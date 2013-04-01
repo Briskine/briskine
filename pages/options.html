@@ -1,0 +1,85 @@
+<!doctype html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <title>Gmail Quicktext Options</title>
+  <script src="../libs/md5.js"></script>
+  <script src="../libs/underscore-min.js"></script>
+  <script src="../background_scripts/main.js"></script>
+  <script src="../background_scripts/ui.js"></script>
+  <link rel="stylesheet" href="main.css" type="text/css" media="screen" charset="utf-8">
+</head>
+<body>
+<div id="wrapper">
+  <header>Gmail Quicktext</header>
+  <div class="tutorial">
+    <strong>Keyboard shortcuts:</strong>
+    <dl>
+      <dt>Search for a Quicktext:</dt>
+      <dd>Ctrl+Alt+Q</dd>
+      <dt>Save selected text as Quicktext:</dt>
+      <dd>Ctrl+Alt+S</dd>
+    </dl>
+  </div>
+  <input type="text" id="search" name="search" value="" placeholder="Search quicktexts" />
+  <div class="buttons">
+    <button id="new-quicktext-button">Add quicktext</button>
+  </div>
+  <div class="clearfix"></div>
+  <div id="quicktext-form">
+    <form name="quicktext-form0" action="">
+      <input type="hidden" name="qt-id" id="qt-id" value="" />
+      <div class="field">
+        <label for="qt-title">Title</label>
+        <input type="text" name="qt-title" id="qt-title" size="50" value=""/>
+      </div>
+      <div class="field">
+        <label for="qt-shortcut">Shortcut</label>
+        <input type="text" name="qt-shortcut" id="qt-shortcut" size="50" value=""/>
+      </div>
+      <div class="field">
+        <label for="qt-template">Quicktext</label>
+        <textarea name="qt-template" id="qt-template" cols="100" rows="10"></textarea>
+      </div>
+      <div class="field">
+        <label>&nbsp;</label>
+        <button id="qt-submit">Save quicktext</button>
+      </div>
+    </form>
+  </div>
+  <table id="quicktexts-table" class="table table-bordered">
+    <thead> 
+      <tr>
+          <th>Shortcut</th>
+          <th>Title</th>
+          <th>Quicktext exerpt</th>
+          <th>Edit</th>
+          <th>Delete</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+  <div class="buttons">
+    <button id="sync-button">Start Sync</button>
+  </div>
+
+  <div class="clearfix"></div>
+  <h3>Settings</h3>
+  <p>If you want to share your Quicktexts with others in your team setup the
+  <strong>sharing key</strong> and the <strong>server values</strong> below. <a href='#'>Read more</a> about sharing Quicktext.
+  </p>
+  <div class="field">
+    <label for="synckey">Sharing key</label>
+    <input type="text" name="synckey" size="50" value=""/>
+  </div>
+  <div class="field">
+    <label for="syncserver">Sharing server</label>
+    <input type="text" size="50" name="syncserver" value=""/>
+  </div>
+  <div class="buttons">
+    <button id="restore-options-button">Restore Defaults</button>
+    <button id="save-options-button">Save Options</button>
+  </div>
+</div>
+</body>
+</html>
