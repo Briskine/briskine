@@ -17,7 +17,10 @@
         // 'Subject' field
         'subject': ""
     };
-    var inCompose = false;
+
+    var inCompose = false; // are we in a compose field
+    var attachedIframe = false; // have we attached events to the edit iframe?
+    // handling messages for settings via chrome.estension
     var settings = {
         port: null,
         values: {},
@@ -73,50 +76,124 @@
         if (e.keyCode === 9 && inCompose === true){
             e.preventDefault();
             var source = e.srcElement;
-            var value = source.value;
-            var start_position = 0; // where the word begings so we can replace it
-            var end_position = e.srcElement.selectionStart;
-            var word = '';
-            // find the previous word before the tab
-            for (var i = end_position - 1; i >= 0; i--) {
-               if (_.str.isBlank(value[i])){
-                   break;
-               }
-               word = _.str.insert(word, 0, value[i]);
+            var isContentEditable = source.getAttribute('contenteditable') !== null
+
+            if (isContentEditable) {
+                if (attachedIframe){ // we are in an iframe
+                    handleIframe(source);
+                } else { // in the 'new style' editor
+                    handleNewStyle(source); 
+                }
+            } else { // old style plaintext editor
+                handlePlainText(source);
+                var value = source.value;
             }
-            start_position = i;
-            if (word) {
-                // search in settings that we have the right quicktext
-                _.each(settings.get('quicktexts'), function(qt){
-                    if (word === qt.shortcut) { // found shortcut
-                        loadVariables();
-                        // remove the word
-                        var before = value.substr(0, start_position + 1);
-                        var after = value.substr(end_position);
-                        var compiled = _.template(qt.template, templateVars);
-                        source.value = before + compiled + after;
-                        // set the cursor in the correct position
-                        var newCursorPos = before.length + compiled.length;
-                        source.setSelectionRange(newCursorPos, newCursorPos); 
+
+            function getWord(value, end_position){
+                var word = '';
+                // find the previous word before the tab
+                for (var i = end_position - 1; i >= 0; i--) {
+                    if (_.str.isBlank(value[i])){
+                        break;
                     }
-                });
+                    word = _.str.insert(word, 0, value[i]);
+                }
+                start_position = i; 
+                return [word, start_position];
+            }
+
+            function parseWord(value, word, start_position, end_position, setValue, setPosition){
+ // search in settings that we have the right quicktext
+                    _.each(settings.get('quicktexts'), function(qt){
+                        if (word === qt.shortcut) { // found shortcut
+                            loadVariables();
+                            // remove the word
+                            var before = value.substr(0, start_position + 1);
+                            var after = value.substr(end_position);
+                            var compiled = _.template(qt.template, templateVars);
+                            var result = before + compiled + after;
+                            setValue(result);
+                            // set the cursor in the correct position
+                            var newCursorPos = before.length + compiled.length;
+                            setPosition(newCursorPos);
+                        }
+                    });
+
+            }
+
+            function handlePlainText(source){
+                var value = source.value;
+                var start_position = 0; // where the word begings so we can replace it
+                var end_position = source.selectionStart;
+                var res = getWord(value, end_position)
+                var word = res[0];
+                start_position = res[1];
+
+                if (word) {
+                    parseWord(value, word, start_position, end_position, function(result){
+                        source.value = result;
+                    }, function(newCursorPos){
+                        source.setSelectionRange(newCursorPos, newCursorPos);
+                    })
+                }
+            }
+
+            function handleIframe(source){
+                var start_position = 0; // where the word begings so we can replace it
+                var iFrameDoc = source.parentNode.parentNode;
+                var selection = iFrameDoc.getSelection();
+                var base = selection.baseNode;
+                var value = base.data;
+                var end_position = selection.baseOffset;
+
+                var res = getWord(value, end_position)
+                var word = res[0];
+                start_position = res[1];
+                if (word) {
+                    parseWord(value, word, start_position, end_position, function(result){
+                        base.data = result;
+                    }, function(newCursorPos){
+                        //TODO: fix setting the selection
+                    })
+                }
+            }
+
+            function handleNewStyle(source){
+                var start_position = 0; // where the word begings so we can replace it
+                var selection = document.getSelection();
+                var base = selection.baseNode;
+                var value = base.data;
+                var end_position = selection.baseOffset;
+
+                var res = getWord(value, end_position)
+                var word = res[0];
+                start_position = res[1];
+                if (word) {
+                    parseWord(value, word, start_position, end_position, function(result){
+                        base.data = result;
+                    }, function(newCursorPos){
+                        //TODO: fix setting the selection
+                    })
+                }
             }
         }
     }
+
     function onFocusCapturePhase(e){
         var focusedEl = e.target;
-        // <textarea id=":nx"
-        if (focusedEl.getAttribute('aria-label') == 'Text area for composing a reply') {
+        if (focusedEl.getAttribute('form') == 'nosend' || // Plaintext
+            focusedEl.classList.contains('editable')) {//Richtext
             inCompose = true;
         }
     }
 
     function onBlurCapturePhase(e){
         var focusedEl = e.target;
-        // <textarea id=":nx"
-        if (focusedEl.getAttribute('aria-label') != 'Text area for composing a reply') {
+        if (!(focusedEl.getAttribute('form') == 'nosend' || // Plaintext
+            focusedEl.classList.contains('editable'))) {//Richtext
             inCompose = false;
         }
+        attachEventsToIframe();
     }
     // given a string like: Alex P <alex@gmail-quicktext.com> return a dict:
     // {'name': 'Alex P', 'first_name': 'Alex', 'last_name': 'P', 'email': 'alex@gmail-quicktext.com'}
@@ -137,6 +214,7 @@
         return null;
     }
     function loadVariables(){
+        //TODO: fix new style to fields
         function loadToField(field){
             // clean first
             templateVars[field] = []
@@ -170,6 +248,16 @@
         document.addEventListener("keydown", onKeydown, true);
         document.addEventListener("focus", onFocusCapturePhase, true);
         document.addEventListener("blur", onBlurCapturePhase, true);
+
+    }
+    function attachEventsToIframe(){
+        var iframe = document.querySelector('iframe.editable');
+        if (!attachedIframe && iframe) {
+            iframe.contentDocument.addEventListener("keydown", onKeydown, true)
+            iframe.contentDocument.addEventListener("focus", onFocusCapturePhase, true)
+            iframe.contentDocument.addEventListener("blur", onBlurCapturePhase, true)
+            attachedIframe = true;
+        }
     }
     settings.load();
     window.addEventListener("DOMContentLoaded", initializeOnDomReady);
