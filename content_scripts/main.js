@@ -73,8 +73,9 @@
 
     function onKeydown(e){
         // inside the compose area of Gmail and we hit Tab (keyCode: 9)
-        if (e.keyCode === 9 && inCompose === true){
+        if (e.keyCode === 9 && inCompose === true) {
             e.preventDefault();
+            e.stopPropagation();
             var source = e.srcElement;
             var isContentEditable = source.getAttribute('contenteditable') !== null
 
@@ -153,7 +154,11 @@
                     parseWord(value, word, start_position, end_position, function(result){
                         base.data = result;
                     }, function(newCursorPos){
-                        //TODO: fix setting the selection
+                        var range = iFrameDoc.createRange();
+                        range.setStart(base, newCursorPos);
+                        range.setEnd(base, newCursorPos);
+                        selection.removeAllRanges();
+                        selection.addRange(range);
                     })
                 }
             }
@@ -172,7 +177,11 @@
                     parseWord(value, word, start_position, end_position, function(result){
                         base.data = result;
                     }, function(newCursorPos){
-                        //TODO: fix setting the selection
+                        var range = document.createRange();
+                        range.setStart(base, newCursorPos);
+                        range.setEnd(base, newCursorPos);
+                        selection.removeAllRanges();
+                        selection.addRange(range);
                     })
                 }
             }
