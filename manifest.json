@@ -12,7 +12,9 @@
     "scripts": [
       "libs/md5.js",
       "background_scripts/main.js",
-      "background_scripts/ui.js"
+      "background_scripts/ui.js",
+      "background_scripts/dialog.js",
+      "background_scripts/popup.js"
     ]
   },
   "options_page": "pages/options.html",
@@ -20,6 +22,8 @@
     "https://mail.google.com/*",
     "http://gmail-quicktext.com/*",
     "https://gmail-quicktext.com/*",
+
+    "contextMenus",
     "storage"
   ],
   "content_scripts": [

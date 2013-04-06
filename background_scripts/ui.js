@@ -65,23 +65,26 @@ function initializeOnDomReady(){
     }
 
     // search quicktext
-    document.querySelector("#search").addEventListener("keyup", function(){
-        // search in title, shortcut and template
-        var self = this;
-        var query = self.value.toLowerCase();
-        var quicktexts = Settings.get('quicktexts');
-        function show(id){
-            var row = document.querySelector("#qt-" + id);
-            row.classList.remove("hide");
-        };
+    var searchEl = document.querySelector("#search");
+    if (searchEl){
+        searchEl.addEventListener("keyup", function(){
+            // search in title, shortcut and template
+            var self = this;
+            var query = self.value.toLowerCase();
+            var quicktexts = Settings.get('quicktexts');
+            function show(id){
+                var row = document.querySelector("#qt-" + id);
+                row.classList.remove("hide");
+            };
 
-        _.each(quicktexts, function(qt){
-            if (qt.title.toLowerCase().indexOf(query) !== -1) {return show(qt.id);}
-            if (qt.shortcut.toLowerCase().indexOf(query) !== -1) {return show(qt.id);}
-            if (qt.template.toLowerCase().indexOf(query) !== -1) {return show(qt.id);}
-            document.querySelector("#qt-" + qt.id).classList.add("hide");
+            _.each(quicktexts, function(qt){
+                if (qt.title.toLowerCase().indexOf(query) !== -1) {return show(qt.id);}
+                if (qt.shortcut.toLowerCase().indexOf(query) !== -1) {return show(qt.id);}
+                if (qt.template.toLowerCase().indexOf(query) !== -1) {return show(qt.id);}
+                document.querySelector("#qt-" + qt.id).classList.add("hide");
+            });
         });
-    });
+    }
 }
 
 // delete quicktexts
@@ -118,6 +121,9 @@ function editClicked(e){
 function loadQuicktexts(){
     var quicktexts = Settings.get('quicktexts');
     var table = document.querySelector("#quicktexts-table");
+    if (!table){
+        return;
+    }
     var isPopup = table.getAttribute("rel") === 'popup';
     var qtTemplate = '<% _.each(quicktexts, function(qt) { %>\
     <tr id="qt-<%= qt.id %>">\

@@ -34,6 +34,7 @@ var Settings = {
     ],
   }
 };
+
 var portHandlers = {
   settings: function(args, port) {
     if (args.operation === "get") {
@@ -51,4 +52,18 @@ chrome.extension.onConnect.addListener(function(port, name) {
   if (portHandlers[port.name]) {
     return port.onMessage.addListener(portHandlers[port.name]);
   }
+});
+
+// Context menu
+chrome.contextMenus.create({
+    "title": 'Save as Quicktext',
+    "contexts": ['editable', 'selection'],
+    "onclick": function(info, tab){
+        // I would have loved to open the popup.html with this, but at this moment
+        // it's not possible to do so due to browser restrictions of Chrome
+        // so we are going to open a dialog with the form
+        returnVal = window.showModalDialog('pages/dialog.html',
+            {'selection': info.selectionText, 'show': 'form'},
+            "dialogwidth: 700; dialogheight: 375; resizable: yes");
+    }
 });
