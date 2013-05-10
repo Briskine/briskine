@@ -21,9 +21,10 @@ var Settings = {
     return key in localStorage;
   },
   defaults: {
-    //api_base_url: "https://gmail-quicktext.com/api/1/",
-    base_url: "http://localhost:5000/",
-    api_base_url: "http://localhost:5000/api/1/",
+    base_url: "https://gmail-quicktext.com/",
+    api_base_url: "https://gmail-quicktext.com/api/1/",
+    //base_url: "http://localhost:5000/",
+    //api_base_url: "http://localhost:5000/api/1/",
     quicktexts: [
       {
           "id": "a0e29d8c0ab9e2fa6ea8b53cf0a9b5d2", // md5 unique identifier

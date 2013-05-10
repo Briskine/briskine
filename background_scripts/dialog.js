@@ -16,7 +16,6 @@ function onLoad() {
         form.classList.add('hide');
         //view.classList.add('show');
     }
-    //window.returnValue = document.getElementById('foo').value; window.close();
 }
 
 document.addEventListener("DOMContentLoaded", function() {

@@ -4,7 +4,7 @@ ajax.send=function(u,f,m,a){var x=ajax.x();x.open(m,u,true);x.onreadystatechange
 ajax.get=function(url,func){ajax.send(url,func,'GET')};
 ajax.gets=function(url){var x=ajax.x();x.open('GET',url,false);x.send(null);return x.responseText};
 ajax.getJSON=function(url){var x=ajax.x();x.open('GET',url,false);x.send(null);return ajax.parseJSON(x.responseText)};
-ajax.post=function(url,func,args){ajax.send(url,func,'POST',args)};
+ajax.post=function(url, args, func){ajax.send(url, func, 'POST', JSON.stringify(args))};
 ajax.parseJSON=function(data) {
     if ( typeof data !== "string" || !data ) {
         return null;

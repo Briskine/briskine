@@ -67,6 +67,12 @@ function initializeOnDomReady(){
                 quicktexts.push(quicktext);
             }
             Settings.set('quicktexts', quicktexts);
+            syncQuicktexts();
+
+            var dialog = document.querySelector("#dialog-container");
+            if (dialog){
+                window.close();
+            }
             loadQuicktexts();
             document.querySelector("#new-quicktext-button").classList.remove("hide");
             document.querySelector("#quicktext-form").classList.remove("show");
@@ -100,33 +106,13 @@ function initializeOnDomReady(){
         syncButton.addEventListener("click", function(){
             // If we are logged in the we should try getting the quicktexts from the website directly
             try {
-                result = ajax.getJSON(Settings.get("api_base_url") + "sync");
-                if (result.status == 0){
-                    quicktexts = []; // the list that we'll populate
-                    existing_quicktexts = Settings.get("quicktexts");
-                    new_ids = [];
-
-                    // add all remote quicktexts to the list
-                    _.each(result.quicktexts, function(remote_qt) {
-                        remote_qt.id = get_id(remote_qt);// give a id to the remote qt
-                        new_ids.push(remote_qt.id);
-                        quicktexts.push(remote_qt);
-                    });
-
-                    // if we don't have the local quicktexts in the remote quicktexts
-                    // we add them to the list
-                    _.each(existing_quicktexts, function(local_qt) {
-                        if (new_ids.indexOf(local_qt.id) === -1){
-                            quicktexts.push(local_qt)
-                        }
-                    })
-                    Settings.set("quicktexts", quicktexts);
-                    loadQuicktexts();
-                }
+                syncQuicktexts();
             } catch (e) {
                 if (e.message.indexOf("Invalid JSON") !== -1) {
                     // this probably means that the user is not logged in
                     window.location =  Settings.get('base_url') + "registration"
+                } else {
+                    throw e;
                 }
             }
         });
@@ -138,8 +124,41 @@ function initializeOnDomReady(){
             window.location = Settings.get('base_url') + 'quicktexts';
         });
     }
+    document.addEventListener("quicktext_created", function(e){
+        console.log(e);
+    });
 }
 
+function syncQuicktexts(){
+    // first we get the quicktexts from the sync server
+    result = ajax.getJSON(Settings.get("api_base_url") + "sync");
+    if (result.status == 0){
+        quicktexts = []; // the list that we'll populate
+        existing_quicktexts = Settings.get("quicktexts");
+        new_ids = [];
+
+        // add all remote quicktexts to the list
+        _.each(result.quicktexts, function(remote_qt) {
+            remote_qt.id = get_id(remote_qt);// give a id to the remote qt
+            new_ids.push(remote_qt.id);
+            quicktexts.push(remote_qt);
+        });
+
+        // if we don't have the local quicktexts in the remote quicktexts
+        // we add them to the list
+        _.each(existing_quicktexts, function(local_qt) {
+            if (new_ids.indexOf(local_qt.id) === -1){
+                quicktexts.push(local_qt)
+            }
+        })
+        Settings.set("quicktexts", quicktexts);
+    }
+    // now we try to send the quicktexts back to the server for syncronization
+    ajax.post(Settings.get("api_base_url") + "sync", Settings.get("quicktexts"), function(res){
+        console.log(res);
+    });
+    loadQuicktexts();
+}
 // get the unique id for the quicktext in question
 function get_id(qt){
     return hex_md5(qt.title + qt.subject + qt.shortcut + qt.tags + qt.body);

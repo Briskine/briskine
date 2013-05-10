@@ -21,6 +21,7 @@ GQ.templateVars = {
 
 GQ.inCompose = false; // are we in a compose field
 GQ.attachedIframe = false; // have we attached events to the edit iframe?
+
 // handling messages for settings via chrome.estension
 GQ.settings = {
     get: function(key, callback) {
