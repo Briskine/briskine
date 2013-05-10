@@ -4,7 +4,14 @@
   <meta http-equiv="content-type" content="text/html; charset=utf-8">
   <title></title>
   
-  
+<script src="../libs/ajax.js"></script>
+<script src="../libs/md5.js"></script>
+<script src="../libs/underscore-min.js"></script>
+<script src="../libs/underscore.string.min.js"></script>
+<script src="../background_scripts/settings.js"></script> 
+<script src="../background_scripts/ui.js"></script> 
+<script src="../background_scripts/dialog.js"></script> 
+
   <link rel="stylesheet" href="main.css" type="text/css" media="screen" charset="utf-8">
 </head>
 <body>
@@ -12,18 +19,28 @@
   
 <div id="quicktext-form">
   <form name="quicktext-form0" action="">
-    <input type="hidden" name="qt-id" id="qt-id" value="" />
+    <input type="hidden" name="qt-id" id="qt-id" value="" /> <!-- local id -->
+    <input type="hidden" name="qt-key" id="qt-key" value="" /> <!-- sync server id -->
     <div class="field">
       <label for="qt-title">Title</label>
       <input type="text" name="qt-title" id="qt-title" size="50" value=""/>
     </div>
     <div class="field">
+      <label for="qt-subject">Subject</label>
+      <input type="text" name="qt-subject" id="qt-subject" size="50" value=""/>
+    </div> 
+    <div class="field">
       <label for="qt-shortcut">Shortcut</label>
       <input type="text" name="qt-shortcut" id="qt-shortcut" size="50" value=""/>
     </div>
     <div class="field">
-      <label for="qt-template">Quicktext</label>
-      <textarea name="qt-template" id="qt-template" cols="100" rows="10"></textarea>
+      <label for="qt-shortcut">Tags</label>
+      <input type="text" name="qt-tags" id="qt-tags" size="50" value=""/>
+      <span class="hint"> Comma separated</span>
+    </div>
+    <div class="field">
+      <label for="qt-body">Quicktext Body</label>
+      <textarea name="qt-body" id="qt-body" cols="100" rows="10"></textarea>
     </div>
     <div class="field">
       <label>&nbsp;</label>
@@ -31,18 +48,6 @@
     </div>
   </form>
 </div>
-<table id="quicktexts-table" class="table table-bordered">
-  <thead> 
-    <tr>
-      <th>Shortcut</th>
-      <th>Title</th>
-      <th>Quicktext exerpt</th>
-      <th>Edit</th>
-      <th>Delete</th>
-    </tr>
-  </thead>
-  <tbody></tbody>
-</table> 
 
 </div>
 </body>

@@ -1,22 +1,21 @@
 {% extends "base.html" %}
 {% block title %}Quicktext for Gmail™ Options{% endblock %}
 {% block header %}
+<script src="../libs/ajax.js"></script>
 <script src="../libs/md5.js"></script>
 <script src="../libs/underscore-min.js"></script>
+<script src="../libs/underscore.string.min.js"></script>
+<script src="../background_scripts/settings.js"></script>
 <script src="../background_scripts/main.js"></script>
 <script src="../background_scripts/ui.js"></script> 
 {% endblock %}
 {% block content %}
-<header>Quicktext for Gmail™</header>
-<div class="tutorial">
-  <strong>Keyboard shortcuts:</strong>
-  <dl>
-    <dt>Search for a Quicktext:</dt>
-    <dd>Ctrl+Alt+Q</dd>
-    <dt>Save selected text as Quicktext:</dt>
-    <dd>Ctrl+Alt+S</dd>
-  </dl>
-</div>
+<header>
+<img src="../icons/icon48.png" valign="middle" />
+<span>
+  Quicktext for Gmail™
+</span>
+</header>
 <input type="text" id="search" name="search" value="" placeholder="Search quicktexts" />
 <div class="buttons">
   <button id="new-quicktext-button">Add quicktext</button>
@@ -25,24 +24,12 @@
 {% include "quicktext-form.html" %}
 {% include "quicktext-table.html" %}
 <!-- Settings -->
-<div class="buttons">
-  <button id="sync-button">Start Sync</button>
-</div>
 <div class="clearfix"></div>
-<h3>Settings</h3>
-<p>If you want to share your Quicktexts with others in your team setup the
-<strong>sharing key</strong> and the <strong>server values</strong> below. <a href='#'>Read more</a> about sharing Quicktext.
-</p>
-<div class="field">
-  <label for="synckey">Sharing key</label>
-  <input type="text" name="synckey" size="50" value=""/>
-</div>
-<div class="field">
-  <label for="syncserver">Sharing server</label>
-  <input type="text" size="50" name="syncserver" value=""/>
-</div>
-<div class="buttons">
-  <button id="restore-options-button">Restore Defaults</button>
-  <button id="save-options-button">Save Options</button>
-</div>  
+<h3>Sharing and Syncronization</h3>
+<p>In order to syncronize your quicktexts or start sharing them with your team click on the button bellow.</p>
+<button id="sync-button">Start syncronization</button>
+<button id="sharing-button">Manage sharing settings</button>
+<br />
+<br />
 {% endblock %}
+

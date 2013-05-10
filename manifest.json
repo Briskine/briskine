@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Quicktext for Gmail™",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "",
   "icons": {
     "16": "icons/icon16.png",
@@ -11,6 +11,7 @@
   "background": {
     "scripts": [
       "libs/md5.js",
+      "background_scripts/settings.js",
       "background_scripts/main.js",
       "background_scripts/ui.js",
       "background_scripts/dialog.js",
@@ -22,6 +23,7 @@
     "https://mail.google.com/*",
     "http://gmail-quicktext.com/*",
     "https://gmail-quicktext.com/*",
+    "http://localhost:5000/*",
 
     "contextMenus",
     "storage"

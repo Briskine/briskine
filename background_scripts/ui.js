@@ -9,8 +9,10 @@ function initializeOnDomReady(){
             // clean the form
             document.querySelector("#qt-id").value = "";
             document.querySelector("#qt-title").value = "";
+            document.querySelector("#qt-subject").value = "";
             document.querySelector("#qt-shortcut").value = "";
-            document.querySelector("#qt-template").value = "";
+            document.querySelector("#qt-tags").value = "";
+            document.querySelector("#qt-body").value = "";
 
             var formDiv = document.querySelector("#quicktext-form");
             formDiv.classList.add("show")
@@ -24,8 +26,10 @@ function initializeOnDomReady(){
             e.preventDefault();
             var id = document.querySelector("#qt-id");
             var title = document.querySelector("#qt-title");
+            var subject = document.querySelector("#qt-subject");
             var shortcut = document.querySelector("#qt-shortcut");
-            var template = document.querySelector("#qt-template");
+            var tags = document.querySelector("#qt-tags");
+            var body = document.querySelector("#qt-body");
             var quicktexts = Settings.get('quicktexts');
 
             if (!title.value){
@@ -33,9 +37,9 @@ function initializeOnDomReady(){
                 title.focus();
                 return false;
             }
-            if (!template.value){
+            if (!body.value){
                 alert("Please enter a quicktext");
-                template.focus();
+                body.focus();
                 return false;
             }
             if (id.value !== ''){
@@ -43,19 +47,24 @@ function initializeOnDomReady(){
                 _.each(quicktexts, function(qt){
                     if (qt.id == id.value){
                         qt.title = title.value;
+                        qt.subject= subject.value;
                         qt.shortcut = shortcut.value;
-                        qt.template = template.value;
+                        qt.tags = tags.value;
+                        qt.body = body.value;
                     }
                     newQuicktexts.push(qt);
                 });
                 quicktexts = newQuicktexts;
             } else {
-                quicktexts.push({
-                    'id': hex_md5(title.value + shortcut.value + template.value),
+                quicktext = {
                     'title': title.value,
+                    'subject': subject.value,
                     'shortcut': shortcut.value,
-                    'template': template.value,
-                });
+                    'tags': tags.value,
+                    'body': body.value
+                };
+                quicktext.id = get_id(quicktext);
+                quicktexts.push(quicktext);
             }
             Settings.set('quicktexts', quicktexts);
             loadQuicktexts();
@@ -68,7 +77,7 @@ function initializeOnDomReady(){
     var searchEl = document.querySelector("#search");
     if (searchEl){
         searchEl.addEventListener("keyup", function(){
-            // search in title, shortcut and template
+            // search in title, shortcut and body
             var self = this;
             var query = self.value.toLowerCase();
             var quicktexts = Settings.get('quicktexts');
@@ -80,11 +89,60 @@ function initializeOnDomReady(){
             _.each(quicktexts, function(qt){
                 if (qt.title.toLowerCase().indexOf(query) !== -1) {return show(qt.id);}
                 if (qt.shortcut.toLowerCase().indexOf(query) !== -1) {return show(qt.id);}
-                if (qt.template.toLowerCase().indexOf(query) !== -1) {return show(qt.id);}
+                if (qt.tags.toLowerCase().indexOf(query) !== -1) {return show(qt.id);}
+                if (qt.body.toLowerCase().indexOf(query) !== -1) {return show(qt.id);}
                 document.querySelector("#qt-" + qt.id).classList.add("hide");
             });
         });
     }
+    var syncButton = document.querySelector("#sync-button");
+    if (syncButton){
+        syncButton.addEventListener("click", function(){
+            // If we are logged in the we should try getting the quicktexts from the website directly
+            try {
+                result = ajax.getJSON(Settings.get("api_base_url") + "sync");
+                if (result.status == 0){
+                    quicktexts = []; // the list that we'll populate
+                    existing_quicktexts = Settings.get("quicktexts");
+                    new_ids = [];
+
+                    // add all remote quicktexts to the list
+                    _.each(result.quicktexts, function(remote_qt) {
+                        remote_qt.id = get_id(remote_qt);// give a id to the remote qt
+                        new_ids.push(remote_qt.id);
+                        quicktexts.push(remote_qt);
+                    });
+
+                    // if we don't have the local quicktexts in the remote quicktexts
+                    // we add them to the list
+                    _.each(existing_quicktexts, function(local_qt) {
+                        if (new_ids.indexOf(local_qt.id) === -1){
+                            quicktexts.push(local_qt)
+                        }
+                    })
+                    Settings.set("quicktexts", quicktexts);
+                    loadQuicktexts();
+                }
+            } catch (e) {
+                if (e.message.indexOf("Invalid JSON") !== -1) {
+                    // this probably means that the user is not logged in
+                    window.location =  Settings.get('base_url') + "registration"
+                }
+            }
+        });
+    }
+
+    var sharingButton = document.querySelector("#sharing-button");
+    if (sharingButton){
+        sharingButton.addEventListener("click", function(){
+            window.location = Settings.get('base_url') + 'quicktexts';
+        });
+    }
+}
+
+// get the unique id for the quicktext in question
+function get_id(qt){
+    return hex_md5(qt.title + qt.subject + qt.shortcut + qt.tags + qt.body);
 }
 
 // delete quicktexts
@@ -111,7 +169,7 @@ function editClicked(e){
             document.querySelector("#qt-id").value = qt.id;
             document.querySelector("#qt-title").value = qt.title;
             document.querySelector("#qt-shortcut").value = qt.shortcut;
-            document.querySelector("#qt-template").value = qt.template;
+            document.querySelector("#qt-body").value = qt.body;
             return;
         }
     });
@@ -119,19 +177,21 @@ function editClicked(e){
 }
 
 function loadQuicktexts(){
-    var quicktexts = Settings.get('quicktexts');
     var table = document.querySelector("#quicktexts-table");
     if (!table){
         return;
     }
+    var quicktexts = Settings.get('quicktexts');
     var isPopup = table.getAttribute("rel") === 'popup';
     var qtTemplate = '<% _.each(quicktexts, function(qt) { %>\
-    <tr id="qt-<%= qt.id %>">\
-        <td><%= qt.shortcut %></td>\
-        <td><%= qt.title %></td>\
-        <td><%= qt.template %></td>\
-        <td><a href="#" class="qt-edit" rel="<%= qt.id %>">Edit</a></td>\
-        <td><a href="#" class="qt-delete" rel="<%= qt.id %>">Delete</a></td>\
+    <tr id="qt-<%= qt.id %>" key="qt-<%= qt.key %>">\
+        <td class="title-cell"><%= qt.title %></td>\
+        <td class="subject-cell"><%= qt.subject %></td>\
+        <td class="shortcut-cell"><%= qt.shortcut %></td>\
+        <td class="tags-cell"><%= qt.tags %></td>\
+        <td class="body-cell"><div class="body-container"><%= qt.body %></div></td>\
+        <td class="edit-cell"><a href="#" class="qt-edit" rel="<%= qt.id %>">Edit</a></td>\
+        <td class="delete-cell"><a href="#" class="qt-delete" rel="<%= qt.id %>">Delete</a></td>\
     </tr>\
     <% }); %>';
     if (isPopup) {
@@ -139,11 +199,20 @@ function loadQuicktexts(){
         <tr id="qt-<%= qt.id %>">\
             <td><%= qt.shortcut %></td>\
             <td><%= qt.title %></td>\
-            <td><%= qt.template %></td>\
+            <td><%= qt.body %></td>\
         </tr>\
         <% }); %>'; 
     }
-    var compiled = _.template(qtTemplate, {'quicktexts': quicktexts});
+    filtered = [];
+    _.each(quicktexts, function(qt){
+        qt.title= _.str.truncate(qt.title, 30);
+        qt.subject = _.str.truncate(qt.subject, 30);
+        qt.shortcut = _.str.truncate(qt.shortcut, 15);
+        qt.tags = _.str.truncate(qt.tags, 20);
+        qt.body = _.str.truncate(qt.body, 100);
+        filtered.push(qt);
+    });
+    var compiled = _.template(qtTemplate, {'quicktexts': filtered});
     document.querySelector("#quicktexts-table tbody").innerHTML = compiled;
 
     // Attach event handlers to delete actions

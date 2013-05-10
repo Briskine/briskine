@@ -1,6 +1,14 @@
 {% extends "base.html" %}
 {% block title %}{% endblock %}
+{% block header %}
+<script src="../libs/ajax.js"></script>
+<script src="../libs/md5.js"></script>
+<script src="../libs/underscore-min.js"></script>
+<script src="../libs/underscore.string.min.js"></script>
+<script src="../background_scripts/settings.js"></script> 
+<script src="../background_scripts/ui.js"></script> 
+<script src="../background_scripts/dialog.js"></script> 
+{% endblock %} 
 {% block content %}
 {% include "quicktext-form.html" %}
-{% include "quicktext-table.html" %}
 {% endblock %} 
