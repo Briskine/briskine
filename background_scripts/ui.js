@@ -103,14 +103,23 @@ function initializeOnDomReady(){
     }
     var syncButton = document.querySelector("#sync-button");
     if (syncButton){
+
+
         syncButton.addEventListener("click", function(){
+            if (syncButton.innerHTML == 'Stop syncronization'){
+                syncButton.innerHTML = 'Start syncronization';
+                Settings.set('syncEnabled', false);
+            } else {
+                syncButton.innerHTML = 'Stop syncronization';
+                Settings.set('syncEnabled', true); 
+            }
             // If we are logged in the we should try getting the quicktexts from the website directly
             try {
                 syncQuicktexts();
             } catch (e) {
                 if (e.message.indexOf("Invalid JSON") !== -1) {
                     // this probably means that the user is not logged in
-                    window.location =  Settings.get('base_url') + "registration"
+                    window.location =  Settings.get('baseURL') + "registration"
                 } else {
                     throw e;
                 }
@@ -124,14 +133,24 @@ function initializeOnDomReady(){
             window.location = Settings.get('base_url') + 'quicktexts';
         });
     }
-    document.addEventListener("quicktext_created", function(e){
-        console.log(e);
-    });
+    var deleteAllButton = document.querySelector("#delete-all-button");
+    if (deleteAllButton){
+        deleteAllButton.addEventListener("click", function(){
+            var r = confirm("Are you sure you want to delete all Quicktexts?\n\nNote: they will NOT be deleted from the syncronization server.");
+            if (r === true){
+                Settings.set("quicktexts", []);
+                loadQuicktexts();
+            }
+        });
+    }
 }
 
 function syncQuicktexts(){
+    if (Settings.get("syncEnabled") === false){
+        return;
+    }
     // first we get the quicktexts from the sync server
-    result = ajax.getJSON(Settings.get("api_base_url") + "sync");
+    result = ajax.getJSON(Settings.get("apiBaseURL") + "sync");
     if (result.status == 0){
         quicktexts = []; // the list that we'll populate
         existing_quicktexts = Settings.get("quicktexts");
@@ -154,8 +173,8 @@ function syncQuicktexts(){
         Settings.set("quicktexts", quicktexts);
     }
     // now we try to send the quicktexts back to the server for syncronization
-    ajax.post(Settings.get("api_base_url") + "sync", Settings.get("quicktexts"), function(res){
-        console.log(res);
+    ajax.post(Settings.get("apiBaseURL") + "sync", Settings.get("quicktexts"), function(res){
+        //console.log(res);
     });
     loadQuicktexts();
 }
@@ -187,6 +206,8 @@ function editClicked(e){
             formDiv.classList.add('show');
             document.querySelector("#qt-id").value = qt.id;
             document.querySelector("#qt-title").value = qt.title;
+            document.querySelector("#qt-subject").value = qt.subject;
+            document.querySelector("#qt-tags").value = qt.tags;
             document.querySelector("#qt-shortcut").value = qt.shortcut;
             document.querySelector("#qt-body").value = qt.body;
             return;

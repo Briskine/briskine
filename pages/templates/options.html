@@ -17,11 +17,12 @@
 </span>
 </header>
 <input type="text" id="search" name="search" value="" placeholder="Search quicktexts" />
-<div class="buttons">
-  <button id="new-quicktext-button">Add quicktext</button>
-</div>
-<div class="clearfix"></div>
 {% include "quicktext-form.html" %}
+ <div class="buttons">
+  <button id="new-quicktext-button">Add quicktext</button>
+  <button id="delete-all-button">Delete all quicktexts</button>
+</div>
+<div class="clearfix"></div> 
 {% include "quicktext-table.html" %}
 <!-- Settings -->
 <div class="clearfix"></div>
