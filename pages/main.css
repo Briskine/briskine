@@ -205,3 +205,21 @@ tr {
   cursor: pointer;
   background-color: #d9edf7;
 }
+
+/* dialog.html */
+#dialog-container {
+  padding: 20px;
+}
+
+/* popup.html */
+body.ispopup {
+  width: 800px;
+}
+#popup-container {
+  padding: 10px;
+  width: 780px;
+}
+
+#popup-container .edit-cell, #popup-container .delete-cell {
+  display: none
+}

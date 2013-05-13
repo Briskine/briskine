@@ -15,6 +15,6 @@ chrome.contextMenus.create({
         // so we are going to open a dialog with the form
         returnVal = window.showModalDialog('pages/dialog.html',
             {'selection': info.selectionText, 'show': 'form'},
-            "dialogwidth: 700; dialogheight: 375; resizable: yes");
+            "dialogwidth: 900; dialogheight: 375; resizable: yes");
     }
 });

@@ -1,7 +1,19 @@
 {% extends "base.html" %}
 {% block title %}{% endblock %}
+{% block header %}
+<script src="../libs/ajax.js"></script>
+<script src="../libs/md5.js"></script>
+<script src="../libs/underscore-min.js"></script>
+<script src="../libs/underscore.string.min.js"></script>
+<script src="../background_scripts/settings.js"></script>
+<script src="../background_scripts/main.js"></script>
+<script src="../background_scripts/ui.js"></script> 
+<script src="../background_scripts/popup.js"></script> 
+{% endblock %} 
 {% block content %}
-<input type="text" id="search" name="search" value="" placeholder="Search quicktexts" />
-<div class="clearfix"></div> 
-{% include "quicktext-table.html" %}
+<div id="popup-container">
+  <input type="text" id="search" name="search" value="" placeholder="Search quicktexts" />
+  <div class="clearfix"></div>
+  {% include "quicktext-table.html" %}
+</div>
 {% endblock %}
