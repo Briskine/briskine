@@ -62,22 +62,22 @@ GQ.onKeydown = function(e){
         e.preventDefault();
         e.stopPropagation();
 
-        function parseWord(value, word, startPosition, endPosition, setValue, setPosition){
+        function parseWord(params, setValue, setPosition){
                 // search in settings that we have the right quicktext
                 GQ.settings.get('quicktexts', function(quicktexts){
                     var propagate = true;
                     _.each(quicktexts, function(qt){
-                        if (word === qt.shortcut) { // found shortcut
+                        if (params['word'] === qt.shortcut) { // found shortcut
                             GQ.loadVariables();
                             // remove the word
-                            var before = value.substr(0, startPosition + 1);
-                            var after = value.substr(endPosition);
+                            var before = params['value'].substr(0, params['startPosition'] + 1);
+                            var after = params['value'].substr(params['endPosition']);
                             var compiled = _.template(qt.body, GQ.templateVars);
                             var result = before + compiled + after;
-                            result = setValue(result);
+                            result = setValue(params, result);
                             // set the cursor in the correct position
                             var newCursorPos = before.length + result.length;
-                            setPosition(newCursorPos);
+                            setPosition(params, newCursorPos);
                             propagate = false;
                             return false;
                         }
@@ -95,36 +95,43 @@ GQ.onKeydown = function(e){
         if (isContentEditable) {
             if (GQ.attachedIframe){ // we are in an iframe
                 GQ.handleIframe(source, parseWord,
-                function(result){
-                    base.data = result;
-                    return result;
-                }, function(newCursorPos){
-                    var range = iFrameDoc.createRange();
-                    range.setStart(base, newCursorPos);
-                    range.setEnd(base, newCursorPos);
-                    selection.removeAllRanges();
-                    selection.addRange(range);
-                });
+                    function(params, result){
+                        params['base'].data = result;
+                        return result;
+                    },
+                    function(params, newCursorPos){
+                        var range = params['iFrameDoc'].createRange();
+                        range.setStart(params['base'], newCursorPos);
+                        range.setEnd(params['base'], newCursorPos);
+                        params['selection'].removeAllRanges();
+                        params['selection'].addRange(range);
+                    }
+                );
             } else { // in the 'new style' editor
                 GQ.handleNewStyle(source, parseWord,
-                        function(result){
-                            base.data = result;
-                            return result;
-                        }, function(newCursorPos){
-                            var range = document.createRange();
-                            range.setStart(base, newCursorPos);
-                            range.setEnd(base, newCursorPos);
-                            selection.removeAllRanges();
-                            selection.addRange(range);
-                        });
+                    function(params, result){
+                        params['base'].data = result;
+                        return result;
+                    },
+                    function(params, newCursorPos){
+                        var range = document.createRange();
+                        range.setStart(params['base'], newCursorPos);
+                        range.setEnd(params['base'], newCursorPos);
+                        params['selection'].removeAllRanges();
+                        params['selection'].addRange(range); 
+                    }
+                );
            }
         } else { // old style plaintext editor
-            GQ.handlePlainText(source, parseWord, function(result){
-                source.value = result;
-                return result;
-            }, function(newCursorPos){
-                source.setSelectionRange(newCursorPos, newCursorPos);
-            });
+            GQ.handlePlainText(source, parseWord,
+                function(params, result){
+                    source.value = result;
+                    return result;
+                },
+                function(params, newCursorPos){
+                    source.setSelectionRange(newCursorPos, newCursorPos);
+                }
+            );
             var value = source.value;
         }
     }

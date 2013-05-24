@@ -37,7 +37,7 @@ var Settings = {
       }
     ],
     syncEnabled: false,
-    autocompleteEnabled: true, // autocomplete dialog
+    autocompleteEnabled: false, // autocomplete dialog
     tabcompleteEnabled: true // tab completion
   }
 };

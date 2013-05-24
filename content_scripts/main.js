@@ -13,13 +13,18 @@ GQ.handlePlainText = function(source, parseWord, resultCallback, updateCallback)
     startPosition = res[1];
 
     if (word) {
-        parseWord(value, word, startPosition, endPosition,
-            resultCallback, updateCallback);
+        var params = {
+            value: value,
+            word: word,
+            startPosition: startPosition,
+            endPosition: endPosition
+        };
+        parseWord(params, resultCallback, updateCallback);
     }
 };
 
 // Handle old-style iFrame editing - this is used in RichText mode
-GQ.handleIframe = function handleIframe(source, parseWord, resultCallback, updateCallback) {
+GQ.handleIframe = function(source, parseWord, resultCallback, updateCallback) {
     var startPosition = 0; // where the word begings so we can replace it
     var iFrameDoc = source.parentNode.parentNode;
     var selection = iFrameDoc.getSelection();
@@ -31,9 +36,16 @@ GQ.handleIframe = function handleIframe(source, parseWord, resultCallback, updat
     var word = res[0];
     startPosition = res[1];
     if (word) {
-        parseWord(value, word, startPosition, endPosition,
-            resultCallback, updateCallback);
-
+        var params = {
+            value: value,
+            word: word,
+            base: base,
+            iFrameDoc: iFrameDoc,
+            selection: selection,
+            startPosition: startPosition,
+            endPosition: endPosition,
+        };
+        parseWord(params, resultCallback, updateCallback); 
     }
 }
 
@@ -49,8 +61,15 @@ GQ.handleNewStyle = function(source, parseWord, resultCallback, updateCallback) 
     var word = res[0];
     startPosition = res[1];
     if (word) {
-        parseWord(value, word, startPosition, endPosition,
-            resultCallback, updateCallback);
+        var params = {
+            value: value,
+            word: word,
+            base: base,
+            selection: selection,
+            startPosition: startPosition,
+            endPosition: endPosition,
+        };
+        parseWord(params, resultCallback, updateCallback);
     }
 }
 
