@@ -1,6 +1,23 @@
 function initializeOnDomReady(){
     // populate quicktext table
     loadQuicktexts();
+
+    // Extension settings
+    function boolFieldHandler(field){
+        var input = document.getElementById(field);
+        if (input){
+            var autocompleteEnabled = Settings.get(field);
+            if (autocompleteEnabled) {
+                input.setAttribute("checked", "checked");
+            }
+            input.addEventListener("change", function(e){
+                Settings.set(field, this.checked);
+            });
+        }
+    }
+    boolFieldHandler("autocompleteEnabled");
+    boolFieldHandler("tabcompleteEnabled");
+
     // add new quick text
     var newButton = document.querySelector("#new-quicktext-button")
     if (newButton){
@@ -130,9 +147,10 @@ function initializeOnDomReady(){
     var sharingButton = document.querySelector("#sharing-button");
     if (sharingButton){
         sharingButton.addEventListener("click", function(){
-            window.location = Settings.get('base_url') + 'quicktexts';
+            window.location = Settings.get('baseURL') + 'quicktexts';
         });
     }
+
     var deleteAllButton = document.querySelector("#delete-all-button");
     if (deleteAllButton){
         deleteAllButton.addEventListener("click", function(){

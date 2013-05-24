@@ -60,7 +60,7 @@ input[type="checkbox"] {
   -webkit-user-select: none;
 }
 label {
-  width: 100px;
+  width: 250px;
   float: left;
 }
 label:hover {
@@ -81,6 +81,10 @@ input, textarea {
 textarea {
   /* Horizontal resizing is pretty screwy-looking. */
   resize: vertical;
+}
+.help {
+  font-size: .9em;
+  color: rgb(109, 109, 107);
 }
 .field {
   margin-bottom: 10px;

@@ -1,8 +1,8 @@
 // Settings
 var Settings = {
   get: function(key) {
-    if (key in localStorage) {
-      return JSON.parse(localStorage[key]);
+    if (key in window.localStorage) {
+      return JSON.parse(window.localStorage[key]);
     } else {
       return this.defaults[key];
     }
@@ -11,14 +11,14 @@ var Settings = {
     if (value === this.defaults[key]) {
       return this.clear(key);
     } else {
-      return localStorage[key] = JSON.stringify(value);
+      return window.localStorage[key] = JSON.stringify(value);
     }
   },
   clear: function(key) {
-    return delete localStorage[key];
+    return delete window.localStorage[key];
   },
   has: function(key) {
-    return key in localStorage;
+    return key in window.localStorage;
   },
   defaults: {
     baseURL: "https://gmail-quicktext.com/",
@@ -37,5 +37,7 @@ var Settings = {
       }
     ],
     syncEnabled: false,
+    autocompleteEnabled: true, // autocomplete dialog
+    tabcompleteEnabled: true // tab completion
   }
 };

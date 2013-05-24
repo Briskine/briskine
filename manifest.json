@@ -38,7 +38,13 @@
       "js": [
         "libs/underscore-min.js",
         "libs/underscore.string.min.js",
+        "content_scripts/utils.js",
+        "content_scripts/completion.js",
+        "content_scripts/keyboard.js",
         "content_scripts/main.js"
+      ],
+      "css": [
+        "content_scripts/main.css"
       ],
       "run_at": "document_start",
       "all_frames": true

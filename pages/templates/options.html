@@ -27,9 +27,19 @@
 <!-- Settings -->
 <div class="clearfix"></div>
 <h3>Sharing and Syncronization</h3>
-<p>In order to syncronize your quicktexts or start sharing them with your team click on the button bellow.</p>
+<p class="help">In order to syncronize your quicktexts or start sharing them with your team click on the button bellow:</p>
 <button id="sync-button">Start syncronization</button>
 <button id="sharing-button">Manage sharing settings</button>
+<h3>Extension Settings</h3>
+<p class="help">Extension behavior can be managed using the settings bellow:</p>
+<p>
+<label for="autocompleteEnabled">Autocomplete dialog</label>
+<input type="checkbox" id="autocompleteEnabled" value="true" /> <span class="help"> Unchecking this will disable the autocomplete dialog (suggestions of quicktexts)</span>
+</p>
+<p>
+<label for="tabcompleteEnabled">Tab completion</label>
+<input type="checkbox" id="tabcompleteEnabled" value="true"/> <span class="help"> Unchecking this will disable TAB completion</span>
+</p>
 <br />
 <br />
 {% endblock %}

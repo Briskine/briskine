@@ -1,0 +1,9 @@
+#qt-au-list {
+  position: fixed;
+  list-style: none;
+  background-color: #fafafa;
+}
+.qt-au-item {
+  cursor: pointer;
+  background-color: red;
+}
