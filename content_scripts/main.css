@@ -3,7 +3,17 @@
   list-style: none;
   background-color: #fafafa;
 }
+
 .qt-au-item {
   cursor: pointer;
   background-color: red;
+}
+
+#qt-mirror {
+  position: absolute;
+  overflow: auto;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  top: 0;
+  left: 0;
 }

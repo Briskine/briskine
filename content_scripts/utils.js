@@ -13,7 +13,7 @@ GQ.settings = {
         });
     },
 };
- 
+
 
 // these variables are used to populate fields in the quicktext templates
 GQ.templateVars = {
@@ -33,7 +33,7 @@ GQ.templateVars = {
     // 'Subject' field
     'subject': ""
 };
- 
+
 // given a string like: Alex P <alex@gmail-quicktext.com> return a dict:
 // {'name': 'Alex P', 'first_name': 'Alex', 'last_name': 'P', 'email': 'alex@gmail-quicktext.com'}
 GQ.parseFields = function(str){
@@ -111,4 +111,4 @@ GQ.getWord = function (value, endPosition) {
     }
     startPosition = i;
     return [word, startPosition];
-};  
+};

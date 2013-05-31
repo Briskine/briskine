@@ -13,21 +13,21 @@ GQ.onKeyup = function(e) {
 
         GQ.removeAutocompleteList();
 
-        function parseWord(value, word, startPosition, endPosition){
+        function parseWord(params){
             // search in settings that we have the right quicktext
             GQ.settings.get('quicktexts', function(quicktexts){
                 var matched = [];
                 _.each(quicktexts, function(qt){
                         // if we have a shortcut that starts with that word
-                        if (qt.shortcut.toLowerCase().indexOf(word) === 0) {
+                        if (qt.shortcut.toLowerCase().indexOf(params['word']) === 0) {
                             matched.push(qt);
                         }
                         // maybe we found something in the title
-                        if (qt.title.toLowerCase().indexOf(word) !== -1) {
+                        if (qt.title.toLowerCase().indexOf(params['word']) !== -1) {
                             matched.push(qt);
                         }
                 });
-                GQ.showAutoCompleteDialog(word, matched, source);
+                GQ.showAutoCompleteDialog(params['word'], matched, source);
             });
         }
 
@@ -35,14 +35,13 @@ GQ.onKeyup = function(e) {
             if (GQ.attachedIframe){ // we are in an iframe
                 GQ.handleIframe(source, parseWord);
             } else { // in the 'new style' editor
-                GQ.handleNewStyle(source, parseWord); 
+                GQ.handleNewStyle(source, parseWord);
             }
         } else { // old style plaintext editor
             GQ.handlePlainText(source, parseWord);
-            var value = source.value;
         }
     });
-}
+};
 
 GQ.onKeydown = function(e){
     if (!GQ.inCompose) {
