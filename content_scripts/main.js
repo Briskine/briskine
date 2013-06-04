@@ -2,6 +2,7 @@ if (typeof GQ == "undefined") var GQ = function(){};
 
 GQ.inCompose = false; // are we in a compose field
 GQ.attachedIframe = false; // have we attached events to the edit iframe?
+GQ.isContentEditable = false; // are we in a contenteditable element
 
 // Handle plain-text compose
 GQ.handlePlainText = function(source, parseWord, resultCallback, updateCallback) {
@@ -91,6 +92,7 @@ GQ.onFocusCapturePhase = function(e){
         focusedEl.classList.contains('editable')) {//Richtext
         GQ.inCompose = true;
     }
+    GQ.isContentEditable = focusedEl.getAttribute("contenteditable") !== null;
 }
 
 GQ.onBlurCapturePhase = function(e){
@@ -99,7 +101,9 @@ GQ.onBlurCapturePhase = function(e){
         focusedEl.classList.contains('editable'))) {//Richtext
         GQ.inCompose = false;
     }
-    GQ.removeAutocompleteList();
+    GQ.isContentEditable = focusedEl.getAttribute("contenteditable") !== null;
+
+    GQ.au.remove();
     GQ.attachEventsToIframe();
 }
 
@@ -110,4 +114,6 @@ GQ.initializeOnDomReady = function(){
     document.addEventListener("blur", GQ.onBlurCapturePhase, true);
 }
 
-window.addEventListener("DOMContentLoaded", GQ.initializeOnDomReady);
+$(document).ready(function(){
+    GQ.initializeOnDomReady();
+});

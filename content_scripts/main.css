@@ -1,12 +1,38 @@
 #qt-au-list {
-  position: fixed;
+  position: absolute;
+  z-index: 10;
+  overflow: hidden;
   list-style: none;
-  background-color: #fafafa;
+
+  margin: 0;
+  margin-top: 16px;
+  padding: 2px;
+  -webkit-box-shadow: 2px 3px 5px rgba(0,0,0,.2);
+  -moz-box-shadow: 2px 3px 5px rgba(0,0,0,.2);
+  box-shadow: 2px 3px 5px rgba(0,0,0,.2);
+  border-radius: 3px;
+  border: 1px solid silver;
+  background: white;
+  font-size: 90%;
+  font-family: monospace;
+  max-height: 20em;
+  overflow-y: auto;
 }
 
 .qt-au-item {
+  margin: 0;
+  padding: 0 4px;
+  border-radius: 2px;
+  max-width: 19em;
+  overflow: hidden;
+  white-space: pre;
+  color: black;
   cursor: pointer;
-  background-color: red;
+}
+
+.qt-au-item-active {
+  background: #08f;
+  color: white;
 }
 
 #qt-mirror {
@@ -14,6 +40,5 @@
   overflow: auto;
   white-space: pre-wrap;
   word-wrap: break-word;
-  top: 0;
-  left: 0;
+  z-index: -9999;
 }

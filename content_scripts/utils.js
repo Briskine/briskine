@@ -112,3 +112,9 @@ GQ.getWord = function (value, endPosition) {
     startPosition = i;
     return [word, startPosition];
 };
+
+GQ.removeEl = function(el) {
+    if (el){
+        el.parentNode.removeChild(el);
+    }
+};

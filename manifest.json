@@ -36,6 +36,7 @@
         "https://gmail-quicktext.com/*"
       ],
       "js": [
+        "libs/jquery-2.0.2.min.js",
         "libs/underscore-min.js",
         "libs/underscore.string.min.js",
         "content_scripts/utils.js",
