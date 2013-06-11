@@ -32,21 +32,23 @@ GQ.au.getCaret = function(params, el) {
   return 0;
 }
 
-// create mirror element (mirrors the Textarea).
+// create mirror element (mirrors the Textarea and contenteditable).
 // we need to do this in order to display the autocomplete dialog
 GQ.au.createMirror = function(params, source) {
+
     var mirrorStyles = [
         // Box Styles.
         'box-sizing', 'height', 'width', 'padding-bottom'
-        , 'padding-left', 'padding-right', 'padding-top'
+        , 'padding-left', 'padding-right', 'padding-top', 'margin-top',
+        'margin-bottom', 'margin-left', 'margin-right',
 
         // Font stuff.
-        , 'font-family', 'font-size', 'font-style' 
+        , 'font-family', 'font-size', 'font-style'
         , 'font-variant', 'font-weight'
 
         // Spacing etc.
         , 'word-spacing', 'letter-spacing', 'line-height'
-        , 'text-decoration', 'text-indent', 'text-transform' 
+        , 'text-decoration', 'text-indent', 'text-transform'
 
         // The direction.
         , 'direction'
@@ -56,34 +58,52 @@ GQ.au.createMirror = function(params, source) {
     mirror.setAttribute("id", "qt-mirror");
     source.parentElement.appendChild(mirror);
 
-    // copy all styles
-    for (var i = 0, style; style = mirrorStyles[i]; i++) {
-        mirror.style.setProperty(style, source.style.getPropertyValue(style));
-    }
-
-    // and classes
+    // all classes
     for (var i = 0, cl; cl = source.classList[i]; i++){
         mirror.classList.add(cl);
+    }
+
+    // copy all styles
+    for (var i = 0, style; style = mirrorStyles[i]; i++) {
+        $(mirror).css(style, $(source).css(style));
     }
 
     var sourcePos = $(source).position();
     mirror.style.top = sourcePos.top + "px";
     mirror.style.left = sourcePos.left + "px";
 
-    var caretPos = GQ.au.getCaret(params, source);
-    var str = params.value;
-    var pre = document.createTextNode(str.substring(0, caretPos));
-    var post = document.createTextNode(str.substring(caretPos));
-    var caret = document.createElement("span");
+    if (!GQ.isContentEditable){
+        var caretPos = GQ.au.getCaret(params, source);
+        var str = params.value;
+        var pre = document.createTextNode(str.substring(0, caretPos));
+        var post = document.createTextNode(str.substring(caretPos));
+        var caret = document.createElement("span");
 
-    caret.setAttribute('id', 'qt-caret');
-    caret.innerHTML = "&nbsp;";
+        caret.setAttribute('id', 'qt-caret');
+        caret.innerHTML = "&nbsp;";
 
-    mirror.appendChild(pre);
-    mirror.appendChild(caret);
-    mirror.appendChild(post);
-
-    mirror.scrollTop = source.scrollTop + 10; 
+        mirror.appendChild(pre);
+        mirror.appendChild(caret);
+        mirror.appendChild(post);
+        mirror.scrollTop = source.scrollTop + 10; 
+    } else {
+        var doc = document;
+        if (params.iFrameDoc){
+            doc = params.iFrameDoc;
+        }
+        var range = doc.createRange();
+        range.selectNodeContents(params.base);
+        var rects = range.getClientRects();
+        var caret = $("<span id='qt-caret' />");
+        if (params.iFrameDoc){
+            caret.css('position', 'absolute');
+        } else {
+            caret.css('position', 'fixed');
+        }
+        caret.css("top", rects[0].top + "px");
+        caret.css("left", rects[0].left + "px");
+        $(mirror).append(caret);
+    }
 }
 
 // Show a list of quicktext the user can choose from.
@@ -108,6 +128,9 @@ GQ.au.show = function(params, quicktexts, source){
 
         listEl.css('top', sourcePos.top + caretPos.top + "px");
         listEl.css('left', sourcePos.left + caretPos.left + "px");
+        if (!params.iFrameDoc){
+            listEl.css('position', 'fixed');
+        }
         $(source).after(listEl);
 
         // make the first element active
@@ -131,7 +154,13 @@ GQ.au.remove = function(doc) {
 };
 
 GQ.au.move = function(dir) {
-    var activeEl = $(".qt-au-item-active");
+    var doc = document;
+    var iframe = document.querySelector('iframe.editable');
+    if (iframe){
+        doc = iframe.contentDocument;
+    }
+
+    var activeEl = $(".qt-au-item-active", doc);
     var nextEl = null;
     if (dir == "up") {
         nextEl = activeEl.prev('.qt-au-item');
@@ -156,6 +185,10 @@ GQ.au.handleInsertion = function(source, parseWord) {
                 },
                 function(params, newCursorPos){
                     var range = params['iFrameDoc'].createRange();
+                    if (newCursorPos > 0) {
+                        newCursorPos--;
+                    }
+                    console.log(params, newCursorPos);
                     range.setStart(params['base'], newCursorPos);
                     range.setEnd(params['base'], newCursorPos);
                     params['selection'].removeAllRanges();
