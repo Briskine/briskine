@@ -8,18 +8,20 @@ GQ.onKeyup = function(e) {
         return;
     }
 
+    var source = e.srcElement;
+
     // execute only if autocomplete dialog is active
     if (GQ.au.active) {
+        e.preventDefault();
+        e.stopPropagation();
         if (e.keyCode === 27) { // escape
-            e.preventDefault();
-            e.stopPropagation();
             GQ.au.remove();
         } else if (e.keyCode === 13) { // enter
-            GQ.au.complete();
+            return;
         } else if (e.keyCode === 38) { // arrow up
-            GQ.au.move("up");
+            return;
         } else if (e.keyCode === 40) { // arrow down
-            GQ.au.move("down");
+            return;
         }
     }
 
@@ -28,7 +30,6 @@ GQ.onKeyup = function(e) {
         if (!enabled) {
             return;
         }
-        var source = e.srcElement;
 
         // remove autocomplete dialog if any
         GQ.au.remove();
@@ -46,7 +47,7 @@ GQ.onKeyup = function(e) {
                             matched.push(qt);
                         }
                 });
-                GQ.au.show(params['word'], matched, source);
+                GQ.au.show(params, matched, source);
             });
         }
 
@@ -62,7 +63,7 @@ GQ.onKeyup = function(e) {
     });
 };
 
-GQ.onKeydown = function(e){
+GQ.onKeydown = function(e) {
     // Only in compose area in Gmail
     if (!GQ.inCompose) {
         return;
@@ -71,5 +72,22 @@ GQ.onKeydown = function(e){
     var source = e.srcElement;
     if (e.keyCode === 9) { // Tab key
         GQ.au.tab(e, source);
+    }
+    if (GQ.au.active) {
+        if (e.keyCode === 27) { // escape
+        } else if (e.keyCode === 13) { // enter
+            GQ.au.complete(e, source);
+            GQ.au.remove();
+        } else if (e.keyCode === 38) { // arrow up
+            console.log("keydown: up");
+            e.preventDefault();
+            e.stopPropagation();
+            GQ.au.move("up");
+        } else if (e.keyCode === 40) { // arrow down
+            console.log("keydown: down");
+            e.preventDefault();
+            e.stopPropagation();
+            GQ.au.move("down");
+        }
     }
 };
