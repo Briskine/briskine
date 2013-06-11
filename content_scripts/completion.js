@@ -4,6 +4,7 @@ if (typeof GQ == "undefined") var GQ = function(){};
 GQ.au = {};
 
 GQ.au.active = false;
+GQ.au.timeoutId = null;
 
 // get position of carret
 GQ.au.getCaret = function(params, el) {
@@ -111,37 +112,41 @@ GQ.au.show = function(params, quicktexts, source){
     $("#qt-au-list", params.iFrameDoc).remove();
     $("#qt-mirror", params.iFrameDoc).remove();
 
-    if (params['word'].length >= 3 && quicktexts.length) {
-        GQ.au.active = true;
+    // clear first
+    window.clearTimeout(GQ.au.timeoutId);
+    GQ.au.timeoutId = window.setTimeout(function() {
+        if (params['word'].length >= 3 && quicktexts.length) {
+            GQ.au.active = true;
 
-        var listEl = $("<ul id='qt-au-list'>")
-        var list = "<% _.each(quicktexts, function(qt) { %>\
-            <li class='qt-au-item' id='qt-item-<%= qt.id %>'><%= qt.shortcut %> - <%= qt.title %></li>\
-        <% }); %>\
-        </ul>";
-        var content = _.template(list, {quicktexts: quicktexts});
-        listEl.html(content);
+            var listEl = $("<ul id='qt-au-list'>")
+            var list = "<% _.each(quicktexts, function(qt) { %>\
+                <li class='qt-au-item' id='qt-item-<%= qt.id %>'><%= qt.shortcut %> - <%= qt.title %></li>\
+            <% }); %>\
+            </ul>";
+            var content = _.template(list, {quicktexts: quicktexts});
+            listEl.html(content);
 
-        mirror = GQ.au.createMirror(params, source);
-        var sourcePos = $(source).position();
-        var caretPos = $("#qt-caret", params.iFrameDoc).position();
+            mirror = GQ.au.createMirror(params, source);
+            var sourcePos = $(source).position();
+            var caretPos = $("#qt-caret", params.iFrameDoc).position();
 
-        listEl.css('top', sourcePos.top + caretPos.top + "px");
-        listEl.css('left', sourcePos.left + caretPos.left + "px");
-        if (!params.iFrameDoc){
-            listEl.css('position', 'fixed');
+            listEl.css('top', sourcePos.top + caretPos.top + "px");
+            listEl.css('left', sourcePos.left + caretPos.left + "px");
+            if (!params.iFrameDoc){
+                listEl.css('position', 'fixed');
+            }
+            $(source).after(listEl);
+
+            // make the first element active
+            $('.qt-au-item:first', params.iFrameDoc).addClass("qt-au-item-active");
+
+            // attach hover events
+            $('.qt-au-item', params.iFrameDoc).hover(function(){
+                $(".qt-au-item", params.iFrameDoc).removeClass("qt-au-item-active");
+                $(this).addClass("qt-au-item-active");
+            });
         }
-        $(source).after(listEl);
-
-        // make the first element active
-        $('.qt-au-item:first', params.iFrameDoc).addClass("qt-au-item-active");
-
-        // attach hover events
-        $('.qt-au-item', params.iFrameDoc).hover(function(){
-            $(".qt-au-item", params.iFrameDoc).removeClass("qt-au-item-active");
-            $(this).addClass("qt-au-item-active");
-        });
-    }
+    }, 300); // sleep for a while before showing
 };
 
 GQ.au.remove = function(doc) {
