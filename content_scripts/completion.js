@@ -127,15 +127,21 @@ GQ.au.remove = function(doc) {
         doc = iframe.contentDocument;
     }
     $("#qt-au-list", doc).remove();
+    GQ.au.active = false;
 };
 
 GQ.au.move = function(dir) {
     var activeEl = $(".qt-au-item-active");
-    activeEl.removeClass("qt-au-item-active");
+    var nextEl = null;
     if (dir == "up") {
-        activeEl.prev().addClass("qt-au-item-active");
+        nextEl = activeEl.prev('.qt-au-item');
     } else if (dir == "down") {
-        activeEl.next().addClass("qt-au-item-active");
+        nextEl = activeEl.next('.qt-au-item');
+    }
+
+    if (nextEl.length){
+        activeEl.removeClass('qt-au-item-active');
+        nextEl.addClass('qt-au-item-active');
     }
 };
 
