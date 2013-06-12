@@ -20,5 +20,8 @@ Here's how it's done:
 Known issues
 ------------
 
-The new edit interface doesn't work yet. Also some of the old interfaces 
-don't work either.
+1. Saving a quicktext from the context menus doesn't work with multi-lines.
+
+   Relevant bug: https://code.google.com/p/chromium/issues/detail?id=116429
+
+   This means that when selecting a text to save as a quicktext it will not preserve newlines.
