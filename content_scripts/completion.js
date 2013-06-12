@@ -101,8 +101,11 @@ GQ.au.createMirror = function(params, source) {
         } else {
             caret.css('position', 'fixed');
         }
-        caret.css("top", rects[0].top + "px");
-        caret.css("left", rects[0].left + "px");
+
+        if (rects.length){
+            caret.css("top", rects[0].top + "px");
+            caret.css("left", rects[0].left + "px");
+        }
         $(mirror).append(caret);
     }
 }
@@ -181,37 +184,42 @@ GQ.au.move = function(dir) {
 
 // Given a quicktext object try to insert it
 GQ.au.handleInsertion = function(source, parseWord) {
+    window.clearTimeout(GQ.au.timeoutId);
     if (GQ.isContentEditable) {
-        if (GQ.attachedIframe){ // we are in an iframe
+        if (GQ.attachedIframe){ // we are in an iframe with a contenteditable element
             GQ.handleIframe(source, parseWord,
                 function(params, result){
-                    params['base'].data = result;
+                    var lines = result.split("\n");
+                    params.base.data = "";
+                    _.each(lines, function(line){
+                        $(params.base).before($("<div>").html(line));
+                    });
                     return result;
                 },
                 function(params, newCursorPos){
-                    var range = params['iFrameDoc'].createRange();
-                    if (newCursorPos > 0) {
-                        newCursorPos--;
-                    }
-                    console.log(params, newCursorPos);
-                    range.setStart(params['base'], newCursorPos);
-                    range.setEnd(params['base'], newCursorPos);
-                    params['selection'].removeAllRanges();
-                    params['selection'].addRange(range);
+                    //var range = params['iFrameDoc'].createRange();
+                    //range.setStart(params['base'], newCursorPos);
+                    //range.setEnd(params['base'], newCursorPos);
+                    //params['selection'].removeAllRanges();
+                    //params['selection'].addRange(range);
                 }
             );
         } else { // in the 'new style' editor
             GQ.handleNewStyle(source, parseWord,
                 function(params, result){
-                    params['base'].data = result;
+                    var lines = result.split("\n");
+                    params.base.data = "";
+                    _.each(lines, function(line){
+                        $(params.base).before($("<div>").html(line));
+                    });
                     return result;
                 },
                 function(params, newCursorPos){
-                    var range = document.createRange();
-                    range.setStart(params['base'], newCursorPos);
-                    range.setEnd(params['base'], newCursorPos);
-                    params['selection'].removeAllRanges();
-                    params['selection'].addRange(range); 
+                    //var range = document.createRange();
+                    //range.setStart(params['base'], newCursorPos);
+                    //range.setEnd(params['base'], newCursorPos);
+                    //params['selection'].removeAllRanges();
+                    //params['selection'].addRange(range); 
                 }
             );
         }
