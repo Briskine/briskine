@@ -46,7 +46,7 @@ GQ.handleIframe = function(source, parseWord, resultCallback, updateCallback) {
             startPosition: startPosition,
             endPosition: endPosition,
         };
-        parseWord(params, resultCallback, updateCallback); 
+        parseWord(params, resultCallback, updateCallback);
     }
 }
 
@@ -88,6 +88,7 @@ GQ.attachEventsToIframe = function(){
 
 GQ.onFocusCapturePhase = function(e){
     var focusedEl = e.target;
+    GQ.inCompose = false;
     if (focusedEl.getAttribute('form') == 'nosend' || // Plaintext
         focusedEl.classList.contains('editable')) {//Richtext
         GQ.inCompose = true;

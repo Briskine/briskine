@@ -79,12 +79,10 @@ GQ.onKeydown = function(e) {
             GQ.au.complete(e, source);
             GQ.au.remove();
         } else if (e.keyCode === 38) { // arrow up
-            console.log("keydown: up");
             e.preventDefault();
             e.stopPropagation();
             GQ.au.move("up");
         } else if (e.keyCode === 40) { // arrow down
-            console.log("keydown: down");
             e.preventDefault();
             e.stopPropagation();
             GQ.au.move("down");
