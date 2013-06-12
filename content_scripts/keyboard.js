@@ -40,9 +40,9 @@ GQ.onKeyup = function(e) {
                 var matched = [];
                 _.each(quicktexts, function(qt){
                         // if we have a shortcut that starts with that word
-                        if (qt.shortcut.toLowerCase().indexOf(params['word']) === 0) {
+                        if (qt.shortcut.toLowerCase().indexOf(params.word) === 0) {
                             matched.push(qt);
-                        } else if (qt.title.toLowerCase().indexOf(params['word']) !== -1) {
+                        } else if (qt.title.toLowerCase().indexOf(params.word) !== -1) {
                             // maybe we found something in the title 
                             matched.push(qt);
                         }

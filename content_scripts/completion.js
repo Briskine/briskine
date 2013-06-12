@@ -86,7 +86,7 @@ GQ.au.createMirror = function(params, source) {
         mirror.appendChild(pre);
         mirror.appendChild(caret);
         mirror.appendChild(post);
-        mirror.scrollTop = source.scrollTop + 10; 
+        mirror.scrollTop = source.scrollTop + 10;
     } else {
         var doc = document;
         if (params.iFrameDoc){
@@ -118,7 +118,7 @@ GQ.au.show = function(params, quicktexts, source){
     // clear first
     window.clearTimeout(GQ.au.timeoutId);
     GQ.au.timeoutId = window.setTimeout(function() {
-        if (params['word'].length >= 3 && quicktexts.length) {
+        if (params.word.length >= 3 && quicktexts.length) {
             GQ.au.active = true;
 
             var listEl = $("<ul id='qt-au-list'>")
@@ -219,7 +219,7 @@ GQ.au.handleInsertion = function(source, parseWord) {
                     //range.setStart(params['base'], newCursorPos);
                     //range.setEnd(params['base'], newCursorPos);
                     //params['selection'].removeAllRanges();
-                    //params['selection'].addRange(range); 
+                    //params['selection'].addRange(range);
                 }
             );
         }
@@ -252,8 +252,8 @@ GQ.au.complete = function(e, source) {
             _.each(quicktexts, function(qt){
                 if (quicktextId === qt.id) { // found quicktext
                     GQ.loadVariables();
-                    var before = params['value'].substr(0, params['startPosition'] + 1);
-                    var after = params['value'].substr(params['endPosition']);
+                    var before = params.value.substr(0, params.startPosition + 1);
+                    var after = params.value.substr(params.endPosition);
                     var compiled = _.template(qt.body, GQ.templateVars);
                     var result = before + compiled + after;
                     result = setValue(params, result);
@@ -279,11 +279,11 @@ GQ.au.tab = function (e, source) {
             // search in settings that we have the right quicktext
             GQ.settings.get('quicktexts', function(quicktexts){
                 _.each(quicktexts, function(qt){
-                    if (params['word'] === qt.shortcut) { // found shortcut
+                    if (params.word === qt.shortcut) { // found shortcut
                         GQ.loadVariables();
                         // remove the word
-                        var before = params['value'].substr(0, params['startPosition'] + 1);
-                        var after = params['value'].substr(params['endPosition']);
+                        var before = params.value.substr(0, params.startPosition + 1);
+                        var after = params.value.substr(params.endPosition);
                         var compiled = _.template(qt.body, GQ.templateVars);
                         var result = before + compiled + after;
                         result = setValue(params, result);
