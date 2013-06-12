@@ -11,6 +11,9 @@
   "background": {
     "scripts": [
       "libs/md5.js",
+      "libs/jquery-2.0.2.min.js",
+      "libs/underscore-min.js",
+      "libs/underscore.string.min.js",
       "background_scripts/settings.js",
       "background_scripts/main.js",
       "background_scripts/ui.js",

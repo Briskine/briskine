@@ -111,11 +111,13 @@ textarea {
   font-size: 24px;
   margin-bottom: 10px;
 }
-#search-popup {
-  width: 100%;
-  height: 25px;
+
+.ispopup #search {
+  width: 745px;
+  height: 30px;
   font-size: 18px;
-}  
+}
+
 .clearfix:after {
   content: ".";
   display: block;
@@ -141,10 +143,7 @@ height: 1%;
   -webkit-border-radius: 0;
   -moz-border-radius: 0;
   border-radius: 0;
-}
-.table-bordered {
   border: 1px solid #ddd;
-  border-collapse: separate;
   border-left: 0;
   -webkit-border-radius: 0;
   -moz-border-radius: 0;
@@ -183,9 +182,10 @@ tr {
   word-wrap: break-word;
 }
 
-.body-cell{
+.body-cell {
   width: 300px;
 }
+
 .body-container {
   text-overflow: ellipsis;
   max-height: 100px; 
@@ -217,11 +217,15 @@ tr {
 
 /* popup.html */
 body.ispopup {
-  width: 800px;
+  width: 765px;
 }
+
+body.ispopup #wrapper {
+  width: inherit;
+}
+
 #popup-container {
   padding: 10px;
-  width: 780px;
 }
 
 #popup-container .edit-cell, #popup-container .delete-cell {
