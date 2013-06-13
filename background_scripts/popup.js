@@ -1,25 +1,3 @@
-/*
- scrollTo plugin: http://lions-mark.com/jquery/scrollTo/
-*/
-
-$.fn.scrollTo = function( target, options, callback ){
-  if(typeof options == 'function' && arguments.length == 2){ callback = options; options = target; }
-  var settings = $.extend({
-    scrollTarget  : target,
-    offsetTop     : 50,
-    duration      : 500,
-    easing        : 'swing'
-  }, options);
-  return this.each(function(){
-    var scrollPane = $(this);
-    var scrollTarget = (typeof settings.scrollTarget == "number") ? settings.scrollTarget : $(settings.scrollTarget);
-    var scrollY = (typeof scrollTarget == "number") ? scrollTarget : scrollTarget.offset().top + scrollPane.scrollTop() - parseInt(settings.offsetTop);
-    scrollPane.animate({scrollTop : scrollY }, parseInt(settings.duration), settings.easing, function(){
-      if (typeof callback == 'function') { callback.call(this); }
-    });
-  });
-}
-
 $(document).ready(function(){
     $("body").addClass('ispopup');
     $("#quicktexts-table").addClass("table-hover");
@@ -29,32 +7,41 @@ $(document).ready(function(){
         insertQuicktext(key);
     });
 
-    $("body").keydown(function(e){
-        var current = $('#quicktexts-table tbody tr.active');
-        if (!current.length){
-            $('#quicktexts-table tbody tr:first').addClass('active');
+    $(document).keydown(function(e){
+        var current = $('#quicktexts-table tbody tr.active:not(.hide)');
+        if (current.length == 0){
+            // find the first non-hidden element and make it active
+            $('#quicktexts-table tbody tr:not(.hide):first').addClass('active');
             return;
         }
 
-        if (e.keyCode == 38) { // up arrow
-            var next = current.prev("tr");
+        var next = null;
+        if (e.keyCode == 13) { // enter
+            var key = current.attr("key").split("qt-")[1];
+            insertQuicktext(key);
+            return;
+        } else if (e.keyCode == 38) { // up arrow
+            next = $(current.prevAll("tr:not(.hide)")[0]);
+        } else if (e.keyCode == 40) { // down arrow
+            next = $(current.nextAll("tr:not(.hide)")[0]);
+        } else {
+            return;
         }
 
-        if (e.keyCode == 40) { // down arrow
-            var next = current.next("tr");
-        }
-
-        if (next.length){
+        if (next && next.length && !next.hasClass("hide")){
             current.removeClass('active');
             next.addClass('active');
+
+            // scroll to the active item
+            var scrollContainer = $("#quicktexts-table-container");
+            scrollContainer.scrollTop(
+                next.offset().top - scrollContainer.offset().top + scrollContainer.scrollTop()
+            );
         }
-
-        $("#quicktexts-table").scrollTo("tr.active", {offsetTop: '110'});
     });
-
 });
 
 // Insert quicktext into compose area
 function insertQuicktext(key){
-
+    console.log(key);
 }

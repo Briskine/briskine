@@ -191,14 +191,11 @@ height: 1%;
   background-color: #f5f5f5;
 }
 
-/*
-#quicktexts-table tbody {
+#quicktexts-table-container {
   height: 466px;
   overflow-y: auto;
-  display: block;
   width: 744px;
 }
-*/
 
 #quicktexts-table .title-cell {
   width: 70px;

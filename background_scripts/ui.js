@@ -118,9 +118,9 @@ function initializeOnDomReady(){
             });
         });
     }
+
     var syncButton = document.querySelector("#sync-button");
     if (syncButton){
-
 
         syncButton.addEventListener("click", function(){
             if (syncButton.innerHTML == 'Stop syncronization'){
