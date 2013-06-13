@@ -153,18 +153,13 @@ height: 1%;
 .table {
   width: 100%;
   margin-bottom: 20px;
-}
-
-table {
-  table-layout: fixed;
-  max-width: 100%;
   background-color: transparent;
   border-collapse: collapse;
   border-spacing: 0;
-  overflow: hidden;
+  table-layout: fixed;
 }
 
-tr {
+.table tr {
   display: table-row;
   vertical-align: inherit;
   border-color: inherit;
@@ -178,33 +173,77 @@ tr {
   border-top: 1px solid #ddd;
 }
 
-.table td{
+.table td {
   word-wrap: break-word;
 }
 
-.body-cell {
-  width: 300px;
+.table th {
+  font-weight: bold;
 }
+
+.table-hover tbody tr:hover > td,
+.table-hover tbody tr:hover > th {
+  cursor: pointer;
+  background-color: #f5f5f5;
+}
+
+.table tbody tr.active {
+  background-color: #f5f5f5;
+}
+
+/*
+#quicktexts-table tbody {
+  height: 466px;
+  overflow-y: auto;
+  display: block;
+  width: 744px;
+}
+*/
+
+#quicktexts-table .title-cell {
+  width: 70px;
+}
+
+#popup-container #quicktexts-table .subject-cell {
+  display: none;
+}
+
+
+#quicktexts-table .shortcut-cell {
+  width: 70px;
+}
+
+#quicktexts-table .tags-cell {
+  width: 70px;
+}
+
+*/
 
 .body-container {
   text-overflow: ellipsis;
   max-height: 100px; 
 }
+
 .use-quicktext {
   cursor: pointer;
 }
+
 .use-quicktext:hover {
   background-color: #d9edf7;
 }
+
 #quicktext-form{
   display: none;
 }
+
 .show {
   display: block !important;
 }
+
 .hide {
   display: none !important;
 }
+
 .clickable:hover {
   cursor: pointer;
   background-color: #d9edf7;

@@ -135,9 +135,6 @@ GQ.au.show = function(params, quicktexts, source){
 
             listEl.css('top', sourcePos.top + caretPos.top + "px");
             listEl.css('left', sourcePos.left + caretPos.left + "px");
-            if (!params.iFrameDoc){
-                listEl.css('position', 'fixed');
-            }
             $(source).after(listEl);
 
             // make the first element active

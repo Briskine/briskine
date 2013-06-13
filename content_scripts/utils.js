@@ -14,7 +14,6 @@ GQ.settings = {
     },
 };
 
-
 // these variables are used to populate fields in the quicktext templates
 GQ.templateVars = {
     // 'From' field
@@ -63,7 +62,7 @@ GQ.parseFields = function(str){
     }
 
     return ret;
-}
+};
 
 GQ.loadVariables = function(){
     //TODO: fix new style to fields
@@ -98,7 +97,7 @@ GQ.loadVariables = function(){
     if (subject) {
         GQ.templateVars.subject = subject.value;
     }
-}
+};
 
 GQ.getWord = function (value, endPosition) {
     var word = '';
