@@ -1,11 +1,6 @@
-$(document).ready(function(){
+document.addEventListener('DOMContentLoaded', function () {
     $("body").addClass('ispopup');
     $("#quicktexts-table").addClass("table-hover");
-    $('#quicktexts-table tr').click(function(e){
-        // A quicktext item was clicked. Insert it into the compose area
-        var key = $(this).attr("key").split("qt-")[1];
-        insertQuicktext(key);
-    });
 
     $(document).keydown(function(e){
         var current = $('#quicktexts-table tbody tr.active:not(.hide)');

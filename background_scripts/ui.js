@@ -240,7 +240,7 @@ function loadQuicktexts(){
         return;
     }
     var quicktexts = Settings.get('quicktexts');
-    var isPopup = table.getAttribute("rel") === 'popup';
+    var isPopup = $('body').hasClass('ispopup');
     var qtTemplate = '<% _.each(quicktexts, function(qt) { %>\
     <tr id="qt-<%= qt.id %>" key="qt-<%= qt.key %>">\
         <td class="title-cell"><%= qt.title %></td>\
@@ -252,15 +252,7 @@ function loadQuicktexts(){
         <td class="delete-cell"><a href="#" class="qt-delete" rel="<%= qt.id %>">Delete</a></td>\
     </tr>\
     <% }); %>';
-    if (isPopup) {
-        qtTemplate = '<% _.each(quicktexts, function(qt) { %>\
-        <tr id="qt-<%= qt.id %>">\
-            <td><%= qt.shortcut %></td>\
-            <td><%= qt.title %></td>\
-            <td><%= qt.body %></td>\
-        </tr>\
-        <% }); %>'; 
-    }
+
     filtered = [];
     _.each(quicktexts, function(qt){
         qt.title= _.str.truncate(qt.title, 30);
@@ -271,7 +263,14 @@ function loadQuicktexts(){
         filtered.push(qt);
     });
     var compiled = _.template(qtTemplate, {'quicktexts': filtered});
-    document.querySelector("#quicktexts-table tbody").innerHTML = compiled;
+    $("#quicktexts-table tbody").html(compiled);
+    if (isPopup){
+        $("#quicktexts-table tbody tr").click(function(){
+            // A quicktext item was clicked. Insert it into the compose area
+            var key = $(this).attr("key").split("qt-")[1];
+            insertQuicktext(key);
+        });
+    }
 
     // Attach event handlers to delete actions
     var deleteActions = document.querySelectorAll(".qt-delete")
@@ -282,19 +281,6 @@ function loadQuicktexts(){
     _.each(editActions, function(el){
         el.addEventListener("click", editClicked);
     });
-    if (isPopup){
-        // in the popup when the user clicks a row it inserts the quicktext in 
-        // the edit area
-        var rows = document.querySelectorAll("#quicktexts-table tbody tr")
-        _.each(rows,function(row){
-            row.classList.add("clickable");
-            row.addEventListener("click", function(e){
-                var self = this;
-                var id = self.getAttribute("id").split('qt-')[1];
-                // send a message to the content script to insert
-            });
-        });
-    }
 }
 
 window.addEventListener("DOMContentLoaded", initializeOnDomReady);
