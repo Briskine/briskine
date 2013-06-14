@@ -123,7 +123,10 @@ GQ.au.show = function(params, quicktexts, source){
 
             var listEl = $("<ul id='qt-au-list'>")
             var list = "<% _.each(quicktexts, function(qt) { %>\
-                <li class='qt-au-item' id='qt-item-<%= qt.id %>'><%= qt.shortcut %> - <%= qt.title %></li>\
+                <li class='qt-au-item' id='qt-item-<%= qt.id %>'>\
+                    <span class='qt-au-item-shortcut'><%= qt.shortcut %></span>\
+                    <span class='qt-au-item-title'><%= qt.title %></span>\
+                </li>\
             <% }); %>\
             </ul>";
             var content = _.template(list, {quicktexts: quicktexts});

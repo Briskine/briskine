@@ -24,15 +24,25 @@
   padding: 0 4px;
   border-radius: 2px;
   max-width: 19em;
+  max-height: 15px;
   overflow: hidden;
-  white-space: pre;
+  word-wrap:break-word;
+  text-overflow:ellipsis;
   color: black;
   cursor: pointer;
+}
+
+.qt-au-item-title {
+  color: grey;
 }
 
 .qt-au-item-active {
   background: #08f;
   color: white;
+}
+
+.qt-au-item-active .qt-au-item-title {
+  color: #F3F3F3;
 }
 
 #qt-mirror {
