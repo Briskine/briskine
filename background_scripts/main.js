@@ -4,6 +4,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     }
 });
 
+
 // Context menus
 chrome.contextMenus.removeAll();
 chrome.contextMenus.create({

@@ -28,6 +28,7 @@
     "https://gmail-quicktext.com/*",
     "http://localhost:5000/*",
 
+    "tabs",
     "contextMenus",
     "storage"
   ],
@@ -43,6 +44,7 @@
         "libs/underscore-min.js",
         "libs/underscore.string.min.js",
         "content_scripts/utils.js",
+        "content_scripts/handlers.js",
         "content_scripts/completion.js",
         "content_scripts/keyboard.js",
         "content_scripts/main.js"

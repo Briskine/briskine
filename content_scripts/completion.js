@@ -187,6 +187,11 @@ GQ.au.handleInsertion = function(source, parseWord) {
             GQ.handleIframe(source, parseWord,
                 function(params, result){
                     var lines = result.split("\n");
+                    if (params.base === source) {
+                        $(source).append("<div>");
+                        params.base = $(source).find('div')[0];
+                    }
+
                     params.base.data = "";
                     _.each(lines, function(line){
                         $(params.base).before($("<div>").html(line));
@@ -205,6 +210,10 @@ GQ.au.handleInsertion = function(source, parseWord) {
             GQ.handleNewStyle(source, parseWord,
                 function(params, result){
                     var lines = result.split("\n");
+                    if (params.base === source) {
+                        $(source).append("<div>");
+                        params.base = $(source).find('div')[0];
+                    }
                     params.base.data = "";
                     _.each(lines, function(line){
                         $(params.base).before($("<div>").html(line));

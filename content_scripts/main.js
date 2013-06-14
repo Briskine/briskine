@@ -13,15 +13,13 @@ GQ.handlePlainText = function(source, parseWord, resultCallback, updateCallback)
     var word = res[0];
     startPosition = res[1];
 
-    if (word) {
-        var params = {
-            value: value,
-            word: word,
-            startPosition: startPosition,
-            endPosition: endPosition
-        };
-        parseWord(params, resultCallback, updateCallback);
-    }
+    var params = {
+        value: value,
+        word: word,
+        startPosition: startPosition,
+        endPosition: endPosition
+    };
+    parseWord(params, resultCallback, updateCallback);
 };
 
 // Handle old-style iFrame editing - this is used in RichText mode
@@ -36,18 +34,19 @@ GQ.handleIframe = function(source, parseWord, resultCallback, updateCallback) {
     var res = GQ.getWord(value, endPosition)
     var word = res[0];
     startPosition = res[1];
-    if (word) {
-        var params = {
-            value: value,
-            word: word,
-            base: base,
-            iFrameDoc: iFrameDoc,
-            selection: selection,
-            startPosition: startPosition,
-            endPosition: endPosition,
-        };
-        parseWord(params, resultCallback, updateCallback);
+    if (!value) {
+        value = "";
     }
+    var params = {
+        value: value,
+        word: word,
+        base: base,
+        iFrameDoc: iFrameDoc,
+        selection: selection,
+        startPosition: startPosition,
+        endPosition: endPosition,
+    };
+    parseWord(params, resultCallback, updateCallback);
 }
 
 // New style iFrame editing. Just like the oldstyle, but with no iFrame
@@ -61,17 +60,18 @@ GQ.handleNewStyle = function(source, parseWord, resultCallback, updateCallback) 
     var res = GQ.getWord(value, endPosition);
     var word = res[0];
     startPosition = res[1];
-    if (word) {
-        var params = {
-            value: value,
-            word: word,
-            base: base,
-            selection: selection,
-            startPosition: startPosition,
-            endPosition: endPosition,
-        };
-        parseWord(params, resultCallback, updateCallback);
+    if (!value) {
+        value = "";
     }
+    var params = {
+        value: value,
+        word: word,
+        base: base,
+        selection: selection,
+        startPosition: startPosition,
+        endPosition: endPosition,
+    };
+    parseWord(params, resultCallback, updateCallback);
 }
 
 // Check that we are in an iFrame and attach the correct events to it

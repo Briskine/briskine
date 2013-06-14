@@ -267,8 +267,8 @@ function loadQuicktexts(){
     if (isPopup){
         $("#quicktexts-table tbody tr").click(function(){
             // A quicktext item was clicked. Insert it into the compose area
-            var key = $(this).attr("key").split("qt-")[1];
-            insertQuicktext(key);
+            var id = $(this).attr("id").split("qt-")[1];
+            insertQuicktext(id);
         });
     }
 

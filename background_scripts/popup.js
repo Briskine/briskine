@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         var next = null;
         if (e.keyCode == 13) { // enter
-            var key = current.attr("key").split("qt-")[1];
+            var key = current.attr("id").split("qt-")[1];
             insertQuicktext(key);
             return;
         } else if (e.keyCode == 38) { // up arrow
@@ -37,6 +37,8 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 // Insert quicktext into compose area
-function insertQuicktext(key){
-    console.log(key);
+function insertQuicktext(id){
+    chrome.tabs.getSelected(null, function(tab) {
+        chrome.tabs.sendMessage(tab.id, {"action": "insert", "id": id}, function(response) {});
+    });
 }
