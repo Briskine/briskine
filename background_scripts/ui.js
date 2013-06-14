@@ -36,6 +36,7 @@ function initializeOnDomReady(){
             document.querySelector("#qt-title").focus();
         });
     }
+
     // submit add/edit quicktext
     var submitButton = document.querySelector("#qt-submit");
     if (submitButton){
@@ -84,7 +85,7 @@ function initializeOnDomReady(){
                 quicktexts.push(quicktext);
             }
             Settings.set('quicktexts', quicktexts);
-            syncQuicktexts();
+            //syncQuicktexts();
 
             var dialog = document.querySelector("#dialog-container");
             if (dialog){
