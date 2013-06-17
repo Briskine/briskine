@@ -142,6 +142,9 @@ GQ.au.show = function(params, quicktexts, source){
 
             // make the first element active
             $('.qt-au-item:first', params.iFrameDoc).addClass("qt-au-item-active");
+            if (GQ.isContentEditable && !GQ.attachedIframe) {
+                listEl.css("position", "fixed");
+            }
 
             // attach hover events
             $('.qt-au-item', params.iFrameDoc).hover(function(){
@@ -262,9 +265,12 @@ GQ.au.complete = function(e, source) {
         var doc = document;
         var iframe = document.querySelector('iframe.editable');
         var textarea = document.querySelector('textarea[form=nosend]');
-        if (iframe && !textarea){
+
+        // if we have an iframe and it's not hidden
+        if (iframe && $(iframe.parentElement).css('display') != 'none'){
             doc = iframe.contentDocument;
         }
+
         var quicktextId = $(".qt-au-item-active", doc).attr('id').split("qt-item-")[1];
         GQ.settings.get('quicktexts', function(quicktexts){
             _.each(quicktexts, function(qt){
