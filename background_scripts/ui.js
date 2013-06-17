@@ -244,11 +244,11 @@ function loadQuicktexts(){
     var isPopup = $('body').hasClass('ispopup');
     var qtTemplate = '<% _.each(quicktexts, function(qt) { %>\
     <tr id="qt-<%= qt.id %>" key="qt-<%= qt.key %>">\
-        <td class="title-cell"><%= qt.title %></td>\
+        <td class="title-cell" title="<%= qt.title %>"><%= qt.title %></td>\
         <td class="subject-cell"><%= qt.subject %></td>\
         <td class="shortcut-cell"><%= qt.shortcut %></td>\
         <td class="tags-cell"><%= qt.tags %></td>\
-        <td class="body-cell"><div class="body-container"><%= qt.body %></div></td>\
+        <td class="body-cell" title="<%= qt.body %>"><div class="body-container"><%= qt.body_truncated %></div></td>\
         <td class="edit-cell"><a href="#" class="qt-edit" rel="<%= qt.id %>">Edit</a></td>\
         <td class="delete-cell"><a href="#" class="qt-delete" rel="<%= qt.id %>">Delete</a></td>\
     </tr>\
@@ -260,7 +260,7 @@ function loadQuicktexts(){
         qt.subject = _.str.truncate(qt.subject, 30);
         qt.shortcut = _.str.truncate(qt.shortcut, 15);
         qt.tags = _.str.truncate(qt.tags, 20);
-        qt.body = _.str.truncate(qt.body, 100);
+        qt.body_truncated = _.str.truncate(qt.body, 100);
         filtered.push(qt);
     });
     var compiled = _.template(qtTemplate, {'quicktexts': filtered});
