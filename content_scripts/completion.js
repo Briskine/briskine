@@ -235,14 +235,22 @@ GQ.au.handleInsertion = function(source, parseWord) {
     } else { // old style plaintext editor
         GQ.handlePlainText(source, parseWord,
             function(params, result){
-                source.value = result;
+                var event = document.createEvent('TextEvent');
+                event.initTextEvent('textInput', true, true, null, params.compiled, 9);
+
+                var before = source.value.substring(0, params.startPosition);
+                var after = source.value.substr(params.endPosition, source.value.length);
+                source.value = before + after;
+                source.selectionStart = params.startPosition + 1;
+                source.selectionEnd = params.startPosition + 1;
+
+                source.dispatchEvent(event); // fire the event on the the textarea
                 return result;
             },
             function(params, newCursorPos){
-                source.setSelectionRange(newCursorPos, newCursorPos);
+                //source.setSelectionRange(newCursorPos, newCursorPos);
             }
         );
-        var value = source.value;
     }
 
 };
@@ -253,7 +261,8 @@ GQ.au.complete = function(e, source) {
     function parseWord(params, setValue, setPosition){
         var doc = document;
         var iframe = document.querySelector('iframe.editable');
-        if (iframe){
+        var textarea = document.querySelector('textarea[form=nosend]');
+        if (iframe && !textarea){
             doc = iframe.contentDocument;
         }
         var quicktextId = $(".qt-au-item-active", doc).attr('id').split("qt-item-")[1];
@@ -264,6 +273,8 @@ GQ.au.complete = function(e, source) {
                     var before = params.value.substr(0, params.startPosition + 1);
                     var after = params.value.substr(params.endPosition);
                     var compiled = _.template(qt.body, GQ.templateVars);
+                    params.compiled = compiled;
+
                     var result = before + compiled + after;
                     result = setValue(params, result);
                     // set the cursor in the correct position
@@ -294,6 +305,7 @@ GQ.au.tab = function (e, source) {
                         var before = params.value.substr(0, params.startPosition + 1);
                         var after = params.value.substr(params.endPosition);
                         var compiled = _.template(qt.body, GQ.templateVars);
+                        params.compiled = compiled;
                         var result = before + compiled + after;
                         result = setValue(params, result);
                         // set the cursor in the correct position
