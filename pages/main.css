@@ -66,6 +66,25 @@ label {
 label:hover {
   color: black;
 }
+
+.label {
+  display: inline-block;
+  padding: 2px 4px;
+  font-size: 11.844px;
+  font-weight: bold;
+  line-height: 14px;
+  color: #ffffff;
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+  white-space: nowrap;
+  vertical-align: baseline;
+  background-color: #999999;
+  border-radius: 3px;
+}
+
+.label-info {
+  background-color: #3a87ad;
+}
+
 pre, code, .code {
   font-family: Consolas, "Liberation Mono", Courier, monospace;
 }
@@ -109,7 +128,7 @@ textarea {
   width: 100%;
   height: 35px;
   font-size: 24px;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
 }
 
 .ispopup #search {
@@ -193,6 +212,10 @@ height: 1%;
 
 .body-cell {
   width: 300px;
+}
+
+.quicktexts-filters {
+  margin-bottom: 5px;
 }
 
 #quicktexts-table-container {

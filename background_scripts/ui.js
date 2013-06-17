@@ -153,31 +153,61 @@ function initializeOnDomReady(){
 // search in title, shortcut and body
 function filterQuicktexts(query){
     var quicktexts = Settings.get('quicktexts');
-    var tags = [];
+    var filterTags = [];
 
     function show(id){
         var row = document.querySelector("#qt-" + id);
         row.classList.remove("hide");
     }
 
-    // if it begins with in: then we have labels
+    // if it begins with in: then we have to filter by tags
     if (query.indexOf('in:') === 0){
         var re = /(in:\s*)([^\s]+)(.*)/;
         var tagRes = re.exec(query);
+        // don't take the tags into consideration when searching
+        query = query.replace(re, "$3");
         if (tagRes && tagRes.length >= 3){
-            console.log(tagRes);
+            if (tagRes[2]) {
+                filterTags = tagRes[2].split(",");
+            }
         }
-        //XXX: HERE. Populate tags array
-
     }
 
     _.each(quicktexts, function(qt){
+        var quicktextTags = _.map(qt.tags.split(","),
+            function(tag){ return tag.replace(/ /g, "")});
+        if (filterTags && _.intersection(filterTags, quicktextTags).length == 0){
+            document.querySelector("#qt-" + qt.id).classList.add("hide");
+            return;
+        }
         if (qt.title.toLowerCase().indexOf(query) !== -1) {return show(qt.id);}
         if (qt.shortcut.toLowerCase().indexOf(query) !== -1) {return show(qt.id);}
         if (qt.tags.toLowerCase().indexOf(query) !== -1) {return show(qt.id);}
         if (qt.body.toLowerCase().indexOf(query) !== -1) {return show(qt.id);}
         document.querySelector("#qt-" + qt.id).classList.add("hide");
     });
+}
+
+// a filter was clicked in the search
+function applyFilter(e){
+    var tag = $(this).attr('href').split("#")[1];
+    var searchBox = document.querySelector("#search");
+    var selStart  = searchBox.selectionStart;
+
+    var event = document.createEvent('TextEvent');
+    event.initTextEvent('textInput', true, true, null, tag); 
+
+    if (searchBox.value === ''){
+        searchBox.value = "in:";
+    } else if (searchBox.value.indexOf('in:') === -1){
+        searchBox.setSelectionStart = 0;
+        searchBox.value = "in:";
+    } else { // at this point we already have an in: statement
+        
+    }
+
+    searchBox.dispatchEvent(event);
+    searchBox.focus();
 }
 
 function syncQuicktexts(){
@@ -256,6 +286,7 @@ function loadQuicktexts(){
     if (!table){
         return;
     }
+    var tags = {};
     var quicktexts = Settings.get('quicktexts');
     var isPopup = $('body').hasClass('ispopup');
     var qtTemplate = '<% _.each(quicktexts, function(qt) { %>\
@@ -276,11 +307,33 @@ function loadQuicktexts(){
         qt.subject = _.str.truncate(qt.subject, 30);
         qt.shortcut = _.str.truncate(qt.shortcut, 15);
         qt.tags = _.str.truncate(qt.tags, 20);
+        // count tags
+        _.each(qt.tags.split(","), function(tag){
+            tag = tag.replace(/ /g, "");
+            if (!tag) {
+                return;
+            }
+            if (!tags[tag]){
+                tags[tag] = 1;
+            } else {
+                tags[tag]++;
+            }
+        });
         qt.body_truncated = _.str.truncate(qt.body, 100);
         filtered.push(qt);
     });
     var compiled = _.template(qtTemplate, {'quicktexts': filtered});
     $("#quicktexts-table tbody").html(compiled);
+
+    //TODO: sort by count size.
+    var filterContent = "";
+    _.each(tags, function(count, tag){
+        filterContent += _.template("<a class='label label-info apply-filter' href='#<%= tag %>'><%= tag %></a> ", 
+            {"tag": tag, "count": count});
+    });
+
+    $(".quicktexts-filters").html(filterContent);
+    $(".apply-filter").click(applyFilter);
     if (isPopup){
         $("#quicktexts-table tbody tr").click(function(){
             // A quicktext item was clicked. Insert it into the compose area
