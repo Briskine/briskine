@@ -48,7 +48,7 @@ function initializeOnDomReady(){
             var shortcut = document.querySelector("#qt-shortcut");
             var tags = document.querySelector("#qt-tags");
             var body = document.querySelector("#qt-body");
-            var quicktexts = Settings.get('quicktexts');
+            var quicktexts = Settings.get('quicktexts').slice();
 
             if (!title.value){
                 alert("Please enter a title");
