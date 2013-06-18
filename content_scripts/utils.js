@@ -1,14 +1,15 @@
 if (typeof GQ == "undefined") var GQ = function(){};
 
+var sendMessage = chrome.runtime.sendMessage || chrome.extension.sendMessage;
 // handling messages for settings via chrome.estension
 GQ.settings = {
     get: function(key, callback) {
-        chrome.runtime.sendMessage({'request': 'get', 'data': key}, function(response) {
+        sendMessage({'request': 'get', 'data': key}, function(response) {
             callback(response);
         });
     },
     set: function(key, value) {
-        chrome.runtime.sendMessage({'request': 'set', 'data': {key: value}}, function(response) {
+        sendMessage({'request': 'set', 'data': {key: value}}, function(response) {
             callback(response);
         });
     },

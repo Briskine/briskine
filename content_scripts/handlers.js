@@ -1,4 +1,6 @@
-chrome.runtime.onMessage.addListener(
+var onMessage = chrome.runtime.onMessage || chrome.extension.onMessage;
+
+onMessage.addListener(
 function(request, sender, sendResponse) {
     // insert quicktext
     if (request.action && request.action == 'insert'){

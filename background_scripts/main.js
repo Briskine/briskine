@@ -1,4 +1,5 @@
-chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+var onMessage = chrome.runtime.onMessage || chrome.extension.onMessage;
+onMessage.addListener(function(request, sender, sendResponse) {
     if (request.request == 'get'){
         sendResponse(Settings.get(request.data));
     }
