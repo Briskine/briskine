@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Quicktext for Gmail™",
-  "version": "0.3.3",
+  "version": "0.4",
   "description": "",
   "icons": {
     "16": "icons/icon16.png",
