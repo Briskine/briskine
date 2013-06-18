@@ -67,6 +67,10 @@ label:hover {
   color: black;
 }
 
+a.label {
+  text-decoration: none;
+}
+
 .label {
   display: inline-block;
   padding: 2px 4px;
@@ -81,9 +85,10 @@ label:hover {
   border-radius: 3px;
 }
 
-.label-info {
+.label-active {
   background-color: #3a87ad;
 }
+
 
 pre, code, .code {
   font-family: Consolas, "Liberation Mono", Courier, monospace;

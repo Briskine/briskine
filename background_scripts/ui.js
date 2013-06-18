@@ -160,26 +160,22 @@ function filterQuicktexts(query){
         row.classList.remove("hide");
     }
 
-    // if it begins with in: then we have to filter by tags
-    if (query.indexOf('in:') === 0){
-        var re = /(in:\s*)([^\s]+)(.*)/;
-        var tagRes = re.exec(query);
-        // don't take the tags into consideration when searching
-        query = query.replace(re, "$3");
-        if (tagRes && tagRes.length >= 3){
-            if (tagRes[2]) {
-                filterTags = tagRes[2].split(",");
-            }
-        }
-    }
+    $('.quicktexts-filters a.label-active').each(function(){
+        var tag = _.str.trim($(this).attr('href').split("#")[1]);
+        filterTags.push(tag);
+    });
 
+    console.log(filterTags);
     _.each(quicktexts, function(qt){
         var quicktextTags = _.map(qt.tags.split(","),
             function(tag){ return tag.replace(/ /g, "")});
-        if (filterTags && _.intersection(filterTags, quicktextTags).length == 0){
-            document.querySelector("#qt-" + qt.id).classList.add("hide");
+        if (filterTags.length &&
+            _.intersection(filterTags, quicktextTags).length != filterTags.length) {
+
+            $("#qt-" + qt.id).addClass("hide");
             return;
         }
+
         if (qt.title.toLowerCase().indexOf(query) !== -1) {return show(qt.id);}
         if (qt.shortcut.toLowerCase().indexOf(query) !== -1) {return show(qt.id);}
         if (qt.tags.toLowerCase().indexOf(query) !== -1) {return show(qt.id);}
@@ -190,24 +186,8 @@ function filterQuicktexts(query){
 
 // a filter was clicked in the search
 function applyFilter(e){
-    var tag = $(this).attr('href').split("#")[1];
-    var searchBox = document.querySelector("#search");
-    var selStart  = searchBox.selectionStart;
-
-    var event = document.createEvent('TextEvent');
-    event.initTextEvent('textInput', true, true, null, tag); 
-
-    if (searchBox.value === ''){
-        searchBox.value = "in:";
-    } else if (searchBox.value.indexOf('in:') === -1){
-        searchBox.setSelectionStart = 0;
-        searchBox.value = "in:";
-    } else { // at this point we already have an in: statement
-        
-    }
-
-    searchBox.dispatchEvent(event);
-    searchBox.focus();
+    $(this).toggleClass('label-active');
+    filterQuicktexts($("#search").val());
 }
 
 function syncQuicktexts(){
@@ -290,7 +270,7 @@ function loadQuicktexts(){
     var quicktexts = Settings.get('quicktexts');
     var isPopup = $('body').hasClass('ispopup');
     var qtTemplate = '<% _.each(quicktexts, function(qt) { %>\
-    <tr id="qt-<%= qt.id %>" key="qt-<%= qt.key %>">\
+    <tr class="qt-row" id="qt-<%= qt.id %>" key="qt-<%= qt.key %>">\
         <td class="title-cell" title="<%= qt.title %>"><%= qt.title %></td>\
         <td class="subject-cell"><%= qt.subject %></td>\
         <td class="shortcut-cell"><%= qt.shortcut %></td>\
@@ -328,12 +308,13 @@ function loadQuicktexts(){
     //TODO: sort by count size.
     var filterContent = "";
     _.each(tags, function(count, tag){
-        filterContent += _.template("<a class='label label-info apply-filter' href='#<%= tag %>'><%= tag %></a> ", 
+        filterContent += _.template("<a class='label apply-filter' href='#<%= tag %>'><%= tag %></a> ", 
             {"tag": tag, "count": count});
     });
 
     $(".quicktexts-filters").html(filterContent);
     $(".apply-filter").click(applyFilter);
+
     if (isPopup){
         $("#quicktexts-table tbody tr").click(function(){
             // A quicktext item was clicked. Insert it into the compose area
