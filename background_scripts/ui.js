@@ -194,31 +194,34 @@ function syncQuicktexts(){
     if (Settings.get("syncEnabled") === false){
         return;
     }
+
     // first we get the quicktexts from the sync server
-    result = ajax.getJSON(Settings.get("apiBaseURL") + "sync");
-    if (result.status == 0){
-        quicktexts = []; // the list that we'll populate
-        existing_quicktexts = Settings.get("quicktexts");
-        new_ids = [];
+    result = $.getJSON(Settings.get("apiBaseURL") + "sync", function(result){
+        if (result.status == 0){
+            quicktexts = []; // the list that we'll populate
+            existing_quicktexts = Settings.get("quicktexts");
+            new_ids = [];
 
-        // add all remote quicktexts to the list
-        _.each(result.quicktexts, function(remote_qt) {
-            remote_qt.id = get_id(remote_qt);// give a id to the remote qt
-            new_ids.push(remote_qt.id);
-            quicktexts.push(remote_qt);
-        });
+            // add all remote quicktexts to the list
+            _.each(result.quicktexts, function(remote_qt) {
+                remote_qt.id = get_id(remote_qt);// give a id to the remote qt
+                new_ids.push(remote_qt.id);
+                quicktexts.push(remote_qt);
+            });
 
-        // if we don't have the local quicktexts in the remote quicktexts
-        // we add them to the list
-        _.each(existing_quicktexts, function(local_qt) {
-            if (new_ids.indexOf(local_qt.id) === -1){
-                quicktexts.push(local_qt)
-            }
-        })
-        Settings.set("quicktexts", quicktexts);
-    }
+            // if we don't have the local quicktexts in the remote quicktexts
+            // we add them to the list
+            _.each(existing_quicktexts, function(local_qt) {
+                if (new_ids.indexOf(local_qt.id) === -1){
+                    quicktexts.push(local_qt)
+                }
+            })
+            Settings.set("quicktexts", quicktexts);
+        }
+    });
+
     // now we try to send the quicktexts back to the server for syncronization
-    ajax.post(Settings.get("apiBaseURL") + "sync", Settings.get("quicktexts"), function(res){
+    $.post(Settings.get("apiBaseURL") + "sync", Settings.get("quicktexts"), function(res){
         //console.log(res);
     });
     loadQuicktexts();
