@@ -24,9 +24,7 @@
   "options_page": "pages/options.html",
   "permissions": [
     "https://mail.google.com/*",
-    "http://gmail-quicktext.com/*",
     "https://gmail-quicktext.com/*",
-    "http://localhost:5000/*",
 
     "tabs",
     "contextMenus",
@@ -36,7 +34,6 @@
     {
       "matches": [
         "https://mail.google.com/*",
-        "http://gmail-quicktext.com/*",
         "https://gmail-quicktext.com/*"
       ],
       "js": [
@@ -60,5 +57,5 @@
     "default_icon": "icons/icon48.png",
     "default_popup": "pages/popup.html"
   },
-  "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'"
+  "content_security_policy": "script-src 'self' 'unsafe-eval' https://gmail-quicktext.com; object-src 'self'"
 }

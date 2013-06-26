@@ -23,8 +23,6 @@ var Settings = {
   defaults: {
     baseURL: "https://gmail-quicktext.com/",
     apiBaseURL: "https://gmail-quicktext.com/api/1/",
-    //baseURL: "http://localhost:5000/",
-    //apiBaseURL: "http://localhost:5000/api/1/",
     quicktexts: [
       {
           "id": "a0e29d8c0ab9e2fa6ea8b53cf0a9b5d2", // md5 unique identifier
@@ -37,7 +35,7 @@ var Settings = {
       }
     ],
     syncEnabled: false,
-    autocompleteEnabled: false, // autocomplete dialog
+    autocompleteEnabled: true, // autocomplete dialog
     tabcompleteEnabled: true // tab completion
   }
 };

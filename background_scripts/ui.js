@@ -1,4 +1,4 @@
-function initializeOnDomReady(){
+$(document).ready(function(){
     // populate quicktext table
     loadQuicktexts();
 
@@ -19,136 +19,106 @@ function initializeOnDomReady(){
     boolFieldHandler("tabcompleteEnabled");
 
     // add new quick text
-    var newButton = document.querySelector("#new-quicktext-button")
-    if (newButton){
-        newButton.addEventListener("click", function(e){
+    $("#new-quicktext-button").click(function(e){
             this.classList.add("hide");
             // clean the form
-            document.querySelector("#qt-id").value = "";
-            document.querySelector("#qt-title").value = "";
-            document.querySelector("#qt-subject").value = "";
-            document.querySelector("#qt-shortcut").value = "";
-            document.querySelector("#qt-tags").value = "";
-            document.querySelector("#qt-body").value = "";
-
-            var formDiv = document.querySelector("#quicktext-form");
-            formDiv.classList.add("show")
-            document.querySelector("#qt-title").focus();
-        });
-    }
+            $("#qt-id").val("");
+            $("#qt-title").val("");
+            $("#qt-subject").val("");
+            $("#qt-shortcut").val("");
+            $("#qt-tags").val("");
+            $("#qt-body").val("");
+            // show and focus
+            $("#quicktext-form").addClass('show').focus();
+    });
 
     // submit add/edit quicktext
-    var submitButton = document.querySelector("#qt-submit");
-    if (submitButton){
-        submitButton.addEventListener("click", function(e){
-            e.preventDefault();
-            var id = document.querySelector("#qt-id");
-            var title = document.querySelector("#qt-title");
-            var subject = document.querySelector("#qt-subject");
-            var shortcut = document.querySelector("#qt-shortcut");
-            var tags = document.querySelector("#qt-tags");
-            var body = document.querySelector("#qt-body");
-            var quicktexts = Settings.get('quicktexts').slice();
+    $("#qt-submit").click(function(e){
+        e.preventDefault();
+        var id = document.querySelector("#qt-id");
+        var title = document.querySelector("#qt-title");
+        var subject = document.querySelector("#qt-subject");
+        var shortcut = document.querySelector("#qt-shortcut");
+        var tags = document.querySelector("#qt-tags");
+        var body = document.querySelector("#qt-body");
+        var quicktexts = Settings.get('quicktexts').slice();
 
-            if (!title.value){
-                alert("Please enter a title");
-                title.focus();
-                return false;
-            }
-            if (!body.value){
-                alert("Please enter a quicktext");
-                body.focus();
-                return false;
-            }
-            if (id.value !== ''){
-                var newQuicktexts = [];
-                _.each(quicktexts, function(qt){
-                    if (qt.id == id.value){
-                        qt.title = title.value;
-                        qt.subject= subject.value;
-                        qt.shortcut = shortcut.value;
-                        qt.tags = tags.value;
-                        qt.body = body.value;
-                    }
-                    newQuicktexts.push(qt);
-                });
-                quicktexts = newQuicktexts;
-            } else {
-                quicktext = {
-                    'title': title.value,
-                    'subject': subject.value,
-                    'shortcut': shortcut.value,
-                    'tags': tags.value,
-                    'body': body.value
-                };
-                quicktext.id = get_id(quicktext);
-                quicktexts.push(quicktext);
-            }
-            Settings.set('quicktexts', quicktexts);
-            //syncQuicktexts();
+        if (!title.value){
+            alert("Please enter a title");
+            title.focus();
+            return false;
+        }
+        if (!body.value){
+            alert("Please enter a quicktext");
+            body.focus();
+            return false;
+        }
+        if (id.value !== ''){
+            var newQuicktexts = [];
+            _.each(quicktexts, function(qt){
+                if (qt.id == id.value){
+                    qt.title = title.value;
+                    qt.subject= subject.value;
+                    qt.shortcut = shortcut.value;
+                    qt.tags = tags.value;
+                    qt.body = body.value;
+                }
+                newQuicktexts.push(qt);
+            });
+            quicktexts = newQuicktexts;
+        } else {
+            quicktext = {
+                'title': title.value,
+                'subject': subject.value,
+                'shortcut': shortcut.value,
+                'tags': tags.value,
+                'body': body.value
+            };
+            quicktext.id = get_id(quicktext);
+            quicktexts.push(quicktext);
+        }
+        Settings.set('quicktexts', quicktexts);
+        syncQuicktexts();
 
-            var dialog = document.querySelector("#dialog-container");
-            if (dialog){
-                window.close();
-            }
-            loadQuicktexts();
-            document.querySelector("#new-quicktext-button").classList.remove("hide");
-            document.querySelector("#quicktext-form").classList.remove("show");
-        });
-    }
+        var dialog = document.querySelector("#dialog-container");
+        if (dialog){
+            window.close();
+        }
+        loadQuicktexts();
+        document.querySelector("#new-quicktext-button").classList.remove("hide");
+        document.querySelector("#quicktext-form").classList.remove("show");
+    });
 
 
     // search quicktext
-    var searchEl = document.querySelector("#search");
-    if (searchEl){
-        searchEl.addEventListener("keyup", function(){
-            filterQuicktexts(this.value.toLowerCase());
-        });
-    }
+    $("#search").on("keyup", function(){
+        filterQuicktexts($(this).val().toLowerCase());
+    });
 
-    var syncButton = document.querySelector("#sync-button");
-    if (syncButton){
+    $("#sync-button").click(function(){
+        var self = $(this);
+        if (Settings.get('syncEnabled') === true) {
+            self.html('Start syncronization');
+            Settings.set('syncEnabled', false);
+        } else {
+            self.html('Stop syncronization');
+            Settings.set('syncEnabled', true);
+        }
+        syncQuicktexts();
+    });
 
-        syncButton.addEventListener("click", function(){
-            if (syncButton.innerHTML == 'Stop syncronization'){
-                syncButton.innerHTML = 'Start syncronization';
-                Settings.set('syncEnabled', false);
-            } else {
-                syncButton.innerHTML = 'Stop syncronization';
-                Settings.set('syncEnabled', true); 
-            }
-            // If we are logged in the we should try getting the quicktexts from the website directly
-            try {
-                syncQuicktexts();
-            } catch (e) {
-                if (e.message.indexOf("Invalid JSON") !== -1) {
-                    // this probably means that the user is not logged in
-                    window.location =  Settings.get('baseURL') + "registration"
-                } else {
-                    throw e;
-                }
-            }
-        });
-    }
+    $("#sharing-button").click(function(){
+        window.location = Settings.get('baseURL') + 'quicktexts';
+    });
 
-    var sharingButton = document.querySelector("#sharing-button");
-    if (sharingButton){
-        sharingButton.addEventListener("click", function(){
-            window.location = Settings.get('baseURL') + 'quicktexts';
-        });
-    }
-
-    var deleteAllButton = document.querySelector("#delete-all-button");
-    if (deleteAllButton){
-        deleteAllButton.addEventListener("click", function(){
-            var r = confirm("Are you sure you want to delete all Quicktexts?\n\nNote: they will NOT be deleted from the syncronization server.");
-            if (r === true){
-                Settings.set("quicktexts", []);
-                loadQuicktexts();
-            }
-        });
-    }
-}
+    $("#delete-all-button"). click(function(){
+        var r = confirm("Are you sure you want to delete all Quicktexts?\n\nNote: they will NOT be deleted from the syncronization server.");
+        if (r === true){
+            Settings.set("quicktexts", []);
+            loadQuicktexts();
+        }
+    });
+});
 
 // search in title, shortcut and body
 function filterQuicktexts(query){
@@ -190,42 +160,46 @@ function applyFilter(e){
     filterQuicktexts($("#search").val());
 }
 
+/*
+ * How Syncronisation works:
+ *
+ *  Upload our quicktexts and get them back while replacing the local ones
+ *
+ * Note: Only replace the existing quicktexts if we got a succesful response from the server.
+ *
+ * This will allow the remote server to decide what is the right quicktext
+ * including the conflicts, storing backups, etc..
+ *
+ **/
+
 function syncQuicktexts(){
     if (Settings.get("syncEnabled") === false){
         return;
     }
 
-    // first we get the quicktexts from the sync server
-    result = $.getJSON(Settings.get("apiBaseURL") + "sync", function(result){
-        if (result.status == 0){
-            quicktexts = []; // the list that we'll populate
-            existing_quicktexts = Settings.get("quicktexts");
-            new_ids = [];
+    var url = Settings.get("apiBaseURL") + "sync";
+    var data = JSON.stringify({'quicktexts': Settings.get("quicktexts")})
+    // now we try to send the quicktexts back to the server for syncronization
+    $.ajax({
+      type: "POST",
+      url: url,
+      data: data,
+      success: function(res, textStatus){
+        if (res.status == 0) { // Everything went fine the server got our quicktexts
+            var quicktexts = [];
 
             // add all remote quicktexts to the list
             _.each(result.quicktexts, function(remote_qt) {
-                remote_qt.id = get_id(remote_qt);// give a id to the remote qt
-                new_ids.push(remote_qt.id);
+                remote_qt.id = get_id(remote_qt); // give an id to the remote qt
                 quicktexts.push(remote_qt);
             });
-
-            // if we don't have the local quicktexts in the remote quicktexts
-            // we add them to the list
-            _.each(existing_quicktexts, function(local_qt) {
-                if (new_ids.indexOf(local_qt.id) === -1){
-                    quicktexts.push(local_qt)
-                }
-            })
             Settings.set("quicktexts", quicktexts);
+            loadQuicktexts();
         }
+      }
     });
-
-    // now we try to send the quicktexts back to the server for syncronization
-    $.post(Settings.get("apiBaseURL") + "sync", Settings.get("quicktexts"), function(res){
-        //console.log(res);
-    });
-    loadQuicktexts();
 }
+
 // get the unique id for the quicktext in question
 function get_id(qt){
     return hex_md5(qt.title + qt.subject + qt.shortcut + qt.tags + qt.body);
@@ -336,5 +310,3 @@ function loadQuicktexts(){
         el.addEventListener("click", editClicked);
     });
 }
-
-window.addEventListener("DOMContentLoaded", initializeOnDomReady);
