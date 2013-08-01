@@ -140,8 +140,6 @@ GQ.au.show = function(params, quicktexts, source){
             listEl.css('left', sourcePos.left + caretPos.left + "px");
             $(source).after(listEl);
 
-            // make the first element active
-            $('.qt-au-item:first', params.iFrameDoc).addClass("qt-au-item-active");
             if (GQ.isContentEditable && !GQ.attachedIframe) {
                 listEl.css("position", "fixed");
             }
@@ -150,6 +148,9 @@ GQ.au.show = function(params, quicktexts, source){
             $('.qt-au-item', params.iFrameDoc).hover(function(){
                 $(".qt-au-item", params.iFrameDoc).removeClass("qt-au-item-active");
                 $(this).addClass("qt-au-item-active");
+
+                // When an item is clicked a completion action should be taken
+                $(this).click(function(){});
             });
         }
     }, 300); // sleep for a while before showing
@@ -172,10 +173,19 @@ GQ.au.move = function(dir) {
     }
 
     var activeEl = $(".qt-au-item-active", doc);
+
     var nextEl = null;
     if (dir == "up") {
+        if (!activeEl.length) { // no active element - select the last element
+            $('.qt-au-item:last', doc).addClass('qt-au-item-active');
+            return;
+        }
         nextEl = activeEl.prev('.qt-au-item');
     } else if (dir == "down") {
+        if (!activeEl.length) { // no active element - select the first element
+            $('.qt-au-item:first', doc).addClass('qt-au-item-active');
+            return;
+        }
         nextEl = activeEl.next('.qt-au-item');
     }
 
@@ -270,8 +280,11 @@ GQ.au.complete = function(e, source) {
         if (iframe && $(iframe.parentElement).css('display') != 'none'){
             doc = iframe.contentDocument;
         }
-
-        var quicktextId = $(".qt-au-item-active", doc).attr('id').split("qt-item-")[1];
+        var activeEl = $(".qt-au-item-active", doc);
+        if (!activeEl.length) {
+            return;
+        }
+        var quicktextId = activeEl.attr('id').split("qt-item-")[1];
         GQ.settings.get('quicktexts', function(quicktexts){
             _.each(quicktexts, function(qt){
                 if (quicktextId === qt.id) { // found quicktext
