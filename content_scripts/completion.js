@@ -210,6 +210,9 @@ GQ.au.handleInsertion = function(source, parseWord) {
 
                     params.base.data = "";
                     _.each(lines, function(line){
+                        if (line === ""){
+                            line = "<br>";
+                        }
                         $(params.base).before($("<div>").html(line));
                     });
                     return result;
@@ -232,6 +235,9 @@ GQ.au.handleInsertion = function(source, parseWord) {
                     }
                     params.base.data = "";
                     _.each(lines, function(line){
+                        if (line === ""){
+                            line = "<br>";
+                        }
                         $(params.base).before($("<div>").html(line));
                     });
                     return result;
