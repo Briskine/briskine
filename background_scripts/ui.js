@@ -181,15 +181,14 @@ function syncQuicktexts(){
     var data = JSON.stringify({'quicktexts': Settings.get("quicktexts")})
     // now we try to send the quicktexts back to the server for syncronization
     $.ajax({
-      type: "POST",
+      type: "GET",
       url: url,
-      data: data,
-      success: function(res, textStatus){
+      success: function(res, textStatus) {
         if (res.status == 0) { // Everything went fine the server got our quicktexts
             var quicktexts = [];
 
             // add all remote quicktexts to the list
-            _.each(result.quicktexts, function(remote_qt) {
+            _.each(res.quicktexts, function(remote_qt) {
                 remote_qt.id = get_id(remote_qt); // give an id to the remote qt
                 quicktexts.push(remote_qt);
             });
