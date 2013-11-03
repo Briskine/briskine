@@ -1,0 +1,22 @@
+{
+  "name": "gq",
+  "version": "1.0.0",
+  "description": "Gmail Quicktext grunt package",
+  "main": "Gruntfile.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": "https://github.com/humanfromearth/gmail-quicktext/",
+  "author": "Alexandru Plugaru",
+  "license": "MIT",
+  "devDependencies": {
+    "grunt": "~0.4.0",
+    "grunt-contrib-concat": "~0.3.0",
+    "grunt-contrib-watch": "~0.5.3",
+
+    "grunt-contrib-stylus": "~0.9.0",
+
+    "grunt-contrib-jshint": "~0.6.3",
+    "grunt-contrib-nodeunit": "~0.2.0"
+  }
+}

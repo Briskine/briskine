@@ -4,14 +4,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
     $(document).keydown(function(e){
         var current = $('#quicktexts-table tbody tr.active:not(.hide)');
-        if (current.length == 0){
+        if (current.length === 0){
             // find the first non-hidden element and make it active
             $('#quicktexts-table tbody tr:not(.hide):first').addClass('active');
             return;
         }
 
         var next = null;
-        if (e.keyCode == 13) { // enter
+        if (e.keyCode === 13) { // enter
             var key = current.attr("id").split("qt-")[1];
             insertQuicktext(key);
             return;

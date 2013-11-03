@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Quicktext for Gmail™",
-  "version": "0.4.3",
+  "version": "1.0",
   "description": "",
   "icons": {
     "16": "icons/icon16.png",
@@ -10,18 +10,13 @@
   },
   "background": {
     "scripts": [
-      "libs/md5.js",
-      "libs/jquery-2.0.2.min.js",
-      "libs/underscore-min.js",
-      "libs/underscore.string.min.js",
-      "background_scripts/settings.js",
-      "background_scripts/main.js",
-      "background_scripts/ui.js",
-      "background_scripts/dialog.js",
-      "background_scripts/popup.js"
+      "background_scripts/js/_dist/gq-bg.js"
+    ],
+    "styles": [
+      "background_scripts/css/_dist/gq-bg.css"
     ]
   },
-  "options_page": "pages/options.html",
+  "options_page": "pages/bg.html#options",
   "permissions": [
     "https://mail.google.com/*",
     "https://gmail-quicktext.com/*",
@@ -37,17 +32,10 @@
         "https://gmail-quicktext.com/*"
       ],
       "js": [
-        "libs/jquery-2.0.2.min.js",
-        "libs/underscore-min.js",
-        "libs/underscore.string.min.js",
-        "content_scripts/utils.js",
-        "content_scripts/handlers.js",
-        "content_scripts/completion.js",
-        "content_scripts/keyboard.js",
-        "content_scripts/main.js"
+        "content_scripts/js/_dist/gq-content.js"
       ],
       "css": [
-        "content_scripts/main.css"
+        "content_scripts/css/_dist/gq-content.css"
       ],
       "run_at": "document_start",
       "all_frames": true
@@ -55,7 +43,7 @@
   ],
   "browser_action": {
     "default_icon": "icons/icon48.png",
-    "default_popup": "pages/popup.html"
+    "default_popup": "pages/bg.html#popup"
   },
   "content_security_policy": "script-src 'self' 'unsafe-eval' https://gmail-quicktext.com; object-src 'self'"
 }

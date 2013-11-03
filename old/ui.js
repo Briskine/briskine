@@ -1,4 +1,7 @@
 $(document).ready(function(){
+    $("[data-toggle=tooltip]").tooltip();
+    $("[data-toggle=popover").popover();
+
     // populate quicktext table
     loadQuicktexts();
 
@@ -304,7 +307,7 @@ function loadQuicktexts(){
     _.each(deleteActions, function(el){
         el.addEventListener("click", deleteClicked);
     });
-    var editActions = document.querySelectorAll(".qt-edit")
+    var editActions = document.querySelectorAll(".qt-edit");
     _.each(editActions, function(el){
         el.addEventListener("click", editClicked);
     });

@@ -11,7 +11,8 @@ var Settings = {
     if (value === this.defaults[key]) {
       return this.clear(key);
     } else {
-      return window.localStorage[key] = JSON.stringify(value);
+      window.localStorage[key] = JSON.stringify(value);
+      return window.localStorage[key];
     }
   },
   clear: function(key) {
@@ -36,6 +37,7 @@ var Settings = {
     ],
     syncEnabled: false,
     autocompleteEnabled: true, // autocomplete dialog
-    tabcompleteEnabled: true // tab completion
+    tabcompleteEnabled: true, // tab completion
+    sidebarHidden: false // show or hide the sidebar 
   }
 };

@@ -12,12 +12,12 @@ function onLoad() {
             body.value = args.selection;
         }
         title.focus();
-    } else if (args.show == 'view') {
+    } else if (args && args.show == 'view') {
         form.classList.add('hide');
         //view.classList.add('show');
     }
 }
 
-document.addEventListener("DOMContentLoaded", function() {
-    onLoad();
-});
+//document.addEventListener("DOMContentLoaded", function() {
+//    onLoad();
+//});

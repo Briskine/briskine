@@ -1,0 +1,43 @@
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title">
+          <span ng-if="selectedQt.id">Edit Quicktext</span>
+          <span ng-if="!selectedQt.id">New Quicktext</span>
+        </h4>
+      </div>
+      <div class="modal-body quicktext-form ">
+        <form role="form" class="form-horizontal" name="quicktext-form0" action="">
+          <input type="hidden" id="qt-id" ng-model="selectedQt.id" /> <!-- local id -->
+          <input type="hidden" id="qt-key" ng-model="selectedQt.key" /> <!-- sync server id -->
+          <div class="form-group">
+            <label for="qt-title">Title</label>
+            <input type="text" class="form-control" id="qt-title" ng-model="selectedQt.title"/>
+          </div>
+          <div class="form-group">
+            <label for="qt-subject">Subject</label>
+            <input type="text" class="form-control"  id="qt-subject" ng-model="selectedQt.subject"/>
+          </div> 
+          <div class="form-group">
+            <label for="qt-shortcut">Tab Completion</label>
+            <input type="text" class="form-control"  id="qt-shortcut" ng-model="selectedQt.shortcut"/>
+          </div>
+          <div class="form-group">
+            <label for="qt-tags">Tags</label>
+            <input type="text" class="form-control"  id="qt-tags" size="50" ng-model="selectedQt.tags"/>
+            <p class="help-block"> Comma separated</span>
+        </div>
+        <div class="form-group">
+          <label for="qt-body">Quicktext Template</label>
+          <textarea id="qt-body" class="form-control" cols="100" rows="10" ng-model="selectedQt.body"></textarea>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-primary" ng-click="saveQt()">Save quicktext</button>
+      or <a href="" data-dismiss="modal">Cancel</a>
+    </div>
+  </div>
+</div>
