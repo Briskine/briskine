@@ -1,4 +1,4 @@
-//This should be ran before anything else
+//This will register Chrome runtime protocols and context menus
 var onMessage = chrome.runtime.onMessage || chrome.extension.onMessage;
 onMessage.addListener(function(request, sender, sendResponse) {
     if (request.request == 'get'){

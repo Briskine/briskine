@@ -1,4 +1,4 @@
-var gqApp = angular.module('gqApp', ['ngRoute']);
+var gqApp = angular.module('gqApp', ['ngRoute', 'angular-md5']);
 
 gqApp.config(function ($routeProvider) {
     $routeProvider
@@ -16,6 +16,3 @@ gqApp.config(function ($routeProvider) {
         })
         .otherwise('/options');
 });
-
-
-

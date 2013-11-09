@@ -1,5 +1,5 @@
 // Quicktexts operations
-gqApp.service('QuicktextService', function(){
+gqApp.service('QuicktextService', function(md5){
     var self = this;
 
     self.quicktexts = function(){
@@ -22,7 +22,7 @@ gqApp.service('QuicktextService', function(){
 
     // create and try to sync
     self.create = function(qt){
-        var id = hex_md5(qt.title + qt.subject + qt.shortcut + qt.tags + qt.body);
+        var id = md5.createHash(qt.title + qt.subject + qt.shortcut + qt.tags + qt.body);
         var newQt = {
             'id': id,
             'key': qt.key,
@@ -105,7 +105,7 @@ gqApp.service('SettingsService', function(){
 });  
 
 // User Profile - check if the user is logged in. Get it's info
-gqApp.service('ProfileService', function(){
+gqApp.service('ProfileService', function(md5){
     var self = this;
 
     self.email = 'alex@gmail-quicktext.com';
@@ -115,7 +115,7 @@ gqApp.service('ProfileService', function(){
     self.expirationDate = '13/11/2014';
 
     self.gravatar = function(size){
-        return 'http://www.gravatar.com/avatar/' + hex_md5(self.email);
+        return 'http://www.gravatar.com/avatar/' + md5.createHash(self.email);
     };
     return self;
 }); 

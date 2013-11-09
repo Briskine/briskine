@@ -1,10 +1,35 @@
 module.exports = function(grunt) {
-  grunt.initConfig({
+
+// List dependencies
+deps = {
+    'bg': {
+        'js':[
+            'bower_components/jquery/jquery.js',
+            'bower_components/bootstrap/dist/js/bootstrap.min.js',
+            'bower_components/underscore/underscore.js',
+            'bower_components/underscore.string/lib/underscore.string.js',
+            'bower_components/moment/moment.js',
+
+            'bower_components/angular/angular.js',
+            'bower_components/angular-route/angular-route.js',
+            'bower_components/angular-md5/angular-md5.js',
+            'bower_components/angular-moment/angular-moment.js',
+
+            'src/background_scripts/js/*.js'
+         ],
+         'css': [
+            'bower_components/bootstrap/dist/css/bootstrap.css',   
+         ]
+    }
+};
+
+grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
+    manifest: grunt.file.readJSON('manifest.json'),
     concat: {
         bg: {
-            src: ['libs/js/*.js', 'background_scripts/js/libs/*.js', 'background_scripts/js/*.js',],
-            dest: 'background_scripts/js/_dist/gq-bg.js'
+            src: deps['bg']['js'],
+            dest: 'src/background_scripts/js/_dist/gq-bg.js'
         },
         //content: {
         //    src: ['libs/js/*js', 'content_scripts/js/*.js',],
@@ -14,7 +39,7 @@ module.exports = function(grunt) {
     jshint: {
         beforeconcat: [
             //'content_scripts/js/*.js', 
-            'background_scripts/js/*.js'
+            'src/background_scripts/js/*.js'
         ],
         afterconcat: [
             //'content_scripts/js/_dist/*.js',
@@ -25,11 +50,11 @@ module.exports = function(grunt) {
         compile: {
             options: {
                 'include css': true,
-                'paths': ['background_scripts/css/', 'content_scripts/css/'],
+                'paths': ['src/background_scripts/css/', 'src/content_scripts/css/'],
             },
             files: {
-                'background_scripts/css/_dist/gq-bg.css': 'background_scripts/css/bg.styl',
-                'content_scripts/css/_dist/gq-content.css': 'content_scripts/css/content.styl',
+                'src/background_scripts/css/_dist/gq-bg.css': 'src/background_scripts/css/bg.styl',
+                'src/content_scripts/css/_dist/gq-content.css': 'src/content_scripts/css/content.styl',
             }
         }
     },
@@ -49,16 +74,27 @@ module.exports = function(grunt) {
             },
         },
     },
-  });
+    compress: {
+        main: {
+            options: {
+                archive: '<%= pkg.name %>-<%= manifest.version %>.zip'
+            },
+            files: [
+                {src: ['manifest.json','src/**']}
+            ]
+        }
+    }
+});
 
-  grunt.loadNpmTasks('grunt-contrib-concat');
-  grunt.loadNpmTasks('grunt-contrib-jshint');
-  grunt.loadNpmTasks('grunt-contrib-stylus');
-  grunt.loadNpmTasks('grunt-contrib-watch');
+grunt.loadNpmTasks('grunt-contrib-concat');
+grunt.loadNpmTasks('grunt-contrib-jshint');
+grunt.loadNpmTasks('grunt-contrib-stylus');
+grunt.loadNpmTasks('grunt-contrib-watch');
+grunt.loadNpmTasks('grunt-contrib-compress');
 
-  // Default task(s).
-  grunt.registerTask('default', ['concat', 'jshint', 'stylus']);
-  grunt.registerTask('js', ['concat', 'jshint']);
-  grunt.registerTask('css', ['stylus']);
+// Default task(s).
+grunt.registerTask('default', ['concat', 'jshint', 'stylus']);
+grunt.registerTask('js', ['concat', 'jshint']);
+grunt.registerTask('css', ['stylus']);
 
 };
