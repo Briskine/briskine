@@ -20,3 +20,14 @@ chrome.contextMenus.create({
             "dialogwidth: 900; dialogheight: 375; resizable: yes");
     }
 });
+
+// Called when the url of a tab changes.
+function checkForValidUrl(tabId, changeInfo, tab) {
+  // Display only in gmail
+  if (tab.url.indexOf('https://mail.google.com') > -1) {
+    chrome.pageAction.show(tabId);
+  }
+};
+
+// Listen for any changes to the URL of any tab.
+chrome.tabs.onUpdated.addListener(checkForValidUrl); 

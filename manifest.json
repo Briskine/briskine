@@ -41,7 +41,8 @@
       "all_frames": true
     }
   ],
-  "browser_action": {
+  "page_action": {
+    "default_title": "Quicktext for Gmail™",  
     "default_icon": "src/icons/icon48.png",
     "default_popup": "src/pages/bg.html#popup"
   },
