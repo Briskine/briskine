@@ -34367,6 +34367,17 @@ chrome.contextMenus.create({
     }
 });
 
+// Called when the url of a tab changes.
+function checkForValidUrl(tabId, changeInfo, tab) {
+  // Display only in gmail
+  if (tab.url.indexOf('https://mail.google.com') > -1) {
+    chrome.pageAction.show(tabId);
+  }
+};
+
+// Listen for any changes to the URL of any tab.
+chrome.tabs.onUpdated.addListener(checkForValidUrl); 
+
 function onLoad() {
     var args = window.dialogArguments;
     var form = document.querySelector("#quicktext-form");
