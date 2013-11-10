@@ -34370,7 +34370,7 @@ chrome.contextMenus.create({
 // Called when the url of a tab changes.
 function checkForValidUrl(tabId, changeInfo, tab) {
     // Display only in gmail
-    if (/^https?://mail.google.com/.test(tab.url) > -1) {
+    if (/^https?:\/\/mail.google.com/.test(tab.url) > -1) {
         chrome.pageAction.show(tabId);
     }
 };
