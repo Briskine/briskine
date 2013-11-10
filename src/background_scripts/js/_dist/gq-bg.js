@@ -34369,10 +34369,10 @@ chrome.contextMenus.create({
 
 // Called when the url of a tab changes.
 function checkForValidUrl(tabId, changeInfo, tab) {
-  // Display only in gmail
-  if (tab.url.indexOf('https://mail.google.com') > -1) {
-    chrome.pageAction.show(tabId);
-  }
+    // Display only in gmail
+    if (/^https?://mail.google.com/.test(tab.url) > -1) {
+        chrome.pageAction.show(tabId);
+    }
 };
 
 // Listen for any changes to the URL of any tab.
