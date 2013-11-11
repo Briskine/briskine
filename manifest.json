@@ -29,10 +29,20 @@
     {
       "matches": [
         "https://mail.google.com/*",
-        "https://gmail-quicktext.com/*"
+        "https://gmail-quicktext.com/*",
+        "http://localhost/gmail/*",
+        "https://localhost/gmail/*"
       ],
       "js": [
-        "src/content_scripts/js/_dist/gq-content.js"
+        // "src/content_scripts/js/_dist/gq-content.js"
+        "bower_components/jquery/jquery.js",
+        "bower_components/underscore/underscore.js",
+        "bower_components/underscore.string/dist/underscore.string.min.js",
+        "src/content_scripts/js/completion.js",
+        "src/content_scripts/js/handlers.js",
+        "src/content_scripts/js/keyboard.js",
+        "src/content_scripts/js/main.js",
+        "src/content_scripts/js/utils.js"
       ],
       "css": [
         "src/content_scripts/css/_dist/gq-content.css"
@@ -42,7 +52,7 @@
     }
   ],
   "page_action": {
-    "default_title": "Quicktext for Gmail™",  
+    "default_title": "Quicktext for Gmail™",
     "default_icon": "src/icons/icon48.png",
     "default_popup": "src/pages/bg.html#/popup"
   },
