@@ -11,8 +11,8 @@ gqApp.config(function ($routeProvider) {
             templateUrl: 'views/options.html'
         })
         .when('/popup', {
-            controller: 'OptionsCtrl',
-            templateUrl: 'views/options.html'
+            controller: 'PopupCtrl',
+            templateUrl: 'views/popup.html'
         })
         .otherwise('/options');
 });

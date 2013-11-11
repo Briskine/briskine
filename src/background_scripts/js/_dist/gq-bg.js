@@ -34234,7 +34234,7 @@ angular.module('angular-md5', [])
     };
   }]);
 
-/* angular-moment.js / v0.5.0 / (c) 2013 Uri Shaked / MIT Licence */
+/* angular-moment.js / v0.5.1 / (c) 2013 Uri Shaked / MIT Licence */
 
 angular.module('angularMoment', [])
 	.constant('amTimeAgoConfig', { withoutSuffix: false })
@@ -34323,6 +34323,17 @@ angular.module('angularMoment', [])
 
 			return $window.moment(value).format(format);
 		};
+	}]).filter('amDurationFormat', ['$window', function ($window) {
+		'use strict';
+
+		return function (value, format, suffix) {
+			if (typeof value === 'undefined' || value === null) {
+				return '';
+			}
+			
+			// else assume the given value is already a duration in a format (miliseconds, etc)
+			return $window.moment.duration(value, format).humanize(suffix);
+		};
 	}]);
 
 var gqApp = angular.module('gqApp', ['ngRoute', 'angular-md5']);
@@ -34338,8 +34349,8 @@ gqApp.config(function ($routeProvider) {
             templateUrl: 'views/options.html'
         })
         .when('/popup', {
-            controller: 'OptionsCtrl',
-            templateUrl: 'views/options.html'
+            controller: 'PopupCtrl',
+            templateUrl: 'views/popup.html'
         })
         .otherwise('/options');
 });
@@ -34373,7 +34384,7 @@ function checkForValidUrl(tabId, changeInfo, tab) {
     if (/^https?:\/\/mail.google.com/.test(tab.url) > -1) {
         chrome.pageAction.show(tabId);
     }
-};
+}
 
 // Listen for any changes to the URL of any tab.
 chrome.tabs.onUpdated.addListener(checkForValidUrl); 
@@ -34454,29 +34465,22 @@ gqApp.filter('tagFilter', function(QuicktextService){
 
 
 gqApp.controller('OptionsCtrl', function($scope, QuicktextService, SettingsService, ProfileService) {
-    var defaults = {
-        'id': '',
-        'key': '',
-        'title': '',
-        'subject': '',
-        'shortcut': '',
-        'tags': '',
-        'body': '',
-    };
-
-    // update this every time there is a change to the list of quicktexts
-    // having a function instead throws an infinite loop in angular for some
-    // reason
-    //
-    // XXX: search for a solution
-    $scope.quicktexts = QuicktextService.quicktexts();
-    $scope.tags = QuicktextService.allTags();
+    $scope.quicktexts = [];
+    $scope.tags = [];
     $scope.filterTags = [];
-    $scope.sidebarHidden = SettingsService.get('sidebarHidden');
+
+    QuicktextService.quicktexts().then(function(response){
+        $scope.quicktexts = response; 
+    }); 
+
+    QuicktextService.allTags().then(function(response){
+        $scope.tags = response;
+    });
 
     $scope.profile = ProfileService;
     $scope.settings = SettingsService;
 
+    $scope.sidebarHidden = SettingsService.get('sidebarHidden');
     $scope.tabcompleteEnabled = SettingsService.get('tabcompleteEnabled');
     $scope.autocompleteEnabled = SettingsService.get('autocompleteEnabled');
 
@@ -34487,10 +34491,21 @@ gqApp.controller('OptionsCtrl', function($scope, QuicktextService, SettingsServi
 
     // Show the form for adding a new quicktext or creating one
     $scope.showForm = function(id){
-        if (!id){ // new qt
+        var defaults = {
+            'id': '', 
+            'key': '', 
+            'subject': '', 
+            'shortcut': '', 
+            'title': '', 
+            'tags': '', 
+            'body': ''
+        }; 
+        if (!this.quicktext){ // new qt
             $scope.selectedQt = angular.copy(defaults);
         } else { // update qt
-            $scope.selectedQt = QuicktextService.get(id);
+            QuicktextService.get(this.quicktext.id).then(function(r){
+                $scope.selectedQt = angular.copy(r);
+            });
         }
 
         $('.modal').modal();
@@ -34501,9 +34516,9 @@ gqApp.controller('OptionsCtrl', function($scope, QuicktextService, SettingsServi
 
     // Delete a quicktext. This operation should first delete from the localStorage
     // then it should imedially go to the service and delete on the server
-    $scope.deleteQt = function(id){
-        QuicktextService.delete(id);
-        $scope.quicktexts = QuicktextService.quicktexts(); 
+    $scope.deleteQt = function(){
+        QuicktextService.delete(this.quicktext.id);
+        QuicktextService.quicktexts().then(function(r){$scope.quicktexts = r;}); 
     };
 
     // Delete all quicktexts. This will not delete the quicktexts on the server side
@@ -34512,7 +34527,7 @@ gqApp.controller('OptionsCtrl', function($scope, QuicktextService, SettingsServi
         if (r === true){
             QuicktextService.deleteAll();
         }
-        $scope.quicktexts = QuicktextService.quicktexts(); 
+        QuicktextService.quicktexts().then(function(r){$scope.quicktexts = r;}); 
     };
 
     // Save a quicktext, perform some checks before
@@ -34529,13 +34544,11 @@ gqApp.controller('OptionsCtrl', function($scope, QuicktextService, SettingsServi
         if ($scope.selectedQt.id) {
             QuicktextService.update($scope.selectedQt);
         } else {
-            // generate a new id
-        
             QuicktextService.create($scope.selectedQt);
         }
         // hide teh modal
         $('.modal').modal('hide');
-        $scope.quicktexts = QuicktextService.quicktexts(); 
+        QuicktextService.quicktexts().then(function(r){$scope.quicktexts = r;}); 
     };
 
     $scope.toggleFilterTag = function(tag){
@@ -34554,6 +34567,21 @@ gqApp.controller('OptionsCtrl', function($scope, QuicktextService, SettingsServi
     };
 });
 
+gqApp.controller('PopupCtrl', function($scope, QuicktextService) {
+    $scope.quicktexts = [];
+    $scope.tags = [];
+    $scope.filterTags = [];
+
+    QuicktextService.quicktexts().then(function(response){
+        $scope.quicktexts = response; 
+    }); 
+
+    QuicktextService.allTags().then(function(response){
+        $scope.tags = response;
+    });
+});
+ 
+/*
 document.addEventListener('DOMContentLoaded', function () {
     $("body").addClass('ispopup');
     $("#quicktexts-table").addClass("table-hover");
@@ -34598,67 +34626,84 @@ function insertQuicktext(id){
         chrome.tabs.sendMessage(tab.id, {"action": "insert", "id": id}, function(response) {});
     });
 }
+*/
+
+/*jshint multistr: true */
 
 // Quicktexts operations
-gqApp.service('QuicktextService', function(md5){
+gqApp.service('QuicktextService', function($q, md5){
     var self = this;
 
+    self.db = openDatabase('qt', '1.0.0', '', 2 * 1024 * 1024);
+    self.db.transaction(function (tx) {
+        tx.executeSql('CREATE TABLE quicktext (\
+                id INTEGER PRIMARY KEY AUTOINCREMENT,\
+                key VARCHAR(50) DEFAULT "",\
+                title VARCHAR(250) NOT NULL,\
+                shortcut VARCHAR(250) DEFAULT "",\
+                subject TEXT DEFAULT "",\
+                tags TEXT DEFAULT "",\
+                body TEXT DEFAULT "");');
+        tx.executeSql('INSERT INTO quicktext (title, shortcut, body) VALUES (\
+                "Say Hello", "hello", "Hello <%= to[0].first_name %>,\n")');
+    });
+
     self.quicktexts = function(){
-        return Settings.get('quicktexts');
+        var deferred = $q.defer();
+        self.db.transaction(function(tx){
+            tx.executeSql("SELECT * FROM quicktext", [], function(tx, res) {
+                var len = res.rows.length, i;
+                var list = [];
+                for (i = 0; i < len; i++) {
+                    list.push(res.rows.item(i));
+                }
+                deferred.resolve(list);
+            });
+        });
+        return deferred.promise;
     };
 
     // get quicktext object given an id or null
-    self.get = function(id){
-        var found;
-        if (id) {
-            _.each(Settings.get('quicktexts'), function(qt){
-                if (qt.id == id) {
-                    found = qt;
-                    return false; // return false to stop the loop
-                }
+    self.get = function(id) {
+        var deferred = $q.defer();
+        self.db.transaction(function(tx){
+            tx.executeSql("SELECT * FROM quicktext WHERE id = ?", [id], function(tx, res) {
+                deferred.resolve(res.rows.item(0));
             });
-        }
-        return found;
+        });
+        return deferred.promise;
     };
 
     // create and try to sync
     self.create = function(qt){
-        var id = md5.createHash(qt.title + qt.subject + qt.shortcut + qt.tags + qt.body);
-        var newQt = {
-            'id': id,
-            'key': qt.key,
-            'title': qt.title,
-            'subject': qt.subject,
-            'shortcut': qt.shortcut,
-            'tags': qt.tags,
-            'body': qt.body,
-        };
-        var quicktexts = Settings.get('quicktexts');
-        quicktexts.push(newQt);
-        Settings.set('quicktexts', quicktexts);
+        self.db.transaction(function(tx){
+            tx.executeSql("INSERT INTO quicktext (key, title, subject, shortcut, tags, body) VALUES (?, ?, ?, ?, ?, ?)", [
+                qt.key, qt.title, qt.subject, qt.shortcut, qt.tags, qt.body
+            ]);
+        });
     };
 
     // update a quicktext and try to sync
-    self.update = function(newQt){
-        Settings.set('quicktexts', _.map(Settings.get('quicktexts'), function(qt){
-            if (qt.id === newQt.id){
-                return newQt;
-            }
-            return qt;
-        }));
+    self.update = function(qt){
+        self.db.transaction(function(tx){
+            tx.executeSql("UPDATE quicktext SET key = ?, title = ?, subject = ?, shortcut = ?, tags = ?, body = ? WHERE id = ?", [
+                qt.key, qt.title, qt.subject, qt.shortcut, qt.tags, qt.body, qt.id
+            ]);
+        }); 
     };
- 
 
     // delete a quicktext and try to sync
     self.delete = function(id){
-        Settings.set('quicktexts', _.filter(Settings.get('quicktexts'), function(qt){
-            return qt.id != id;
-        }));
+        self.db.transaction(function(tx){
+            tx.executeSql("DELETE FROM  quicktext WHERE id =  ?", [id]);
+        });
     };
 
     // delete all but don't delete from server
     self.deleteAll = function(){
-        Settings.set('quicktexts', []);
+        self.db.transaction(function(tx){
+            tx.executeSql("DELETE FROM quicktext");
+        }); 
     };
 
 
@@ -34673,23 +34718,26 @@ gqApp.service('QuicktextService', function(md5){
 
     // get all tags
     self.allTags = function(){
-        tagsCount = {};
-        _.each(Settings.get('quicktexts'), function(qt){
-            _.each(qt.tags.split(","), function(tag){
-                tag = tag.replace(/ /g, "");
-                if (!tag) {
-                    return;
-                }
-                if (!tagsCount[tag]){
-                    tagsCount[tag] = 1;
-                } else {
-                    tagsCount[tag]++;
-                }
-            });      
+        var deferred = $q.defer();
+        self.quicktexts().then(function(quicktexts){
+            var tagsCount = {};
+            _.each(quicktexts, function(qt){
+                _.each(qt.tags.split(","), function(tag){
+                    tag = tag.replace(/ /g, "");
+                    if (!tag) {
+                        return;
+                    }
+                    if (!tagsCount[tag]){
+                        tagsCount[tag] = 1;
+                    } else {
+                        tagsCount[tag]++;
+                    }
+                });      
+            }); 
+            deferred.resolve(tagsCount);
         });
-        return tagsCount;
+        return deferred.promise;
     };
-
     return self;
 });
 
@@ -34723,44 +34771,33 @@ gqApp.service('ProfileService', function(md5){
 
 // Settings
 var Settings = {
-  get: function(key) {
-    if (key in window.localStorage) {
-      return JSON.parse(window.localStorage[key]);
-    } else {
-      return this.defaults[key];
+    get: function(key) {
+        if (key in window.localStorage) {
+            return JSON.parse(window.localStorage[key]);
+        } else {
+            return this.defaults[key];
+        }
+    },
+    set: function(key, value) {
+        if (value === this.defaults[key]) {
+            return this.clear(key);
+        } else {
+            window.localStorage[key] = JSON.stringify(value);
+            return window.localStorage[key];
+        }
+    },
+    clear: function(key) {
+        return delete window.localStorage[key];
+    },
+    has: function(key) {
+        return key in window.localStorage;
+    },
+    defaults: {
+        baseURL: "https://gmail-quicktext.com/",
+        apiBaseURL: "https://gmail-quicktext.com/api/1/",
+        syncEnabled: false,
+        autocompleteEnabled: true, // autocomplete dialog
+        tabcompleteEnabled: true, // tab completion
+        sidebarHidden: false // show or hide the sidebar 
     }
-  },
-  set: function(key, value) {
-    if (value === this.defaults[key]) {
-      return this.clear(key);
-    } else {
-      window.localStorage[key] = JSON.stringify(value);
-      return window.localStorage[key];
-    }
-  },
-  clear: function(key) {
-    return delete window.localStorage[key];
-  },
-  has: function(key) {
-    return key in window.localStorage;
-  },
-  defaults: {
-    baseURL: "https://gmail-quicktext.com/",
-    apiBaseURL: "https://gmail-quicktext.com/api/1/",
-    quicktexts: [
-      {
-          "id": "a0e29d8c0ab9e2fa6ea8b53cf0a9b5d2", // md5 unique identifier
-          "subject": "",
-          "title": "Insert 'Hello Name,'",
-          "shortcut": "hello",
-          "tags": "",
-          // since there can be multiple to addresses we'll take just the first one.
-          "body": "Hello <%= to[0].first_name %>,"
-      }
-    ],
-    syncEnabled: false,
-    autocompleteEnabled: true, // autocomplete dialog
-    tabcompleteEnabled: true, // tab completion
-    sidebarHidden: false // show or hide the sidebar 
-  }
 };

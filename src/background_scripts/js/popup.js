@@ -1,3 +1,18 @@
+gqApp.controller('PopupCtrl', function($scope, QuicktextService) {
+    $scope.quicktexts = [];
+    $scope.tags = [];
+    $scope.filterTags = [];
+
+    QuicktextService.quicktexts().then(function(response){
+        $scope.quicktexts = response; 
+    }); 
+
+    QuicktextService.allTags().then(function(response){
+        $scope.tags = response;
+    });
+});
+ 
+/*
 document.addEventListener('DOMContentLoaded', function () {
     $("body").addClass('ispopup');
     $("#quicktexts-table").addClass("table-hover");
@@ -42,3 +57,4 @@ function insertQuicktext(id){
         chrome.tabs.sendMessage(tab.id, {"action": "insert", "id": id}, function(response) {});
     });
 }
+*/

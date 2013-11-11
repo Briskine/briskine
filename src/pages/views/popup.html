@@ -1,35 +1,3 @@
-<!doctype html>
-<html ng-app>
-<head>
-  <meta http-equiv="content-type" content="text/html; charset=utf-8">
-  <title></title>
-  <script src="../background_scripts/js/_dist/gq-bg.js"></script>
-  <link href="../background_scripts/css/_dist/gq-bg.css" rel="stylesheet" type="text/css" media="screen" charset="utf-8">
-</head>
-<body>
-<div id="wrapper">
-  
-<div id="popup-container">
-  <input type="text" id="search" name="search" value="" placeholder="Search quicktexts" />
-  <div id="quicktexts-table-container">
-  <div class="quicktexts-filters"></div>
-<table id="quicktexts-table" class="table table-bordered">
-  <thead> 
-    <tr>
-      <th class="title-cell">Title</th>
-      <th class="subject-cell">Subject</th>
-      <th class="shortcut-cell">Shortcut</th>
-      <th class="tags-cell">Tags</th>
-      <th class="body-cell">Quicktext exerpt</th>
-      <th class="edit-cell">Edit</th>
-      <th class="delete-cell">Delete</th>
-    </tr>
-  </thead>
-  <tbody></tbody>
-</table> 
-  </div>
+<div class="container">
+  <div ng-include="'includes/table.html'"></div>
 </div>
-
-</div>
-</body>
-</html> 

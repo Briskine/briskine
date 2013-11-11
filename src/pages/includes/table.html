@@ -38,8 +38,8 @@
       <td>{{quicktext.tags}}</td>
       <td title="{{quicktext.body}}" ng-bind-html="quicktext.body | truncate:100 | newlines | safe"></td>
       <td>
-        <button class="btn btn-primary btn-xs edit-button" ng-click="showForm('{{quicktext.id}}')">edit</button>
-        <button class="btn btn-default btn-xs delete-button" ng-click="deleteQt('{{quicktext.id}}')">delete</button>
+        <button class="btn btn-primary btn-xs edit-button" ng-click="showForm()">edit</button>
+        <button class="btn btn-default btn-xs delete-button" ng-click="deleteQt()">delete</button>
       </td>
     </tr> 
   </tbody>

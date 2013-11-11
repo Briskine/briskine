@@ -16,7 +16,7 @@
       "src/background_scripts/css/_dist/gq-bg.css"
     ]
   },
-  "options_page": "src/pages/bg.html#options",
+  "options_page": "src/pages/bg.html#/options",
   "permissions": [
     "https://mail.google.com/*",
     "https://gmail-quicktext.com/*",
@@ -44,7 +44,7 @@
   "page_action": {
     "default_title": "Quicktext for Gmail™",  
     "default_icon": "src/icons/icon48.png",
-    "default_popup": "src/pages/bg.html#popup"
+    "default_popup": "src/pages/bg.html#/popup"
   },
   "content_security_policy": "script-src 'self' 'unsafe-eval' https://gmail-quicktext.com; object-src 'self'"
 }

@@ -1,63 +1,79 @@
+/*jshint multistr: true */
+
 // Quicktexts operations
-gqApp.service('QuicktextService', function(md5){
+gqApp.service('QuicktextService', function($q, md5){
     var self = this;
 
+    self.db = openDatabase('qt', '1.0.0', '', 2 * 1024 * 1024);
+    self.db.transaction(function (tx) {
+        tx.executeSql('CREATE TABLE quicktext (\
+                id INTEGER PRIMARY KEY AUTOINCREMENT,\
+                key VARCHAR(50) DEFAULT "",\
+                title VARCHAR(250) NOT NULL,\
+                shortcut VARCHAR(250) DEFAULT "",\
+                subject TEXT DEFAULT "",\
+                tags TEXT DEFAULT "",\
+                body TEXT DEFAULT "");');
+        tx.executeSql('INSERT INTO quicktext (title, shortcut, body) VALUES (\
+                "Say Hello", "hello", "Hello <%= to[0].first_name %>,\n")');
+    });
+
     self.quicktexts = function(){
-        return Settings.get('quicktexts');
+        var deferred = $q.defer();
+        self.db.transaction(function(tx){
+            tx.executeSql("SELECT * FROM quicktext", [], function(tx, res) {
+                var len = res.rows.length, i;
+                var list = [];
+                for (i = 0; i < len; i++) {
+                    list.push(res.rows.item(i));
+                }
+                deferred.resolve(list);
+            });
+        });
+        return deferred.promise;
     };
 
     // get quicktext object given an id or null
-    self.get = function(id){
-        var found;
-        if (id) {
-            _.each(Settings.get('quicktexts'), function(qt){
-                if (qt.id == id) {
-                    found = qt;
-                    return false; // return false to stop the loop
-                }
+    self.get = function(id) {
+        var deferred = $q.defer();
+        self.db.transaction(function(tx){
+            tx.executeSql("SELECT * FROM quicktext WHERE id = ?", [id], function(tx, res) {
+                deferred.resolve(res.rows.item(0));
             });
-        }
-        return found;
+        });
+        return deferred.promise;
     };
 
     // create and try to sync
     self.create = function(qt){
-        var id = md5.createHash(qt.title + qt.subject + qt.shortcut + qt.tags + qt.body);
-        var newQt = {
-            'id': id,
-            'key': qt.key,
-            'title': qt.title,
-            'subject': qt.subject,
-            'shortcut': qt.shortcut,
-            'tags': qt.tags,
-            'body': qt.body,
-        };
-        var quicktexts = Settings.get('quicktexts');
-        quicktexts.push(newQt);
-        Settings.set('quicktexts', quicktexts);
+        self.db.transaction(function(tx){
+            tx.executeSql("INSERT INTO quicktext (key, title, subject, shortcut, tags, body) VALUES (?, ?, ?, ?, ?, ?)", [
+                qt.key, qt.title, qt.subject, qt.shortcut, qt.tags, qt.body
+            ]);
+        });
     };
 
     // update a quicktext and try to sync
-    self.update = function(newQt){
-        Settings.set('quicktexts', _.map(Settings.get('quicktexts'), function(qt){
-            if (qt.id === newQt.id){
-                return newQt;
-            }
-            return qt;
-        }));
+    self.update = function(qt){
+        self.db.transaction(function(tx){
+            tx.executeSql("UPDATE quicktext SET key = ?, title = ?, subject = ?, shortcut = ?, tags = ?, body = ? WHERE id = ?", [
+                qt.key, qt.title, qt.subject, qt.shortcut, qt.tags, qt.body, qt.id
+            ]);
+        }); 
     };
- 
 
     // delete a quicktext and try to sync
     self.delete = function(id){
-        Settings.set('quicktexts', _.filter(Settings.get('quicktexts'), function(qt){
-            return qt.id != id;
-        }));
+        self.db.transaction(function(tx){
+            tx.executeSql("DELETE FROM  quicktext WHERE id =  ?", [id]);
+        });
     };
 
     // delete all but don't delete from server
     self.deleteAll = function(){
-        Settings.set('quicktexts', []);
+        self.db.transaction(function(tx){
+            tx.executeSql("DELETE FROM quicktext");
+        }); 
     };
 
 
@@ -72,23 +88,26 @@ gqApp.service('QuicktextService', function(md5){
 
     // get all tags
     self.allTags = function(){
-        tagsCount = {};
-        _.each(Settings.get('quicktexts'), function(qt){
-            _.each(qt.tags.split(","), function(tag){
-                tag = tag.replace(/ /g, "");
-                if (!tag) {
-                    return;
-                }
-                if (!tagsCount[tag]){
-                    tagsCount[tag] = 1;
-                } else {
-                    tagsCount[tag]++;
-                }
-            });      
+        var deferred = $q.defer();
+        self.quicktexts().then(function(quicktexts){
+            var tagsCount = {};
+            _.each(quicktexts, function(qt){
+                _.each(qt.tags.split(","), function(tag){
+                    tag = tag.replace(/ /g, "");
+                    if (!tag) {
+                        return;
+                    }
+                    if (!tagsCount[tag]){
+                        tagsCount[tag] = 1;
+                    } else {
+                        tagsCount[tag]++;
+                    }
+                });      
+            }); 
+            deferred.resolve(tagsCount);
         });
-        return tagsCount;
+        return deferred.promise;
     };
-
     return self;
 });
 

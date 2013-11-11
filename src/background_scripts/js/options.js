@@ -1,27 +1,20 @@
 gqApp.controller('OptionsCtrl', function($scope, QuicktextService, SettingsService, ProfileService) {
-    var defaults = {
-        'id': '',
-        'key': '',
-        'title': '',
-        'subject': '',
-        'shortcut': '',
-        'tags': '',
-        'body': '',
-    };
-
-    // update this every time there is a change to the list of quicktexts
-    // having a function instead throws an infinite loop in angular for some
-    // reason
-    //
-    // XXX: search for a solution
-    $scope.quicktexts = QuicktextService.quicktexts();
-    $scope.tags = QuicktextService.allTags();
+    $scope.quicktexts = [];
+    $scope.tags = [];
     $scope.filterTags = [];
-    $scope.sidebarHidden = SettingsService.get('sidebarHidden');
+
+    QuicktextService.quicktexts().then(function(response){
+        $scope.quicktexts = response; 
+    }); 
+
+    QuicktextService.allTags().then(function(response){
+        $scope.tags = response;
+    });
 
     $scope.profile = ProfileService;
     $scope.settings = SettingsService;
 
+    $scope.sidebarHidden = SettingsService.get('sidebarHidden');
     $scope.tabcompleteEnabled = SettingsService.get('tabcompleteEnabled');
     $scope.autocompleteEnabled = SettingsService.get('autocompleteEnabled');
 
@@ -32,10 +25,21 @@ gqApp.controller('OptionsCtrl', function($scope, QuicktextService, SettingsServi
 
     // Show the form for adding a new quicktext or creating one
     $scope.showForm = function(id){
-        if (!id){ // new qt
+        var defaults = {
+            'id': '', 
+            'key': '', 
+            'subject': '', 
+            'shortcut': '', 
+            'title': '', 
+            'tags': '', 
+            'body': ''
+        }; 
+        if (!this.quicktext){ // new qt
             $scope.selectedQt = angular.copy(defaults);
         } else { // update qt
-            $scope.selectedQt = QuicktextService.get(id);
+            QuicktextService.get(this.quicktext.id).then(function(r){
+                $scope.selectedQt = angular.copy(r);
+            });
         }
 
         $('.modal').modal();
@@ -46,9 +50,9 @@ gqApp.controller('OptionsCtrl', function($scope, QuicktextService, SettingsServi
 
     // Delete a quicktext. This operation should first delete from the localStorage
     // then it should imedially go to the service and delete on the server
-    $scope.deleteQt = function(id){
-        QuicktextService.delete(id);
-        $scope.quicktexts = QuicktextService.quicktexts(); 
+    $scope.deleteQt = function(){
+        QuicktextService.delete(this.quicktext.id);
+        QuicktextService.quicktexts().then(function(r){$scope.quicktexts = r;}); 
     };
 
     // Delete all quicktexts. This will not delete the quicktexts on the server side
@@ -57,7 +61,7 @@ gqApp.controller('OptionsCtrl', function($scope, QuicktextService, SettingsServi
         if (r === true){
             QuicktextService.deleteAll();
         }
-        $scope.quicktexts = QuicktextService.quicktexts(); 
+        QuicktextService.quicktexts().then(function(r){$scope.quicktexts = r;}); 
     };
 
     // Save a quicktext, perform some checks before
@@ -74,13 +78,11 @@ gqApp.controller('OptionsCtrl', function($scope, QuicktextService, SettingsServi
         if ($scope.selectedQt.id) {
             QuicktextService.update($scope.selectedQt);
         } else {
-            // generate a new id
-        
             QuicktextService.create($scope.selectedQt);
         }
         // hide teh modal
         $('.modal').modal('hide');
-        $scope.quicktexts = QuicktextService.quicktexts(); 
+        QuicktextService.quicktexts().then(function(r){$scope.quicktexts = r;}); 
     };
 
     $scope.toggleFilterTag = function(tag){
