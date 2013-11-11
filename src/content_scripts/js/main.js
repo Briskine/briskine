@@ -115,6 +115,4 @@ GQ.initializeOnDomReady = function(){
     document.addEventListener("blur", GQ.onBlurCapturePhase, true);
 }
 
-$(document).ready(function(){
-    GQ.initializeOnDomReady();
-});
+GQ.initializeOnDomReady();
