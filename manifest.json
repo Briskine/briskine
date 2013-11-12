@@ -35,14 +35,12 @@
       ],
       "js": [
         // "src/content_scripts/js/_dist/gq-content.js"
-        "bower_components/zepto/zepto.min.js",
+        "bower_components/zepto/zepto.js",
         "bower_components/underscore/underscore.js",
         "bower_components/underscore.string/dist/underscore.string.min.js",
-        "src/content_scripts/js/completion.js",
-        "src/content_scripts/js/handlers.js",
-        "src/content_scripts/js/keyboard.js",
-        "src/content_scripts/js/main.js",
-        "src/content_scripts/js/utils.js"
+        "src/content_scripts/js/patterns.js",
+        "src/content_scripts/js/index.js",
+        "src/content_scripts/js/events.js"
       ],
       "css": [
         "src/content_scripts/css/_dist/gq-content.css"
