@@ -34359,8 +34359,15 @@ gqApp.config(function ($routeProvider) {
 var onMessage = chrome.runtime.onMessage || chrome.extension.onMessage;
 onMessage.addListener(function(request, sender, sendResponse) {
     if (request.request == 'get'){
-        sendResponse(Settings.get(request.data));
+        if (!document.querySelector('body[class=ng-scope]')) {
+            angular.bootstrap('body', ['gqApp']);
+        }
+        var injector = angular.element('body').injector();
+        injector.get('QuicktextService').quicktexts().then(function(res){
+            sendResponse(res);
+        });
     }
+    return true;
 });
 
 // Context menus
@@ -34381,7 +34388,7 @@ chrome.contextMenus.create({
 // Called when the url of a tab changes.
 function checkForValidUrl(tabId, changeInfo, tab) {
     // Display only in gmail
-    if (/^https?:\/\/mail.google.com/.test(tab.url) > -1) {
+    if (/^https?:\/\/mail.google.com/.test(tab.url)) {
         chrome.pageAction.show(tabId);
     }
 }
@@ -34465,6 +34472,7 @@ gqApp.filter('tagFilter', function(QuicktextService){
 
 
 gqApp.controller('OptionsCtrl', function($scope, QuicktextService, SettingsService, ProfileService) {
+    $scope.controller = "OptionsCtrl";
     $scope.quicktexts = [];
     $scope.tags = [];
     $scope.filterTags = [];
@@ -34567,7 +34575,8 @@ gqApp.controller('OptionsCtrl', function($scope, QuicktextService, SettingsServi
     };
 });
 
-gqApp.controller('PopupCtrl', function($scope, QuicktextService) {
+gqApp.controller('PopupCtrl', function($scope, $timeout, QuicktextService) {
+    $scope.controller = "PopupCtrl";
     $scope.quicktexts = [];
     $scope.tags = [];
     $scope.filterTags = [];
@@ -34579,6 +34588,10 @@ gqApp.controller('PopupCtrl', function($scope, QuicktextService) {
     QuicktextService.allTags().then(function(response){
         $scope.tags = response;
     });
+
+    $timeout(function() {
+        $('body').hide().show();
+    }, 100);
 });
  
 /*

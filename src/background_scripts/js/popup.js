@@ -1,4 +1,5 @@
-gqApp.controller('PopupCtrl', function($scope, QuicktextService) {
+gqApp.controller('PopupCtrl', function($scope, $timeout, QuicktextService) {
+    $scope.controller = "PopupCtrl";
     $scope.quicktexts = [];
     $scope.tags = [];
     $scope.filterTags = [];
@@ -10,6 +11,10 @@ gqApp.controller('PopupCtrl', function($scope, QuicktextService) {
     QuicktextService.allTags().then(function(response){
         $scope.tags = response;
     });
+
+    $timeout(function() {
+        $('body').hide().show();
+    }, 100);
 });
  
 /*

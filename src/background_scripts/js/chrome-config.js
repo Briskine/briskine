@@ -2,8 +2,15 @@
 var onMessage = chrome.runtime.onMessage || chrome.extension.onMessage;
 onMessage.addListener(function(request, sender, sendResponse) {
     if (request.request == 'get'){
-        sendResponse(Settings.get(request.data));
+        if (!document.querySelector('body[class=ng-scope]')) {
+            angular.bootstrap('body', ['gqApp']);
+        }
+        var injector = angular.element('body').injector();
+        injector.get('QuicktextService').quicktexts().then(function(res){
+            sendResponse(res);
+        });
     }
+    return true;
 });
 
 // Context menus
@@ -24,7 +31,7 @@ chrome.contextMenus.create({
 // Called when the url of a tab changes.
 function checkForValidUrl(tabId, changeInfo, tab) {
     // Display only in gmail
-    if (/^https?:\/\/mail.google.com/.test(tab.url) > -1) {
+    if (/^https?:\/\/mail.google.com/.test(tab.url)) {
         chrome.pageAction.show(tabId);
     }
 }

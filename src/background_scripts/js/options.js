@@ -1,4 +1,5 @@
 gqApp.controller('OptionsCtrl', function($scope, QuicktextService, SettingsService, ProfileService) {
+    $scope.controller = "OptionsCtrl";
     $scope.quicktexts = [];
     $scope.tags = [];
     $scope.filterTags = [];
