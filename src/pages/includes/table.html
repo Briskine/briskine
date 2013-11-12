@@ -18,8 +18,9 @@
     </span>
   </span>
 </div>
-
-<table class="table table-hover" ng-class="{'table-condensed': controller == 'PopupCtrl'}">
+<div class="clearfix"></div>
+<div id="quicktext-table-container">
+<table class="table table-hover" id="quicktext-table" ng-class="{'table-condensed': controller == 'PopupCtrl'}">
   <thead>
     <tr>
       <th>Title</th>
@@ -31,7 +32,8 @@
     </tr>
   </thead>
   <tbody>
-    <tr ng-repeat="quicktext in quicktexts | filter:searchText | tagFilter:filterTags ">
+    <tr ng-repeat="quicktext in quicktexts | filter:searchText | tagFilter:filterTags "
+      ng-class="{'active': $index === focusIndex}">
       <td>{{quicktext.title}}</td>
       <td ng-hide="controller == 'PopupCtrl'">{{quicktext.subject}}</td>
       <td>{{quicktext.shortcut}}</td>
@@ -44,3 +46,4 @@
     </tr> 
   </tbody>
 </table>
+</div>

@@ -7576,6 +7576,7 @@ td.visible-print {
 .toggle-sidebar span{font-size:20px}
 .search-table{width:320px}
 .quicktext-form{margin-left:10px;margin-right:10px}
-.quicktext-filters{margin-top:10px;margin-bottom:10px}
-#popup-container{min-width:630px;padding-top:13px;}
+.quicktext-filters{display:block;margin-top:10px;margin-bottom:10px}
+#popup-container{min-width:629px;padding-top:13px;}
 #popup-container .search-table{width:100%}
+#quicktext-table-container{height:300px;overflow-y:auto}

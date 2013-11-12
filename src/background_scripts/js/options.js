@@ -1,4 +1,4 @@
-gqApp.controller('OptionsCtrl', function($scope, QuicktextService, SettingsService, ProfileService) {
+gqApp.controller('OptionsCtrl', function($scope, $rootScope, QuicktextService, SettingsService, ProfileService) {
     $scope.controller = "OptionsCtrl";
     $scope.quicktexts = [];
     $scope.tags = [];
@@ -19,10 +19,11 @@ gqApp.controller('OptionsCtrl', function($scope, QuicktextService, SettingsServi
     $scope.tabcompleteEnabled = SettingsService.get('tabcompleteEnabled');
     $scope.autocompleteEnabled = SettingsService.get('autocompleteEnabled');
 
-    $scope.$on('$routeChangeSuccess', function () {
+    $rootScope.$on('$includeContentLoaded', function(event) {
+        $("#search-input").focus();
         $("[data-toggle=tooltip]").tooltip();
         $("[data-toggle=popover").popover();
-    }); 
+    });
 
     // Show the form for adding a new quicktext or creating one
     $scope.showForm = function(id){
