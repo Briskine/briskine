@@ -35,6 +35,7 @@
       ],
       "js": [
         // "src/content_scripts/js/_dist/gq-content.js"
+        "bower_components/zepto/zepto.min.js",
         "bower_components/underscore/underscore.js",
         "bower_components/underscore.string/dist/underscore.string.min.js",
         "src/content_scripts/js/completion.js",
