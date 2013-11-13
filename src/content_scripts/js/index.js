@@ -9,9 +9,7 @@ var App = {
   , composeElement: null  // reference to compose DOM element
   , gmailView: ''         // it may be standard or basic html
   }
-, autocomplete: {
-    active: false
-  }
+, autocomplete: {}
 , settings: {
     get: function(key, callback) {
       chrome.runtime.sendMessage({'request': 'get', 'data': key}, function(response) {
