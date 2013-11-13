@@ -24,7 +24,7 @@ chrome.contextMenus.create({
 // Called when the url of a tab changes.
 function checkForValidUrl(tabId, changeInfo, tab) {
     // Display only in gmail
-    if (/^https?:\/\/mail.google.com/.test(tab.url) > -1 || /^https?:\/\/localhost\/gmail/.test(tab.url) > -1) {
+    if (/^https?:\/\/mail.google.com/.test(tab.url) || /^https?:\/\/localhost\/gmail/.test(tab.url)) {
         chrome.pageAction.show(tabId);
     }
 }
