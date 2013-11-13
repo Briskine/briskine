@@ -40,6 +40,7 @@
         "bower_components/underscore.string/dist/underscore.string.min.js",
         "src/content_scripts/js/patterns.js",
         "src/content_scripts/js/index.js",
+        "src/content_scripts/js/autocomplete.js",
         "src/content_scripts/js/events.js"
       ],
       "css": [

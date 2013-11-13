@@ -4,15 +4,15 @@
 
 PubSub.subscribe('focus', function(action, element, gmailView) {
 	if (action === 'on') {
-		GQ.data.inCompose = true
-		GQ.data.composeElement = element
-		GQ.data.gmailView = gmailView
+		App.data.inCompose = true
+		App.data.composeElement = element
+		App.data.gmailView = gmailView
 	} else if (action === 'off') {
 		// Disable only focused areas
-		if (GQ.data.composeElement == element) {
-			GQ.data.inCompose = false
-			GQ.data.composeElement = null
-			GQ.data.gmailView = ''
+		if (App.data.composeElement == element) {
+			App.data.inCompose = false
+			App.data.composeElement = null
+			App.data.gmailView = ''
 		}
 	}
 })
@@ -21,15 +21,7 @@ PubSub.subscribe('focus', function(action, element, gmailView) {
 	Events handling
 */
 
-GQ.onKeyup = function(e) {
-	// console.log(e)
-}
-
-GQ.onKeydown = function(e) {
-	// console.log(e)
-}
-
-GQ.onFocus = function(e) {
+App.onFocus = function(e) {
 	var target = e.target
 
 	// Disable any focus as there may be only one focus on a page
@@ -43,6 +35,14 @@ GQ.onFocus = function(e) {
 	}
 }
 
-GQ.onBlur = function(e) {
+App.onBlur = function(e) {
 	PubSub.publish('focus', 'off', e.target)
+}
+
+App.onKeyDown = function(e) {
+	App.autocomplete.onKeyDown(e)
+}
+
+App.onKeyUp = function(e) {
+	App.autocomplete.onKeyUp(e)
 }

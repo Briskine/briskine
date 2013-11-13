@@ -3,21 +3,24 @@
   All declarations are done here
 */
 
-var GQ = {
+var App = {
   data: {
     inCompose: false      // true when textarea element is focused
   , composeElement: null  // reference to compose DOM element
-  , gmailView: ''         // it may be standard or basic HTML
+  , gmailView: ''         // it may be standard or basic html
+  }
+, autocomplete: {
+    active: false
   }
 }
 
-GQ.init = function() {
-  document.addEventListener("keydown", GQ.onKeydown, true);
-  document.addEventListener("keyup", GQ.onKeyup, true)
-  document.addEventListener("blur", GQ.onBlur, true);
-  document.addEventListener("focus", GQ.onFocus, true);
+App.init = function() {
+  document.addEventListener("blur", App.onBlur, true)
+  document.addEventListener("focus", App.onFocus, true)
+  document.addEventListener("keydown", App.onKeyDown, true)
+  document.addEventListener("keyup", App.onKeyUp, true)
 }
 
 $(function(){
-  GQ.init()
+  App.init()
 })
