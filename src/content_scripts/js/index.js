@@ -12,6 +12,19 @@ var App = {
 , autocomplete: {
     active: false
   }
+, settings: {
+    get: function(key, callback) {
+      chrome.runtime.sendMessage({'request': 'get', 'data': key}, function(response) {
+        callback(response)
+      })
+    }
+  // we shouldn't be able to set settings from content
+  // , set: function(key, value) {
+  //     chrome.runtime.sendMessage({'request': 'set', 'data': {key: value}}, function(response) {
+  //       callback(response)
+  //     })
+  //   }
+  }
 }
 
 App.init = function() {
