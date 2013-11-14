@@ -27,7 +27,7 @@ App.autocomplete.onKeyDown = function (e) {
   if (App.data.inCompose && e.keyCode == KEY_TAB) {
     if (App.autocomplete.isActive) {
       // Simulate closing
-      App.autocomplete.onKey(KEY_ESCAPE)
+      App.autocomplete.close()
       // Do not prevent default
     } else {
       e.preventDefault()
@@ -50,6 +50,11 @@ App.autocomplete.onKeyDown = function (e) {
   if (App.autocomplete.isActive && e.keyCode == KEY_ESCAPE) {
     e.preventDefault()
     e.stopPropagation()
+  }
+
+  // If dropdown is active but the pressed key is different from what we expect
+  if (App.autocomplete.isActive && !~[KEY_TAB, KEY_ENTER, KEY_ESCAPE, KEY_UP, KEY_DOWN].indexOf(e.keyCode)) {
+    App.autocomplete.close()
   }
 }
 
