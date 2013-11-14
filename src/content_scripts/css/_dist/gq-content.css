@@ -8,3 +8,4 @@
     .qt-dropdown li .qt-shortcut{}
 
 .qt-mirror{position:absolute;overflow:auto;white-space:pre-wrap;word-wrap:break-word;z-index:-9999}
+.qt-mirror .qt-caret{display: inline-block;}
