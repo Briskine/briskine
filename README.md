@@ -4,18 +4,17 @@ Quicktext for Gmail™
 Google Chrome plugin for Gmail for improved productivity.
 
 
-Regenerating pages
--------------------
+Developing extension
+--------------------
 
-Since we have a few html pages that essentially reuse the same html it makes
-sense to have templates. Python + Jinja2: http://jinja.pocoo.org/ is used to make that possible.
+Development is done using Grunt. So first you need to install [Node.js](http://nodejs.org/) and [Grunt](http://gruntjs.com/).
 
-Here's how it's done:
+There are available following commands:
 
-    mkvirtualenv gmail-quicktext
-    pip install -r requirements.pip
-    cd pages
-    python generate_pages.py
+* `grunt` or `grunt dev` or `grunt d` - Development mode. Creates development manifest, watches for styl files and recompiles them automatically.
+* `grunt production` or `grunt p` - Build extension.
+* `grunt test` or `grunt t` - Run tests.
+* `grunt build` or `grunt b` - Build and compress extension.
 
 Known issues
 ------------

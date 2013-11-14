@@ -1,3 +1,7 @@
+
+/* line 1 : /Users/bumbu/Development/Projects/gmail-quicktext/node_modules/grunt-contrib-stylus/node_modules/stylus/lib/functions/index.styl */
+
+/* line 256 : /Users/bumbu/Development/Projects/gmail-quicktext/bower_components/bootstrap/dist/css/bootstrap.css */
 /*!
  * Bootstrap v3.0.2 by @fat and @mdo
  * Copyright 2013 Twitter, Inc.
@@ -7096,6 +7100,8 @@ td.visible-print {
     display: none !important;
   }
 }
+
+/* line 256 : /Users/bumbu/Development/Projects/gmail-quicktext/bower_components/bootstrap/dist/css/bootstrap-theme.css */
 /*!
  * Bootstrap v3.0.2 by @fat and @mdo
  * Copyright 2013 Twitter, Inc.
@@ -7555,28 +7561,165 @@ td.visible-print {
   -webkit-box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05), 0 1px 0 rgba(255, 255, 255, 0.1);
           box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05), 0 1px 0 rgba(255, 255, 255, 0.1);
 }
-.page-content-wrapper{padding-top:35px}
-.logo-container{text-align:center}
-#sidebar-wrapper{margin-left:-250px;left:250px;width:250px;background-color:#f5f5f5;box-shadow:inset -10px 0 10px -7px #ccc;position:fixed;height:100%;overflow-y:auto;}
-#sidebar-wrapper .sidebar-nav{position:absolute;top:0;width:250px;list-style:none;margin:0;padding:0;}
-#sidebar-wrapper .sidebar-nav .sidebar-brand{text-align:center;padding-top:35px;padding-bottom:35px}
-#sidebar-wrapper .sidebar-nav li{padding:0 20px 20px 20px;}
-#sidebar-wrapper .sidebar-nav li > .section-header{padding-bottom:8px;font-size:16px;font-weight:bold;color:#777}
-#sidebar-wrapper .sidebar-footer{position:absolute;bottom:0;left:0;margin-right:20px;margin-left:20px;width:205px;}
-#sidebar-wrapper .sidebar-footer .sidebar-footer-links{text-align:center;padding-bottom:10px}
-#sidebar-wrapper .profile .profile-picture{vertical-align:middle;display:table-cell;}
-#sidebar-wrapper .profile .profile-picture img{border:2px #fff solid}
-#sidebar-wrapper .profile .profile-container{padding-left:10px;display:table-cell;vertical-align:middle}
-#sidebar-wrapper .profile .profile-name{font-size:16px;font-weight:bold}
-#sidebar-wrapper .profile .profile-email{font-size:12px}
-#sidebar-wrapper .profile .profile-extra{margin-top:7px}
-.toggle-sidebar{cursor:pointer;position:absolute;bottom:170px;background-color:#fdfdfd;padding:5px;}
-.toggle-sidebar.toggle-hide{right:0}
-.toggle-sidebar.toggle-show{left:0}
-.toggle-sidebar span{font-size:20px}
-.search-table{width:320px}
-.quicktext-form{margin-left:10px;margin-right:10px}
-.quicktext-filters{margin-top:10px;margin-bottom:10px}
-#popup-container{min-width:629px;padding-top:13px;}
-#popup-container .search-table{width:100%}
-#popup-container #quicktext-table-container{height:300px;overflow-y:auto}
+
+/* line 4 : /Users/bumbu/Development/Projects/gmail-quicktext/src/background/css/background.styl */
+.page-content-wrapper {
+  padding-top: 35px;
+}
+
+/* line 7 : /Users/bumbu/Development/Projects/gmail-quicktext/src/background/css/background.styl */
+.logo-container {
+  text-align: center;
+}
+
+/* line 10 : /Users/bumbu/Development/Projects/gmail-quicktext/src/background/css/background.styl */
+#sidebar-wrapper {
+  margin-left: -250px;
+  left: 250px;
+  width: 250px;
+  background-color: #f5f5f5;
+  box-shadow: inset -10px 0 10px -7px #ccc;
+  position: fixed;
+  height: 100%;
+  overflow-y: auto;
+}
+
+/* line 20 : /Users/bumbu/Development/Projects/gmail-quicktext/src/background/css/background.styl */
+#sidebar-wrapper .sidebar-nav {
+  position: absolute;
+  top: 0;
+  width: 250px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* line 28 : /Users/bumbu/Development/Projects/gmail-quicktext/src/background/css/background.styl */
+#sidebar-wrapper .sidebar-nav .sidebar-brand {
+  text-align: center;
+  padding-top: 35px;
+  padding-bottom: 35px;
+}
+
+/* line 33 : /Users/bumbu/Development/Projects/gmail-quicktext/src/background/css/background.styl */
+#sidebar-wrapper .sidebar-nav li {
+  padding: 0px 20px 20px 20px;
+}
+
+/* line 36 : /Users/bumbu/Development/Projects/gmail-quicktext/src/background/css/background.styl */
+#sidebar-wrapper .sidebar-nav li > .section-header {
+  padding-bottom: 8px;
+  font-size: 16px;
+  font-weight: bold;
+  color: #777;
+}
+
+/* line 42 : /Users/bumbu/Development/Projects/gmail-quicktext/src/background/css/background.styl */
+#sidebar-wrapper .sidebar-footer {
+  position: absolute;
+  bottom: 0px;
+  left: 0px;
+  margin-right: 20px;
+  margin-left: 20px;
+  width: 205px;
+}
+
+/* line 50 : /Users/bumbu/Development/Projects/gmail-quicktext/src/background/css/background.styl */
+#sidebar-wrapper .sidebar-footer .sidebar-footer-links {
+  text-align: center;
+  padding-bottom: 10px;
+}
+
+/* line 54 : /Users/bumbu/Development/Projects/gmail-quicktext/src/background/css/background.styl */
+
+/* line 55 : /Users/bumbu/Development/Projects/gmail-quicktext/src/background/css/background.styl */
+#sidebar-wrapper .profile .profile-picture {
+  vertical-align: middle;
+  display: table-cell;
+}
+
+/* line 58 : /Users/bumbu/Development/Projects/gmail-quicktext/src/background/css/background.styl */
+#sidebar-wrapper .profile .profile-picture img {
+  border: 2px #fff solid;
+}
+
+/* line 60 : /Users/bumbu/Development/Projects/gmail-quicktext/src/background/css/background.styl */
+#sidebar-wrapper .profile .profile-container {
+  padding-left: 10px;
+  display: table-cell;
+  vertical-align: middle;
+}
+
+/* line 64 : /Users/bumbu/Development/Projects/gmail-quicktext/src/background/css/background.styl */
+#sidebar-wrapper .profile .profile-name {
+  font-size: 16px;
+  font-weight: bold;
+}
+
+/* line 67 : /Users/bumbu/Development/Projects/gmail-quicktext/src/background/css/background.styl */
+#sidebar-wrapper .profile .profile-email {
+  font-size: 12px;
+}
+
+/* line 69 : /Users/bumbu/Development/Projects/gmail-quicktext/src/background/css/background.styl */
+#sidebar-wrapper .profile .profile-extra {
+  margin-top: 7px;
+}
+
+/* line 73 : /Users/bumbu/Development/Projects/gmail-quicktext/src/background/css/background.styl */
+.toggle-sidebar {
+  cursor: pointer;
+  position: absolute;
+  bottom: 170px;
+  background-color: #fdfdfd;
+  padding: 5px;
+}
+
+/* line 77 : /Users/bumbu/Development/Projects/gmail-quicktext/src/background/css/background.styl */
+.toggle-sidebar.toggle-hide {
+  right: 0px;
+}
+
+/* line 79 : /Users/bumbu/Development/Projects/gmail-quicktext/src/background/css/background.styl */
+.toggle-sidebar.toggle-show {
+  left: 0px;
+}
+
+/* line 85 : /Users/bumbu/Development/Projects/gmail-quicktext/src/background/css/background.styl */
+.toggle-sidebar span {
+  font-size: 20px;
+}
+
+/* line 88 : /Users/bumbu/Development/Projects/gmail-quicktext/src/background/css/background.styl */
+.search-table {
+  width: 320px;
+}
+
+/* line 91 : /Users/bumbu/Development/Projects/gmail-quicktext/src/background/css/background.styl */
+.quicktext-form {
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+/* line 95 : /Users/bumbu/Development/Projects/gmail-quicktext/src/background/css/background.styl */
+.quicktext-filters {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+/* line 99 : /Users/bumbu/Development/Projects/gmail-quicktext/src/background/css/background.styl */
+#popup-container {
+  min-width: 629px;
+  padding-top: 13px;
+}
+
+/* line 102 : /Users/bumbu/Development/Projects/gmail-quicktext/src/background/css/background.styl */
+#popup-container .search-table {
+  width: 100%;
+}
+
+/* line 105 : /Users/bumbu/Development/Projects/gmail-quicktext/src/background/css/background.styl */
+#popup-container #quicktext-table-container {
+  height: 300px;
+  overflow-y: auto;
+}

@@ -1,115 +1,178 @@
+'use strict';
+
 module.exports = function(grunt) {
+  // load all grunt tasks
+  require('matchdep').filterDev('grunt-*').forEach(grunt.loadNpmTasks);
 
-// List dependencies
-deps = {
-    'bg': {
-        'js':[
-            'bower_components/jquery/jquery.js',
-            'bower_components/bootstrap/dist/js/bootstrap.min.js',
-            'bower_components/underscore/underscore.js',
-            'bower_components/underscore.string/lib/underscore.string.js',
-            'bower_components/moment/moment.js',
-
-            'bower_components/angular/angular.js',
-            'bower_components/angular-route/angular-route.js',
-            'bower_components/angular-md5/angular-md5.js',
-            'bower_components/angular-moment/angular-moment.js',
-
-            'src/background_scripts/js/*.js'
-         ],
-         'css': [
-            'bower_components/bootstrap/dist/css/bootstrap.css',
-         ]
-    },
-    content: {
+  var dependencies = {
+      background: {
         js: [
-            'bower_components/jquery/jquery.js',
-            'bower_components/underscore/underscore.js',
-            'bower_components/underscore.string/lib/underscore.string.js',
+          'bower_components/jquery/jquery.js',
+          'bower_components/bootstrap/dist/js/bootstrap.min.js',
+          'bower_components/underscore/underscore.js',
+          'bower_components/underscore.string/lib/underscore.string.js',
+          'bower_components/moment/moment.js',
 
-            'src/content_scripts/js/patterns.js',
-            'src/content_scripts/js/index.js',
-            'src/content_scripts/js/autocomplete.js',
-            'src/content_scripts/js/events.js'
+          'bower_components/angular/angular.js',
+          'bower_components/angular-route/angular-route.js',
+          'bower_components/angular-md5/angular-md5.js',
+          'bower_components/angular-moment/angular-moment.js',
+
+          'src/background/js/*.js'
+         ],
+         css: [
+          'bower_components/bootstrap/dist/css/bootstrap.css',
+         ]
+      },
+      content: {
+        js: [
+          'bower_components/jquery/jquery.js',
+          'bower_components/underscore/underscore.js',
+          'bower_components/underscore.string/lib/underscore.string.js',
+
+          'src/content/js/patterns.js',
+          'src/content/js/index.js',
+          'src/content/js/autocomplete.js',
+          'src/content/js/events.js'
         ],
         css: [
-            'src/content_scripts/css/_dist/gq-content.css',
+          'src/content/css/content.css',
         ]
-    }
-};
+      }
+    };
 
-grunt.initConfig({
+  // Project configuration
+  grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
-    manifest: grunt.file.readJSON('manifest.json'),
-    concat: {
-        bg: {
-            src: deps['bg']['js'],
-            dest: 'src/background_scripts/js/_dist/gq-bg.js'
-        },
-        content: {
-           src: deps.content.js,
-           dest: 'src/content_scripts/js/_dist/gq-content.js'
+    manifestContents: grunt.file.readJSON('src/manifest.json'),
+    // TODO ad watching all files and reloading extension in browser
+    watch: {
+      stylus: {
+        files: ['src/**/*.styl', 'src/**/*.css'],
+        tasks: ['stylus:development'],
+        options: {
+          spawn: false
         }
-    },
-    jshint: {
-        beforeconcat: [
-            //'content_scripts/js/*.js',
-            'src/background_scripts/js/*.js'
-        ],
-        afterconcat: [
-            //'content_scripts/js/_dist/*.js',
-            //'background_scripts/js/_dist/*.js'
-        ],
+      }
     },
     stylus: {
-        compile: {
-            options: {
-                'include css': true,
-                'paths': ['src/background_scripts/css/', 'src/content_scripts/css/'],
-            },
-            files: {
-                'src/background_scripts/css/_dist/gq-bg.css': 'src/background_scripts/css/bg.styl',
-                'src/content_scripts/css/_dist/gq-content.css': 'src/content_scripts/css/content.styl',
-            }
+      development: {
+        options: {
+          'include css': true,
+          compress: false,
+          linenos: true
+        },
+        files: {
+          'ext/background/css/background.css': 'src/background/css/background.styl',
+          'ext/content/css/content.css': 'src/content/css/content.styl'
         }
+      },
+      production: {
+        options: {
+          'include css': true
+        },
+        files: {
+          'ext/background/css/background.css': 'src/background/css/background.styl',
+          'ext/content/css/content.css': 'src/content/css/content.styl'
+        }
+      }
     },
-    watch: {
-        scripts: {
-            files: ['**/*.js'],
-            tasks: ['concat', 'jshint'],
-            options: {
-                spawn: false,
-            },
-        },
-        styles: {
-            files: ['**/*.styl', '**/*.css'],
-            tasks: ['stylus'],
-            options: {
-                spawn: false,
-            },
-        },
+    jshint: {
+      development: [
+        'src/content/js/*.js',
+        'src/background/js/*.js'
+      ],
+      production: [
+        'ext/content/js/*.js',
+        'ext/background/js/*.js'
+      ]
+    },
+    concat: {
+      background: {
+        src: dependencies.background.js,
+        dest: 'ext/background/js/background.js'
+      },
+      content: {
+        src: dependencies.content.js,
+        dest: 'ext/content/js/content.js'
+      }
     },
     compress: {
-        main: {
-            options: {
-                archive: '<%= pkg.name %>-<%= manifest.version %>.zip'
-            },
-            files: [
-                {src: ['manifest.json','src/**']}
-            ]
-        }
+      all: {
+        options: {
+          archive: 'build/<%= pkg.name %>-<%= manifestContents.version %>.zip'
+        },
+        files: [
+          {src: ['ext/**']}
+        ]
+      }
     }
-});
+  });
 
-grunt.loadNpmTasks('grunt-contrib-concat');
-grunt.loadNpmTasks('grunt-contrib-jshint');
-grunt.loadNpmTasks('grunt-contrib-stylus');
-grunt.loadNpmTasks('grunt-contrib-watch');
-grunt.loadNpmTasks('grunt-contrib-compress');
+  grunt.registerTask('manifest:development', 'Build chrome manifest life.', function() {
+    var manifest = grunt.file.readJSON('src/manifest.json')
 
-// Default task(s).
-grunt.registerTask('default', ['concat', 'jshint', 'stylus']);
-grunt.registerTask('js', ['concat', 'jshint']);
-grunt.registerTask('css', ['stylus']);
+    // Load content script on localhost
+    manifest.content_scripts[0].matches.push('http://localhost/gmail/*')
+    manifest.content_scripts[0].matches.push('https://localhost/gmail/*')
 
+    // Change content scripts
+    manifest.content_scripts[0].js = dependencies.content.js
+    manifest.content_scripts[0].css = dependencies.content.css
+
+    // Change background scripts
+    manifest.background.scripts = dependencies.background.js
+    manifest.background.styles = dependencies.background.css
+
+    grunt.file.write('ext/manifest.json', JSON.stringify(manifest))
+  })
+
+  grunt.registerTask('manifest:production', 'Build chrome manifest life.', function() {
+    var manifest = grunt.file.readJSON('src/manifest.json')
+
+    // Leave everything as it is
+
+    grunt.file.write('ext/manifest.json', JSON.stringify(manifest))
+  })
+
+
+  // Development mode
+  grunt.registerTask('development', [
+    'manifest:development',
+    'stylus:development',
+    'watch'
+  ]);
+  // alias
+  grunt.registerTask('d', ['development'])
+
+
+  // Testing
+  // TODO add unit tests
+  grunt.registerTask('test', [
+    'jshint'
+  ]);
+  // alias
+  grunt.registerTask('t', ['test'])
+
+
+  // Optimize and compress
+  grunt.registerTask('production', [
+    'manifest:production',
+    'stylus:production',
+    'concat'
+  ]);
+  // alias
+  grunt.registerTask('p', ['production'])
+
+
+  // Creates extension zip archive
+  grunt.registerTask('build', [
+    'production',
+    'compress'
+  ]);
+  // alias
+  grunt.registerTask('b', ['build']);
+
+
+  grunt.registerTask('default', ['development']);
 };
