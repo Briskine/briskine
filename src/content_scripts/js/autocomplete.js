@@ -18,6 +18,8 @@ var mirrorStyles = [
 App.autocomplete.isActive = false
 App.autocomplete.$dropdown = null
 App.autocomplete.isEmpty = null
+App.autocomplete.quicktexts = []
+App.autocomplete.cursorPosition = null
 
 
 App.autocomplete.onKeyDown = function (e) {
@@ -93,12 +95,16 @@ App.autocomplete.onKey = function(key, e) {
 }
 
 App.autocomplete.checkWord = function(e) {
-  var cursorPositon = this.getCursorPosition(e)
+  var cursorPosition = this.getCursorPosition(e)
+  this.cursorPosition = cursorPosition
 
   // Display loading
-  this.dropdownCreate(cursorPositon)
+  this.dropdownCreate(cursorPosition)
 
-  var word = this.getSelectedWord(cursorPositon)
+  var word = this.getSelectedWord(cursorPosition)
+
+  // Cache word
+  cursorPosition.word = word
 
   // TODO move search into background and retrieve filtered results
   if (word.text == '') {
@@ -107,20 +113,22 @@ App.autocomplete.checkWord = function(e) {
     // Load all tags
     App.settings.get('quicktexts', function(elements){
       // Search for match
-      App.autocomplete.dropdownPopulate(elements.filter(function(a) {
+      App.autocomplete.quicktexts = elements.filter(function(a) {
         // TODO search for mathc in whole shorcut (now searches for match starting with the beginning)
         return a.shortcut.indexOf(word.text) === 0
-      }))
+      })
+
+      App.autocomplete.dropdownPopulate(App.autocomplete.quicktexts)
     });
   }
 }
 
-App.autocomplete.dropdownCreate = function(cursorPositon) {
+App.autocomplete.dropdownCreate = function(cursorPosition) {
   // Add loading dropdown
-  this.$dropdown = $('<ul id="qt-dropdown" class="qt-dropdown"><li class="default">Loading...</li></ul>').insertAfter(cursorPositon.elementMain)
+  this.$dropdown = $('<ul id="qt-dropdown" class="qt-dropdown"><li class="default">Loading...</li></ul>').insertAfter(cursorPosition.elementMain)
   this.$dropdown.css({
-    top: (cursorPositon.absolute.top + cursorPositon.absolute.height) + 'px'
-  , left: (cursorPositon.absolute.left + cursorPositon.absolute.width) + 'px'
+    top: (cursorPosition.absolute.top + cursorPosition.absolute.height) + 'px'
+  , left: (cursorPosition.absolute.left + cursorPosition.absolute.width) + 'px'
   })
 
   this.isActive = true
@@ -131,7 +139,7 @@ App.autocomplete.dropdownPopulate = function(elements) {
   if (elements.length) {
     var listElements = "\
           <% _.each(elements, function(element) { %>\
-            <li class='qt-item' id='qt-item-<%= element.id %>'>\
+            <li class='qt-item' data-id='<%= element.id %>'>\
               <span class='qt-shortcut'><%= element.shortcut %></span>\
               <span class='qt-title'><%= element.title %></span>\
             </li>\
@@ -158,20 +166,20 @@ App.autocomplete.dropdownSelectItem = function(index) {
   }
 }
 
-App.autocomplete.getSelectedWord = function(cursorPositon) {
+App.autocomplete.getSelectedWord = function(cursorPosition) {
   var word = {
-    start: 0
-  , end: 0
-  , text: ''
-  }
+        start: 0
+      , end: 0
+      , text: ''
+      }
 
   if (App.data.gmailView === 'basic html') {
-    var string = $(cursorPositon.element).val().substr(0, cursorPositon.end)
+    var string = $(cursorPosition.element).val().substr(0, cursorPosition.end)
   } else if (App.data.gmailView === 'standard') {
     // Get text from node start until cursorPosition.end
     var range = new Range()
-    range.setStart(cursorPositon.element, 0)
-    range.setEnd(cursorPositon.element, cursorPositon.end)
+    range.setStart(cursorPosition.element, 0)
+    range.setEnd(cursorPosition.element, cursorPosition.end)
     var string = range.toString()
   }
   // Replace all nbsp with normal spaces
@@ -188,11 +196,11 @@ App.autocomplete.getSelectedWord = function(cursorPositon) {
   Moves focus from editable content to Send button
 */
 App.autocomplete.focusNext = function(element) {
-  if (App.data.gmailView === 'standard') {
-    var button = $(element).closest('table').parent().closest('table').find('[role=button][tabindex="1"]')
-  } else if (App.data.gmailView == 'basic html') {
+  if (App.data.gmailView == 'basic html') {
     var elements = $(element).closest('table').find('input,textarea,button')
       , button = elements.eq(elements.index(element)+1)
+  } else if (App.data.gmailView === 'standard') {
+    var button = $(element).closest('table').parent().closest('table').find('[role=button][tabindex="1"]')
   }
 
   if (button.length) {
@@ -210,6 +218,7 @@ App.autocomplete.getCursorPosition = function(e) {
         }
       , element: null
       , elementMain: e.target
+      , word: null
       }
 
   // Working with textarea
@@ -283,7 +292,64 @@ App.autocomplete.getCursorPosition = function(e) {
 }
 
 App.autocomplete.selectActive = function() {
+  if (this.isActive && !this.isEmpty && this.quicktexts.length) {
+    var activeItemId = this.$dropdown.find('.active').data('id')
+      , quicktext = this.getQuicktextById(activeItemId)
 
+    this.replaceWith(quicktext)
+  }
+}
+
+App.autocomplete.replaceWith = function(quicktext) {
+  var cursorPosition = this.cursorPosition
+    , word = cursorPosition.word
+
+  if (App.data.gmailView == 'basic html') {
+    var $textarea = $(cursorPosition.element)
+      , value = $textarea.val()
+      , valueNew = value.substr(0, word.start) + quicktext.body + value.substr(word.end)
+      , cursorOffset = word.start + quicktext.body.length
+
+    $textarea.val(valueNew)
+
+    // Set focus at the end of patch
+    $textarea.focus()
+    $textarea[0].setSelectionRange(cursorOffset, cursorOffset)
+  } else if (App.data.gmailView === 'standard') {
+    var selection = window.getSelection()
+      , range = selection.getRangeAt(0)
+
+    range.setStart(cursorPosition.element, word.start)
+    range.setEnd(cursorPosition.element, word.end)
+    range.deleteContents()
+    range.insertNode(range.createContextualFragment(quicktext.body.replace(/\n/g, '<br>') + '<span id="qt-caret"></span>'))
+
+    // Virtual caret
+    // Used to set cursor position in right place
+    // TODO find a better method to do that
+    var $caret = $('#qt-caret')
+
+    if ($caret.length) {
+      // Set caret back at old position
+      range = range.cloneRange()
+      range.setStartAfter($caret[0])
+      range.collapse(true)
+      selection.removeAllRanges()
+      selection.addRange(range)
+
+      // Remove virtual caret
+      $caret.remove()
+    }
+  }
+
+  App.autocomplete.close()
+}
+
+// TODO should request background
+App.autocomplete.getQuicktextById = function(id) {
+  return this.quicktexts.filter(function (a) {
+    return a.id === id
+  })[0]
 }
 
 App.autocomplete.close = function() {
@@ -292,6 +358,9 @@ App.autocomplete.close = function() {
 
   this.isActive = false
   this.isEmpty = null
+
+  this.quicktexts = []
+  this.cursorPosition = null
 }
 
 App.autocomplete.changeSelection = function(direction) {
