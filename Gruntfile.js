@@ -18,6 +18,8 @@ module.exports = function(grunt) {
           'bower_components/angular-md5/angular-md5.js',
           'bower_components/angular-moment/angular-moment.js',
 
+          // Should be first
+          'src/background/js/environment.js',
           'src/background/js/*.js'
          ],
          css: [
@@ -125,6 +127,8 @@ module.exports = function(grunt) {
     manifest.background.styles = dependencies.background.css
 
     grunt.file.write('ext/manifest.json', JSON.stringify(manifest))
+
+    grunt.file.write('src/background/js/environment.js', 'var ENV = "development"')
   })
 
   grunt.registerTask('manifest:production', 'Build chrome manifest life.', function() {
@@ -133,6 +137,8 @@ module.exports = function(grunt) {
     // Leave everything as it is
 
     grunt.file.write('ext/manifest.json', JSON.stringify(manifest))
+
+    grunt.file.write('src/background/js/environment.js', 'var ENV = "production"')
   })
 
 

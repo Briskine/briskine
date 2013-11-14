@@ -30,9 +30,16 @@ chrome.contextMenus.create({
 
 // Called when the url of a tab changes.
 function checkForValidUrl(tabId, changeInfo, tab) {
-    // Display only in gmail
-    if (/^https?:\/\/mail.google.com/.test(tab.url) || /^https?:\/\/localhost\/gmail/.test(tab.url)) {
-        chrome.pageAction.show(tabId);
+    if (ENV && ENV === 'development') {
+        // Display in gmail and localhost
+        if (/^https?:\/\/mail.google.com/.test(tab.url) || /^https?:\/\/localhost\/gmail/.test(tab.url)) {
+            chrome.pageAction.show(tabId);
+        }
+    } else {
+        // Display only in gmail
+        if (/^https?:\/\/mail.google.com/.test(tab.url)) {
+            chrome.pageAction.show(tabId);
+        }
     }
 }
 
