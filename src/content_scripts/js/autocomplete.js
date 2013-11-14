@@ -98,8 +98,8 @@ App.autocomplete.checkWord = function(e) {
   // Display loading
   this.dropdownCreate(cursorPositon)
 
-  // Search for matches
   var word = this.getSelectedWord(cursorPositon)
+
   // TODO move search into background and retrieve filtered results
   if (word.text == '') {
     App.autocomplete.dropdownPopulate([])
@@ -140,9 +140,21 @@ App.autocomplete.dropdownPopulate = function(elements) {
 
     this.$dropdown.html(content)
     this.isEmpty = false
+
+    // Set first element active
+    this.dropdownSelectItem(0)
   } else {
     this.$dropdown.html('<li class="default">No results found.<br>Press Esc to close this window.<br>Press Tab to jump to Send button.</li>')
     this.isEmpty = true
+  }
+}
+
+App.autocomplete.dropdownSelectItem = function(index) {
+  if (this.isActive && !this.isEmpty) {
+    this.$dropdown.children()
+      .removeClass('active')
+      .eq(index)
+        .addClass('active')
   }
 }
 
@@ -283,6 +295,10 @@ App.autocomplete.close = function() {
 }
 
 App.autocomplete.changeSelection = function(direction) {
+  var index_diff = direction === 'prev' ? -1 : 1
+    , elements_count = this.$dropdown.children().length
+    , index_active = this.$dropdown.find('.active').index()
+    , index_new = Math.max(0, Math.min(elements_count -1, index_active + index_diff))
 
+  this.dropdownSelectItem(index_new)
 }
-
