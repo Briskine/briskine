@@ -21,10 +21,8 @@ module.exports = function(grunt) {
           // Should be first
           'src/background/js/environment.js',
           'src/background/js/*.js'
-         ],
-         css: [
-          'bower_components/bootstrap/dist/css/bootstrap.css',
-         ]
+        ],
+        css: ['ext/background/css/background.css']
       },
       content: {
         js: [
@@ -37,9 +35,7 @@ module.exports = function(grunt) {
           'src/content/js/autocomplete.js',
           'src/content/js/events.js'
         ],
-        css: [
-          'src/content/css/content.css',
-        ]
+        css: ['ext/content/css/content.css']
       }
     };
 
@@ -52,6 +48,13 @@ module.exports = function(grunt) {
       stylus: {
         files: ['src/**/*.styl', 'src/**/*.css'],
         tasks: ['stylus:development'],
+        options: {
+          spawn: false
+        }
+      },
+      js: {
+        files: dependencies.background.js.concat(dependencies.content.js),
+        tasks: ['concat'],
         options: {
           spawn: false
         }
@@ -118,14 +121,6 @@ module.exports = function(grunt) {
     manifest.content_scripts[0].matches.push('http://localhost/gmail/*')
     manifest.content_scripts[0].matches.push('https://localhost/gmail/*')
 
-    // Change content scripts
-    manifest.content_scripts[0].js = dependencies.content.js
-    manifest.content_scripts[0].css = dependencies.content.css
-
-    // Change background scripts
-    manifest.background.scripts = dependencies.background.js
-    manifest.background.styles = dependencies.background.css
-
     grunt.file.write('ext/manifest.json', JSON.stringify(manifest))
 
     grunt.file.write('src/background/js/environment.js', 'var ENV = "development"')
@@ -146,6 +141,7 @@ module.exports = function(grunt) {
   grunt.registerTask('development', [
     'manifest:development',
     'stylus:development',
+    'concat',
     'watch'
   ]);
   // alias

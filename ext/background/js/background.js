@@ -34596,8 +34596,8 @@ gqApp.controller('PopupCtrl', function($scope, $rootScope, $timeout, QuicktextSe
     $scope.focusIndex = 0;
 
     QuicktextService.quicktexts().then(function(response){
-        $scope.quicktexts = response; 
-    }); 
+        $scope.quicktexts = response;
+    });
 
     QuicktextService.allTags().then(function(response){
         $scope.tags = response;
@@ -34607,7 +34607,7 @@ gqApp.controller('PopupCtrl', function($scope, $rootScope, $timeout, QuicktextSe
         var id = $scope.quicktexts[index].id;
         chrome.tabs.getSelected(null, function(tab) {
             chrome.tabs.sendMessage(tab.id, {"action": "insert", "id": id}, function(response) {});
-        }); 
+        });
     };
 
     $timeout(function(){
@@ -34624,31 +34624,31 @@ gqApp.controller('PopupCtrl', function($scope, $rootScope, $timeout, QuicktextSe
         var active = $('.active');
         scrollContainer.scrollTop(
             active.offset().top - scrollContainer.offset().top + scrollContainer.scrollTop()
-        );  
+        );
     };
 
     // key navigation
     $scope.keys = [];
-    $scope.keys.push({ code: 13, action: function() { 
-        $scope.insertQuicktext( $scope.focusIndex ); 
+    $scope.keys.push({ code: 13, action: function() {
+        $scope.insertQuicktext( $scope.focusIndex );
     }});
-    $scope.keys.push({ code: 38, action: function() { 
+    $scope.keys.push({ code: 38, action: function() {
         if ($scope.focusIndex > 0){
-            $scope.focusIndex--; 
+            $scope.focusIndex--;
             $scope.scroll();
         }
     }});
-    $scope.keys.push({ code: 40, action: function() { 
+    $scope.keys.push({ code: 40, action: function() {
         if ($scope.focusIndex + 1 < $scope.quicktexts.length) {
-            $scope.focusIndex++; 
+            $scope.focusIndex++;
             $scope.scroll();
         }
     }});
-  
+
     $scope.$on('keydown', function(msg, code) {
       $scope.keys.forEach(function(o) {
-        if ( o.code !== code ) { 
-            return; 
+        if ( o.code !== code ) {
+            return;
         }
         o.action();
         $scope.$apply();
@@ -34665,7 +34665,7 @@ gqApp.directive('keyTrap', function() {
     });
   };
 });
- 
+
 /*
 document.addEventListener('DOMContentLoaded', function () {
     $("body").addClass('ispopup');
