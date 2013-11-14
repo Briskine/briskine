@@ -34444,14 +34444,14 @@ gqApp.filter('newlines', function () {
     return function (text) {
         return text.replace("\n", "<br />");
     };
-});  
+});
 
 // tell angular that an output is safe
 gqApp.filter('safe', function ($sce) {
     return function(val) {
         return $sce.trustAsHtml(val);
     };
-}); 
+});
 
 // Filter quicktexts by tags
 gqApp.filter('tagFilter', function(QuicktextService){
@@ -34460,15 +34460,15 @@ gqApp.filter('tagFilter', function(QuicktextService){
             return _.filter(quicktexts, function(qt){
                 tags = QuicktextService.tags(qt);
                 if (_.intersection(filterTags, tags).length === filterTags.length) {
-                    return true; 
+                    return true;
                 }
                 return false;
             });
         } else {
             return quicktexts;
-        }  
+        }
     };
-}); 
+});
 
 
 gqApp.controller('OptionsCtrl', function($scope, $rootScope, QuicktextService, SettingsService, ProfileService) {
@@ -34478,8 +34478,8 @@ gqApp.controller('OptionsCtrl', function($scope, $rootScope, QuicktextService, S
     $scope.filterTags = [];
 
     QuicktextService.quicktexts().then(function(response){
-        $scope.quicktexts = response; 
-    }); 
+        $scope.quicktexts = response;
+    });
 
     QuicktextService.allTags().then(function(response){
         $scope.tags = response;
@@ -34501,14 +34501,14 @@ gqApp.controller('OptionsCtrl', function($scope, $rootScope, QuicktextService, S
     // Show the form for adding a new quicktext or creating one
     $scope.showForm = function(id){
         var defaults = {
-            'id': '', 
-            'key': '', 
-            'subject': '', 
-            'shortcut': '', 
-            'title': '', 
-            'tags': '', 
+            'id': '',
+            'key': '',
+            'subject': '',
+            'shortcut': '',
+            'title': '',
+            'tags': '',
             'body': ''
-        }; 
+        };
         if (!this.quicktext){ // new qt
             $scope.selectedQt = angular.copy(defaults);
         } else { // update qt
@@ -34527,7 +34527,8 @@ gqApp.controller('OptionsCtrl', function($scope, $rootScope, QuicktextService, S
     // then it should imedially go to the service and delete on the server
     $scope.deleteQt = function(){
         QuicktextService.delete(this.quicktext.id);
-        QuicktextService.quicktexts().then(function(r){$scope.quicktexts = r;}); 
+        QuicktextService.quicktexts().then(function(r){$scope.quicktexts = r;});
+        QuicktextService.allTags().then(function(r){$scope.tags = r;});
     };
 
     // Delete all quicktexts. This will not delete the quicktexts on the server side
@@ -34536,7 +34537,8 @@ gqApp.controller('OptionsCtrl', function($scope, $rootScope, QuicktextService, S
         if (r === true){
             QuicktextService.deleteAll();
         }
-        QuicktextService.quicktexts().then(function(r){$scope.quicktexts = r;}); 
+        QuicktextService.quicktexts().then(function(r){$scope.quicktexts = r;});
+        QuicktextService.allTags().then(function(r){$scope.tags = r;});
     };
 
     // Save a quicktext, perform some checks before
@@ -34557,20 +34559,21 @@ gqApp.controller('OptionsCtrl', function($scope, $rootScope, QuicktextService, S
         }
         // hide teh modal
         $('.modal').modal('hide');
-        QuicktextService.quicktexts().then(function(r){$scope.quicktexts = r;}); 
+        QuicktextService.quicktexts().then(function(r){$scope.quicktexts = r;});
+        QuicktextService.allTags().then(function(r){$scope.tags = r;});
     };
 
-    $scope.toggleFilterTag = function(tag){
-        var index = $scope.filterTags.indexOf(tag); 
+    $scope.toggleFilterTag = function(){
+        var index = $scope.filterTags.indexOf(this.tag);
         if (index === -1) {
-            $scope.filterTags.push(tag);
+            $scope.filterTags.push(this.tag);
         } else {
             $scope.filterTags.splice(index, 1); // remove from tags
         }
     };
 
     $scope.toggleSidebar = function(){
-        $scope.sidebarHidden = !$scope.sidebarHidden; 
+        $scope.sidebarHidden = !$scope.sidebarHidden;
         // put in settings
         SettingsService.set('sidebarHidden', $scope.sidebarHidden);
     };
@@ -34761,7 +34764,7 @@ gqApp.service('QuicktextService', function($q, md5){
             tx.executeSql("UPDATE quicktext SET key = ?, title = ?, subject = ?, shortcut = ?, tags = ?, body = ? WHERE id = ?", [
                 qt.key, qt.title, qt.subject, qt.shortcut, qt.tags, qt.body, qt.id
             ]);
-        }); 
+        });
     };
 
     // delete a quicktext and try to sync
@@ -34775,7 +34778,7 @@ gqApp.service('QuicktextService', function($q, md5){
     self.deleteAll = function(){
         self.db.transaction(function(tx){
             tx.executeSql("DELETE FROM quicktext");
-        }); 
+        });
     };
 
 
@@ -34804,8 +34807,8 @@ gqApp.service('QuicktextService', function($q, md5){
                     } else {
                         tagsCount[tag]++;
                     }
-                });      
-            }); 
+                });
+            });
             deferred.resolve(tagsCount);
         });
         return deferred.promise;
@@ -34817,13 +34820,13 @@ gqApp.service('QuicktextService', function($q, md5){
 gqApp.service('SettingsService', function(){
     var self = this;
     self.get = function(key){
-        return Settings.get(key);     
+        return Settings.get(key);
     };
     self.set = function(key, val){
-        return Settings.set(key, val);     
-    }; 
+        return Settings.set(key, val);
+    };
     return self;
-});  
+});
 
 // User Profile - check if the user is logged in. Get it's info
 gqApp.service('ProfileService', function(md5){
@@ -34839,7 +34842,7 @@ gqApp.service('ProfileService', function(md5){
         return 'http://www.gravatar.com/avatar/' + md5.createHash(self.email);
     };
     return self;
-}); 
+});
 
 // Settings
 var Settings = {

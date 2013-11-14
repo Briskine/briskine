@@ -59,7 +59,7 @@ gqApp.service('QuicktextService', function($q, md5){
             tx.executeSql("UPDATE quicktext SET key = ?, title = ?, subject = ?, shortcut = ?, tags = ?, body = ? WHERE id = ?", [
                 qt.key, qt.title, qt.subject, qt.shortcut, qt.tags, qt.body, qt.id
             ]);
-        }); 
+        });
     };
 
     // delete a quicktext and try to sync
@@ -73,7 +73,7 @@ gqApp.service('QuicktextService', function($q, md5){
     self.deleteAll = function(){
         self.db.transaction(function(tx){
             tx.executeSql("DELETE FROM quicktext");
-        }); 
+        });
     };
 
 
@@ -102,8 +102,8 @@ gqApp.service('QuicktextService', function($q, md5){
                     } else {
                         tagsCount[tag]++;
                     }
-                });      
-            }); 
+                });
+            });
             deferred.resolve(tagsCount);
         });
         return deferred.promise;
@@ -115,13 +115,13 @@ gqApp.service('QuicktextService', function($q, md5){
 gqApp.service('SettingsService', function(){
     var self = this;
     self.get = function(key){
-        return Settings.get(key);     
+        return Settings.get(key);
     };
     self.set = function(key, val){
-        return Settings.set(key, val);     
-    }; 
+        return Settings.set(key, val);
+    };
     return self;
-});  
+});
 
 // User Profile - check if the user is logged in. Get it's info
 gqApp.service('ProfileService', function(md5){
@@ -137,4 +137,4 @@ gqApp.service('ProfileService', function(md5){
         return 'http://www.gravatar.com/avatar/' + md5.createHash(self.email);
     };
     return self;
-}); 
+});
