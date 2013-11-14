@@ -21,6 +21,12 @@ App.autocomplete.isEmpty = null
 App.autocomplete.quicktexts = []
 App.autocomplete.cursorPosition = null
 
+PubSub.subscribe('focus', function(action, element, gmailView) {
+  if (action === 'off') {
+    App.autocomplete.close()
+  }
+})
+
 
 App.autocomplete.onKeyDown = function (e) {
   // Press tab while in compose and tab pressed
@@ -138,6 +144,17 @@ App.autocomplete.dropdownCreate = function(cursorPosition) {
 
   this.isActive = true
   this.isEmpty = true
+
+  // Handle mouse hover and click
+  this.$dropdown.on('mouseover mousedown', 'li.qt-item', function(e) {
+    e.preventDefault()
+    e.stopPropagation()
+
+    App.autocomplete.dropdownSelectItem($(this).index())
+    if (e.type === 'mousedown') {
+      App.autocomplete.selectActive()
+    }
+  })
 }
 
 App.autocomplete.dropdownPopulate = function(elements) {
@@ -358,14 +375,16 @@ App.autocomplete.getQuicktextById = function(id) {
 }
 
 App.autocomplete.close = function() {
-  this.$dropdown.remove()
-  this.$dropdown = null
+  if (App.autocomplete.isActive) {
+    this.$dropdown.remove()
+    this.$dropdown = null
 
-  this.isActive = false
-  this.isEmpty = null
+    this.isActive = false
+    this.isEmpty = null
 
-  this.quicktexts = []
-  this.cursorPosition = null
+    this.quicktexts = []
+    this.cursorPosition = null
+  }
 }
 
 App.autocomplete.changeSelection = function(direction) {
