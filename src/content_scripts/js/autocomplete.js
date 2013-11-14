@@ -134,12 +134,13 @@ App.autocomplete.checkWord = function(e) {
   }
 }
 
+// TODO make dropdown position relative so on scrolling it will stay in right place
 App.autocomplete.dropdownCreate = function(cursorPosition) {
   // Add loading dropdown
   this.$dropdown = $('<ul id="qt-dropdown" class="qt-dropdown"><li class="default">Loading...</li></ul>').insertAfter(cursorPosition.elementMain)
   this.$dropdown.css({
-    top: (cursorPosition.absolute.top + cursorPosition.absolute.height) + 'px'
-  , left: (cursorPosition.absolute.left + cursorPosition.absolute.width) + 'px'
+    top: (cursorPosition.absolute.top + cursorPosition.absolute.height - $(window).scrollTop()) + 'px'
+  , left: (cursorPosition.absolute.left + cursorPosition.absolute.width - $(window).scrollLeft()) + 'px'
   })
 
   this.isActive = true
@@ -271,7 +272,10 @@ App.autocomplete.getCursorPosition = function(e) {
     // insert mirror
     $mirror.insertAfter($source)
 
-    position.absolute = $('#qt-caret').offset()
+    var $caret = $('#qt-caret')
+    position.absolute = $caret.offset()
+    position.absolute.width = $caret.width()
+    position.absolute.height = $caret.height()
 
     $mirror.remove()
 
@@ -304,6 +308,8 @@ App.autocomplete.getCursorPosition = function(e) {
       selection.addRange(range)
 
       position.absolute = $caret.offset()
+      position.absolute.width = $caret.width()
+      position.absolute.height = $caret.height()
 
       // Remove virtual caret
       $caret.remove()
