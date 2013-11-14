@@ -2,8 +2,15 @@
 var onMessage = chrome.runtime.onMessage || chrome.extension.onMessage;
 onMessage.addListener(function(request, sender, sendResponse) {
     if (request.request == 'get'){
-        sendResponse(Settings.get(request.data));
+        if (!document.querySelector('body[class=ng-scope]')) {
+            angular.bootstrap('body', ['gqApp']);
+        }
+        var injector = angular.element('body').injector();
+        injector.get('QuicktextService').quicktexts().then(function(res){
+            sendResponse(res);
+        });
     }
+    return true;
 });
 
 // Context menus

@@ -1,5 +1,5 @@
 <div class="btn-toolbar">
-  <button class="btn btn-primary" ng-click="showForm()">New quicktext</button>
+  <button class="btn btn-primary" ng-click="showForm()" ng-hide="controller == 'PopupCtrl'">New quicktext</button>
   <!--
   <a href="" ng-click="deleteAll()">Delete all Quicktexts</a>
   -->
@@ -10,37 +10,40 @@
 <div class="quicktext-filters pull-right">
   <span ng-repeat="(tag, count) in tags">
     <a
-      href='' 
+      href=''
       class="label"
       ng-class="{true: 'label-primary', false: 'label-default'}[filterTags.indexOf(tag) !== -1]"
-      ng-click="toggleFilterTag('{{tag}}')" 
+      ng-click="toggleFilterTag()"
       >{{tag}}<span ng-if="count > 1"> ({{count}})</span></a>
     </span>
   </span>
 </div>
-
-<table class="table table-hover">
+<div class="clearfix"></div>
+<div id="quicktext-table-container">
+<table class="table table-hover" id="quicktext-table" ng-class="{'table-condensed': controller == 'PopupCtrl'}">
   <thead>
     <tr>
       <th>Title</th>
-      <th>Subject</th>
+      <th ng-hide="controller == 'PopupCtrl'">Subject</th>
       <th>Tab Completion</th>
       <th>Tags</th>
       <th>Quicktext</th>
-      <th></th>
+      <th ng-hide="controller == 'PopupCtrl'"></th>
     </tr>
   </thead>
   <tbody>
-    <tr ng-repeat="quicktext in quicktexts | filter:searchText | tagFilter:filterTags ">
+    <tr ng-repeat="quicktext in quicktexts | filter:searchText | tagFilter:filterTags "
+      ng-class="{'active': $index === focusIndex}">
       <td>{{quicktext.title}}</td>
-      <td>{{quicktext.subject}}</td>
+      <td ng-hide="controller == 'PopupCtrl'">{{quicktext.subject}}</td>
       <td>{{quicktext.shortcut}}</td>
       <td>{{quicktext.tags}}</td>
       <td title="{{quicktext.body}}" ng-bind-html="quicktext.body | truncate:100 | newlines | safe"></td>
-      <td>
+      <td ng-hide="controller == 'PopupCtrl'">
         <button class="btn btn-primary btn-xs edit-button" ng-click="showForm()">edit</button>
         <button class="btn btn-default btn-xs delete-button" ng-click="deleteQt()">delete</button>
       </td>
-    </tr> 
+    </tr>
   </tbody>
 </table>
+</div>
