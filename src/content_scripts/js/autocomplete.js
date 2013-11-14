@@ -1,7 +1,7 @@
 var mirrorStyles = [
     // Box Styles.
     'box-sizing', 'height', 'width', 'padding-bottom', 'padding-left', 'padding-right', 'padding-top', 'margin-top',
-    'margin-bottom', 'margin-left', 'margin-right'
+    'margin-bottom', 'margin-left', 'margin-right', 'border-width'
     // Font stuff.
     , 'font-family', 'font-size', 'font-style', 'font-variant', 'font-weight'
     // Spacing etc.
@@ -93,22 +93,31 @@ App.autocomplete.onKey = function(key, e) {
 }
 
 App.autocomplete.checkWord = function(e) {
-  // Display loading
-  this.dropdownCreate(e)
-
-  // Search for matches
-
-  // Display matches
-  App.settings.get('quicktexts', function(elements){
-    App.autocomplete.dropdownPopulate(elements)
-  });
-}
-
-App.autocomplete.dropdownCreate = function(e) {
   var cursorPositon = this.getCursorPosition(e)
 
+  // Display loading
+  this.dropdownCreate(cursorPositon)
+
+  // Search for matches
+  var word = this.getSelectedWord(cursorPositon)
+  // TODO move search into background and retrieve filtered results
+  if (word.text == '') {
+    App.autocomplete.dropdownPopulate([])
+  } else {
+    // Load all tags
+    App.settings.get('quicktexts', function(elements){
+      // Search for match
+      App.autocomplete.dropdownPopulate(elements.filter(function(a) {
+        // TODO search for mathc in whole shorcut (now searches for match starting with the beginning)
+        return a.shortcut.indexOf(word.text) === 0
+      }))
+    });
+  }
+}
+
+App.autocomplete.dropdownCreate = function(cursorPositon) {
   // Add loading dropdown
-  this.$dropdown = $('<ul id="qt-dropdown" class="qt-dropdown"><li class="default">Loading...</li></ul>').insertAfter(e.target)
+  this.$dropdown = $('<ul id="qt-dropdown" class="qt-dropdown"><li class="default">Loading...</li></ul>').insertAfter(cursorPositon.elementMain)
   this.$dropdown.css({
     top: (cursorPositon.absolute.top + cursorPositon.absolute.height) + 'px'
   , left: (cursorPositon.absolute.left + cursorPositon.absolute.width) + 'px'
@@ -137,6 +146,32 @@ App.autocomplete.dropdownPopulate = function(elements) {
   }
 }
 
+App.autocomplete.getSelectedWord = function(cursorPositon) {
+  var word = {
+    start: 0
+  , end: 0
+  , text: ''
+  }
+
+  if (App.data.gmailView === 'basic html') {
+    var string = $(cursorPositon.element).val().substr(0, cursorPositon.end)
+  } else if (App.data.gmailView === 'standard') {
+    // Get text from node start until cursorPosition.end
+    var range = new Range()
+    range.setStart(cursorPositon.element, 0)
+    range.setEnd(cursorPositon.element, cursorPositon.end)
+    var string = range.toString()
+  }
+  // Replace all nbsp with normal spaces
+  string = string.replace('\xa0', ' ')
+
+  word.start = Math.max(string.lastIndexOf(" "), string.lastIndexOf("\n")) + 1
+  word.text = string.substr(word.start)
+  word.end = word.start + word.text.length
+
+  return word
+}
+
 /*
   Moves focus from editable content to Send button
 */
@@ -162,11 +197,12 @@ App.autocomplete.getCursorPosition = function(e) {
         , top: 0
         }
       , element: null
+      , elementMain: e.target
       }
 
   // Working with textarea
   // Create a mirror element, copy textarea styles
-  // Insert text until until selectionEnd
+  // Insert text until selectionEnd
   // Insert a virtual cursor and find its position
   if (App.data.gmailView === 'basic html') {
     position.element = e.target
@@ -187,7 +223,7 @@ App.autocomplete.getCursorPosition = function(e) {
 
     // copy content
     $mirror.html($source.val().substr(0, position.end).split("\n").join('<br>'))
-    $mirror.append('<span id="qt-caret"/>')
+    $mirror.append('<span id="qt-caret" class="qt-caret"/>')
 
     // insert mirror
     $mirror.insertAfter($source)
