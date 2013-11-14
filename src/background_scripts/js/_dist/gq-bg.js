@@ -34381,13 +34381,13 @@ chrome.contextMenus.create({
 // Called when the url of a tab changes.
 function checkForValidUrl(tabId, changeInfo, tab) {
     // Display only in gmail
-    if (/^https?:\/\/mail.google.com/.test(tab.url) > -1) {
+    if (/^https?:\/\/mail.google.com/.test(tab.url) || /^https?:\/\/localhost\/gmail/.test(tab.url)) {
         chrome.pageAction.show(tabId);
     }
 }
 
 // Listen for any changes to the URL of any tab.
-chrome.tabs.onUpdated.addListener(checkForValidUrl); 
+chrome.tabs.onUpdated.addListener(checkForValidUrl);
 
 function onLoad() {
     var args = window.dialogArguments;

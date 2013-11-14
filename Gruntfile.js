@@ -18,8 +18,23 @@ deps = {
             'src/background_scripts/js/*.js'
          ],
          'css': [
-            'bower_components/bootstrap/dist/css/bootstrap.css',   
+            'bower_components/bootstrap/dist/css/bootstrap.css',
          ]
+    },
+    content: {
+        js: [
+            'bower_components/jquery/jquery.js',
+            'bower_components/underscore/underscore.js',
+            'bower_components/underscore.string/lib/underscore.string.js',
+
+            'src/content_scripts/js/patterns.js',
+            'src/content_scripts/js/index.js',
+            'src/content_scripts/js/autocomplete.js',
+            'src/content_scripts/js/events.js'
+        ],
+        css: [
+            'src/content_scripts/css/_dist/gq-content.css',
+        ]
     }
 };
 
@@ -31,14 +46,14 @@ grunt.initConfig({
             src: deps['bg']['js'],
             dest: 'src/background_scripts/js/_dist/gq-bg.js'
         },
-        //content: {
-        //    src: ['libs/js/*js', 'content_scripts/js/*.js',],
-        //    dest: 'content_scripts/js/_dist/gq-content.js'
-        //}
+        content: {
+           src: deps.content.js,
+           dest: 'src/content_scripts/js/_dist/gq-content.js'
+        }
     },
     jshint: {
         beforeconcat: [
-            //'content_scripts/js/*.js', 
+            //'content_scripts/js/*.js',
             'src/background_scripts/js/*.js'
         ],
         afterconcat: [
