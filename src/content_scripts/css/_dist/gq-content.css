@@ -1,6 +1,0 @@
-#qt-au-list{position:absolute;z-index:10;overflow:hidden;list-style:none;margin:0;margin-top:16px;padding:2px;-webkit-box-shadow:2px 3px 5px rgba(0,0,0,0.2);-moz-box-shadow:2px 3px 5px rgba(0,0,0,0.2);box-shadow:2px 3px 5px rgba(0,0,0,0.2);border-radius:3px;border:1px solid #c0c0c0;background:#fff;font-size:90%;font-family:monospace;max-height:20em;overflow-y:auto}
-.qt-au-item{margin:0;padding:0 4px;border-radius:2px;max-width:19em;max-height:15px;overflow:hidden;word-wrap:break-word;text-overflow:ellipsis;color:#000;cursor:pointer}
-.qt-au-item-title{color:#808080}
-.qt-au-item-active{background:#08f;color:#fff}
-.qt-au-item-active .qt-au-item-title{color:#f3f3f3}
-#qt-mirror{position:absolute;overflow:auto;white-space:pre-wrap;word-wrap:break-word;z-index:-9999}

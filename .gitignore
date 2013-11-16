@@ -2,3 +2,7 @@ node_modules
 bower_components
 selenium
 chrome_profile
+build
+
+# It is added in git but we don't have to track this file
+src/backgrount/js/environment.js
