@@ -32,6 +32,7 @@ module.exports = function(grunt) {
 
           'src/content/js/patterns.js',
           'src/content/js/index.js',
+          'src/content/js/parser.js',
           'src/content/js/autocomplete.js',
           'src/content/js/events.js'
         ],

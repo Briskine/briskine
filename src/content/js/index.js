@@ -10,6 +10,7 @@ var App = {
   , gmailView: ''         // it may be standard or basic html
   }
 , autocomplete: {}
+, parser: {}
 , settings: {
     get: function(key, callback) {
       chrome.runtime.sendMessage({'request': 'get', 'data': key}, function(response) {

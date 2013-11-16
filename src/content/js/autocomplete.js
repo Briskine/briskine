@@ -335,7 +335,8 @@ App.autocomplete.replaceWith = function(quicktext) {
   if (App.data.gmailView == 'basic html') {
     var $textarea = $(cursorPosition.element)
       , value = $textarea.val()
-      , valueNew = value.substr(0, word.start) + quicktext.body + value.substr(word.end)
+      , replacement = _.template(quicktext.body, App.parser.getData(cursorPosition.elementMain))
+      , valueNew = value.substr(0, word.start) + replacement + value.substr(word.end)
       , cursorOffset = word.start + quicktext.body.length
 
     $textarea.val(valueNew)
@@ -346,11 +347,12 @@ App.autocomplete.replaceWith = function(quicktext) {
   } else if (App.data.gmailView === 'standard') {
     var selection = window.getSelection()
       , range = selection.getRangeAt(0)
+      , replacement = _.template(quicktext.body, App.parser.getData(cursorPosition.elementMain)).replace(/\n/g, '<br>')
 
     range.setStart(cursorPosition.element, word.start)
     range.setEnd(cursorPosition.element, word.end)
     range.deleteContents()
-    range.insertNode(range.createContextualFragment(quicktext.body.replace(/\n/g, '<br>') + '<span id="qt-caret"></span>'))
+    range.insertNode(range.createContextualFragment(replacement + '<span id="qt-caret"></span>'))
 
     // Virtual caret
     // Used to set cursor position in right place
