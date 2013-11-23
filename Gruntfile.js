@@ -27,8 +27,7 @@ module.exports = function(grunt) {
       content: {
         js: [
           'bower_components/jquery/jquery.js',
-          'bower_components/underscore/underscore.js',
-          'bower_components/underscore.string/lib/underscore.string.js',
+          'bower_components/handlebars/handlebars.js',
 
           'src/content/js/patterns.js',
           'src/content/js/index.js',

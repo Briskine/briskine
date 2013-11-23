@@ -161,13 +161,13 @@ App.autocomplete.dropdownCreate = function(cursorPosition) {
 App.autocomplete.dropdownPopulate = function(elements) {
   if (elements.length) {
     var listElements = "\
-          <% _.each(elements, function(element) { %>\
-            <li class='qt-item' data-id='<%= element.id %>'>\
-              <span class='qt-shortcut'><%= element.shortcut %></span>\
-              <span class='qt-title'><%= element.title %></span>\
+          {{#each elements}}\
+            <li class='qt-item' data-id='{{id}}'>\
+              <span class='qt-shortcut'>{{shortcut}}</span>\
+              <span class='qt-title'>{{title}}</span>\
             </li>\
-          <% }); %>"
-      , content = _.template(listElements, {elements: elements});
+          {{/each}}"
+      , content = Handlebars.compile(listElements)({elements: elements})
 
     this.$dropdown.html(content)
     this.isEmpty = false
@@ -335,7 +335,7 @@ App.autocomplete.replaceWith = function(quicktext) {
   if (App.data.gmailView == 'basic html') {
     var $textarea = $(cursorPosition.element)
       , value = $textarea.val()
-      , replacement = _.template(quicktext.body, App.parser.getData(cursorPosition.elementMain))
+      , replacement = Handlebars.compile(quicktext.body)(App.parser.getData(cursorPosition.elementMain))
       , valueNew = value.substr(0, word.start) + replacement + value.substr(word.end)
       , cursorOffset = word.start + quicktext.body.length
 
@@ -347,7 +347,7 @@ App.autocomplete.replaceWith = function(quicktext) {
   } else if (App.data.gmailView === 'standard') {
     var selection = window.getSelection()
       , range = selection.getRangeAt(0)
-      , replacement = _.template(quicktext.body, App.parser.getData(cursorPosition.elementMain)).replace(/\n/g, '<br>')
+      , replacement = Handlebars.compile(quicktext.body)(App.parser.getData(cursorPosition.elementMain)).replace(/\n/g, '<br>')
 
     range.setStart(cursorPosition.element, word.start)
     range.setEnd(cursorPosition.element, word.end)
