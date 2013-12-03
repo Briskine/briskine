@@ -45,4 +45,14 @@ if(chrome.runtime){
 
     // Listen for any changes to the URL of any tab.
     chrome.tabs.onUpdated.addListener(checkForValidUrl);
+
+    // Called after installation: https://developer.chrome.com/extensions/runtime.html#event-onInstalled
+    chrome.runtime.onInstalled.addListener(function(details){
+        // All gmail tabs shoul be reloaded if the extension was installed
+        chrome.tabs.query({'url': '*://mail.google.com/*'}, function(tabs){
+            for (i in tabs) {
+                chrome.tabs.reload(tabs[i].id, {});
+            }
+        });
+    })
 }
