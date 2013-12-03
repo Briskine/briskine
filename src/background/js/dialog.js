@@ -1,23 +1,39 @@
-function onLoad() {
-    var args = window.dialogArguments;
-    var form = document.querySelector("#quicktext-form");
-    //var view = document.querySelector("#quicktext-view");
-    if (args && args.show == 'form') {
-        form.classList.add('show');
-        //view.classList.add('hide');
-        var title = document.querySelector("#qt-title");
-        var body = document.querySelector("#qt-body");
-        // setting the value to the text selected
-        if (args.selection){
-            body.value = args.selection;
-        }
-        title.focus();
-    } else if (args && args.show == 'view') {
-        form.classList.add('hide');
-        //view.classList.add('show');
-    }
-}
+gqApp.controller('DialogCtrl', function($scope, $rootScope, QuicktextService) {
+    $scope.controller = "DialogCtrl";
+    $scope.selectedQt = {
+        'id': '',
+        'key': '',
+        'subject': '',
+        'shortcut': '',
+        'title': '',
+        'tags': '',
+        'body': ''
+    };
 
-//document.addEventListener("DOMContentLoaded", function() {
-//    onLoad();
-//});
+    $rootScope.$on('$includeContentLoaded', function(event) {
+        // Show the form for adding a new quicktext or creating one
+        $('.close').hide(); // hide close icon
+        $('.modal').modal();
+        $('.modal').on('shown.bs.modal', function () { //put focus on the first text input
+            $(this).find('input[type=text]:first').focus();
+        });
+        var args = window.dialogArguments;
+        if (args.selection){
+            $scope.selectedQt.body = args.selection;
+        }
+    });
+
+    $scope.saveQt = function() {
+        if (!$scope.selectedQt.title){
+            alert("Please enter a Title");
+            return false;
+        }
+
+        if (!$scope.selectedQt.body){
+            alert("Please enter a Quicktext Template");
+            return false;
+        }
+        QuicktextService.create($scope.selectedQt);
+        window.close();
+    };
+});

@@ -7,8 +7,8 @@ gqApp.config(function ($routeProvider) {
             templateUrl: 'views/options.html'
         })
         .when('/dialog', {
-            controller: 'OptionsCtrl',
-            templateUrl: 'views/options.html'
+            controller: 'DialogCtrl',
+            templateUrl: 'views/dialog.html'
         })
         .when('/popup', {
             controller: 'PopupCtrl',

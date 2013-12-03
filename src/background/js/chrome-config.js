@@ -22,9 +22,9 @@ if(chrome.runtime){
             // I would have loved to open the popup.html with this, but at this moment
             // it's not possible to do so due to browser restrictions of Chrome
             // so we are going to open a dialog with the form
-            returnVal = window.showModalDialog('/pages/bg.html#dialog',
+            returnVal = window.showModalDialog('/pages/bg.html#/dialog',
                 {'selection': info.selectionText, 'show': 'form'},
-                "dialogwidth: 900; dialogheight: 375; resizable: yes");
+                "dialogwidth: 600; dialogheight: 800; resizable: yes");
         }
     });
 
