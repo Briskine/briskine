@@ -34430,6 +34430,7 @@ gqApp.controller('DialogCtrl', function($scope, $rootScope, QuicktextService) {
     $rootScope.$on('$includeContentLoaded', function(event) {
         // Show the form for adding a new quicktext or creating one
         $('.close').hide(); // hide close icon
+        $('.cancel-bottom').hide(); // hide cancel link
         $('.modal').modal();
         $('.modal').on('shown.bs.modal', function () { //put focus on the first text input
             $(this).find('input[type=text]:first').focus();
