@@ -14,8 +14,8 @@ gqApp.service('QuicktextService', function($q, md5){
                 subject TEXT DEFAULT "",\
                 tags TEXT DEFAULT "",\
                 body TEXT DEFAULT "");');
-        tx.executeSql('INSERT INTO quicktext (title, shortcut, body) VALUES (\
-                "Say Hello", "hello", "Hello <%= to[0].first_name %>,\n")');
+        tx.executeSql('INSERT INTO quicktext (title, shortcut, body) VALUES ("Say Hello", "h", "Hello {{to.0.first_name}},\n\n")');
+        tx.executeSql('INSERT INTO quicktext (title, shortcut, body) VALUES ("Kind regards", "kr", "Kind regards,\n")');
     });
 
     self.quicktexts = function(){
