@@ -1,10 +1,14 @@
 // Settings
 var Settings = {
-    get: function(key) {
-        if (key in window.localStorage) {
+    get: function(key, def) {
+        if (key in window.localStorage && window.localStorage[key] !== '') {
             return JSON.parse(window.localStorage[key]);
         } else {
-            return this.defaults[key];
+            if (!def){
+                return this.defaults[key];
+            } else {
+                return def;
+            }
         }
     },
     set: function(key, value) {

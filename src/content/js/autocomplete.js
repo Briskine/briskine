@@ -372,6 +372,8 @@ App.autocomplete.replaceWith = function(quicktext) {
     }
   }
 
+  // updates stats
+  App.settings.stats('words', quicktext.body.split(" ").length, function(){});
   App.autocomplete.close()
 }
 

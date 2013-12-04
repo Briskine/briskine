@@ -11474,6 +11474,11 @@ var App = {
       chrome.runtime.sendMessage({'request': 'get', 'data': key}, function(response) {
         callback(response)
       })
+    },
+    stats: function(key, val, callback) {
+      chrome.runtime.sendMessage({'request': 'stats', 'key': key, 'val': val}, function(response) {
+        callback(response)
+      });
     }
   // we shouldn't be able to set settings from content
   // , set: function(key, value) {
@@ -11964,6 +11969,8 @@ App.autocomplete.replaceWith = function(quicktext) {
     }
   }
 
+  // updates stats
+  App.settings.stats('words', quicktext.body.split(" ").length, function(){});
   App.autocomplete.close()
 }
 

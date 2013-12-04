@@ -1,14 +1,22 @@
 // Register Chrome runtime protocols and context menus
 if(chrome.runtime){
     chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-        if (request.request == 'get'){
-            if (!document.querySelector('body[class=ng-scope]')) {
-                angular.bootstrap('body', ['gqApp']);
-            }
-            var injector = angular.element('body').injector();
+        if (!document.querySelector('body[class=ng-scope]')) {
+            angular.bootstrap('body', ['gqApp']);
+        }
+        var injector = angular.element('body').injector(); 
+        if (request.request === 'get'){
             injector.get('QuicktextService').quicktexts().then(function(res){
                 sendResponse(res);
             });
+        }
+        if (request.request === 'stats'){
+            var settingsService = injector.get('SettingsService');
+            if (request.key === 'words'){
+                var words = parseInt(request.val);
+                settingsService.set("words", settingsService.get("words") + words);
+            }
+            sendResponse(true);
         }
         return true;
     });
