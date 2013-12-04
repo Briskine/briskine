@@ -9,8 +9,7 @@ var mirrorStyles = [
     // The direction.
     , 'direction'
     ]
-  , KEY_CTRL = 17
-  , KEY_SPACE = 32
+  , KEY_TAB = 9
   , KEY_ENTER = 13
   , KEY_ESCAPE = 27
   , KEY_UP = 38
@@ -21,7 +20,6 @@ App.autocomplete.$dropdown = null
 App.autocomplete.isEmpty = null
 App.autocomplete.quicktexts = []
 App.autocomplete.cursorPosition = null
-App.autocomplete.ctrlDown = false;
 
 PubSub.subscribe('focus', function(action, element, gmailView) {
   if (action === 'off') {
@@ -31,24 +29,19 @@ PubSub.subscribe('focus', function(action, element, gmailView) {
 
 
 App.autocomplete.onKeyDown = function (e) {
-    //  CTRL+SPACE triggers completion. First check if CTRL key is hit
-    if (e.keyCode == KEY_CTRL) {
-        App.autocomplete.ctrlDown = true;
-        return;
-    }
+  // Press tab while in compose and tab pressed
+  if (App.data.inCompose && e.keyCode == KEY_TAB) {
+    if (App.autocomplete.isActive) {
+      // Simulate closing
+      App.autocomplete.close()
+      // Do not prevent default
+    } else {
+      e.preventDefault()
+      e.stopPropagation()
 
-    if (App.data.inCompose && App.autocomplete.ctrlDown && e.keyCode == KEY_SPACE) {
-        if (App.autocomplete.isActive) {
-            // Simulate closing
-            App.autocomplete.close();
-            // Do not prevent default
-        } else {
-            e.preventDefault();
-            e.stopPropagation();
-
-            App.autocomplete.onKey(e.keyCode, e);
-        }
+      App.autocomplete.onKey(e.keyCode, e)
     }
+  }
 
   // Press control keys when autocomplete is active
   if (App.autocomplete.isActive && ~[KEY_ENTER, KEY_UP, KEY_DOWN].indexOf(e.keyCode)) {
@@ -66,35 +59,35 @@ App.autocomplete.onKeyDown = function (e) {
   }
 
   // If dropdown is active but the pressed key is different from what we expect
-  if (App.autocomplete.isActive && !~[KEY_SPACE, KEY_ENTER, KEY_ESCAPE, KEY_UP, KEY_DOWN].indexOf(e.keyCode)) {
+  if (App.autocomplete.isActive && !~[KEY_TAB, KEY_ENTER, KEY_ESCAPE, KEY_UP, KEY_DOWN].indexOf(e.keyCode)) {
     App.autocomplete.close()
   }
 }
 
 App.autocomplete.onKeyUp = function(e) {
-    // if ctrl is no longer pressed make sure we don't activate on space
-    if (e.keyCode == KEY_CTRL) {
-        App.autocomplete.ctrlDown = false;
-        return;
+  // Allways prevent tab propagation
+  if (App.data.inCompose && e.keyCode == KEY_TAB) {
+    e.preventDefault()
+    e.stopPropagation()
+  }
+
+  if (App.autocomplete.isActive) {
+    // Just prevent propagation
+    if (~[KEY_ENTER, KEY_ESCAPE, KEY_UP, KEY_DOWN].indexOf(e.keyCode)) {
+      e.preventDefault()
+      e.stopPropagation()
     }
 
-    if (App.autocomplete.isActive) {
-        // Just prevent propagation
-        if (~[KEY_ENTER, KEY_ESCAPE, KEY_UP, KEY_DOWN].indexOf(e.keyCode)) {
-            e.preventDefault()
-            e.stopPropagation()
-        }
-
-        // Escape
-        if (e.keyCode == KEY_ESCAPE) {
-            App.autocomplete.onKey(e.keyCode)
-        }
+    // Escape
+    if (e.keyCode == KEY_ESCAPE) {
+      App.autocomplete.onKey(e.keyCode)
     }
+  }
 }
 
 App.autocomplete.onKey = function(key, e) {
   switch(key) {
-    case KEY_SPACE:
+    case KEY_TAB:
       this.checkWord(e)
     break
     case KEY_ENTER:
@@ -182,7 +175,7 @@ App.autocomplete.dropdownPopulate = function(elements) {
     // Set first element active
     this.dropdownSelectItem(0)
   } else {
-    this.$dropdown.html('<li class="default">No results found.<br>Press Esc to close.</li>')
+    this.$dropdown.html('<li class="default">No results found.<br>Press Esc to close this window.<br>Press Tab to jump to Send button.</li>')
     this.isEmpty = true
   }
 }
