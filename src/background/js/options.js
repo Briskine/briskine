@@ -18,6 +18,7 @@ gqApp.controller('OptionsCtrl', function($scope, $rootScope, QuicktextService, S
     $scope.sidebarHidden = SettingsService.get('sidebarHidden');
     $scope.tabcompleteEnabled = SettingsService.get('tabcompleteEnabled');
     $scope.autocompleteEnabled = SettingsService.get('autocompleteEnabled');
+    $scope.sendStatsEnabled = SettingsService.get('sendStatsEnabled');
 
     $rootScope.$on('$includeContentLoaded', function(event) {
         $("#search-input").focus();

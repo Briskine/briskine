@@ -127,11 +127,13 @@ gqApp.service('SettingsService', function(){
 gqApp.service('ProfileService', function(SettingsService, md5){
     var self = this;
 
-    self.email = 'alex@gmail-quicktext.com';
-    self.firstName = 'Alex';
-    self.lastName = 'Plugaru';
-    self.currentSubscription = 'Yearly';
-    self.expirationDate = '13/11/2014';
+    self.isLoggedin = false;
+
+    self.email = '';
+    self.firstName = '';
+    self.lastName = '';
+    self.currentSubscription = '';
+    self.expirationDate = '';
 
     self.gravatar = function(size){
         return 'http://www.gravatar.com/avatar/' + md5.createHash(self.email);

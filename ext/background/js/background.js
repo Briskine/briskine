@@ -34535,6 +34535,7 @@ gqApp.controller('OptionsCtrl', function($scope, $rootScope, QuicktextService, S
     $scope.sidebarHidden = SettingsService.get('sidebarHidden');
     $scope.tabcompleteEnabled = SettingsService.get('tabcompleteEnabled');
     $scope.autocompleteEnabled = SettingsService.get('autocompleteEnabled');
+    $scope.sendStatsEnabled = SettingsService.get('sendStatsEnabled');
 
     $rootScope.$on('$includeContentLoaded', function(event) {
         $("#search-input").focus();
@@ -34876,11 +34877,13 @@ gqApp.service('SettingsService', function(){
 gqApp.service('ProfileService', function(SettingsService, md5){
     var self = this;
 
-    self.email = 'alex@gmail-quicktext.com';
-    self.firstName = 'Alex';
-    self.lastName = 'Plugaru';
-    self.currentSubscription = 'Yearly';
-    self.expirationDate = '13/11/2014';
+    self.isLoggedin = false;
+
+    self.email = '';
+    self.firstName = '';
+    self.lastName = '';
+    self.currentSubscription = '';
+    self.expirationDate = '';
 
     self.gravatar = function(size){
         return 'http://www.gravatar.com/avatar/' + md5.createHash(self.email);
@@ -34969,6 +34972,7 @@ var Settings = {
         syncEnabled: false,
         autocompleteEnabled: true, // autocomplete dialog
         tabcompleteEnabled: true, // tab completion
-        sidebarHidden: false // show or hide the sidebar 
+        sendStatsEnabled: true, // send anonymous statistics
+        sidebarHidden: false // show or hide the sidebar
     }
 };

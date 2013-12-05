@@ -8,21 +8,24 @@
     </li>
     <li>
       <div class="profile">
-            <div class="profile-body">
-                <a class="profile-picture" ng-href="{{settings.get('baseURL')}}profile">
-                  <img class="img-circle" title="Setup your avatar on gravatar.com" alt="gravatar" ng-src="{{profile.gravatar()}}">
-                </a> 
-                <div class="profile-container">
-                  <div class="profile-name">{{profile.firstName}} {{profile.lastName}}</div>
-                  <div class="profile-email"><a ng-href="{{settings.get('baseURL')}}profile">{{profile.email}}</a></div>
-                </div>
-            </div>
-            <div class="clearfix">&nbsp;</div>
-            <div class="profile-extra">
-              <div class="profile-stats" data-toggle="tooltip" data-placement="bottom" data-original-title="33WPM: http://tinyurl.com/wiki-wpm" >So far you saved <strong>{{profile.savedWords}}</strong> words or <strong>{{profile.savedTime}}</strong>. <span class="glyphicon glyphicon-question-sign"></span></div>
-              <!-- <div class="profile-subscription">You have a <strong>{{profile.currentSubscription}}</strong> subscription.</div> -->
-            </div> 
+        <div class="profile-body" ng-show="profile.isLoggedin">
+          <a class="profile-picture" ng-href="{{settings.get('baseURL')}}profile">
+            <img class="img-circle" title="Setup your avatar on gravatar.com" alt="gravatar" ng-src="{{profile.gravatar()}}">
+          </a> 
+          <div class="profile-container">
+            <div class="profile-name">{{profile.firstName}} {{profile.lastName}}</div>
+            <div class="profile-email"><a ng-href="{{settings.get('baseURL')}}profile">{{profile.email}}</a></div>
+          </div>
         </div>
+        <div class="anonymous" ng-show="!profile.isLoggedin">
+          <a href="{{settings.get('baseURL')}}register/">Register</a> to benefit from <em>collaboration</em> with your team, <em>easy backup</em> and other features.
+        </div> 
+        <div class="clearfix">&nbsp;</div>
+        <div class="profile-extra">
+          <div class="profile-stats" data-toggle="tooltip" data-placement="bottom" data-original-title="33 Words per Minute: http://tinyurl.com/wiki-wpm" >So far you saved <strong>{{profile.savedWords}}</strong> words or <strong>{{profile.savedTime}}</strong>. <span class="glyphicon glyphicon-question-sign"></span></div>
+          <!-- <div class="profile-subscription">You have a <strong>{{profile.currentSubscription}}</strong> subscription.</div> -->
+        </div>
+      </div>
     </li>
     <li>
     <div class="section-header">Extension Settings</div>
@@ -34,10 +37,14 @@
       <label for="tabcompleteEnabled" data-toggle="tooltip" data-placement="bottom" data-original-title="Tab completion automatically inserts a quicktext. Trigger it using 'Tab Completion' keyword then press the 'Tab' key">Tab completion <span class="glyphicon glyphicon-question-sign"></span></label>
       <input type="checkbox" id="tabcompleteEnabled" ng-model="tabcompleteEnabled" ng-change="settings.set('tabcompleteEnabled', tabcompleteEnabled)" />
     </div>
+    <div class="checkbox">
+      <label for="sendStats" data-toggle="tooltip" data-placement="bottom" data-original-title="Help improve the quicktext extension by sending anonymous statistics.">Send usage statistics <span class="glyphicon glyphicon-question-sign"></span></label>
+      <input type="checkbox" id="sendStats" ng-model="sendStatsEnabled" ng-change="settings.set('sendStatsEnabled', sendStatsEnabled)" />
+    </div> 
     </li>
   </ul>
   <div class="sidebar-footer">
-    <div class="well sync-status">
+    <div class="well sync-status" ng-show="profile.isLoggedin">
       <div class="sync-label">Last sync</div>
       <div class="sync-date"></div>
       <button class="btn btn-default btn-xs">Sync now!</button>

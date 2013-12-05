@@ -31,6 +31,7 @@ var Settings = {
         syncEnabled: false,
         autocompleteEnabled: true, // autocomplete dialog
         tabcompleteEnabled: true, // tab completion
-        sidebarHidden: false // show or hide the sidebar 
+        sendStatsEnabled: true, // send anonymous statistics
+        sidebarHidden: false // show or hide the sidebar
     }
 };

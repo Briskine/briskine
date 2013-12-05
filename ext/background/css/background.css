@@ -7570,6 +7570,7 @@ td.visible-print {
 #sidebar-wrapper .profile .profile-name{font-size:16px;font-weight:bold}
 #sidebar-wrapper .profile .profile-email{font-size:12px}
 #sidebar-wrapper .profile .profile-extra{margin-top:7px}
+#sidebar-wrapper .profile .anonymous{font-size:larger}
 .toggle-sidebar{cursor:pointer;position:absolute;bottom:170px;background-color:#fdfdfd;padding:5px;}
 .toggle-sidebar.toggle-hide{right:0}
 .toggle-sidebar.toggle-show{left:0}
