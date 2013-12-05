@@ -87,10 +87,9 @@ module.exports = function(grunt) {
         'src/content/js/*.js',
         'src/background/js/*.js'
       ],
-      production: [
-        'ext/content/js/*.js',
-        'ext/background/js/*.js'
-      ]
+      options: {
+        multistr: true
+      }
     },
     concat: {
       background: {
@@ -123,7 +122,7 @@ module.exports = function(grunt) {
 
     grunt.file.write('ext/manifest.json', JSON.stringify(manifest))
 
-    grunt.file.write('src/background/js/environment.js', 'var ENV = "development"')
+    grunt.file.write('src/background/js/environment.js', 'var ENV = "development";')
   })
 
   grunt.registerTask('manifest:production', 'Build chrome manifest life.', function() {
@@ -133,7 +132,7 @@ module.exports = function(grunt) {
 
     grunt.file.write('ext/manifest.json', JSON.stringify(manifest))
 
-    grunt.file.write('src/background/js/environment.js', 'var ENV = "production"')
+    grunt.file.write('src/background/js/environment.js', 'var ENV = "production";')
   })
 
 
@@ -141,6 +140,7 @@ module.exports = function(grunt) {
   grunt.registerTask('development', [
     'manifest:development',
     'stylus:development',
+    'jshint',
     'concat',
     'watch'
   ]);
@@ -174,7 +174,6 @@ module.exports = function(grunt) {
   ]);
   // alias
   grunt.registerTask('b', ['build']);
-
 
   grunt.registerTask('default', ['development']);
 };

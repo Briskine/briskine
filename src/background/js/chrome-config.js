@@ -13,7 +13,7 @@ if(chrome.runtime){
         if (request.request === 'stats'){
             var settingsService = injector.get('SettingsService');
             if (request.key === 'words'){
-                var words = parseInt(request.val);
+                var words = parseInt(request.val, 10);
                 settingsService.set("words", settingsService.get("words") + words);
             }
             sendResponse(true);
@@ -37,7 +37,7 @@ if(chrome.runtime){
     });
 
     // Called when the url of a tab changes.
-    function checkForValidUrl(tabId, changeInfo, tab) {
+    var checkForValidUrl = function(tabId, changeInfo, tab) {
         if (ENV && ENV === 'development') {
             // Display in gmail and localhost
             if (/^https?:\/\/mail.google.com/.test(tab.url) || /^https?:\/\/localhost\/gmail/.test(tab.url)) {
@@ -49,7 +49,7 @@ if(chrome.runtime){
                 chrome.pageAction.show(tabId);
             }
         }
-    }
+    };
 
     // Listen for any changes to the URL of any tab.
     chrome.tabs.onUpdated.addListener(checkForValidUrl);
@@ -58,9 +58,9 @@ if(chrome.runtime){
     chrome.runtime.onInstalled.addListener(function(details){
         // All gmail tabs shoul be reloaded if the extension was installed
         chrome.tabs.query({'url': '*://mail.google.com/*'}, function(tabs){
-            for (i in tabs) {
+            for (var i in tabs) {
                 chrome.tabs.reload(tabs[i].id, {});
             }
         });
-    })
+    });
 }

@@ -179,7 +179,7 @@ gqApp.service('ProfileService', function(SettingsService, md5){
         } else {
             return Math.floor(minutes / (60 * 24)) + "d, " + Math.floor(minutes % (60 * 24) / 60) + "h and " + minutes % (60 * 24) % 60 + "min";
         }
-    }
+    };
     // average WPM: http://en.wikipedia.org/wiki/Words_per_minute
     self.avgWPM = 33;
     self.savedTime = self.niceTime(Math.round(self.words/self.avgWPM));

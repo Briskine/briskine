@@ -11425,36 +11425,38 @@ var __module0__ = (function(__dependency1__, __dependency2__, __dependency3__, _
 })();
 
 /*
-  Patterns
+    Patterns
 */
 
 var PubSub = {
-    observers: []
-  , subscribe: function(topic, observer) {
-      this.observers[topic] || (this.observers[topic] = [])
+    observers: [],
+    subscribe: function(topic, observer) {
+        if (!this.observers[topic]) {
+            this.observers[topic] = [];
+        }
+        this.observers[topic].push(observer);
+    },
+    unsubscribe: function(topic, observer) {
+        if (!this.observers[topic]){
+            return;
+        }
 
-      this.observers[topic].push(observer)
+        var index = this.observers[topic].indexOf(observer);
+        if (~index) {
+            this.observers[topic].splice(index, 1);
+        }
+    },
+    publish: function(topic) {
+        if (!this.observers[topic]) {
+            return;
+        }
+
+        for (var i = this.observers[topic].length - 1; i >= 0; i--) {
+            // Pass all arguments except first one
+            this.observers[topic][i].apply(null, Array.prototype.slice.call(arguments, 1));
+        }
     }
-  , unsubscribe: function(topic, observer) {
-      if (!this.observers[topic])
-        return;
-
-      var index = this.observers[topic].indexOf(observer)
-
-      if (~index) {
-        this.observers[topic].splice(index, 1)
-      }
-    }
-  , publish: function(topic) {
-      if (!this.observers[topic])
-        return;
-
-      for (var i = this.observers[topic].length - 1; i >= 0; i--) {
-        // Pass all arguments except first one
-        this.observers[topic][i].apply(null, Array.prototype.slice.call(arguments, 1))
-      };
-    }
-  }
+};
 
 /*
   This is the index file which is loaded first after patterns
@@ -11462,167 +11464,162 @@ var PubSub = {
 */
 
 var App = {
-  data: {
-    inCompose: false      // true when textarea element is focused
-  , composeElement: null  // reference to compose DOM element
-  , gmailView: ''         // it may be standard or basic html
-  }
-, autocomplete: {}
-, parser: {}
-, settings: {
-    get: function(key, callback) {
-      chrome.runtime.sendMessage({'request': 'get', 'data': key}, function(response) {
-        callback(response)
-      })
+    data: {
+        inCompose: false,      // true when textarea element is focused
+        composeElement: null,  // reference to compose DOM element
+        gmailView: ''         // it may be standard or basic html
     },
-    stats: function(key, val, callback) {
-      chrome.runtime.sendMessage({'request': 'stats', 'key': key, 'val': val}, function(response) {
-        callback(response)
-      });
+    autocomplete: {},
+    parser: {},
+    settings: {
+        get: function(key, callback) {
+            chrome.runtime.sendMessage({'request': 'get', 'data': key}, function(response) {
+               callback(response);
+            });
+        },
+        stats: function(key, val, callback) {
+            chrome.runtime.sendMessage({'request': 'stats', 'key': key, 'val': val}, function(response) {
+                callback(response);
+            });
+        }
     }
-  // we shouldn't be able to set settings from content
-  // , set: function(key, value) {
-  //     chrome.runtime.sendMessage({'request': 'set', 'data': {key: value}}, function(response) {
-  //       callback(response)
-  //     })
-  //   }
-  }
-}
+};
 
 App.init = function() {
-  document.addEventListener("blur", App.onBlur, true)
-  document.addEventListener("focus", App.onFocus, true)
-  document.addEventListener("keydown", App.onKeyDown, true)
-  document.addEventListener("keyup", App.onKeyUp, true)
-}
+    document.addEventListener("blur", App.onBlur, true);
+    document.addEventListener("focus", App.onFocus, true);
+    document.addEventListener("keydown", App.onKeyDown, true);
+    document.addEventListener("keyup", App.onKeyUp, true);
+};
 
 $(function(){
-  App.init()
-})
+    App.init();
+});
 
 App.parser.getData = function(element) {
-  var fieldValues = this.getFieldValues(element)
+    var fieldValues = this.getFieldValues(element);
 
-  // Add more logic here
-
-  return fieldValues
-}
+    // Add more logic here
+    return fieldValues;
+};
 
 App.parser.getFieldValues = function(element) {
-  if (App.data.gmailView === 'basic html') {
-    var from = $('#guser b').text()
+    var from = "",
+        to = [],
+        cc = [],
+        bcc = [],
+        subject = "";
 
-    // Full options window
-    if ($('#to').length) {
-      var to = $('#to').val().split(',')
-        , cc = $('#cc').val().split(',')
-        , bcc = $('#bcc').val().split(',')
-        , subject = $('input[name=subject]').val()
-    // Reply window
-    } else {
-      var to = []
-        , cc = [] // don't have cc here
-        , bcc = [] // don't have bcc here
-        , subject = $('h2 b').text()
+    if (App.data.gmailView === 'basic html') {
+        from = $('#guser b').text();
 
-      // It there are multiple reply to options
-      if ($('#replyall').length) {
-        to = $('input[name='+$('#replyall').attr('name')+']:checked').closest('tr').find('label')
-          // retrieve text but child nodes
-          .clone().children().remove().end().text().trim().split(',')
-      } else {
-        to = $(element).closest('table').find('td').first().find('td').first()
-          // retrieve text but child nodes
-          .clone().children().remove().end().text().trim().split(',')
-      }
+        // Full options window
+        if ($('#to').length) {
+            to = $('#to').val().split(',');
+            cc = $('#cc').val().split(',');
+            bcc = $('#bcc').val().split(',');
+            subject = $('input[name=subject]').val();
+        } else { // Reply window
+            subject = $('h2 b').text();
+
+            // It there are multiple reply to options
+            if ($('#replyall').length) {
+                to = $('input[name='+$('#replyall').attr('name')+']:checked').closest('tr').find('label')
+                    // retrieve text but child nodes
+                    .clone().children().remove().end().text().trim().split(',');
+            } else {
+                to = $(element).closest('table').find('td').first().find('td').first()
+                    // retrieve text but child nodes
+                    .clone().children().remove().end().text().trim().split(',');
+            }
+        }
+    } else if (App.data.gmailView === 'standard') {
+        var $container = $(element).closest('table').parent().closest('table').parent().closest('table'),
+            from_email = $container.find('input[name=from]').val(),
+            // , from_name = $('span[email="'+from_email+'"]').length ? $('span[email="'+from_email+'"]').attr('name') : ''
+            // Taking name based on Google+ avatar name
+            from_name = $('a[href^="https://plus.google.com/u/0/"] img[alt]').length ? $('a[href^="https://plus.google.com/u/0/"] img[alt]').attr('alt') : '';
+
+        from = from_name + ' <' + from_email + '>';
+        to = $container.find('input[name=to]').toArray().map(function(a){return a.value;});
+        cc = $container.find('input[name=cc]').toArray().map(function(a){return a.value;});
+        bcc = $container.find('input[name=bcc]').toArray().map(function(a){return a.value;});
+        subject = $container.find('input[name=subject]').val();
     }
-  } else if (App.data.gmailView === 'standard') {
-    var $container = $(element).closest('table').parent().closest('table').parent().closest('table')
-      , from_email = $container.find('input[name=from]').val()
-      // , from_name = $('span[email="'+from_email+'"]').length ? $('span[email="'+from_email+'"]').attr('name') : ''
-      // Taking name based on Google+ avatar name
-      , from_name = $('a[href^="https://plus.google.com/u/0/"] img[alt]').length ? $('a[href^="https://plus.google.com/u/0/"] img[alt]').attr('alt') : ''
-      , from = from_name + ' <' + from_email + '>'
-      , to = $container.find('input[name=to]').toArray().map(function(a){return a.value})
-      , cc = $container.find('input[name=cc]').toArray().map(function(a){return a.value})
-      , bcc = $container.find('input[name=bcc]').toArray().map(function(a){return a.value})
-      , subject = $container.find('input[name=subject]').val()
-  }
 
-  return {
-    from: App.parser.parseList([from])
-  , to: App.parser.parseList(to)
-  , cc: App.parser.parseList(cc)
-  , bcc: App.parser.parseList(bcc)
-  , subject: subject
-  }
-}
+    return {
+        from: App.parser.parseList([from]),
+        to: App.parser.parseList(to),
+        cc: App.parser.parseList(cc),
+        bcc: App.parser.parseList(bcc),
+        subject: subject
+    };
+};
 
 App.parser.parseList = function(list) {
-  return list.filter(function(a){
-    return a
-  }).map(function(a){
-    return App.parser.parseString(a)
-  })
-}
+    return list.filter(function(a){
+        return a;
+    }).map(function(a){
+        return App.parser.parseString(a);
+    });
+};
 
-App.parser.regExString = /"?([^ ]*)\s*(.*)"?\s*<([^>]+)>/
-
-App.parser.regExEmail = /([\w!.%+\-])+@([\w\-])+(?:\.[\w\-]+)+/
+App.parser.regExString = /"?([^ ]*)\s*(.*)"?\s*<([^>]+)>/;
+App.parser.regExEmail = /([\w!.%+\-])+@([\w\-])+(?:\.[\w\-]+)+/;
 
 App.parser.parseString = function(string) {
-  var match = App.parser.regExString.exec(string)
-    , data = {
-        name: ''
-      , first_name: ''
-      , last_name: ''
-      , email: ''
-      }
+    var match = App.parser.regExString.exec(string),
+        data = {
+            name: '',
+            first_name: '',
+            last_name: '',
+            email: ''
+        };
 
-  if (match && match.length >= 4) {
-    data.first_name = match[1].replace('"', '').trim()
-    data.last_name = match[2].replace('"', '').trim()
-    data.name = data.first_name + (data.first_name && data.last_name ? ' ' : '') + data.last_name
-    data.email = match[3]
-  } else {
-    // try to match the email
-    match = App.parser.regExEmail.exec(string)
-    if(match) {
-      data.email = match[0]
+    if (match && match.length >= 4) {
+        data.first_name = match[1].replace('"', '').trim();
+        data.last_name = match[2].replace('"', '').trim();
+        data.name = data.first_name + (data.first_name && data.last_name ? ' ' : '') + data.last_name;
+        data.email = match[3];
+    } else {
+        // try to match the email
+        match = App.parser.regExEmail.exec(string);
+        if(match) {
+            data.email = match[0];
+        }
     }
-  }
 
-  return data
-}
+    return data;
+};
 
 var mirrorStyles = [
-    // Box Styles.
-    'box-sizing', 'height', 'width', 'padding-bottom', 'padding-left', 'padding-right', 'padding-top', 'margin-top',
-    'margin-bottom', 'margin-left', 'margin-right', 'border-width'
-    // Font stuff.
-    , 'font-family', 'font-size', 'font-style', 'font-variant', 'font-weight'
-    // Spacing etc.
-    , 'word-spacing', 'letter-spacing', 'line-height', 'text-decoration', 'text-indent', 'text-transform'
-    // The direction.
-    , 'direction'
-    ]
-  , KEY_TAB = 9
-  , KEY_ENTER = 13
-  , KEY_ESCAPE = 27
-  , KEY_UP = 38
-  , KEY_DOWN = 40
+        // Box Styles.
+        'box-sizing', 'height', 'width', 'padding-bottom', 'padding-left', 'padding-right', 'padding-top', 'margin-top',
+        'margin-bottom', 'margin-left', 'margin-right', 'border-width',
+        // Font stuff.
+        'font-family', 'font-size', 'font-style', 'font-variant', 'font-weight',
+        // Spacing etc.
+        'word-spacing', 'letter-spacing', 'line-height', 'text-decoration', 'text-indent', 'text-transform',
+        // The direction.
+        'direction'
+    ],
+    KEY_TAB = 9,
+    KEY_ENTER = 13,
+    KEY_ESCAPE = 27,
+    KEY_UP = 38,
+    KEY_DOWN = 40;
 
-App.autocomplete.isActive = false
-App.autocomplete.$dropdown = null
-App.autocomplete.isEmpty = null
-App.autocomplete.quicktexts = []
-App.autocomplete.cursorPosition = null
+App.autocomplete.isActive = false;
+App.autocomplete.$dropdown = null;
+App.autocomplete.isEmpty = null;
+App.autocomplete.quicktexts = [];
+App.autocomplete.cursorPosition = null;
 
 PubSub.subscribe('focus', function(action, element, gmailView) {
   if (action === 'off') {
-    App.autocomplete.close()
+    App.autocomplete.close();
   }
-})
+});
 
 
 App.autocomplete.onKeyDown = function (e) {
@@ -11630,130 +11627,130 @@ App.autocomplete.onKeyDown = function (e) {
   if (App.data.inCompose && e.keyCode == KEY_TAB) {
     if (App.autocomplete.isActive) {
       // Simulate closing
-      App.autocomplete.close()
+      App.autocomplete.close();
       // Do not prevent default
     } else {
-      e.preventDefault()
-      e.stopPropagation()
+      e.preventDefault();
+      e.stopPropagation();
 
-      App.autocomplete.onKey(e.keyCode, e)
+      App.autocomplete.onKey(e.keyCode, e);
     }
   }
 
   // Press control keys when autocomplete is active
   if (App.autocomplete.isActive && ~[KEY_ENTER, KEY_UP, KEY_DOWN].indexOf(e.keyCode)) {
-    e.preventDefault()
-    e.stopPropagation()
+    e.preventDefault();
+    e.stopPropagation();
 
-    App.autocomplete.onKey(e.keyCode)
+    App.autocomplete.onKey(e.keyCode);
   }
 
   // Only prevent propagation as we'll handle escape on keyup
   // because well have to set autocomplete.active as false and it will propagate on keyup
   if (App.autocomplete.isActive && e.keyCode == KEY_ESCAPE) {
-    e.preventDefault()
-    e.stopPropagation()
+    e.preventDefault();
+    e.stopPropagation();
   }
 
   // If dropdown is active but the pressed key is different from what we expect
   if (App.autocomplete.isActive && !~[KEY_TAB, KEY_ENTER, KEY_ESCAPE, KEY_UP, KEY_DOWN].indexOf(e.keyCode)) {
-    App.autocomplete.close()
+    App.autocomplete.close();
   }
-}
+};
 
 App.autocomplete.onKeyUp = function(e) {
   // Allways prevent tab propagation
   if (App.data.inCompose && e.keyCode == KEY_TAB) {
-    e.preventDefault()
-    e.stopPropagation()
+    e.preventDefault();
+    e.stopPropagation();
   }
 
   if (App.autocomplete.isActive) {
     // Just prevent propagation
     if (~[KEY_ENTER, KEY_ESCAPE, KEY_UP, KEY_DOWN].indexOf(e.keyCode)) {
-      e.preventDefault()
-      e.stopPropagation()
+      e.preventDefault();
+      e.stopPropagation();
     }
 
     // Escape
     if (e.keyCode == KEY_ESCAPE) {
-      App.autocomplete.onKey(e.keyCode)
+      App.autocomplete.onKey(e.keyCode);
     }
   }
-}
+};
 
 App.autocomplete.onKey = function(key, e) {
   switch(key) {
     case KEY_TAB:
-      this.checkWord(e)
-    break
+      this.checkWord(e);
+    break;
     case KEY_ENTER:
-      this.selectActive()
-    break
+      this.selectActive();
+    break;
     case KEY_ESCAPE:
-      this.close()
-    break
+      this.close();
+    break;
     case KEY_UP:
-      this.changeSelection('prev')
-    break
+      this.changeSelection('prev');
+    break;
     case KEY_DOWN:
-      this.changeSelection('next')
-    break
+      this.changeSelection('next');
+    break;
   }
-}
+};
 
 App.autocomplete.checkWord = function(e) {
-  var cursorPosition = this.getCursorPosition(e)
-  this.cursorPosition = cursorPosition
+  var cursorPosition = this.getCursorPosition(e);
+  this.cursorPosition = cursorPosition;
 
   // Display loading
-  this.dropdownCreate(cursorPosition)
+  this.dropdownCreate(cursorPosition);
 
-  var word = this.getSelectedWord(cursorPosition)
+  var word = this.getSelectedWord(cursorPosition);
 
   // Cache word
-  cursorPosition.word = word
+  cursorPosition.word = word;
 
   // TODO move search into background and retrieve filtered results
-  if (word.text == '') {
-    App.autocomplete.dropdownPopulate([])
+  if (word.text === '') {
+    App.autocomplete.dropdownPopulate([]);
   } else {
     // Load all tags
     App.settings.get('quicktexts', function(elements){
       // Search for match
       App.autocomplete.quicktexts = elements.filter(function(a) {
         // TODO search for mathc in whole shorcut (now searches for match starting with the beginning)
-        return a.shortcut.indexOf(word.text) === 0
-      })
+        return a.shortcut.indexOf(word.text) === 0;
+      });
 
-      App.autocomplete.dropdownPopulate(App.autocomplete.quicktexts)
+      App.autocomplete.dropdownPopulate(App.autocomplete.quicktexts);
     });
   }
-}
+};
 
 // TODO make dropdown position relative so on scrolling it will stay in right place
 App.autocomplete.dropdownCreate = function(cursorPosition) {
   // Add loading dropdown
-  this.$dropdown = $('<ul id="qt-dropdown" class="qt-dropdown"><li class="default">Loading...</li></ul>').insertAfter(cursorPosition.elementMain)
+  this.$dropdown = $('<ul id="qt-dropdown" class="qt-dropdown"><li class="default">Loading...</li></ul>').insertAfter(cursorPosition.elementMain);
   this.$dropdown.css({
-    top: (cursorPosition.absolute.top + cursorPosition.absolute.height - $(window).scrollTop()) + 'px'
-  , left: (cursorPosition.absolute.left + cursorPosition.absolute.width - $(window).scrollLeft()) + 'px'
-  })
+    top: (cursorPosition.absolute.top + cursorPosition.absolute.height - $(window).scrollTop()) + 'px',
+    left: (cursorPosition.absolute.left + cursorPosition.absolute.width - $(window).scrollLeft()) + 'px'
+  });
 
-  this.isActive = true
-  this.isEmpty = true
+  this.isActive = true;
+  this.isEmpty = true;
 
   // Handle mouse hover and click
   this.$dropdown.on('mouseover mousedown', 'li.qt-item', function(e) {
-    e.preventDefault()
-    e.stopPropagation()
+    e.preventDefault();
+    e.stopPropagation();
 
-    App.autocomplete.dropdownSelectItem($(this).index())
+    App.autocomplete.dropdownSelectItem($(this).index());
     if (e.type === 'mousedown') {
-      App.autocomplete.selectActive()
+      App.autocomplete.selectActive();
     }
-  })
-}
+  });
+};
 
 App.autocomplete.dropdownPopulate = function(elements) {
   if (elements.length) {
@@ -11763,291 +11760,298 @@ App.autocomplete.dropdownPopulate = function(elements) {
               <span class='qt-shortcut'>{{shortcut}}</span>\
               <span class='qt-title'>{{title}}</span>\
             </li>\
-          {{/each}}"
-      , content = Handlebars.compile(listElements)({elements: elements})
+          {{/each}}",
+        content = Handlebars.compile(listElements)({elements: elements});
 
-    this.$dropdown.html(content)
-    this.isEmpty = false
+    this.$dropdown.html(content);
+    this.isEmpty = false;
 
     // Set first element active
-    this.dropdownSelectItem(0)
+    this.dropdownSelectItem(0);
   } else {
-    this.$dropdown.html('<li class="default">No results found.<br>Press Esc to close this window.<br>Press Tab to jump to Send button.</li>')
-    this.isEmpty = true
+    this.$dropdown.html('<li class="default">No results found.<br>Press Esc to close this window.<br>Press Tab to jump to Send button.</li>');
+    this.isEmpty = true;
   }
-}
+};
 
 App.autocomplete.dropdownSelectItem = function(index) {
-  if (this.isActive && !this.isEmpty) {
-    this.$dropdown.children()
-      .removeClass('active')
-      .eq(index)
-        .addClass('active')
-  }
-}
+    if (this.isActive && !this.isEmpty) {
+        this.$dropdown.children()
+            .removeClass('active')
+            .eq(index)
+            .addClass('active');
+    }
+};
 
 App.autocomplete.getSelectedWord = function(cursorPosition) {
-  var word = {
-        start: 0
-      , end: 0
-      , text: ''
-      }
+    var word = {
+        start: 0,
+        end: 0,
+        text: ''
+    };
+    var string;
 
-  if (App.data.gmailView === 'basic html') {
-    var string = $(cursorPosition.element).val().substr(0, cursorPosition.end)
-  } else if (App.data.gmailView === 'standard') {
-    // Get text from node start until cursorPosition.end
-    var range = new Range()
-    range.setStart(cursorPosition.element, 0)
-    range.setEnd(cursorPosition.element, cursorPosition.end)
-    var string = range.toString()
-  }
-  // Replace all nbsp with normal spaces
-  string = string.replace('\xa0', ' ')
+    if (App.data.gmailView === 'basic html') {
+        string = $(cursorPosition.element).val().substr(0, cursorPosition.end);
+    } else if (App.data.gmailView === 'standard') {
+        // Get text from node start until cursorPosition.end
+        var range = new Range();
+        range.setStart(cursorPosition.element, 0);
+        range.setEnd(cursorPosition.element, cursorPosition.end);
+        string = range.toString();
+    }
+    // Replace all nbsp with normal spaces
+    string = string.replace('\xa0', ' ');
 
-  word.start = Math.max(string.lastIndexOf(" "), string.lastIndexOf("\n")) + 1
-  word.text = string.substr(word.start)
-  word.end = word.start + word.text.length
+    word.start = Math.max(string.lastIndexOf(" "), string.lastIndexOf("\n")) + 1;
+    word.text = string.substr(word.start);
+    word.end = word.start + word.text.length;
 
-  return word
-}
+    return word;
+};
 
 /*
   Moves focus from editable content to Send button
 */
 App.autocomplete.focusNext = function(element) {
-  if (App.data.gmailView == 'basic html') {
-    var elements = $(element).closest('table').find('input,textarea,button')
-      , button = elements.eq(elements.index(element)+1)
-  } else if (App.data.gmailView === 'standard') {
-    var button = $(element).closest('table').parent().closest('table').find('[role=button][tabindex="1"]')
-  }
+    var button;
+    if (App.data.gmailView == 'basic html') {
+        var elements = $(element).closest('table').find('input,textarea,button');
+        button = elements.eq(elements.index(element)+1);
+    } else if (App.data.gmailView === 'standard') {
+        button = $(element).closest('table').parent().closest('table').find('[role=button][tabindex="1"]');
+    }
 
-  if (button.length) {
-    button.focus()
-  }
-}
+    if (button.length) {
+        button.focus();
+    }
+};
 
 App.autocomplete.getCursorPosition = function(e) {
-  var position = {
-        start: 0
-      , end: 0
-      , absolute: {
-          left: 0
-        , top: 0
-        }
-      , element: null
-      , elementMain: e.target
-      , word: null
-      }
+    var position = {
+        start: 0,
+        end: 0,
+        absolute: {
+            left: 0,
+            top: 0
+        },
+        element: null,
+        elementMain: e.target,
+        word: null
+    };
+    var $caret;
 
   // Working with textarea
   // Create a mirror element, copy textarea styles
   // Insert text until selectionEnd
   // Insert a virtual cursor and find its position
   if (App.data.gmailView === 'basic html') {
-    position.element = e.target
-    position.start = position.element.selectionStart
-    position.end = position.element.selectionEnd
+    position.element = e.target;
+    position.start = position.element.selectionStart;
+    position.end = position.element.selectionEnd;
 
-    var $mirror = $('<div id="qt-mirror" class="qt-mirror"/>').addClass(position.element.className)
-      , $source = $(position.element)
-      , $sourcePosition = $source.position()
+    var $mirror = $('<div id="qt-mirror" class="qt-mirror"/>').addClass(position.element.className),
+        $source = $(position.element),
+        $sourcePosition = $source.position();
 
     // copy all styles
-    for (var i = 0, style; style = mirrorStyles[i]; i++) {
-      $mirror.css(style, $source.css(style))
+    for (var i in mirrorStyles) {
+        var style = mirrorStyles[i];
+        $mirror.css(style, $source.css(style));
     }
 
     // set absolute position
-    $mirror.css({top: $sourcePosition.top + 'px', left: $sourcePosition.left + 'px'})
+    $mirror.css({top: $sourcePosition.top + 'px', left: $sourcePosition.left + 'px'});
 
     // copy content
-    $mirror.html($source.val().substr(0, position.end).split("\n").join('<br>'))
-    $mirror.append('<span id="qt-caret" class="qt-caret"/>')
+    $mirror.html($source.val().substr(0, position.end).split("\n").join('<br>'));
+    $mirror.append('<span id="qt-caret" class="qt-caret"/>');
 
     // insert mirror
-    $mirror.insertAfter($source)
+    $mirror.insertAfter($source);
 
-    var $caret = $('#qt-caret')
-    position.absolute = $caret.offset()
-    position.absolute.width = $caret.width()
-    position.absolute.height = $caret.height()
+    $caret = $('#qt-caret');
+    position.absolute = $caret.offset();
+    position.absolute.width = $caret.width();
+    position.absolute.height = $caret.height();
 
-    $mirror.remove()
+    $mirror.remove();
 
   // Working with editable div
   // Insert a virtual cursor, find its position
   // http://stackoverflow.com/questions/16580841/insert-text-at-caret-in-contenteditable-div
   } else if (App.data.gmailView === 'standard') {
-    var selection = window.getSelection()
-      , range = selection.getRangeAt(0)
+    var selection = window.getSelection(),
+        range = selection.getRangeAt(0);
 
-    position.element = selection.baseNode
-    position.start = range.startOffset
-    position.end = range.endOffset
+    position.element = selection.baseNode;
+    position.start = range.startOffset;
+    position.end = range.endOffset;
 
-    range.collapse(false)   // collapse at end
-    range.deleteContents()
+    range.collapse(false);   // collapse at end
+    range.deleteContents();
 
     // Add virtual caret
-    range.insertNode(range.createContextualFragment('<span id="qt-caret"></span>'))
+    range.insertNode(range.createContextualFragment('<span id="qt-caret"></span>'));
 
     // Virtual caret
-    var $caret = $('#qt-caret')
+    $caret = $('#qt-caret');
 
     if ($caret.length) {
       // Set caret back at old position
-      range = range.cloneRange()
-      range.setStartAfter($caret[0])
-      range.collapse(true)
-      selection.removeAllRanges()
-      selection.addRange(range)
+      range = range.cloneRange();
+      range.setStartAfter($caret[0]);
+      range.collapse(true);
+      selection.removeAllRanges();
+      selection.addRange(range);
 
-      position.absolute = $caret.offset()
-      position.absolute.width = $caret.width()
-      position.absolute.height = $caret.height()
+      position.absolute = $caret.offset();
+      position.absolute.width = $caret.width();
+      position.absolute.height = $caret.height();
 
       // Remove virtual caret
-      $caret.remove()
+      $caret.remove();
     }
   }
 
-  return position
-}
+  return position;
+};
 
 App.autocomplete.selectActive = function() {
   if (this.isActive && !this.isEmpty && this.quicktexts.length) {
-    var activeItemId = this.$dropdown.find('.active').data('id')
-      , quicktext = this.getQuicktextById(activeItemId)
+    var activeItemId = this.$dropdown.find('.active').data('id'),
+        quicktext = this.getQuicktextById(activeItemId);
 
-    this.replaceWith(quicktext)
+    this.replaceWith(quicktext);
   }
-}
+};
 
 App.autocomplete.replaceWith = function(quicktext) {
-  var cursorPosition = this.cursorPosition
-    , word = cursorPosition.word
+  var cursorPosition = this.cursorPosition,
+      word = cursorPosition.word,
+      replacement = "";
 
   if (App.data.gmailView == 'basic html') {
-    var $textarea = $(cursorPosition.element)
-      , value = $textarea.val()
-      , replacement = Handlebars.compile(quicktext.body)(App.parser.getData(cursorPosition.elementMain))
-      , valueNew = value.substr(0, word.start) + replacement + value.substr(word.end)
-      , cursorOffset = word.start + quicktext.body.length
+    var $textarea = $(cursorPosition.element),
+        value = $textarea.val();
 
-    $textarea.val(valueNew)
+    replacement = Handlebars.compile(quicktext.body)(App.parser.getData(cursorPosition.elementMain));
+
+    var valueNew = value.substr(0, word.start) + replacement + value.substr(word.end),
+        cursorOffset = word.start + quicktext.body.length;
+
+    $textarea.val(valueNew);
 
     // Set focus at the end of patch
-    $textarea.focus()
-    $textarea[0].setSelectionRange(cursorOffset, cursorOffset)
+    $textarea.focus();
+    $textarea[0].setSelectionRange(cursorOffset, cursorOffset);
   } else if (App.data.gmailView === 'standard') {
-    var selection = window.getSelection()
-      , range = selection.getRangeAt(0)
-      , replacement = Handlebars.compile(quicktext.body)(App.parser.getData(cursorPosition.elementMain)).replace(/\n/g, '<br>')
+    var selection = window.getSelection(),
+        range = selection.getRangeAt(0);
+    replacement = Handlebars.compile(quicktext.body)(App.parser.getData(cursorPosition.elementMain)).replace(/\n/g, '<br>');
 
-    range.setStart(cursorPosition.element, word.start)
-    range.setEnd(cursorPosition.element, word.end)
-    range.deleteContents()
-    range.insertNode(range.createContextualFragment(replacement + '<span id="qt-caret"></span>'))
+    range.setStart(cursorPosition.element, word.start);
+    range.setEnd(cursorPosition.element, word.end);
+    range.deleteContents();
+    range.insertNode(range.createContextualFragment(replacement + '<span id="qt-caret"></span>'));
 
     // Virtual caret
     // Used to set cursor position in right place
     // TODO find a better method to do that
-    var $caret = $('#qt-caret')
+    $caret = $('#qt-caret');
 
     if ($caret.length) {
       // Set caret back at old position
-      range = range.cloneRange()
-      range.setStartAfter($caret[0])
-      range.collapse(true)
-      selection.removeAllRanges()
-      selection.addRange(range)
+      range = range.cloneRange();
+      range.setStartAfter($caret[0]);
+      range.collapse(true);
+      selection.removeAllRanges();
+      selection.addRange(range);
 
       // Remove virtual caret
-      $caret.remove()
+      $caret.remove();
     }
   }
 
   // updates stats
   App.settings.stats('words', quicktext.body.split(" ").length, function(){});
-  App.autocomplete.close()
-}
+  App.autocomplete.close();
+};
 
 // TODO should request background
 App.autocomplete.getQuicktextById = function(id) {
-  return this.quicktexts.filter(function (a) {
-    return a.id === id
-  })[0]
-}
+    return this.quicktexts.filter(function (a) {
+        return a.id === id;
+    })[0];
+};
 
 App.autocomplete.close = function() {
-  if (App.autocomplete.isActive) {
-    this.$dropdown.remove()
-    this.$dropdown = null
+    if (App.autocomplete.isActive) {
+        this.$dropdown.remove();
+        this.$dropdown = null;
 
-    this.isActive = false
-    this.isEmpty = null
+        this.isActive = false;
+        this.isEmpty = null;
 
-    this.quicktexts = []
-    this.cursorPosition = null
-  }
-}
+        this.quicktexts = [];
+        this.cursorPosition = null;
+    }
+};
 
 App.autocomplete.changeSelection = function(direction) {
-  var index_diff = direction === 'prev' ? -1 : 1
-    , elements_count = this.$dropdown.children().length
-    , index_active = this.$dropdown.find('.active').index()
-    , index_new = Math.max(0, Math.min(elements_count -1, index_active + index_diff))
+    var index_diff = direction === 'prev' ? -1 : 1,
+        elements_count = this.$dropdown.children().length,
+        index_active = this.$dropdown.find('.active').index(),
+        index_new = Math.max(0, Math.min(elements_count -1, index_active + index_diff));
 
-  this.dropdownSelectItem(index_new)
-}
+    this.dropdownSelectItem(index_new);
+};
 
 /*
-	PubSub events
+   PubSub events
 */
 
 PubSub.subscribe('focus', function(action, element, gmailView) {
-	if (action === 'on') {
-		App.data.inCompose = true
-		App.data.composeElement = element
-		App.data.gmailView = gmailView
-	} else if (action === 'off') {
-		// Disable only focused areas
-		if (App.data.composeElement == element) {
-			App.data.inCompose = false
-			App.data.composeElement = null
-			App.data.gmailView = ''
-		}
-	}
-})
+    if (action === 'on') {
+        App.data.inCompose = true;
+        App.data.composeElement = element;
+        App.data.gmailView = gmailView;
+    } else if (action === 'off') {
+        // Disable only focused areas
+        if (App.data.composeElement == element) {
+            App.data.inCompose = false;
+            App.data.composeElement = null;
+            App.data.gmailView = '';
+        }
+    }
+});
 
 /*
-	Events handling
+    Events handling
 */
 
 App.onFocus = function(e) {
-	var target = e.target
+    var target = e.target;
 
-	// Disable any focus as there may be only one focus on a page
-	PubSub.publish('focus', 'off', target)
+    // Disable any focus as there may be only one focus on a page
+    PubSub.publish('focus', 'off', target);
 
-	// Check if it is the compose element
-	if (target.type === 'textarea' && target.getAttribute('name') === 'body') {
-		PubSub.publish('focus', 'on', target, 'basic html')
-	} else if (target.classList.contains('editable') && target.getAttribute('contenteditable')) {
-		PubSub.publish('focus', 'on', target, 'standard')
-	}
-}
+    // Check if it is the compose element
+    if (target.type === 'textarea' && target.getAttribute('name') === 'body') {
+        PubSub.publish('focus', 'on', target, 'basic html');
+    } else if (target.classList.contains('editable') && target.getAttribute('contenteditable')) {
+        PubSub.publish('focus', 'on', target, 'standard');
+    }
+};
 
 App.onBlur = function(e) {
-	PubSub.publish('focus', 'off', e.target)
-}
+    PubSub.publish('focus', 'off', e.target);
+};
 
 App.onKeyDown = function(e) {
-	App.autocomplete.onKeyDown(e)
-}
+    App.autocomplete.onKeyDown(e);
+};
 
 App.onKeyUp = function(e) {
-	App.autocomplete.onKeyUp(e)
-}
+    App.autocomplete.onKeyUp(e);
+};
