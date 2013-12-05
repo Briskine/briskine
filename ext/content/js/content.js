@@ -11681,7 +11681,7 @@ App.autocomplete.onKeyUp = function(e) {
 App.autocomplete.onKey = function(key, e) {
     switch(key) {
         case KEY_TAB:
-            this.checkWord(e);
+            this.keyCompletion(e);
             break;
         case KEY_ENTER:
             this.selectActive();
@@ -11695,6 +11695,26 @@ App.autocomplete.onKey = function(key, e) {
         case KEY_DOWN:
             this.changeSelection('next');
             break;
+    }
+};
+
+App.autocomplete.keyCompletion = function(e){
+    App.autocomplete.cursorPosition = this.getCursorPosition(e);
+    var word = this.getSelectedWord(App.autocomplete.cursorPosition);
+    App.autocomplete.cursorPosition.word = word;
+    if (word.text){
+        App.settings.get('quicktexts', function(quicktexts){
+            // Search for match
+            var filtered = quicktexts.filter(function(a) {
+                return a.shortcut.indexOf(word.text) === 0;
+            });
+            if (filtered.length){
+                // replace with the first quicktext found
+                App.autocomplete.replaceWith(filtered[0]);
+            } else { // no quicktext found.. focus the next element
+                App.autocomplete.nextFocusEl.focus();
+            }
+        });
     }
 };
 
@@ -11926,7 +11946,7 @@ App.autocomplete.selectActive = function() {
 };
 
 App.autocomplete.replaceWith = function(quicktext) {
-    var cursorPosition = this.cursorPosition,
+    var cursorPosition = App.autocomplete.cursorPosition,
         word = cursorPosition.word,
         replacement = "";
 
