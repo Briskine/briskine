@@ -34641,9 +34641,9 @@ gqApp.controller('PopupCtrl', function($scope, $rootScope, $timeout, QuicktextSe
     });
 
     $scope.insertQuicktext = function(index){
-        var id = $scope.quicktexts[index].id;
+        var quicktext = $scope.quicktexts[index];
         chrome.tabs.getSelected(null, function(tab) {
-            chrome.tabs.sendMessage(tab.id, {"action": "insert", "id": id}, function(response) {});
+            chrome.tabs.sendMessage(tab.id, {"action": "insert", "quicktext": quicktext}, function(response) {});
         });
     };
 
@@ -34663,19 +34663,22 @@ gqApp.controller('PopupCtrl', function($scope, $rootScope, $timeout, QuicktextSe
             active.offset().top - scrollContainer.offset().top + scrollContainer.scrollTop()
         );
     };
-
+    
+    var KEY_ENTER = 13,
+        KEY_UP = 38,
+        KEY_DOWN = 40;
     // key navigation
     $scope.keys = [];
-    $scope.keys.push({ code: 13, action: function() {
+    $scope.keys.push({ code: KEY_ENTER, action: function() {
         $scope.insertQuicktext( $scope.focusIndex );
     }});
-    $scope.keys.push({ code: 38, action: function() {
+    $scope.keys.push({ code: KEY_UP, action: function() {
         if ($scope.focusIndex > 0){
             $scope.focusIndex--;
             $scope.scroll();
         }
     }});
-    $scope.keys.push({ code: 40, action: function() {
+    $scope.keys.push({ code: KEY_DOWN, action: function() {
         if ($scope.focusIndex + 1 < $scope.quicktexts.length) {
             $scope.focusIndex++;
             $scope.scroll();

@@ -11847,17 +11847,18 @@ App.autocomplete.focusNext = function(element) {
 };
 
 App.autocomplete.getCursorPosition = function(e) {
-    var position = {
-        start: 0,
-        end: 0,
-        absolute: {
-            left: 0,
-            top: 0
-        },
-        element: null,
-        elementMain: e.target,
-        word: null
-    };
+    var target = e && e.target ? e.target : null,
+        position = {
+            start: 0,
+            end: 0,
+            absolute: {
+                left: 0,
+                top: 0
+            },
+            element: null,
+            elementMain: target,
+            word: null
+        };
     var $caret;
 
     // Working with textarea
@@ -12074,3 +12075,18 @@ App.onKeyDown = function(e) {
 App.onKeyUp = function(e) {
     App.autocomplete.onKeyUp(e);
 };
+
+var onMessage = chrome.runtime.onMessage || chrome.extension.onMessage;
+
+// wait for the background page to send a message to the content script
+onMessage.addListener(
+function(request, sender, sendResponse) {
+    // insert quicktext
+    if (request.action && request.action == 'insert'){
+        var quicktext = request.quicktext;
+
+        App.autocomplete.cursorPosition = App.autocomplete.getCursorPosition();
+        App.autocomplete.cursorPosition.word = "";
+        App.autocomplete.replaceWith(quicktext);
+    }
+});

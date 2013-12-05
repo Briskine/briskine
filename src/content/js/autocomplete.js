@@ -253,17 +253,18 @@ App.autocomplete.focusNext = function(element) {
 };
 
 App.autocomplete.getCursorPosition = function(e) {
-    var position = {
-        start: 0,
-        end: 0,
-        absolute: {
-            left: 0,
-            top: 0
-        },
-        element: null,
-        elementMain: e.target,
-        word: null
-    };
+    var target = e && e.target ? e.target : null,
+        position = {
+            start: 0,
+            end: 0,
+            absolute: {
+                left: 0,
+                top: 0
+            },
+            element: null,
+            elementMain: target,
+            word: null
+        };
     var $caret;
 
     // Working with textarea

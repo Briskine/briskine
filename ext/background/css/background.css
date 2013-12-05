@@ -7580,4 +7580,5 @@ td.visible-print {
 .quicktext-filters{margin-top:10px;margin-bottom:10px}
 #popup-container{min-width:629px;padding-top:13px;}
 #popup-container .search-table{width:100%}
-#popup-container #quicktext-table-container{height:300px;overflow-y:auto}
+#popup-container #quicktext-table-container{height:300px;overflow-y:auto;}
+#popup-container #quicktext-table-container tr{cursor:pointer}
