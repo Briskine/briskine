@@ -51,5 +51,16 @@
     },
     "default_popup": "pages/bg.html#/popup"
   },
+  "commands": {
+      "_execute_page_action": {
+          "suggested_key": {
+              "default": "Ctrl+I",
+              "windows": "Alt+P",
+              "mac": "Ctrl+I",
+              "linux": "Ctrl+Shift+J",
+              "chromeos": "Ctrl+Shift+U"
+          }
+      }
+  },
   "content_security_policy": "script-src 'self' 'unsafe-eval' https://gmail-quicktext.com; object-src 'self'"
 }
