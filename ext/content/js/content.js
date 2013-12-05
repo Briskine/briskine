@@ -11712,7 +11712,7 @@ App.autocomplete.keyCompletion = function(e){
                 // replace with the first quicktext found
                 App.autocomplete.replaceWith(filtered[0]);
             } else { // no quicktext found.. focus the next element
-                App.autocomplete.nextFocusEl.focus();
+                //App.autocomplete.nextFocusEl.focus();
             }
         });
     }
