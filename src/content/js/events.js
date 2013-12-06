@@ -25,7 +25,7 @@ App.onFocus = function(e) {
     var target = e.target;
 
     // Disable any focus as there may be only one focus on a page
-    PubSub.publish('focus', 'off', target);
+    // PubSub.publish('focus', 'off', target);
 
     // Check if it is the compose element
     if (target.type === 'textarea' && target.getAttribute('name') === 'body') {
@@ -46,3 +46,26 @@ App.onKeyDown = function(e) {
 App.onKeyUp = function(e) {
     App.autocomplete.onKeyUp(e);
 };
+
+// Chrome events
+var onMessage = chrome.runtime.onMessage || chrome.extension.onMessage;
+
+// wait for the background page to send a message to the content script
+onMessage.addListener(
+function(request, sender, sendResponse) {
+    console.log(App.doc);
+    // insert quicktext
+    if (request.action && request.action == 'insert'){
+        var quicktext = request.quicktext;
+        var dest = App.doc.getSelection();
+        var e = {
+            target: dest.baseNode
+        };
+
+        // return focus to it's rightful owner
+        App.onFocus(e);
+        App.autocomplete.cursorPosition = App.autocomplete.getCursorPosition(e);
+        App.autocomplete.cursorPosition.word = "";
+        App.autocomplete.replaceWith(quicktext);
+    }
+});

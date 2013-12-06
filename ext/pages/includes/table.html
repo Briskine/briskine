@@ -33,7 +33,8 @@
   </thead>
   <tbody>
     <tr ng-repeat="quicktext in quicktexts | filter:searchText | tagFilter:filterTags "
-      ng-class="{'active': $index === focusIndex}">
+        ng-class="{'active': $index === focusIndex}"
+        ng-click="controller == 'PopupCtrl' ? insertQuicktext($index) : true">
       <td>{{quicktext.title}}</td>
       <td ng-hide="controller == 'PopupCtrl'">{{quicktext.subject}}</td>
       <td>{{quicktext.shortcut}}</td>

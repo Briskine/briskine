@@ -18,6 +18,8 @@ gqApp.controller('PopupCtrl', function($scope, $rootScope, $timeout, QuicktextSe
         var quicktext = $scope.quicktexts[index];
         chrome.tabs.getSelected(null, function(tab) {
             chrome.tabs.sendMessage(tab.id, {"action": "insert", "quicktext": quicktext}, function(response) {});
+            // after inserting a quicktext close the popup
+            window.close();
         });
     };
 
@@ -37,7 +39,7 @@ gqApp.controller('PopupCtrl', function($scope, $rootScope, $timeout, QuicktextSe
             active.offset().top - scrollContainer.offset().top + scrollContainer.scrollTop()
         );
     };
-    
+
     var KEY_ENTER = 13,
         KEY_UP = 38,
         KEY_DOWN = 40;
@@ -46,6 +48,7 @@ gqApp.controller('PopupCtrl', function($scope, $rootScope, $timeout, QuicktextSe
     $scope.keys.push({ code: KEY_ENTER, action: function() {
         $scope.insertQuicktext( $scope.focusIndex );
     }});
+
     $scope.keys.push({ code: KEY_UP, action: function() {
         if ($scope.focusIndex > 0){
             $scope.focusIndex--;
