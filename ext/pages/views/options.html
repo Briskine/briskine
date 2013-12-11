@@ -18,7 +18,7 @@
           </div>
         </div>
         <div class="anonymous" ng-show="!profile.isLoggedin">
-          <a href="{{settings.get('baseURL')}}register/">Register</a> to benefit from <em>collaboration</em> with your team, <em>easy backup</em> and other features.
+          <a ng-click="showLogin()" href="">Login</a> or <a ng-click="showRegister()" href="#">Sign Up</a> to <em>share</em> quicktexts with your team.
         </div> 
         <div class="clearfix">&nbsp;</div>
         <div class="profile-extra">
@@ -38,7 +38,7 @@
       <input type="checkbox" id="tabcompleteEnabled" ng-model="tabcompleteEnabled" ng-change="settings.set('tabcompleteEnabled', tabcompleteEnabled)" />
     </div>
     <div class="checkbox">
-      <label for="sendStats" data-toggle="tooltip" data-placement="bottom" data-original-title="Help improve the quicktext extension by sending anonymous statistics.">Send usage statistics <span class="glyphicon glyphicon-question-sign"></span></label>
+      <label for="sendStats" data-toggle="tooltip" data-placement="bottom" data-original-title="Help improve the Quicktext by sending anonymous statistics.">Send usage statistics <span class="glyphicon glyphicon-question-sign"></span></label>
       <input type="checkbox" id="sendStats" ng-model="sendStatsEnabled" ng-change="settings.set('sendStatsEnabled', sendStatsEnabled)" />
     </div> 
     </li>
@@ -65,6 +65,7 @@
     <div class="container">
       <div ng-include="'includes/table.html'"></div>
       <div ng-include="'includes/form.html'"></div>
+      <div ng-include="'includes/login.html'"></div>
     </div>
   </div> <!-- .page-content-wrapper -->
 </div> <!-- #wrapper -->

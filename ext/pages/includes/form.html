@@ -1,4 +1,4 @@
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal fade" id="quicktext-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
@@ -8,7 +8,7 @@
           <span ng-if="!selectedQt.id">New Quicktext</span>
         </h4>
       </div>
-      <div class="modal-body quicktext-form ">
+      <div class="modal-body quicktext-form">
         <form role="form" class="form-horizontal" name="quicktext-form0" action="">
           <input type="hidden" id="qt-id" ng-model="selectedQt.id" /> <!-- local id -->
           <input type="hidden" id="qt-key" ng-model="selectedQt.key" /> <!-- sync server id -->

@@ -34562,10 +34562,14 @@ gqApp.controller('OptionsCtrl', function($scope, $rootScope, QuicktextService, S
             });
         }
 
-        $('.modal').modal();
+        $('#quicktext-modal').modal();
         $('.modal').on('shown.bs.modal', function () { //put focus on the first text input
             $(this).find('input[type=text]:first').focus();
         });
+    };
+
+    $scope.showLogin = function(){
+        $("#login-modal").modal();
     };
 
     // Delete a quicktext. This operation should first delete from the localStorage
