@@ -26,8 +26,6 @@ var App = {
 };
 
 App.init = function() {
-    App.doc = document;
-    console.log(App.doc);
     document.addEventListener("blur", App.onBlur, true);
     document.addEventListener("focus", App.onFocus, true);
     document.addEventListener("keydown", App.onKeyDown, true);

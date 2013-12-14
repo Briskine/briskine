@@ -34666,9 +34666,11 @@ gqApp.controller('PopupCtrl', function($scope, $rootScope, $timeout, QuicktextSe
 
     $scope.insertQuicktext = function(index){
         var quicktext = $scope.quicktexts[index];
-        chrome.tabs.getSelected(null, function(tab) {
-            chrome.tabs.sendMessage(tab.id, {"action": "insert", "quicktext": quicktext}, function(response) {});
-            // after inserting a quicktext close the popup
+        chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+            chrome.tabs.sendMessage(tabs[0].id, {
+                "action": "insert",
+                "quicktext": quicktext
+            }, function(response) {});
             window.close();
         });
     };

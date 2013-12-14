@@ -11486,8 +11486,6 @@ var App = {
 };
 
 App.init = function() {
-    App.doc = document;
-    console.log(App.doc);
     document.addEventListener("blur", App.onBlur, true);
     document.addEventListener("focus", App.onFocus, true);
     document.addEventListener("keydown", App.onKeyDown, true);
@@ -12039,8 +12037,7 @@ PubSub.subscribe('focus', function(action, element, gmailView) {
         App.data.composeElement = element;
         App.data.gmailView = gmailView;
     } else if (action === 'off') {
-        // Disable only focused areas
-        if (App.data.composeElement == element) {
+        if (App.data.composeElement !== element) {
             App.data.inCompose = false;
             App.data.composeElement = null;
             App.data.gmailView = '';
@@ -12058,6 +12055,7 @@ App.onFocus = function(e) {
     // Disable any focus as there may be only one focus on a page
     // PubSub.publish('focus', 'off', target);
 
+    // TODO: some refactoring here
     // Check if it is the compose element
     if (target.type === 'textarea' && target.getAttribute('name') === 'body') {
         PubSub.publish('focus', 'on', target, 'basic html');
@@ -12078,25 +12076,24 @@ App.onKeyUp = function(e) {
     App.autocomplete.onKeyUp(e);
 };
 
-// Chrome events
-var onMessage = chrome.runtime.onMessage || chrome.extension.onMessage;
-
 // wait for the background page to send a message to the content script
-onMessage.addListener(
+chrome.runtime.onMessage.addListener(
 function(request, sender, sendResponse) {
-    console.log(App.doc);
     // insert quicktext
     if (request.action && request.action == 'insert'){
-        var quicktext = request.quicktext;
-        var dest = App.doc.getSelection();
-        var e = {
-            target: dest.baseNode
-        };
+        if (App.data.inCompose){
+            var quicktext = request.quicktext;
+            var dest = document.getSelection();
+            var e = {
+                target: dest.baseNode
+            };
 
-        // return focus to it's rightful owner
-        App.onFocus(e);
-        App.autocomplete.cursorPosition = App.autocomplete.getCursorPosition(e);
-        App.autocomplete.cursorPosition.word = "";
-        App.autocomplete.replaceWith(quicktext);
+            // return focus to it's rightful owner
+            App.onFocus(e);
+            App.autocomplete.cursorPosition = App.autocomplete.getCursorPosition(e);
+            App.autocomplete.cursorPosition.word = "";
+            App.autocomplete.replaceWith(quicktext);
+        }
     }
+    sendResponse();
 });
