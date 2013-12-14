@@ -4,8 +4,8 @@
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
         <h4 class="modal-title">
-          <span ng-if="selectedQt.id">Edit Quicktext</span>
-          <span ng-if="!selectedQt.id">New Quicktext</span>
+          <span ng-show="selectedQt.id">Edit Quicktext</span>
+          <span ng-show="!selectedQt.id">New Quicktext</span>
         </h4>
       </div>
       <div class="modal-body quicktext-form">
@@ -36,6 +36,7 @@
       </form>
     </div>
     <div class="modal-footer">
+      <span ng-show="selectedQt.id" class="duplicate-bottom pull-left"><a href="" ng-click="duplicateQt()">Duplicate quicktext</a></span>
       <button type="button" class="btn btn-primary" ng-click="saveQt()">Save quicktext</button>
       <span class="cancel-bottom">or <a href="" data-dismiss="modal">Cancel</a></span>
     </div>

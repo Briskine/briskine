@@ -34612,6 +34612,26 @@ gqApp.controller('OptionsCtrl', function($scope, $rootScope, QuicktextService, S
         QuicktextService.allTags().then(function(r){$scope.tags = r;});
     };
 
+    // Save a quicktext, perform some checks before
+    $scope.duplicateQt = function() {
+        if (!$scope.selectedQt.title){
+            alert("Please enter a Title");
+            return false;
+        }
+
+        if (!$scope.selectedQt.body){
+            alert("Please enter a Quicktext Template");
+            return false;
+        }
+
+        QuicktextService.create($scope.selectedQt);
+
+        // hide teh modal
+        $('.modal').modal('hide');
+        QuicktextService.quicktexts().then(function(r){$scope.quicktexts = r;});
+        QuicktextService.allTags().then(function(r){$scope.tags = r;});
+    };
+
     $scope.toggleFilterTag = function(){
         var index = $scope.filterTags.indexOf(this.tag);
         if (index === -1) {
