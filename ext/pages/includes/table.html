@@ -42,7 +42,7 @@
         <span ng-repeat="tag in quicktext.tags.split(',')" class="label label-default">{{tag}}</span>
       </td>
       <td title="{{quicktext.body}}" ng-bind-html="quicktext.body | truncate:100 | newlines | safe"></td>
-      <td ng-hide="controller == 'PopupCtrl'">
+      <td ng-hide="controller == 'PopupCtrl'" class="btn-group">
         <button class="btn btn-primary btn-xs edit-button" ng-click="showForm()">edit</button>
         <button class="btn btn-default btn-xs delete-button" ng-click="deleteQt()">delete</button>
       </td>
