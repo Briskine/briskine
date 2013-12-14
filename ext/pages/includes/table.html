@@ -38,7 +38,9 @@
       <td>{{quicktext.title}}</td>
       <td ng-hide="controller == 'PopupCtrl'">{{quicktext.subject}}</td>
       <td>{{quicktext.shortcut}}</td>
-      <td>{{quicktext.tags}}</td>
+      <td>
+        <span ng-repeat="tag in quicktext.tags.split(',')" class="label label-default">{{tag}}</span>
+      </td>
       <td title="{{quicktext.body}}" ng-bind-html="quicktext.body | truncate:100 | newlines | safe"></td>
       <td ng-hide="controller == 'PopupCtrl'">
         <button class="btn btn-primary btn-xs edit-button" ng-click="showForm()">edit</button>
