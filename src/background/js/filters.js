@@ -47,4 +47,3 @@ gqApp.filter('tagFilter', function(QuicktextService){
         }
     };
 });
-

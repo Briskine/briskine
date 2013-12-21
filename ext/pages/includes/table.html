@@ -41,7 +41,9 @@
       <td ng-hide="controller == 'PopupCtrl'">{{quicktext.subject}}</td>
       <td>{{quicktext.shortcut}}</td>
       <td>
-        <span ng-repeat="tag in quicktext.tags.split(',')" class="label label-default">{{tag}}</span>
+        <span ng-repeat="tag in quicktext.tags.split(',')">
+          <span class="label" ng-class="{true: 'label-primary', false: 'label-default'}[filterTags.indexOf(tag.trim()) !== -1]">{{tag.trim()}}</span>
+        </span>
       </td>
       <td title="{{quicktext.body}}" ng-bind-html="quicktext.body | truncate:100 | newlines | safe"></td>
       <td ng-hide="controller == 'PopupCtrl'" class="btn-group">

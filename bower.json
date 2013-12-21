@@ -16,11 +16,11 @@
     "tests"
   ],
   "dependencies": {
-    "angular": "~1.2.0",
-    "angular-route": "~1.2.0",
-    "angular-moment": "~0.5.0",
+    "angular": "~1.2.6",
+    "angular-route": "~1.2.6",
+    "angular-moment": "~0.5.2",
     "angular-md5": "~0.0.3",
-    "bootstrap": "~3.0.2",
+    "bootstrap": "~3.0.3",
     "jquery": "~2.0.3",
     "underscore": "~1.5.2",
     "underscore.string": "~2.3.3",
