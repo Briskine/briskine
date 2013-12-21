@@ -4,7 +4,7 @@
   <a href="" ng-click="deleteAll()">Delete all Quicktexts</a>
   -->
   <span class="pull-right search-table">
-    <input type="text" class="form-control" id="search-input" ng-model="searchText" placeholder="Search quicktexts" />
+    <input type="text" class="form-control" id="search-input" ng-model="searchText" ng-change="searchChange()" placeholder="Search quicktexts" />
   </span>
 </div>
 <div class="quicktext-filters pull-right">
@@ -34,7 +34,9 @@
   <tbody>
     <tr ng-repeat="quicktext in quicktexts | filter:searchText | tagFilter:filterTags "
         ng-class="{'active': $index === focusIndex}"
-        ng-click="controller == 'PopupCtrl' ? insertQuicktext($index) : true">
+        ng-click="controller == 'PopupCtrl' ? insertQuicktext($index) : true"
+        data-quicktext-id="{{quicktext.id}}"
+        >
       <td>{{quicktext.title}}</td>
       <td ng-hide="controller == 'PopupCtrl'">{{quicktext.subject}}</td>
       <td>{{quicktext.shortcut}}</td>

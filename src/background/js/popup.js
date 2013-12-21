@@ -15,13 +15,17 @@ gqApp.controller('PopupCtrl', function($scope, $rootScope, $timeout, QuicktextSe
     });
 
     $scope.insertQuicktext = function(index){
-        var quicktext = $scope.quicktexts[index];
-        chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-            chrome.tabs.sendMessage(tabs[0].id, {
-                "action": "insert",
-                "quicktext": quicktext
-            }, function(response) {});
-            window.close();
+        // get the quicktext id
+        var quicktext_id = $('#quicktext-table-container tbody tr:nth-child(' + (index + 1) + ')').attr('data-quicktext-id');
+        // getch the quicktext
+        QuicktextService.get(quicktext_id).then(function(quicktext){
+            chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+                chrome.tabs.sendMessage(tabs[0].id, {
+                    "action": "insert",
+                    "quicktext": quicktext
+                }, function(response) {});
+                window.close();
+            });
         });
     };
 
@@ -48,7 +52,7 @@ gqApp.controller('PopupCtrl', function($scope, $rootScope, $timeout, QuicktextSe
     // key navigation
     $scope.keys = [];
     $scope.keys.push({ code: KEY_ENTER, action: function() {
-        $scope.insertQuicktext( $scope.focusIndex );
+        $scope.insertQuicktext($scope.focusIndex);
     }});
 
     $scope.keys.push({ code: KEY_UP, action: function() {
@@ -74,6 +78,10 @@ gqApp.controller('PopupCtrl', function($scope, $rootScope, $timeout, QuicktextSe
       });
     });
 
+    // if the search changes the focus should be reset to 0 again
+    $scope.searchChange = function(){
+        $scope.focusIndex = 0;
+    };
 });
 
 // used for key navigation inside the popup
