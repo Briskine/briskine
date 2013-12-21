@@ -35302,6 +35302,15 @@ gqApp.controller('PopupCtrl', function($scope, $rootScope, $timeout, QuicktextSe
     $scope.searchChange = function(){
         $scope.focusIndex = 0;
     };
+
+    $scope.toggleFilterTag = function(){
+        var index = $scope.filterTags.indexOf(this.tag);
+        if (index === -1) {
+            $scope.filterTags.push(this.tag);
+        } else {
+            $scope.filterTags.splice(index, 1); // remove from tags
+        }
+    };
 });
 
 // used for key navigation inside the popup
