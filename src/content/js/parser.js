@@ -1,3 +1,10 @@
+/*
+ * Parse e-mail fields to, cc, bcc, subject and others.
+ *
+ * This is useful to populate the templates
+ *
+ * */
+
 App.parser.getData = function(element) {
     var fieldValues = this.getFieldValues(element);
 

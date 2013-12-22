@@ -1,3 +1,9 @@
+/*
+ * This is where the actual completion is happening
+ */
+
+// Mirror styles are used for creating a mirror element in order to track the
+// cursor in a textarea
 var mirrorStyles = [
         // Box Styles.
         'box-sizing', 'height', 'width', 'padding-bottom', 'padding-left', 'padding-right', 'padding-top', 'margin-top',
@@ -10,6 +16,7 @@ var mirrorStyles = [
         'direction'
     ],
     KEY_TAB = 9,
+    KEY_SHIFT = 16,
     KEY_ENTER = 13,
     KEY_ESCAPE = 27,
     KEY_UP = 38,
@@ -20,6 +27,7 @@ App.autocomplete.$dropdown = null;
 App.autocomplete.isEmpty = null;
 App.autocomplete.quicktexts = [];
 App.autocomplete.cursorPosition = null;
+App.autocomplete.shiftKey = false;
 
 PubSub.subscribe('focus', function(action, element, gmailView) {
     if (action === 'off') {
@@ -28,8 +36,13 @@ PubSub.subscribe('focus', function(action, element, gmailView) {
 });
 
 App.autocomplete.onKeyDown = function (e) {
-    // Press tab while in compose and tab pressed
-    if (App.data.inCompose && e.keyCode == KEY_TAB) {
+    if (e.keyCode === KEY_SHIFT){
+        App.autocomplete.shiftKey = true;
+        return;
+    }
+
+    // Press tab while in compose and tab pressed (but not shift+tab)
+    if (App.data.inCompose && e.keyCode == KEY_TAB && !App.autocomplete.shiftKey) {
         if (App.autocomplete.isActive) {
             // Simulate closing
             App.autocomplete.close();
@@ -64,7 +77,12 @@ App.autocomplete.onKeyDown = function (e) {
 };
 
 App.autocomplete.onKeyUp = function(e) {
-    // Allways prevent tab propagation
+    if (e.keyCode === KEY_SHIFT){
+        App.autocomplete.shiftKey = false;
+        return;
+    }
+
+    // Always prevent tab propagation
     if (App.data.inCompose && e.keyCode == KEY_TAB) {
         e.preventDefault();
         e.stopPropagation();
@@ -118,9 +136,11 @@ App.autocomplete.keyCompletion = function(e){
                 // replace with the first quicktext found
                 App.autocomplete.replaceWith(filtered[0]);
             } else { // no quicktext found.. focus the next element
-                //App.autocomplete.nextFocusEl.focus();
+                App.autocomplete.focusNext(e.target);
             }
         });
+    } else {
+        App.autocomplete.focusNext(e.target);
     }
 };
 
@@ -307,8 +327,8 @@ App.autocomplete.getCursorPosition = function(e) {
         // Insert a virtual cursor, find its position
         // http://stackoverflow.com/questions/16580841/insert-text-at-caret-in-contenteditable-div
     } else if (App.data.gmailView === 'standard') {
-        var selection = window.getSelection(),
-            range = selection.getRangeAt(0);
+        var selection = window.getSelection();
+        var range = selection.getRangeAt(0);
 
         position.element = selection.baseNode;
         position.start = range.startOffset;

@@ -1,7 +1,9 @@
 /*
-    Patterns
-*/
+ * Patterns
+ *
+ */
 
+// Observer pattern
 var PubSub = {
     observers: [],
     subscribe: function(topic, observer) {
