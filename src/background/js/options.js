@@ -84,6 +84,7 @@ gqApp.controller('OptionsCtrl', function($scope, $rootScope, QuicktextService, S
             alert("Please enter a Quicktext Template");
             return false;
         }
+
         if ($scope.selectedQt.id) {
             QuicktextService.update($scope.selectedQt);
         } else {

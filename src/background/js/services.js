@@ -44,11 +44,23 @@ gqApp.service('QuicktextService', function($q, md5){
         return deferred.promise;
     };
 
+    // given a string with tags give a clean list
+    // remove spaces, duplicates and so on
+    self._clean_tags = function(tags){
+        var tArray = _.filter(tags.split(','), function(tag){
+            if (tag.trim() !== ''){
+                return true;
+            }
+        });
+        tags = _.unique(_.map(tArray, function(t){ return t.trim()})).join(', ');
+        return tags;
+    }
+
     // create and try to sync
     self.create = function(qt){
         self.db.transaction(function(tx){
             tx.executeSql("INSERT INTO quicktext (key, title, subject, shortcut, tags, body) VALUES (?, ?, ?, ?, ?, ?)", [
-                qt.key, qt.title, qt.subject, qt.shortcut, qt.tags, qt.body
+                qt.key, qt.title, qt.subject, qt.shortcut, self._clean_tags(qt.tags), qt.body
             ]);
         });
     };
@@ -57,7 +69,7 @@ gqApp.service('QuicktextService', function($q, md5){
     self.update = function(qt){
         self.db.transaction(function(tx){
             tx.executeSql("UPDATE quicktext SET key = ?, title = ?, subject = ?, shortcut = ?, tags = ?, body = ? WHERE id = ?", [
-                qt.key, qt.title, qt.subject, qt.shortcut, qt.tags, qt.body, qt.id
+                qt.key, qt.title, qt.subject, qt.shortcut, self._clean_tags(qt.tags), qt.body, qt.id
             ]);
         });
     };
