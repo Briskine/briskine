@@ -28,6 +28,8 @@ gqApp.controller('OptionsCtrl', function($scope, $rootScope, QuicktextService, S
 
     // Show the form for adding a new quicktext or creating one
     $scope.showForm = function(id){
+        _gaq.push(['_trackEvent', "forms", 'show']);
+
         var defaults = {
             'id': '',
             'key': '',

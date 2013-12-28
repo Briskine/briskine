@@ -13102,7 +13102,7 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap requires jQuery");+func
 }).call(this);
 
 /**
- * @license AngularJS v1.2.7-build.2025+sha.d1c4766
+ * @license AngularJS v1.2.7-build.2029+sha.80e7a45
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -13171,7 +13171,7 @@ function minErr(module) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.2.7-build.2025+sha.d1c4766/' +
+    message = message + '\nhttp://errors.angularjs.org/1.2.7-build.2029+sha.80e7a45/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i-2) + '=' +
@@ -14934,7 +14934,7 @@ function setupModuleLoader(window) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.2.7-build.2025+sha.d1c4766',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.2.7-build.2029+sha.80e7a45',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 2,
   dot: 7,
@@ -24403,6 +24403,7 @@ function $RootScopeProvider(){
       this.$$asyncQueue = [];
       this.$$postDigestQueue = [];
       this.$$listeners = {};
+      this.$$listenerCount = {};
       this.$$isolateBindings = {};
     }
 
@@ -24462,6 +24463,7 @@ function $RootScopeProvider(){
         }
         child['this'] = child;
         child.$$listeners = {};
+        child.$$listenerCount = {};
         child.$parent = this;
         child.$$watchers = child.$$nextSibling = child.$$childHead = child.$$childTail = null;
         child.$$prevSibling = this.$$childTail;
@@ -24966,6 +24968,8 @@ function $RootScopeProvider(){
         this.$$destroyed = true;
         if (this === $rootScope) return;
 
+        forEach(this.$$listenerCount, bind(null, decrementListenerCount, this));
+
         if (parent.$$childHead == this) parent.$$childHead = this.$$nextSibling;
         if (parent.$$childTail == this) parent.$$childTail = this.$$prevSibling;
         if (this.$$prevSibling) this.$$prevSibling.$$nextSibling = this.$$nextSibling;
@@ -25155,8 +25159,18 @@ function $RootScopeProvider(){
         }
         namedListeners.push(listener);
 
+        var current = this;
+        do {
+          if (!current.$$listenerCount[name]) {
+            current.$$listenerCount[name] = 0;
+          }
+          current.$$listenerCount[name]++;
+        } while ((current = current.$parent));
+
+        var self = this;
         return function() {
           namedListeners[indexOf(namedListeners, listener)] = null;
+          decrementListenerCount(self, 1, name);
         };
       },
 
@@ -25268,8 +25282,7 @@ function $RootScopeProvider(){
             listeners, i, length;
 
         //down while you can, then up and next sibling or up and next sibling until back at root
-        do {
-          current = next;
+        while ((current = next)) {
           event.currentScope = current;
           listeners = current.$$listeners[name] || [];
           for (i=0, length = listeners.length; i<length; i++) {
@@ -25291,12 +25304,14 @@ function $RootScopeProvider(){
           // Insanity Warning: scope depth-first traversal
           // yes, this code is a bit crazy, but it works and we have tests to prove it!
           // this piece should be kept in sync with the traversal in $digest
-          if (!(next = (current.$$childHead || (current !== target && current.$$nextSibling)))) {
+          // (though it differs due to having the extra check for $$listenerCount)
+          if (!(next = ((current.$$listenerCount[name] && current.$$childHead) ||
+              (current !== target && current.$$nextSibling)))) {
             while(current !== target && !(next = current.$$nextSibling)) {
               current = current.$parent;
             }
           }
-        } while ((current = next));
+        }
 
         return event;
       }
@@ -25323,6 +25338,16 @@ function $RootScopeProvider(){
       var fn = $parse(exp);
       assertArgFn(fn, name);
       return fn;
+    }
+
+    function decrementListenerCount(current, count, name) {
+      do {
+        current.$$listenerCount[name] -= count;
+
+        if (current.$$listenerCount[name] === 0) {
+          delete current.$$listenerCount[name];
+        }
+      } while ((current = current.$parent));
     }
 
     /**
@@ -33642,7 +33667,7 @@ var styleDirective = valueFn({
 
 !angular.$$csp() && angular.element(document).find('head').prepend('<style type="text/css">@charset "UTF-8";[ng\\:cloak],[ng-cloak],[data-ng-cloak],[x-ng-cloak],.ng-cloak,.x-ng-cloak,.ng-hide{display:none !important;}ng\\:form{display:block;}</style>');
 /**
- * @license AngularJS v1.2.7-build.2025+sha.d1c4766
+ * @license AngularJS v1.2.7-build.2029+sha.80e7a45
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -34485,7 +34510,7 @@ function ngViewFactory(   $route,   $anchorScroll,   $animate) {
           var locals = $route.current && $route.current.locals,
               template = locals && locals.$template;
 
-          if (template) {
+          if (angular.isDefined(template)) {
             var newScope = scope.$new();
             var current = $route.current;
 
@@ -34933,10 +34958,11 @@ if(chrome.runtime){
         if (!document.querySelector('body[class=ng-scope]')) {
             angular.bootstrap('body', ['gqApp']);
         }
-        var injector = angular.element('body').injector(); 
+        var injector = angular.element('body').injector();
         if (request.request === 'get'){
             injector.get('QuicktextService').quicktexts().then(function(res){
                 sendResponse(res);
+                _gaq.push(['_trackEvent', "content", 'insert']);
             });
         }
         if (request.request === 'stats'){
@@ -34985,6 +35011,7 @@ if(chrome.runtime){
 
     // Called after installation: https://developer.chrome.com/extensions/runtime.html#event-onInstalled
     chrome.runtime.onInstalled.addListener(function(details){
+        _gaq.push(['_trackEvent', "general", 'installed-quicktext']);
         // All gmail tabs shoul be reloaded if the extension was installed
         chrome.tabs.query({'url': '*://mail.google.com/*'}, function(tabs){
             for (var i in tabs) {
@@ -35085,6 +35112,16 @@ gqApp.filter('tagFilter', function(QuicktextService){
     };
 });
 
+var _gaq = _gaq || [];
+_gaq.push(['_setAccount', 'UA-46737877-2']);
+_gaq.push(['_trackPageview']);
+
+(function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = 'https://ssl.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+})();
+
 gqApp.controller('OptionsCtrl', function($scope, $rootScope, QuicktextService, SettingsService, ProfileService) {
     $scope.controller = "OptionsCtrl";
     $scope.quicktexts = [];
@@ -35115,6 +35152,8 @@ gqApp.controller('OptionsCtrl', function($scope, $rootScope, QuicktextService, S
 
     // Show the form for adding a new quicktext or creating one
     $scope.showForm = function(id){
+        _gaq.push(['_trackEvent', "forms", 'show']);
+
         var defaults = {
             'id': '',
             'key': '',
@@ -35237,6 +35276,8 @@ gqApp.controller('PopupCtrl', function($scope, $rootScope, $timeout, QuicktextSe
 
     $scope.insertQuicktext = function(index){
         // get the quicktext id
+        _gaq.push(['_trackEvent', "popup", 'insert']);
+
         var quicktext_id = $('#quicktext-table-container tbody tr:nth-child(' + (index + 1) + ')').attr('data-quicktext-id');
         // getch the quicktext
         QuicktextService.get(quicktext_id).then(function(quicktext){
@@ -35377,9 +35418,9 @@ gqApp.service('QuicktextService', function($q, md5){
                 return true;
             }
         });
-        tags = _.unique(_.map(tArray, function(t){ return t.trim()})).join(', ');
+        tags = _.unique(_.map(tArray, function(t){ return t.trim(); })).join(', ');
         return tags;
-    }
+    };
 
     // create and try to sync
     self.create = function(qt){
@@ -35388,6 +35429,7 @@ gqApp.service('QuicktextService', function($q, md5){
                 qt.key, qt.title, qt.subject, qt.shortcut, self._clean_tags(qt.tags), qt.body
             ]);
         });
+        _gaq.push(['_trackEvent', 'quicktexts', 'create']);
     };
 
     // update a quicktext and try to sync
@@ -35397,6 +35439,7 @@ gqApp.service('QuicktextService', function($q, md5){
                 qt.key, qt.title, qt.subject, qt.shortcut, self._clean_tags(qt.tags), qt.body, qt.id
             ]);
         });
+        _gaq.push(['_trackEvent', 'quicktexts', 'update']);
     };
 
     // delete a quicktext and try to sync
@@ -35404,6 +35447,7 @@ gqApp.service('QuicktextService', function($q, md5){
         self.db.transaction(function(tx){
             tx.executeSql("DELETE FROM  quicktext WHERE id =  ?", [id]);
         });
+        _gaq.push(['_trackEvent', 'quicktexts', 'delete']);
     };
 
     // delete all but don't delete from server
@@ -35411,6 +35455,7 @@ gqApp.service('QuicktextService', function($q, md5){
         self.db.transaction(function(tx){
             tx.executeSql("DELETE FROM quicktext");
         });
+        _gaq.push(['_trackEvent', "quicktexts", 'delete-all']);
     };
 
 

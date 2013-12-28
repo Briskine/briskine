@@ -1,6 +1,6 @@
 {
   "manifest_version": 2,
-  "name": "Quicktext for Gmail™",
+  "name": "Quicktext",
   "version": "1.0.0",
   "description": "",
   "icons": {
@@ -20,7 +20,7 @@
   "permissions": [
     "http://mail.google.com/*",
     "https://mail.google.com/*",
-    "https://gmail-quicktext.com/*",
+    "https://quicktext.io/*",
 
     "tabs",
     "contextMenus",
@@ -31,7 +31,7 @@
       "matches": [
         "http://mail.google.com/*",
         "https://mail.google.com/*",
-        "https://gmail-quicktext.com/*"
+        "https://quicktext.io/*"
       ],
       "js": [
         "content/js/content.js"
@@ -44,7 +44,7 @@
     }
   ],
   "page_action": {
-    "default_title": "Quicktext for Gmail™",
+    "default_title": "Quicktext",
     "default_icon": {
           "19": "icons/icon19.png",
           "38": "icons/icon38.png"
@@ -62,5 +62,5 @@
           }
       }
   },
-  "content_security_policy": "script-src 'self' 'unsafe-eval' https://gmail-quicktext.com; object-src 'self'"
+  "content_security_policy": "script-src 'self' 'unsafe-eval' https://ssl.google-analytics.com; object-src 'self'"
 }

@@ -4,10 +4,11 @@ if(chrome.runtime){
         if (!document.querySelector('body[class=ng-scope]')) {
             angular.bootstrap('body', ['gqApp']);
         }
-        var injector = angular.element('body').injector(); 
+        var injector = angular.element('body').injector();
         if (request.request === 'get'){
             injector.get('QuicktextService').quicktexts().then(function(res){
                 sendResponse(res);
+                _gaq.push(['_trackEvent', "content", 'insert']);
             });
         }
         if (request.request === 'stats'){
@@ -56,6 +57,7 @@ if(chrome.runtime){
 
     // Called after installation: https://developer.chrome.com/extensions/runtime.html#event-onInstalled
     chrome.runtime.onInstalled.addListener(function(details){
+        _gaq.push(['_trackEvent', "general", 'installed-quicktext']);
         // All gmail tabs shoul be reloaded if the extension was installed
         chrome.tabs.query({'url': '*://mail.google.com/*'}, function(tabs){
             for (var i in tabs) {

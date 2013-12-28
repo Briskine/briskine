@@ -16,6 +16,8 @@ gqApp.controller('PopupCtrl', function($scope, $rootScope, $timeout, QuicktextSe
 
     $scope.insertQuicktext = function(index){
         // get the quicktext id
+        _gaq.push(['_trackEvent', "popup", 'insert']);
+
         var quicktext_id = $('#quicktext-table-container tbody tr:nth-child(' + (index + 1) + ')').attr('data-quicktext-id');
         // getch the quicktext
         QuicktextService.get(quicktext_id).then(function(quicktext){

@@ -52,9 +52,9 @@ gqApp.service('QuicktextService', function($q, md5){
                 return true;
             }
         });
-        tags = _.unique(_.map(tArray, function(t){ return t.trim()})).join(', ');
+        tags = _.unique(_.map(tArray, function(t){ return t.trim(); })).join(', ');
         return tags;
-    }
+    };
 
     // create and try to sync
     self.create = function(qt){
@@ -63,6 +63,7 @@ gqApp.service('QuicktextService', function($q, md5){
                 qt.key, qt.title, qt.subject, qt.shortcut, self._clean_tags(qt.tags), qt.body
             ]);
         });
+        _gaq.push(['_trackEvent', 'quicktexts', 'create']);
     };
 
     // update a quicktext and try to sync
@@ -72,6 +73,7 @@ gqApp.service('QuicktextService', function($q, md5){
                 qt.key, qt.title, qt.subject, qt.shortcut, self._clean_tags(qt.tags), qt.body, qt.id
             ]);
         });
+        _gaq.push(['_trackEvent', 'quicktexts', 'update']);
     };
 
     // delete a quicktext and try to sync
@@ -79,6 +81,7 @@ gqApp.service('QuicktextService', function($q, md5){
         self.db.transaction(function(tx){
             tx.executeSql("DELETE FROM  quicktext WHERE id =  ?", [id]);
         });
+        _gaq.push(['_trackEvent', 'quicktexts', 'delete']);
     };
 
     // delete all but don't delete from server
@@ -86,6 +89,7 @@ gqApp.service('QuicktextService', function($q, md5){
         self.db.transaction(function(tx){
             tx.executeSql("DELETE FROM quicktext");
         });
+        _gaq.push(['_trackEvent', "quicktexts", 'delete-all']);
     };
 
 
