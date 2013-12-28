@@ -1,5 +1,5 @@
-Quicktext for Gmail™
-=====================
+Quicktext Chrome Extension
+==========================
 
 Google Chrome plugin for Gmail for improved productivity.
 
