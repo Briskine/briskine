@@ -1,3 +1,7 @@
+
+/* line 1 : /media/Mokush/Dev/quicktext-chrome/node_modules/grunt-contrib-stylus/node_modules/stylus/lib/functions/index.styl */
+
+/* line 256 : /media/Mokush/Dev/quicktext-chrome/bower_components/bootstrap/dist/css/bootstrap.css */
 /*!
  * Bootstrap v3.0.3 (http://getbootstrap.com)
  * Copyright 2013 Twitter, Inc.
@@ -7116,444 +7120,367 @@ td.visible-print {
     display: none !important;
   }
 }
-/*!
- * Bootstrap v3.0.3 (http://getbootstrap.com)
- * Copyright 2013 Twitter, Inc.
- * Licensed under http://www.apache.org/licenses/LICENSE-2.0
- */
 
-.btn-default,
-.btn-primary,
-.btn-success,
-.btn-info,
-.btn-warning,
-.btn-danger {
-  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.2);
-  -webkit-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 1px 1px rgba(0, 0, 0, 0.075);
-          box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 1px 1px rgba(0, 0, 0, 0.075);
+/* line 256 : /media/Mokush/Dev/quicktext-chrome/src/background/css/bootstrap-chrome.styl */
+
+/* line 13 : /media/Mokush/Dev/quicktext-chrome/src/background/css/bootstrap-chrome.styl */
+html,
+body {
+  font-family: 'Chrome Droid Sans', 'Droid Sans Fallback', 'Lucida Grande', sans-serif;
+  font-size: 12px;
 }
 
-.btn-default:active,
-.btn-primary:active,
-.btn-success:active,
-.btn-info:active,
-.btn-warning:active,
-.btn-danger:active,
-.btn-default.active,
-.btn-primary.active,
-.btn-success.active,
-.btn-info.active,
-.btn-warning.active,
-.btn-danger.active {
-  -webkit-box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
-          box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+/* line 20 : /media/Mokush/Dev/quicktext-chrome/src/background/css/bootstrap-chrome.styl */
+header {
+  margin-bottom: 13px;
+  border-bottom: 1px solid #eee;
 }
 
-.btn:active,
-.btn.active {
-  background-image: none;
+/* line 24 : /media/Mokush/Dev/quicktext-chrome/src/background/css/bootstrap-chrome.styl */
+header h1 {
+  display: inline-block;
+  padding: 21px 0 13px;
+  margin: 0;
+  font-size: 1.5em;
 }
 
-.btn-default {
-  text-shadow: 0 1px 0 #fff;
-  background-image: -webkit-linear-gradient(top, #ffffff 0%, #e0e0e0 100%);
-  background-image: linear-gradient(to bottom, #ffffff 0%, #e0e0e0 100%);
-  background-repeat: repeat-x;
-  border-color: #dbdbdb;
-  border-color: #ccc;
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffffff', endColorstr='#ffe0e0e0', GradientType=0);
-  filter: progid:DXImageTransform.Microsoft.gradient(enabled=false);
+/* line 35 : /media/Mokush/Dev/quicktext-chrome/src/background/css/bootstrap-chrome.styl */
+input[type="text"] {
+  border: 1px solid #bfbfbf;
+  border-radius: 2px;
+  box-sizing: border-box;
+  color: #444;
+  font: inherit;
+  margin: 0;
+  min-height: 2em;
+  padding: 3px;
 }
 
-.btn-default:hover,
-.btn-default:focus {
-  background-color: #e0e0e0;
-  background-position: 0 -15px;
+/* line 46 : /media/Mokush/Dev/quicktext-chrome/src/background/css/bootstrap-chrome.styl */
+
+/* line 48 : /media/Mokush/Dev/quicktext-chrome/src/background/css/bootstrap-chrome.styl */
+.form-control:focus {
+  box-shadow: none;
+  border-color: #4d90fe;
 }
 
-.btn-default:active,
-.btn-default.active {
-  background-color: #e0e0e0;
-  border-color: #dbdbdb;
+/* line 57 : /media/Mokush/Dev/quicktext-chrome/src/background/css/bootstrap-chrome.styl */
+.list-group-item {
+  border-color: #eee;
+  border-width: 1px 0 0;
 }
 
+/* line 61 : /media/Mokush/Dev/quicktext-chrome/src/background/css/bootstrap-chrome.styl */
+.list-group-item:first-child {
+  border-width: 0;
+}
+
+/* line 68 : /media/Mokush/Dev/quicktext-chrome/src/background/css/bootstrap-chrome.styl */
 .btn-primary {
-  background-image: -webkit-linear-gradient(top, #428bca 0%, #2d6ca2 100%);
-  background-image: linear-gradient(to bottom, #428bca 0%, #2d6ca2 100%);
-  background-repeat: repeat-x;
-  border-color: #2b669a;
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff428bca', endColorstr='#ff2d6ca2', GradientType=0);
-  filter: progid:DXImageTransform.Microsoft.gradient(enabled=false);
+  appearance: none;
+  user-select: none;
+  background-image: linear-gradient(#ededed, #ededed 38%, #dedede);
+  border: 1px solid rgba(0,0,0,0.25);
+  border-radius: 2px;
+  box-shadow: 0 1px 0 rgba(0,0,0,0.08), inset 0 1px 2px rgba(255,255,255,0.75);
+  color: #444;
+  font: inherit;
+  margin: 0 1px 0 0;
+  text-shadow: 0 1px 0 #f0f0f0;
 }
 
-.btn-primary:hover,
-.btn-primary:focus {
-  background-color: #2d6ca2;
-  background-position: 0 -15px;
+/* line 80 : /media/Mokush/Dev/quicktext-chrome/src/background/css/bootstrap-chrome.styl */
+.btn-primary:hover {
+  background-image: linear-gradient(#f0f0f0, #f0f0f0 38%, #e0e0e0);
+  border-color: rgba(0,0,0,0.3);
+  box-shadow: 0 1px 0 rgba(0,0,0,0.12), inset 0 1px 2px rgba(255,255,255,0.95);
+  color: #000;
 }
 
-.btn-primary:active,
-.btn-primary.active {
-  background-color: #2d6ca2;
-  border-color: #2b669a;
+/* line 87 : /media/Mokush/Dev/quicktext-chrome/src/background/css/bootstrap-chrome.styl */
+.btn-primary:active {
+  background-image: linear-gradient(#e7e7e7, #e7e7e7 38%, #d7d7d7);
+  box-shadow: none;
+  text-shadow: none;
 }
 
-.btn-success {
-  background-image: -webkit-linear-gradient(top, #5cb85c 0%, #419641 100%);
-  background-image: linear-gradient(to bottom, #5cb85c 0%, #419641 100%);
-  background-repeat: repeat-x;
-  border-color: #3e8f3e;
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff5cb85c', endColorstr='#ff419641', GradientType=0);
-  filter: progid:DXImageTransform.Microsoft.gradient(enabled=false);
+/* line 4 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+.page-content-wrapper {
+  padding-top: 35px;
 }
 
-.btn-success:hover,
-.btn-success:focus {
-  background-color: #419641;
-  background-position: 0 -15px;
+/* line 7 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+.logo-container {
+  text-align: center;
 }
 
-.btn-success:active,
-.btn-success.active {
-  background-color: #419641;
-  border-color: #3e8f3e;
+/* line 10 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+#sidebar-wrapper {
+  position: fixed;
+  z-index: 999;
+  margin-left: -250px;
+  left: 250px;
+  width: 250px;
+  background-color: #f5f5f5;
+  box-shadow: inset -10px 0 10px -7px #ccc;
+  height: 100%;
+  overflow-y: auto;
 }
 
-.btn-warning {
-  background-image: -webkit-linear-gradient(top, #f0ad4e 0%, #eb9316 100%);
-  background-image: linear-gradient(to bottom, #f0ad4e 0%, #eb9316 100%);
-  background-repeat: repeat-x;
-  border-color: #e38d13;
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#fff0ad4e', endColorstr='#ffeb9316', GradientType=0);
-  filter: progid:DXImageTransform.Microsoft.gradient(enabled=false);
+/* line 21 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+#sidebar-wrapper .sidebar-nav {
+  position: absolute;
+  top: 0;
+  width: 250px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
 }
 
-.btn-warning:hover,
-.btn-warning:focus {
-  background-color: #eb9316;
-  background-position: 0 -15px;
+/* line 29 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+#sidebar-wrapper .sidebar-nav .sidebar-brand {
+  text-align: center;
+  padding-top: 35px;
+  padding-bottom: 35px;
 }
 
-.btn-warning:active,
-.btn-warning.active {
-  background-color: #eb9316;
-  border-color: #e38d13;
+/* line 34 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+#sidebar-wrapper .sidebar-nav li {
+  padding: 0px 20px 20px 20px;
 }
 
-.btn-danger {
-  background-image: -webkit-linear-gradient(top, #d9534f 0%, #c12e2a 100%);
-  background-image: linear-gradient(to bottom, #d9534f 0%, #c12e2a 100%);
-  background-repeat: repeat-x;
-  border-color: #b92c28;
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffd9534f', endColorstr='#ffc12e2a', GradientType=0);
-  filter: progid:DXImageTransform.Microsoft.gradient(enabled=false);
+/* line 37 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+#sidebar-wrapper .sidebar-nav li > .section-header {
+  padding-bottom: 8px;
+  font-size: 16px;
+  font-weight: bold;
+  color: #777;
 }
 
-.btn-danger:hover,
-.btn-danger:focus {
-  background-color: #c12e2a;
-  background-position: 0 -15px;
+/* line 43 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+#sidebar-wrapper .sidebar-footer {
+  position: absolute;
+  bottom: 0px;
+  left: 0px;
+  margin-right: 20px;
+  margin-left: 20px;
+  width: 205px;
 }
 
-.btn-danger:active,
-.btn-danger.active {
-  background-color: #c12e2a;
-  border-color: #b92c28;
+/* line 51 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+#sidebar-wrapper .sidebar-footer .sidebar-footer-links {
+  text-align: center;
+  padding-bottom: 10px;
 }
 
-.btn-info {
-  background-image: -webkit-linear-gradient(top, #5bc0de 0%, #2aabd2 100%);
-  background-image: linear-gradient(to bottom, #5bc0de 0%, #2aabd2 100%);
-  background-repeat: repeat-x;
-  border-color: #28a4c9;
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff5bc0de', endColorstr='#ff2aabd2', GradientType=0);
-  filter: progid:DXImageTransform.Microsoft.gradient(enabled=false);
+/* line 55 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+
+/* line 56 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+#sidebar-wrapper .profile .profile-picture {
+  vertical-align: middle;
+  display: table-cell;
 }
 
-.btn-info:hover,
-.btn-info:focus {
-  background-color: #2aabd2;
-  background-position: 0 -15px;
+/* line 59 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+#sidebar-wrapper .profile .profile-picture img {
+  border: 2px #fff solid;
 }
 
-.btn-info:active,
-.btn-info.active {
-  background-color: #2aabd2;
-  border-color: #28a4c9;
+/* line 61 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+#sidebar-wrapper .profile .profile-container {
+  padding-left: 10px;
+  display: table-cell;
+  vertical-align: middle;
 }
 
-.thumbnail,
-.img-thumbnail {
-  -webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.075);
-          box-shadow: 0 1px 2px rgba(0, 0, 0, 0.075);
+/* line 65 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+#sidebar-wrapper .profile .profile-name {
+  font-size: 16px;
+  font-weight: bold;
 }
 
-.dropdown-menu > li > a:hover,
-.dropdown-menu > li > a:focus {
-  background-color: #e8e8e8;
-  background-image: -webkit-linear-gradient(top, #f5f5f5 0%, #e8e8e8 100%);
-  background-image: linear-gradient(to bottom, #f5f5f5 0%, #e8e8e8 100%);
-  background-repeat: repeat-x;
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#fff5f5f5', endColorstr='#ffe8e8e8', GradientType=0);
+/* line 68 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+#sidebar-wrapper .profile .profile-email {
+  font-size: 12px;
 }
 
-.dropdown-menu > .active > a,
-.dropdown-menu > .active > a:hover,
-.dropdown-menu > .active > a:focus {
-  background-color: #357ebd;
-  background-image: -webkit-linear-gradient(top, #428bca 0%, #357ebd 100%);
-  background-image: linear-gradient(to bottom, #428bca 0%, #357ebd 100%);
-  background-repeat: repeat-x;
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff428bca', endColorstr='#ff357ebd', GradientType=0);
+/* line 70 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+#sidebar-wrapper .profile .profile-extra {
+  margin-top: 7px;
 }
 
-.navbar-default {
-  background-image: -webkit-linear-gradient(top, #ffffff 0%, #f8f8f8 100%);
-  background-image: linear-gradient(to bottom, #ffffff 0%, #f8f8f8 100%);
-  background-repeat: repeat-x;
-  border-radius: 4px;
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffffff', endColorstr='#fff8f8f8', GradientType=0);
-  filter: progid:DXImageTransform.Microsoft.gradient(enabled=false);
-  -webkit-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 1px 5px rgba(0, 0, 0, 0.075);
-          box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 1px 5px rgba(0, 0, 0, 0.075);
+/* line 72 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+#sidebar-wrapper .profile .anonymous {
+  font-size: larger;
 }
 
-.navbar-default .navbar-nav > .active > a {
-  background-image: -webkit-linear-gradient(top, #ebebeb 0%, #f3f3f3 100%);
-  background-image: linear-gradient(to bottom, #ebebeb 0%, #f3f3f3 100%);
-  background-repeat: repeat-x;
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffebebeb', endColorstr='#fff3f3f3', GradientType=0);
-  -webkit-box-shadow: inset 0 3px 9px rgba(0, 0, 0, 0.075);
-          box-shadow: inset 0 3px 9px rgba(0, 0, 0, 0.075);
+/* line 76 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+.toggle-sidebar {
+  cursor: pointer;
+  position: absolute;
+  bottom: 170px;
+  background-color: #fdfdfd;
+  padding: 5px;
 }
 
-.navbar-brand,
-.navbar-nav > li > a {
-  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.25);
+/* line 80 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+.toggle-sidebar.toggle-hide {
+  right: 0px;
 }
 
-.navbar-inverse {
-  background-image: -webkit-linear-gradient(top, #3c3c3c 0%, #222222 100%);
-  background-image: linear-gradient(to bottom, #3c3c3c 0%, #222222 100%);
-  background-repeat: repeat-x;
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff3c3c3c', endColorstr='#ff222222', GradientType=0);
-  filter: progid:DXImageTransform.Microsoft.gradient(enabled=false);
+/* line 82 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+.toggle-sidebar.toggle-show {
+  left: 0px;
 }
 
-.navbar-inverse .navbar-nav > .active > a {
-  background-image: -webkit-linear-gradient(top, #222222 0%, #282828 100%);
-  background-image: linear-gradient(to bottom, #222222 0%, #282828 100%);
-  background-repeat: repeat-x;
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff222222', endColorstr='#ff282828', GradientType=0);
-  -webkit-box-shadow: inset 0 3px 9px rgba(0, 0, 0, 0.25);
-          box-shadow: inset 0 3px 9px rgba(0, 0, 0, 0.25);
+/* line 88 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+.toggle-sidebar span {
+  font-size: 20px;
 }
 
-.navbar-inverse .navbar-brand,
-.navbar-inverse .navbar-nav > li > a {
-  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+/* line 91 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+.search-table {
+  width: 320px;
 }
 
-.navbar-static-top,
-.navbar-fixed-top,
-.navbar-fixed-bottom {
-  border-radius: 0;
+/* line 94 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+.quicktext-form {
+  margin-left: 10px;
+  margin-right: 10px;
 }
 
-.alert {
-  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.2);
-  -webkit-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25), 0 1px 2px rgba(0, 0, 0, 0.05);
-          box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25), 0 1px 2px rgba(0, 0, 0, 0.05);
+/* line 98 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+.quicktext-filters {
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
 
-.alert-success {
-  background-image: -webkit-linear-gradient(top, #dff0d8 0%, #c8e5bc 100%);
-  background-image: linear-gradient(to bottom, #dff0d8 0%, #c8e5bc 100%);
-  background-repeat: repeat-x;
-  border-color: #b2dba1;
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffdff0d8', endColorstr='#ffc8e5bc', GradientType=0);
+/* line 102 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+.duplicate-bottom {
+  padding-top: 6px;
 }
 
-.alert-info {
-  background-image: -webkit-linear-gradient(top, #d9edf7 0%, #b9def0 100%);
-  background-image: linear-gradient(to bottom, #d9edf7 0%, #b9def0 100%);
-  background-repeat: repeat-x;
-  border-color: #9acfea;
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffd9edf7', endColorstr='#ffb9def0', GradientType=0);
+/* line 105 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+#popup-container {
+  min-width: 629px;
+  padding-top: 13px;
 }
 
-.alert-warning {
-  background-image: -webkit-linear-gradient(top, #fcf8e3 0%, #f8efc0 100%);
-  background-image: linear-gradient(to bottom, #fcf8e3 0%, #f8efc0 100%);
-  background-repeat: repeat-x;
-  border-color: #f5e79e;
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#fffcf8e3', endColorstr='#fff8efc0', GradientType=0);
+/* line 108 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+#popup-container .search-table {
+  width: 100%;
 }
 
-.alert-danger {
-  background-image: -webkit-linear-gradient(top, #f2dede 0%, #e7c3c3 100%);
-  background-image: linear-gradient(to bottom, #f2dede 0%, #e7c3c3 100%);
-  background-repeat: repeat-x;
-  border-color: #dca7a7;
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#fff2dede', endColorstr='#ffe7c3c3', GradientType=0);
+/* line 111 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+#popup-container #quicktext-table-container {
+  height: 300px;
+  overflow-y: auto;
 }
 
-.progress {
-  background-image: -webkit-linear-gradient(top, #ebebeb 0%, #f5f5f5 100%);
-  background-image: linear-gradient(to bottom, #ebebeb 0%, #f5f5f5 100%);
-  background-repeat: repeat-x;
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffebebeb', endColorstr='#fff5f5f5', GradientType=0);
+/* line 115 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+#popup-container #quicktext-table-container tr {
+  cursor: pointer;
 }
 
-.progress-bar {
-  background-image: -webkit-linear-gradient(top, #428bca 0%, #3071a9 100%);
-  background-image: linear-gradient(to bottom, #428bca 0%, #3071a9 100%);
-  background-repeat: repeat-x;
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff428bca', endColorstr='#ff3071a9', GradientType=0);
+/* line 118 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+#login-modal {
+  display: none;
 }
 
-.progress-bar-success {
-  background-image: -webkit-linear-gradient(top, #5cb85c 0%, #449d44 100%);
-  background-image: linear-gradient(to bottom, #5cb85c 0%, #449d44 100%);
-  background-repeat: repeat-x;
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff5cb85c', endColorstr='#ff449d44', GradientType=0);
+/* line 121 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+#login-modal .form-signin {
+  max-width: 400px;
+  display: block;
+  background-color: #f7f7f7;
+  box-shadow: 0 0 3px 3px #888;
+  border-radius: 2px;
 }
 
-.progress-bar-info {
-  background-image: -webkit-linear-gradient(top, #5bc0de 0%, #31b0d5 100%);
-  background-image: linear-gradient(to bottom, #5bc0de 0%, #31b0d5 100%);
-  background-repeat: repeat-x;
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff5bc0de', endColorstr='#ff31b0d5', GradientType=0);
+/* line 128 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+#login-modal .form-signin .main {
+  padding: 38px;
 }
 
-.progress-bar-warning {
-  background-image: -webkit-linear-gradient(top, #f0ad4e 0%, #ec971f 100%);
-  background-image: linear-gradient(to bottom, #f0ad4e 0%, #ec971f 100%);
-  background-repeat: repeat-x;
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#fff0ad4e', endColorstr='#ffec971f', GradientType=0);
+/* line 131 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+#login-modal .form-signin .main .social-box {
+  margin: 0 auto;
+  padding: 38px;
+  border-bottom: 1px #ccc solid;
 }
 
-.progress-bar-danger {
-  background-image: -webkit-linear-gradient(top, #d9534f 0%, #c9302c 100%);
-  background-image: linear-gradient(to bottom, #d9534f 0%, #c9302c 100%);
-  background-repeat: repeat-x;
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffd9534f', endColorstr='#ffc9302c', GradientType=0);
+/* line 135 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+#login-modal .form-signin .main .social-box a {
+  font-weight: bold;
+  font-size: 18px;
+  padding: 8px;
 }
 
-.list-group {
-  border-radius: 4px;
-  -webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.075);
-          box-shadow: 0 1px 2px rgba(0, 0, 0, 0.075);
+/* line 139 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+#login-modal .form-signin .main .social-box a i {
+  font-weight: bold;
+  font-size: 20px;
 }
 
-.list-group-item.active,
-.list-group-item.active:hover,
-.list-group-item.active:focus {
-  text-shadow: 0 -1px 0 #3071a9;
-  background-image: -webkit-linear-gradient(top, #428bca 0%, #3278b3 100%);
-  background-image: linear-gradient(to bottom, #428bca 0%, #3278b3 100%);
-  background-repeat: repeat-x;
-  border-color: #3278b3;
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff428bca', endColorstr='#ff3278b3', GradientType=0);
+/* line 143 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+#login-modal .form-signin .heading-desc {
+  font-size: 20px;
+  font-weight: bold;
+  padding: 38px 38px 0px 38px;
 }
 
-.panel {
-  -webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-          box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+/* line 149 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+#login-modal .form-signin .form-signin-heading,
+#login-modal .form-signin .checkbox {
+  margin-bottom: 10px;
 }
 
-.panel-default > .panel-heading {
-  background-image: -webkit-linear-gradient(top, #f5f5f5 0%, #e8e8e8 100%);
-  background-image: linear-gradient(to bottom, #f5f5f5 0%, #e8e8e8 100%);
-  background-repeat: repeat-x;
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#fff5f5f5', endColorstr='#ffe8e8e8', GradientType=0);
+/* line 152 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+#login-modal .form-signin .checkbox {
+  font-weight: normal;
 }
 
-.panel-primary > .panel-heading {
-  background-image: -webkit-linear-gradient(top, #428bca 0%, #357ebd 100%);
-  background-image: linear-gradient(to bottom, #428bca 0%, #357ebd 100%);
-  background-repeat: repeat-x;
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff428bca', endColorstr='#ff357ebd', GradientType=0);
+/* line 155 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+#login-modal .form-signin .form-signin .form-control {
+  position: relative;
+  font-size: 16px;
+  height: 20px;
+  padding: 20px;
+  box-sizing: border-box;
 }
 
-.panel-success > .panel-heading {
-  background-image: -webkit-linear-gradient(top, #dff0d8 0%, #d0e9c6 100%);
-  background-image: linear-gradient(to bottom, #dff0d8 0%, #d0e9c6 100%);
-  background-repeat: repeat-x;
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffdff0d8', endColorstr='#ffd0e9c6', GradientType=0);
+/* line 162 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+#login-modal .form-signin .form-control focus {
+  z-index: 2;
 }
 
-.panel-info > .panel-heading {
-  background-image: -webkit-linear-gradient(top, #d9edf7 0%, #c4e3f3 100%);
-  background-image: linear-gradient(to bottom, #d9edf7 0%, #c4e3f3 100%);
-  background-repeat: repeat-x;
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffd9edf7', endColorstr='#ffc4e3f3', GradientType=0);
+/* line 165 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+#login-modal .form-signin input[type="text"] {
+  margin-bottom: 10px;
+  border-radius: 5px;
 }
 
-.panel-warning > .panel-heading {
-  background-image: -webkit-linear-gradient(top, #fcf8e3 0%, #faf2cc 100%);
-  background-image: linear-gradient(to bottom, #fcf8e3 0%, #faf2cc 100%);
-  background-repeat: repeat-x;
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#fffcf8e3', endColorstr='#fffaf2cc', GradientType=0);
+/* line 170 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+#login-modal .form-signin input[type="password"] {
+  margin-bottom: 10px;
+  border-radius: 5px;
 }
 
-.panel-danger > .panel-heading {
-  background-image: -webkit-linear-gradient(top, #f2dede 0%, #ebcccc 100%);
-  background-image: linear-gradient(to bottom, #f2dede 0%, #ebcccc 100%);
-  background-repeat: repeat-x;
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#fff2dede', endColorstr='#ffebcccc', GradientType=0);
+/* line 174 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+#login-modal .form-signin .login-footer {
+  background: #f0f0f0;
+  margin: 0 auto;
+  border-top: 1px solid #dadada;
+  padding: 20px;
 }
 
-.well {
-  background-image: -webkit-linear-gradient(top, #e8e8e8 0%, #f5f5f5 100%);
-  background-image: linear-gradient(to bottom, #e8e8e8 0%, #f5f5f5 100%);
-  background-repeat: repeat-x;
-  border-color: #dcdcdc;
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffe8e8e8', endColorstr='#fff5f5f5', GradientType=0);
-  -webkit-box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05), 0 1px 0 rgba(255, 255, 255, 0.1);
-          box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05), 0 1px 0 rgba(255, 255, 255, 0.1);
+/* line 180 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+#login-modal .form-signin .login-footer .left-section a {
+  font-weight: bold;
+  color: #8a8a8a;
+  line-height: 19px;
 }
-.page-content-wrapper{padding-top:35px}
-.logo-container{text-align:center}
-#sidebar-wrapper{margin-left:-250px;left:250px;width:250px;background-color:#f5f5f5;box-shadow:inset -10px 0 10px -7px #ccc;position:fixed;height:100%;overflow-y:auto;}
-#sidebar-wrapper .sidebar-nav{position:absolute;top:0;width:250px;list-style:none;margin:0;padding:0;}
-#sidebar-wrapper .sidebar-nav .sidebar-brand{text-align:center;padding-top:35px;padding-bottom:35px}
-#sidebar-wrapper .sidebar-nav li{padding:0 20px 20px 20px;}
-#sidebar-wrapper .sidebar-nav li > .section-header{padding-bottom:8px;font-size:16px;font-weight:bold;color:#777}
-#sidebar-wrapper .sidebar-footer{position:absolute;bottom:0;left:0;margin-right:20px;margin-left:20px;width:205px;}
-#sidebar-wrapper .sidebar-footer .sidebar-footer-links{text-align:center;padding-bottom:10px}
-#sidebar-wrapper .profile .profile-picture{vertical-align:middle;display:table-cell;}
-#sidebar-wrapper .profile .profile-picture img{border:2px #fff solid}
-#sidebar-wrapper .profile .profile-container{padding-left:10px;display:table-cell;vertical-align:middle}
-#sidebar-wrapper .profile .profile-name{font-size:16px;font-weight:bold}
-#sidebar-wrapper .profile .profile-email{font-size:12px}
-#sidebar-wrapper .profile .profile-extra{margin-top:7px}
-#sidebar-wrapper .profile .anonymous{font-size:larger}
-.toggle-sidebar{cursor:pointer;position:absolute;bottom:170px;background-color:#fdfdfd;padding:5px;}
-.toggle-sidebar.toggle-hide{right:0}
-.toggle-sidebar.toggle-show{left:0}
-.toggle-sidebar span{font-size:20px}
-.search-table{width:320px}
-.quicktext-form{margin-left:10px;margin-right:10px}
-.quicktext-filters{margin-top:10px;margin-bottom:10px}
-.duplicate-bottom{padding-top:6px}
-#popup-container{min-width:629px;padding-top:13px;}
-#popup-container .search-table{width:100%}
-#popup-container #quicktext-table-container{height:300px;overflow-y:auto;}
-#popup-container #quicktext-table-container tr{cursor:pointer}
-#login-modal{display:none;}
-#login-modal .form-signin{max-width:400px;display:block;background-color:#f7f7f7;box-shadow:0 0 3px 3px #888;border-radius:2px;}
-#login-modal .form-signin .main{padding:38px;}
-#login-modal .form-signin .main .social-box{margin:0 auto;padding:38px;border-bottom:1px #ccc solid;}
-#login-modal .form-signin .main .social-box a{font-weight:bold;font-size:18px;padding:8px;}
-#login-modal .form-signin .main .social-box a i{font-weight:bold;font-size:20px}
-#login-modal .form-signin .heading-desc{font-size:20px;font-weight:bold;padding:38px 38px 0 38px}
-#login-modal .form-signin .form-signin-heading,#login-modal .form-signin .checkbox{margin-bottom:10px}
-#login-modal .form-signin .checkbox{font-weight:normal}
-#login-modal .form-signin .form-signin .form-control{position:relative;font-size:16px;height:20px;padding:20px;box-sizing:border-box}
-#login-modal .form-signin .form-control focus{z-index:2}
-#login-modal .form-signin input[type="text"]{margin-bottom:10px;border-radius:5px}
-#login-modal .form-signin input[type="password"]{margin-bottom:10px;border-radius:5px}
-#login-modal .form-signin .login-footer{background:#f0f0f0;margin:0 auto;border-top:1px solid #dadada;padding:20px}
-#login-modal .form-signin .login-footer .left-section a{font-weight:bold;color:#8a8a8a;line-height:19px}
-#login-modal .mg-btm{margin-bottom:20px}
+
+/* line 185 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+#login-modal .mg-btm {
+  margin-bottom: 20px;
+}

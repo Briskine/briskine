@@ -11,7 +11,7 @@
         <div class="profile-body" ng-show="profile.isLoggedin">
           <a class="profile-picture" ng-href="{{settings.get('baseURL')}}profile">
             <img class="img-circle" title="Setup your avatar on gravatar.com" alt="gravatar" ng-src="{{profile.gravatar()}}">
-          </a> 
+          </a>
           <div class="profile-container">
             <div class="profile-name">{{profile.firstName}} {{profile.lastName}}</div>
             <div class="profile-email"><a ng-href="{{settings.get('baseURL')}}profile">{{profile.email}}</a></div>
@@ -19,7 +19,7 @@
         </div>
         <div class="anonymous" ng-show="!profile.isLoggedin">
           <a ng-click="showLogin()" href="">Login</a> or <a ng-click="showRegister()" href="#">Sign Up</a> to <em>share</em> quicktexts with your team.
-        </div> 
+        </div>
         <div class="clearfix">&nbsp;</div>
         <div class="profile-extra">
           <div class="profile-stats" data-toggle="tooltip" data-placement="bottom" data-original-title="33 Words per Minute: http://tinyurl.com/wiki-wpm" >So far you saved <strong>{{profile.savedWords}}</strong> words or <strong>{{profile.savedTime}}</strong>. <span class="glyphicon glyphicon-question-sign"></span></div>
@@ -40,7 +40,7 @@
     <div class="checkbox">
       <label for="sendStats" data-toggle="tooltip" data-placement="bottom" data-original-title="Help improve the Quicktext by sending anonymous statistics.">Send usage statistics <span class="glyphicon glyphicon-question-sign"></span></label>
       <input type="checkbox" id="sendStats" ng-model="sendStatsEnabled" ng-change="settings.set('sendStatsEnabled', sendStatsEnabled)" />
-    </div> 
+    </div>
     </li>
   </ul>
   <div class="sidebar-footer">
@@ -48,7 +48,7 @@
       <div class="sync-label">Last sync</div>
       <div class="sync-date"></div>
       <button class="btn btn-default btn-xs">Sync now!</button>
-    </div> 
+    </div>
     <div class="sidebar-footer-links">
       <a ng-href="{{settings.get('baseURL')}}help/">Need Help?</a>
     </div>
