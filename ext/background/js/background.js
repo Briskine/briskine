@@ -34925,8 +34925,8 @@ var gqApp = angular.module('gqApp', ['ngRoute', 'angular-md5']);
 
 gqApp.config(function ($routeProvider) {
     $routeProvider
-        .when('/options', {
-            controller: 'OptionsCtrl',
+        .when('/list', {
+            controller: 'ListCtrl',
             templateUrl: 'views/quicktexts.html'
         })
         .when('/dialog', {
@@ -34937,7 +34937,9 @@ gqApp.config(function ($routeProvider) {
             controller: 'PopupCtrl',
             templateUrl: 'views/popup.html'
         })
-        .otherwise('/options');
+        .otherwise({
+          redirectTo: '/list'
+        });
 });
 
 // Register Chrome runtime protocols and context menus
@@ -35110,7 +35112,7 @@ _gaq.push(['_trackPageview']);
     var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
 })();
 
-gqApp.controller('OptionsCtrl', function($scope, $rootScope, QuicktextService, SettingsService, ProfileService) {
+gqApp.controller('ListCtrl', function($scope, $rootScope, QuicktextService, SettingsService, ProfileService) {
     $scope.controller = "OptionsCtrl";
     $scope.quicktexts = [];
     $scope.tags = [];
