@@ -15,12 +15,13 @@ module.exports = function(grunt) {
 
           'bower_components/angular/angular.js',
           'bower_components/angular-route/angular-route.js',
+          'bower_components/angular-animate/angular-animate.js',
           'bower_components/angular-md5/angular-md5.js',
           'bower_components/angular-moment/angular-moment.js',
 
           // Should be first
           'src/background/js/environment.js',
-          'src/background/js/*.js'
+          'src/background/js/**/*.js'
         ],
         css: ['ext/background/css/background.css']
       },

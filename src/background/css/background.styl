@@ -1,10 +1,48 @@
 /* Quicktext Chrome Extension
  */
 
+@import "nib";
 @import "../../../bower_components/bootstrap/dist/css/bootstrap.css";
 @import "bootstrap-chrome.styl";
 
+/* Container animation
+ */
+.view-container {
+  position: relative;
+}
 
+.container-animation {
+  position: relative;
+  display: block;
+  width: 100%;
+}
+
+.container-animation.ng-enter,
+.container-animation.ng-leave {
+  transition: all .1s ease-out;
+}
+
+.container-animation.ng-enter {
+  opacity: 0;
+  transform: translate3d(50px, 0, 0);
+}
+
+.container-animation.ng-enter.ng-enter-active {
+  opacity: 1;
+  z-index: 1000;
+  transform: translate3d(0, 0, 0);
+}
+
+.container-animation.ng-leave {
+  position: absolute;
+  z-index: 101;
+  transform: translate3d(0, 0, 0);
+}
+
+.container-animation.ng-leave.ng-leave-active {
+  opacity: 0;
+  transform: translate3d(-50px, 0, 0);
+}
 
 
 /*.page-content-wrapper

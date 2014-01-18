@@ -37,8 +37,8 @@
         </div>
 
         <ul class="nav nav-pills nav-stacked">
-          <li class="active"><a href="#">Quicktexts</a></li>
-          <li><a href="#">Settings</a></li>
+          <li ng-class="{ 'active': (path === '/list') }"><a href="#/list">Quicktexts</a></li>
+          <li ng-class="{ 'active': (path === '/settings') }"><a href="#/settings">Settings</a></li>
           <li><a ng-href="{{settings.get('baseURL')}}help/">Help</a></li>
         </ul>
 
@@ -68,7 +68,10 @@
         </div>
       </div>
 
-      <div class="col-sm-9" data-ng-view></div>
+      <div class="col-sm-9 view-container">
+        <div class="container-animation" data-ng-view></div>
+      </div>
+
     </div>
   </div>
 
