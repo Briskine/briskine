@@ -10,3 +10,4 @@ src/backgrount/js/environment.js
 # Editor
 .kateproject
 .kateconfig
+.kateproject.d
