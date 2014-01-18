@@ -36619,8 +36619,6 @@ gqApp.controller('ListCtrl', function($scope, $rootScope, QuicktextService, Sett
         $scope.tags = response;
     });
 
-//     $scope.sidebarHidden = SettingsService.get('sidebarHidden');
-
     $rootScope.$on('$includeContentLoaded', function(event) {
         $("#search-input").focus();
     });
@@ -36725,12 +36723,6 @@ gqApp.controller('ListCtrl', function($scope, $rootScope, QuicktextService, Sett
             $scope.filterTags.splice(index, 1); // remove from tags
         }
     };
-
-//     $scope.toggleSidebar = function(){
-//         $scope.sidebarHidden = !$scope.sidebarHidden;
-//         // put in settings
-//         SettingsService.set('sidebarHidden', $scope.sidebarHidden);
-//     };
 });
 
 gqApp.controller('PopupCtrl', function($scope, $rootScope, $timeout, QuicktextService) {

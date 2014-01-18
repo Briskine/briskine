@@ -7397,24 +7397,25 @@ input[type="text"] {
 /* line 30 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
 body {
   padding-top: 5.5em;
+  color: #333;
 }
 
-/* line 34 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+/* line 36 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
 .container {
   width: 100%;
   padding: 0;
 }
 
-/* line 40 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+/* line 42 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
 /* Fixed header
  */
 
-/* line 42 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+/* line 44 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
 header {
   position: fixed;
   top: 0;
-  left: 25%;
-  width: 700px;
+  left: 20%;
+  width: 600px;
   z-index: 999;
   max-width: 700px;
   background: -webkit-linear-gradient(#fff, #fff 40%, rgba(255,255,255,0.92));
@@ -7424,35 +7425,35 @@ header {
   background: linear-gradient(#fff, #fff 40%, rgba(255,255,255,0.92));
 }
 
-/* line 52 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+/* line 54 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
 .header-actions {
   padding-top: 1.5em;
 }
 
-/* line 55 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+/* line 57 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
 .header-actions .form-control {
   width: 13.75em;
 }
 
-/* line 60 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+/* line 62 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
 /* View container
  */
 
-/* line 62 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+/* line 64 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
 .view-container {
   position: relative;
-  width: 700px;
-  margin-left: 25%;
+  width: 600px;
+  margin-left: 20%;
 }
 
-/* line 68 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+/* line 70 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
 .container-animation {
   position: relative;
   display: block;
   width: 100%;
 }
 
-/* line 74 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+/* line 76 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
 .container-animation.ng-enter,
 .container-animation.ng-leave {
   -webkit-transition: all 0.1s ease-out;
@@ -7462,7 +7463,7 @@ header {
   transition: all 0.1s ease-out;
 }
 
-/* line 77 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+/* line 79 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
 .container-animation.ng-enter header,
 .container-animation.ng-leave header {
   position: absolute;
@@ -7471,7 +7472,7 @@ header {
   width: 100%;
 }
 
-/* line 85 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+/* line 87 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
 .container-animation.ng-enter {
   opacity: 0;
   -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
@@ -7483,7 +7484,7 @@ header {
   transform: translate3d(50px, 0, 0);
 }
 
-/* line 90 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+/* line 92 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
 .container-animation.ng-enter.ng-enter-active {
   opacity: 1;
   -ms-filter: none;
@@ -7496,7 +7497,7 @@ header {
   transform: translate3d(0, 0, 0);
 }
 
-/* line 96 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+/* line 98 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
 .container-animation.ng-leave {
   position: absolute;
   z-index: 101;
@@ -7507,7 +7508,7 @@ header {
   transform: translate3d(0, 0, 0);
 }
 
-/* line 102 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+/* line 104 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
 .container-animation.ng-leave.ng-leave-active {
   opacity: 0;
   -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
@@ -7519,24 +7520,23 @@ header {
   transform: translate3d(-50px, 0, 0);
 }
 
-/* line 107 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+/* line 109 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
 /* Sidebar
  */
 
-/* line 109 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+/* line 111 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
 .sidebar-wrapper {
   position: fixed;
   top: 0;
   left: 0;
-  width: 25%;
-  padding-top: 1.25em;
-  padding-left: 1.375em;
+  width: 20%;
+  padding: 1em 1.25em 0 1.375em;
 }
 
 /* line 119 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
 .brand {
   display: block;
-  margin-bottom: 1.25em;
+  margin-bottom: 1em;
   font-size: 2.25em;
   line-height: 1em;
   color: #707070;
@@ -7559,10 +7559,12 @@ header {
 }
 
 /* line 141 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
-/* Button bar
- */
+.anonymous,
+.profile-body {
+  margin-bottom: 0.75em;
+}
 
-/* line 146 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+/* line 145 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
 /*.page-content-wrapper
     padding-top 35px
 

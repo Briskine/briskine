@@ -17,8 +17,8 @@ emCalc(h) {
 $grey1 = #eee;
 $black = #333;
 $color1 = rgb(77, 144, 254);
-$sidebarWidth = 25%;
-$contentWidth = 700px;
+$sidebarWidth = 20%;
+$contentWidth = 600px;
 
 /* Bootstrap theme
  */
@@ -29,6 +29,8 @@ $contentWidth = 700px;
  */
 body {
   padding-top: emCalc(88);
+
+  color: $black;
 }
 
 .container {
@@ -112,14 +114,12 @@ header {
   top: 0;
   left: 0;
   width: $sidebarWidth;
-
-  padding-top: emCalc(20);
-  padding-left: emCalc(22);
+  padding: emCalc(16) emCalc(20) 0 emCalc(22);
 }
 
 .brand {
   display: block;
-  margin-bottom: emCalc(20);
+  margin-bottom: emCalc(16);
 
   font-size: emCalc(36);
   line-height: 1em;
@@ -139,10 +139,10 @@ header {
   }
 }
 
-/* Button bar
- */
-
-
+.anonymous,
+.profile-body {
+  margin-bottom: emCalc(12);
+}
 
 /*.page-content-wrapper
     padding-top 35px

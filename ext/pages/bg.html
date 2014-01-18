@@ -16,7 +16,7 @@
         Quicktext
       </a>
 
-        <div class="profile">
+      <div class="profile">
         <div class="profile-body" ng-show="profile.isLoggedin">
           <a class="profile-picture" ng-href="{{settings.get('baseURL')}}profile">
             <img class="img-circle" title="Setup your avatar on gravatar.com" alt="gravatar" ng-src="{{profile.gravatar()}}">
@@ -30,11 +30,17 @@
         <div class="anonymous" ng-show="!profile.isLoggedin">
           <a ng-click="showLogin()" href="">Login</a> or <a ng-click="showRegister()" href="#">Sign Up</a> to <em>share</em> quicktexts with your team.
         </div>
-        <div class="clearfix">&nbsp;</div>
+
         <div class="profile-extra">
-          <div class="profile-stats" data-toggle="tooltip" data-placement="bottom" data-original-title="33 Words per Minute: http://tinyurl.com/wiki-wpm" >So far you saved <strong>{{profile.savedWords}}</strong> words or <strong>{{profile.savedTime}}</strong>. <span class="glyphicon glyphicon-question-sign"></span></div>
+          <div class="profile-stats" data-toggle="tooltip" data-placement="bottom" data-original-title="33 Words per Minute: http://tinyurl.com/wiki-wpm" >
+            So far you saved <strong>{{profile.savedWords}}</strong> words or <strong>{{profile.savedTime}}</strong>.
+            <span class="glyphicon glyphicon-question-sign"></span>
+          </div>
+
           <!-- <div class="profile-subscription">You have a <strong>{{profile.currentSubscription}}</strong> subscription.</div> -->
+
         </div>
+
       </div>
 
       <ul class="nav nav-pills nav-stacked">
