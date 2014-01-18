@@ -34927,7 +34927,7 @@ gqApp.config(function ($routeProvider) {
     $routeProvider
         .when('/options', {
             controller: 'OptionsCtrl',
-            templateUrl: 'views/options.html'
+            templateUrl: 'views/quicktexts.html'
         })
         .when('/dialog', {
             controller: 'DialogCtrl',

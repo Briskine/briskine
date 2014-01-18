@@ -16,6 +16,10 @@ body {
   font-size: 12px;
 }
 
+.container {
+  margin: 0;
+}
+
 /* Header
  */
 header {
@@ -61,6 +65,55 @@ input[type="text"] {
 
   &:first-child {
     border-width: 0;
+  }
+}
+
+/* Nav pills
+ */
+
+.nav {
+
+
+  > li {
+    margin-left: -15px !important;
+    border-left: 6px solid transparent;
+
+    line-height: .8em;
+
+    > a {
+      color: darken($grey1, 40%);
+      border-radius: 0;
+
+      &:hover {
+        background: none;
+      }
+    }
+
+    &.active {
+      border-color: darken($grey1, 60%);
+
+      a {
+        background: none;
+
+        color: darken($grey1, 60%);
+
+        &:hover {
+          background: none;
+          cursor: default;
+
+          color: darken($grey1, 60%);
+        }
+      }
+    }
+
+  }
+}
+
+.nav-stacked {
+  margin: 1em 0;
+
+  > li:last-child {
+    margin-top: 2em;
   }
 }
 

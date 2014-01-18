@@ -1,6 +1,10 @@
 
 /* line 1 : /media/Mokush/Dev/quicktext-chrome/node_modules/grunt-contrib-stylus/node_modules/stylus/lib/functions/index.styl */
 
+/* line 256 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+/* Quicktext Chrome Extension
+ */
+
 /* line 256 : /media/Mokush/Dev/quicktext-chrome/bower_components/bootstrap/dist/css/bootstrap.css */
 /*!
  * Bootstrap v3.0.3 (http://getbootstrap.com)
@@ -7130,13 +7134,18 @@ body {
   font-size: 12px;
 }
 
-/* line 20 : /media/Mokush/Dev/quicktext-chrome/src/background/css/bootstrap-chrome.styl */
+/* line 18 : /media/Mokush/Dev/quicktext-chrome/src/background/css/bootstrap-chrome.styl */
+.container {
+  margin: 0;
+}
+
+/* line 24 : /media/Mokush/Dev/quicktext-chrome/src/background/css/bootstrap-chrome.styl */
 header {
   margin-bottom: 13px;
   border-bottom: 1px solid #eee;
 }
 
-/* line 24 : /media/Mokush/Dev/quicktext-chrome/src/background/css/bootstrap-chrome.styl */
+/* line 28 : /media/Mokush/Dev/quicktext-chrome/src/background/css/bootstrap-chrome.styl */
 header h1 {
   display: inline-block;
   padding: 21px 0 13px;
@@ -7144,7 +7153,7 @@ header h1 {
   font-size: 1.5em;
 }
 
-/* line 35 : /media/Mokush/Dev/quicktext-chrome/src/background/css/bootstrap-chrome.styl */
+/* line 39 : /media/Mokush/Dev/quicktext-chrome/src/background/css/bootstrap-chrome.styl */
 input[type="text"] {
   border: 1px solid #bfbfbf;
   border-radius: 2px;
@@ -7156,26 +7165,74 @@ input[type="text"] {
   padding: 3px;
 }
 
-/* line 46 : /media/Mokush/Dev/quicktext-chrome/src/background/css/bootstrap-chrome.styl */
+/* line 50 : /media/Mokush/Dev/quicktext-chrome/src/background/css/bootstrap-chrome.styl */
 
-/* line 48 : /media/Mokush/Dev/quicktext-chrome/src/background/css/bootstrap-chrome.styl */
+/* line 52 : /media/Mokush/Dev/quicktext-chrome/src/background/css/bootstrap-chrome.styl */
 .form-control:focus {
   box-shadow: none;
   border-color: #4d90fe;
 }
 
-/* line 57 : /media/Mokush/Dev/quicktext-chrome/src/background/css/bootstrap-chrome.styl */
+/* line 61 : /media/Mokush/Dev/quicktext-chrome/src/background/css/bootstrap-chrome.styl */
 .list-group-item {
   border-color: #eee;
   border-width: 1px 0 0;
 }
 
-/* line 61 : /media/Mokush/Dev/quicktext-chrome/src/background/css/bootstrap-chrome.styl */
+/* line 65 : /media/Mokush/Dev/quicktext-chrome/src/background/css/bootstrap-chrome.styl */
 .list-group-item:first-child {
   border-width: 0;
 }
 
-/* line 68 : /media/Mokush/Dev/quicktext-chrome/src/background/css/bootstrap-chrome.styl */
+/* line 73 : /media/Mokush/Dev/quicktext-chrome/src/background/css/bootstrap-chrome.styl */
+
+/* line 76 : /media/Mokush/Dev/quicktext-chrome/src/background/css/bootstrap-chrome.styl */
+.nav > li {
+  margin-left: -15px !important;
+  border-left: 6px solid transparent;
+  line-height: 0.8em;
+}
+
+/* line 82 : /media/Mokush/Dev/quicktext-chrome/src/background/css/bootstrap-chrome.styl */
+.nav > li > a {
+  color: #8f8f8f;
+  border-radius: 0;
+}
+
+/* line 86 : /media/Mokush/Dev/quicktext-chrome/src/background/css/bootstrap-chrome.styl */
+.nav > li > a:hover {
+  background: none;
+}
+
+/* line 91 : /media/Mokush/Dev/quicktext-chrome/src/background/css/bootstrap-chrome.styl */
+.nav > li.active {
+  border-color: #5f5f5f;
+}
+
+/* line 94 : /media/Mokush/Dev/quicktext-chrome/src/background/css/bootstrap-chrome.styl */
+.nav > li.active a {
+  background: none;
+  color: #5f5f5f;
+}
+
+/* line 99 : /media/Mokush/Dev/quicktext-chrome/src/background/css/bootstrap-chrome.styl */
+.nav > li.active a:hover {
+  background: none;
+  cursor: default;
+  color: #5f5f5f;
+}
+
+/* line 111 : /media/Mokush/Dev/quicktext-chrome/src/background/css/bootstrap-chrome.styl */
+.nav-stacked {
+  margin: 1em 0;
+}
+
+/* line 114 : /media/Mokush/Dev/quicktext-chrome/src/background/css/bootstrap-chrome.styl */
+.nav-stacked > li:last-child {
+  margin-top: 2em;
+}
+
+/* line 121 : /media/Mokush/Dev/quicktext-chrome/src/background/css/bootstrap-chrome.styl */
 .btn-primary {
   appearance: none;
   user-select: none;
@@ -7189,7 +7246,7 @@ input[type="text"] {
   text-shadow: 0 1px 0 #f0f0f0;
 }
 
-/* line 80 : /media/Mokush/Dev/quicktext-chrome/src/background/css/bootstrap-chrome.styl */
+/* line 133 : /media/Mokush/Dev/quicktext-chrome/src/background/css/bootstrap-chrome.styl */
 .btn-primary:hover {
   background-image: linear-gradient(#f0f0f0, #f0f0f0 38%, #e0e0e0);
   border-color: rgba(0,0,0,0.3);
@@ -7197,290 +7254,194 @@ input[type="text"] {
   color: #000;
 }
 
-/* line 87 : /media/Mokush/Dev/quicktext-chrome/src/background/css/bootstrap-chrome.styl */
+/* line 140 : /media/Mokush/Dev/quicktext-chrome/src/background/css/bootstrap-chrome.styl */
 .btn-primary:active {
   background-image: linear-gradient(#e7e7e7, #e7e7e7 38%, #d7d7d7);
   box-shadow: none;
   text-shadow: none;
 }
 
-/* line 4 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
-.page-content-wrapper {
-  padding-top: 35px;
-}
-
-/* line 7 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
-.logo-container {
-  text-align: center;
-}
-
 /* line 10 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
-#sidebar-wrapper {
-  position: fixed;
-  z-index: 999;
-  margin-left: -250px;
-  left: 250px;
-  width: 250px;
-  background-color: #f5f5f5;
-  box-shadow: inset -10px 0 10px -7px #ccc;
-  height: 100%;
-  overflow-y: auto;
-}
+/*.page-content-wrapper
+    padding-top 35px
 
-/* line 21 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
-#sidebar-wrapper .sidebar-nav {
-  position: absolute;
-  top: 0;
-  width: 250px;
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
+.logo-container
+    text-align center
 
-/* line 29 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
-#sidebar-wrapper .sidebar-nav .sidebar-brand {
-  text-align: center;
-  padding-top: 35px;
-  padding-bottom: 35px;
-}
+#sidebar-wrapper
+    position fixed
+    z-index 999
+    margin-left -250px
+    left 250px
+    width 250px
+    background-color #f5f5f5
+    box-shadow inset -10px 0 10px -7px #ccc
+    height 100%
+    overflow-y auto
 
-/* line 34 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
-#sidebar-wrapper .sidebar-nav li {
-  padding: 0px 20px 20px 20px;
-}
+    .sidebar-nav
+        position absolute
+        top 0
+        width 250px
+        list-style none
+        margin 0
+        padding 0
 
-/* line 37 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
-#sidebar-wrapper .sidebar-nav li > .section-header {
-  padding-bottom: 8px;
-  font-size: 16px;
-  font-weight: bold;
-  color: #777;
-}
+        .sidebar-brand
+            text-align center
+            padding-top 35px
+            padding-bottom 35px
 
-/* line 43 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
-#sidebar-wrapper .sidebar-footer {
-  position: absolute;
-  bottom: 0px;
-  left: 0px;
-  margin-right: 20px;
-  margin-left: 20px;
-  width: 205px;
-}
+        li
+            padding 0px 20px 20px 20px
 
-/* line 51 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
-#sidebar-wrapper .sidebar-footer .sidebar-footer-links {
-  text-align: center;
-  padding-bottom: 10px;
-}
+            > .section-header
+                padding-bottom 8px
+                font-size 16px
+                font-weight bold
+                color #777
 
-/* line 55 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+    .sidebar-footer
+        position absolute
+        bottom 0px
+        left 0px
+        margin-right 20px
+        margin-left 20px
+        width 205px
 
-/* line 56 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
-#sidebar-wrapper .profile .profile-picture {
-  vertical-align: middle;
-  display: table-cell;
-}
+        .sidebar-footer-links
+            text-align center
+            padding-bottom 10px
 
-/* line 59 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
-#sidebar-wrapper .profile .profile-picture img {
-  border: 2px #fff solid;
-}
+    .profile
+        .profile-picture
+            vertical-align middle
+            display table-cell
+            img
+                border 2px #fff solid
+        .profile-container
+            padding-left 10px
+            display table-cell
+            vertical-align middle
+        .profile-name
+            font-size 16px
+            font-weight bold
+        .profile-email
+            font-size 12px
+        .profile-extra
+            margin-top 7px
+        .anonymous
+            font-size larger
 
-/* line 61 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
-#sidebar-wrapper .profile .profile-container {
-  padding-left: 10px;
-  display: table-cell;
-  vertical-align: middle;
-}
 
-/* line 65 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
-#sidebar-wrapper .profile .profile-name {
-  font-size: 16px;
-  font-weight: bold;
-}
+.toggle-sidebar
+   cursor pointer
+   position absolute
+   bottom 170px
+   &.toggle-hide
+    right 0px
+   &.toggle-show
+    left 0px
 
-/* line 68 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
-#sidebar-wrapper .profile .profile-email {
-  font-size: 12px;
-}
+   background-color #FDFDFD
+   padding 5px
 
-/* line 70 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
-#sidebar-wrapper .profile .profile-extra {
-  margin-top: 7px;
-}
+   span
+       font-size 20px
 
-/* line 72 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
-#sidebar-wrapper .profile .anonymous {
-  font-size: larger;
-}
+.search-table
+    width 320px
 
-/* line 76 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
-.toggle-sidebar {
-  cursor: pointer;
-  position: absolute;
-  bottom: 170px;
-  background-color: #fdfdfd;
-  padding: 5px;
-}
+.quicktext-form
+    margin-left 10px
+    margin-right 10px
 
-/* line 80 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
-.toggle-sidebar.toggle-hide {
-  right: 0px;
-}
+.quicktext-filters
+    margin-top 10px
+    margin-bottom 10px
 
-/* line 82 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
-.toggle-sidebar.toggle-show {
-  left: 0px;
-}
+.duplicate-bottom
+    padding-top 6px
 
-/* line 88 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
-.toggle-sidebar span {
-  font-size: 20px;
-}
+#popup-container
+    min-width 629px
+    padding-top 13px
+    .search-table
+        width: 100%
 
-/* line 91 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
-.search-table {
-  width: 320px;
-}
+    #quicktext-table-container
+        height 300px
+        overflow-y auto
 
-/* line 94 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
-.quicktext-form {
-  margin-left: 10px;
-  margin-right: 10px;
-}
+        tr
+            cursor pointer
 
-/* line 98 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
-.quicktext-filters {
-  margin-top: 10px;
-  margin-bottom: 10px;
-}
+#login-modal
+    display none
 
-/* line 102 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
-.duplicate-bottom {
-  padding-top: 6px;
-}
+    .form-signin
+        max-width 400px
+        display block
+        background-color #f7f7f7
+        box-shadow 0 0 3px 3px #888
+        border-radius 2px
 
-/* line 105 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
-#popup-container {
-  min-width: 629px;
-  padding-top: 13px;
-}
+        .main
+            padding 38px
 
-/* line 108 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
-#popup-container .search-table {
-  width: 100%;
-}
+            .social-box
+                margin 0 auto
+                padding 38px
+                border-bottom 1px #ccc solid
+                a
+                    font-weight bold
+                    font-size 18px
+                    padding 8px
+                    i
+                        font-weight bold
+                        font-size 20px
 
-/* line 111 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
-#popup-container #quicktext-table-container {
-  height: 300px;
-  overflow-y: auto;
-}
+        .heading-desc
+            font-size 20px
+            font-weight bold
+            padding 38px 38px 0px 38px
 
-/* line 115 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
-#popup-container #quicktext-table-container tr {
-  cursor: pointer;
-}
 
-/* line 118 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
-#login-modal {
-  display: none;
-}
+        .form-signin-heading, .checkbox
+            margin-bottom 10px
 
-/* line 121 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
-#login-modal .form-signin {
-  max-width: 400px;
-  display: block;
-  background-color: #f7f7f7;
-  box-shadow: 0 0 3px 3px #888;
-  border-radius: 2px;
-}
+        .checkbox
+            font-weight normal
 
-/* line 128 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
-#login-modal .form-signin .main {
-  padding: 38px;
-}
+        .form-signin .form-control
+            position relative
+            font-size 16px
+            height 20px
+            padding 20px
+            box-sizing border-box
 
-/* line 131 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
-#login-modal .form-signin .main .social-box {
-  margin: 0 auto;
-  padding: 38px;
-  border-bottom: 1px #ccc solid;
-}
+        .form-control focus
+            z-index 2
 
-/* line 135 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
-#login-modal .form-signin .main .social-box a {
-  font-weight: bold;
-  font-size: 18px;
-  padding: 8px;
-}
+        input[type="text"]
+            margin-bottom 10px
+            border-radius 5px
 
-/* line 139 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
-#login-modal .form-signin .main .social-box a i {
-  font-weight: bold;
-  font-size: 20px;
-}
 
-/* line 143 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
-#login-modal .form-signin .heading-desc {
-  font-size: 20px;
-  font-weight: bold;
-  padding: 38px 38px 0px 38px;
-}
+        input[type="password"]
+            margin-bottom 10px
+            border-radius 5px
 
-/* line 149 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
-#login-modal .form-signin .form-signin-heading,
-#login-modal .form-signin .checkbox {
-  margin-bottom: 10px;
-}
+        .login-footer
+            background #f0f0f0
+            margin 0 auto
+            border-top 1px solid #dadada
+            padding 20px
 
-/* line 152 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
-#login-modal .form-signin .checkbox {
-  font-weight: normal;
-}
+        .login-footer .left-section a
+            font-weight bold
+            color #8a8a8a
+            line-height 19px
 
-/* line 155 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
-#login-modal .form-signin .form-signin .form-control {
-  position: relative;
-  font-size: 16px;
-  height: 20px;
-  padding: 20px;
-  box-sizing: border-box;
-}
-
-/* line 162 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
-#login-modal .form-signin .form-control focus {
-  z-index: 2;
-}
-
-/* line 165 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
-#login-modal .form-signin input[type="text"] {
-  margin-bottom: 10px;
-  border-radius: 5px;
-}
-
-/* line 170 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
-#login-modal .form-signin input[type="password"] {
-  margin-bottom: 10px;
-  border-radius: 5px;
-}
-
-/* line 174 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
-#login-modal .form-signin .login-footer {
-  background: #f0f0f0;
-  margin: 0 auto;
-  border-top: 1px solid #dadada;
-  padding: 20px;
-}
-
-/* line 180 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
-#login-modal .form-signin .login-footer .left-section a {
-  font-weight: bold;
-  color: #8a8a8a;
-  line-height: 19px;
-}
-
-/* line 185 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
-#login-modal .mg-btm {
-  margin-bottom: 20px;
-}
+    .mg-btm
+        margin-bottom 20px*/
