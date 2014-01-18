@@ -1,8 +1,12 @@
+/* Quicktext chrome extension
+ */
+
 var gqApp = angular.module('gqApp', [
   'ngRoute',
   'ngAnimate',
   'angular-md5'
 ]).config(function ($routeProvider) {
+  
     $routeProvider
         .when('/list', {
             controller: 'ListCtrl',
@@ -25,6 +29,8 @@ var gqApp = angular.module('gqApp', [
         });
 });
 
+/* Global run
+ */
 gqApp.run(function ($rootScope, $location, ProfileService, SettingsService) {
 
   $rootScope.$on('$routeChangeStart', function(next, current) {
