@@ -5,10 +5,28 @@
 @import "../../../bower_components/bootstrap/dist/css/bootstrap.css";
 @import "bootstrap-chrome.styl";
 
-/* Container animation
+/* General
+ */
+body {
+  padding-top: 6em;
+}
+
+header {
+  position: fixed;
+  top: 0;
+  left: 25%;
+  width: 75%;
+  z-index: 999;
+  max-width: 700px;
+
+  background: linear-gradient(white, white 40%, rgba(255, 255, 255, 0.92));
+}
+
+/* View container
  */
 .view-container {
   position: relative;
+  margin-left: 25%;
 }
 
 .container-animation {
@@ -20,6 +38,13 @@
 .container-animation.ng-enter,
 .container-animation.ng-leave {
   transition: all .1s ease-out;
+
+  header {
+    position: absolute;
+    top: -6em;
+    left: 0;
+    width: 100%;
+  }
 }
 
 .container-animation.ng-enter {
@@ -42,6 +67,14 @@
 .container-animation.ng-leave.ng-leave-active {
   opacity: 0;
   transform: translate3d(-50px, 0, 0);
+}
+
+/* Sidebar
+ */
+.sidebar-wrapper {
+  position: fixed;
+  top: 0;
+  left: 0;
 }
 
 

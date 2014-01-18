@@ -7170,7 +7170,7 @@ td.visible-print {
 /* line 13 : /media/Mokush/Dev/quicktext-chrome/src/background/css/bootstrap-chrome.styl */
 html,
 body {
-  font-family: 'Chrome Droid Sans', 'Droid Sans Fallback', 'Lucida Grande', sans-serif;
+  font-family: sans-serif;
   font-size: 12px;
 }
 
@@ -7328,22 +7328,47 @@ input[type="text"] {
 }
 
 /* line 8 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
-/* Container animation
+/* General
  */
 
 /* line 10 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
-.view-container {
-  position: relative;
+body {
+  padding-top: 6em;
 }
 
 /* line 14 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+header {
+  position: fixed;
+  top: 0;
+  left: 25%;
+  width: 75%;
+  z-index: 999;
+  max-width: 700px;
+  background: -webkit-linear-gradient(#fff, #fff 40%, rgba(255,255,255,0.92));
+  background: -moz-linear-gradient(#fff, #fff 40%, rgba(255,255,255,0.92));
+  background: -o-linear-gradient(#fff, #fff 40%, rgba(255,255,255,0.92));
+  background: -ms-linear-gradient(#fff, #fff 40%, rgba(255,255,255,0.92));
+  background: linear-gradient(#fff, #fff 40%, rgba(255,255,255,0.92));
+}
+
+/* line 25 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+/* View container
+ */
+
+/* line 27 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+.view-container {
+  position: relative;
+  margin-left: 25%;
+}
+
+/* line 32 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
 .container-animation {
   position: relative;
   display: block;
   width: 100%;
 }
 
-/* line 20 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+/* line 38 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
 .container-animation.ng-enter,
 .container-animation.ng-leave {
   -webkit-transition: all 0.1s ease-out;
@@ -7353,7 +7378,16 @@ input[type="text"] {
   transition: all 0.1s ease-out;
 }
 
-/* line 24 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+/* line 41 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+.container-animation.ng-enter header,
+.container-animation.ng-leave header {
+  position: absolute;
+  top: -6em;
+  left: 0;
+  width: 100%;
+}
+
+/* line 49 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
 .container-animation.ng-enter {
   opacity: 0;
   -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
@@ -7365,7 +7399,7 @@ input[type="text"] {
   transform: translate3d(50px, 0, 0);
 }
 
-/* line 29 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+/* line 54 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
 .container-animation.ng-enter.ng-enter-active {
   opacity: 1;
   -ms-filter: none;
@@ -7378,7 +7412,7 @@ input[type="text"] {
   transform: translate3d(0, 0, 0);
 }
 
-/* line 35 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+/* line 60 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
 .container-animation.ng-leave {
   position: absolute;
   z-index: 101;
@@ -7389,7 +7423,7 @@ input[type="text"] {
   transform: translate3d(0, 0, 0);
 }
 
-/* line 41 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+/* line 66 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
 .container-animation.ng-leave.ng-leave-active {
   opacity: 0;
   -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
@@ -7401,7 +7435,18 @@ input[type="text"] {
   transform: translate3d(-50px, 0, 0);
 }
 
-/* line 47 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+/* line 71 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+/* Sidebar
+ */
+
+/* line 73 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+.sidebar-wrapper {
+  position: fixed;
+  top: 0;
+  left: 0;
+}
+
+/* line 80 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
 /*.page-content-wrapper
     padding-top 35px
 

@@ -1,5 +1,5 @@
 gqApp.controller('ListCtrl', function($scope, $rootScope, QuicktextService, SettingsService, ProfileService) {
-    $scope.controller = "OptionsCtrl";
+    $scope.controller = 'ListCtrl';
     $scope.quicktexts = [];
     $scope.tags = [];
     $scope.filterTags = [];
@@ -12,18 +12,10 @@ gqApp.controller('ListCtrl', function($scope, $rootScope, QuicktextService, Sett
         $scope.tags = response;
     });
 
-    $scope.profile = ProfileService;
-    $scope.settings = SettingsService;
-
-    $scope.sidebarHidden = SettingsService.get('sidebarHidden');
-    $scope.tabcompleteEnabled = SettingsService.get('tabcompleteEnabled');
-    $scope.autocompleteEnabled = SettingsService.get('autocompleteEnabled');
-    $scope.sendStatsEnabled = SettingsService.get('sendStatsEnabled');
+//     $scope.sidebarHidden = SettingsService.get('sidebarHidden');
 
     $rootScope.$on('$includeContentLoaded', function(event) {
         $("#search-input").focus();
-        $("[data-toggle=tooltip]").tooltip();
-        $("[data-toggle=popover").popover();
     });
 
     // Show the form for adding a new quicktext or creating one
@@ -127,9 +119,9 @@ gqApp.controller('ListCtrl', function($scope, $rootScope, QuicktextService, Sett
         }
     };
 
-    $scope.toggleSidebar = function(){
-        $scope.sidebarHidden = !$scope.sidebarHidden;
-        // put in settings
-        SettingsService.set('sidebarHidden', $scope.sidebarHidden);
-    };
+//     $scope.toggleSidebar = function(){
+//         $scope.sidebarHidden = !$scope.sidebarHidden;
+//         // put in settings
+//         SettingsService.set('sidebarHidden', $scope.sidebarHidden);
+//     };
 });

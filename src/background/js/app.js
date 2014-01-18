@@ -25,10 +25,23 @@ var gqApp = angular.module('gqApp', [
         });
 });
 
-gqApp.run(function ($rootScope, $location) {
+gqApp.run(function ($rootScope, $location, ProfileService, SettingsService) {
 
   $rootScope.$on('$routeChangeStart', function(next, current) {
     $rootScope.path = $location.path();
+  });
+
+  $rootScope.profile = ProfileService;
+  $rootScope.settings = SettingsService;
+
+  $rootScope.$on('$viewContentLoaded', function(event) {
+    $("[data-toggle=tooltip]").tooltip();
+    $("[data-toggle=popover").popover();
+  });
+
+  $rootScope.$on('$includeContentLoaded', function(event) {
+    $("[data-toggle=tooltip]").tooltip();
+    $("[data-toggle=popover").popover();
   });
 
 });
