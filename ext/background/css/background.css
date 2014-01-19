@@ -7569,34 +7569,79 @@ header {
 }
 
 /* line 145 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+/* Hover actions
+ */
+
+/* line 147 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+.list-group-item {
+  position: relative;
+}
+
+/* line 150 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+.list-group-item .hover-actions {
+  position: absolute;
+  top: 50%;
+  right: 0.75em;
+  -webkit-transition: all 0.1s ease-out;
+  -moz-transition: all 0.1s ease-out;
+  -o-transition: all 0.1s ease-out;
+  -ms-transition: all 0.1s ease-out;
+  transition: all 0.1s ease-out;
+  -webkit-transform: translateY(-50%);
+  -moz-transform: translateY(-50%);
+  -o-transform: translateY(-50%);
+  -ms-transform: translateY(-50%);
+  transform: translateY(-50%);
+  min-width: 200px;
+  text-align: right;
+  opacity: 0;
+  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
+  filter: alpha(opacity=0);
+}
+
+/* line 160 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+.list-group-item .hover-actions button,
+.list-group-item .hover-actions .btn {
+  display: inline-block;
+  margin-left: 0.5em;
+}
+
+/* line 167 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+.list-group-item:hover .hover-actions {
+  opacity: 1;
+  -ms-filter: none;
+  filter: none;
+}
+
+/* line 172 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
 /* Page Action Popup
  */
 
-/* line 148 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+/* line 175 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
 
-/* line 150 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+/* line 177 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
 .popup .sidebar-wrapper {
   display: none;
 }
 
-/* line 154 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+/* line 181 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
 .popup header {
   left: 0;
   padding: 0.5em 1.25em;
 }
 
-/* line 159 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+/* line 186 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
 .popup .view-container {
   margin: 0;
 }
 
-/* line 163 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+/* line 190 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
 .popup header,
 .popup .view-container {
   width: 100%;
 }
 
-/* line 170 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+/* line 197 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
 /*.page-content-wrapper
     padding-top 35px
 

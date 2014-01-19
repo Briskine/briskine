@@ -144,6 +144,33 @@ header {
   margin-bottom: emCalc(12);
 }
 
+/* Hover actions
+ */
+.list-group-item {
+  position: relative;
+
+  .hover-actions {
+    position: absolute;
+    top: 50%;
+    right: emCalc(12);
+    transition: all .1s ease-out;
+    transform: translateY(-50%);
+    min-width: 200px;
+    text-align: right;
+    opacity: 0;
+
+    button
+    .btn {
+      display: inline-block;
+      margin-left: emCalc(8);
+    }
+  }
+
+  &:hover .hover-actions {
+    opacity: 1;
+  }
+}
+
 /* Page Action Popup
  */
 

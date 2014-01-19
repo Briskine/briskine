@@ -36464,7 +36464,7 @@ var gqApp = angular.module('gqApp', [
         })
         .when('/popup', {
             controller: 'PopupCtrl',
-            templateUrl: 'views/popup.html'
+            templateUrl: 'views/list.html'
         })
         .otherwise({
           redirectTo: '/list'
@@ -36493,6 +36493,10 @@ gqApp.run(function ($rootScope, $location, ProfileService, SettingsService) {
   });
 
 });
+
+/* TODO
+ */
+// We no longer need the add.html and popup.html templates
 
 // Register Chrome runtime protocols and context menus
 if(chrome.runtime){
