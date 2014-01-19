@@ -1,4 +1,4 @@
-gqApp.controller('DialogCtrl', function($scope, $rootScope, QuicktextService) {
+gqApp.controller('AddCtrl', function($scope, $rootScope, QuicktextService, $location) {
     $scope.controller = "DialogCtrl";
     $scope.selectedQt = {
         'id': '',
@@ -18,6 +18,7 @@ gqApp.controller('DialogCtrl', function($scope, $rootScope, QuicktextService) {
         $('.modal').on('shown.bs.modal', function () { //put focus on the first text input
             $(this).find('input[type=text]:first').focus();
         });
+
         var args = window.dialogArguments;
         if (args.selection){
             $scope.selectedQt.body = args.selection;

@@ -1,7 +1,7 @@
 
 /* line 1 : /media/Mokush/Dev/quicktext-chrome/node_modules/grunt-contrib-stylus/node_modules/stylus/lib/functions/index.styl */
 
-/* line 256 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+/* line undefined : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
 /* Quicktext Chrome Extension
  */
 
@@ -7350,41 +7350,45 @@ input[type="text"] {
 }
 
 /* line 153 : /media/Mokush/Dev/quicktext-chrome/src/background/css/bootstrap-chrome.styl */
+.modal-backdrop {
+  background-color: #fff;
+}
+
+/* line 156 : /media/Mokush/Dev/quicktext-chrome/src/background/css/bootstrap-chrome.styl */
 .modal-backdrop.in {
   opacity: 0.9;
   -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=90)";
   filter: alpha(opacity=90);
-  background-color: #fff;
 }
 
-/* line 158 : /media/Mokush/Dev/quicktext-chrome/src/background/css/bootstrap-chrome.styl */
+/* line 161 : /media/Mokush/Dev/quicktext-chrome/src/background/css/bootstrap-chrome.styl */
 .modal-content {
   border: 0;
   -webkit-box-shadow: 0 4px 23px 5px rgba(0,0,0,0.2), 0 2px 6px rgba(0,0,0,0.15);
   box-shadow: 0 4px 23px 5px rgba(0,0,0,0.2), 0 2px 6px rgba(0,0,0,0.15);
 }
 
-/* line 162 : /media/Mokush/Dev/quicktext-chrome/src/background/css/bootstrap-chrome.styl */
+/* line 165 : /media/Mokush/Dev/quicktext-chrome/src/background/css/bootstrap-chrome.styl */
 .modal-content .modal-header {
   border: none;
 }
 
-/* line 165 : /media/Mokush/Dev/quicktext-chrome/src/background/css/bootstrap-chrome.styl */
+/* line 168 : /media/Mokush/Dev/quicktext-chrome/src/background/css/bootstrap-chrome.styl */
 .modal-content .modal-header h4 {
   font-size: 1.125em;
 }
 
-/* line 170 : /media/Mokush/Dev/quicktext-chrome/src/background/css/bootstrap-chrome.styl */
+/* line 173 : /media/Mokush/Dev/quicktext-chrome/src/background/css/bootstrap-chrome.styl */
 .modal-content .modal-footer {
   border: none;
 }
 
-/* line 174 : /media/Mokush/Dev/quicktext-chrome/src/background/css/bootstrap-chrome.styl */
+/* line 177 : /media/Mokush/Dev/quicktext-chrome/src/background/css/bootstrap-chrome.styl */
 .modal-content .modal-body {
   padding: 0 15px;
 }
 
-/* line 177 : /media/Mokush/Dev/quicktext-chrome/src/background/css/bootstrap-chrome.styl */
+/* line 180 : /media/Mokush/Dev/quicktext-chrome/src/background/css/bootstrap-chrome.styl */
 .modal-content .modal-body .form-group {
   margin-left: 0;
   margin-right: 0;

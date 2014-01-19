@@ -1,4 +1,6 @@
-gqApp.controller('ListCtrl', function($scope, $rootScope, QuicktextService, SettingsService, ProfileService) {
+gqApp.controller('ListCtrl', function($scope, $rootScope, $routeParams, $location,  QuicktextService, SettingsService, ProfileService) {
+    var $formModal;
+
     $scope.controller = 'ListCtrl';
     $scope.quicktexts = [];
     $scope.tags = [];
@@ -12,13 +14,41 @@ gqApp.controller('ListCtrl', function($scope, $rootScope, QuicktextService, Sett
         $scope.tags = response;
     });
 
-    $rootScope.$on('$includeContentLoaded', function(event) {
-        $("#search-input").focus();
-    });
+    /* Init modal and other dom manipulation
+     * when the templates have loaded
+     */
+    var initDom = function() {
+      $("#search-input").focus();
+
+      /* New/Edit modal
+        */
+      $formModal = $('#quicktext-modal');
+      $formModal.modal({
+        show: false
+      });
+
+      $formModal.on('hide.bs.modal', function (e) {
+        $location.path('/list').search({});
+        $scope.$apply();
+      });
+
+      $formModal.on('shown.bs.modal', function () {
+        //put focus on the first text input
+        $formModal.find('input[type=text]:first').focus();
+      });
+
+      $scope.showLogin = function(){
+          $("#login-modal").modal();
+      };
+
+      checkRoute();
+    };
+
+    $rootScope.$on('$includeContentLoaded', initDom);
 
     // Show the form for adding a new quicktext or creating one
-    $scope.showForm = function(id){
-        _gaq.push(['_trackEvent', "forms", 'show']);
+    $scope.showForm = function(id) {
+        _gaq.push(['_trackEvent', 'forms', 'show']);
 
         var defaults = {
             'id': '',
@@ -29,23 +59,33 @@ gqApp.controller('ListCtrl', function($scope, $rootScope, QuicktextService, Sett
             'tags': '',
             'body': ''
         };
-        if (!this.quicktext){ // new qt
-            $scope.selectedQt = angular.copy(defaults);
-        } else { // update qt
-            QuicktextService.get(this.quicktext.id).then(function(r){
+
+        if ($routeParams.id === 'new') {
+          // new qt
+          $scope.selectedQt = angular.copy(defaults);
+          $scope.selectedQt.body = $routeParams.body;
+        } else if ($routeParams.id) { // update qt
+            QuicktextService.get($routeParams.id).then(function(r){
                 $scope.selectedQt = angular.copy(r);
             });
         }
 
-        $('#quicktext-modal').modal();
-        $('.modal').on('shown.bs.modal', function () { //put focus on the first text input
-            $(this).find('input[type=text]:first').focus();
-        });
+        $formModal.modal('show');
     };
 
-    $scope.showLogin = function(){
-        $("#login-modal").modal();
+    /* Check search params to see if adding or editing items
+     */
+    var checkRoute = function() {
+
+      // if not the default list
+      // new or edit, so show the modal
+      if($routeParams.id) {
+        $scope.showForm();
+      }
+
     };
+
+    $scope.$on('$routeUpdate', checkRoute);
 
     // Delete a quicktext. This operation should first delete from the localStorage
     // then it should imedially go to the service and delete on the server
@@ -116,4 +156,5 @@ gqApp.controller('ListCtrl', function($scope, $rootScope, QuicktextService, Sett
             $scope.filterTags.splice(index, 1); // remove from tags
         }
     };
+
 });

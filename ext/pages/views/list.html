@@ -6,7 +6,7 @@
 </header>
 
 <div class="btn-toolbar">
-  <button class="btn btn-primary" ng-click="showForm()" ng-hide="controller == 'PopupCtrl'">New quicktext</button>
+  <a href="#/list?id=new" class="btn btn-primary" ng-hide="controller == 'PopupCtrl'">New quicktext</a>
   <!--
   <a href="" ng-click="deleteAll()">Delete all Quicktexts</a>
   -->
@@ -51,6 +51,8 @@
         <strong title="{{quicktext.body}}" ng-bind-html="quicktext.body | truncate:100 | newlines | safe"></strong>
       </p>
 
+      <a href="#/list?id={{ quicktext.id }}" class="btn btn-primary btn-xs edit-button">edit</a>
+
     </div>
 
   </div>
@@ -90,8 +92,6 @@
 </table>-->
 
 </div>
-
-
 
 <div ng-include="'includes/form.html'"></div>
 <div ng-include="'includes/login.html'"></div>

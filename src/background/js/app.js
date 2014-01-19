@@ -5,20 +5,19 @@ var gqApp = angular.module('gqApp', [
   'ngRoute',
   'ngAnimate',
   'angular-md5'
-]).config(function ($routeProvider) {
-  
+]).config(function($routeProvider, $compileProvider) {
+
+    $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|chrome-extension):/);
+
     $routeProvider
         .when('/list', {
             controller: 'ListCtrl',
-            templateUrl: 'views/quicktexts.html'
+            templateUrl: 'views/list.html',
+            reloadOnSearch: false
         })
         .when('/settings', {
             controller: 'SettingsCtrl',
             templateUrl: 'views/settings.html'
-        })
-        .when('/dialog', {
-            controller: 'DialogCtrl',
-            templateUrl: 'views/dialog.html'
         })
         .when('/popup', {
             controller: 'PopupCtrl',

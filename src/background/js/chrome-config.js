@@ -31,9 +31,18 @@ if(chrome.runtime){
             // I would have loved to open the popup.html with this, but at this moment
             // it's not possible to do so due to browser restrictions of Chrome
             // so we are going to open a dialog with the form
-            returnVal = window.showModalDialog('/pages/bg.html#/dialog',
-                {'selection': info.selectionText, 'show': 'form'},
-                "dialogwidth: 600; dialogheight: 800; resizable: yes");
+
+//           returnVal = window.showModalDialog('/pages/bg.html#/dialog',
+//                 {'selection': info.selectionText, 'show': 'form'},
+//                 "dialogwidth: 600; dialogheight: 800; resizable: yes");
+
+          // use chrome tabs API to bypass popup blocker after first save
+          // using window.open hits popup blocker after 1 open
+          var quicktextBody = encodeURIComponent(info.selectionText);
+          chrome.tabs.create({
+            url: '/pages/bg.html#/list?id=new&body=' + quicktextBody
+          });
+
         }
     });
 

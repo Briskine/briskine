@@ -36448,20 +36448,19 @@ var gqApp = angular.module('gqApp', [
   'ngRoute',
   'ngAnimate',
   'angular-md5'
-]).config(function ($routeProvider) {
-  
+]).config(function($routeProvider, $compileProvider) {
+
+    $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|chrome-extension):/);
+
     $routeProvider
         .when('/list', {
             controller: 'ListCtrl',
-            templateUrl: 'views/quicktexts.html'
+            templateUrl: 'views/list.html',
+            reloadOnSearch: false
         })
         .when('/settings', {
             controller: 'SettingsCtrl',
             templateUrl: 'views/settings.html'
-        })
-        .when('/dialog', {
-            controller: 'DialogCtrl',
-            templateUrl: 'views/dialog.html'
         })
         .when('/popup', {
             controller: 'PopupCtrl',
@@ -36528,9 +36527,18 @@ if(chrome.runtime){
             // I would have loved to open the popup.html with this, but at this moment
             // it's not possible to do so due to browser restrictions of Chrome
             // so we are going to open a dialog with the form
-            returnVal = window.showModalDialog('/pages/bg.html#/dialog',
-                {'selection': info.selectionText, 'show': 'form'},
-                "dialogwidth: 600; dialogheight: 800; resizable: yes");
+
+//           returnVal = window.showModalDialog('/pages/bg.html#/dialog',
+//                 {'selection': info.selectionText, 'show': 'form'},
+//                 "dialogwidth: 600; dialogheight: 800; resizable: yes");
+
+          // use chrome tabs API to bypass popup blocker after first save
+          // using window.open hits popup blocker after 1 open
+          var quicktextBody = encodeURIComponent(info.selectionText);
+          chrome.tabs.create({
+            url: '/pages/bg.html#/list?id=new&body=' + quicktextBody
+          });
+
         }
     });
 
@@ -36564,7 +36572,7 @@ if(chrome.runtime){
     });
 }
 
-gqApp.controller('DialogCtrl', function($scope, $rootScope, QuicktextService) {
+gqApp.controller('AddCtrl', function($scope, $rootScope, QuicktextService, $location) {
     $scope.controller = "DialogCtrl";
     $scope.selectedQt = {
         'id': '',
@@ -36584,6 +36592,7 @@ gqApp.controller('DialogCtrl', function($scope, $rootScope, QuicktextService) {
         $('.modal').on('shown.bs.modal', function () { //put focus on the first text input
             $(this).find('input[type=text]:first').focus();
         });
+
         var args = window.dialogArguments;
         if (args.selection){
             $scope.selectedQt.body = args.selection;
@@ -36605,7 +36614,9 @@ gqApp.controller('DialogCtrl', function($scope, $rootScope, QuicktextService) {
     };
 });
 
-gqApp.controller('ListCtrl', function($scope, $rootScope, QuicktextService, SettingsService, ProfileService) {
+gqApp.controller('ListCtrl', function($scope, $rootScope, $routeParams, $location,  QuicktextService, SettingsService, ProfileService) {
+    var $formModal;
+
     $scope.controller = 'ListCtrl';
     $scope.quicktexts = [];
     $scope.tags = [];
@@ -36619,13 +36630,41 @@ gqApp.controller('ListCtrl', function($scope, $rootScope, QuicktextService, Sett
         $scope.tags = response;
     });
 
-    $rootScope.$on('$includeContentLoaded', function(event) {
-        $("#search-input").focus();
-    });
+    /* Init modal and other dom manipulation
+     * when the templates have loaded
+     */
+    var initDom = function() {
+      $("#search-input").focus();
+
+      /* New/Edit modal
+        */
+      $formModal = $('#quicktext-modal');
+      $formModal.modal({
+        show: false
+      });
+
+      $formModal.on('hide.bs.modal', function (e) {
+        $location.path('/list').search({});
+        $scope.$apply();
+      });
+
+      $formModal.on('shown.bs.modal', function () {
+        //put focus on the first text input
+        $formModal.find('input[type=text]:first').focus();
+      });
+
+      $scope.showLogin = function(){
+          $("#login-modal").modal();
+      };
+
+      checkRoute();
+    };
+
+    $rootScope.$on('$includeContentLoaded', initDom);
 
     // Show the form for adding a new quicktext or creating one
-    $scope.showForm = function(id){
-        _gaq.push(['_trackEvent', "forms", 'show']);
+    $scope.showForm = function(id) {
+        _gaq.push(['_trackEvent', 'forms', 'show']);
 
         var defaults = {
             'id': '',
@@ -36636,23 +36675,33 @@ gqApp.controller('ListCtrl', function($scope, $rootScope, QuicktextService, Sett
             'tags': '',
             'body': ''
         };
-        if (!this.quicktext){ // new qt
-            $scope.selectedQt = angular.copy(defaults);
-        } else { // update qt
-            QuicktextService.get(this.quicktext.id).then(function(r){
+
+        if ($routeParams.id === 'new') {
+          // new qt
+          $scope.selectedQt = angular.copy(defaults);
+          $scope.selectedQt.body = $routeParams.body;
+        } else if ($routeParams.id) { // update qt
+            QuicktextService.get($routeParams.id).then(function(r){
                 $scope.selectedQt = angular.copy(r);
             });
         }
 
-        $('#quicktext-modal').modal();
-        $('.modal').on('shown.bs.modal', function () { //put focus on the first text input
-            $(this).find('input[type=text]:first').focus();
-        });
+        $formModal.modal('show');
     };
 
-    $scope.showLogin = function(){
-        $("#login-modal").modal();
+    /* Check search params to see if adding or editing items
+     */
+    var checkRoute = function() {
+
+      // if not the default list
+      // new or edit, so show the modal
+      if($routeParams.id) {
+        $scope.showForm();
+      }
+
     };
+
+    $scope.$on('$routeUpdate', checkRoute);
 
     // Delete a quicktext. This operation should first delete from the localStorage
     // then it should imedially go to the service and delete on the server
@@ -36723,6 +36772,7 @@ gqApp.controller('ListCtrl', function($scope, $rootScope, QuicktextService, Sett
             $scope.filterTags.splice(index, 1); // remove from tags
         }
     };
+
 });
 
 gqApp.controller('PopupCtrl', function($scope, $rootScope, $timeout, QuicktextService) {
