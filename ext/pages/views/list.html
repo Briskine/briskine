@@ -5,8 +5,8 @@
   </div>
 </header>
 
-<div class="btn-toolbar">
-  <a href="#/list?id=new" class="btn btn-primary" ng-hide="controller == 'PopupCtrl'">New quicktext</a>
+<div class="btn-toolbar" ng-hide="pageAction">
+  <a href="#/list?id=new" class="btn btn-primary">New quicktext</a>
   <!--
   <a href="" ng-click="deleteAll()">Delete all Quicktexts</a>
   -->
@@ -23,8 +23,6 @@
     </span>
   </span>
 </div>
-
-<div class="clearfix"></div>
 
 <div id="quicktext-table-container">
 

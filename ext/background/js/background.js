@@ -36776,6 +36776,8 @@ gqApp.controller('ListCtrl', function($scope, $rootScope, $routeParams, $locatio
 });
 
 gqApp.controller('PopupCtrl', function($scope, $rootScope, $timeout, QuicktextService) {
+    $rootScope.pageAction = true;
+
     $scope.controller = "PopupCtrl";
     $scope.quicktexts = [];
     $scope.tags = [];

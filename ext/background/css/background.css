@@ -1,7 +1,7 @@
 
 /* line 1 : /media/Mokush/Dev/quicktext-chrome/node_modules/grunt-contrib-stylus/node_modules/stylus/lib/functions/index.styl */
 
-/* line undefined : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+/* line 256 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
 /* Quicktext Chrome Extension
  */
 
@@ -7569,6 +7569,34 @@ header {
 }
 
 /* line 145 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+/* Page Action Popup
+ */
+
+/* line 148 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+
+/* line 150 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+.popup .sidebar-wrapper {
+  display: none;
+}
+
+/* line 154 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+.popup header {
+  left: 0;
+  padding: 0.5em 1.25em;
+}
+
+/* line 159 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+.popup .view-container {
+  margin: 0;
+}
+
+/* line 163 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+.popup header,
+.popup .view-container {
+  width: 100%;
+}
+
+/* line 170 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
 /*.page-content-wrapper
     padding-top 35px
 
