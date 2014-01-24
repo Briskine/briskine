@@ -107,15 +107,6 @@ header {
   transform: translate3d(-50px, 0, 0);
 }
 
-/* Don't use view transition in the action popup
- */
-.popup {
-  .container-animation.ng-enter,
-  .container-animation.ng-leave {
-    transition: none;
-  }
-}
-
 /* Sidebar
  */
 .sidebar-wrapper {
@@ -184,6 +175,7 @@ header {
  */
 
 .popup {
+  width: 630px;
 
   .sidebar-wrapper {
     display: none;
@@ -203,8 +195,13 @@ header {
     width: 100%;
   }
 
+  /* Don't use view transition in the action popup
+  */
+  .container-animation.ng-enter,
+  .container-animation.ng-leave {
+    transition: none;
+  }
 }
-
 
 /*.page-content-wrapper
     padding-top 35px

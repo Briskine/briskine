@@ -36814,13 +36814,8 @@ gqApp.controller('PopupCtrl', function($scope, $rootScope, $timeout, QuicktextSe
         });
     };
 
-    $timeout(function(){
-        $('body').css({'width': "630px"});
-    }, 300);
-
     $rootScope.$on('$includeContentLoaded', function(event) {
         $("#search-input").focus();
-        //$('body').css({'width': "630px"});
     });
 
     $scope.scroll = function(){
