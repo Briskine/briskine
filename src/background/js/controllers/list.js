@@ -1,5 +1,6 @@
 gqApp.controller('ListCtrl', function($scope, $rootScope, $routeParams, $location, $timeout, $filter, QuicktextService, SettingsService, ProfileService) {
-    var $formModal;
+
+  var $formModal;
 
     $scope.filteredQuicktexts = [];
     $scope.quicktexts = [];
