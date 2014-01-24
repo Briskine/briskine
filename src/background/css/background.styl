@@ -28,7 +28,7 @@ $contentWidth = 600px;
 /* General
  */
 body {
-  padding-top: emCalc(88);
+  padding-top: emCalc(86);
 
   color: $black;
 }
@@ -144,31 +144,74 @@ header {
   margin-bottom: emCalc(12);
 }
 
-/* Hover actions
+/* List group item
  */
 .list-group-item {
   position: relative;
+  display: block;
+  overflow: hidden;
+  border-radius: 0 !important;
 
   .hover-actions {
+    display: block;
     position: absolute;
     top: 50%;
     right: emCalc(12);
-    transition: all .1s ease-out;
     transform: translateY(-50%);
     min-width: 200px;
     text-align: right;
-    opacity: 0;
 
     button
     .btn {
       display: inline-block;
       margin-left: emCalc(8);
+
+      transition: all .1s ease-out;
+      opacity: 0;
+
+      &:focus {
+        opacity: 1;
+      }
     }
   }
 
+  .list-group-item-link:focus ~ .hover-actions,
   &:hover .hover-actions {
-    opacity: 1;
+    .btn,
+    button {
+      opacity: 1;
+    }
   }
+
+  &.active {
+    background: lighten($color1, 80%);
+  }
+}
+
+/* Quicktext list
+  */
+.quicktexts-list {
+
+  .list-group-item {
+    padding: 0;
+
+    .list-group-item-link {
+      display: block;
+      padding: emCalc(12) emCalc(16);
+
+      color: $black;
+
+      &:hover {
+        text-decoration: none;
+      }
+
+      &:focus {
+        background: lighten($color1, 50%);
+      }
+    }
+  }
+
+
 }
 
 /* Page Action Popup
@@ -200,6 +243,16 @@ header {
   .container-animation.ng-enter,
   .container-animation.ng-leave {
     transition: none;
+  }
+
+  /* Quicktext list
+   */
+  .quicktexts-list {
+    .list-group-item {
+      &:hover {
+        background-color: $grey1;
+      }
+    }
   }
 }
 

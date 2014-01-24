@@ -1,7 +1,7 @@
 <header>
   <h1>Quicktexts</h1>
   <div class="pull-right header-actions">
-    <input type="text" class="form-control" id="search-input" ng-model="searchText" ng-change="searchChange()" placeholder="Search quicktexts" />
+    <input type="text" class="form-control" id="search-input" ng-model="searchText" ng-change="searchChange()" placeholder="Search quicktexts" tabindex="0" autofocus/>
   </div>
 </header>
 
@@ -26,34 +26,37 @@
 
 <div id="quicktext-table-container">
 
-  <div class="list-group">
+  <div class="list-group quicktexts-list">
 
-    <div class="list-group-item clearfix"
+    <div class="list-group-item"
         ng-repeat="quicktext in quicktexts | filter:searchText | tagFilter:filterTags"
-        ng-class="{'active': $index === focusIndex}"
-        ng-click="pageAction ? insertQuicktext(quicktext.id) : false">
+        ng-class="{ 'active': $index === focusIndex }">
 
-      <h4 class="list-group-item-heading">
-        {{ quicktext.title }}
-      </h4>
-      <p class="list-group-item-text" ng-show="quicktext.subject">
-        Subject: {{ quicktext.subject }}
-      </p>
-      <p class="list-group-item-text" ng-show="quicktext.tags">
-          <span ng-repeat="tag in quicktext.tags.split(',')">
-          <span class="label" ng-class="{true: 'label-primary', false: 'label-default'}[filterTags.indexOf(tag.trim()) !== -1]">{{tag.trim()}}</span>
-        </span>
-      </p>
-      <p class="list-group-item-text">
-        <strong title="{{quicktext.body}}" ng-bind-html="quicktext.body | truncate:100 | newlines | safe"></strong>
-      </p>
+      <a class="list-group-item-link"
+        tabindex="0"
+        ng-click="activateQuicktext(quicktext.id)"
+        ng-focus="setFocus($index)">
+        <h4 class="list-group-item-heading">
+          {{ quicktext.title }}
+        </h4>
+        <p class="list-group-item-text" ng-show="quicktext.subject">
+          Subject: {{ quicktext.subject }}
+        </p>
+        <p class="list-group-item-text" ng-show="quicktext.tags">
+            <span ng-repeat="tag in quicktext.tags.split(',')">
+            <span class="label" ng-class="{true: 'label-primary', false: 'label-default'}[filterTags.indexOf(tag.trim()) !== -1]">{{tag.trim()}}</span>
+          </span>
+        </p>
+        <p class="list-group-item-text">
+          <strong title="{{quicktext.body}}" ng-bind-html="quicktext.body | truncate:100 | newlines | safe"></strong>
+        </p>
+      </a>
 
-       <div class="hover-actions">
-          <a ng-href="#/list?id={{ quicktext.id }}" target="{{ pageAction && '_blank' }}" class="btn btn-primary btn-xs edit-button">Edit</a>
+      <div class="hover-actions">
+        <a ng-href="#/list?id={{ quicktext.id }}" target="{{ pageAction ? '_blank' : '' }}" class="btn btn-primary btn-xs edit-button">Edit</a>
 
-          <button type="button" class="close" ng-click="deleteQt()" title="Delete">&times;</button>
-        </div>
-
+        <button type="button" class="close" ng-click="deleteQt()" title="Delete">&times;</button>
+      </div>
     </div>
 
   </div>

@@ -15,9 +15,10 @@ gqApp.controller('AddCtrl', function($scope, $rootScope, QuicktextService, $loca
         $('.close').hide(); // hide close icon
         $('.cancel-bottom').hide(); // hide cancel link
         $('.modal').modal();
-        $('.modal').on('shown.bs.modal', function () { //put focus on the first text input
-            $(this).find('input[type=text]:first').focus();
-        });
+
+//         $('.modal').on('shown.bs.modal', function () { //put focus on the first text input
+//             $(this).find('input[type=text]:first').focus();
+//         });
 
         var args = window.dialogArguments;
         if (args.selection){

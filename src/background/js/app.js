@@ -20,7 +20,8 @@ var gqApp = angular.module('gqApp', [
             templateUrl: 'views/settings.html'
         })
         .when('/popup', {
-            controller: 'PopupCtrl',
+            //controller: 'PopupCtrl',
+            controller: 'ListCtrl',
             templateUrl: 'views/list.html'
         })
         .otherwise({
@@ -36,6 +37,7 @@ gqApp.run(function ($rootScope, $location, ProfileService, SettingsService) {
     $rootScope.path = $location.path();
   });
 
+  $rootScope.pageAction = ($location.path() === '/popup');
   $rootScope.profile = ProfileService;
   $rootScope.settings = SettingsService;
 
@@ -53,4 +55,6 @@ gqApp.run(function ($rootScope, $location, ProfileService, SettingsService) {
 
 /* TODO
  */
-// We no longer need the add.html and popup.html templates
+// We no longer need
+// * add.html and popup.html templates
+// * add controller

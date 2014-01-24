@@ -36463,7 +36463,8 @@ var gqApp = angular.module('gqApp', [
             templateUrl: 'views/settings.html'
         })
         .when('/popup', {
-            controller: 'PopupCtrl',
+            //controller: 'PopupCtrl',
+            controller: 'ListCtrl',
             templateUrl: 'views/list.html'
         })
         .otherwise({
@@ -36479,6 +36480,7 @@ gqApp.run(function ($rootScope, $location, ProfileService, SettingsService) {
     $rootScope.path = $location.path();
   });
 
+  $rootScope.pageAction = ($location.path() === '/popup');
   $rootScope.profile = ProfileService;
   $rootScope.settings = SettingsService;
 
@@ -36496,7 +36498,9 @@ gqApp.run(function ($rootScope, $location, ProfileService, SettingsService) {
 
 /* TODO
  */
-// We no longer need the add.html and popup.html templates
+// We no longer need
+// * add.html and popup.html templates
+// * add controller
 
 // Register Chrome runtime protocols and context menus
 if(chrome.runtime){
@@ -36593,9 +36597,10 @@ gqApp.controller('AddCtrl', function($scope, $rootScope, QuicktextService, $loca
         $('.close').hide(); // hide close icon
         $('.cancel-bottom').hide(); // hide cancel link
         $('.modal').modal();
-        $('.modal').on('shown.bs.modal', function () { //put focus on the first text input
-            $(this).find('input[type=text]:first').focus();
-        });
+
+//         $('.modal').on('shown.bs.modal', function () { //put focus on the first text input
+//             $(this).find('input[type=text]:first').focus();
+//         });
 
         var args = window.dialogArguments;
         if (args.selection){
@@ -36618,10 +36623,10 @@ gqApp.controller('AddCtrl', function($scope, $rootScope, QuicktextService, $loca
     };
 });
 
-gqApp.controller('ListCtrl', function($scope, $rootScope, $routeParams, $location,  QuicktextService, SettingsService, ProfileService) {
+gqApp.controller('ListCtrl', function($scope, $rootScope, $routeParams, $location, $timeout, QuicktextService, SettingsService, ProfileService) {
     var $formModal;
 
-    $scope.controller = 'ListCtrl';
+    //$scope.controller = 'ListCtrl';
     $scope.quicktexts = [];
     $scope.tags = [];
     $scope.filterTags = [];
@@ -36638,7 +36643,6 @@ gqApp.controller('ListCtrl', function($scope, $rootScope, $routeParams, $locatio
      * when the templates have loaded
      */
     var initDom = function() {
-      $("#search-input").focus();
 
       /* New/Edit modal
         */
@@ -36648,8 +36652,9 @@ gqApp.controller('ListCtrl', function($scope, $rootScope, $routeParams, $locatio
       });
 
       $formModal.on('hide.bs.modal', function (e) {
-        $location.path('/list').search({});
-        $scope.$apply();
+        $timeout(function() {
+          $location.path('/list').search({});
+        });
       });
 
       $formModal.on('shown.bs.modal', function () {
@@ -36777,10 +36782,110 @@ gqApp.controller('ListCtrl', function($scope, $rootScope, $routeParams, $locatio
         }
     };
 
+    /* Keyboard navigation
+     */
+    var KEY_ENTER = 13,
+        KEY_UP = 38,
+        KEY_DOWN = 40;
+
+    $scope.focusIndex = 0;
+
+    // key navigation
+    $scope.keys = [];
+    $scope.keys.push({
+      code: KEY_ENTER,
+      action: function() {
+        // get the id of the currently selected quicktext
+        var quicktextId = $scope.quicktexts[$scope.focusIndex].id;
+        $scope.activateQuicktext(quicktextId);
+      }
+    });
+
+    $scope.keys.push({
+      code: KEY_UP,
+      action: function() {
+        if ($scope.focusIndex > 0){
+            $scope.focusIndex--;
+            $scope.scroll();
+        }
+      }
+    });
+
+    $scope.keys.push({
+      code: KEY_DOWN,
+      action: function() {
+        if ($scope.focusIndex + 1 < $scope.quicktexts.length) {
+            $scope.focusIndex++;
+            $scope.scroll();
+        }
+      }
+    });
+
+    $scope.$on('keydown', function(msg, code) {
+      $scope.keys.forEach(function(o) {
+        if ( o.code !== code ) {
+            return;
+        }
+        o.action();
+        $scope.$apply();
+      });
+    });
+
+    /* Scroll to the focused element
+     */
+    $scope.scroll = function(){
+        var scrollContainer = $("#quicktext-table-container");
+        var active = $('.active');
+        scrollContainer.scrollTop(
+            active.offset().top - scrollContainer.offset().top + scrollContainer.scrollTop()
+        );
+    };
+
+    // if the search changes the focus should be reset to 0 again
+    $scope.searchChange = function(){
+        $scope.focusIndex = 0;
+    };
+
+    /* Insert quicktext from the pageAction popup
+     */
+    $scope.insertQuicktext = function(quicktextId) {
+        // get the quicktext id
+        _gaq.push(['_trackEvent', 'popup', 'insert']);
+
+        // getch the quicktext
+        QuicktextService.get(quicktextId).then(function(quicktext){
+            chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+                chrome.tabs.sendMessage(tabs[0].id, {
+                    'action': 'insert',
+                    'quicktext': quicktext
+                }, function(response) {});
+                window.close();
+            });
+        });
+    };
+
+    /* Activate quicktext on click or Enter key
+     */
+    $scope.activateQuicktext = function(id) {
+      if($rootScope.pageAction) {
+        $scope.insertQuicktext(id);
+      } else {
+        $location.search('id', id);
+      };
+
+      return false;
+    };
+
+    /* Set active item based on focus rather than keyboard
+     */
+    $scope.setFocus = function(index) {
+      $scope.focusIndex = index;
+    }
+
 });
 
 gqApp.controller('PopupCtrl', function($scope, $rootScope, $timeout, QuicktextService) {
-    $rootScope.pageAction = true;
+//     $rootScope.pageAction = true;
 
     $scope.controller = "PopupCtrl";
     $scope.quicktexts = [];
@@ -36852,6 +36957,7 @@ gqApp.controller('PopupCtrl', function($scope, $rootScope, $timeout, QuicktextSe
         if ( o.code !== code ) {
             return;
         }
+        console.log('keydown');
         o.action();
         $scope.$apply();
       });
@@ -36872,6 +36978,14 @@ gqApp.controller('PopupCtrl', function($scope, $rootScope, $timeout, QuicktextSe
     };
 });
 
+gqApp.controller('SettingsCtrl', function($scope, $rootScope, QuicktextService, SettingsService, ProfileService) {
+
+  $scope.tabcompleteEnabled = SettingsService.get('tabcompleteEnabled');
+  $scope.autocompleteEnabled = SettingsService.get('autocompleteEnabled');
+  $scope.sendStatsEnabled = SettingsService.get('sendStatsEnabled');
+
+});
+
 // used for key navigation inside the popup
 gqApp.directive('keyTrap', function() {
   return function( scope, elem ) {
@@ -36879,14 +36993,6 @@ gqApp.directive('keyTrap', function() {
       scope.$broadcast('keydown', event.keyCode );
     });
   };
-});
-
-gqApp.controller('SettingsCtrl', function($scope, $rootScope, QuicktextService, SettingsService, ProfileService) {
-
-  $scope.tabcompleteEnabled = SettingsService.get('tabcompleteEnabled');
-  $scope.autocompleteEnabled = SettingsService.get('autocompleteEnabled');
-  $scope.sendStatsEnabled = SettingsService.get('sendStatsEnabled');
-
 });
 
 // Truncate and end with ...

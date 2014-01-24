@@ -1,5 +1,5 @@
 gqApp.controller('PopupCtrl', function($scope, $rootScope, $timeout, QuicktextService) {
-    $rootScope.pageAction = true;
+//     $rootScope.pageAction = true;
 
     $scope.controller = "PopupCtrl";
     $scope.quicktexts = [];
@@ -71,6 +71,7 @@ gqApp.controller('PopupCtrl', function($scope, $rootScope, $timeout, QuicktextSe
         if ( o.code !== code ) {
             return;
         }
+        console.log('keydown');
         o.action();
         $scope.$apply();
       });
@@ -89,13 +90,4 @@ gqApp.controller('PopupCtrl', function($scope, $rootScope, $timeout, QuicktextSe
             $scope.filterTags.splice(index, 1); // remove from tags
         }
     };
-});
-
-// used for key navigation inside the popup
-gqApp.directive('keyTrap', function() {
-  return function( scope, elem ) {
-    elem.bind('keydown', function( event ) {
-      scope.$broadcast('keydown', event.keyCode );
-    });
-  };
 });
