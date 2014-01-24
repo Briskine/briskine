@@ -16,17 +16,16 @@ gqApp.controller('PopupCtrl', function($scope, $rootScope, $timeout, QuicktextSe
         $scope.tags = response;
     });
 
-    $scope.insertQuicktext = function(index){
+    $scope.insertQuicktext = function(quicktextId) {
         // get the quicktext id
-        _gaq.push(['_trackEvent', "popup", 'insert']);
+        _gaq.push(['_trackEvent', 'popup', 'insert']);
 
-        var quicktext_id = $('#quicktext-table-container tbody tr:nth-child(' + (index + 1) + ')').attr('data-quicktext-id');
         // getch the quicktext
-        QuicktextService.get(quicktext_id).then(function(quicktext){
+        QuicktextService.get(quicktextId).then(function(quicktext){
             chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
                 chrome.tabs.sendMessage(tabs[0].id, {
-                    "action": "insert",
-                    "quicktext": quicktext
+                    'action': 'insert',
+                    'quicktext': quicktext
                 }, function(response) {});
                 window.close();
             });

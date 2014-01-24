@@ -29,16 +29,15 @@
   <div class="list-group">
 
     <div class="list-group-item clearfix"
-      ng-repeat="quicktext in quicktexts | filter:searchText | tagFilter:filterTags"
+        ng-repeat="quicktext in quicktexts | filter:searchText | tagFilter:filterTags"
         ng-class="{'active': $index === focusIndex}"
-        ng-click="controller == 'PopupCtrl' ? insertQuicktext($index) : true"
-        data-quicktext-id="{{quicktext.id}}">
+        ng-click="pageAction ? insertQuicktext(quicktext.id) : false">
 
       <h4 class="list-group-item-heading">
-        {{quicktext.title}}
+        {{ quicktext.title }}
       </h4>
       <p class="list-group-item-text" ng-show="quicktext.subject">
-        Subject: {{quicktext.subject}}
+        Subject: {{ quicktext.subject }}
       </p>
       <p class="list-group-item-text" ng-show="quicktext.tags">
           <span ng-repeat="tag in quicktext.tags.split(',')">
