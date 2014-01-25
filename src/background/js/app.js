@@ -20,7 +20,6 @@ var gqApp = angular.module('gqApp', [
             templateUrl: 'views/settings.html'
         })
         .when('/popup', {
-            //controller: 'PopupCtrl',
             controller: 'ListCtrl',
             templateUrl: 'views/list.html'
         })
@@ -47,10 +46,13 @@ gqApp.run(function ($rootScope, $location, ProfileService, SettingsService) {
         // init bootstrap elements
         $('[data-toggle=tooltip]').tooltip();
         $('[data-toggle=popover').popover();
+        $('.modal').modal({
+          show: false
+        });
 
         //put focus on the first text input when opening modals
-         $('.modal').on('shown.bs.modal', function () {
-            $(this).find('input[type=text]:first').focus();
+        $('.modal').on('shown.bs.modal', function () {
+            $(this).find('input:first').focus();
         });
 
     };
@@ -59,7 +61,11 @@ gqApp.run(function ($rootScope, $location, ProfileService, SettingsService) {
     $rootScope.$on('$includeContentLoaded', initDom);
 
     $rootScope.showLogin = function(){
-        $('.login-modal').modal();
+        $('.login-modal').modal('show');
+    };
+
+    $rootScope.showRegister = function(){
+        $('.register-modal').modal('show');
     };
 
 });

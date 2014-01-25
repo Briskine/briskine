@@ -219,25 +219,56 @@ header {
  */
 .login-modal {
 
-    .modal-dialog {
-        max-width: 360px;
-    }
+  .modal-dialog {
+    max-width: 360px;
+  }
 
 }
 
+/* Register modal
+ */
+.register-modal {
+
+  .modal-dialog {
+    max-width: 420px;
+  }
+
+}
+
+
+.btn-social {
+  font-size: emCalc(20);
+  color: #fff;
+}
+
+.btn-google {
+  background-color: #DF4A32;
+  border-color: darken(@background-color, 20%);
+
+  i {
+    color: lighten(@background-color, 80%);
+  }
+
+  &:hover {
+    color: #fff;
+    border-color: darken(@background-color, 20%);
+    background-color: darken(@background-color, 15%);
+  }
+}
+
 .text-separator {
-    margin-top: emCalc(24);
-    border-top: 1px solid $grey1;
+  margin-top: emCalc(20);
+  border-top: 1px solid $grey1;
 
-    text-align: center;
+  text-align: center;
 
-    p {
-        display: inline-block;
-        position: relative;
-        top: emCalc(-12);
-        padding: 0 emCalc(8);
-        background-color: #fff;
-    }
+  p {
+    display: inline-block;
+    position: relative;
+    top: emCalc(-12);
+    padding: 0 emCalc(8);
+    background-color: #fff;
+  }
 }
 
 /* Page Action Popup

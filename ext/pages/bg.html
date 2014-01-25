@@ -28,7 +28,7 @@
         </div>
 
         <div class="anonymous" ng-show="!profile.isLoggedin">
-          <a ng-click="showLogin()" href="">Login</a> or <a ng-click="showRegister()" href="#">Sign Up</a> to <em>share</em> quicktexts with your team.
+          <a ng-click="showLogin()" href="">Login</a> or <a ng-click="showRegister()" href="">Sign Up</a> to <em>share</em> quicktexts with your team.
         </div>
 
         <div class="profile-extra">
@@ -63,6 +63,9 @@
       <div class="container-animation" data-ng-view></div>
     </div>
   </div>
+
+  <div ng-include="'includes/login.html'"></div>
+  <div ng-include="'includes/register.html'"></div>
 
 </body>
 </html>

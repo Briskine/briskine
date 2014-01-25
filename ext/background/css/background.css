@@ -1,7 +1,7 @@
 
 /* line 1 : /media/Mokush/Dev/quicktext-chrome/node_modules/grunt-contrib-stylus/node_modules/stylus/lib/functions/index.styl */
 
-/* line undefined : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+/* line 256 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
 /* Quicktext Chrome Extension
  */
 
@@ -8551,7 +8551,8 @@ header h1 {
 }
 
 /* line 37 : /media/Mokush/Dev/quicktext-chrome/src/background/css/bootstrap-chrome.styl */
-input[type="text"] {
+input[type='text'],
+input[type='email'] {
   border: 1px solid #bfbfbf;
   -webkit-border-radius: 2px;
   border-radius: 2px;
@@ -9029,13 +9030,48 @@ header {
 }
 
 /* line 224 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+/* Register modal
+ */
+
+/* line 226 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+
+/* line 228 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+.register-modal .modal-dialog {
+  max-width: 420px;
+}
+
+/* line 235 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+.btn-social {
+  font-size: 1.25em;
+  color: #fff;
+}
+
+/* line 240 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+.btn-google {
+  background-color: #df4a32;
+  border-color: #bd341d;
+}
+
+/* line 244 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+.btn-google i {
+  color: #f9dbd6;
+}
+
+/* line 248 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+.btn-google:hover {
+  color: #fff;
+  border-color: #bd341d;
+  background-color: #c9371f;
+}
+
+/* line 255 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
 .text-separator {
-  margin-top: 1.5em;
+  margin-top: 1.25em;
   border-top: 1px solid #eee;
   text-align: center;
 }
 
-/* line 230 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+/* line 261 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
 .text-separator p {
   display: inline-block;
   position: relative;
@@ -9044,11 +9080,11 @@ header {
   background-color: #fff;
 }
 
-/* line 239 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+/* line 270 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
 /* Page Action Popup
  */
 
-/* line 242 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+/* line 273 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
 .popup {
   width: 630px;
 /* Don't use view transition in the action popup
@@ -9057,29 +9093,29 @@ header {
    */
 }
 
-/* line 245 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+/* line 276 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
 .popup .sidebar-wrapper {
   display: none;
 }
 
-/* line 249 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+/* line 280 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
 .popup header {
   left: 0;
   padding: 0.5em 1.25em;
 }
 
-/* line 254 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+/* line 285 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
 .popup .view-container {
   margin: 0;
 }
 
-/* line 258 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+/* line 289 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
 .popup header,
 .popup .view-container {
   width: 100%;
 }
 
-/* line 264 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+/* line 295 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
 .popup .container-animation.ng-enter,
 .popup .container-animation.ng-leave {
   -webkit-transition: none;
@@ -9089,16 +9125,16 @@ header {
   transition: none;
 }
 
-/* line 270 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+/* line 301 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
 
-/* line 271 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+/* line 302 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
 
-/* line 273 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+/* line 304 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
 .popup .quicktexts-list .list-group-item:hover {
   background-color: #eee;
 }
 
-/* line 280 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+/* line 311 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
 /*.page-content-wrapper
     padding-top 35px
 
