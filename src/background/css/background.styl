@@ -3,6 +3,7 @@
 
 @import "nib";
 @import "../../../bower_components/bootstrap/dist/css/bootstrap.css";
+@import "../../../bower_components/font-awesome/css/font-awesome.css";
 
 /* Functions
  */
@@ -212,7 +213,31 @@ header {
     }
   }
 
+}
 
+/* Login modal
+ */
+.login-modal {
+
+    .modal-dialog {
+        max-width: 360px;
+    }
+
+}
+
+.text-separator {
+    margin-top: emCalc(24);
+    border-top: 1px solid $grey1;
+
+    text-align: center;
+
+    p {
+        display: inline-block;
+        position: relative;
+        top: emCalc(-12);
+        padding: 0 emCalc(8);
+        background-color: #fff;
+    }
 }
 
 /* Page Action Popup

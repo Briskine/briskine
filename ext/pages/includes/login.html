@@ -1,43 +1,90 @@
-<div class="modal fade" id="login-modal" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="container">
-        <div class="row">
-          <form class="form-signin mg-btm">
-            <h3 class="heading-desc">
-              <button type="button" class="close pull-right" aria-hidden="true">×</button>
-              Login to Quicktext</h3>
-            <div class="social-box">
-              <div class="row">
-                <div class="col-md-12">
-                  <a href="#" class="btn btn-info btn-block" >
-                    <i class="icon-google"></i>    Login with Google
-                  </a>
-                </div>
-              </div>
-            </div>
-            <div class="main">
-              <input type="text" class="form-control" placeholder="E-mail" autofocus>
-              <input type="password" class="form-control" placeholder="Password">
-              <span class="clearfix"></span>
-            </div>
-            <div class="login-footer">
-              <div class="row">
-                <div class="col-xs-6 col-md-6">
-                  <div class="left-section">
-                    <a href="">Forgot your password?</a>
-                    <a href="">Sign up now</a>
-                  </div>
-                </div>
-                <div class="col-xs-6 col-md-6 pull-right">
-                  <button type="submit" class="btn btn-large btn-danger pull-right">Login</button>
-                </div>
-              </div>
+<div class="modal fade login-modal" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
 
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">
+                    Login to Quicktext
+                </h4>
             </div>
-          </form>
+
+            <div class="modal-body quicktext-form">
+
+                <div class="text-center">
+                    <a href="#" class="btn btn-default">
+                        <i class="icon-google"></i> Sign in with Google
+                    </a>
+                </div>
+
+                <div class="text-separator">
+                    <p>Or sign in with your email</p>
+                </div>
+
+                <form class="form-signin" role="form">
+
+                    <div class="form-group">
+                        <label for="email">E-mail</label>
+                        <input type="text" class="form-control" id="email" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="text" class="form-control" id="password" />
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-sm-6">
+
+
+
+                            <p>
+                                <a href="">Forgot your password?</a>
+                            </p>
+
+                        </div>
+
+                        <div class="col-sm-6 text-right">
+
+                             <button type="submit" class="btn btn-large btn-primary btn-login">Login</button>
+
+                        </div>
+
+                    </div>
+
+
+
+
+
+                   <!-- <div class="main">
+                    <input type="text" class="form-control" placeholder="E-mail" autofocus>
+                    <input type="password" class="form-control" placeholder="Password">
+                    <span class="clearfix"></span>
+                    </div>
+                    <div class="login-footer">
+                    <div class="row">
+                        <div class="col-xs-6 col-md-6">
+                        <div class="left-section">
+                            <a href="">Forgot your password?</a>
+                            <a href="">Sign up now</a>
+                        </div>
+                        </div>
+                        <div class="col-xs-6 col-md-6 pull-right">
+                        <button type="submit" class="btn btn-large btn-danger pull-right">Login</button>
+                        </div>
+                    </div>-->
+                </form>
+            </div>
+
+            <div class="modal-footer">
+                <div class="panel panel-default">
+                    <div class="panel-body text-center">
+                        Don't have an account? <a href="#">Sign Up</a>
+                    </div>
+                </div>
+            </div>
+
         </div>
-      </div>
     </div>
-  </div>
 </div>

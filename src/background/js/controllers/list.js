@@ -1,6 +1,7 @@
-gqApp.controller('ListCtrl', function($scope, $rootScope, $routeParams, $location, $timeout, $filter, QuicktextService, SettingsService, ProfileService) {
+gqApp.controller('ListCtrl',
+function($scope, $rootScope, $routeParams, $location, $timeout, $filter, QuicktextService, SettingsService, ProfileService) {
 
-  var $formModal;
+    var $formModal;
 
     $scope.filteredQuicktexts = [];
     $scope.quicktexts = [];
@@ -24,29 +25,21 @@ gqApp.controller('ListCtrl', function($scope, $rootScope, $routeParams, $locatio
      */
     var initDom = function() {
 
-      /* New/Edit modal
+        /* New/Edit modal
         */
-      $formModal = $('#quicktext-modal');
-      $formModal.modal({
+        $formModal = $('#quicktext-modal');
+        $formModal.modal({
         show: false
-      });
-
-      $formModal.on('hide.bs.modal', function (e) {
-        $timeout(function() {
-          $location.path('/list').search({});
         });
-      });
 
-      $formModal.on('shown.bs.modal', function () {
-        //put focus on the first text input
-        $formModal.find('input[type=text]:first').focus();
-      });
+        $formModal.on('hide.bs.modal', function (e) {
+            $timeout(function() {
+                $location.path('/list').search({});
+            });
+        });
 
-      $scope.showLogin = function(){
-          $("#login-modal").modal();
-      };
+        checkRoute();
 
-      checkRoute();
     };
 
     $rootScope.$on('$includeContentLoaded', initDom);
@@ -66,9 +59,9 @@ gqApp.controller('ListCtrl', function($scope, $rootScope, $routeParams, $locatio
         };
 
         if ($routeParams.id === 'new') {
-          // new qt
-          $scope.selectedQt = angular.copy(defaults);
-          $scope.selectedQt.body = $routeParams.body;
+            // new qt
+            $scope.selectedQt = angular.copy(defaults);
+            $scope.selectedQt.body = $routeParams.body;
         } else if ($routeParams.id) { // update qt
             QuicktextService.get($routeParams.id).then(function(r){
                 $scope.selectedQt = angular.copy(r);
@@ -79,14 +72,14 @@ gqApp.controller('ListCtrl', function($scope, $rootScope, $routeParams, $locatio
     };
 
     /* Check search params to see if adding or editing items
-     */
+        */
     var checkRoute = function() {
 
-      // if not the default list
-      // new or edit, so show the modal
-      if($routeParams.id) {
+        // if not the default list
+        // new or edit, so show the modal
+        if($routeParams.id) {
         $scope.showForm();
-      }
+        }
 
     };
 
@@ -163,7 +156,7 @@ gqApp.controller('ListCtrl', function($scope, $rootScope, $routeParams, $locatio
     };
 
     /* Keyboard navigation
-     */
+        */
     var KEY_ENTER = 13,
         KEY_UP = 38,
         KEY_DOWN = 40;
@@ -173,48 +166,54 @@ gqApp.controller('ListCtrl', function($scope, $rootScope, $routeParams, $locatio
     // key navigation
     $scope.keys = [];
     $scope.keys.push({
-      code: KEY_ENTER,
-      action: function() {
-        if($scope.filteredQuicktexts.length) {
-          // get the id of the currently selected quicktext
-          var quicktextId = $scope.filteredQuicktexts[$scope.focusIndex].id;
-          $scope.activateQuicktext(quicktextId);
+        code: KEY_ENTER,
+        action: function() {
+            // activate the enter key action only
+            // if there are no modals visible
+            // and the existing search filter matches any items
+
+            var modalVisible = $('.modal').is(':visible');
+
+            if(!modalVisible && $scope.filteredQuicktexts.length) {
+                // get the id of the currently selected quicktext
+                var quicktextId = $scope.filteredQuicktexts[$scope.focusIndex].id;
+                $scope.activateQuicktext(quicktextId);
+            }
         }
-      }
     });
 
     $scope.keys.push({
-      code: KEY_UP,
-      action: function() {
+        code: KEY_UP,
+        action: function() {
         if($scope.focusIndex > 0){
             $scope.focusIndex--;
             $scope.scroll();
         }
-      }
+        }
     });
 
     $scope.keys.push({
-      code: KEY_DOWN,
-      action: function() {
+        code: KEY_DOWN,
+        action: function() {
         if($scope.focusIndex + 1 < $scope.filteredQuicktexts.length) {
             $scope.focusIndex++;
             $scope.scroll();
         };
-      }
+        }
     });
 
     $scope.$on('keydown', function(msg, code) {
-      $scope.keys.forEach(function(o) {
+        $scope.keys.forEach(function(o) {
         if ( o.code !== code ) {
             return;
         }
         o.action();
         $scope.$apply();
-      });
+        });
     });
 
     /* Scroll to the focused element
-     */
+        */
     $scope.scroll = function(){
         var scrollContainer = $("#quicktext-table-container");
         var active = $('.active');
@@ -225,14 +224,14 @@ gqApp.controller('ListCtrl', function($scope, $rootScope, $routeParams, $locatio
 
     // if the search changes the focus should be reset to 0 again
     var searchChange = function(){
-      $scope.filteredQuicktexts = $filter('filter')($scope.quicktexts, $scope.searchText);
-      $scope.focusIndex = 0;
+        $scope.filteredQuicktexts = $filter('filter')($scope.quicktexts, $scope.searchText);
+        $scope.focusIndex = 0;
     };
 
     $scope.$watch('searchText', searchChange);
 
     /* Insert quicktext from the pageAction popup
-     */
+        */
     $scope.insertQuicktext = function(quicktextId) {
         // get the quicktext id
         _gaq.push(['_trackEvent', 'popup', 'insert']);
@@ -250,21 +249,21 @@ gqApp.controller('ListCtrl', function($scope, $rootScope, $routeParams, $locatio
     };
 
     /* Activate quicktext on click or Enter key
-     */
+        */
     $scope.activateQuicktext = function(id) {
-      if($rootScope.pageAction) {
+        if($rootScope.pageAction) {
         $scope.insertQuicktext(id);
-      } else {
+        } else {
         $location.search('id', id);
-      };
+        };
 
-      return false;
+        return false;
     };
 
     /* Set active item based on focus rather than keyboard
-     */
+        */
     $scope.setFocus = function(index) {
-      $scope.focusIndex = index;
+        $scope.focusIndex = index;
     };
 
 });

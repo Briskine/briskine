@@ -33,23 +33,34 @@ var gqApp = angular.module('gqApp', [
  */
 gqApp.run(function ($rootScope, $location, ProfileService, SettingsService) {
 
-  $rootScope.$on('$routeChangeStart', function(next, current) {
-    $rootScope.path = $location.path();
-  });
+    $rootScope.$on('$routeChangeStart', function(next, current) {
+        $rootScope.path = $location.path();
+    });
 
-  $rootScope.pageAction = ($location.path() === '/popup');
-  $rootScope.profile = ProfileService;
-  $rootScope.settings = SettingsService;
+    $rootScope.pageAction = ($location.path() === '/popup');
+    $rootScope.profile = ProfileService;
+    $rootScope.settings = SettingsService;
 
-  $rootScope.$on('$viewContentLoaded', function(event) {
-    $("[data-toggle=tooltip]").tooltip();
-    $("[data-toggle=popover").popover();
-  });
+    // init dom plugins
+    var initDom = function() {
 
-  $rootScope.$on('$includeContentLoaded', function(event) {
-    $("[data-toggle=tooltip]").tooltip();
-    $("[data-toggle=popover").popover();
-  });
+        // init bootstrap elements
+        $('[data-toggle=tooltip]').tooltip();
+        $('[data-toggle=popover').popover();
+
+        //put focus on the first text input when opening modals
+         $('.modal').on('shown.bs.modal', function () {
+            $(this).find('input[type=text]:first').focus();
+        });
+
+    };
+
+    $rootScope.$on('$viewContentLoaded', initDom);
+    $rootScope.$on('$includeContentLoaded', initDom);
+
+    $rootScope.showLogin = function(){
+        $('.login-modal').modal();
+    };
 
 });
 

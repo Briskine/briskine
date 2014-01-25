@@ -111,6 +111,21 @@ module.exports = function(grunt) {
           {src: ['ext/**']}
         ]
       }
+    },
+    // Put files not handled in other tasks here
+    copy: {
+      development: {
+        files: [{
+          expand: true,
+          flatten: true,
+          dot: true,
+          cwd: 'bower_components/font-awesome/fonts/',
+          dest: 'ext/background/fonts',
+          src: [
+            '*'
+          ]
+        }]
+      }
     }
   });
 
@@ -139,6 +154,7 @@ module.exports = function(grunt) {
 
   // Development mode
   grunt.registerTask('development', [
+    'copy:development',
     'manifest:development',
     'stylus:development',
     'jshint',
@@ -160,6 +176,7 @@ module.exports = function(grunt) {
 
   // Optimize and compress
   grunt.registerTask('production', [
+    'copy:development',
     'manifest:production',
     'stylus:production',
     'concat'
