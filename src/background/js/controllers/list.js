@@ -9,6 +9,10 @@ gqApp.controller('ListCtrl', function($scope, $rootScope, $routeParams, $locatio
 
     QuicktextService.quicktexts().then(function(response){
         $scope.quicktexts = response;
+
+        // trigger searchChange to update filtered quicktexts
+        // used for keyboard navigation
+        searchChange();
     });
 
     QuicktextService.allTags().then(function(response){
@@ -220,12 +224,12 @@ gqApp.controller('ListCtrl', function($scope, $rootScope, $routeParams, $locatio
     };
 
     // if the search changes the focus should be reset to 0 again
-    $scope.searchChange = function(){
+    var searchChange = function(){
       $scope.filteredQuicktexts = $filter('filter')($scope.quicktexts, $scope.searchText);
       $scope.focusIndex = 0;
     };
 
-    $scope.$watch('searchText', $scope.searchChange);
+    $scope.$watch('searchText', searchChange);
 
     /* Insert quicktext from the pageAction popup
      */

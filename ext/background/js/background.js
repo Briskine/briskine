@@ -36580,49 +36580,6 @@ if(chrome.runtime){
     });
 }
 
-gqApp.controller('AddCtrl', function($scope, $rootScope, QuicktextService, $location) {
-    $scope.controller = "DialogCtrl";
-    $scope.selectedQt = {
-        'id': '',
-        'key': '',
-        'subject': '',
-        'shortcut': '',
-        'title': '',
-        'tags': '',
-        'body': ''
-    };
-
-    $rootScope.$on('$includeContentLoaded', function(event) {
-        // Show the form for adding a new quicktext or creating one
-        $('.close').hide(); // hide close icon
-        $('.cancel-bottom').hide(); // hide cancel link
-        $('.modal').modal();
-
-//         $('.modal').on('shown.bs.modal', function () { //put focus on the first text input
-//             $(this).find('input[type=text]:first').focus();
-//         });
-
-        var args = window.dialogArguments;
-        if (args.selection){
-            $scope.selectedQt.body = args.selection;
-        }
-    });
-
-    $scope.saveQt = function() {
-        if (!$scope.selectedQt.title){
-            alert("Please enter a Title");
-            return false;
-        }
-
-        if (!$scope.selectedQt.body){
-            alert("Please enter a Quicktext Template");
-            return false;
-        }
-        QuicktextService.create($scope.selectedQt);
-        window.close();
-    };
-});
-
 gqApp.controller('ListCtrl', function($scope, $rootScope, $routeParams, $location, $timeout, $filter, QuicktextService, SettingsService, ProfileService) {
 
   var $formModal;
@@ -36634,6 +36591,10 @@ gqApp.controller('ListCtrl', function($scope, $rootScope, $routeParams, $locatio
 
     QuicktextService.quicktexts().then(function(response){
         $scope.quicktexts = response;
+
+        // trigger searchChange to update filtered quicktexts
+        // used for keyboard navigation
+        searchChange();
     });
 
     QuicktextService.allTags().then(function(response){
@@ -36845,12 +36806,12 @@ gqApp.controller('ListCtrl', function($scope, $rootScope, $routeParams, $locatio
     };
 
     // if the search changes the focus should be reset to 0 again
-    $scope.searchChange = function(){
+    var searchChange = function(){
       $scope.filteredQuicktexts = $filter('filter')($scope.quicktexts, $scope.searchText);
       $scope.focusIndex = 0;
     };
 
-    $scope.$watch('searchText', $scope.searchChange);
+    $scope.$watch('searchText', searchChange);
 
     /* Insert quicktext from the pageAction popup
      */

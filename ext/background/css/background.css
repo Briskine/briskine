@@ -1,7 +1,7 @@
 
 /* line 1 : /media/Mokush/Dev/quicktext-chrome/node_modules/grunt-contrib-stylus/node_modules/stylus/lib/functions/index.styl */
 
-/* line undefined : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+/* line 256 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
 /* Quicktext Chrome Extension
  */
 
@@ -7633,7 +7633,7 @@ header {
 
 /* line 182 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
 .list-group-item.active {
-  background: #dbe9ff;
+  background: #edf4ff;
 }
 
 /* line 187 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
@@ -7662,7 +7662,7 @@ header {
 
 /* line 205 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
 .quicktexts-list .list-group-item .list-group-item-link:focus {
-  background: #a6c8ff;
+  background: #edf4ff;
 }
 
 /* line 214 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
