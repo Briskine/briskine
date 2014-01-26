@@ -1,4 +1,4 @@
-<div class="modal fade login-modal" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
+<div class="modal fade login-modal" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true" ng-controller="LoginCtrl">
     <div class="modal-dialog">
         <div class="modal-content">
 
@@ -21,16 +21,16 @@
                     <p>Or sign in with your email</p>
                 </div>
 
-                <form class="form-signin" role="form">
+                <form class="form-signin" role="form" ng-submit="SubmitLogin()">
 
                     <div class="form-group">
                         <label for="email">E-mail</label>
-                        <input type="email" class="form-control" id="email" required/>
+                        <input type="email" class="form-control" id="email" ng-model="model.email" required/>
                     </div>
 
                     <div class="form-group">
                         <label for="password">Password</label>
-                        <input type="text" class="form-control" id="password" required/>
+                        <input type="text" class="form-control" id="password" ng-model="model.password" required/>
                     </div>
 
                     <div class="row">

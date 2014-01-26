@@ -1,4 +1,4 @@
-<div class="modal fade register-modal" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
+<div class="modal fade register-modal" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true" ng-controller="SignupCtrl">
   <div class="modal-dialog">
     <div class="modal-content">
 
@@ -21,11 +21,11 @@
           <p>Or sign in with your email</p>
         </div>
 
-        <form class="form-signin" role="form">
+        <form class="form-signin" role="form" ng-submit="SubmitSignup()">
 
           <div class="form-group">
             <label for="registeremail">E-mail</label>
-            <input type="email" class="form-control" id="registeremail" required/>
+            <input type="email" class="form-control" id="registeremail" ng-model="model.email" required/>
           </div>
 
 
@@ -34,7 +34,7 @@
 
               <div class="form-group">
                 <label for="registerpassword">Password</label>
-                <input type="text" class="form-control" id="registerpassword" required/>
+                <input type="text" class="form-control" id="registerpassword" ng-model="model.password" required/>
               </div>
 
             </div>
@@ -42,7 +42,7 @@
 
               <div class="form-group">
                 <label for="confirmpassword">Confirm password</label>
-                <input type="text" class="form-control" id="confirmpassword" required/>
+                <input type="text" class="form-control" id="confirmpassword" ng-model="model.confirmPassword" required/>
               </div>
 
             </div>

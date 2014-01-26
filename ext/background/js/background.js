@@ -36868,11 +36868,36 @@ function($scope, $rootScope, $routeParams, $location, $timeout, $filter, Quickte
 
 });
 
+gqApp.controller('LoginCtrl', function($scope, $rootScope, QuicktextService, SettingsService, ProfileService) {
+
+  var model = $scope.model = {};
+  model.email = '';
+  model.password = '';
+
+  $scope.SubmitLogin = function() {
+
+  };
+
+});
+
 gqApp.controller('SettingsCtrl', function($scope, $rootScope, QuicktextService, SettingsService, ProfileService) {
 
   $scope.tabcompleteEnabled = SettingsService.get('tabcompleteEnabled');
   $scope.autocompleteEnabled = SettingsService.get('autocompleteEnabled');
   $scope.sendStatsEnabled = SettingsService.get('sendStatsEnabled');
+
+});
+
+gqApp.controller('SignupCtrl', function($scope, $rootScope, QuicktextService, SettingsService, ProfileService) {
+
+  var model = $scope.model = {};
+  model.email = '';
+  model.password = '';
+  model.comfirmPassword = '';
+
+  $scope.SubmitSignup = function() {
+
+  };
 
 });
 
