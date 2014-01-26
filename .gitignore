@@ -11,3 +11,4 @@ src/backgrount/js/environment.js
 .kateproject
 .kateconfig
 .kateproject.d
+*.kate-swp

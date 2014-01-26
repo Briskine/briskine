@@ -10,18 +10,18 @@
   <!--
   <a href="" ng-click="deleteAll()">Delete all Quicktexts</a>
   -->
-</div>
 
-<div class="quicktext-filters pull-right">
-  <span ng-repeat="(tag, count) in tags">
-    <a
-      href=''
-      class="label"
-      ng-class="{true: 'label-primary', false: 'label-default'}[filterTags.indexOf(tag) !== -1]"
-      ng-click="toggleFilterTag()"
-      >{{tag}}<span ng-if="count > 1"> ({{count}})</span></a>
+  <div class="quicktext-filters pull-right">
+    <span ng-repeat="(tag, count) in tags">
+      <a
+        href=''
+        class="label"
+        ng-class="{true: 'label-primary', false: 'label-default'}[filterTags.indexOf(tag) !== -1]"
+        ng-click="toggleFilterTag()"
+        >{{tag}}<span ng-if="count > 1"> ({{count}})</span></a>
+      </span>
     </span>
-  </span>
+  </div>
 </div>
 
 <div id="quicktext-table-container">
@@ -29,7 +29,7 @@
   <div class="list-group quicktexts-list">
 
     <div class="list-group-item"
-        ng-repeat="quicktext in quicktexts | filter:searchText | tagFilter:filterTags"
+        ng-repeat="quicktext in filteredQuicktexts"
         ng-class="{ 'active': $index === focusIndex }">
 
       <a class="list-group-item-link"

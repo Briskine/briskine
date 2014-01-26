@@ -36824,11 +36824,16 @@ function($scope, $rootScope, $routeParams, $location, $timeout, $filter, Quickte
 
   // if the search changes the focus should be reset to 0 again
   var searchChange = function(){
+      // apply the text search filter
       $scope.filteredQuicktexts = $filter('filter')($scope.quicktexts, $scope.searchText);
+      // apply the tag serach filter
+      $scope.filteredQuicktexts = $filter('tagFilter')($scope.filteredQuicktexts, $scope.filterTags);
+
       $scope.focusIndex = 0;
   };
 
   $scope.$watch('searchText', searchChange);
+  $scope.$watch('filterTags', searchChange, true);
 
   /* Insert quicktext from the pageAction popup
       */
