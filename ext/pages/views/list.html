@@ -80,40 +80,6 @@
 
   </div>
 
-<!--<table class="table table-hover" id="quicktext-table" ng-class="{'table-condensed': controller == 'PopupCtrl'}">
-  <thead>
-    <tr>
-      <th>Title</th>
-      <th ng-hide="controller == 'PopupCtrl'">Subject</th>
-      <th>Tab Completion</th>
-      <th>Tags</th>
-      <th>Quicktext</th>
-      <th ng-hide="controller == 'PopupCtrl'"></th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr ng-repeat="quicktext in quicktexts | filter:searchText | tagFilter:filterTags "
-        ng-class="{'active': $index === focusIndex}"
-        ng-click="controller == 'PopupCtrl' ? insertQuicktext($index) : true"
-        data-quicktext-id="{{quicktext.id}}"
-        >
-      <td>{{quicktext.title}}</td>
-      <td ng-hide="controller == 'PopupCtrl'">{{quicktext.subject}}</td>
-      <td>{{quicktext.shortcut}}</td>
-      <td>
-        <span ng-repeat="tag in quicktext.tags.split(',')">
-          <span class="label" ng-class="{true: 'label-primary', false: 'label-default'}[filterTags.indexOf(tag.trim()) !== -1]">{{tag.trim()}}</span>
-        </span>
-      </td>
-      <td title="{{quicktext.body}}" ng-bind-html="quicktext.body | truncate:100 | newlines | safe"></td>
-      <td ng-hide="controller == 'PopupCtrl'" class="btn-group">
-        <button class="btn btn-primary btn-xs edit-button" ng-click="showForm()">edit</button>
-        <button class="btn btn-default btn-xs delete-button" ng-click="deleteQt()">delete</button>
-      </td>
-    </tr>
-  </tbody>
-</table>-->
-
 </div>
 
 <div ng-include="'includes/form.html'"></div>
