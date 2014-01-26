@@ -36495,7 +36495,7 @@ gqApp.run(function ($rootScope, $location, ProfileService, SettingsService) {
 
         //put focus on the first text input when opening modals
         $('.modal').on('shown.bs.modal', function () {
-            $(this).find('input:first').focus();
+            $(this).find('input[type!="hidden"]:first').focus();
         });
 
     };
@@ -36626,7 +36626,7 @@ function($scope, $rootScope, $routeParams, $location, $timeout, $filter, Quickte
 
     /* New/Edit modal
     */
-    $formModal = $('#quicktext-modal');
+    $formModal = $('.quicktext-modal');
     $formModal.modal({
     show: false
     });

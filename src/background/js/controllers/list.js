@@ -27,7 +27,7 @@ function($scope, $rootScope, $routeParams, $location, $timeout, $filter, Quickte
 
     /* New/Edit modal
     */
-    $formModal = $('#quicktext-modal');
+    $formModal = $('.quicktext-modal');
     $formModal.modal({
     show: false
     });
