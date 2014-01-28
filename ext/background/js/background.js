@@ -36609,10 +36609,13 @@ function($scope, $rootScope, $routeParams, $location, $timeout, $filter, Quickte
 
   QuicktextService.quicktexts().then(function(response){
     $scope.quicktexts = response;
+  });
 
-    // trigger searchChange to update filtered quicktexts
-    // used for keyboard navigation
-    searchChange();
+  $scope.$watch('quicktexts', function() {
+    if($scope.quicktexts && $scope.quicktexts.length) {
+      // trigger filterQuicktexts to update filtered quicktexts
+      filterQuicktexts();
+    }
   });
 
   QuicktextService.allTags().then(function(response){
@@ -36720,10 +36723,17 @@ function($scope, $rootScope, $routeParams, $location, $timeout, $filter, Quickte
     } else {
         QuicktextService.create($scope.selectedQt);
     }
+
     // hide teh modal
     $('.modal').modal('hide');
-    QuicktextService.quicktexts().then(function(r){$scope.quicktexts = r;});
-    QuicktextService.allTags().then(function(r){$scope.tags = r;});
+
+    QuicktextService.quicktexts().then(function(r){
+      $scope.quicktexts = r;
+    });
+
+    QuicktextService.allTags().then(function(r){
+      $scope.tags = r;
+    });
   };
 
   // Save a quicktext, perform some checks before
@@ -36822,8 +36832,8 @@ function($scope, $rootScope, $routeParams, $location, $timeout, $filter, Quickte
       );
   };
 
-  // if the search changes the focus should be reset to 0 again
-  var searchChange = function(){
+  // apply filters to the list of quicktexts
+  var filterQuicktexts = function(){
       // apply the text search filter
       $scope.filteredQuicktexts = $filter('filter')($scope.quicktexts, $scope.searchText);
       // apply the tag serach filter
@@ -36832,8 +36842,8 @@ function($scope, $rootScope, $routeParams, $location, $timeout, $filter, Quickte
       $scope.focusIndex = 0;
   };
 
-  $scope.$watch('searchText', searchChange);
-  $scope.$watch('filterTags', searchChange, true);
+  $scope.$watch('searchText', filterQuicktexts);
+  $scope.$watch('filterTags', filterQuicktexts, true);
 
   /* Insert quicktext from the pageAction popup
       */
