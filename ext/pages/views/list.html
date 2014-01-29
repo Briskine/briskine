@@ -55,7 +55,7 @@
 
           </div>
 
-          <div class="col-xs-4">
+          <div class="col-xs-6">
 
             <p class="list-group-item-text quicktext-detail" ng-show="quicktext.shortcut">
               <strong>Tab completion: </strong>
@@ -69,7 +69,7 @@
 
             <p class="list-group-item-text quicktext-detail">
               <strong>Template: </strong>
-              <span title="{{quicktext.body}}" ng-bind-html="quicktext.body | truncate:100 | newlines | safe"></span>
+              <span class="quicktext-template" title="{{quicktext.body}}" ng-bind-html="quicktext.body | truncate:100 | newlines | safe"></span>
             </p>
 
           </div>
