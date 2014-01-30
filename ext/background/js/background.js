@@ -13102,7 +13102,7 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap requires jQuery");+func
 }).call(this);
 
 /**
- * @license AngularJS v1.2.11-build.2186+sha.766b3d5
+ * @license AngularJS v1.2.10-build.2155+sha.756c52d
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -13171,7 +13171,7 @@ function minErr(module) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.2.11-build.2186+sha.766b3d5/' +
+    message = message + '\nhttp://errors.angularjs.org/1.2.10-build.2155+sha.756c52d/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i-2) + '=' +
@@ -14937,11 +14937,11 @@ function setupModuleLoader(window) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.2.11-build.2186+sha.766b3d5',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.2.10-build.2155+sha.756c52d',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 2,
-  dot: 11,
-  codeName: 'cryptocurrency-hyperdeflation'
+  dot: 10,
+  codeName: 'augmented-serendipity'
 };
 
 
@@ -16383,9 +16383,11 @@ function annotate(fn) {
  * @param {(Object|function())} provider If the provider is:
  *
  *   - `Object`: then it should have a `$get` method. The `$get` method will be invoked using
- *     {@link AUTO.$injector#invoke $injector.invoke()} when an instance needs to be created.
- *   - `Constructor`: a new instance of the provider will be created using                     
- *     {@link AUTO.$injector#instantiate $injector.instantiate()}, then treated as `object`.
+ *               {@link AUTO.$injector#invoke $injector.invoke()} when an instance needs to be
+ *               created.
+ *   - `Constructor`: a new instance of the provider will be created using
+ *               {@link AUTO.$injector#instantiate $injector.instantiate()}, then treated as
+ *               `object`.
  *
  * @returns {Object} registered provider instance
 
@@ -20164,14 +20166,31 @@ function $HttpProvider() {
      * XMLHttpRequest will transparently follow it, meaning that the error callback will not be
      * called for such responses.
      *
+     * # Calling $http from outside AngularJS
+     * The `$http` service will not actually send the request until the next `$digest()` is
+     * executed. Normally this is not an issue, since almost all the time your call to `$http` will
+     * be from within a `$apply()` block.
+     * If you are calling `$http` from outside Angular, then you should wrap it in a call to
+     * `$apply` to cause a $digest to occur and also to handle errors in the block correctly.
+     *
+     * ```
+     * $scope.$apply(function() {
+     *   $http(...);
+     * });
+     * ```
+     *
      * # Writing Unit Tests that use $http
-     * When unit testing (using {@link api/ngMock ngMock}), it is necessary to call
-     * {@link api/ngMock.$httpBackend#methods_flush $httpBackend.flush()} to flush each pending
-     * request using trained responses.
+     * When unit testing you are mostly responsible for scheduling the `$digest` cycle. If you do
+     * not trigger a `$digest` before calling `$httpBackend.flush()` then the request will not have
+     * been made and `$httpBackend.expect(...)` expectations will fail.  The solution is to run the
+     * code that calls the `$http()` method inside a $apply block as explained in the previous
+     * section.
      *
      * ```
      * $httpBackend.expectGET(...);
-     * $http.get(...);
+     * $scope.$apply(function() {
+     *   $http.get(...);
+     * });
      * $httpBackend.flush();
      * ```
      *
@@ -21406,7 +21425,7 @@ function $IntervalProvider() {
       * In tests you can use {@link ngMock.$interval#methods_flush `$interval.flush(millis)`} to
       * move forward by `millis` milliseconds and trigger any functions scheduled to run in that
       * time.
-      *
+      * 
       * <div class="alert alert-warning">
       * **Note**: Intervals created by this service must be explicitly destroyed when you are finished
       * with them.  In particular they are not automatically destroyed when a controller's scope or a
@@ -21519,8 +21538,8 @@ function $IntervalProvider() {
           promise = deferred.promise,
           iteration = 0,
           skipApply = (isDefined(invokeApply) && !invokeApply);
-
-      count = isDefined(count) ? count : 0;
+      
+      count = isDefined(count) ? count : 0,
 
       promise.then(null, null, fn);
 
@@ -23220,7 +23239,7 @@ Parser.prototype = {
     var getter = getterFn(field, this.options, this.text);
 
     return extend(function(scope, locals, self) {
-      return getter(self || object(scope, locals));
+      return getter(self || object(scope, locals), locals);
     }, {
       assign: function(scope, value, locals) {
         return setter(object(scope, locals), field, value, parser.text, parser.options);
@@ -23796,9 +23815,9 @@ function $ParseProvider() {
  * asynchronous programming what `try`, `catch` and `throw` keywords are to synchronous programming.
  *
  * <pre>
- *   // for the purpose of this example let's assume that variables `$q`, `scope` and `okToGreet`
- *   // are available in the current lexical scope (they could have been injected or passed in).
- * 
+ *   // for the purpose of this example let's assume that variables `$q` and `scope` are
+ *   // available in the current lexical scope (they could have been injected or passed in).
+ *
  *   function asyncGreet(name) {
  *     var deferred = $q.defer();
  *
@@ -27940,14 +27959,11 @@ var htmlAnchorDirective = valueFn({
       element.append(document.createComment('IE fix'));
     }
 
-    if (!attr.href && !attr.xlinkHref && !attr.name) {
+    if (!attr.href && !attr.name) {
       return function(scope, element) {
-        // SVGAElement does not use the href attribute, but rather the 'xlinkHref' attribute.
-        var href = toString.call(element.prop('href')) === '[object SVGAnimatedString]' ?
-                   'xlink:href' : 'href';
         element.on('click', function(event){
           // if we have no href url, then don't navigate anywhere.
-          if (!element.attr(href)) {
+          if (!element.attr('href')) {
             event.preventDefault();
           }
         });
@@ -28714,7 +28730,7 @@ var ngFormDirective = formDirectiveFactory(true);
 */
 
 var URL_REGEXP = /^(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?$/;
-var EMAIL_REGEXP = /^[a-z0-9!#$%&'*+/=?^_`{|}~.-]+@[a-z0-9-]+(\.[a-z0-9-]+)*$/i;
+var EMAIL_REGEXP = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,6}$/;
 var NUMBER_REGEXP = /^\s*(\-|\+)?(\d+|(\d*(\.\d*)))\s*$/;
 
 var inputType = {
@@ -30896,7 +30912,6 @@ var ngControllerDirective = [function() {
  * an element is clicked.
  *
  * @element ANY
- * @priority 0
  * @param {expression} ngClick {@link guide/expression Expression} to evaluate upon
  * click. (Event object is available as `$event`)
  *
@@ -30953,7 +30968,6 @@ forEach(
  * The `ngDblclick` directive allows you to specify custom behavior on a dblclick event.
  *
  * @element ANY
- * @priority 0
  * @param {expression} ngDblclick {@link guide/expression Expression} to evaluate upon
  * a dblclick. (The Event object is available as `$event`)
  *
@@ -30977,7 +30991,6 @@ forEach(
  * The ngMousedown directive allows you to specify custom behavior on mousedown event.
  *
  * @element ANY
- * @priority 0
  * @param {expression} ngMousedown {@link guide/expression Expression} to evaluate upon
  * mousedown. (Event object is available as `$event`)
  *
@@ -31001,7 +31014,6 @@ forEach(
  * Specify custom behavior on mouseup event.
  *
  * @element ANY
- * @priority 0
  * @param {expression} ngMouseup {@link guide/expression Expression} to evaluate upon
  * mouseup. (Event object is available as `$event`)
  *
@@ -31024,7 +31036,6 @@ forEach(
  * Specify custom behavior on mouseover event.
  *
  * @element ANY
- * @priority 0
  * @param {expression} ngMouseover {@link guide/expression Expression} to evaluate upon
  * mouseover. (Event object is available as `$event`)
  *
@@ -31048,7 +31059,6 @@ forEach(
  * Specify custom behavior on mouseenter event.
  *
  * @element ANY
- * @priority 0
  * @param {expression} ngMouseenter {@link guide/expression Expression} to evaluate upon
  * mouseenter. (Event object is available as `$event`)
  *
@@ -31072,7 +31082,6 @@ forEach(
  * Specify custom behavior on mouseleave event.
  *
  * @element ANY
- * @priority 0
  * @param {expression} ngMouseleave {@link guide/expression Expression} to evaluate upon
  * mouseleave. (Event object is available as `$event`)
  *
@@ -31096,7 +31105,6 @@ forEach(
  * Specify custom behavior on mousemove event.
  *
  * @element ANY
- * @priority 0
  * @param {expression} ngMousemove {@link guide/expression Expression} to evaluate upon
  * mousemove. (Event object is available as `$event`)
  *
@@ -31120,7 +31128,6 @@ forEach(
  * Specify custom behavior on keydown event.
  *
  * @element ANY
- * @priority 0
  * @param {expression} ngKeydown {@link guide/expression Expression} to evaluate upon
  * keydown. (Event object is available as `$event` and can be interrogated for keyCode, altKey, etc.)
  *
@@ -31142,7 +31149,6 @@ forEach(
  * Specify custom behavior on keyup event.
  *
  * @element ANY
- * @priority 0
  * @param {expression} ngKeyup {@link guide/expression Expression} to evaluate upon
  * keyup. (Event object is available as `$event` and can be interrogated for keyCode, altKey, etc.)
  *
@@ -31189,7 +31195,6 @@ forEach(
  * attribute**.
  *
  * @element form
- * @priority 0
  * @param {expression} ngSubmit {@link guide/expression Expression} to eval. (Event object is available as `$event`)
  *
  * @example
@@ -31239,7 +31244,6 @@ forEach(
  * Specify custom behavior on focus event.
  *
  * @element window, input, select, textarea, a
- * @priority 0
  * @param {expression} ngFocus {@link guide/expression Expression} to evaluate upon
  * focus. (Event object is available as `$event`)
  *
@@ -31255,7 +31259,6 @@ forEach(
  * Specify custom behavior on blur event.
  *
  * @element window, input, select, textarea, a
- * @priority 0
  * @param {expression} ngBlur {@link guide/expression Expression} to evaluate upon
  * blur. (Event object is available as `$event`)
  *
@@ -31271,7 +31274,6 @@ forEach(
  * Specify custom behavior on copy event.
  *
  * @element window, input, select, textarea, a
- * @priority 0
  * @param {expression} ngCopy {@link guide/expression Expression} to evaluate upon
  * copy. (Event object is available as `$event`)
  *
@@ -31292,7 +31294,6 @@ forEach(
  * Specify custom behavior on cut event.
  *
  * @element window, input, select, textarea, a
- * @priority 0
  * @param {expression} ngCut {@link guide/expression Expression} to evaluate upon
  * cut. (Event object is available as `$event`)
  *
@@ -31313,7 +31314,6 @@ forEach(
  * Specify custom behavior on paste event.
  *
  * @element window, input, select, textarea, a
- * @priority 0
  * @param {expression} ngPaste {@link guide/expression Expression} to evaluate upon
  * paste. (Event object is available as `$event`)
  *
@@ -31696,13 +31696,6 @@ var ngIncludeFillContentDirective = ['$compile',
  * {@link api/ng.directive:ngRepeat `ngRepeat`}, as seen in the demo below. Besides this case, you
  * should use {@link guide/controller controllers} rather than `ngInit`
  * to initialize values on a scope.
- * </div>
- * <div class="alert alert-warning">
- * **Note**: If you have assignment in `ngInit` along with {@link api/ng.$filter `$filter`}, make
- * sure you have parenthesis for correct precedence:
- * <pre class="prettyprint">
- *   <div ng-init="test1 = (data | orderBy:'name')"></div>
- * </pre>
  * </div>
  *
  * @priority 450
@@ -32752,7 +32745,7 @@ var ngStyleDirective = ngDirective(function(scope, element, attr) {
  * as specified in the template.
  *
  * The directive itself works similar to ngInclude, however, instead of downloading template code (or loading it
- * from the template cache), `ngSwitch` simply chooses one of the nested elements and makes it visible based on which element
+ * from the template cache), `ngSwitch` simply choses one of the nested elements and makes it visible based on which element
  * matches the value obtained from the evaluated expression. In other words, you define a container element
  * (where you place the directive), place an expression on the **`on="..."` attribute**
  * (or the **`ng-switch="..."` attribute**), define any inner elements inside of the directive and place
@@ -33068,21 +33061,14 @@ var ngOptionsMinErr = minErr('ngOptions');
  * represented by the selected option will be bound to the model identified by the `ngModel`
  * directive.
  *
- * <div class="alert alert-warning">
- * **Note:** `ngModel` compares by reference, not value. This is important when binding to an
- * array of objects. See an example {@link http://jsfiddle.net/qWzTb/ in this jsfiddle}.
- * </div>
- *
  * Optionally, a single hard-coded `<option>` element, with the value set to an empty string, can
  * be nested into the `<select>` element. This element will then represent the `null` or "not selected"
  * option. See example below for demonstration.
  *
- * <div class="alert alert-warning">
- * **Note:** `ngOptions` provides an iterator facility for the `<option>` element which should be used instead
+ * Note: `ngOptions` provides iterator facility for `<option>` element which should be used instead
  * of {@link ng.directive:ngRepeat ngRepeat} when you want the
  * `select` model to be bound to a non-string value. This is because an option element can only
  * be bound to string values at present.
- * </div>
  *
  * @param {string} ngModel Assignable angular expression to data-bind to.
  * @param {string=} name Property name of the form under which the control is published.
@@ -33486,7 +33472,7 @@ var selectDirective = ['$compile', '$parse', function($compile,   $parse) {
 
           // We now build up the list of options we need (we merge later)
           for (index = 0; length = keys.length, index < length; index++) {
-
+            
             key = index;
             if (keyName) {
               key = keys[index];
@@ -33696,7 +33682,7 @@ var styleDirective = valueFn({
 
 !angular.$$csp() && angular.element(document).find('head').prepend('<style type="text/css">@charset "UTF-8";[ng\\:cloak],[ng-cloak],[data-ng-cloak],[x-ng-cloak],.ng-cloak,.x-ng-cloak,.ng-hide{display:none !important;}ng\\:form{display:block;}</style>');
 /**
- * @license AngularJS v1.2.11-build.2186+sha.766b3d5
+ * @license AngularJS v1.2.10-build.2155+sha.756c52d
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -33887,7 +33873,7 @@ function $RouteProvider(){
 
     path = path
       .replace(/([().])/g, '\\$1')
-      .replace(/(\/)?:(\w+)([\?\*])?/g, function(_, slash, key, option){
+      .replace(/(\/)?:(\w+)([\?|\*])?/g, function(_, slash, key, option){
         var optional = option === '?' ? option : null;
         var star = option === '*' ? option : null;
         keys.push({ name: key, optional: !!optional });
@@ -34072,7 +34058,7 @@ function $RouteProvider(){
      * @eventType broadcast on root scope
      * @description
      * Broadcasted before a route change. At this  point the route services starts
-     * resolving all of the dependencies needed for the route change to occur.
+     * resolving all of the dependencies needed for the route change to occurs.
      * Typically this involves fetching the view template as well as any dependencies
      * defined in `resolve` route property. Once  all of the dependencies are resolved
      * `$routeChangeSuccess` is fired.
@@ -34617,7 +34603,7 @@ function ngViewFillContentFactory($compile, $controller, $route) {
 })(window, window.angular);
 
 /**
- * @license AngularJS v1.2.11-build.2186+sha.766b3d5
+ * @license AngularJS v1.2.10-build.2155+sha.756c52d
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -35452,10 +35438,7 @@ angular.module('ngAnimate', ['ng'])
         }
 
         function fireDoneCallbackAsync() {
-          async(function() {
-            fireDOMCallback('close');
-            doneCallback && doneCallback();
-          });
+          doneCallback && async(doneCallback);
         }
 
         //it is less complicated to use a flag than managing and cancelling
@@ -36457,7 +36440,7 @@ angular.module('angularMoment', [])
 		};
 	}]);
 
-var ENV = "production";
+var ENV = "development";
 /* Quicktext chrome extension
  */
 
@@ -36564,24 +36547,41 @@ if(chrome.runtime){
     chrome.contextMenus.removeAll();
     chrome.contextMenus.create({
         "title": 'Save as Quicktext',
-        "contexts": ['editable', 'selection'],
-        "onclick": function(info, tab){
-            // I would have loved to open the popup.html with this, but at this moment
-            // it's not possible to do so due to browser restrictions of Chrome
-            // so we are going to open a dialog with the form
+        "contexts": ['editable', 'selection']
+//         "onclick": function(info, tab){
+//             // I would have loved to open the popup.html with this, but at this moment
+//             // it's not possible to do so due to browser restrictions of Chrome
+//             // so we are going to open a dialog with the form
+//
+//           // use chrome tabs API to bypass popup blocker after first save
+//           // using window.open hits popup blocker after closing the initally opened tab
+//           var quicktextBody = encodeURIComponent(info.selectionText);
+// //           chrome.tabs.create({
+// //             url: chrome.extension.getURL('/pages/bg.html') + '#/list?id=new&body=' + quicktextBody
+// //           });
+//
+// //           console.log('create');
+// //
+// //           chrome.tabs.create({
+// //             url: chrome.extension.getURL('/pages/bg.html') + '#/list?id=new&body=' + quicktextBody
+// //           });
+//
+//           // seems like there is no way around chrome popup blocker
+//           // except by using showModalDialog
+//           //window.showModalDialog('/pages/bg.html#/list?id=new&body=' + quicktextBody, {}, "dialogwidth: 800; dialogheight: 700; resizable: yes");
+//
+//         }
+    });
 
-          // use chrome tabs API to bypass popup blocker after first save
-          // using window.open hits popup blocker after closing the initally opened tab
-          var quicktextBody = encodeURIComponent(info.selectionText);
-//           chrome.tabs.create({
-//             url: '/pages/bg.html#/list?id=new&body=' + quicktextBody
-//           });
+    // rather than using the contextMenu onclick function, we attach
+    // an event to the onClicked event.
+    // this fixes issues with the onclick function not being triggered
+    // or the new tab not being opened.
+    chrome.contextMenus.onClicked.addListener(function(info, tab){
 
-          // seems like there is no way around chrome popup blocker
-          // except by using showModalDialog
-          window.showModalDialog('/pages/bg.html#/list?id=new&body=' + quicktextBody, {}, "dialogwidth: 800; dialogheight: 700; resizable: yes");
+      var quicktextBody = encodeURIComponent(info.selectionText);
+      window.open(chrome.extension.getURL('/pages/bg.html') + '#/list?id=new&body=' + quicktextBody, 'quicktextOptions');
 
-        }
     });
 
     // Called when the url of a tab changes.

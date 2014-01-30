@@ -1,3 +1,51 @@
+
+/* line 1 : /media/Mokush/Dev/quicktext-chrome/node_modules/grunt-contrib-stylus/node_modules/stylus/lib/functions/index.styl */
+
+/* line undefined : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+/* Quicktext Chrome Extension
+ */
+
+/* line 14 : /media/Mokush/Dev/quicktext-chrome/node_modules/grunt-contrib-stylus/node_modules/nib/lib/nib/index.styl */
+
+/* line 2 : /media/Mokush/Dev/quicktext-chrome/node_modules/grunt-contrib-stylus/node_modules/nib/lib/nib/border.styl */
+
+/* line 2 : /media/Mokush/Dev/quicktext-chrome/node_modules/grunt-contrib-stylus/node_modules/nib/lib/nib/clearfix.styl */
+
+/* line 2 : /media/Mokush/Dev/quicktext-chrome/node_modules/grunt-contrib-stylus/node_modules/nib/lib/nib/color-image.styl */
+
+/* line 6 : /media/Mokush/Dev/quicktext-chrome/node_modules/grunt-contrib-stylus/node_modules/nib/lib/nib/flex.styl */
+
+/* line 92 : /media/Mokush/Dev/quicktext-chrome/node_modules/grunt-contrib-stylus/node_modules/nib/lib/nib/gradients.styl */
+
+/* line 92 : /media/Mokush/Dev/quicktext-chrome/node_modules/grunt-contrib-stylus/node_modules/nib/lib/nib/config.styl */
+
+/* line 2 : /media/Mokush/Dev/quicktext-chrome/node_modules/grunt-contrib-stylus/node_modules/nib/lib/nib/iconic.styl */
+
+/* line 2 : /media/Mokush/Dev/quicktext-chrome/node_modules/grunt-contrib-stylus/node_modules/nib/lib/nib/image.styl */
+
+/* line 27 : /media/Mokush/Dev/quicktext-chrome/node_modules/grunt-contrib-stylus/node_modules/nib/lib/nib/overflow.styl */
+
+/* line 3 : /media/Mokush/Dev/quicktext-chrome/node_modules/grunt-contrib-stylus/node_modules/nib/lib/nib/positions.styl */
+
+/* line 3 : /media/Mokush/Dev/quicktext-chrome/node_modules/grunt-contrib-stylus/node_modules/nib/lib/nib/reset.styl */
+
+/* line 5 : /media/Mokush/Dev/quicktext-chrome/node_modules/grunt-contrib-stylus/node_modules/nib/lib/nib/text/index.styl */
+
+/* line 2 : /media/Mokush/Dev/quicktext-chrome/node_modules/grunt-contrib-stylus/node_modules/nib/lib/nib/text/aliases.styl */
+
+/* line 2 : /media/Mokush/Dev/quicktext-chrome/node_modules/grunt-contrib-stylus/node_modules/nib/lib/nib/text/ellipsis.styl */
+
+/* line 11 : /media/Mokush/Dev/quicktext-chrome/node_modules/grunt-contrib-stylus/node_modules/nib/lib/nib/text/hide-text.styl */
+
+/* line 9 : /media/Mokush/Dev/quicktext-chrome/node_modules/grunt-contrib-stylus/node_modules/nib/lib/nib/text/replace-text.styl */
+
+/* line undefined : /media/Mokush/Dev/quicktext-chrome/node_modules/grunt-contrib-stylus/node_modules/nib/lib/nib/vendor.styl */
+
+/* line 574 : /media/Mokush/Dev/quicktext-chrome/node_modules/grunt-contrib-stylus/node_modules/nib/lib/nib/config.styl */
+
+/* line 12 : /media/Mokush/Dev/quicktext-chrome/node_modules/grunt-contrib-stylus/node_modules/nib/lib/nib/size.styl */
+
+/* line 29 : /media/Mokush/Dev/quicktext-chrome/bower_components/bootstrap/dist/css/bootstrap.css */
 /*!
  * Bootstrap v3.0.3 (http://getbootstrap.com)
  * Copyright 2013 Twitter, Inc.
@@ -7116,6 +7164,8 @@ td.visible-print {
     display: none !important;
   }
 }
+
+/* line 29 : /media/Mokush/Dev/quicktext-chrome/bower_components/font-awesome/css/font-awesome.css */
 /*!
  *  Font Awesome 4.0.3 by @davegandy - http://fontawesome.io - @fontawesome
  *  License - http://fontawesome.io/license (Font: SIL OFL 1.1, CSS: MIT License)
@@ -8454,83 +8504,668 @@ td.visible-print {
 .fa-plus-square-o:before {
   content: "\f196";
 }
-html,body{font-family:sans-serif;font-size:.875em}
-.container{margin:0}
-p{margin:0 0 .5em}
-header{margin-bottom:13px;border-bottom:1px solid #eee;}
-header h1{display:inline-block;padding:21px 0 13px;margin:0;font-size:1.5em}
-input[type='text'],input[type='email']{border:1px solid #bfbfbf;-webkit-border-radius:2px;border-radius:2px;color:#444;font:inherit;margin:0;height:auto;padding:.25em .375em}
-.form-control:focus{-webkit-box-shadow:none;box-shadow:none;border-color:#4d90fe}
-.list-group-item{border-color:#eee;border-width:1px 0 0;}
-.list-group-item:first-child{border-width:0}
-.nav > li{margin-left:-1.375em !important;border-left:6px solid transparent;line-height:.8em;}
-.nav > li > a{color:#8f8f8f;-webkit-border-radius:0;border-radius:0;}
-.nav > li > a:hover{background:none}
-.nav > li.active{border-color:#5f5f5f;}
-.nav > li.active a{background:none;color:#5f5f5f;}
-.nav > li.active a:hover{background:none;cursor:default;color:#5f5f5f}
-.nav-stacked{margin:1em 0;}
-.nav-stacked > li:last-child{margin-top:2em}
-.btn{-webkit-appearance:none;-moz-appearance:none;appearance:none;margin:0 0 .25em 0;padding:.25em 1em;font:inherit}
-.btn-primary{-webkit-appearance:none;-moz-appearance:none;appearance:none;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;background-image:-webkit-linear-gradient(#ededed, #ededed 38%, #dedede);background-image:-moz-linear-gradient(#ededed, #ededed 38%, #dedede);background-image:-o-linear-gradient(#ededed, #ededed 38%, #dedede);background-image:-ms-linear-gradient(#ededed, #ededed 38%, #dedede);background-image:linear-gradient(#ededed, #ededed 38%, #dedede);border:1px solid rgba(0,0,0,0.25);-webkit-border-radius:2px;border-radius:2px;-webkit-box-shadow:0 1px 0 rgba(0,0,0,0.08),inset 0 1px 2px rgba(255,255,255,0.75);box-shadow:0 1px 0 rgba(0,0,0,0.08),inset 0 1px 2px rgba(255,255,255,0.75);color:#444;text-shadow:0 1px 0 #f0f0f0;}
-.btn-primary:hover{background-image:-webkit-linear-gradient(#f0f0f0, #f0f0f0 38%, #e0e0e0);background-image:-moz-linear-gradient(#f0f0f0, #f0f0f0 38%, #e0e0e0);background-image:-o-linear-gradient(#f0f0f0, #f0f0f0 38%, #e0e0e0);background-image:-ms-linear-gradient(#f0f0f0, #f0f0f0 38%, #e0e0e0);background-image:linear-gradient(#f0f0f0, #f0f0f0 38%, #e0e0e0);border-color:rgba(0,0,0,0.3);-webkit-box-shadow:0 1px 0 rgba(0,0,0,0.12),inset 0 1px 2px rgba(255,255,255,0.95);box-shadow:0 1px 0 rgba(0,0,0,0.12),inset 0 1px 2px rgba(255,255,255,0.95);color:#000}
-.btn-primary:active{background-image:-webkit-linear-gradient(#e7e7e7, #e7e7e7 38%, #d7d7d7);background-image:-moz-linear-gradient(#e7e7e7, #e7e7e7 38%, #d7d7d7);background-image:-o-linear-gradient(#e7e7e7, #e7e7e7 38%, #d7d7d7);background-image:-ms-linear-gradient(#e7e7e7, #e7e7e7 38%, #d7d7d7);background-image:linear-gradient(#e7e7e7, #e7e7e7 38%, #d7d7d7);-webkit-box-shadow:none;box-shadow:none;text-shadow:none}
-.btn-primary:focus{color:#000}
-.btn-toolbar{padding-bottom:.75em;margin-bottom:0;border-bottom:1px solid #eee}
-.modal-backdrop{background-color:#fff;}
-.modal-backdrop.in{opacity:.9;-ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=90)";filter:alpha(opacity=90)}
-.modal-content{border:0;-webkit-box-shadow:0 4px 23px 5px rgba(0,0,0,0.2),0 2px 6px rgba(0,0,0,0.15);box-shadow:0 4px 23px 5px rgba(0,0,0,0.2),0 2px 6px rgba(0,0,0,0.15);}
-.modal-content .modal-header{border:none;}
-.modal-content .modal-header h4{font-size:1.125em}
-.modal-content .modal-footer{border:none}
-.modal-content .modal-body{padding:0 15px;}
-.modal-content .modal-body .form-group{margin-left:0;margin-right:0}
-body{padding-top:5.375em;color:#333}
-.container{width:100%;padding:0}
-header{position:fixed;top:0;left:20%;width:600px;z-index:999;max-width:700px;background:-webkit-linear-gradient(#fff, #fff 40%, rgba(255,255,255,0.92));background:-moz-linear-gradient(#fff, #fff 40%, rgba(255,255,255,0.92));background:-o-linear-gradient(#fff, #fff 40%, rgba(255,255,255,0.92));background:-ms-linear-gradient(#fff, #fff 40%, rgba(255,255,255,0.92));background:linear-gradient(#fff, #fff 40%, rgba(255,255,255,0.92))}
-.header-actions{padding-top:1.5em;}
-.header-actions .form-control{width:13.75em}
-.view-container{position:relative;width:600px;margin-left:20%}
-.container-animation{position:relative;display:block;width:100%}
-.container-animation.ng-enter,.container-animation.ng-leave{-webkit-transition:all 0.1s ease-out;-moz-transition:all 0.1s ease-out;-o-transition:all 0.1s ease-out;-ms-transition:all 0.1s ease-out;transition:all 0.1s ease-out;}
-.container-animation.ng-enter header,.container-animation.ng-leave header{position:absolute;top:-5.5em;left:0;width:100%}
-.container-animation.ng-enter{opacity:0;-ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";filter:alpha(opacity=0);-webkit-transform:translate3d(50px,0,0);-moz-transform:translate3d(50px,0,0);-o-transform:translate3d(50px,0,0);-ms-transform:translate3d(50px,0,0);transform:translate3d(50px,0,0)}
-.container-animation.ng-enter.ng-enter-active{opacity:1;-ms-filter:none;filter:none;z-index:1000;-webkit-transform:translate3d(0,0,0);-moz-transform:translate3d(0,0,0);-o-transform:translate3d(0,0,0);-ms-transform:translate3d(0,0,0);transform:translate3d(0,0,0)}
-.container-animation.ng-leave{position:absolute;z-index:101;-webkit-transform:translate3d(0,0,0);-moz-transform:translate3d(0,0,0);-o-transform:translate3d(0,0,0);-ms-transform:translate3d(0,0,0);transform:translate3d(0,0,0)}
-.container-animation.ng-leave.ng-leave-active{opacity:0;-ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";filter:alpha(opacity=0);-webkit-transform:translate3d(-50px,0,0);-moz-transform:translate3d(-50px,0,0);-o-transform:translate3d(-50px,0,0);-ms-transform:translate3d(-50px,0,0);transform:translate3d(-50px,0,0)}
-.sidebar-wrapper{position:fixed;top:0;left:0;width:20%;padding:1em 1.25em 0 1.375em}
-.brand{display:block;margin-bottom:1em;font-size:2.25em;line-height:1em;color:#707070;vertical-align:bottom;}
-.brand img{width:1em;opacity:.8;-ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=80)";filter:alpha(opacity=80);vertical-align:middle}
-.brand:hover{color:#333;text-decoration:none}
-.anonymous,.profile-body{margin-bottom:.75em}
-.list-group-item{position:relative;display:block;overflow:hidden;-webkit-border-radius:0 !important;border-radius:0 !important;}
-.list-group-item .hover-actions{display:block;position:absolute;top:50%;right:.75em;-webkit-transform:translateY(-50%);-moz-transform:translateY(-50%);-o-transform:translateY(-50%);-ms-transform:translateY(-50%);transform:translateY(-50%);min-width:200px;text-align:right;}
-.list-group-item .hover-actions button,.list-group-item .hover-actions .btn{display:inline-block;margin-left:.5em;-webkit-transition:all 0.1s ease-out;-moz-transition:all 0.1s ease-out;-o-transition:all 0.1s ease-out;-ms-transition:all 0.1s ease-out;transition:all 0.1s ease-out;opacity:0;-ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";filter:alpha(opacity=0);}
-.list-group-item .hover-actions button:focus,.list-group-item .hover-actions .btn:focus{opacity:1;-ms-filter:none;filter:none}
-.list-group-item .list-group-item-link:focus ~ .hover-actions .btn,.list-group-item:hover .hover-actions .btn,.list-group-item .list-group-item-link:focus ~ .hover-actions button,.list-group-item:hover .hover-actions button{opacity:1;-ms-filter:none;filter:none}
-.list-group-item.active{background:#edf4ff}
-.quicktexts-list .list-group-item{padding:0;}
-.quicktexts-list .list-group-item .list-group-item-link{display:block;padding:.75em 1em;cursor:pointer;color:#333;}
-.quicktexts-list .list-group-item .list-group-item-link:hover{text-decoration:none}
-.quicktexts-list .list-group-item .list-group-item-link:focus{background:#edf4ff}
-.quicktexts-list .list-group-item:hover{background-color:#eee}
-.quicktexts-list .quicktext-detail{margin-bottom:.5em;}
-.quicktexts-list .quicktext-detail strong{font-weight:normal;font-size:.75em;color:rgba(51,51,51,0.5);text-transform:uppercase;letter-spacing:1px}
-.quicktexts-list .quicktext-detail .quicktext-template{display:block}
-.quicktexts-list .quicktext-detail p{margin:0}
-.login-modal .modal-dialog{max-width:360px}
-.quicktext-modal .modal-dialog{max-width:480px}
-.register-modal .modal-dialog{max-width:420px}
-.btn-social{font-size:1.25em;color:#fff}
-.btn-google{background-color:#df4a32;border-color:#bd341d;}
-.btn-google i{color:#f9dbd6}
-.btn-google:hover{color:#fff;border-color:#bd341d;background-color:#c9371f}
-.text-separator{margin-top:1.25em;border-top:1px solid #eee;text-align:center;}
-.text-separator p{display:inline-block;position:relative;top:-.75em;padding:0 .5em;background-color:#fff}
-.popup{width:630px;}
-.popup .sidebar-wrapper{display:none}
-.popup header{left:0;padding:.5em 1.25em}
-.popup .view-container{margin:0}
-.popup header,.popup .view-container{width:100%}
-.popup .container-animation.ng-enter,.popup .container-animation.ng-leave{-webkit-transition:none;-moz-transition:none;-o-transition:none;-ms-transition:none;transition:none}
-.popup .btn-toolbar{padding:.75em 1em}
+
+/* line 8 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+/* Functions
+ */
+
+/* line 15 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+/* Variables
+ */
+
+/* line 24 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+/* Bootstrap theme
+ */
+
+/* line 29 : /media/Mokush/Dev/quicktext-chrome/src/background/css/bootstrap-chrome.styl */
+
+/* line 7 : /media/Mokush/Dev/quicktext-chrome/src/background/css/bootstrap-chrome.styl */
+html,
+body {
+  font-family: sans-serif;
+  font-size: 0.875em;
+}
+
+/* line 12 : /media/Mokush/Dev/quicktext-chrome/src/background/css/bootstrap-chrome.styl */
+.container {
+  margin: 0;
+}
+
+/* line 16 : /media/Mokush/Dev/quicktext-chrome/src/background/css/bootstrap-chrome.styl */
+p {
+  margin: 0 0 0.5em;
+}
+
+/* line 22 : /media/Mokush/Dev/quicktext-chrome/src/background/css/bootstrap-chrome.styl */
+header {
+  margin-bottom: 13px;
+  border-bottom: 1px solid #eee;
+}
+
+/* line 26 : /media/Mokush/Dev/quicktext-chrome/src/background/css/bootstrap-chrome.styl */
+header h1 {
+  display: inline-block;
+  padding: 21px 0 13px;
+  margin: 0;
+  font-size: 1.5em;
+}
+
+/* line 37 : /media/Mokush/Dev/quicktext-chrome/src/background/css/bootstrap-chrome.styl */
+input[type='text'],
+input[type='email'] {
+  border: 1px solid #bfbfbf;
+  -webkit-border-radius: 2px;
+  border-radius: 2px;
+  color: #444;
+  font: inherit;
+  margin: 0;
+  height: auto;
+  padding: 0.25em 0.375em;
+}
+
+/* line 48 : /media/Mokush/Dev/quicktext-chrome/src/background/css/bootstrap-chrome.styl */
+
+/* line 50 : /media/Mokush/Dev/quicktext-chrome/src/background/css/bootstrap-chrome.styl */
+.form-control:focus {
+  -webkit-box-shadow: none;
+  box-shadow: none;
+  border-color: #4d90fe;
+}
+
+/* line 59 : /media/Mokush/Dev/quicktext-chrome/src/background/css/bootstrap-chrome.styl */
+.list-group-item {
+  border-color: #eee;
+  border-width: 1px 0 0;
+}
+
+/* line 63 : /media/Mokush/Dev/quicktext-chrome/src/background/css/bootstrap-chrome.styl */
+.list-group-item:first-child {
+  border-width: 0;
+}
+
+/* line 71 : /media/Mokush/Dev/quicktext-chrome/src/background/css/bootstrap-chrome.styl */
+
+/* line 73 : /media/Mokush/Dev/quicktext-chrome/src/background/css/bootstrap-chrome.styl */
+.nav > li {
+  margin-left: -1.375em !important;
+  border-left: 6px solid transparent;
+  line-height: 0.8em;
+}
+
+/* line 79 : /media/Mokush/Dev/quicktext-chrome/src/background/css/bootstrap-chrome.styl */
+.nav > li > a {
+  color: #8f8f8f;
+  -webkit-border-radius: 0;
+  border-radius: 0;
+}
+
+/* line 83 : /media/Mokush/Dev/quicktext-chrome/src/background/css/bootstrap-chrome.styl */
+.nav > li > a:hover {
+  background: none;
+}
+
+/* line 88 : /media/Mokush/Dev/quicktext-chrome/src/background/css/bootstrap-chrome.styl */
+.nav > li.active {
+  border-color: #5f5f5f;
+}
+
+/* line 91 : /media/Mokush/Dev/quicktext-chrome/src/background/css/bootstrap-chrome.styl */
+.nav > li.active a {
+  background: none;
+  color: #5f5f5f;
+}
+
+/* line 96 : /media/Mokush/Dev/quicktext-chrome/src/background/css/bootstrap-chrome.styl */
+.nav > li.active a:hover {
+  background: none;
+  cursor: default;
+  color: #5f5f5f;
+}
+
+/* line 108 : /media/Mokush/Dev/quicktext-chrome/src/background/css/bootstrap-chrome.styl */
+.nav-stacked {
+  margin: 1em 0;
+}
+
+/* line 111 : /media/Mokush/Dev/quicktext-chrome/src/background/css/bootstrap-chrome.styl */
+.nav-stacked > li:last-child {
+  margin-top: 2em;
+}
+
+/* line 118 : /media/Mokush/Dev/quicktext-chrome/src/background/css/bootstrap-chrome.styl */
+.btn {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  margin: 0 0 0.25em 0;
+  padding: 0.25em 1em;
+  font: inherit;
+}
+
+/* line 126 : /media/Mokush/Dev/quicktext-chrome/src/background/css/bootstrap-chrome.styl */
+.btn-primary {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  background-image: -webkit-linear-gradient(#ededed, #ededed 38%, #dedede);
+  background-image: -moz-linear-gradient(#ededed, #ededed 38%, #dedede);
+  background-image: -o-linear-gradient(#ededed, #ededed 38%, #dedede);
+  background-image: -ms-linear-gradient(#ededed, #ededed 38%, #dedede);
+  background-image: linear-gradient(#ededed, #ededed 38%, #dedede);
+  border: 1px solid rgba(0,0,0,0.25);
+  -webkit-border-radius: 2px;
+  border-radius: 2px;
+  -webkit-box-shadow: 0 1px 0 rgba(0,0,0,0.08), inset 0 1px 2px rgba(255,255,255,0.75);
+  box-shadow: 0 1px 0 rgba(0,0,0,0.08), inset 0 1px 2px rgba(255,255,255,0.75);
+  color: #444;
+  text-shadow: 0 1px 0 #f0f0f0;
+}
+
+/* line 136 : /media/Mokush/Dev/quicktext-chrome/src/background/css/bootstrap-chrome.styl */
+.btn-primary:hover {
+  background-image: -webkit-linear-gradient(#f0f0f0, #f0f0f0 38%, #e0e0e0);
+  background-image: -moz-linear-gradient(#f0f0f0, #f0f0f0 38%, #e0e0e0);
+  background-image: -o-linear-gradient(#f0f0f0, #f0f0f0 38%, #e0e0e0);
+  background-image: -ms-linear-gradient(#f0f0f0, #f0f0f0 38%, #e0e0e0);
+  background-image: linear-gradient(#f0f0f0, #f0f0f0 38%, #e0e0e0);
+  border-color: rgba(0,0,0,0.3);
+  -webkit-box-shadow: 0 1px 0 rgba(0,0,0,0.12), inset 0 1px 2px rgba(255,255,255,0.95);
+  box-shadow: 0 1px 0 rgba(0,0,0,0.12), inset 0 1px 2px rgba(255,255,255,0.95);
+  color: #000;
+}
+
+/* line 143 : /media/Mokush/Dev/quicktext-chrome/src/background/css/bootstrap-chrome.styl */
+.btn-primary:active {
+  background-image: -webkit-linear-gradient(#e7e7e7, #e7e7e7 38%, #d7d7d7);
+  background-image: -moz-linear-gradient(#e7e7e7, #e7e7e7 38%, #d7d7d7);
+  background-image: -o-linear-gradient(#e7e7e7, #e7e7e7 38%, #d7d7d7);
+  background-image: -ms-linear-gradient(#e7e7e7, #e7e7e7 38%, #d7d7d7);
+  background-image: linear-gradient(#e7e7e7, #e7e7e7 38%, #d7d7d7);
+  -webkit-box-shadow: none;
+  box-shadow: none;
+  text-shadow: none;
+}
+
+/* line 149 : /media/Mokush/Dev/quicktext-chrome/src/background/css/bootstrap-chrome.styl */
+.btn-primary:focus {
+  color: #000;
+}
+
+/* line 154 : /media/Mokush/Dev/quicktext-chrome/src/background/css/bootstrap-chrome.styl */
+.btn-toolbar {
+  padding-bottom: 0.75em;
+  margin-bottom: 0;
+  border-bottom: 1px solid #eee;
+}
+
+/* line 162 : /media/Mokush/Dev/quicktext-chrome/src/background/css/bootstrap-chrome.styl */
+.modal-backdrop {
+  background-color: #fff;
+}
+
+/* line 165 : /media/Mokush/Dev/quicktext-chrome/src/background/css/bootstrap-chrome.styl */
+.modal-backdrop.in {
+  opacity: 0.9;
+  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=90)";
+  filter: alpha(opacity=90);
+}
+
+/* line 170 : /media/Mokush/Dev/quicktext-chrome/src/background/css/bootstrap-chrome.styl */
+.modal-content {
+  border: 0;
+  -webkit-box-shadow: 0 4px 23px 5px rgba(0,0,0,0.2), 0 2px 6px rgba(0,0,0,0.15);
+  box-shadow: 0 4px 23px 5px rgba(0,0,0,0.2), 0 2px 6px rgba(0,0,0,0.15);
+}
+
+/* line 174 : /media/Mokush/Dev/quicktext-chrome/src/background/css/bootstrap-chrome.styl */
+.modal-content .modal-header {
+  border: none;
+}
+
+/* line 177 : /media/Mokush/Dev/quicktext-chrome/src/background/css/bootstrap-chrome.styl */
+.modal-content .modal-header h4 {
+  font-size: 1.125em;
+}
+
+/* line 182 : /media/Mokush/Dev/quicktext-chrome/src/background/css/bootstrap-chrome.styl */
+.modal-content .modal-footer {
+  border: none;
+}
+
+/* line 186 : /media/Mokush/Dev/quicktext-chrome/src/background/css/bootstrap-chrome.styl */
+.modal-content .modal-body {
+  padding: 0 15px;
+}
+
+/* line 189 : /media/Mokush/Dev/quicktext-chrome/src/background/css/bootstrap-chrome.styl */
+.modal-content .modal-body .form-group {
+  margin-left: 0;
+  margin-right: 0;
+}
+
+/* line 29 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+/* General
+ */
+
+/* line 31 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+body {
+  padding-top: 5.375em;
+  color: #333;
+}
+
+/* line 37 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+.container {
+  width: 100%;
+  padding: 0;
+}
+
+/* line 43 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+/* Fixed header
+ */
+
+/* line 45 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+header {
+  position: fixed;
+  top: 0;
+  left: 20%;
+  width: 600px;
+  z-index: 999;
+  max-width: 700px;
+  background: -webkit-linear-gradient(#fff, #fff 40%, rgba(255,255,255,0.92));
+  background: -moz-linear-gradient(#fff, #fff 40%, rgba(255,255,255,0.92));
+  background: -o-linear-gradient(#fff, #fff 40%, rgba(255,255,255,0.92));
+  background: -ms-linear-gradient(#fff, #fff 40%, rgba(255,255,255,0.92));
+  background: linear-gradient(#fff, #fff 40%, rgba(255,255,255,0.92));
+}
+
+/* line 55 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+.header-actions {
+  padding-top: 1.5em;
+}
+
+/* line 58 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+.header-actions .form-control {
+  width: 13.75em;
+}
+
+/* line 63 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+/* View container
+ */
+
+/* line 65 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+.view-container {
+  position: relative;
+  width: 600px;
+  margin-left: 20%;
+}
+
+/* line 71 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+.container-animation {
+  position: relative;
+  display: block;
+  width: 100%;
+}
+
+/* line 77 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+.container-animation.ng-enter,
+.container-animation.ng-leave {
+  -webkit-transition: all 0.1s ease-out;
+  -moz-transition: all 0.1s ease-out;
+  -o-transition: all 0.1s ease-out;
+  -ms-transition: all 0.1s ease-out;
+  transition: all 0.1s ease-out;
+}
+
+/* line 80 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+.container-animation.ng-enter header,
+.container-animation.ng-leave header {
+  position: absolute;
+  top: -5.5em;
+  left: 0;
+  width: 100%;
+}
+
+/* line 88 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+.container-animation.ng-enter {
+  opacity: 0;
+  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
+  filter: alpha(opacity=0);
+  -webkit-transform: translate3d(50px, 0, 0);
+  -moz-transform: translate3d(50px, 0, 0);
+  -o-transform: translate3d(50px, 0, 0);
+  -ms-transform: translate3d(50px, 0, 0);
+  transform: translate3d(50px, 0, 0);
+}
+
+/* line 93 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+.container-animation.ng-enter.ng-enter-active {
+  opacity: 1;
+  -ms-filter: none;
+  filter: none;
+  z-index: 1000;
+  -webkit-transform: translate3d(0, 0, 0);
+  -moz-transform: translate3d(0, 0, 0);
+  -o-transform: translate3d(0, 0, 0);
+  -ms-transform: translate3d(0, 0, 0);
+  transform: translate3d(0, 0, 0);
+}
+
+/* line 99 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+.container-animation.ng-leave {
+  position: absolute;
+  z-index: 101;
+  -webkit-transform: translate3d(0, 0, 0);
+  -moz-transform: translate3d(0, 0, 0);
+  -o-transform: translate3d(0, 0, 0);
+  -ms-transform: translate3d(0, 0, 0);
+  transform: translate3d(0, 0, 0);
+}
+
+/* line 105 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+.container-animation.ng-leave.ng-leave-active {
+  opacity: 0;
+  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
+  filter: alpha(opacity=0);
+  -webkit-transform: translate3d(-50px, 0, 0);
+  -moz-transform: translate3d(-50px, 0, 0);
+  -o-transform: translate3d(-50px, 0, 0);
+  -ms-transform: translate3d(-50px, 0, 0);
+  transform: translate3d(-50px, 0, 0);
+}
+
+/* line 110 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+/* Sidebar
+ */
+
+/* line 112 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+.sidebar-wrapper {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 20%;
+  padding: 1em 1.25em 0 1.375em;
+}
+
+/* line 120 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+.brand {
+  display: block;
+  margin-bottom: 1em;
+  font-size: 2.25em;
+  line-height: 1em;
+  color: #707070;
+  vertical-align: bottom;
+}
+
+/* line 129 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+.brand img {
+  width: 1em;
+  opacity: 0.8;
+  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=80)";
+  filter: alpha(opacity=80);
+  vertical-align: middle;
+}
+
+/* line 136 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+.brand:hover {
+  color: #333;
+  text-decoration: none;
+}
+
+/* line 142 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+.anonymous,
+.profile-body {
+  margin-bottom: 0.75em;
+}
+
+/* line 146 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+/* List group item
+ */
+
+/* line 148 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+.list-group-item {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  -webkit-border-radius: 0 !important;
+  border-radius: 0 !important;
+}
+
+/* line 154 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+.list-group-item .hover-actions {
+  display: block;
+  position: absolute;
+  top: 50%;
+  right: 0.75em;
+  -webkit-transform: translateY(-50%);
+  -moz-transform: translateY(-50%);
+  -o-transform: translateY(-50%);
+  -ms-transform: translateY(-50%);
+  transform: translateY(-50%);
+  min-width: 200px;
+  text-align: right;
+}
+
+/* line 163 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+.list-group-item .hover-actions button,
+.list-group-item .hover-actions .btn {
+  display: inline-block;
+  margin-left: 0.5em;
+  -webkit-transition: all 0.1s ease-out;
+  -moz-transition: all 0.1s ease-out;
+  -o-transition: all 0.1s ease-out;
+  -ms-transition: all 0.1s ease-out;
+  transition: all 0.1s ease-out;
+  opacity: 0;
+  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
+  filter: alpha(opacity=0);
+}
+
+/* line 171 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+.list-group-item .hover-actions button:focus,
+.list-group-item .hover-actions .btn:focus {
+  opacity: 1;
+  -ms-filter: none;
+  filter: none;
+}
+
+/* line 177 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+
+/* line 178 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+.list-group-item .list-group-item-link:focus ~ .hover-actions .btn,
+.list-group-item:hover .hover-actions .btn,
+.list-group-item .list-group-item-link:focus ~ .hover-actions button,
+.list-group-item:hover .hover-actions button {
+  opacity: 1;
+  -ms-filter: none;
+  filter: none;
+}
+
+/* line 183 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+.list-group-item.active {
+  background: #edf4ff;
+}
+
+/* line 188 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+/* Quicktext list
+  */
+
+/* line 190 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+
+/* line 192 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+.quicktexts-list .list-group-item {
+  padding: 0;
+}
+
+/* line 195 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+.quicktexts-list .list-group-item .list-group-item-link {
+  display: block;
+  padding: 0.75em 1em;
+  cursor: pointer;
+  color: #333;
+}
+
+/* line 202 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+.quicktexts-list .list-group-item .list-group-item-link:hover {
+  text-decoration: none;
+}
+
+/* line 206 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+.quicktexts-list .list-group-item .list-group-item-link:focus {
+  background: #edf4ff;
+}
+
+/* line 211 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+.quicktexts-list .list-group-item:hover {
+  background-color: #eee;
+}
+
+/* line 216 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+.quicktexts-list .quicktext-detail {
+  margin-bottom: 0.5em;
+}
+
+/* line 219 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+.quicktexts-list .quicktext-detail strong {
+  font-weight: normal;
+  font-size: 0.75em;
+  color: rgba(51,51,51,0.5);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* line 227 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+.quicktexts-list .quicktext-detail .quicktext-template {
+  display: block;
+}
+
+/* line 231 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+.quicktexts-list .quicktext-detail p {
+  margin: 0;
+}
+
+/* line 238 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+/* Login modal
+ */
+
+/* line 240 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+
+/* line 242 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+.login-modal .modal-dialog {
+  max-width: 360px;
+}
+
+/* line 248 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+/* Quicktext new/edit modal
+ */
+
+/* line 250 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+
+/* line 252 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+.quicktext-modal .modal-dialog {
+  max-width: 480px;
+}
+
+/* line 258 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+/* Register modal
+ */
+
+/* line 260 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+
+/* line 262 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+.register-modal .modal-dialog {
+  max-width: 420px;
+}
+
+/* line 269 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+.btn-social {
+  font-size: 1.25em;
+  color: #fff;
+}
+
+/* line 274 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+.btn-google {
+  background-color: #df4a32;
+  border-color: #bd341d;
+}
+
+/* line 278 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+.btn-google i {
+  color: #f9dbd6;
+}
+
+/* line 282 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+.btn-google:hover {
+  color: #fff;
+  border-color: #bd341d;
+  background-color: #c9371f;
+}
+
+/* line 289 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+.text-separator {
+  margin-top: 1.25em;
+  border-top: 1px solid #eee;
+  text-align: center;
+}
+
+/* line 295 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+.text-separator p {
+  display: inline-block;
+  position: relative;
+  top: -0.75em;
+  padding: 0 0.5em;
+  background-color: #fff;
+}
+
+/* line 304 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+/* Page Action Popup
+ */
+
+/* line 307 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+.popup {
+  width: 630px;
+/* Don't use view transition in the action popup
+  */
+/* More padding for the btn-toolbar
+   */
+}
+
+/* line 310 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+.popup .sidebar-wrapper {
+  display: none;
+}
+
+/* line 314 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+.popup header {
+  left: 0;
+  padding: 0.5em 1.25em;
+}
+
+/* line 319 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+.popup .view-container {
+  margin: 0;
+}
+
+/* line 323 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+.popup header,
+.popup .view-container {
+  width: 100%;
+}
+
+/* line 329 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+.popup .container-animation.ng-enter,
+.popup .container-animation.ng-leave {
+  -webkit-transition: none;
+  -moz-transition: none;
+  -o-transition: none;
+  -ms-transition: none;
+  transition: none;
+}
+
+/* line 335 : /media/Mokush/Dev/quicktext-chrome/src/background/css/background.styl */
+.popup .btn-toolbar {
+  padding: 0.75em 1em;
+}

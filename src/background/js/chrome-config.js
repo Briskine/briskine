@@ -26,24 +26,41 @@ if(chrome.runtime){
     chrome.contextMenus.removeAll();
     chrome.contextMenus.create({
         "title": 'Save as Quicktext',
-        "contexts": ['editable', 'selection'],
-        "onclick": function(info, tab){
-            // I would have loved to open the popup.html with this, but at this moment
-            // it's not possible to do so due to browser restrictions of Chrome
-            // so we are going to open a dialog with the form
+        "contexts": ['editable', 'selection']
+//         "onclick": function(info, tab){
+//             // I would have loved to open the popup.html with this, but at this moment
+//             // it's not possible to do so due to browser restrictions of Chrome
+//             // so we are going to open a dialog with the form
+//
+//           // use chrome tabs API to bypass popup blocker after first save
+//           // using window.open hits popup blocker after closing the initally opened tab
+//           var quicktextBody = encodeURIComponent(info.selectionText);
+// //           chrome.tabs.create({
+// //             url: chrome.extension.getURL('/pages/bg.html') + '#/list?id=new&body=' + quicktextBody
+// //           });
+//
+// //           console.log('create');
+// //
+// //           chrome.tabs.create({
+// //             url: chrome.extension.getURL('/pages/bg.html') + '#/list?id=new&body=' + quicktextBody
+// //           });
+//
+//           // seems like there is no way around chrome popup blocker
+//           // except by using showModalDialog
+//           //window.showModalDialog('/pages/bg.html#/list?id=new&body=' + quicktextBody, {}, "dialogwidth: 800; dialogheight: 700; resizable: yes");
+//
+//         }
+    });
 
-          // use chrome tabs API to bypass popup blocker after first save
-          // using window.open hits popup blocker after closing the initally opened tab
-          var quicktextBody = encodeURIComponent(info.selectionText);
-//           chrome.tabs.create({
-//             url: '/pages/bg.html#/list?id=new&body=' + quicktextBody
-//           });
+    // rather than using the contextMenu onclick function, we attach
+    // an event to the onClicked event.
+    // this fixes issues with the onclick function not being triggered
+    // or the new tab not being opened.
+    chrome.contextMenus.onClicked.addListener(function(info, tab){
 
-          // seems like there is no way around chrome popup blocker
-          // except by using showModalDialog
-          window.showModalDialog('/pages/bg.html#/list?id=new&body=' + quicktextBody, {}, "dialogwidth: 800; dialogheight: 700; resizable: yes");
+      var quicktextBody = encodeURIComponent(info.selectionText);
+      window.open(chrome.extension.getURL('/pages/bg.html') + '#/list?id=new&body=' + quicktextBody, 'quicktextOptions');
 
-        }
     });
 
     // Called when the url of a tab changes.
