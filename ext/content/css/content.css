@@ -1,72 +1,8 @@
-
-/* line 1 : /media/Mokush/Dev/quicktext-chrome/node_modules/grunt-contrib-stylus/node_modules/stylus/lib/functions/index.styl */
-
-/* line 1 : /media/Mokush/Dev/quicktext-chrome/src/content/css/content.styl */
-.qt-dropdown {
-  position: fixed;
-  z-index: 10;
-  overflow: hidden;
-  overflow-y: auto;
-  margin: 0;
-  padding: 2px;
-  max-height: 20em;
-  box-shadow: 2px 3px 5px rgba(0,0,0,0.2);
-  border-radius: 3px;
-  border: 1px solid #c0c0c0;
-  background: #fff;
-  list-style: none;
-  font-size: 90%;
-  font-family: monospace;
-}
-
-/* line 17 : /media/Mokush/Dev/quicktext-chrome/src/content/css/content.styl */
-.qt-dropdown li {
-  margin: 0;
-  padding: 0 4px;
-  border-radius: 2px;
-  max-width: 20em;
-  max-height: 15px;
-  overflow: hidden;
-  word-wrap: break-word;
-  text-overflow: ellipsis;
-  color: #000;
-  cursor: pointer;
-}
-
-/* line 29 : /media/Mokush/Dev/quicktext-chrome/src/content/css/content.styl */
-.qt-dropdown li.default {
-  cursor: default;
-  max-height: 4em;
-}
-
-/* line 33 : /media/Mokush/Dev/quicktext-chrome/src/content/css/content.styl */
-.qt-dropdown li.active {
-  background: #08f;
-  color: #fff;
-}
-
-/* line 37 : /media/Mokush/Dev/quicktext-chrome/src/content/css/content.styl */
-.qt-dropdown li.active .qt-title {
-  color: #f3f3f3;
-}
-
-/* line 40 : /media/Mokush/Dev/quicktext-chrome/src/content/css/content.styl */
-.qt-dropdown li .qt-title {
-  color: #808080;
-}
-
-/* line 43 : /media/Mokush/Dev/quicktext-chrome/src/content/css/content.styl */
-
-/* line 46 : /media/Mokush/Dev/quicktext-chrome/src/content/css/content.styl */
-.qt-mirror {
-  position: absolute;
-  overflow: auto;
-  white-space: pre-wrap;
-  word-wrap: break-word;
-  z-index: -9999;
-}
-
-/* line 52 : /media/Mokush/Dev/quicktext-chrome/src/content/css/content.styl */
-.qt-mirror .qt-caret {
-  display: inline-block;
-}
+.qt-dropdown{position:fixed;z-index:10;overflow:hidden;overflow-y:auto;margin:0;padding:2px;max-height:20em;box-shadow:2px 3px 5px rgba(0,0,0,0.2);border-radius:3px;border:1px solid #c0c0c0;background:#fff;list-style:none;font-size:90%;font-family:monospace;}
+.qt-dropdown li{margin:0;padding:0 4px;border-radius:2px;max-width:20em;max-height:15px;overflow:hidden;word-wrap:break-word;text-overflow:ellipsis;color:#000;cursor:pointer;}
+.qt-dropdown li.default{cursor:default;max-height:4em}
+.qt-dropdown li.active{background:#08f;color:#fff;}
+.qt-dropdown li.active .qt-title{color:#f3f3f3}
+.qt-dropdown li .qt-title{color:#808080}
+.qt-mirror{position:absolute;overflow:auto;white-space:pre-wrap;word-wrap:break-word;z-index:-9999;}
+.qt-mirror .qt-caret{display:inline-block}

@@ -36440,7 +36440,7 @@ angular.module('angularMoment', [])
 		};
 	}]);
 
-var ENV = "development";
+var ENV = "production";
 /* Quicktext chrome extension
  */
 
