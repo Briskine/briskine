@@ -15,12 +15,13 @@ module.exports = function(grunt) {
 
           'bower_components/angular/angular.js',
           'bower_components/angular-route/angular-route.js',
+          'bower_components/angular-animate/angular-animate.js',
           'bower_components/angular-md5/angular-md5.js',
           'bower_components/angular-moment/angular-moment.js',
 
           // Should be first
           'src/background/js/environment.js',
-          'src/background/js/*.js'
+          'src/background/js/**/*.js'
         ],
         css: ['ext/background/css/background.css']
       },
@@ -110,6 +111,21 @@ module.exports = function(grunt) {
           {src: ['ext/**']}
         ]
       }
+    },
+    // Put files not handled in other tasks here
+    copy: {
+      development: {
+        files: [{
+          expand: true,
+          flatten: true,
+          dot: true,
+          cwd: 'bower_components/font-awesome/fonts/',
+          dest: 'ext/background/fonts',
+          src: [
+            '*'
+          ]
+        }]
+      }
     }
   });
 
@@ -138,6 +154,7 @@ module.exports = function(grunt) {
 
   // Development mode
   grunt.registerTask('development', [
+    'copy:development',
     'manifest:development',
     'stylus:development',
     'jshint',
@@ -159,6 +176,7 @@ module.exports = function(grunt) {
 
   // Optimize and compress
   grunt.registerTask('production', [
+    'copy:development',
     'manifest:production',
     'stylus:production',
     'concat'

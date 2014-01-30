@@ -1,0 +1,66 @@
+<div class="modal fade register-modal" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true" ng-controller="SignupCtrl">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title">
+            Sign-up
+        </h4>
+      </div>
+
+      <div class="modal-body">
+
+        <div class="text-center">
+          <a href="#" class="btn btn-default btn-social btn-google fa-2x">
+              <i class="fa fa-google-plus"></i> Sign in with Google
+          </a>
+        </div>
+
+        <div class="text-separator">
+          <p>Or sign in with your email</p>
+        </div>
+
+        <form class="form-signin" role="form" ng-submit="SubmitSignup()">
+
+          <div class="form-group">
+            <label for="registeremail">E-mail</label>
+            <input type="email" class="form-control" id="registeremail" ng-model="model.email" required/>
+          </div>
+
+
+          <div class="row">
+            <div class="col-sm-6">
+
+              <div class="form-group">
+                <label for="registerpassword">Password</label>
+                <input type="text" class="form-control" id="registerpassword" ng-model="model.password" required/>
+              </div>
+
+            </div>
+            <div class="col-sm-6">
+
+              <div class="form-group">
+                <label for="confirmpassword">Confirm password</label>
+                <input type="text" class="form-control" id="confirmpassword" ng-model="model.confirmPassword" required/>
+              </div>
+
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-sm-6">
+
+            </div>
+            <div class="col-sm-6 text-right">
+                  <button type="submit" class="btn btn-large btn-primary btn-login">Sign-up</button>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <div class="modal-footer"></div>
+
+    </div>
+  </div>
+</div>

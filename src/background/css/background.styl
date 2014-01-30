@@ -1,185 +1,344 @@
-@import "../../../bower_components/bootstrap/dist/css/bootstrap.css"
-@import "bootstrap-theme.css"
+/* Quicktext Chrome Extension
+ */
 
-.page-content-wrapper
-    padding-top 35px
+@import "nib";
+@import "../../../bower_components/bootstrap/dist/css/bootstrap.css";
+@import "../../../bower_components/font-awesome/css/font-awesome.css";
 
-.logo-container
-    text-align center
+/* Functions
+ */
 
-#sidebar-wrapper
-    margin-left -250px
-    left 250px
-    width 250px
-    background-color #f5f5f5
-    box-shadow inset -10px 0 10px -7px #ccc
-    position fixed
-    height 100%
-    overflow-y auto
+emCalc(h) {
+  unit(h/16, 'em');
+}
 
-    .sidebar-nav
-        position absolute
-        top 0
-        width 250px
-        list-style none
-        margin 0
-        padding 0
+/* Variables
+ */
 
-        .sidebar-brand
-            text-align center
-            padding-top 35px
-            padding-bottom 35px
+$grey1 = #eee;
+$black = #333;
+$color1 = rgb(77, 144, 254);
+$sidebarWidth = 20%;
+$contentWidth = 600px;
 
-        li
-            padding 0px 20px 20px 20px
-
-            > .section-header
-                padding-bottom 8px
-                font-size 16px
-                font-weight bold
-                color #777
-
-    .sidebar-footer
-        position absolute
-        bottom 0px
-        left 0px
-        margin-right 20px
-        margin-left 20px
-        width 205px
-
-        .sidebar-footer-links
-            text-align center
-            padding-bottom 10px
-
-    .profile
-        .profile-picture
-            vertical-align middle
-            display table-cell
-            img
-                border 2px #fff solid
-        .profile-container
-            padding-left 10px
-            display table-cell
-            vertical-align middle
-        .profile-name
-            font-size 16px
-            font-weight bold
-        .profile-email
-            font-size 12px
-        .profile-extra
-            margin-top 7px
-        .anonymous
-            font-size larger
+/* Bootstrap theme
+ */
+@import "bootstrap-chrome.styl";
 
 
-.toggle-sidebar
-   cursor pointer
-   position absolute
-   bottom 170px
-   &.toggle-hide
-    right 0px
-   &.toggle-show
-    left 0px
+/* General
+ */
+body {
+  padding-top: emCalc(86);
 
-   background-color #FDFDFD
-   padding 5px
+  color: $black;
+}
 
-   span
-       font-size 20px
-
-.search-table
-    width 320px
-
-.quicktext-form
-    margin-left 10px
-    margin-right 10px
-
-.quicktext-filters
-    margin-top 10px
-    margin-bottom 10px
-
-.duplicate-bottom
-    padding-top 6px
-
-#popup-container
-    min-width 629px
-    padding-top 13px
-    .search-table
-        width: 100%
-
-    #quicktext-table-container
-        height 300px
-        overflow-y auto
-
-        tr
-            cursor pointer
-
-#login-modal
-    display none
-
-    .form-signin
-        max-width 400px
-        display block
-        background-color #f7f7f7
-        box-shadow 0 0 3px 3px #888
-        border-radius 2px
-
-        .main
-            padding 38px
-
-            .social-box
-                margin 0 auto
-                padding 38px
-                border-bottom 1px #ccc solid
-                a
-                    font-weight bold
-                    font-size 18px
-                    padding 8px
-                    i
-                        font-weight bold
-                        font-size 20px
-
-        .heading-desc
-            font-size 20px
-            font-weight bold
-            padding 38px 38px 0px 38px
+.container {
+  width: 100%;
+  padding: 0;
+}
 
 
-        .form-signin-heading, .checkbox
-            margin-bottom 10px
+/* Fixed header
+ */
+header {
+  position: fixed;
+  top: 0;
+  left: $sidebarWidth;
+  width: $contentWidth;
+  z-index: 999;
+  max-width: 700px;
+  background: linear-gradient(white, white 40%, rgba(255, 255, 255, 0.92));
+}
 
-        .checkbox
-            font-weight normal
+.header-actions {
+  padding-top: emCalc(24);
 
-        .form-signin .form-control
-            position relative
-            font-size 16px
-            height 20px
-            padding 20px
-            box-sizing border-box
+  .form-control {
+    width: emCalc(220);
+  }
+}
 
-        .form-control focus
-            z-index 2
+/* View container
+ */
+.view-container {
+  position: relative;
+  width: $contentWidth;
+  margin-left: $sidebarWidth;
+}
 
-        input[type="text"]
-            margin-bottom 10px
-            border-radius 5px
+.container-animation {
+  position: relative;
+  display: block;
+  width: 100%;
+}
+
+.container-animation.ng-enter,
+.container-animation.ng-leave {
+  transition: all .1s ease-out;
+
+  header {
+    position: absolute;
+    top: emCalc(-88);
+    left: 0;
+    width: 100%;
+  }
+}
+
+.container-animation.ng-enter {
+  opacity: 0;
+  transform: translate3d(50px, 0, 0);
+}
+
+.container-animation.ng-enter.ng-enter-active {
+  opacity: 1;
+  z-index: 1000;
+  transform: translate3d(0, 0, 0);
+}
+
+.container-animation.ng-leave {
+  position: absolute;
+  z-index: 101;
+  transform: translate3d(0, 0, 0);
+}
+
+.container-animation.ng-leave.ng-leave-active {
+  opacity: 0;
+  transform: translate3d(-50px, 0, 0);
+}
+
+/* Sidebar
+ */
+.sidebar-wrapper {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: $sidebarWidth;
+  padding: emCalc(16) emCalc(20) 0 emCalc(22);
+}
+
+.brand {
+  display: block;
+  margin-bottom: emCalc(16);
+
+  font-size: emCalc(36);
+  line-height: 1em;
+  color: lighten($black, 30%);
+  vertical-align: bottom;
+
+  img {
+    width: emCalc(16);
+    opacity: .8;
+
+    vertical-align: middle;
+  }
+
+  &:hover {
+    color: $black;
+    text-decoration: none;
+  }
+}
+
+.anonymous,
+.profile-body {
+  margin-bottom: emCalc(12);
+}
+
+/* List group item
+ */
+.list-group-item {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  border-radius: 0 !important;
+
+  .hover-actions {
+    display: block;
+    position: absolute;
+    top: 50%;
+    right: emCalc(12);
+    transform: translateY(-50%);
+    min-width: 200px;
+    text-align: right;
+
+    button
+    .btn {
+      display: inline-block;
+      margin-left: emCalc(8);
+
+      transition: all .1s ease-out;
+      opacity: 0;
+
+      &:focus {
+        opacity: 1;
+      }
+    }
+  }
+
+  .list-group-item-link:focus ~ .hover-actions,
+  &:hover .hover-actions {
+    .btn,
+    button {
+      opacity: 1;
+    }
+  }
+
+  &.active {
+    background: lighten($color1, 90%);
+  }
+}
+
+/* Quicktext list
+  */
+.quicktexts-list {
+
+  .list-group-item {
+    padding: 0;
+
+    .list-group-item-link {
+      display: block;
+      padding: emCalc(12) emCalc(16);
+      cursor: pointer;
+
+      color: $black;
+
+      &:hover {
+        text-decoration: none;
+      }
+
+      &:focus {
+        background: lighten($color1, 90%);
+      }
+    }
+
+    &:hover {
+      background-color: $grey1;
+    }
+  }
+
+  .quicktext-detail {
+    margin-bottom: emCalc(8);
+
+    strong {
+      font-weight: normal;
+      font-size: emCalc(12);
+      color: rgba($black, 50%);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .quicktext-template {
+        display: block;
+    }
+
+    p {
+      margin: 0;
+    }
+  }
+
+}
+
+/* Login modal
+ */
+.login-modal {
+
+  .modal-dialog {
+    max-width: 360px;
+  }
+
+}
+
+/* Quicktext new/edit modal
+ */
+.quicktext-modal {
+
+  .modal-dialog {
+    max-width: 480px;
+  }
+
+}
+
+/* Register modal
+ */
+.register-modal {
+
+  .modal-dialog {
+    max-width: 420px;
+  }
+
+}
 
 
-        input[type="password"]
-            margin-bottom 10px
-            border-radius 5px
+.btn-social {
+  font-size: emCalc(20);
+  color: #fff;
+}
 
-        .login-footer
-            background #f0f0f0
-            margin 0 auto
-            border-top 1px solid #dadada
-            padding 20px
+.btn-google {
+  background-color: #DF4A32;
+  border-color: darken(@background-color, 20%);
 
-        .login-footer .left-section a
-            font-weight bold
-            color #8a8a8a
-            line-height 19px
+  i {
+    color: lighten(@background-color, 80%);
+  }
 
-    .mg-btm
-        margin-bottom 20px
+  &:hover {
+    color: #fff;
+    border-color: darken(@background-color, 20%);
+    background-color: darken(@background-color, 15%);
+  }
+}
+
+.text-separator {
+  margin-top: emCalc(20);
+  border-top: 1px solid $grey1;
+
+  text-align: center;
+
+  p {
+    display: inline-block;
+    position: relative;
+    top: emCalc(-12);
+    padding: 0 emCalc(8);
+    background-color: #fff;
+  }
+}
+
+/* Page Action Popup
+ */
+
+.popup {
+  width: 630px;
+
+  .sidebar-wrapper {
+    display: none;
+  }
+
+  header {
+    left: 0;
+    padding: emCalc(8) emCalc(20);
+  }
+
+  .view-container {
+    margin: 0;
+  }
+
+  header,
+  .view-container {
+    width: 100%;
+  }
+
+  /* Don't use view transition in the action popup
+  */
+  .container-animation.ng-enter,
+  .container-animation.ng-leave {
+    transition: none;
+  }
+
+  /* More padding for the btn-toolbar
+   */
+  .btn-toolbar {
+    padding: emCalc(12) emCalc(16);
+  }
+}

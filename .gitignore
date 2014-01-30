@@ -6,3 +6,9 @@ build
 
 # It is added in git but we don't have to track this file
 src/backgrount/js/environment.js
+
+# Editor
+.kateproject
+.kateconfig
+.kateproject.d
+*.kate-swp

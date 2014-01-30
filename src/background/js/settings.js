@@ -26,8 +26,8 @@ var Settings = {
         return key in window.localStorage;
     },
     defaults: {
-        baseURL: "https://gmail-quicktext.com/",
-        apiBaseURL: "https://gmail-quicktext.com/api/1/",
+        baseURL: "https://quicktext.io/",
+        apiBaseURL: "https://quicktext.io/api/1/",
         syncEnabled: false,
         autocompleteEnabled: true, // autocomplete dialog
         tabcompleteEnabled: true, // tab completion
