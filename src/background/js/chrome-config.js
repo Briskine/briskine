@@ -27,29 +27,6 @@ if(chrome.runtime){
     chrome.contextMenus.create({
         "title": 'Save as Quicktext',
         "contexts": ['editable', 'selection']
-//         "onclick": function(info, tab){
-//             // I would have loved to open the popup.html with this, but at this moment
-//             // it's not possible to do so due to browser restrictions of Chrome
-//             // so we are going to open a dialog with the form
-//
-//           // use chrome tabs API to bypass popup blocker after first save
-//           // using window.open hits popup blocker after closing the initally opened tab
-//           var quicktextBody = encodeURIComponent(info.selectionText);
-// //           chrome.tabs.create({
-// //             url: chrome.extension.getURL('/pages/bg.html') + '#/list?id=new&body=' + quicktextBody
-// //           });
-//
-// //           console.log('create');
-// //
-// //           chrome.tabs.create({
-// //             url: chrome.extension.getURL('/pages/bg.html') + '#/list?id=new&body=' + quicktextBody
-// //           });
-//
-//           // seems like there is no way around chrome popup blocker
-//           // except by using showModalDialog
-//           //window.showModalDialog('/pages/bg.html#/list?id=new&body=' + quicktextBody, {}, "dialogwidth: 800; dialogheight: 700; resizable: yes");
-//
-//         }
     });
 
     // rather than using the contextMenu onclick function, we attach
@@ -84,6 +61,15 @@ if(chrome.runtime){
     // Called after installation: https://developer.chrome.com/extensions/runtime.html#event-onInstalled
     chrome.runtime.onInstalled.addListener(function(details){
         _gaq.push(['_trackEvent', "general", 'installed-quicktext']);
+
+        // perform the necessary migrations
+        if (!document.querySelector('body[class=ng-scope]')) {
+            angular.bootstrap('body', ['gqApp']);
+        }
+
+        var injector = angular.element('body').injector();
+        injector.get('QuicktextService').migrate_043_100();
+
         // All gmail tabs shoul be reloaded if the extension was installed
         chrome.tabs.query({'url': '*://mail.google.com/*'}, function(tabs){
             for (var i in tabs) {

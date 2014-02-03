@@ -125,6 +125,22 @@ gqApp.service('QuicktextService', function($q, md5){
         return deferred.promise;
     };
 
+    // perform migration from version 0.4.3 to the new version 1.0.0
+    self.migrate_043_100 = function(){
+        var quicktexts = Settings.get("quicktexts");
+        if (quicktexts){
+            for (var i in quicktexts){
+                var qt = quicktexts[i];
+                qt.body = qt.body.replace("<%=", "{{");
+                qt.body = qt.body.replace("%>", "}}");
+                qt.body = qt.body.replace("to[0].", "to.0.");
+                qt.body = qt.body.replace("from[0].", "from.0.");
+                qt.key = "";
+                self.create(qt);
+            }
+            Settings.set("quicktexts", []);
+        }
+    };
 });
 
 // Settings
