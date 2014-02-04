@@ -11830,25 +11830,23 @@ App.autocomplete.dropdownCreate = function (cursorPosition) {
 };
 
 App.autocomplete.dropdownPopulate = function (elements) {
-    if (elements.length) {
-        var listElements = "\
-        {{#each elements}}\
-        <li class='qt-item' data-id='{{id}}'>\
-            <span class='qt-shortcut'>{{shortcut}}</span>\
-            <span class='qt-title'>{{title}}</span>\
-            </li>\
-            {{/each}}",
-            content = Handlebars.compile(listElements)({elements: elements});
-
-        this.$dropdown.html(content);
-        this.isEmpty = false;
-
-        // Set first element active
-        this.dropdownSelectItem(0);
-    } else {
-        this.$dropdown.html('<li class="default">No results found.<br>Press Esc to close this window.<br>Press Tab to jump to Send button.</li>');
-        this.isEmpty = true;
+    if (!elements.length) {
+        return;
     }
+    var listElements = "\
+    {{#each elements}}\
+    <li class='qt-item' data-id='{{id}}'>\
+        <span class='qt-shortcut'>{{shortcut}}</span>\
+        <span class='qt-title'>{{title}}</span>\
+        </li>\
+        {{/each}}",
+        content = Handlebars.compile(listElements)({elements: elements});
+
+    this.$dropdown.html(content);
+    this.isEmpty = false;
+
+    // Set first element active
+    this.dropdownSelectItem(0);
 };
 
 App.autocomplete.dropdownSelectItem = function (index) {
