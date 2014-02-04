@@ -28,15 +28,16 @@ App.autocomplete.isEmpty = null;
 App.autocomplete.quicktexts = [];
 App.autocomplete.cursorPosition = null;
 App.autocomplete.shiftKey = false;
+App.autocomplete.timeoutId = null;
 
-PubSub.subscribe('focus', function(action, element, gmailView) {
+PubSub.subscribe('focus', function (action, element, gmailView) {
     if (action === 'off') {
         App.autocomplete.close();
     }
 });
 
 App.autocomplete.onKeyDown = function (e) {
-    if (e.keyCode === KEY_SHIFT){
+    if (e.keyCode === KEY_SHIFT) {
         App.autocomplete.shiftKey = true;
         return;
     }
@@ -76,8 +77,8 @@ App.autocomplete.onKeyDown = function (e) {
     }
 };
 
-App.autocomplete.onKeyUp = function(e) {
-    if (e.keyCode === KEY_SHIFT){
+App.autocomplete.onKeyUp = function (e) {
+    if (e.keyCode === KEY_SHIFT) {
         App.autocomplete.shiftKey = false;
         return;
     }
@@ -100,10 +101,23 @@ App.autocomplete.onKeyUp = function(e) {
             App.autocomplete.onKey(e.keyCode);
         }
     }
+    // Try to show the autocomplete dialog (it there is something to show)
+    App.settings.getAutocompleteEnabled(function (enabled) { // first make sure it's enabled
+        if (!enabled) {
+            return;
+        }
+        App.autocomplete.close();
+        window.clearTimeout(App.autocomplete.timeoutId);
+        App.settings.getAutocompleteDelay(function (delay) { // get the delay value
+            App.autocomplete.timeoutId = window.setTimeout(function () {
+                App.autocomplete.checkWord(e);
+            }, delay);
+        });
+    });
 };
 
-App.autocomplete.onKey = function(key, e) {
-    switch(key) {
+App.autocomplete.onKey = function (key, e) {
+    switch (key) {
         case KEY_TAB:
             this.keyCompletion(e);
             break;
@@ -122,17 +136,19 @@ App.autocomplete.onKey = function(key, e) {
     }
 };
 
-App.autocomplete.keyCompletion = function(e){
+// TAB completion
+App.autocomplete.keyCompletion = function (e) {
+
     App.autocomplete.cursorPosition = this.getCursorPosition(e);
     var word = this.getSelectedWord(App.autocomplete.cursorPosition);
     App.autocomplete.cursorPosition.word = word;
-    if (word.text){
-        App.settings.get('quicktexts', function(quicktexts){
+    if (word.text) {
+        App.settings.get('quicktexts', function (quicktexts) {
             // Search for match
-            var filtered = quicktexts.filter(function(a) {
+            var filtered = quicktexts.filter(function (a) {
                 return a.shortcut.indexOf(word.text) === 0;
             });
-            if (filtered.length){
+            if (filtered.length) {
                 // replace with the first quicktext found
                 App.autocomplete.replaceWith(filtered[0]);
             } else { // no quicktext found.. focus the next element
@@ -144,37 +160,35 @@ App.autocomplete.keyCompletion = function(e){
     }
 };
 
-App.autocomplete.checkWord = function(e) {
+App.autocomplete.checkWord = function (e) {
     var cursorPosition = this.getCursorPosition(e);
     this.cursorPosition = cursorPosition;
-
-    // Display loading
-    this.dropdownCreate(cursorPosition);
 
     var word = this.getSelectedWord(cursorPosition);
 
     // Cache word
     cursorPosition.word = word;
 
-    // TODO move search into background and retrieve filtered results
-    if (word.text === '') {
-        App.autocomplete.dropdownPopulate([]);
-    } else {
+    if (word.text !== '') {
+
         // Load all tags
-        App.settings.get('quicktexts', function(elements){
+        App.settings.get('quicktexts', function (elements) {
             // Search for match
-            App.autocomplete.quicktexts = elements.filter(function(a) {
+            App.autocomplete.quicktexts = elements.filter(function (a) {
                 // TODO search for mathc in whole shorcut (now searches for match starting with the beginning)
                 return a.shortcut.indexOf(word.text) === 0;
             });
 
-            App.autocomplete.dropdownPopulate(App.autocomplete.quicktexts);
+            if (App.autocomplete.quicktexts.length) {
+                App.autocomplete.dropdownCreate(cursorPosition);
+                App.autocomplete.dropdownPopulate(App.autocomplete.quicktexts);
+            }
         });
     }
 };
 
 // TODO make dropdown position relative so on scrolling it will stay in right place
-App.autocomplete.dropdownCreate = function(cursorPosition) {
+App.autocomplete.dropdownCreate = function (cursorPosition) {
     // Add loading dropdown
     this.$dropdown = $('<ul id="qt-dropdown" class="qt-dropdown"><li class="default">Loading...</li></ul>').insertAfter(cursorPosition.elementMain);
     this.$dropdown.css({
@@ -186,7 +200,7 @@ App.autocomplete.dropdownCreate = function(cursorPosition) {
     this.isEmpty = true;
 
     // Handle mouse hover and click
-    this.$dropdown.on('mouseover mousedown', 'li.qt-item', function(e) {
+    this.$dropdown.on('mouseover mousedown', 'li.qt-item', function (e) {
         e.preventDefault();
         e.stopPropagation();
 
@@ -197,7 +211,7 @@ App.autocomplete.dropdownCreate = function(cursorPosition) {
     });
 };
 
-App.autocomplete.dropdownPopulate = function(elements) {
+App.autocomplete.dropdownPopulate = function (elements) {
     if (elements.length) {
         var listElements = "\
         {{#each elements}}\
@@ -219,7 +233,7 @@ App.autocomplete.dropdownPopulate = function(elements) {
     }
 };
 
-App.autocomplete.dropdownSelectItem = function(index) {
+App.autocomplete.dropdownSelectItem = function (index) {
     if (this.isActive && !this.isEmpty) {
         this.$dropdown.children()
             .removeClass('active')
@@ -228,7 +242,7 @@ App.autocomplete.dropdownSelectItem = function(index) {
     }
 };
 
-App.autocomplete.getSelectedWord = function(cursorPosition) {
+App.autocomplete.getSelectedWord = function (cursorPosition) {
     var word = {
         start: 0,
         end: 0,
@@ -256,13 +270,13 @@ App.autocomplete.getSelectedWord = function(cursorPosition) {
 };
 
 /*
-  Moves focus from editable content to Send button
-*/
-App.autocomplete.focusNext = function(element) {
+ Moves focus from editable content to Send button
+ */
+App.autocomplete.focusNext = function (element) {
     var button;
     if (App.data.gmailView == 'basic html') {
         var elements = $(element).closest('table').find('input,textarea,button');
-        button = elements.eq(elements.index(element)+1);
+        button = elements.eq(elements.index(element) + 1);
     } else if (App.data.gmailView === 'standard') {
         button = $(element).closest('table').parent().closest('table').find('[role=button][tabindex="1"]');
     }
@@ -272,7 +286,7 @@ App.autocomplete.focusNext = function(element) {
     }
 };
 
-App.autocomplete.getCursorPosition = function(e) {
+App.autocomplete.getCursorPosition = function (e) {
     var target = e && e.target ? e.target : null,
         position = {
             start: 0,
@@ -363,7 +377,7 @@ App.autocomplete.getCursorPosition = function(e) {
     return position;
 };
 
-App.autocomplete.selectActive = function() {
+App.autocomplete.selectActive = function () {
     if (this.isActive && !this.isEmpty && this.quicktexts.length) {
         var activeItemId = this.$dropdown.find('.active').data('id'),
             quicktext = this.getQuicktextById(activeItemId);
@@ -372,7 +386,7 @@ App.autocomplete.selectActive = function() {
     }
 };
 
-App.autocomplete.replaceWith = function(quicktext) {
+App.autocomplete.replaceWith = function (quicktext) {
     var cursorPosition = App.autocomplete.cursorPosition,
         word = cursorPosition.word,
         replacement = "";
@@ -420,18 +434,19 @@ App.autocomplete.replaceWith = function(quicktext) {
     }
 
     // updates stats
-    App.settings.stats('words', quicktext.body.split(" ").length, function(){});
+    App.settings.stats('words', quicktext.body.split(" ").length, function () {
+    });
     App.autocomplete.close();
 };
 
 // TODO should request background
-App.autocomplete.getQuicktextById = function(id) {
+App.autocomplete.getQuicktextById = function (id) {
     return this.quicktexts.filter(function (a) {
         return a.id === id;
     })[0];
 };
 
-App.autocomplete.close = function() {
+App.autocomplete.close = function () {
     if (App.autocomplete.isActive) {
         this.$dropdown.remove();
         this.$dropdown = null;
@@ -444,11 +459,11 @@ App.autocomplete.close = function() {
     }
 };
 
-App.autocomplete.changeSelection = function(direction) {
+App.autocomplete.changeSelection = function (direction) {
     var index_diff = direction === 'prev' ? -1 : 1,
         elements_count = this.$dropdown.children().length,
         index_active = this.$dropdown.find('.active').index(),
-        index_new = Math.max(0, Math.min(elements_count -1, index_active + index_diff));
+        index_new = Math.max(0, Math.min(elements_count - 1, index_active + index_diff));
 
     this.dropdownSelectItem(index_new);
 };

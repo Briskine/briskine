@@ -1,37 +1,55 @@
 <header>
-  <h1>Settings</h1>
+    <h1>Settings</h1>
 </header>
 
-<form>
-  <label>Behavior</label>
-  <div class="checkbox">
+<form role="form">
+    <label>Behavior</label>
 
-    <label for="autocompleteEnabled" data-toggle="tooltip" data-placement="top" data-original-title="Autocomplete dialog pops up while typing in the compose area of Gmail. It shows possible quicktexts">
-      Autocomplete dialog
-      <span class="glyphicon glyphicon-question-sign"></span>
-    </label>
+    <div class="checkbox">
 
-    <input type="checkbox" id="autocompleteEnabled" ng-model="autocompleteEnabled" ng-change="settings.set('autocompleteEnabled', autocompleteEnabled)" />
+        <label for="autocompleteEnabled" data-toggle="tooltip" data-placement="top"
+               data-original-title="Autocomplete dialog pops up while typing in the compose area of Gmail. It shows possible quicktexts">
+            Autocomplete dialog
+            <span class="glyphicon glyphicon-question-sign"></span>
+        </label>
 
-  </div>
-  <div class="checkbox">
+        <input type="checkbox" id="autocompleteEnabled" ng-model="autocompleteEnabled"
+               ng-change="settings.set('autocompleteEnabled', autocompleteEnabled)"/>
 
-    <label for="tabcompleteEnabled" data-toggle="tooltip" data-placement="bottom" data-original-title="Tab completion automatically inserts a quicktext. Trigger it using 'Tab Completion' keyword then press the 'Tab' key">
-      Tab completion
-      <span class="glyphicon glyphicon-question-sign"></span>
-    </label>
+    </div>
+    <div class="form-group">
+        <label for="autocompleteDelay" data-toggle="tooltip" data-placement="bottom"
+               data-original-title="How much time (miliseconds) to wait until the Autocomplete Dialog should be displayed.">
+            Autocomplete Delay
+            <span class="glyphicon glyphicon-question-sign"></span>
+        </label>
+        <br/>
+        <input type="text" id="autocompleteDelay" ng-model="autocompleteDelay"
+               ng-change="settings.set('autocompleteDelay', autocompleteDelay)"/>
 
-    <input type="checkbox" id="tabcompleteEnabled" ng-model="tabcompleteEnabled" ng-change="settings.set('tabcompleteEnabled', tabcompleteEnabled)" />
+    </div>
+    <div class="checkbox">
+        <label for="tabcompleteEnabled" data-toggle="tooltip" data-placement="bottom"
+               data-original-title="Tab completion automatically inserts a quicktext. Trigger it using 'Tab Completion' keyword then press the 'Tab' key">
+            Tab completion
+            <span class="glyphicon glyphicon-question-sign"></span>
+        </label>
 
-  </div>
-  <div class="checkbox">
+        <input type="checkbox" id="tabcompleteEnabled" ng-model="tabcompleteEnabled"
+               ng-change="settings.set('tabcompleteEnabled', tabcompleteEnabled)"/>
 
-    <label for="sendStats" data-toggle="tooltip" data-placement="bottom" data-original-title="Help improve the Quicktext by sending anonymous statistics.">
-      Send usage statistics
-      <span class="glyphicon glyphicon-question-sign"></span>
-    </label>
+    </div>
 
-    <input type="checkbox" id="sendStats" ng-model="sendStatsEnabled" ng-change="settings.set('sendStatsEnabled', sendStatsEnabled)" />
-    
-  </div>
+    <div class="checkbox">
+
+        <label for="sendStats" data-toggle="tooltip" data-placement="bottom"
+               data-original-title="Help improve the Quicktext by sending anonymous statistics.">
+            Send usage statistics
+            <span class="glyphicon glyphicon-question-sign"></span>
+        </label>
+
+        <input type="checkbox" id="sendStats" ng-model="sendStatsEnabled"
+               ng-change="settings.set('sendStatsEnabled', sendStatsEnabled)"/>
+
+    </div>
 </form>

@@ -21,6 +21,16 @@ var App = {
             chrome.runtime.sendMessage({'request': 'stats', 'key': key, 'val': val}, function(response) {
                 callback(response);
             });
+        },
+        getAutocompleteEnabled: function(callback) {
+            chrome.runtime.sendMessage({'request': 'getAutocompleteEnabled'}, function(response) {
+                callback(response);
+            });
+        },
+        getAutocompleteDelay: function(callback) {
+            chrome.runtime.sendMessage({'request': 'getAutocompleteDelay'}, function(response) {
+                callback(response);
+            });
         }
     }
 };

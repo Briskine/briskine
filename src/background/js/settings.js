@@ -30,6 +30,7 @@ var Settings = {
         apiBaseURL: "https://quicktext.io/api/1/",
         syncEnabled: false,
         autocompleteEnabled: true, // autocomplete dialog
+        autocompleteDelay: 300, // autocomplete dialog delay - 300ms by default
         tabcompleteEnabled: true, // tab completion
         sendStatsEnabled: true, // send anonymous statistics
         sidebarHidden: false // show or hide the sidebar
