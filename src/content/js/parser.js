@@ -5,14 +5,11 @@
  *
  * */
 
-App.parser.getData = function(element) {
-    var fieldValues = this.getFieldValues(element);
-
-    // Add more logic here
-    return fieldValues;
+App.parser.getData = function (element) {
+    return this.getFieldValues(element);
 };
 
-App.parser.getFieldValues = function(element) {
+App.parser.getFieldValues = function (element) {
     var from = "",
         to = [],
         cc = [],
@@ -21,19 +18,20 @@ App.parser.getFieldValues = function(element) {
 
     if (App.data.gmailView === 'basic html') {
         from = $('#guser b').text();
+        var toEl = $("#to");
 
         // Full options window
-        if ($('#to').length) {
-            to = $('#to').val().split(',');
+        if (toEl.length) {
+            to = toEl.val().split(',');
             cc = $('#cc').val().split(',');
             bcc = $('#bcc').val().split(',');
             subject = $('input[name=subject]').val();
         } else { // Reply window
             subject = $('h2 b').text();
-
+            var replyToAll = $('#replyall');
             // It there are multiple reply to options
-            if ($('#replyall').length) {
-                to = $('input[name='+$('#replyall').attr('name')+']:checked').closest('tr').find('label')
+            if (replyToAll.length) {
+                to = $('input[name=' + replyToAll.attr('name') + ']:checked').closest('tr').find('label')
                     // retrieve text but child nodes
                     .clone().children().remove().end().text().trim().split(',');
             } else {
@@ -45,14 +43,21 @@ App.parser.getFieldValues = function(element) {
     } else if (App.data.gmailView === 'standard') {
         var $container = $(element).closest('table').parent().closest('table').parent().closest('table'),
             from_email = $container.find('input[name=from]').val(),
-            // , from_name = $('span[email="'+from_email+'"]').length ? $('span[email="'+from_email+'"]').attr('name') : ''
-            // Taking name based on Google+ avatar name
-            from_name = $('a[href^="https://plus.google.com/u/0/"] img[alt]').length ? $('a[href^="https://plus.google.com/u/0/"] img[alt]').attr('alt') : '';
+        // , from_name = $('span[email="'+from_email+'"]').length ? $('span[email="'+from_email+'"]').attr('name') : ''
+        // Taking name based on Google+ avatar name
+            fromNameEl = $('a[href^="https://plus.google.com/u/0/"] img[alt]'),
+            from_name = fromNameEl.length ? fromNameEl.attr('alt') : '';
 
         from = from_name + ' <' + from_email + '>';
-        to = $container.find('input[name=to]').toArray().map(function(a){return a.value;});
-        cc = $container.find('input[name=cc]').toArray().map(function(a){return a.value;});
-        bcc = $container.find('input[name=bcc]').toArray().map(function(a){return a.value;});
+        to = $container.find('input[name=to]').toArray().map(function (a) {
+            return a.value;
+        });
+        cc = $container.find('input[name=cc]').toArray().map(function (a) {
+            return a.value;
+        });
+        bcc = $container.find('input[name=bcc]').toArray().map(function (a) {
+            return a.value;
+        });
         subject = $container.find('input[name=subject]').val();
     }
 
@@ -65,18 +70,18 @@ App.parser.getFieldValues = function(element) {
     };
 };
 
-App.parser.parseList = function(list) {
-    return list.filter(function(a){
+App.parser.parseList = function (list) {
+    return list.filter(function (a) {
         return a;
-    }).map(function(a){
-        return App.parser.parseString(a);
-    });
+    }).map(function (a) {
+            return App.parser.parseString(a);
+        });
 };
 
 App.parser.regExString = /"?([^ ]*)\s*(.*)"?\s*<([^>]+)>/;
 App.parser.regExEmail = /([\w!.%+\-])+@([\w\-])+(?:\.[\w\-]+)+/;
 
-App.parser.parseString = function(string) {
+App.parser.parseString = function (string) {
     var match = App.parser.regExString.exec(string),
         data = {
             name: '',
@@ -93,7 +98,7 @@ App.parser.parseString = function(string) {
     } else {
         // try to match the email
         match = App.parser.regExEmail.exec(string);
-        if(match) {
+        if (match) {
             data.email = match[0];
         }
     }

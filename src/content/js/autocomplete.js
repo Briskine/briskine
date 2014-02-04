@@ -296,7 +296,7 @@ App.autocomplete.getCursorPosition = function(e) {
         position.start = position.element.selectionStart;
         position.end = position.element.selectionEnd;
 
-        var $mirror = $('<div id="qt-mirror" class="qt-mirror"/>').addClass(position.element.className),
+        var $mirror = $('<div id="qt-mirror" class="qt-mirror"></div>').addClass(position.element.className),
             $source = $(position.element),
             $sourcePosition = $source.position();
 
@@ -311,7 +311,7 @@ App.autocomplete.getCursorPosition = function(e) {
 
         // copy content
         $mirror.html($source.val().substr(0, position.end).split("\n").join('<br>'));
-        $mirror.append('<span id="qt-caret" class="qt-caret"/>');
+        $mirror.append('<span id="qt-caret" class="qt-caret"></span>');
 
         // insert mirror
         $mirror.insertAfter($source);
@@ -404,7 +404,7 @@ App.autocomplete.replaceWith = function(quicktext) {
         // Virtual caret
         // Used to set cursor position in right place
         // TODO find a better method to do that
-        $caret = $('#qt-caret');
+        var $caret = $('#qt-caret');
 
         if ($caret.length) {
             // Set caret back at old position
