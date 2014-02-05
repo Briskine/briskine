@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="920"
+   height="680"
+   id="svg2"
+   version="1.1"
+   inkscape:version="0.48.4 r9939"
+   sodipodi:docname="quicktext-tile-large.svg"
+   inkscape:export-filename="/media/Mokush/Dev/gmail-righttasks/artwork/gmail-righttasks-tile-large.png"
+   inkscape:export-xdpi="90"
+   inkscape:export-ydpi="90">
+  <defs
+     id="defs4" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.49497475"
+     inkscape:cx="360.8288"
+     inkscape:cy="344.99737"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     inkscape:window-width="1233"
+     inkscape:window-height="800"
+     inkscape:window-x="47"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     showguides="true"
+     inkscape:guide-bbox="true"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0">
+    <inkscape:grid
+       type="xygrid"
+       id="grid3012"
+       empspacing="5"
+       visible="true"
+       enabled="true"
+       snapvisiblegridlinesonly="true" />
+  </sodipodi:namedview>
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-63.580357,-117.91394)">
+    <rect
+       style="fill:#141717;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       id="rect3906"
+       width="920"
+       height="680"
+       x="63.580357"
+       y="117.91394" />
+    <path
+       style="fill:#0d5f5a;fill-opacity:1;stroke:none"
+       d="m 495.50448,268.02075 c -96.84105,0 -175.27339,78.60234 -175.27339,175.44341 0,90.01384 67.7191,163.91146 155.04302,173.91337 1.08202,0.22523 2.24811,0.085 3.40005,0.085 8.74226,0 15.81031,-6.61533 15.81031,-15.0453 0,-3.91918 -1.56234,-7.49734 -4.08006,-10.20022 -32.54653,-28.35796 -47.5714,-24.69001 -78.58986,-68.5555 -14.69585,-20.78241 -20.01207,-52.73763 -20.01207,-80.19739 0,-58.2119 45.49006,-105.40203 103.702,-105.40203 58.21197,0 105.40207,47.19013 105.40207,105.40203 0,24.95486 -8.78034,47.74366 -23.29047,65.79131 l -27.20051,-23.80051 c -14.07399,-12.29969 -25.27872,-23.67164 -37.57074,-13.94026 -0.76515,0.6059 -1.78169,1.51397 -2.38005,2.38003 -9.69551,14.02782 5.27147,27.64238 18.02035,41.31082 35.90366,38.49951 71.85744,76.95229 107.78211,115.43223 12.74889,13.66843 31.66163,15.9393 41.4808,6.12013 l 2.21003,-2.04004 c 9.81918,-9.81917 7.95386,-29.35113 -6.12012,-41.65082 l -43.35084,-37.74073 c 25.28616,-30.32285 40.46079,-69.27936 40.46079,-111.86218 0,-96.84106 -78.60235,-175.4434 -175.44342,-175.4434 z"
+       id="path3804"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="sscsscssssccccccccccss" />
+  </g>
+</svg>
