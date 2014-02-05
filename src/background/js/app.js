@@ -3,6 +3,7 @@
 
 var gqApp = angular.module('gqApp', [
   'ngRoute',
+  'ngResource',
   'ngAnimate',
   'angular-md5'
 ]).config(function($routeProvider, $compileProvider) {

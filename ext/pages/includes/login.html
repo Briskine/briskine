@@ -1,4 +1,5 @@
-<div class="modal fade login-modal" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true" ng-controller="LoginCtrl">
+<div class="modal fade login-modal" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true"
+     ng-controller="LoginCtrl">
     <div class="modal-dialog">
         <div class="modal-content">
 
@@ -12,7 +13,7 @@
             <div class="modal-body">
 
                 <div class="text-center">
-                    <a href="#" class="btn btn-default btn-social btn-google fa-2x">
+                    <a href="#" ng-click="loginGoogle()"class="btn btn-default btn-social btn-google fa-2x">
                         <i class="fa fa-google-plus"></i> Sign in with Google
                     </a>
                 </div>
@@ -40,7 +41,7 @@
                             </p>
                         </div>
                         <div class="col-sm-6 text-right">
-                             <button type="submit" class="btn btn-large btn-primary btn-login">Login</button>
+                            <button type="submit" class="btn btn-large btn-primary btn-login">Login</button>
                         </div>
                     </div>
                 </form>

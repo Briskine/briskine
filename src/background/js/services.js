@@ -1,8 +1,9 @@
 /*jshint multistr: true */
 
 // Quicktexts operations
-gqApp.service('QuicktextService', function($q, md5){
+gqApp.service('QuicktextService', function($q, $resource, SettingsService){
     var self = this;
+    self.qRes =  $resource(SettingsService.get('apiBaseURL') + 'quicktexts/:quicktextId', {quicktextId: '@id'});
 
     self.db = openDatabase('qt', '1.0.0', '', 2 * 1024 * 1024);
     self.db.transaction(function (tx) {
@@ -33,15 +34,21 @@ gqApp.service('QuicktextService', function($q, md5){
         return deferred.promise;
     };
 
-    // get quicktext object given an id or null
-    self.get = function(id) {
-        var deferred = $q.defer();
-        self.db.transaction(function(tx){
-            tx.executeSql("SELECT * FROM quicktext WHERE id = ?", [id], function(tx, res) {
-                deferred.resolve(res.rows.item(0));
+    // Trigger a sync operation
+    self.sync = function() {
+        //TODO: Make sure the user is logged in before sending anything
+
+        // Take all quicktexts
+        var qRes = $resource(SettingsService.get('apiBaseURL') + 'quicktexts/sync');
+
+        // This will upload all quicktexts to the server
+        self.quicktexts().then(function(quicktexts){
+            var q = qRes();
+            q.quicktexts = quicktexts;
+            q.$save(function(res){
+                // Saving quicktexts should respond with new quicktexts which will replace the local copies.
             });
         });
-        return deferred.promise;
     };
 
     // given a string with tags give a clean list
@@ -56,12 +63,41 @@ gqApp.service('QuicktextService', function($q, md5){
         return tags;
     };
 
+    // Copy one quicktext object to another
+    self._copy = function(source, target){
+        for (var k in source){
+            if (k === 'tags'){
+                target[k] = self._clean_tags(source[k]);
+            } else {
+                target[k] = source[k];
+            }
+        }
+        return target;
+    };
+
+    // get quicktext object given an id or null
+    self.get = function(id) {
+        var deferred = $q.defer();
+        self.db.transaction(function(tx){
+            tx.executeSql("SELECT * FROM quicktext WHERE id = ?", [id], function(tx, res) {
+                deferred.resolve(res.rows.item(0));
+            });
+        });
+        return deferred.promise;
+    };
+
     // create and try to sync
     self.create = function(qt){
         self.db.transaction(function(tx){
             tx.executeSql("INSERT INTO quicktext (key, title, subject, shortcut, tags, body) VALUES (?, ?, ?, ?, ?, ?)", [
                 qt.key, qt.title, qt.subject, qt.shortcut, self._clean_tags(qt.tags), qt.body
             ]);
+
+            var remoteQt = new self.qRes();
+            remoteQt = self._copy(qt, remoteQt);
+            remoteQt.$save(function(res){
+                console.log(res);
+            });
         });
         _gaq.push(['_trackEvent', 'quicktexts', 'create']);
     };
