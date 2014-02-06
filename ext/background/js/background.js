@@ -13102,7 +13102,7 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap requires jQuery");+func
 }).call(this);
 
 /**
- * @license AngularJS v1.2.11
+ * @license AngularJS v1.2.12-build.2230+sha.bf4b0db
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -13171,7 +13171,7 @@ function minErr(module) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.2.11/' +
+    message = message + '\nhttp://errors.angularjs.org/1.2.12-build.2230+sha.bf4b0db/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i-2) + '=' +
@@ -13374,7 +13374,7 @@ function isArrayLike(obj) {
  * is the value of an object property or an array element and `key` is the object property key or
  * array element index. Specifying a `context` for the function is optional.
  *
- * It is worth nothing that `.forEach` does not iterate over inherited properties because it filters
+ * It is worth noting that `.forEach` does not iterate over inherited properties because it filters
  * using the `hasOwnProperty` method.
  *
    <pre>
@@ -13383,7 +13383,7 @@ function isArrayLike(obj) {
      angular.forEach(values, function(value, key){
        this.push(key + ': ' + value);
      }, log);
-     expect(log).toEqual(['name: misko', 'gender:male']);
+     expect(log).toEqual(['name: misko', 'gender: male']);
    </pre>
  *
  * @param {Object|Array} obj Object to iterate over.
@@ -13954,7 +13954,7 @@ function shallowCopy(src, dst) {
   for(var key in src) {
     // shallowCopy is only ever called by $compile nodeLinkFn, which has control over src
     // so we don't need to worry about using our custom hasOwnProperty here
-    if (src.hasOwnProperty(key) && key.charAt(0) !== '$' && key.charAt(1) !== '$') {
+    if (src.hasOwnProperty(key) && !(key.charAt(0) === '$' && key.charAt(1) === '$')) {
       dst[key] = src[key];
     }
   }
@@ -14937,11 +14937,11 @@ function setupModuleLoader(window) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.2.11',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.2.12-build.2230+sha.bf4b0db',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 2,
-  dot: 11,
-  codeName: 'cryptocurrency-hyperdeflation'
+  dot: 12,
+  codeName: 'snapshot'
 };
 
 
@@ -15237,6 +15237,9 @@ function jqLitePatchJQueryRemove(name, dispatchThis, filterElems, getterIfNoArgu
 function JQLite(element) {
   if (element instanceof JQLite) {
     return element;
+  }
+  if (isString(element)) {
+    element = trim(element);
   }
   if (!(this instanceof JQLite)) {
     if (isString(element) && element.charAt(0) != '<') {
@@ -16618,7 +16621,7 @@ function annotate(fn) {
  * Here we decorate the {@link ng.$log $log} service to convert warnings to errors by intercepting
  * calls to {@link ng.$log#error $log.warn()}.
  * <pre>
- *   $provider.decorator('$log', ['$delegate', function($delegate) {
+ *   $provide.decorator('$log', ['$delegate', function($delegate) {
  *     $delegate.warn = $delegate.error;
  *     return $delegate;
  *   }]);
@@ -18993,7 +18996,7 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
           hasTranscludeDirective = true;
 
           // Special case ngIf and ngRepeat so that we don't complain about duplicate transclusion.
-          // This option should only be used by directives that know how to how to safely handle element transclusion,
+          // This option should only be used by directives that know how to safely handle element transclusion,
           // where the transcluded nodes are added or replaced after linking.
           if (!directive.$$tlb) {
             assertNoDuplicate('transclusion', nonTlbTranscludeDirective, directive, $compileNode);
@@ -21094,7 +21097,20 @@ function createHttpBackend($browser, createXhr, $browserDefer, callbacks, rawDoc
       }
 
       if (responseType) {
-        xhr.responseType = responseType;
+        try {
+          xhr.responseType = responseType;
+        } catch (e) {
+          // WebKit added support for the json responseType value on 09/03/2013
+          // https://bugs.webkit.org/show_bug.cgi?id=73648. Versions of Safari prior to 7 are
+          // known to throw when setting the value "json" as the response type. Other older
+          // browsers implementing the responseType 
+          //
+          // The json response type can be ignored if not supported, because JSON payloads are
+          // parsed on the client-side regardless.
+          if (responseType !== 'json') {
+            throw e;
+          }
+        }
       }
 
       xhr.send(post || null);
@@ -22416,7 +22432,7 @@ function $LogProvider(){
    * @name ng.$logProvider#debugEnabled
    * @methodOf ng.$logProvider
    * @description
-   * @param {string=} flag enable or disable debug level messages
+   * @param {boolean=} flag enable or disable debug level messages
    * @returns {*} current value if used as getter or itself (chaining) if used as setter
    */
   this.debugEnabled = function(flag) {
@@ -23872,7 +23888,7 @@ function $ParseProvider() {
  *   constructed via `$q.reject`, the promise will be rejected instead.
  * - `reject(reason)` – rejects the derived promise with the `reason`. This is equivalent to
  *   resolving it with a rejection constructed via `$q.reject`.
- * - `notify(value)` - provides updates on the status of the promises execution. This may be called
+ * - `notify(value)` - provides updates on the status of the promise's execution. This may be called
  *   multiple times before the promise is either resolved or rejected.
  *
  * **Properties**
@@ -27261,9 +27277,13 @@ function filterFilter() {
          expect(element(by.binding('amount | currency:"USD$"')).getText()).toBe('USD$1,234.56');
        });
        it('should update', function() {
+         if (browser.params.browser == 'safari') {
+           // Safari does not understand the minus key. See
+           // https://github.com/angular/protractor/issues/481
+           return;
+         }
          element(by.model('amount')).clear();
-         element(by.model('amount')).sendKeys('-1234');
-         expect(element(by.id('currency-default')).getText()).toBe('($1,234.00)');
+         element(by.model('amount')).sendKeys('-1234');         expect(element(by.id('currency-default')).getText()).toBe('($1,234.00)');
          expect(element(by.binding('amount | currency:"USD$"')).getText()).toBe('(USD$1,234.00)');
        });
      </doc:protractor>
@@ -29698,11 +29718,17 @@ var VALID_CLASS = 'ng-valid',
     </file>
     <file name="protractorTest.js">
       it('should data-bind and become invalid', function() {
+        if (browser.params.browser = 'safari') {
+          // SafariDriver can't handle contenteditable.
+          return;
+        };
         var contentEditable = element(by.css('.doc-example-live [contenteditable]'));
 
         expect(contentEditable.getText()).toEqual('Change me!');
 
-        contentEditable.clear();
+        // Firefox driver doesn't trigger the proper events on 'clear', so do this hack
+        contentEditable.click();
+        contentEditable.sendKeys(protractor.Key.chord(protractor.Key.COMMAND, "a"));
         contentEditable.sendKeys(protractor.Key.BACK_SPACE);
 
         expect(contentEditable.getText()).toEqual('');
@@ -30558,7 +30584,6 @@ function classDirective(name, selector) {
          expect(ps.get(1).getAttribute('class')).toBe('');
          element(by.model('style')).clear();
          element(by.model('style')).sendKeys('red');
-         browser.debugger();
          expect(ps.get(1).getAttribute('class')).toBe('red');
        });
 
@@ -31699,12 +31724,21 @@ var ngIfDirective = ['$animate', function($animate) {
       });
 
       it('should load template2.html', function() {
+        if (browser.params.browser == 'firefox') {
+          // Firefox can't handle using selects
+          // See https://github.com/angular/protractor/issues/480
+          return;
+        }
         templateSelect.click();
         templateSelect.element.all(by.css('option')).get(2).click();
         expect(includeElem.getText()).toMatch(/Content of template2.html/);
       });
 
       it('should change to blank', function() {
+        if (browser.params.browser == 'firefox') {
+          // Firefox can't handle using selects
+          return;
+        }
         templateSelect.click();
         templateSelect.element.all(by.css('option')).get(0).click();
         expect(includeElem.isPresent()).toBe(false);
@@ -33859,7 +33893,7 @@ var styleDirective = valueFn({
 
 !angular.$$csp() && angular.element(document).find('head').prepend('<style type="text/css">@charset "UTF-8";[ng\\:cloak],[ng-cloak],[data-ng-cloak],[x-ng-cloak],.ng-cloak,.x-ng-cloak,.ng-hide{display:none !important;}ng\\:form{display:block;}</style>');
 /**
- * @license AngularJS v1.2.11-build.2186+sha.766b3d5
+ * @license AngularJS v1.2.12-build.2230+sha.bf4b0db
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -34210,17 +34244,17 @@ function $RouteProvider(){
          }
        </file>
 
-       <file name="scenario.js">
+       <file name="protractorTest.js">
          it('should load and compile correct template', function() {
-           element('a:contains("Moby: Ch1")').click();
-           var content = element('.doc-example-live [ng-view]').text();
+           element(by.linkText('Moby: Ch1')).click();
+           var content = element(by.css('.doc-example-live [ng-view]')).getText();
            expect(content).toMatch(/controller\: ChapterCntl/);
            expect(content).toMatch(/Book Id\: Moby/);
            expect(content).toMatch(/Chapter Id\: 1/);
 
-           element('a:contains("Scarlet")').click();
-           sleep(2); // promises are not part of scenario waiting
-           content = element('.doc-example-live [ng-view]').text();
+           element(by.partialLinkText('Scarlet')).click();
+
+           content = element(by.css('.doc-example-live [ng-view]')).getText();
            expect(content).toMatch(/controller\: BookCntl/);
            expect(content).toMatch(/Book Id\: Scarlet/);
          });
@@ -34654,16 +34688,17 @@ ngRouteModule.directive('ngView', ngViewFillContentFactory);
         }
       </file>
 
-      <file name="scenario.js">
+      <file name="protractorTest.js">
         it('should load and compile correct template', function() {
-          element('a:contains("Moby: Ch1")').click();
-          var content = element('.doc-example-live [ng-view]').text();
+          element(by.linkText('Moby: Ch1')).click();
+          var content = element(by.css('.doc-example-live [ng-view]')).getText();
           expect(content).toMatch(/controller\: ChapterCntl/);
           expect(content).toMatch(/Book Id\: Moby/);
           expect(content).toMatch(/Chapter Id\: 1/);
 
-          element('a:contains("Scarlet")').click();
-          content = element('.doc-example-live [ng-view]').text();
+          element(by.partialLinkText('Scarlet')).click();
+
+          content = element(by.css('.doc-example-live [ng-view]')).getText();
           expect(content).toMatch(/controller\: BookCntl/);
           expect(content).toMatch(/Book Id\: Scarlet/);
         });
@@ -34780,7 +34815,7 @@ function ngViewFillContentFactory($compile, $controller, $route) {
 })(window, window.angular);
 
 /**
- * @license AngularJS v1.2.11
+ * @license AngularJS v1.2.12-build.2230+sha.bf4b0db
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -34821,7 +34856,7 @@ function shallowClearAndCopy(src, dst) {
   });
 
   for (var key in src) {
-    if (src.hasOwnProperty(key) && key.charAt(0) !== '$' && key.charAt(1) !== '$') {
+    if (src.hasOwnProperty(key) && !(key.charAt(0) === '$' && key.charAt(1) === '$')) {
       dst[key] = src[key];
     }
   }
@@ -35377,7 +35412,7 @@ angular.module('ngResource', ['ng']).
 })(window, window.angular);
 
 /**
- * @license AngularJS v1.2.11-build.2186+sha.766b3d5
+ * @license AngularJS v1.2.12-build.2230+sha.bf4b0db
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -37222,36 +37257,36 @@ var ENV = "production";
  */
 
 var gqApp = angular.module('gqApp', [
-  'ngRoute',
-  'ngResource',
-  'ngAnimate',
-  'angular-md5'
-]).config(function($routeProvider, $compileProvider) {
+        'ngRoute',
+        'ngResource',
+        'ngAnimate',
+        'angular-md5'
+    ]).config(function($routeProvider, $compileProvider) {
 
-    $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|chrome-extension):/);
+        $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|chrome-extension):/);
 
-    $routeProvider
-        .when('/list', {
-            controller: 'ListCtrl',
-            templateUrl: 'views/list.html',
-            reloadOnSearch: false
-        })
-        .when('/settings', {
-            controller: 'SettingsCtrl',
-            templateUrl: 'views/settings.html'
-        })
-        .when('/popup', {
-            controller: 'ListCtrl',
-            templateUrl: 'views/list.html'
-        })
-        .otherwise({
-          redirectTo: '/list'
-        });
-});
+        $routeProvider
+            .when('/list', {
+                controller: 'ListCtrl',
+                templateUrl: 'views/list.html',
+                reloadOnSearch: false
+            })
+            .when('/settings', {
+                controller: 'SettingsCtrl',
+                templateUrl: 'views/settings.html'
+            })
+            .when('/popup', {
+                controller: 'ListCtrl',
+                templateUrl: 'views/list.html'
+            })
+            .otherwise({
+                redirectTo: '/list'
+            });
+    });
 
 /* Global run
  */
-gqApp.run(function ($rootScope, $location, ProfileService, SettingsService) {
+gqApp.run(function($rootScope, $location, $http, ProfileService, SettingsService) {
 
     $rootScope.$on('$routeChangeStart', function(next, current) {
         $rootScope.path = $location.path();
@@ -37268,27 +37303,37 @@ gqApp.run(function ($rootScope, $location, ProfileService, SettingsService) {
         $('[data-toggle=tooltip]').tooltip();
         $('[data-toggle=popover').popover();
         $('.modal').modal({
-          show: false
+            show: false
         });
 
         //put focus on the first text input when opening modals
-        $('.modal').on('shown.bs.modal', function () {
+        $('.modal').on('shown.bs.modal', function() {
             $(this).find('input[type!="hidden"]:first').focus();
         });
 
+        $rootScope.isLoggedIn();
     };
 
     $rootScope.$on('$viewContentLoaded', initDom);
     $rootScope.$on('$includeContentLoaded', initDom);
 
-    $rootScope.showLogin = function(){
+    $rootScope.showLogin = function() {
         $('.login-modal').modal('show');
     };
 
-    $rootScope.showRegister = function(){
+    $rootScope.showRegister = function() {
         $('.register-modal').modal('show');
     };
 
+    $rootScope.checkLogin = function() {
+        $('#check-login').removeClass("hide");
+    };
+
+    $rootScope.isLoggedIn = function() {
+        $http.get(SettingsService.get("apiBaseURL") + "account").success(function(data) {
+            $rootScope.profile.user = data;
+        });
+    };
 });
 
 /* TODO
@@ -37386,290 +37431,298 @@ if (chrome.runtime) {
 }
 
 gqApp.controller('ListCtrl',
-function($scope, $rootScope, $routeParams, $location, $timeout, $filter, QuicktextService, SettingsService, ProfileService) {
+    function($scope, $rootScope, $routeParams, $location, $timeout, $filter, QuicktextService, SettingsService, ProfileService) {
 
-  var $formModal;
+        var $formModal;
 
-  $scope.filteredQuicktexts = [];
-  $scope.quicktexts = [];
-  $scope.tags = [];
-  $scope.filterTags = [];
+        $scope.filteredQuicktexts = [];
+        $scope.quicktexts = [];
+        $scope.tags = [];
+        $scope.filterTags = [];
 
-  QuicktextService.quicktexts().then(function(response){
-    $scope.quicktexts = response;
-  });
+        $scope.reloadQuicktexts = function(remotePromise) {
+            QuicktextService.quicktexts().then(function(r) {
+                $scope.quicktexts = r;
+            });
+            QuicktextService.allTags().then(function(r) {
+                $scope.tags = r;
+            });
+            // This is executed if a remote operation on the server was performed
+            if (remotePromise){
+                remotePromise.then(function(){
+                    $scope.reloadQuicktexts();
+                });
+            }
+        };
+        $scope.reloadQuicktexts();
 
-  $scope.$watch('quicktexts', function() {
-    if($scope.quicktexts && $scope.quicktexts.length) {
-      // trigger filterQuicktexts to update filtered quicktexts
-      filterQuicktexts();
-    }
-  });
-
-  QuicktextService.allTags().then(function(response){
-    $scope.tags = response;
-  });
-
-  /* Init modal and other dom manipulation
-   * when the templates have loaded
-   */
-  var initDom = function() {
-
-    /* New/Edit modal
-    */
-    $formModal = $('.quicktext-modal');
-    $formModal.modal({
-    show: false
-    });
-
-    $formModal.on('hide.bs.modal', function (e) {
-        $timeout(function() {
-            $location.path('/list').search({});
+        $scope.$watch('quicktexts', function() {
+            if ($scope.quicktexts && $scope.quicktexts.length) {
+                // trigger filterQuicktexts to update filtered quicktexts
+                filterQuicktexts();
+            }
         });
+
+
+        /* Init modal and other dom manipulation
+         * when the templates have loaded
+         */
+        var initDom = function() {
+
+            /* New/Edit modal
+             */
+            $formModal = $('.quicktext-modal');
+            $formModal.modal({
+                show: false
+            });
+
+            $formModal.on('hide.bs.modal', function(e) {
+                $timeout(function() {
+                    $location.path('/list').search({});
+                });
+            });
+
+            checkRoute();
+
+        };
+
+        $rootScope.$on('$includeContentLoaded', initDom);
+
+        // Show the form for adding a new quicktext or creating one
+        $scope.showForm = function(id) {
+            _gaq.push(['_trackEvent', 'forms', 'show']);
+
+            var defaults = {
+                'id': '',
+                'key': '',
+                'subject': '',
+                'shortcut': '',
+                'title': '',
+                'tags': '',
+                'body': ''
+            };
+
+            if ($routeParams.id === 'new') {
+                // new qt
+                $scope.selectedQt = angular.copy(defaults);
+                $scope.selectedQt.body = $routeParams.body;
+            } else if ($routeParams.id) {
+                // update qt
+                QuicktextService.get($routeParams.id).then(function(r) {
+                    $scope.selectedQt = angular.copy(r);
+                });
+            }
+
+            $formModal.modal('show');
+        };
+
+        /* Check search params to see if adding or editing items
+         */
+        var checkRoute = function() {
+
+            // if not the default list
+            // new or edit, so show the modal
+            if ($routeParams.id) {
+                $scope.showForm();
+            }
+
+        };
+
+        $scope.$on('$routeUpdate', checkRoute);
+
+        // Delete a quicktext. This operation should first delete from the localStorage
+        // then it should imedially go to the service and delete on the server
+        $scope.deleteQt = function() {
+            QuicktextService.delete(this.quicktext).then(function(remotePromise) {
+                $scope.reloadQuicktexts(remotePromise);
+            });
+        };
+
+        // Delete all quicktexts. This will not delete the quicktexts on the server side
+        $scope.deleteAll = function() {
+            var r = confirm("Are you sure you want to delete all Quicktexts?\n\nNote: they will NOT be deleted from the sync server.");
+            if (r === true) {
+                QuicktextService.deleteAll();
+            }
+            $scope.reloadQuicktexts();
+        };
+
+        // Save a quicktext, perform some checks before
+        $scope.saveQt = function() {
+            if (!$scope.selectedQt.title) {
+                alert("Please enter a Title");
+                return false;
+            }
+
+            if (!$scope.selectedQt.body) {
+                alert("Please enter a Quicktext Template");
+                return false;
+            }
+
+            if ($scope.selectedQt.id) {
+                QuicktextService.update($scope.selectedQt).then(function(remotePromise) {
+                    $scope.reloadQuicktexts(remotePromise);
+                });
+            } else {
+                QuicktextService.create($scope.selectedQt).then(function(remotePromise) {
+                    $scope.reloadQuicktexts(remotePromise);
+                });
+            }
+
+            // hide teh modal
+            $('.modal').modal('hide');
+        };
+
+        // Save a quicktext, perform some checks before
+        $scope.duplicateQt = function() {
+            if (!$scope.selectedQt.title) {
+                alert("Please enter a Title");
+                return false;
+            }
+
+            if (!$scope.selectedQt.body) {
+                alert("Please enter a Quicktext Template");
+                return false;
+            }
+
+            QuicktextService.create($scope.selectedQt).then(function(remotePromise) {
+                $scope.reloadQuicktexts(remotePromise);
+            });
+
+            // hide teh modal
+            $('.modal').modal('hide');
+
+        };
+
+        $scope.toggleFilterTag = function() {
+            var index = $scope.filterTags.indexOf(this.tag);
+            if (index === -1) {
+                $scope.filterTags.push(this.tag);
+            } else {
+                $scope.filterTags.splice(index, 1); // remove from tags
+            }
+        };
+
+        /* Keyboard navigation
+         */
+        var KEY_ENTER = 13,
+            KEY_UP = 38,
+            KEY_DOWN = 40;
+
+        $scope.focusIndex = 0;
+
+        // key navigation
+        $scope.keys = [];
+        $scope.keys.push({
+            code: KEY_ENTER,
+            action: function() {
+                // activate the enter key action only
+                // if there are no modals visible
+                // and the existing search filter matches any items
+
+                var modalVisible = $('.modal').is(':visible');
+
+                if (!modalVisible && $scope.filteredQuicktexts.length) {
+                    // get the id of the currently selected quicktext
+                    var quicktextId = $scope.filteredQuicktexts[$scope.focusIndex].id;
+                    $scope.activateQuicktext(quicktextId);
+                }
+            }
+        });
+
+        $scope.keys.push({
+            code: KEY_UP,
+            action: function() {
+                if ($scope.focusIndex > 0) {
+                    $scope.focusIndex--;
+                    $scope.scroll();
+                }
+            }
+        });
+
+        $scope.keys.push({
+            code: KEY_DOWN,
+            action: function() {
+                if ($scope.focusIndex + 1 < $scope.filteredQuicktexts.length) {
+                    $scope.focusIndex++;
+                    $scope.scroll();
+                }
+                ;
+            }
+        });
+
+        $scope.$on('keydown', function(msg, code) {
+            $scope.keys.forEach(function(o) {
+                if (o.code !== code) {
+                    return;
+                }
+                o.action();
+                $scope.$apply();
+            });
+        });
+
+        /* Scroll to the focused element
+         */
+        $scope.scroll = function() {
+            var scrollContainer = $("#quicktext-table-container");
+            var active = $('.active');
+            scrollContainer.scrollTop(
+                active.offset().top - scrollContainer.offset().top + scrollContainer.scrollTop()
+            );
+        };
+
+        // apply filters to the list of quicktexts
+        var filterQuicktexts = function() {
+            // apply the text search filter
+            $scope.filteredQuicktexts = $filter('filter')($scope.quicktexts, $scope.searchText);
+            // apply the tag serach filter
+            $scope.filteredQuicktexts = $filter('tagFilter')($scope.filteredQuicktexts, $scope.filterTags);
+
+            $scope.focusIndex = 0;
+        };
+
+        $scope.$watch('searchText', filterQuicktexts);
+        $scope.$watch('filterTags', filterQuicktexts, true);
+
+        /* Insert quicktext from the pageAction popup
+         */
+        $scope.insertQuicktext = function(quicktextId) {
+            // get the quicktext id
+            _gaq.push(['_trackEvent', 'popup', 'insert']);
+
+            // getch the quicktext
+            QuicktextService.get(quicktextId).then(function(quicktext) {
+                chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+                    chrome.tabs.sendMessage(tabs[0].id, {
+                        'action': 'insert',
+                        'quicktext': quicktext
+                    }, function(response) {
+                    });
+                    window.close();
+                });
+            });
+        };
+
+        /* Activate quicktext on click or Enter key
+         */
+        $scope.activateQuicktext = function(id) {
+            if ($rootScope.pageAction) {
+                $scope.insertQuicktext(id);
+            } else {
+                $location.search('id', id);
+            }
+            ;
+
+            return false;
+        };
+
+        /* Set active item based on focus rather than keyboard
+         */
+        $scope.setFocus = function(index) {
+            $scope.focusIndex = index;
+        };
+
     });
-
-    checkRoute();
-
-  };
-
-  $rootScope.$on('$includeContentLoaded', initDom);
-
-  // Show the form for adding a new quicktext or creating one
-  $scope.showForm = function(id) {
-    _gaq.push(['_trackEvent', 'forms', 'show']);
-
-    var defaults = {
-        'id': '',
-        'key': '',
-        'subject': '',
-        'shortcut': '',
-        'title': '',
-        'tags': '',
-        'body': ''
-    };
-
-    if ($routeParams.id === 'new') {
-      // new qt
-      $scope.selectedQt = angular.copy(defaults);
-      $scope.selectedQt.body = $routeParams.body;
-    } else if ($routeParams.id) {
-      // update qt
-      QuicktextService.get($routeParams.id).then(function(r){
-        $scope.selectedQt = angular.copy(r);
-      });
-    }
-
-    $formModal.modal('show');
-  };
-
-  /* Check search params to see if adding or editing items
-   */
-  var checkRoute = function() {
-
-    // if not the default list
-    // new or edit, so show the modal
-    if($routeParams.id) {
-      $scope.showForm();
-    }
-
-  };
-
-  $scope.$on('$routeUpdate', checkRoute);
-
-  // Delete a quicktext. This operation should first delete from the localStorage
-  // then it should imedially go to the service and delete on the server
-  $scope.deleteQt = function(){
-    QuicktextService.delete(this.quicktext.id);
-    QuicktextService.quicktexts().then(function(r){$scope.quicktexts = r;});
-    QuicktextService.allTags().then(function(r){$scope.tags = r;});
-  };
-
-  // Delete all quicktexts. This will not delete the quicktexts on the server side
-  $scope.deleteAll = function (){
-    var r = confirm("Are you sure you want to delete all Quicktexts?\n\nNote: they will NOT be deleted from the sync server.");
-    if (r === true){
-        QuicktextService.deleteAll();
-    }
-    QuicktextService.quicktexts().then(function(r){$scope.quicktexts = r;});
-    QuicktextService.allTags().then(function(r){$scope.tags = r;});
-  };
-
-  // Save a quicktext, perform some checks before
-  $scope.saveQt = function() {
-    if (!$scope.selectedQt.title){
-        alert("Please enter a Title");
-        return false;
-    }
-
-    if (!$scope.selectedQt.body){
-        alert("Please enter a Quicktext Template");
-        return false;
-    }
-
-    if ($scope.selectedQt.id) {
-        QuicktextService.update($scope.selectedQt);
-    } else {
-        QuicktextService.create($scope.selectedQt);
-    }
-
-    // hide teh modal
-    $('.modal').modal('hide');
-
-    QuicktextService.quicktexts().then(function(r){
-      $scope.quicktexts = r;
-    });
-
-    QuicktextService.allTags().then(function(r){
-      $scope.tags = r;
-    });
-  };
-
-  // Save a quicktext, perform some checks before
-  $scope.duplicateQt = function() {
-      if (!$scope.selectedQt.title){
-          alert("Please enter a Title");
-          return false;
-      }
-
-      if (!$scope.selectedQt.body){
-          alert("Please enter a Quicktext Template");
-          return false;
-      }
-
-      QuicktextService.create($scope.selectedQt);
-
-      // hide teh modal
-      $('.modal').modal('hide');
-      QuicktextService.quicktexts().then(function(r){$scope.quicktexts = r;});
-      QuicktextService.allTags().then(function(r){$scope.tags = r;});
-  };
-
-  $scope.toggleFilterTag = function(){
-      var index = $scope.filterTags.indexOf(this.tag);
-      if (index === -1) {
-          $scope.filterTags.push(this.tag);
-      } else {
-          $scope.filterTags.splice(index, 1); // remove from tags
-      }
-  };
-
-  /* Keyboard navigation
-      */
-  var KEY_ENTER = 13,
-      KEY_UP = 38,
-      KEY_DOWN = 40;
-
-  $scope.focusIndex = 0;
-
-  // key navigation
-  $scope.keys = [];
-  $scope.keys.push({
-      code: KEY_ENTER,
-      action: function() {
-          // activate the enter key action only
-          // if there are no modals visible
-          // and the existing search filter matches any items
-
-          var modalVisible = $('.modal').is(':visible');
-
-          if(!modalVisible && $scope.filteredQuicktexts.length) {
-              // get the id of the currently selected quicktext
-              var quicktextId = $scope.filteredQuicktexts[$scope.focusIndex].id;
-              $scope.activateQuicktext(quicktextId);
-          }
-      }
-  });
-
-  $scope.keys.push({
-      code: KEY_UP,
-      action: function() {
-      if($scope.focusIndex > 0){
-          $scope.focusIndex--;
-          $scope.scroll();
-      }
-      }
-  });
-
-  $scope.keys.push({
-      code: KEY_DOWN,
-      action: function() {
-      if($scope.focusIndex + 1 < $scope.filteredQuicktexts.length) {
-          $scope.focusIndex++;
-          $scope.scroll();
-      };
-      }
-  });
-
-  $scope.$on('keydown', function(msg, code) {
-      $scope.keys.forEach(function(o) {
-      if ( o.code !== code ) {
-          return;
-      }
-      o.action();
-      $scope.$apply();
-      });
-  });
-
-  /* Scroll to the focused element
-      */
-  $scope.scroll = function(){
-      var scrollContainer = $("#quicktext-table-container");
-      var active = $('.active');
-      scrollContainer.scrollTop(
-          active.offset().top - scrollContainer.offset().top + scrollContainer.scrollTop()
-      );
-  };
-
-  // apply filters to the list of quicktexts
-  var filterQuicktexts = function(){
-      // apply the text search filter
-      $scope.filteredQuicktexts = $filter('filter')($scope.quicktexts, $scope.searchText);
-      // apply the tag serach filter
-      $scope.filteredQuicktexts = $filter('tagFilter')($scope.filteredQuicktexts, $scope.filterTags);
-
-      $scope.focusIndex = 0;
-  };
-
-  $scope.$watch('searchText', filterQuicktexts);
-  $scope.$watch('filterTags', filterQuicktexts, true);
-
-  /* Insert quicktext from the pageAction popup
-      */
-  $scope.insertQuicktext = function(quicktextId) {
-      // get the quicktext id
-      _gaq.push(['_trackEvent', 'popup', 'insert']);
-
-      // getch the quicktext
-      QuicktextService.get(quicktextId).then(function(quicktext){
-          chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-              chrome.tabs.sendMessage(tabs[0].id, {
-                  'action': 'insert',
-                  'quicktext': quicktext
-              }, function(response) {});
-              window.close();
-          });
-      });
-  };
-
-  /* Activate quicktext on click or Enter key
-      */
-  $scope.activateQuicktext = function(id) {
-    if($rootScope.pageAction) {
-      $scope.insertQuicktext(id);
-    } else {
-      $location.search('id', id);
-    };
-
-    return false;
-  };
-
-  /* Set active item based on focus rather than keyboard
-      */
-  $scope.setFocus = function(index) {
-    $scope.focusIndex = index;
-  };
-
-});
 
 gqApp.controller('LoginCtrl', function ($scope, $rootScope, QuicktextService, SettingsService, ProfileService) {
     var model = $scope.model = {};
@@ -37677,8 +37730,20 @@ gqApp.controller('LoginCtrl', function ($scope, $rootScope, QuicktextService, Se
     model.password = '';
 
     $scope.loginGoogle = function () {
+
+        var loginPost =  function(action){
+            var form = document.createElement("form");
+            form.setAttribute("method", "post");
+            form.setAttribute("action", action);
+            document.body.appendChild(form);
+            form.submit();
+        };
+
+        var action = SettingsService.get("baseURL") + "login/google";
+        var url = "javascript:" + loginPost.toString().replace(/(\n|\t)/gm,'') + "; loginPost('" + action + "');";
+        console.log(url);
         chrome.tabs.create({
-            url: SettingsService.get("baseURL") + "/login/google",
+            url: url,
             active: true,
         });
     };
@@ -37782,28 +37847,33 @@ _gaq.push(['_trackPageview']);
 /*jshint multistr: true */
 
 // Quicktexts operations
-gqApp.service('QuicktextService', function($q, $resource, SettingsService){
+gqApp.service('QuicktextService', function($q, $resource, SettingsService) {
     var self = this;
-    self.qRes =  $resource(SettingsService.get('apiBaseURL') + 'quicktexts/:quicktextId', {quicktextId: '@id'});
-
-    self.db = openDatabase('qt', '1.0.0', '', 2 * 1024 * 1024);
-    self.db.transaction(function (tx) {
-        tx.executeSql('CREATE TABLE quicktext (\
-                id INTEGER PRIMARY KEY AUTOINCREMENT,\
-                key VARCHAR(50) DEFAULT "",\
-                title VARCHAR(250) NOT NULL,\
-                shortcut VARCHAR(250) DEFAULT "",\
-                subject TEXT DEFAULT "",\
-                tags TEXT DEFAULT "",\
-                body TEXT DEFAULT "");');
-        tx.executeSql('INSERT INTO quicktext (title, shortcut, body) VALUES ("Say Hello", "h", "Hello {{to.0.first_name}},\n\n")');
-        tx.executeSql('INSERT INTO quicktext (title, shortcut, body) VALUES ("Kind regards", "kr", "Kind regards,\n{{from.0.first_name}}.")');
+    self.qRes = $resource(SettingsService.get('apiBaseURL') + 'quicktexts/:quicktextId', {
+        quicktextId: '@id'
+    }, {
+        update: {
+            method: "PUT"
+        },
+        delete: {
+            method: "DELETE"
+        }
     });
 
-    self.quicktexts = function(){
+    self.db = openDatabase('qt', '1.0.0', '', 2 * 1024 * 1024);
+    self.db.transaction(function(tx) {
+        var now = new Date().toISOString();
+        tx.executeSql('CREATE TABLE quicktext (\n  id               INTEGER PRIMARY KEY AUTOINCREMENT,\n  key              VARCHAR(50) DEFAULT "", -- this is the key on the server\n  title            VARCHAR(250) NOT NULL,\n  shortcut         VARCHAR(250) DEFAULT "",\n  subject          TEXT DEFAULT "",\n  tags             TEXT DEFAULT "",\n  body             TEXT DEFAULT "",\n  created_datetime DATETIME NOT NULL, \n  updated_datetime DATETIME DEFAULT NULL, -- updated locally\n  sync_datetime    DATETIME DEFAULT NULL, -- last sync datetime\n  deleted          INTEGER DEFAULT 0 -- mark as deleted\n);');
+        tx.executeSql('INSERT INTO quicktext (title, shortcut, body, created_datetime) VALUES ("Say Hello", "h", "Hello {{to.0.first_name}},\n\n", ?)',
+            [now]);
+        tx.executeSql('INSERT INTO quicktext (title, shortcut, body, created_datetime) VALUES ("Kind regards", "kr", "Kind regards,\n{{FROM.0.first_name}}.\\n", ?)',
+            [now]);
+    });
+
+    self.quicktexts = function() {
         var deferred = $q.defer();
-        self.db.transaction(function(tx){
-            tx.executeSql("SELECT * FROM quicktext", [], function(tx, res) {
+        self.db.transaction(function(tx) {
+            tx.executeSql("SELECT * FROM quicktext WHERE deleted = 0 ORDER BY created_datetime DESC", [], function(tx, res) {
                 var len = res.rows.length, i;
                 var list = [];
                 for (i = 0; i < len; i++) {
@@ -37815,39 +37885,74 @@ gqApp.service('QuicktextService', function($q, $resource, SettingsService){
         return deferred.promise;
     };
 
-    // Trigger a sync operation
+    /* Sync - assume that there was no connectivity and now we have it
+
+     Local quicktexts:
+
+     * Created (doesn't have a 'key' set)
+     * Deleted (deleted=1 in the db) - delete remotely and then completely in the db
+     * Updated (sync_datetime is null or lower than the updated_date)
+
+     Remote quicktexts (after local sync):
+
+     * Created (no similar key found locally) - update sync_date
+     * Updated (found key - update) - update sync_date
+     */
+    //TODO: Make sure the user is logged in before sending anything
     self.sync = function() {
-        //TODO: Make sure the user is logged in before sending anything
-
-        // Take all quicktexts
-        var qRes = $resource(SettingsService.get('apiBaseURL') + 'quicktexts/sync');
-
-        // This will upload all quicktexts to the server
-        self.quicktexts().then(function(quicktexts){
-            var q = qRes();
-            q.quicktexts = quicktexts;
-            q.$save(function(res){
-                // Saving quicktexts should respond with new quicktexts which will replace the local copies.
+        //Make sure we first create remote versions of previously unsynced quicktexts
+        self.db.transaction(function(tx) {
+            tx.executeSql("SELECT * FROM quicktext WHERE key IS NULL", [], function(tx, res) {
+                var len = res.rows.length;
+                for (var i = 0; i < len; i++) {
+                    var qt = res.rows.item(i);
+                    var qtRemote = new self.qRes();
+                    qtRemote = self._copy(qt, qtRemote);
+                    qtRemote.$save(function(data) {
+                        self.db.transaction(function(tx) {
+                            var now = new Date().toISOString();
+                            tx.executeSql("UPDATE quicktext SET key = ? AND sync_datetime = ? WHERE id = ?", [
+                                qt.id, data.key, now
+                            ]);
+                        });
+                    });
+                }
             });
+        });
+
+        tx.executeSql("SELECT * FROM quicktext", [], function(tx, res) {
+            var len = res.rows.length;
+            for (var i = 0; i < len; i++) {
+                var qt = res.rows.item(i);
+                if (qt.deleted == 1) {
+                    self.qRes.get({qRes})
+                }
+            }
         });
     };
 
     // given a string with tags give a clean list
     // remove spaces, duplicates and so on
-    self._clean_tags = function(tags){
-        var tArray = _.filter(tags.split(','), function(tag){
-            if (tag.trim() !== ''){
+    self._clean_tags = function(tags) {
+        var tArray = _.filter(tags.split(','), function(tag) {
+            if (tag.trim() !== '') {
                 return true;
             }
         });
-        tags = _.unique(_.map(tArray, function(t){ return t.trim(); })).join(', ');
+        tags = _.unique(_.map(tArray, function(t) {
+            return t.trim();
+        })).join(', ');
         return tags;
     };
 
-    // Copy one quicktext object to another
-    self._copy = function(source, target){
-        for (var k in source){
-            if (k === 'tags'){
+    // Copy one quicktext object to another - used for the remote saving
+    self._copy = function(source, target) {
+        for (var k in source) {
+            // ignore the id
+            if (k === 'id') {
+                continue;
+            }
+            if (k === 'tags') {
                 target[k] = self._clean_tags(source[k]);
             } else {
                 target[k] = source[k];
@@ -37859,78 +37964,136 @@ gqApp.service('QuicktextService', function($q, $resource, SettingsService){
     // get quicktext object given an id or null
     self.get = function(id) {
         var deferred = $q.defer();
-        self.db.transaction(function(tx){
+        self.db.transaction(function(tx) {
             tx.executeSql("SELECT * FROM quicktext WHERE id = ?", [id], function(tx, res) {
                 deferred.resolve(res.rows.item(0));
             });
         });
         return deferred.promise;
     };
+    // create and try to sync with the server
+    self.create = function(qt) {
+        var deferred = $q.defer();
+        self.db.transaction(function(tx) {
+            var now = new Date().toISOString();
+            tx.executeSql("INSERT INTO quicktext (key, title, subject, shortcut, tags, body, created_datetime) VALUES (?, ?, ?, ?, ?, ?, ?)", [
+                qt.key, qt.title, qt.subject, qt.shortcut, self._clean_tags(qt.tags), qt.body, now
+            ], function(_, results) {
+                var remoteDefer = $q.defer();
+                deferred.resolve(remoteDefer.promise);
 
-    // create and try to sync
-    self.create = function(qt){
-        self.db.transaction(function(tx){
-            tx.executeSql("INSERT INTO quicktext (key, title, subject, shortcut, tags, body) VALUES (?, ?, ?, ?, ?, ?)", [
-                qt.key, qt.title, qt.subject, qt.shortcut, self._clean_tags(qt.tags), qt.body
-            ]);
-
-            var remoteQt = new self.qRes();
-            remoteQt = self._copy(qt, remoteQt);
-            remoteQt.$save(function(res){
-                console.log(res);
+                var qtId = results.insertId;
+                var remoteQt = new self.qRes();
+                remoteQt = self._copy(qt, remoteQt);
+                remoteQt.$save(function(data) {
+                    // once it's saved server side, store the remote key in the database
+                    self.db.transaction(function(tx) {
+                        var now = new Date().toISOString();
+                        tx.executeSql("UPDATE quicktext SET key = ?, sync_datetime = ? WHERE id = ?", [
+                            data.id, now, qtId], function() {
+                            remoteDefer.resolve();
+                        });
+                    });
+                });
             });
         });
         _gaq.push(['_trackEvent', 'quicktexts', 'create']);
+        return deferred.promise;
     };
 
     // update a quicktext and try to sync
-    self.update = function(qt){
-        self.db.transaction(function(tx){
-            tx.executeSql("UPDATE quicktext SET key = ?, title = ?, subject = ?, shortcut = ?, tags = ?, body = ? WHERE id = ?", [
-                qt.key, qt.title, qt.subject, qt.shortcut, self._clean_tags(qt.tags), qt.body, qt.id
-            ]);
+    self.update = function(qt) {
+        var deferred = $q.defer();
+        self.db.transaction(function(tx) {
+            var now = new Date().toISOString();
+            tx.executeSql("UPDATE quicktext SET key = ?, title = ?, subject = ?, shortcut = ?, tags = ?, body = ?, updated_datetime = ? WHERE id = ?", [
+                qt.key, qt.title, qt.subject, qt.shortcut, self._clean_tags(qt.tags), qt.body, now, qt.id
+            ], function() {
+                var remoteDefer = $q.defer();
+                deferred.resolve(remoteDefer.promise);
+                self.qRes.get({quicktextId: qt.key}, function(remoteQt) {
+                    var remoteQt = self._copy(qt, remoteQt);
+                    remoteQt.$update(function() {
+                        self.db.transaction(function(tx) {
+                            var now = new Date().toISOString();
+                            tx.executeSql("UPDATE quicktext SET sync_datetime = ? WHERE id = ?", [now, qt.id], function() {
+                                remoteDefer.resolve();
+                            });
+                        });
+                    });
+                });
+            });
         });
         _gaq.push(['_trackEvent', 'quicktexts', 'update']);
+        return deferred.promise;
     };
 
-    // delete a quicktext and try to sync
-    self.delete = function(id){
-        self.db.transaction(function(tx){
-            tx.executeSql("DELETE FROM  quicktext WHERE id =  ?", [id]);
+    // delete a quicktext
+    self.delete = function(qt) {
+        var deferred = $q.defer();
+        self.db.transaction(function(tx) {
+            if (!qt.key) { // no key means it was never on sync server
+                self.db.transaction(function(tx) {
+                    tx.executeSql("DELETE FROM quicktext WHERE id = ?", [qt.id], function() {
+                        deferred.resolve();
+                    });
+                });
+                return;
+            }
+
+            // we have something on the server so first update to deleted = 1
+            tx.executeSql("UPDATE quicktext SET deleted = 1 WHERE id = ?", [qt.id], function() {
+                var remoteDefer = $q.defer();
+                deferred.resolve(remoteDefer.promise);
+                self.qRes.get({quicktextId: qt.key}, function(remoteQt) {
+                    remoteQt.$delete(function() {
+                        // Do a local "DELETE" only if deleted remotely.
+                        // If remote operation fails, try again when syncing.
+                        //
+                        // NOTE: We delete locally to save space.
+                        self.db.transaction(function(tx) {
+                            tx.executeSql("DELETE FROM quicktext WHERE id = ?", [qt.id], function() {
+                                remoteDefer.resolve();
+                            });
+                        });
+                    });
+                });
+            });
         });
         _gaq.push(['_trackEvent', 'quicktexts', 'delete']);
+        return deferred.promise;
     };
 
+    //TODO: Decide here at some point
     // delete all but don't delete from server
-    self.deleteAll = function(){
-        self.db.transaction(function(tx){
+    self.deleteAll = function() {
+        self.db.transaction(function(tx) {
             tx.executeSql("DELETE FROM quicktext");
         });
         _gaq.push(['_trackEvent', "quicktexts", 'delete-all']);
     };
 
-
     // get all tags from a quicktext
-    self.tags = function(qt){
+    self.tags = function(qt) {
         var retTags = [];
-        _.each(qt.tags.split(","), function(tag){
+        _.each(qt.tags.split(","), function(tag) {
             retTags.push(tag.replace(/ /g, ""));
         });
         return retTags;
     };
 
     // get all tags
-    self.allTags = function(){
+    self.allTags = function() {
         var deferred = $q.defer();
-        self.quicktexts().then(function(quicktexts){
+        self.quicktexts().then(function(quicktexts) {
             var tagsCount = {};
-            _.each(quicktexts, function(qt){
-                _.each(qt.tags.split(","), function(tag){
+            _.each(quicktexts, function(qt) {
+                _.each(qt.tags.split(","), function(tag) {
                     tag = tag.replace(/ /g, "");
                     if (!tag) {
                         return;
                     }
-                    if (!tagsCount[tag]){
+                    if (!tagsCount[tag]) {
                         tagsCount[tag] = 1;
                     } else {
                         tagsCount[tag]++;
@@ -37943,10 +38106,10 @@ gqApp.service('QuicktextService', function($q, $resource, SettingsService){
     };
 
     // perform migration from version 0.4.3 to the new version 1.0.0
-    self.migrate_043_100 = function(){
+    self.migrate_043_100 = function() {
         var quicktexts = Settings.get("quicktexts");
-        if (quicktexts){
-            for (var i in quicktexts){
+        if (quicktexts) {
+            for (var i in quicktexts) {
                 var qt = quicktexts[i];
                 qt.body = qt.body.replace("<%=", "{{");
                 qt.body = qt.body.replace("%>", "}}");
@@ -37961,39 +38124,33 @@ gqApp.service('QuicktextService', function($q, $resource, SettingsService){
 });
 
 // Settings
-gqApp.service('SettingsService', function(){
+gqApp.service('SettingsService', function() {
     var self = this;
-    self.get = function(key, def){
+    self.get = function(key, def) {
         return Settings.get(key, def);
     };
-    self.set = function(key, val){
+    self.set = function(key, val) {
         return Settings.set(key, val);
     };
     return self;
 });
 
 // User Profile - check if the user is logged in. Get it's info
-gqApp.service('ProfileService', function(SettingsService, md5){
+gqApp.service('ProfileService', function(SettingsService, md5) {
     var self = this;
 
-    self.isLoggedin = false;
-
-    self.email = '';
-    self.firstName = '';
-    self.lastName = '';
-    self.currentSubscription = '';
-    self.expirationDate = '';
-
-    self.gravatar = function(size){
-        return 'http://www.gravatar.com/avatar/' + md5.createHash(self.email);
+    self.gravatar = function(email, size) {
+        if (email) {
+            return 'https://www.gravatar.com/avatar/' + md5.createHash(email) + '?d=identicon';
+        }
     };
 
     self.reduceNumbers = function(n) {
         /* Write nice numbers. Ex: 1000 -> 1k */
-        if (!n){
+        if (!n) {
             return "0";
         }
-        if (n < 1000){
+        if (n < 1000) {
             return n;
         }
 
@@ -38006,7 +38163,7 @@ gqApp.service('ProfileService', function(SettingsService, md5){
             mag = "M";
         } else if (n < Math.pow(10, 11)) {
             p = Math.pow(10, 8);
-            mag= "G";
+            mag = "G";
         } else if (n < Math.pow(10, 14)) {
             p = Math.pow(10, 11);
             mag = "T";
@@ -38017,8 +38174,8 @@ gqApp.service('ProfileService', function(SettingsService, md5){
     self.words = SettingsService.get("words", 0);
     self.savedWords = self.reduceNumbers(self.words);
 
-    self.niceTime = function(minutes){
-        if (!minutes){
+    self.niceTime = function(minutes) {
+        if (!minutes) {
             return "0min";
         }
         if (minutes < 60) {
@@ -38026,14 +38183,14 @@ gqApp.service('ProfileService', function(SettingsService, md5){
         }
         // 23h and 23m
         if (minutes < 60 * 24) {
-            return Math.floor(minutes/60) + "h and " + minutes % 60 + "min";
+            return Math.floor(minutes / 60) + "h and " + minutes % 60 + "min";
         } else {
             return Math.floor(minutes / (60 * 24)) + "d, " + Math.floor(minutes % (60 * 24) / 60) + "h and " + minutes % (60 * 24) % 60 + "min";
         }
     };
     // average WPM: http://en.wikipedia.org/wiki/Words_per_minute
     self.avgWPM = 33;
-    self.savedTime = self.niceTime(Math.round(self.words/self.avgWPM));
+    self.savedTime = self.niceTime(Math.round(self.words / self.avgWPM));
 
     return self;
 });
@@ -38068,6 +38225,8 @@ var Settings = {
     defaults: {
         baseURL: "https://quicktext.io/",
         apiBaseURL: "https://quicktext.io/api/1/",
+        //baseURL: "http://localhost:5000/",
+        //apiBaseURL: "http://localhost:5000/api/1/",
         syncEnabled: false,
         autocompleteEnabled: true, // autocomplete dialog
         autocompleteDelay: 300, // autocomplete dialog delay - 300ms by default

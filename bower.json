@@ -16,9 +16,10 @@
     "tests"
   ],
   "dependencies": {
-    "angular": "~1.2.9",
-    "angular-route": "~1.2.9",
-    "angular-animate": "~1.2.9",
+    "angular": "~1.2.11",
+    "angular-route": "~1.2.11",
+    "angular-resource": "~1.2.11",
+    "angular-animate": "~1.2.11",
     "angular-moment": "~0.5.2",
     "angular-md5": "~0.0.6",
     "bootstrap": "~3.0.3",
@@ -26,7 +27,6 @@
     "underscore": "~1.5.2",
     "underscore.string": "~2.3.3",
     "handlebars": "~1.1.2",
-    "font-awesome": "~4.0",
-    "angular-resource": "~1.2.11"
+    "font-awesome": "~4.0"
   }
 }

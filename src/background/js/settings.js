@@ -28,6 +28,8 @@ var Settings = {
     defaults: {
         baseURL: "https://quicktext.io/",
         apiBaseURL: "https://quicktext.io/api/1/",
+        //baseURL: "http://localhost:5000/",
+        //apiBaseURL: "http://localhost:5000/api/1/",
         syncEnabled: false,
         autocompleteEnabled: true, // autocomplete dialog
         autocompleteDelay: 300, // autocomplete dialog delay - 300ms by default
