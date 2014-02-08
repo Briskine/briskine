@@ -62,7 +62,7 @@ gqApp.controller('ListCtrl',
 
             var defaults = {
                 'id': '',
-                'key': '',
+                'remote_id': '',
                 'subject': '',
                 'shortcut': '',
                 'title': '',

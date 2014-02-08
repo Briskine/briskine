@@ -14,13 +14,17 @@ gqApp.service('QuicktextService', function($q, $resource, SettingsService) {
         }
     });
 
+    self.isLoggedin = function() {
+        return SettingsService.get("isLoggedIn");
+    };
+
     self.db = openDatabase('qt', '1.0.0', '', 2 * 1024 * 1024);
     self.db.transaction(function(tx) {
         var now = new Date().toISOString();
-        tx.executeSql('CREATE TABLE quicktext (\n  id               INTEGER PRIMARY KEY AUTOINCREMENT,\n  key              VARCHAR(50) DEFAULT "", -- this is the key on the server\n  title            VARCHAR(250) NOT NULL,\n  shortcut         VARCHAR(250) DEFAULT "",\n  subject          TEXT DEFAULT "",\n  tags             TEXT DEFAULT "",\n  body             TEXT DEFAULT "",\n  created_datetime DATETIME NOT NULL, \n  updated_datetime DATETIME DEFAULT NULL, -- updated locally\n  sync_datetime    DATETIME DEFAULT NULL, -- last sync datetime\n  deleted          INTEGER DEFAULT 0 -- mark as deleted\n);');
-        tx.executeSql('INSERT INTO quicktext (title, shortcut, body, created_datetime) VALUES ("Say Hello", "h", "Hello {{to.0.first_name}},\n\n", ?)',
+        tx.executeSql('CREATE TABLE quicktext (\n  id               INTEGER PRIMARY KEY AUTOINCREMENT,\n  remote_id        VARCHAR(50) DEFAULT "",\n  title            VARCHAR(250) NOT NULL,\n  shortcut         VARCHAR(250) DEFAULT "",\n  subject          TEXT DEFAULT "",\n  tags             TEXT DEFAULT "",\n  body             TEXT DEFAULT "",\n  created_datetime DATETIME     NOT NULL,\n  updated_datetime DATETIME DEFAULT NULL, -- updated locally\n  sync_datetime    DATETIME DEFAULT NULL, -- last sync datetime\n  deleted          INTEGER DEFAULT 0 -- mark as deleted\n);');
+        tx.executeSql('INSERT INTO quicktext (title, shortcut, body, created_datetime) VALUES ("Say Hello", "h", \'Hello {{to.0.first_name}},\n\n\', ?)',
             [now]);
-        tx.executeSql('INSERT INTO quicktext (title, shortcut, body, created_datetime) VALUES ("Kind regards", "kr", "Kind regards,\n{{FROM.0.first_name}}.\\n", ?)',
+        tx.executeSql('INSERT INTO quicktext (title, shortcut, body, created_datetime) VALUES ("Kind regards", "kr", \'Kind regards,\n{{from.0.first_name}}.\n\', ?)',
             [now]);
     });
 
@@ -43,47 +47,90 @@ gqApp.service('QuicktextService', function($q, $resource, SettingsService) {
 
      Local quicktexts:
 
-     * Created (doesn't have a 'key' set)
+     * Created (doesn't have a 'remote_id' set)
      * Deleted (deleted=1 in the db) - delete remotely and then completely in the db
      * Updated (sync_datetime is null or lower than the updated_date)
 
      Remote quicktexts (after local sync):
 
-     * Created (no similar key found locally) - update sync_date
-     * Updated (found key - update) - update sync_date
+     * Created (no similar remote_id found locally) - update sync_date
+     * Updated (found remote_id - update) - update sync_date
      */
     //TODO: Make sure the user is logged in before sending anything
+
+    self.syncTimer = null;
+
     self.sync = function() {
+        if (!self.isLoggedin()) {
+            return;
+        }
+
         //Make sure we first create remote versions of previously unsynced quicktexts
         self.db.transaction(function(tx) {
-            tx.executeSql("SELECT * FROM quicktext WHERE key IS NULL", [], function(tx, res) {
-                var len = res.rows.length;
-                for (var i = 0; i < len; i++) {
+            tx.executeSql("SELECT * FROM quicktext WHERE remote_id = ''", [], function(tx, res) {
+                var saveQt = function(qt) {
+                    return function(remoteQt) {
+                        self.db.transaction(function(tx) {
+                            tx.executeSql("UPDATE quicktext SET remote_id = ?, sync_datetime = ? WHERE id = ?", [
+                                remoteQt.id, remoteQt.created_datetime, qt.id
+                            ]);
+                        });
+                    };
+                };
+
+                for (var i = 0; i < res.rows.length; i++) {
                     var qt = res.rows.item(i);
                     var qtRemote = new self.qRes();
                     qtRemote = self._copy(qt, qtRemote);
-                    qtRemote.$save(function(data) {
-                        self.db.transaction(function(tx) {
-                            var now = new Date().toISOString();
-                            tx.executeSql("UPDATE quicktext SET key = ? AND sync_datetime = ? WHERE id = ?", [
-                                qt.id, data.key, now
-                            ]);
-                        });
-                    });
+                    qtRemote.$save(saveQt(qt));
                 }
             });
         });
 
-        tx.executeSql("SELECT * FROM quicktext", [], function(tx, res) {
-            var len = res.rows.length;
-            for (var i = 0; i < len; i++) {
-                var qt = res.rows.item(i);
-                if (qt.deleted == 1) {
-                    self.qRes.get({qRes})
+        // Now for the deleted and updated quicktexts
+        self.db.transaction(function(tx) {
+            tx.executeSql("SELECT * FROM quicktext WHERE remote_id != ''", [], function(tx, res) {
+
+                var remoteDelete = function(qt) {
+                    return function(remoteQt) {
+                        // once it's deleted remotely, remove it locally
+                        remoteQt.$delete(function() {
+                            self.db.transaction(function(tx) {
+                                tx.executeSql("DELETE FROM quicktext WHERE id = ?", [qt.id]);
+                            });
+                        });
+                    };
+                };
+
+                var remoteUpdate = function(qt) {
+                    return function(remoteQt) {
+                        remoteQt = self._copy(qt, remoteQt);
+                        remoteQt.$update(function(res) {
+                            //update the sync time
+                            self.db.transaction(function(tx) {
+                                tx.executeSql("UPDATE quicktext SET sync_datetime = ? WHERE id = ?", [
+                                    res.versions[0].created_datetime, qt.id
+                                ]);
+                            });
+                        });
+                    };
+                };
+
+                for (var i = 0; i < res.rows.length; i++) {
+                    var qt = res.rows.item(i);
+                    if (qt.deleted === 1) { // deleted, but not yet synced
+                        self.qRes.get({quicktextId: qt.remote_id}, remoteDelete(qt));
+                    } else if (!qt.sync_datetime || qt.sync_datetime < qt.updated_datetime) { // send for update only if sync_datetime is older than the update_datetime
+                        self.qRes.get({quicktextId: qt.remote_id}, remoteUpdate(qt));
+                    }
                 }
-            }
+            });
         });
+        window.clearTimeout(self.syncTimer);
+        self.syncTimer = window.setTimeout(self.sync, 5000);
     };
+
+    self.sync();
 
     // given a string with tags give a clean list
     // remove spaces, duplicates and so on
@@ -130,21 +177,25 @@ gqApp.service('QuicktextService', function($q, $resource, SettingsService) {
         var deferred = $q.defer();
         self.db.transaction(function(tx) {
             var now = new Date().toISOString();
-            tx.executeSql("INSERT INTO quicktext (key, title, subject, shortcut, tags, body, created_datetime) VALUES (?, ?, ?, ?, ?, ?, ?)", [
-                qt.key, qt.title, qt.subject, qt.shortcut, self._clean_tags(qt.tags), qt.body, now
+            tx.executeSql("INSERT INTO quicktext (remote_id, title, subject, shortcut, tags, body, created_datetime) VALUES (?, ?, ?, ?, ?, ?, ?)", [
+                qt.remote_id, qt.title, qt.subject, qt.shortcut, self._clean_tags(qt.tags), qt.body, now
             ], function(_, results) {
                 var remoteDefer = $q.defer();
                 deferred.resolve(remoteDefer.promise);
 
+                if (!self.isLoggedin()) {
+                    remoteDefer.resolve();
+                    return;
+                }
+
                 var qtId = results.insertId;
                 var remoteQt = new self.qRes();
                 remoteQt = self._copy(qt, remoteQt);
-                remoteQt.$save(function(data) {
-                    // once it's saved server side, store the remote key in the database
+                remoteQt.$save(function(remoteQt) {
+                    // once it's saved server side, store the remote_id in the database
                     self.db.transaction(function(tx) {
-                        var now = new Date().toISOString();
-                        tx.executeSql("UPDATE quicktext SET key = ?, sync_datetime = ? WHERE id = ?", [
-                            data.id, now, qtId], function() {
+                        tx.executeSql("UPDATE quicktext SET remote_id = ?, sync_datetime = ? WHERE id = ?", [
+                            remoteQt.id, remoteQt.created_datetime, qtId], function() {
                             remoteDefer.resolve();
                         });
                     });
@@ -160,22 +211,43 @@ gqApp.service('QuicktextService', function($q, $resource, SettingsService) {
         var deferred = $q.defer();
         self.db.transaction(function(tx) {
             var now = new Date().toISOString();
-            tx.executeSql("UPDATE quicktext SET key = ?, title = ?, subject = ?, shortcut = ?, tags = ?, body = ?, updated_datetime = ? WHERE id = ?", [
-                qt.key, qt.title, qt.subject, qt.shortcut, self._clean_tags(qt.tags), qt.body, now, qt.id
+            tx.executeSql("UPDATE quicktext SET remote_id = ?, title = ?, subject = ?, shortcut = ?, tags = ?, body = ?, updated_datetime = ? WHERE id = ?", [
+                qt.remote_id, qt.title, qt.subject, qt.shortcut, self._clean_tags(qt.tags), qt.body, now, qt.id
             ], function() {
                 var remoteDefer = $q.defer();
                 deferred.resolve(remoteDefer.promise);
-                self.qRes.get({quicktextId: qt.key}, function(remoteQt) {
-                    var remoteQt = self._copy(qt, remoteQt);
-                    remoteQt.$update(function() {
+
+                if (!self.isLoggedin()) {
+                    remoteDefer.resolve();
+                    return;
+                }
+
+                if (!qt.remote_id) {
+                    var remoteQt = new self.qRes();
+                    remoteQt = self._copy(qt, remoteQt);
+                    remoteQt.$save(function(remoteQt) {
                         self.db.transaction(function(tx) {
-                            var now = new Date().toISOString();
-                            tx.executeSql("UPDATE quicktext SET sync_datetime = ? WHERE id = ?", [now, qt.id], function() {
+                            tx.executeSql('UPDATE quicktext SET remote_id = ?, sync_datetime = ? WHERE id = ?', [
+                                remoteQt.id, remoteQt.created_datetime, qt.id
+                            ], function() {
                                 remoteDefer.resolve();
                             });
                         });
                     });
-                });
+                    deferred.resolve();
+                } else {
+                    self.qRes.get({quicktextId: qt.remote_id}, function(remoteQt) {
+                        remoteQt = self._copy(qt, remoteQt);
+                        remoteQt.$update(function() {
+                            self.db.transaction(function(tx) {
+                                tx.executeSql("UPDATE quicktext SET sync_datetime = ? WHERE id = ?", [
+                                    remoteQt.versions[0].created_datetime, qt.id], function() {
+                                    remoteDefer.resolve();
+                                });
+                            });
+                        });
+                    });
+                }
             });
         });
         _gaq.push(['_trackEvent', 'quicktexts', 'update']);
@@ -186,7 +258,7 @@ gqApp.service('QuicktextService', function($q, $resource, SettingsService) {
     self.delete = function(qt) {
         var deferred = $q.defer();
         self.db.transaction(function(tx) {
-            if (!qt.key) { // no key means it was never on sync server
+            if (!qt.remote_id) { // no remote_id means it was never on sync server
                 self.db.transaction(function(tx) {
                     tx.executeSql("DELETE FROM quicktext WHERE id = ?", [qt.id], function() {
                         deferred.resolve();
@@ -199,7 +271,13 @@ gqApp.service('QuicktextService', function($q, $resource, SettingsService) {
             tx.executeSql("UPDATE quicktext SET deleted = 1 WHERE id = ?", [qt.id], function() {
                 var remoteDefer = $q.defer();
                 deferred.resolve(remoteDefer.promise);
-                self.qRes.get({quicktextId: qt.key}, function(remoteQt) {
+
+                if (!self.isLoggedin()) {
+                    remoteDefer.resolve();
+                    return;
+                }
+
+                self.qRes.get({quicktextId: qt.remote_id}, function(remoteQt) {
                     remoteQt.$delete(function() {
                         // Do a local "DELETE" only if deleted remotely.
                         // If remote operation fails, try again when syncing.
@@ -269,7 +347,7 @@ gqApp.service('QuicktextService', function($q, $resource, SettingsService) {
                 qt.body = qt.body.replace("%>", "}}");
                 qt.body = qt.body.replace("to[0].", "to.0.");
                 qt.body = qt.body.replace("from[0].", "from.0.");
-                qt.key = "";
+                qt.remote_id = "";
                 self.create(qt);
             }
             Settings.set("quicktexts", []);

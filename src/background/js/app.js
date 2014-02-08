@@ -46,7 +46,7 @@ gqApp.run(function($rootScope, $location, $http, ProfileService, SettingsService
 
         // init bootstrap elements
         $('[data-toggle=tooltip]').tooltip();
-        $('[data-toggle=popover').popover();
+        $('[data-toggle=popover]').popover();
         $('.modal').modal({
             show: false
         });
@@ -75,14 +75,13 @@ gqApp.run(function($rootScope, $location, $http, ProfileService, SettingsService
     };
 
     $rootScope.isLoggedIn = function() {
-        $http.get(SettingsService.get("apiBaseURL") + "account").success(function(data) {
-            $rootScope.profile.user = data;
+        $http.get(SettingsService.get("apiBaseURL") + 'login-info').success(function(data) {
+            SettingsService.set("isLoggedIn", data.is_loggedin);
+            if (data.is_loggedin) {
+                $http.get(SettingsService.get("apiBaseURL") + "account").success(function(data) {
+                    $rootScope.profile.user = data;
+                });
+            }
         });
     };
 });
-
-/* TODO
- */
-// We no longer need
-// * add.html and popup.html templates
-// * add controller
