@@ -59,10 +59,12 @@
         </ul>
 
         <div class="sidebar-footer">
-            <div class="well sync-status" ng-show="profile.isLoggedin">
-                <div class="sync-label">Last sync</div>
-                <div class="sync-date"></div>
-                <button class="btn btn-default btn-xs">Sync now!</button>
+            <div class="sync-status" ng-show="profile.user">
+                <div class="sync-label" ng-show="lastSync">
+                  Last sync
+                  <span am-time-ago="lastSync"></span>.
+                </div>
+                <button class="btn btn-primary" ng-click="SyncNow()">Sync now</button>
             </div>
         </div>
 

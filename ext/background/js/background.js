@@ -37138,125 +37138,177 @@ module.filter('md5', ['md5', function(md5) {
 }(angular.module('angular-md5', []), angular));
 
 
-/* angular-moment.js / v0.5.2 / (c) 2013 Uri Shaked / MIT Licence */
+/* angular-moment.js / v0.6.2 / (c) 2013, 2014 Uri Shaked / MIT Licence */
 
-angular.module('angularMoment', [])
-	.constant('amTimeAgoConfig', { withoutSuffix: false })
-	.directive('amTimeAgo', ['$window', 'amTimeAgoConfig', function ($window, amTimeAgoConfig) {
-		'use strict';
+(function () {
+	'use strict';
 
-		return function (scope, element, attr) {
-			var activeTimeout = null;
-			var currentValue;
-			var currentFormat;
-
-			function cancelTimer() {
-				if (activeTimeout) {
-					$window.clearTimeout(activeTimeout);
-					activeTimeout = null;
-				}
+	/**
+	 * Apply a timezone onto a given moment object - if moment-timezone.js is included
+	 * Otherwise, it'll not apply any timezone shift.
+	 * @param {Moment} aMoment
+	 * @param {string} timezone
+	 * @returns {Moment}
+	 */
+	function applyTimezone(aMoment, timezone, $log) {
+		if (aMoment && timezone) {
+			if (aMoment.tz) {
+				aMoment = aMoment.tz(timezone);
+			} else {
+				$log.warn('angular-moment: timezone specified but moment.tz() is undefined. Did you forget to include moment-timezone.js?');
 			}
+		}
+		return aMoment;
+	}
 
-			function updateTime(momentInstance) {
-				element.text(momentInstance.fromNow(amTimeAgoConfig.withoutSuffix));
-				var howOld = $window.moment().diff(momentInstance, 'minute');
-				var secondsUntilUpdate = 3600;
-				if (howOld < 1) {
-					secondsUntilUpdate = 1;
-				} else if (howOld < 60) {
-					secondsUntilUpdate = 30;
-				} else if (howOld < 180) {
-					secondsUntilUpdate = 300;
-				}
+	angular.module('angularMoment', [])
+	/**
+	 * Common configuration of the angularMoment module
+	 */
+		.constant('angularMomentConfig', {
+			timezone: '' // e.g. 'Europe/London'
+		})
+		.constant('amTimeAgoConfig', { withoutSuffix: false})
+		.directive('amTimeAgo', ['$window', 'amTimeAgoConfig', function ($window, amTimeAgoConfig) {
 
-				activeTimeout = $window.setTimeout(function () {
-					updateTime(momentInstance);
-				}, secondsUntilUpdate * 1000);
-			}
+			return function (scope, element, attr) {
+				var activeTimeout = null;
+				var currentValue;
+				var currentFormat;
+				var withoutSuffix = amTimeAgoConfig.withoutSuffix;
 
-			function updateMoment() {
-				cancelTimer();
-				updateTime($window.moment(currentValue, currentFormat));
-			}
-
-			scope.$watch(attr.amTimeAgo, function (value) {
-				if ((typeof value === 'undefined') || (value === null) || (value === '')) {
-					cancelTimer();
-					if (currentValue) {
-						element.text('');
-						currentValue = null;
+				function cancelTimer() {
+					if (activeTimeout) {
+						$window.clearTimeout(activeTimeout);
+						activeTimeout = null;
 					}
-					return;
 				}
 
-				if (angular.isNumber(value)) {
+				function updateTime(momentInstance) {
+					element.text(momentInstance.fromNow(withoutSuffix));
+					var howOld = $window.moment().diff(momentInstance, 'minute');
+					var secondsUntilUpdate = 3600;
+					if (howOld < 1) {
+						secondsUntilUpdate = 1;
+					} else if (howOld < 60) {
+						secondsUntilUpdate = 30;
+					} else if (howOld < 180) {
+						secondsUntilUpdate = 300;
+					}
+
+					activeTimeout = $window.setTimeout(function () {
+						updateTime(momentInstance);
+					}, secondsUntilUpdate * 1000);
+				}
+
+				function updateMoment() {
+					cancelTimer();
+					updateTime($window.moment(currentValue, currentFormat));
+				}
+
+				scope.$watch(attr.amTimeAgo, function (value) {
+					if ((typeof value === 'undefined') || (value === null) || (value === '')) {
+						cancelTimer();
+						if (currentValue) {
+							element.text('');
+							currentValue = null;
+						}
+						return;
+					}
+
+					if (angular.isNumber(value)) {
+						// Milliseconds since the epoch
+						value = new Date(value);
+					}
+					// else assume the given value is already a date
+
+					currentValue = value;
+					updateMoment();
+				});
+
+				if (angular.isDefined(attr.amWithoutSuffix)) {
+					scope.$watch(attr.amWithoutSuffix, function (value) {
+						if (typeof value === 'boolean') {
+							withoutSuffix = value;
+							updateMoment();
+						} else {
+							withoutSuffix = amTimeAgoConfig.withoutSuffix;
+						}
+					});
+				}
+
+				attr.$observe('amFormat', function (format) {
+					currentFormat = format;
+					if (currentValue) {
+						updateMoment();
+					}
+				});
+
+				scope.$on('$destroy', function () {
+					cancelTimer();
+				});
+
+				scope.$on('amMoment:languageChange', function () {
+					updateMoment();
+				});
+			};
+		}])
+		.factory('amMoment', ['$window', '$rootScope', function ($window, $rootScope) {
+			return {
+				changeLanguage: function (lang) {
+					var result = $window.moment.lang(lang);
+					if (angular.isDefined(lang)) {
+						$rootScope.$broadcast('amMoment:languageChange');
+					}
+					return result;
+				}
+			};
+		}])
+		.filter('amCalendar', ['$window', '$log', 'angularMomentConfig', function ($window, $log, angularMomentConfig) {
+
+			return function (value) {
+				if (typeof value === 'undefined' || value === null) {
+					return '';
+				}
+
+				if (!isNaN(parseFloat(value)) && isFinite(value)) {
 					// Milliseconds since the epoch
-					value = new Date(value);
+					value = new Date(parseInt(value, 10));
 				}
 				// else assume the given value is already a date
 
-				currentValue = value;
-				updateMoment();
-			});
+				return applyTimezone($window.moment(value), angularMomentConfig.timezone, $log).calendar();
+			};
+		}])
+		.filter('amDateFormat', ['$window', '$log', 'angularMomentConfig', function ($window, $log, angularMomentConfig) {
 
-			attr.$observe('amFormat', function (format) {
-				currentFormat = format;
-				if (currentValue) {
-					updateMoment();
+			return function (value, format) {
+				if (typeof value === 'undefined' || value === null) {
+					return '';
 				}
-			});
 
-			scope.$on('$destroy', function () {
-				cancelTimer();
-			});
-		};
-	}])
-	.filter('amCalendar', ['$window', function ($window) {
-		'use strict';
+				if (!isNaN(parseFloat(value)) && isFinite(value)) {
+					// Milliseconds since the epoch
+					value = new Date(parseInt(value, 10));
+				}
+				// else assume the given value is already a date
 
-		return function (value) {
-			if (typeof value === 'undefined' || value === null) {
-				return '';
-			}
+				return applyTimezone($window.moment(value), angularMomentConfig.timezone, $log).format(format);
+			};
+		}])
+		.filter('amDurationFormat', ['$window', function ($window) {
 
-			if (!isNaN(parseFloat(value)) && isFinite(value)) {
-				// Milliseconds since the epoch
-				value = new Date(parseInt(value, 10));
-			}
-			// else assume the given value is already a date
+			return function (value, format, suffix) {
+				if (typeof value === 'undefined' || value === null) {
+					return '';
+				}
 
-			return $window.moment(value).calendar();
-		};
-	}])
-	.filter('amDateFormat', ['$window', function ($window) {
-		'use strict';
+				// else assume the given value is already a duration in a format (miliseconds, etc)
+				return $window.moment.duration(value, format).humanize(suffix);
+			};
+		}]);
 
-		return function (value, format) {
-			if (typeof value === 'undefined' || value === null) {
-				return '';
-			}
-
-			if (!isNaN(parseFloat(value)) && isFinite(value)) {
-				// Milliseconds since the epoch
-				value = new Date(parseInt(value, 10));
-			}
-			// else assume the given value is already a date
-
-			return $window.moment(value).format(format);
-		};
-	}])
-	.filter('amDurationFormat', ['$window', function ($window) {
-		'use strict';
-
-		return function (value, format, suffix) {
-			if (typeof value === 'undefined' || value === null) {
-				return '';
-			}
-
-			// else assume the given value is already a duration in a format (miliseconds, etc)
-			return $window.moment.duration(value, format).humanize(suffix);
-		};
-	}]);
+})();
 
 var ENV = "production";
 /* Quicktext chrome extension
@@ -37266,7 +37318,8 @@ var gqApp = angular.module('gqApp', [
         'ngRoute',
         'ngResource',
         'ngAnimate',
-        'angular-md5'
+        'angular-md5',
+        'angularMoment'
     ]).config(function($routeProvider, $compileProvider) {
 
         $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|chrome-extension):/);
@@ -37292,7 +37345,7 @@ var gqApp = angular.module('gqApp', [
 
 /* Global run
  */
-gqApp.run(function($rootScope, $location, $http, ProfileService, SettingsService) {
+gqApp.run(function($rootScope, $location, $http, $timeout, ProfileService, SettingsService, QuicktextService) {
 
     $rootScope.$on('$routeChangeStart', function(next, current) {
         $rootScope.path = $location.path();
@@ -37301,6 +37354,15 @@ gqApp.run(function($rootScope, $location, $http, ProfileService, SettingsService
     $rootScope.pageAction = ($location.path() === '/popup');
     $rootScope.profile = ProfileService;
     $rootScope.settings = SettingsService;
+
+    // last sync date
+    $rootScope.lastSync = QuicktextService.lastSync;
+
+    $rootScope.SyncNow = function() {
+      QuicktextService.sync(function(lastSync) {
+        $rootScope.lastSync = lastSync;
+      });
+    };
 
     // init dom plugins
     var initDom = function() {
@@ -37910,8 +37972,9 @@ gqApp.service('QuicktextService', function($q, $resource, SettingsService) {
     //TODO: Make sure the user is logged in before sending anything
 
     self.syncTimer = null;
+    self.lastSync = null;
 
-    self.sync = function() {
+    self.sync = function(callback) {
         if (!self.isLoggedin()) {
             return;
         }
@@ -37979,6 +38042,11 @@ gqApp.service('QuicktextService', function($q, $resource, SettingsService) {
         });
         window.clearTimeout(self.syncTimer);
         self.syncTimer = window.setTimeout(self.sync, 5000);
+
+        // TODO should probably be done in one of the query callbacks
+        // after a succesfull sync
+        self.lastSync = new Date();
+        if(callback) callback(self.lastSync);
     };
 
     self.sync();
