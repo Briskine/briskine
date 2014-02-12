@@ -17,20 +17,22 @@
         </a>
 
         <div class="profile">
+
             <div class="profile-body" ng-show="profile.user">
+
                 <a class="profile-picture" href="https://www.gravatar.com/" target="_blank">
-                    <img class="img-circle" title="Setup your avatar on gravatar.com" alt="gravatar"
-                         ng-src="{{profile.gravatar(profile.user.email)}}">
+                    <img class="img-circle" title="Setup your avatar on gravatar.com" alt="gravatar" ng-src="{{ profile.gravatar(profile.user.email) }}">
                 </a>
 
-                <div class="profile-container">
-                    <div class="profile-name">{{profile.user.info.given_name}} {{profile.user.info.family_name}}</div>
-                    <div class="profile-email">{{profile.user.email}}</div>
+                <div class="profile-details">
+                    <p>
+                      <strong>{{profile.user.info.given_name}} {{profile.user.info.family_name}}</strong>
+                    </p>
+                    <p>{{profile.user.email}}</p>
                 </div>
             </div>
 
             <div class="anonymous" ng-show="!profile.user">
-                <!-- <a ng-click="showLogin()" href="">Login</a> or <a ng-click="showRegister()" href="">Sign Up</a> to <em>share</em> quicktexts with your team.-->
                 <a ng-href="{{settings.get('baseURL')}}signin" ng-click="checkLogin()" target="_blank">Login</a> or
                 <a ng-href="{{settings.get('baseURL')}}registration" target="_blank" ng-click="checkLogin()">Sign Up</a>
                 to <em>share</em> quicktexts with your team.
