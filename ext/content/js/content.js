@@ -11461,9 +11461,9 @@ var PubSub = {
 };
 
 /*
-  This is the index file which is loaded first after patterns
-  All declarations are done here
-*/
+ This is the index file which is loaded first after patterns
+ All declarations are done here
+ */
 
 var App = {
     data: {
@@ -11474,37 +11474,37 @@ var App = {
     autocomplete: {},
     parser: {},
     settings: {
-        get: function(key, callback) {
-            chrome.runtime.sendMessage({'request': 'get', 'data': key}, function(response) {
-               callback(response);
-            });
-        },
-        stats: function(key, val, callback) {
-            chrome.runtime.sendMessage({'request': 'stats', 'key': key, 'val': val}, function(response) {
+        get: function (key, callback) {
+            chrome.runtime.sendMessage({'request': 'get', 'data': key}, function (response) {
                 callback(response);
             });
         },
-        getAutocompleteEnabled: function(callback) {
-            chrome.runtime.sendMessage({'request': 'getAutocompleteEnabled'}, function(response) {
+        stats: function (key, val, callback) {
+            chrome.runtime.sendMessage({'request': 'stats', 'key': key, 'val': val}, function (response) {
                 callback(response);
             });
         },
-        getAutocompleteDelay: function(callback) {
-            chrome.runtime.sendMessage({'request': 'getAutocompleteDelay'}, function(response) {
+        getAutocompleteEnabled: function (callback) {
+            chrome.runtime.sendMessage({'request': 'getAutocompleteEnabled'}, function (response) {
+                callback(response);
+            });
+        },
+        getAutocompleteDelay: function (callback) {
+            chrome.runtime.sendMessage({'request': 'getAutocompleteDelay'}, function (response) {
                 callback(response);
             });
         }
     }
 };
 
-App.init = function() {
+App.init = function () {
     document.addEventListener("blur", App.onBlur, true);
     document.addEventListener("focus", App.onFocus, true);
     document.addEventListener("keydown", App.onKeyDown, true);
     document.addEventListener("keyup", App.onKeyUp, true);
 };
 
-$(function(){
+$(function () {
     App.init();
 });
 
@@ -11718,20 +11718,25 @@ App.autocomplete.onKeyUp = function (e) {
         if (e.keyCode == KEY_ESCAPE) {
             App.autocomplete.onKey(e.keyCode);
         }
+
     }
-    // Try to show the autocomplete dialog (it there is something to show)
-    App.settings.getAutocompleteEnabled(function (enabled) { // first make sure it's enabled
-        if (!enabled) {
-            return;
-        }
-        App.autocomplete.close();
-        window.clearTimeout(App.autocomplete.timeoutId);
-        App.settings.getAutocompleteDelay(function (delay) { // get the delay value
-            App.autocomplete.timeoutId = window.setTimeout(function () {
-                App.autocomplete.checkWord(e);
-            }, delay);
+
+    if (App.data.inCompose) {
+        // Try to show the autocomplete dialog (it there is something to show)
+        App.settings.getAutocompleteEnabled(function (enabled) { // first make sure it's enabled
+            if (!enabled) {
+                return;
+            }
+            App.autocomplete.close();
+            window.clearTimeout(App.autocomplete.timeoutId);
+            App.settings.getAutocompleteDelay(function (delay) { // get the delay value
+                App.autocomplete.timeoutId = window.setTimeout(function () {
+                    App.autocomplete.checkWord(e);
+                }, delay);
+            });
         });
-    });
+    }
+
 };
 
 App.autocomplete.onKey = function (key, e) {
@@ -11787,14 +11792,20 @@ App.autocomplete.checkWord = function (e) {
     // Cache word
     cursorPosition.word = word;
 
-    if (word.text !== '') {
+    if (word.text !== '' && word.text.length >= 2) {
 
         // Load all tags
         App.settings.get('quicktexts', function (elements) {
             // Search for match
             App.autocomplete.quicktexts = elements.filter(function (a) {
                 // TODO search for mathc in whole shorcut (now searches for match starting with the beginning)
-                return a.shortcut.indexOf(word.text) === 0;
+                if (a.shortcut.indexOf(word.text) === 0) {
+                    return true;
+                }
+
+                if (a.title.toLowerCase().indexOf(word.text.toLowerCase()) !== -1) {
+                    return true;
+                }
             });
 
             if (App.autocomplete.quicktexts.length) {
@@ -12122,7 +12133,7 @@ App.onFocus = function(e) {
 };
 
 App.onBlur = function(e) {
-    PubSub.publish('focus', 'off', e.target);
+    PubSub.publish('focus', 'off', e.relatedTarget);
 };
 
 App.onKeyDown = function(e) {

@@ -13102,7 +13102,7 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap requires jQuery");+func
 }).call(this);
 
 /**
- * @license AngularJS v1.2.12-build.2230+sha.bf4b0db
+ * @license AngularJS v1.2.13-build.2256+sha.e7ab857
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -13171,7 +13171,7 @@ function minErr(module) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.2.12-build.2230+sha.bf4b0db/' +
+    message = message + '\nhttp://errors.angularjs.org/1.2.13-build.2256+sha.e7ab857/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i-2) + '=' +
@@ -13263,6 +13263,7 @@ function minErr(module) {
     -assertNotHasOwnProperty,
     -getter,
     -getBlockElements,
+    -hasOwnProperty,
 
 */
 
@@ -13278,7 +13279,7 @@ function minErr(module) {
  * @returns {string} Lowercased string.
  */
 var lowercase = function(string){return isString(string) ? string.toLowerCase() : string;};
-
+var hasOwnProperty = Object.prototype.hasOwnProperty;
 
 /**
  * @ngdoc function
@@ -14313,6 +14314,7 @@ function encodeUriQuery(val, pctEncodeSpaces) {
    <file name="index.html">
    <div ng-controller="ngAppDemoController">
      I can add: {{a}} + {{b}} =  {{ a+b }}
+   </div>
    </file>
    <file name="script.js">
    angular.module('ngAppDemo', []).controller('ngAppDemoController', function($scope) {
@@ -14937,10 +14939,10 @@ function setupModuleLoader(window) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.2.12-build.2230+sha.bf4b0db',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.2.13-build.2256+sha.e7ab857',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 2,
-  dot: 12,
+  dot: 13,
   codeName: 'snapshot'
 };
 
@@ -15103,7 +15105,7 @@ function publishExternalAPI(angular){
  * - [`after()`](http://api.jquery.com/after/)
  * - [`append()`](http://api.jquery.com/append/)
  * - [`attr()`](http://api.jquery.com/attr/)
- * - [`bind()`](http://api.jquery.com/on/) - Does not support namespaces, selectors or eventData
+ * - [`bind()`](http://api.jquery.com/bind/) - Does not support namespaces, selectors or eventData
  * - [`children()`](http://api.jquery.com/children/) - Does not support selectors
  * - [`clone()`](http://api.jquery.com/clone/)
  * - [`contents()`](http://api.jquery.com/contents/)
@@ -15130,7 +15132,7 @@ function publishExternalAPI(angular){
  * - [`text()`](http://api.jquery.com/text/)
  * - [`toggleClass()`](http://api.jquery.com/toggleClass/)
  * - [`triggerHandler()`](http://api.jquery.com/triggerHandler/) - Passes a dummy event object to handlers.
- * - [`unbind()`](http://api.jquery.com/off/) - Does not support namespaces
+ * - [`unbind()`](http://api.jquery.com/unbind/) - Does not support namespaces
  * - [`val()`](http://api.jquery.com/val/)
  * - [`wrap()`](http://api.jquery.com/wrap/)
  *
@@ -18942,7 +18944,7 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
           templateDirective = previousCompileContext.templateDirective,
           nonTlbTranscludeDirective = previousCompileContext.nonTlbTranscludeDirective,
           hasTranscludeDirective = false,
-          hasElementTranscludeDirective = false,
+          hasElementTranscludeDirective = previousCompileContext.hasElementTranscludeDirective,
           $compileNode = templateAttrs.$$element = jqLite(compileNode),
           directive,
           directiveName,
@@ -19116,6 +19118,7 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
 
       nodeLinkFn.scope = newScopeDirective && newScopeDirective.scope === true;
       nodeLinkFn.transclude = hasTranscludeDirective && childTranscludeFn;
+      previousCompileContext.hasElementTranscludeDirective = hasElementTranscludeDirective;
 
       // might be normal or delayed nodeLinkFn depending on if templateUrl is present
       return nodeLinkFn;
@@ -19512,8 +19515,13 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
 
             if (beforeTemplateLinkNode !== beforeTemplateCompileNode) {
               var oldClasses = beforeTemplateLinkNode.className;
-              // it was cloned therefore we have to clone as well.
-              linkNode = jqLiteClone(compileNode);
+
+              if (!(previousCompileContext.hasElementTranscludeDirective &&
+                  origAsyncDirective.replace)) {
+                // it was cloned therefore we have to clone as well.
+                linkNode = jqLiteClone(compileNode);
+              }
+
               replaceWith(linkRootElement, jqLite(beforeTemplateLinkNode), linkNode);
 
               // Copy in CSS classes from original node
@@ -27169,6 +27177,15 @@ function filterFilter() {
         };
       } else {
         comparator = function(obj, text) {
+          if (obj && text && typeof obj === 'object' && typeof text === 'object') {
+            for (var objKey in obj) {
+              if (objKey.charAt(0) !== '$' && hasOwnProperty.call(obj, objKey) &&
+                  comparator(obj[objKey], text[objKey])) {
+                return true;
+              }
+            }
+            return false;
+          }
           text = (''+text).toLowerCase();
           return (''+obj).toLowerCase().indexOf(text) > -1;
         };
@@ -28062,7 +28079,14 @@ var htmlAnchorDirective = valueFn({
 
           element(by.id('link-3')).click();
 
-          expect(browser.driver.getCurrentUrl()).toMatch(/\/123$/);
+          // At this point, we navigate away from an Angular page, so we need
+          // to use browser.driver to get the base webdriver.
+
+          browser.wait(function() {
+            return browser.driver.getCurrentUrl().then(function(url) {
+              return url.match(/\/123$/);
+            });
+          }, 1000, 'page should navigate to /123');
         });
 
         it('should execute ng-click but not reload when href empty string and name specified', function() {
@@ -29785,6 +29809,9 @@ var NgModelController = ['$scope', '$exceptionHandler', '$attrs', '$element', '$
    * You can override this for input directives whose concept of being empty is different to the
    * default. The `checkboxInputType` directive does this because in its case a value of `false`
    * implies empty.
+   * 
+   * @param {*} value Reference to check.
+   * @returns {boolean} True if `value` is empty.
    */
   this.$isEmpty = function(value) {
     return isUndefined(value) || value === '' || value === null || value !== value;
@@ -31346,8 +31373,8 @@ forEach(
  * Enables binding angular expressions to onsubmit events.
  *
  * Additionally it prevents the default action (which for form means sending the request to the
- * server and reloading the current page) **but only if the form does not contain an `action`
- * attribute**.
+ * server and reloading the current page), but only if the form does not contain `action`,
+ * `data-action`, or `x-action` attributes.
  *
  * @element form
  * @priority 0
@@ -33172,23 +33199,16 @@ var ngSwitchDefaultDirective = ngDirective({
  *
  */
 var ngTranscludeDirective = ngDirective({
-  controller: ['$element', '$transclude', function($element, $transclude) {
+  link: function($scope, $element, $attrs, controller, $transclude) {
     if (!$transclude) {
       throw minErr('ngTransclude')('orphan',
-          'Illegal use of ngTransclude directive in the template! ' +
-          'No parent directive that requires a transclusion found. ' +
-          'Element: {0}',
-          startingTag($element));
+       'Illegal use of ngTransclude directive in the template! ' +
+       'No parent directive that requires a transclusion found. ' +
+       'Element: {0}',
+       startingTag($element));
     }
-
-    // remember the transclusion fn but call it during linking so that we don't process transclusion before directives on
-    // the parent element even when the transclusion replaces the current element. (we can't use priority here because
-    // that applies only to compile fns and not controllers
-    this.$transclude = $transclude;
-  }],
-
-  link: function($scope, $element, $attrs, controller) {
-    controller.$transclude(function(clone) {
+    
+    $transclude(function(clone) {
       $element.empty();
       $element.append(clone);
     });
@@ -33893,7 +33913,7 @@ var styleDirective = valueFn({
 
 !angular.$$csp() && angular.element(document).find('head').prepend('<style type="text/css">@charset "UTF-8";[ng\\:cloak],[ng-cloak],[data-ng-cloak],[x-ng-cloak],.ng-cloak,.x-ng-cloak,.ng-hide{display:none !important;}ng\\:form{display:block;}</style>');
 /**
- * @license AngularJS v1.2.12-build.2230+sha.bf4b0db
+ * @license AngularJS v1.2.13-build.2256+sha.e7ab857
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -34815,7 +34835,7 @@ function ngViewFillContentFactory($compile, $controller, $route) {
 })(window, window.angular);
 
 /**
- * @license AngularJS v1.2.12-build.2230+sha.bf4b0db
+ * @license AngularJS v1.2.11
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -34856,7 +34876,7 @@ function shallowClearAndCopy(src, dst) {
   });
 
   for (var key in src) {
-    if (src.hasOwnProperty(key) && !(key.charAt(0) === '$' && key.charAt(1) === '$')) {
+    if (src.hasOwnProperty(key) && key.charAt(0) !== '$' && key.charAt(1) !== '$') {
       dst[key] = src[key];
     }
   }
@@ -35412,7 +35432,7 @@ angular.module('ngResource', ['ng']).
 })(window, window.angular);
 
 /**
- * @license AngularJS v1.2.12-build.2230+sha.bf4b0db
+ * @license AngularJS v1.2.13-build.2256+sha.e7ab857
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */

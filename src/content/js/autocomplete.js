@@ -100,20 +100,25 @@ App.autocomplete.onKeyUp = function (e) {
         if (e.keyCode == KEY_ESCAPE) {
             App.autocomplete.onKey(e.keyCode);
         }
+
     }
-    // Try to show the autocomplete dialog (it there is something to show)
-    App.settings.getAutocompleteEnabled(function (enabled) { // first make sure it's enabled
-        if (!enabled) {
-            return;
-        }
-        App.autocomplete.close();
-        window.clearTimeout(App.autocomplete.timeoutId);
-        App.settings.getAutocompleteDelay(function (delay) { // get the delay value
-            App.autocomplete.timeoutId = window.setTimeout(function () {
-                App.autocomplete.checkWord(e);
-            }, delay);
+
+    if (App.data.inCompose) {
+        // Try to show the autocomplete dialog (it there is something to show)
+        App.settings.getAutocompleteEnabled(function (enabled) { // first make sure it's enabled
+            if (!enabled) {
+                return;
+            }
+            App.autocomplete.close();
+            window.clearTimeout(App.autocomplete.timeoutId);
+            App.settings.getAutocompleteDelay(function (delay) { // get the delay value
+                App.autocomplete.timeoutId = window.setTimeout(function () {
+                    App.autocomplete.checkWord(e);
+                }, delay);
+            });
         });
-    });
+    }
+
 };
 
 App.autocomplete.onKey = function (key, e) {
@@ -169,14 +174,20 @@ App.autocomplete.checkWord = function (e) {
     // Cache word
     cursorPosition.word = word;
 
-    if (word.text !== '') {
+    if (word.text !== '' && word.text.length >= 2) {
 
         // Load all tags
         App.settings.get('quicktexts', function (elements) {
             // Search for match
             App.autocomplete.quicktexts = elements.filter(function (a) {
                 // TODO search for mathc in whole shorcut (now searches for match starting with the beginning)
-                return a.shortcut.indexOf(word.text) === 0;
+                if (a.shortcut.indexOf(word.text) === 0) {
+                    return true;
+                }
+
+                if (a.title.toLowerCase().indexOf(word.text.toLowerCase()) !== -1) {
+                    return true;
+                }
             });
 
             if (App.autocomplete.quicktexts.length) {

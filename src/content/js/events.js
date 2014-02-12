@@ -36,7 +36,7 @@ App.onFocus = function(e) {
 };
 
 App.onBlur = function(e) {
-    PubSub.publish('focus', 'off', e.target);
+    PubSub.publish('focus', 'off', e.relatedTarget);
 };
 
 App.onKeyDown = function(e) {
