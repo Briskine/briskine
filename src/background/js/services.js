@@ -59,8 +59,9 @@ gqApp.service('QuicktextService', function($q, $resource, SettingsService) {
     //TODO: Make sure the user is logged in before sending anything
 
     self.syncTimer = null;
+    self.lastSync = null;
 
-    self.sync = function() {
+    self.sync = function(callback) {
         if (!self.isLoggedin()) {
             return;
         }
@@ -128,6 +129,11 @@ gqApp.service('QuicktextService', function($q, $resource, SettingsService) {
         });
         window.clearTimeout(self.syncTimer);
         self.syncTimer = window.setTimeout(self.sync, 5000);
+
+        // TODO should probably be done in one of the query callbacks
+        // after a succesfull sync
+        self.lastSync = new Date();
+        if(callback) callback(self.lastSync);
     };
 
     self.sync();

@@ -5,7 +5,8 @@ var gqApp = angular.module('gqApp', [
         'ngRoute',
         'ngResource',
         'ngAnimate',
-        'angular-md5'
+        'angular-md5',
+        'angularMoment'
     ]).config(function($routeProvider, $compileProvider) {
 
         $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|chrome-extension):/);
@@ -31,7 +32,7 @@ var gqApp = angular.module('gqApp', [
 
 /* Global run
  */
-gqApp.run(function($rootScope, $location, $http, ProfileService, SettingsService) {
+gqApp.run(function($rootScope, $location, $http, $timeout, ProfileService, SettingsService, QuicktextService) {
 
     $rootScope.$on('$routeChangeStart', function(next, current) {
         $rootScope.path = $location.path();
@@ -40,6 +41,15 @@ gqApp.run(function($rootScope, $location, $http, ProfileService, SettingsService
     $rootScope.pageAction = ($location.path() === '/popup');
     $rootScope.profile = ProfileService;
     $rootScope.settings = SettingsService;
+
+    // last sync date
+    $rootScope.lastSync = QuicktextService.lastSync;
+
+    $rootScope.SyncNow = function() {
+      QuicktextService.sync(function(lastSync) {
+        $rootScope.lastSync = lastSync;
+      });
+    };
 
     // init dom plugins
     var initDom = function() {

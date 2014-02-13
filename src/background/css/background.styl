@@ -142,7 +142,7 @@ header {
 
 .anonymous,
 .profile-body {
-  margin-bottom: emCalc(12);
+  margin-bottom: emCalc(28);
 }
 
 /* List group item
@@ -269,7 +269,6 @@ header {
 
 }
 
-
 .btn-social {
   font-size: emCalc(20);
   color: #fff;
@@ -340,5 +339,79 @@ header {
    */
   .btn-toolbar {
     padding: emCalc(12) emCalc(16);
+  }
+}
+
+/* Profile
+ */
+.profile-body {
+  clearfix();
+
+  transition: all .1s ease-out;
+  transition-delay: .3s;
+  transform: translateX(emCalc(-68));
+  opacity: .5;
+
+  &:hover {
+    transform: translateX(0);
+    opacity: 1;
+
+    .profile-picture {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+
+  .profile-picture {
+    float: left;
+    margin-right: emCalc(12);
+
+    transition: all .15s ease-out;
+    transition-delay: .3s;
+    transform: translateX(emCalc(8));
+    opacity: .6;
+
+    img {
+      max-width: emCalc(60);
+    }
+  }
+
+  .profile-details {
+    float: left;
+    padding-top: emCalc(6);
+    cursor: default;
+
+    p {
+      margin: 0;
+
+      color: lighten($black, 20%);
+
+      strong {
+        font-size: emCalc(20);
+        color: $black;
+      }
+    }
+  }
+}
+
+/* Sidebar footer
+ */
+.sidebar-footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  padding: emCalc(16) emCalc(20) emCalc(20) emCalc(22);
+
+  .sync-status {
+    transition: all .1s ease-in;
+    opacity: .6;
+
+    &:hover {
+      opacity: 1;
+    }
+
+    .sync-label {
+      padding-bottom: emCalc(8);
+    }
   }
 }

@@ -13102,7 +13102,7 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap requires jQuery");+func
 }).call(this);
 
 /**
- * @license AngularJS v1.2.13-build.2256+sha.e7ab857
+ * @license AngularJS v1.2.13-build.2250+sha.08793a6
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -13171,7 +13171,7 @@ function minErr(module) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.2.13-build.2256+sha.e7ab857/' +
+    message = message + '\nhttp://errors.angularjs.org/1.2.13-build.2250+sha.08793a6/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i-2) + '=' +
@@ -13263,7 +13263,6 @@ function minErr(module) {
     -assertNotHasOwnProperty,
     -getter,
     -getBlockElements,
-    -hasOwnProperty,
 
 */
 
@@ -13279,7 +13278,7 @@ function minErr(module) {
  * @returns {string} Lowercased string.
  */
 var lowercase = function(string){return isString(string) ? string.toLowerCase() : string;};
-var hasOwnProperty = Object.prototype.hasOwnProperty;
+
 
 /**
  * @ngdoc function
@@ -14314,7 +14313,6 @@ function encodeUriQuery(val, pctEncodeSpaces) {
    <file name="index.html">
    <div ng-controller="ngAppDemoController">
      I can add: {{a}} + {{b}} =  {{ a+b }}
-   </div>
    </file>
    <file name="script.js">
    angular.module('ngAppDemo', []).controller('ngAppDemoController', function($scope) {
@@ -14939,7 +14937,7 @@ function setupModuleLoader(window) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.2.13-build.2256+sha.e7ab857',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.2.13-build.2250+sha.08793a6',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 2,
   dot: 13,
@@ -15105,7 +15103,7 @@ function publishExternalAPI(angular){
  * - [`after()`](http://api.jquery.com/after/)
  * - [`append()`](http://api.jquery.com/append/)
  * - [`attr()`](http://api.jquery.com/attr/)
- * - [`bind()`](http://api.jquery.com/bind/) - Does not support namespaces, selectors or eventData
+ * - [`bind()`](http://api.jquery.com/on/) - Does not support namespaces, selectors or eventData
  * - [`children()`](http://api.jquery.com/children/) - Does not support selectors
  * - [`clone()`](http://api.jquery.com/clone/)
  * - [`contents()`](http://api.jquery.com/contents/)
@@ -15132,7 +15130,7 @@ function publishExternalAPI(angular){
  * - [`text()`](http://api.jquery.com/text/)
  * - [`toggleClass()`](http://api.jquery.com/toggleClass/)
  * - [`triggerHandler()`](http://api.jquery.com/triggerHandler/) - Passes a dummy event object to handlers.
- * - [`unbind()`](http://api.jquery.com/unbind/) - Does not support namespaces
+ * - [`unbind()`](http://api.jquery.com/off/) - Does not support namespaces
  * - [`val()`](http://api.jquery.com/val/)
  * - [`wrap()`](http://api.jquery.com/wrap/)
  *
@@ -27177,15 +27175,6 @@ function filterFilter() {
         };
       } else {
         comparator = function(obj, text) {
-          if (obj && text && typeof obj === 'object' && typeof text === 'object') {
-            for (var objKey in obj) {
-              if (objKey.charAt(0) !== '$' && hasOwnProperty.call(obj, objKey) &&
-                  comparator(obj[objKey], text[objKey])) {
-                return true;
-              }
-            }
-            return false;
-          }
           text = (''+text).toLowerCase();
           return (''+obj).toLowerCase().indexOf(text) > -1;
         };
@@ -29809,9 +29798,6 @@ var NgModelController = ['$scope', '$exceptionHandler', '$attrs', '$element', '$
    * You can override this for input directives whose concept of being empty is different to the
    * default. The `checkboxInputType` directive does this because in its case a value of `false`
    * implies empty.
-   * 
-   * @param {*} value Reference to check.
-   * @returns {boolean} True if `value` is empty.
    */
   this.$isEmpty = function(value) {
     return isUndefined(value) || value === '' || value === null || value !== value;
@@ -33913,7 +33899,7 @@ var styleDirective = valueFn({
 
 !angular.$$csp() && angular.element(document).find('head').prepend('<style type="text/css">@charset "UTF-8";[ng\\:cloak],[ng-cloak],[data-ng-cloak],[x-ng-cloak],.ng-cloak,.x-ng-cloak,.ng-hide{display:none !important;}ng\\:form{display:block;}</style>');
 /**
- * @license AngularJS v1.2.13-build.2256+sha.e7ab857
+ * @license AngularJS v1.2.13-build.2250+sha.08793a6
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -34835,7 +34821,7 @@ function ngViewFillContentFactory($compile, $controller, $route) {
 })(window, window.angular);
 
 /**
- * @license AngularJS v1.2.11
+ * @license AngularJS v1.2.13-build.2250+sha.08793a6
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -34876,7 +34862,7 @@ function shallowClearAndCopy(src, dst) {
   });
 
   for (var key in src) {
-    if (src.hasOwnProperty(key) && key.charAt(0) !== '$' && key.charAt(1) !== '$') {
+    if (src.hasOwnProperty(key) && !(key.charAt(0) === '$' && key.charAt(1) === '$')) {
       dst[key] = src[key];
     }
   }
@@ -35432,7 +35418,7 @@ angular.module('ngResource', ['ng']).
 })(window, window.angular);
 
 /**
- * @license AngularJS v1.2.13-build.2256+sha.e7ab857
+ * @license AngularJS v1.2.13-build.2250+sha.08793a6
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -37152,125 +37138,177 @@ module.filter('md5', ['md5', function(md5) {
 }(angular.module('angular-md5', []), angular));
 
 
-/* angular-moment.js / v0.5.2 / (c) 2013 Uri Shaked / MIT Licence */
+/* angular-moment.js / v0.6.2 / (c) 2013, 2014 Uri Shaked / MIT Licence */
 
-angular.module('angularMoment', [])
-	.constant('amTimeAgoConfig', { withoutSuffix: false })
-	.directive('amTimeAgo', ['$window', 'amTimeAgoConfig', function ($window, amTimeAgoConfig) {
-		'use strict';
+(function () {
+	'use strict';
 
-		return function (scope, element, attr) {
-			var activeTimeout = null;
-			var currentValue;
-			var currentFormat;
-
-			function cancelTimer() {
-				if (activeTimeout) {
-					$window.clearTimeout(activeTimeout);
-					activeTimeout = null;
-				}
+	/**
+	 * Apply a timezone onto a given moment object - if moment-timezone.js is included
+	 * Otherwise, it'll not apply any timezone shift.
+	 * @param {Moment} aMoment
+	 * @param {string} timezone
+	 * @returns {Moment}
+	 */
+	function applyTimezone(aMoment, timezone, $log) {
+		if (aMoment && timezone) {
+			if (aMoment.tz) {
+				aMoment = aMoment.tz(timezone);
+			} else {
+				$log.warn('angular-moment: timezone specified but moment.tz() is undefined. Did you forget to include moment-timezone.js?');
 			}
+		}
+		return aMoment;
+	}
 
-			function updateTime(momentInstance) {
-				element.text(momentInstance.fromNow(amTimeAgoConfig.withoutSuffix));
-				var howOld = $window.moment().diff(momentInstance, 'minute');
-				var secondsUntilUpdate = 3600;
-				if (howOld < 1) {
-					secondsUntilUpdate = 1;
-				} else if (howOld < 60) {
-					secondsUntilUpdate = 30;
-				} else if (howOld < 180) {
-					secondsUntilUpdate = 300;
-				}
+	angular.module('angularMoment', [])
+	/**
+	 * Common configuration of the angularMoment module
+	 */
+		.constant('angularMomentConfig', {
+			timezone: '' // e.g. 'Europe/London'
+		})
+		.constant('amTimeAgoConfig', { withoutSuffix: false})
+		.directive('amTimeAgo', ['$window', 'amTimeAgoConfig', function ($window, amTimeAgoConfig) {
 
-				activeTimeout = $window.setTimeout(function () {
-					updateTime(momentInstance);
-				}, secondsUntilUpdate * 1000);
-			}
+			return function (scope, element, attr) {
+				var activeTimeout = null;
+				var currentValue;
+				var currentFormat;
+				var withoutSuffix = amTimeAgoConfig.withoutSuffix;
 
-			function updateMoment() {
-				cancelTimer();
-				updateTime($window.moment(currentValue, currentFormat));
-			}
-
-			scope.$watch(attr.amTimeAgo, function (value) {
-				if ((typeof value === 'undefined') || (value === null) || (value === '')) {
-					cancelTimer();
-					if (currentValue) {
-						element.text('');
-						currentValue = null;
+				function cancelTimer() {
+					if (activeTimeout) {
+						$window.clearTimeout(activeTimeout);
+						activeTimeout = null;
 					}
-					return;
 				}
 
-				if (angular.isNumber(value)) {
+				function updateTime(momentInstance) {
+					element.text(momentInstance.fromNow(withoutSuffix));
+					var howOld = $window.moment().diff(momentInstance, 'minute');
+					var secondsUntilUpdate = 3600;
+					if (howOld < 1) {
+						secondsUntilUpdate = 1;
+					} else if (howOld < 60) {
+						secondsUntilUpdate = 30;
+					} else if (howOld < 180) {
+						secondsUntilUpdate = 300;
+					}
+
+					activeTimeout = $window.setTimeout(function () {
+						updateTime(momentInstance);
+					}, secondsUntilUpdate * 1000);
+				}
+
+				function updateMoment() {
+					cancelTimer();
+					updateTime($window.moment(currentValue, currentFormat));
+				}
+
+				scope.$watch(attr.amTimeAgo, function (value) {
+					if ((typeof value === 'undefined') || (value === null) || (value === '')) {
+						cancelTimer();
+						if (currentValue) {
+							element.text('');
+							currentValue = null;
+						}
+						return;
+					}
+
+					if (angular.isNumber(value)) {
+						// Milliseconds since the epoch
+						value = new Date(value);
+					}
+					// else assume the given value is already a date
+
+					currentValue = value;
+					updateMoment();
+				});
+
+				if (angular.isDefined(attr.amWithoutSuffix)) {
+					scope.$watch(attr.amWithoutSuffix, function (value) {
+						if (typeof value === 'boolean') {
+							withoutSuffix = value;
+							updateMoment();
+						} else {
+							withoutSuffix = amTimeAgoConfig.withoutSuffix;
+						}
+					});
+				}
+
+				attr.$observe('amFormat', function (format) {
+					currentFormat = format;
+					if (currentValue) {
+						updateMoment();
+					}
+				});
+
+				scope.$on('$destroy', function () {
+					cancelTimer();
+				});
+
+				scope.$on('amMoment:languageChange', function () {
+					updateMoment();
+				});
+			};
+		}])
+		.factory('amMoment', ['$window', '$rootScope', function ($window, $rootScope) {
+			return {
+				changeLanguage: function (lang) {
+					var result = $window.moment.lang(lang);
+					if (angular.isDefined(lang)) {
+						$rootScope.$broadcast('amMoment:languageChange');
+					}
+					return result;
+				}
+			};
+		}])
+		.filter('amCalendar', ['$window', '$log', 'angularMomentConfig', function ($window, $log, angularMomentConfig) {
+
+			return function (value) {
+				if (typeof value === 'undefined' || value === null) {
+					return '';
+				}
+
+				if (!isNaN(parseFloat(value)) && isFinite(value)) {
 					// Milliseconds since the epoch
-					value = new Date(value);
+					value = new Date(parseInt(value, 10));
 				}
 				// else assume the given value is already a date
 
-				currentValue = value;
-				updateMoment();
-			});
+				return applyTimezone($window.moment(value), angularMomentConfig.timezone, $log).calendar();
+			};
+		}])
+		.filter('amDateFormat', ['$window', '$log', 'angularMomentConfig', function ($window, $log, angularMomentConfig) {
 
-			attr.$observe('amFormat', function (format) {
-				currentFormat = format;
-				if (currentValue) {
-					updateMoment();
+			return function (value, format) {
+				if (typeof value === 'undefined' || value === null) {
+					return '';
 				}
-			});
 
-			scope.$on('$destroy', function () {
-				cancelTimer();
-			});
-		};
-	}])
-	.filter('amCalendar', ['$window', function ($window) {
-		'use strict';
+				if (!isNaN(parseFloat(value)) && isFinite(value)) {
+					// Milliseconds since the epoch
+					value = new Date(parseInt(value, 10));
+				}
+				// else assume the given value is already a date
 
-		return function (value) {
-			if (typeof value === 'undefined' || value === null) {
-				return '';
-			}
+				return applyTimezone($window.moment(value), angularMomentConfig.timezone, $log).format(format);
+			};
+		}])
+		.filter('amDurationFormat', ['$window', function ($window) {
 
-			if (!isNaN(parseFloat(value)) && isFinite(value)) {
-				// Milliseconds since the epoch
-				value = new Date(parseInt(value, 10));
-			}
-			// else assume the given value is already a date
+			return function (value, format, suffix) {
+				if (typeof value === 'undefined' || value === null) {
+					return '';
+				}
 
-			return $window.moment(value).calendar();
-		};
-	}])
-	.filter('amDateFormat', ['$window', function ($window) {
-		'use strict';
+				// else assume the given value is already a duration in a format (miliseconds, etc)
+				return $window.moment.duration(value, format).humanize(suffix);
+			};
+		}]);
 
-		return function (value, format) {
-			if (typeof value === 'undefined' || value === null) {
-				return '';
-			}
-
-			if (!isNaN(parseFloat(value)) && isFinite(value)) {
-				// Milliseconds since the epoch
-				value = new Date(parseInt(value, 10));
-			}
-			// else assume the given value is already a date
-
-			return $window.moment(value).format(format);
-		};
-	}])
-	.filter('amDurationFormat', ['$window', function ($window) {
-		'use strict';
-
-		return function (value, format, suffix) {
-			if (typeof value === 'undefined' || value === null) {
-				return '';
-			}
-
-			// else assume the given value is already a duration in a format (miliseconds, etc)
-			return $window.moment.duration(value, format).humanize(suffix);
-		};
-	}]);
+})();
 
 var ENV = "production";
 /* Quicktext chrome extension
@@ -37280,7 +37318,8 @@ var gqApp = angular.module('gqApp', [
         'ngRoute',
         'ngResource',
         'ngAnimate',
-        'angular-md5'
+        'angular-md5',
+        'angularMoment'
     ]).config(function($routeProvider, $compileProvider) {
 
         $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|chrome-extension):/);
@@ -37306,7 +37345,7 @@ var gqApp = angular.module('gqApp', [
 
 /* Global run
  */
-gqApp.run(function($rootScope, $location, $http, ProfileService, SettingsService) {
+gqApp.run(function($rootScope, $location, $http, $timeout, ProfileService, SettingsService, QuicktextService) {
 
     $rootScope.$on('$routeChangeStart', function(next, current) {
         $rootScope.path = $location.path();
@@ -37315,6 +37354,15 @@ gqApp.run(function($rootScope, $location, $http, ProfileService, SettingsService
     $rootScope.pageAction = ($location.path() === '/popup');
     $rootScope.profile = ProfileService;
     $rootScope.settings = SettingsService;
+
+    // last sync date
+    $rootScope.lastSync = QuicktextService.lastSync;
+
+    $rootScope.SyncNow = function() {
+      QuicktextService.sync(function(lastSync) {
+        $rootScope.lastSync = lastSync;
+      });
+    };
 
     // init dom plugins
     var initDom = function() {
@@ -37924,8 +37972,9 @@ gqApp.service('QuicktextService', function($q, $resource, SettingsService) {
     //TODO: Make sure the user is logged in before sending anything
 
     self.syncTimer = null;
+    self.lastSync = null;
 
-    self.sync = function() {
+    self.sync = function(callback) {
         if (!self.isLoggedin()) {
             return;
         }
@@ -37993,6 +38042,11 @@ gqApp.service('QuicktextService', function($q, $resource, SettingsService) {
         });
         window.clearTimeout(self.syncTimer);
         self.syncTimer = window.setTimeout(self.sync, 5000);
+
+        // TODO should probably be done in one of the query callbacks
+        // after a succesfull sync
+        self.lastSync = new Date();
+        if(callback) callback(self.lastSync);
     };
 
     self.sync();
