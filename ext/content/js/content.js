@@ -11989,7 +11989,7 @@ App.autocomplete.getCursorPosition = function (e) {
             range = range.cloneRange();
             range.setStartAfter($caret[0]);
             range.collapse(true);
-            selection.removeAllRanges();
+            //selection.removeAllRanges();
             selection.addRange(range);
 
             position.absolute = $caret.offset();
