@@ -91,16 +91,17 @@ App.autocomplete.onKeyUp = function (e) {
 
     if (App.autocomplete.isActive) {
         // Just prevent propagation
-        if (~[KEY_ENTER, KEY_ESCAPE, KEY_UP, KEY_DOWN].indexOf(e.keyCode)) {
+        if (~[KEY_ENTER, KEY_UP, KEY_DOWN].indexOf(e.keyCode)) {
             e.preventDefault();
             e.stopPropagation();
+            return;
         }
 
         // Escape
         if (e.keyCode == KEY_ESCAPE) {
             App.autocomplete.onKey(e.keyCode);
+            return;
         }
-
     }
 
     if (App.data.inCompose) {
@@ -118,7 +119,6 @@ App.autocomplete.onKeyUp = function (e) {
             });
         });
     }
-
 };
 
 App.autocomplete.onKey = function (key, e) {
@@ -151,7 +151,7 @@ App.autocomplete.keyCompletion = function (e) {
         App.settings.get('quicktexts', function (quicktexts) {
             // Search for match
             var filtered = quicktexts.filter(function (a) {
-                return a.shortcut.indexOf(word.text) === 0;
+                return a.shortcut === word.text;
             });
             if (filtered.length) {
                 // replace with the first quicktext found
@@ -174,21 +174,48 @@ App.autocomplete.checkWord = function (e) {
     // Cache word
     cursorPosition.word = word;
 
-    if (word.text !== '' && word.text.length >= 2) {
+    var quicktexts = [];
 
-        // Load all tags
+
+    //TODO: This should probably be done in the background and the results be hold in a cache
+    if (word.text !== '') {
         App.settings.get('quicktexts', function (elements) {
-            // Search for match
-            App.autocomplete.quicktexts = elements.filter(function (a) {
-                // TODO search for mathc in whole shorcut (now searches for match starting with the beginning)
-                if (a.shortcut.indexOf(word.text) === 0) {
+            App.autocomplete.quicktexts = [];
+
+            App.autocomplete.quicktexts = _.union(App.autocomplete.quicktexts, elements.filter(function (a) {
+                if (a.shortcut === word.text) {
                     return true;
                 }
 
-                if (a.title.toLowerCase().indexOf(word.text.toLowerCase()) !== -1) {
-                    return true;
+                // check out the exact match of tags
+                var tags = a.tags.split(",");
+                for (var i in tags){
+                    var tag = tags[i].replace(" ", "");
+                    if (tag && word.text === tag) {
+                        return true;
+                    }
                 }
-            });
+            }));
+
+
+            if (word.text.length >= 3) { // begin searching in the title/tags after 3 chars
+                // Search for match
+                App.autocomplete.quicktexts = _.union(App.autocomplete.quicktexts, elements.filter(function (a) {
+                    if (a.title.toLowerCase().indexOf(word.text.toLowerCase()) !== -1) {
+                        return true;
+                    }
+                }));
+            }
+
+            if (word.text.length >= 5) { // begin searching in body after 5 chars
+                // Search for match
+                App.autocomplete.quicktexts = _.union(App.autocomplete.quicktexts, elements.filter(function (a) {
+                    if (a.body.toLowerCase().indexOf(word.text.toLowerCase()) !== -1) {
+                        return true;
+                    }
+                }));
+            }
+
 
             if (App.autocomplete.quicktexts.length) {
                 App.autocomplete.dropdownCreate(cursorPosition);
