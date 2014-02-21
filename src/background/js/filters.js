@@ -37,10 +37,7 @@ gqApp.filter('tagFilter', function(QuicktextService){
         if (filterTags && filterTags.length){
             return _.filter(quicktexts, function(qt){
                 tags = QuicktextService.tags(qt);
-                if (_.intersection(filterTags, tags).length === filterTags.length) {
-                    return true;
-                }
-                return false;
+                return _.intersection(filterTags, tags).length === filterTags.length;
             });
         } else {
             return quicktexts;

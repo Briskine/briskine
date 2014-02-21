@@ -17,7 +17,7 @@ App.parser.getFieldValues = function (element) {
         subject = "";
 
     if (App.data.gmailView === 'basic html') {
-        from = $('#guser b').text();
+        from = $('#guser').find('b').text();
         var toEl = $("#to");
 
         // Full options window

@@ -105,6 +105,11 @@ App.autocomplete.onKeyUp = function (e) {
     }
 
     if (App.data.inCompose) {
+        if (App.autocomplete.justCompleted) {
+            App.autocomplete.justCompleted = false;
+            return;
+        }
+
         // Try to show the autocomplete dialog (it there is something to show)
         App.settings.getAutocompleteEnabled(function (enabled) { // first make sure it's enabled
             if (!enabled) {
@@ -155,7 +160,7 @@ App.autocomplete.keyCompletion = function (e) {
             });
             if (filtered.length) {
                 // replace with the first quicktext found
-                App.autocomplete.replaceWith(filtered[0]);
+                App.autocomplete.replaceWith(filtered[0], e);
             } else { // no quicktext found.. focus the next element
                 App.autocomplete.focusNext(e.target);
             }
@@ -189,30 +194,27 @@ App.autocomplete.checkWord = function (e) {
 
                 // check out the exact match of tags
                 var tags = a.tags.split(",");
-                for (var i in tags){
+                for (var i in tags) {
                     var tag = tags[i].replace(" ", "");
                     if (tag && word.text === tag) {
                         return true;
                     }
                 }
+                return false;
             }));
 
 
             if (word.text.length >= 3) { // begin searching in the title/tags after 3 chars
                 // Search for match
                 App.autocomplete.quicktexts = _.union(App.autocomplete.quicktexts, elements.filter(function (a) {
-                    if (a.title.toLowerCase().indexOf(word.text.toLowerCase()) !== -1) {
-                        return true;
-                    }
+                    return a.title.toLowerCase().indexOf(word.text.toLowerCase()) !== -1;
                 }));
             }
 
             if (word.text.length >= 5) { // begin searching in body after 5 chars
                 // Search for match
                 App.autocomplete.quicktexts = _.union(App.autocomplete.quicktexts, elements.filter(function (a) {
-                    if (a.body.toLowerCase().indexOf(word.text.toLowerCase()) !== -1) {
-                        return true;
-                    }
+                    return a.body.toLowerCase().indexOf(word.text.toLowerCase()) !== -1;
                 }));
             }
 
@@ -422,10 +424,12 @@ App.autocomplete.selectActive = function () {
     }
 };
 
-App.autocomplete.replaceWith = function (quicktext) {
+App.autocomplete.replaceWith = function (quicktext, event) {
     var cursorPosition = App.autocomplete.cursorPosition,
         word = cursorPosition.word,
         replacement = "";
+
+    App.autocomplete.justCompleted = true; // the idea is that we don't want any completion to popup after we just completed
 
     if (App.data.gmailView == 'basic html') {
         var $textarea = $(cursorPosition.element),
