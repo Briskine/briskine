@@ -265,6 +265,7 @@ gqApp.controller('ListCtrl',
                         'action': 'insert',
                         'quicktext': quicktext
                     }, function(response) {
+                        //console.log(response);
                     });
                     window.close();
                 });

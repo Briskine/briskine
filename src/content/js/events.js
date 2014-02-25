@@ -1,26 +1,24 @@
 /*
-   PubSub events
-*/
+ PubSub events
+ */
 
-PubSub.subscribe('focus', function(action, element, gmailView) {
+PubSub.subscribe('focus', function (action, element, gmailView) {
     if (action === 'on') {
         App.data.inCompose = true;
         App.data.composeElement = element;
         App.data.gmailView = gmailView;
-    } else if (action === 'off') {
-        if (App.data.composeElement !== element) {
-            App.data.inCompose = false;
-            App.data.composeElement = null;
-            App.data.gmailView = '';
-        }
+    } else if (action === 'off' && element !== null) {
+        App.data.inCompose = false;
+        App.data.composeElement = null;
+        App.data.gmailView = '';
     }
 });
 
 /*
-    Events handling
-*/
+ Events handling
+ */
 
-App.onFocus = function(e) {
+App.onFocus = function (e) {
     var target = e.target;
 
     // Disable any focus as there may be only one focus on a page
@@ -35,36 +33,17 @@ App.onFocus = function(e) {
     }
 };
 
-App.onBlur = function(e) {
+App.onBlur = function (e) {
     PubSub.publish('focus', 'off', e.relatedTarget);
 };
 
-App.onKeyDown = function(e) {
+App.onKeyDown = function (e) {
     App.autocomplete.onKeyDown(e);
 };
 
-App.onKeyUp = function(e) {
+App.onKeyUp = function (e) {
     App.autocomplete.onKeyUp(e);
 };
 
-// wait for the background page to send a message to the content script
-chrome.runtime.onMessage.addListener(
-function(request, sender, sendResponse) {
-    // insert quicktext
-    if (request.action && request.action == 'insert'){
-        if (App.data.inCompose){
-            var quicktext = request.quicktext;
-            var dest = document.getSelection();
-            var e = {
-                target: dest.baseNode
-            };
 
-            // return focus to it's rightful owner
-            App.onFocus(e);
-            App.autocomplete.cursorPosition = App.autocomplete.getCursorPosition(e);
-            App.autocomplete.cursorPosition.word = "";
-            App.autocomplete.replaceWith(quicktext);
-        }
-    }
-    sendResponse();
-});
+
