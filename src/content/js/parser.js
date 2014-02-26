@@ -45,10 +45,10 @@ App.parser.getFieldValues = function (element) {
             from_email = $container.find('input[name=from]').val(),
         // , from_name = $('span[email="'+from_email+'"]').length ? $('span[email="'+from_email+'"]').attr('name') : ''
         // Taking name based on Google+ avatar name
-            fromNameEl = $('a[href^="https://plus.google.com/u/0/"] img[alt]'),
-            from_name = fromNameEl.length ? fromNameEl.attr('alt') : '';
+            fromNameEl = $('a[href^="https://plus.google.com/u/0/me"][title]'),
+            fromName = fromNameEl.length ? fromNameEl.attr('title').split('\n')[0]: '';
 
-        from = from_name + ' <' + from_email + '>';
+        from = fromName + ' <' + from_email + '>';
         to = $container.find('input[name=to]').toArray().map(function (a) {
             return a.value;
         });
