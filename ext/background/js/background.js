@@ -38258,7 +38258,7 @@ gqApp.service('StatsService', function($resource, SettingsService){
             }
         }
         window.clearTimeout(self.syncStatsTimer);
-        self.syncStatsTimer = window.setTimeout(self.sync, 1000); // every 15minutes
+        self.syncStatsTimer = window.setTimeout(self.sync, 15 * 60 * 1000); // every 15minutes
     };
     self.sync();
 });
