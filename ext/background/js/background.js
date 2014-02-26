@@ -38000,6 +38000,31 @@ gqApp.service('QuicktextService', function($q, $resource, SettingsService) {
                 }
             });
         });
+
+        // Get the quicktexts from the remote server
+        self.qRes.query(function(remoteQuicktexts) {
+            self.db.transaction(function(tx) {
+                tx.executeSql("SELECT * FROM quicktext", [], function(tx, res) {
+                    for (var i = 0; i < res.rows.length; i++) {
+                        var qt = res.rows.item(i);
+                        _.each(remoteQuicktexts, function(remoteQt) {
+                            var version = remoteQt.versions[0];
+
+                            if (qt.remote_id === remoteQt.id) {
+                                qt = self._copy(version, qt);
+                                qt.remote_id = remoteQt.id;
+                                self.update(qt, true);
+                            } else {
+                                var newQt = self._copy(version, {});
+                                newQt.remote_id = remoteQt.id;
+                                self.create(newQt, true);
+                            }
+                        });
+                    }
+                });
+            });
+        });
+
         window.clearTimeout(self.syncTimer);
         self.syncTimer = window.setTimeout(self.sync, 15000); // every 15 seconds
 
@@ -38055,13 +38080,17 @@ gqApp.service('QuicktextService', function($q, $resource, SettingsService) {
     };
 
     // create and try to sync with the server
-    self.create = function(qt) {
+    self.create = function(qt, onlyLocal) {
         var deferred = $q.defer();
         self.db.transaction(function(tx) {
             var now = new Date().toISOString();
             tx.executeSql("INSERT INTO quicktext (remote_id, title, subject, shortcut, tags, body, created_datetime) VALUES (?, ?, ?, ?, ?, ?, ?)", [
                 qt.remote_id, qt.title, qt.subject, qt.shortcut, self._clean_tags(qt.tags), qt.body, now
             ], function(_, results) {
+                if (onlyLocal){ // update only locally - don't do any remote operations
+                    return;
+                }
+
                 var remoteDefer = $q.defer();
                 deferred.resolve(remoteDefer.promise);
 
@@ -38089,13 +38118,17 @@ gqApp.service('QuicktextService', function($q, $resource, SettingsService) {
     };
 
     // update a quicktext and try to sync
-    self.update = function(qt) {
+    self.update = function(qt, onlyLocal) {
         var deferred = $q.defer();
         self.db.transaction(function(tx) {
             var now = new Date().toISOString();
             tx.executeSql("UPDATE quicktext SET remote_id = ?, title = ?, subject = ?, shortcut = ?, tags = ?, body = ?, updated_datetime = ? WHERE id = ?", [
                 qt.remote_id, qt.title, qt.subject, qt.shortcut, self._clean_tags(qt.tags), qt.body, now, qt.id
             ], function() {
+                if (onlyLocal){ // update only locally - don't do any remote operations
+                    return;
+                }
+
                 var remoteDefer = $q.defer();
                 deferred.resolve(remoteDefer.promise);
 
@@ -38238,20 +38271,20 @@ gqApp.service('QuicktextService', function($q, $resource, SettingsService) {
 });
 
 // Handle stats (publish stats on the remote server)
-gqApp.service('StatsService', function($resource, SettingsService){
+gqApp.service('StatsService', function($resource, SettingsService) {
     var self = this;
 
     self.syncStatsTimer = null;
     self.statsRes = $resource(SettingsService.get('apiBaseURL') + 'stats/');
 
     // should probably be called every few minutes or so
-    self.sync = function(){
+    self.sync = function() {
         if (SettingsService.get("sendStatsEnabled")) { // do this only if user allowed sending anonymous statistics
             var newWords = SettingsService.get("words") - SettingsService.get('syncedWords');
             if (newWords > 0) {
                 var stats = new self.statsRes();
                 stats.words = newWords;
-                stats.$save(function(){
+                stats.$save(function() {
                     SettingsService.set("syncedWords", SettingsService.get("words"));
                     SettingsService.set("lastStatsSync", new Date());
                 });
