@@ -32,7 +32,7 @@ var Settings = {
         //apiBaseURL: "http://localhost:5000/api/1/",
         syncEnabled: false,
         autocompleteEnabled: true, // autocomplete dialog
-        autocompleteDelay: 300, // autocomplete dialog delay - 300ms by default
+        autocompleteDelay: 1000, // autocomplete dialog delay - 1s by default
         tabcompleteEnabled: true, // tab completion
         sendStatsEnabled: true, // send anonymous statistics
         sidebarHidden: false // show or hide the sidebar
