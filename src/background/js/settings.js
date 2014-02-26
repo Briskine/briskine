@@ -30,11 +30,15 @@ var Settings = {
         apiBaseURL: "https://quicktext.io/api/1/",
         //baseURL: "http://localhost:5000/",
         //apiBaseURL: "http://localhost:5000/api/1/",
+        isLoggedIn: false,
         syncEnabled: false,
+        lastSync: null,
         autocompleteEnabled: true, // autocomplete dialog
         autocompleteDelay: 1000, // autocomplete dialog delay - 1s by default
         tabcompleteEnabled: true, // tab completion
         sendStatsEnabled: true, // send anonymous statistics
-        sidebarHidden: false // show or hide the sidebar
+        words: 0,
+        syncedWords: 0,
+        lastStatsSync: null
     }
 };

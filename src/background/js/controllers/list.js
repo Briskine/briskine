@@ -1,5 +1,5 @@
 gqApp.controller('ListCtrl',
-    function($scope, $rootScope, $routeParams, $location, $timeout, $filter, QuicktextService, SettingsService, ProfileService) {
+    function($scope, $rootScope, $routeParams, $location, $timeout, $filter, QuicktextService, SettingsService, ProfileService, StatsService) {
 
         var $formModal;
 

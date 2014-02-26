@@ -56,7 +56,6 @@ gqApp.service('QuicktextService', function($q, $resource, SettingsService) {
      * Created (no similar remote_id found locally) - update sync_date
      * Updated (found remote_id - update) - update sync_date
      */
-    //TODO: Make sure the user is logged in before sending anything
 
     self.syncTimer = null;
     self.lastSync = null;
@@ -128,12 +127,14 @@ gqApp.service('QuicktextService', function($q, $resource, SettingsService) {
             });
         });
         window.clearTimeout(self.syncTimer);
-        self.syncTimer = window.setTimeout(self.sync, 5000);
+        self.syncTimer = window.setTimeout(self.sync, 15000); // every 15 seconds
 
         // TODO should probably be done in one of the query callbacks
         // after a succesfull sync
         self.lastSync = new Date();
-        if(callback) callback(self.lastSync);
+        if (callback) {
+            callback(self.lastSync);
+        }
     };
 
     self.sync();
@@ -178,6 +179,7 @@ gqApp.service('QuicktextService', function($q, $resource, SettingsService) {
         });
         return deferred.promise;
     };
+
     // create and try to sync with the server
     self.create = function(qt) {
         var deferred = $q.defer();
@@ -359,6 +361,32 @@ gqApp.service('QuicktextService', function($q, $resource, SettingsService) {
             Settings.set("quicktexts", []);
         }
     };
+});
+
+// Handle stats (publish stats on the remote server)
+gqApp.service('StatsService', function($resource, SettingsService){
+    var self = this;
+
+    self.syncStatsTimer = null;
+    self.statsRes = $resource(SettingsService.get('apiBaseURL') + 'stats/');
+
+    // should probably be called every few minutes or so
+    self.sync = function(){
+        if (SettingsService.get("sendStatsEnabled")) { // do this only if user allowed sending anonymous statistics
+            var newWords = SettingsService.get("words") - SettingsService.get('syncedWords');
+            if (newWords > 0) {
+                var stats = new self.statsRes();
+                stats.words = newWords;
+                stats.$save(function(){
+                    SettingsService.set("syncedWords", SettingsService.get("words"));
+                    SettingsService.set("lastStatsSync", new Date());
+                });
+            }
+        }
+        window.clearTimeout(self.syncStatsTimer);
+        self.syncStatsTimer = window.setTimeout(self.sync, 15 * 60 * 1000); // every 15minutes
+    };
+    self.sync();
 });
 
 // Settings
