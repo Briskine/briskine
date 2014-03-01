@@ -7,14 +7,20 @@ gqApp.controller('ListCtrl',
         $scope.quicktexts = [];
         $scope.tags = [];
         $scope.filterTags = [];
+        $scope.limitQuicktexts = 42; // I know.. it's a cliche
+
+        // by default the load more button is disabled
+        $('.load-more').hide();
 
         $scope.reloadQuicktexts = function(remotePromise) {
             QuicktextService.quicktexts().then(function(r) {
                 $scope.quicktexts = r;
             });
+
             QuicktextService.allTags().then(function(r) {
                 $scope.tags = r;
             });
+
             // This is executed if a remote operation on the server was performed
             if (remotePromise){
                 remotePromise.then(function(){
@@ -24,11 +30,20 @@ gqApp.controller('ListCtrl',
         };
         $scope.reloadQuicktexts();
 
+        $scope.loadMore = function(){
+            $scope.limitQuicktexts += 42;
+            if ($scope.limitQuicktexts > $scope.filteredQuicktexts.length) {
+                $(".load-more").hide();
+                $scope.limitQuicktexts = 42;
+            }
+        };
+
         $scope.$watch('quicktexts', function() {
             if ($scope.quicktexts && $scope.quicktexts.length) {
                 // trigger filterQuicktexts to update filtered quicktexts
                 filterQuicktexts();
             }
+
         });
 
 
@@ -247,6 +262,13 @@ gqApp.controller('ListCtrl',
             $scope.filteredQuicktexts = $filter('tagFilter')($scope.filteredQuicktexts, $scope.filterTags);
 
             $scope.focusIndex = 0;
+
+            if ($scope.filteredQuicktexts.length < $scope.limitQuicktexts) {
+                $('.load-more').hide();
+                $scope.limitQuicktexts = 42;
+            } else {
+                $('.load-more').show();
+            }
         };
 
         $scope.$watch('searchText', filterQuicktexts);

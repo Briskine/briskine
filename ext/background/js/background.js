@@ -10787,7 +10787,7 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap requires jQuery");+func
 }(this, String);
 
 //! moment.js
-//! version : 2.4.0
+//! version : 2.5.1
 //! authors : Tim Wood, Iskren Chernev, Moment.js contributors
 //! license : MIT
 //! momentjs.com
@@ -10799,7 +10799,8 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap requires jQuery");+func
     ************************************/
 
     var moment,
-        VERSION = "2.4.0",
+        VERSION = "2.5.1",
+        global = this,
         round = Math.round,
         i,
 
@@ -10814,8 +10815,21 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap requires jQuery");+func
         // internal storage for language config files
         languages = {},
 
+        // moment internal properties
+        momentProperties = {
+            _isAMomentObject: null,
+            _i : null,
+            _f : null,
+            _l : null,
+            _strict : null,
+            _isUTC : null,
+            _offset : null,  // optional. Combine with _isUTC
+            _pf : null,
+            _lang : null  // optional
+        },
+
         // check for nodeJS
-        hasModule = (typeof module !== 'undefined' && module.exports),
+        hasModule = (typeof module !== 'undefined' && module.exports && typeof require !== 'undefined'),
 
         // ASP.NET json date format regex
         aspNetJsonRegex = /^\/?Date\((\-?\d+)/i,
@@ -10826,32 +10840,40 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap requires jQuery");+func
         isoDurationRegex = /^(-)?P(?:(?:([0-9,.]*)Y)?(?:([0-9,.]*)M)?(?:([0-9,.]*)D)?(?:T(?:([0-9,.]*)H)?(?:([0-9,.]*)M)?(?:([0-9,.]*)S)?)?|([0-9,.]*)W)$/,
 
         // format tokens
-        formattingTokens = /(\[[^\[]*\])|(\\)?(Mo|MM?M?M?|Do|DDDo|DD?D?D?|ddd?d?|do?|w[o|w]?|W[o|W]?|YYYYY|YYYY|YY|gg(ggg?)?|GG(GGG?)?|e|E|a|A|hh?|HH?|mm?|ss?|S{1,4}|X|zz?|ZZ?|.)/g,
+        formattingTokens = /(\[[^\[]*\])|(\\)?(Mo|MM?M?M?|Do|DDDo|DD?D?D?|ddd?d?|do?|w[o|w]?|W[o|W]?|YYYYYY|YYYYY|YYYY|YY|gg(ggg?)?|GG(GGG?)?|e|E|a|A|hh?|HH?|mm?|ss?|S{1,4}|X|zz?|ZZ?|.)/g,
         localFormattingTokens = /(\[[^\[]*\])|(\\)?(LT|LL?L?L?|l{1,4})/g,
 
         // parsing token regexes
         parseTokenOneOrTwoDigits = /\d\d?/, // 0 - 99
         parseTokenOneToThreeDigits = /\d{1,3}/, // 0 - 999
-        parseTokenThreeDigits = /\d{3}/, // 000 - 999
-        parseTokenFourDigits = /\d{1,4}/, // 0 - 9999
-        parseTokenSixDigits = /[+\-]?\d{1,6}/, // -999,999 - 999,999
+        parseTokenOneToFourDigits = /\d{1,4}/, // 0 - 9999
+        parseTokenOneToSixDigits = /[+\-]?\d{1,6}/, // -999,999 - 999,999
         parseTokenDigits = /\d+/, // nonzero number of digits
         parseTokenWord = /[0-9]*['a-z\u00A0-\u05FF\u0700-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]+|[\u0600-\u06FF\/]+(\s*?[\u0600-\u06FF]+){1,2}/i, // any word (or two) characters or numbers including two/three word month in arabic.
-        parseTokenTimezone = /Z|[\+\-]\d\d:?\d\d/i, // +00:00 -00:00 +0000 -0000 or Z
-        parseTokenT = /T/i, // T (ISO seperator)
+        parseTokenTimezone = /Z|[\+\-]\d\d:?\d\d/gi, // +00:00 -00:00 +0000 -0000 or Z
+        parseTokenT = /T/i, // T (ISO separator)
         parseTokenTimestampMs = /[\+\-]?\d+(\.\d{1,3})?/, // 123456789 123456789.123
 
-        // preliminary iso regex
-        // 0000-00-00 0000-W00 or 0000-W00-0 + T + 00 or 00:00 or 00:00:00 or 00:00:00.000 + +00:00 or +0000)
-        isoRegex = /^\s*\d{4}-(?:(\d\d-\d\d)|(W\d\d$)|(W\d\d-\d)|(\d\d\d))((T| )(\d\d(:\d\d(:\d\d(\.\d+)?)?)?)?([\+\-]\d\d:?\d\d|Z)?)?$/,
+        //strict parsing regexes
+        parseTokenOneDigit = /\d/, // 0 - 9
+        parseTokenTwoDigits = /\d\d/, // 00 - 99
+        parseTokenThreeDigits = /\d{3}/, // 000 - 999
+        parseTokenFourDigits = /\d{4}/, // 0000 - 9999
+        parseTokenSixDigits = /[+-]?\d{6}/, // -999,999 - 999,999
+        parseTokenSignedNumber = /[+-]?\d+/, // -inf - inf
+
+        // iso 8601 regex
+        // 0000-00-00 0000-W00 or 0000-W00-0 + T + 00 or 00:00 or 00:00:00 or 00:00:00.000 + +00:00 or +0000 or +00)
+        isoRegex = /^\s*(?:[+-]\d{6}|\d{4})-(?:(\d\d-\d\d)|(W\d\d$)|(W\d\d-\d)|(\d\d\d))((T| )(\d\d(:\d\d(:\d\d(\.\d+)?)?)?)?([\+\-]\d\d(?::?\d\d)?|\s*Z)?)?$/,
 
         isoFormat = 'YYYY-MM-DDTHH:mm:ssZ',
 
         isoDates = [
-            'YYYY-MM-DD',
-            'GGGG-[W]WW',
-            'GGGG-[W]WW-E',
-            'YYYY-DDD'
+            ['YYYYYY-MM-DD', /[+-]\d{6}-\d{2}-\d{2}/],
+            ['YYYY-MM-DD', /\d{4}-\d{2}-\d{2}/],
+            ['GGGG-[W]WW-E', /\d{4}-W\d{2}-\d/],
+            ['GGGG-[W]WW', /\d{4}-W\d{2}/],
+            ['YYYY-DDD', /\d{4}-\d{3}/]
         ],
 
         // iso time formats and regexes
@@ -10953,11 +10975,15 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap requires jQuery");+func
             YYYYY : function () {
                 return leftZeroFill(this.year(), 5);
             },
+            YYYYYY : function () {
+                var y = this.year(), sign = y >= 0 ? '+' : '-';
+                return sign + leftZeroFill(Math.abs(y), 6);
+            },
             gg   : function () {
                 return leftZeroFill(this.weekYear() % 100, 2);
             },
             gggg : function () {
-                return this.weekYear();
+                return leftZeroFill(this.weekYear(), 4);
             },
             ggggg : function () {
                 return leftZeroFill(this.weekYear(), 5);
@@ -10966,7 +10992,7 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap requires jQuery");+func
                 return leftZeroFill(this.isoWeekYear() % 100, 2);
             },
             GGGG : function () {
-                return this.isoWeekYear();
+                return leftZeroFill(this.isoWeekYear(), 4);
             },
             GGGGG : function () {
                 return leftZeroFill(this.isoWeekYear(), 5);
@@ -11023,7 +11049,7 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap requires jQuery");+func
                     a = -a;
                     b = "-";
                 }
-                return b + leftZeroFill(toInt(10 * a / 6), 4);
+                return b + leftZeroFill(toInt(a / 60), 2) + leftZeroFill(toInt(a) % 60, 2);
             },
             z : function () {
                 return this.zoneAbbr();
@@ -11033,10 +11059,30 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap requires jQuery");+func
             },
             X    : function () {
                 return this.unix();
+            },
+            Q : function () {
+                return this.quarter();
             }
         },
 
         lists = ['months', 'monthsShort', 'weekdays', 'weekdaysShort', 'weekdaysMin'];
+
+    function defaultParsingFlags() {
+        // We need to deep clone this object, and es5 standard is not very
+        // helpful.
+        return {
+            empty : false,
+            unusedTokens : [],
+            unusedInput : [],
+            overflow : -2,
+            charsLeftOver : 0,
+            nullInput : false,
+            invalidMonth : null,
+            invalidFormat : false,
+            userInvalidated : false,
+            iso: false
+        };
+    }
 
     function padToken(func, count) {
         return function (a) {
@@ -11086,9 +11132,6 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap requires jQuery");+func
             seconds = normalizedInput.second || 0,
             milliseconds = normalizedInput.millisecond || 0;
 
-        // store reference to input for deterministic cloning
-        this._input = duration;
-
         // representation for dateAddRemove
         this._milliseconds = +milliseconds +
             seconds * 1e3 + // 1000
@@ -11132,6 +11175,17 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap requires jQuery");+func
         return a;
     }
 
+    function cloneMoment(m) {
+        var result = {}, i;
+        for (i in m) {
+            if (m.hasOwnProperty(i) && momentProperties.hasOwnProperty(i)) {
+                result[i] = m[i];
+            }
+        }
+
+        return result;
+    }
+
     function absRound(number) {
         if (number < 0) {
             return Math.ceil(number);
@@ -11142,12 +11196,14 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap requires jQuery");+func
 
     // left zero fill a number
     // see http://jsperf.com/left-zero-filling for performance comparison
-    function leftZeroFill(number, targetLength) {
-        var output = number + '';
+    function leftZeroFill(number, targetLength, forceSign) {
+        var output = '' + Math.abs(number),
+            sign = number >= 0;
+
         while (output.length < targetLength) {
             output = '0' + output;
         }
-        return output;
+        return (sign ? (forceSign ? '+' : '') : '-') + output;
     }
 
     // helper function for _.addTime and _.subtractTime
@@ -11218,8 +11274,7 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap requires jQuery");+func
     function normalizeObjectUnits(inputObject) {
         var normalizedInput = {},
             normalizedProp,
-            prop,
-            index;
+            prop;
 
         for (prop in inputObject) {
             if (inputObject.hasOwnProperty(prop)) {
@@ -11322,21 +11377,6 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap requires jQuery");+func
         }
     }
 
-    function initializeParsingFlags(config) {
-        config._pf = {
-            empty : false,
-            unusedTokens : [],
-            unusedInput : [],
-            overflow : -2,
-            charsLeftOver : 0,
-            nullInput : false,
-            invalidMonth : null,
-            invalidFormat : false,
-            userInvalidated : false,
-            iso: false
-        };
-    }
-
     function isValid(m) {
         if (m._isValid == null) {
             m._isValid = !isNaN(m._d.getTime()) &&
@@ -11358,6 +11398,12 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap requires jQuery");+func
 
     function normalizeLanguage(key) {
         return key ? key.toLowerCase().replace('_', '-') : key;
+    }
+
+    // Return a moment from input, that is local/utc/zone equivalent to model.
+    function makeAs(input, model) {
+        return model._isUTC ? moment(input).zone(model._offset || 0) :
+            moment(input).local();
     }
 
     /************************************
@@ -11691,21 +11737,32 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap requires jQuery");+func
 
     // get the regex to find the next token
     function getParseRegexForToken(token, config) {
-        var a;
+        var a, strict = config._strict;
         switch (token) {
         case 'DDDD':
             return parseTokenThreeDigits;
         case 'YYYY':
         case 'GGGG':
         case 'gggg':
-            return parseTokenFourDigits;
+            return strict ? parseTokenFourDigits : parseTokenOneToFourDigits;
+        case 'Y':
+        case 'G':
+        case 'g':
+            return parseTokenSignedNumber;
+        case 'YYYYYY':
         case 'YYYYY':
         case 'GGGGG':
         case 'ggggg':
-            return parseTokenSixDigits;
+            return strict ? parseTokenSixDigits : parseTokenOneToSixDigits;
         case 'S':
+            if (strict) { return parseTokenOneDigit; }
+            /* falls through */
         case 'SS':
+            if (strict) { return parseTokenTwoDigits; }
+            /* falls through */
         case 'SSS':
+            if (strict) { return parseTokenThreeDigits; }
+            /* falls through */
         case 'DDD':
             return parseTokenOneToThreeDigits;
         case 'MMM':
@@ -11735,6 +11792,9 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap requires jQuery");+func
         case 'hh':
         case 'mm':
         case 'ss':
+        case 'ww':
+        case 'WW':
+            return strict ? parseTokenTwoDigits : parseTokenOneOrTwoDigits;
         case 'M':
         case 'D':
         case 'd':
@@ -11743,9 +11803,7 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap requires jQuery");+func
         case 'm':
         case 's':
         case 'w':
-        case 'ww':
         case 'W':
-        case 'WW':
         case 'e':
         case 'E':
             return parseTokenOneOrTwoDigits;
@@ -11756,8 +11814,10 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap requires jQuery");+func
     }
 
     function timezoneMinutesFromString(string) {
-        var tzchunk = (parseTokenTimezone.exec(string) || [])[0],
-            parts = (tzchunk + '').match(parseTimezoneChunker) || ['-', 0, 0],
+        string = string || "";
+        var possibleTzMatches = (string.match(parseTokenTimezone) || []),
+            tzChunk = possibleTzMatches[possibleTzMatches.length - 1] || [],
+            parts = (tzChunk + '').match(parseTimezoneChunker) || ['-', 0, 0],
             minutes = +(parts[1] * 60) + toInt(parts[2]);
 
         return parts[0] === '+' ? -minutes : minutes;
@@ -11806,6 +11866,7 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap requires jQuery");+func
             break;
         case 'YYYY' :
         case 'YYYYY' :
+        case 'YYYYYY' :
             datePartArray[YEAR] = toInt(input);
             break;
         // AM / PM
@@ -11890,8 +11951,9 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap requires jQuery");+func
         //compute day of the year from weeks and weekdays
         if (config._w && config._a[DATE] == null && config._a[MONTH] == null) {
             fixYear = function (val) {
+                var int_val = parseInt(val, 10);
                 return val ?
-                  (val.length < 3 ? (parseInt(val, 10) > 68 ? '19' + val : '20' + val) : val) :
+                  (val.length < 3 ? (int_val > 68 ? 1900 + int_val : 2000 + int_val) : int_val) :
                   (config._a[YEAR] == null ? moment().weekYear() : config._a[YEAR]);
             };
 
@@ -12003,7 +12065,7 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap requires jQuery");+func
 
         for (i = 0; i < tokens.length; i++) {
             token = tokens[i];
-            parsedInput = (getParseRegexForToken(token, config).exec(string) || [])[0];
+            parsedInput = (string.match(getParseRegexForToken(token, config)) || [])[0];
             if (parsedInput) {
                 skipped = string.substr(0, string.indexOf(parsedInput));
                 if (skipped.length > 0) {
@@ -12075,7 +12137,7 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap requires jQuery");+func
         for (i = 0; i < config._f.length; i++) {
             currentScore = 0;
             tempConfig = extend({}, config);
-            initializeParsingFlags(tempConfig);
+            tempConfig._pf = defaultParsingFlags();
             tempConfig._f = config._f[i];
             makeDateFromStringAndFormat(tempConfig);
 
@@ -12102,26 +12164,26 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap requires jQuery");+func
 
     // date from iso format
     function makeDateFromString(config) {
-        var i,
+        var i, l,
             string = config._i,
             match = isoRegex.exec(string);
 
         if (match) {
             config._pf.iso = true;
-            for (i = 4; i > 0; i--) {
-                if (match[i]) {
+            for (i = 0, l = isoDates.length; i < l; i++) {
+                if (isoDates[i][1].exec(string)) {
                     // match[5] should be "T" or undefined
-                    config._f = isoDates[i - 1] + (match[6] || " ");
+                    config._f = isoDates[i][0] + (match[6] || " ");
                     break;
                 }
             }
-            for (i = 0; i < 4; i++) {
+            for (i = 0, l = isoTimes.length; i < l; i++) {
                 if (isoTimes[i][1].exec(string)) {
                     config._f += isoTimes[i][0];
                     break;
                 }
             }
-            if (parseTokenTimezone.exec(string)) {
+            if (string.match(parseTokenTimezone)) {
                 config._f += "Z";
             }
             makeDateFromStringAndFormat(config);
@@ -12256,11 +12318,10 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap requires jQuery");+func
 
     //http://en.wikipedia.org/wiki/ISO_week_date#Calculating_a_date_given_the_year.2C_week_number_and_weekday
     function dayOfYearFromWeeks(year, week, weekday, firstDayOfWeekOfYear, firstDayOfWeek) {
-        var d = new Date(Date.UTC(year, 0)).getUTCDay(),
-            daysToAdd, dayOfYear;
+        var d = makeUTCDate(year, 0, 1).getUTCDay(), daysToAdd, dayOfYear;
 
         weekday = weekday != null ? weekday : firstDayOfWeek;
-        daysToAdd = firstDayOfWeek - d + (d > firstDayOfWeekOfYear ? 7 : 0);
+        daysToAdd = firstDayOfWeek - d + (d > firstDayOfWeekOfYear ? 7 : 0) - (d < firstDayOfWeek ? 7 : 0);
         dayOfYear = 7 * (week - 1) + (weekday - firstDayOfWeek) + daysToAdd + 1;
 
         return {
@@ -12277,10 +12338,6 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap requires jQuery");+func
         var input = config._i,
             format = config._f;
 
-        if (typeof config._pf === 'undefined') {
-            initializeParsingFlags(config);
-        }
-
         if (input === null) {
             return moment.invalid({nullInput: true});
         }
@@ -12290,7 +12347,7 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap requires jQuery");+func
         }
 
         if (moment.isMoment(input)) {
-            config = extend({}, input);
+            config = cloneMoment(input);
 
             config._d = new Date(+input._d);
         } else if (format) {
@@ -12307,37 +12364,47 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap requires jQuery");+func
     }
 
     moment = function (input, format, lang, strict) {
+        var c;
+
         if (typeof(lang) === "boolean") {
             strict = lang;
             lang = undefined;
         }
-        return makeMoment({
-            _i : input,
-            _f : format,
-            _l : lang,
-            _strict : strict,
-            _isUTC : false
-        });
+        // object construction must be done this way.
+        // https://github.com/moment/moment/issues/1423
+        c = {};
+        c._isAMomentObject = true;
+        c._i = input;
+        c._f = format;
+        c._l = lang;
+        c._strict = strict;
+        c._isUTC = false;
+        c._pf = defaultParsingFlags();
+
+        return makeMoment(c);
     };
 
     // creating with utc
     moment.utc = function (input, format, lang, strict) {
-        var m;
+        var c;
 
         if (typeof(lang) === "boolean") {
             strict = lang;
             lang = undefined;
         }
-        m = makeMoment({
-            _useUTC : true,
-            _isUTC : true,
-            _l : lang,
-            _i : input,
-            _f : format,
-            _strict : strict
-        }).utc();
+        // object construction must be done this way.
+        // https://github.com/moment/moment/issues/1423
+        c = {};
+        c._isAMomentObject = true;
+        c._useUTC = true;
+        c._isUTC = true;
+        c._l = lang;
+        c._i = input;
+        c._f = format;
+        c._strict = strict;
+        c._pf = defaultParsingFlags();
 
-        return m;
+        return makeMoment(c).utc();
     };
 
     // creating with unix timestamp (in seconds)
@@ -12347,18 +12414,21 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap requires jQuery");+func
 
     // duration
     moment.duration = function (input, key) {
-        var isDuration = moment.isDuration(input),
-            isNumber = (typeof input === 'number'),
-            duration = (isDuration ? input._input : (isNumber ? {} : input)),
+        var duration = input,
             // matching against regexp is expensive, do it on demand
             match = null,
             sign,
             ret,
-            parseIso,
-            timeEmpty,
-            dateTimeEmpty;
+            parseIso;
 
-        if (isNumber) {
+        if (moment.isDuration(input)) {
+            duration = {
+                ms: input._milliseconds,
+                d: input._days,
+                M: input._months
+            };
+        } else if (typeof input === 'number') {
+            duration = {};
             if (key) {
                 duration[key] = input;
             } else {
@@ -12397,7 +12467,7 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap requires jQuery");+func
 
         ret = new Duration(duration);
 
-        if (isDuration && input.hasOwnProperty('_lang')) {
+        if (moment.isDuration(input) && input.hasOwnProperty('_lang')) {
             ret._lang = input._lang;
         }
 
@@ -12444,7 +12514,8 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap requires jQuery");+func
 
     // compare moment object
     moment.isMoment = function (obj) {
-        return obj instanceof Moment;
+        return obj instanceof Moment ||
+            (obj != null &&  obj.hasOwnProperty('_isAMomentObject'));
     };
 
     // for typechecking Duration objects
@@ -12504,7 +12575,12 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap requires jQuery");+func
         },
 
         toISOString : function () {
-            return formatMoment(moment(this).utc(), 'YYYY-MM-DD[T]HH:mm:ss.SSS[Z]');
+            var m = moment(this).utc();
+            if (0 < m.year() && m.year() <= 9999) {
+                return formatMoment(m, 'YYYY-MM-DD[T]HH:mm:ss.SSS[Z]');
+            } else {
+                return formatMoment(m, 'YYYYYY-MM-DD[T]HH:mm:ss.SSS[Z]');
+            }
         },
 
         toArray : function () {
@@ -12581,7 +12657,7 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap requires jQuery");+func
         },
 
         diff : function (input, units, asFloat) {
-            var that = this._isUTC ? moment(input).zone(this._offset || 0) : moment(input).local(),
+            var that = makeAs(input, this),
                 zoneDiff = (this.zone() - that.zone()) * 6e4,
                 diff, output;
 
@@ -12623,13 +12699,16 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap requires jQuery");+func
         },
 
         calendar : function () {
-            var diff = this.diff(moment().zone(this.zone()).startOf('day'), 'days', true),
+            // We want to compare the start of today, vs this.
+            // Getting start-of-today depends on whether we're zone'd or not.
+            var sod = makeAs(moment(), this).startOf('day'),
+                diff = this.diff(sod, 'days', true),
                 format = diff < -6 ? 'sameElse' :
-                diff < -1 ? 'lastWeek' :
-                diff < 0 ? 'lastDay' :
-                diff < 1 ? 'sameDay' :
-                diff < 2 ? 'nextDay' :
-                diff < 7 ? 'nextWeek' : 'sameElse';
+                    diff < -1 ? 'lastWeek' :
+                    diff < 0 ? 'lastDay' :
+                    diff < 1 ? 'sameDay' :
+                    diff < 2 ? 'nextDay' :
+                    diff < 7 ? 'nextWeek' : 'sameElse';
             return this.format(this.lang().calendar(format, this));
         },
 
@@ -12729,8 +12808,8 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap requires jQuery");+func
         },
 
         isSame: function (input, units) {
-            units = typeof units !== 'undefined' ? units : 'millisecond';
-            return +this.clone().startOf(units) === +moment(input).startOf(units);
+            units = units || 'ms';
+            return +this.clone().startOf(units) === +makeAs(input, this).startOf(units);
         },
 
         min: function (other) {
@@ -12772,7 +12851,9 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap requires jQuery");+func
         },
 
         parseZone : function () {
-            if (typeof this._i === 'string') {
+            if (this._tzm) {
+                this.zone(this._tzm);
+            } else if (typeof this._i === 'string') {
                 this.zone(this._i);
             }
             return this;
@@ -12796,6 +12877,10 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap requires jQuery");+func
         dayOfYear : function (input) {
             var dayOfYear = round((moment(this).startOf('day') - moment(this).startOf('year')) / 864e5) + 1;
             return input == null ? dayOfYear : this.add("d", (input - dayOfYear));
+        },
+
+        quarter : function () {
+            return Math.ceil((this.month() + 1.0) / 3.0);
         },
 
         weekYear : function (input) {
@@ -13068,7 +13153,7 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap requires jQuery");+func
         // add `moment` as a global object via a string identifier,
         // for Closure Compiler "advanced" mode
         if (deprecate) {
-            this.moment = function () {
+            global.moment = function () {
                 if (!warned && console && console.warn) {
                     warned = true;
                     console.warn(
@@ -13078,8 +13163,9 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap requires jQuery");+func
                 }
                 return local_moment.apply(null, arguments);
             };
+            extend(global.moment, local_moment);
         } else {
-            this['moment'] = moment;
+            global['moment'] = moment;
         }
     }
 
@@ -13089,7 +13175,7 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap requires jQuery");+func
         makeGlobal(true);
     } else if (typeof define === "function" && define.amd) {
         define("moment", function (require, exports, module) {
-            if (module.config().noGlobal !== true) {
+            if (module.config && module.config() && module.config().noGlobal !== true) {
                 // If user provided noGlobal, he is aware of global
                 makeGlobal(module.config().noGlobal === undefined);
             }
@@ -13102,7 +13188,7 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap requires jQuery");+func
 }).call(this);
 
 /**
- * @license AngularJS v1.2.13-build.2256+sha.e7ab857
+ * @license AngularJS v1.2.12-build.2230+sha.bf4b0db
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -13171,7 +13257,7 @@ function minErr(module) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.2.13-build.2256+sha.e7ab857/' +
+    message = message + '\nhttp://errors.angularjs.org/1.2.12-build.2230+sha.bf4b0db/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i-2) + '=' +
@@ -13263,7 +13349,6 @@ function minErr(module) {
     -assertNotHasOwnProperty,
     -getter,
     -getBlockElements,
-    -hasOwnProperty,
 
 */
 
@@ -13279,7 +13364,7 @@ function minErr(module) {
  * @returns {string} Lowercased string.
  */
 var lowercase = function(string){return isString(string) ? string.toLowerCase() : string;};
-var hasOwnProperty = Object.prototype.hasOwnProperty;
+
 
 /**
  * @ngdoc function
@@ -14314,7 +14399,6 @@ function encodeUriQuery(val, pctEncodeSpaces) {
    <file name="index.html">
    <div ng-controller="ngAppDemoController">
      I can add: {{a}} + {{b}} =  {{ a+b }}
-   </div>
    </file>
    <file name="script.js">
    angular.module('ngAppDemo', []).controller('ngAppDemoController', function($scope) {
@@ -14939,10 +15023,10 @@ function setupModuleLoader(window) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.2.13-build.2256+sha.e7ab857',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.2.12-build.2230+sha.bf4b0db',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 2,
-  dot: 13,
+  dot: 12,
   codeName: 'snapshot'
 };
 
@@ -15105,7 +15189,7 @@ function publishExternalAPI(angular){
  * - [`after()`](http://api.jquery.com/after/)
  * - [`append()`](http://api.jquery.com/append/)
  * - [`attr()`](http://api.jquery.com/attr/)
- * - [`bind()`](http://api.jquery.com/bind/) - Does not support namespaces, selectors or eventData
+ * - [`bind()`](http://api.jquery.com/on/) - Does not support namespaces, selectors or eventData
  * - [`children()`](http://api.jquery.com/children/) - Does not support selectors
  * - [`clone()`](http://api.jquery.com/clone/)
  * - [`contents()`](http://api.jquery.com/contents/)
@@ -15132,7 +15216,7 @@ function publishExternalAPI(angular){
  * - [`text()`](http://api.jquery.com/text/)
  * - [`toggleClass()`](http://api.jquery.com/toggleClass/)
  * - [`triggerHandler()`](http://api.jquery.com/triggerHandler/) - Passes a dummy event object to handlers.
- * - [`unbind()`](http://api.jquery.com/unbind/) - Does not support namespaces
+ * - [`unbind()`](http://api.jquery.com/off/) - Does not support namespaces
  * - [`val()`](http://api.jquery.com/val/)
  * - [`wrap()`](http://api.jquery.com/wrap/)
  *
@@ -18944,7 +19028,7 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
           templateDirective = previousCompileContext.templateDirective,
           nonTlbTranscludeDirective = previousCompileContext.nonTlbTranscludeDirective,
           hasTranscludeDirective = false,
-          hasElementTranscludeDirective = previousCompileContext.hasElementTranscludeDirective,
+          hasElementTranscludeDirective = false,
           $compileNode = templateAttrs.$$element = jqLite(compileNode),
           directive,
           directiveName,
@@ -19118,7 +19202,6 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
 
       nodeLinkFn.scope = newScopeDirective && newScopeDirective.scope === true;
       nodeLinkFn.transclude = hasTranscludeDirective && childTranscludeFn;
-      previousCompileContext.hasElementTranscludeDirective = hasElementTranscludeDirective;
 
       // might be normal or delayed nodeLinkFn depending on if templateUrl is present
       return nodeLinkFn;
@@ -19515,13 +19598,8 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
 
             if (beforeTemplateLinkNode !== beforeTemplateCompileNode) {
               var oldClasses = beforeTemplateLinkNode.className;
-
-              if (!(previousCompileContext.hasElementTranscludeDirective &&
-                  origAsyncDirective.replace)) {
-                // it was cloned therefore we have to clone as well.
-                linkNode = jqLiteClone(compileNode);
-              }
-
+              // it was cloned therefore we have to clone as well.
+              linkNode = jqLiteClone(compileNode);
               replaceWith(linkRootElement, jqLite(beforeTemplateLinkNode), linkNode);
 
               // Copy in CSS classes from original node
@@ -27177,15 +27255,6 @@ function filterFilter() {
         };
       } else {
         comparator = function(obj, text) {
-          if (obj && text && typeof obj === 'object' && typeof text === 'object') {
-            for (var objKey in obj) {
-              if (objKey.charAt(0) !== '$' && hasOwnProperty.call(obj, objKey) &&
-                  comparator(obj[objKey], text[objKey])) {
-                return true;
-              }
-            }
-            return false;
-          }
           text = (''+text).toLowerCase();
           return (''+obj).toLowerCase().indexOf(text) > -1;
         };
@@ -28079,14 +28148,7 @@ var htmlAnchorDirective = valueFn({
 
           element(by.id('link-3')).click();
 
-          // At this point, we navigate away from an Angular page, so we need
-          // to use browser.driver to get the base webdriver.
-
-          browser.wait(function() {
-            return browser.driver.getCurrentUrl().then(function(url) {
-              return url.match(/\/123$/);
-            });
-          }, 1000, 'page should navigate to /123');
+          expect(browser.driver.getCurrentUrl()).toMatch(/\/123$/);
         });
 
         it('should execute ng-click but not reload when href empty string and name specified', function() {
@@ -29809,9 +29871,6 @@ var NgModelController = ['$scope', '$exceptionHandler', '$attrs', '$element', '$
    * You can override this for input directives whose concept of being empty is different to the
    * default. The `checkboxInputType` directive does this because in its case a value of `false`
    * implies empty.
-   * 
-   * @param {*} value Reference to check.
-   * @returns {boolean} True if `value` is empty.
    */
   this.$isEmpty = function(value) {
     return isUndefined(value) || value === '' || value === null || value !== value;
@@ -31373,8 +31432,8 @@ forEach(
  * Enables binding angular expressions to onsubmit events.
  *
  * Additionally it prevents the default action (which for form means sending the request to the
- * server and reloading the current page), but only if the form does not contain `action`,
- * `data-action`, or `x-action` attributes.
+ * server and reloading the current page) **but only if the form does not contain an `action`
+ * attribute**.
  *
  * @element form
  * @priority 0
@@ -33199,16 +33258,23 @@ var ngSwitchDefaultDirective = ngDirective({
  *
  */
 var ngTranscludeDirective = ngDirective({
-  link: function($scope, $element, $attrs, controller, $transclude) {
+  controller: ['$element', '$transclude', function($element, $transclude) {
     if (!$transclude) {
       throw minErr('ngTransclude')('orphan',
-       'Illegal use of ngTransclude directive in the template! ' +
-       'No parent directive that requires a transclusion found. ' +
-       'Element: {0}',
-       startingTag($element));
+          'Illegal use of ngTransclude directive in the template! ' +
+          'No parent directive that requires a transclusion found. ' +
+          'Element: {0}',
+          startingTag($element));
     }
-    
-    $transclude(function(clone) {
+
+    // remember the transclusion fn but call it during linking so that we don't process transclusion before directives on
+    // the parent element even when the transclusion replaces the current element. (we can't use priority here because
+    // that applies only to compile fns and not controllers
+    this.$transclude = $transclude;
+  }],
+
+  link: function($scope, $element, $attrs, controller) {
+    controller.$transclude(function(clone) {
       $element.empty();
       $element.append(clone);
     });
@@ -33913,7 +33979,7 @@ var styleDirective = valueFn({
 
 !angular.$$csp() && angular.element(document).find('head').prepend('<style type="text/css">@charset "UTF-8";[ng\\:cloak],[ng-cloak],[data-ng-cloak],[x-ng-cloak],.ng-cloak,.x-ng-cloak,.ng-hide{display:none !important;}ng\\:form{display:block;}</style>');
 /**
- * @license AngularJS v1.2.13-build.2256+sha.e7ab857
+ * @license AngularJS v1.2.12-build.2230+sha.bf4b0db
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -34835,7 +34901,7 @@ function ngViewFillContentFactory($compile, $controller, $route) {
 })(window, window.angular);
 
 /**
- * @license AngularJS v1.2.11
+ * @license AngularJS v1.2.12-build.2230+sha.bf4b0db
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -34876,7 +34942,7 @@ function shallowClearAndCopy(src, dst) {
   });
 
   for (var key in src) {
-    if (src.hasOwnProperty(key) && key.charAt(0) !== '$' && key.charAt(1) !== '$') {
+    if (src.hasOwnProperty(key) && !(key.charAt(0) === '$' && key.charAt(1) === '$')) {
       dst[key] = src[key];
     }
   }
@@ -35432,7 +35498,7 @@ angular.module('ngResource', ['ng']).
 })(window, window.angular);
 
 /**
- * @license AngularJS v1.2.13-build.2256+sha.e7ab857
+ * @license AngularJS v1.2.12-build.2230+sha.bf4b0db
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -37152,125 +37218,177 @@ module.filter('md5', ['md5', function(md5) {
 }(angular.module('angular-md5', []), angular));
 
 
-/* angular-moment.js / v0.5.2 / (c) 2013 Uri Shaked / MIT Licence */
+/* angular-moment.js / v0.6.2 / (c) 2013, 2014 Uri Shaked / MIT Licence */
 
-angular.module('angularMoment', [])
-	.constant('amTimeAgoConfig', { withoutSuffix: false })
-	.directive('amTimeAgo', ['$window', 'amTimeAgoConfig', function ($window, amTimeAgoConfig) {
-		'use strict';
+(function () {
+	'use strict';
 
-		return function (scope, element, attr) {
-			var activeTimeout = null;
-			var currentValue;
-			var currentFormat;
-
-			function cancelTimer() {
-				if (activeTimeout) {
-					$window.clearTimeout(activeTimeout);
-					activeTimeout = null;
-				}
+	/**
+	 * Apply a timezone onto a given moment object - if moment-timezone.js is included
+	 * Otherwise, it'll not apply any timezone shift.
+	 * @param {Moment} aMoment
+	 * @param {string} timezone
+	 * @returns {Moment}
+	 */
+	function applyTimezone(aMoment, timezone, $log) {
+		if (aMoment && timezone) {
+			if (aMoment.tz) {
+				aMoment = aMoment.tz(timezone);
+			} else {
+				$log.warn('angular-moment: timezone specified but moment.tz() is undefined. Did you forget to include moment-timezone.js?');
 			}
+		}
+		return aMoment;
+	}
 
-			function updateTime(momentInstance) {
-				element.text(momentInstance.fromNow(amTimeAgoConfig.withoutSuffix));
-				var howOld = $window.moment().diff(momentInstance, 'minute');
-				var secondsUntilUpdate = 3600;
-				if (howOld < 1) {
-					secondsUntilUpdate = 1;
-				} else if (howOld < 60) {
-					secondsUntilUpdate = 30;
-				} else if (howOld < 180) {
-					secondsUntilUpdate = 300;
-				}
+	angular.module('angularMoment', [])
+	/**
+	 * Common configuration of the angularMoment module
+	 */
+		.constant('angularMomentConfig', {
+			timezone: '' // e.g. 'Europe/London'
+		})
+		.constant('amTimeAgoConfig', { withoutSuffix: false})
+		.directive('amTimeAgo', ['$window', 'amTimeAgoConfig', function ($window, amTimeAgoConfig) {
 
-				activeTimeout = $window.setTimeout(function () {
-					updateTime(momentInstance);
-				}, secondsUntilUpdate * 1000);
-			}
+			return function (scope, element, attr) {
+				var activeTimeout = null;
+				var currentValue;
+				var currentFormat;
+				var withoutSuffix = amTimeAgoConfig.withoutSuffix;
 
-			function updateMoment() {
-				cancelTimer();
-				updateTime($window.moment(currentValue, currentFormat));
-			}
-
-			scope.$watch(attr.amTimeAgo, function (value) {
-				if ((typeof value === 'undefined') || (value === null) || (value === '')) {
-					cancelTimer();
-					if (currentValue) {
-						element.text('');
-						currentValue = null;
+				function cancelTimer() {
+					if (activeTimeout) {
+						$window.clearTimeout(activeTimeout);
+						activeTimeout = null;
 					}
-					return;
 				}
 
-				if (angular.isNumber(value)) {
+				function updateTime(momentInstance) {
+					element.text(momentInstance.fromNow(withoutSuffix));
+					var howOld = $window.moment().diff(momentInstance, 'minute');
+					var secondsUntilUpdate = 3600;
+					if (howOld < 1) {
+						secondsUntilUpdate = 1;
+					} else if (howOld < 60) {
+						secondsUntilUpdate = 30;
+					} else if (howOld < 180) {
+						secondsUntilUpdate = 300;
+					}
+
+					activeTimeout = $window.setTimeout(function () {
+						updateTime(momentInstance);
+					}, secondsUntilUpdate * 1000);
+				}
+
+				function updateMoment() {
+					cancelTimer();
+					updateTime($window.moment(currentValue, currentFormat));
+				}
+
+				scope.$watch(attr.amTimeAgo, function (value) {
+					if ((typeof value === 'undefined') || (value === null) || (value === '')) {
+						cancelTimer();
+						if (currentValue) {
+							element.text('');
+							currentValue = null;
+						}
+						return;
+					}
+
+					if (angular.isNumber(value)) {
+						// Milliseconds since the epoch
+						value = new Date(value);
+					}
+					// else assume the given value is already a date
+
+					currentValue = value;
+					updateMoment();
+				});
+
+				if (angular.isDefined(attr.amWithoutSuffix)) {
+					scope.$watch(attr.amWithoutSuffix, function (value) {
+						if (typeof value === 'boolean') {
+							withoutSuffix = value;
+							updateMoment();
+						} else {
+							withoutSuffix = amTimeAgoConfig.withoutSuffix;
+						}
+					});
+				}
+
+				attr.$observe('amFormat', function (format) {
+					currentFormat = format;
+					if (currentValue) {
+						updateMoment();
+					}
+				});
+
+				scope.$on('$destroy', function () {
+					cancelTimer();
+				});
+
+				scope.$on('amMoment:languageChange', function () {
+					updateMoment();
+				});
+			};
+		}])
+		.factory('amMoment', ['$window', '$rootScope', function ($window, $rootScope) {
+			return {
+				changeLanguage: function (lang) {
+					var result = $window.moment.lang(lang);
+					if (angular.isDefined(lang)) {
+						$rootScope.$broadcast('amMoment:languageChange');
+					}
+					return result;
+				}
+			};
+		}])
+		.filter('amCalendar', ['$window', '$log', 'angularMomentConfig', function ($window, $log, angularMomentConfig) {
+
+			return function (value) {
+				if (typeof value === 'undefined' || value === null) {
+					return '';
+				}
+
+				if (!isNaN(parseFloat(value)) && isFinite(value)) {
 					// Milliseconds since the epoch
-					value = new Date(value);
+					value = new Date(parseInt(value, 10));
 				}
 				// else assume the given value is already a date
 
-				currentValue = value;
-				updateMoment();
-			});
+				return applyTimezone($window.moment(value), angularMomentConfig.timezone, $log).calendar();
+			};
+		}])
+		.filter('amDateFormat', ['$window', '$log', 'angularMomentConfig', function ($window, $log, angularMomentConfig) {
 
-			attr.$observe('amFormat', function (format) {
-				currentFormat = format;
-				if (currentValue) {
-					updateMoment();
+			return function (value, format) {
+				if (typeof value === 'undefined' || value === null) {
+					return '';
 				}
-			});
 
-			scope.$on('$destroy', function () {
-				cancelTimer();
-			});
-		};
-	}])
-	.filter('amCalendar', ['$window', function ($window) {
-		'use strict';
+				if (!isNaN(parseFloat(value)) && isFinite(value)) {
+					// Milliseconds since the epoch
+					value = new Date(parseInt(value, 10));
+				}
+				// else assume the given value is already a date
 
-		return function (value) {
-			if (typeof value === 'undefined' || value === null) {
-				return '';
-			}
+				return applyTimezone($window.moment(value), angularMomentConfig.timezone, $log).format(format);
+			};
+		}])
+		.filter('amDurationFormat', ['$window', function ($window) {
 
-			if (!isNaN(parseFloat(value)) && isFinite(value)) {
-				// Milliseconds since the epoch
-				value = new Date(parseInt(value, 10));
-			}
-			// else assume the given value is already a date
+			return function (value, format, suffix) {
+				if (typeof value === 'undefined' || value === null) {
+					return '';
+				}
 
-			return $window.moment(value).calendar();
-		};
-	}])
-	.filter('amDateFormat', ['$window', function ($window) {
-		'use strict';
+				// else assume the given value is already a duration in a format (miliseconds, etc)
+				return $window.moment.duration(value, format).humanize(suffix);
+			};
+		}]);
 
-		return function (value, format) {
-			if (typeof value === 'undefined' || value === null) {
-				return '';
-			}
-
-			if (!isNaN(parseFloat(value)) && isFinite(value)) {
-				// Milliseconds since the epoch
-				value = new Date(parseInt(value, 10));
-			}
-			// else assume the given value is already a date
-
-			return $window.moment(value).format(format);
-		};
-	}])
-	.filter('amDurationFormat', ['$window', function ($window) {
-		'use strict';
-
-		return function (value, format, suffix) {
-			if (typeof value === 'undefined' || value === null) {
-				return '';
-			}
-
-			// else assume the given value is already a duration in a format (miliseconds, etc)
-			return $window.moment.duration(value, format).humanize(suffix);
-		};
-	}]);
+})();
 
 var ENV = "production";
 /* Quicktext chrome extension
@@ -37469,14 +37587,20 @@ gqApp.controller('ListCtrl',
         $scope.quicktexts = [];
         $scope.tags = [];
         $scope.filterTags = [];
+        $scope.limitQuicktexts = 42; // I know.. it's a cliche
+
+        // by default the load more button is disabled
+        $('.load-more').hide();
 
         $scope.reloadQuicktexts = function(remotePromise) {
             QuicktextService.quicktexts().then(function(r) {
                 $scope.quicktexts = r;
             });
+
             QuicktextService.allTags().then(function(r) {
                 $scope.tags = r;
             });
+
             // This is executed if a remote operation on the server was performed
             if (remotePromise){
                 remotePromise.then(function(){
@@ -37486,11 +37610,20 @@ gqApp.controller('ListCtrl',
         };
         $scope.reloadQuicktexts();
 
+        $scope.loadMore = function(){
+            $scope.limitQuicktexts += 42;
+            if ($scope.limitQuicktexts > $scope.filteredQuicktexts.length) {
+                $(".load-more").hide();
+                $scope.limitQuicktexts = 42;
+            }
+        };
+
         $scope.$watch('quicktexts', function() {
             if ($scope.quicktexts && $scope.quicktexts.length) {
                 // trigger filterQuicktexts to update filtered quicktexts
                 filterQuicktexts();
             }
+
         });
 
 
@@ -37709,6 +37842,13 @@ gqApp.controller('ListCtrl',
             $scope.filteredQuicktexts = $filter('tagFilter')($scope.filteredQuicktexts, $scope.filterTags);
 
             $scope.focusIndex = 0;
+
+            if ($scope.filteredQuicktexts.length < $scope.limitQuicktexts) {
+                $('.load-more').hide();
+                $scope.limitQuicktexts = 42;
+            } else {
+                $('.load-more').show();
+            }
         };
 
         $scope.$watch('searchText', filterQuicktexts);
