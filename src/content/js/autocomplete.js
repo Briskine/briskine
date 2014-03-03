@@ -236,6 +236,10 @@ App.autocomplete.dropdownCreate = function (cursorPosition) {
         left: (cursorPosition.absolute.left + cursorPosition.absolute.width - $(window).scrollLeft()) + 'px'
     });
 
+    //HACK: set z-index to auto to a parent, otherwise the autocomplete
+    //      dropdown will not be displayed with the correct stacking
+    this.$dropdown.parents('.qz').css('z-index', 'auto'); 
+
     this.isActive = true;
     this.isEmpty = true;
 
@@ -488,6 +492,7 @@ App.autocomplete.getQuicktextById = function (id) {
 
 App.autocomplete.close = function () {
     if (App.autocomplete.isActive) {
+        
         this.$dropdown.remove();
         this.$dropdown = null;
 
