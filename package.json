@@ -4,7 +4,7 @@
   "description": "Gmail Quicktext grunt package",
   "main": "Gruntfile.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "protractor tests/protractor.conf.js"
   },
   "repository": "https://github.com/humanfromearth/gmail-quicktext/",
   "author": "Alexandru Plugaru",
