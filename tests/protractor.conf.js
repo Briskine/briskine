@@ -3,6 +3,7 @@ exports.config = {
   specs: [
     './e2e/*.spec.js'
   ],
+  chromeOnly: true,
   capabilities: {
     browserName: 'chrome',
     chromeOptions: {

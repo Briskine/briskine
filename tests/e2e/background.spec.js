@@ -12,6 +12,10 @@ describe('background suite', function(){
     body: 'Test quicktext body'
   };
 
+  beforeEach(function() {
+    browser.sleep(1000);
+  });
+
   it('should open the Options page', function(){
     // use plain driver
     // to prevent complaining about angular not being available
