@@ -2,7 +2,8 @@
  */
 
 describe('background suite', function(){
-  var optionsUrl = 'chrome-extension://cleeacmgbdnkcjjghnkfdlbeapahlfng/pages/bg.html';
+  var optionsUrl = 'chrome-extension://cleeacmgbdnkcjjghnkfdlbeapahlfng/pages/bg.html',
+      sleepTime = 800;
 
   var quicktext = {
     title: 'Test quicktext title ' + new Date().getTime(),
@@ -65,7 +66,7 @@ describe('background suite', function(){
 
     btnSubmit.click();
 
-    browser.driver.sleep(100);
+    browser.driver.sleep(sleepTime);
 
     expect(modal.getCssValue('display')).toBe('none');
   });
@@ -79,7 +80,7 @@ describe('background suite', function(){
   it('should open the edit modal', function() {
     element(by.repeater('quicktext in filteredQuicktexts').row(0)).findElement(by.css('.edit-button')).click();
 
-    browser.driver.sleep(100);
+    browser.driver.sleep(sleepTime);
 
     var modal = element(by.css('.quicktext-modal'));
     expect(modal.getCssValue('display')).toBe('block');
@@ -122,18 +123,33 @@ describe('background suite', function(){
 
     btnSubmit.click();
 
-    browser.driver.sleep(100);
+    browser.driver.sleep(sleepTime);
 
     expect(modal.getCssValue('display')).toBe('none');
   });
 
+  it('should filter the quicktexts', function() {
+    var searchField = element(by.model('searchText'));
+    var list = element.all(by.repeater('quicktext in filteredQuicktexts'));
+
+    searchField.sendKeys(quicktext.title);
+
+    browser.driver.sleep(sleepTime);
+
+    expect(list.count()).toBe(1);
+  });
+
   it('should delete the new quicktext', function() {
+    var del = protractor.Key.chord(protractor.Key.CONTROL, 'a') + protractor.Key.DELETE;
+    element(by.model('searchText')).sendKeys(del);
+
     element(by.repeater('quicktext in filteredQuicktexts').row(0)).findElement(by.css('button.close')).click();
 
-    browser.driver.sleep(1000);
+    browser.driver.sleep(sleepTime);
 
     expect(element(by.repeater('quicktext in filteredQuicktexts').row(0)).getText()).not.toContain(quicktext.title);
-
   });
+
+
 
 })
