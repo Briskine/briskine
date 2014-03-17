@@ -2,7 +2,7 @@
  */
 
 describe('background suite', function(){
-  var optionsUrl = 'chrome-extension://cfooooochgpnlahkobanknlnabbpnfab/pages/bg.html';
+  var optionsUrl = 'chrome-extension://cleeacmgbdnkcjjghnkfdlbeapahlfng/pages/bg.html';
 
   var quicktext = {
     title: 'Test quicktext title ' + new Date().getTime(),
@@ -11,10 +11,6 @@ describe('background suite', function(){
     tags: 'tag1, tag2, tag3',
     body: 'Test quicktext body'
   };
-
-  beforeEach(function() {
-    browser.sleep(1000);
-  });
 
   it('should open the Options page', function(){
     // use plain driver
