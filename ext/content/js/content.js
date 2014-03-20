@@ -13223,6 +13223,8 @@ App.autocomplete.getSelectedWord = function (cursorPosition) {
     };
     var string;
 
+    console.log(cursorPosition);
+
     if (App.data.gmailView === 'basic html') {
         string = $(cursorPosition.element).val().substr(0, cursorPosition.end);
     } else if (App.data.gmailView === 'standard') {
@@ -13372,8 +13374,6 @@ App.autocomplete.replaceWith = function (quicktext, event) {
 
         replacement = Handlebars.compile(quicktext.body)(App.parser.getData(cursorPosition.elementMain));
 
-        console.log(replacement);
-
         var valueNew = value.substr(0, word.start) + replacement + value.substr(word.end),
             cursorOffset = word.start + quicktext.body.length;
 
@@ -13408,6 +13408,12 @@ App.autocomplete.replaceWith = function (quicktext, event) {
             // Remove virtual caret
             $caret.remove();
         }
+    }
+
+    // set subject field
+    if(quicktext.subject) {
+      var $subjectField = $('input[name=subjectbox]');
+      $subjectField.val(quicktext.subject);
     }
 
     // updates stats
