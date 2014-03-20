@@ -174,6 +174,12 @@ App.autocomplete.checkWord = function (e) {
     var cursorPosition = this.getCursorPosition(e);
     this.cursorPosition = cursorPosition;
 
+    // if tab is pressed without any selection
+    // just moving the cursor to the send button
+    if(cursorPosition.start === 0 && cursorPosition.end === 0) {
+      return false;
+    }
+
     var word = this.getSelectedWord(cursorPosition);
 
     // Cache word
@@ -291,8 +297,6 @@ App.autocomplete.getSelectedWord = function (cursorPosition) {
         text: ''
     };
     var string;
-
-    console.log(cursorPosition);
 
     if (App.data.gmailView === 'basic html') {
         string = $(cursorPosition.element).val().substr(0, cursorPosition.end);
