@@ -130,6 +130,14 @@ module.exports = function (grunt) {
                     }
                 ]
             }
+        },
+        shell: {
+            test: {
+                options: {
+                    stdout: true
+                },
+                command: 'npm test'
+            }
         }
     });
 
@@ -172,7 +180,8 @@ module.exports = function (grunt) {
     // Testing
     // TODO add unit tests
     grunt.registerTask('test', [
-        'jshint'
+        'jshint',
+        'shell:test'
     ]);
     // alias
     grunt.registerTask('t', ['test'])
