@@ -12785,7 +12785,7 @@ App.init = function () {
     var chromeEventRegistry = function () {
         if (/(compose|drafts)/.test(window.location.hash)) {
             // register only one time
-            if (chrome.runtime.onMessage.getListenerCount() === 0) {
+            if (!chrome.runtime.onMessage.hasListeners()) {
                 // wait for the background page to send a message to the content script
                 chrome.runtime.onMessage.addListener(
                     function (request, sender, sendResponse) {
@@ -13169,7 +13169,7 @@ App.autocomplete.dropdownCreate = function (cursorPosition) {
 
     //HACK: set z-index to auto to a parent, otherwise the autocomplete
     //      dropdown will not be displayed with the correct stacking
-    this.$dropdown.parents('.qz').css('z-index', 'auto'); 
+    this.$dropdown.parents('.qz').css('z-index', 'auto');
 
     this.isActive = true;
     this.isEmpty = true;
@@ -13372,6 +13372,8 @@ App.autocomplete.replaceWith = function (quicktext, event) {
 
         replacement = Handlebars.compile(quicktext.body)(App.parser.getData(cursorPosition.elementMain));
 
+        console.log(replacement);
+
         var valueNew = value.substr(0, word.start) + replacement + value.substr(word.end),
             cursorOffset = word.start + quicktext.body.length;
 
@@ -13423,7 +13425,7 @@ App.autocomplete.getQuicktextById = function (id) {
 
 App.autocomplete.close = function () {
     if (App.autocomplete.isActive) {
-        
+
         this.$dropdown.remove();
         this.$dropdown = null;
 

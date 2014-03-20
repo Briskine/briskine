@@ -46,7 +46,7 @@ App.init = function () {
     var chromeEventRegistry = function () {
         if (/(compose|drafts)/.test(window.location.hash)) {
             // register only one time
-            if (chrome.runtime.onMessage.getListenerCount() === 0) {
+            if (!chrome.runtime.onMessage.hasListeners()) {
                 // wait for the background page to send a message to the content script
                 chrome.runtime.onMessage.addListener(
                     function (request, sender, sendResponse) {
