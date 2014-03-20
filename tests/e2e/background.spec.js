@@ -136,7 +136,6 @@ describe('background suite', function () {
         searchField.sendKeys(quicktext.title);
 
         browser.driver.sleep(sleepTime);
-
         expect(list.count()).toBe(1);
     });
 
