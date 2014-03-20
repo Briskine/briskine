@@ -12,3 +12,6 @@ src/backgrount/js/environment.js
 .kateconfig
 .kateproject.d
 *.kate-swp
+
+# chrome extension
+key.pem

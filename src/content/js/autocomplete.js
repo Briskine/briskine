@@ -174,6 +174,12 @@ App.autocomplete.checkWord = function (e) {
     var cursorPosition = this.getCursorPosition(e);
     this.cursorPosition = cursorPosition;
 
+    // if tab is pressed without any selection
+    // just moving the cursor to the send button
+    if(cursorPosition.start === 0 && cursorPosition.end === 0) {
+      return false;
+    }
+
     var word = this.getSelectedWord(cursorPosition);
 
     // Cache word
@@ -238,7 +244,7 @@ App.autocomplete.dropdownCreate = function (cursorPosition) {
 
     //HACK: set z-index to auto to a parent, otherwise the autocomplete
     //      dropdown will not be displayed with the correct stacking
-    this.$dropdown.parents('.qz').css('z-index', 'auto'); 
+    this.$dropdown.parents('.qz').css('z-index', 'auto');
 
     this.isActive = true;
     this.isEmpty = true;
@@ -477,6 +483,12 @@ App.autocomplete.replaceWith = function (quicktext, event) {
         }
     }
 
+    // set subject field
+    if(quicktext.subject) {
+      var $subjectField = $('input[name=subjectbox]');
+      $subjectField.val(quicktext.subject);
+    }
+
     // updates stats
     App.settings.stats('words', quicktext.body.split(" ").length, function () {
     });
@@ -492,7 +504,7 @@ App.autocomplete.getQuicktextById = function (id) {
 
 App.autocomplete.close = function () {
     if (App.autocomplete.isActive) {
-        
+
         this.$dropdown.remove();
         this.$dropdown = null;
 

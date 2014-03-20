@@ -85,3 +85,11 @@ Second To:
 - Email {{to.1.email}}
 {{/if}}
 ```
+
+Testing
+-------
+
+Install `protractor` to be able to run the tests.
+
+  npm install -g protractor
+  webdriver-manager update
