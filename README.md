@@ -94,3 +94,5 @@ Install `protractor` to be able to run the tests.
 npm install -g protractor
 webdriver-manager update
 ```
+
+Set the `QUICKTEXT_GMAIL_USERNAME` and `QUICKTEXT_GMAIL_PASSWORD` ENV variables, for logging-in into Gmail.
