@@ -103,7 +103,7 @@ describe('content script', function(){
 
   });
 
-  it('should activate the quicktext using Tab', function() {
+  it('should activate the quicktext by pressing Tab', function() {
 
     browser.driver.findElement(by.css(messageBodySelector)).sendKeys('h' + protractor.Key.TAB);
 
