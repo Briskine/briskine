@@ -18,6 +18,13 @@ describe('content script', function(){
 
   var deleteAll = protractor.Key.chord(protractor.Key.CONTROL, 'a') + protractor.Key.DELETE;
 
+  // check for the required ENV variables
+  if(!gmail.user || !gmail.password) {
+    var envError = '\nIMPORTANT!\n Set the QUICKTEXT_GMAIL_USERNAME and QUICKTEXT_GMAIL_PASSWORD enviroment variables, so we can run the contentscript tests inside Gmail.';
+    console.log(envError);
+    return new Error(envError);
+  }
+
   it('should log-in into Gmail', function() {
 
     browser.driver.get(gmail.url);
