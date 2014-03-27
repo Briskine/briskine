@@ -1,7 +1,7 @@
 exports.config = {
   baseUrl: '',
   specs: [
-    './e2e/*.spec.js'
+    './e2e/content.spec.js'
   ],
   chromeOnly: true,
   capabilities: {
@@ -13,10 +13,5 @@ exports.config = {
       ]
     }
   }
-
-//   seleniumAddress: 'http://localhost:4444/wd/hub',
-//   jasmineNodeOpts: {
-//     specs: ['./e2e/*.spec.js']
-//   }
 }
 
