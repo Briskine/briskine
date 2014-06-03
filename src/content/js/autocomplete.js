@@ -155,9 +155,13 @@ App.autocomplete.keyCompletion = function (e) {
     if (word.text) {
         App.settings.get('quicktexts', function (quicktexts) {
             // Search for match
-            var filtered = quicktexts.filter(function (a) {
-                return a.shortcut === word.text;
-            });
+            var filtered = [];
+            if (quicktexts && quicktexts.length) {
+                filtered = quicktexts.filter(function (a) {
+                  return a.shortcut === word.text;
+                }); 
+            }
+           
             if (filtered.length) {
                 // replace with the first quicktext found
                 App.autocomplete.replaceWith(filtered[0], e);
