@@ -144,7 +144,7 @@ describe('background suite', function () {
         element(by.model('searchText')).sendKeys(del);
 
         expect(element.all(by.repeater('quicktext in filteredQuicktexts')).count()).toBe(1);
-        element.all(by.repeater('quicktext in filteredQuicktexts')).then(function(elems){
+        element.all(by.repeater('quicktext in filteredQuicktexts')).then(function (elems) {
             elems[0].element(by.css('button.close')).click();
             browser.driver.sleep(sleepTime);
             expect(element.all(by.repeater('quicktext in filteredQuicktexts')).count()).toBe(0);
