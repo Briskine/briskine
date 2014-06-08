@@ -12709,14 +12709,14 @@ var __module0__ = (function(__dependency1__, __dependency2__, __dependency3__, _
 // Observer pattern
 var PubSub = {
     observers: [],
-    subscribe: function(topic, observer) {
+    subscribe: function (topic, observer) {
         if (!this.observers[topic]) {
             this.observers[topic] = [];
         }
         this.observers[topic].push(observer);
     },
-    unsubscribe: function(topic, observer) {
-        if (!this.observers[topic]){
+    unsubscribe: function (topic, observer) {
+        if (!this.observers[topic]) {
             return;
         }
 
@@ -12725,7 +12725,7 @@ var PubSub = {
             this.observers[topic].splice(index, 1);
         }
     },
-    publish: function(topic) {
+    publish: function (topic) {
         if (!this.observers[topic]) {
             return;
         }
@@ -12869,7 +12869,7 @@ App.parser.getFieldValues = function (element) {
         // , from_name = $('span[email="'+from_email+'"]').length ? $('span[email="'+from_email+'"]').attr('name') : ''
         // Taking name based on Google+ avatar name
             fromNameEl = $('a[href^="https://plus.google.com/u/0/me"][title]'),
-            fromName = fromNameEl.length ? fromNameEl.attr('title').split('\n')[0]: '';
+            fromName = fromNameEl.length ? fromNameEl.attr('title').split('\n')[0] : '';
 
         from = fromName + ' <' + from_email + '>';
         to = $container.find('input[name=to]').toArray().map(function (a) {
@@ -12897,8 +12897,8 @@ App.parser.parseList = function (list) {
     return list.filter(function (a) {
         return a;
     }).map(function (a) {
-            return App.parser.parseString(a);
-        });
+        return App.parser.parseString(a);
+    });
 };
 
 App.parser.regExString = /"?([^ ]*)\s*(.*)"?\s*<([^>]+)>/;
@@ -13089,10 +13089,10 @@ App.autocomplete.keyCompletion = function (e) {
             var filtered = [];
             if (quicktexts && quicktexts.length) {
                 filtered = quicktexts.filter(function (a) {
-                  return a.shortcut === word.text;
-                }); 
+                    return a.shortcut === word.text;
+                });
             }
-           
+
             if (filtered.length) {
                 // replace with the first quicktext found
                 App.autocomplete.replaceWith(filtered[0], e);
@@ -13111,8 +13111,8 @@ App.autocomplete.checkWord = function (e) {
 
     // if tab is pressed without any selection
     // just moving the cursor to the send button
-    if(cursorPosition.start === 0 && cursorPosition.end === 0) {
-      return false;
+    if (cursorPosition.start === 0 && cursorPosition.end === 0) {
+        return false;
     }
 
     var word = this.getSelectedWord(cursorPosition);
@@ -13419,9 +13419,9 @@ App.autocomplete.replaceWith = function (quicktext, event) {
     }
 
     // set subject field
-    if(quicktext.subject) {
-      var $subjectField = $('input[name=subjectbox]');
-      $subjectField.val(quicktext.subject);
+    if (quicktext.subject) {
+        var $subjectField = $('input[name=subjectbox]');
+        $subjectField.val(quicktext.subject);
     }
 
     // updates stats

@@ -1,5 +1,5 @@
 gqApp.controller('ListCtrl',
-    function($scope, $rootScope, $routeParams, $location, $timeout, $filter, QuicktextService, SettingsService, ProfileService, StatsService) {
+    function ($scope, $rootScope, $routeParams, $location, $timeout, $filter, QuicktextService, SettingsService, ProfileService, StatsService) {
 
         var $formModal;
 
@@ -12,45 +12,53 @@ gqApp.controller('ListCtrl',
         // by default the load more button is disabled
         $('.load-more').hide();
 
-        $scope.reloadQuicktexts = function(remotePromise) {
-            QuicktextService.quicktexts().then(function(r) {
+        $scope.reloadQuicktexts = function (remotePromise) {
+            QuicktextService.quicktexts().then(function (r) {
                 $scope.quicktexts = r;
             });
 
-            QuicktextService.allTags().then(function(r) {
+            QuicktextService.allTags().then(function (r) {
                 $scope.tags = r;
             });
 
             // This is executed if a remote operation on the server was performed
-            if (remotePromise){
-                remotePromise.then(function(){
+            if (remotePromise) {
+                remotePromise.then(function () {
                     $scope.reloadQuicktexts();
                 });
             }
         };
         $scope.reloadQuicktexts();
 
-        $scope.loadMore = function(){
-            $scope.limitQuicktexts += 42;
-            if ($scope.limitQuicktexts > $scope.filteredQuicktexts.length) {
-                $(".load-more").hide();
-                $scope.limitQuicktexts = 42;
-            }
+        // Setup recuring syncing interval
+        this.syncInterval = null;
+        this.sync = function () {
+            window.clearInterval(this.syncInterval);
+            QuicktextService.sync(function () {
+                $scope.reloadQuicktexts();
+            });
         };
+        this.sync(); // sync right now
+        this.syncInterval = window.setInterval(this.sync, 15000); // every 15 seconds
 
-        $scope.$watch('quicktexts', function() {
+
+        $scope.$watch('quicktexts', function () {
             if ($scope.quicktexts && $scope.quicktexts.length) {
                 // trigger filterQuicktexts to update filtered quicktexts
                 filterQuicktexts();
             }
+        });
 
+        // Listen on syncing events
+        $scope.$on("quicktexts-sync", function () {
+            $scope.reloadQuicktexts();
         });
 
 
         /* Init modal and other dom manipulation
          * when the templates have loaded
          */
-        var initDom = function() {
+        var initDom = function () {
 
             /* New/Edit modal
              */
@@ -59,8 +67,8 @@ gqApp.controller('ListCtrl',
                 show: false
             });
 
-            $formModal.on('hide.bs.modal', function(e) {
-                $timeout(function() {
+            $formModal.on('hide.bs.modal', function (e) {
+                $timeout(function () {
                     $location.path('/list').search({});
                 });
             });
@@ -72,7 +80,7 @@ gqApp.controller('ListCtrl',
         $rootScope.$on('$includeContentLoaded', initDom);
 
         // Show the form for adding a new quicktext or creating one
-        $scope.showForm = function(id) {
+        $scope.showForm = function (id) {
             _gaq.push(['_trackEvent', 'forms', 'show']);
 
             var defaults = {
@@ -91,7 +99,7 @@ gqApp.controller('ListCtrl',
                 $scope.selectedQt.body = $routeParams.body;
             } else if ($routeParams.id) {
                 // update qt
-                QuicktextService.get($routeParams.id).then(function(r) {
+                QuicktextService.get($routeParams.id).then(function (r) {
                     $scope.selectedQt = angular.copy(r);
                 });
             }
@@ -101,7 +109,7 @@ gqApp.controller('ListCtrl',
 
         /* Check search params to see if adding or editing items
          */
-        var checkRoute = function() {
+        var checkRoute = function () {
 
             // if not the default list
             // new or edit, so show the modal
@@ -113,25 +121,24 @@ gqApp.controller('ListCtrl',
 
         $scope.$on('$routeUpdate', checkRoute);
 
+        $scope.loadMore = function () {
+            $scope.limitQuicktexts += 42;
+            if ($scope.limitQuicktexts > $scope.filteredQuicktexts.length) {
+                $(".load-more").hide();
+                $scope.limitQuicktexts = 42;
+            }
+        };
         // Delete a quicktext. This operation should first delete from the localStorage
         // then it should imedially go to the service and delete on the server
-        $scope.deleteQt = function() {
-            QuicktextService.delete(this.quicktext).then(function(remotePromise) {
+        $scope.deleteQt = function () {
+            QuicktextService.delete(this.quicktext).then(function (remotePromise) {
                 $scope.reloadQuicktexts(remotePromise);
             });
         };
 
-        // Delete all quicktexts. This will not delete the quicktexts on the server side
-        $scope.deleteAll = function() {
-            var r = confirm("Are you sure you want to delete all Quicktexts?\n\nNote: they will NOT be deleted from the sync server.");
-            if (r === true) {
-                QuicktextService.deleteAll();
-            }
-            $scope.reloadQuicktexts();
-        };
 
         // Save a quicktext, perform some checks before
-        $scope.saveQt = function() {
+        $scope.saveQt = function () {
             if (!$scope.selectedQt.title) {
                 alert("Please enter a Title");
                 return false;
@@ -143,11 +150,11 @@ gqApp.controller('ListCtrl',
             }
 
             if ($scope.selectedQt.id) {
-                QuicktextService.update($scope.selectedQt).then(function(remotePromise) {
+                QuicktextService.update($scope.selectedQt).then(function (remotePromise) {
                     $scope.reloadQuicktexts(remotePromise);
                 });
             } else {
-                QuicktextService.create($scope.selectedQt).then(function(remotePromise) {
+                QuicktextService.create($scope.selectedQt).then(function (remotePromise) {
                     $scope.reloadQuicktexts(remotePromise);
                 });
             }
@@ -157,7 +164,7 @@ gqApp.controller('ListCtrl',
         };
 
         // Save a quicktext, perform some checks before
-        $scope.duplicateQt = function() {
+        $scope.duplicateQt = function () {
             if (!$scope.selectedQt.title) {
                 alert("Please enter a Title");
                 return false;
@@ -168,7 +175,7 @@ gqApp.controller('ListCtrl',
                 return false;
             }
 
-            QuicktextService.create($scope.selectedQt).then(function(remotePromise) {
+            QuicktextService.create($scope.selectedQt).then(function (remotePromise) {
                 $scope.reloadQuicktexts(remotePromise);
             });
 
@@ -177,7 +184,7 @@ gqApp.controller('ListCtrl',
 
         };
 
-        $scope.toggleFilterTag = function() {
+        $scope.toggleFilterTag = function () {
             var index = $scope.filterTags.indexOf(this.tag);
             if (index === -1) {
                 $scope.filterTags.push(this.tag);
@@ -198,7 +205,7 @@ gqApp.controller('ListCtrl',
         $scope.keys = [];
         $scope.keys.push({
             code: KEY_ENTER,
-            action: function() {
+            action: function () {
                 // activate the enter key action only
                 // if there are no modals visible
                 // and the existing search filter matches any items
@@ -215,7 +222,7 @@ gqApp.controller('ListCtrl',
 
         $scope.keys.push({
             code: KEY_UP,
-            action: function() {
+            action: function () {
                 if ($scope.focusIndex > 0) {
                     $scope.focusIndex--;
                     $scope.scroll();
@@ -225,7 +232,7 @@ gqApp.controller('ListCtrl',
 
         $scope.keys.push({
             code: KEY_DOWN,
-            action: function() {
+            action: function () {
                 if ($scope.focusIndex + 1 < $scope.filteredQuicktexts.length) {
                     $scope.focusIndex++;
                     $scope.scroll();
@@ -234,8 +241,8 @@ gqApp.controller('ListCtrl',
             }
         });
 
-        $scope.$on('keydown', function(msg, code) {
-            $scope.keys.forEach(function(o) {
+        $scope.$on('keydown', function (msg, code) {
+            $scope.keys.forEach(function (o) {
                 if (o.code !== code) {
                     return;
                 }
@@ -246,16 +253,16 @@ gqApp.controller('ListCtrl',
 
         /* Scroll to the focused element
          */
-        $scope.scroll = function() {
+        $scope.scroll = function () {
             var scrollContainer = $("#quicktext-table-container");
             var active = $('.active');
             scrollContainer.scrollTop(
-                active.offset().top - scrollContainer.offset().top + scrollContainer.scrollTop()
+                    active.offset().top - scrollContainer.offset().top + scrollContainer.scrollTop()
             );
         };
 
         // apply filters to the list of quicktexts
-        var filterQuicktexts = function() {
+        var filterQuicktexts = function () {
             // apply the text search filter
             $scope.filteredQuicktexts = $filter('filter')($scope.quicktexts, $scope.searchText);
             // apply the tag serach filter
@@ -276,17 +283,17 @@ gqApp.controller('ListCtrl',
 
         /* Insert quicktext from the pageAction popup
          */
-        $scope.insertQuicktext = function(quicktextId) {
+        $scope.insertQuicktext = function (quicktextId) {
             // get the quicktext id
             _gaq.push(['_trackEvent', 'popup', 'insert']);
 
             // getch the quicktext
-            QuicktextService.get(quicktextId).then(function(quicktext) {
-                chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+            QuicktextService.get(quicktextId).then(function (quicktext) {
+                chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
                     chrome.tabs.sendMessage(tabs[0].id, {
                         'action': 'insert',
                         'quicktext': quicktext
-                    }, function(response) {
+                    }, function (response) {
                         //console.log(response);
                     });
                     window.close();
@@ -296,7 +303,7 @@ gqApp.controller('ListCtrl',
 
         /* Activate quicktext on click or Enter key
          */
-        $scope.activateQuicktext = function(id) {
+        $scope.activateQuicktext = function (id) {
             if ($rootScope.pageAction) {
                 $scope.insertQuicktext(id);
             } else {
@@ -309,7 +316,7 @@ gqApp.controller('ListCtrl',
 
         /* Set active item based on focus rather than keyboard
          */
-        $scope.setFocus = function(index) {
+        $scope.setFocus = function (index) {
             $scope.focusIndex = index;
         };
 

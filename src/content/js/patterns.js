@@ -6,14 +6,14 @@
 // Observer pattern
 var PubSub = {
     observers: [],
-    subscribe: function(topic, observer) {
+    subscribe: function (topic, observer) {
         if (!this.observers[topic]) {
             this.observers[topic] = [];
         }
         this.observers[topic].push(observer);
     },
-    unsubscribe: function(topic, observer) {
-        if (!this.observers[topic]){
+    unsubscribe: function (topic, observer) {
+        if (!this.observers[topic]) {
             return;
         }
 
@@ -22,7 +22,7 @@ var PubSub = {
             this.observers[topic].splice(index, 1);
         }
     },
-    publish: function(topic) {
+    publish: function (topic) {
         if (!this.observers[topic]) {
             return;
         }

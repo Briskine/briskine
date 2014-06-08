@@ -2,39 +2,39 @@
  */
 
 var gqApp = angular.module('gqApp', [
-        'ngRoute',
-        'ngResource',
-        'ngAnimate',
-        'angular-md5',
-        'angularMoment'
-    ]).config(function($routeProvider, $compileProvider) {
+    'ngRoute',
+    'ngResource',
+    'ngAnimate',
+    'angular-md5',
+    'angularMoment'
+]).config(function ($routeProvider, $compileProvider) {
 
-        $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|chrome-extension):/);
+    $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|chrome-extension):/);
 
-        $routeProvider
-            .when('/list', {
-                controller: 'ListCtrl',
-                templateUrl: 'views/list.html',
-                reloadOnSearch: false
-            })
-            .when('/settings', {
-                controller: 'SettingsCtrl',
-                templateUrl: 'views/settings.html'
-            })
-            .when('/popup', {
-                controller: 'ListCtrl',
-                templateUrl: 'views/list.html'
-            })
-            .otherwise({
-                redirectTo: '/list'
-            });
-    });
+    $routeProvider
+        .when('/list', {
+            controller: 'ListCtrl',
+            templateUrl: 'views/list.html',
+            reloadOnSearch: false
+        })
+        .when('/settings', {
+            controller: 'SettingsCtrl',
+            templateUrl: 'views/settings.html'
+        })
+        .when('/popup', {
+            controller: 'ListCtrl',
+            templateUrl: 'views/list.html'
+        })
+        .otherwise({
+            redirectTo: '/list'
+        });
+});
 
 /* Global run
  */
-gqApp.run(function($rootScope, $location, $http, $timeout, ProfileService, SettingsService, QuicktextService) {
+gqApp.run(function ($rootScope, $location, $http, $timeout, ProfileService, SettingsService, QuicktextService) {
 
-    $rootScope.$on('$routeChangeStart', function(next, current) {
+    $rootScope.$on('$routeChangeStart', function (next, current) {
         $rootScope.path = $location.path();
     });
 
@@ -45,14 +45,15 @@ gqApp.run(function($rootScope, $location, $http, $timeout, ProfileService, Setti
     // last sync date
     $rootScope.lastSync = QuicktextService.lastSync;
 
-    $rootScope.SyncNow = function() {
-      QuicktextService.sync(function(lastSync) {
-        $rootScope.lastSync = lastSync;
-      });
+    $rootScope.SyncNow = function () {
+        QuicktextService.sync(function (lastSync) {
+            $rootScope.$broadcast("quicktexts-sync");
+            $rootScope.lastSync = lastSync;
+        });
     };
 
     // init dom plugins
-    var initDom = function() {
+    var initDom = function () {
 
         // init bootstrap elements
         $('[data-toggle=tooltip]').tooltip();
@@ -62,7 +63,7 @@ gqApp.run(function($rootScope, $location, $http, $timeout, ProfileService, Setti
         });
 
         //put focus on the first text input when opening modals
-        $('.modal').on('shown.bs.modal', function() {
+        $('.modal').on('shown.bs.modal', function () {
             $(this).find('input[type!="hidden"]:first').focus();
         });
 
@@ -72,23 +73,23 @@ gqApp.run(function($rootScope, $location, $http, $timeout, ProfileService, Setti
     $rootScope.$on('$viewContentLoaded', initDom);
     $rootScope.$on('$includeContentLoaded', initDom);
 
-    $rootScope.showLogin = function() {
+    $rootScope.showLogin = function () {
         $('.login-modal').modal('show');
     };
 
-    $rootScope.showRegister = function() {
+    $rootScope.showRegister = function () {
         $('.register-modal').modal('show');
     };
 
-    $rootScope.checkLogin = function() {
+    $rootScope.checkLogin = function () {
         $('#check-login').removeClass("hide");
     };
 
-    $rootScope.isLoggedIn = function() {
-        $http.get(SettingsService.get("apiBaseURL") + 'login-info').success(function(data) {
+    $rootScope.isLoggedIn = function () {
+        $http.get(SettingsService.get("apiBaseURL") + 'login-info').success(function (data) {
             SettingsService.set("isLoggedIn", data.is_loggedin);
             if (data.is_loggedin) {
-                $http.get(SettingsService.get("apiBaseURL") + "account").success(function(data) {
+                $http.get(SettingsService.get("apiBaseURL") + "account").success(function (data) {
                     $rootScope.profile.user = data;
                 });
             }

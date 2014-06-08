@@ -1,73 +1,86 @@
 <div class="modal fade quicktext-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        <h4 class="modal-title">
-          <span ng-show="selectedQt.id">Edit Quicktext</span>
-          <span ng-show="!selectedQt.id">New Quicktext</span>
-        </h4>
-      </div>
-
-      <form role="form" name="quicktext-form0" ng-submit="saveQt()">
-
-        <div class="modal-body">
-          <input type="hidden" id="qt-id" ng-model="selectedQt.id" /> <!-- local id -->
-          <input type="hidden" id="qt-key" ng-model="selectedQt.key" /> <!-- sync server id -->
-
-          <div class="row">
-            <div class="col-xs-7">
-
-              <div class="form-group">
-                <label for="qt-title">Title</label>
-                <input type="text" class="form-control" id="qt-title" ng-model="selectedQt.title" autofocus required/>
-              </div>
-
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">
+                    <span ng-show="selectedQt.id">Edit Quicktext</span>
+                    <span ng-show="!selectedQt.id">New Quicktext</span>
+                </h4>
             </div>
 
-            <div class="col-xs-5">
+            <form role="form" name="quicktext-form0" ng-submit="saveQt()">
 
-              <div class="form-group" data-toggle="tooltip" data-placement="bottom" title="Text to be entered in the email, before pressing the Tab key, to trigger the Quicktext.">
-                <label for="qt-shortcut">
-                  Tab Completion
-                  <span class="text-muted">(Optional)</span>
-                </label>
-                <input type="text" class="form-control" id="qt-shortcut" ng-model="selectedQt.shortcut"/>
-              </div>
+                <div class="modal-body">
+                    <input type="hidden" id="qt-id" ng-model="selectedQt.id"/> <!-- local id -->
+                    <input type="hidden" id="qt-key" ng-model="selectedQt.key"/> <!-- sync server id -->
 
-            </div>
-          </div>
+                    <div class="row">
+                        <div class="col-xs-7">
 
-          <div class="form-group">
-            <label for="qt-subject">
-              Subject
-              <span class="text-muted">(Optional)</span>
-            </label>
-            <input type="text" class="form-control"  id="qt-subject" ng-model="selectedQt.subject"/>
-          </div>
-          <div class="form-group">
-            <label for="qt-tags">
-              Tags
-              <span class="text-muted">(Optional)</span>
-            </label>
-            <input type="text" class="form-control"  id="qt-tags" size="50" ng-model="selectedQt.tags"/>
-            <p class="help-block">Comma separated list of tags.</span>
-          </div>
-          <div class="form-group">
-            <label for="qt-body">Quicktext Template</label>
-            <textarea id="qt-body" class="form-control" cols="100" rows="6" ng-model="selectedQt.body" required></textarea>
-          </div>
-      </div>
+                            <div class="form-group">
+                                <label for="qt-title">Title</label>
+                                <input type="text" class="form-control" id="qt-title" ng-model="selectedQt.title"
+                                       placeholder="A useful title that you can search for" autofocus required/>
+                            </div>
 
-      <div class="modal-footer">
-        <span ng-show="selectedQt.id" class="duplicate-bottom pull-left"><a href="" ng-click="duplicateQt()">Duplicate quicktext</a></span>
+                        </div>
 
-        <button type="submit" class="btn btn-primary">Save quicktext</button>
+                        <div class="col-xs-5">
 
-        <span class="cancel-bottom">or <a href="" data-dismiss="modal">Cancel</a></span>
-      </div>
+                            <div class="form-group" data-toggle="tooltip" data-placement="bottom"
+                                 title="Text to be entered in the email, before pressing the Tab key, to trigger the Quicktext.">
+                                <label for="qt-shortcut">
+                                    Tab Completion
+                                    <span class="text-muted">(Optional)</span>
+                                </label>
+                                <input type="text" class="form-control" id="qt-shortcut"
+                                       ng-model="selectedQt.shortcut"
+                                       placeholder="shortKeyword"/>
 
-    </form>
+                            </div>
 
-  </div>
-</div>
+                        </div>
+                    </div>
+
+                    <div class="form-group" data-toggle="tooltip" data-placement="bottom"
+                         title="The e-mail subject will be replaced with this field. Only when this quicktext is used.">
+                        <label for="qt-subject">
+                            Subject
+                            <span class="text-muted">(Optional)</span>
+                        </label>
+                        <input type="text" class="form-control" id="qt-subject" ng-model="selectedQt.subject"/>
+                    </div>
+                    <div class="form-group">
+                        <label for="qt-tags">
+                            Tags
+                            <span class="text-muted">(Optional)</span>
+                        </label>
+                        <input type="text" class="form-control" id="qt-tags" size="50" ng-model="selectedQt.tags" placeholder="Ex: en, sales, discounts"/>
+
+                        <p class="help-block">Comma separated list of tags.</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="qt-body">Quicktext Template</label>
+                        <textarea id="qt-body" class="form-control" cols="100" rows="6" ng-model="selectedQt.body"
+                                  required></textarea>
+
+                        <p class="help-block">Supports <a href="http://help.quicktext.io/src/04-templates.html"
+                                                          target="_blank">template variables</a>.</p>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <span ng-show="selectedQt.id" class="duplicate-bottom pull-left"><a href=""
+                                                                                        ng-click="duplicateQt()">Duplicate
+                        quicktext</a></span>
+
+                    <button type="submit" class="btn btn-primary">Save quicktext</button>
+
+                    <span class="cancel-bottom">or <a href="" data-dismiss="modal">Cancel</a></span>
+                </div>
+
+            </form>
+
+        </div>
+    </div>

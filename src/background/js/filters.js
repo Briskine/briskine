@@ -12,7 +12,7 @@ gqApp.filter('truncate', function () {
         if (text.length <= length || text.length - end.length <= length) {
             return text;
         } else {
-            return String(text).substring(0, length-end.length) + end;
+            return String(text).substring(0, length - end.length) + end;
         }
     };
 });
@@ -26,16 +26,16 @@ gqApp.filter('newlines', function () {
 
 // tell angular that an output is safe
 gqApp.filter('safe', function ($sce) {
-    return function(val) {
+    return function (val) {
         return $sce.trustAsHtml(val);
     };
 });
 
 // Filter quicktexts by tags
-gqApp.filter('tagFilter', function(QuicktextService){
-    return function(quicktexts, filterTags){
-        if (filterTags && filterTags.length){
-            return _.filter(quicktexts, function(qt){
+gqApp.filter('tagFilter', function (QuicktextService) {
+    return function (quicktexts, filterTags) {
+        if (filterTags && filterTags.length) {
+            return _.filter(quicktexts, function (qt) {
                 tags = QuicktextService.tags(qt);
                 return _.intersection(filterTags, tags).length === filterTags.length;
             });

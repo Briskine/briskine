@@ -46,7 +46,7 @@ App.parser.getFieldValues = function (element) {
         // , from_name = $('span[email="'+from_email+'"]').length ? $('span[email="'+from_email+'"]').attr('name') : ''
         // Taking name based on Google+ avatar name
             fromNameEl = $('a[href^="https://plus.google.com/u/0/me"][title]'),
-            fromName = fromNameEl.length ? fromNameEl.attr('title').split('\n')[0]: '';
+            fromName = fromNameEl.length ? fromNameEl.attr('title').split('\n')[0] : '';
 
         from = fromName + ' <' + from_email + '>';
         to = $container.find('input[name=to]').toArray().map(function (a) {
@@ -74,8 +74,8 @@ App.parser.parseList = function (list) {
     return list.filter(function (a) {
         return a;
     }).map(function (a) {
-            return App.parser.parseString(a);
-        });
+        return App.parser.parseString(a);
+    });
 };
 
 App.parser.regExString = /"?([^ ]*)\s*(.*)"?\s*<([^>]+)>/;

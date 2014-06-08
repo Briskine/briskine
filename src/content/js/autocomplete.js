@@ -158,10 +158,10 @@ App.autocomplete.keyCompletion = function (e) {
             var filtered = [];
             if (quicktexts && quicktexts.length) {
                 filtered = quicktexts.filter(function (a) {
-                  return a.shortcut === word.text;
-                }); 
+                    return a.shortcut === word.text;
+                });
             }
-           
+
             if (filtered.length) {
                 // replace with the first quicktext found
                 App.autocomplete.replaceWith(filtered[0], e);
@@ -180,8 +180,8 @@ App.autocomplete.checkWord = function (e) {
 
     // if tab is pressed without any selection
     // just moving the cursor to the send button
-    if(cursorPosition.start === 0 && cursorPosition.end === 0) {
-      return false;
+    if (cursorPosition.start === 0 && cursorPosition.end === 0) {
+        return false;
     }
 
     var word = this.getSelectedWord(cursorPosition);
@@ -488,9 +488,9 @@ App.autocomplete.replaceWith = function (quicktext, event) {
     }
 
     // set subject field
-    if(quicktext.subject) {
-      var $subjectField = $('input[name=subjectbox]');
-      $subjectField.val(quicktext.subject);
+    if (quicktext.subject) {
+        var $subjectField = $('input[name=subjectbox]');
+        $subjectField.val(quicktext.subject);
     }
 
     // updates stats

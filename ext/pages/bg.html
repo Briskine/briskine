@@ -11,7 +11,7 @@
 <div class="container">
     <div class="sidebar-wrapper">
 
-        <a ng-href="{{ settings.get('baseURL') }}" class="brand">
+        <a ng-href="{{ settings.get('baseURL') }}" target="_blank" class="brand">
             <img src="../icons/icon48.png" alt="Quicktext"/>
             Quicktext
         </a>
@@ -20,7 +20,7 @@
 
             <div class="profile-body" ng-show="profile.user">
 
-                <a class="profile-picture" href="https://www.gravatar.com/" target="_blank">
+                <a class="profile-picture" href="https://quicktext.io/app#/account" target="_blank">
                     <img class="img-circle" title="Setup your avatar on gravatar.com" alt="gravatar" ng-src="{{ profile.gravatar(profile.user.email) }}">
                 </a>
 

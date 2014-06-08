@@ -5,7 +5,7 @@ gqApp.controller('LoginCtrl', function ($scope, $rootScope, QuicktextService, Se
 
     $scope.loginGoogle = function () {
 
-        var loginPost =  function(action){
+        var loginPost = function (action) {
             var form = document.createElement("form");
             form.setAttribute("method", "post");
             form.setAttribute("action", action);
@@ -14,7 +14,7 @@ gqApp.controller('LoginCtrl', function ($scope, $rootScope, QuicktextService, Se
         };
 
         var action = SettingsService.get("baseURL") + "login/google";
-        var url = "javascript:" + loginPost.toString().replace(/(\n|\t)/gm,'') + "; loginPost('" + action + "');";
+        var url = "javascript:" + loginPost.toString().replace(/(\n|\t)/gm, '') + "; loginPost('" + action + "');";
         console.log(url);
         chrome.tabs.create({
             url: url,
