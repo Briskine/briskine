@@ -155,9 +155,7 @@ module.exports = function (grunt) {
 
     grunt.registerTask('manifest:production', 'Build chrome manifest life.', function () {
         var manifest = grunt.file.readJSON('src/manifest.json')
-
-        // Leave everything as it is
-
+        delete manifest.key;
         grunt.file.write('ext/manifest.json', JSON.stringify(manifest))
 
         grunt.file.write('src/background/js/environment.js', 'var ENV = "production";')
