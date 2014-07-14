@@ -79,7 +79,7 @@ gqApp.service('QuicktextService', function ($q, $resource, SettingsService) {
                 };
 
                 for (var i = 0; i < res.rows.length; i++) {
-                    var qt = res.rows.item(i);
+                    var qt = angular.copy(res.rows.item(i));
                     var qtRemote = new self.qRes();
                     qtRemote = self._copy(qt, qtRemote);
                     qtRemote.$save(saveQt(qt));
@@ -136,13 +136,13 @@ gqApp.service('QuicktextService', function ($q, $resource, SettingsService) {
                         localQuicktexts.push(res.rows.item(i));
                     }
                     _.each(remoteQuicktexts, function (remoteQt) {
-                        var version = remoteQt.versions[0];
+                        var lastVersion = remoteQt.versions[0];
                         var updated = false;
 
                         for (var i in localQuicktexts) {
-                            var qt = localQuicktexts[i];
+                            var qt = angular.copy(localQuicktexts[i]);
                             if (qt.remote_id === remoteQt.id) {
-                                qt = self._copy(version, qt);
+                                qt = self._copy(lastVersion, qt);
                                 qt.remote_id = remoteQt.id;
                                 self.update(qt, true);
                                 updated = true;
@@ -152,7 +152,7 @@ gqApp.service('QuicktextService', function ($q, $resource, SettingsService) {
 
                         // I wish there was for..else in JS
                         if (!updated) {
-                            var newQt = self._copy(version, {});
+                            var newQt = self._copy(lastVersion, {});
                             newQt.remote_id = remoteQt.id;
                             self.create(newQt, true);
                         }
@@ -187,8 +187,8 @@ gqApp.service('QuicktextService', function ($q, $resource, SettingsService) {
 // Copy one quicktext object to another - used for the remote saving
     self._copy = function (source, target) {
         for (var k in source) {
-            // ignore the id
-            if (k === 'id') {
+            // ignore the no own property or id
+            if (k === 'id' && !source.hasOwnProperty(k)) {
                 continue;
             }
             if (k === 'tags') {
