@@ -43,6 +43,21 @@ gqApp.service('QuicktextService', function ($q, $resource, SettingsService) {
         return deferred.promise;
     };
 
+    self.filtered = function (filters) {
+        var deferred = $q.defer();
+        self.db.transaction(function (tx) {
+            tx.executeSql("SELECT * FROM quicktext WHERE deleted = 0 AND " + filters + "ORDER BY created_datetime DESC", [], function (tx, res) {
+                var len = res.rows.length, i;
+                var list = [];
+                for (i = 0; i < len; i++) {
+                    list.push(res.rows.item(i));
+                }
+                deferred.resolve(list);
+            });
+        });
+        return deferred.promise;
+    };
+
     /* Sync - assume that there was no connectivity and now we have it
 
      Local quicktexts:

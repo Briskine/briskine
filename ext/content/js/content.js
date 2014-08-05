@@ -12751,6 +12751,12 @@ var App = {
     autocomplete: {},
     parser: {},
     settings: {
+        getQuicktexts: function(text, callback) {
+            App.quicktextsPort.postMessage({text: text});
+            App.quicktextsPort.onMessage.addListener(function(msg){
+                callback(msg.quicktexts);
+            });
+        },
         get: function (key, callback) {
             chrome.runtime.sendMessage({'request': 'get', 'data': key}, function (response) {
                 callback(response);
@@ -12773,6 +12779,8 @@ var App = {
         }
     }
 };
+
+App.quicktextsPort = chrome.runtime.connect({name: "quicktexts"});
 
 
 App.init = function () {
@@ -13084,7 +13092,7 @@ App.autocomplete.keyCompletion = function (e) {
     var word = this.getSelectedWord(App.autocomplete.cursorPosition);
     App.autocomplete.cursorPosition.word = word;
     if (word.text) {
-        App.settings.get('quicktexts', function (quicktexts) {
+        App.settings.getQuicktexts(word.text, function (quicktexts) {
             // Search for match
             var filtered = [];
             if (quicktexts && quicktexts.length) {

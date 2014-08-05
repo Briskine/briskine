@@ -153,7 +153,7 @@ App.autocomplete.keyCompletion = function (e) {
     var word = this.getSelectedWord(App.autocomplete.cursorPosition);
     App.autocomplete.cursorPosition.word = word;
     if (word.text) {
-        App.settings.get('quicktexts', function (quicktexts) {
+        App.settings.getQuicktexts(word.text, function (quicktexts) {
             // Search for match
             var filtered = [];
             if (quicktexts && quicktexts.length) {

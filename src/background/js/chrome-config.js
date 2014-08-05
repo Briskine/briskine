@@ -84,5 +84,20 @@ if (chrome.runtime) {
 
             return true;
         });
+
+        chrome.runtime.onConnect.addListener(function(port) {
+            port.onMessage.addListener(function(msg) {
+                if (!document.querySelector('body[class=ng-scope]')) {
+                    angular.bootstrap('body', ['gqApp']);
+                }
+                var injector = angular.element('body').injector();
+                if (port.name === 'quicktexts') {
+                    injector.get('QuicktextService').filtered("shortcut = '"+ msg.text +"'" /* TODO: <- fix this */).then(function (res) {
+                       port.postMessage({'quicktexts': res});
+                       _gaq.push(['_trackEvent', "content", 'insert']);
+                    });
+                }
+            });
+        });
     });
 }

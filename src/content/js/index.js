@@ -12,6 +12,12 @@ var App = {
     autocomplete: {},
     parser: {},
     settings: {
+        getQuicktexts: function(text, callback) {
+            App.quicktextsPort.postMessage({text: text});
+            App.quicktextsPort.onMessage.addListener(function(msg){
+                callback(msg.quicktexts);
+            });
+        },
         get: function (key, callback) {
             chrome.runtime.sendMessage({'request': 'get', 'data': key}, function (response) {
                 callback(response);
@@ -34,6 +40,8 @@ var App = {
         }
     }
 };
+
+App.quicktextsPort = chrome.runtime.connect({name: "quicktexts"});
 
 
 App.init = function () {
