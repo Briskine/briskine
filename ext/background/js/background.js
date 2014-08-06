@@ -37968,20 +37968,24 @@ if (chrome.runtime) {
             return true;
         });
 
-        chrome.runtime.onConnect.addListener(function(port) {
-            port.onMessage.addListener(function(msg) {
-                if (!document.querySelector('body[class=ng-scope]')) {
-                    angular.bootstrap('body', ['gqApp']);
-                }
-                var injector = angular.element('body').injector();
-                if (port.name === 'quicktexts') {
-                    injector.get('QuicktextService').filtered("shortcut = '"+ msg.text +"'" /* TODO: <- fix this */).then(function (res) {
-                       port.postMessage({'quicktexts': res});
-                       _gaq.push(['_trackEvent', "content", 'insert']);
+        if (!chrome.runtime.onConnect.hasListeners()) {
+            chrome.runtime.onConnect.addListener(function (port) {
+                if (!port.onMessage.hasListeners()) {
+                    port.onMessage.addListener(function (msg) {
+                        if (!document.querySelector('body[class=ng-scope]')) {
+                            angular.bootstrap('body', ['gqApp']);
+                        }
+                        var injector = angular.element('body').injector();
+                        if (port.name === 'quicktexts') {
+                            injector.get('QuicktextService').filtered("shortcut = '" + msg.text + "'" /* TODO: <- fix this */).then(function (res) {
+                                port.postMessage({'quicktexts': res});
+                                _gaq.push(['_trackEvent', "content", 'insert']);
+                            });
+                        }
                     });
                 }
             });
-        });
+        }
     });
 }
 
@@ -38485,7 +38489,7 @@ gqApp.service('QuicktextService', function ($q, $resource, SettingsService) {
     self.filtered = function (filters) {
         var deferred = $q.defer();
         self.db.transaction(function (tx) {
-            tx.executeSql("SELECT * FROM quicktext WHERE deleted = 0 AND " + filters + "ORDER BY created_datetime DESC", [], function (tx, res) {
+            tx.executeSql("SELECT * FROM quicktext WHERE deleted = 0 AND " + filters + " ORDER BY created_datetime DESC", [], function (tx, res) {
                 var len = res.rows.length, i;
                 var list = [];
                 for (i = 0; i < len; i++) {

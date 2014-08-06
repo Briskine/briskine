@@ -12751,11 +12751,13 @@ var App = {
     autocomplete: {},
     parser: {},
     settings: {
-        getQuicktexts: function(text, callback) {
+        getQuicktexts: function (text, callback) {
             App.quicktextsPort.postMessage({text: text});
-            App.quicktextsPort.onMessage.addListener(function(msg){
-                callback(msg.quicktexts);
-            });
+            if (!App.quicktextsPort.onMessage.hasListeners()) {
+                App.quicktextsPort.onMessage.addListener(function (msg) {
+                    callback(msg.quicktexts);
+                });
+            }
         },
         get: function (key, callback) {
             chrome.runtime.sendMessage({'request': 'get', 'data': key}, function (response) {
@@ -12781,7 +12783,13 @@ var App = {
 };
 
 App.quicktextsPort = chrome.runtime.connect({name: "quicktexts"});
-
+if (!App.quicktextsPort.onDisconnect.hasListeners()) {
+    App.quicktextsPort.onDisconnect.addListener(function(e){
+        console.log("Disconnected port", e);
+        console.log("Trying to reconnect");
+        App.quicktextsPort = chrome.runtime.connect({name: "quicktexts"});
+    });
+}
 
 App.init = function () {
 
