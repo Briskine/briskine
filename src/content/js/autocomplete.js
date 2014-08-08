@@ -153,18 +153,10 @@ App.autocomplete.keyCompletion = function (e) {
     var word = this.getSelectedWord(App.autocomplete.cursorPosition);
     App.autocomplete.cursorPosition.word = word;
     if (word.text) {
-        App.settings.getQuicktexts(word.text, function (quicktexts) {
-            // Search for match
-            var filtered = [];
-            if (quicktexts && quicktexts.length) {
-                filtered = quicktexts.filter(function (a) {
-                    return a.shortcut === word.text;
-                });
-            }
-
-            if (filtered.length) {
+        App.settings.getQuicktextsShortcut(word.text, function (quicktexts) {
+            if (quicktexts.length) {
                 // replace with the first quicktext found
-                App.autocomplete.replaceWith(filtered[0], e);
+                App.autocomplete.replaceWith(quicktexts[0], e);
             } else { // no quicktext found.. focus the next element
                 App.autocomplete.focusNext(e.target);
             }
@@ -194,41 +186,8 @@ App.autocomplete.checkWord = function (e) {
 
     //TODO: This should probably be done in the background and the results be hold in a cache
     if (word.text !== '') {
-        App.settings.get('quicktexts', function (elements) {
-            App.autocomplete.quicktexts = [];
-
-            App.autocomplete.quicktexts = _.union(App.autocomplete.quicktexts, elements.filter(function (a) {
-                if (a.shortcut === word.text) {
-                    return true;
-                }
-
-                // check out the exact match of tags
-                var tags = a.tags.split(",");
-                for (var i in tags) {
-                    var tag = tags[i].replace(" ", "");
-                    if (tag && word.text === tag) {
-                        return true;
-                    }
-                }
-                return false;
-            }));
-
-
-            if (word.text.length >= 3) { // begin searching in the title/tags after 3 chars
-                // Search for match
-                App.autocomplete.quicktexts = _.union(App.autocomplete.quicktexts, elements.filter(function (a) {
-                    return a.title.toLowerCase().indexOf(word.text.toLowerCase()) !== -1;
-                }));
-            }
-
-            if (word.text.length >= 5) { // begin searching in body after 5 chars
-                // Search for match
-                App.autocomplete.quicktexts = _.union(App.autocomplete.quicktexts, elements.filter(function (a) {
-                    return a.body.toLowerCase().indexOf(word.text.toLowerCase()) !== -1;
-                }));
-            }
-
-
+        App.settings.getFiltered(word.text, function (quicktexts) {
+            App.autocomplete.quicktexts = quicktexts;
             if (App.autocomplete.quicktexts.length) {
                 App.autocomplete.dropdownCreate(cursorPosition);
                 App.autocomplete.dropdownPopulate(App.autocomplete.quicktexts);

@@ -37781,7 +37781,7 @@ module.filter('md5', ['md5', function(md5) {
 
 })();
 
-var ENV = "production";
+var ENV = "development";
 /* Quicktext chrome extension
  */
 
@@ -37967,7 +37967,6 @@ if (chrome.runtime) {
 
             return true;
         });
-
         if (!chrome.runtime.onConnect.hasListeners()) {
             chrome.runtime.onConnect.addListener(function (port) {
                 if (!port.onMessage.hasListeners()) {
@@ -37977,10 +37976,46 @@ if (chrome.runtime) {
                         }
                         var injector = angular.element('body').injector();
                         if (port.name === 'quicktexts') {
-                            injector.get('QuicktextService').filtered("shortcut = '" + msg.text + "'" /* TODO: <- fix this */).then(function (res) {
-                                port.postMessage({'quicktexts': res});
-                                _gaq.push(['_trackEvent', "content", 'insert']);
-                            });
+                            if (msg.field === 'shortcut'){
+                                injector.get('QuicktextService').filtered("shortcut = '" + msg.text + "'" /* TODO: <- fix this sql */).then(function (res) {
+                                    port.postMessage({'quicktexts': res, 'action': 'insert'});
+                                    _gaq.push(['_trackEvent', "content", 'insert']);
+                                });
+                            } else {
+                                injector.get('QuicktextService').filtered("shortcut = '" + msg.text + "' OR title LIKE '%"+ msg.text +"%' OR body LIKE '% " + msg.text + " %'" /* TODO: <- fix this sql */).then(function (res) {
+                                    /*
+                                    if (a.shortcut === word.text) {
+                                        return true;
+                                    }
+
+                                    // check out the exact match of tags
+                                    var tags = a.tags.split(",");
+                                    for (var i in tags) {
+                                        var tag = tags[i].replace(" ", "");
+                                        if (tag && word.text === tag) {
+                                            return true;
+                                        }
+                                    }
+
+                                    if (word.text.length >= 3) { // begin searching in the title/tags after 3 chars
+                                        // Search for match
+                                        App.autocomplete.quicktexts = _.union(App.autocomplete.quicktexts, elements.filter(function (a) {
+                                            return a.title.toLowerCase().indexOf(word.text.toLowerCase()) !== -1;
+                                        }));
+                                    }
+
+                                    if (word.text.length >= 5) { // begin searching in body after 5 chars
+                                        // Search for match
+                                        App.autocomplete.quicktexts = _.union(App.autocomplete.quicktexts, elements.filter(function (a) {
+                                            return a.body.toLowerCase().indexOf(word.text.toLowerCase()) !== -1;
+                                        }));
+                                    }
+                                    */
+
+                                    port.postMessage({'quicktexts': res, 'action': 'list'});
+                                    _gaq.push(['_trackEvent', "content", 'insert']);
+                                });
+                            }
                         }
                     });
                 }

@@ -12751,13 +12751,28 @@ var App = {
     autocomplete: {},
     parser: {},
     settings: {
-        getQuicktexts: function (text, callback) {
+        // Get quicktexts filtered out by shortcut
+        getQuicktextsShortcut: function (text, callback) {
+            App.quicktextsPort.postMessage({text: text, field: "shortcut"});
+            App.quicktextsPort.onMessage
+            if (!App.quicktextsPort.onMessage.hasListeners()) {
+                App.quicktextsPort.onMessage.addListener(function (msg) {
+                    if (msg.action === 'insert') {
+                        callback(msg.quicktexts);
+                    }
+                });
+            }
+        },
+        getFiltered: function(text, callback){
             App.quicktextsPort.postMessage({text: text});
             if (!App.quicktextsPort.onMessage.hasListeners()) {
                 App.quicktextsPort.onMessage.addListener(function (msg) {
-                    callback(msg.quicktexts);
+                    if (msg.action === 'list') {
+                        callback(msg.quicktexts);
+                    }
                 });
             }
+
         },
         get: function (key, callback) {
             chrome.runtime.sendMessage({'request': 'get', 'data': key}, function (response) {
@@ -12798,39 +12813,6 @@ App.init = function () {
     document.addEventListener("keydown", App.onKeyDown, true);
     document.addEventListener("keyup", App.onKeyUp, true);
 
-    var chromeEventRegistry = function () {
-        if (/(compose|drafts)/.test(window.location.hash)) {
-            // register only one time
-            if (!chrome.runtime.onMessage.hasListeners()) {
-                // wait for the background page to send a message to the content script
-                chrome.runtime.onMessage.addListener(
-                    function (request, sender, sendResponse) {
-                        // insert quicktext
-                        if (request.action && request.action == 'insert') {
-                            if (App.data.inCompose) {
-                                var quicktext = request.quicktext;
-                                var dest = document.getSelection();
-                                var e = {
-                                    target: dest.baseNode
-                                };
-
-                                // return focus to it's rightful owner
-                                App.onFocus(e); //TODO: this loses the selection
-                                App.autocomplete.cursorPosition = App.autocomplete.getCursorPosition(e);
-                                App.autocomplete.cursorPosition.word = "";
-                                App.autocomplete.replaceWith(quicktext);
-                                App.autocomplete.justCompleted = true;
-                            }
-                        }
-                        sendResponse("Inserted");
-                    });
-            }
-
-        }
-    };
-    // check if we are in compose or drafts before registering any events. This prevents multiple registration of message listeners
-    chromeEventRegistry();
-    window.setInterval(chromeEventRegistry, 500);
 };
 
 $(function () {
@@ -13100,18 +13082,10 @@ App.autocomplete.keyCompletion = function (e) {
     var word = this.getSelectedWord(App.autocomplete.cursorPosition);
     App.autocomplete.cursorPosition.word = word;
     if (word.text) {
-        App.settings.getQuicktexts(word.text, function (quicktexts) {
-            // Search for match
-            var filtered = [];
-            if (quicktexts && quicktexts.length) {
-                filtered = quicktexts.filter(function (a) {
-                    return a.shortcut === word.text;
-                });
-            }
-
-            if (filtered.length) {
+        App.settings.getQuicktextsShortcut(word.text, function (quicktexts) {
+            if (quicktexts.length) {
                 // replace with the first quicktext found
-                App.autocomplete.replaceWith(filtered[0], e);
+                App.autocomplete.replaceWith(quicktexts[0], e);
             } else { // no quicktext found.. focus the next element
                 App.autocomplete.focusNext(e.target);
             }
@@ -13141,41 +13115,8 @@ App.autocomplete.checkWord = function (e) {
 
     //TODO: This should probably be done in the background and the results be hold in a cache
     if (word.text !== '') {
-        App.settings.get('quicktexts', function (elements) {
-            App.autocomplete.quicktexts = [];
-
-            App.autocomplete.quicktexts = _.union(App.autocomplete.quicktexts, elements.filter(function (a) {
-                if (a.shortcut === word.text) {
-                    return true;
-                }
-
-                // check out the exact match of tags
-                var tags = a.tags.split(",");
-                for (var i in tags) {
-                    var tag = tags[i].replace(" ", "");
-                    if (tag && word.text === tag) {
-                        return true;
-                    }
-                }
-                return false;
-            }));
-
-
-            if (word.text.length >= 3) { // begin searching in the title/tags after 3 chars
-                // Search for match
-                App.autocomplete.quicktexts = _.union(App.autocomplete.quicktexts, elements.filter(function (a) {
-                    return a.title.toLowerCase().indexOf(word.text.toLowerCase()) !== -1;
-                }));
-            }
-
-            if (word.text.length >= 5) { // begin searching in body after 5 chars
-                // Search for match
-                App.autocomplete.quicktexts = _.union(App.autocomplete.quicktexts, elements.filter(function (a) {
-                    return a.body.toLowerCase().indexOf(word.text.toLowerCase()) !== -1;
-                }));
-            }
-
-
+        App.settings.getFiltered(word.text, function (quicktexts) {
+            App.autocomplete.quicktexts = quicktexts;
             if (App.autocomplete.quicktexts.length) {
                 App.autocomplete.dropdownCreate(cursorPosition);
                 App.autocomplete.dropdownPopulate(App.autocomplete.quicktexts);
