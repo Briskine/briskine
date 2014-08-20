@@ -37781,7 +37781,7 @@ module.filter('md5', ['md5', function(md5) {
 
 })();
 
-var ENV = "development";
+var ENV = "production";
 /* Quicktext chrome extension
  */
 
@@ -37967,55 +37967,26 @@ if (chrome.runtime) {
 
             return true;
         });
+
         if (!chrome.runtime.onConnect.hasListeners()) {
             chrome.runtime.onConnect.addListener(function (port) {
+                // Attach listener only once
                 if (!port.onMessage.hasListeners()) {
                     port.onMessage.addListener(function (msg) {
                         if (!document.querySelector('body[class=ng-scope]')) {
                             angular.bootstrap('body', ['gqApp']);
                         }
                         var injector = angular.element('body').injector();
-                        if (port.name === 'quicktexts') {
-                            if (msg.field === 'shortcut'){
-                                injector.get('QuicktextService').filtered("shortcut = '" + msg.text + "'" /* TODO: <- fix this sql */).then(function (res) {
-                                    port.postMessage({'quicktexts': res, 'action': 'insert'});
-                                    _gaq.push(['_trackEvent', "content", 'insert']);
-                                });
-                            } else {
-                                injector.get('QuicktextService').filtered("shortcut = '" + msg.text + "' OR title LIKE '%"+ msg.text +"%' OR body LIKE '% " + msg.text + " %'" /* TODO: <- fix this sql */).then(function (res) {
-                                    /*
-                                    if (a.shortcut === word.text) {
-                                        return true;
-                                    }
-
-                                    // check out the exact match of tags
-                                    var tags = a.tags.split(",");
-                                    for (var i in tags) {
-                                        var tag = tags[i].replace(" ", "");
-                                        if (tag && word.text === tag) {
-                                            return true;
-                                        }
-                                    }
-
-                                    if (word.text.length >= 3) { // begin searching in the title/tags after 3 chars
-                                        // Search for match
-                                        App.autocomplete.quicktexts = _.union(App.autocomplete.quicktexts, elements.filter(function (a) {
-                                            return a.title.toLowerCase().indexOf(word.text.toLowerCase()) !== -1;
-                                        }));
-                                    }
-
-                                    if (word.text.length >= 5) { // begin searching in body after 5 chars
-                                        // Search for match
-                                        App.autocomplete.quicktexts = _.union(App.autocomplete.quicktexts, elements.filter(function (a) {
-                                            return a.body.toLowerCase().indexOf(word.text.toLowerCase()) !== -1;
-                                        }));
-                                    }
-                                    */
-
-                                    port.postMessage({'quicktexts': res, 'action': 'list'});
-                                    _gaq.push(['_trackEvent', "content", 'insert']);
-                                });
-                            }
+                        if (port.name === 'shortcut') {
+                            injector.get('QuicktextService').filtered("shortcut = '" + msg.text + "'" /* TODO: <- fix this sql */).then(function (res) {
+                                port.postMessage({'quicktexts': res, 'action': 'insert'});
+                                _gaq.push(['_trackEvent', "content", 'insert']);
+                            });
+                        } else if (port.name === 'search') {
+                            injector.get('QuicktextService').filtered("shortcut = '" + msg.text + "' OR title LIKE '%"+ msg.text +"%' OR body LIKE '% " + msg.text + " %'" /* TODO: <- fix this sql */).then(function (res) {
+                                port.postMessage({'quicktexts': res, 'action': 'list'});
+                                _gaq.push(['_trackEvent', "content", 'insert']);
+                            });
                         }
                     });
                 }

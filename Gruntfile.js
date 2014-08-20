@@ -32,6 +32,7 @@ module.exports = function (grunt) {
                 'bower_components/underscore/underscore.js',
                 'bower_components/handlebars/handlebars.js',
 
+                'src/content/js/gmailr.js',
                 'src/content/js/patterns.js',
                 'src/content/js/index.js',
                 'src/content/js/parser.js',
@@ -91,7 +92,8 @@ module.exports = function (grunt) {
                 'src/background/js/*.js'
             ],
             options: {
-                multistr: true
+                multistr: true,
+                ignores: "src/content/js/gmailr.js"
             }
         },
         concat: {
