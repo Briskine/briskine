@@ -319,5 +319,4 @@ gqApp.controller('ListCtrl',
         $scope.setFocus = function (index) {
             $scope.focusIndex = index;
         };
-
     });

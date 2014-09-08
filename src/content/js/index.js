@@ -14,12 +14,9 @@ var App = {
     settings: {
         // Get quicktexts filtered out by shortcut
         getQuicktextsShortcut: function (text, callback) {
-            console.log("shortcut 1");
             // add only one listener
             if (!App.shortcutPort.onMessage.hasListeners()) {
-                console.log("add shortcut listener");
                 App.shortcutPort.onMessage.addListener(function (msg) {
-                    console.log("shortcut 2");
                     callback(msg.quicktexts);
                 });
             }
@@ -28,13 +25,9 @@ var App = {
         getFiltered: function (text, callback) {
             // take only strings bigger than 2 chars
             if (text.length > 2) {
-                console.log("filtered 1");
                 if (!App.searchPort.onMessage.hasListeners()) {
-                    console.log("add search listener");
                     App.searchPort.onMessage.addListener(function (msg) {
-                        console.log("filtered 2");
                         callback(msg.quicktexts);
-
                     });
                 }
                 App.searchPort.postMessage({text: text});
@@ -63,6 +56,12 @@ var App = {
     }
 };
 
+// Add trackjs
+window._trackJs = {
+    token: "f4b509356dbf42feb02b2b535d8c1c85",
+    application: "quicktext-chrome",
+    version: chrome.runtime.getManifest().version
+};
 
 App.init = function () {
     document.addEventListener("blur", App.onBlur, true);
@@ -71,26 +70,13 @@ App.init = function () {
     document.addEventListener("keyup", App.onKeyUp, true);
 
     if (!App.shortcutPort) {
-        console.log("Created shortcut port");
         App.shortcutPort = chrome.runtime.connect({name: "shortcut"});
-        if (!App.shortcutPort.onDisconnect.hasListeners()) {
-            App.shortcutPort.onDisconnect.addListener(function (e) {
-                console.log("Disconnected port shortcut", e);
-                console.log("Trying to reconnect");
-                App.shortcutPort = chrome.runtime.connect({name: "shortcut"});
-            });
-        }
+        console.log("Created shortcut port");
     }
+
     if (!App.searchPort) {
-        console.log("Created search port");
         App.searchPort = chrome.runtime.connect({name: "search"});
-        if (!App.shortcutPort.onDisconnect.hasListeners()) {
-            App.shortcutPort.onDisconnect.addListener(function (e) {
-                console.log("Disconnected port search", e);
-                console.log("Trying to reconnect");
-                App.shortcutPort = chrome.runtime.connect({name: "search"});
-            });
-        }
+        console.log("Created search port");
     }
 };
 

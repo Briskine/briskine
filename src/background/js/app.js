@@ -2,33 +2,53 @@
  */
 
 var gqApp = angular.module('gqApp', [
-    'ngRoute',
-    'ngResource',
-    'ngAnimate',
-    'angular-md5',
-    'angularMoment'
-]).config(function ($routeProvider, $compileProvider) {
+        'ngRoute',
+        'ngResource',
+        'ngAnimate',
+        'angular-md5',
+        'angularMoment'
+    ]).config(function ($routeProvider, $compileProvider) {
 
-    $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|chrome-extension):/);
+        $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|chrome-extension):/);
 
-    $routeProvider
-        .when('/list', {
-            controller: 'ListCtrl',
-            templateUrl: 'views/list.html',
-            reloadOnSearch: false
-        })
-        .when('/settings', {
-            controller: 'SettingsCtrl',
-            templateUrl: 'views/settings.html'
-        })
-        .when('/popup', {
-            controller: 'ListCtrl',
-            templateUrl: 'views/list.html'
-        })
-        .otherwise({
-            redirectTo: '/list'
-        });
-});
+        $routeProvider
+            .when('/list', {
+                controller: 'ListCtrl',
+                templateUrl: 'views/list.html',
+                reloadOnSearch: false
+            })
+            .when('/settings', {
+                controller: 'SettingsCtrl',
+                templateUrl: 'views/settings.html'
+            })
+            .when('/popup', {
+                controller: 'ListCtrl',
+                templateUrl: 'views/list.html'
+            })
+            .otherwise({
+                redirectTo: '/list'
+            });
+    });
+
+// Add trackjs
+window._trackJs = {
+    token: "f4b509356dbf42feb02b2b535d8c1c85",
+    application: "quicktext-chrome",
+    version: chrome.runtime.getManifest().version
+};
+
+gqApp.config(["$provide", function ($provide) {
+        $provide.decorator("$exceptionHandler", ["$delegate", "$window", function ($delegate, $window) {
+            return function (exception, cause) {
+                if ($window.trackJs) {
+                    $window.trackJs.track(exception);
+                }
+                // (Optional) Pass the error through to the delegate formats it for the console
+                $delegate(exception, cause);
+            };
+        }]);
+
+    }]);
 
 /* Global run
  */
@@ -51,7 +71,6 @@ gqApp.run(function ($rootScope, $location, $http, $timeout, ProfileService, Sett
             $rootScope.lastSync = lastSync;
         });
     };
-
     // init dom plugins
     var initDom = function () {
 

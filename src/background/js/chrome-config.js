@@ -50,12 +50,13 @@ if (chrome.runtime) {
         // this fixes issues with the onclick function not being triggered
         // or the new tab not being opened.
         chrome.contextMenus.onClicked.addListener(function (info, tab) {
-
             var quicktextBody = encodeURIComponent(info.selectionText);
             window.open(chrome.extension.getURL('/pages/bg.html') + '#/list?id=new&body=' + quicktextBody, 'quicktextOptions');
 
         });
+    });
 
+    if (!chrome.runtime.onMessage.hasListeners()) {
         chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
             if (!document.querySelector('body[class=ng-scope]')) {
                 angular.bootstrap('body', ['gqApp']);
@@ -84,30 +85,30 @@ if (chrome.runtime) {
 
             return true;
         });
+    }
 
-        if (!chrome.runtime.onConnect.hasListeners()) {
-            chrome.runtime.onConnect.addListener(function (port) {
-                // Attach listener only once
-                if (!port.onMessage.hasListeners()) {
-                    port.onMessage.addListener(function (msg) {
-                        if (!document.querySelector('body[class=ng-scope]')) {
-                            angular.bootstrap('body', ['gqApp']);
-                        }
-                        var injector = angular.element('body').injector();
-                        if (port.name === 'shortcut') {
-                            injector.get('QuicktextService').filtered("shortcut = '" + msg.text + "'" /* TODO: <- fix this sql */).then(function (res) {
-                                port.postMessage({'quicktexts': res, 'action': 'insert'});
-                                _gaq.push(['_trackEvent', "content", 'insert']);
-                            });
-                        } else if (port.name === 'search') {
-                            injector.get('QuicktextService').filtered("shortcut = '" + msg.text + "' OR title LIKE '%"+ msg.text +"%' OR body LIKE '% " + msg.text + " %'" /* TODO: <- fix this sql */).then(function (res) {
-                                port.postMessage({'quicktexts': res, 'action': 'list'});
-                                _gaq.push(['_trackEvent', "content", 'insert']);
-                            });
-                        }
-                    });
-                }
-            });
-        }
-    });
+    if (!chrome.runtime.onConnect.hasListeners()) {
+        chrome.runtime.onConnect.addListener(function (port) {
+            // Attach listener only once
+            if (!port.onMessage.hasListeners()) {
+                port.onMessage.addListener(function (msg) {
+                    if (!document.querySelector('body[class=ng-scope]')) {
+                        angular.bootstrap('body', ['gqApp']);
+                    }
+                    var injector = angular.element('body').injector();
+                    if (port.name === 'shortcut') {
+                        injector.get('QuicktextService').filtered("shortcut = '" + msg.text + "'" /* TODO: <- fix this sql */).then(function (res) {
+                            port.postMessage({'quicktexts': res, 'action': 'insert'});
+                            _gaq.push(['_trackEvent', "content", 'insert']);
+                        });
+                    } else if (port.name === 'search') {
+                        injector.get('QuicktextService').filtered("shortcut = '" + msg.text + "' OR title LIKE '%"+ msg.text +"%' OR body LIKE '% " + msg.text + " %'" /* TODO: <- fix this sql */).then(function (res) {
+                            port.postMessage({'quicktexts': res, 'action': 'list'});
+                            _gaq.push(['_trackEvent', "content", 'insert']);
+                        });
+                    }
+                });
+            }
+        });
+    }                        
 }

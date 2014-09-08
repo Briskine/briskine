@@ -22,7 +22,8 @@ module.exports = function (grunt) {
 
                 // Should be first
                 'src/background/js/environment.js',
-                'src/background/js/**/*.js'
+                'src/background/js/**/*.js',
+                'bower_components/trackjs-tracker/tracker.js'
             ],
             css: ['ext/background/css/background.css']
         },
@@ -36,7 +37,8 @@ module.exports = function (grunt) {
                 'src/content/js/index.js',
                 'src/content/js/parser.js',
                 'src/content/js/autocomplete.js',
-                'src/content/js/events.js'
+                'src/content/js/events.js',
+                'bower_components/trackjs-tracker/tracker.js'
             ],
             css: ['ext/content/css/content.css']
         }
@@ -91,8 +93,8 @@ module.exports = function (grunt) {
                 'src/background/js/*.js'
             ],
             options: {
-                multistr: true,
-                ignores: "src/content/js/gmailr.js"
+                multistr: true
+                //ignores: "src/content/js/gmailr.js"
             }
         },
         concat: {
