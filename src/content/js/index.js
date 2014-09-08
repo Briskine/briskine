@@ -94,7 +94,6 @@ App.init = function () {
     }
 };
 
-// Use gmailr to call initialization only once
-Gmailr.init(App.init);
-
-
+$(function () {
+    App.init();
+});
