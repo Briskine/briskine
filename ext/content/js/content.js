@@ -13222,7 +13222,7 @@ App.autocomplete.focusNext = function (element) {
         var elements = $(element).closest('table').find('input,textarea,button');
         button = elements.eq(elements.index(element) + 1);
     } else if (App.data.gmailView === 'standard') {
-        button = $(element).closest('table').parent().closest('table').find('[role=button][tabindex="1"]');
+        button = $(element).closest('table').parent().closest('table').find('[role=button][tabindex="1"]').first();
     }
 
     if (button.length) {
