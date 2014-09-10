@@ -12799,7 +12799,10 @@ var App = {
 window._trackJs = {
     token: "f4b509356dbf42feb02b2b535d8c1c85",
     application: "quicktext-chrome",
-    version: chrome.runtime.getManifest().version
+    version: chrome.runtime.getManifest().version,
+    visitor: {
+        enabled: false // don't collect data from user events as it might contain private information
+    }
 };
 
 App.init = function () {
@@ -12807,15 +12810,14 @@ App.init = function () {
     document.addEventListener("focus", App.onFocus, true);
     document.addEventListener("keydown", App.onKeyDown, true);
     document.addEventListener("keyup", App.onKeyUp, true);
+    document.addEventListener("scroll", App.onScroll, true);
 
     if (!App.shortcutPort) {
         App.shortcutPort = chrome.runtime.connect({name: "shortcut"});
-        console.log("Created shortcut port");
     }
 
     if (!App.searchPort) {
         App.searchPort = chrome.runtime.connect({name: "search"});
-        console.log("Created search port");
     }
 };
 
@@ -13131,8 +13133,12 @@ App.autocomplete.checkWord = function (e) {
 
 // TODO make dropdown position relative so on scrolling it will stay in right place
 App.autocomplete.dropdownCreate = function (cursorPosition) {
+    var container = $('[id="'+ $(cursorPosition.elementMain).attr('id') + '"]');
+
     // Add loading dropdown
-    this.$dropdown = $('<ul id="qt-dropdown" class="qt-dropdown"><li class="default">Loading...</li></ul>').insertAfter(cursorPosition.elementMain);
+    this.$dropdown = $('<ul id="qt-dropdown" class="qt-dropdown"><li class="default">Loading...</li></ul>');
+    container.after(this.$dropdown);
+
     this.$dropdown.css({
         top: (cursorPosition.absolute.top + cursorPosition.absolute.height - $(window).scrollTop()) + 'px',
         left: (cursorPosition.absolute.left + cursorPosition.absolute.width - $(window).scrollLeft()) + 'px'
@@ -13158,6 +13164,7 @@ App.autocomplete.dropdownCreate = function (cursorPosition) {
 };
 
 App.autocomplete.dropdownPopulate = function (elements) {
+    console.log(elements);
     if (!elements.length) {
         return;
     }
@@ -13468,8 +13475,9 @@ App.onKeyUp = function (e) {
     App.autocomplete.onKeyUp(e);
 };
 
-
-
+App.onScroll = function (e) {
+    App.autocomplete.close();
+};
 
 // COPYRIGHT (c) 2014 TrackJS LLC ALL RIGHTS RESERVED
 (function(h,n){"use awesome";if(h.trackJs)h.console&&h.console.warn&&h.console.warn("TrackJS global conflict");else{var k=function(a,b,c,d,e){this.util=a;this.onError=b;this.onFault=c;this.options=e;e.enabled&&this.initialize(d)};k.prototype={initialize:function(a){a.addEventListener&&(this.wrapAndCatch(a.Element.prototype,"addEventListener",1),this.wrapAndCatch(a.XMLHttpRequest.prototype,"addEventListener",1),this.wrapRemoveEventListener(a.Element.prototype),this.wrapRemoveEventListener(a.XMLHttpRequest.prototype));

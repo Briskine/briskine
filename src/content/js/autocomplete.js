@@ -198,8 +198,12 @@ App.autocomplete.checkWord = function (e) {
 
 // TODO make dropdown position relative so on scrolling it will stay in right place
 App.autocomplete.dropdownCreate = function (cursorPosition) {
+    var container = $('[id="'+ $(cursorPosition.elementMain).attr('id') + '"]');
+
     // Add loading dropdown
-    this.$dropdown = $('<ul id="qt-dropdown" class="qt-dropdown"><li class="default">Loading...</li></ul>').insertAfter(cursorPosition.elementMain);
+    this.$dropdown = $('<ul id="qt-dropdown" class="qt-dropdown"><li class="default">Loading...</li></ul>');
+    container.after(this.$dropdown);
+
     this.$dropdown.css({
         top: (cursorPosition.absolute.top + cursorPosition.absolute.height - $(window).scrollTop()) + 'px',
         left: (cursorPosition.absolute.left + cursorPosition.absolute.width - $(window).scrollLeft()) + 'px'
@@ -225,6 +229,7 @@ App.autocomplete.dropdownCreate = function (cursorPosition) {
 };
 
 App.autocomplete.dropdownPopulate = function (elements) {
+    console.log(elements);
     if (!elements.length) {
         return;
     }

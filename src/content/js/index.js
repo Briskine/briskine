@@ -71,15 +71,14 @@ App.init = function () {
     document.addEventListener("focus", App.onFocus, true);
     document.addEventListener("keydown", App.onKeyDown, true);
     document.addEventListener("keyup", App.onKeyUp, true);
+    document.addEventListener("scroll", App.onScroll, true);
 
     if (!App.shortcutPort) {
         App.shortcutPort = chrome.runtime.connect({name: "shortcut"});
-        console.log("Created shortcut port");
     }
 
     if (!App.searchPort) {
         App.searchPort = chrome.runtime.connect({name: "search"});
-        console.log("Created search port");
     }
 };
 

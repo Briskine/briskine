@@ -45,5 +45,6 @@ App.onKeyUp = function (e) {
     App.autocomplete.onKeyUp(e);
 };
 
-
-
+App.onScroll = function (e) {
+    App.autocomplete.close();
+};
