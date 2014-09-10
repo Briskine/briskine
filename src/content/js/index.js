@@ -60,7 +60,10 @@ var App = {
 window._trackJs = {
     token: "f4b509356dbf42feb02b2b535d8c1c85",
     application: "quicktext-chrome",
-    version: chrome.runtime.getManifest().version
+    version: chrome.runtime.getManifest().version,
+    visitor: {
+        enabled: false // don't collect data from user events as it might contain private information
+    }
 };
 
 App.init = function () {
