@@ -271,6 +271,9 @@ App.autocomplete.getSelectedWord = function (cursorPosition) {
     } else if (App.data.gmailView === 'standard') {
         // Get text from node start until cursorPosition.end
         var range = new Range();
+        if (cursorPosition.end > cursorPosition.element.length) {
+            cursorPosition.end = cursorPosition.element.length;
+        }
         range.setStart(cursorPosition.element, 0);
         range.setEnd(cursorPosition.element, cursorPosition.end);
         string = range.toString();
