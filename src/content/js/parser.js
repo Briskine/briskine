@@ -82,6 +82,8 @@ App.parser.regExString = /"?([^ ]*)\s*(.*)"?\s*<([^>]+)>/;
 App.parser.regExEmail = /([\w!.%+\-])+@([\w\-])+(?:\.[\w\-]+)+/;
 
 App.parser.parseString = function (string) {
+    //XXX: Gmail changed the title to: Account  Firstname Lastname so we remove it
+    string = string.replace("Account ", "");
     var match = App.parser.regExString.exec(string),
         data = {
             name: '',

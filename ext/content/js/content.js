@@ -12909,6 +12909,8 @@ App.parser.regExString = /"?([^ ]*)\s*(.*)"?\s*<([^>]+)>/;
 App.parser.regExEmail = /([\w!.%+\-])+@([\w\-])+(?:\.[\w\-]+)+/;
 
 App.parser.parseString = function (string) {
+    //XXX: Gmail changed the title to: Account  Firstname Lastname so we remove it
+    string = string.replace("Account ", "");
     var match = App.parser.regExString.exec(string),
         data = {
             name: '',
@@ -13164,7 +13166,6 @@ App.autocomplete.dropdownCreate = function (cursorPosition) {
 };
 
 App.autocomplete.dropdownPopulate = function (elements) {
-    console.log(elements);
     if (!elements.length) {
         return;
     }
@@ -13313,6 +13314,7 @@ App.autocomplete.getCursorPosition = function (e) {
 
         if ($caret.length) {
             // Set caret back at old position
+            //TODO: fix this soon! THe caret is not positioned at the right place anyway.
             range = range.cloneRange();
             range.setStartAfter($caret[0]);
             range.collapse(true);
