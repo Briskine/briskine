@@ -78,12 +78,11 @@ App.parser.parseList = function (list) {
     });
 };
 
-App.parser.regExString = /"?([^ ]*)\s*(.*)"?\s*<([^>]+)>/;
+App.parser.regExString = /"?([^ ]*)\s*([^ ]*)\s*(.*)"?\s*<([^>]+)>/;
 App.parser.regExEmail = /([\w!.%+\-])+@([\w\-])+(?:\.[\w\-]+)+/;
 
 App.parser.parseString = function (string) {
     //XXX: Gmail changed the title to: Account  Firstname Lastname so we remove it
-    string = string.replace("Account ", "");
     var match = App.parser.regExString.exec(string),
         data = {
             name: '',
@@ -92,11 +91,11 @@ App.parser.parseString = function (string) {
             email: ''
         };
 
-    if (match && match.length >= 4) {
-        data.first_name = match[1].replace('"', '').trim();
-        data.last_name = match[2].replace('"', '').trim();
+    if (match && match.length >= 5) {
+        data.first_name = match[2].replace('"', '').trim();
+        data.last_name = match[3].replace('"', '').trim();
         data.name = data.first_name + (data.first_name && data.last_name ? ' ' : '') + data.last_name;
-        data.email = match[3];
+        data.email = match[4];
     } else {
         // try to match the email
         match = App.parser.regExEmail.exec(string);
