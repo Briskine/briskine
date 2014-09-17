@@ -119,7 +119,9 @@ App.autocomplete.onKeyUp = function (e) {
             window.clearTimeout(App.autocomplete.timeoutId);
             App.settings.getAutocompleteDelay(function (delay) { // get the delay value
                 App.autocomplete.timeoutId = window.setTimeout(function () {
-                    App.autocomplete.checkWord(e);
+                    if (App.data.inCompose) { // before checking make sure we are still inside the compose area
+                        App.autocomplete.checkWord(e);
+                    }
                 }, delay);
             });
         });

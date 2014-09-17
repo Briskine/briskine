@@ -7,7 +7,7 @@ PubSub.subscribe('focus', function (action, element, gmailView) {
         App.data.inCompose = true;
         App.data.composeElement = element;
         App.data.gmailView = gmailView;
-    } else if (action === 'off' && element !== null) {
+    } else if (action === 'off') {
         App.data.inCompose = false;
         App.data.composeElement = null;
         App.data.gmailView = '';
