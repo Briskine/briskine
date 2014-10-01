@@ -130,9 +130,6 @@ App.autocomplete.onKeyUp = function (e) {
 
 App.autocomplete.onKey = function (key, e) {
     switch (key) {
-        case KEY_TAB:
-            this.keyCompletion(e);
-            break;
         case KEY_ENTER:
             this.selectActive();
             break;
@@ -148,11 +145,17 @@ App.autocomplete.onKey = function (key, e) {
     }
 };
 
-// TAB completion
+// Keyboard Completion
 App.autocomplete.keyCompletion = function (e) {
+    // only works in compose area
+    if (!App.data.inCompose) {
+        return true;
+    }
+    e.preventDefault();
+    e.stopPropagation();
 
-    App.autocomplete.cursorPosition = this.getCursorPosition(e);
-    var word = this.getSelectedWord(App.autocomplete.cursorPosition);
+    App.autocomplete.cursorPosition = App.autocomplete.getCursorPosition(e);
+    var word = App.autocomplete.getSelectedWord(App.autocomplete.cursorPosition);
     App.autocomplete.cursorPosition.word = word;
     if (word.text) {
         App.settings.getQuicktextsShortcut(word.text, function (quicktexts) {
@@ -165,6 +168,30 @@ App.autocomplete.keyCompletion = function (e) {
         });
     } else {
         App.autocomplete.focusNext(e.target);
+    }
+};
+
+App.autocomplete.dialogCompletion = function (e) {
+    // only works in compose area
+    if (!App.data.inCompose) {
+        return true;
+    }
+    e.preventDefault();
+    e.stopPropagation();
+
+    App.autocomplete.cursorPosition = App.autocomplete.getCursorPosition(e);
+    var word = App.autocomplete.getSelectedWord(App.autocomplete.cursorPosition);
+    App.autocomplete.cursorPosition.word = word;
+
+    //TODO: This should probably be done in the background and the results be hold in a cache
+    if (word.text !== '') {
+        App.settings.getFiltered(word.text, function (quicktexts) {
+            App.autocomplete.quicktexts = quicktexts;
+            if (App.autocomplete.quicktexts.length) {
+                App.autocomplete.dropdownCreate(cursorPosition);
+                App.autocomplete.dropdownPopulate(App.autocomplete.quicktexts);
+            }
+        });
     }
 };
 

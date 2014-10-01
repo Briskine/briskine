@@ -76,13 +76,9 @@ if (chrome.runtime) {
                 }
                 sendResponse(true);
             }
-            if (request.request === 'getAutocompleteEnabled') {
-                sendResponse(settingsService.get("autocompleteEnabled"));
+            if (request.request === 'settings') {
+                sendResponse(settingsService.get("settings"));
             }
-            if (request.request === 'getAutocompleteDelay') {
-                sendResponse(settingsService.get("autocompleteDelay"));
-            }
-
             return true;
         });
     }

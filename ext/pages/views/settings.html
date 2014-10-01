@@ -3,56 +3,73 @@
 </header>
 
 <form role="form">
-    <label>Behavior</label>
-
+    <h4>Keyboard Shortcut</h4>
+    <p class="help-block">Quickly expand quicktexts using a keyboard shortcut.</p>
     <div class="checkbox">
-
-        <label for="autocompleteEnabled" data-toggle="tooltip" data-placement="top"
-               data-original-title="Autocomplete dialog pops up while typing in the compose area of Gmail. It shows possible quicktexts">
-            Autocomplete dialog
-            <span class="glyphicon glyphicon-question-sign"></span>
-        </label>
-
-        <input type="checkbox" id="autocompleteEnabled" ng-model="autocompleteEnabled"
-               ng-change="settings.set('autocompleteEnabled', autocompleteEnabled)"/>
-
+        <label for="keyboard-enabled">Enable Keyboard Shortcut</label>
+        <input type="checkbox" id="keyboard-enabled" ng-model="settings.keyboard.enabled" />
     </div>
-    <div class="form-group">
-        <label for="autocompleteDelay" data-toggle="tooltip" data-placement="bottom"
-               data-original-title="How much time (miliseconds) to wait until the Autocomplete Dialog should be displayed.">
-            Autocomplete Delay
+    <div class="form-group" ng-show="settings.keyboard.enabled">
+        <label for="keyboard-shortcut" data-toggle="tooltip" data-placement="bottom"
+               data-original-title="Setup keyboard shortcut to expand quicktexts">
+            Keyboard Shortcut
             <span class="glyphicon glyphicon-question-sign"></span>
         </label>
         <br/>
-        <input type="text" id="autocompleteDelay" ng-model="autocompleteDelay"
-               ng-change="settings.set('autocompleteDelay', autocompleteDelay)"/>
-
+        <input type="text" id="keyboard-shortcut" ng-model="settings.keyboard.shortcut" readonly="readonly" placeholder="Press any key combination" />
+        <button class="btn btn-primary btn-default" ng-click="recordSequence('keyboard-shortcut')">Change</button>
     </div>
+    <br/>
+    <h4>Autocomplete Dialog</h4>
+    <p class="help-block">Autocomplete dialog helps you search quicktexts faster.</p>
     <div class="checkbox">
-        <label for="tabcompleteEnabled" data-toggle="tooltip" data-placement="bottom"
-               data-original-title="Tab completion automatically inserts a quicktext. Trigger it using 'Tab Completion' keyword then press the 'Tab' key">
-            Tab completion
+        <label for="dialog-enabled">Enable Autocomple Dialog</label>
+        <input type="checkbox" id="dialog-enabled" ng-model="settings.dialog.enabled"/>
+    </div>
+    <div class="form-group" ng-show="settings.dialog.enabled">
+        <label for="dialog-shortcut" data-toggle="tooltip" data-placement="bottom"
+               data-original-title="Setup keyboard shortcut that triggers the autocomplete dialog">
+            Keyboard Shortcut
             <span class="glyphicon glyphicon-question-sign"></span>
         </label>
-
-        <input type="checkbox" id="tabcompleteEnabled" ng-model="tabcompleteEnabled"
-               ng-change="settings.set('tabcompleteEnabled', tabcompleteEnabled)"/>
+        <br/>
+        <input type="text" id="dialog-shortcut" readonly="readonly" ng-model="settings.dialog.shortcut" placeholder="Press any key combination" />
+        <button class="btn btn-primary btn-default" ng-click="recordSequence('dialog-shortcut')">Change</button>
 
     </div>
 
-    <div class="checkbox">
+    <div class="checkbox" ng-show="settings.dialog.enabled">
+        <label for="dialog-auto">Automatic popup
+            <span data-toggle="tooltip" data-placement="top"
+                  data-original-title="Automatically pop up the dialog while you type">
+                <span class="glyphicon glyphicon-question-sign"></span>
+            </span>
+        </label>
+        <input type="checkbox" id="dialog-auto" ng-model="settings.dialog.auto"/>
+    </div>
+    <div class="form-group" ng-show="settings.dialog.enabled && settings.dialog.auto">
+        <label for="dialog-delay" data-toggle="tooltip" data-placement="bottom"
+               data-original-title="How much time (miliseconds) to wait until the Autocomplete Dialog should be displayed.">
+            Autocomplete Dialog Popup Delay
+            <span class="glyphicon glyphicon-question-sign"></span>
+        </label>
+        <br/>
+        <input type="text" id="dialog-delay" ng-model="settings.dialog.delay" />
 
+    </div>
+    <br/>
+    <h4>Other</h4>
+    <div class="checkbox">
         <label for="sendStats" data-toggle="tooltip" data-placement="bottom"
                data-original-title="Help improve the Quicktext by sending anonymous statistics.">
             Send usage statistics
             <span class="glyphicon glyphicon-question-sign"></span>
         </label>
 
-        <input type="checkbox" id="sendStats" ng-model="sendStatsEnabled"
-               ng-change="settings.set('sendStatsEnabled', sendStatsEnabled)"/>
+        <input type="checkbox" id="sendStats" ng-model="settings.stats.enabled" />
 
     </div>
     <div class="form-group">
-        <a href="" class="btn btn-primary btn-default" ng-click="deleteAll()">Delete all Quicktexts</a>
+        <a href="" class="btn btn-danger" ng-click="deleteAll()">Delete all Quicktexts</a>
     </div>
 </form>

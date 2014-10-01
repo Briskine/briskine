@@ -43,13 +43,8 @@ var App = {
                 callback(response);
             });
         },
-        getAutocompleteEnabled: function (callback) {
-            chrome.runtime.sendMessage({'request': 'getAutocompleteEnabled'}, function (response) {
-                callback(response);
-            });
-        },
-        getAutocompleteDelay: function (callback) {
-            chrome.runtime.sendMessage({'request': 'getAutocompleteDelay'}, function (response) {
+        fetchSettings: function (callback) {
+            chrome.runtime.sendMessage({'request': 'settings'}, function (response) {
                 callback(response);
             });
         }
@@ -69,9 +64,17 @@ window._trackJs = {
 App.init = function () {
     document.addEventListener("blur", App.onBlur, true);
     document.addEventListener("focus", App.onFocus, true);
-    document.addEventListener("keydown", App.onKeyDown, true);
-    document.addEventListener("keyup", App.onKeyUp, true);
     document.addEventListener("scroll", App.onScroll, true);
+
+    // use custom keyboard shortcuts
+    App.settings.fetchSettings(function (settings) {
+        if (settings.keyboard.enabled) {
+            Mousetrap.bindGlobal(settings.keyboard.shortcut, App.autocomplete.keyCompletion);
+        }
+        if (settings.dialog.shortcut) {
+            Mousetrap.bindGlobal(settings.dialog.shortcut, App.autocomplete.dialogCompletion);
+        }
+    });
 
     if (!App.shortcutPort) {
         App.shortcutPort = chrome.runtime.connect({name: "shortcut"});

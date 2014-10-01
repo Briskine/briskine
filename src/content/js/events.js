@@ -37,14 +37,6 @@ App.onBlur = function (e) {
     PubSub.publish('focus', 'off', e.relatedTarget);
 };
 
-App.onKeyDown = function (e) {
-    App.autocomplete.onKeyDown(e);
-};
-
-App.onKeyUp = function (e) {
-    App.autocomplete.onKeyUp(e);
-};
-
 App.onScroll = function (e) {
     App.autocomplete.close();
 };
