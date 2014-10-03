@@ -1,1 +1,220 @@
-.qt-dropdown{position:fixed;z-index:999;overflow:hidden;overflow-y:auto;margin:0;padding:2px;max-height:20em;box-shadow:2px 3px 5px rgba(0,0,0,0.2);border-radius:3px;border:1px solid #c0c0c0;background:#fff;list-style:none;font-size:90%;font-family:monospace;}.qt-dropdown li{margin:0;padding:0 4px;border-radius:2px;max-width:20em;max-height:15px;overflow:hidden;word-wrap:break-word;text-overflow:ellipsis;color:#000;cursor:pointer;}.qt-dropdown li.default{cursor:default;max-height:4em}.qt-dropdown li.active{background:#08f;color:#fff;}.qt-dropdown li.active .qt-title{color:#f3f3f3}.qt-dropdown li .qt-title{color:#808080}.,qt-shortcut,.qt-mirror{position:absolute;overflow:auto;white-space:pre-wrap;word-wrap:break-word;z-index:-9999;}. .qt-caret,qt-shortcut .qt-caret,.qt-mirror .qt-caret{display:inline-block}
+
+/* line 123 : /media/mokush/dev/quicktext-chrome/src/content/css/content.styl */
+
+/* line 1 : /media/mokush/dev/quicktext-chrome/node_modules/grunt-contrib-stylus/node_modules/stylus/lib/functions/index.styl */
+
+/* line 197 : /media/mokush/dev/quicktext-chrome/src/content/css/content.styl */
+/* Content styles
+ * inside gmail
+ */
+
+/* line 293 : /media/mokush/dev/quicktext-chrome/node_modules/grunt-contrib-stylus/node_modules/stylus/lib/functions/index.styl */
+
+/* line 14 : /media/mokush/dev/quicktext-chrome/node_modules/grunt-contrib-stylus/node_modules/nib/lib/nib/index.styl */
+
+/* line 14 : /media/mokush/dev/quicktext-chrome/node_modules/grunt-contrib-stylus/node_modules/nib/lib/nib/index.styl */
+
+/* line 14 : /media/mokush/dev/quicktext-chrome/node_modules/grunt-contrib-stylus/node_modules/nib/lib/nib/border.styl */
+
+/* line 11 : /media/mokush/dev/quicktext-chrome/node_modules/grunt-contrib-stylus/node_modules/nib/lib/nib/border.styl */
+
+/* line 11 : /media/mokush/dev/quicktext-chrome/node_modules/grunt-contrib-stylus/node_modules/nib/lib/nib/clearfix.styl */
+
+/* line 30 : /media/mokush/dev/quicktext-chrome/node_modules/grunt-contrib-stylus/node_modules/nib/lib/nib/clearfix.styl */
+
+/* line 1 : /media/mokush/dev/quicktext-chrome/node_modules/grunt-contrib-stylus/node_modules/nib/lib/nib/color-image.styl */
+
+/* line 5 : /media/mokush/dev/quicktext-chrome/node_modules/grunt-contrib-stylus/node_modules/nib/lib/nib/color-image.styl */
+
+/* line 5 : /media/mokush/dev/quicktext-chrome/node_modules/grunt-contrib-stylus/node_modules/nib/lib/nib/flex.styl */
+
+/* line 197 : /media/mokush/dev/quicktext-chrome/node_modules/grunt-contrib-stylus/node_modules/nib/lib/nib/flex.styl */
+
+/* line 93 : /media/mokush/dev/quicktext-chrome/node_modules/grunt-contrib-stylus/node_modules/nib/lib/nib/gradients.styl */
+
+/* line 93 : /media/mokush/dev/quicktext-chrome/node_modules/grunt-contrib-stylus/node_modules/nib/lib/nib/gradients.styl */
+
+/* line 93 : /media/mokush/dev/quicktext-chrome/node_modules/grunt-contrib-stylus/node_modules/nib/lib/nib/config.styl */
+
+/* line 12 : /media/mokush/dev/quicktext-chrome/node_modules/grunt-contrib-stylus/node_modules/nib/lib/nib/config.styl */
+
+/* line 1 : /media/mokush/dev/quicktext-chrome/node_modules/grunt-contrib-stylus/node_modules/nib/lib/nib/iconic.styl */
+
+/* line 8 : /media/mokush/dev/quicktext-chrome/node_modules/grunt-contrib-stylus/node_modules/nib/lib/nib/iconic.styl */
+
+/* line 8 : /media/mokush/dev/quicktext-chrome/node_modules/grunt-contrib-stylus/node_modules/nib/lib/nib/image.styl */
+
+/* line 26 : /media/mokush/dev/quicktext-chrome/node_modules/grunt-contrib-stylus/node_modules/nib/lib/nib/image.styl */
+
+/* line 26 : /media/mokush/dev/quicktext-chrome/node_modules/grunt-contrib-stylus/node_modules/nib/lib/nib/overflow.styl */
+
+/* line 23 : /media/mokush/dev/quicktext-chrome/node_modules/grunt-contrib-stylus/node_modules/nib/lib/nib/overflow.styl */
+
+/* line 9 : /media/mokush/dev/quicktext-chrome/node_modules/grunt-contrib-stylus/node_modules/nib/lib/nib/positions.styl */
+
+/* line 73 : /media/mokush/dev/quicktext-chrome/node_modules/grunt-contrib-stylus/node_modules/nib/lib/nib/positions.styl */
+
+/* line 15 : /media/mokush/dev/quicktext-chrome/node_modules/grunt-contrib-stylus/node_modules/nib/lib/nib/reset.styl */
+
+/* line 79 : /media/mokush/dev/quicktext-chrome/node_modules/grunt-contrib-stylus/node_modules/nib/lib/nib/reset.styl */
+
+/* line 6 : /media/mokush/dev/quicktext-chrome/node_modules/grunt-contrib-stylus/node_modules/nib/lib/nib/text/index.styl */
+
+/* line 6 : /media/mokush/dev/quicktext-chrome/node_modules/grunt-contrib-stylus/node_modules/nib/lib/nib/text/index.styl */
+
+/* line 6 : /media/mokush/dev/quicktext-chrome/node_modules/grunt-contrib-stylus/node_modules/nib/lib/nib/text/aliases.styl */
+
+/* line 13 : /media/mokush/dev/quicktext-chrome/node_modules/grunt-contrib-stylus/node_modules/nib/lib/nib/text/aliases.styl */
+
+/* line 13 : /media/mokush/dev/quicktext-chrome/node_modules/grunt-contrib-stylus/node_modules/nib/lib/nib/text/ellipsis.styl */
+
+/* line 10 : /media/mokush/dev/quicktext-chrome/node_modules/grunt-contrib-stylus/node_modules/nib/lib/nib/text/ellipsis.styl */
+
+/* line 10 : /media/mokush/dev/quicktext-chrome/node_modules/grunt-contrib-stylus/node_modules/nib/lib/nib/text/hide-text.styl */
+
+/* line 9 : /media/mokush/dev/quicktext-chrome/node_modules/grunt-contrib-stylus/node_modules/nib/lib/nib/text/hide-text.styl */
+
+/* line 9 : /media/mokush/dev/quicktext-chrome/node_modules/grunt-contrib-stylus/node_modules/nib/lib/nib/text/replace-text.styl */
+
+/* line 10 : /media/mokush/dev/quicktext-chrome/node_modules/grunt-contrib-stylus/node_modules/nib/lib/nib/text/replace-text.styl */
+
+/* line 1 : /media/mokush/dev/quicktext-chrome/node_modules/grunt-contrib-stylus/node_modules/nib/lib/nib/text/shadow-stroke.styl */
+
+/* line 3 : /media/mokush/dev/quicktext-chrome/node_modules/grunt-contrib-stylus/node_modules/nib/lib/nib/text/shadow-stroke.styl */
+
+/* line undefined : /media/mokush/dev/quicktext-chrome/node_modules/grunt-contrib-stylus/node_modules/nib/lib/nib/vendor.styl */
+
+/* line 580 : /media/mokush/dev/quicktext-chrome/node_modules/grunt-contrib-stylus/node_modules/nib/lib/nib/vendor.styl */
+
+/* line 580 : /media/mokush/dev/quicktext-chrome/node_modules/grunt-contrib-stylus/node_modules/nib/lib/nib/config.styl */
+
+/* line 12 : /media/mokush/dev/quicktext-chrome/node_modules/grunt-contrib-stylus/node_modules/nib/lib/nib/config.styl */
+
+/* line 12 : /media/mokush/dev/quicktext-chrome/node_modules/grunt-contrib-stylus/node_modules/nib/lib/nib/size.styl */
+
+/* line 7 : /media/mokush/dev/quicktext-chrome/src/content/css/content.styl */
+.qt-mirror {
+  position: absolute;
+  overflow: auto;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  z-index: -9999;
+}
+
+/* line 14 : /media/mokush/dev/quicktext-chrome/src/content/css/content.styl */
+.qt-mirror .qt-caret {
+  display: inline-block;
+}
+
+/* line 19 : /media/mokush/dev/quicktext-chrome/src/content/css/content.styl */
+/* Autocomplete dropdown
+*/
+
+/* line 26 : /media/mokush/dev/quicktext-chrome/src/content/css/content.styl */
+.qt-dropdown {
+  position: fixed;
+  z-index: 999;
+  overflow: hidden;
+  margin: 0;
+  padding: 0;
+  -webkit-box-shadow: 1px 1px 3px rgba(0,0,0,0.1);
+  box-shadow: 1px 1px 3px rgba(0,0,0,0.1);
+  -webkit-border-radius: 2px;
+  border-radius: 2px;
+  border: 1px solid #c0c0c0;
+  background: #fff;
+  font-size: 0.8em;
+}
+
+/* line 40 : /media/mokush/dev/quicktext-chrome/src/content/css/content.styl */
+.qt-dropdown * {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+/* line 44 : /media/mokush/dev/quicktext-chrome/src/content/css/content.styl */
+
+/* line 48 : /media/mokush/dev/quicktext-chrome/src/content/css/content.styl */
+.qt-dropdown-content {
+  display: block;
+  overflow-x: hidden;
+  overflow-y: auto;
+  max-height: 20em;
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+}
+
+/* line 57 : /media/mokush/dev/quicktext-chrome/src/content/css/content.styl */
+.qt-dropdown-content li {
+  position: relative;
+  padding: 8px;
+  max-width: 20em;
+  overflow: hidden;
+  cursor: pointer;
+  color: #000;
+  -o-text-overflow: ellipsis;
+  text-overflow: ellipsis;
+}
+
+/* line 67 : /media/mokush/dev/quicktext-chrome/src/content/css/content.styl */
+.qt-dropdown-content li.default {
+  cursor: default;
+  max-height: 4em;
+}
+
+/* line 72 : /media/mokush/dev/quicktext-chrome/src/content/css/content.styl */
+.qt-dropdown-content li.active {
+  background: #eee;
+}
+
+/* line 79 : /media/mokush/dev/quicktext-chrome/src/content/css/content.styl */
+.qt-title {
+  display: block;
+  overflow: hidden;
+  padding: 0 3em 0.4em 0;
+  white-space: nowrap;
+  -o-text-overflow: ellipsis;
+  text-overflow: ellipsis;
+}
+
+/* line 88 : /media/mokush/dev/quicktext-chrome/src/content/css/content.styl */
+.qt-body {
+  display: block;
+  overflow: hidden;
+  color: #525252;
+  white-space: nowrap !important;
+  -o-text-overflow: ellipsis;
+  text-overflow: ellipsis;
+}
+
+/* line 97 : /media/mokush/dev/quicktext-chrome/src/content/css/content.styl */
+.qt-shortcut {
+  position: absolute;
+  top: 7px;
+  right: 8px;
+  padding: 2px 4px;
+  border: 1px solid #dbdbdb;
+  background: #e4e4e4;
+  -webkit-border-radius: 2px;
+  border-radius: 2px;
+  font-size: 0.8em;
+  font-family: monospace;
+}
+
+/* line 110 : /media/mokush/dev/quicktext-chrome/src/content/css/content.styl */
+.qt-dropdown-search {
+  display: block;
+  width: 100%;
+  padding: 8px;
+  border: 0;
+  -webkit-box-shadow: 0 1px 2px #dbdbdb;
+  box-shadow: 0 1px 2px #dbdbdb;
+  font-size: 1em;
+}
+
+/* line 120 : /media/mokush/dev/quicktext-chrome/src/content/css/content.styl */
+.qt-search-highlight {
+  font-weight: bold;
+}

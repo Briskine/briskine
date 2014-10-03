@@ -30,6 +30,23 @@ App.autocomplete.cursorPosition = null;
 App.autocomplete.shiftKey = false;
 App.autocomplete.timeoutId = null;
 
+App.autocomplete.dropdownTemplate = '' +
+'<div class="qt-dropdown qt-dropdown-loading">' +
+'<input type="search" class="qt-dropdown-search" value="" placeholder="Search quicktexts..">' +
+'<ul class="qt-dropdown-content"></ul>' +
+'</div>' +
+'';
+
+App.autocomplete.dropdownListTemplate = '' +
+'{{#each elements}}' +
+'<li class="qt-item" data-id="{{id}}">' +
+'<span class="qt-title">{{{title}}}</span>' +
+'<span class="qt-shortcut">{{{shortcut}}}</span>' +
+'<span class="qt-body">{{{body}}}</span>' +
+'</li>' +
+'{{/each}}' +
+'';
+
 PubSub.subscribe('focus', function (action, element, gmailView) {
     if (action === 'off') {
         App.autocomplete.close();
@@ -219,7 +236,11 @@ App.autocomplete.checkWord = function (e) {
             App.autocomplete.quicktexts = quicktexts;
             if (App.autocomplete.quicktexts.length) {
                 App.autocomplete.dropdownCreate(cursorPosition);
-                App.autocomplete.dropdownPopulate(App.autocomplete.quicktexts);
+                App.autocomplete.dropdownPopulate(App.autocomplete.quicktexts, word.text);
+
+                // TODO automatically add the word to the search input
+                // and focus on the input
+
             }
         });
     }
@@ -230,7 +251,8 @@ App.autocomplete.dropdownCreate = function (cursorPosition) {
     var container = $('[id="'+ $(cursorPosition.elementMain).attr('id') + '"]');
 
     // Add loading dropdown
-    this.$dropdown = $('<ul id="qt-dropdown" class="qt-dropdown"><li class="default">Loading...</li></ul>');
+    this.$dropdown = $(App.autocomplete.dropdownTemplate);
+    this.$dropdownContent = $('.qt-dropdown-content', this.$dropdown);
     container.after(this.$dropdown);
 
     this.$dropdown.css({
@@ -255,22 +277,38 @@ App.autocomplete.dropdownCreate = function (cursorPosition) {
             App.autocomplete.selectActive();
         }
     });
+
 };
 
-App.autocomplete.dropdownPopulate = function (elements) {
+App.autocomplete.dropdownPopulate = function (elements, word) {
     if (!elements.length) {
         return;
     }
-    var listElements = "\
-    {{#each elements}}\
-    <li class='qt-item' data-id='{{id}}'>\
-        <span class='qt-shortcut'>{{shortcut}}</span>\
-        <span class='qt-title'>{{title}}</span>\
-        </li>\
-        {{/each}}",
-        content = Handlebars.compile(listElements)({elements: elements});
 
-    this.$dropdown.html(content);
+    // clone the elements
+    // so we can safely highlight the matched text
+    // without breaking the generated handlebars markup
+    var clonedElements = elements.slice(0);
+
+    // highlight found string in element title, body and shortcut
+    var searchRe = new RegExp(word, 'gi');
+
+    var highlightMatch = function(match) {
+        return '<span class="qt-search-highlight">' + match + '</span>';
+    }
+
+    clonedElements.forEach(function(elem) {
+        elem.title = elem.title.replace(searchRe, highlightMatch);
+        elem.body = elem.body.replace(searchRe, highlightMatch);
+        elem.shortcut = elem.shortcut.replace(searchRe, highlightMatch);
+    });
+
+    var content = Handlebars.compile(App.autocomplete.dropdownListTemplate)({
+        elements: clonedElements
+    });
+
+
+    this.$dropdownContent.html(content);
     this.isEmpty = false;
 
     // Set first element active
@@ -279,7 +317,7 @@ App.autocomplete.dropdownPopulate = function (elements) {
 
 App.autocomplete.dropdownSelectItem = function (index) {
     if (this.isActive && !this.isEmpty) {
-        this.$dropdown.children()
+        this.$dropdownContent.children()
             .removeClass('active')
             .eq(index)
             .addClass('active');
@@ -411,6 +449,16 @@ App.autocomplete.getCursorPosition = function (e) {
             range.setStartAfter($caret[0]);
             range.collapse(true);
             //selection.removeAllRanges();
+
+            // TODO fix
+            // `Discontiguous selection is not supported.`
+            // Chrome error.
+            // https://code.google.com/p/chromium/issues/detail?id=399791
+            // https://code.google.com/p/rangy/issues/detail?id=208
+
+            // Probably, because of this
+            // after a word is matched, after adding/deleting extra chars
+            // the word does not change, or the popup does not show at all
             selection.addRange(range);
 
             position.absolute = $caret.offset();
@@ -427,7 +475,7 @@ App.autocomplete.getCursorPosition = function (e) {
 
 App.autocomplete.selectActive = function () {
     if (this.isActive && !this.isEmpty && this.quicktexts.length) {
-        var activeItemId = this.$dropdown.find('.active').data('id'),
+        var activeItemId = this.$dropdownContent.find('.active').data('id'),
             quicktext = this.getQuicktextById(activeItemId);
 
         this.replaceWith(quicktext);
@@ -518,8 +566,8 @@ App.autocomplete.close = function () {
 
 App.autocomplete.changeSelection = function (direction) {
     var index_diff = direction === 'prev' ? -1 : 1,
-        elements_count = this.$dropdown.children().length,
-        index_active = this.$dropdown.find('.active').index(),
+        elements_count = this.$dropdownContent.children().length,
+        index_active = this.$dropdownContent.find('.active').index(),
         index_new = Math.max(0, Math.min(elements_count - 1, index_active + index_diff));
 
     this.dropdownSelectItem(index_new);
