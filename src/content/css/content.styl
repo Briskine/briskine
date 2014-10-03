@@ -1,54 +1,123 @@
-.qt-dropdown
-  position fixed
-  z-index 999
-  overflow hidden
-  overflow-y auto
-  margin 0
-  padding 2px
-  max-height 20em
-  box-shadow 2px 3px 5px rgba(0, 0, 0, 0.2)
-  border-radius 3px
-  border 1px solid #c0c0c0
-  background #fff
-  list-style none
-  font-size 90%
-  font-family monospace
+/* Content styles
+ * inside gmail
+ */
 
-  li
-    margin 0
-    padding 0 4px
-    border-radius 2px
-    max-width 20em
-    max-height 15px
-    overflow hidden
-    word-wrap break-word
-    text-overflow ellipsis
-    color #000
-    cursor pointer
+@import 'nib';
 
-    &.default
-      cursor default
-      max-height 4em
+.qt-mirror {
+    position: absolute;
+    overflow: auto;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    z-index: -9999;
 
-    &.active
-      background #08f
-      color #fff
+    .qt-caret {
+        display: inline-block;
+    }
+}
 
-      .qt-title
-        color #f3f3f3
+/* Autocomplete dropdown
+*/
 
-    .qt-title
-      color #808080
+$colorActiveBg = #EEEEEE;
+$colorText = #000;
+$padding = 8px;
 
-.
-qt-shortcut
-//
+.qt-dropdown {
+    position: fixed;
+    z-index: 999;
+    overflow: hidden;
+    margin: 0;
+    padding: 0;
+    box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+    border-radius: 2px;
+    border: 1px solid #c0c0c0;
+    background: #fff;
 
-.qt-mirror
-  position absolute
-  overflow auto
-  white-space pre-wrap
-  word-wrap break-word
-  z-index -9999
-  .qt-caret
-    display inline-block
+    font-size: .8em;
+}
+
+.qt-dropdown * {
+    box-sizing: border-box;
+}
+
+.qt-dropdown-loading {
+
+}
+
+.qt-dropdown-content {
+    display: block;
+    overflow-x: hidden;
+    overflow-y: auto;
+    max-height: 20em;
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+
+    li {
+        position: relative;
+        padding: $padding;
+        max-width: 20em;
+        overflow: hidden;
+        cursor: pointer;
+
+        color: $colorText;
+        text-overflow: ellipsis;
+
+        &.default {
+            cursor: default;
+            max-height: 4em;
+        }
+
+        &.active {
+            background: $colorActiveBg;
+        }
+
+    }
+}
+
+.qt-title {
+    display: block;
+    overflow: hidden;
+    padding: 0 3em .4em 0;
+
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.qt-body {
+    display: block;
+    overflow: hidden;
+
+    color: lighten($colorText, 32%);
+    white-space: nowrap !important;
+    text-overflow: ellipsis;
+}
+
+.qt-shortcut {
+    position: absolute;
+    top: $padding - 1px;
+    right: $padding;
+    padding: 2px 4px;
+    border: 1px solid darken($colorActiveBg, 8%);
+    background: darken($colorActiveBg, 4%);
+    border-radius: 2px;
+
+    font-size: .8em;
+    font-family: monospace;
+}
+
+.qt-dropdown-search {
+    display: block;
+    width: 100%;
+    padding: $padding;
+    border: 0;
+    box-shadow: 0 1px 2px darken($colorActiveBg, 8%);
+
+    font-size: 1em;
+}
+
+.qt-search-highlight {
+    font-weight: bold;
+}
+
