@@ -37310,7 +37310,7 @@ module.filter('md5', ['md5', function(md5) {
 
 })();
 
-var ENV = "development";
+var ENV = "production";
 /* Quicktext chrome extension
  */
 

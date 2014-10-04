@@ -31,24 +31,30 @@ App.autocomplete.shiftKey = false;
 App.autocomplete.timeoutId = null;
 
 App.autocomplete.dropdownTemplate = '' +
-'<div class="qt-dropdown qt-dropdown-loading">' +
+'<div class="qt-dropdown">' +
 '<input type="search" class="qt-dropdown-search" value="" placeholder="Search quicktexts..">' +
 '<ul class="qt-dropdown-content"></ul>' +
 '</div>' +
 '';
 
 App.autocomplete.dropdownListTemplate = '' +
-'{{#each elements}}' +
-'<li class="qt-item" data-id="{{id}}">' +
-'<span class="qt-title">{{{title}}}</span>' +
-'<span class="qt-shortcut">{{{shortcut}}}</span>' +
-'<span class="qt-body">{{{body}}}</span>' +
+'{{#if elements.length}}' +
+    '{{#each elements}}' +
+    '<li class="qt-item" data-id="{{id}}">' +
+    '<span class="qt-title">{{{title}}}</span>' +
+    '<span class="qt-shortcut">{{{shortcut}}}</span>' +
+    '<span class="qt-body">{{{body}}}</span>' +
+    '</li>' +
+    '{{/each}}' +
+'{{else}}' +
+'<li class="qt-blank-state">' +
+'No quicktexts found.' +
 '</li>' +
-'{{/each}}' +
+'{{/if}}' +
 '';
 
 PubSub.subscribe('focus', function (action, element, gmailView) {
-    if (action === 'off') {
+    if (action === 'off' && element !== App.autocomplete.$dropdownSearch.get(0)) {
         App.autocomplete.close();
     }
 });
@@ -89,7 +95,8 @@ App.autocomplete.onKeyDown = function (e) {
     }
 
     // If dropdown is active but the pressed key is different from what we expect
-    if (App.autocomplete.isActive && !~[KEY_TAB, KEY_ENTER, KEY_ESCAPE, KEY_UP, KEY_DOWN].indexOf(e.keyCode)) {
+    // and the search field is not focused
+    if (App.autocomplete.isActive && !~[KEY_TAB, KEY_ENTER, KEY_ESCAPE, KEY_UP, KEY_DOWN].indexOf(e.keyCode) && !App.autocomplete.$dropdownSearch.is(':focus')) {
         App.autocomplete.close();
     }
 };
@@ -204,20 +211,12 @@ App.autocomplete.checkWord = function (e) {
 
 
     //TODO: This should probably be done in the background and the results be hold in a cache
-    if (word.text !== '') {
-        App.settings.getFiltered(word.text, function (quicktexts) {
-            App.autocomplete.quicktexts = quicktexts;
-            if (App.autocomplete.quicktexts.length) {
-                //App.autocomplete.dropdownCreate(cursorPosition);
-                App.autocomplete.dropdownShow(cursorPosition);
-                App.autocomplete.dropdownPopulate(App.autocomplete.quicktexts, word.text);
 
-                // TODO automatically add the word to the search input
-                // and focus on the input
+    // populate the search field with the string we're looking for
+    App.autocomplete.$dropdownSearch.val(word.text);
 
-            }
-        });
-    }
+    App.autocomplete.dropdownPopulate(cursorPosition);
+
 };
 
 // TODO make dropdown position relative so on scrolling it will stay in right place
@@ -228,6 +227,7 @@ App.autocomplete.dropdownCreate = function (cursorPosition) {
     // Add loading dropdown
     this.$dropdown = $(App.autocomplete.dropdownTemplate);
     this.$dropdownContent = $('.qt-dropdown-content', this.$dropdown);
+    this.$dropdownSearch = $('.qt-dropdown-search', this.$dropdown);
     //container.after(this.$dropdown);
     container.append(this.$dropdown);
 
@@ -237,6 +237,7 @@ App.autocomplete.dropdownCreate = function (cursorPosition) {
 
     // Handle mouse hover and click
     this.$dropdown.on('mouseover mousedown', 'li.qt-item', function (e) {
+
         e.preventDefault();
         e.stopPropagation();
 
@@ -244,6 +245,15 @@ App.autocomplete.dropdownCreate = function (cursorPosition) {
         if (e.type === 'mousedown') {
             App.autocomplete.selectActive();
         }
+
+    });
+
+    this.$dropdownSearch.on('keyup', function(e) {
+
+        App.autocomplete.cursorPosition.word.text = $(this).val();
+
+        App.autocomplete.dropdownPopulate(App.autocomplete.cursorPosition);
+
     });
 
 };
@@ -263,38 +273,52 @@ App.autocomplete.dropdownShow = function (cursorPosition) {
 };
 
 
-App.autocomplete.dropdownPopulate = function (elements, word) {
-    if (!elements.length) {
+App.autocomplete.dropdownPopulate = function (cursorPosition) {
+
+    if (!cursorPosition.word.text) {
         return;
     }
 
-    // clone the elements
-    // so we can safely highlight the matched text
-    // without breaking the generated handlebars markup
-    var clonedElements = elements.slice(0);
+    App.settings.getFiltered(cursorPosition.word.text, function (quicktexts) {
 
-    // highlight found string in element title, body and shortcut
-    var searchRe = new RegExp(word, 'gi');
+        App.autocomplete.quicktexts = quicktexts;
 
-    var highlightMatch = function(match) {
-        return '<span class="qt-search-highlight">' + match + '</span>';
-    };
+        //App.autocomplete.dropdownCreate(cursorPosition);
 
-    clonedElements.forEach(function(elem) {
-        elem.title = elem.title.replace(searchRe, highlightMatch);
-        elem.body = elem.body.replace(searchRe, highlightMatch);
-        elem.shortcut = elem.shortcut.replace(searchRe, highlightMatch);
+        if(App.autocomplete.quicktexts.length && !this.isActive) {
+            App.autocomplete.dropdownShow(cursorPosition);
+        }
+
+        // clone the elements
+        // so we can safely highlight the matched text
+        // without breaking the generated handlebars markup
+        var clonedElements = App.autocomplete.quicktexts.slice(0);
+
+        // highlight found string in element title, body and shortcut
+        var searchRe = new RegExp(cursorPosition.word.text, 'gi');
+
+        var highlightMatch = function(match) {
+            return '<span class="qt-search-highlight">' + match + '</span>';
+        };
+
+        clonedElements.forEach(function(elem) {
+            elem.title = elem.title.replace(searchRe, highlightMatch);
+            elem.body = elem.body.replace(searchRe, highlightMatch);
+            elem.shortcut = elem.shortcut.replace(searchRe, highlightMatch);
+        });
+
+        var content = Handlebars.compile(App.autocomplete.dropdownListTemplate)({
+            elements: clonedElements
+        });
+
+        App.autocomplete.$dropdownContent.html(content);
+        App.autocomplete.isEmpty = false;
+
+        // Set first element active
+        App.autocomplete.dropdownSelectItem(0);
+
     });
 
-    var content = Handlebars.compile(App.autocomplete.dropdownListTemplate)({
-        elements: clonedElements
-    });
-
-    this.$dropdownContent.html(content);
-    this.isEmpty = false;
-
-    // Set first element active
-    this.dropdownSelectItem(0);
 };
 
 App.autocomplete.dropdownSelectItem = function (index) {
@@ -326,6 +350,7 @@ App.autocomplete.getSelectedWord = function (cursorPosition) {
         range.setEnd(cursorPosition.element, cursorPosition.end);
         string = range.toString();
     }
+
     // Replace all nbsp with normal spaces
     string = string.replace('\xa0', ' ');
 
