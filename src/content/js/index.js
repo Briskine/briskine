@@ -80,6 +80,8 @@ App.init = function () {
     if (!App.searchPort) {
         App.searchPort = chrome.runtime.connect({name: "search"});
     }
+
+    App.autocomplete.dropdownCreate();
 };
 
 $(function () {

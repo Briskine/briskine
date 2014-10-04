@@ -208,7 +208,8 @@ App.autocomplete.checkWord = function (e) {
         App.settings.getFiltered(word.text, function (quicktexts) {
             App.autocomplete.quicktexts = quicktexts;
             if (App.autocomplete.quicktexts.length) {
-                App.autocomplete.dropdownCreate(cursorPosition);
+                //App.autocomplete.dropdownCreate(cursorPosition);
+                App.autocomplete.dropdownShow(cursorPosition);
                 App.autocomplete.dropdownPopulate(App.autocomplete.quicktexts, word.text);
 
                 // TODO automatically add the word to the search input
@@ -221,24 +222,18 @@ App.autocomplete.checkWord = function (e) {
 
 // TODO make dropdown position relative so on scrolling it will stay in right place
 App.autocomplete.dropdownCreate = function (cursorPosition) {
-    var container = $('[id="'+ $(cursorPosition.elementMain).attr('id') + '"]');
+    //var container = $('[id="'+ $(cursorPosition.elementMain).attr('id') + '"]');
+    var container = $('body');
 
     // Add loading dropdown
     this.$dropdown = $(App.autocomplete.dropdownTemplate);
     this.$dropdownContent = $('.qt-dropdown-content', this.$dropdown);
-    container.after(this.$dropdown);
-
-    this.$dropdown.css({
-        top: (cursorPosition.absolute.top + cursorPosition.absolute.height - $(window).scrollTop()) + 'px',
-        left: (cursorPosition.absolute.left + cursorPosition.absolute.width - $(window).scrollLeft()) + 'px'
-    });
+    //container.after(this.$dropdown);
+    container.append(this.$dropdown);
 
     //HACK: set z-index to auto to a parent, otherwise the autocomplete
     //      dropdown will not be displayed with the correct stacking
     this.$dropdown.parents('.qz').css('z-index', 'auto');
-
-    this.isActive = true;
-    this.isEmpty = true;
 
     // Handle mouse hover and click
     this.$dropdown.on('mouseover mousedown', 'li.qt-item', function (e) {
@@ -252,6 +247,21 @@ App.autocomplete.dropdownCreate = function (cursorPosition) {
     });
 
 };
+
+App.autocomplete.dropdownShow = function (cursorPosition) {
+
+    this.isActive = true;
+    this.isEmpty = true;
+
+    this.$dropdown.css({
+        top: (cursorPosition.absolute.top + cursorPosition.absolute.height - $(window).scrollTop()) + 'px',
+        left: (cursorPosition.absolute.left + cursorPosition.absolute.width - $(window).scrollLeft()) + 'px'
+    });
+
+    this.$dropdown.addClass('qt-dropdown-show');
+
+};
+
 
 App.autocomplete.dropdownPopulate = function (elements, word) {
     if (!elements.length) {
@@ -268,7 +278,7 @@ App.autocomplete.dropdownPopulate = function (elements, word) {
 
     var highlightMatch = function(match) {
         return '<span class="qt-search-highlight">' + match + '</span>';
-    }
+    };
 
     clonedElements.forEach(function(elem) {
         elem.title = elem.title.replace(searchRe, highlightMatch);
@@ -279,7 +289,6 @@ App.autocomplete.dropdownPopulate = function (elements, word) {
     var content = Handlebars.compile(App.autocomplete.dropdownListTemplate)({
         elements: clonedElements
     });
-
 
     this.$dropdownContent.html(content);
     this.isEmpty = false;
@@ -526,8 +535,9 @@ App.autocomplete.getQuicktextById = function (id) {
 App.autocomplete.close = function () {
     if (App.autocomplete.isActive) {
 
-        this.$dropdown.remove();
-        this.$dropdown = null;
+        //this.$dropdown.remove();
+        //this.$dropdown = null;
+        this.$dropdown.removeClass('qt-dropdown-show');
 
         this.isActive = false;
         this.isEmpty = null;
