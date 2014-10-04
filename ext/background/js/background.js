@@ -39584,7 +39584,7 @@ module.filter('md5', ['md5', function(md5) {
 
 })();
 
-var ENV = "production";
+var ENV = "development";
 /* Quicktext chrome extension
  */
 
