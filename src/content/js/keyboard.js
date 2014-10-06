@@ -24,12 +24,12 @@ App.autocomplete.keyboard = {
                     // replace with the first quicktext found
                     App.autocomplete.replaceWith(quicktexts[0], e);
                 } else { // no quicktext found.. focus the next element
-                    App.autocomplete.focusNext(e);
+                    App.autocomplete.keyboard.focusNext(e);
                 }
             });
         } else {
             // No text, focus next
-            App.autocomplete.focusNext(e);
+            App.autocomplete.keyboard.focusNext(e);
         }
     },
     /*

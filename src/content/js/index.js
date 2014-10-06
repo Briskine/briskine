@@ -84,6 +84,7 @@ App.init = function () {
 
     // create dialog once and then reuse the same element
     App.autocomplete.dialog.create();
+    App.autocomplete.dialog.bindKeyboardEvents();
 };
 
 $(function () {

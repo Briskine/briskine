@@ -41,10 +41,10 @@ App.autocomplete.dialog = {
         App.settings.getFiltered(word.text, function (quicktexts) {
             App.autocomplete.quicktexts = quicktexts;
             if (App.autocomplete.quicktexts.length) {
-                App.autocomplete.dialog.create();
                 App.autocomplete.dialog.populate(App.autocomplete.quicktexts);
             }
         });
+
     },
     // TODO(@ghinda): make dropdown position relative so on scrolling it will stay in right place
     create: function () {
@@ -73,6 +73,7 @@ App.autocomplete.dialog = {
             App.autocomplete.dialog.selectItem($(this).index());
             if (e.type === 'mousedown') {
                 App.autocomplete.dialog.selectActive();
+                App.autocomplete.dialog.close();
             }
         });
 
@@ -83,26 +84,25 @@ App.autocomplete.dialog = {
                 App.autocomplete.dialog.populate(App.autocomplete.quicktexts);
             });
         });
-        
-        this.bindEvents();
     },
-    bindEvents: function() {
-        Mousetrap.bindGlobal('up', function(e){
+    bindKeyboardEvents: function () {
+        Mousetrap.bindGlobal('up', function (e) {
             if (App.autocomplete.dialog.isActive) {
                 App.autocomplete.dialog.changeSelection('prev');
             }
         });
-        Mousetrap.bindGlobal('down', function(e){
+        Mousetrap.bindGlobal('down', function (e) {
             if (App.autocomplete.dialog.isActive) {
                 App.autocomplete.dialog.changeSelection('next');
             }
         });
-        Mousetrap.bindGlobal('escape', function(e){
+        Mousetrap.bindGlobal('escape', function (e) {
             App.autocomplete.dialog.close();
         });
-        Mousetrap.bindGlobal('enter', function(e){
+        Mousetrap.bindGlobal('enter', function (e) {
             if (App.autocomplete.dialog.isActive) {
                 App.autocomplete.dialog.selectActive();
+                App.autocomplete.dialog.close();
             }
         });
 
@@ -117,7 +117,7 @@ App.autocomplete.dialog = {
         // clone the elements
         // so we can safely highlight the matched text
         // without breaking the generated handlebars markup
-        var clonedElements = App.autocomplete.quicktexts.slice(0);
+        var clonedElements = jQuery.extend(true, [], App.autocomplete.quicktexts);
 
         // highlight found string in element title, body and shortcut
         var searchRe = new RegExp(App.autocomplete.cursorPosition.word.text, 'gi');
@@ -155,17 +155,18 @@ App.autocomplete.dialog = {
         App.autocomplete.dialog.$search.focus();
     },
     selectItem: function (index) {
-        if (this.isActive && !this.isEmpty) {
-            this.$content.children()
+        console.log(index);
+        if (App.autocomplete.dialog.isActive && !App.autocomplete.dialog.isEmpty) {
+            App.autocomplete.dialog.$content.children()
                 .removeClass('active')
                 .eq(index)
                 .addClass('active');
         }
     },
     selectActive: function () {
-        if (this.isActive && !this.isEmpty && App.autocomplete.quicktexts.length) {
+        if (App.autocomplete.dialog.isActive && !this.isEmpty && App.autocomplete.quicktexts.length) {
             var activeItemId = App.autocomplete.dialog.$content.find('.active').data('id');
-            var quicktext = App.autocomplete.quicktexts.filter(function(quicktext) {
+            var quicktext = App.autocomplete.quicktexts.filter(function (quicktext) {
                 return quicktext.id === activeItemId;
             })[0];
             App.autocomplete.replaceWith(quicktext);
@@ -177,18 +178,18 @@ App.autocomplete.dialog = {
             index_active = App.autocomplete.dialog.$content.find('.active').index(),
             index_new = Math.max(0, Math.min(elements_count - 1, index_active + index_diff));
 
-        this.selectItem(index_new);
+        App.autocomplete.dialog.selectItem(index_new);
     },
     // remove dropdown and cleanup
     close: function () {
-        if (this.isActive) {
-            this.$dialog.removeClass('qt-dropdown-show');
+        if (App.autocomplete.dialog.isActive) {
+            $('.qt-dropdown').removeClass('qt-dropdown-show');
 
-            this.isActive = false;
-            this.isEmpty = null;
+            App.autocomplete.dialog.isActive = false;
+            App.autocomplete.dialog.isEmpty = null;
 
-            this.quicktexts = [];
-            this.cursorPosition = null;
+            App.autocomplete.dialog.quicktexts = [];
+            App.autocomplete.dialog.cursorPosition = null;
         }
     }
 };
