@@ -3,6 +3,10 @@
  */
 
 PubSub.subscribe('focus', function (action, element, gmailView) {
+    if ($(element).hasClass('qt-dropdown-search')) {
+        return; // ignore search input
+    }
+
     if (action === 'on') {
         App.data.inCompose = true;
         App.data.composeElement = element;
@@ -24,7 +28,6 @@ App.onFocus = function (e) {
     // Disable any focus as there may be only one focus on a page
     // PubSub.publish('focus', 'off', target);
 
-    // TODO: some refactoring here
     // Check if it is the compose element
     if (target.type === 'textarea' && target.getAttribute('name') === 'body') {
         PubSub.publish('focus', 'on', target, 'basic html');
@@ -38,5 +41,5 @@ App.onBlur = function (e) {
 };
 
 App.onScroll = function (e) {
-    App.autocomplete.close();
+    App.autocomplete.dialog.close();
 };

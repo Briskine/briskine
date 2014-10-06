@@ -23,15 +23,13 @@ var App = {
             App.shortcutPort.postMessage({text: text});
         },
         getFiltered: function (text, callback) {
-            // take only strings bigger than 2 chars
-            if (text.length > 2) {
-                if (!App.searchPort.onMessage.hasListeners()) {
-                    App.searchPort.onMessage.addListener(function (msg) {
-                        callback(msg.quicktexts);
-                    });
-                }
-                App.searchPort.postMessage({text: text});
+            // search even the empty strings. It's not a problem because the dialog is now triggered by a user shortcut
+            if (!App.searchPort.onMessage.hasListeners()) {
+                App.searchPort.onMessage.addListener(function (msg) {
+                    callback(msg.quicktexts);
+                });
             }
+            App.searchPort.postMessage({text: text});
         },
         get: function (key, callback) {
             chrome.runtime.sendMessage({'request': 'get', 'data': key}, function (response) {
@@ -52,14 +50,14 @@ var App = {
 };
 
 // Add trackjs
-window._trackJs = {
-    token: "f4b509356dbf42feb02b2b535d8c1c85",
-    application: "quicktext-chrome",
-    version: chrome.runtime.getManifest().version,
-    visitor: {
-        enabled: false // don't collect data from user events as it might contain private information
-    }
-};
+//window._trackJs = {
+//    token: "f4b509356dbf42feb02b2b535d8c1c85",
+//    application: "quicktext-chrome",
+//    version: chrome.runtime.getManifest().version,
+//    visitor: {
+//        enabled: false // don't collect data from user events as it might contain private information
+//    }
+//};
 
 App.init = function () {
     document.addEventListener("blur", App.onBlur, true);
@@ -69,10 +67,10 @@ App.init = function () {
     // use custom keyboard shortcuts
     App.settings.fetchSettings(function (settings) {
         if (settings.keyboard.enabled) {
-            Mousetrap.bindGlobal(settings.keyboard.shortcut, App.autocomplete.keyCompletion);
+            Mousetrap.bindGlobal(settings.keyboard.shortcut, App.autocomplete.keyboard.completion);
         }
         if (settings.dialog.shortcut) {
-            Mousetrap.bindGlobal(settings.dialog.shortcut, App.autocomplete.dialogCompletion);
+            Mousetrap.bindGlobal(settings.dialog.shortcut, App.autocomplete.dialog.completion);
         }
     });
 
@@ -84,7 +82,8 @@ App.init = function () {
         App.searchPort = chrome.runtime.connect({name: "search"});
     }
 
-    App.autocomplete.dropdownCreate();
+    // create dialog once and then reuse the same element
+    App.autocomplete.dialog.create();
 };
 
 $(function () {
