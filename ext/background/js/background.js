@@ -13403,7 +13403,7 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap requires jQuery");+func
      */
     function _addEvent(object, type, callback) {
         if (object.addEventListener) {
-            object.addEventListener(type, callback, false);
+            object.addEventListener(type, callback, true);
             return;
         }
 
@@ -40142,7 +40142,6 @@ if (chrome.runtime) {
                 chrome.pageAction.show(tabId);
             }
         }
-
     };
 
     // Listen for any changes to the URL of any tab.
@@ -40232,7 +40231,9 @@ if (chrome.runtime) {
                                 _gaq.push(['_trackEvent', "content", 'insert']);
                             });
                         } else {
-                            injector.get('QuicktextService').filtered("shortcut = '" + msg.text + "' OR title LIKE '%" + msg.text + "%' OR body LIKE '% " + msg.text + " %'" /* TODO: <- fix this sql */).then(function (res) {
+                            injector.get('QuicktextService').filtered(
+                                    "shortcut = '" + msg.text + "' OR title LIKE '%" + msg.text + "%' OR body LIKE '% " + msg.text + " %'" /* TODO: <- fix this sql */,
+                                    msg.limit).then(function (res) {
                                 port.postMessage({'quicktexts': res, 'action': 'list'});
                                 _gaq.push(['_trackEvent', "content", 'insert']);
                             });
@@ -40766,13 +40767,16 @@ gqApp.service('QuicktextService', function ($q, $resource, SettingsService) {
         return deferred.promise;
     };
 
-    self.filtered = function (filters) {
+    self.filtered = function (filters, limit) {
         var deferred = $q.defer();
         self.db.transaction(function (tx) {
             if (filters !== '') {
                 filters = " AND " + filters;
             }
-            tx.executeSql("SELECT * FROM quicktext WHERE deleted = 0 " + filters + " ORDER BY created_datetime DESC", [], function (tx, res) {
+            if (limit) {
+                limit = " LIMIT " + limit;
+            }
+            tx.executeSql("SELECT * FROM quicktext WHERE deleted = 0 " + filters + " ORDER BY created_datetime DESC" + limit, [], function (tx, res) {
                 var len = res.rows.length, i;
                 var list = [];
                 for (i = 0; i < len; i++) {

@@ -22,14 +22,14 @@ var App = {
             }
             App.shortcutPort.postMessage({text: text});
         },
-        getFiltered: function (text, callback) {
+        getFiltered: function (text, limit, callback) {
             // search even the empty strings. It's not a problem because the dialog is now triggered by a user shortcut
             if (!App.searchPort.onMessage.hasListeners()) {
                 App.searchPort.onMessage.addListener(function (msg) {
                     callback(msg.quicktexts);
                 });
             }
-            App.searchPort.postMessage({text: text});
+            App.searchPort.postMessage({text: text, limit: limit});
         },
         get: function (key, callback) {
             chrome.runtime.sendMessage({'request': 'get', 'data': key}, function (response) {

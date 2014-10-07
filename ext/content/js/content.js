@@ -12917,7 +12917,7 @@ var __module0__ = (function(__dependency1__, __dependency2__, __dependency3__, _
      */
     function _addEvent(object, type, callback) {
         if (object.addEventListener) {
-            object.addEventListener(type, callback, false);
+            object.addEventListener(type, callback, true);
             return;
         }
 
@@ -13752,14 +13752,14 @@ var App = {
             }
             App.shortcutPort.postMessage({text: text});
         },
-        getFiltered: function (text, callback) {
+        getFiltered: function (text, limit, callback) {
             // search even the empty strings. It's not a problem because the dialog is now triggered by a user shortcut
             if (!App.searchPort.onMessage.hasListeners()) {
                 App.searchPort.onMessage.addListener(function (msg) {
                     callback(msg.quicktexts);
                 });
             }
-            App.searchPort.postMessage({text: text});
+            App.searchPort.postMessage({text: text, limit: limit});
         },
         get: function (key, callback) {
             chrome.runtime.sendMessage({'request': 'get', 'data': key}, function (response) {
@@ -13935,7 +13935,10 @@ App.parser.parseString = function (string) {
  * Generic methods for autocompletion
  */
 
-var KEY_TAB = 9;
+var KEY_TAB = 9,
+    KEY_UP = 39,
+    KEY_DOWN = 40,
+    KEY_ENTER = 13;
 
 App.autocomplete.quicktexts = [];
 App.autocomplete.cursorPosition = null;
@@ -14218,6 +14221,7 @@ App.autocomplete.dialog = {
     ],
     isActive: false,
     isEmpty: true,
+    RESULTS_LIMIT: 5, // only show 5 results at a time
 
     completion: function (e) {
         // only works in compose area
@@ -14232,7 +14236,7 @@ App.autocomplete.dialog = {
         App.autocomplete.cursorPosition.word = word;
 
         //TODO: This should probably be done in the background and the results be hold in a cache
-        App.settings.getFiltered(word.text, function (quicktexts) {
+        App.settings.getFiltered(word.text, App.autocomplete.dialog.RESULTS_LIMIT, function (quicktexts) {
             App.autocomplete.quicktexts = quicktexts;
             if (App.autocomplete.quicktexts.length) {
                 App.autocomplete.dialog.populate(App.autocomplete.quicktexts);
@@ -14272,8 +14276,12 @@ App.autocomplete.dialog = {
         });
 
         this.$search.on('keyup', function (e) {
+            if (_.contains([KEY_ENTER, KEY_UP, KEY_DOWN], e.keyCode)) {
+                return;
+            }
+
             App.autocomplete.cursorPosition.word.text = $(this).val();
-            App.settings.getFiltered(App.autocomplete.cursorPosition.word.text, function (quicktexts) {
+            App.settings.getFiltered(App.autocomplete.cursorPosition.word.text, App.autocomplete.dialog.RESULTS_LIMIT, function (quicktexts) {
                 App.autocomplete.quicktexts = quicktexts;
                 App.autocomplete.dialog.populate(App.autocomplete.quicktexts);
             });
@@ -14349,7 +14357,6 @@ App.autocomplete.dialog = {
         App.autocomplete.dialog.$search.focus();
     },
     selectItem: function (index) {
-        console.log(index);
         if (App.autocomplete.dialog.isActive && !App.autocomplete.dialog.isEmpty) {
             App.autocomplete.dialog.$content.children()
                 .removeClass('active')
@@ -14378,6 +14385,7 @@ App.autocomplete.dialog = {
     close: function () {
         if (App.autocomplete.dialog.isActive) {
             $('.qt-dropdown').removeClass('qt-dropdown-show');
+            $('.qt-dropdown-search').val('');
 
             App.autocomplete.dialog.isActive = false;
             App.autocomplete.dialog.isEmpty = null;

@@ -14,7 +14,6 @@ if (chrome.runtime) {
                 chrome.pageAction.show(tabId);
             }
         }
-
     };
 
     // Listen for any changes to the URL of any tab.
@@ -104,7 +103,9 @@ if (chrome.runtime) {
                                 _gaq.push(['_trackEvent', "content", 'insert']);
                             });
                         } else {
-                            injector.get('QuicktextService').filtered("shortcut = '" + msg.text + "' OR title LIKE '%" + msg.text + "%' OR body LIKE '% " + msg.text + " %'" /* TODO: <- fix this sql */).then(function (res) {
+                            injector.get('QuicktextService').filtered(
+                                    "shortcut = '" + msg.text + "' OR title LIKE '%" + msg.text + "%' OR body LIKE '% " + msg.text + " %'" /* TODO: <- fix this sql */,
+                                    msg.limit).then(function (res) {
                                 port.postMessage({'quicktexts': res, 'action': 'list'});
                                 _gaq.push(['_trackEvent', "content", 'insert']);
                             });

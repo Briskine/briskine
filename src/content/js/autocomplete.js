@@ -2,7 +2,10 @@
  * Generic methods for autocompletion
  */
 
-var KEY_TAB = 9;
+var KEY_TAB = 9,
+    KEY_UP = 39,
+    KEY_DOWN = 40,
+    KEY_ENTER = 13;
 
 App.autocomplete.quicktexts = [];
 App.autocomplete.cursorPosition = null;

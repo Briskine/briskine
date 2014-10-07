@@ -24,6 +24,7 @@ App.autocomplete.dialog = {
     ],
     isActive: false,
     isEmpty: true,
+    RESULTS_LIMIT: 5, // only show 5 results at a time
 
     completion: function (e) {
         // only works in compose area
@@ -38,7 +39,7 @@ App.autocomplete.dialog = {
         App.autocomplete.cursorPosition.word = word;
 
         //TODO: This should probably be done in the background and the results be hold in a cache
-        App.settings.getFiltered(word.text, function (quicktexts) {
+        App.settings.getFiltered(word.text, App.autocomplete.dialog.RESULTS_LIMIT, function (quicktexts) {
             App.autocomplete.quicktexts = quicktexts;
             if (App.autocomplete.quicktexts.length) {
                 App.autocomplete.dialog.populate(App.autocomplete.quicktexts);
@@ -78,8 +79,12 @@ App.autocomplete.dialog = {
         });
 
         this.$search.on('keyup', function (e) {
+            if (_.contains([KEY_ENTER, KEY_UP, KEY_DOWN], e.keyCode)) {
+                return;
+            }
+
             App.autocomplete.cursorPosition.word.text = $(this).val();
-            App.settings.getFiltered(App.autocomplete.cursorPosition.word.text, function (quicktexts) {
+            App.settings.getFiltered(App.autocomplete.cursorPosition.word.text, App.autocomplete.dialog.RESULTS_LIMIT, function (quicktexts) {
                 App.autocomplete.quicktexts = quicktexts;
                 App.autocomplete.dialog.populate(App.autocomplete.quicktexts);
             });
@@ -155,7 +160,6 @@ App.autocomplete.dialog = {
         App.autocomplete.dialog.$search.focus();
     },
     selectItem: function (index) {
-        console.log(index);
         if (App.autocomplete.dialog.isActive && !App.autocomplete.dialog.isEmpty) {
             App.autocomplete.dialog.$content.children()
                 .removeClass('active')
@@ -184,6 +188,7 @@ App.autocomplete.dialog = {
     close: function () {
         if (App.autocomplete.dialog.isActive) {
             $('.qt-dropdown').removeClass('qt-dropdown-show');
+            $('.qt-dropdown-search').val('');
 
             App.autocomplete.dialog.isActive = false;
             App.autocomplete.dialog.isEmpty = null;
