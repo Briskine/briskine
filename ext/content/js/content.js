@@ -14333,6 +14333,7 @@ App.autocomplete.dialog = {
 
         clonedElements.forEach(function (elem) {
             elem.title = elem.title.replace(searchRe, highlightMatch);
+            elem.originalBody = elem.body;
             elem.body = elem.body.replace(searchRe, highlightMatch);
             elem.shortcut = elem.shortcut.replace(searchRe, highlightMatch);
         });
@@ -14409,7 +14410,7 @@ App.autocomplete.dialog.template = '' +
 App.autocomplete.dialog.liTemplate = '' +
     '{{#if elements.length}}' +
     '{{#each elements}}' +
-    '<li class="qt-item" data-id="{{id}}">' +
+    '<li class="qt-item" data-id="{{id}}" title="{{{originalBody}}}">' +
     '<span class="qt-title">{{{title}}}</span>' +
     '<span class="qt-shortcut">{{{shortcut}}}</span>' +
     '<span class="qt-body">{{{body}}}</span>' +
