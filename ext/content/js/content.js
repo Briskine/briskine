@@ -13936,7 +13936,7 @@ App.parser.parseString = function (string) {
  */
 
 var KEY_TAB = 9,
-    KEY_UP = 39,
+    KEY_UP = 38,
     KEY_DOWN = 40,
     KEY_ENTER = 13;
 
@@ -14234,8 +14234,11 @@ App.autocomplete.dialog = {
         App.autocomplete.cursorPosition = App.autocomplete.getCursorPosition(e);
         var word = App.autocomplete.getSelectedWord(App.autocomplete.cursorPosition);
         App.autocomplete.cursorPosition.word = word;
+        if (word.text) {
+            App.autocomplete.dialog.$search.val(word.text); //setup default value if any
+        }
 
-        //TODO: This should probably be done in the background and the results be hold in a cache
+        //TODO: Some caching here would be really nice
         App.settings.getFiltered(word.text, App.autocomplete.dialog.RESULTS_LIMIT, function (quicktexts) {
             App.autocomplete.quicktexts = quicktexts;
             if (App.autocomplete.quicktexts.length) {
@@ -14253,9 +14256,7 @@ App.autocomplete.dialog = {
         this.$dialog = $(this.template);
         this.$content = $('.qt-dropdown-content', this.$dialog);
         this.$search = $('.qt-dropdown-search', this.$dialog);
-        if (App.autocomplete.cursorPosition) {
-            this.$search.val(App.autocomplete.cursorPosition.word.text); //setup default value if any
-        }
+
         container.append(this.$dialog);
 
         //HACK: set z-index to auto to a parent, otherwise the autocomplete
@@ -14276,6 +14277,7 @@ App.autocomplete.dialog = {
         });
 
         this.$search.on('keyup', function (e) {
+            // ignore modifier keys because they manipulate
             if (_.contains([KEY_ENTER, KEY_UP, KEY_DOWN], e.keyCode)) {
                 return;
             }
@@ -14315,6 +14317,7 @@ App.autocomplete.dialog = {
         if (App.autocomplete.quicktexts.length && !App.autocomplete.dialog.isActive) {
             App.autocomplete.dialog.show(App.autocomplete.cursorPosition);
         }
+
 
         // clone the elements
         // so we can safely highlight the matched text

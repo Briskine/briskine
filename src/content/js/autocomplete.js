@@ -3,7 +3,7 @@
  */
 
 var KEY_TAB = 9,
-    KEY_UP = 39,
+    KEY_UP = 38,
     KEY_DOWN = 40,
     KEY_ENTER = 13;
 
