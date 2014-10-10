@@ -14,4 +14,5 @@ src/backgrount/js/environment.js
 *.kate-swp
 
 # chrome extension
+ext/
 key.pem

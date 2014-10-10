@@ -4,6 +4,12 @@ module.exports = function (grunt) {
     // load all grunt tasks
     require('matchdep').filterDev('grunt-*').forEach(grunt.loadNpmTasks);
 
+    // folder paths
+    var config = {
+        app: 'src',
+        dist: 'ext'
+    };
+
     var dependencies = {
         background: {
             js: [
@@ -23,11 +29,10 @@ module.exports = function (grunt) {
                 'bower_components/angular-moment/angular-moment.js',
 
                 // Should be first
-                'src/background/js/environment.js',
-                'src/background/js/**/*.js',
+                'background/js/environment.js',
+                'background/js/**/*.js',
                 'bower_components/trackjs-tracker/tracker.js'
-            ],
-            css: ['ext/background/css/background.css']
+            ]
         },
         content: {
             js: [
@@ -37,37 +42,53 @@ module.exports = function (grunt) {
                 'bower_components/mousetrap/mousetrap.js',
                 'bower_components/mousetrap/plugins/global-bind/mousetrap-global-bind.js',
 
-                'src/content/js/patterns.js',
-                'src/content/js/index.js',
-                'src/content/js/parser.js',
-                'src/content/js/autocomplete.js',
-                'src/content/js/keyboard.js',
-                'src/content/js/dialog.js',
-                'src/content/js/events.js',
+                'content/js/patterns.js',
+                'content/js/index.js',
+                'content/js/parser.js',
+                'content/js/autocomplete.js',
+                'content/js/keyboard.js',
+                'content/js/dialog.js',
+                'content/js/events.js',
                 'bower_components/trackjs-tracker/tracker.js'
-            ],
-            css: ['ext/content/css/content.css']
+            ]
         }
     };
 
     // Project configuration
     grunt.initConfig({
+        config: config,
         pkg: grunt.file.readJSON('package.json'),
-        manifestContents: grunt.file.readJSON('src/manifest.json'),
+        manifestContents: grunt.file.readJSON(config.app + '/manifest.json'),
         // TODO ad watching all files and reloading extension in browser
         watch: {
             stylus: {
-                files: ['src/**/*.styl', 'src/**/*.css'],
+                files: [
+                    '**/*.styl'
+                ],
                 tasks: ['stylus:development'],
                 options: {
+                    cwd: config.app,
                     spawn: false
                 }
             },
             js: {
-                files: dependencies.background.js.concat(dependencies.content.js),
+                files: dependencies.background.js.concat(dependencies.content.js)
+                ,
                 tasks: ['concat'],
                 options: {
+                    cwd: config.app,
                     spawn: false
+                }
+            },
+            extensionReload: {
+                files: [
+                    '**/*.css',
+                    '**/*.js'
+                ],
+                tasks: [],
+                options: {
+                    cwd: config.dist,
+                    livereload: true
                 }
             }
         },
@@ -79,8 +100,9 @@ module.exports = function (grunt) {
                     linenos: true
                 },
                 files: {
-                    'ext/background/css/background.css': 'src/background/css/background.styl',
-                    'ext/content/css/content.css': 'src/content/css/content.styl'
+                    '<%= config.dist %>/background/css/background.css': '<%= config.app %>/background/css/background.styl',
+
+                    '<%= config.dist %>/content/css/content.css': '<%= config.app %>/content/css/content.styl'
                 }
             },
             production: {
@@ -88,15 +110,15 @@ module.exports = function (grunt) {
                     'include css': true
                 },
                 files: {
-                    'ext/background/css/background.css': 'src/background/css/background.styl',
-                    'ext/content/css/content.css': 'src/content/css/content.styl'
+                    '<%= config.dist %>/background/css/background.css': '<%= config.app %>/background/css/background.styl',
+                    '<%= config.dist %>/content/css/content.css': '<%= config.app %>/content/css/content.styl'
                 }
             }
         },
         jshint: {
             development: [
-                'src/content/js/*.js',
-                'src/background/js/*.js'
+                '<%= config.app %>/content/js/*.js',
+                '<%= config.app %>/background/js/*.js'
             ],
             options: {
                 multistr: true
@@ -105,12 +127,19 @@ module.exports = function (grunt) {
         },
         concat: {
             background: {
+                expand: true,
+                cwd: config.app,
                 src: dependencies.background.js,
-                dest: 'ext/background/js/background.js'
+                dest: '<%= config.dist %>/background/js/background.js',
+                // treat dest as a file, not as a folder
+                rename: function(dest) { return dest }
             },
             content: {
+                expand: true,
+                cwd: config.app,
                 src: dependencies.content.js,
-                dest: 'ext/content/js/content.js'
+                dest: '<%= config.dist %>/content/js/content.js',
+                rename: function(dest) { return dest }
             }
         },
         compress: {
@@ -119,7 +148,7 @@ module.exports = function (grunt) {
                     archive: 'build/<%= pkg.name %>-<%= manifestContents.version %>.zip'
                 },
                 files: [
-                    {src: ['ext/**']}
+                    {src: ['<%= config.dist %>/**']}
                 ]
             }
         },
@@ -131,14 +160,38 @@ module.exports = function (grunt) {
                         expand: true,
                         flatten: true,
                         dot: true,
-                        cwd: 'bower_components/font-awesome/fonts/',
-                        dest: 'ext/background/fonts',
+                        cwd: '<%= config.app %>/bower_components/font-awesome/fonts/',
+                        dest: '<%= config.dist %>/background/fonts',
                         src: [
                             '*'
+                        ]
+                    },
+                    {
+                        expand: true,
+                        dot: true,
+                        cwd: config.app,
+                        dest: '<%= config.dist %>',
+                        src: [
+                            'icons/**',
+                            '_locales/**',
+                            'pages/**',
+                            'LICENSE'
                         ]
                     }
                 ]
             }
+        },
+        clean: {
+            dist: {
+                files: [{
+                    expand: true,
+                    dot: true,
+                    cwd: '<%= config.dist %>',
+                    src: [
+                        '*'
+                    ]
+                }]
+            },
         },
         shell: {
             test: {
@@ -151,28 +204,29 @@ module.exports = function (grunt) {
     });
 
     grunt.registerTask('manifest:development', 'Build chrome manifest life.', function () {
-        var manifest = grunt.file.readJSON('src/manifest.json')
+        var manifest = grunt.file.readJSON(config.app + '/manifest.json')
 
         // Load content script on localhost
         manifest.content_scripts[0].matches.push('http://localhost/gmail/*')
         manifest.content_scripts[0].matches.push('https://localhost/gmail/*')
 
-        grunt.file.write('ext/manifest.json', JSON.stringify(manifest))
+        grunt.file.write(config.dist + '/manifest.json', JSON.stringify(manifest))
 
-        grunt.file.write('src/background/js/environment.js', 'var ENV = "development";')
+        grunt.file.write(config.app + '/background/js/environment.js', 'var ENV = "development";')
     })
 
     grunt.registerTask('manifest:production', 'Build chrome manifest life.', function () {
-        var manifest = grunt.file.readJSON('src/manifest.json')
+        var manifest = grunt.file.readJSON(config.app + '/manifest.json')
         delete manifest.key;
-        grunt.file.write('ext/manifest.json', JSON.stringify(manifest))
+        grunt.file.write(config.dist + '/manifest.json', JSON.stringify(manifest))
 
-        grunt.file.write('src/background/js/environment.js', 'var ENV = "production";')
+        grunt.file.write(config.app + '/background/js/environment.js', 'var ENV = "production";')
     })
 
 
     // Development mode
     grunt.registerTask('development', [
+        'clean',
         'copy:development',
         'manifest:development',
         'stylus:development',
@@ -196,6 +250,7 @@ module.exports = function (grunt) {
 
     // Optimize and compress
     grunt.registerTask('production', [
+        'clean',
         'copy:development',
         'manifest:production',
         'stylus:production',
@@ -214,4 +269,5 @@ module.exports = function (grunt) {
     grunt.registerTask('b', ['build']);
 
     grunt.registerTask('default', ['development']);
+
 };
