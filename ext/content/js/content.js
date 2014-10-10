@@ -12701,6 +12701,997 @@ var __module0__ = (function(__dependency1__, __dependency2__, __dependency3__, _
   return __module0__;
 })();
 
+/*global define:false */
+/**
+ * Copyright 2013 Craig Campbell
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * Mousetrap is a simple keyboard shortcut library for Javascript with
+ * no external dependencies
+ *
+ * @version 1.4.6
+ * @url craig.is/killing/mice
+ */
+(function(window, document, undefined) {
+
+    /**
+     * mapping of special keycodes to their corresponding keys
+     *
+     * everything in this dictionary cannot use keypress events
+     * so it has to be here to map to the correct keycodes for
+     * keyup/keydown events
+     *
+     * @type {Object}
+     */
+    var _MAP = {
+            8: 'backspace',
+            9: 'tab',
+            13: 'enter',
+            16: 'shift',
+            17: 'ctrl',
+            18: 'alt',
+            20: 'capslock',
+            27: 'esc',
+            32: 'space',
+            33: 'pageup',
+            34: 'pagedown',
+            35: 'end',
+            36: 'home',
+            37: 'left',
+            38: 'up',
+            39: 'right',
+            40: 'down',
+            45: 'ins',
+            46: 'del',
+            91: 'meta',
+            93: 'meta',
+            224: 'meta'
+        },
+
+        /**
+         * mapping for special characters so they can support
+         *
+         * this dictionary is only used incase you want to bind a
+         * keyup or keydown event to one of these keys
+         *
+         * @type {Object}
+         */
+        _KEYCODE_MAP = {
+            106: '*',
+            107: '+',
+            109: '-',
+            110: '.',
+            111 : '/',
+            186: ';',
+            187: '=',
+            188: ',',
+            189: '-',
+            190: '.',
+            191: '/',
+            192: '`',
+            219: '[',
+            220: '\\',
+            221: ']',
+            222: '\''
+        },
+
+        /**
+         * this is a mapping of keys that require shift on a US keypad
+         * back to the non shift equivelents
+         *
+         * this is so you can use keyup events with these keys
+         *
+         * note that this will only work reliably on US keyboards
+         *
+         * @type {Object}
+         */
+        _SHIFT_MAP = {
+            '~': '`',
+            '!': '1',
+            '@': '2',
+            '#': '3',
+            '$': '4',
+            '%': '5',
+            '^': '6',
+            '&': '7',
+            '*': '8',
+            '(': '9',
+            ')': '0',
+            '_': '-',
+            '+': '=',
+            ':': ';',
+            '\"': '\'',
+            '<': ',',
+            '>': '.',
+            '?': '/',
+            '|': '\\'
+        },
+
+        /**
+         * this is a list of special strings you can use to map
+         * to modifier keys when you specify your keyboard shortcuts
+         *
+         * @type {Object}
+         */
+        _SPECIAL_ALIASES = {
+            'option': 'alt',
+            'command': 'meta',
+            'return': 'enter',
+            'escape': 'esc',
+            'mod': /Mac|iPod|iPhone|iPad/.test(navigator.platform) ? 'meta' : 'ctrl'
+        },
+
+        /**
+         * variable to store the flipped version of _MAP from above
+         * needed to check if we should use keypress or not when no action
+         * is specified
+         *
+         * @type {Object|undefined}
+         */
+        _REVERSE_MAP,
+
+        /**
+         * a list of all the callbacks setup via Mousetrap.bind()
+         *
+         * @type {Object}
+         */
+        _callbacks = {},
+
+        /**
+         * direct map of string combinations to callbacks used for trigger()
+         *
+         * @type {Object}
+         */
+        _directMap = {},
+
+        /**
+         * keeps track of what level each sequence is at since multiple
+         * sequences can start out with the same sequence
+         *
+         * @type {Object}
+         */
+        _sequenceLevels = {},
+
+        /**
+         * variable to store the setTimeout call
+         *
+         * @type {null|number}
+         */
+        _resetTimer,
+
+        /**
+         * temporary state where we will ignore the next keyup
+         *
+         * @type {boolean|string}
+         */
+        _ignoreNextKeyup = false,
+
+        /**
+         * temporary state where we will ignore the next keypress
+         *
+         * @type {boolean}
+         */
+        _ignoreNextKeypress = false,
+
+        /**
+         * are we currently inside of a sequence?
+         * type of action ("keyup" or "keydown" or "keypress") or false
+         *
+         * @type {boolean|string}
+         */
+        _nextExpectedAction = false;
+
+    /**
+     * loop through the f keys, f1 to f19 and add them to the map
+     * programatically
+     */
+    for (var i = 1; i < 20; ++i) {
+        _MAP[111 + i] = 'f' + i;
+    }
+
+    /**
+     * loop through to map numbers on the numeric keypad
+     */
+    for (i = 0; i <= 9; ++i) {
+        _MAP[i + 96] = i;
+    }
+
+    /**
+     * cross browser add event method
+     *
+     * @param {Element|HTMLDocument} object
+     * @param {string} type
+     * @param {Function} callback
+     * @returns void
+     */
+    function _addEvent(object, type, callback) {
+        if (object.addEventListener) {
+            object.addEventListener(type, callback, false);
+            return;
+        }
+
+        object.attachEvent('on' + type, callback);
+    }
+
+    /**
+     * takes the event and returns the key character
+     *
+     * @param {Event} e
+     * @return {string}
+     */
+    function _characterFromEvent(e) {
+
+        // for keypress events we should return the character as is
+        if (e.type == 'keypress') {
+            var character = String.fromCharCode(e.which);
+
+            // if the shift key is not pressed then it is safe to assume
+            // that we want the character to be lowercase.  this means if
+            // you accidentally have caps lock on then your key bindings
+            // will continue to work
+            //
+            // the only side effect that might not be desired is if you
+            // bind something like 'A' cause you want to trigger an
+            // event when capital A is pressed caps lock will no longer
+            // trigger the event.  shift+a will though.
+            if (!e.shiftKey) {
+                character = character.toLowerCase();
+            }
+
+            return character;
+        }
+
+        // for non keypress events the special maps are needed
+        if (_MAP[e.which]) {
+            return _MAP[e.which];
+        }
+
+        if (_KEYCODE_MAP[e.which]) {
+            return _KEYCODE_MAP[e.which];
+        }
+
+        // if it is not in the special map
+
+        // with keydown and keyup events the character seems to always
+        // come in as an uppercase character whether you are pressing shift
+        // or not.  we should make sure it is always lowercase for comparisons
+        return String.fromCharCode(e.which).toLowerCase();
+    }
+
+    /**
+     * checks if two arrays are equal
+     *
+     * @param {Array} modifiers1
+     * @param {Array} modifiers2
+     * @returns {boolean}
+     */
+    function _modifiersMatch(modifiers1, modifiers2) {
+        return modifiers1.sort().join(',') === modifiers2.sort().join(',');
+    }
+
+    /**
+     * resets all sequence counters except for the ones passed in
+     *
+     * @param {Object} doNotReset
+     * @returns void
+     */
+    function _resetSequences(doNotReset) {
+        doNotReset = doNotReset || {};
+
+        var activeSequences = false,
+            key;
+
+        for (key in _sequenceLevels) {
+            if (doNotReset[key]) {
+                activeSequences = true;
+                continue;
+            }
+            _sequenceLevels[key] = 0;
+        }
+
+        if (!activeSequences) {
+            _nextExpectedAction = false;
+        }
+    }
+
+    /**
+     * finds all callbacks that match based on the keycode, modifiers,
+     * and action
+     *
+     * @param {string} character
+     * @param {Array} modifiers
+     * @param {Event|Object} e
+     * @param {string=} sequenceName - name of the sequence we are looking for
+     * @param {string=} combination
+     * @param {number=} level
+     * @returns {Array}
+     */
+    function _getMatches(character, modifiers, e, sequenceName, combination, level) {
+        var i,
+            callback,
+            matches = [],
+            action = e.type;
+
+        // if there are no events related to this keycode
+        if (!_callbacks[character]) {
+            return [];
+        }
+
+        // if a modifier key is coming up on its own we should allow it
+        if (action == 'keyup' && _isModifier(character)) {
+            modifiers = [character];
+        }
+
+        // loop through all callbacks for the key that was pressed
+        // and see if any of them match
+        for (i = 0; i < _callbacks[character].length; ++i) {
+            callback = _callbacks[character][i];
+
+            // if a sequence name is not specified, but this is a sequence at
+            // the wrong level then move onto the next match
+            if (!sequenceName && callback.seq && _sequenceLevels[callback.seq] != callback.level) {
+                continue;
+            }
+
+            // if the action we are looking for doesn't match the action we got
+            // then we should keep going
+            if (action != callback.action) {
+                continue;
+            }
+
+            // if this is a keypress event and the meta key and control key
+            // are not pressed that means that we need to only look at the
+            // character, otherwise check the modifiers as well
+            //
+            // chrome will not fire a keypress if meta or control is down
+            // safari will fire a keypress if meta or meta+shift is down
+            // firefox will fire a keypress if meta or control is down
+            if ((action == 'keypress' && !e.metaKey && !e.ctrlKey) || _modifiersMatch(modifiers, callback.modifiers)) {
+
+                // when you bind a combination or sequence a second time it
+                // should overwrite the first one.  if a sequenceName or
+                // combination is specified in this call it does just that
+                //
+                // @todo make deleting its own method?
+                var deleteCombo = !sequenceName && callback.combo == combination;
+                var deleteSequence = sequenceName && callback.seq == sequenceName && callback.level == level;
+                if (deleteCombo || deleteSequence) {
+                    _callbacks[character].splice(i, 1);
+                }
+
+                matches.push(callback);
+            }
+        }
+
+        return matches;
+    }
+
+    /**
+     * takes a key event and figures out what the modifiers are
+     *
+     * @param {Event} e
+     * @returns {Array}
+     */
+    function _eventModifiers(e) {
+        var modifiers = [];
+
+        if (e.shiftKey) {
+            modifiers.push('shift');
+        }
+
+        if (e.altKey) {
+            modifiers.push('alt');
+        }
+
+        if (e.ctrlKey) {
+            modifiers.push('ctrl');
+        }
+
+        if (e.metaKey) {
+            modifiers.push('meta');
+        }
+
+        return modifiers;
+    }
+
+    /**
+     * prevents default for this event
+     *
+     * @param {Event} e
+     * @returns void
+     */
+    function _preventDefault(e) {
+        if (e.preventDefault) {
+            e.preventDefault();
+            return;
+        }
+
+        e.returnValue = false;
+    }
+
+    /**
+     * stops propogation for this event
+     *
+     * @param {Event} e
+     * @returns void
+     */
+    function _stopPropagation(e) {
+        if (e.stopPropagation) {
+            e.stopPropagation();
+            return;
+        }
+
+        e.cancelBubble = true;
+    }
+
+    /**
+     * actually calls the callback function
+     *
+     * if your callback function returns false this will use the jquery
+     * convention - prevent default and stop propogation on the event
+     *
+     * @param {Function} callback
+     * @param {Event} e
+     * @returns void
+     */
+    function _fireCallback(callback, e, combo, sequence) {
+
+        // if this event should not happen stop here
+        if (Mousetrap.stopCallback(e, e.target || e.srcElement, combo, sequence)) {
+            return;
+        }
+
+        if (callback(e, combo) === false) {
+            _preventDefault(e);
+            _stopPropagation(e);
+        }
+    }
+
+    /**
+     * handles a character key event
+     *
+     * @param {string} character
+     * @param {Array} modifiers
+     * @param {Event} e
+     * @returns void
+     */
+    function _handleKey(character, modifiers, e) {
+        var callbacks = _getMatches(character, modifiers, e),
+            i,
+            doNotReset = {},
+            maxLevel = 0,
+            processedSequenceCallback = false;
+
+        // Calculate the maxLevel for sequences so we can only execute the longest callback sequence
+        for (i = 0; i < callbacks.length; ++i) {
+            if (callbacks[i].seq) {
+                maxLevel = Math.max(maxLevel, callbacks[i].level);
+            }
+        }
+
+        // loop through matching callbacks for this key event
+        for (i = 0; i < callbacks.length; ++i) {
+
+            // fire for all sequence callbacks
+            // this is because if for example you have multiple sequences
+            // bound such as "g i" and "g t" they both need to fire the
+            // callback for matching g cause otherwise you can only ever
+            // match the first one
+            if (callbacks[i].seq) {
+
+                // only fire callbacks for the maxLevel to prevent
+                // subsequences from also firing
+                //
+                // for example 'a option b' should not cause 'option b' to fire
+                // even though 'option b' is part of the other sequence
+                //
+                // any sequences that do not match here will be discarded
+                // below by the _resetSequences call
+                if (callbacks[i].level != maxLevel) {
+                    continue;
+                }
+
+                processedSequenceCallback = true;
+
+                // keep a list of which sequences were matches for later
+                doNotReset[callbacks[i].seq] = 1;
+                _fireCallback(callbacks[i].callback, e, callbacks[i].combo, callbacks[i].seq);
+                continue;
+            }
+
+            // if there were no sequence matches but we are still here
+            // that means this is a regular match so we should fire that
+            if (!processedSequenceCallback) {
+                _fireCallback(callbacks[i].callback, e, callbacks[i].combo);
+            }
+        }
+
+        // if the key you pressed matches the type of sequence without
+        // being a modifier (ie "keyup" or "keypress") then we should
+        // reset all sequences that were not matched by this event
+        //
+        // this is so, for example, if you have the sequence "h a t" and you
+        // type "h e a r t" it does not match.  in this case the "e" will
+        // cause the sequence to reset
+        //
+        // modifier keys are ignored because you can have a sequence
+        // that contains modifiers such as "enter ctrl+space" and in most
+        // cases the modifier key will be pressed before the next key
+        //
+        // also if you have a sequence such as "ctrl+b a" then pressing the
+        // "b" key will trigger a "keypress" and a "keydown"
+        //
+        // the "keydown" is expected when there is a modifier, but the
+        // "keypress" ends up matching the _nextExpectedAction since it occurs
+        // after and that causes the sequence to reset
+        //
+        // we ignore keypresses in a sequence that directly follow a keydown
+        // for the same character
+        var ignoreThisKeypress = e.type == 'keypress' && _ignoreNextKeypress;
+        if (e.type == _nextExpectedAction && !_isModifier(character) && !ignoreThisKeypress) {
+            _resetSequences(doNotReset);
+        }
+
+        _ignoreNextKeypress = processedSequenceCallback && e.type == 'keydown';
+    }
+
+    /**
+     * handles a keydown event
+     *
+     * @param {Event} e
+     * @returns void
+     */
+    function _handleKeyEvent(e) {
+
+        // normalize e.which for key events
+        // @see http://stackoverflow.com/questions/4285627/javascript-keycode-vs-charcode-utter-confusion
+        if (typeof e.which !== 'number') {
+            e.which = e.keyCode;
+        }
+
+        var character = _characterFromEvent(e);
+
+        // no character found then stop
+        if (!character) {
+            return;
+        }
+
+        // need to use === for the character check because the character can be 0
+        if (e.type == 'keyup' && _ignoreNextKeyup === character) {
+            _ignoreNextKeyup = false;
+            return;
+        }
+
+        Mousetrap.handleKey(character, _eventModifiers(e), e);
+    }
+
+    /**
+     * determines if the keycode specified is a modifier key or not
+     *
+     * @param {string} key
+     * @returns {boolean}
+     */
+    function _isModifier(key) {
+        return key == 'shift' || key == 'ctrl' || key == 'alt' || key == 'meta';
+    }
+
+    /**
+     * called to set a 1 second timeout on the specified sequence
+     *
+     * this is so after each key press in the sequence you have 1 second
+     * to press the next key before you have to start over
+     *
+     * @returns void
+     */
+    function _resetSequenceTimer() {
+        clearTimeout(_resetTimer);
+        _resetTimer = setTimeout(_resetSequences, 1000);
+    }
+
+    /**
+     * reverses the map lookup so that we can look for specific keys
+     * to see what can and can't use keypress
+     *
+     * @return {Object}
+     */
+    function _getReverseMap() {
+        if (!_REVERSE_MAP) {
+            _REVERSE_MAP = {};
+            for (var key in _MAP) {
+
+                // pull out the numeric keypad from here cause keypress should
+                // be able to detect the keys from the character
+                if (key > 95 && key < 112) {
+                    continue;
+                }
+
+                if (_MAP.hasOwnProperty(key)) {
+                    _REVERSE_MAP[_MAP[key]] = key;
+                }
+            }
+        }
+        return _REVERSE_MAP;
+    }
+
+    /**
+     * picks the best action based on the key combination
+     *
+     * @param {string} key - character for key
+     * @param {Array} modifiers
+     * @param {string=} action passed in
+     */
+    function _pickBestAction(key, modifiers, action) {
+
+        // if no action was picked in we should try to pick the one
+        // that we think would work best for this key
+        if (!action) {
+            action = _getReverseMap()[key] ? 'keydown' : 'keypress';
+        }
+
+        // modifier keys don't work as expected with keypress,
+        // switch to keydown
+        if (action == 'keypress' && modifiers.length) {
+            action = 'keydown';
+        }
+
+        return action;
+    }
+
+    /**
+     * binds a key sequence to an event
+     *
+     * @param {string} combo - combo specified in bind call
+     * @param {Array} keys
+     * @param {Function} callback
+     * @param {string=} action
+     * @returns void
+     */
+    function _bindSequence(combo, keys, callback, action) {
+
+        // start off by adding a sequence level record for this combination
+        // and setting the level to 0
+        _sequenceLevels[combo] = 0;
+
+        /**
+         * callback to increase the sequence level for this sequence and reset
+         * all other sequences that were active
+         *
+         * @param {string} nextAction
+         * @returns {Function}
+         */
+        function _increaseSequence(nextAction) {
+            return function() {
+                _nextExpectedAction = nextAction;
+                ++_sequenceLevels[combo];
+                _resetSequenceTimer();
+            };
+        }
+
+        /**
+         * wraps the specified callback inside of another function in order
+         * to reset all sequence counters as soon as this sequence is done
+         *
+         * @param {Event} e
+         * @returns void
+         */
+        function _callbackAndReset(e) {
+            _fireCallback(callback, e, combo);
+
+            // we should ignore the next key up if the action is key down
+            // or keypress.  this is so if you finish a sequence and
+            // release the key the final key will not trigger a keyup
+            if (action !== 'keyup') {
+                _ignoreNextKeyup = _characterFromEvent(e);
+            }
+
+            // weird race condition if a sequence ends with the key
+            // another sequence begins with
+            setTimeout(_resetSequences, 10);
+        }
+
+        // loop through keys one at a time and bind the appropriate callback
+        // function.  for any key leading up to the final one it should
+        // increase the sequence. after the final, it should reset all sequences
+        //
+        // if an action is specified in the original bind call then that will
+        // be used throughout.  otherwise we will pass the action that the
+        // next key in the sequence should match.  this allows a sequence
+        // to mix and match keypress and keydown events depending on which
+        // ones are better suited to the key provided
+        for (var i = 0; i < keys.length; ++i) {
+            var isFinal = i + 1 === keys.length;
+            var wrappedCallback = isFinal ? _callbackAndReset : _increaseSequence(action || _getKeyInfo(keys[i + 1]).action);
+            _bindSingle(keys[i], wrappedCallback, action, combo, i);
+        }
+    }
+
+    /**
+     * Converts from a string key combination to an array
+     *
+     * @param  {string} combination like "command+shift+l"
+     * @return {Array}
+     */
+    function _keysFromString(combination) {
+        if (combination === '+') {
+            return ['+'];
+        }
+
+        return combination.split('+');
+    }
+
+    /**
+     * Gets info for a specific key combination
+     *
+     * @param  {string} combination key combination ("command+s" or "a" or "*")
+     * @param  {string=} action
+     * @returns {Object}
+     */
+    function _getKeyInfo(combination, action) {
+        var keys,
+            key,
+            i,
+            modifiers = [];
+
+        // take the keys from this pattern and figure out what the actual
+        // pattern is all about
+        keys = _keysFromString(combination);
+
+        for (i = 0; i < keys.length; ++i) {
+            key = keys[i];
+
+            // normalize key names
+            if (_SPECIAL_ALIASES[key]) {
+                key = _SPECIAL_ALIASES[key];
+            }
+
+            // if this is not a keypress event then we should
+            // be smart about using shift keys
+            // this will only work for US keyboards however
+            if (action && action != 'keypress' && _SHIFT_MAP[key]) {
+                key = _SHIFT_MAP[key];
+                modifiers.push('shift');
+            }
+
+            // if this key is a modifier then add it to the list of modifiers
+            if (_isModifier(key)) {
+                modifiers.push(key);
+            }
+        }
+
+        // depending on what the key combination is
+        // we will try to pick the best event for it
+        action = _pickBestAction(key, modifiers, action);
+
+        return {
+            key: key,
+            modifiers: modifiers,
+            action: action
+        };
+    }
+
+    /**
+     * binds a single keyboard combination
+     *
+     * @param {string} combination
+     * @param {Function} callback
+     * @param {string=} action
+     * @param {string=} sequenceName - name of sequence if part of sequence
+     * @param {number=} level - what part of the sequence the command is
+     * @returns void
+     */
+    function _bindSingle(combination, callback, action, sequenceName, level) {
+
+        // store a direct mapped reference for use with Mousetrap.trigger
+        _directMap[combination + ':' + action] = callback;
+
+        // make sure multiple spaces in a row become a single space
+        combination = combination.replace(/\s+/g, ' ');
+
+        var sequence = combination.split(' '),
+            info;
+
+        // if this pattern is a sequence of keys then run through this method
+        // to reprocess each pattern one key at a time
+        if (sequence.length > 1) {
+            _bindSequence(combination, sequence, callback, action);
+            return;
+        }
+
+        info = _getKeyInfo(combination, action);
+
+        // make sure to initialize array if this is the first time
+        // a callback is added for this key
+        _callbacks[info.key] = _callbacks[info.key] || [];
+
+        // remove an existing match if there is one
+        _getMatches(info.key, info.modifiers, {type: info.action}, sequenceName, combination, level);
+
+        // add this call back to the array
+        // if it is a sequence put it at the beginning
+        // if not put it at the end
+        //
+        // this is important because the way these are processed expects
+        // the sequence ones to come first
+        _callbacks[info.key][sequenceName ? 'unshift' : 'push']({
+            callback: callback,
+            modifiers: info.modifiers,
+            action: info.action,
+            seq: sequenceName,
+            level: level,
+            combo: combination
+        });
+    }
+
+    /**
+     * binds multiple combinations to the same callback
+     *
+     * @param {Array} combinations
+     * @param {Function} callback
+     * @param {string|undefined} action
+     * @returns void
+     */
+    function _bindMultiple(combinations, callback, action) {
+        for (var i = 0; i < combinations.length; ++i) {
+            _bindSingle(combinations[i], callback, action);
+        }
+    }
+
+    // start!
+    _addEvent(document, 'keypress', _handleKeyEvent);
+    _addEvent(document, 'keydown', _handleKeyEvent);
+    _addEvent(document, 'keyup', _handleKeyEvent);
+
+    var Mousetrap = {
+
+        /**
+         * binds an event to mousetrap
+         *
+         * can be a single key, a combination of keys separated with +,
+         * an array of keys, or a sequence of keys separated by spaces
+         *
+         * be sure to list the modifier keys first to make sure that the
+         * correct key ends up getting bound (the last key in the pattern)
+         *
+         * @param {string|Array} keys
+         * @param {Function} callback
+         * @param {string=} action - 'keypress', 'keydown', or 'keyup'
+         * @returns void
+         */
+        bind: function(keys, callback, action) {
+            keys = keys instanceof Array ? keys : [keys];
+            _bindMultiple(keys, callback, action);
+            return this;
+        },
+
+        /**
+         * unbinds an event to mousetrap
+         *
+         * the unbinding sets the callback function of the specified key combo
+         * to an empty function and deletes the corresponding key in the
+         * _directMap dict.
+         *
+         * TODO: actually remove this from the _callbacks dictionary instead
+         * of binding an empty function
+         *
+         * the keycombo+action has to be exactly the same as
+         * it was defined in the bind method
+         *
+         * @param {string|Array} keys
+         * @param {string} action
+         * @returns void
+         */
+        unbind: function(keys, action) {
+            return Mousetrap.bind(keys, function() {}, action);
+        },
+
+        /**
+         * triggers an event that has already been bound
+         *
+         * @param {string} keys
+         * @param {string=} action
+         * @returns void
+         */
+        trigger: function(keys, action) {
+            if (_directMap[keys + ':' + action]) {
+                _directMap[keys + ':' + action]({}, keys);
+            }
+            return this;
+        },
+
+        /**
+         * resets the library back to its initial state.  this is useful
+         * if you want to clear out the current keyboard shortcuts and bind
+         * new ones - for example if you switch to another page
+         *
+         * @returns void
+         */
+        reset: function() {
+            _callbacks = {};
+            _directMap = {};
+            return this;
+        },
+
+       /**
+        * should we stop this event before firing off callbacks
+        *
+        * @param {Event} e
+        * @param {Element} element
+        * @return {boolean}
+        */
+        stopCallback: function(e, element) {
+
+            // if the element has the class "mousetrap" then no need to stop
+            if ((' ' + element.className + ' ').indexOf(' mousetrap ') > -1) {
+                return false;
+            }
+
+            // stop for input, select, and textarea
+            return element.tagName == 'INPUT' || element.tagName == 'SELECT' || element.tagName == 'TEXTAREA' || element.isContentEditable;
+        },
+
+        /**
+         * exposes _handleKey publicly so it can be overwritten by extensions
+         */
+        handleKey: _handleKey
+    };
+
+    // expose mousetrap to the global object
+    window.Mousetrap = Mousetrap;
+
+    // expose mousetrap as an AMD module
+    if (typeof define === 'function' && define.amd) {
+        define(Mousetrap);
+    }
+}) (window, document);
+
+/**
+ * adds a bindGlobal method to Mousetrap that allows you to
+ * bind specific keyboard shortcuts that will still work
+ * inside a text input field
+ *
+ * usage:
+ * Mousetrap.bindGlobal('ctrl+s', _saveChanges);
+ */
+/* global Mousetrap:true */
+Mousetrap = (function(Mousetrap) {
+    var _globalCallbacks = {},
+        _originalStopCallback = Mousetrap.stopCallback;
+
+    Mousetrap.stopCallback = function(e, element, combo, sequence) {
+        if (_globalCallbacks[combo] || _globalCallbacks[sequence]) {
+            return false;
+        }
+
+        return _originalStopCallback(e, element, combo);
+    };
+
+    Mousetrap.bindGlobal = function(keys, callback, action) {
+        Mousetrap.bind(keys, callback, action);
+
+        if (keys instanceof Array) {
+            for (var i = 0; i < keys.length; i++) {
+                _globalCallbacks[keys[i]] = true;
+            }
+            return;
+        }
+
+        _globalCallbacks[keys] = true;
+    };
+
+    return Mousetrap;
+}) (Mousetrap);
+
 /*
  * Patterns
  *
@@ -12761,16 +13752,14 @@ var App = {
             }
             App.shortcutPort.postMessage({text: text});
         },
-        getFiltered: function (text, callback) {
-            // take only strings bigger than 2 chars
-            if (text.length > 2) {
-                if (!App.searchPort.onMessage.hasListeners()) {
-                    App.searchPort.onMessage.addListener(function (msg) {
-                        callback(msg.quicktexts);
-                    });
-                }
-                App.searchPort.postMessage({text: text});
+        getFiltered: function (text, limit, callback) {
+            // search even the empty strings. It's not a problem because the dialog is now triggered by a user shortcut
+            if (!App.searchPort.onMessage.hasListeners()) {
+                App.searchPort.onMessage.addListener(function (msg) {
+                    callback(msg.quicktexts);
+                });
             }
+            App.searchPort.postMessage({text: text, limit: limit});
         },
         get: function (key, callback) {
             chrome.runtime.sendMessage({'request': 'get', 'data': key}, function (response) {
@@ -12782,13 +13771,8 @@ var App = {
                 callback(response);
             });
         },
-        getAutocompleteEnabled: function (callback) {
-            chrome.runtime.sendMessage({'request': 'getAutocompleteEnabled'}, function (response) {
-                callback(response);
-            });
-        },
-        getAutocompleteDelay: function (callback) {
-            chrome.runtime.sendMessage({'request': 'getAutocompleteDelay'}, function (response) {
+        fetchSettings: function (callback) {
+            chrome.runtime.sendMessage({'request': 'settings'}, function (response) {
                 callback(response);
             });
         }
@@ -12797,20 +13781,28 @@ var App = {
 
 // Add trackjs
 window._trackJs = {
-    token: "f4b509356dbf42feb02b2b535d8c1c85",
-    application: "quicktext-chrome",
-    version: chrome.runtime.getManifest().version,
-    visitor: {
-        enabled: false // don't collect data from user events as it might contain private information
-    }
+   token: "f4b509356dbf42feb02b2b535d8c1c85",
+   application: "quicktext-chrome",
+   version: chrome.runtime.getManifest().version,
+   visitor: {
+       enabled: false // don't collect data from user events as it might contain private information
+   }
 };
 
 App.init = function () {
     document.addEventListener("blur", App.onBlur, true);
     document.addEventListener("focus", App.onFocus, true);
-    document.addEventListener("keydown", App.onKeyDown, true);
-    document.addEventListener("keyup", App.onKeyUp, true);
     document.addEventListener("scroll", App.onScroll, true);
+
+    // use custom keyboard shortcuts
+    App.settings.fetchSettings(function (settings) {
+        if (settings.keyboard.enabled) {
+            Mousetrap.bindGlobal(settings.keyboard.shortcut, App.autocomplete.keyboard.completion);
+        }
+        if (settings.dialog.shortcut) {
+            Mousetrap.bindGlobal(settings.dialog.shortcut, App.autocomplete.dialog.completion);
+        }
+    });
 
     if (!App.shortcutPort) {
         App.shortcutPort = chrome.runtime.connect({name: "shortcut"});
@@ -12820,7 +13812,9 @@ App.init = function () {
         App.searchPort = chrome.runtime.connect({name: "search"});
     }
 
-    App.autocomplete.dropdownCreate();
+    // create dialog once and then reuse the same element
+    App.autocomplete.dialog.create();
+    App.autocomplete.dialog.bindKeyboardEvents();
 };
 
 $(function () {
@@ -12938,336 +13932,16 @@ App.parser.parseString = function (string) {
 };
 
 /*
- * This is where the actual completion is happening
+ * Generic methods for autocompletion
  */
 
-// Mirror styles are used for creating a mirror element in order to track the
-// cursor in a textarea
-var mirrorStyles = [
-        // Box Styles.
-        'box-sizing', 'height', 'width', 'padding-bottom', 'padding-left', 'padding-right', 'padding-top', 'margin-top',
-        'margin-bottom', 'margin-left', 'margin-right', 'border-width',
-        // Font stuff.
-        'font-family', 'font-size', 'font-style', 'font-variant', 'font-weight',
-        // Spacing etc.
-        'word-spacing', 'letter-spacing', 'line-height', 'text-decoration', 'text-indent', 'text-transform',
-        // The direction.
-        'direction'
-    ],
-    KEY_TAB = 9,
-    KEY_SHIFT = 16,
-    KEY_ENTER = 13,
-    KEY_ESCAPE = 27,
+var KEY_TAB = 9,
     KEY_UP = 38,
-    KEY_DOWN = 40;
+    KEY_DOWN = 40,
+    KEY_ENTER = 13;
 
-App.autocomplete.isActive = false;
-App.autocomplete.$dropdown = null;
-App.autocomplete.isEmpty = null;
 App.autocomplete.quicktexts = [];
 App.autocomplete.cursorPosition = null;
-App.autocomplete.shiftKey = false;
-App.autocomplete.timeoutId = null;
-
-App.autocomplete.dropdownTemplate = '' +
-'<div class="qt-dropdown">' +
-'<input type="search" class="qt-dropdown-search" value="" placeholder="Search quicktexts..">' +
-'<ul class="qt-dropdown-content"></ul>' +
-'</div>' +
-'';
-
-App.autocomplete.dropdownListTemplate = '' +
-'{{#if elements.length}}' +
-    '{{#each elements}}' +
-    '<li class="qt-item" data-id="{{id}}">' +
-    '<span class="qt-title">{{{title}}}</span>' +
-    '<span class="qt-shortcut">{{{shortcut}}}</span>' +
-    '<span class="qt-body">{{{body}}}</span>' +
-    '</li>' +
-    '{{/each}}' +
-'{{else}}' +
-'<li class="qt-blank-state">' +
-'No quicktexts found.' +
-'</li>' +
-'{{/if}}' +
-'';
-
-PubSub.subscribe('focus', function (action, element, gmailView) {
-    if (action === 'off' && element !== App.autocomplete.$dropdownSearch.get(0)) {
-        App.autocomplete.close();
-    }
-});
-
-App.autocomplete.onKeyDown = function (e) {
-    if (e.keyCode === KEY_SHIFT) {
-        App.autocomplete.shiftKey = true;
-        return;
-    }
-
-    // Press tab while in compose and tab pressed (but not shift+tab)
-    if (App.data.inCompose && e.keyCode == KEY_TAB && !App.autocomplete.shiftKey) {
-        if (App.autocomplete.isActive) {
-            // Simulate closing
-            App.autocomplete.close();
-            // Do not prevent default
-        } else {
-            e.preventDefault();
-            e.stopPropagation();
-
-            App.autocomplete.onKey(e.keyCode, e);
-        }
-    }
-
-    // Press control keys when autocomplete is active
-    if (App.autocomplete.isActive && ~[KEY_ENTER, KEY_UP, KEY_DOWN].indexOf(e.keyCode)) {
-        e.preventDefault();
-        e.stopPropagation();
-
-        App.autocomplete.onKey(e.keyCode);
-    }
-
-    // Only prevent propagation as we'll handle escape on keyup
-    // because well have to set autocomplete.active as false and it will propagate on keyup
-    if (App.autocomplete.isActive && e.keyCode == KEY_ESCAPE) {
-        e.preventDefault();
-        e.stopPropagation();
-    }
-
-    // If dropdown is active but the pressed key is different from what we expect
-    // and the search field is not focused
-    if (App.autocomplete.isActive && !~[KEY_TAB, KEY_ENTER, KEY_ESCAPE, KEY_UP, KEY_DOWN].indexOf(e.keyCode) && !App.autocomplete.$dropdownSearch.is(':focus')) {
-        App.autocomplete.close();
-    }
-};
-
-App.autocomplete.onKeyUp = function (e) {
-    if (e.keyCode === KEY_SHIFT) {
-        App.autocomplete.shiftKey = false;
-        return;
-    }
-
-    // Always prevent tab propagation
-    if (App.data.inCompose && e.keyCode == KEY_TAB) {
-        e.preventDefault();
-        e.stopPropagation();
-    }
-
-    if (App.autocomplete.isActive) {
-        // Just prevent propagation
-        if (~[KEY_ENTER, KEY_UP, KEY_DOWN].indexOf(e.keyCode)) {
-            e.preventDefault();
-            e.stopPropagation();
-            return;
-        }
-
-        // Escape
-        if (e.keyCode == KEY_ESCAPE) {
-            App.autocomplete.onKey(e.keyCode);
-            return;
-        }
-    }
-
-    if (App.data.inCompose) {
-        if (App.autocomplete.justCompleted) {
-            App.autocomplete.justCompleted = false;
-            return;
-        }
-
-        // Try to show the autocomplete dialog (it there is something to show)
-        App.settings.getAutocompleteEnabled(function (enabled) { // first make sure it's enabled
-            if (!enabled) {
-                return;
-            }
-            App.autocomplete.close();
-            window.clearTimeout(App.autocomplete.timeoutId);
-            App.settings.getAutocompleteDelay(function (delay) { // get the delay value
-                App.autocomplete.timeoutId = window.setTimeout(function () {
-                    if (App.data.inCompose) { // before checking make sure we are still inside the compose area
-                        App.autocomplete.checkWord(e);
-                    }
-                }, delay);
-            });
-        });
-    }
-};
-
-App.autocomplete.onKey = function (key, e) {
-    switch (key) {
-        case KEY_TAB:
-            this.keyCompletion(e);
-            break;
-        case KEY_ENTER:
-            this.selectActive();
-            break;
-        case KEY_ESCAPE:
-            this.close();
-            break;
-        case KEY_UP:
-            this.changeSelection('prev');
-            break;
-        case KEY_DOWN:
-            this.changeSelection('next');
-            break;
-    }
-};
-
-// TAB completion
-App.autocomplete.keyCompletion = function (e) {
-
-    App.autocomplete.cursorPosition = this.getCursorPosition(e);
-    var word = this.getSelectedWord(App.autocomplete.cursorPosition);
-    App.autocomplete.cursorPosition.word = word;
-    if (word.text) {
-        App.settings.getQuicktextsShortcut(word.text, function (quicktexts) {
-            if (quicktexts.length) {
-                // replace with the first quicktext found
-                App.autocomplete.replaceWith(quicktexts[0], e);
-            } else { // no quicktext found.. focus the next element
-                App.autocomplete.focusNext(e.target);
-            }
-        });
-    } else {
-        App.autocomplete.focusNext(e.target);
-    }
-};
-
-App.autocomplete.checkWord = function (e) {
-    var cursorPosition = this.getCursorPosition(e);
-    this.cursorPosition = cursorPosition;
-
-    // if tab is pressed without any selection
-    // just moving the cursor to the send button
-    if (cursorPosition.start === 0 && cursorPosition.end === 0) {
-        return false;
-    }
-
-    var word = this.getSelectedWord(cursorPosition);
-
-    // Cache word
-    cursorPosition.word = word;
-
-    var quicktexts = [];
-
-
-    //TODO: This should probably be done in the background and the results be hold in a cache
-
-    // populate the search field with the string we're looking for
-    App.autocomplete.$dropdownSearch.val(word.text);
-
-    App.autocomplete.dropdownPopulate(cursorPosition);
-
-};
-
-// TODO make dropdown position relative so on scrolling it will stay in right place
-App.autocomplete.dropdownCreate = function (cursorPosition) {
-    //var container = $('[id="'+ $(cursorPosition.elementMain).attr('id') + '"]');
-    var container = $('body');
-
-    // Add loading dropdown
-    this.$dropdown = $(App.autocomplete.dropdownTemplate);
-    this.$dropdownContent = $('.qt-dropdown-content', this.$dropdown);
-    this.$dropdownSearch = $('.qt-dropdown-search', this.$dropdown);
-    //container.after(this.$dropdown);
-    container.append(this.$dropdown);
-
-    //HACK: set z-index to auto to a parent, otherwise the autocomplete
-    //      dropdown will not be displayed with the correct stacking
-    this.$dropdown.parents('.qz').css('z-index', 'auto');
-
-    // Handle mouse hover and click
-    this.$dropdown.on('mouseover mousedown', 'li.qt-item', function (e) {
-
-        e.preventDefault();
-        e.stopPropagation();
-
-        App.autocomplete.dropdownSelectItem($(this).index());
-        if (e.type === 'mousedown') {
-            App.autocomplete.selectActive();
-        }
-
-    });
-
-    this.$dropdownSearch.on('keyup', function(e) {
-
-        App.autocomplete.cursorPosition.word.text = $(this).val();
-
-        App.autocomplete.dropdownPopulate(App.autocomplete.cursorPosition);
-
-    });
-
-};
-
-App.autocomplete.dropdownShow = function (cursorPosition) {
-
-    this.isActive = true;
-    this.isEmpty = true;
-
-    this.$dropdown.css({
-        top: (cursorPosition.absolute.top + cursorPosition.absolute.height - $(window).scrollTop()) + 'px',
-        left: (cursorPosition.absolute.left + cursorPosition.absolute.width - $(window).scrollLeft()) + 'px'
-    });
-
-    this.$dropdown.addClass('qt-dropdown-show');
-
-};
-
-
-App.autocomplete.dropdownPopulate = function (cursorPosition) {
-
-    if (!cursorPosition.word.text) {
-        return;
-    }
-
-    App.settings.getFiltered(cursorPosition.word.text, function (quicktexts) {
-
-        App.autocomplete.quicktexts = quicktexts;
-
-        //App.autocomplete.dropdownCreate(cursorPosition);
-
-        if(App.autocomplete.quicktexts.length && !this.isActive) {
-            App.autocomplete.dropdownShow(cursorPosition);
-        }
-
-        // clone the elements
-        // so we can safely highlight the matched text
-        // without breaking the generated handlebars markup
-        var clonedElements = App.autocomplete.quicktexts.slice(0);
-
-        // highlight found string in element title, body and shortcut
-        var searchRe = new RegExp(cursorPosition.word.text, 'gi');
-
-        var highlightMatch = function(match) {
-            return '<span class="qt-search-highlight">' + match + '</span>';
-        };
-
-        clonedElements.forEach(function(elem) {
-            elem.title = elem.title.replace(searchRe, highlightMatch);
-            elem.body = elem.body.replace(searchRe, highlightMatch);
-            elem.shortcut = elem.shortcut.replace(searchRe, highlightMatch);
-        });
-
-        var content = Handlebars.compile(App.autocomplete.dropdownListTemplate)({
-            elements: clonedElements
-        });
-
-        App.autocomplete.$dropdownContent.html(content);
-        App.autocomplete.isEmpty = false;
-
-        // Set first element active
-        App.autocomplete.dropdownSelectItem(0);
-
-    });
-
-};
-
-App.autocomplete.dropdownSelectItem = function (index) {
-    if (this.isActive && !this.isEmpty) {
-        this.$dropdownContent.children()
-            .removeClass('active')
-            .eq(index)
-            .addClass('active');
-    }
-};
 
 App.autocomplete.getSelectedWord = function (cursorPosition) {
     var word = {
@@ -13300,23 +13974,6 @@ App.autocomplete.getSelectedWord = function (cursorPosition) {
     return word;
 };
 
-/*
- Moves focus from editable content to Send button
- */
-App.autocomplete.focusNext = function (element) {
-    var button;
-    if (App.data.gmailView == 'basic html') {
-        var elements = $(element).closest('table').find('input,textarea,button');
-        button = elements.eq(elements.index(element) + 1);
-    } else if (App.data.gmailView === 'standard') {
-        button = $(element).closest('table').parent().closest('table').find('[role=button][tabindex="1"]').first();
-    }
-
-    if (button.length) {
-        button.focus();
-    }
-};
-
 App.autocomplete.getCursorPosition = function (e) {
     var target = e && e.target ? e.target : null,
         position = {
@@ -13346,8 +14003,8 @@ App.autocomplete.getCursorPosition = function (e) {
             $sourcePosition = $source.position();
 
         // copy all styles
-        for (var i in mirrorStyles) {
-            var style = mirrorStyles[i];
+        for (var i in App.autocomplete.mirrorStyles) {
+            var style = App.autocomplete.mirrorStyles[i];
             $mirror.css(style, $source.css(style));
         }
 
@@ -13419,14 +14076,6 @@ App.autocomplete.getCursorPosition = function (e) {
     return position;
 };
 
-App.autocomplete.selectActive = function () {
-    if (this.isActive && !this.isEmpty && this.quicktexts.length) {
-        var activeItemId = this.$dropdownContent.find('.active').data('id'),
-            quicktext = this.getQuicktextById(activeItemId);
-
-        this.replaceWith(quicktext);
-    }
-};
 
 App.autocomplete.replaceWith = function (quicktext, event) {
     var cursorPosition = App.autocomplete.cursorPosition,
@@ -13486,45 +14135,312 @@ App.autocomplete.replaceWith = function (quicktext, event) {
     // updates stats
     App.settings.stats('words', quicktext.body.split(" ").length, function () {
     });
-    App.autocomplete.close();
+    App.autocomplete.dialog.close();
 };
 
-// TODO should request background
-App.autocomplete.getQuicktextById = function (id) {
-    return this.quicktexts.filter(function (a) {
-        return a.id === id;
-    })[0];
-};
+/**
+ * Keyboard completion code.
+ */
 
-App.autocomplete.close = function () {
-    if (App.autocomplete.isActive) {
+App.autocomplete.keyboard = {
+    completion: function (e) {
 
-        //this.$dropdown.remove();
-        //this.$dropdown = null;
-        this.$dropdown.removeClass('qt-dropdown-show');
+        // only works in compose area
+        if (!App.data.inCompose) {
+            return true;
+        }
+        e.preventDefault();
+        e.stopPropagation();
 
-        this.isActive = false;
-        this.isEmpty = null;
+        // First get the cursor position
+        App.autocomplete.cursorPosition = App.autocomplete.getCursorPosition(e);
+        // Then get the word at the positon
+        var word = App.autocomplete.getSelectedWord(App.autocomplete.cursorPosition);
+        App.autocomplete.cursorPosition.word = word;
 
-        this.quicktexts = [];
-        this.cursorPosition = null;
+        if (word.text) {
+            // Find a matching Quicktext shortcut in the bg script
+            App.settings.getQuicktextsShortcut(word.text, function (quicktexts) {
+                if (quicktexts.length) {
+                    // replace with the first quicktext found
+                    App.autocomplete.replaceWith(quicktexts[0], e);
+                } else { // no quicktext found.. focus the next element
+                    App.autocomplete.keyboard.focusNext(e);
+                }
+            });
+        } else {
+            // No text, focus next
+            App.autocomplete.keyboard.focusNext(e);
+        }
+    },
+    /*
+     Moves focus from editable content to Send button
+     */
+    focusNext: function (e) {
+        // focus next, but only if the keyboard shortcut used is a TAB
+        if (e.keyCode !== KEY_TAB) {
+            return;
+        }
+
+        var button;
+        if (App.data.gmailView == 'basic html') {
+            var elements = $(e.target).closest('table').find('input,textarea,button');
+            button = elements.eq(elements.index(element) + 1);
+        } else if (App.data.gmailView === 'standard') {
+            button = $(e.target).closest('table').parent().closest('table').find('[role=button][tabindex="1"]').first();
+        }
+
+        if (button.length) {
+            button.focus();
+        }
     }
 };
 
-App.autocomplete.changeSelection = function (direction) {
-    var index_diff = direction === 'prev' ? -1 : 1,
-        elements_count = this.$dropdownContent.children().length,
-        index_active = this.$dropdownContent.find('.active').index(),
-        index_new = Math.max(0, Math.min(elements_count - 1, index_active + index_diff));
+/**
+ * Autocomplete dialog code.
+ */
 
-    this.dropdownSelectItem(index_new);
+
+PubSub.subscribe('focus', function (action, element, gmailView) {
+    if (action === 'off' && element !== App.autocomplete.dialog.$search.get(0)) {
+        App.autocomplete.dialog.close();
+    }
+});
+
+App.autocomplete.dialog = {
+    // Mirror styles are used for creating a mirror element in order to track the cursor in a textarea
+    mirrorStyles: [
+        // Box Styles.
+        'box-sizing', 'height', 'width', 'padding-bottom', 'padding-left', 'padding-right', 'padding-top', 'margin-top',
+        'margin-bottom', 'margin-left', 'margin-right', 'border-width',
+        // Font stuff.
+        'font-family', 'font-size', 'font-style', 'font-variant', 'font-weight',
+        // Spacing etc.
+        'word-spacing', 'letter-spacing', 'line-height', 'text-decoration', 'text-indent', 'text-transform',
+        // The direction.
+        'direction'
+    ],
+    isActive: false,
+    isEmpty: true,
+    RESULTS_LIMIT: 5, // only show 5 results at a time
+
+    completion: function (e) {
+
+        // only works in compose area
+        if (!App.data.inCompose) {
+            return true;
+        }
+        e.preventDefault();
+        e.stopPropagation();
+
+        App.autocomplete.cursorPosition = App.autocomplete.getCursorPosition(e);
+        var word = App.autocomplete.getSelectedWord(App.autocomplete.cursorPosition);
+        App.autocomplete.cursorPosition.word = word;
+        if (word.text) {
+            App.autocomplete.dialog.$search.val(word.text); //setup default value if any
+        }
+
+        //TODO: Some caching here would be really nice
+        App.settings.getFiltered(word.text, App.autocomplete.dialog.RESULTS_LIMIT, function (quicktexts) {
+            App.autocomplete.quicktexts = quicktexts;
+
+            console.log(word);
+            console.log(quicktexts);
+
+            if (App.autocomplete.quicktexts.length) {
+                App.autocomplete.dialog.populate(App.autocomplete.quicktexts);
+            }
+        });
+
+    },
+    // TODO(@ghinda): make dropdown position relative so on scrolling it will stay in right place
+    create: function () {
+        //var container = $('[id="'+ $(cursorPosition.elementMain).attr('id') + '"]');
+        var container = $('body');
+
+        // Add loading dropdown
+        this.$dialog = $(this.template);
+        this.$content = $('.qt-dropdown-content', this.$dialog);
+        this.$search = $('.qt-dropdown-search', this.$dialog);
+
+        container.append(this.$dialog);
+
+        //HACK: set z-index to auto to a parent, otherwise the autocomplete
+        //      dropdown will not be displayed with the correct stacking
+        this.$dialog.parents('.qz').css('z-index', 'auto');
+
+        // Handle mouse hover and click
+        this.$dialog.on('mouseover mousedown', 'li.qt-item', function (e) {
+
+            e.preventDefault();
+            e.stopPropagation();
+
+            App.autocomplete.dialog.selectItem($(this).index());
+            if (e.type === 'mousedown') {
+                App.autocomplete.dialog.selectActive();
+                App.autocomplete.dialog.close();
+            }
+        });
+
+        this.$search.on('keyup', function (e) {
+            // ignore modifier keys because they manipulate
+            if (_.contains([KEY_ENTER, KEY_UP, KEY_DOWN], e.keyCode)) {
+                return;
+            }
+
+            App.autocomplete.cursorPosition.word.text = $(this).val();
+            App.settings.getFiltered(App.autocomplete.cursorPosition.word.text, App.autocomplete.dialog.RESULTS_LIMIT, function (quicktexts) {
+                App.autocomplete.quicktexts = quicktexts;
+                App.autocomplete.dialog.populate(App.autocomplete.quicktexts);
+            });
+        });
+    },
+    bindKeyboardEvents: function () {
+        Mousetrap.bindGlobal('up', function (e) {
+            if (App.autocomplete.dialog.isActive) {
+                App.autocomplete.dialog.changeSelection('prev');
+            }
+        });
+        Mousetrap.bindGlobal('down', function (e) {
+            if (App.autocomplete.dialog.isActive) {
+                App.autocomplete.dialog.changeSelection('next');
+            }
+        });
+        Mousetrap.bindGlobal('escape', function (e) {
+            App.autocomplete.dialog.close();
+        });
+        Mousetrap.bindGlobal('enter', function (e) {
+            if (App.autocomplete.dialog.isActive) {
+                App.autocomplete.dialog.selectActive();
+                App.autocomplete.dialog.close();
+            }
+        });
+
+    },
+    populate: function (quicktexts) {
+        console.log('populate');
+
+        App.autocomplete.quicktexts = quicktexts;
+
+        if (App.autocomplete.quicktexts.length && !App.autocomplete.dialog.isActive) {
+            App.autocomplete.dialog.show(App.autocomplete.cursorPosition);
+        }
+
+
+        // clone the elements
+        // so we can safely highlight the matched text
+        // without breaking the generated handlebars markup
+        var clonedElements = jQuery.extend(true, [], App.autocomplete.quicktexts);
+
+        // highlight found string in element title, body and shortcut
+        var searchRe = new RegExp(App.autocomplete.cursorPosition.word.text, 'gi');
+
+        var highlightMatch = function (match) {
+            return '<span class="qt-search-highlight">' + match + '</span>';
+        };
+
+        clonedElements.forEach(function (elem) {
+            elem.title = elem.title.replace(searchRe, highlightMatch);
+            elem.originalBody = elem.body;
+            elem.body = elem.body.replace(searchRe, highlightMatch);
+            elem.shortcut = elem.shortcut.replace(searchRe, highlightMatch);
+        });
+
+        var content = Handlebars.compile(App.autocomplete.dialog.liTemplate)({
+            elements: clonedElements
+        });
+
+        App.autocomplete.dialog.$content.html(content);
+        App.autocomplete.dialog.isEmpty = false;
+
+        // Set first element active
+        App.autocomplete.dialog.selectItem(0);
+    },
+    show: function (cursorPosition) {
+        App.autocomplete.dialog.isActive = true;
+        App.autocomplete.dialog.isEmpty = true;
+
+        App.autocomplete.dialog.$dialog.css({
+            top: (cursorPosition.absolute.top + cursorPosition.absolute.height - $(window).scrollTop()) + 'px',
+            left: (cursorPosition.absolute.left + cursorPosition.absolute.width - $(window).scrollLeft()) + 'px'
+        });
+
+        App.autocomplete.dialog.$dialog.addClass('qt-dropdown-show');
+        App.autocomplete.dialog.$search.focus();
+    },
+    selectItem: function (index) {
+        if (App.autocomplete.dialog.isActive && !App.autocomplete.dialog.isEmpty) {
+            App.autocomplete.dialog.$content.children()
+                .removeClass('active')
+                .eq(index)
+                .addClass('active');
+        }
+    },
+    selectActive: function () {
+        if (App.autocomplete.dialog.isActive && !this.isEmpty && App.autocomplete.quicktexts.length) {
+            var activeItemId = App.autocomplete.dialog.$content.find('.active').data('id');
+            var quicktext = App.autocomplete.quicktexts.filter(function (quicktext) {
+                return quicktext.id === activeItemId;
+            })[0];
+            App.autocomplete.replaceWith(quicktext);
+        }
+    },
+    changeSelection: function (direction) {
+        var index_diff = direction === 'prev' ? -1 : 1,
+            elements_count = App.autocomplete.dialog.$content.children().length,
+            index_active = App.autocomplete.dialog.$content.find('.active').index(),
+            index_new = Math.max(0, Math.min(elements_count - 1, index_active + index_diff));
+
+        App.autocomplete.dialog.selectItem(index_new);
+    },
+    // remove dropdown and cleanup
+    close: function () {
+        if (App.autocomplete.dialog.isActive) {
+            $('.qt-dropdown').removeClass('qt-dropdown-show');
+            $('.qt-dropdown-search').val('');
+
+            App.autocomplete.dialog.isActive = false;
+            App.autocomplete.dialog.isEmpty = null;
+
+            App.autocomplete.dialog.quicktexts = [];
+            App.autocomplete.dialog.cursorPosition = null;
+        }
+    }
 };
+
+App.autocomplete.dialog.template = '' +
+    '<div class="qt-dropdown">' +
+    '<input type="search" class="qt-dropdown-search" value="" placeholder="Search quicktexts..">' +
+    '<ul class="qt-dropdown-content"></ul>' +
+    '</div>' +
+    '';
+
+App.autocomplete.dialog.liTemplate = '' +
+    '{{#if elements.length}}' +
+    '{{#each elements}}' +
+    '<li class="qt-item" data-id="{{id}}" title="{{{originalBody}}}">' +
+    '<span class="qt-title">{{{title}}}</span>' +
+    '<span class="qt-shortcut">{{{shortcut}}}</span>' +
+    '<span class="qt-body">{{{body}}}</span>' +
+    '</li>' +
+    '{{/each}}' +
+    '{{else}}' +
+    '<li class="qt-blank-state">' +
+    'No quicktexts found.' +
+    '</li>' +
+    '{{/if}}' +
+    '';
+
 
 /*
  PubSub events
  */
 
 PubSub.subscribe('focus', function (action, element, gmailView) {
+    if ($(element).hasClass('qt-dropdown-search')) {
+        return; // ignore search input
+    }
+
     if (action === 'on') {
         App.data.inCompose = true;
         App.data.composeElement = element;
@@ -13546,7 +14462,6 @@ App.onFocus = function (e) {
     // Disable any focus as there may be only one focus on a page
     // PubSub.publish('focus', 'off', target);
 
-    // TODO: some refactoring here
     // Check if it is the compose element
     if (target.type === 'textarea' && target.getAttribute('name') === 'body') {
         PubSub.publish('focus', 'on', target, 'basic html');
@@ -13559,14 +14474,48 @@ App.onBlur = function (e) {
     PubSub.publish('focus', 'off', e.relatedTarget);
 };
 
-App.onKeyDown = function (e) {
-    App.autocomplete.onKeyDown(e);
-};
-
-App.onKeyUp = function (e) {
-    App.autocomplete.onKeyUp(e);
-};
-
 App.onScroll = function (e) {
-    App.autocomplete.close();
+    App.autocomplete.dialog.close();
 };
+
+// COPYRIGHT (c) 2014 TrackJS LLC ALL RIGHTS RESERVED
+(function(h,n){"use awesome";if(h.trackJs)h.console&&h.console.warn&&h.console.warn("TrackJS global conflict");else{var k=function(a,b,c,d,e){this.util=a;this.onError=b;this.onFault=c;this.options=e;e.enabled&&this.initialize(d)};k.prototype={initialize:function(a){a.addEventListener&&(this.wrapAndCatch(a.Element.prototype,"addEventListener",1),this.wrapAndCatch(a.XMLHttpRequest.prototype,"addEventListener",1),this.wrapRemoveEventListener(a.Element.prototype),this.wrapRemoveEventListener(a.XMLHttpRequest.prototype));
+this.wrapAndCatch(a,"setTimeout",0);this.wrapAndCatch(a,"setInterval",0)},wrapAndCatch:function(a,b,c){var d=this,e=a[b];d.util.hasFunction(e,"apply")&&(a[b]=function(){try{var f=Array.prototype.slice.call(arguments),g=f[c],u,h;if(d.options.bindStack)try{throw Error();}catch(A){h=A.stack,u=d.util.isoNow()}if("addEventListener"===b&&(this._trackJsEvt||(this._trackJsEvt=new l),this._trackJsEvt.getWrapped(f[0],g,f[2])))return;g&&d.util.hasFunction(g,"apply")&&(f[c]=function(){try{return g.apply(this,
+arguments)}catch(a){throw d.onError("catch",a,{bindTime:u,bindStack:h}),d.util.wrapError(a);}},"addEventListener"===b&&this._trackJsEvt.add(f[0],g,f[2],f[c]));return e.apply(this,f)}catch(k){a[b]=e,d.onFault(k)}})},wrapRemoveEventListener:function(a){if(a&&a.removeEventListener&&this.util.hasFunction(a.removeEventListener,"call")){var b=a.removeEventListener;a.removeEventListener=function(a,d,e){if(this._trackJsEvt){var f=this._trackJsEvt.getWrapped(a,d,e);f&&this._trackJsEvt.remove(a,d,e);return b.call(this,
+a,f,e)}return b.call(this,a,d,e)}}}};var l=function(){this.events=[]};l.prototype={add:function(a,b,c,d){-1>=this.indexOf(a,b,c)&&this.events.push([a,b,!!c,d])},remove:function(a,b,c){a=this.indexOf(a,b,!!c);0<=a&&this.events.splice(a,1)},getWrapped:function(a,b,c){a=this.indexOf(a,b,!!c);if(0<=a)return this.events[a][3]},indexOf:function(a,b,c){for(var d=0;d<this.events.length;d++)if(this.events[d][0]===a&&this.events[d][1]===b&&this.events[d][2]===!!c)return d;return-1}};var p=function(a,b){this.util=
+a;this.initCurrent(b)};p.prototype={current:{},initOnly:{enabled:!0,token:!0,callback:{enabled:!0},console:{enabled:!0},network:{enabled:!0},visitor:{enabled:!0},window:{enabled:!0}},defaults:{application:"",enabled:!0,onError:function(){return!0},serialize:function(a){return void 0===a?"undefined":null===a?"null":"number"===typeof a&&isNaN(a)?"NaN":""===a?"Empty String":0===a?"0":!1===a?"false":a&&a.toString?a.toString():"unknown"},sessionId:"",token:"",userId:"",version:"",callback:{enabled:!0,
+bindStack:!1},console:{enabled:!0,display:!0,error:!0,watch:["log","debug","info","warn","error"]},network:{enabled:!0,error:!0},visitor:{enabled:!0},window:{enabled:!0}},initCurrent:function(a){if(this.validate(a,this.defaults,"config",{}))return this.current=this.util.extend(this.current,this.defaults,a),!0;this.current=this.util.extend(this.current,this.defaults);return!1},setCurrent:function(a){return this.validate(a,this.defaults,"config",this.initOnly)?(this.current=this.util.extend(this.current,
+a),!0):!1},validate:function(a,b,c,d){var e=!0;c=c||"";d=d||{};for(var f in a)if(a.hasOwnProperty(f))if(b.hasOwnProperty(f)){var g=typeof b[f];g!==typeof a[f]?(console.warn(c+"."+f+": property must be type "+g+"."),e=!1):"[object Array]"!==Object.prototype.toString.call(a[f])||this.validateArray(a[f],b[f],c+"."+f)?"[object Object]"===Object.prototype.toString.call(a[f])?e=this.validate(a[f],b[f],c+"."+f,d[f]):d.hasOwnProperty(f)&&(console.warn(c+"."+f+": property cannot be set after load."),e=!1):
+e=!1}else console.warn(c+"."+f+": property not supported."),e=!1;return e},validateArray:function(a,b,c){var d=!0;c=c||"";for(var e=0;e<a.length;e++)this.util.contains(b,a[e])||(console.warn(c+"["+e+"]: invalid value: "+a[e]+"."),d=!1);return d}};var t=function(a,b,c,d,e,f,g){this.util=a;this.log=b;this.onError=c;this.onFault=d;this.serialize=e;g.enabled&&(f.console=this.wrapConsoleObject(f.console,g))};t.prototype={wrapConsoleObject:function(a,b){a=a||{};var c=a.log||function(){},d=this,e;for(e=
+0;e<b.watch.length;e++)(function(e){var g=a[e]||c;a[e]=function(){try{var a=Array.prototype.slice.call(arguments);d.log.add("c",{timestamp:d.util.isoNow(),severity:e,message:d.serialize(a)});if(b.error&&"error"===e)try{throw Error(a[0]);}catch(c){d.onError("console",c)}b.display&&(d.util.hasFunction(g,"apply")?g.apply(this,a):g(a[0],a[1],a[2]))}catch(h){d.onFault(h)}}})(b.watch[e]);return a},report:function(){return this.log.all("c")}};var q=function(a,b,c,d,e){this.config=a;this.util=b;this.log=
+c;this.window=d;this.document=e;this.correlationId=this.token=null;this.initialize()};q.prototype={initialize:function(){this.token=this.getCustomerToken();this.correlationId=this.getCorrelationId()},getCustomerToken:function(){if(this.config.current.token)return this.config.current.token;var a=this.document.getElementsByTagName("script");return a[a.length-1].getAttribute("data-token")},getCorrelationId:function(){var a;try{a=this.document.cookie.replace(/(?:(?:^|.*;\s*)TrackJS\s*\=\s*([^;]*).*$)|^.*$/,
+"$1"),a||(a=this.util.uuid(),this.document.cookie="TrackJS="+a+"; expires=Fri, 31 Dec 9999 23:59:59 GMT; path=/")}catch(b){a=this.util.uuid()}return a},report:function(){return{application:this.config.current.application,correlationId:this.correlationId,sessionId:this.config.current.sessionId,token:this.token,userId:this.config.current.userId,version:this.config.current.version}}};var r=function(a){this.loadedOn=(new Date).getTime();this.window=a};r.prototype={discoverDependencies:function(){var a,
+b={};this.window.jQuery&&(this.window.jQuery.fn&&this.window.jQuery.fn.jquery)&&(b.jQuery=this.window.jQuery.fn.jquery);this.window.jQuery&&(this.window.jQuery.ui&&this.window.jQuery.ui.version)&&(b.jQueryUI=this.window.jQuery.ui.version);this.window.angular&&(this.window.angular.version&&this.window.angular.version.full)&&(b.angular=this.window.angular.version.full);for(a in this.window)if("_trackJs"!==a&&"_trackJS"!==a&&"_trackjs"!==a&&"webkitStorageInfo"!==a)try{if(this.window[a]){var c=this.window[a].version||
+this.window[a].Version||this.window[a].VERSION;"string"===typeof c&&(b[a]=c)}}catch(d){}return b},report:function(){return{age:(new Date).getTime()-this.loadedOn,dependencies:this.discoverDependencies(),userAgent:this.window.navigator.userAgent,viewportHeight:this.window.document.documentElement.clientHeight,viewportWidth:this.window.document.documentElement.clientWidth}}};var s=function(a){this.util=a;this.appender=[];this.maxLength=30};s.prototype={all:function(a){var b=[],c,d;for(d=0;d<this.appender.length;d++)(c=
+this.appender[d])&&c.category===a&&b.push(c.value);return b},clear:function(){this.appender.length=0},truncate:function(){this.appender.length>this.maxLength&&(this.appender=this.appender.slice(Math.max(this.appender.length-this.maxLength,0)))},add:function(a,b){var c=this.util.uuid();this.appender.push({key:c,category:a,value:b});this.truncate();return c},get:function(a,b){var c,d;for(d=0;d<this.appender.length;d++)if(c=this.appender[d],c.category===a&&c.key===b)return c.value;return!1}};var v=function(a,
+b,c,d,e,f){this.util=a;this.log=b;this.onError=c;this.onFault=d;this.window=e;this.options=f;f.enabled&&this.initialize(e)};v.prototype={initialize:function(a){a.XMLHttpRequest&&this.util.hasFunction(a.XMLHttpRequest.prototype.open,"apply")&&this.watchNetworkObject(a.XMLHttpRequest);a.XDomainRequest&&this.util.hasFunction(a.XDomainRequest.prototype.open,"apply")&&this.watchNetworkObject(a.XDomainRequest)},watchNetworkObject:function(a){var b=this,c=a.prototype.open,d=a.prototype.send;a.prototype.open=
+function(a,b){this._trackJs={method:a,url:b};return c.apply(this,arguments)};a.prototype.send=function(){try{if(!this._trackJs)return d.apply(this,arguments);this._trackJs.logId=b.log.add("n",{startedOn:b.util.isoNow(),method:this._trackJs.method,url:this._trackJs.url});b.listenForNetworkComplete(this)}catch(a){b.onFault(a)}return d.apply(this,arguments)};return a},listenForNetworkComplete:function(a){var b=this;b.window.ProgressEvent&&a.addEventListener&&a.addEventListener("readystatechange",function(){4===
+a.readyState&&b.finalizeNetworkEvent(a)},!0);a.addEventListener?a.addEventListener("load",function(){b.finalizeNetworkEvent(a);b.checkNetworkFault(a)},!0):setTimeout(function(){try{var c=a.onload;a.onload=function(){b.finalizeNetworkEvent(a);b.checkNetworkFault(a);"function"===typeof c&&b.util.hasFunction(c,"apply")&&c.apply(a,arguments)};var d=a.onerror;a.onerror=function(){b.finalizeNetworkEvent(a);b.checkNetworkFault(a);"function"===typeof oldOnError&&d.apply(a,arguments)}}catch(e){b.onFault(e)}},
+0)},finalizeNetworkEvent:function(a){if(a._trackJs){var b=this.log.get("n",a._trackJs.logId);b&&(b.completedOn=this.util.isoNow(),b.statusCode=1223==a.status?204:a.status,b.statusText=1223==a.status?"No Content":a.statusText,a._trackJs=void 0)}},checkNetworkFault:function(a){if(this.options.error&&400<=a.status&&1223!=a.status)this.onError("ajax",a.status+" "+a.statusText)},report:function(){return this.log.all("n")}};var m=function(a){this.util=a;this.disabled=!1;this.throttleStats={attemptCount:0,
+throttledCount:0,lastAttempt:(new Date).getTime()};h.JSON&&h.JSON.stringify||(this.disabled=!0)};m.prototype={errorEndpoint:function(a,b){b=(b||"https://capture.trackjs.com/capture")+("?token="+a);return this.util.isBrowserIE()?"//"+b.split("://")[1]:b},usageEndpoint:function(a){return this.appendObjectAsQuery(a,"https://usage.trackjs.com/usage.gif")},trackerFaultEndpoint:function(a){return this.appendObjectAsQuery(a,"https://usage.trackjs.com/fault.gif")},appendObjectAsQuery:function(a,b){b+="?";
+for(var c in a)a.hasOwnProperty(c)&&(b+=encodeURIComponent(c)+"="+encodeURIComponent(a[c])+"&");return b},getCORSRequest:function(a,b){var c=new h.XMLHttpRequest;"withCredentials"in c?(c.open(a,b),c.setRequestHeader("Content-Type","text/plain")):"undefined"!==typeof h.XDomainRequest?(c=new h.XDomainRequest,c.open(a,b)):c=null;return c},sendTrackerFault:function(a){this.throttle(a)||((new Image).src=this.trackerFaultEndpoint(a))},sendUsage:function(a){(new Image).src=this.usageEndpoint(a)},sendError:function(a,
+b){var c=this;if(!this.disabled&&!this.throttle(a))try{var d=this.getCORSRequest("POST",this.errorEndpoint(b));d.onreadystatechange=function(){4===d.readyState&&200!==d.status&&(c.disabled=!0)};d._trackJs=void 0;d.send(h.JSON.stringify(a))}catch(e){throw this.disabled=!0,e;}},throttle:function(a){var b=(new Date).getTime();this.throttleStats.attemptCount++;if(this.throttleStats.lastAttempt+1E3>=b){if(this.throttleStats.lastAttempt=b,10<this.throttleStats.attemptCount)return this.throttleStats.throttledCount++,
+!0}else a.throttled=this.throttleStats.throttledCount,this.throttleStats.attemptCount=0,this.throttleStats.lastAttempt=b,this.throttleStats.throttledCount=0;return!1}};var w=function(a){this.window=a};w.prototype={bind:function(a,b){return function(){return a.apply(b,Array.prototype.slice.call(arguments))}},contains:function(a,b){var c;for(c=0;c<a.length;c++)if(a[c]===b)return!0;return!1},defer:function(a,b){setTimeout(function(){a.apply(b)})},extend:function(a){for(var b,c=Array.prototype.slice.call(arguments,
+1),d=0;d<c.length;d++)for(b in c[d])null===c[d][b]||void 0===c[d][b]?a[b]=c[d][b]:"[object Object]"===Object.prototype.toString.call(c[d][b])?(a[b]=a[b]||{},this.extend(a[b],c[d][b])):a[b]=c[d][b];return a},hasFunction:function(a,b){try{return!!a[b]}catch(c){return!1}},isBrowserIE:function(){var a=this.window.navigator.userAgent,b=a.match(/Trident\/([\d.]+)/);return b&&"7.0"===b[1]?11:(a=a.match(/MSIE ([\d.]+)/))?parseInt(a[1],10):!1},isBrowserSupported:function(){var a=this.isBrowserIE();return!a||
+8<=a},isoNow:function(){var a=new Date;return a.toISOString?a.toISOString():a.getUTCFullYear()+"-"+this.pad(a.getUTCMonth()+1)+"-"+this.pad(a.getUTCDate())+"T"+this.pad(a.getUTCHours())+":"+this.pad(a.getUTCMinutes())+":"+this.pad(a.getUTCSeconds())+"."+String((a.getUTCMilliseconds()/1E3).toFixed(3)).slice(2,5)+"Z"},pad:function(a){a=String(a);1===a.length&&(a="0"+a);return a},uuid:function(){return"xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g,function(a){var b=16*Math.random()|0;return("x"==
+a?b:b&3|8).toString(16)})},wrapError:function(a){if(a.innerError)return a;var b=Error("TrackJS Caught: "+(a.message||a));b.description="TrackJS Caught: "+a.description;b.file=a.file;b.line=a.line||a.lineNumber;b.column=a.column||a.columnNumber;b.stack=a.stack;b.innerError=a;return b}};var x=function(a,b,c,d,e,f){this.util=a;this.log=b;this.onError=c;this.onFault=d;this.options=f;this.document=e;f.enabled&&this.initialize(e)};x.prototype={initialize:function(a){var b=this.util.bind(this.onDocumentClicked,
+this),c=this.util.bind(this.onInputChanged,this);a.addEventListener?(a.addEventListener("click",b,!0),a.addEventListener("blur",c,!0)):a.attachEvent&&(a.attachEvent("onclick",b),a.attachEvent("onfocusout",c))},onDocumentClicked:function(a){try{var b=this.getElementFromEvent(a);b&&b.tagName&&(this.isDescribedElement(b,"a")||this.isDescribedElement(b,"button")||this.isDescribedElement(b,"input",["button","submit"])?this.writeVisitorEvent(b,"click"):this.isDescribedElement(b,"input",["checkbox","radio"])&&
+this.writeVisitorEvent(b,"input",b.value,b.checked))}catch(c){this.onFault(c)}},onInputChanged:function(a){try{var b=this.getElementFromEvent(a);if(b&&b.tagName)if(this.isDescribedElement(b,"textarea"))this.writeVisitorEvent(b,"input",b.value);else if(this.isDescribedElement(b,"select")&&b.options&&b.options.length)this.onSelectInputChanged(b);else this.isDescribedElement(b,"input")&&!this.isDescribedElement(b,"input",["button","submit","hidden","checkbox","radio"])&&this.writeVisitorEvent(b,"input",
+b.value)}catch(c){this.onFault(c)}},onSelectInputChanged:function(a){if(a.multiple)for(var b=0;b<a.options.length;b++)a.options[b].selected&&this.writeVisitorEvent(a,"input",a.options[b].value);else 0<=a.selectedIndex&&a.options[a.selectedIndex]&&this.writeVisitorEvent(a,"input",a.options[a.selectedIndex].value)},writeVisitorEvent:function(a,b,c,d){"password"===this.getElementType(a)&&(c=void 0);this.log.add("v",{timestamp:this.util.isoNow(),action:b,element:{tag:a.tagName.toLowerCase(),attributes:this.getElementAttributes(a),
+value:this.getMetaValue(c,d)}})},getElementFromEvent:function(a){return a.target||n.elementFromPoint(a.clientX,a.clientY)},isDescribedElement:function(a,b,c){if(a.tagName.toLowerCase()!==b.toLowerCase())return!1;if(!c)return!0;a=this.getElementType(a);for(b=0;b<c.length;b++)if(c[b]===a)return!0;return!1},getElementType:function(a){return(a.getAttribute("type")||"").toLowerCase()},getElementAttributes:function(a){for(var b={},c=0;c<a.attributes.length;c++)"value"!==a.attributes[c].name.toLowerCase()&&
+(b[a.attributes[c].name]=a.attributes[c].value);return b},getMetaValue:function(a,b){return void 0===a?void 0:{length:a.length,pattern:this.matchInputPattern(a),checked:b}},matchInputPattern:function(a){return""===a?"empty":/^[a-z0-9!#$%&'*+=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/.test(a)?"email":/^(0?[1-9]|[12][0-9]|3[01])[\/\-](0?[1-9]|1[012])[\/\-]\d{4}$/.test(a)||/^(\d{4}[\/\-](0?[1-9]|1[012])[\/\-]0?[1-9]|[12][0-9]|3[01])$/.test(a)?
+"date":/^(?:(?:\+?1\s*(?:[.-]\s*)?)?(?:\(\s*([2-9]1[02-9]|[2-9][02-8]1|[2-9][02-8][02-9])\s*\)|([2-9]1[02-9]|[2-9][02-8]1|[2-9][02-8][02-9]))\s*(?:[.-]\s*)?)?([2-9]1[02-9]|[2-9][02-9]1|[2-9][02-9]{2})\s*(?:[.-]\s*)?([0-9]{4})(?:\s*(?:#|x\.?|ext\.?|extension)\s*(\d+))?$/.test(a)?"usphone":/^\s*$/.test(a)?"whitespace":/^\d*$/.test(a)?"numeric":/^[a-zA-Z]*$/.test(a)?"alpha":/^[a-zA-Z0-9]*$/.test(a)?"alphanumeric":"characters"},report:function(){return this.log.all("v")}};var y=function(a,b,c,d,e){this.onError=
+a;this.onFault=b;this.serialize=c;e.enabled&&this.watchWindowErrors(d)};y.prototype={watchWindowErrors:function(a){var b=this;a.onerror=function(a,d,e,f,g){try{g||(g={},g.message=b.serialize(a),g.file=b.serialize(d),g.line=parseInt(e,10)||null,g.column=parseInt(f,10)||null),b.onError("window",g)}catch(h){b.onFault(h)}}}};var z=function(a,b,c,d,e,f,g,h,k,l,m,n,p,t,q,r){try{this.window=q,this.document=r,this.util=new m(this.window),this.onError=this.util.bind(this.onError,this),this.onFault=this.util.bind(this.onFault,
+this),this.serialize=this.util.bind(this.serialize,this),this.transmitter=new l(this.util),this.config=new d(this.util,a),this.log=new h(this.util),this.api=new b(this.config,this.util,this.onError),this.environment=new g(this.window),this.customer=new f(this.config,this.util,this.log,this.window,this.document),this.customer.token&&(this.transmitter.sendUsage({token:this.customer.token,correlationId:this.customer.correlationId,application:this.config.current.application,x:this.util.uuid()}),this.apiConsoleWatcher=
+new e(this.util,this.log,this.onError,this.onFault,this.serialize,this.api,this.config.defaults.console),this.windowConsoleWatcher=new e(this.util,this.log,this.onError,this.onFault,this.serialize,this.window,this.config.current.console),this.util.isBrowserSupported()&&this.config.current.enabled&&(this.callbackWatcher=new c(this.util,this.onError,this.onFault,this.window,this.config.current.callback),this.visitorWatcher=new n(this.util,this.log,this.onError,this.onFault,this.document,this.config.current.visitor),
+this.networkWatcher=new k(this.util,this.log,this.onError,this.onFault,this.window,this.config.current.network),this.windowWatcher=new p(this.onError,this.onFault,this.serialize,this.window,this.config.current.window)))}catch(s){this.onFault(s)}};z.prototype={reveal:function(){if(this.customer.token)return this.api;this.window.console&&this.window.console.warn&&this.window.console.warn("TrackJS could not find a token")},onError:function(a,b,c){if(this.util.isBrowserSupported()&&this.config.current.enabled)try{b=
+b||{};c=c||{bindStack:null,bindTime:null,force:!1};var d=b.message||b;if(!d||!d.indexOf||-1===d.indexOf("TrackJS Caught")){var e=this.util.extend({},{bindStack:c.bindStack,bindTime:c.bindTime,column:b.column||b.columnNumber,console:this.windowConsoleWatcher.report(),customer:this.customer.report(),entry:a,environment:this.environment.report(),file:b.file||b.fileName,line:b.line||b.lineNumber,message:c.force?d:this.serialize(d),network:this.networkWatcher.report(),url:(h.location||"").toString(),stack:b.stack,
+timestamp:this.util.isoNow(),visitor:this.visitorWatcher.report(),version:"2.1.1"});if(!c.force)try{if(!this.config.current.onError(e,b))return}catch(f){e.console.push({timestamp:this.util.isoNow(),severity:"error",message:f.message});var g=this;setTimeout(function(){g.onError("catch",f,{force:!0})},0)}this.log.clear();this.transmitter.sendError(e,this.customer.token)}}catch(k){console.log(k),this.onFault(k)}},onFault:function(a){var b=this.transmitter||new m;a=a||{};a={token:this.customer.token,
+file:a.file||a.fileName,msg:a.message||"unknown",stack:(a.stack||"unknown").substr(0,500),url:this.window.location,v:"2.1.1",x:this.util.uuid()};b.sendTrackerFault(a)},serialize:function(a){if(this.config&&this.config.current&&this.config.current.serialize)try{return this.config.current.serialize(a)}catch(b){return this.onError("catch",b,{force:!0}),this.util&&this.util.hasFunction(a,"toString")?a.toString():"unknown"}}};k=new z(h._trackJs||h._trackJS||h._trackjs||{},function(a,b,c){return{attempt:function(a,
+e){try{var f=Array.prototype.slice.call(arguments,2);return a.apply(e||this,f)}catch(g){throw c("catch",g),b.wrapError(g);}},configure:function(b){return a.setCurrent(b)},track:function(a){a=a||{};if(!a.stack)try{throw Error(a);}catch(b){a=b}c("direct",a)},watch:function(a,e){return function(){try{var f=Array.prototype.slice.call(arguments,0);return a.apply(e||this,f)}catch(g){throw c("catch",g),b.wrapError(g);}}},watchAll:function(a){var e=Array.prototype.slice.call(arguments,1),f;for(f in a)"function"===
+typeof a[f]&&(b.contains(e,f)||function(){var e=a[f];a[f]=function(){try{var a=Array.prototype.slice.call(arguments,0);return e.apply(this,a)}catch(d){throw c("catch",d),b.wrapError(d);}}}())},version:"2.1.1"}},k,p,t,q,r,s,v,m,w,x,y,l,h,n);h.trackJs=k.reveal()}})(window,document);

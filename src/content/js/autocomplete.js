@@ -1,334 +1,14 @@
 /*
- * This is where the actual completion is happening
+ * Generic methods for autocompletion
  */
 
-// Mirror styles are used for creating a mirror element in order to track the
-// cursor in a textarea
-var mirrorStyles = [
-        // Box Styles.
-        'box-sizing', 'height', 'width', 'padding-bottom', 'padding-left', 'padding-right', 'padding-top', 'margin-top',
-        'margin-bottom', 'margin-left', 'margin-right', 'border-width',
-        // Font stuff.
-        'font-family', 'font-size', 'font-style', 'font-variant', 'font-weight',
-        // Spacing etc.
-        'word-spacing', 'letter-spacing', 'line-height', 'text-decoration', 'text-indent', 'text-transform',
-        // The direction.
-        'direction'
-    ],
-    KEY_TAB = 9,
-    KEY_SHIFT = 16,
-    KEY_ENTER = 13,
-    KEY_ESCAPE = 27,
+var KEY_TAB = 9,
     KEY_UP = 38,
-    KEY_DOWN = 40;
+    KEY_DOWN = 40,
+    KEY_ENTER = 13;
 
-App.autocomplete.isActive = false;
-App.autocomplete.$dropdown = null;
-App.autocomplete.isEmpty = null;
 App.autocomplete.quicktexts = [];
 App.autocomplete.cursorPosition = null;
-App.autocomplete.shiftKey = false;
-App.autocomplete.timeoutId = null;
-
-App.autocomplete.dropdownTemplate = '' +
-'<div class="qt-dropdown">' +
-'<input type="search" class="qt-dropdown-search" value="" placeholder="Search quicktexts..">' +
-'<ul class="qt-dropdown-content"></ul>' +
-'</div>' +
-'';
-
-App.autocomplete.dropdownListTemplate = '' +
-'{{#if elements.length}}' +
-    '{{#each elements}}' +
-    '<li class="qt-item" data-id="{{id}}">' +
-    '<span class="qt-title">{{{title}}}</span>' +
-    '<span class="qt-shortcut">{{{shortcut}}}</span>' +
-    '<span class="qt-body">{{{body}}}</span>' +
-    '</li>' +
-    '{{/each}}' +
-'{{else}}' +
-'<li class="qt-blank-state">' +
-'No quicktexts found.' +
-'</li>' +
-'{{/if}}' +
-'';
-
-PubSub.subscribe('focus', function (action, element, gmailView) {
-    if (action === 'off' && element !== App.autocomplete.$dropdownSearch.get(0)) {
-        App.autocomplete.close();
-    }
-});
-
-App.autocomplete.onKeyDown = function (e) {
-    if (e.keyCode === KEY_SHIFT) {
-        App.autocomplete.shiftKey = true;
-        return;
-    }
-
-    // Press tab while in compose and tab pressed (but not shift+tab)
-    if (App.data.inCompose && e.keyCode == KEY_TAB && !App.autocomplete.shiftKey) {
-        if (App.autocomplete.isActive) {
-            // Simulate closing
-            App.autocomplete.close();
-            // Do not prevent default
-        } else {
-            e.preventDefault();
-            e.stopPropagation();
-
-            App.autocomplete.onKey(e.keyCode, e);
-        }
-    }
-
-    // Press control keys when autocomplete is active
-    if (App.autocomplete.isActive && ~[KEY_ENTER, KEY_UP, KEY_DOWN].indexOf(e.keyCode)) {
-        e.preventDefault();
-        e.stopPropagation();
-
-        App.autocomplete.onKey(e.keyCode);
-    }
-
-    // Only prevent propagation as we'll handle escape on keyup
-    // because well have to set autocomplete.active as false and it will propagate on keyup
-    if (App.autocomplete.isActive && e.keyCode == KEY_ESCAPE) {
-        e.preventDefault();
-        e.stopPropagation();
-    }
-
-    // If dropdown is active but the pressed key is different from what we expect
-    // and the search field is not focused
-    if (App.autocomplete.isActive && !~[KEY_TAB, KEY_ENTER, KEY_ESCAPE, KEY_UP, KEY_DOWN].indexOf(e.keyCode) && !App.autocomplete.$dropdownSearch.is(':focus')) {
-        App.autocomplete.close();
-    }
-};
-
-App.autocomplete.onKeyUp = function (e) {
-    if (e.keyCode === KEY_SHIFT) {
-        App.autocomplete.shiftKey = false;
-        return;
-    }
-
-    // Always prevent tab propagation
-    if (App.data.inCompose && e.keyCode == KEY_TAB) {
-        e.preventDefault();
-        e.stopPropagation();
-    }
-
-    if (App.autocomplete.isActive) {
-        // Just prevent propagation
-        if (~[KEY_ENTER, KEY_UP, KEY_DOWN].indexOf(e.keyCode)) {
-            e.preventDefault();
-            e.stopPropagation();
-            return;
-        }
-
-        // Escape
-        if (e.keyCode == KEY_ESCAPE) {
-            App.autocomplete.onKey(e.keyCode);
-            return;
-        }
-    }
-
-    if (App.data.inCompose) {
-        if (App.autocomplete.justCompleted) {
-            App.autocomplete.justCompleted = false;
-            return;
-        }
-
-        // Try to show the autocomplete dialog (it there is something to show)
-        App.settings.getAutocompleteEnabled(function (enabled) { // first make sure it's enabled
-            if (!enabled) {
-                return;
-            }
-            App.autocomplete.close();
-            window.clearTimeout(App.autocomplete.timeoutId);
-            App.settings.getAutocompleteDelay(function (delay) { // get the delay value
-                App.autocomplete.timeoutId = window.setTimeout(function () {
-                    if (App.data.inCompose) { // before checking make sure we are still inside the compose area
-                        App.autocomplete.checkWord(e);
-                    }
-                }, delay);
-            });
-        });
-    }
-};
-
-App.autocomplete.onKey = function (key, e) {
-    switch (key) {
-        case KEY_TAB:
-            this.keyCompletion(e);
-            break;
-        case KEY_ENTER:
-            this.selectActive();
-            break;
-        case KEY_ESCAPE:
-            this.close();
-            break;
-        case KEY_UP:
-            this.changeSelection('prev');
-            break;
-        case KEY_DOWN:
-            this.changeSelection('next');
-            break;
-    }
-};
-
-// TAB completion
-App.autocomplete.keyCompletion = function (e) {
-
-    App.autocomplete.cursorPosition = this.getCursorPosition(e);
-    var word = this.getSelectedWord(App.autocomplete.cursorPosition);
-    App.autocomplete.cursorPosition.word = word;
-    if (word.text) {
-        App.settings.getQuicktextsShortcut(word.text, function (quicktexts) {
-            if (quicktexts.length) {
-                // replace with the first quicktext found
-                App.autocomplete.replaceWith(quicktexts[0], e);
-            } else { // no quicktext found.. focus the next element
-                App.autocomplete.focusNext(e.target);
-            }
-        });
-    } else {
-        App.autocomplete.focusNext(e.target);
-    }
-};
-
-App.autocomplete.checkWord = function (e) {
-    var cursorPosition = this.getCursorPosition(e);
-    this.cursorPosition = cursorPosition;
-
-    // if tab is pressed without any selection
-    // just moving the cursor to the send button
-    if (cursorPosition.start === 0 && cursorPosition.end === 0) {
-        return false;
-    }
-
-    var word = this.getSelectedWord(cursorPosition);
-
-    // Cache word
-    cursorPosition.word = word;
-
-    var quicktexts = [];
-
-
-    //TODO: This should probably be done in the background and the results be hold in a cache
-
-    // populate the search field with the string we're looking for
-    App.autocomplete.$dropdownSearch.val(word.text);
-
-    App.autocomplete.dropdownPopulate(cursorPosition);
-
-};
-
-// TODO make dropdown position relative so on scrolling it will stay in right place
-App.autocomplete.dropdownCreate = function (cursorPosition) {
-    //var container = $('[id="'+ $(cursorPosition.elementMain).attr('id') + '"]');
-    var container = $('body');
-
-    // Add loading dropdown
-    this.$dropdown = $(App.autocomplete.dropdownTemplate);
-    this.$dropdownContent = $('.qt-dropdown-content', this.$dropdown);
-    this.$dropdownSearch = $('.qt-dropdown-search', this.$dropdown);
-    //container.after(this.$dropdown);
-    container.append(this.$dropdown);
-
-    //HACK: set z-index to auto to a parent, otherwise the autocomplete
-    //      dropdown will not be displayed with the correct stacking
-    this.$dropdown.parents('.qz').css('z-index', 'auto');
-
-    // Handle mouse hover and click
-    this.$dropdown.on('mouseover mousedown', 'li.qt-item', function (e) {
-
-        e.preventDefault();
-        e.stopPropagation();
-
-        App.autocomplete.dropdownSelectItem($(this).index());
-        if (e.type === 'mousedown') {
-            App.autocomplete.selectActive();
-        }
-
-    });
-
-    this.$dropdownSearch.on('keyup', function(e) {
-
-        App.autocomplete.cursorPosition.word.text = $(this).val();
-
-        App.autocomplete.dropdownPopulate(App.autocomplete.cursorPosition);
-
-    });
-
-};
-
-App.autocomplete.dropdownShow = function (cursorPosition) {
-
-    this.isActive = true;
-    this.isEmpty = true;
-
-    this.$dropdown.css({
-        top: (cursorPosition.absolute.top + cursorPosition.absolute.height - $(window).scrollTop()) + 'px',
-        left: (cursorPosition.absolute.left + cursorPosition.absolute.width - $(window).scrollLeft()) + 'px'
-    });
-
-    this.$dropdown.addClass('qt-dropdown-show');
-
-};
-
-
-App.autocomplete.dropdownPopulate = function (cursorPosition) {
-
-    if (!cursorPosition.word.text) {
-        return;
-    }
-
-    App.settings.getFiltered(cursorPosition.word.text, function (quicktexts) {
-
-        App.autocomplete.quicktexts = quicktexts;
-
-        //App.autocomplete.dropdownCreate(cursorPosition);
-
-        if(App.autocomplete.quicktexts.length && !this.isActive) {
-            App.autocomplete.dropdownShow(cursorPosition);
-        }
-
-        // clone the elements
-        // so we can safely highlight the matched text
-        // without breaking the generated handlebars markup
-        var clonedElements = App.autocomplete.quicktexts.slice(0);
-
-        // highlight found string in element title, body and shortcut
-        var searchRe = new RegExp(cursorPosition.word.text, 'gi');
-
-        var highlightMatch = function(match) {
-            return '<span class="qt-search-highlight">' + match + '</span>';
-        };
-
-        clonedElements.forEach(function(elem) {
-            elem.title = elem.title.replace(searchRe, highlightMatch);
-            elem.body = elem.body.replace(searchRe, highlightMatch);
-            elem.shortcut = elem.shortcut.replace(searchRe, highlightMatch);
-        });
-
-        var content = Handlebars.compile(App.autocomplete.dropdownListTemplate)({
-            elements: clonedElements
-        });
-
-        App.autocomplete.$dropdownContent.html(content);
-        App.autocomplete.isEmpty = false;
-
-        // Set first element active
-        App.autocomplete.dropdownSelectItem(0);
-
-    });
-
-};
-
-App.autocomplete.dropdownSelectItem = function (index) {
-    if (this.isActive && !this.isEmpty) {
-        this.$dropdownContent.children()
-            .removeClass('active')
-            .eq(index)
-            .addClass('active');
-    }
-};
 
 App.autocomplete.getSelectedWord = function (cursorPosition) {
     var word = {
@@ -361,23 +41,6 @@ App.autocomplete.getSelectedWord = function (cursorPosition) {
     return word;
 };
 
-/*
- Moves focus from editable content to Send button
- */
-App.autocomplete.focusNext = function (element) {
-    var button;
-    if (App.data.gmailView == 'basic html') {
-        var elements = $(element).closest('table').find('input,textarea,button');
-        button = elements.eq(elements.index(element) + 1);
-    } else if (App.data.gmailView === 'standard') {
-        button = $(element).closest('table').parent().closest('table').find('[role=button][tabindex="1"]').first();
-    }
-
-    if (button.length) {
-        button.focus();
-    }
-};
-
 App.autocomplete.getCursorPosition = function (e) {
     var target = e && e.target ? e.target : null,
         position = {
@@ -407,8 +70,8 @@ App.autocomplete.getCursorPosition = function (e) {
             $sourcePosition = $source.position();
 
         // copy all styles
-        for (var i in mirrorStyles) {
-            var style = mirrorStyles[i];
+        for (var i in App.autocomplete.mirrorStyles) {
+            var style = App.autocomplete.mirrorStyles[i];
             $mirror.css(style, $source.css(style));
         }
 
@@ -480,14 +143,6 @@ App.autocomplete.getCursorPosition = function (e) {
     return position;
 };
 
-App.autocomplete.selectActive = function () {
-    if (this.isActive && !this.isEmpty && this.quicktexts.length) {
-        var activeItemId = this.$dropdownContent.find('.active').data('id'),
-            quicktext = this.getQuicktextById(activeItemId);
-
-        this.replaceWith(quicktext);
-    }
-};
 
 App.autocomplete.replaceWith = function (quicktext, event) {
     var cursorPosition = App.autocomplete.cursorPosition,
@@ -547,36 +202,5 @@ App.autocomplete.replaceWith = function (quicktext, event) {
     // updates stats
     App.settings.stats('words', quicktext.body.split(" ").length, function () {
     });
-    App.autocomplete.close();
-};
-
-// TODO should request background
-App.autocomplete.getQuicktextById = function (id) {
-    return this.quicktexts.filter(function (a) {
-        return a.id === id;
-    })[0];
-};
-
-App.autocomplete.close = function () {
-    if (App.autocomplete.isActive) {
-
-        //this.$dropdown.remove();
-        //this.$dropdown = null;
-        this.$dropdown.removeClass('qt-dropdown-show');
-
-        this.isActive = false;
-        this.isEmpty = null;
-
-        this.quicktexts = [];
-        this.cursorPosition = null;
-    }
-};
-
-App.autocomplete.changeSelection = function (direction) {
-    var index_diff = direction === 'prev' ? -1 : 1,
-        elements_count = this.$dropdownContent.children().length,
-        index_active = this.$dropdownContent.find('.active').index(),
-        index_new = Math.max(0, Math.min(elements_count - 1, index_active + index_diff));
-
-    this.dropdownSelectItem(index_new);
+    App.autocomplete.dialog.close();
 };

@@ -10787,7 +10787,7 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap requires jQuery");+func
 }(this, String);
 
 //! moment.js
-//! version : 2.4.0
+//! version : 2.5.1
 //! authors : Tim Wood, Iskren Chernev, Moment.js contributors
 //! license : MIT
 //! momentjs.com
@@ -10799,7 +10799,8 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap requires jQuery");+func
     ************************************/
 
     var moment,
-        VERSION = "2.4.0",
+        VERSION = "2.5.1",
+        global = this,
         round = Math.round,
         i,
 
@@ -10814,8 +10815,21 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap requires jQuery");+func
         // internal storage for language config files
         languages = {},
 
+        // moment internal properties
+        momentProperties = {
+            _isAMomentObject: null,
+            _i : null,
+            _f : null,
+            _l : null,
+            _strict : null,
+            _isUTC : null,
+            _offset : null,  // optional. Combine with _isUTC
+            _pf : null,
+            _lang : null  // optional
+        },
+
         // check for nodeJS
-        hasModule = (typeof module !== 'undefined' && module.exports),
+        hasModule = (typeof module !== 'undefined' && module.exports && typeof require !== 'undefined'),
 
         // ASP.NET json date format regex
         aspNetJsonRegex = /^\/?Date\((\-?\d+)/i,
@@ -10826,32 +10840,40 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap requires jQuery");+func
         isoDurationRegex = /^(-)?P(?:(?:([0-9,.]*)Y)?(?:([0-9,.]*)M)?(?:([0-9,.]*)D)?(?:T(?:([0-9,.]*)H)?(?:([0-9,.]*)M)?(?:([0-9,.]*)S)?)?|([0-9,.]*)W)$/,
 
         // format tokens
-        formattingTokens = /(\[[^\[]*\])|(\\)?(Mo|MM?M?M?|Do|DDDo|DD?D?D?|ddd?d?|do?|w[o|w]?|W[o|W]?|YYYYY|YYYY|YY|gg(ggg?)?|GG(GGG?)?|e|E|a|A|hh?|HH?|mm?|ss?|S{1,4}|X|zz?|ZZ?|.)/g,
+        formattingTokens = /(\[[^\[]*\])|(\\)?(Mo|MM?M?M?|Do|DDDo|DD?D?D?|ddd?d?|do?|w[o|w]?|W[o|W]?|YYYYYY|YYYYY|YYYY|YY|gg(ggg?)?|GG(GGG?)?|e|E|a|A|hh?|HH?|mm?|ss?|S{1,4}|X|zz?|ZZ?|.)/g,
         localFormattingTokens = /(\[[^\[]*\])|(\\)?(LT|LL?L?L?|l{1,4})/g,
 
         // parsing token regexes
         parseTokenOneOrTwoDigits = /\d\d?/, // 0 - 99
         parseTokenOneToThreeDigits = /\d{1,3}/, // 0 - 999
-        parseTokenThreeDigits = /\d{3}/, // 000 - 999
-        parseTokenFourDigits = /\d{1,4}/, // 0 - 9999
-        parseTokenSixDigits = /[+\-]?\d{1,6}/, // -999,999 - 999,999
+        parseTokenOneToFourDigits = /\d{1,4}/, // 0 - 9999
+        parseTokenOneToSixDigits = /[+\-]?\d{1,6}/, // -999,999 - 999,999
         parseTokenDigits = /\d+/, // nonzero number of digits
         parseTokenWord = /[0-9]*['a-z\u00A0-\u05FF\u0700-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]+|[\u0600-\u06FF\/]+(\s*?[\u0600-\u06FF]+){1,2}/i, // any word (or two) characters or numbers including two/three word month in arabic.
-        parseTokenTimezone = /Z|[\+\-]\d\d:?\d\d/i, // +00:00 -00:00 +0000 -0000 or Z
-        parseTokenT = /T/i, // T (ISO seperator)
+        parseTokenTimezone = /Z|[\+\-]\d\d:?\d\d/gi, // +00:00 -00:00 +0000 -0000 or Z
+        parseTokenT = /T/i, // T (ISO separator)
         parseTokenTimestampMs = /[\+\-]?\d+(\.\d{1,3})?/, // 123456789 123456789.123
 
-        // preliminary iso regex
-        // 0000-00-00 0000-W00 or 0000-W00-0 + T + 00 or 00:00 or 00:00:00 or 00:00:00.000 + +00:00 or +0000)
-        isoRegex = /^\s*\d{4}-(?:(\d\d-\d\d)|(W\d\d$)|(W\d\d-\d)|(\d\d\d))((T| )(\d\d(:\d\d(:\d\d(\.\d+)?)?)?)?([\+\-]\d\d:?\d\d|Z)?)?$/,
+        //strict parsing regexes
+        parseTokenOneDigit = /\d/, // 0 - 9
+        parseTokenTwoDigits = /\d\d/, // 00 - 99
+        parseTokenThreeDigits = /\d{3}/, // 000 - 999
+        parseTokenFourDigits = /\d{4}/, // 0000 - 9999
+        parseTokenSixDigits = /[+-]?\d{6}/, // -999,999 - 999,999
+        parseTokenSignedNumber = /[+-]?\d+/, // -inf - inf
+
+        // iso 8601 regex
+        // 0000-00-00 0000-W00 or 0000-W00-0 + T + 00 or 00:00 or 00:00:00 or 00:00:00.000 + +00:00 or +0000 or +00)
+        isoRegex = /^\s*(?:[+-]\d{6}|\d{4})-(?:(\d\d-\d\d)|(W\d\d$)|(W\d\d-\d)|(\d\d\d))((T| )(\d\d(:\d\d(:\d\d(\.\d+)?)?)?)?([\+\-]\d\d(?::?\d\d)?|\s*Z)?)?$/,
 
         isoFormat = 'YYYY-MM-DDTHH:mm:ssZ',
 
         isoDates = [
-            'YYYY-MM-DD',
-            'GGGG-[W]WW',
-            'GGGG-[W]WW-E',
-            'YYYY-DDD'
+            ['YYYYYY-MM-DD', /[+-]\d{6}-\d{2}-\d{2}/],
+            ['YYYY-MM-DD', /\d{4}-\d{2}-\d{2}/],
+            ['GGGG-[W]WW-E', /\d{4}-W\d{2}-\d/],
+            ['GGGG-[W]WW', /\d{4}-W\d{2}/],
+            ['YYYY-DDD', /\d{4}-\d{3}/]
         ],
 
         // iso time formats and regexes
@@ -10953,11 +10975,15 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap requires jQuery");+func
             YYYYY : function () {
                 return leftZeroFill(this.year(), 5);
             },
+            YYYYYY : function () {
+                var y = this.year(), sign = y >= 0 ? '+' : '-';
+                return sign + leftZeroFill(Math.abs(y), 6);
+            },
             gg   : function () {
                 return leftZeroFill(this.weekYear() % 100, 2);
             },
             gggg : function () {
-                return this.weekYear();
+                return leftZeroFill(this.weekYear(), 4);
             },
             ggggg : function () {
                 return leftZeroFill(this.weekYear(), 5);
@@ -10966,7 +10992,7 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap requires jQuery");+func
                 return leftZeroFill(this.isoWeekYear() % 100, 2);
             },
             GGGG : function () {
-                return this.isoWeekYear();
+                return leftZeroFill(this.isoWeekYear(), 4);
             },
             GGGGG : function () {
                 return leftZeroFill(this.isoWeekYear(), 5);
@@ -11023,7 +11049,7 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap requires jQuery");+func
                     a = -a;
                     b = "-";
                 }
-                return b + leftZeroFill(toInt(10 * a / 6), 4);
+                return b + leftZeroFill(toInt(a / 60), 2) + leftZeroFill(toInt(a) % 60, 2);
             },
             z : function () {
                 return this.zoneAbbr();
@@ -11033,10 +11059,30 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap requires jQuery");+func
             },
             X    : function () {
                 return this.unix();
+            },
+            Q : function () {
+                return this.quarter();
             }
         },
 
         lists = ['months', 'monthsShort', 'weekdays', 'weekdaysShort', 'weekdaysMin'];
+
+    function defaultParsingFlags() {
+        // We need to deep clone this object, and es5 standard is not very
+        // helpful.
+        return {
+            empty : false,
+            unusedTokens : [],
+            unusedInput : [],
+            overflow : -2,
+            charsLeftOver : 0,
+            nullInput : false,
+            invalidMonth : null,
+            invalidFormat : false,
+            userInvalidated : false,
+            iso: false
+        };
+    }
 
     function padToken(func, count) {
         return function (a) {
@@ -11086,9 +11132,6 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap requires jQuery");+func
             seconds = normalizedInput.second || 0,
             milliseconds = normalizedInput.millisecond || 0;
 
-        // store reference to input for deterministic cloning
-        this._input = duration;
-
         // representation for dateAddRemove
         this._milliseconds = +milliseconds +
             seconds * 1e3 + // 1000
@@ -11132,6 +11175,17 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap requires jQuery");+func
         return a;
     }
 
+    function cloneMoment(m) {
+        var result = {}, i;
+        for (i in m) {
+            if (m.hasOwnProperty(i) && momentProperties.hasOwnProperty(i)) {
+                result[i] = m[i];
+            }
+        }
+
+        return result;
+    }
+
     function absRound(number) {
         if (number < 0) {
             return Math.ceil(number);
@@ -11142,12 +11196,14 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap requires jQuery");+func
 
     // left zero fill a number
     // see http://jsperf.com/left-zero-filling for performance comparison
-    function leftZeroFill(number, targetLength) {
-        var output = number + '';
+    function leftZeroFill(number, targetLength, forceSign) {
+        var output = '' + Math.abs(number),
+            sign = number >= 0;
+
         while (output.length < targetLength) {
             output = '0' + output;
         }
-        return output;
+        return (sign ? (forceSign ? '+' : '') : '-') + output;
     }
 
     // helper function for _.addTime and _.subtractTime
@@ -11218,8 +11274,7 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap requires jQuery");+func
     function normalizeObjectUnits(inputObject) {
         var normalizedInput = {},
             normalizedProp,
-            prop,
-            index;
+            prop;
 
         for (prop in inputObject) {
             if (inputObject.hasOwnProperty(prop)) {
@@ -11322,21 +11377,6 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap requires jQuery");+func
         }
     }
 
-    function initializeParsingFlags(config) {
-        config._pf = {
-            empty : false,
-            unusedTokens : [],
-            unusedInput : [],
-            overflow : -2,
-            charsLeftOver : 0,
-            nullInput : false,
-            invalidMonth : null,
-            invalidFormat : false,
-            userInvalidated : false,
-            iso: false
-        };
-    }
-
     function isValid(m) {
         if (m._isValid == null) {
             m._isValid = !isNaN(m._d.getTime()) &&
@@ -11358,6 +11398,12 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap requires jQuery");+func
 
     function normalizeLanguage(key) {
         return key ? key.toLowerCase().replace('_', '-') : key;
+    }
+
+    // Return a moment from input, that is local/utc/zone equivalent to model.
+    function makeAs(input, model) {
+        return model._isUTC ? moment(input).zone(model._offset || 0) :
+            moment(input).local();
     }
 
     /************************************
@@ -11691,21 +11737,32 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap requires jQuery");+func
 
     // get the regex to find the next token
     function getParseRegexForToken(token, config) {
-        var a;
+        var a, strict = config._strict;
         switch (token) {
         case 'DDDD':
             return parseTokenThreeDigits;
         case 'YYYY':
         case 'GGGG':
         case 'gggg':
-            return parseTokenFourDigits;
+            return strict ? parseTokenFourDigits : parseTokenOneToFourDigits;
+        case 'Y':
+        case 'G':
+        case 'g':
+            return parseTokenSignedNumber;
+        case 'YYYYYY':
         case 'YYYYY':
         case 'GGGGG':
         case 'ggggg':
-            return parseTokenSixDigits;
+            return strict ? parseTokenSixDigits : parseTokenOneToSixDigits;
         case 'S':
+            if (strict) { return parseTokenOneDigit; }
+            /* falls through */
         case 'SS':
+            if (strict) { return parseTokenTwoDigits; }
+            /* falls through */
         case 'SSS':
+            if (strict) { return parseTokenThreeDigits; }
+            /* falls through */
         case 'DDD':
             return parseTokenOneToThreeDigits;
         case 'MMM':
@@ -11735,6 +11792,9 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap requires jQuery");+func
         case 'hh':
         case 'mm':
         case 'ss':
+        case 'ww':
+        case 'WW':
+            return strict ? parseTokenTwoDigits : parseTokenOneOrTwoDigits;
         case 'M':
         case 'D':
         case 'd':
@@ -11743,9 +11803,7 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap requires jQuery");+func
         case 'm':
         case 's':
         case 'w':
-        case 'ww':
         case 'W':
-        case 'WW':
         case 'e':
         case 'E':
             return parseTokenOneOrTwoDigits;
@@ -11756,8 +11814,10 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap requires jQuery");+func
     }
 
     function timezoneMinutesFromString(string) {
-        var tzchunk = (parseTokenTimezone.exec(string) || [])[0],
-            parts = (tzchunk + '').match(parseTimezoneChunker) || ['-', 0, 0],
+        string = string || "";
+        var possibleTzMatches = (string.match(parseTokenTimezone) || []),
+            tzChunk = possibleTzMatches[possibleTzMatches.length - 1] || [],
+            parts = (tzChunk + '').match(parseTimezoneChunker) || ['-', 0, 0],
             minutes = +(parts[1] * 60) + toInt(parts[2]);
 
         return parts[0] === '+' ? -minutes : minutes;
@@ -11806,6 +11866,7 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap requires jQuery");+func
             break;
         case 'YYYY' :
         case 'YYYYY' :
+        case 'YYYYYY' :
             datePartArray[YEAR] = toInt(input);
             break;
         // AM / PM
@@ -11890,8 +11951,9 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap requires jQuery");+func
         //compute day of the year from weeks and weekdays
         if (config._w && config._a[DATE] == null && config._a[MONTH] == null) {
             fixYear = function (val) {
+                var int_val = parseInt(val, 10);
                 return val ?
-                  (val.length < 3 ? (parseInt(val, 10) > 68 ? '19' + val : '20' + val) : val) :
+                  (val.length < 3 ? (int_val > 68 ? 1900 + int_val : 2000 + int_val) : int_val) :
                   (config._a[YEAR] == null ? moment().weekYear() : config._a[YEAR]);
             };
 
@@ -12003,7 +12065,7 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap requires jQuery");+func
 
         for (i = 0; i < tokens.length; i++) {
             token = tokens[i];
-            parsedInput = (getParseRegexForToken(token, config).exec(string) || [])[0];
+            parsedInput = (string.match(getParseRegexForToken(token, config)) || [])[0];
             if (parsedInput) {
                 skipped = string.substr(0, string.indexOf(parsedInput));
                 if (skipped.length > 0) {
@@ -12075,7 +12137,7 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap requires jQuery");+func
         for (i = 0; i < config._f.length; i++) {
             currentScore = 0;
             tempConfig = extend({}, config);
-            initializeParsingFlags(tempConfig);
+            tempConfig._pf = defaultParsingFlags();
             tempConfig._f = config._f[i];
             makeDateFromStringAndFormat(tempConfig);
 
@@ -12102,26 +12164,26 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap requires jQuery");+func
 
     // date from iso format
     function makeDateFromString(config) {
-        var i,
+        var i, l,
             string = config._i,
             match = isoRegex.exec(string);
 
         if (match) {
             config._pf.iso = true;
-            for (i = 4; i > 0; i--) {
-                if (match[i]) {
+            for (i = 0, l = isoDates.length; i < l; i++) {
+                if (isoDates[i][1].exec(string)) {
                     // match[5] should be "T" or undefined
-                    config._f = isoDates[i - 1] + (match[6] || " ");
+                    config._f = isoDates[i][0] + (match[6] || " ");
                     break;
                 }
             }
-            for (i = 0; i < 4; i++) {
+            for (i = 0, l = isoTimes.length; i < l; i++) {
                 if (isoTimes[i][1].exec(string)) {
                     config._f += isoTimes[i][0];
                     break;
                 }
             }
-            if (parseTokenTimezone.exec(string)) {
+            if (string.match(parseTokenTimezone)) {
                 config._f += "Z";
             }
             makeDateFromStringAndFormat(config);
@@ -12256,11 +12318,10 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap requires jQuery");+func
 
     //http://en.wikipedia.org/wiki/ISO_week_date#Calculating_a_date_given_the_year.2C_week_number_and_weekday
     function dayOfYearFromWeeks(year, week, weekday, firstDayOfWeekOfYear, firstDayOfWeek) {
-        var d = new Date(Date.UTC(year, 0)).getUTCDay(),
-            daysToAdd, dayOfYear;
+        var d = makeUTCDate(year, 0, 1).getUTCDay(), daysToAdd, dayOfYear;
 
         weekday = weekday != null ? weekday : firstDayOfWeek;
-        daysToAdd = firstDayOfWeek - d + (d > firstDayOfWeekOfYear ? 7 : 0);
+        daysToAdd = firstDayOfWeek - d + (d > firstDayOfWeekOfYear ? 7 : 0) - (d < firstDayOfWeek ? 7 : 0);
         dayOfYear = 7 * (week - 1) + (weekday - firstDayOfWeek) + daysToAdd + 1;
 
         return {
@@ -12277,10 +12338,6 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap requires jQuery");+func
         var input = config._i,
             format = config._f;
 
-        if (typeof config._pf === 'undefined') {
-            initializeParsingFlags(config);
-        }
-
         if (input === null) {
             return moment.invalid({nullInput: true});
         }
@@ -12290,7 +12347,7 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap requires jQuery");+func
         }
 
         if (moment.isMoment(input)) {
-            config = extend({}, input);
+            config = cloneMoment(input);
 
             config._d = new Date(+input._d);
         } else if (format) {
@@ -12307,37 +12364,47 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap requires jQuery");+func
     }
 
     moment = function (input, format, lang, strict) {
+        var c;
+
         if (typeof(lang) === "boolean") {
             strict = lang;
             lang = undefined;
         }
-        return makeMoment({
-            _i : input,
-            _f : format,
-            _l : lang,
-            _strict : strict,
-            _isUTC : false
-        });
+        // object construction must be done this way.
+        // https://github.com/moment/moment/issues/1423
+        c = {};
+        c._isAMomentObject = true;
+        c._i = input;
+        c._f = format;
+        c._l = lang;
+        c._strict = strict;
+        c._isUTC = false;
+        c._pf = defaultParsingFlags();
+
+        return makeMoment(c);
     };
 
     // creating with utc
     moment.utc = function (input, format, lang, strict) {
-        var m;
+        var c;
 
         if (typeof(lang) === "boolean") {
             strict = lang;
             lang = undefined;
         }
-        m = makeMoment({
-            _useUTC : true,
-            _isUTC : true,
-            _l : lang,
-            _i : input,
-            _f : format,
-            _strict : strict
-        }).utc();
+        // object construction must be done this way.
+        // https://github.com/moment/moment/issues/1423
+        c = {};
+        c._isAMomentObject = true;
+        c._useUTC = true;
+        c._isUTC = true;
+        c._l = lang;
+        c._i = input;
+        c._f = format;
+        c._strict = strict;
+        c._pf = defaultParsingFlags();
 
-        return m;
+        return makeMoment(c).utc();
     };
 
     // creating with unix timestamp (in seconds)
@@ -12347,18 +12414,21 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap requires jQuery");+func
 
     // duration
     moment.duration = function (input, key) {
-        var isDuration = moment.isDuration(input),
-            isNumber = (typeof input === 'number'),
-            duration = (isDuration ? input._input : (isNumber ? {} : input)),
+        var duration = input,
             // matching against regexp is expensive, do it on demand
             match = null,
             sign,
             ret,
-            parseIso,
-            timeEmpty,
-            dateTimeEmpty;
+            parseIso;
 
-        if (isNumber) {
+        if (moment.isDuration(input)) {
+            duration = {
+                ms: input._milliseconds,
+                d: input._days,
+                M: input._months
+            };
+        } else if (typeof input === 'number') {
+            duration = {};
             if (key) {
                 duration[key] = input;
             } else {
@@ -12397,7 +12467,7 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap requires jQuery");+func
 
         ret = new Duration(duration);
 
-        if (isDuration && input.hasOwnProperty('_lang')) {
+        if (moment.isDuration(input) && input.hasOwnProperty('_lang')) {
             ret._lang = input._lang;
         }
 
@@ -12444,7 +12514,8 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap requires jQuery");+func
 
     // compare moment object
     moment.isMoment = function (obj) {
-        return obj instanceof Moment;
+        return obj instanceof Moment ||
+            (obj != null &&  obj.hasOwnProperty('_isAMomentObject'));
     };
 
     // for typechecking Duration objects
@@ -12504,7 +12575,12 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap requires jQuery");+func
         },
 
         toISOString : function () {
-            return formatMoment(moment(this).utc(), 'YYYY-MM-DD[T]HH:mm:ss.SSS[Z]');
+            var m = moment(this).utc();
+            if (0 < m.year() && m.year() <= 9999) {
+                return formatMoment(m, 'YYYY-MM-DD[T]HH:mm:ss.SSS[Z]');
+            } else {
+                return formatMoment(m, 'YYYYYY-MM-DD[T]HH:mm:ss.SSS[Z]');
+            }
         },
 
         toArray : function () {
@@ -12581,7 +12657,7 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap requires jQuery");+func
         },
 
         diff : function (input, units, asFloat) {
-            var that = this._isUTC ? moment(input).zone(this._offset || 0) : moment(input).local(),
+            var that = makeAs(input, this),
                 zoneDiff = (this.zone() - that.zone()) * 6e4,
                 diff, output;
 
@@ -12623,13 +12699,16 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap requires jQuery");+func
         },
 
         calendar : function () {
-            var diff = this.diff(moment().zone(this.zone()).startOf('day'), 'days', true),
+            // We want to compare the start of today, vs this.
+            // Getting start-of-today depends on whether we're zone'd or not.
+            var sod = makeAs(moment(), this).startOf('day'),
+                diff = this.diff(sod, 'days', true),
                 format = diff < -6 ? 'sameElse' :
-                diff < -1 ? 'lastWeek' :
-                diff < 0 ? 'lastDay' :
-                diff < 1 ? 'sameDay' :
-                diff < 2 ? 'nextDay' :
-                diff < 7 ? 'nextWeek' : 'sameElse';
+                    diff < -1 ? 'lastWeek' :
+                    diff < 0 ? 'lastDay' :
+                    diff < 1 ? 'sameDay' :
+                    diff < 2 ? 'nextDay' :
+                    diff < 7 ? 'nextWeek' : 'sameElse';
             return this.format(this.lang().calendar(format, this));
         },
 
@@ -12729,8 +12808,8 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap requires jQuery");+func
         },
 
         isSame: function (input, units) {
-            units = typeof units !== 'undefined' ? units : 'millisecond';
-            return +this.clone().startOf(units) === +moment(input).startOf(units);
+            units = units || 'ms';
+            return +this.clone().startOf(units) === +makeAs(input, this).startOf(units);
         },
 
         min: function (other) {
@@ -12772,7 +12851,9 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap requires jQuery");+func
         },
 
         parseZone : function () {
-            if (typeof this._i === 'string') {
+            if (this._tzm) {
+                this.zone(this._tzm);
+            } else if (typeof this._i === 'string') {
                 this.zone(this._i);
             }
             return this;
@@ -12796,6 +12877,10 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap requires jQuery");+func
         dayOfYear : function (input) {
             var dayOfYear = round((moment(this).startOf('day') - moment(this).startOf('year')) / 864e5) + 1;
             return input == null ? dayOfYear : this.add("d", (input - dayOfYear));
+        },
+
+        quarter : function () {
+            return Math.ceil((this.month() + 1.0) / 3.0);
         },
 
         weekYear : function (input) {
@@ -13068,7 +13153,7 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap requires jQuery");+func
         // add `moment` as a global object via a string identifier,
         // for Closure Compiler "advanced" mode
         if (deprecate) {
-            this.moment = function () {
+            global.moment = function () {
                 if (!warned && console && console.warn) {
                     warned = true;
                     console.warn(
@@ -13078,8 +13163,9 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap requires jQuery");+func
                 }
                 return local_moment.apply(null, arguments);
             };
+            extend(global.moment, local_moment);
         } else {
-            this['moment'] = moment;
+            global['moment'] = moment;
         }
     }
 
@@ -13089,7 +13175,7 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap requires jQuery");+func
         makeGlobal(true);
     } else if (typeof define === "function" && define.amd) {
         define("moment", function (require, exports, module) {
-            if (module.config().noGlobal !== true) {
+            if (module.config && module.config() && module.config().noGlobal !== true) {
                 // If user provided noGlobal, he is aware of global
                 makeGlobal(module.config().noGlobal === undefined);
             }
@@ -13100,6 +13186,1150 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap requires jQuery");+func
         makeGlobal();
     }
 }).call(this);
+
+/*global define:false */
+/**
+ * Copyright 2013 Craig Campbell
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * Mousetrap is a simple keyboard shortcut library for Javascript with
+ * no external dependencies
+ *
+ * @version 1.4.6
+ * @url craig.is/killing/mice
+ */
+(function(window, document, undefined) {
+
+    /**
+     * mapping of special keycodes to their corresponding keys
+     *
+     * everything in this dictionary cannot use keypress events
+     * so it has to be here to map to the correct keycodes for
+     * keyup/keydown events
+     *
+     * @type {Object}
+     */
+    var _MAP = {
+            8: 'backspace',
+            9: 'tab',
+            13: 'enter',
+            16: 'shift',
+            17: 'ctrl',
+            18: 'alt',
+            20: 'capslock',
+            27: 'esc',
+            32: 'space',
+            33: 'pageup',
+            34: 'pagedown',
+            35: 'end',
+            36: 'home',
+            37: 'left',
+            38: 'up',
+            39: 'right',
+            40: 'down',
+            45: 'ins',
+            46: 'del',
+            91: 'meta',
+            93: 'meta',
+            224: 'meta'
+        },
+
+        /**
+         * mapping for special characters so they can support
+         *
+         * this dictionary is only used incase you want to bind a
+         * keyup or keydown event to one of these keys
+         *
+         * @type {Object}
+         */
+        _KEYCODE_MAP = {
+            106: '*',
+            107: '+',
+            109: '-',
+            110: '.',
+            111 : '/',
+            186: ';',
+            187: '=',
+            188: ',',
+            189: '-',
+            190: '.',
+            191: '/',
+            192: '`',
+            219: '[',
+            220: '\\',
+            221: ']',
+            222: '\''
+        },
+
+        /**
+         * this is a mapping of keys that require shift on a US keypad
+         * back to the non shift equivelents
+         *
+         * this is so you can use keyup events with these keys
+         *
+         * note that this will only work reliably on US keyboards
+         *
+         * @type {Object}
+         */
+        _SHIFT_MAP = {
+            '~': '`',
+            '!': '1',
+            '@': '2',
+            '#': '3',
+            '$': '4',
+            '%': '5',
+            '^': '6',
+            '&': '7',
+            '*': '8',
+            '(': '9',
+            ')': '0',
+            '_': '-',
+            '+': '=',
+            ':': ';',
+            '\"': '\'',
+            '<': ',',
+            '>': '.',
+            '?': '/',
+            '|': '\\'
+        },
+
+        /**
+         * this is a list of special strings you can use to map
+         * to modifier keys when you specify your keyboard shortcuts
+         *
+         * @type {Object}
+         */
+        _SPECIAL_ALIASES = {
+            'option': 'alt',
+            'command': 'meta',
+            'return': 'enter',
+            'escape': 'esc',
+            'mod': /Mac|iPod|iPhone|iPad/.test(navigator.platform) ? 'meta' : 'ctrl'
+        },
+
+        /**
+         * variable to store the flipped version of _MAP from above
+         * needed to check if we should use keypress or not when no action
+         * is specified
+         *
+         * @type {Object|undefined}
+         */
+        _REVERSE_MAP,
+
+        /**
+         * a list of all the callbacks setup via Mousetrap.bind()
+         *
+         * @type {Object}
+         */
+        _callbacks = {},
+
+        /**
+         * direct map of string combinations to callbacks used for trigger()
+         *
+         * @type {Object}
+         */
+        _directMap = {},
+
+        /**
+         * keeps track of what level each sequence is at since multiple
+         * sequences can start out with the same sequence
+         *
+         * @type {Object}
+         */
+        _sequenceLevels = {},
+
+        /**
+         * variable to store the setTimeout call
+         *
+         * @type {null|number}
+         */
+        _resetTimer,
+
+        /**
+         * temporary state where we will ignore the next keyup
+         *
+         * @type {boolean|string}
+         */
+        _ignoreNextKeyup = false,
+
+        /**
+         * temporary state where we will ignore the next keypress
+         *
+         * @type {boolean}
+         */
+        _ignoreNextKeypress = false,
+
+        /**
+         * are we currently inside of a sequence?
+         * type of action ("keyup" or "keydown" or "keypress") or false
+         *
+         * @type {boolean|string}
+         */
+        _nextExpectedAction = false;
+
+    /**
+     * loop through the f keys, f1 to f19 and add them to the map
+     * programatically
+     */
+    for (var i = 1; i < 20; ++i) {
+        _MAP[111 + i] = 'f' + i;
+    }
+
+    /**
+     * loop through to map numbers on the numeric keypad
+     */
+    for (i = 0; i <= 9; ++i) {
+        _MAP[i + 96] = i;
+    }
+
+    /**
+     * cross browser add event method
+     *
+     * @param {Element|HTMLDocument} object
+     * @param {string} type
+     * @param {Function} callback
+     * @returns void
+     */
+    function _addEvent(object, type, callback) {
+        if (object.addEventListener) {
+            object.addEventListener(type, callback, false);
+            return;
+        }
+
+        object.attachEvent('on' + type, callback);
+    }
+
+    /**
+     * takes the event and returns the key character
+     *
+     * @param {Event} e
+     * @return {string}
+     */
+    function _characterFromEvent(e) {
+
+        // for keypress events we should return the character as is
+        if (e.type == 'keypress') {
+            var character = String.fromCharCode(e.which);
+
+            // if the shift key is not pressed then it is safe to assume
+            // that we want the character to be lowercase.  this means if
+            // you accidentally have caps lock on then your key bindings
+            // will continue to work
+            //
+            // the only side effect that might not be desired is if you
+            // bind something like 'A' cause you want to trigger an
+            // event when capital A is pressed caps lock will no longer
+            // trigger the event.  shift+a will though.
+            if (!e.shiftKey) {
+                character = character.toLowerCase();
+            }
+
+            return character;
+        }
+
+        // for non keypress events the special maps are needed
+        if (_MAP[e.which]) {
+            return _MAP[e.which];
+        }
+
+        if (_KEYCODE_MAP[e.which]) {
+            return _KEYCODE_MAP[e.which];
+        }
+
+        // if it is not in the special map
+
+        // with keydown and keyup events the character seems to always
+        // come in as an uppercase character whether you are pressing shift
+        // or not.  we should make sure it is always lowercase for comparisons
+        return String.fromCharCode(e.which).toLowerCase();
+    }
+
+    /**
+     * checks if two arrays are equal
+     *
+     * @param {Array} modifiers1
+     * @param {Array} modifiers2
+     * @returns {boolean}
+     */
+    function _modifiersMatch(modifiers1, modifiers2) {
+        return modifiers1.sort().join(',') === modifiers2.sort().join(',');
+    }
+
+    /**
+     * resets all sequence counters except for the ones passed in
+     *
+     * @param {Object} doNotReset
+     * @returns void
+     */
+    function _resetSequences(doNotReset) {
+        doNotReset = doNotReset || {};
+
+        var activeSequences = false,
+            key;
+
+        for (key in _sequenceLevels) {
+            if (doNotReset[key]) {
+                activeSequences = true;
+                continue;
+            }
+            _sequenceLevels[key] = 0;
+        }
+
+        if (!activeSequences) {
+            _nextExpectedAction = false;
+        }
+    }
+
+    /**
+     * finds all callbacks that match based on the keycode, modifiers,
+     * and action
+     *
+     * @param {string} character
+     * @param {Array} modifiers
+     * @param {Event|Object} e
+     * @param {string=} sequenceName - name of the sequence we are looking for
+     * @param {string=} combination
+     * @param {number=} level
+     * @returns {Array}
+     */
+    function _getMatches(character, modifiers, e, sequenceName, combination, level) {
+        var i,
+            callback,
+            matches = [],
+            action = e.type;
+
+        // if there are no events related to this keycode
+        if (!_callbacks[character]) {
+            return [];
+        }
+
+        // if a modifier key is coming up on its own we should allow it
+        if (action == 'keyup' && _isModifier(character)) {
+            modifiers = [character];
+        }
+
+        // loop through all callbacks for the key that was pressed
+        // and see if any of them match
+        for (i = 0; i < _callbacks[character].length; ++i) {
+            callback = _callbacks[character][i];
+
+            // if a sequence name is not specified, but this is a sequence at
+            // the wrong level then move onto the next match
+            if (!sequenceName && callback.seq && _sequenceLevels[callback.seq] != callback.level) {
+                continue;
+            }
+
+            // if the action we are looking for doesn't match the action we got
+            // then we should keep going
+            if (action != callback.action) {
+                continue;
+            }
+
+            // if this is a keypress event and the meta key and control key
+            // are not pressed that means that we need to only look at the
+            // character, otherwise check the modifiers as well
+            //
+            // chrome will not fire a keypress if meta or control is down
+            // safari will fire a keypress if meta or meta+shift is down
+            // firefox will fire a keypress if meta or control is down
+            if ((action == 'keypress' && !e.metaKey && !e.ctrlKey) || _modifiersMatch(modifiers, callback.modifiers)) {
+
+                // when you bind a combination or sequence a second time it
+                // should overwrite the first one.  if a sequenceName or
+                // combination is specified in this call it does just that
+                //
+                // @todo make deleting its own method?
+                var deleteCombo = !sequenceName && callback.combo == combination;
+                var deleteSequence = sequenceName && callback.seq == sequenceName && callback.level == level;
+                if (deleteCombo || deleteSequence) {
+                    _callbacks[character].splice(i, 1);
+                }
+
+                matches.push(callback);
+            }
+        }
+
+        return matches;
+    }
+
+    /**
+     * takes a key event and figures out what the modifiers are
+     *
+     * @param {Event} e
+     * @returns {Array}
+     */
+    function _eventModifiers(e) {
+        var modifiers = [];
+
+        if (e.shiftKey) {
+            modifiers.push('shift');
+        }
+
+        if (e.altKey) {
+            modifiers.push('alt');
+        }
+
+        if (e.ctrlKey) {
+            modifiers.push('ctrl');
+        }
+
+        if (e.metaKey) {
+            modifiers.push('meta');
+        }
+
+        return modifiers;
+    }
+
+    /**
+     * prevents default for this event
+     *
+     * @param {Event} e
+     * @returns void
+     */
+    function _preventDefault(e) {
+        if (e.preventDefault) {
+            e.preventDefault();
+            return;
+        }
+
+        e.returnValue = false;
+    }
+
+    /**
+     * stops propogation for this event
+     *
+     * @param {Event} e
+     * @returns void
+     */
+    function _stopPropagation(e) {
+        if (e.stopPropagation) {
+            e.stopPropagation();
+            return;
+        }
+
+        e.cancelBubble = true;
+    }
+
+    /**
+     * actually calls the callback function
+     *
+     * if your callback function returns false this will use the jquery
+     * convention - prevent default and stop propogation on the event
+     *
+     * @param {Function} callback
+     * @param {Event} e
+     * @returns void
+     */
+    function _fireCallback(callback, e, combo, sequence) {
+
+        // if this event should not happen stop here
+        if (Mousetrap.stopCallback(e, e.target || e.srcElement, combo, sequence)) {
+            return;
+        }
+
+        if (callback(e, combo) === false) {
+            _preventDefault(e);
+            _stopPropagation(e);
+        }
+    }
+
+    /**
+     * handles a character key event
+     *
+     * @param {string} character
+     * @param {Array} modifiers
+     * @param {Event} e
+     * @returns void
+     */
+    function _handleKey(character, modifiers, e) {
+        var callbacks = _getMatches(character, modifiers, e),
+            i,
+            doNotReset = {},
+            maxLevel = 0,
+            processedSequenceCallback = false;
+
+        // Calculate the maxLevel for sequences so we can only execute the longest callback sequence
+        for (i = 0; i < callbacks.length; ++i) {
+            if (callbacks[i].seq) {
+                maxLevel = Math.max(maxLevel, callbacks[i].level);
+            }
+        }
+
+        // loop through matching callbacks for this key event
+        for (i = 0; i < callbacks.length; ++i) {
+
+            // fire for all sequence callbacks
+            // this is because if for example you have multiple sequences
+            // bound such as "g i" and "g t" they both need to fire the
+            // callback for matching g cause otherwise you can only ever
+            // match the first one
+            if (callbacks[i].seq) {
+
+                // only fire callbacks for the maxLevel to prevent
+                // subsequences from also firing
+                //
+                // for example 'a option b' should not cause 'option b' to fire
+                // even though 'option b' is part of the other sequence
+                //
+                // any sequences that do not match here will be discarded
+                // below by the _resetSequences call
+                if (callbacks[i].level != maxLevel) {
+                    continue;
+                }
+
+                processedSequenceCallback = true;
+
+                // keep a list of which sequences were matches for later
+                doNotReset[callbacks[i].seq] = 1;
+                _fireCallback(callbacks[i].callback, e, callbacks[i].combo, callbacks[i].seq);
+                continue;
+            }
+
+            // if there were no sequence matches but we are still here
+            // that means this is a regular match so we should fire that
+            if (!processedSequenceCallback) {
+                _fireCallback(callbacks[i].callback, e, callbacks[i].combo);
+            }
+        }
+
+        // if the key you pressed matches the type of sequence without
+        // being a modifier (ie "keyup" or "keypress") then we should
+        // reset all sequences that were not matched by this event
+        //
+        // this is so, for example, if you have the sequence "h a t" and you
+        // type "h e a r t" it does not match.  in this case the "e" will
+        // cause the sequence to reset
+        //
+        // modifier keys are ignored because you can have a sequence
+        // that contains modifiers such as "enter ctrl+space" and in most
+        // cases the modifier key will be pressed before the next key
+        //
+        // also if you have a sequence such as "ctrl+b a" then pressing the
+        // "b" key will trigger a "keypress" and a "keydown"
+        //
+        // the "keydown" is expected when there is a modifier, but the
+        // "keypress" ends up matching the _nextExpectedAction since it occurs
+        // after and that causes the sequence to reset
+        //
+        // we ignore keypresses in a sequence that directly follow a keydown
+        // for the same character
+        var ignoreThisKeypress = e.type == 'keypress' && _ignoreNextKeypress;
+        if (e.type == _nextExpectedAction && !_isModifier(character) && !ignoreThisKeypress) {
+            _resetSequences(doNotReset);
+        }
+
+        _ignoreNextKeypress = processedSequenceCallback && e.type == 'keydown';
+    }
+
+    /**
+     * handles a keydown event
+     *
+     * @param {Event} e
+     * @returns void
+     */
+    function _handleKeyEvent(e) {
+
+        // normalize e.which for key events
+        // @see http://stackoverflow.com/questions/4285627/javascript-keycode-vs-charcode-utter-confusion
+        if (typeof e.which !== 'number') {
+            e.which = e.keyCode;
+        }
+
+        var character = _characterFromEvent(e);
+
+        // no character found then stop
+        if (!character) {
+            return;
+        }
+
+        // need to use === for the character check because the character can be 0
+        if (e.type == 'keyup' && _ignoreNextKeyup === character) {
+            _ignoreNextKeyup = false;
+            return;
+        }
+
+        Mousetrap.handleKey(character, _eventModifiers(e), e);
+    }
+
+    /**
+     * determines if the keycode specified is a modifier key or not
+     *
+     * @param {string} key
+     * @returns {boolean}
+     */
+    function _isModifier(key) {
+        return key == 'shift' || key == 'ctrl' || key == 'alt' || key == 'meta';
+    }
+
+    /**
+     * called to set a 1 second timeout on the specified sequence
+     *
+     * this is so after each key press in the sequence you have 1 second
+     * to press the next key before you have to start over
+     *
+     * @returns void
+     */
+    function _resetSequenceTimer() {
+        clearTimeout(_resetTimer);
+        _resetTimer = setTimeout(_resetSequences, 1000);
+    }
+
+    /**
+     * reverses the map lookup so that we can look for specific keys
+     * to see what can and can't use keypress
+     *
+     * @return {Object}
+     */
+    function _getReverseMap() {
+        if (!_REVERSE_MAP) {
+            _REVERSE_MAP = {};
+            for (var key in _MAP) {
+
+                // pull out the numeric keypad from here cause keypress should
+                // be able to detect the keys from the character
+                if (key > 95 && key < 112) {
+                    continue;
+                }
+
+                if (_MAP.hasOwnProperty(key)) {
+                    _REVERSE_MAP[_MAP[key]] = key;
+                }
+            }
+        }
+        return _REVERSE_MAP;
+    }
+
+    /**
+     * picks the best action based on the key combination
+     *
+     * @param {string} key - character for key
+     * @param {Array} modifiers
+     * @param {string=} action passed in
+     */
+    function _pickBestAction(key, modifiers, action) {
+
+        // if no action was picked in we should try to pick the one
+        // that we think would work best for this key
+        if (!action) {
+            action = _getReverseMap()[key] ? 'keydown' : 'keypress';
+        }
+
+        // modifier keys don't work as expected with keypress,
+        // switch to keydown
+        if (action == 'keypress' && modifiers.length) {
+            action = 'keydown';
+        }
+
+        return action;
+    }
+
+    /**
+     * binds a key sequence to an event
+     *
+     * @param {string} combo - combo specified in bind call
+     * @param {Array} keys
+     * @param {Function} callback
+     * @param {string=} action
+     * @returns void
+     */
+    function _bindSequence(combo, keys, callback, action) {
+
+        // start off by adding a sequence level record for this combination
+        // and setting the level to 0
+        _sequenceLevels[combo] = 0;
+
+        /**
+         * callback to increase the sequence level for this sequence and reset
+         * all other sequences that were active
+         *
+         * @param {string} nextAction
+         * @returns {Function}
+         */
+        function _increaseSequence(nextAction) {
+            return function() {
+                _nextExpectedAction = nextAction;
+                ++_sequenceLevels[combo];
+                _resetSequenceTimer();
+            };
+        }
+
+        /**
+         * wraps the specified callback inside of another function in order
+         * to reset all sequence counters as soon as this sequence is done
+         *
+         * @param {Event} e
+         * @returns void
+         */
+        function _callbackAndReset(e) {
+            _fireCallback(callback, e, combo);
+
+            // we should ignore the next key up if the action is key down
+            // or keypress.  this is so if you finish a sequence and
+            // release the key the final key will not trigger a keyup
+            if (action !== 'keyup') {
+                _ignoreNextKeyup = _characterFromEvent(e);
+            }
+
+            // weird race condition if a sequence ends with the key
+            // another sequence begins with
+            setTimeout(_resetSequences, 10);
+        }
+
+        // loop through keys one at a time and bind the appropriate callback
+        // function.  for any key leading up to the final one it should
+        // increase the sequence. after the final, it should reset all sequences
+        //
+        // if an action is specified in the original bind call then that will
+        // be used throughout.  otherwise we will pass the action that the
+        // next key in the sequence should match.  this allows a sequence
+        // to mix and match keypress and keydown events depending on which
+        // ones are better suited to the key provided
+        for (var i = 0; i < keys.length; ++i) {
+            var isFinal = i + 1 === keys.length;
+            var wrappedCallback = isFinal ? _callbackAndReset : _increaseSequence(action || _getKeyInfo(keys[i + 1]).action);
+            _bindSingle(keys[i], wrappedCallback, action, combo, i);
+        }
+    }
+
+    /**
+     * Converts from a string key combination to an array
+     *
+     * @param  {string} combination like "command+shift+l"
+     * @return {Array}
+     */
+    function _keysFromString(combination) {
+        if (combination === '+') {
+            return ['+'];
+        }
+
+        return combination.split('+');
+    }
+
+    /**
+     * Gets info for a specific key combination
+     *
+     * @param  {string} combination key combination ("command+s" or "a" or "*")
+     * @param  {string=} action
+     * @returns {Object}
+     */
+    function _getKeyInfo(combination, action) {
+        var keys,
+            key,
+            i,
+            modifiers = [];
+
+        // take the keys from this pattern and figure out what the actual
+        // pattern is all about
+        keys = _keysFromString(combination);
+
+        for (i = 0; i < keys.length; ++i) {
+            key = keys[i];
+
+            // normalize key names
+            if (_SPECIAL_ALIASES[key]) {
+                key = _SPECIAL_ALIASES[key];
+            }
+
+            // if this is not a keypress event then we should
+            // be smart about using shift keys
+            // this will only work for US keyboards however
+            if (action && action != 'keypress' && _SHIFT_MAP[key]) {
+                key = _SHIFT_MAP[key];
+                modifiers.push('shift');
+            }
+
+            // if this key is a modifier then add it to the list of modifiers
+            if (_isModifier(key)) {
+                modifiers.push(key);
+            }
+        }
+
+        // depending on what the key combination is
+        // we will try to pick the best event for it
+        action = _pickBestAction(key, modifiers, action);
+
+        return {
+            key: key,
+            modifiers: modifiers,
+            action: action
+        };
+    }
+
+    /**
+     * binds a single keyboard combination
+     *
+     * @param {string} combination
+     * @param {Function} callback
+     * @param {string=} action
+     * @param {string=} sequenceName - name of sequence if part of sequence
+     * @param {number=} level - what part of the sequence the command is
+     * @returns void
+     */
+    function _bindSingle(combination, callback, action, sequenceName, level) {
+
+        // store a direct mapped reference for use with Mousetrap.trigger
+        _directMap[combination + ':' + action] = callback;
+
+        // make sure multiple spaces in a row become a single space
+        combination = combination.replace(/\s+/g, ' ');
+
+        var sequence = combination.split(' '),
+            info;
+
+        // if this pattern is a sequence of keys then run through this method
+        // to reprocess each pattern one key at a time
+        if (sequence.length > 1) {
+            _bindSequence(combination, sequence, callback, action);
+            return;
+        }
+
+        info = _getKeyInfo(combination, action);
+
+        // make sure to initialize array if this is the first time
+        // a callback is added for this key
+        _callbacks[info.key] = _callbacks[info.key] || [];
+
+        // remove an existing match if there is one
+        _getMatches(info.key, info.modifiers, {type: info.action}, sequenceName, combination, level);
+
+        // add this call back to the array
+        // if it is a sequence put it at the beginning
+        // if not put it at the end
+        //
+        // this is important because the way these are processed expects
+        // the sequence ones to come first
+        _callbacks[info.key][sequenceName ? 'unshift' : 'push']({
+            callback: callback,
+            modifiers: info.modifiers,
+            action: info.action,
+            seq: sequenceName,
+            level: level,
+            combo: combination
+        });
+    }
+
+    /**
+     * binds multiple combinations to the same callback
+     *
+     * @param {Array} combinations
+     * @param {Function} callback
+     * @param {string|undefined} action
+     * @returns void
+     */
+    function _bindMultiple(combinations, callback, action) {
+        for (var i = 0; i < combinations.length; ++i) {
+            _bindSingle(combinations[i], callback, action);
+        }
+    }
+
+    // start!
+    _addEvent(document, 'keypress', _handleKeyEvent);
+    _addEvent(document, 'keydown', _handleKeyEvent);
+    _addEvent(document, 'keyup', _handleKeyEvent);
+
+    var Mousetrap = {
+
+        /**
+         * binds an event to mousetrap
+         *
+         * can be a single key, a combination of keys separated with +,
+         * an array of keys, or a sequence of keys separated by spaces
+         *
+         * be sure to list the modifier keys first to make sure that the
+         * correct key ends up getting bound (the last key in the pattern)
+         *
+         * @param {string|Array} keys
+         * @param {Function} callback
+         * @param {string=} action - 'keypress', 'keydown', or 'keyup'
+         * @returns void
+         */
+        bind: function(keys, callback, action) {
+            keys = keys instanceof Array ? keys : [keys];
+            _bindMultiple(keys, callback, action);
+            return this;
+        },
+
+        /**
+         * unbinds an event to mousetrap
+         *
+         * the unbinding sets the callback function of the specified key combo
+         * to an empty function and deletes the corresponding key in the
+         * _directMap dict.
+         *
+         * TODO: actually remove this from the _callbacks dictionary instead
+         * of binding an empty function
+         *
+         * the keycombo+action has to be exactly the same as
+         * it was defined in the bind method
+         *
+         * @param {string|Array} keys
+         * @param {string} action
+         * @returns void
+         */
+        unbind: function(keys, action) {
+            return Mousetrap.bind(keys, function() {}, action);
+        },
+
+        /**
+         * triggers an event that has already been bound
+         *
+         * @param {string} keys
+         * @param {string=} action
+         * @returns void
+         */
+        trigger: function(keys, action) {
+            if (_directMap[keys + ':' + action]) {
+                _directMap[keys + ':' + action]({}, keys);
+            }
+            return this;
+        },
+
+        /**
+         * resets the library back to its initial state.  this is useful
+         * if you want to clear out the current keyboard shortcuts and bind
+         * new ones - for example if you switch to another page
+         *
+         * @returns void
+         */
+        reset: function() {
+            _callbacks = {};
+            _directMap = {};
+            return this;
+        },
+
+       /**
+        * should we stop this event before firing off callbacks
+        *
+        * @param {Event} e
+        * @param {Element} element
+        * @return {boolean}
+        */
+        stopCallback: function(e, element) {
+
+            // if the element has the class "mousetrap" then no need to stop
+            if ((' ' + element.className + ' ').indexOf(' mousetrap ') > -1) {
+                return false;
+            }
+
+            // stop for input, select, and textarea
+            return element.tagName == 'INPUT' || element.tagName == 'SELECT' || element.tagName == 'TEXTAREA' || element.isContentEditable;
+        },
+
+        /**
+         * exposes _handleKey publicly so it can be overwritten by extensions
+         */
+        handleKey: _handleKey
+    };
+
+    // expose mousetrap to the global object
+    window.Mousetrap = Mousetrap;
+
+    // expose mousetrap as an AMD module
+    if (typeof define === 'function' && define.amd) {
+        define(Mousetrap);
+    }
+}) (window, document);
+
+/**
+ * This extension allows you to record a sequence using Mousetrap.
+ *
+ * @author Dan Tao <daniel.tao@gmail.com>
+ */
+(function(Mousetrap) {
+    /**
+     * the sequence currently being recorded
+     *
+     * @type {Array}
+     */
+    var _recordedSequence = [],
+
+        /**
+         * a callback to invoke after recording a sequence
+         *
+         * @type {Function|null}
+         */
+        _recordedSequenceCallback = null,
+
+        /**
+         * a list of all of the keys currently held down
+         *
+         * @type {Array}
+         */
+        _currentRecordedKeys = [],
+
+        /**
+         * temporary state where we remember if we've already captured a
+         * character key in the current combo
+         *
+         * @type {boolean}
+         */
+        _recordedCharacterKey = false,
+
+        /**
+         * a handle for the timer of the current recording
+         *
+         * @type {null|number}
+         */
+        _recordTimer = null,
+
+        /**
+         * the original handleKey method to override when Mousetrap.record() is
+         * called
+         *
+         * @type {Function}
+         */
+        _origHandleKey = Mousetrap.handleKey;
+
+    /**
+     * handles a character key event
+     *
+     * @param {string} character
+     * @param {Array} modifiers
+     * @param {Event} e
+     * @returns void
+     */
+    function _handleKey(character, modifiers, e) {
+        // remember this character if we're currently recording a sequence
+        if (e.type == 'keydown') {
+            if (character.length === 1 && _recordedCharacterKey) {
+                _recordCurrentCombo();
+            }
+
+            for (i = 0; i < modifiers.length; ++i) {
+                _recordKey(modifiers[i]);
+            }
+            _recordKey(character);
+
+        // once a key is released, all keys that were held down at the time
+        // count as a keypress
+        } else if (e.type == 'keyup' && _currentRecordedKeys.length > 0) {
+            _recordCurrentCombo();
+        }
+    }
+
+    /**
+     * marks a character key as held down while recording a sequence
+     *
+     * @param {string} key
+     * @returns void
+     */
+    function _recordKey(key) {
+        var i;
+
+        // one-off implementation of Array.indexOf, since IE6-9 don't support it
+        for (i = 0; i < _currentRecordedKeys.length; ++i) {
+            if (_currentRecordedKeys[i] === key) {
+                return;
+            }
+        }
+
+        _currentRecordedKeys.push(key);
+
+        if (key.length === 1) {
+            _recordedCharacterKey = true;
+        }
+    }
+
+    /**
+     * marks whatever key combination that's been recorded so far as finished
+     * and gets ready for the next combo
+     *
+     * @returns void
+     */
+    function _recordCurrentCombo() {
+        _recordedSequence.push(_currentRecordedKeys);
+        _currentRecordedKeys = [];
+        _recordedCharacterKey = false;
+        _restartRecordTimer();
+    }
+
+    /**
+     * ensures each combo in a sequence is in a predictable order and formats
+     * key combos to be '+'-delimited
+     *
+     * modifies the sequence in-place
+     *
+     * @param {Array} sequence
+     * @returns void
+     */
+    function _normalizeSequence(sequence) {
+        var i;
+
+        for (i = 0; i < sequence.length; ++i) {
+            sequence[i].sort(function(x, y) {
+                // modifier keys always come first, in alphabetical order
+                if (x.length > 1 && y.length === 1) {
+                    return -1;
+                } else if (x.length === 1 && y.length > 1) {
+                    return 1;
+                }
+
+                // character keys come next (list should contain no duplicates,
+                // so no need for equality check)
+                return x > y ? 1 : -1;
+            });
+
+            sequence[i] = sequence[i].join('+');
+        }
+    }
+
+    /**
+     * finishes the current recording, passes the recorded sequence to the stored
+     * callback, and sets Mousetrap.handleKey back to its original function
+     *
+     * @returns void
+     */
+    function _finishRecording() {
+        if (_recordedSequenceCallback) {
+            _normalizeSequence(_recordedSequence);
+            _recordedSequenceCallback(_recordedSequence);
+        }
+
+        // reset all recorded state
+        _recordedSequence = [];
+        _recordedSequenceCallback = null;
+        _currentRecordedKeys = [];
+
+        Mousetrap.handleKey = _origHandleKey;
+    }
+
+    /**
+     * called to set a 1 second timeout on the current recording
+     *
+     * this is so after each key press in the sequence the recording will wait for
+     * 1 more second before executing the callback
+     *
+     * @returns void
+     */
+    function _restartRecordTimer() {
+        clearTimeout(_recordTimer);
+        _recordTimer = setTimeout(_finishRecording, 1000);
+    }
+
+    /**
+     * records the next sequence and passes it to a callback once it's
+     * completed
+     *
+     * @param {Function} callback
+     * @returns void
+     */
+    Mousetrap.record = function(callback) {
+        Mousetrap.handleKey = _handleKey;
+        _recordedSequenceCallback = callback;
+    };
+
+})(Mousetrap);
 
 /**
  * @license AngularJS v1.2.13-build.2250+sha.08793a6
@@ -37310,7 +38540,7 @@ module.filter('md5', ['md5', function(md5) {
 
 })();
 
-var ENV = "production";
+var ENV = "development";
 /* Quicktext chrome extension
  */
 
@@ -37445,7 +38675,6 @@ if (chrome.runtime) {
                 chrome.pageAction.show(tabId);
             }
         }
-
     };
 
     // Listen for any changes to the URL of any tab.
@@ -37507,13 +38736,9 @@ if (chrome.runtime) {
                 }
                 sendResponse(true);
             }
-            if (request.request === 'getAutocompleteEnabled') {
-                sendResponse(settingsService.get("autocompleteEnabled"));
+            if (request.request === 'settings') {
+                sendResponse(settingsService.get("settings"));
             }
-            if (request.request === 'getAutocompleteDelay') {
-                sendResponse(settingsService.get("autocompleteDelay"));
-            }
-
             return true;
         });
     }
@@ -37533,15 +38758,24 @@ if (chrome.runtime) {
                             _gaq.push(['_trackEvent', "content", 'insert']);
                         });
                     } else if (port.name === 'search') {
-                        injector.get('QuicktextService').filtered("shortcut = '" + msg.text + "' OR title LIKE '%"+ msg.text +"%' OR body LIKE '% " + msg.text + " %'" /* TODO: <- fix this sql */).then(function (res) {
-                            port.postMessage({'quicktexts': res, 'action': 'list'});
-                            _gaq.push(['_trackEvent', "content", 'insert']);
-                        });
+                        if (!msg.text) { // if text is empty get all of them
+                            injector.get('QuicktextService').quicktexts().then(function (res) {
+                                port.postMessage({'quicktexts': res, 'action': 'list'});
+                                _gaq.push(['_trackEvent', "content", 'insert']);
+                            });
+                        } else {
+                            injector.get('QuicktextService').filtered(
+                                    "shortcut = '" + msg.text + "' OR title LIKE '%" + msg.text + "%' OR body LIKE '% " + msg.text + " %'" /* TODO: <- fix this sql */,
+                                    msg.limit).then(function (res) {
+                                port.postMessage({'quicktexts': res, 'action': 'list'});
+                                _gaq.push(['_trackEvent', "content", 'insert']);
+                            });
+                        }
                     }
                 });
             }
         });
-    }                        
+    }
 }
 
 gqApp.controller('ListCtrl',
@@ -37896,21 +39130,47 @@ gqApp.controller('LoginCtrl', function ($scope, $rootScope, QuicktextService, Se
     };
 });
 
-gqApp.controller('SettingsCtrl', function ($scope, $rootScope, QuicktextService, SettingsService, ProfileService) {
+gqApp.controller('SettingsCtrl', function ($scope, $rootScope, QuicktextService, SettingsService) {
 
-    $scope.tabcompleteEnabled = SettingsService.get('tabcompleteEnabled');
-    $scope.autocompleteEnabled = SettingsService.get('autocompleteEnabled');
-    $scope.autocompleteDelay = SettingsService.get('autocompleteDelay');
-    $scope.sendStatsEnabled = SettingsService.get('sendStatsEnabled');
+    $scope.settings =  SettingsService.get('settings');
+
+    $scope.$watch("settings", function(data){
+        $scope.updateSettings(data)
+    }, true);
+
+    $scope.updateSettings = function(data){
+        SettingsService.set('settings', data);
+    };
 
     // Delete all quicktexts. This will not delete the quicktexts on the server side
     $scope.deleteAll = function () {
         var r = confirm("Are you sure you want to delete all Quicktexts?\n\nNote: they will NOT be deleted from the sync server.");
         if (r === true) {
-            QuicktextService.deleteAll().then();
+            QuicktextService.deleteAll().then(function(){
+                alert("All quicktexts have been deleted. You can still get them back if you are registered quicktext.io");
+            });
         }
     };
 
+    $scope.recordSequence = function(selector) {
+        var input = $('#' + selector);
+        var model = input.attr('ng-model');
+        input.val('');
+
+        Mousetrap.record(function(sequence) {
+            // sequence is an array like ['ctrl+k', 'c']
+
+            var val = sequence.join(' ');
+            if (model === 'settings.keyboard.shortcut'){
+                $scope.settings.keyboard.shortcut = val;
+            } else if (model === 'settings.dialog.shortcut'){
+                $scope.settings.dialog.shortcut = val;
+            }
+            input.val(val);
+            $scope.updateSettings($scope.settings);
+            alert("Please refresh Gmail for the new shortcut to come into effect");
+        });
+    };
 });
 
 gqApp.controller('SignupCtrl', function ($scope, $rootScope, QuicktextService, SettingsService, ProfileService) {
@@ -38040,10 +39300,16 @@ gqApp.service('QuicktextService', function ($q, $resource, SettingsService) {
         return deferred.promise;
     };
 
-    self.filtered = function (filters) {
+    self.filtered = function (filters, limit) {
         var deferred = $q.defer();
         self.db.transaction(function (tx) {
-            tx.executeSql("SELECT * FROM quicktext WHERE deleted = 0 AND " + filters + " ORDER BY created_datetime DESC", [], function (tx, res) {
+            if (filters !== '') {
+                filters = " AND " + filters;
+            }
+            if (limit) {
+                limit = " LIMIT " + limit;
+            }
+            tx.executeSql("SELECT * FROM quicktext WHERE deleted = 0 " + filters + " ORDER BY created_datetime DESC" + limit, [], function (tx, res) {
                 var len = res.rows.length, i;
                 var list = [];
                 for (i = 0; i < len; i++) {
@@ -38523,14 +39789,14 @@ var Settings = {
             return JSON.parse(window.localStorage[key]);
         } else {
             if (!def) {
-                return this.defaults[key];
+                return angular.copy(this.defaults[key]);
             } else {
                 return def;
             }
         }
     },
     set: function (key, value) {
-        if (value === this.defaults[key]) {
+        if (_.isEqual(value, this.defaults[key])) {
             return this.clear(key);
         } else {
             window.localStorage[key] = JSON.stringify(value);
@@ -38546,17 +39812,70 @@ var Settings = {
     defaults: {
         baseURL: "https://quicktext.io/",
         apiBaseURL: "https://quicktext.io/api/1/",
-        //baseURL: "http://localhost:5000/",
-        //apiBaseURL: "http://localhost:5000/api/1/",
+
+        settings: { // settings for the settings view
+            dialog: {
+                enabled: true,
+                shortcut: 'ctrl+space', // shortcut that triggers the complete dialog
+                auto: false, //trigger automatically while typing - should be disabled cause it's annoying sometimes
+                delay: 1000 // if we want to trigger it automatically
+            },
+            keyboard: {
+                enabled: true,
+                shortcut: 'tab'
+            },
+            stats: {
+                enabled: true  // send anonymous statistics - doesn't include GA
+            }
+        },
+        // refactor this into 'local' and 'remote'
         isLoggedIn: false,
         syncEnabled: false,
-        lastSync: null,
-        autocompleteEnabled: true, // autocomplete dialog
-        autocompleteDelay: 1000, // autocomplete dialog delay - 1s by default
-        tabcompleteEnabled: true, // tab completion
-        sendStatsEnabled: true, // send anonymous statistics
         words: 0,
         syncedWords: 0,
-        lastStatsSync: null
+        lastStatsSync: null,
+        lastSync: null
     }
 };
+
+// COPYRIGHT (c) 2014 TrackJS LLC ALL RIGHTS RESERVED
+(function(h,n){"use awesome";if(h.trackJs)h.console&&h.console.warn&&h.console.warn("TrackJS global conflict");else{var k=function(a,b,c,d,e){this.util=a;this.onError=b;this.onFault=c;this.options=e;e.enabled&&this.initialize(d)};k.prototype={initialize:function(a){a.addEventListener&&(this.wrapAndCatch(a.Element.prototype,"addEventListener",1),this.wrapAndCatch(a.XMLHttpRequest.prototype,"addEventListener",1),this.wrapRemoveEventListener(a.Element.prototype),this.wrapRemoveEventListener(a.XMLHttpRequest.prototype));
+this.wrapAndCatch(a,"setTimeout",0);this.wrapAndCatch(a,"setInterval",0)},wrapAndCatch:function(a,b,c){var d=this,e=a[b];d.util.hasFunction(e,"apply")&&(a[b]=function(){try{var f=Array.prototype.slice.call(arguments),g=f[c],u,h;if(d.options.bindStack)try{throw Error();}catch(A){h=A.stack,u=d.util.isoNow()}if("addEventListener"===b&&(this._trackJsEvt||(this._trackJsEvt=new l),this._trackJsEvt.getWrapped(f[0],g,f[2])))return;g&&d.util.hasFunction(g,"apply")&&(f[c]=function(){try{return g.apply(this,
+arguments)}catch(a){throw d.onError("catch",a,{bindTime:u,bindStack:h}),d.util.wrapError(a);}},"addEventListener"===b&&this._trackJsEvt.add(f[0],g,f[2],f[c]));return e.apply(this,f)}catch(k){a[b]=e,d.onFault(k)}})},wrapRemoveEventListener:function(a){if(a&&a.removeEventListener&&this.util.hasFunction(a.removeEventListener,"call")){var b=a.removeEventListener;a.removeEventListener=function(a,d,e){if(this._trackJsEvt){var f=this._trackJsEvt.getWrapped(a,d,e);f&&this._trackJsEvt.remove(a,d,e);return b.call(this,
+a,f,e)}return b.call(this,a,d,e)}}}};var l=function(){this.events=[]};l.prototype={add:function(a,b,c,d){-1>=this.indexOf(a,b,c)&&this.events.push([a,b,!!c,d])},remove:function(a,b,c){a=this.indexOf(a,b,!!c);0<=a&&this.events.splice(a,1)},getWrapped:function(a,b,c){a=this.indexOf(a,b,!!c);if(0<=a)return this.events[a][3]},indexOf:function(a,b,c){for(var d=0;d<this.events.length;d++)if(this.events[d][0]===a&&this.events[d][1]===b&&this.events[d][2]===!!c)return d;return-1}};var p=function(a,b){this.util=
+a;this.initCurrent(b)};p.prototype={current:{},initOnly:{enabled:!0,token:!0,callback:{enabled:!0},console:{enabled:!0},network:{enabled:!0},visitor:{enabled:!0},window:{enabled:!0}},defaults:{application:"",enabled:!0,onError:function(){return!0},serialize:function(a){return void 0===a?"undefined":null===a?"null":"number"===typeof a&&isNaN(a)?"NaN":""===a?"Empty String":0===a?"0":!1===a?"false":a&&a.toString?a.toString():"unknown"},sessionId:"",token:"",userId:"",version:"",callback:{enabled:!0,
+bindStack:!1},console:{enabled:!0,display:!0,error:!0,watch:["log","debug","info","warn","error"]},network:{enabled:!0,error:!0},visitor:{enabled:!0},window:{enabled:!0}},initCurrent:function(a){if(this.validate(a,this.defaults,"config",{}))return this.current=this.util.extend(this.current,this.defaults,a),!0;this.current=this.util.extend(this.current,this.defaults);return!1},setCurrent:function(a){return this.validate(a,this.defaults,"config",this.initOnly)?(this.current=this.util.extend(this.current,
+a),!0):!1},validate:function(a,b,c,d){var e=!0;c=c||"";d=d||{};for(var f in a)if(a.hasOwnProperty(f))if(b.hasOwnProperty(f)){var g=typeof b[f];g!==typeof a[f]?(console.warn(c+"."+f+": property must be type "+g+"."),e=!1):"[object Array]"!==Object.prototype.toString.call(a[f])||this.validateArray(a[f],b[f],c+"."+f)?"[object Object]"===Object.prototype.toString.call(a[f])?e=this.validate(a[f],b[f],c+"."+f,d[f]):d.hasOwnProperty(f)&&(console.warn(c+"."+f+": property cannot be set after load."),e=!1):
+e=!1}else console.warn(c+"."+f+": property not supported."),e=!1;return e},validateArray:function(a,b,c){var d=!0;c=c||"";for(var e=0;e<a.length;e++)this.util.contains(b,a[e])||(console.warn(c+"["+e+"]: invalid value: "+a[e]+"."),d=!1);return d}};var t=function(a,b,c,d,e,f,g){this.util=a;this.log=b;this.onError=c;this.onFault=d;this.serialize=e;g.enabled&&(f.console=this.wrapConsoleObject(f.console,g))};t.prototype={wrapConsoleObject:function(a,b){a=a||{};var c=a.log||function(){},d=this,e;for(e=
+0;e<b.watch.length;e++)(function(e){var g=a[e]||c;a[e]=function(){try{var a=Array.prototype.slice.call(arguments);d.log.add("c",{timestamp:d.util.isoNow(),severity:e,message:d.serialize(a)});if(b.error&&"error"===e)try{throw Error(a[0]);}catch(c){d.onError("console",c)}b.display&&(d.util.hasFunction(g,"apply")?g.apply(this,a):g(a[0],a[1],a[2]))}catch(h){d.onFault(h)}}})(b.watch[e]);return a},report:function(){return this.log.all("c")}};var q=function(a,b,c,d,e){this.config=a;this.util=b;this.log=
+c;this.window=d;this.document=e;this.correlationId=this.token=null;this.initialize()};q.prototype={initialize:function(){this.token=this.getCustomerToken();this.correlationId=this.getCorrelationId()},getCustomerToken:function(){if(this.config.current.token)return this.config.current.token;var a=this.document.getElementsByTagName("script");return a[a.length-1].getAttribute("data-token")},getCorrelationId:function(){var a;try{a=this.document.cookie.replace(/(?:(?:^|.*;\s*)TrackJS\s*\=\s*([^;]*).*$)|^.*$/,
+"$1"),a||(a=this.util.uuid(),this.document.cookie="TrackJS="+a+"; expires=Fri, 31 Dec 9999 23:59:59 GMT; path=/")}catch(b){a=this.util.uuid()}return a},report:function(){return{application:this.config.current.application,correlationId:this.correlationId,sessionId:this.config.current.sessionId,token:this.token,userId:this.config.current.userId,version:this.config.current.version}}};var r=function(a){this.loadedOn=(new Date).getTime();this.window=a};r.prototype={discoverDependencies:function(){var a,
+b={};this.window.jQuery&&(this.window.jQuery.fn&&this.window.jQuery.fn.jquery)&&(b.jQuery=this.window.jQuery.fn.jquery);this.window.jQuery&&(this.window.jQuery.ui&&this.window.jQuery.ui.version)&&(b.jQueryUI=this.window.jQuery.ui.version);this.window.angular&&(this.window.angular.version&&this.window.angular.version.full)&&(b.angular=this.window.angular.version.full);for(a in this.window)if("_trackJs"!==a&&"_trackJS"!==a&&"_trackjs"!==a&&"webkitStorageInfo"!==a)try{if(this.window[a]){var c=this.window[a].version||
+this.window[a].Version||this.window[a].VERSION;"string"===typeof c&&(b[a]=c)}}catch(d){}return b},report:function(){return{age:(new Date).getTime()-this.loadedOn,dependencies:this.discoverDependencies(),userAgent:this.window.navigator.userAgent,viewportHeight:this.window.document.documentElement.clientHeight,viewportWidth:this.window.document.documentElement.clientWidth}}};var s=function(a){this.util=a;this.appender=[];this.maxLength=30};s.prototype={all:function(a){var b=[],c,d;for(d=0;d<this.appender.length;d++)(c=
+this.appender[d])&&c.category===a&&b.push(c.value);return b},clear:function(){this.appender.length=0},truncate:function(){this.appender.length>this.maxLength&&(this.appender=this.appender.slice(Math.max(this.appender.length-this.maxLength,0)))},add:function(a,b){var c=this.util.uuid();this.appender.push({key:c,category:a,value:b});this.truncate();return c},get:function(a,b){var c,d;for(d=0;d<this.appender.length;d++)if(c=this.appender[d],c.category===a&&c.key===b)return c.value;return!1}};var v=function(a,
+b,c,d,e,f){this.util=a;this.log=b;this.onError=c;this.onFault=d;this.window=e;this.options=f;f.enabled&&this.initialize(e)};v.prototype={initialize:function(a){a.XMLHttpRequest&&this.util.hasFunction(a.XMLHttpRequest.prototype.open,"apply")&&this.watchNetworkObject(a.XMLHttpRequest);a.XDomainRequest&&this.util.hasFunction(a.XDomainRequest.prototype.open,"apply")&&this.watchNetworkObject(a.XDomainRequest)},watchNetworkObject:function(a){var b=this,c=a.prototype.open,d=a.prototype.send;a.prototype.open=
+function(a,b){this._trackJs={method:a,url:b};return c.apply(this,arguments)};a.prototype.send=function(){try{if(!this._trackJs)return d.apply(this,arguments);this._trackJs.logId=b.log.add("n",{startedOn:b.util.isoNow(),method:this._trackJs.method,url:this._trackJs.url});b.listenForNetworkComplete(this)}catch(a){b.onFault(a)}return d.apply(this,arguments)};return a},listenForNetworkComplete:function(a){var b=this;b.window.ProgressEvent&&a.addEventListener&&a.addEventListener("readystatechange",function(){4===
+a.readyState&&b.finalizeNetworkEvent(a)},!0);a.addEventListener?a.addEventListener("load",function(){b.finalizeNetworkEvent(a);b.checkNetworkFault(a)},!0):setTimeout(function(){try{var c=a.onload;a.onload=function(){b.finalizeNetworkEvent(a);b.checkNetworkFault(a);"function"===typeof c&&b.util.hasFunction(c,"apply")&&c.apply(a,arguments)};var d=a.onerror;a.onerror=function(){b.finalizeNetworkEvent(a);b.checkNetworkFault(a);"function"===typeof oldOnError&&d.apply(a,arguments)}}catch(e){b.onFault(e)}},
+0)},finalizeNetworkEvent:function(a){if(a._trackJs){var b=this.log.get("n",a._trackJs.logId);b&&(b.completedOn=this.util.isoNow(),b.statusCode=1223==a.status?204:a.status,b.statusText=1223==a.status?"No Content":a.statusText,a._trackJs=void 0)}},checkNetworkFault:function(a){if(this.options.error&&400<=a.status&&1223!=a.status)this.onError("ajax",a.status+" "+a.statusText)},report:function(){return this.log.all("n")}};var m=function(a){this.util=a;this.disabled=!1;this.throttleStats={attemptCount:0,
+throttledCount:0,lastAttempt:(new Date).getTime()};h.JSON&&h.JSON.stringify||(this.disabled=!0)};m.prototype={errorEndpoint:function(a,b){b=(b||"https://capture.trackjs.com/capture")+("?token="+a);return this.util.isBrowserIE()?"//"+b.split("://")[1]:b},usageEndpoint:function(a){return this.appendObjectAsQuery(a,"https://usage.trackjs.com/usage.gif")},trackerFaultEndpoint:function(a){return this.appendObjectAsQuery(a,"https://usage.trackjs.com/fault.gif")},appendObjectAsQuery:function(a,b){b+="?";
+for(var c in a)a.hasOwnProperty(c)&&(b+=encodeURIComponent(c)+"="+encodeURIComponent(a[c])+"&");return b},getCORSRequest:function(a,b){var c=new h.XMLHttpRequest;"withCredentials"in c?(c.open(a,b),c.setRequestHeader("Content-Type","text/plain")):"undefined"!==typeof h.XDomainRequest?(c=new h.XDomainRequest,c.open(a,b)):c=null;return c},sendTrackerFault:function(a){this.throttle(a)||((new Image).src=this.trackerFaultEndpoint(a))},sendUsage:function(a){(new Image).src=this.usageEndpoint(a)},sendError:function(a,
+b){var c=this;if(!this.disabled&&!this.throttle(a))try{var d=this.getCORSRequest("POST",this.errorEndpoint(b));d.onreadystatechange=function(){4===d.readyState&&200!==d.status&&(c.disabled=!0)};d._trackJs=void 0;d.send(h.JSON.stringify(a))}catch(e){throw this.disabled=!0,e;}},throttle:function(a){var b=(new Date).getTime();this.throttleStats.attemptCount++;if(this.throttleStats.lastAttempt+1E3>=b){if(this.throttleStats.lastAttempt=b,10<this.throttleStats.attemptCount)return this.throttleStats.throttledCount++,
+!0}else a.throttled=this.throttleStats.throttledCount,this.throttleStats.attemptCount=0,this.throttleStats.lastAttempt=b,this.throttleStats.throttledCount=0;return!1}};var w=function(a){this.window=a};w.prototype={bind:function(a,b){return function(){return a.apply(b,Array.prototype.slice.call(arguments))}},contains:function(a,b){var c;for(c=0;c<a.length;c++)if(a[c]===b)return!0;return!1},defer:function(a,b){setTimeout(function(){a.apply(b)})},extend:function(a){for(var b,c=Array.prototype.slice.call(arguments,
+1),d=0;d<c.length;d++)for(b in c[d])null===c[d][b]||void 0===c[d][b]?a[b]=c[d][b]:"[object Object]"===Object.prototype.toString.call(c[d][b])?(a[b]=a[b]||{},this.extend(a[b],c[d][b])):a[b]=c[d][b];return a},hasFunction:function(a,b){try{return!!a[b]}catch(c){return!1}},isBrowserIE:function(){var a=this.window.navigator.userAgent,b=a.match(/Trident\/([\d.]+)/);return b&&"7.0"===b[1]?11:(a=a.match(/MSIE ([\d.]+)/))?parseInt(a[1],10):!1},isBrowserSupported:function(){var a=this.isBrowserIE();return!a||
+8<=a},isoNow:function(){var a=new Date;return a.toISOString?a.toISOString():a.getUTCFullYear()+"-"+this.pad(a.getUTCMonth()+1)+"-"+this.pad(a.getUTCDate())+"T"+this.pad(a.getUTCHours())+":"+this.pad(a.getUTCMinutes())+":"+this.pad(a.getUTCSeconds())+"."+String((a.getUTCMilliseconds()/1E3).toFixed(3)).slice(2,5)+"Z"},pad:function(a){a=String(a);1===a.length&&(a="0"+a);return a},uuid:function(){return"xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g,function(a){var b=16*Math.random()|0;return("x"==
+a?b:b&3|8).toString(16)})},wrapError:function(a){if(a.innerError)return a;var b=Error("TrackJS Caught: "+(a.message||a));b.description="TrackJS Caught: "+a.description;b.file=a.file;b.line=a.line||a.lineNumber;b.column=a.column||a.columnNumber;b.stack=a.stack;b.innerError=a;return b}};var x=function(a,b,c,d,e,f){this.util=a;this.log=b;this.onError=c;this.onFault=d;this.options=f;this.document=e;f.enabled&&this.initialize(e)};x.prototype={initialize:function(a){var b=this.util.bind(this.onDocumentClicked,
+this),c=this.util.bind(this.onInputChanged,this);a.addEventListener?(a.addEventListener("click",b,!0),a.addEventListener("blur",c,!0)):a.attachEvent&&(a.attachEvent("onclick",b),a.attachEvent("onfocusout",c))},onDocumentClicked:function(a){try{var b=this.getElementFromEvent(a);b&&b.tagName&&(this.isDescribedElement(b,"a")||this.isDescribedElement(b,"button")||this.isDescribedElement(b,"input",["button","submit"])?this.writeVisitorEvent(b,"click"):this.isDescribedElement(b,"input",["checkbox","radio"])&&
+this.writeVisitorEvent(b,"input",b.value,b.checked))}catch(c){this.onFault(c)}},onInputChanged:function(a){try{var b=this.getElementFromEvent(a);if(b&&b.tagName)if(this.isDescribedElement(b,"textarea"))this.writeVisitorEvent(b,"input",b.value);else if(this.isDescribedElement(b,"select")&&b.options&&b.options.length)this.onSelectInputChanged(b);else this.isDescribedElement(b,"input")&&!this.isDescribedElement(b,"input",["button","submit","hidden","checkbox","radio"])&&this.writeVisitorEvent(b,"input",
+b.value)}catch(c){this.onFault(c)}},onSelectInputChanged:function(a){if(a.multiple)for(var b=0;b<a.options.length;b++)a.options[b].selected&&this.writeVisitorEvent(a,"input",a.options[b].value);else 0<=a.selectedIndex&&a.options[a.selectedIndex]&&this.writeVisitorEvent(a,"input",a.options[a.selectedIndex].value)},writeVisitorEvent:function(a,b,c,d){"password"===this.getElementType(a)&&(c=void 0);this.log.add("v",{timestamp:this.util.isoNow(),action:b,element:{tag:a.tagName.toLowerCase(),attributes:this.getElementAttributes(a),
+value:this.getMetaValue(c,d)}})},getElementFromEvent:function(a){return a.target||n.elementFromPoint(a.clientX,a.clientY)},isDescribedElement:function(a,b,c){if(a.tagName.toLowerCase()!==b.toLowerCase())return!1;if(!c)return!0;a=this.getElementType(a);for(b=0;b<c.length;b++)if(c[b]===a)return!0;return!1},getElementType:function(a){return(a.getAttribute("type")||"").toLowerCase()},getElementAttributes:function(a){for(var b={},c=0;c<a.attributes.length;c++)"value"!==a.attributes[c].name.toLowerCase()&&
+(b[a.attributes[c].name]=a.attributes[c].value);return b},getMetaValue:function(a,b){return void 0===a?void 0:{length:a.length,pattern:this.matchInputPattern(a),checked:b}},matchInputPattern:function(a){return""===a?"empty":/^[a-z0-9!#$%&'*+=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/.test(a)?"email":/^(0?[1-9]|[12][0-9]|3[01])[\/\-](0?[1-9]|1[012])[\/\-]\d{4}$/.test(a)||/^(\d{4}[\/\-](0?[1-9]|1[012])[\/\-]0?[1-9]|[12][0-9]|3[01])$/.test(a)?
+"date":/^(?:(?:\+?1\s*(?:[.-]\s*)?)?(?:\(\s*([2-9]1[02-9]|[2-9][02-8]1|[2-9][02-8][02-9])\s*\)|([2-9]1[02-9]|[2-9][02-8]1|[2-9][02-8][02-9]))\s*(?:[.-]\s*)?)?([2-9]1[02-9]|[2-9][02-9]1|[2-9][02-9]{2})\s*(?:[.-]\s*)?([0-9]{4})(?:\s*(?:#|x\.?|ext\.?|extension)\s*(\d+))?$/.test(a)?"usphone":/^\s*$/.test(a)?"whitespace":/^\d*$/.test(a)?"numeric":/^[a-zA-Z]*$/.test(a)?"alpha":/^[a-zA-Z0-9]*$/.test(a)?"alphanumeric":"characters"},report:function(){return this.log.all("v")}};var y=function(a,b,c,d,e){this.onError=
+a;this.onFault=b;this.serialize=c;e.enabled&&this.watchWindowErrors(d)};y.prototype={watchWindowErrors:function(a){var b=this;a.onerror=function(a,d,e,f,g){try{g||(g={},g.message=b.serialize(a),g.file=b.serialize(d),g.line=parseInt(e,10)||null,g.column=parseInt(f,10)||null),b.onError("window",g)}catch(h){b.onFault(h)}}}};var z=function(a,b,c,d,e,f,g,h,k,l,m,n,p,t,q,r){try{this.window=q,this.document=r,this.util=new m(this.window),this.onError=this.util.bind(this.onError,this),this.onFault=this.util.bind(this.onFault,
+this),this.serialize=this.util.bind(this.serialize,this),this.transmitter=new l(this.util),this.config=new d(this.util,a),this.log=new h(this.util),this.api=new b(this.config,this.util,this.onError),this.environment=new g(this.window),this.customer=new f(this.config,this.util,this.log,this.window,this.document),this.customer.token&&(this.transmitter.sendUsage({token:this.customer.token,correlationId:this.customer.correlationId,application:this.config.current.application,x:this.util.uuid()}),this.apiConsoleWatcher=
+new e(this.util,this.log,this.onError,this.onFault,this.serialize,this.api,this.config.defaults.console),this.windowConsoleWatcher=new e(this.util,this.log,this.onError,this.onFault,this.serialize,this.window,this.config.current.console),this.util.isBrowserSupported()&&this.config.current.enabled&&(this.callbackWatcher=new c(this.util,this.onError,this.onFault,this.window,this.config.current.callback),this.visitorWatcher=new n(this.util,this.log,this.onError,this.onFault,this.document,this.config.current.visitor),
+this.networkWatcher=new k(this.util,this.log,this.onError,this.onFault,this.window,this.config.current.network),this.windowWatcher=new p(this.onError,this.onFault,this.serialize,this.window,this.config.current.window)))}catch(s){this.onFault(s)}};z.prototype={reveal:function(){if(this.customer.token)return this.api;this.window.console&&this.window.console.warn&&this.window.console.warn("TrackJS could not find a token")},onError:function(a,b,c){if(this.util.isBrowserSupported()&&this.config.current.enabled)try{b=
+b||{};c=c||{bindStack:null,bindTime:null,force:!1};var d=b.message||b;if(!d||!d.indexOf||-1===d.indexOf("TrackJS Caught")){var e=this.util.extend({},{bindStack:c.bindStack,bindTime:c.bindTime,column:b.column||b.columnNumber,console:this.windowConsoleWatcher.report(),customer:this.customer.report(),entry:a,environment:this.environment.report(),file:b.file||b.fileName,line:b.line||b.lineNumber,message:c.force?d:this.serialize(d),network:this.networkWatcher.report(),url:(h.location||"").toString(),stack:b.stack,
+timestamp:this.util.isoNow(),visitor:this.visitorWatcher.report(),version:"2.1.1"});if(!c.force)try{if(!this.config.current.onError(e,b))return}catch(f){e.console.push({timestamp:this.util.isoNow(),severity:"error",message:f.message});var g=this;setTimeout(function(){g.onError("catch",f,{force:!0})},0)}this.log.clear();this.transmitter.sendError(e,this.customer.token)}}catch(k){console.log(k),this.onFault(k)}},onFault:function(a){var b=this.transmitter||new m;a=a||{};a={token:this.customer.token,
+file:a.file||a.fileName,msg:a.message||"unknown",stack:(a.stack||"unknown").substr(0,500),url:this.window.location,v:"2.1.1",x:this.util.uuid()};b.sendTrackerFault(a)},serialize:function(a){if(this.config&&this.config.current&&this.config.current.serialize)try{return this.config.current.serialize(a)}catch(b){return this.onError("catch",b,{force:!0}),this.util&&this.util.hasFunction(a,"toString")?a.toString():"unknown"}}};k=new z(h._trackJs||h._trackJS||h._trackjs||{},function(a,b,c){return{attempt:function(a,
+e){try{var f=Array.prototype.slice.call(arguments,2);return a.apply(e||this,f)}catch(g){throw c("catch",g),b.wrapError(g);}},configure:function(b){return a.setCurrent(b)},track:function(a){a=a||{};if(!a.stack)try{throw Error(a);}catch(b){a=b}c("direct",a)},watch:function(a,e){return function(){try{var f=Array.prototype.slice.call(arguments,0);return a.apply(e||this,f)}catch(g){throw c("catch",g),b.wrapError(g);}}},watchAll:function(a){var e=Array.prototype.slice.call(arguments,1),f;for(f in a)"function"===
+typeof a[f]&&(b.contains(e,f)||function(){var e=a[f];a[f]=function(){try{var a=Array.prototype.slice.call(arguments,0);return e.apply(this,a)}catch(d){throw c("catch",d),b.wrapError(d);}}}())},version:"2.1.1"}},k,p,t,q,r,s,v,m,w,x,y,l,h,n);h.trackJs=k.reveal()}})(window,document);

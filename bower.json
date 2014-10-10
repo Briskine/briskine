@@ -28,6 +28,7 @@
     "underscore.string": "~2.3.3",
     "handlebars": "~1.1.2",
     "font-awesome": "~4.0",
-    "trackjs-tracker": "~2.1.1"
+    "trackjs-tracker": "~2.1.1",
+    "mousetrap": "git@github.com:humanfromearth/mousetrap.git#~1.4.6"
   }
 }
