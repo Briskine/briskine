@@ -46,9 +46,6 @@ App.autocomplete.dialog = {
         App.settings.getFiltered(word.text, App.autocomplete.dialog.RESULTS_LIMIT, function (quicktexts) {
             App.autocomplete.quicktexts = quicktexts;
 
-            console.log(word);
-            console.log(quicktexts);
-
             if (App.autocomplete.quicktexts.length) {
                 App.autocomplete.dialog.populate(App.autocomplete.quicktexts);
             }
@@ -120,7 +117,6 @@ App.autocomplete.dialog = {
 
     },
     populate: function (quicktexts) {
-        console.log('populate');
 
         App.autocomplete.quicktexts = quicktexts;
 
