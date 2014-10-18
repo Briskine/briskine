@@ -25,6 +25,7 @@ App.autocomplete.dialog = {
     isActive: false,
     isEmpty: true,
     RESULTS_LIMIT: 5, // only show 5 results at a time
+    editor: null,
 
     completion: function (e) {
 
@@ -155,6 +156,9 @@ App.autocomplete.dialog = {
         App.autocomplete.dialog.selectItem(0);
     },
     show: function (cursorPosition) {
+        // get current focused element - the editor
+        App.autocomplete.dialog.editor = document.activeElement;
+
         App.autocomplete.dialog.isActive = true;
         App.autocomplete.dialog.isEmpty = true;
 
@@ -202,6 +206,13 @@ App.autocomplete.dialog = {
 
             App.autocomplete.dialog.quicktexts = [];
             App.autocomplete.dialog.cursorPosition = null;
+
+            // return focus to the editor
+            if(App.autocomplete.dialog.editor) {
+                setTimeout(function() {
+                    App.autocomplete.dialog.editor.focus();
+                });
+            }
         }
     }
 };
