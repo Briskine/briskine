@@ -43,7 +43,6 @@ App.autocomplete.dialog = {
             App.autocomplete.dialog.$search.val(word.text); //setup default value if any
         }
 
-        //TODO: Some caching here would be really nice
         App.settings.getFiltered(word.text, App.autocomplete.dialog.RESULTS_LIMIT, function (quicktexts) {
             App.autocomplete.quicktexts = quicktexts;
 
@@ -91,9 +90,6 @@ App.autocomplete.dialog = {
             App.autocomplete.cursorPosition.word.text = $(this).val();
 
             App.settings.getFiltered(App.autocomplete.cursorPosition.word.text, App.autocomplete.dialog.RESULTS_LIMIT, function (quicktexts) {
-
-                console.log(App.autocomplete.cursorPosition.word.text);
-                console.log(quicktexts);
 
                 App.autocomplete.quicktexts = quicktexts;
                 App.autocomplete.dialog.populate(App.autocomplete.quicktexts);
@@ -214,9 +210,11 @@ App.autocomplete.dialog = {
 
             // return focus to the editor
             if(App.autocomplete.dialog.editor) {
+                // chrome focuses the to field
+                // so we need the delay
                 setTimeout(function() {
                     App.autocomplete.dialog.editor.focus();
-                });
+                }, 50);
             }
         }
     }

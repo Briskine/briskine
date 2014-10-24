@@ -7,7 +7,9 @@ var App = {
     data: {
         inCompose: false,      // true when textarea element is focused
         composeElement: null,  // reference to compose DOM element
-        gmailView: ''         // it may be standard or basic html
+        gmailView: '',         // it may be standard or basic html
+        searchCache: {},
+        debouncer: {}
     },
     autocomplete: {},
     parser: {},
@@ -25,23 +27,37 @@ var App = {
         getFiltered: function (text, limit, callback) {
             // search even the empty strings. It's not a problem because the dialog is now triggered by a user shortcut
 
-            // TODO use a deffered instead of checking existing listeners
-            // defer only if the callback is the same
+            // use a debouncer to not trigger the filter too many times
+            // use the callback function as a uuid for the debouncers
 
-            // so we diferentiante between requests from the search field
-            // and the autocomplete shortcut
+            var debouncerId = callback.toString();
 
-            
+            if(App.data.debouncer[debouncerId]) {
+                clearTimeout(App.data.debouncer[debouncerId]);
+            }
 
-            //if (!App.searchPort.onMessage.hasListeners()) {
-                App.searchPort.onMessage.addListener(function (msg) {
-                    callback(msg.quicktexts);
-                });
-            //}
+            App.data.debouncer[debouncerId] = setTimeout(function() {
 
-            console.log(App.searchPort.onMessage.hasListeners());
+                if(!App.data.searchCache[text] || !App.data.searchCache[text].length) {
 
-            App.searchPort.postMessage({text: text, limit: limit});
+                    App.searchPort.onMessage.addListener(function (msg) {
+
+                        App.data.searchCache[text] = msg.quicktexts.slice();
+
+                        callback(msg.quicktexts);
+                    });
+
+                    App.searchPort.postMessage({text: text, limit: limit});
+
+                } else {
+
+                    callback(App.data.searchCache[text]);
+
+                }
+
+            }, 250);
+
+
         },
         get: function (key, callback) {
             chrome.runtime.sendMessage({'request': 'get', 'data': key}, function (response) {
@@ -62,14 +78,14 @@ var App = {
 };
 
 // Add trackjs
-window._trackJs = {
-   token: "f4b509356dbf42feb02b2b535d8c1c85",
-   application: "quicktext-chrome",
-   version: chrome.runtime.getManifest().version,
-   visitor: {
-       enabled: false // don't collect data from user events as it might contain private information
-   }
-};
+// window._trackJs = {
+//    token: "f4b509356dbf42feb02b2b535d8c1c85",
+//    application: "quicktext-chrome",
+//    version: chrome.runtime.getManifest().version,
+//    visitor: {
+//        enabled: false // don't collect data from user events as it might contain private information
+//    }
+// };
 
 App.init = function () {
     document.addEventListener("blur", App.onBlur, true);
