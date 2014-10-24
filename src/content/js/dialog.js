@@ -77,7 +77,7 @@ App.autocomplete.dialog = {
             App.autocomplete.dialog.selectItem($(this).index());
             if (e.type === 'mousedown') {
                 App.autocomplete.dialog.selectActive();
-                App.autocomplete.dialog.close();
+                //App.autocomplete.dialog.close();
             }
         });
 
@@ -93,6 +93,7 @@ App.autocomplete.dialog = {
 
                 App.autocomplete.quicktexts = quicktexts;
                 App.autocomplete.dialog.populate(App.autocomplete.quicktexts);
+                
             });
         });
     },
@@ -173,10 +174,13 @@ App.autocomplete.dialog = {
     },
     selectItem: function (index) {
         if (App.autocomplete.dialog.isActive && !App.autocomplete.dialog.isEmpty) {
+            var $element = App.autocomplete.dialog.$content.children().eq(index);
+
             App.autocomplete.dialog.$content.children()
                 .removeClass('active')
-                .eq(index)
-                .addClass('active');
+                .eq(index);
+
+            $element.addClass('active');
         }
     },
     selectActive: function () {
@@ -195,6 +199,10 @@ App.autocomplete.dialog = {
             index_new = Math.max(0, Math.min(elements_count - 1, index_active + index_diff));
 
         App.autocomplete.dialog.selectItem(index_new);
+
+        // scroll the active element into view
+        var $element = App.autocomplete.dialog.$content.children().eq(index_new);
+        $element.get(0).scrollIntoView();
     },
     // remove dropdown and cleanup
     close: function () {

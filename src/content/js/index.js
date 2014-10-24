@@ -44,7 +44,10 @@ var App = {
 
                         App.data.searchCache[text] = msg.quicktexts.slice();
 
-                        callback(msg.quicktexts);
+                        callback(App.data.searchCache[text]);
+
+                        App.searchPort.onMessage.removeListener(arguments.callee);
+
                     });
 
                     App.searchPort.postMessage({text: text, limit: limit});
@@ -55,7 +58,7 @@ var App = {
 
                 }
 
-            }, 250);
+            }, 200);
 
 
         },

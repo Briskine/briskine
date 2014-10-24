@@ -41,5 +41,10 @@ App.onBlur = function (e) {
 };
 
 App.onScroll = function (e) {
-    App.autocomplete.dialog.close();
+    var target = e.target;
+
+    // if scrolling the autocomplet list, don't close it
+    if(target !== App.autocomplete.dialog.$content.get(0)) {
+        App.autocomplete.dialog.close();
+    }
 };
