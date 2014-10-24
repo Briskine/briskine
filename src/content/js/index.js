@@ -24,11 +24,23 @@ var App = {
         },
         getFiltered: function (text, limit, callback) {
             // search even the empty strings. It's not a problem because the dialog is now triggered by a user shortcut
-            if (!App.searchPort.onMessage.hasListeners()) {
+
+            // TODO use a deffered instead of checking existing listeners
+            // defer only if the callback is the same
+
+            // so we diferentiante between requests from the search field
+            // and the autocomplete shortcut
+
+            
+
+            //if (!App.searchPort.onMessage.hasListeners()) {
                 App.searchPort.onMessage.addListener(function (msg) {
                     callback(msg.quicktexts);
                 });
-            }
+            //}
+
+            console.log(App.searchPort.onMessage.hasListeners());
+
             App.searchPort.postMessage({text: text, limit: limit});
         },
         get: function (key, callback) {

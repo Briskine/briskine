@@ -89,7 +89,12 @@ App.autocomplete.dialog = {
             }
 
             App.autocomplete.cursorPosition.word.text = $(this).val();
+
             App.settings.getFiltered(App.autocomplete.cursorPosition.word.text, App.autocomplete.dialog.RESULTS_LIMIT, function (quicktexts) {
+
+                console.log(App.autocomplete.cursorPosition.word.text);
+                console.log(quicktexts);
+
                 App.autocomplete.quicktexts = quicktexts;
                 App.autocomplete.dialog.populate(App.autocomplete.quicktexts);
             });

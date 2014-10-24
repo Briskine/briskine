@@ -104,8 +104,9 @@ if (chrome.runtime) {
                             });
                         } else {
                             injector.get('QuicktextService').filtered(
-                                    "shortcut = '" + msg.text + "' OR title LIKE '%" + msg.text + "%' OR body LIKE '% " + msg.text + " %'" /* TODO: <- fix this sql */,
+                                    "shortcut LIKE '%" + msg.text + "%' OR title LIKE '%" + msg.text + "%' OR body LIKE '% " + msg.text + " %'",
                                     msg.limit).then(function (res) {
+
                                 port.postMessage({'quicktexts': res, 'action': 'list'});
                                 _gaq.push(['_trackEvent', "content", 'insert']);
                             });
