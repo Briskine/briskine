@@ -32,35 +32,23 @@ var App = {
 
             var debouncerId = callback.toString();
 
-            if(App.data.debouncer[debouncerId]) {
+            if (App.data.debouncer[debouncerId]) {
                 clearTimeout(App.data.debouncer[debouncerId]);
             }
 
-            App.data.debouncer[debouncerId] = setTimeout(function() {
-
-                if(!App.data.searchCache[text] || !App.data.searchCache[text].length) {
-
+            App.data.debouncer[debouncerId] = setTimeout(function () {
+                if (!App.data.searchCache[text] || !App.data.searchCache[text].length) {
                     App.searchPort.onMessage.addListener(function (msg) {
-
                         App.data.searchCache[text] = msg.quicktexts.slice();
-
                         callback(App.data.searchCache[text]);
-
                         App.searchPort.onMessage.removeListener(arguments.callee);
-
                     });
-
                     App.searchPort.postMessage({text: text, limit: limit});
-
                 } else {
-
                     callback(App.data.searchCache[text]);
-
                 }
 
             }, 200);
-
-
         },
         get: function (key, callback) {
             chrome.runtime.sendMessage({'request': 'get', 'data': key}, function (response) {

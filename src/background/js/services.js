@@ -46,13 +46,20 @@ gqApp.service('QuicktextService', function ($q, $resource, SettingsService) {
     self.filtered = function (filters, limit) {
         var deferred = $q.defer();
         self.db.transaction(function (tx) {
-            if (filters !== '') {
+            if (filters) {
                 filters = " AND " + filters;
+            } else {
+                filters = ""
             }
+
             if (limit) {
                 limit = " LIMIT " + limit;
+            } else {
+                limit = ""
             }
-            tx.executeSql("SELECT * FROM quicktext WHERE deleted = 0 " + filters + " ORDER BY created_datetime DESC" + limit, [], function (tx, res) {
+
+            var sql = "SELECT * FROM quicktext WHERE deleted = 0 " + filters + " ORDER BY created_datetime DESC" + limit;
+            tx.executeSql(sql, [], function (tx, res) {
                 var len = res.rows.length, i;
                 var list = [];
                 for (i = 0; i < len; i++) {
