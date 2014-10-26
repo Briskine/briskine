@@ -49,13 +49,13 @@ gqApp.service('QuicktextService', function ($q, $resource, SettingsService) {
             if (filters) {
                 filters = " AND " + filters;
             } else {
-                filters = ""
+                filters = "";
             }
 
             if (limit) {
                 limit = " LIMIT " + limit;
             } else {
-                limit = ""
+                limit = "";
             }
 
             var sql = "SELECT * FROM quicktext WHERE deleted = 0 " + filters + " ORDER BY created_datetime DESC" + limit;

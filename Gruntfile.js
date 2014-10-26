@@ -168,6 +168,16 @@ module.exports = function (grunt) {
                     },
                     {
                         expand: true,
+                        flatten: true,
+                        dot: true,
+                        cwd: '<%= config.app %>/bower_components/bootstrap/dist/fonts/',
+                        dest: '<%= config.dist %>/background/fonts',
+                        src: [
+                            '*'
+                        ]
+                    },
+                    {
+                        expand: true,
                         dot: true,
                         cwd: config.app,
                         dest: '<%= config.dist %>',
