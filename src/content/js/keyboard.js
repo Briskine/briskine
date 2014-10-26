@@ -4,6 +4,7 @@
 
 App.autocomplete.keyboard = {
     completion: function (e) {
+
         // only works in compose area
         if (!App.data.inCompose) {
             return true;

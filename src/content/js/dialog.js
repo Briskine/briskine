@@ -25,8 +25,10 @@ App.autocomplete.dialog = {
     isActive: false,
     isEmpty: true,
     RESULTS_LIMIT: 5, // only show 5 results at a time
+    editor: null,
 
     completion: function (e) {
+
         // only works in compose area
         if (!App.data.inCompose) {
             return true;
@@ -41,9 +43,9 @@ App.autocomplete.dialog = {
             App.autocomplete.dialog.$search.val(word.text); //setup default value if any
         }
 
-        //TODO: Some caching here would be really nice
         App.settings.getFiltered(word.text, App.autocomplete.dialog.RESULTS_LIMIT, function (quicktexts) {
             App.autocomplete.quicktexts = quicktexts;
+
             if (App.autocomplete.quicktexts.length) {
                 App.autocomplete.dialog.populate(App.autocomplete.quicktexts);
             }
@@ -75,7 +77,7 @@ App.autocomplete.dialog = {
             App.autocomplete.dialog.selectItem($(this).index());
             if (e.type === 'mousedown') {
                 App.autocomplete.dialog.selectActive();
-                App.autocomplete.dialog.close();
+                //App.autocomplete.dialog.close();
             }
         });
 
@@ -86,9 +88,12 @@ App.autocomplete.dialog = {
             }
 
             App.autocomplete.cursorPosition.word.text = $(this).val();
+
             App.settings.getFiltered(App.autocomplete.cursorPosition.word.text, App.autocomplete.dialog.RESULTS_LIMIT, function (quicktexts) {
+
                 App.autocomplete.quicktexts = quicktexts;
                 App.autocomplete.dialog.populate(App.autocomplete.quicktexts);
+                
             });
         });
     },
@@ -115,6 +120,7 @@ App.autocomplete.dialog = {
 
     },
     populate: function (quicktexts) {
+
         App.autocomplete.quicktexts = quicktexts;
 
         if (App.autocomplete.quicktexts.length && !App.autocomplete.dialog.isActive) {
@@ -152,6 +158,9 @@ App.autocomplete.dialog = {
         App.autocomplete.dialog.selectItem(0);
     },
     show: function (cursorPosition) {
+        // get current focused element - the editor
+        App.autocomplete.dialog.editor = document.activeElement;
+
         App.autocomplete.dialog.isActive = true;
         App.autocomplete.dialog.isEmpty = true;
 
@@ -165,10 +174,13 @@ App.autocomplete.dialog = {
     },
     selectItem: function (index) {
         if (App.autocomplete.dialog.isActive && !App.autocomplete.dialog.isEmpty) {
+            var $element = App.autocomplete.dialog.$content.children().eq(index);
+
             App.autocomplete.dialog.$content.children()
                 .removeClass('active')
-                .eq(index)
-                .addClass('active');
+                .eq(index);
+
+            $element.addClass('active');
         }
     },
     selectActive: function () {
@@ -187,6 +199,10 @@ App.autocomplete.dialog = {
             index_new = Math.max(0, Math.min(elements_count - 1, index_active + index_diff));
 
         App.autocomplete.dialog.selectItem(index_new);
+
+        // scroll the active element into view
+        var $element = App.autocomplete.dialog.$content.children().eq(index_new);
+        $element.get(0).scrollIntoView();
     },
     // remove dropdown and cleanup
     close: function () {
@@ -199,6 +215,15 @@ App.autocomplete.dialog = {
 
             App.autocomplete.dialog.quicktexts = [];
             App.autocomplete.dialog.cursorPosition = null;
+
+            // return focus to the editor
+            if(App.autocomplete.dialog.editor) {
+                // chrome focuses the to field
+                // so we need the delay
+                setTimeout(function() {
+                    App.autocomplete.dialog.editor.focus();
+                }, 50);
+            }
         }
     }
 };
