@@ -1,17 +1,10 @@
-exports.config = {
-    baseUrl: '',
-    specs: [
-        './e2e/content.spec.js'
-    ],
-    chromeOnly: true,
-    capabilities: {
-        browserName: 'chrome',
-        chromeOptions: {
-            extensions: [],
-            args: [
-                'load-extension=./ext/'
-            ]
-        }
-    }
-}
+/* Protractor config
+ * for content script testing
+ */
+var defaultConfig = require('./protractor.background.conf.js');
 
+defaultConfig.config.specs = [
+  './e2e/content.spec.js'
+];
+
+exports.config = defaultConfig.config;

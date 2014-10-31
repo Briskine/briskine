@@ -1,9 +1,13 @@
 /* Tests for the Options page
  */
 
-describe('background suite', function () {
-    var optionsUrl = 'chrome-extension://cleeacmgbdnkcjjghnkfdlbeapahlfng/pages/bg.html',
-        sleepTime = 800;
+describe('Background script', function () {
+    var sleepTime = 800;
+    var extensionsUrl = 'chrome://extensions-frame/';
+    var extensionName = 'Quicktext for Chrome';
+    var extensionId = '';
+    var optionsUrl = 'chrome-extension://';
+    var optionsUrlSuffix = '/pages/bg.html';
 
     var quicktext = {
         title: 'Test quicktext title ' + new Date().getTime(),
@@ -14,11 +18,59 @@ describe('background suite', function () {
     };
 
     it('should open the Options page', function () {
+
+        var foundExtension = false;
+
+        browser.ignoreSynchronization = true;
+
         // use plain driver
         // to prevent complaining about angular not being available
-        browser.driver.get(optionsUrl);
+        browser.driver.get(extensionsUrl);
 
-        expect(browser.getTitle()).toBe('Quicktext Options');
+        browser.driver.wait(function () {
+            return browser.driver.isElementPresent(by.css('#extension-settings-list'));
+        });
+
+        var i = 0;
+        var findExtension = function($details) {
+
+            var $detail = $details[i];
+
+            $detail.element(by.css('.extension-title')).getText().then(function(title) {
+
+                if(title.indexOf(extensionName) !== -1) {
+
+                    $detail.getAttribute('id').then(function(id) {
+                        extensionId = id;
+
+                        optionsUrl += extensionId + optionsUrlSuffix;
+
+                        browser.get(optionsUrl);
+
+                        browser.driver.wait(function () {
+                            return browser.driver.isElementPresent(by.css('.view-container'));
+                        });
+
+                        expect(browser.getTitle()).toBe('Quicktext Options');
+
+                        browser.ignoreSynchronization = false;
+
+
+                    });
+
+                } else {
+
+                    i++;
+                    findExtension($details);
+
+                }
+
+            });
+
+        };
+
+        element.all(by.css('.extension-list-item-wrapper')).then(findExtension);
+
     });
 
     it('should redirect to the List view', function () {
@@ -143,11 +195,17 @@ describe('background suite', function () {
         var del = protractor.Key.chord(protractor.Key.CONTROL, 'a') + protractor.Key.DELETE;
         element(by.model('searchText')).sendKeys(del);
 
-        expect(element.all(by.repeater('quicktext in filteredQuicktexts')).count()).toBe(1);
-        element.all(by.repeater('quicktext in filteredQuicktexts')).then(function (elems) {
+        browser.driver.sleep(sleepTime);
+
+        element.all(by.repeater('quicktext in filteredQuicktexts')).then(function(elems) {
+
+            var previousCount = elems.length;
+
             elems[0].element(by.css('button.close')).click();
+
             browser.driver.sleep(sleepTime);
-            expect(element.all(by.repeater('quicktext in filteredQuicktexts')).count()).toBe(0);
+
+            expect(element.all(by.repeater('quicktext in filteredQuicktexts')).count()).toBe(previousCount - 1);
         });
     });
 })

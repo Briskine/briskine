@@ -1,7 +1,7 @@
 /* Tests for the contentscript
  */
 
-describe('content script', function () {
+describe('Content script', function () {
 
     var gmail = {
             url: 'https://mail.google.com/mail/u/0/#inbox',
@@ -57,11 +57,23 @@ describe('content script', function () {
 
     });
 
-    // TODO add a new quicktext, or at least make sure we have the default ones
+    // TODO add a new quicktext
+    // or at least make sure we have the default ones
+
+    // TODO configure the autucomplete keyboard shortcut
+    // or make sure it's the default one
 
     it('should show the Quicktext autocomplete dropdown', function () {
 
         browser.driver.findElement(by.css(messageBodySelector)).sendKeys(quicktext.tab);
+
+        // trigger the autocomplete dialog with the keyboard shortcut
+
+        // TODO make this configurable
+        var autocompleteShortcut = protractor.Key.chord(protractor.Key.CONTROL, protractor.Key.SPACE);
+
+        browser.driver.findElement(by.css(messageBodySelector)).sendKeys(autocompleteShortcut);
+
 
         browser.driver.wait(function () {
             return browser.driver.isElementPresent(by.css(autocompleteDropdownSelector));
@@ -96,11 +108,17 @@ describe('content script', function () {
 
         browser.driver.findElement(by.css(messageBodySelector)).sendKeys(quicktext.tab);
 
+        // TODO make this configurable
+        var autocompleteShortcut = protractor.Key.chord(protractor.Key.CONTROL, protractor.Key.SPACE);
+
+        browser.driver.findElement(by.css(messageBodySelector)).sendKeys(autocompleteShortcut);
+
         browser.driver.wait(function () {
             return browser.driver.isElementPresent(by.css(autocompleteDropdownSelector));
         });
 
-        browser.driver.findElement(by.css(messageBodySelector)).sendKeys(protractor.Key.ENTER);
+        var autocompleteSearch = autocompleteDropdownSelector + ' input[type=search]';
+        browser.driver.findElement(by.css(autocompleteSearch)).sendKeys(protractor.Key.ENTER);
 
         expect(
             browser.driver.findElement(by.css(messageBodySelector)).getText()

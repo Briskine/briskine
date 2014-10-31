@@ -203,12 +203,19 @@ module.exports = function (grunt) {
                 }]
             },
         },
-        shell: {
-            test: {
+        protractor: {
+            options: {
+                keepAlive: false
+            },
+            background: {
                 options: {
-                    stdout: true
-                },
-                command: 'npm test'
+                    configFile: 'tests/protractor.background.conf.js'
+                }
+            },
+            content: {
+                options: {
+                    configFile: 'tests/protractor.content.conf.js'
+                }
             }
         }
     });
@@ -250,10 +257,29 @@ module.exports = function (grunt) {
 
     // Testing
     // TODO add unit tests
-    grunt.registerTask('test', [
-        'jshint',
-        'shell:test'
-    ]);
+    grunt.registerTask('test', function (target) {
+        grunt.task.run([
+            'jshint',
+            'production'
+        ]);
+
+        if (target === 'content') {
+            return grunt.task.run([
+                'protractor:content'
+            ]);
+        }
+
+        if (target === 'background') {
+            return grunt.task.run([
+                'protractor:background'
+            ]);
+        }
+
+        grunt.task.run([
+            'protractor:content',
+            'protractor:background'
+        ]);
+    });
     // alias
     grunt.registerTask('t', ['test'])
 

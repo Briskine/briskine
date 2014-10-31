@@ -4,8 +4,7 @@
   "description": "Gmail Quicktext grunt package",
   "main": "Gruntfile.js",
   "scripts": {
-    "test": "protractor tests/protractor.conf.js",
-    "test-content": "protractor tests/protractor.content.conf.js"
+    "install": "./node_modules/.bin/webdriver-manager update"
   },
   "repository": "https://github.com/humanfromearth/gmail-quicktext/",
   "author": "Alexandru Plugaru",
@@ -19,8 +18,9 @@
     "grunt-contrib-jshint": "~0.8.0",
     "grunt-contrib-compress": "~0.7.0",
     "matchdep": "~0.3.0",
-    "grunt-shell": "^0.6.4",
-    "grunt-contrib-clean": "^0.6.0"
+    "grunt-contrib-clean": "^0.6.0",
+    "grunt-protractor-runner": "^1.1.x",
+    "protractor": "^1.3.x"
   },
   "dependencies": {
   }
