@@ -12,7 +12,66 @@ describe('Content script', function () {
         return new Error(envError);
     }
 
-    it('should log-in into Gmail', function () {
+    it('should open the options page', function () {
+
+        config.GetExtensionId(function() {
+
+            browser.get(config.optionsUrl);
+
+            browser.driver.wait(function () {
+                return browser.driver.isElementPresent(by.css('.view-container'));
+            });
+
+            expect(browser.getTitle()).toBe('Quicktext Options');
+
+        });
+
+    });
+
+    it('should create a new quicktext', function() {
+
+        element(by.css('[href="#/list?id=new"]')).click();
+
+        browser.driver.wait(function () {
+            return browser.driver.isElementPresent(by.css('.quicktext-modal'));
+        });
+
+        var modal = element(by.css('.quicktext-modal'));
+
+        var title = element(by.model('selectedQt.title'));
+        title.sendKeys(config.quicktextNew.title);
+
+        var shortcut = element(by.model('selectedQt.shortcut'));
+        shortcut.sendKeys(config.quicktextNew.shortcut);
+
+        var subject = element(by.model('selectedQt.subject'));
+        subject.sendKeys(config.quicktextNew.subject);
+
+        var tags = element(by.model('selectedQt.tags'));
+        tags.sendKeys(config.quicktextNew.tags);
+
+        var body = element(by.model('selectedQt.body'));
+        body.sendKeys(config.quicktextNew.body);
+
+        body.submit();
+
+
+
+    });
+
+    it('should have the new quicktext in the pageaction popup', function () {
+
+        browser.driver.get(config.popupUrl);
+
+        browser.driver.wait(function () {
+            return browser.driver.isElementPresent(by.css('.view-container'));
+        });
+
+        expect(element(by.css('.quicktexts-list')).getText()).toContain(config.quicktextNew.title);
+
+    });
+
+    it('should log into Gmail', function () {
 
         browser.driver.get(config.gmail.url);
 
@@ -43,13 +102,6 @@ describe('Content script', function () {
 
     });
 
-    // TODO add a new quicktext
-    // by opening chrome-extension://<your-extension-id>/pages/bg.html#/popup
-    // to also test the pageAction popup
-
-    // TODO configure the autocomplete keyboard shortcut
-    // or make sure it's the default one
-
     it('should show the autocomplete dropdown', function () {
 
         browser.driver.findElement(by.css(config.messageBodySelector)).sendKeys(config.quicktextNew.shortcut);
@@ -69,13 +121,21 @@ describe('Content script', function () {
 
     it('should contain the quicktext in the autocomplete dropdown', function () {
 
+        browser.driver.wait(function () {
+            return browser.driver.isElementPresent(by.css(config.autocompleteDropdownSelector));
+        });
+
         expect(
             browser.driver.findElement(by.css(config.autocompleteDropdownSelector)).getText()
-        ).toContain('Say Hello');
+        ).toContain(config.quicktextNew.title);
 
     });
 
     it('should activate the quicktext by clicking on the autocomplete listing', function () {
+
+        browser.driver.wait(function () {
+            return browser.driver.isElementPresent(by.css(config.autocompleteDropdownSelector));
+        });
 
         browser.driver.findElement(by.css(config.autocompleteDropdownSelector + ' li:first-child')).click();
 
@@ -83,39 +143,49 @@ describe('Content script', function () {
             browser.driver.findElement(by.css(config.messageBodySelector)).getText()
         ).toContain(config.quicktextNew.body);
 
-        // cleanup everything in the message body
-        browser.driver.findElement(by.css(config.messageBodySelector)).sendKeys(config.deleteAll);
-
     });
 
     it('should activate the quicktext by pressing Enter', function () {
 
+        browser.driver.wait(function () {
+            return browser.driver.isElementPresent(by.css(config.messageBodySelector));
+        });
+
+        // cleanup everything in the message body
+        browser.driver.findElement(by.css(config.messageBodySelector)).sendKeys(config.deleteAll);
+
         browser.driver.findElement(by.css(config.messageBodySelector)).sendKeys(config.quicktextNew.shortcut);
 
-        // TODO make this configurable
-        var autocompleteShortcut = protractor.Key.chord(protractor.Key.CONTROL, protractor.Key.SPACE);
-
-        browser.driver.findElement(by.css(config.messageBodySelector)).sendKeys(autocompleteShortcut);
+        browser.driver.findElement(by.css(config.messageBodySelector)).sendKeys(config.autocompleteShortcut);
 
         browser.driver.wait(function () {
             return browser.driver.isElementPresent(by.css(config.autocompleteDropdownSelector));
         });
 
         var autocompleteSearch = config.autocompleteDropdownSelector + ' input[type=search]';
+
+        browser.driver.wait(function () {
+            return browser.driver.isElementPresent(by.css(autocompleteSearch));
+        });
+
         browser.driver.findElement(by.css(autocompleteSearch)).sendKeys(protractor.Key.ENTER);
 
         expect(
             browser.driver.findElement(by.css(config.messageBodySelector)).getText()
         ).toContain(config.quicktextNew.body);
 
-        // cleanup everything in the message body
-        browser.driver.findElement(by.css(config.messageBodySelector)).sendKeys(config.deleteAll);
-
     });
 
     it('should activate the quicktext by pressing Tab', function () {
 
-        browser.driver.findElement(by.css(config.messageBodySelector)).sendKeys('h' + protractor.Key.TAB);
+        browser.driver.wait(function () {
+            return browser.driver.isElementPresent(by.css(config.messageBodySelector));
+        });
+
+        // cleanup everything in the message body
+        browser.driver.findElement(by.css(config.messageBodySelector)).sendKeys(config.deleteAll);
+
+        browser.driver.findElement(by.css(config.messageBodySelector)).sendKeys(config.quicktextNew.shortcut + protractor.Key.TAB);
 
         expect(
             browser.driver.findElement(by.css(config.messageBodySelector)).getText()

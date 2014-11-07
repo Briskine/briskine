@@ -12,7 +12,7 @@ var config = {
     optionsUrlSuffix: '/pages/bg.html',
 
     popupUrl: 'chrome-extension://',
-    popUrlSuffix: '/pages/bg.html#/popup',
+    popupUrlSuffix: '/pages/bg.html#/popup',
 
     quicktextNew: {
         title: 'Test quicktext title ' + Date.now(),

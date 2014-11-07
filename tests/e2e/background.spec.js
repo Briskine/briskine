@@ -29,7 +29,6 @@ describe('Background script', function () {
 
     it('should open the New Quicktext dialog', function () {
         element(by.css('[href="#/list?id=new"]')).click();
-        browser.driver.sleep(config.sleepTime);
 
         element(by.css('.quicktext-modal')).getCssValue('display').then(function (display) {
             expect(display).toBe('block');
