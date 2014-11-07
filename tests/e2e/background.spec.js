@@ -7,69 +7,29 @@ describe('Background script', function () {
 
     it('should open the Options page', function () {
 
-        var foundExtension = false;
+        config.GetExtensionId(function() {
 
-        browser.ignoreSynchronization = true;
+            browser.get(config.optionsUrl);
 
-        // use plain driver
-        // to prevent complaining about angular not being available
-        browser.driver.get(extensionsUrl);
-
-        browser.driver.wait(function () {
-            return browser.driver.isElementPresent(by.css('#extension-settings-list'));
-        });
-
-        var i = 0;
-        var findExtension = function($details) {
-
-            var $detail = $details[i];
-
-            $detail.element(by.css('.extension-title')).getText().then(function(title) {
-
-                if(title.indexOf(extensionName) !== -1) {
-
-                    $detail.getAttribute('id').then(function(id) {
-                        extensionId = id;
-
-                        optionsUrl += extensionId + optionsUrlSuffix;
-
-                        browser.get(optionsUrl);
-
-                        browser.driver.wait(function () {
-                            return browser.driver.isElementPresent(by.css('.view-container'));
-                        });
-
-                        expect(browser.getTitle()).toBe('Quicktext Options');
-
-                        browser.ignoreSynchronization = false;
-
-
-                    });
-
-                } else {
-
-                    i++;
-                    findExtension($details);
-
-                }
-
+            browser.driver.wait(function () {
+                return browser.driver.isElementPresent(by.css('.view-container'));
             });
 
-        };
+            expect(browser.getTitle()).toBe('Quicktext Options');
 
-        element.all(by.css('.extension-list-item-wrapper')).then(findExtension);
+        });
 
     });
 
     it('should redirect to the List view', function () {
-        browser.driver.get(optionsUrl);
+        browser.driver.get(config.optionsUrl);
 
         expect(browser.getCurrentUrl()).toContain('/list');
     });
 
     it('should open the New Quicktext dialog', function () {
         element(by.css('[href="#/list?id=new"]')).click();
-        browser.driver.sleep(sleepTime);
+        browser.driver.sleep(config.sleepTime);
 
         element(by.css('.quicktext-modal')).getCssValue('display').then(function (display) {
             expect(display).toBe('block');
@@ -107,7 +67,7 @@ describe('Background script', function () {
 
         btnSubmit.click();
 
-        browser.driver.sleep(sleepTime);
+        browser.driver.sleep(config.sleepTime);
 
         expect(modal.getCssValue('display')).toBe('none');
     });
@@ -121,7 +81,7 @@ describe('Background script', function () {
     it('should open the edit modal', function () {
         element.all(by.repeater('quicktext in filteredQuicktexts')).then(function (elems) {
             elems[0].element(by.css('.edit-button')).click();
-            browser.driver.sleep(sleepTime);
+            browser.driver.sleep(config.sleepTime);
             var modal = element(by.css('.quicktext-modal'));
             expect(modal.getCssValue('display')).toBe('block');
         });
@@ -159,12 +119,11 @@ describe('Background script', function () {
         config.quicktextNew.title += '2';
 
         var title = element(by.model('selectedQt.title'));
-        var del = protractor.Key.chord(protractor.Key.CONTROL, 'a') + protractor.Key.DELETE;
-        title.sendKeys(del + config.quicktextNew.title);
+        title.sendKeys(config.deleteAll + config.quicktextNew.title);
 
         btnSubmit.click();
 
-        browser.driver.sleep(sleepTime);
+        browser.driver.sleep(config.sleepTime);
 
         expect(modal.getCssValue('display')).toBe('none');
     });
@@ -175,15 +134,14 @@ describe('Background script', function () {
 
         searchField.sendKeys(config.quicktextNew.title);
 
-        browser.driver.sleep(sleepTime);
+        browser.driver.sleep(config.sleepTime);
         expect(list.count()).toBe(1);
     });
 
     it('should delete the new quicktext', function () {
-        var del = protractor.Key.chord(protractor.Key.CONTROL, 'a') + protractor.Key.DELETE;
-        element(by.model('searchText')).sendKeys(del);
+        element(by.model('searchText')).sendKeys(config.deleteAll);
 
-        browser.driver.sleep(sleepTime);
+        browser.driver.sleep(config.sleepTime);
 
         element.all(by.repeater('quicktext in filteredQuicktexts')).then(function(elems) {
 
@@ -191,7 +149,7 @@ describe('Background script', function () {
 
             elems[0].element(by.css('button.close')).click();
 
-            browser.driver.sleep(sleepTime);
+            browser.driver.sleep(config.sleepTime);
 
             expect(element.all(by.repeater('quicktext in filteredQuicktexts')).count()).toBe(previousCount - 1);
         });
