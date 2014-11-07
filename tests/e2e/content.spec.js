@@ -58,9 +58,10 @@ describe('Content script', function () {
     });
 
     // TODO add a new quicktext
-    // or at least make sure we have the default ones
+    // by opening chrome-extension://<your-extension-id>/pages/bg.html#/popup
+    // to also test the pageAction popup
 
-    // TODO configure the autucomplete keyboard shortcut
+    // TODO configure the autocomplete keyboard shortcut
     // or make sure it's the default one
 
     it('should show the Quicktext autocomplete dropdown', function () {
