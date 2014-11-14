@@ -258,10 +258,6 @@ module.exports = function (grunt) {
     // Testing
     // TODO add unit tests
     grunt.registerTask('test', function (target) {
-        grunt.task.run([
-            'jshint',
-            'production'
-        ]);
 
         if (target === 'content') {
             return grunt.task.run([
@@ -276,9 +272,12 @@ module.exports = function (grunt) {
         }
 
         grunt.task.run([
+            'jshint',
+            'production',
             'protractor:content',
             'protractor:background'
         ]);
+        
     });
     // alias
     grunt.registerTask('t', ['test'])
