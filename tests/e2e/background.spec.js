@@ -46,29 +46,36 @@ describe('Background script', function () {
     });
 
     it('should submit a New Quicktext and hide the dialog', function () {
-        var modal = element(by.css('.quicktext-modal'));
-        var btnSubmit = element(by.css('.quicktext-modal [type=submit]'));
 
-        var title = element(by.model('selectedQt.title'));
-        title.sendKeys(config.quicktextNew.title);
+        element(by.model('selectedQt.tags')).clear().sendKeys(config.quicktextNew.tags);
 
-        var shortcut = element(by.model('selectedQt.shortcut'));
-        shortcut.sendKeys(config.quicktextNew.shortcut);
+        browser.sleep(5000);
 
-        var subject = element(by.model('selectedQt.subject'));
-        subject.sendKeys(config.quicktextNew.subject);
+        element(by.model('selectedQt.title')).clear().sendKeys(config.quicktextNew.title);
 
-        var tags = element(by.model('selectedQt.tags'));
-        tags.sendKeys(config.quicktextNew.tags);
+        browser.sleep(5000);
 
-        var body = element(by.model('selectedQt.body'));
-        body.sendKeys(config.quicktextNew.body);
+        element(by.model('selectedQt.body')).clear().sendKeys(config.quicktextNew.body);
 
-        btnSubmit.click();
+        browser.sleep(5000);
 
-        browser.driver.sleep(config.sleepTime);
+        element(by.model('selectedQt.subject')).clear().sendKeys(config.quicktextNew.subject);
 
-        expect(modal.getCssValue('display')).toBe('none');
+        browser.sleep(5000);
+
+        element(by.model('selectedQt.shortcut')).clear().sendKeys(config.quicktextNew.shortcut);
+
+        browser.sleep(5000);
+
+        element(by.model('selectedQt.body')).submit();
+
+            browser.sleep(config.sleepTime);
+
+
+            expect(element(by.css('.quicktext-modal')).getCssValue('display')).toBe('none');
+
+
+
     });
 
     it('should contain the new quicktext in the list', function () {

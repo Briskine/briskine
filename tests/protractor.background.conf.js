@@ -1,6 +1,14 @@
 /* Protractor config
  * for background script testing
  */
+
+var fs = require('fs');
+
+var extensionb64 = fs.readFileSync('./ext/quicktext-chrome.crx');
+
+// convert to base64
+extensionb64 = new Buffer(extensionb64).toString('base64');
+
 exports.config = {
     baseUrl: '',
     specs: [
@@ -9,9 +17,9 @@ exports.config = {
     multiCapabilities: [{
         browserName: 'chrome',
         chromeOptions: {
-            extensions: [],
+            extensions: [ extensionb64 ],
             args: [
-                'load-extension=./ext/'
+                //'load-extension=./ext/'
             ]
         }
     }],

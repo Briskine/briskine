@@ -95,6 +95,8 @@ Before running the tests, run:
 npm install
 ```
 
+Then key your Chrome private `.pem` keyfile and copy it as `key.pem` in the repository root.
+
 Set the `QUICKTEXT_GMAIL_USERNAME` and `QUICKTEXT_GMAIL_PASSWORD` ENV variables, for logging-in into Gmail.
 
 ```
@@ -122,7 +124,7 @@ grunt test:background
 
 Running the tests will recompile the app for production and test that.
 
-If you want to run the tests without recompiling the app, run:
+If you want to run the tests locally (not on Sauce Labs) without recompiling the app, run:
 
 ```
 grunt protractor:background

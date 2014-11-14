@@ -11,6 +11,8 @@ var config = {
     optionsUrl: 'chrome-extension://',
     optionsUrlSuffix: '/pages/bg.html',
 
+    extensionb64: '',
+
     popupUrl: 'chrome-extension://',
     popupUrlSuffix: '/pages/bg.html#/popup',
 

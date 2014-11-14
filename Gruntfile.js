@@ -203,6 +203,14 @@ module.exports = function (grunt) {
                 }]
             },
         },
+        crx: {
+            extension: {
+                privateKey: 'key.pem',
+                filename: 'quicktext-chrome.crx',
+                src: '<%= config.dist %>',
+                dest: '<%= config.dist %>'
+            }
+        },
         protractor: {
             options: {
                 keepAlive: false
@@ -212,9 +220,27 @@ module.exports = function (grunt) {
                     configFile: 'tests/protractor.background.conf.js'
                 }
             },
+            backgroundRemote: {
+                options: {
+                    configFile: 'tests/protractor.background.conf.js',
+                    args: {
+                        sauceUser: process.env.SAUCE_USERNAME,
+                        sauceKey: process.env.SAUCE_ACCESS_KEY
+                    }
+                }
+            },
             content: {
                 options: {
                     configFile: 'tests/protractor.content.conf.js'
+                }
+            },
+            contentRemote: {
+                options: {
+                    configFile: 'tests/protractor.content.conf.js',
+                    args: {
+                        sauceUser: process.env.SAUCE_USERNAME,
+                        sauceKey: process.env.SAUCE_ACCESS_KEY
+                    }
                 }
             }
         }
@@ -259,25 +285,29 @@ module.exports = function (grunt) {
     // TODO add unit tests
     grunt.registerTask('test', function (target) {
 
+        grunt.task.run([
+            'jshint',
+            'production',
+            'crx'
+        ]);
+
         if (target === 'content') {
             return grunt.task.run([
-                'protractor:content'
+                'protractor:contentRemote'
             ]);
         }
 
         if (target === 'background') {
             return grunt.task.run([
-                'protractor:background'
+                'protractor:backgroundRemote'
             ]);
         }
 
         grunt.task.run([
-            'jshint',
-            'production',
-            'protractor:content',
-            'protractor:background'
+            'protractor:contentRemote',
+            'protractor:backgroundRemote'
         ]);
-        
+
     });
     // alias
     grunt.registerTask('t', ['test'])

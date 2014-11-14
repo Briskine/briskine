@@ -3,6 +3,7 @@ bower_components
 selenium
 chrome_profile
 build
+*.log
 
 # It is added in git but we don't have to track this file
 src/backgrount/js/environment.js
@@ -14,4 +15,5 @@ src/backgrount/js/environment.js
 
 # chrome extension
 ext/
-key.pem
+*.pem
+*.crx
