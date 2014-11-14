@@ -2,86 +2,33 @@
  */
 
 describe('Background script', function () {
-    var sleepTime = 800;
-    var extensionsUrl = 'chrome://extensions-frame/';
-    var extensionName = 'Quicktext for Chrome';
-    var extensionId = '';
-    var optionsUrl = 'chrome-extension://';
-    var optionsUrlSuffix = '/pages/bg.html';
 
-    var quicktext = {
-        title: 'Test quicktext title ' + new Date().getTime(),
-        shortcut: 'Q',
-        subject: 'Test quicktext subject',
-        tags: 'tag1, tag2, tag3',
-        body: 'Test quicktext body'
-    };
+    var config = require('./config.js');
 
     it('should open the Options page', function () {
 
-        var foundExtension = false;
+        config.GetExtensionId(function() {
 
-        browser.ignoreSynchronization = true;
+            browser.get(config.optionsUrl);
 
-        // use plain driver
-        // to prevent complaining about angular not being available
-        browser.driver.get(extensionsUrl);
-
-        browser.driver.wait(function () {
-            return browser.driver.isElementPresent(by.css('#extension-settings-list'));
-        });
-
-        var i = 0;
-        var findExtension = function($details) {
-
-            var $detail = $details[i];
-
-            $detail.element(by.css('.extension-title')).getText().then(function(title) {
-
-                if(title.indexOf(extensionName) !== -1) {
-
-                    $detail.getAttribute('id').then(function(id) {
-                        extensionId = id;
-
-                        optionsUrl += extensionId + optionsUrlSuffix;
-
-                        browser.get(optionsUrl);
-
-                        browser.driver.wait(function () {
-                            return browser.driver.isElementPresent(by.css('.view-container'));
-                        });
-
-                        expect(browser.getTitle()).toBe('Quicktext Options');
-
-                        browser.ignoreSynchronization = false;
-
-
-                    });
-
-                } else {
-
-                    i++;
-                    findExtension($details);
-
-                }
-
+            browser.driver.wait(function () {
+                return browser.driver.isElementPresent(by.css('.view-container'));
             });
 
-        };
+            expect(browser.getTitle()).toBe('Quicktext Options');
 
-        element.all(by.css('.extension-list-item-wrapper')).then(findExtension);
+        });
 
     });
 
     it('should redirect to the List view', function () {
-        browser.driver.get(optionsUrl);
+        browser.driver.get(config.optionsUrl);
 
         expect(browser.getCurrentUrl()).toContain('/list');
     });
 
     it('should open the New Quicktext dialog', function () {
         element(by.css('[href="#/list?id=new"]')).click();
-        browser.driver.sleep(sleepTime);
 
         element(by.css('.quicktext-modal')).getCssValue('display').then(function (display) {
             expect(display).toBe('block');
@@ -103,23 +50,23 @@ describe('Background script', function () {
         var btnSubmit = element(by.css('.quicktext-modal [type=submit]'));
 
         var title = element(by.model('selectedQt.title'));
-        title.sendKeys(quicktext.title);
+        title.sendKeys(config.quicktextNew.title);
 
         var shortcut = element(by.model('selectedQt.shortcut'));
-        shortcut.sendKeys(quicktext.shortcut);
+        shortcut.sendKeys(config.quicktextNew.shortcut);
 
         var subject = element(by.model('selectedQt.subject'));
-        subject.sendKeys(quicktext.subject);
+        subject.sendKeys(config.quicktextNew.subject);
 
         var tags = element(by.model('selectedQt.tags'));
-        tags.sendKeys(quicktext.tags);
+        tags.sendKeys(config.quicktextNew.tags);
 
         var body = element(by.model('selectedQt.body'));
-        body.sendKeys(quicktext.body);
+        body.sendKeys(config.quicktextNew.body);
 
         btnSubmit.click();
 
-        browser.driver.sleep(sleepTime);
+        browser.driver.sleep(config.sleepTime);
 
         expect(modal.getCssValue('display')).toBe('none');
     });
@@ -127,13 +74,13 @@ describe('Background script', function () {
     it('should contain the new quicktext in the list', function () {
         var newItem = element(by.repeater('quicktext in filteredQuicktexts').row(0));
 
-        expect(newItem.getText()).toContain(quicktext.title);
+        expect(newItem.getText()).toContain(config.quicktextNew.title);
     });
 
     it('should open the edit modal', function () {
         element.all(by.repeater('quicktext in filteredQuicktexts')).then(function (elems) {
             elems[0].element(by.css('.edit-button')).click();
-            browser.driver.sleep(sleepTime);
+            browser.driver.sleep(config.sleepTime);
             var modal = element(by.css('.quicktext-modal'));
             expect(modal.getCssValue('display')).toBe('block');
         });
@@ -142,41 +89,40 @@ describe('Background script', function () {
     it('should contain the quicktext details', function () {
 
         var title = element(by.model('selectedQt.title'));
-        expect(title.getAttribute('value')).toBe(quicktext.title);
+        expect(title.getAttribute('value')).toBe(config.quicktextNew.title);
 
         var shortcut = element(by.model('selectedQt.shortcut'));
-        expect(shortcut.getAttribute('value')).toBe(quicktext.shortcut);
+        expect(shortcut.getAttribute('value')).toBe(config.quicktextNew.shortcut);
 
         var subject = element(by.model('selectedQt.subject'));
-        expect(subject.getAttribute('value')).toBe(quicktext.subject);
+        expect(subject.getAttribute('value')).toBe(config.quicktextNew.subject);
 
         var tags = element(by.model('selectedQt.tags'));
-        expect(tags.getAttribute('value')).toBe(quicktext.tags);
+        expect(tags.getAttribute('value')).toBe(config.quicktextNew.tags);
 
         var body = element(by.model('selectedQt.body'));
-        expect(body.getAttribute('value')).toBe(quicktext.body);
+        expect(body.getAttribute('value')).toBe(config.quicktextNew.body);
 
     });
 
     it('should contain the edited quicktext in the list', function () {
         var newItem = element(by.repeater('quicktext in filteredQuicktexts').row(0));
 
-        expect(newItem.getText()).toContain(quicktext.title);
+        expect(newItem.getText()).toContain(config.quicktextNew.title);
     });
 
     it('should edit the quicktext and hide the dialog', function () {
         var modal = element(by.css('.quicktext-modal'));
         var btnSubmit = element(by.css('.quicktext-modal [type=submit]'));
 
-        quicktext.title += '2';
+        config.quicktextNew.title += '2';
 
         var title = element(by.model('selectedQt.title'));
-        var del = protractor.Key.chord(protractor.Key.CONTROL, 'a') + protractor.Key.DELETE;
-        title.sendKeys(del + quicktext.title);
+        title.sendKeys(config.deleteAll + config.quicktextNew.title);
 
         btnSubmit.click();
 
-        browser.driver.sleep(sleepTime);
+        browser.driver.sleep(config.sleepTime);
 
         expect(modal.getCssValue('display')).toBe('none');
     });
@@ -185,17 +131,16 @@ describe('Background script', function () {
         var searchField = element(by.model('searchText'));
         var list = element.all(by.repeater('quicktext in filteredQuicktexts'));
 
-        searchField.sendKeys(quicktext.title);
+        searchField.sendKeys(config.quicktextNew.title);
 
-        browser.driver.sleep(sleepTime);
+        browser.driver.sleep(config.sleepTime);
         expect(list.count()).toBe(1);
     });
 
     it('should delete the new quicktext', function () {
-        var del = protractor.Key.chord(protractor.Key.CONTROL, 'a') + protractor.Key.DELETE;
-        element(by.model('searchText')).sendKeys(del);
+        element(by.model('searchText')).sendKeys(config.deleteAll);
 
-        browser.driver.sleep(sleepTime);
+        browser.driver.sleep(config.sleepTime);
 
         element.all(by.repeater('quicktext in filteredQuicktexts')).then(function(elems) {
 
@@ -203,7 +148,7 @@ describe('Background script', function () {
 
             elems[0].element(by.css('button.close')).click();
 
-            browser.driver.sleep(sleepTime);
+            browser.driver.sleep(config.sleepTime);
 
             expect(element.all(by.repeater('quicktext in filteredQuicktexts')).count()).toBe(previousCount - 1);
         });
