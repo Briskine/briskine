@@ -4,7 +4,8 @@
   "description": "Gmail Quicktext grunt package",
   "main": "Gruntfile.js",
   "scripts": {
-    "install": "./node_modules/.bin/webdriver-manager update"
+    "install": "./node_modules/.bin/webdriver-manager update",
+    "test": "grunt test"
   },
   "repository": "https://github.com/humanfromearth/gmail-quicktext/",
   "author": "Alexandru Plugaru",

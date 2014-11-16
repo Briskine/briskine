@@ -2,7 +2,7 @@ language: node_js
 node_js:
 - '0.10'
 before_install: 'npm install -g grunt-cli && ssh-keygen -f key.pem -N ""'
-install: 'grunt test'
+install: npm install
 env:
   global:
   - secure: xOZI9IkP+N43AcFA/GlL1aHZIvhu7YNHSoLqEabo07nQmTK7BIQKYGDa/i1RCY77/MR+V4psWcQOKxM3krdFHLN8YKhr2pLCrFfE0JucOUh+r/A9L+hMuG5pTNRbmBKXe7bQjUn6+b00mMXUxJqFnYWrG5B6ar7ddQ8u3ujpnR8=
