@@ -12,6 +12,19 @@ describe('Content script', function () {
         return new Error(envError);
     }
 
+    var setValue = function(element, value) {
+
+        return element.getWebElement().then(function(elem) {
+
+            var execute = 'arguments[0].value = arguments[1];' +
+            'angular.element(arguments[0]).trigger("input");'
+
+            return browser.executeScript(execute, elem, value);
+
+        });
+
+    };
+
     it('should open the options page', function () {
 
         config.GetExtensionId(function() {
@@ -36,26 +49,23 @@ describe('Content script', function () {
             return browser.driver.isElementPresent(by.css('.quicktext-modal'));
         });
 
-        var modal = element(by.css('.quicktext-modal'));
+        setValue(element(by.model('selectedQt.tags')), config.quicktextNew.tags);
 
-        var title = element(by.model('selectedQt.title'));
-        title.sendKeys(config.quicktextNew.title);
+        setValue(element(by.model('selectedQt.title')), config.quicktextNew.title);
 
-        var shortcut = element(by.model('selectedQt.shortcut'));
-        shortcut.sendKeys(config.quicktextNew.shortcut);
+        setValue(element(by.model('selectedQt.body')), config.quicktextNew.body);
 
-        var subject = element(by.model('selectedQt.subject'));
-        subject.sendKeys(config.quicktextNew.subject);
+        setValue(element(by.model('selectedQt.subject')), config.quicktextNew.subject);
 
-        var tags = element(by.model('selectedQt.tags'));
-        tags.sendKeys(config.quicktextNew.tags);
+        setValue(element(by.model('selectedQt.shortcut')), config.quicktextNew.shortcut);
 
-        var body = element(by.model('selectedQt.body'));
-        body.sendKeys(config.quicktextNew.body);
+        element(by.model('selectedQt.body')).submit().then(function() {
 
-        body.submit();
+            browser.sleep(config.sleepTime);
 
+            expect(element(by.css('.quicktext-modal')).getCssValue('display')).toBe('none');
 
+        });
 
     });
 

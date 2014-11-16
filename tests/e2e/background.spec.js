@@ -67,14 +67,14 @@ describe('Background script', function () {
 
         browser.sleep(5000);
 
-        element(by.model('selectedQt.body')).submit();
+        element(by.model('selectedQt.body')).submit().then(function() {
 
             browser.sleep(config.sleepTime);
 
 
             expect(element(by.css('.quicktext-modal')).getCssValue('display')).toBe('none');
 
-
+        });
 
     });
 
