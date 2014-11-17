@@ -29,6 +29,7 @@
     "handlebars": "~1.1.2",
     "font-awesome": "~4.0",
     "trackjs-tracker": "~2.1.1",
-    "mousetrap": "https://github.com/xarg/mousetrap.git#master"
+    "mousetrap": "https://github.com/xarg/mousetrap.git#master",
+    "analytics": "~2.4.16"
   }
 }

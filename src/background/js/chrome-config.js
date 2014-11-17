@@ -21,7 +21,7 @@ if (chrome.runtime) {
 
     // Called after installation: https://developer.chrome.com/extensions/runtime.html#event-onInstalled
     chrome.runtime.onInstalled.addListener(function (details) {
-        _gaq.push(['_trackEvent', "general", 'installed-quicktext']);
+        analytics.track("Installed Quicktext");
 
         // perform the necessary migrations
         if (!document.querySelector('body[class=ng-scope]')) {
@@ -64,7 +64,7 @@ if (chrome.runtime) {
             if (request.request === 'get') {
                 injector.get('QuicktextService').quicktexts().then(function (res) {
                     sendResponse(res);
-                    _gaq.push(['_trackEvent', "content", 'insert']);
+                    analytics.track("Inserted Quicktext");
                 });
             }
             var settingsService = injector.get('SettingsService');
@@ -94,13 +94,13 @@ if (chrome.runtime) {
                     if (port.name === 'shortcut') {
                         injector.get('QuicktextService').filtered("shortcut = '" + msg.text + "'" /* TODO: <- fix this sql */).then(function (res) {
                             port.postMessage({'quicktexts': res, 'action': 'insert'});
-                            _gaq.push(['_trackEvent', "content", 'insert']);
+                            analytics.track("Inserted Quicktext");
                         });
                     } else if (port.name === 'search') {
                         if (!msg.text) { // if text is empty get all of them
                             injector.get('QuicktextService').quicktexts().then(function (res) {
                                 port.postMessage({'quicktexts': res, 'action': 'list'});
-                                _gaq.push(['_trackEvent', "content", 'insert']);
+                                analytics.track("Inserted Quicktext");
                             });
                         } else {
                             injector.get('QuicktextService').filtered(
@@ -108,7 +108,7 @@ if (chrome.runtime) {
                                     msg.limit).then(function (res) {
 
                                 port.postMessage({'quicktexts': res, 'action': 'list'});
-                                _gaq.push(['_trackEvent', "content", 'insert']);
+                                analytics.track("Inserted Quicktext");
                             });
                         }
                     }

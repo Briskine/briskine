@@ -81,7 +81,7 @@ gqApp.controller('ListCtrl',
 
         // Show the form for adding a new quicktext or creating one
         $scope.showForm = function (id) {
-            _gaq.push(['_trackEvent', 'forms', 'show']);
+            analytics.track("Show edit form");
 
             var defaults = {
                 'id': '',
@@ -285,7 +285,7 @@ gqApp.controller('ListCtrl',
          */
         $scope.insertQuicktext = function (quicktextId) {
             // get the quicktext id
-            _gaq.push(['_trackEvent', 'popup', 'insert']);
+            analytics.track("Popup Insert Quicktext");
 
             // getch the quicktext
             QuicktextService.get(quicktextId).then(function (quicktext) {
