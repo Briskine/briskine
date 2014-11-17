@@ -203,12 +203,45 @@ module.exports = function (grunt) {
                 }]
             },
         },
-        shell: {
-            test: {
+        crx: {
+            extension: {
+                privateKey: 'key.pem',
+                filename: 'quicktext-chrome.crx',
+                src: '<%= config.dist %>',
+                dest: '<%= config.dist %>'
+            }
+        },
+        protractor: {
+            options: {
+                keepAlive: false
+            },
+            background: {
                 options: {
-                    stdout: true
-                },
-                command: 'npm test'
+                    configFile: 'tests/protractor.background.conf.js'
+                }
+            },
+            backgroundRemote: {
+                options: {
+                    configFile: 'tests/protractor.background.conf.js',
+                    args: {
+                        sauceUser: process.env.SAUCE_USERNAME,
+                        sauceKey: process.env.SAUCE_ACCESS_KEY
+                    }
+                }
+            },
+            content: {
+                options: {
+                    configFile: 'tests/protractor.content.conf.js'
+                }
+            },
+            contentRemote: {
+                options: {
+                    configFile: 'tests/protractor.content.conf.js',
+                    args: {
+                        sauceUser: process.env.SAUCE_USERNAME,
+                        sauceKey: process.env.SAUCE_ACCESS_KEY
+                    }
+                }
             }
         }
     });
@@ -250,10 +283,32 @@ module.exports = function (grunt) {
 
     // Testing
     // TODO add unit tests
-    grunt.registerTask('test', [
-        'jshint',
-        'shell:test'
-    ]);
+    grunt.registerTask('test', function (target) {
+
+        grunt.task.run([
+            'jshint',
+            'production',
+            'crx'
+        ]);
+
+        if (target === 'content') {
+            return grunt.task.run([
+                'protractor:contentRemote'
+            ]);
+        }
+
+        if (target === 'background') {
+            return grunt.task.run([
+                'protractor:backgroundRemote'
+            ]);
+        }
+
+        grunt.task.run([
+            'protractor:contentRemote',
+            'protractor:backgroundRemote'
+        ]);
+
+    });
     // alias
     grunt.registerTask('t', ['test'])
 

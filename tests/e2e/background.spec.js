@@ -1,35 +1,34 @@
 /* Tests for the Options page
  */
 
-describe('background suite', function () {
-    var optionsUrl = 'chrome-extension://cleeacmgbdnkcjjghnkfdlbeapahlfng/pages/bg.html',
-        sleepTime = 800;
+describe('Background script', function () {
 
-    var quicktext = {
-        title: 'Test quicktext title ' + new Date().getTime(),
-        shortcut: 'Q',
-        subject: 'Test quicktext subject',
-        tags: 'tag1, tag2, tag3',
-        body: 'Test quicktext body'
-    };
+    var config = require('./config.js');
 
     it('should open the Options page', function () {
-        // use plain driver
-        // to prevent complaining about angular not being available
-        browser.driver.get(optionsUrl);
 
-        expect(browser.getTitle()).toBe('Quicktext Options');
+        config.GetExtensionId(function() {
+
+            browser.get(config.optionsUrl);
+
+            browser.driver.wait(function () {
+                return browser.driver.isElementPresent(by.css('.view-container'));
+            });
+
+            expect(browser.getTitle()).toBe('Quicktext Options');
+
+        });
+
     });
 
     it('should redirect to the List view', function () {
-        browser.driver.get(optionsUrl);
+        browser.driver.get(config.optionsUrl);
 
         expect(browser.getCurrentUrl()).toContain('/list');
     });
 
     it('should open the New Quicktext dialog', function () {
         element(by.css('[href="#/list?id=new"]')).click();
-        browser.driver.sleep(sleepTime);
 
         element(by.css('.quicktext-modal')).getCssValue('display').then(function (display) {
             expect(display).toBe('block');
@@ -47,41 +46,48 @@ describe('background suite', function () {
     });
 
     it('should submit a New Quicktext and hide the dialog', function () {
-        var modal = element(by.css('.quicktext-modal'));
-        var btnSubmit = element(by.css('.quicktext-modal [type=submit]'));
 
-        var title = element(by.model('selectedQt.title'));
-        title.sendKeys(quicktext.title);
+        element(by.model('selectedQt.tags')).clear().sendKeys(config.quicktextNew.tags);
 
-        var shortcut = element(by.model('selectedQt.shortcut'));
-        shortcut.sendKeys(quicktext.shortcut);
+        browser.sleep(5000);
 
-        var subject = element(by.model('selectedQt.subject'));
-        subject.sendKeys(quicktext.subject);
+        element(by.model('selectedQt.title')).clear().sendKeys(config.quicktextNew.title);
 
-        var tags = element(by.model('selectedQt.tags'));
-        tags.sendKeys(quicktext.tags);
+        browser.sleep(5000);
 
-        var body = element(by.model('selectedQt.body'));
-        body.sendKeys(quicktext.body);
+        element(by.model('selectedQt.body')).clear().sendKeys(config.quicktextNew.body);
 
-        btnSubmit.click();
+        browser.sleep(5000);
 
-        browser.driver.sleep(sleepTime);
+        element(by.model('selectedQt.subject')).clear().sendKeys(config.quicktextNew.subject);
 
-        expect(modal.getCssValue('display')).toBe('none');
+        browser.sleep(5000);
+
+        element(by.model('selectedQt.shortcut')).clear().sendKeys(config.quicktextNew.shortcut);
+
+        browser.sleep(5000);
+
+        element(by.model('selectedQt.body')).submit().then(function() {
+
+            browser.sleep(config.sleepTime);
+
+
+            expect(element(by.css('.quicktext-modal')).getCssValue('display')).toBe('none');
+
+        });
+
     });
 
     it('should contain the new quicktext in the list', function () {
         var newItem = element(by.repeater('quicktext in filteredQuicktexts').row(0));
 
-        expect(newItem.getText()).toContain(quicktext.title);
+        expect(newItem.getText()).toContain(config.quicktextNew.title);
     });
 
     it('should open the edit modal', function () {
         element.all(by.repeater('quicktext in filteredQuicktexts')).then(function (elems) {
             elems[0].element(by.css('.edit-button')).click();
-            browser.driver.sleep(sleepTime);
+            browser.driver.sleep(config.sleepTime);
             var modal = element(by.css('.quicktext-modal'));
             expect(modal.getCssValue('display')).toBe('block');
         });
@@ -90,41 +96,40 @@ describe('background suite', function () {
     it('should contain the quicktext details', function () {
 
         var title = element(by.model('selectedQt.title'));
-        expect(title.getAttribute('value')).toBe(quicktext.title);
+        expect(title.getAttribute('value')).toBe(config.quicktextNew.title);
 
         var shortcut = element(by.model('selectedQt.shortcut'));
-        expect(shortcut.getAttribute('value')).toBe(quicktext.shortcut);
+        expect(shortcut.getAttribute('value')).toBe(config.quicktextNew.shortcut);
 
         var subject = element(by.model('selectedQt.subject'));
-        expect(subject.getAttribute('value')).toBe(quicktext.subject);
+        expect(subject.getAttribute('value')).toBe(config.quicktextNew.subject);
 
         var tags = element(by.model('selectedQt.tags'));
-        expect(tags.getAttribute('value')).toBe(quicktext.tags);
+        expect(tags.getAttribute('value')).toBe(config.quicktextNew.tags);
 
         var body = element(by.model('selectedQt.body'));
-        expect(body.getAttribute('value')).toBe(quicktext.body);
+        expect(body.getAttribute('value')).toBe(config.quicktextNew.body);
 
     });
 
     it('should contain the edited quicktext in the list', function () {
         var newItem = element(by.repeater('quicktext in filteredQuicktexts').row(0));
 
-        expect(newItem.getText()).toContain(quicktext.title);
+        expect(newItem.getText()).toContain(config.quicktextNew.title);
     });
 
     it('should edit the quicktext and hide the dialog', function () {
         var modal = element(by.css('.quicktext-modal'));
         var btnSubmit = element(by.css('.quicktext-modal [type=submit]'));
 
-        quicktext.title += '2';
+        config.quicktextNew.title += '2';
 
         var title = element(by.model('selectedQt.title'));
-        var del = protractor.Key.chord(protractor.Key.CONTROL, 'a') + protractor.Key.DELETE;
-        title.sendKeys(del + quicktext.title);
+        title.sendKeys(config.deleteAll + config.quicktextNew.title);
 
         btnSubmit.click();
 
-        browser.driver.sleep(sleepTime);
+        browser.driver.sleep(config.sleepTime);
 
         expect(modal.getCssValue('display')).toBe('none');
     });
@@ -133,21 +138,26 @@ describe('background suite', function () {
         var searchField = element(by.model('searchText'));
         var list = element.all(by.repeater('quicktext in filteredQuicktexts'));
 
-        searchField.sendKeys(quicktext.title);
+        searchField.sendKeys(config.quicktextNew.title);
 
-        browser.driver.sleep(sleepTime);
+        browser.driver.sleep(config.sleepTime);
         expect(list.count()).toBe(1);
     });
 
     it('should delete the new quicktext', function () {
-        var del = protractor.Key.chord(protractor.Key.CONTROL, 'a') + protractor.Key.DELETE;
-        element(by.model('searchText')).sendKeys(del);
+        element(by.model('searchText')).sendKeys(config.deleteAll);
 
-        expect(element.all(by.repeater('quicktext in filteredQuicktexts')).count()).toBe(1);
-        element.all(by.repeater('quicktext in filteredQuicktexts')).then(function (elems) {
+        browser.driver.sleep(config.sleepTime);
+
+        element.all(by.repeater('quicktext in filteredQuicktexts')).then(function(elems) {
+
+            var previousCount = elems.length;
+
             elems[0].element(by.css('button.close')).click();
-            browser.driver.sleep(sleepTime);
-            expect(element.all(by.repeater('quicktext in filteredQuicktexts')).count()).toBe(0);
+
+            browser.driver.sleep(config.sleepTime);
+
+            expect(element.all(by.repeater('quicktext in filteredQuicktexts')).count()).toBe(previousCount - 1);
         });
     });
 })

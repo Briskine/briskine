@@ -89,10 +89,49 @@ Second To:
 Testing
 -------
 
-Install `protractor` to be able to run the tests.
+Before running the tests, run:
+
 ```
-npm install -g protractor
-webdriver-manager update
+npm install
 ```
 
+Then key your Chrome private `.pem` keyfile and copy it as `key.pem` in the repository root.
+
 Set the `QUICKTEXT_GMAIL_USERNAME` and `QUICKTEXT_GMAIL_PASSWORD` ENV variables, for logging-in into Gmail.
+
+```
+export QUICKTEXT_GMAIL_USERNAME=abc
+export QUICKTEXT_GMAIL_PASSWORD=def
+```
+
+Then, to run all the tests:
+
+```
+grunt test
+```
+
+or only for the contentscript:
+
+```
+grunt test:content
+```
+
+or only for the background script:
+
+```
+grunt test:background
+```
+
+Running the tests will recompile the app for production and test that.
+
+If you want to run the tests locally (not on Sauce Labs) without recompiling the app, run:
+
+```
+grunt protractor:background
+```
+
+or
+
+```
+grunt protractor:content
+```
