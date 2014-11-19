@@ -1,6 +1,6 @@
 {
   "name": "quicktext-chrome",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "Gmail Quicktext grunt package",
   "main": "Gruntfile.js",
   "scripts": {
