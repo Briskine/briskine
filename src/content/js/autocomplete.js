@@ -21,20 +21,14 @@ App.autocomplete.getSelectedWord = function (cursorPosition) {
     if (App.data.gmailView === 'basic html') {
         string = $(cursorPosition.element).val().substr(0, cursorPosition.end);
     } else if (App.data.gmailView === 'standard') {
-        // Get text from node start until cursorPosition.end
-        var range = new Range();
-        if (cursorPosition.end > cursorPosition.element.length) {
-            cursorPosition.end = cursorPosition.element.length;
-        }
-        range.setStart(cursorPosition.element, 0);
-        range.setEnd(cursorPosition.element, cursorPosition.end);
-        string = range.toString();
+        var selection = window.getSelection();
+        string = selection.focusNode.textContent.substr(0, selection.focusOffset);
     }
 
     // Replace all nbsp with normal spaces
     string = string.replace('\xa0', ' ');
 
-    word.start = Math.max(string.lastIndexOf(" "), string.lastIndexOf("\n")) + 1;
+    word.start = Math.max(string.lastIndexOf(" "), string.lastIndexOf("\n"), string.lastIndexOf("<br>")) + 1;
     word.text = string.substr(word.start);
     word.end = word.start + word.text.length;
 
@@ -44,17 +38,33 @@ App.autocomplete.getSelectedWord = function (cursorPosition) {
 App.autocomplete.getCursorPosition = function (e) {
     var target = e && e.target ? e.target : null,
         position = {
-            start: 0,
-            end: 0,
+            element: null,
+            offset: 0,
             absolute: {
                 left: 0,
                 top: 0
             },
-            element: null,
             elementMain: target,
             word: null
         };
     var $caret;
+
+    var getRanges = function(sel){
+        if (sel.rangeCount){
+            var ranges = [];
+            for (var i= 0; i < sel.rangeCount; i++){
+                ranges.push(sel.getRangeAt(i));
+            }
+            return ranges;
+        }
+        return [];
+    };
+
+    var restoreRanges = function(sel, ranges){
+        for (var i in ranges) {
+            sel.addRange(ranges[i]);
+        }
+    };
 
     // Working with textarea
     // Create a mirror element, copy textarea styles
@@ -97,40 +107,39 @@ App.autocomplete.getCursorPosition = function (e) {
         // http://stackoverflow.com/questions/16580841/insert-text-at-caret-in-contenteditable-div
     } else if (App.data.gmailView === 'standard') {
         var selection = window.getSelection();
-        var range = selection.getRangeAt(0);
+        // get the element that we are focused + plus the offset
+        // Read more about this here: https://developer.mozilla.org/en-US/docs/Web/API/Selection.focusNode
+        position.element = selection.focusNode;
+        position.offset = selection.focusOffset;
 
-        position.element = selection.baseNode;
-        position.start = range.startOffset;
-        position.end = range.endOffset;
+        // First we get all ranges (most likely just 1 range)
+        var ranges = getRanges(selection);
+        var focusNode = selection.focusNode;
+        var focusOffset = selection.focusOffset;
 
-        range.collapse(false);   // collapse at end
-        range.deleteContents();
+        if (!ranges.length) {
+            Raven.captureMessage("A selection without any ranges!");
+            return;
+        }
+        // remove any previous ranges
+        selection.removeAllRanges();
 
-        // Add virtual caret
-        range.insertNode(range.createContextualFragment('<span id="qt-caret"></span>'));
+        // Added a new range to place the caret at the focus point of the cursor
+        var range = new Range();
+        var caretText = '<span id="qt-caret"></span>';
+        range.setStart(focusNode, focusOffset);
+        range.setEnd(focusNode, focusOffset);
+        range.insertNode(range.createContextualFragment(caretText));
+        selection.addRange(range);
+        selection.removeAllRanges();
+
+        // finally we restore all the ranges that we had before
+        restoreRanges(selection, ranges);
 
         // Virtual caret
         $caret = $('#qt-caret');
 
         if ($caret.length) {
-            // Set caret back at old position
-            //TODO: fix this soon! THe caret is not positioned at the right place anyway.
-            range = range.cloneRange();
-            range.setStartAfter($caret[0]);
-            range.collapse(true);
-            //selection.removeAllRanges();
-
-            // TODO fix
-            // `Discontiguous selection is not supported.`
-            // Chrome error.
-            // https://code.google.com/p/chromium/issues/detail?id=399791
-            // https://code.google.com/p/rangy/issues/detail?id=208
-
-            // Probably, because of this
-            // after a word is matched, after adding/deleting extra chars
-            // the word does not change, or the popup does not show at all
-            selection.addRange(range);
-
             position.absolute = $caret.offset();
             position.absolute.width = $caret.width();
             position.absolute.height = $caret.height();
