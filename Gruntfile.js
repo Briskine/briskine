@@ -13,6 +13,7 @@ module.exports = function (grunt) {
     var dependencies = {
         background: {
             js: [
+                'bower_components/raven-js/dist/raven.js',
                 'bower_components/jquery/jquery.js',
                 'bower_components/bootstrap/dist/js/bootstrap.min.js',
                 'bower_components/underscore/underscore.js',
@@ -30,12 +31,12 @@ module.exports = function (grunt) {
 
                 // Should be first
                 'background/js/environment.js',
-                'background/js/**/*.js',
-                'bower_components/trackjs-tracker/tracker.js'
+                'background/js/**/*.js'
             ]
         },
         content: {
             js: [
+                'bower_components/raven-js/dist/raven.js',
                 'bower_components/jquery/jquery.js',
                 'bower_components/underscore/underscore.js',
                 'bower_components/handlebars/handlebars.js',
@@ -48,8 +49,7 @@ module.exports = function (grunt) {
                 'content/js/autocomplete.js',
                 'content/js/keyboard.js',
                 'content/js/dialog.js',
-                'content/js/events.js',
-                'bower_components/trackjs-tracker/tracker.js'
+                'content/js/events.js'
             ]
         }
     };

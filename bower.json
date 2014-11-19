@@ -30,6 +30,7 @@
     "font-awesome": "~4.0",
     "trackjs-tracker": "~2.1.1",
     "mousetrap": "https://github.com/xarg/mousetrap.git#master",
-    "analytics": "~2.4.16"
+    "analytics": "~2.4.16",
+    "raven-js": "~1.1.16"
   }
 }

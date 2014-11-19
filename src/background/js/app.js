@@ -30,19 +30,19 @@ var gqApp = angular.module('gqApp', [
             });
     });
 
-// Add trackjs
-window._trackJs = {
-    token: "f4b509356dbf42feb02b2b535d8c1c85",
-    application: "quicktext-chrome",
-    version: chrome.runtime.getManifest().version
-};
+Raven.config('https://af2f5e9fb2744c359c19d08c8319d9c5@app.getsentry.com/30379', {
+    tags: {
+        version: chrome.runtime.getManifest().version
+    },
+    linesOfContext: 11,
+    fetchContext: true,
+    collectWindowErrors: true
+}).install();
 
 gqApp.config(["$provide", function ($provide) {
         $provide.decorator("$exceptionHandler", ["$delegate", "$window", function ($delegate, $window) {
             return function (exception, cause) {
-                if ($window.trackJs) {
-                    $window.trackJs.track(exception);
-                }
+                Raven.captureException(exception);
                 // (Optional) Pass the error through to the delegate formats it for the console
                 $delegate(exception, cause);
             };

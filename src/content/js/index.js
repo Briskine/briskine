@@ -68,15 +68,14 @@ var App = {
     }
 };
 
-// Add trackjs
-// window._trackJs = {
-//    token: "f4b509356dbf42feb02b2b535d8c1c85",
-//    application: "quicktext-chrome",
-//    version: chrome.runtime.getManifest().version,
-//    visitor: {
-//        enabled: false // don't collect data from user events as it might contain private information
-//    }
-// };
+Raven.config('https://af2f5e9fb2744c359c19d08c8319d9c5@app.getsentry.com/30379', {
+    tags: {
+        version: chrome.runtime.getManifest().version
+    },
+    linesOfContext: 11,
+    fetchContext: true,
+    collectWindowErrors: true
+}).install();
 
 App.init = function () {
     document.addEventListener("blur", App.onBlur, true);
