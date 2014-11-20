@@ -160,47 +160,59 @@ App.autocomplete.replaceWith = function (quicktext, event) {
 
     App.autocomplete.justCompleted = true; // the idea is that we don't want any completion to popup after we just completed
 
-    if (App.data.gmailView == 'basic html') {
-        var $textarea = $(cursorPosition.element),
-            value = $textarea.val();
+    // TODO detect if the elementMain is a form element
+    // or a contenteditable element, instead of the gmailView check.
+    // so we don't have to re-do this in all plugins
 
-        replacement = Handlebars.compile(quicktext.body)(App.parser.getData(cursorPosition.elementMain));
+    App.plugin.getData({
+        element: cursorPosition.elementMain
+    }, function(err, response) {
 
-        var valueNew = value.substr(0, word.start) + replacement + value.substr(word.end),
-            cursorOffset = word.start + quicktext.body.length;
+        var parsedTemplate = Handlebars.compile(quicktext.body)(response);
 
-        $textarea.val(valueNew);
+        if (App.data.gmailView == 'basic html') {
+            var $textarea = $(cursorPosition.element),
+                value = $textarea.val();
 
-        // Set focus at the end of patch
-        $textarea.focus();
-        $textarea[0].setSelectionRange(cursorOffset, cursorOffset);
-    } else if (App.data.gmailView === 'standard') {
-        var selection = window.getSelection(),
-            range = selection.getRangeAt(0);
-        replacement = Handlebars.compile(quicktext.body)(App.parser.getData(cursorPosition.elementMain)).replace(/\n/g, '<br>');
+            var valueNew = value.substr(0, word.start) + parsedTemplate + value.substr(word.end),
+                cursorOffset = word.start + quicktext.body.length;
 
-        range.setStart(cursorPosition.element, word.start);
-        range.setEnd(cursorPosition.element, word.end);
-        range.deleteContents();
-        range.insertNode(range.createContextualFragment(replacement + '<span id="qt-caret"></span>'));
+            $textarea.val(valueNew);
 
-        // Virtual caret
-        // Used to set cursor position in right place
-        // TODO find a better method to do that
-        var $caret = $('#qt-caret');
+            // Set focus at the end of patch
+            $textarea.focus();
+            $textarea[0].setSelectionRange(cursorOffset, cursorOffset);
+        } else if (App.data.gmailView === 'standard') {
 
-        if ($caret.length) {
-            // Set caret back at old position
-            range = range.cloneRange();
-            range.setStartAfter($caret[0]);
-            range.collapse(true);
-            selection.removeAllRanges();
-            selection.addRange(range);
+            var selection = window.getSelection();
+            var range = selection.getRangeAt(0);
 
-            // Remove virtual caret
-            $caret.remove();
+            replacement = parsedTemplate.replace(/\n/g, '<br>');
+
+            range.setStart(cursorPosition.element, word.start);
+            range.setEnd(cursorPosition.element, word.end);
+            range.deleteContents();
+            range.insertNode(range.createContextualFragment(replacement + '<span id="qt-caret"></span>'));
+
+            // Virtual caret
+            // Used to set cursor position in right place
+            // TODO find a better method to do that
+            var $caret = $('#qt-caret');
+
+            if ($caret.length) {
+                // Set caret back at old position
+                range = range.cloneRange();
+                range.setStartAfter($caret[0]);
+                range.collapse(true);
+                selection.removeAllRanges();
+                selection.addRange(range);
+
+                // Remove virtual caret
+                $caret.remove();
+            }
         }
-    }
+
+    });
 
     // set subject field
     if (quicktext.subject) {

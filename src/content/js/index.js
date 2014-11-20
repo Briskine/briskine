@@ -12,7 +12,6 @@ var App = {
         debouncer: {}
     },
     autocomplete: {},
-    parser: {},
     settings: {
         // Get quicktexts filtered out by shortcut
         getQuicktextsShortcut: function (text, callback) {
@@ -68,6 +67,78 @@ var App = {
     }
 };
 
+// the active plugin, based on the plugin.init response
+App.plugin = '';
+
+// complete list of plugins
+App.plugins = {};
+
+// main plugin creation method, used by plugins
+App.plugin = function(id, obj) {
+
+    // check if adapter has all required methods
+    // TODO set methods required to implement a wio adapter
+    var requiredMethods = [
+        'init'
+    ];
+
+    // mix in the adapter
+    requiredMethods.forEach(function(prop) {
+        if(!obj.hasOwnProperty(prop)) {
+            throw 'Invalid plugin! Missing method: ' + prop;
+        }
+    });
+
+    App.plugins[id] = obj;
+
+};
+
+// run the init method on all adapters
+App.activatePlugins = function() {
+
+    var allPlugins = Object.keys(App.plugins);
+    var pluginResponse = {};
+
+    // check if all plugins were loaded
+    var checkPluginsLoaded = function() {
+
+        var pluginResponseArray = Object.keys(pluginResponse);
+
+        if(pluginResponseArray.length === allPlugins.length) {
+
+            // all plugins loaded
+            pluginResponseArray.some(function(pluginName) {
+
+                // find the first plugin that returned true
+                // and set it as the active one
+                if(pluginResponse[pluginName] === true) {
+                    App.plugin = App.plugins[pluginName];
+                    return true;
+                }
+
+                return false;
+
+            });
+
+        }
+
+    };
+
+    // trigger the init function on all plugins
+    allPlugins.forEach(function(pluginName) {
+
+        App.plugins[pluginName].init({}, function(err, response) {
+
+            pluginResponse[pluginName] = response;
+
+            checkPluginsLoaded();
+
+        });
+
+    });
+
+};
+
 Raven.config('https://af2f5e9fb2744c359c19d08c8319d9c5@app.getsentry.com/30379', {
     tags: {
         version: chrome.runtime.getManifest().version
@@ -103,8 +174,11 @@ App.init = function () {
     // create dialog once and then reuse the same element
     App.autocomplete.dialog.create();
     App.autocomplete.dialog.bindKeyboardEvents();
+
+    App.activatePlugins();
 };
 
 $(function () {
+    // TODO init is being called multiple times, find a fix for it
     App.init();
 });

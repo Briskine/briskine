@@ -45,11 +45,11 @@ module.exports = function (grunt) {
 
                 'content/js/patterns.js',
                 'content/js/index.js',
-                'content/js/parser.js',
                 'content/js/autocomplete.js',
                 'content/js/keyboard.js',
                 'content/js/dialog.js',
-                'content/js/events.js'
+                'content/js/events.js',
+                'content/js/plugins/gmail.js'
             ]
         }
     };
