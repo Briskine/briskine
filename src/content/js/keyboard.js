@@ -43,11 +43,20 @@ App.autocomplete.keyboard = {
         }
 
         var button;
-        if (App.data.gmailView == 'basic html') {
+        if (App.data.contentEditable) {
+
+            // TODO maybe just use [tabindex=1]
+            // so we're not Gmail specific.
+            // If it does not work
+            // we probably have to add a method to the plugin.
+
+            button = $(e.target).closest('table').parent().closest('table').find('[role=button][tabindex="1"]').first();
+
+        } else {
+
             var elements = $(e.target).closest('table').find('input,textarea,button');
             button = elements.eq(elements.index(element) + 1);
-        } else if (App.data.gmailView === 'standard') {
-            button = $(e.target).closest('table').parent().closest('table').find('[role=button][tabindex="1"]').first();
+
         }
 
         if (button.length) {

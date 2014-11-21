@@ -18,11 +18,11 @@ App.autocomplete.getSelectedWord = function (cursorPosition) {
     };
     var string;
 
-    if (App.data.gmailView === 'basic html') {
-        string = $(cursorPosition.element).val().substr(0, cursorPosition.end);
-    } else if (App.data.gmailView === 'standard') {
+    if (App.data.contentEditable) {
         var selection = window.getSelection();
         string = selection.focusNode.textContent.substr(0, selection.focusOffset);
+    } else {
+        string = $(cursorPosition.element).val().substr(0, cursorPosition.end);
     }
 
     // Replace all nbsp with normal spaces
@@ -65,46 +65,16 @@ App.autocomplete.getCursorPosition = function (e) {
         }
     };
 
-    // Working with textarea
-    // Create a mirror element, copy textarea styles
-    // Insert text until selectionEnd
-    // Insert a virtual cursor and find its position
-    if (App.data.gmailView === 'basic html') {
-        //position.element = e.target;
-        position.start = position.element.selectionStart;
-        position.end = position.element.selectionEnd;
+    var contenteditable = false;
+    if(position.element.getAttribute('contenteditable') && position.element.getAttribute('contenteditable') === 'true') {
+        contenteditable = true;
+    }
 
-        var $mirror = $('<div id="qt-mirror" class="qt-mirror"></div>').addClass(position.element.className),
-            $source = $(position.element),
-            $sourcePosition = $source.position();
-
-        // copy all styles
-        for (var i in App.autocomplete.mirrorStyles) {
-            var style = App.autocomplete.mirrorStyles[i];
-            $mirror.css(style, $source.css(style));
-        }
-
-        // set absolute position
-        $mirror.css({top: $sourcePosition.top + 'px', left: $sourcePosition.left + 'px'});
-
-        // copy content
-        $mirror.html($source.val().substr(0, position.end).split("\n").join('<br>'));
-        $mirror.append('<span id="qt-caret" class="qt-caret"></span>');
-
-        // insert mirror
-        $mirror.insertAfter($source);
-
-        $caret = $('#qt-caret');
-        position.absolute = $caret.offset();
-        position.absolute.width = $caret.width();
-        position.absolute.height = $caret.height();
-
-        $mirror.remove();
-
+    if(App.data.contentEditable) {
         // Working with editable div
         // Insert a virtual cursor, find its position
         // http://stackoverflow.com/questions/16580841/insert-text-at-caret-in-contenteditable-div
-    } else if (App.data.gmailView === 'standard') {
+
         var selection = window.getSelection();
         // get the element that we are focused + plus the offset
         // Read more about this here: https://developer.mozilla.org/en-US/docs/Web/API/Selection.focusNode
@@ -146,6 +116,45 @@ App.autocomplete.getCursorPosition = function (e) {
             // Remove virtual caret
             $caret.remove();
         }
+
+    } else {
+
+        // Working with textarea
+        // Create a mirror element, copy textarea styles
+        // Insert text until selectionEnd
+        // Insert a virtual cursor and find its position
+
+        //position.element = e.target;
+        position.start = position.element.selectionStart;
+        position.end = position.element.selectionEnd;
+
+        var $mirror = $('<div id="qt-mirror" class="qt-mirror"></div>').addClass(position.element.className),
+            $source = $(position.element),
+            $sourcePosition = $source.position();
+
+        // copy all styles
+        for (var i in App.autocomplete.mirrorStyles) {
+            var style = App.autocomplete.mirrorStyles[i];
+            $mirror.css(style, $source.css(style));
+        }
+
+        // set absolute position
+        $mirror.css({top: $sourcePosition.top + 'px', left: $sourcePosition.left + 'px'});
+
+        // copy content
+        $mirror.html($source.val().substr(0, position.end).split("\n").join('<br>'));
+        $mirror.append('<span id="qt-caret" class="qt-caret"></span>');
+
+        // insert mirror
+        $mirror.insertAfter($source);
+
+        $caret = $('#qt-caret');
+        position.absolute = $caret.offset();
+        position.absolute.width = $caret.width();
+        position.absolute.height = $caret.height();
+
+        $mirror.remove();
+
     }
 
     return position;
@@ -159,29 +168,13 @@ App.autocomplete.replaceWith = function (quicktext, event) {
 
     App.autocomplete.justCompleted = true; // the idea is that we don't want any completion to popup after we just completed
 
-    // TODO detect if the element is a form element
-    // or a contenteditable element, instead of the gmailView check.
-    // so we don't have to re-do this in all plugins
-
     App.plugin.getData({
         element: cursorPosition.element
     }, function(err, response) {
 
         var parsedTemplate = Handlebars.compile(quicktext.body)(response);
 
-        if (App.data.gmailView == 'basic html') {
-            var $textarea = $(cursorPosition.element),
-                value = $textarea.val();
-
-            var valueNew = value.substr(0, word.start) + parsedTemplate + value.substr(word.end),
-                cursorOffset = word.start + quicktext.body.length;
-
-            $textarea.val(valueNew);
-
-            // Set focus at the end of patch
-            $textarea.focus();
-            $textarea[0].setSelectionRange(cursorOffset, cursorOffset);
-        } else if (App.data.gmailView === 'standard') {
+        if(App.data.contentEditable) {
 
             var selection = window.getSelection();
             var range = selection.getRangeAt(0);
@@ -209,6 +202,21 @@ App.autocomplete.replaceWith = function (quicktext, event) {
                 // Remove virtual caret
                 $caret.remove();
             }
+
+        } else {
+
+            var $textarea = $(cursorPosition.element),
+                value = $textarea.val();
+
+            var valueNew = value.substr(0, word.start) + parsedTemplate + value.substr(word.end),
+                cursorOffset = word.start + quicktext.body.length;
+
+            $textarea.val(valueNew);
+
+            // Set focus at the end of patch
+            $textarea.focus();
+            $textarea[0].setSelectionRange(cursorOffset, cursorOffset);
+
         }
 
     });

@@ -6,8 +6,8 @@
 var App = {
     data: {
         inCompose: false,      // true when textarea element is focused
-        composeElement: null,  // reference to compose DOM element
-        gmailView: '',         // it may be standard or basic html
+        //composeElement: null,  // reference to compose DOM element
+        contentEditable: false,
         searchCache: {},
         debouncer: {}
     },
@@ -176,6 +176,9 @@ App.init = function () {
     App.autocomplete.dialog.bindKeyboardEvents();
 
     App.activatePlugins();
+
+    // TODO change background script to show the pageAction icon in yahoo, etc.
+
 };
 
 $(function () {

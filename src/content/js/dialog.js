@@ -3,7 +3,7 @@
  */
 
 
-PubSub.subscribe('focus', function (action, element, gmailView) {
+PubSub.subscribe('focus', function (action, element) {
     if (action === 'off' && element !== App.autocomplete.dialog.$search.get(0)) {
         App.autocomplete.dialog.close();
     }

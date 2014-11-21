@@ -2,20 +2,25 @@
  PubSub events
  */
 
-PubSub.subscribe('focus', function (action, element, gmailView) {
+PubSub.subscribe('focus', function (action, element) {
     if ($(element).hasClass('qt-dropdown-search')) {
         return; // ignore search input
     }
 
     if (action === 'on') {
         App.data.inCompose = true;
-        App.data.composeElement = element;
-        App.data.gmailView = gmailView;
+
+        // check if element is contenteditable
+        if(element && element.getAttribute('contenteditable')) {
+            App.data.contentEditable = true;
+        } else {
+            App.data.contentEditable = false;
+        }
+
     } else if (action === 'off') {
         App.data.inCompose = false;
-        App.data.composeElement = null;
-        App.data.gmailView = '';
     }
+
 });
 
 /*
@@ -29,11 +34,12 @@ App.onFocus = function (e) {
     // PubSub.publish('focus', 'off', target);
 
     // Check if it is the compose element
-    if (target.type === 'textarea' && target.getAttribute('name') === 'body') {
-        PubSub.publish('focus', 'on', target, 'basic html');
-    } else if (target.classList.contains('editable') && target.getAttribute('contenteditable')) {
-        PubSub.publish('focus', 'on', target, 'standard');
-    }
+    // TODO this will be replaced by the check in the plugin init
+    //if (target.type === 'textarea' && target.getAttribute('name') === 'body') {
+    //PubSub.publish('focus', 'on', target, 'basic html');
+    //} else if (target.classList.contains('editable') && target.getAttribute('contenteditable')) {
+        PubSub.publish('focus', 'on', target);
+    //}
 };
 
 App.onBlur = function (e) {

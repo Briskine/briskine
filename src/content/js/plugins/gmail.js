@@ -41,7 +41,7 @@ App.plugin('gmail', (function() {
         return data;
     };
 
-    // TODO get all required variables from the dom (subject, name, etc.)
+    // get all required data from the dom
     var getData = function(params, callback) {
 
         var from = '',
@@ -50,7 +50,29 @@ App.plugin('gmail', (function() {
             bcc = [],
             subject = '';
 
-        if (App.data.gmailView === 'basic html') {
+        if (App.data.contentEditable) {
+
+            var $container = $(params.element).closest('table').parent().closest('table').parent().closest('table'),
+                from_email = $container.find('input[name=from]').val(),
+            // , from_name = $('span[email="'+from_email+'"]').length ? $('span[email="'+from_email+'"]').attr('name') : ''
+            // Taking name based on Google+ avatar name
+                fromNameEl = $('a[href^="https://plus.google.com/u/0/me"][title]'),
+                fromName = fromNameEl.length ? fromNameEl.attr('title').split('\n')[0] : '';
+
+            from = fromName + ' <' + from_email + '>';
+            to = $container.find('input[name=to]').toArray().map(function (a) {
+                return a.value;
+            });
+            cc = $container.find('input[name=cc]').toArray().map(function (a) {
+                return a.value;
+            });
+            bcc = $container.find('input[name=bcc]').toArray().map(function (a) {
+                return a.value;
+            });
+            subject = $container.find('input[name=subject]').val();
+
+        } else {
+
             from = $('#guser').find('b').text();
             var toEl = $('#to');
 
@@ -74,25 +96,7 @@ App.plugin('gmail', (function() {
                         .clone().children().remove().end().text().trim().split(',');
                 }
             }
-        } else if (App.data.gmailView === 'standard') {
-            var $container = $(params.element).closest('table').parent().closest('table').parent().closest('table'),
-                from_email = $container.find('input[name=from]').val(),
-            // , from_name = $('span[email="'+from_email+'"]').length ? $('span[email="'+from_email+'"]').attr('name') : ''
-            // Taking name based on Google+ avatar name
-                fromNameEl = $('a[href^="https://plus.google.com/u/0/me"][title]'),
-                fromName = fromNameEl.length ? fromNameEl.attr('title').split('\n')[0] : '';
 
-            from = fromName + ' <' + from_email + '>';
-            to = $container.find('input[name=to]').toArray().map(function (a) {
-                return a.value;
-            });
-            cc = $container.find('input[name=cc]').toArray().map(function (a) {
-                return a.value;
-            });
-            bcc = $container.find('input[name=bcc]').toArray().map(function (a) {
-                return a.value;
-            });
-            subject = $container.find('input[name=subject]').val();
         }
 
         var vars = {
@@ -111,11 +115,16 @@ App.plugin('gmail', (function() {
 
     var init = function(params, callback) {
 
-        var activateExtension = false;
-        // TODO trigger the extension based on url
-        // or something else, in extreme cases
+        var gmailUrl = '//mail.google.com/';
 
-        activateExtension = true;
+        var activateExtension = false;
+
+        // trigger the extension based on url
+        if(window.location.href.indexOf(gmailUrl) !== -1) {
+            activateExtension = true;
+        }
+
+        console.log('init yahoo plugin');
 
         // return true as response if plugin should be activated
         if(callback) {
