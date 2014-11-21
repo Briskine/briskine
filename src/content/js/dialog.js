@@ -54,7 +54,6 @@ App.autocomplete.dialog = {
     },
     // TODO(@ghinda): make dropdown position relative so on scrolling it will stay in right place
     create: function () {
-        //var container = $('[id="'+ $(cursorPosition.elementMain).attr('id') + '"]');
         var container = $('body');
 
         // Add loading dropdown

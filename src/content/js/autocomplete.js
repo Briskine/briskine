@@ -36,17 +36,16 @@ App.autocomplete.getSelectedWord = function (cursorPosition) {
 };
 
 App.autocomplete.getCursorPosition = function (e) {
-    var target = e && e.target ? e.target : null,
-        position = {
-            element: null,
+    var position = {
+            element: e && e.target ? e.target : null,
             offset: 0,
             absolute: {
                 left: 0,
                 top: 0
             },
-            elementMain: target,
             word: null
         };
+
     var $caret;
 
     var getRanges = function(sel){
@@ -71,7 +70,7 @@ App.autocomplete.getCursorPosition = function (e) {
     // Insert text until selectionEnd
     // Insert a virtual cursor and find its position
     if (App.data.gmailView === 'basic html') {
-        position.element = e.target;
+        //position.element = e.target;
         position.start = position.element.selectionStart;
         position.end = position.element.selectionEnd;
 
@@ -160,12 +159,12 @@ App.autocomplete.replaceWith = function (quicktext, event) {
 
     App.autocomplete.justCompleted = true; // the idea is that we don't want any completion to popup after we just completed
 
-    // TODO detect if the elementMain is a form element
+    // TODO detect if the element is a form element
     // or a contenteditable element, instead of the gmailView check.
     // so we don't have to re-do this in all plugins
 
     App.plugin.getData({
-        element: cursorPosition.elementMain
+        element: cursorPosition.element
     }, function(err, response) {
 
         var parsedTemplate = Handlebars.compile(quicktext.body)(response);
