@@ -204,7 +204,7 @@ App.autocomplete.dialog = {
         $element.get(0).scrollIntoView();
     },
     // remove dropdown and cleanup
-    close: function () {
+    close: function (callback) {
         if (App.autocomplete.dialog.isActive) {
             $('.qt-dropdown').removeClass('qt-dropdown-show');
             $('.qt-dropdown-search').val('');
@@ -217,10 +217,14 @@ App.autocomplete.dialog = {
 
             // return focus to the editor
             if(App.autocomplete.dialog.editor) {
-                // chrome focuses the to field
+                // gmail auto-focuses the to field
                 // so we need the delay
                 setTimeout(function() {
                     App.autocomplete.dialog.editor.focus();
+
+                    if(callback) {
+                        callback();
+                    }
                 }, 50);
             }
         }

@@ -36,6 +36,7 @@ App.autocomplete.getSelectedWord = function (cursorPosition) {
 };
 
 App.autocomplete.getCursorPosition = function (e) {
+
     var position = {
             element: e && e.target ? e.target : null,
             offset: 0,
@@ -43,7 +44,6 @@ App.autocomplete.getCursorPosition = function (e) {
                 left: 0,
                 top: 0
             },
-            //selection: window.getSelection(),
             word: null
         };
 
@@ -163,69 +163,76 @@ App.autocomplete.getCursorPosition = function (e) {
 
 
 App.autocomplete.replaceWith = function (quicktext, event) {
+
+
     var cursorPosition = App.autocomplete.cursorPosition,
         word = cursorPosition.word,
         replacement = "";
 
     App.autocomplete.justCompleted = true; // the idea is that we don't want any completion to popup after we just completed
 
-    App.plugin.getData({
-        element: cursorPosition.element
-    }, function(err, response) {
+    // we need the callback because the editor
+    // doesn't get the focus right-away.
+    // so window.getSelection() returns the search field
+    // in the dialog otherwise, instead of the editor
+    App.autocomplete.dialog.close(function() {
 
-        var parsedTemplate = Handlebars.compile(quicktext.body)(response);
+        App.plugin.getData({
+            element: cursorPosition.element
+        }, function(err, response) {
 
-        if(App.data.contentEditable) {
+            var parsedTemplate = Handlebars.compile(quicktext.body)(response);
 
-            var selection = window.getSelection();
-            var range = selection.getRangeAt(0);
+            if(App.data.contentEditable) {
 
-            replacement = parsedTemplate.replace(/\n/g, '<br>');
+                var selection = window.getSelection();
+                var range = selection.getRangeAt(0);
 
-            console.log(cursorPosition.element.selection);
+                replacement = parsedTemplate.replace(/\n/g, '<br>');
 
-            console.log(range);
-            console.log(word);
+                range.setStart(cursorPosition.element, word.start);
+                range.setEnd(cursorPosition.element, word.end);
+                range.deleteContents();
+                range.insertNode(range.createContextualFragment(replacement + '<span id="qt-caret"></span>'));
 
-            range.setStart(cursorPosition.element, word.start);
-            range.setEnd(cursorPosition.element, word.end);
-            range.deleteContents();
-            range.insertNode(range.createContextualFragment(replacement + '<span id="qt-caret"></span>'));
+                // Virtual caret
+                // Used to set cursor position in right place
+                // TODO find a better method to do that
+                var $caret = $('#qt-caret');
 
-            // Virtual caret
-            // Used to set cursor position in right place
-            // TODO find a better method to do that
-            var $caret = $('#qt-caret');
+                if ($caret.length) {
+                    // Set caret back at old position
+                    range = range.cloneRange();
+                    range.setStartAfter($caret[0]);
+                    range.collapse(true);
+                    selection.removeAllRanges();
+                    selection.addRange(range);
 
-            if ($caret.length) {
-                // Set caret back at old position
-                range = range.cloneRange();
-                range.setStartAfter($caret[0]);
-                range.collapse(true);
-                selection.removeAllRanges();
-                selection.addRange(range);
+                    // Remove virtual caret
+                    $caret.remove();
+                }
 
-                // Remove virtual caret
-                $caret.remove();
+            } else {
+
+                var $textarea = $(cursorPosition.element),
+                    value = $textarea.val();
+
+                var valueNew = value.substr(0, word.start) + parsedTemplate + value.substr(word.end),
+                    cursorOffset = word.start + quicktext.body.length;
+
+                $textarea.val(valueNew);
+
+                // Set focus at the end of patch
+                $textarea.focus();
+                $textarea[0].setSelectionRange(cursorOffset, cursorOffset);
+
             }
 
-        } else {
-
-            var $textarea = $(cursorPosition.element),
-                value = $textarea.val();
-
-            var valueNew = value.substr(0, word.start) + parsedTemplate + value.substr(word.end),
-                cursorOffset = word.start + quicktext.body.length;
-
-            $textarea.val(valueNew);
-
-            // Set focus at the end of patch
-            $textarea.focus();
-            $textarea[0].setSelectionRange(cursorOffset, cursorOffset);
-
-        }
+        });
 
     });
+
+    // TODO move this to plugin
 
     // set subject field
     if (quicktext.subject) {
@@ -236,5 +243,6 @@ App.autocomplete.replaceWith = function (quicktext, event) {
     // updates stats
     App.settings.stats('words', quicktext.body.split(" ").length, function () {
     });
-    App.autocomplete.dialog.close();
+
+
 };

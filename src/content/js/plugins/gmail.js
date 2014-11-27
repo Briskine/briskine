@@ -99,8 +99,6 @@ App.plugin('gmail', (function() {
 
         }
 
-        console.log(from, to, cc, bcc, subject);
-
         var vars = {
             from: parseList(from),
             to: parseList(to),
