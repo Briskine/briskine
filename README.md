@@ -86,6 +86,67 @@ Second To:
 {{/if}}
 ```
 
+Building plugins
+----------------
+
+You can build plugins using the `App.plugin('PLUGIN_NAME', {})` method.
+
+Check out the `src/content/plugins/*.js` files for examples on how a plugin show look.
+
+Each plugin must expose the following methods:
+
+* `init`
+* `getData`
+
+All plugin methods should take two arguments: `params` and `callback`.
+
+The `params` argument is an object which can contain other objects or properties that you can use in the method.
+
+The `callback` argument should be a function called at the end of the method, after all async functionality.
+
+The `callback` function uses `Node.js`-style arguments. The first one is an error object returned in case of errors, otherwise return `null`. The second argument is the actual method response.
+
+### Plugin methods
+
+#### init
+
+The `init` method should respond with a boolean value, `false` by default, and `true` if the plugin should be activated.
+
+#### getData
+
+The `getData` method receives the following `params` object:
+
+```
+params: {
+    element: DOM_ELEMENT
+}
+```
+
+The `params.element` object is a reference to the DOM element on which the autocomplete was triggered. It can be a `contenteditable` element, or a form element.
+
+The response of the `getData` method should look like:
+
+```
+{
+    from: [],
+    to: [],
+    cc: [],
+    bcc: [],
+    subject: ''
+}
+```
+
+Each array should contain objects that look like:
+
+```
+{
+    name: '',
+    first_name: '',
+    last_name: '',
+    email: ''
+}
+```
+
 Testing
 -------
 

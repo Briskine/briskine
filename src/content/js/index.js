@@ -79,7 +79,8 @@ App.plugin = function(id, obj) {
     // check if adapter has all required methods
     // TODO set methods required to implement a wio adapter
     var requiredMethods = [
-        'init'
+        'init',
+        'getData'
     ];
 
     // mix in the adapter

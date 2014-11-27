@@ -26,7 +26,7 @@ App.autocomplete.getSelectedWord = function (cursorPosition) {
     }
 
     // Replace all nbsp with normal spaces
-    string = string.replace('\xa0', ' ');
+    string = string.replace('\xa0', ' ').trim();
 
     word.start = Math.max(string.lastIndexOf(" "), string.lastIndexOf("\n"), string.lastIndexOf("<br>")) + 1;
     word.text = string.substr(word.start);
@@ -43,6 +43,7 @@ App.autocomplete.getCursorPosition = function (e) {
                 left: 0,
                 top: 0
             },
+            //selection: window.getSelection(),
             word: null
         };
 
@@ -180,6 +181,11 @@ App.autocomplete.replaceWith = function (quicktext, event) {
             var range = selection.getRangeAt(0);
 
             replacement = parsedTemplate.replace(/\n/g, '<br>');
+
+            console.log(cursorPosition.element.selection);
+
+            console.log(range);
+            console.log(word);
 
             range.setStart(cursorPosition.element, word.start);
             range.setEnd(cursorPosition.element, word.end);

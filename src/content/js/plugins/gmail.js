@@ -44,7 +44,7 @@ App.plugin('gmail', (function() {
     // get all required data from the dom
     var getData = function(params, callback) {
 
-        var from = '',
+        var from = [],
             to = [],
             cc = [],
             bcc = [],
@@ -59,7 +59,7 @@ App.plugin('gmail', (function() {
                 fromNameEl = $('a[href^="https://plus.google.com/u/0/me"][title]'),
                 fromName = fromNameEl.length ? fromNameEl.attr('title').split('\n')[0] : '';
 
-            from = fromName + ' <' + from_email + '>';
+            from.push(fromName + ' <' + from_email + '>');
             to = $container.find('input[name=to]').toArray().map(function (a) {
                 return a.value;
             });
@@ -73,7 +73,7 @@ App.plugin('gmail', (function() {
 
         } else {
 
-            from = $('#guser').find('b').text();
+            from.push($('#guser').find('b').text());
             var toEl = $('#to');
 
             // Full options window
@@ -99,8 +99,10 @@ App.plugin('gmail', (function() {
 
         }
 
+        console.log(from, to, cc, bcc, subject);
+
         var vars = {
-            from: parseList([from]),
+            from: parseList(from),
             to: parseList(to),
             cc: parseList(cc),
             bcc: parseList(bcc),
@@ -123,8 +125,6 @@ App.plugin('gmail', (function() {
         if(window.location.href.indexOf(gmailUrl) !== -1) {
             activateExtension = true;
         }
-
-        console.log('init yahoo plugin');
 
         // return true as response if plugin should be activated
         if(callback) {
