@@ -232,12 +232,9 @@ App.autocomplete.replaceWith = function (quicktext, event) {
 
     });
 
-    // TODO move this to plugin
-
     // set subject field
     if (quicktext.subject) {
-        var $subjectField = $('input[name=subjectbox]');
-        $subjectField.val(quicktext.subject);
+        App.plugin.setTitle(quicktext);
     }
 
     // updates stats

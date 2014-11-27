@@ -113,6 +113,19 @@ App.plugin('gmail', (function() {
 
     };
 
+    var setTitle = function(params, callback) {
+
+        var response = {};
+
+        var $subjectField = $('input[name=subjectbox]');
+        $subjectField.val(params.subject);
+
+        if(callback) {
+            callback(null, response);
+        }
+
+    };
+
     var init = function(params, callback) {
 
         var gmailUrl = '//mail.google.com/';
@@ -135,7 +148,8 @@ App.plugin('gmail', (function() {
 
     return {
         init: init,
-        getData: getData
+        getData: getData,
+        setTitle: setTitle
     }
 
 })());

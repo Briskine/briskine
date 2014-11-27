@@ -33,13 +33,7 @@ App.onFocus = function (e) {
     // Disable any focus as there may be only one focus on a page
     // PubSub.publish('focus', 'off', target);
 
-    // Check if it is the compose element
-    // TODO this will be replaced by the check in the plugin init
-    //if (target.type === 'textarea' && target.getAttribute('name') === 'body') {
-    //PubSub.publish('focus', 'on', target, 'basic html');
-    //} else if (target.classList.contains('editable') && target.getAttribute('contenteditable')) {
-        PubSub.publish('focus', 'on', target);
-    //}
+    PubSub.publish('focus', 'on', target);
 };
 
 App.onBlur = function (e) {

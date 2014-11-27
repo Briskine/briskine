@@ -41,6 +41,20 @@ App.plugin('yahoo', (function() {
 
     };
 
+    var setTitle = function(params, callback) {
+
+        // TODO this is just copied from gmail
+        var response = {};
+
+        var $subjectField = $('input[name=subjectbox]');
+        $subjectField.val(params.subject);
+
+        if(callback) {
+            callback(null, response);
+        }
+
+    };
+
     var init = function(params, callback) {
 
         var yahooUrl = '.mail.yahoo.com/';
@@ -63,7 +77,8 @@ App.plugin('yahoo', (function() {
 
     return {
         init: init,
-        getData: getData
+        getData: getData,
+        setTitle: setTitle
     }
 
 })());

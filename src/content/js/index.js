@@ -76,17 +76,17 @@ App.plugins = {};
 // main plugin creation method, used by plugins
 App.plugin = function(id, obj) {
 
-    // check if adapter has all required methods
-    // TODO set methods required to implement a wio adapter
+    // check if plugin has all the required methods
     var requiredMethods = [
         'init',
-        'getData'
+        'getData',
+        'setTitle'
     ];
 
-    // mix in the adapter
+    // mix in the plugin
     requiredMethods.forEach(function(prop) {
         if(!obj.hasOwnProperty(prop)) {
-            throw 'Invalid plugin! Missing method: ' + prop;
+            throw 'Invalid plugin *' + id + '*! Missing method: ' + prop;
         }
     });
 

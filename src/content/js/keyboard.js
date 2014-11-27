@@ -42,25 +42,25 @@ App.autocomplete.keyboard = {
             return;
         }
 
-        var button;
-        if (App.data.contentEditable) {
+        // traverse the dom upwards and look for the next item
+        // with tabindex=1
+        var $editor = $(e.target);
+        var $parents = $editor.parents();
+        var $tabindex;
 
-            // TODO maybe just use [tabindex=1]
-            // so we're not Gmail specific.
-            // If it does not work
-            // we probably have to add a method to the plugin.
+        $parents.each(function() {
 
-            button = $(e.target).closest('table').parent().closest('table').find('[role=button][tabindex="1"]').first();
+            $tabindex = $(this).find('[tabindex=1]:visible').not($editor);
 
-        } else {
+            // if we found the next visible tabindex element
+            // stop searching
+            if($tabindex.length) {
+                $tabindex.get(0).focus();
+                return false;
+            }
 
-            var elements = $(e.target).closest('table').find('input,textarea,button');
-            button = elements.eq(elements.index(element) + 1);
+        });
 
-        }
 
-        if (button.length) {
-            button.focus();
-        }
     }
 };

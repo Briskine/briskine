@@ -147,6 +147,12 @@ Each array should contain objects that look like:
 }
 ```
 
+#### setTitle
+
+```
+// TODO
+```
+
 Testing
 -------
 
