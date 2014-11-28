@@ -164,7 +164,6 @@ App.autocomplete.getCursorPosition = function (e) {
 
 App.autocomplete.replaceWith = function (quicktext, event) {
 
-
     var cursorPosition = App.autocomplete.cursorPosition,
         word = cursorPosition.word,
         replacement = "";
@@ -232,7 +231,9 @@ App.autocomplete.replaceWith = function (quicktext, event) {
     // doesn't get the focus right-away.
     // so window.getSelection() returns the search field
     // in the dialog otherwise, instead of the editor
-    App.autocomplete.dialog.close(setText);
+    App.autocomplete.dialog.close();
+
+    App.autocomplete.focusEditor(setText);
 
     // set subject field
     if (quicktext.subject) {
@@ -245,3 +246,21 @@ App.autocomplete.replaceWith = function (quicktext, event) {
 
 
 };
+
+App.autocomplete.focusEditor = function(callback) {
+
+    // return focus to the editor
+    if(App.autocomplete.dialog.editor) {
+        // gmail auto-focuses the to field
+        // so we need the delay
+        setTimeout(function() {
+            App.autocomplete.dialog.editor.focus();
+
+            if(callback) {
+                callback();
+            }
+        }, 50);
+    }
+
+};
+

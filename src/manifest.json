@@ -21,6 +21,7 @@
     "permissions": [
         "*://mail.google.com/*",
         "*://*.mail.yahoo.com/*",
+        "*://*.mail.live.com/*",
         "https://quicktext.io/*",
 
         "tabs",
@@ -32,6 +33,7 @@
             "matches": [
                 "*://mail.google.com/*",
                 "*://*.mail.yahoo.com/*",
+                "*://*.mail.live.com/*",
                 "https://quicktext.io/*"
             ],
             "js": [

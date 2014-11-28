@@ -109,11 +109,13 @@ App.autocomplete.dialog = {
         });
         Mousetrap.bindGlobal('escape', function (e) {
             App.autocomplete.dialog.close();
+            App.autocomplete.focusEditor();
         });
         Mousetrap.bindGlobal('enter', function (e) {
             if (App.autocomplete.dialog.isActive) {
                 App.autocomplete.dialog.selectActive();
                 App.autocomplete.dialog.close();
+                App.autocomplete.focusEditor();
             }
         });
 
@@ -208,9 +210,13 @@ App.autocomplete.dialog = {
 
         if(!App.autocomplete.dialog.isActive) {
 
+            return;
+
+            /*
             if(callback) {
                 return callback();
             }
+            */
 
         }
 
@@ -222,19 +228,6 @@ App.autocomplete.dialog = {
 
         App.autocomplete.dialog.quicktexts = [];
         App.autocomplete.dialog.cursorPosition = null;
-
-        // return focus to the editor
-        if(App.autocomplete.dialog.editor) {
-            // gmail auto-focuses the to field
-            // so we need the delay
-            setTimeout(function() {
-                App.autocomplete.dialog.editor.focus();
-
-                if(callback) {
-                    callback();
-                }
-            }, 50);
-        }
 
     }
 };

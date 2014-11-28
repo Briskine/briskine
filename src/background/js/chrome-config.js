@@ -5,13 +5,15 @@ if (chrome.runtime) {
 
     var urlMatchRegex = [
         /^https?:\/\/mail.google.com/,
-        /mail.yahoo.com/
+        /mail.yahoo.com/,
+        /mail.live.com/
     ];
 
     // for tabs.query auto-reload
     var urlMathPatterns = [
         '*://mail.google.com/*',
-        '*://*.mail.yahoo.com/*'
+        '*://*.mail.yahoo.com/*',
+        '*://*.mail.live.com/*'
     ];
 
     // Called when the url of a tab changes.

@@ -11,7 +11,7 @@ App.plugin('yahoo', (function() {
             to: [],
             cc: [],
             bcc: [],
-            subject: subject
+            subject: ''
         };
 
         var $composeContainer = $(params.element).parents('.thread-item').first();

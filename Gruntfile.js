@@ -50,7 +50,8 @@ module.exports = function (grunt) {
                 'content/js/dialog.js',
                 'content/js/events.js',
                 'content/js/plugins/gmail.js',
-                'content/js/plugins/yahoo.js'
+                'content/js/plugins/yahoo.js',
+                'content/js/plugins/outlook.js'
             ]
         }
     };
