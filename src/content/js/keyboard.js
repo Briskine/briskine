@@ -42,20 +42,31 @@ App.autocomplete.keyboard = {
             return;
         }
 
-        // traverse the dom upwards and look for the next item
-        // with tabindex=1
+        // TODO outlook.com uses custom tab-functionality
+        // so this doesn't work
+
+        // traverse the dom upwards and look for
+        // the next focusable item
+        // https://stackoverflow.com/questions/1599660/which-html-elements-can-receive-focus
         var $editor = $(e.target);
-        var $parents = $editor.parents();
-        var $tabindex;
+        var $parents = $editor.parents().filter(':visible');
+        var $nextFocus;
 
         $parents.each(function() {
 
-            $tabindex = $(this).find('[tabindex=1]:visible').not($editor);
+            $nextFocus = $(this).find('a[href], area[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), button:not([disabled]), iframe, object, embed, *[tabindex], *[contenteditable]').not('[tabindex=-1]').not($editor);
+
+            $nextFocus = $nextFocus.filter(function() {
+                return !($(this).is(':hidden') || $(this).css('visibility') === 'hidden');
+            });
 
             // if we found the next visible tabindex element
             // stop searching
-            if($tabindex.length) {
-                $tabindex.get(0).focus();
+            if($nextFocus.length) {
+
+                console.log($nextFocus);
+
+                $nextFocus.get(0).focus();
                 return false;
             }
 
