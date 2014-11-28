@@ -1,19 +1,31 @@
 // Register Chrome runtime protocols and context menus
 if (chrome.runtime) {
 
+    var activeUrls = [
+        /^https?:\/\/mail.google.com/,
+        /mail.yahoo.com/
+    ];
+
     // Called when the url of a tab changes.
     var updatedTab = function (tabId, changeInfo, tab) {
+
+        // in development
+        // also show for localhost
         if (ENV && ENV === 'development') {
-            // Display in gmail and localhost
-            if (/^https?:\/\/mail.google.com/.test(tab.url) || /^https?:\/\/localhost\/gmail/.test(tab.url)) {
-                chrome.pageAction.show(tabId);
-            }
-        } else {
-            // Display only in gmail
-            if (/^https?:\/\/mail.google.com/.test(tab.url)) {
-                chrome.pageAction.show(tabId);
-            }
+            activeUrls.push(/^https?:\/\/localhost\/gmail/);
         }
+
+        activeUrls.some(function(urlPattern) {
+
+            // Display only in activeUrls
+            if (urlPattern.test(tab.url)) {
+                chrome.pageAction.show(tabId);
+                return true;
+            }
+
+            return false;
+        });
+
     };
 
     // Listen for any changes to the URL of any tab.

@@ -178,8 +178,6 @@ App.init = function () {
 
     App.activatePlugins();
 
-    // TODO change background script to show the pageAction icon in yahoo, etc.
-
 };
 
 $(function () {
