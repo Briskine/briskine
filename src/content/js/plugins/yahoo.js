@@ -18,23 +18,29 @@ App.plugin('yahoo', (function() {
         var $emailContainer = $composeContainer.prev('.thread-item');
 
         // get your name from the top-right profile
-        var fromName = $('#yucs-profile b').text();
-        var fromEmail = $('#yucs-profile-panel b + x').text();
+        var fromName = $('#yucs-profile b').first().text();
+        var fromEmail = $('#yucs-profile-panel b + b').text();
 
         // get your own name from somewhere
         vars.from.push({
             name: fromName,
             first_name: '',
             last_name: '',
-            email: fromEmail
+            email: fromEmail + '@yahoo.com'
         });
 
         $composeContainer.find('#to li').each(function() {
             var $li = $(this);
             var liText = $li.text().trim();
+
+            // TODO check if the liText is the name or the email
+
             if(liText) {
                 vars.to.push({
-                    name: liText
+                    name: liText,
+                    first_name: '',
+                    last_name: '',
+                    email: ''
                 });
             }
         });

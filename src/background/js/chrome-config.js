@@ -1,6 +1,8 @@
 // Register Chrome runtime protocols and context menus
 if (chrome.runtime) {
 
+    // TODO somehow get this values from the plugins
+
     var urlMatchRegex = [
         /^https?:\/\/mail.google.com/,
         /mail.yahoo.com/
