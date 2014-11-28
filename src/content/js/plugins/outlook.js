@@ -3,6 +3,23 @@
 
 App.plugin('outlook', (function() {
 
+    var parseName = function(name) {
+        name = name.trim();
+
+        var first_name = '';
+        var last_name = '';
+
+        var firstSpace = name.indexOf(' ');
+
+        first_name = name.substring(0, firstSpace);
+        last_name = name.substring(firstSpace + 1, name.length);
+
+        return {
+            first_name: first_name,
+            last_name: last_name
+        }
+    };
+
     // get all required data from the dom
     var getData = function(params, callback) {
 
@@ -14,6 +31,48 @@ App.plugin('outlook', (function() {
             subject: ''
         };
 
+        var $fromContainer= $('.FromContainer', window.parent.document);
+        var fromName = $fromContainer.find('.Name').text();
+        var fromAddress = $fromContainer.find('.Address').text();
+
+        var from = {
+           name: fromName,
+           first_name: '',
+           last_name: '',
+           email: fromAddress
+        };
+
+        var parsedName = parseName(fromName);
+
+        from.first_name = parsedName.first_name;
+        from.last_name = parsedName.last_name;
+
+        vars.from.push(from);
+
+        var $toContacts = $('#toCP .cp_Contact', window.parent.document);
+        var $contact;
+        var email;
+
+        $toContacts.each(function() {
+            $contact = $(this).find('a:first');
+            email = $contact.next('.hideText').text();
+
+            var name = $contact.text();
+            var parsedName = parseName(name);
+            var to = {
+                name: name,
+                first_name: '',
+                last_name: '',
+                email: email.replace(/["<>;]/gi,'')
+            };
+
+            to.first_name = parsedName.first_name;
+            to.last_name = parsedName.last_name;
+
+            vars.to.push(to);
+
+        });
+
         if(callback) {
             callback(null, vars);
         }
@@ -24,7 +83,7 @@ App.plugin('outlook', (function() {
 
         var response = {};
 
-        var $subjectField = $('input[name=fSubject]');
+        var $subjectField = $('input[name=fSubject]', window.parent.document);
         $subjectField.val(params.subject);
 
         if(callback) {
