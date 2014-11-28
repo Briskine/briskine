@@ -171,11 +171,7 @@ App.autocomplete.replaceWith = function (quicktext, event) {
 
     App.autocomplete.justCompleted = true; // the idea is that we don't want any completion to popup after we just completed
 
-    // we need the callback because the editor
-    // doesn't get the focus right-away.
-    // so window.getSelection() returns the search field
-    // in the dialog otherwise, instead of the editor
-    App.autocomplete.dialog.close(function() {
+    var setText = function() {
 
         App.plugin.getData({
             element: cursorPosition.element
@@ -230,7 +226,13 @@ App.autocomplete.replaceWith = function (quicktext, event) {
 
         });
 
-    });
+    };
+
+    // we need the callback because the editor
+    // doesn't get the focus right-away.
+    // so window.getSelection() returns the search field
+    // in the dialog otherwise, instead of the editor
+    App.autocomplete.dialog.close(setText);
 
     // set subject field
     if (quicktext.subject) {

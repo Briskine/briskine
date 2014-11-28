@@ -205,29 +205,37 @@ App.autocomplete.dialog = {
     },
     // remove dropdown and cleanup
     close: function (callback) {
-        if (App.autocomplete.dialog.isActive) {
-            $('.qt-dropdown').removeClass('qt-dropdown-show');
-            $('.qt-dropdown-search').val('');
 
-            App.autocomplete.dialog.isActive = false;
-            App.autocomplete.dialog.isEmpty = null;
+        if(!App.autocomplete.dialog.isActive) {
 
-            App.autocomplete.dialog.quicktexts = [];
-            App.autocomplete.dialog.cursorPosition = null;
-
-            // return focus to the editor
-            if(App.autocomplete.dialog.editor) {
-                // gmail auto-focuses the to field
-                // so we need the delay
-                setTimeout(function() {
-                    App.autocomplete.dialog.editor.focus();
-
-                    if(callback) {
-                        callback();
-                    }
-                }, 50);
+            if(callback) {
+                return callback();
             }
+
         }
+
+        $('.qt-dropdown').removeClass('qt-dropdown-show');
+        $('.qt-dropdown-search').val('');
+
+        App.autocomplete.dialog.isActive = false;
+        App.autocomplete.dialog.isEmpty = null;
+
+        App.autocomplete.dialog.quicktexts = [];
+        App.autocomplete.dialog.cursorPosition = null;
+
+        // return focus to the editor
+        if(App.autocomplete.dialog.editor) {
+            // gmail auto-focuses the to field
+            // so we need the delay
+            setTimeout(function() {
+                App.autocomplete.dialog.editor.focus();
+
+                if(callback) {
+                    callback();
+                }
+            }, 50);
+        }
+
     }
 };
 
