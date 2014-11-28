@@ -6,12 +6,8 @@ App.plugin('yahoo', (function() {
     // get all required data from the dom
     var getData = function(params, callback) {
 
-        // TODO should from also be an array
-        // or just an object?
-        // currently the gmail plugin sends it as a one-element array
-
         var vars = {
-            from: {},
+            from: [],
             to: [],
             cc: [],
             bcc: [],
@@ -21,9 +17,17 @@ App.plugin('yahoo', (function() {
         var $composeContainer = $(params.element).parents('.thread-item').first();
         var $emailContainer = $composeContainer.prev('.thread-item');
 
-        // TODO not good
+        // get your name from the top-right profile
+        var fromName = $('#yucs-profile b').text();
+        var fromEmail = $('#yucs-profile-panel b + x').text();
+
         // get your own name from somewhere
-        vars.from.name = $emailContainer.find('.from').text();
+        vars.from.push({
+            name: fromName,
+            first_name: '',
+            last_name: '',
+            email: fromEmail
+        });
 
         $composeContainer.find('#to li').each(function() {
             var $li = $(this);
@@ -43,10 +47,9 @@ App.plugin('yahoo', (function() {
 
     var setTitle = function(params, callback) {
 
-        // TODO this is just copied from gmail
         var response = {};
 
-        var $subjectField = $('input[name=subjectbox]');
+        var $subjectField = $('#subject-field');
         $subjectField.val(params.subject);
 
         if(callback) {

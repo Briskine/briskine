@@ -1,9 +1,15 @@
 // Register Chrome runtime protocols and context menus
 if (chrome.runtime) {
 
-    var activeUrls = [
+    var urlMatchRegex = [
         /^https?:\/\/mail.google.com/,
         /mail.yahoo.com/
+    ];
+
+    // for tabs.query auto-reload
+    var urlMathPatterns = [
+        '*://mail.google.com/*',
+        '*://*.mail.yahoo.com/*'
     ];
 
     // Called when the url of a tab changes.
@@ -12,12 +18,13 @@ if (chrome.runtime) {
         // in development
         // also show for localhost
         if (ENV && ENV === 'development') {
-            activeUrls.push(/^https?:\/\/localhost\/gmail/);
+            urlMatchRegex.push(/^https?:\/\/localhost\/gmail/);
+            urlMathPatterns.push(/localhost/);
         }
 
-        activeUrls.some(function(urlPattern) {
+        urlMatchRegex.some(function(urlPattern) {
 
-            // Display only in activeUrls
+            // display only in certain urls
             if (urlPattern.test(tab.url)) {
                 chrome.pageAction.show(tabId);
                 return true;
@@ -44,7 +51,7 @@ if (chrome.runtime) {
         injector.get('QuicktextService').migrate_043_100();
 
         // All gmail tabs shoul be reloaded if the extension was installed
-        chrome.tabs.query({'url': '*://mail.google.com/*'}, function (tabs) {
+        chrome.tabs.query({'url': urlMathPatterns}, function (tabs) {
             for (var i in tabs) {
                 chrome.tabs.reload(tabs[i].id, {});
             }
