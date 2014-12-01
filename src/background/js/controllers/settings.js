@@ -12,10 +12,10 @@ gqApp.controller('SettingsCtrl', function ($scope, $rootScope, QuicktextService,
 
     // Delete all quicktexts. This will not delete the quicktexts on the server side
     $scope.deleteAll = function () {
-        var r = confirm("Are you sure you want to delete all Quicktexts?\n\nNote: they will NOT be deleted from the sync server.");
+        var r = confirm("Are you sure you want to delete all templates?\n\nNote: they will NOT be deleted from the sync server if it's setup.");
         if (r === true) {
             QuicktextService.deleteAll().then(function(){
-                alert("All quicktexts have been deleted. You can still get them back if you are registered quicktext.io");
+                alert("All templates have been deleted. You can still get them back if you are registered gorgias.io");
             });
         }
     };
@@ -36,7 +36,7 @@ gqApp.controller('SettingsCtrl', function ($scope, $rootScope, QuicktextService,
             }
             input.val(val);
             $scope.updateSettings($scope.settings);
-            alert("Please refresh Gmail for the new shortcut to come into effect");
+            alert("Please refresh your websites for the new shortcut to come into effect");
         });
     };
 });

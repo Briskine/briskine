@@ -26,8 +26,8 @@ var Settings = {
         return key in window.localStorage;
     },
     defaults: {
-        baseURL: "https://quicktext.io/",
-        apiBaseURL: "https://quicktext.io/api/1/",
+        baseURL: "https://gorgias.io/",
+        apiBaseURL: "https://gorgias.io/api/1/",
 
         settings: { // settings for the settings view
             dialog: {

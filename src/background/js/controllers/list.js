@@ -285,7 +285,7 @@ gqApp.controller('ListCtrl',
          */
         $scope.insertQuicktext = function (quicktextId) {
             // get the quicktext id
-            analytics.track("Popup Insert Quicktext");
+            analytics.track("Popup insert template");
 
             // getch the quicktext
             QuicktextService.get(quicktextId).then(function (quicktext) {

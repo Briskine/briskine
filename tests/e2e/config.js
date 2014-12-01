@@ -6,7 +6,7 @@ var config = {
     deleteAll: protractor.Key.chord(protractor.Key.CONTROL, 'a') + protractor.Key.DELETE,
 
     extensionsUrl: 'chrome://extensions-frame/',
-    extensionName: 'Quicktext for Chrome',
+    extensionName: 'Gorgias',
     extensionId: '',
     optionsUrl: 'chrome-extension://',
     optionsUrlSuffix: '/pages/bg.html',

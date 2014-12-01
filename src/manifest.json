@@ -22,7 +22,7 @@
         "*://mail.google.com/*",
         "*://*.mail.yahoo.com/*",
         "*://*.mail.live.com/*",
-        "https://quicktext.io/*",
+        "https://gorgias.io/*",
 
         "tabs",
         "contextMenus",
@@ -34,7 +34,7 @@
                 "*://mail.google.com/*",
                 "*://*.mail.yahoo.com/*",
                 "*://*.mail.live.com/*",
-                "https://quicktext.io/*"
+                "https://gorgias.io/*"
             ],
             "js": [
                 "content/js/content.js"
@@ -47,7 +47,7 @@
         }
     ],
     "page_action": {
-        "default_title": "Quicktext",
+        "default_title": "Gorgias",
         "default_icon": {
             "19": "icons/icon19.png",
             "38": "icons/icon38.png"

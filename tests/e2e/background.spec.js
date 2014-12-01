@@ -15,7 +15,7 @@ describe('Background script', function () {
                 return browser.driver.isElementPresent(by.css('.view-container'));
             });
 
-            expect(browser.getTitle()).toBe('Quicktext Options');
+            expect(browser.getTitle()).toBe('Gorgias Options');
 
         });
 

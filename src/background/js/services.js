@@ -271,7 +271,7 @@ gqApp.service('QuicktextService', function ($q, $resource, SettingsService) {
                         });
                     });
                 });
-                analytics.track("Created Quicktext");
+                analytics.track("Created template");
             });
         });
         return deferred.promise;
@@ -323,7 +323,7 @@ gqApp.service('QuicktextService', function ($q, $resource, SettingsService) {
                         });
                     });
                 }
-                analytics.track("Updated Quicktext");
+                analytics.track("Updated template");
             });
         });
         return deferred.promise;
@@ -367,7 +367,7 @@ gqApp.service('QuicktextService', function ($q, $resource, SettingsService) {
                 });
             });
         });
-        analytics.track("Deleted Quicktext");
+        analytics.track("Deleted template");
         return deferred.promise;
     };
 
@@ -377,7 +377,7 @@ gqApp.service('QuicktextService', function ($q, $resource, SettingsService) {
         var deferred = $q.defer();
         self.db.transaction(function (tx) {
             tx.executeSql("DELETE FROM quicktext");
-            analytics.track("Deleted All Quicktexts");
+            analytics.track("Deleted all templates");
             deferred.resolve();
         });
         return deferred.promise;

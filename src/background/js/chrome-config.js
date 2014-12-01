@@ -44,7 +44,7 @@ if (chrome.runtime) {
 
     // Called after installation: https://developer.chrome.com/extensions/runtime.html#event-onInstalled
     chrome.runtime.onInstalled.addListener(function (details) {
-        analytics.track("Installed Quicktext");
+        analytics.track("Installed Gorgias");
 
         // perform the necessary migrations
         if (!document.querySelector('body[class=ng-scope]')) {
@@ -63,7 +63,7 @@ if (chrome.runtime) {
 
         // Context menus
         chrome.contextMenus.create({
-            "title": 'Save \'%s\' as Quicktext',
+            "title": 'Save \'%s\' as a template',
             "contexts": ['editable', 'selection']
         });
 
@@ -87,7 +87,9 @@ if (chrome.runtime) {
             if (request.request === 'get') {
                 injector.get('QuicktextService').quicktexts().then(function (res) {
                     sendResponse(res);
-                    analytics.track("Inserted Quicktext");
+                    analytics.track("Inserted template", {
+                        "source": "message" 
+                    });
                 });
             }
             var settingsService = injector.get('SettingsService');
@@ -117,23 +119,24 @@ if (chrome.runtime) {
                     if (port.name === 'shortcut') {
                         injector.get('QuicktextService').filtered("shortcut = '" + msg.text + "'" /* TODO: <- fix this sql */).then(function (res) {
                             port.postMessage({'quicktexts': res, 'action': 'insert'});
-                            analytics.track("Inserted Quicktext");
+                            // find a way to identify the insertion from the dialog in the future
+                            analytics.track("Inserted template", {
+                                "source": "keyboard" 
+                            });
                         });
                     } else if (port.name === 'search') {
                         if (!msg.text) { // if text is empty get all of them
                             injector.get('QuicktextService').quicktexts().then(function (res) {
                                 port.postMessage({'quicktexts': res, 'action': 'list'});
-                                analytics.track("Inserted Quicktext");
                             });
                         } else {
                             injector.get('QuicktextService').filtered(
                                     "shortcut LIKE '%" + msg.text + "%' OR title LIKE '%" + msg.text + "%' OR body LIKE '% " + msg.text + " %'",
                                     msg.limit).then(function (res) {
-
                                 port.postMessage({'quicktexts': res, 'action': 'list'});
-                                analytics.track("Inserted Quicktext");
                             });
                         }
+                        analytics.track("Searched template");
                     }
                 });
             }

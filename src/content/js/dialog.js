@@ -234,7 +234,7 @@ App.autocomplete.dialog = {
 
 App.autocomplete.dialog.template = '' +
     '<div class="qt-dropdown">' +
-    '<input type="search" class="qt-dropdown-search" value="" placeholder="Search quicktexts..">' +
+    '<input type="search" class="qt-dropdown-search" value="" placeholder="Search templates...">' +
     '<ul class="qt-dropdown-content"></ul>' +
     '</div>' +
     '';
@@ -250,7 +250,7 @@ App.autocomplete.dialog.liTemplate = '' +
     '{{/each}}' +
     '{{else}}' +
     '<li class="qt-blank-state">' +
-    'No quicktexts found.' +
+    'No templates found.' +
     '</li>' +
     '{{/if}}' +
     '';

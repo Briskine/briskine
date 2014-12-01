@@ -2,7 +2,7 @@
 <html data-ng-app="gqApp">
 <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
-    <title>Quicktext Options</title>
+    <title>Gorgias Options</title>
     <script src="../background/js/background.js"></script>
     <link href="../background/css/background.css" rel="stylesheet" type="text/css" media="screen" charset="utf-8">
 </head>
@@ -12,15 +12,15 @@
     <div class="sidebar-wrapper">
 
         <a ng-href="{{ settings.get('baseURL') }}" target="_blank" class="brand">
-            <img src="../icons/icon48.png" alt="Quicktext"/>
-            Quicktext
+            <img src="../icons/icon48.png" alt="Gorgias"/>
+            Gorgias
         </a>
 
         <div class="profile">
 
             <div class="profile-body" ng-show="profile.user">
 
-                <a class="profile-picture" href="https://quicktext.io/app#/account" target="_blank">
+                <a class="profile-picture" href="https://gorgias.io/app#/account" target="_blank">
                     <img class="img-circle" title="Setup your avatar on gravatar.com" alt="gravatar" ng-src="{{ profile.gravatar(profile.user.email) }}">
                 </a>
 
@@ -35,7 +35,7 @@
             <div class="anonymous" ng-show="!profile.user">
                 <a ng-href="{{settings.get('baseURL')}}#login" ng-click="checkLogin()" target="_blank">Login</a> or
                 <a ng-href="{{settings.get('baseURL')}}#registration" target="_blank" ng-click="checkLogin()">Sign Up</a>
-                to <em>share</em> quicktexts with your team.
+                to <em>share</em> templates with your team.
             </div>
 
             <div class="profile-extra">
@@ -53,9 +53,9 @@
         </div>
 
         <ul class="nav nav-pills nav-stacked">
-            <li ng-class="{ 'active': (path === '/list') }"><a href="#/list">Quicktexts</a></li>
+            <li ng-class="{ 'active': (path === '/list') }"><a href="#/list">Templates</a></li>
             <li ng-class="{ 'active': (path === '/settings') }"><a href="#/settings">Settings</a></li>
-            <li><a href="http://help.quicktext.io/">Help</a></li>
+            <li><a href="http://help.gorgias.io/">Help</a></li>
         </ul>
 
         <div class="sidebar-footer">
@@ -78,9 +78,5 @@
         <div class="container-animation" data-ng-view></div>
     </div>
 </div>
-
-<div ng-include="'includes/login.html'"></div>
-<div ng-include="'includes/register.html'"></div>
-
 </body>
 </html>

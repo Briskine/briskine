@@ -4,14 +4,14 @@
 
 <form role="form">
     <h4>Keyboard Shortcut</h4>
-    <p class="help-block">Quickly expand quicktexts using a keyboard shortcut.</p>
+    <p class="help-block">Quickly expand templates using a keyboard shortcut.</p>
     <div class="checkbox">
         <label for="keyboard-enabled">Enable Keyboard Shortcut</label>
         <input type="checkbox" id="keyboard-enabled" ng-model="settings.keyboard.enabled" />
     </div>
     <div class="form-group" ng-show="settings.keyboard.enabled">
         <label for="keyboard-shortcut" data-toggle="tooltip" data-placement="bottom"
-               data-original-title="Setup keyboard shortcut to expand quicktexts">
+               data-original-title="Setup keyboard shortcut to expand templates">
             Keyboard Shortcut
             <span class="glyphicon glyphicon-question-sign"></span>
         </label>
@@ -20,15 +20,15 @@
         <button class="btn btn-primary btn-default" ng-click="recordSequence('keyboard-shortcut')">Change</button>
     </div>
     <br/>
-    <h4>Autocomplete Dialog</h4>
-    <p class="help-block">Autocomplete dialog helps you search quicktexts faster.</p>
+    <h4>Auto-complete Dialog</h4>
+    <p class="help-block">Auto-complete dialog helps you search templates faster.</p>
     <div class="checkbox">
-        <label for="dialog-enabled">Enable Autocomple Dialog</label>
+        <label for="dialog-enabled">Enable Auto-complete Dialog</label>
         <input type="checkbox" id="dialog-enabled" ng-model="settings.dialog.enabled"/>
     </div>
     <div class="form-group" ng-show="settings.dialog.enabled">
         <label for="dialog-shortcut" data-toggle="tooltip" data-placement="bottom"
-               data-original-title="Setup keyboard shortcut that triggers the autocomplete dialog">
+               data-original-title="Setup keyboard shortcut that triggers the auto-complete dialog">
             Keyboard Shortcut
             <span class="glyphicon glyphicon-question-sign"></span>
         </label>
@@ -63,7 +63,7 @@
     <h4>Other</h4>
     <div class="checkbox">
         <label for="sendStats" data-toggle="tooltip" data-placement="bottom"
-               data-original-title="Help improve the Quicktext by sending anonymous statistics.">
+               data-original-title="Help improve the Gorigias by sending anonymous statistics.">
             Send usage statistics
             <span class="glyphicon glyphicon-question-sign"></span>
         </label>
@@ -72,6 +72,6 @@
 
     </div>
     <div class="form-group">
-        <a href="" class="btn btn-danger" ng-click="deleteAll()">Delete all Quicktexts</a>
+        <a href="" class="btn btn-danger" ng-click="deleteAll()">Delete all templates</a>
     </div>
 </form>
