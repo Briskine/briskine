@@ -5,8 +5,9 @@
 
 var App = {
     data: {
+        // TODO remove verything related to incompose, since no longer use it
+        // we can trigger the autocomplete on any element
         inCompose: false,      // true when textarea element is focused
-        //composeElement: null,  // reference to compose DOM element
         contentEditable: false,
         searchCache: {},
         debouncer: {}
@@ -15,12 +16,16 @@ var App = {
     settings: {
         // Get quicktexts filtered out by shortcut
         getQuicktextsShortcut: function (text, callback) {
-            // add only one listener
-            if (!App.shortcutPort.onMessage.hasListeners()) {
-                App.shortcutPort.onMessage.addListener(function (msg) {
-                    callback(msg.quicktexts);
-                });
-            }
+
+            var listener = function (msg) {
+                // bind listener only once
+                App.shortcutPort.onMessage.removeListener(listener);
+
+                callback(msg.quicktexts);
+            };
+
+            App.shortcutPort.onMessage.addListener(listener);
+
             App.shortcutPort.postMessage({text: text});
         },
         getFiltered: function (text, limit, callback) {
@@ -68,7 +73,18 @@ var App = {
 };
 
 // the active plugin, based on the plugin.init response
-App.plugin = '';
+// blank at first
+App.activePlugin = {
+    setTitle: function(params, callback) {
+        callback();
+    },
+    getData: function(params, callback) {
+        callback();
+    },
+    init: function(params, callback) {
+        callback();
+    }
+};
 
 // complete list of plugins
 App.plugins = {};
@@ -113,7 +129,7 @@ App.activatePlugins = function() {
                 // find the first plugin that returned true
                 // and set it as the active one
                 if(pluginResponse[pluginName] === true) {
-                    App.plugin = App.plugins[pluginName];
+                    App.activePlugin = App.plugins[pluginName];
                     return true;
                 }
 

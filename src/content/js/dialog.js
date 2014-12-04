@@ -190,7 +190,14 @@ App.autocomplete.dialog = {
             var quicktext = App.autocomplete.quicktexts.filter(function (quicktext) {
                 return quicktext.id === activeItemId;
             })[0];
-            App.autocomplete.replaceWith(quicktext);
+
+            var selection = window.getSelection();
+
+            App.autocomplete.replaceWith({
+                element: App.autocomplete.dialog.editor,
+                quicktext: quicktext,
+                selection: selection
+            });
         }
     },
     changeSelection: function (direction) {

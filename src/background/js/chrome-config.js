@@ -10,7 +10,7 @@ if (chrome.runtime) {
     ];
 
     // for tabs.query auto-reload
-    var urlMathPatterns = [
+    var urlMatchPatterns = [
         '*://mail.google.com/*',
         '*://*.mail.yahoo.com/*',
         '*://*.mail.live.com/*'
@@ -22,8 +22,9 @@ if (chrome.runtime) {
         // in development
         // also show for localhost
         if (ENV && ENV === 'development') {
-            urlMatchRegex.push(/^https?:\/\/localhost\/gmail/);
-            urlMathPatterns.push(/localhost/);
+            //urlMatchRegex.push(/^https?:\/\/localhost\/gmail/);
+            urlMatchRegex.push(/localhost/);
+            urlMatchPatterns.push(/localhost/);
         }
 
         urlMatchRegex.some(function(urlPattern) {
@@ -55,7 +56,7 @@ if (chrome.runtime) {
         injector.get('QuicktextService').migrate_043_100();
 
         // All gmail tabs shoul be reloaded if the extension was installed
-        chrome.tabs.query({'url': urlMathPatterns}, function (tabs) {
+        chrome.tabs.query({'url': urlMatchPatterns}, function (tabs) {
             for (var i in tabs) {
                 chrome.tabs.reload(tabs[i].id, {});
             }

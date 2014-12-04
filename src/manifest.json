@@ -19,6 +19,7 @@
     },
     "options_page": "pages/bg.html#/options",
     "permissions": [
+        "*://localhost:*/*",
         "*://mail.google.com/*",
         "*://*.mail.yahoo.com/*",
         "*://*.mail.live.com/*",
@@ -31,6 +32,7 @@
     "content_scripts": [
         {
             "matches": [
+                "*://localhost:*/*",
                 "*://mail.google.com/*",
                 "*://*.mail.yahoo.com/*",
                 "*://*.mail.live.com/*",

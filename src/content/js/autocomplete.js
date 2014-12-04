@@ -10,7 +10,13 @@ var KEY_TAB = 9,
 App.autocomplete.quicktexts = [];
 App.autocomplete.cursorPosition = null;
 
-App.autocomplete.getSelectedWord = function (cursorPosition) {
+// TODO remove references to App.data.contentEditable
+// and use this utility method
+App.autocomplete.isContentEditable = function(element) {
+    return element && element.getAttribute('contenteditable');
+};
+
+App.autocomplete.getSelectedWord = function (params) {
     var word = {
         start: 0,
         end: 0,
@@ -22,7 +28,7 @@ App.autocomplete.getSelectedWord = function (cursorPosition) {
         var selection = window.getSelection();
         string = selection.focusNode.textContent.substr(0, selection.focusOffset);
     } else {
-        string = $(cursorPosition.element).val().substr(0, cursorPosition.end);
+        string = $(params.element).val().substr(0, App.autocomplete.cursorPosition.end);
     }
 
     // Replace all nbsp with normal spaces
@@ -162,31 +168,32 @@ App.autocomplete.getCursorPosition = function (e) {
 };
 
 
-App.autocomplete.replaceWith = function (quicktext, event) {
+//App.autocomplete.replaceWith = function (quicktext, event) {
+App.autocomplete.replaceWith = function (params) {
 
-    var cursorPosition = App.autocomplete.cursorPosition,
-        word = cursorPosition.word,
-        replacement = "";
+    var word = App.autocomplete.cursorPosition.word;
+    var replacement = '';
 
     App.autocomplete.justCompleted = true; // the idea is that we don't want any completion to popup after we just completed
 
     var setText = function() {
 
-        App.plugin.getData({
-            element: cursorPosition.element
+        App.activePlugin.getData({
+            element: params.element
         }, function(err, response) {
 
-            var parsedTemplate = Handlebars.compile(quicktext.body)(response);
+            var parsedTemplate = Handlebars.compile(params.quicktext.body)(response);
 
-            if(App.data.contentEditable) {
+            if(App.autocomplete.isContentEditable(params.element)) {
 
-                var selection = window.getSelection();
+                //var selection = window.getSelection();
+                var selection = params.selection;
                 var range = selection.getRangeAt(0);
 
                 replacement = parsedTemplate.replace(/\n/g, '<br>');
 
-                range.setStart(cursorPosition.element, word.start);
-                range.setEnd(cursorPosition.element, word.end);
+                range.setStart(params.element, word.start);
+                range.setEnd(params.element, word.end);
                 range.deleteContents();
                 range.insertNode(range.createContextualFragment(replacement + '<span id="qt-caret"></span>'));
 
@@ -209,11 +216,11 @@ App.autocomplete.replaceWith = function (quicktext, event) {
 
             } else {
 
-                var $textarea = $(cursorPosition.element),
+                var $textarea = $(params.element),
                     value = $textarea.val();
 
                 var valueNew = value.substr(0, word.start) + parsedTemplate + value.substr(word.end),
-                    cursorOffset = word.start + quicktext.body.length;
+                    cursorOffset = word.start + params.quicktext.body.length;
 
                 $textarea.val(valueNew);
 
@@ -227,40 +234,41 @@ App.autocomplete.replaceWith = function (quicktext, event) {
 
     };
 
+    App.autocomplete.dialog.close();
+
     // we need the callback because the editor
     // doesn't get the focus right-away.
     // so window.getSelection() returns the search field
     // in the dialog otherwise, instead of the editor
-    App.autocomplete.dialog.close();
-
-    App.autocomplete.focusEditor(setText);
+    App.autocomplete.focusEditor(params.element, setText);
 
     // set subject field
-    if (quicktext.subject) {
-        App.plugin.setTitle(quicktext);
+    if (params.quicktext.subject) {
+        App.activePlugin.setTitle(params.quicktext);
     }
 
     // updates stats
-    App.settings.stats('words', quicktext.body.split(" ").length, function () {
+    App.settings.stats('words', params.quicktext.body.split(' ').length, function () {
     });
 
 
 };
 
-App.autocomplete.focusEditor = function(callback) {
+App.autocomplete.focusEditor = function(element, callback) {
 
     // return focus to the editor
-    if(App.autocomplete.dialog.editor) {
-        // gmail auto-focuses the to field
-        // so we need the delay
-        setTimeout(function() {
-            App.autocomplete.dialog.editor.focus();
 
-            if(callback) {
-                callback();
-            }
-        }, 50);
-    }
+    // gmail auto-focuses the to field
+    // so we need the delay
+    setTimeout(function() {
+        if(element) {
+            element.focus();
+        }
+
+        if(callback) {
+            callback();
+        }
+    }, 50);
 
 };
 
