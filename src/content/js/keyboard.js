@@ -12,7 +12,8 @@ App.autocomplete.keyboard = {
         App.autocomplete.cursorPosition = App.autocomplete.getCursorPosition(e);
         // Then get the word at the positon
         var word = App.autocomplete.getSelectedWord({
-            element: element
+            element: element,
+            selection: selection
         });
         App.autocomplete.cursorPosition.word = word;
 

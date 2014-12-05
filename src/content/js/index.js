@@ -5,10 +5,6 @@
 
 var App = {
     data: {
-        // TODO remove verything related to incompose, since no longer use it
-        // we can trigger the autocomplete on any element
-        inCompose: false,      // true when textarea element is focused
-        contentEditable: false,
         searchCache: {},
         debouncer: {}
     },

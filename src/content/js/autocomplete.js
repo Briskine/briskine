@@ -10,10 +10,8 @@ var KEY_TAB = 9,
 App.autocomplete.quicktexts = [];
 App.autocomplete.cursorPosition = null;
 
-// TODO remove references to App.data.contentEditable
-// and use this utility method
 App.autocomplete.isContentEditable = function(element) {
-    return element && element.getAttribute('contenteditable');
+    return element && element.hasAttribute('contenteditable');
 };
 
 App.autocomplete.getSelectedWord = function (params) {
@@ -24,9 +22,8 @@ App.autocomplete.getSelectedWord = function (params) {
     };
     var string;
 
-    if (App.data.contentEditable) {
-        var selection = window.getSelection();
-        string = selection.focusNode.textContent.substr(0, selection.focusOffset);
+    if (App.autocomplete.isContentEditable(params.element)) {
+        string = params.selection.focusNode.textContent.substr(0, params.selection.focusOffset);
     } else {
         string = $(params.element).val().substr(0, App.autocomplete.cursorPosition.end);
     }
@@ -72,12 +69,7 @@ App.autocomplete.getCursorPosition = function (e) {
         }
     };
 
-    var contenteditable = false;
-    if(position.element.getAttribute('contenteditable') && position.element.getAttribute('contenteditable') === 'true') {
-        contenteditable = true;
-    }
-
-    if(App.data.contentEditable) {
+    if(App.autocomplete.isContentEditable(position.element)) {
         // Working with editable div
         // Insert a virtual cursor, find its position
         // http://stackoverflow.com/questions/16580841/insert-text-at-caret-in-contenteditable-div
@@ -192,9 +184,21 @@ App.autocomplete.replaceWith = function (params) {
 
                 replacement = parsedTemplate.replace(/\n/g, '<br>');
 
-                range.setStart(params.element, word.start);
-                range.setEnd(params.element, word.end);
+                // find the first text node
+                // because setStart/setEnd work differently based on
+                // the type of node
+                // https://developer.mozilla.org/en-US/docs/Web/API/range.setStart
+                var textNode = range.startContainer;
+
+                // clear whitespace in the textnode
+                if(textNode.nodeValue) {
+                    textNode.nodeValue = textNode.nodeValue.trim();
+                }
+
+                range.setStart(textNode, word.start);
+                range.setEnd(textNode, word.end);
                 range.deleteContents();
+
                 range.insertNode(range.createContextualFragment(replacement + '<span id="qt-caret"></span>'));
 
                 // Virtual caret

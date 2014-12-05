@@ -29,15 +29,17 @@ App.autocomplete.dialog = {
 
     completion: function (e) {
 
-        // only works in compose area
-        if (!App.data.inCompose) {
-            return true;
-        }
         e.preventDefault();
         e.stopPropagation();
 
+        var element = e.target;
+        var selection = window.getSelection();
+
         App.autocomplete.cursorPosition = App.autocomplete.getCursorPosition(e);
-        var word = App.autocomplete.getSelectedWord(App.autocomplete.cursorPosition);
+        var word = App.autocomplete.getSelectedWord({
+            element: element,
+            selection: selection
+        });
         App.autocomplete.cursorPosition.word = word;
         if (word.text) {
             App.autocomplete.dialog.$search.val(word.text); //setup default value if any
@@ -46,6 +48,9 @@ App.autocomplete.dialog = {
         App.settings.getFiltered(word.text, App.autocomplete.dialog.RESULTS_LIMIT, function (quicktexts) {
             App.autocomplete.quicktexts = quicktexts;
 
+            // TODO should we also show the dialog when the search
+            // for quicktexts didn't return anything?
+            // and just show all quicktexts?
             if (App.autocomplete.quicktexts.length) {
                 App.autocomplete.dialog.populate(App.autocomplete.quicktexts);
             }
@@ -124,7 +129,7 @@ App.autocomplete.dialog = {
 
         App.autocomplete.quicktexts = quicktexts;
 
-        if (App.autocomplete.quicktexts.length && !App.autocomplete.dialog.isActive) {
+        if (!App.autocomplete.dialog.isActive) {
             App.autocomplete.dialog.show(App.autocomplete.cursorPosition);
         }
 

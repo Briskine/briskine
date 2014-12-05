@@ -3,6 +3,10 @@
 
 App.plugin('gmail', (function() {
 
+    var isContentEditable = function(element) {
+        return element && element.hasAttribute('contenteditable');
+    };
+
     var parseList = function (list) {
         return list.filter(function (a) {
             return a;
@@ -50,7 +54,7 @@ App.plugin('gmail', (function() {
             bcc = [],
             subject = '';
 
-        if (App.data.contentEditable) {
+        if (isContentEditable(params.element)) {
 
             var $container = $(params.element).closest('table').parent().closest('table').parent().closest('table'),
                 from_email = $container.find('input[name=from]').val(),
