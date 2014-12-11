@@ -5,15 +5,20 @@
 App.autocomplete.keyboard = {
     completion: function (e) {
 
-        var selection = window.getSelection();
         var element = e.target;
+        var selection = window.getSelection();
+        var focusNode = selection.focusNode;
+
+        if(selection.rangeCount) {
+            var range = selection.getRangeAt(0);
+            var caretPos = range.endOffset;
+        }
 
         // First get the cursor position
         App.autocomplete.cursorPosition = App.autocomplete.getCursorPosition(e);
         // Then get the word at the positon
         var word = App.autocomplete.getSelectedWord({
-            element: element,
-            selection: selection
+            element: element
         });
         App.autocomplete.cursorPosition.word = word;
 
@@ -27,7 +32,7 @@ App.autocomplete.keyboard = {
                     App.autocomplete.replaceWith({
                         element: element,
                         quicktext: quicktexts[0],
-                        selection: selection
+                        focusNode: focusNode
                     });
                 }
 

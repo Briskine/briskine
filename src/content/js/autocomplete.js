@@ -20,10 +20,12 @@ App.autocomplete.getSelectedWord = function (params) {
         end: 0,
         text: ''
     };
+
     var string;
+    var selection = window.getSelection();
 
     if (App.autocomplete.isContentEditable(params.element)) {
-        string = params.selection.focusNode.textContent.substr(0, params.selection.focusOffset);
+        string = selection.focusNode.textContent.substr(0, selection.focusOffset);
     } else {
         string = $(params.element).val().substr(0, App.autocomplete.cursorPosition.end);
     }
@@ -178,45 +180,36 @@ App.autocomplete.replaceWith = function (params) {
 
             if(App.autocomplete.isContentEditable(params.element)) {
 
-                //var selection = window.getSelection();
-                var selection = params.selection;
-                var range = selection.getRangeAt(0);
+                var selection = window.getSelection();
+                var range = document.createRange();
 
                 replacement = parsedTemplate.replace(/\n/g, '<br>');
 
-                // find the first text node
-                // because setStart/setEnd work differently based on
+                // setStart/setEnd work differently based on
                 // the type of node
                 // https://developer.mozilla.org/en-US/docs/Web/API/range.setStart
-                var textNode = range.startContainer;
+                var focusNode = params.focusNode;
 
-                // clear whitespace in the textnode
-                if(textNode.nodeValue) {
-                    textNode.nodeValue = textNode.nodeValue.trim();
+                // clear whitespace in the focused textnode
+                if(focusNode.nodeValue) {
+                    focusNode.nodeValue = focusNode.nodeValue.trim();
                 }
 
-                range.setStart(textNode, word.start);
-                range.setEnd(textNode, word.end);
+                // remove the shorcut text
+                range.setStart(focusNode, word.start);
+                range.setEnd(focusNode, word.end);
                 range.deleteContents();
 
-                range.insertNode(range.createContextualFragment(replacement + '<span id="qt-caret"></span>'));
+                var qtNode = range.createContextualFragment(replacement);
+                var lastQtChild = qtNode.lastChild;
 
-                // Virtual caret
-                // Used to set cursor position in right place
-                // TODO find a better method to do that
-                var $caret = $('#qt-caret');
+                range.insertNode(qtNode);
 
-                if ($caret.length) {
-                    // Set caret back at old position
-                    range = range.cloneRange();
-                    range.setStartAfter($caret[0]);
-                    range.collapse(true);
-                    selection.removeAllRanges();
-                    selection.addRange(range);
-
-                    // Remove virtual caret
-                    $caret.remove();
-                }
+                var caretRange = document.createRange();
+                caretRange.setStartAfter(lastQtChild);
+                caretRange.collapse(true);
+                selection.removeAllRanges();
+                selection.addRange(caretRange);
 
             } else {
 

@@ -33,12 +33,10 @@ App.autocomplete.dialog = {
         e.stopPropagation();
 
         var element = e.target;
-        var selection = window.getSelection();
 
         App.autocomplete.cursorPosition = App.autocomplete.getCursorPosition(e);
         var word = App.autocomplete.getSelectedWord({
-            element: element,
-            selection: selection
+            element: element
         });
         App.autocomplete.cursorPosition.word = word;
         if (word.text) {
@@ -167,6 +165,10 @@ App.autocomplete.dialog = {
         // get current focused element - the editor
         App.autocomplete.dialog.editor = document.activeElement;
 
+        var selection = window.getSelection();
+        var focusNode = selection.focusNode;
+        App.autocomplete.dialog.focusNode = focusNode;
+
         App.autocomplete.dialog.isActive = true;
         App.autocomplete.dialog.isEmpty = true;
 
@@ -196,12 +198,10 @@ App.autocomplete.dialog = {
                 return quicktext.id === activeItemId;
             })[0];
 
-            var selection = window.getSelection();
-
             App.autocomplete.replaceWith({
                 element: App.autocomplete.dialog.editor,
                 quicktext: quicktext,
-                selection: selection
+                focusNode: App.autocomplete.dialog.focusNode
             });
         }
     },
