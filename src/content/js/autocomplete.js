@@ -25,7 +25,9 @@ App.autocomplete.getSelectedWord = function (params) {
     var selection = window.getSelection();
 
     if (App.autocomplete.isContentEditable(params.element)) {
-        string = selection.focusNode.textContent.substr(0, selection.focusOffset);
+        //string = selection.focusNode.textContent.substr(0, selection.focusOffset);
+        // removed the focusOffset because it's acting a bit crazy
+        string = selection.focusNode.textContent;
     } else {
         string = $(params.element).val().substr(0, App.autocomplete.cursorPosition.end);
     }

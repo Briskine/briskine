@@ -113,6 +113,15 @@ App.autocomplete.dialog = {
             if (App.autocomplete.dialog.isActive) {
                 App.autocomplete.dialog.close();
                 App.autocomplete.focusEditor(App.autocomplete.dialog.editor);
+
+                // restore the previous caret position
+                // since we didn't select any quicktext
+                var selection = window.getSelection();
+                var caretRange = document.createRange();
+                caretRange.setStartAfter(App.autocomplete.dialog.focusNode);
+                caretRange.collapse(true);
+                selection.removeAllRanges();
+                selection.addRange(caretRange);
             }
         });
         Mousetrap.bindGlobal('enter', function (e) {
