@@ -44,7 +44,7 @@
             "css": [
                 "content/css/content.css"
             ],
-            "run_at": "document_idle",
+            "run_at": "document_end",
             "all_frames": true
         }
     ],
