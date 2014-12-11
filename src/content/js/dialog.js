@@ -46,12 +46,11 @@ App.autocomplete.dialog = {
         App.settings.getFiltered(word.text, App.autocomplete.dialog.RESULTS_LIMIT, function (quicktexts) {
             App.autocomplete.quicktexts = quicktexts;
 
-            // TODO should we also show the dialog when the search
-            // for quicktexts didn't return anything?
-            // and just show all quicktexts?
-            if (App.autocomplete.quicktexts.length) {
+            // show the dialog even when the search
+            // for quicktexts didn't return anything
+            //if (App.autocomplete.quicktexts.length) {
                 App.autocomplete.dialog.populate(App.autocomplete.quicktexts);
-            }
+            //}
         });
 
     },
@@ -111,14 +110,16 @@ App.autocomplete.dialog = {
             }
         });
         Mousetrap.bindGlobal('escape', function (e) {
-            App.autocomplete.dialog.close();
-            App.autocomplete.focusEditor();
+            if (App.autocomplete.dialog.isActive) {
+                App.autocomplete.dialog.close();
+                App.autocomplete.focusEditor(App.autocomplete.dialog.editor);
+            }
         });
         Mousetrap.bindGlobal('enter', function (e) {
             if (App.autocomplete.dialog.isActive) {
                 App.autocomplete.dialog.selectActive();
                 App.autocomplete.dialog.close();
-                App.autocomplete.focusEditor();
+                App.autocomplete.focusEditor(App.autocomplete.dialog.editor);
             }
         });
 
