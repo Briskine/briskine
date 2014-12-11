@@ -11,6 +11,10 @@ App.plugin('outlook', (function() {
 
         var firstSpace = name.indexOf(' ');
 
+        if(firstSpace === -1) {
+            firstSpace = name.length;
+        }
+
         first_name = name.substring(0, firstSpace);
         last_name = name.substring(firstSpace + 1, name.length);
 

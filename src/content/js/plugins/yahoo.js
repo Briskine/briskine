@@ -3,6 +3,27 @@
 
 App.plugin('yahoo', (function() {
 
+    var parseName = function(name) {
+        name = name.trim();
+
+        var first_name = '';
+        var last_name = '';
+
+        var firstSpace = name.indexOf(' ');
+
+        if(firstSpace === -1) {
+            firstSpace = name.length;
+        }
+
+        first_name = name.substring(0, firstSpace);
+        last_name = name.substring(firstSpace + 1, name.length);
+
+        return {
+            first_name: first_name,
+            last_name: last_name
+        }
+    };
+
     // get all required data from the dom
     var getData = function(params, callback) {
 
@@ -21,13 +42,20 @@ App.plugin('yahoo', (function() {
         var fromName = $('#yucs-profile b').first().text();
         var fromEmail = $('#yucs-profile-panel b + b').text();
 
-        // get your own name from somewhere
-        vars.from.push({
+        // get your own name from the top right
+        var from = {
             name: fromName,
             first_name: '',
             last_name: '',
             email: fromEmail + '@yahoo.com'
-        });
+        };
+
+        var parsedName = parseName(fromName);
+
+        from.first_name = parsedName.first_name;
+        from.last_name = parsedName.last_name;
+
+        vars.from.push(from);
 
         $composeContainer.find('#to li').each(function() {
             var $li = $(this);
@@ -36,10 +64,12 @@ App.plugin('yahoo', (function() {
             // TODO check if the liText is the name or the email
 
             if(liText) {
+                var parsedLiName = parseName(liText);
+
                 vars.to.push({
                     name: liText,
-                    first_name: '',
-                    last_name: '',
+                    first_name: parsedLiName.first_name,
+                    last_name: parsedLiName.last_name,
                     email: ''
                 });
             }
