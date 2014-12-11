@@ -42,6 +42,12 @@ App.plugin('outlook', (function() {
            email: fromAddress
         };
 
+        // in case we didn't get the name from .fromContainer
+        // try to get it from the top right
+        if(!fromName || !fromName.trim()) {
+            fromName = $('#c_meun', window.parent.document).text();
+        };
+
         var parsedName = parseName(fromName);
 
         from.first_name = parsedName.first_name;
