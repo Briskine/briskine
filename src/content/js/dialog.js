@@ -38,12 +38,10 @@ App.autocomplete.dialog = {
         var word = App.autocomplete.getSelectedWord({
             element: element
         });
-        App.autocomplete.cursorPosition.word = word;
-        if (word.text) {
-            App.autocomplete.dialog.$search.val(word.text); //setup default value if any
-        }
 
-        App.settings.getFiltered(word.text, App.autocomplete.dialog.RESULTS_LIMIT, function (quicktexts) {
+        App.autocomplete.cursorPosition.word = word;
+
+        App.settings.getFiltered("", App.autocomplete.dialog.RESULTS_LIMIT, function (quicktexts) {
             App.autocomplete.quicktexts = quicktexts;
 
             // show the dialog even when the search
@@ -94,7 +92,7 @@ App.autocomplete.dialog = {
 
                 App.autocomplete.quicktexts = quicktexts;
                 App.autocomplete.dialog.populate(App.autocomplete.quicktexts);
-                
+
             });
         });
     },
