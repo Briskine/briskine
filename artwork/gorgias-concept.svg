@@ -1,0 +1,324 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="826.71741"
+   height="440"
+   id="svg2"
+   version="1.1"
+   inkscape:version="0.48.5 r10040"
+   sodipodi:docname="gorgias-concept.svg"
+   inkscape:export-filename="/media/mokush/dev/gorgias-chrome/artwork/gorgias-concept.png"
+   inkscape:export-xdpi="90"
+   inkscape:export-ydpi="90">
+  <defs
+     id="defs4">
+    <linearGradient
+       id="linearGradient3890">
+      <stop
+         style="stop-color:#067b82;stop-opacity:1;"
+         offset="0"
+         id="stop3892" />
+      <stop
+         style="stop-color:#067b82;stop-opacity:0;"
+         offset="1"
+         id="stop3894" />
+    </linearGradient>
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="1"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.7"
+     inkscape:cx="576.72192"
+     inkscape:cy="179.03281"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     inkscape:window-width="1323"
+     inkscape:window-height="768"
+     inkscape:window-x="43"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     showguides="true"
+     inkscape:guide-bbox="true"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0">
+    <inkscape:grid
+       type="xygrid"
+       id="grid3012"
+       empspacing="5"
+       visible="true"
+       enabled="true"
+       snapvisiblegridlinesonly="true"
+       originx="-93.282665px"
+       originy="-240px" />
+  </sodipodi:namedview>
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-156.86302,-117.91394)">
+    <g
+       id="g3883"
+       transform="translate(64.285714,-20.091108)">
+      <text
+         sodipodi:linespacing="125%"
+         id="text3030"
+         y="238.16292"
+         x="155.28966"
+         style="font-size:22.95050812px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Open Sans"
+         xml:space="preserve"><tspan
+           style="font-size:82.62182617px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Open Sans;-inkscape-font-specification:Open Sans"
+           y="238.16292"
+           x="155.28966"
+           id="tspan3032"
+           sodipodi:role="line">g</tspan></text>
+      <rect
+         y="178.1321"
+         x="202.09056"
+         height="80.042267"
+         width="1.4897863"
+         id="rect3036"
+         style="fill:#000000;fill-opacity:1;stroke:none" />
+      <text
+         xml:space="preserve"
+         style="font-size:82.62182617px;font-style:normal;font-variant:normal;font-weight:300;font-stretch:normal;text-align:start;line-height:100%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#999999;fill-opacity:1;stroke:none;font-family:Open Sans;-inkscape-font-specification:Open Sans Light"
+         x="237.05902"
+         y="237.91394"
+         id="text3806"
+         sodipodi:linespacing="100%"><tspan
+           sodipodi:role="line"
+           id="tspan3808"
+           x="237.05902"
+           y="237.91394"
+           style="font-size:82.62182617px;font-style:normal;font-variant:normal;font-weight:300;font-stretch:normal;text-align:start;line-height:100%;letter-spacing:-6.00308228px;writing-mode:lr-tb;text-anchor:start;fill:#999999;font-family:Open Sans;-inkscape-font-specification:Open Sans"
+           dx="-33.478661 0 0 1.895009 -0.75800365">orgias</tspan></text>
+    </g>
+    <rect
+       style="fill:#374548;fill-opacity:1;stroke:none"
+       id="rect3798"
+       width="460.00003"
+       height="440"
+       x="523.58038"
+       y="117.91394" />
+    <g
+       id="g3862"
+       transform="translate(0,-20.091108)">
+      <text
+         xml:space="preserve"
+         style="font-size:22.95050812px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Open Sans"
+         x="635.28967"
+         y="238.16292"
+         id="text3800"
+         sodipodi:linespacing="125%"><tspan
+           sodipodi:role="line"
+           id="tspan3802"
+           x="635.28967"
+           y="238.16292"
+           style="font-size:82.62182617px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;fill:#ffffff;font-family:Open Sans;-inkscape-font-specification:Open Sans">g</tspan></text>
+      <rect
+         style="fill:#ffffff;fill-opacity:1;stroke:none"
+         id="rect3804"
+         width="1.4897863"
+         height="80.042267"
+         x="682.09058"
+         y="178.1321" />
+      <text
+         sodipodi:linespacing="100%"
+         id="text3807"
+         y="237.91394"
+         x="717.05902"
+         style="font-size:82.62182617px;font-style:normal;font-variant:normal;font-weight:300;font-stretch:normal;text-align:start;line-height:100%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#999999;fill-opacity:1;stroke:none;font-family:Open Sans;-inkscape-font-specification:Open Sans Light"
+         xml:space="preserve"><tspan
+           dx="-33.478661 0 0 1.895009 -0.75800365"
+           style="font-size:82.62182617px;font-style:normal;font-variant:normal;font-weight:300;font-stretch:normal;text-align:start;line-height:100%;letter-spacing:-6.00308228px;writing-mode:lr-tb;text-anchor:start;fill:#999999;font-family:Open Sans;-inkscape-font-specification:Open Sans"
+           y="237.91394"
+           x="717.05902"
+           id="tspan3809"
+           sodipodi:role="line">orgias</tspan></text>
+    </g>
+    <g
+       id="g3876"
+       transform="translate(64.285714,5.4961331)">
+      <text
+         xml:space="preserve"
+         style="font-size:22.95050812px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#05231d;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Open Sans"
+         x="155.28966"
+         y="366.73434"
+         id="text3830"
+         sodipodi:linespacing="125%"><tspan
+           sodipodi:role="line"
+           id="tspan3832"
+           x="155.28966"
+           y="366.73434"
+           style="font-size:82.62182617px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;fill:#05231d;fill-opacity:1;font-family:Open Sans;-inkscape-font-specification:Open Sans">g</tspan></text>
+      <rect
+         style="fill:#05231d;fill-opacity:1;stroke:none"
+         id="rect3834"
+         width="1.4897863"
+         height="80.042267"
+         x="202.09056"
+         y="306.70352" />
+      <text
+         sodipodi:linespacing="100%"
+         id="text3836"
+         y="366.48538"
+         x="208.58035"
+         style="font-size:82.62182617px;font-style:normal;font-variant:normal;font-weight:300;font-stretch:normal;text-align:start;line-height:100%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#16a085;fill-opacity:1;stroke:none;font-family:Open Sans;-inkscape-font-specification:Open Sans Light"
+         xml:space="preserve"><tspan
+           style="font-size:82.62182617px;font-style:normal;font-variant:normal;font-weight:300;font-stretch:normal;text-align:start;line-height:100%;letter-spacing:-6.00308228px;writing-mode:lr-tb;text-anchor:start;fill:#16a085;fill-opacity:1;font-family:Open Sans;-inkscape-font-specification:Open Sans"
+           y="366.48538"
+           x="208.58035"
+           id="tspan3838"
+           sodipodi:role="line">text</tspan></text>
+    </g>
+    <rect
+       y="277.91394"
+       x="523.58038"
+       height="140"
+       width="460.00003"
+       id="rect3850"
+       style="fill:#16a085;fill-opacity:0.95686275;stroke:none" />
+    <g
+       id="g3869"
+       transform="translate(0,5.4961331)">
+      <text
+         sodipodi:linespacing="125%"
+         id="text3852"
+         y="366.73434"
+         x="636.77948"
+         style="font-size:22.95050812px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Open Sans"
+         xml:space="preserve"><tspan
+           style="font-size:82.62182617px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;fill:#ffffff;fill-opacity:1;font-family:Open Sans;-inkscape-font-specification:Open Sans"
+           y="366.73434"
+           x="636.77948"
+           id="tspan3854"
+           sodipodi:role="line">g</tspan></text>
+      <rect
+         y="306.70352"
+         x="683.58038"
+         height="80.042267"
+         width="1.4897863"
+         id="rect3856"
+         style="fill:#ffffff;fill-opacity:1;stroke:none" />
+      <text
+         xml:space="preserve"
+         style="font-size:82.62182617px;font-style:normal;font-variant:normal;font-weight:300;font-stretch:normal;text-align:start;line-height:100%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#c0f8ea;fill-opacity:1;stroke:none;font-family:Open Sans;-inkscape-font-specification:Open Sans Light"
+         x="690.07019"
+         y="366.48538"
+         id="text3858"
+         sodipodi:linespacing="100%"><tspan
+           sodipodi:role="line"
+           id="tspan3860"
+           x="690.07019"
+           y="366.48538"
+           style="font-size:82.62182617px;font-style:normal;font-variant:normal;font-weight:300;font-stretch:normal;text-align:start;line-height:100%;letter-spacing:-6.00308228px;writing-mode:lr-tb;text-anchor:start;fill:#c0f8ea;fill-opacity:1;font-family:Open Sans;-inkscape-font-specification:Open Sans">text</tspan></text>
+    </g>
+    <g
+       id="g3890"
+       transform="translate(64.285714,141.21042)">
+      <text
+         sodipodi:linespacing="125%"
+         id="text3892"
+         y="366.73434"
+         x="155.28966"
+         style="font-size:22.95050812px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#07141d;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Open Sans"
+         xml:space="preserve"><tspan
+           style="font-size:82.62182617px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;fill:#07141d;fill-opacity:1;font-family:Open Sans;-inkscape-font-specification:Open Sans"
+           y="366.73434"
+           x="155.28966"
+           id="tspan3894"
+           sodipodi:role="line">g</tspan></text>
+      <rect
+         y="306.70352"
+         x="202.09056"
+         height="80.042267"
+         width="1.4897863"
+         id="rect3896"
+         style="fill:#07141d;fill-opacity:1;stroke:none" />
+      <text
+         xml:space="preserve"
+         style="font-size:82.62182617px;font-style:normal;font-variant:normal;font-weight:300;font-stretch:normal;text-align:start;line-height:100%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#2a7db4;fill-opacity:1;stroke:none;font-family:Open Sans;-inkscape-font-specification:Open Sans Light"
+         x="208.58035"
+         y="366.48538"
+         id="text3898"
+         sodipodi:linespacing="100%"><tspan
+           sodipodi:role="line"
+           id="tspan3900"
+           x="208.58035"
+           y="366.48538"
+           style="font-size:82.62182617px;font-style:normal;font-variant:normal;font-weight:300;font-stretch:normal;text-align:start;line-height:100%;letter-spacing:-6.00308228px;writing-mode:lr-tb;text-anchor:start;fill:#2a7db4;fill-opacity:1;font-family:Open Sans;-inkscape-font-specification:Open Sans">sync</tspan></text>
+    </g>
+    <rect
+       style="fill:#2980b9;fill-opacity:0.95686275;stroke:none"
+       id="rect3902"
+       width="460.00003"
+       height="140"
+       x="523.58038"
+       y="417.91394" />
+    <g
+       transform="translate(475,141.21042)"
+       id="g3904"
+       style="fill:#ffffff">
+      <text
+         xml:space="preserve"
+         style="font-size:22.95050812px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Open Sans"
+         x="155.28966"
+         y="366.73434"
+         id="text3906"
+         sodipodi:linespacing="125%"><tspan
+           sodipodi:role="line"
+           id="tspan3908"
+           x="155.28966"
+           y="366.73434"
+           style="font-size:82.62182617px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;fill:#ffffff;fill-opacity:1;font-family:Open Sans;-inkscape-font-specification:Open Sans">g</tspan></text>
+      <rect
+         style="fill:#ffffff;fill-opacity:1;stroke:none"
+         id="rect3910"
+         width="1.4897863"
+         height="80.042267"
+         x="202.09056"
+         y="306.70352" />
+      <text
+         sodipodi:linespacing="100%"
+         id="text3912"
+         y="366.48538"
+         x="208.58035"
+         style="font-size:82.62182617px;font-style:normal;font-variant:normal;font-weight:300;font-stretch:normal;text-align:start;line-height:100%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#c6e0f2;fill-opacity:1;stroke:none;font-family:Open Sans;-inkscape-font-specification:Open Sans Light"
+         xml:space="preserve"><tspan
+           style="font-size:82.62182617px;font-style:normal;font-variant:normal;font-weight:300;font-stretch:normal;text-align:start;line-height:100%;letter-spacing:-6.00308228px;writing-mode:lr-tb;text-anchor:start;fill:#c6e0f2;fill-opacity:1;font-family:Open Sans;-inkscape-font-specification:Open Sans"
+           y="366.48538"
+           x="208.58035"
+           id="tspan3914"
+           sodipodi:role="line">sync</tspan></text>
+    </g>
+    <g
+       id="g3957"
+       transform="matrix(2.0952841,0,0,2.0952841,-123.06468,-637.58174)" />
+  </g>
+</svg>
