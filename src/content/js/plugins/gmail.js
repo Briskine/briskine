@@ -62,8 +62,11 @@ App.plugin('gmail', (function() {
             // Taking name based on Google+ avatar name
                 fromNameEl = $('a[href^="https://plus.google.com/u/0/me"][title]'),
                 fromName = fromNameEl.length ? fromNameEl.attr('title').split('\n')[0] : '';
+            if (!from_email) {
+                from_email = fromNameEl.length ? fromNameEl.attr('title').split('\n')[1]: '';
+            }
 
-            from.push(fromName + ' <' + from_email + '>');
+            from.push(from_email ? fromName + ' <' + from_email + '>' : fromName);
             to = $container.find('input[name=to]').toArray().map(function (a) {
                 return a.value;
             });
@@ -110,7 +113,6 @@ App.plugin('gmail', (function() {
             bcc: parseList(bcc),
             subject: subject
         };
-
         if(callback) {
             callback(null, vars);
         }
