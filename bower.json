@@ -1,11 +1,13 @@
 {
   "name": "gq",
-  "version": "1.0.0",
-  "homepage": "https://github.com/humanfromearth/gmail-quicktext",
+  "version": "1.2",
+  "homepage": "https://github.com/gorgias/gorgias-chrome",
   "authors": [
-    "Alexandru Plugaru <alexandru.plugaru@gmail.com>"
+    "Alexandru Bumbu <bmbalex@gmail.com>",
+    "Alexandru Plugaru <alex@gorgias.io>",
+    "Ionut Colceriu <contact@ghinda.net>"
   ],
-  "description": "A powerful Google Chrome extention for writting faster e-mail in Gmail",
+  "description": "A powerful Google Chrome extension for writing faster on the web.",
   "license": "MIT",
   "private": true,
   "ignore": [

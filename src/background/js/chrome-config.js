@@ -3,17 +3,12 @@ if (chrome.runtime) {
 
     // TODO somehow get this values from the plugins
 
-    var urlMatchRegex = [
-        /^https?:\/\/mail.google.com/,
-        /mail.yahoo.com/,
-        /mail.live.com/
-    ];
-
     // for tabs.query auto-reload
     var urlMatchPatterns = [
         '*://mail.google.com/*',
         '*://*.mail.yahoo.com/*',
-        '*://*.mail.live.com/*'
+        '*://*.mail.live.com/*',
+        '*://*.linkedin.com/*'
     ];
 
     // Called when the url of a tab changes.
@@ -23,21 +18,9 @@ if (chrome.runtime) {
         // also show for localhost
         if (ENV && ENV === 'development') {
             //urlMatchRegex.push(/^https?:\/\/localhost\/gmail/);
-            urlMatchRegex.push(/localhost/);
-            urlMatchPatterns.push(/localhost/);
+            urlMatchPatterns.push("*/localhost/*");
         }
-
-        urlMatchRegex.some(function(urlPattern) {
-
-            // display only in certain urls
-            if (urlPattern.test(tab.url)) {
-                chrome.pageAction.show(tabId);
-                return true;
-            }
-
-            return false;
-        });
-
+        return false;
     };
 
     // Listen for any changes to the URL of any tab.
@@ -89,7 +72,7 @@ if (chrome.runtime) {
                 injector.get('QuicktextService').quicktexts().then(function (res) {
                     sendResponse(res);
                     analytics.track("Inserted template", {
-                        "source": "message" 
+                        "source": "message"
                     });
                 });
             }
@@ -122,7 +105,7 @@ if (chrome.runtime) {
                             port.postMessage({'quicktexts': res, 'action': 'insert'});
                             // find a way to identify the insertion from the dialog in the future
                             analytics.track("Inserted template", {
-                                "source": "keyboard" 
+                                "source": "keyboard"
                             });
                         });
                     } else if (port.name === 'search') {

@@ -1,7 +1,15 @@
-Quicktext Chrome Extension
+Gorgias Chrome Extension
 ==========================
 
-Google Chrome plugin for Gmail for improved productivity.
+Google Chrome plugin for improved productivity on the web.
+
+Sites supported
+---------------
+
+* Gmail
+* Outlook.com
+* Yahoo Mail
+* Linkedin
 
 
 Developing extension
@@ -19,11 +27,11 @@ There are available following commands:
 Known issues
 ------------
 
-1. Saving a quicktext from the context menus doesn't work with multi-lines.
+1. Saving a template from the context menus doesn't work with multi-lines.
 
    Relevant bug: https://code.google.com/p/chromium/issues/detail?id=116429
 
-   This means that when selecting a text to save as a quicktext it will not preserve newlines.
+   This means that when selecting a text to save as a template it will not preserve newlines.
 
 Creating templates
 ------------------
