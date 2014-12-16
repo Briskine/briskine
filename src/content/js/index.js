@@ -98,7 +98,7 @@ App.plugin = function(id, obj) {
     // mix in the plugin
     requiredMethods.forEach(function(prop) {
         if(!obj.hasOwnProperty(prop)) {
-            throw 'Invalid plugin *' + id + '*! Missing method: ' + prop;
+            throw new Error('Invalid plugin *' + id + '*! Missing method: ' + prop);
         }
     });
 
