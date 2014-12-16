@@ -5,7 +5,6 @@
 
 PubSub.subscribe('focus', function (action, element) {
     if (action === 'off' && (element && element.attr && element.attr('class') !== $(this.searchSelector).attr('class'))) {
-        console.log(element);
         App.autocomplete.dialog.close();
     }
 });
@@ -32,7 +31,6 @@ App.autocomplete.dialog = {
     searchSelector: ".qt-dropdown-search",
 
     completion: function (e) {
-        console.log("completion");
         e.preventDefault();
         e.stopPropagation();
 
@@ -83,7 +81,6 @@ App.autocomplete.dialog = {
         });
 
         dialog.on('keyup', this.searchSelector, function (e) {
-            console.log("called keyup");
             // ignore modifier keys because they manipulate
             if (_.contains([KEY_ENTER, KEY_UP, KEY_DOWN], e.keyCode)) {
                 return;
@@ -107,7 +104,6 @@ App.autocomplete.dialog = {
         });
         Mousetrap.bindGlobal('down', function (e) {
             if (App.autocomplete.dialog.isActive) {
-                console.log("down", App.autocomplete.dialog.isActive);
                 App.autocomplete.dialog.changeSelection('next');
             }
         });
@@ -172,7 +168,6 @@ App.autocomplete.dialog = {
         App.autocomplete.dialog.selectItem(0);
     },
     show: function (cursorPosition) {
-        console.log("show dialog");
        // get current focused element - the editor
         App.autocomplete.dialog.editor = document.activeElement;
 
@@ -233,8 +228,6 @@ App.autocomplete.dialog = {
     },
     // remove dropdown and cleanup
     close: function (callback) {
-        console.log("close dialog");
-
         if(!App.autocomplete.dialog.isActive) {
 
             return;
