@@ -21,24 +21,32 @@ App.autocomplete.getSelectedWord = function (params) {
         text: ''
     };
 
-    var string;
+    var beforeSelection = "";
     var selection = window.getSelection();
 
     if (App.autocomplete.isContentEditable(params.element)) {
-        //string = selection.focusNode.textContent.substr(0, selection.focusOffset);
-        // removed the focusOffset because it's acting a bit crazy
-        string = selection.focusNode.textContent;
+        switch (selection.focusNode.nodeType) {
+            // In most cases, the focusNode property refers to a Text Node.
+            case (document.TEXT_NODE): // for text nodes it's easy. Just take the text and find the closest word
+                beforeSelection = selection.focusNode.textContent;
+                break;
+            // However, in some cases it may refer to an Element Node
+            case (document.ELEMENT_NODE):
+                // In that case, the focusOffset property returns the index in the childNodes collection of the focus node where the selection ends.
+                beforeSelection = selection.focusNode.childNodes[selection.focusOffset].textContent;
+
+                break;
+        }
     } else {
-        string = $(params.element).val().substr(0, App.autocomplete.cursorPosition.end);
+        beforeSelection = $(params.element).val().substr(0, App.autocomplete.cursorPosition.end);
     }
 
-    // Replace all nbsp with normal spaces
-    string = string.replace('\xa0', ' ').trim();
+    // Replace all &nbsp; with normal spaces
+    beforeSelection = beforeSelection.replace('\xa0', ' ').trim();
 
-    word.start = Math.max(string.lastIndexOf(" "), string.lastIndexOf("\n"), string.lastIndexOf("<br>")) + 1;
-    word.text = string.substr(word.start);
+    word.start = Math.max(beforeSelection.lastIndexOf(" "), beforeSelection.lastIndexOf("\n"), beforeSelection.lastIndexOf("<br>")) + 1;
+    word.text = beforeSelection.substr(word.start);
     word.end = word.start + word.text.length;
-
     return word;
 };
 
@@ -192,6 +200,19 @@ App.autocomplete.replaceWith = function (params) {
                 // https://developer.mozilla.org/en-US/docs/Web/API/range.setStart
                 var focusNode = params.focusNode;
 
+
+                // we need to have a text node in the end
+                while (focusNode.nodeType === document.ELEMENT_NODE) {
+                    if (focusNode.childNodes.length > 0) {
+                        focusNode = focusNode.childNodes[selection.focusOffset]; // select a text node
+                    } else {
+                        // create an empty text node and attach it before the node
+                        var tnode = document.createTextNode('');
+                        focusNode.parentNode.insertBefore(tnode, focusNode);
+                        focusNode = tnode;
+                    }
+                }
+
                 // clear whitespace in the focused textnode
                 if(focusNode.nodeValue) {
                     focusNode.nodeValue = focusNode.nodeValue.trim();
@@ -213,6 +234,36 @@ App.autocomplete.replaceWith = function (params) {
                 selection.removeAllRanges();
                 selection.addRange(caretRange);
 
+                /*
+
+                switch (focusNode.nodeType) {
+                    case (document.TEXT_NODE):
+                        // clear whitespace in the focused textnode
+                        if(focusNode.nodeValue) {
+                            focusNode.nodeValue = focusNode.nodeValue.trim();
+                        }
+
+                        // remove the shorcut text
+                        range.setStart(focusNode, word.start);
+                        range.setEnd(focusNode, word.end);
+                        range.deleteContents();
+
+                        var qtNode = range.createContextualFragment(replacement);
+                        var lastQtChild = qtNode.lastChild;
+
+                        range.insertNode(qtNode);
+
+                        var caretRange = document.createRange();
+                        caretRange.setStartAfter(lastQtChild);
+                        caretRange.collapse(true);
+                        selection.removeAllRanges();
+                        selection.addRange(caretRange);
+                        break;
+                    case (document.ELEMENT_NODE):
+
+                        break;
+                }
+                */
             } else {
 
                 var $textarea = $(params.element),

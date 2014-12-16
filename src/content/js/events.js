@@ -28,10 +28,8 @@ App.onBlur = function (e) {
 };
 
 App.onScroll = function (e) {
-    var target = e.target;
-
-    // if scrolling the autocomplet list, don't close it
-    if(target !== App.autocomplete.dialog.$content.get(0)) {
+    // if search is focused
+    if(document.activeElement !== $(App.autocomplete.dialog.searchSelector).get(0)) {
         App.autocomplete.dialog.close();
     }
 };

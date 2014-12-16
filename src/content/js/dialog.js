@@ -4,7 +4,8 @@
 
 
 PubSub.subscribe('focus', function (action, element) {
-    if (action === 'off' && element !== App.autocomplete.dialog.$search.get(0)) {
+    if (action === 'off' && (element && element.attr && element.attr('class') !== $(this.searchSelector).attr('class'))) {
+        console.log(element);
         App.autocomplete.dialog.close();
     }
 });
@@ -26,9 +27,12 @@ App.autocomplete.dialog = {
     isEmpty: true,
     RESULTS_LIMIT: 5, // only show 5 results at a time
     editor: null,
+    dialogSelector: ".qt-dropdown",
+    contentSelector: ".qt-dropdown-content",
+    searchSelector: ".qt-dropdown-search",
 
     completion: function (e) {
-
+        console.log("completion");
         e.preventDefault();
         e.stopPropagation();
 
@@ -54,22 +58,20 @@ App.autocomplete.dialog = {
     },
     // TODO(@ghinda): make dropdown position relative so on scrolling it will stay in right place
     create: function () {
+
+        // Create only once in the root of the document
         var container = $('body');
 
         // Add loading dropdown
-        this.$dialog = $(this.template);
-        this.$content = $('.qt-dropdown-content', this.$dialog);
-        this.$search = $('.qt-dropdown-search', this.$dialog);
-
-        container.append(this.$dialog);
+        var dialog = $(this.template);
+        container.append(dialog);
 
         //HACK: set z-index to auto to a parent, otherwise the autocomplete
         //      dropdown will not be displayed with the correct stacking
-        this.$dialog.parents('.qz').css('z-index', 'auto');
+        dialog.parents('.qz').css('z-index', 'auto');
 
         // Handle mouse hover and click
-        this.$dialog.on('mouseover mousedown', 'li.qt-item', function (e) {
-
+        dialog.on('mouseover mousedown', 'li.qt-item', function (e) {
             e.preventDefault();
             e.stopPropagation();
 
@@ -80,7 +82,8 @@ App.autocomplete.dialog = {
             }
         });
 
-        this.$search.on('keyup', function (e) {
+        dialog.on('keyup', this.searchSelector, function (e) {
+            console.log("called keyup");
             // ignore modifier keys because they manipulate
             if (_.contains([KEY_ENTER, KEY_UP, KEY_DOWN], e.keyCode)) {
                 return;
@@ -104,6 +107,7 @@ App.autocomplete.dialog = {
         });
         Mousetrap.bindGlobal('down', function (e) {
             if (App.autocomplete.dialog.isActive) {
+                console.log("down", App.autocomplete.dialog.isActive);
                 App.autocomplete.dialog.changeSelection('next');
             }
         });
@@ -132,9 +136,7 @@ App.autocomplete.dialog = {
 
     },
     populate: function (quicktexts) {
-
         App.autocomplete.quicktexts = quicktexts;
-
         if (!App.autocomplete.dialog.isActive) {
             App.autocomplete.dialog.show(App.autocomplete.cursorPosition);
         }
@@ -163,14 +165,15 @@ App.autocomplete.dialog = {
             elements: clonedElements
         });
 
-        App.autocomplete.dialog.$content.html(content);
+        $(this.contentSelector).html(content);
         App.autocomplete.dialog.isEmpty = false;
 
         // Set first element active
         App.autocomplete.dialog.selectItem(0);
     },
     show: function (cursorPosition) {
-        // get current focused element - the editor
+        console.log("show dialog");
+       // get current focused element - the editor
         App.autocomplete.dialog.editor = document.activeElement;
 
         var selection = window.getSelection();
@@ -180,19 +183,21 @@ App.autocomplete.dialog = {
         App.autocomplete.dialog.isActive = true;
         App.autocomplete.dialog.isEmpty = true;
 
-        App.autocomplete.dialog.$dialog.css({
+        $(this.dialogSelector).css({
             top: (cursorPosition.absolute.top + cursorPosition.absolute.height - $(window).scrollTop()) + 'px',
             left: (cursorPosition.absolute.left + cursorPosition.absolute.width - $(window).scrollLeft()) + 'px'
         });
 
-        App.autocomplete.dialog.$dialog.addClass('qt-dropdown-show');
-        App.autocomplete.dialog.$search.focus();
+        $(this.dialogSelector).addClass('qt-dropdown-show');
+        $(this.searchSelector).focus();
+        $(App.autocomplete.dialog.contentSelector).scrollTop();
     },
     selectItem: function (index) {
         if (App.autocomplete.dialog.isActive && !App.autocomplete.dialog.isEmpty) {
-            var $element = App.autocomplete.dialog.$content.children().eq(index);
+            var content = $(this.contentSelector);
+            var $element = content.children().eq(index);
 
-            App.autocomplete.dialog.$content.children()
+            content.children()
                 .removeClass('active')
                 .eq(index);
 
@@ -201,7 +206,7 @@ App.autocomplete.dialog = {
     },
     selectActive: function () {
         if (App.autocomplete.dialog.isActive && !this.isEmpty && App.autocomplete.quicktexts.length) {
-            var activeItemId = App.autocomplete.dialog.$content.find('.active').data('id');
+            var activeItemId = $(this.contentSelector).find('.active').data('id');
             var quicktext = App.autocomplete.quicktexts.filter(function (quicktext) {
                 return quicktext.id === activeItemId;
             })[0];
@@ -215,18 +220,20 @@ App.autocomplete.dialog = {
     },
     changeSelection: function (direction) {
         var index_diff = direction === 'prev' ? -1 : 1,
-            elements_count = App.autocomplete.dialog.$content.children().length,
-            index_active = App.autocomplete.dialog.$content.find('.active').index(),
+            content = $(this.contentSelector),
+            elements_count = content.children().length,
+            index_active = content.find('.active').index(),
             index_new = Math.max(0, Math.min(elements_count - 1, index_active + index_diff));
 
         App.autocomplete.dialog.selectItem(index_new);
 
         // scroll the active element into view
-        var $element = App.autocomplete.dialog.$content.children().eq(index_new);
+        var $element = content.children().eq(index_new);
         $element.get(0).scrollIntoView();
     },
     // remove dropdown and cleanup
     close: function (callback) {
+        console.log("close dialog");
 
         if(!App.autocomplete.dialog.isActive) {
 
@@ -240,8 +247,8 @@ App.autocomplete.dialog = {
 
         }
 
-        $('.qt-dropdown').removeClass('qt-dropdown-show');
-        $('.qt-dropdown-search').val('');
+        $(this.dialogSelector).removeClass('qt-dropdown-show');
+        $(this.searchSelector).val('');
 
         App.autocomplete.dialog.isActive = false;
         App.autocomplete.dialog.isEmpty = null;
