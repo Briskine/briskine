@@ -1,14 +1,5 @@
 {
-  "name": "gq",
-  "version": "1.2",
-  "homepage": "https://github.com/gorgias/gorgias-chrome",
-  "authors": [
-    "Alexandru Bumbu <bmbalex@gmail.com>",
-    "Alexandru Plugaru <alex@gorgias.io>",
-    "Ionut Colceriu <contact@ghinda.net>"
-  ],
-  "description": "A powerful Google Chrome extension for writing faster on the web.",
-  "license": "MIT",
+  "name": "gorgias",
   "private": true,
   "ignore": [
     "**/.*",

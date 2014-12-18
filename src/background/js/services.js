@@ -4,7 +4,7 @@
 gqApp.service('QuicktextService', function ($q, $resource, SettingsService) {
     var self = this;
     self.qRes = $resource(SettingsService.get('apiBaseURL') + 'quicktexts/:quicktextId', {
-        quicktextId: '@id'
+        quicktextId: '@remote_id'
     }, {
         update: {
             method: "PUT"
@@ -271,7 +271,15 @@ gqApp.service('QuicktextService', function ($q, $resource, SettingsService) {
                         });
                     });
                 });
-                analytics.track("Created template");
+
+                // Send some info about the creation of templates
+                analytics.track("Created template", {
+                    "with_subject": true ? qt.subject !== "": false,
+                    "with_shortcut": true ? qt.shortcut !== "": false,
+                    "with_tags": true ? qt.tags !== "": false,
+                    "title_size": qt.title.length,
+                    "body_size": qt.body.length
+                });
             });
         });
         return deferred.promise;
@@ -323,7 +331,14 @@ gqApp.service('QuicktextService', function ($q, $resource, SettingsService) {
                         });
                     });
                 }
-                analytics.track("Updated template");
+                // Send some info about the creation of templates
+                analytics.track("Updated template", {
+                    "with_subject": true ? qt.subject !== "": false,
+                    "with_shortcut": true ? qt.shortcut !== "": false,
+                    "with_tags": true ? qt.tags !== "": false,
+                    "title_size": qt.title.length,
+                    "body_size": qt.body.length
+                });
             });
         });
         return deferred.promise;

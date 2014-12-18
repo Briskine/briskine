@@ -1,28 +1,38 @@
 {
-  "name": "quicktext-chrome",
-  "version": "1.2",
-  "description": "Gmail Quicktext grunt package",
-  "main": "Gruntfile.js",
-  "scripts": {
-    "install": "./node_modules/.bin/webdriver-manager update",
-    "test": "grunt test"
-  },
-  "repository": "https://github.com/humanfromearth/gmail-quicktext/",
-  "author": "Alexandru Plugaru",
-  "license": "MIT",
-  "devDependencies": {
-    "grunt": "~0.4.5",
-    "grunt-contrib-clean": "^0.6.0",
-    "grunt-contrib-compress": "~0.12.0",
-    "grunt-contrib-concat": "~0.5.0",
-    "grunt-contrib-copy": "~0.7",
-    "grunt-contrib-jshint": "~0.10.0",
-    "grunt-contrib-stylus": "~0.20.0",
-    "grunt-contrib-watch": "~0.6.1",
-    "grunt-crx": "^0.3.3",
-    "grunt-protractor-runner": "^1.1.x",
-    "matchdep": "~0.3.0",
-    "protractor": "^1.4.x"
-  },
-  "dependencies": {}
+    "name": "quicktext-chrome",
+    "version": "1.2.1",
+    "description": "Gorgias grunt package",
+    "main": "Gruntfile.js",
+    "scripts": {
+        "install": "./node_modules/.bin/webdriver-manager update",
+        "test": "grunt test"
+    },
+    "repository": "https://github.com/gorgias/gorgias-chrome/",
+    "author": "Alexandru Plugaru <alex@gorgias.io>",
+    "contributors": [
+        {
+            "name": "Ionut Colceriu",
+            "email": "contact@ghinda.net"
+        },
+        {
+            "name": "Alex Bumbu",
+            "email": "bmbalex@gmail.com"
+        }
+    ],
+    "license": "MIT",
+    "devDependencies": {
+        "grunt": "~0.4.5",
+        "grunt-contrib-clean": "^0.6.0",
+        "grunt-contrib-compress": "~0.12.0",
+        "grunt-contrib-concat": "~0.5.0",
+        "grunt-contrib-copy": "~0.7",
+        "grunt-contrib-jshint": "~0.10.0",
+        "grunt-contrib-stylus": "~0.20.0",
+        "grunt-contrib-watch": "~0.6.1",
+        "grunt-crx": "^0.3.3",
+        "grunt-protractor-runner": "^1.1.x",
+        "matchdep": "~0.3.0",
+        "protractor": "^1.4.x"
+    },
+    "dependencies": {}
 }

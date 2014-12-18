@@ -70,10 +70,13 @@ if (chrome.runtime) {
             var injector = angular.element('body').injector();
             if (request.request === 'get') {
                 injector.get('QuicktextService').quicktexts().then(function (res) {
-                    sendResponse(res);
                     analytics.track("Inserted template", {
+                        "title_size": res[0].title.length,
+                        "body_size": res[0].body.length,
                         "source": "message"
                     });
+                    sendResponse(res);
+
                 });
             }
             var settingsService = injector.get('SettingsService');
@@ -105,7 +108,9 @@ if (chrome.runtime) {
                             port.postMessage({'quicktexts': res, 'action': 'insert'});
                             // find a way to identify the insertion from the dialog in the future
                             analytics.track("Inserted template", {
-                                "source": "keyboard"
+                                "source": "keyboard",
+                                "title_size": res[0].title.length,
+                                "body_size": res[0].body.length
                             });
                         });
                     } else if (port.name === 'search') {
@@ -120,7 +125,9 @@ if (chrome.runtime) {
                                 port.postMessage({'quicktexts': res, 'action': 'list'});
                             });
                         }
-                        analytics.track("Searched template");
+                        analytics.track("Searched template", {
+                            'query_size': msg.text.length
+                        });
                     }
                 });
             }
