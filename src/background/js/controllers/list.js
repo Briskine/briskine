@@ -131,21 +131,25 @@ gqApp.controller('ListCtrl',
         // Delete a quicktext. This operation should first delete from the localStorage
         // then it should imedially go to the service and delete on the server
         $scope.deleteQt = function () {
-            QuicktextService.delete(this.quicktext).then(function (remotePromise) {
-                $scope.reloadQuicktexts(remotePromise);
-            });
+            if (this.quicktext) {
+                r = confirm("Are you sure you want to delete '" + this.quicktext.title + "' template?");
+                QuicktextService.delete(this.quicktext).then(function (remotePromise) {
+                    $scope.reloadQuicktexts(remotePromise);
+                });
+            }
+
         };
 
 
         // Save a quicktext, perform some checks before
         $scope.saveQt = function () {
             if (!$scope.selectedQt.title) {
-                alert("Please enter a Title");
+                alert("Please enter a title");
                 return false;
             }
 
             if (!$scope.selectedQt.body) {
-                alert("Please enter a Quicktext Template");
+                alert("Please enter a body");
                 return false;
             }
 
@@ -166,12 +170,12 @@ gqApp.controller('ListCtrl',
         // Save a quicktext, perform some checks before
         $scope.duplicateQt = function () {
             if (!$scope.selectedQt.title) {
-                alert("Please enter a Title");
+                alert("Please enter a title");
                 return false;
             }
 
             if (!$scope.selectedQt.body) {
-                alert("Please enter a Quicktext Template");
+                alert("Please enter a body");
                 return false;
             }
 

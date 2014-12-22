@@ -10,7 +10,8 @@ gqApp.service('QuicktextService', function ($q, $resource, SettingsService) {
             method: "PUT"
         },
         delete: {
-            method: "DELETE"
+            method: "DELETE",
+            isArray: false
         }
     });
 
@@ -368,6 +369,8 @@ gqApp.service('QuicktextService', function ($q, $resource, SettingsService) {
                 }
 
                 self.qRes.get({quicktextId: qt.remote_id}, function (remoteQt) {
+                    // make sure we have the remote id otherwise the delete will not find the right resource
+                    remoteQt.remote_id = remoteQt.id;
                     remoteQt.$delete(function () {
                         // Do a local "DELETE" only if deleted remotely.
                         // If remote operation fails, try again when syncing.
