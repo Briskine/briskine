@@ -36,7 +36,12 @@ gqApp.controller('SettingsCtrl', function ($scope, $rootScope, QuicktextService,
             }
             input.val(val);
             $scope.updateSettings($scope.settings);
-            alert("Please refresh your websites for the new shortcut to come into effect");
+
+            chrome.tabs.query({'url': '<all_urls>', 'windowType': 'normal'}, function (tabs) {
+                for (var i in tabs) {
+                    chrome.tabs.reload(tabs[i].id, {});
+                }
+            });
         });
     };
 });
