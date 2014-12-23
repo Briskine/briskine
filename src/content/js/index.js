@@ -44,10 +44,13 @@ var App = {
                         App.searchPort.onMessage.removeListener(arguments.callee);
                     });
                     App.searchPort.postMessage({text: text, limit: limit});
+                    // expire cache after a while
+                    setTimeout(function(){
+                        delete App.data.searchCache[text];
+                    }, 1500);
                 } else {
                     callback(App.data.searchCache[text]);
                 }
-
             }, 200);
         },
         get: function (key, callback) {
