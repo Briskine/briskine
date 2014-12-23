@@ -155,18 +155,29 @@ gqApp.controller('ListCtrl',
                 return false;
             }
 
-            if ($scope.selectedQt.id) {
-                QuicktextService.update($scope.selectedQt).then(function (remotePromise) {
-                    $scope.reloadQuicktexts(remotePromise);
-                });
-            } else {
-                QuicktextService.create($scope.selectedQt).then(function (remotePromise) {
-                    $scope.reloadQuicktexts(remotePromise);
-                });
-            }
+            QuicktextService.quicktexts().then(function(quicktexts){
+                if ($scope.selectedQt.shortcut) {
+                    for (var i in quicktexts) {
+                        var qt = quicktexts[i];
+                        if (qt.id !== $scope.selectedQt.id && qt.shortcut === $scope.selectedQt.shortcut) {
+                            alert("There is another a template with the '" + $scope.selectedQt.shortcut + "' keyboard shortcut");
+                            return false;
+                        }
+                    }
+                }
+                if ($scope.selectedQt.id) {
+                    QuicktextService.update($scope.selectedQt).then(function (remotePromise) {
+                        $scope.reloadQuicktexts(remotePromise);
+                    });
+                } else {
+                    QuicktextService.create($scope.selectedQt).then(function (remotePromise) {
+                        $scope.reloadQuicktexts(remotePromise);
+                    });
+                }
 
-            // hide teh modal
-            $('.modal').modal('hide');
+                // hide teh modal
+                $('.modal').modal('hide');
+            });
         };
 
         // Save a quicktext, perform some checks before
