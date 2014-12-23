@@ -11,9 +11,14 @@
 
             <form role="form" name="quicktext-form0" ng-submit="saveQt()">
 
+
                 <div class="modal-body">
                     <input type="hidden" id="qt-id" ng-model="selectedQt.id"/> <!-- local id -->
                     <input type="hidden" id="qt-key" ng-model="selectedQt.key"/> <!-- sync server id -->
+                    <div id="duplicate-alert-box" class="alert alert-info fade in hide">
+                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                        <strong>Duplicated!</strong> Please edit this new template and hit <strong>Save template</strong>.
+                    </div>
 
                     <div class="row">
                         <div class="col-xs-7">

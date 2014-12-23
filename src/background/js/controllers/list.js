@@ -22,7 +22,7 @@ gqApp.controller('ListCtrl',
             });
 
             // This is executed if a remote operation on the server was performed
-            if (remotePromise) {
+            if (remotePromise && typeof remotePromise.then == 'function') {
                 remotePromise.then(function () {
                     $scope.reloadQuicktexts();
                 });
@@ -93,13 +93,15 @@ gqApp.controller('ListCtrl',
                 'body': ''
             };
 
-            if ($routeParams.id === 'new') {
+            id = id ? id : $routeParams.id;
+
+            if (id === 'new') {
                 // new qt
                 $scope.selectedQt = angular.copy(defaults);
                 $scope.selectedQt.body = $routeParams.body;
-            } else if ($routeParams.id) {
+            } else if (id) {
                 // update qt
-                QuicktextService.get($routeParams.id).then(function (r) {
+                QuicktextService.get(id).then(function (r) {
                     $scope.selectedQt = angular.copy(r);
                 });
             }
@@ -179,13 +181,17 @@ gqApp.controller('ListCtrl',
                 return false;
             }
 
-            QuicktextService.create($scope.selectedQt).then(function (remotePromise) {
-                $scope.reloadQuicktexts(remotePromise);
+            // append a (copy) to the title
+            var newQt = angular.copy($scope.selectedQt);
+            newQt.title = newQt.title + " (copy)";
+
+            QuicktextService.create(newQt).then(function (id) {
+                if (typeof id !== 'undefined') {
+                    $('#duplicate-alert-box').removeClass('hide');
+                    $scope.reloadQuicktexts();
+                    $scope.showForm(id);
+                }
             });
-
-            // hide teh modal
-            $('.modal').modal('hide');
-
         };
 
         $scope.toggleFilterTag = function () {

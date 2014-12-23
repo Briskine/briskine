@@ -263,12 +263,14 @@ gqApp.service('QuicktextService', function ($q, $resource, SettingsService) {
                 var qtId = results.insertId;
                 var remoteQt = new self.qRes();
                 remoteQt = self._copy(qt, remoteQt);
+                // make sure we don't have a remote_id (it's a new template sow there should not be any remote_id)
+                remoteQt.remote_id = '';
                 remoteQt.$save(function (remoteQt) {
                     // once it's saved server side, store the remote_id in the database
                     self.db.transaction(function (tx) {
                         tx.executeSql("UPDATE quicktext SET remote_id = ?, sync_datetime = ? WHERE id = ?", [
                             remoteQt.id, remoteQt.created_datetime, qtId], function () {
-                            remoteDefer.resolve();
+                            remoteDefer.resolve(qtId);
                         });
                     });
                 });
