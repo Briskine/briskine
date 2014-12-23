@@ -184,6 +184,9 @@ gqApp.controller('ListCtrl',
             // append a (copy) to the title
             var newQt = angular.copy($scope.selectedQt);
             newQt.title = newQt.title + " (copy)";
+            $('.modal').on('hidden.bs.modal', function(){
+                $('#duplicate-alert-box').addClass('hide');
+            });
 
             QuicktextService.create(newQt).then(function (id) {
                 if (typeof id !== 'undefined') {
