@@ -1,4 +1,4 @@
-/* Linkedin plugin
+/* Facebook plugin
  */
 
 App.plugin('facebook', (function() {

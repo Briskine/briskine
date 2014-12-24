@@ -54,7 +54,8 @@ module.exports = function (grunt) {
                 'content/js/plugins/yahoo.js',
                 'content/js/plugins/outlook.js',
                 'content/js/plugins/linkedin.js',
-                'content/js/plugins/facebook.js'
+                'content/js/plugins/facebook.js',
+                'content/js/plugins/fastmail.js'
             ]
         }
     };
