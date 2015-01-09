@@ -11,9 +11,14 @@
 
             <form role="form" name="quicktext-form0" ng-submit="saveQt()">
 
+
                 <div class="modal-body">
                     <input type="hidden" id="qt-id" ng-model="selectedQt.id"/> <!-- local id -->
                     <input type="hidden" id="qt-key" ng-model="selectedQt.key"/> <!-- sync server id -->
+                    <div id="duplicate-alert-box" class="alert alert-info fade in hide">
+                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                        <strong>Duplicated!</strong> Please edit this new template and hit <strong>Save template</strong>.
+                    </div>
 
                     <div class="row">
                         <div class="col-xs-7">
@@ -51,7 +56,8 @@
                         </label>
                         <input type="text" class="form-control" id="qt-subject" ng-model="selectedQt.subject"/>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group" data-toggle="tooltip" data-placement="bottom"
+                         title="Tags are useful to search and filter templates (when you have many).">
                         <label for="qt-tags">
                             Tags
                             <span class="text-muted">(Optional)</span>

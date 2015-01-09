@@ -22,7 +22,7 @@ gqApp.controller('ListCtrl',
             });
 
             // This is executed if a remote operation on the server was performed
-            if (remotePromise) {
+            if (remotePromise && typeof remotePromise.then == 'function') {
                 remotePromise.then(function () {
                     $scope.reloadQuicktexts();
                 });
@@ -93,13 +93,15 @@ gqApp.controller('ListCtrl',
                 'body': ''
             };
 
-            if ($routeParams.id === 'new') {
+            id = id ? id : $routeParams.id;
+
+            if (id === 'new') {
                 // new qt
                 $scope.selectedQt = angular.copy(defaults);
                 $scope.selectedQt.body = $routeParams.body;
-            } else if ($routeParams.id) {
+            } else if (id) {
                 // update qt
-                QuicktextService.get($routeParams.id).then(function (r) {
+                QuicktextService.get(id).then(function (r) {
                     $scope.selectedQt = angular.copy(r);
                 });
             }
@@ -131,57 +133,79 @@ gqApp.controller('ListCtrl',
         // Delete a quicktext. This operation should first delete from the localStorage
         // then it should imedially go to the service and delete on the server
         $scope.deleteQt = function () {
-            QuicktextService.delete(this.quicktext).then(function (remotePromise) {
-                $scope.reloadQuicktexts(remotePromise);
-            });
+            if (this.quicktext) {
+                r = confirm("Are you sure you want to delete '" + this.quicktext.title + "' template?");
+                QuicktextService.delete(this.quicktext).then(function (remotePromise) {
+                    $scope.reloadQuicktexts(remotePromise);
+                });
+            }
+
         };
 
 
         // Save a quicktext, perform some checks before
         $scope.saveQt = function () {
             if (!$scope.selectedQt.title) {
-                alert("Please enter a Title");
+                alert("Please enter a title");
                 return false;
             }
 
             if (!$scope.selectedQt.body) {
-                alert("Please enter a Quicktext Template");
+                alert("Please enter a body");
                 return false;
             }
 
-            if ($scope.selectedQt.id) {
-                QuicktextService.update($scope.selectedQt).then(function (remotePromise) {
-                    $scope.reloadQuicktexts(remotePromise);
-                });
-            } else {
-                QuicktextService.create($scope.selectedQt).then(function (remotePromise) {
-                    $scope.reloadQuicktexts(remotePromise);
-                });
-            }
+            QuicktextService.quicktexts().then(function(quicktexts){
+                if ($scope.selectedQt.shortcut) {
+                    for (var i in quicktexts) {
+                        var qt = quicktexts[i];
+                        if (qt.id !== $scope.selectedQt.id && qt.shortcut === $scope.selectedQt.shortcut) {
+                            alert("There is another a template with the '" + $scope.selectedQt.shortcut + "' keyboard shortcut");
+                            return false;
+                        }
+                    }
+                }
+                if ($scope.selectedQt.id) {
+                    QuicktextService.update($scope.selectedQt).then(function (remotePromise) {
+                        $scope.reloadQuicktexts(remotePromise);
+                    });
+                } else {
+                    QuicktextService.create($scope.selectedQt).then(function (remotePromise) {
+                        $scope.reloadQuicktexts(remotePromise);
+                    });
+                }
 
-            // hide teh modal
-            $('.modal').modal('hide');
+                // hide teh modal
+                $('.modal').modal('hide');
+            });
         };
 
         // Save a quicktext, perform some checks before
         $scope.duplicateQt = function () {
             if (!$scope.selectedQt.title) {
-                alert("Please enter a Title");
+                alert("Please enter a title");
                 return false;
             }
 
             if (!$scope.selectedQt.body) {
-                alert("Please enter a Quicktext Template");
+                alert("Please enter a body");
                 return false;
             }
 
-            QuicktextService.create($scope.selectedQt).then(function (remotePromise) {
-                $scope.reloadQuicktexts(remotePromise);
+            // append a (copy) to the title
+            var newQt = angular.copy($scope.selectedQt);
+            newQt.title = newQt.title + " (copy)";
+            $('.modal').on('hidden.bs.modal', function(){
+                $('#duplicate-alert-box').addClass('hide');
             });
 
-            // hide teh modal
-            $('.modal').modal('hide');
-
+            QuicktextService.create(newQt).then(function (id) {
+                if (typeof id !== 'undefined') {
+                    $('#duplicate-alert-box').removeClass('hide');
+                    $scope.reloadQuicktexts();
+                    $scope.showForm(id);
+                }
+            });
         };
 
         $scope.toggleFilterTag = function () {

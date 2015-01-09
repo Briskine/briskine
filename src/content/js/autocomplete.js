@@ -218,10 +218,16 @@ App.autocomplete.replaceWith = function (params) {
                     focusNode.nodeValue = focusNode.nodeValue.trim();
                 }
 
-                // remove the shorcut text
-                range.setStart(focusNode, word.start);
-                range.setEnd(focusNode, word.end);
-                range.deleteContents();
+                // if the current word matches the shortcut then remove it otherwise skip it (ex: from dialog)
+                if (word.text === params.quicktext.shortcut) {
+                    range.setStart(focusNode, word.start);
+                    range.setEnd(focusNode, word.end);
+                    range.deleteContents();
+                } else {
+                    range.setStart(focusNode, word.end);
+                    range.setEnd(focusNode, word.end);
+                }
+
 
                 var qtNode = range.createContextualFragment(replacement);
                 var lastQtChild = qtNode.lastChild;

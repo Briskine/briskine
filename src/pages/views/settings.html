@@ -16,7 +16,7 @@
             <span class="glyphicon glyphicon-question-sign"></span>
         </label>
         <br/>
-        <input type="text" id="keyboard-shortcut" ng-model="settings.keyboard.shortcut" readonly="readonly" placeholder="Press any key combination" />
+        <input type="text" id="keyboard-shortcut" ng-model="settings.keyboard.shortcut" readonly="readonly" placeholder="Press any key combination" size="25" />
         <button class="btn btn-primary btn-default" ng-click="recordSequence('keyboard-shortcut')">Change</button>
     </div>
     <br/>
@@ -33,7 +33,7 @@
             <span class="glyphicon glyphicon-question-sign"></span>
         </label>
         <br/>
-        <input type="text" id="dialog-shortcut" readonly="readonly" ng-model="settings.dialog.shortcut" placeholder="Press any key combination" />
+        <input type="text" id="dialog-shortcut" readonly="readonly" ng-model="settings.dialog.shortcut" placeholder="Press any key combination" size="25" />
         <button class="btn btn-primary btn-default" ng-click="recordSequence('dialog-shortcut')">Change</button>
 
     </div>

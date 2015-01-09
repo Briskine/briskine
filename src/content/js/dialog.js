@@ -4,8 +4,12 @@
 
 
 PubSub.subscribe('focus', function (action, element) {
-    if (action === 'off' && (element && element.attr && element.attr('class') !== $(this.searchSelector).attr('class'))) {
-        App.autocomplete.dialog.close();
+    if (action === 'off') {
+        if (element === null) {
+            App.autocomplete.dialog.close();
+        } else if ($(element).attr('class') !== $(App.autocomplete.dialog.searchSelector).attr('class')) {
+            App.autocomplete.dialog.close();
+        }
     }
 });
 
@@ -64,7 +68,7 @@ App.autocomplete.dialog = {
         var dialog = $(this.template);
         container.append(dialog);
 
-        //HACK: set z-index to auto to a parent, otherwise the autocomplete
+        //Gmail HACK: set z-index to auto to a parent, otherwise the autocomplete
         //      dropdown will not be displayed with the correct stacking
         dialog.parents('.qz').css('z-index', 'auto');
 
