@@ -117,7 +117,7 @@ if (chrome.runtime) {
                         });
                     } else if (port.name === 'search') {
                         if (!msg.text) { // if text is empty get all of them
-                            injector.get('QuicktextService').quicktexts().then(function (res) {
+                            injector.get('QuicktextService').quicktexts(msg.limit).then(function (res) {
                                 port.postMessage({'quicktexts': res, 'action': 'list'});
                             });
                         } else {
