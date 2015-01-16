@@ -164,26 +164,51 @@ Raven.config('https://af2f5e9fb2744c359c19d08c8319d9c5@app.getsentry.com/30379',
     collectWindowErrors: true
 }).install();
 
-App.init = function () {
+App.init = function (settings) {
+
+    var currentUrl = window.location.href;
+
+    var blacklistPrivate = [
+        'https://gorgias.io'
+    ];
+
+    // create the full blacklist
+    // from the editable and private one
+    var fullBlacklist = [];
+    [].push.apply(fullBlacklist, settings.blacklist);
+    [].push.apply(fullBlacklist, blacklistPrivate);
+
+    // check if url is in blacklist
+    var isBlacklisted = false;
+    fullBlacklist.some(function(item) {
+        if(currentUrl.indexOf(item) !== -1) {
+            isBlacklisted = true;
+            return true;
+        }
+        return false;
+    });
+
+    if(isBlacklisted) {
+        return false;
+    }
+
     document.addEventListener("blur", App.onBlur, true);
     document.addEventListener("focus", App.onFocus, true);
     document.addEventListener("scroll", App.onScroll, true);
 
     // use custom keyboard shortcuts
-    App.settings.fetchSettings(function (settings) {
-        if (settings.keyboard.enabled) {
-            Mousetrap.bindGlobal(settings.keyboard.shortcut, App.autocomplete.keyboard.completion);
-        }
-        if (settings.dialog.shortcut) {
-            Mousetrap.bindGlobal(settings.dialog.shortcut, App.autocomplete.dialog.completion);
-        }
-        
-        // create dialog once and then reuse the same element
-        App.autocomplete.dialog.create();
-        App.autocomplete.dialog.bindKeyboardEvents();
+    if (settings.keyboard.enabled) {
+        Mousetrap.bindGlobal(settings.keyboard.shortcut, App.autocomplete.keyboard.completion);
+    }
+    if (settings.dialog.shortcut) {
+        Mousetrap.bindGlobal(settings.dialog.shortcut, App.autocomplete.dialog.completion);
+    }
 
-        App.activatePlugins();
-    });
+    // create dialog once and then reuse the same element
+    App.autocomplete.dialog.create();
+    App.autocomplete.dialog.bindKeyboardEvents();
+
+    App.activatePlugins();
 
     if (!App.shortcutPort) {
         App.shortcutPort = chrome.runtime.connect({name: "shortcut"});
@@ -196,6 +221,5 @@ App.init = function () {
 };
 
 $(function () {
-    // TODO init is being called multiple times, find a fix for it
-    App.init();
+    App.settings.fetchSettings(App.init);
 });
