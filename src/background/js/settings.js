@@ -42,7 +42,11 @@ var Settings = {
             },
             stats: {
                 enabled: true  // send anonymous statistics - doesn't include GA
-            }
+            },
+            blacklist: [],
+            blacklistPrivate: [
+                'https://gorgias.io/'
+            ]
         },
         // refactor this into 'local' and 'remote'
         isLoggedIn: false,

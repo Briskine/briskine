@@ -67,14 +67,23 @@
     </p>
     <div class="blacklist-list">
 
-        <div class="blacklist-item">
+        <div class="blacklist-item" ng-repeat="item in settings.blacklist track by $index">
 
+            <input ng-model="settings.blacklist[$index]" placeholder="www.example.com" class="blacklist-item-url" ng-blur="CheckBlacklistItem($index)">
+
+            <button type="button" class="blacklist-item-remove" title="Remove website from blacklist" ng-click="RemoveBlacklistItem($index)">
+                <span class="glyphicon glyphicon-remove"></span>
+            </button>
+        </div>
+
+        <div class="blacklist-blank-state" ng-if="settings.blacklist.length === 0">
+            You don't have any websites blacklisted.
         </div>
 
     </div>
 
     <div class="form-group">
-        <button class="btn btn-primary btn-default">
+        <button class="btn btn-primary btn-default" ng-click="AddBlacklistItem()">
             Add website to Blacklist
         </button>
     </div>

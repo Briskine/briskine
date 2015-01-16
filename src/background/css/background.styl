@@ -413,3 +413,67 @@ header {
     }
   }
 }
+
+/* Blacklist
+ */
+
+.blacklist-list {
+    overflow-x: hidden;
+    overflow-y: auto;
+    max-width: emCalc(360);
+    max-height: emCalc(260);
+    padding: emCalc(8);
+    margin: 0 0 emCalc(4);
+    border: 1px solid #bfbfbf;
+    border-radius: 2px;
+}
+
+.blacklist-item {
+    position: relative;
+}
+
+.blacklist-item:hover .blacklist-item-remove {
+    opacity: 1;
+}
+
+.blacklist-item:hover .blacklist-item-url {
+    border-color: lighten(#bfbfbf, 40%);
+}
+
+.blacklist-item-url {
+    display: block;
+    width: 100%;
+    padding: emCalc(5) 0 emCalc(4);
+    border-radius: 0;
+    border-color: transparent;
+    border-width: 0 0 1px 0;
+}
+
+.blacklist-item .blacklist-item-url:focus {
+    border-color: #bfbfbf;
+    outline: none;
+}
+
+.blacklist-item-remove {
+    position: absolute;
+    bottom: 1px;
+    right: 0;
+    opacity: 0;
+    background: #fff;
+    border: 0;
+    padding: emCalc(4);
+
+    color: #bfbfbf;
+    transition: all .2s ease-out;
+}
+
+.blacklist-item-remove:hover {
+    color: #333;
+}
+
+.blacklist-blank-state {
+    padding: emCalc(8);
+
+    color: #737373;
+    text-align: center;
+}

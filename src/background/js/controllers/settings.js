@@ -1,8 +1,9 @@
-gqApp.controller('SettingsCtrl', function ($scope, $rootScope, QuicktextService, SettingsService) {
+gqApp.controller('SettingsCtrl', function ($scope, $rootScope, $timeout,  QuicktextService, SettingsService) {
 
     $scope.settings =  SettingsService.get('settings');
 
     $scope.$watch("settings", function(data){
+        console.log(data);
         $scope.updateSettings(data)
     }, true);
 
@@ -44,4 +45,35 @@ gqApp.controller('SettingsCtrl', function ($scope, $rootScope, QuicktextService,
             });
         });
     };
+
+    $scope.AddBlacklistItem = function() {
+
+        $scope.settings.blacklist.push('');
+
+        // focus the last element blacklist website
+        // wait for angular to digest it
+        $timeout(function() {
+            var $container = $('.blacklist-list');
+            var $newItem = $container.find('.blacklist-item-url').last();
+
+            $newItem.focus();
+        });
+
+    };
+
+    $scope.RemoveBlacklistItem = function(index) {
+
+        $scope.settings.blacklist.splice(index, 1);
+
+    };
+
+    $scope.CheckBlacklistItem = function(index) {
+
+        // if the url is blank, remove it
+        if($scope.settings.blacklist[index].trim() === '') {
+            $scope.settings.blacklist.splice(index, 1);
+        }
+
+    };
+
 });
