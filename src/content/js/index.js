@@ -177,6 +177,12 @@ App.init = function () {
         if (settings.dialog.shortcut) {
             Mousetrap.bindGlobal(settings.dialog.shortcut, App.autocomplete.dialog.completion);
         }
+        
+        // create dialog once and then reuse the same element
+        App.autocomplete.dialog.create();
+        App.autocomplete.dialog.bindKeyboardEvents();
+
+        App.activatePlugins();
     });
 
     if (!App.shortcutPort) {
@@ -186,12 +192,6 @@ App.init = function () {
     if (!App.searchPort) {
         App.searchPort = chrome.runtime.connect({name: "search"});
     }
-
-    // create dialog once and then reuse the same element
-    App.autocomplete.dialog.create();
-    App.autocomplete.dialog.bindKeyboardEvents();
-
-    App.activatePlugins();
 
 };
 

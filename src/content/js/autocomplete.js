@@ -10,6 +10,16 @@ var KEY_TAB = 9,
 App.autocomplete.quicktexts = [];
 App.autocomplete.cursorPosition = null;
 
+App.autocomplete.isEditable = function(element) {
+
+    var isTextfield = (element.tagName.toLowerCase() === 'input');
+    var isTextarea = (element.tagName.toLowerCase() === 'textarea');
+    var isContenteditable = App.autocomplete.isContentEditable(element);
+
+    return (isTextfield || isTextarea || isContenteditable);
+
+};
+
 App.autocomplete.isContentEditable = function(element) {
     return element && element.hasAttribute('contenteditable');
 };

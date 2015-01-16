@@ -3,7 +3,6 @@ gqApp.controller('SettingsCtrl', function ($scope, $rootScope, $timeout,  Quickt
     $scope.settings =  SettingsService.get('settings');
 
     $scope.$watch("settings", function(data){
-        console.log(data);
         $scope.updateSettings(data)
     }, true);
 

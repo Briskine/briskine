@@ -40,6 +40,12 @@ App.autocomplete.dialog = {
 
         var element = e.target;
 
+        // if it's not an editable element
+        // don't trigger anything
+        if(!App.autocomplete.isEditable(element)) {
+            return false;
+        }
+
         App.autocomplete.cursorPosition = App.autocomplete.getCursorPosition(e);
         var word = App.autocomplete.getSelectedWord({
             element: element
@@ -50,11 +56,7 @@ App.autocomplete.dialog = {
         App.settings.getFiltered("", App.autocomplete.dialog.RESULTS_LIMIT, function (quicktexts) {
             App.autocomplete.quicktexts = quicktexts;
 
-            // show the dialog even when the search
-            // for quicktexts didn't return anything
-            //if (App.autocomplete.quicktexts.length) {
-                App.autocomplete.dialog.populate(App.autocomplete.quicktexts);
-            //}
+            App.autocomplete.dialog.populate(App.autocomplete.quicktexts);
         });
 
     },

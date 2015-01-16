@@ -9,6 +9,12 @@ App.autocomplete.keyboard = {
         var selection = window.getSelection();
         var focusNode = selection.focusNode;
 
+        // if it's not an editable element
+        // don't trigger anything
+        if(!App.autocomplete.isEditable(element)) {
+            return false;
+        }
+
         if(selection.rangeCount) {
             var range = selection.getRangeAt(0);
             var caretPos = range.endOffset;
