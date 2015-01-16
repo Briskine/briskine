@@ -86,6 +86,17 @@ module.exports = function (grunt) {
                     spawn: false
                 }
             },
+            copy: {
+                files: [
+                    '**/*.html',
+                    '**/*.png'
+                ],
+                tasks: [ 'copy:development' ],
+                options: {
+                    cwd: config.app,
+                    spawn: false
+                }
+            },
             extensionReload: {
                 files: [
                     '**/*.css',
