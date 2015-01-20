@@ -35,7 +35,7 @@ App.plugin('yahoo', (function() {
             subject: ''
         };
 
-        var $composeContainer = $(params.element).parents('.thread-item').first();
+        var $composeContainer = $(params.element).parents('.compose').first();
         var $emailContainer = $composeContainer.prev('.thread-item');
 
         // get your name from the top-right profile
@@ -99,7 +99,7 @@ App.plugin('yahoo', (function() {
         var yahooUrl = '.mail.yahoo.com/';
 
         var activateExtension = false;
-        
+
         // trigger the extension based on url
         if(window.location.href.indexOf(yahooUrl) !== -1) {
             activateExtension = true;
