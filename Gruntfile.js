@@ -18,6 +18,7 @@ module.exports = function (grunt) {
                 'bower_components/bootstrap/dist/js/bootstrap.min.js',
                 'bower_components/underscore/underscore.js',
                 'bower_components/underscore.string/lib/underscore.string.js',
+                'bower_components/handlebars/handlebars.js',
                 'bower_components/moment/moment.js',
                 'bower_components/mousetrap/mousetrap.js',
                 'bower_components/mousetrap/plugins/record/mousetrap-record.js',

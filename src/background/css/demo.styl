@@ -1,0 +1,327 @@
+/* Gorgias
+ * homepage demo
+ */
+
+@import "nib";
+
+.gorgias-demo {
+    position: relative;
+    overflow: hidden;
+    min-height: 300px;
+
+    // don't mess with my demo
+    pointer-events: none;
+}
+
+@keyframes gdemo-bring-in-editor {
+    0% {
+        opacity: 0;
+        transform: translate3d(0, 20px, 0);
+    }
+    100% {
+        opacity: 1;
+        transform: translate3d(0, 0, 0);
+    }
+}
+
+.gorgias-editor-container {
+    position: absolute;
+    bottom: 0;
+    right: 10%;
+    width: 100%;
+    max-width: 400px;
+    height: 240px;
+    padding: 10px;
+    border-top: 30px solid #efefef;
+    box-shadow: 0 2px 2px #efefef;
+    background: #fff;
+
+    color: #333;
+    text-align: left;
+
+    animation: gdemo-bring-in-editor .4s linear;
+}
+
+.gorgias-to-field {
+    padding: 10px;
+    margin: -10px -10px 10px -10px;
+    border-bottom: 1px solid #efefef;
+}
+
+.gorgias-to-field .to {
+    color: #737373;
+}
+
+.gorgias-demo-editor {
+    position: relative;
+    display: inline-block;
+}
+
+@keyframes gdemo-vcursor-blink {
+    0% { opacity:1; }
+    50% { opacity:0; }
+    100% { opacity:1; }
+}
+
+.gorgias-demo-vcursor {
+    border-right: 1px solid #666;
+    animation: gdemo-vcursor-blink 0.7s infinite;
+}
+
+.gorgias-demo-frame-info {
+    position: absolute;
+    bottom: 60px;
+    right: 10%;
+    margin-right: 440px;
+    display: block;
+    max-width: 300px;
+    opacity: 0;
+    transition: all .2s ease-out;
+    transform: translate3d(0, 12px, 0);
+
+    color: #D3D3D3;
+}
+
+.gorgias-demo-frame-info,
+.gorgias-demo-frame-info p {
+    font-size: 14px;
+    text-align: right;
+}
+
+.gorgias-demo-frame-info ul {
+    text-align: left;
+}
+
+@keyframes hideTip {
+    to {
+        opacity: 0;
+        visibility: hidden;
+    }
+}
+
+.gorgias-demo-key {
+    position: absolute;
+    bottom: 40px;
+    right: 10%;
+    margin-right: 32px;
+    padding: 8px 16px;
+    background: rgba(0,0,0,.4);
+    border-radius: 2px;
+
+    color: #fff;
+    font-size: 20px;
+    font-weight: bold;
+
+    transition: all .2s ease-in;
+    visibility: hidden;
+    opacity: 0;
+}
+
+.gorgias-demo-frame--activate-first-shortcut .key-tab,
+.gorgias-demo-frame--dialog-show .key-dialog-shortcut,
+.gorgias-demo-frame--dialog-activate .key-enter {
+    visibility: visible;
+    opacity: 1;
+
+    animation: hideTip .5s ease-in 1.2s forwards;
+}
+
+.gorgias-demo-frame--empty-state .gorgias-demo-frame-info--empty-state,
+.gorgias-demo-frame--type-first-shortcut .gorgias-demo-frame-info--empty-state,
+.gorgias-demo-frame--activate-first-shortcut .gorgias-demo-frame-info--activate-first-shortcut,
+.gorgias-demo-frame--dialog-show .gorgias-demo-frame-info--dialog-show,
+.gorgias-demo-frame--dialog-activate .gorgias-demo-frame-info--dialog-activate,
+.gorgias-demo-frame--try-it .gorgias-demo-frame-info--try-it {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+}
+
+/* activate the real editor only when the last frame is active
+ */
+.gorgias-demo-frame--try-it {
+    pointer-events: auto;
+}
+
+.gorgias-demo-final-list li:last-child {
+    list-style: none;
+    padding-top: 5px;
+}
+
+/* bring attention to the editor
+ * on the try-it step
+ */
+
+@keyframes gdemo-editor-attention {
+    0%,
+    100% {
+        box-shadow: 0 2px 2px #efefef;
+    }
+    50% {
+        box-shadow: 0 0 18px rgba(#067b82, .3);
+    }
+}
+
+.gorgias-demo-frame--try-it .gorgias-editor-container {
+    cursor: text;
+    animation: gdemo-editor-attention 3s ease-in-out infinite;
+}
+
+.gdemo-editor-was-focused .gorgias-editor-container {
+    animation: none;
+}
+
+.gdemo-editor-was-focused .gorgias-editor-container {
+    padding: 0;
+}
+
+.gdemo-editor-was-focused .gorgias-demo-editor {
+    display: block;
+    height: 100%;
+    padding: 10px;
+}
+
+.gdemo-editor-was-focused .gorgias-to-field {
+    margin: 0;
+}
+
+.gdemo-editor-was-focused .gorgias-demo-vcursor {
+    display: none;
+}
+
+/* content styles
+ */
+
+
+@import 'nib';
+
+.gdemo-mirror {
+    position: absolute;
+    overflow: auto;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    z-index: -9999;
+
+    .gdemo-caret {
+        display: inline-block;
+    }
+}
+
+/* Autocomplete dropdown
+*/
+
+$colorActiveBg = #EEEEEE;
+$colorText = #000;
+$padding = 8px;
+
+.gdemo-dropdown {
+    display: none;
+
+    position: fixed;
+    z-index: 9999999;
+
+    overflow: hidden;
+    margin: 0;
+    padding: 0;
+    box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+    border-radius: 2px;
+    border: 1px solid #c0c0c0;
+    background: #fff;
+
+    //font-family: 'sans-serif';
+    font-size: 13px;
+}
+
+.gdemo-dropdown-show {
+    display: block !important;
+}
+
+.gdemo-dropdown * {
+    box-sizing: border-box;
+}
+
+.gdemo-dropdown-content {
+    display: block;
+    overflow-x: hidden;
+    overflow-y: auto;
+    max-height: 16em;
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+
+    li {
+        position: relative;
+        padding: $padding;
+        max-width: 20em;
+        overflow: hidden;
+        cursor: pointer;
+
+        color: $colorText;
+        text-overflow: ellipsis;
+
+        &.default {
+            cursor: default;
+            max-height: 4em;
+        }
+
+        &.active {
+            background: $colorActiveBg;
+        }
+
+    }
+}
+
+.gdemo-title {
+    display: block;
+    overflow: hidden;
+    padding: 0 3em .4em 0;
+
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.gdemo-body {
+    display: block;
+    overflow: hidden;
+
+    color: lighten($colorText, 32%);
+    white-space: nowrap !important;
+    text-overflow: ellipsis;
+}
+
+.gdemo-shortcut {
+    position: absolute;
+    top: $padding - 1px;
+    right: $padding;
+    padding: 2px 4px;
+    border: 1px solid darken($colorActiveBg, 8%);
+    background: darken($colorActiveBg, 4%);
+    border-radius: 2px;
+
+    font-size: .8em;
+    font-family: monospace;
+}
+
+.gdemo-dropdown-search {
+    display: block;
+    width: 100%;
+    padding: $padding;
+    border: 0;
+    box-shadow: 0 1px 2px darken($colorActiveBg, 8%);
+
+    font-size: 1em;
+
+    &:focus {
+        outline: none;
+    }
+}
+
+.gdemo-search-highlight {
+    font-weight: bold;
+}
+
+.gdemo-blank-state {
+    display: block;
+
+    color: lighten($colorText, 32%);
+    text-align: center;
+}
