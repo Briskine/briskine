@@ -25,6 +25,10 @@ var gqApp = angular.module('gqApp', [
                 controller: 'ListCtrl',
                 templateUrl: 'views/list.html'
             })
+            .when('/installed', {
+                controller: 'InstallCtrl',
+                templateUrl: 'views/installed.html'
+            })
             .otherwise({
                 redirectTo: '/list'
             });

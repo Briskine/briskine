@@ -1,0 +1,63 @@
+@import "nib";
+@import "../../bower_components/bootstrap/dist/css/bootstrap.css";
+@import "../../bower_components/font-awesome/css/font-awesome.css";
+
+/* Functions
+ */
+
+emCalc(h) {
+    unit(h / 16, 'em');
+}
+
+/* Variables
+ */
+
+$grey1 = #eee;
+$black = #333;
+$color1 = rgb(77, 144, 254);
+$sidebarWidth = 248px;
+$contentWidth = 800px;
+
+/* Bootstrap theme
+ */
+@import "bootstrap-chrome.styl";
+
+.installed-container {
+    postion: relative;
+    width: 960px;
+    margin: 0 auto;
+    padding: 0;
+    & body {
+        padding-top: 0px;
+    }
+    .header {
+        border-bottom: 1px solid #f4f7f9;
+        position: relative;
+        width: 960px;
+        margin: 0 auto;
+        padding: 20px 0;
+        z-index: 10;
+        img {
+            width: 96px;
+        }
+    }
+    .hero {
+        padding-top: 70px;
+        font-family: "Open Sans",Helvetica,Arial,sans-serif;
+        h1 {
+            font-size: emCalc(72);
+        }
+    }
+}
+
+#browser-action-pointer {
+    width: 148px;
+    height: 184px;
+    position: fixed;
+    padding-top: 100px;
+    top: 10px;
+    right: 30px;
+    left: auto;
+    z-index: 3;
+    background: url(../../icons/installed-arrow.png) no-repeat center top;
+}

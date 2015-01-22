@@ -117,6 +117,7 @@ module.exports = function (grunt) {
                     linenos: true
                 },
                 files: {
+                    '<%= config.dist %>/background/css/installed.css': '<%= config.app %>/background/css/installed.styl',
                     '<%= config.dist %>/background/css/background.css': '<%= config.app %>/background/css/background.styl',
 
                     '<%= config.dist %>/content/css/content.css': '<%= config.app %>/content/css/content.styl'
@@ -127,6 +128,7 @@ module.exports = function (grunt) {
                     'include css': true
                 },
                 files: {
+                    '<%= config.dist %>/background/css/installed.css': '<%= config.app %>/background/css/installed.styl',
                     '<%= config.dist %>/background/css/background.css': '<%= config.app %>/background/css/background.styl',
                     '<%= config.dist %>/content/css/content.css': '<%= config.app %>/content/css/content.styl'
                 }
