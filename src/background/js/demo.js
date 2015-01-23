@@ -303,7 +303,6 @@ var gorgiasDemo = (function() {
             var qtNode = range.createContextualFragment(replacement);
             var lastQtChild = qtNode.lastChild;
 
-            // TODO this throws error when tab is not focused
             range.insertNode(qtNode);
 
             var caretRange = document.createRange();
@@ -313,8 +312,6 @@ var gorgiasDemo = (function() {
             selection.addRange(caretRange);
 
         });
-
-        //App.autocomplete.dialog.close();
 
     };
 
@@ -413,10 +410,6 @@ var gorgiasDemo = (function() {
             index_new = Math.max(0, Math.min(elements_count - 1, index_active + index_diff));
 
         dialogSelectItem(index_new);
-
-        // scroll the active element into view
-        var $element = content.children().eq(index_new);
-        $element.get(0).scrollIntoView();
     };
 
     var dialogCreate = function () {
@@ -445,6 +438,9 @@ var gorgiasDemo = (function() {
         });
 
         dialog.on('keyup', searchSelector, function (e) {
+
+            e.preventDefault();
+            e.stopPropagation();
 
             if(e.keyCode === KEY_UP) {
                 dialogChangeSelection('prev');
@@ -478,10 +474,6 @@ var gorgiasDemo = (function() {
                     text: text
                 }
             });
-
-
-            // TODO see why page is still scrolling on key-up/down
-            e.preventDefault();
 
         });
     };

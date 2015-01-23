@@ -24,6 +24,8 @@
     }
 }
 
+container-box-shadow = 0 2px 2px rgba(0,0,0,.5);
+
 .gorgias-editor-container {
     position: absolute;
     bottom: 0;
@@ -33,7 +35,7 @@
     height: 240px;
     padding: 10px;
     border-top: 30px solid #efefef;
-    box-shadow: 0 2px 2px #efefef;
+    box-shadow: container-box-shadow;
     background: #fff;
 
     color: #333;
@@ -142,6 +144,10 @@
     pointer-events: auto;
 }
 
+.gorgias-demo-final-list .btn {
+    font-size: 1em;
+}
+
 .gorgias-demo-final-list li:last-child {
     list-style: none;
     padding-top: 5px;
@@ -154,10 +160,10 @@
 @keyframes gdemo-editor-attention {
     0%,
     100% {
-        box-shadow: 0 2px 2px #efefef;
+        box-shadow: container-box-shadow;
     }
     50% {
-        box-shadow: 0 0 18px rgba(#067b82, .3);
+        box-shadow: 0 0 18px rgba(#067b82, .5);
     }
 }
 
