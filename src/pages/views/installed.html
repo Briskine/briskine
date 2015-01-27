@@ -16,13 +16,15 @@
 
         <div class="hero text-center">
             <h1>Welcome aboard!</h1>
-            <p class="lead">Strap on your seatbelts, you are about to write much faster!</p>
+
+            <p class="lead">Strap on your seat belts, you're about to write much faster!</p>
         </div>
 
         <div class="gorgias-demo">
 
             <div class="gorgias-editor-container">
-                <div class="gorgias-to-field"><span class="to">To:</span> Malala Yousafzai &lt;malala@example.org&gt;</div>
+                <div class="gorgias-to-field"><span class="to">To:</span> Malala Yousafzai &lt;malala@example.org&gt;
+                </div>
                 <div class="gorgias-demo-editor"></div>
                 <span class="gorgias-demo-vcursor"></span>
             </div>
@@ -38,19 +40,19 @@
             <div class="gorgias-demo-frame-info gorgias-demo-frame-info--activate-first-shortcut">
 
                 <p>
-                    Dead-simple intelligent autocomplete.
+                    Dead-simple keyboard completion.
                 </p>
 
             </div>
 
             <div class="gorgias-demo-key key-tab">
-                Tab
+                Tab ↹
             </div>
 
             <div class="gorgias-demo-frame-info gorgias-demo-frame-info--dialog-show">
 
                 <p>
-                    Search through your templates with a simple but powerfull UI.
+                    Search through your templates.
                 </p>
 
             </div>
@@ -68,24 +70,22 @@
             </div>
 
             <div class="gorgias-demo-key key-enter">
-                Enter
+                Enter &#9166;
             </div>
 
             <div class="gorgias-demo-frame-info gorgias-demo-frame-info--try-it">
 
-                <p>
-                    Go ahead, try it out for yourself!
-                </p>
+                <p class="call-action">Go ahead, try it out for yourself!</p>
 
                 <ul class="gorgias-demo-final-list">
                     <li>
-                        Type <strong>h</strong> and press <strong>Tab</strong>
+                        Type <span class="keyboard-key">h</span> and press <span class="keyboard-key">Tab ↹</span>
                     </li>
                     <li>
-                        Type <strong>kr</strong> then press <strong>Tab</strong>
+                        Type <span class="keyboard-key">kr</span> then press <span class="keyboard-key">Tab ↹</span>
                     </li>
                     <li>
-                        Press <strong>Ctrl + Space</strong>, then <strong>Enter</strong>
+                        Press <span class="keyboard-key">Ctrl</span> + <span class="keyboard-key">Space</span> and <span class="keyboard-key">Enter &#9166;</span>
                     </li>
                 </ul>
 
@@ -111,7 +111,7 @@
 
     <div class="gorgias-wizard-step gorgias-wizard-step-language">
         <h2>
-            Choose the languages you use
+            Choose your languages
             <small>
                 and we'll automatically set up templates for them.
             </small>
@@ -127,9 +127,9 @@
             </div>
 
         </form>
-
+        <p class="text-muted">Coming very soon: Spanish and Arabic. Contact us if you want to see your language here: support@gorgias.io</p>
         <a href="#/installed?step=types" class="btn btn-primary btn-lg btn-wizard-next">
-            Set up template types
+            Add selected languages
             <i class="fa fa-angle-right"></i>
         </a>
 
@@ -138,27 +138,38 @@
     <div class="gorgias-wizard-step gorgias-wizard-step-types">
 
         <h2>
-            Choose the work you do
+            Choose a few templates to get started
             <small>
-                and we'll add specific templates to get you started.
+                and we'll add their translations in {{ctrl.enabledLanguagesLabels()}}.
             </small>
         </h2>
 
         <form>
 
-            <div class="checkbox" ng-repeat="type in ctrl.templateTypes">
-                <label>
-                    <input type="checkbox" ng-model="type.enabled">
-                    {{ type.label }}
-                    <div ng-bind="type.description" class="template-type-description">
-                    </div>
+            <div class="checkbox category" ng-repeat="category in ctrl.templates">
+                <label class="category-label">
+                    <input type="checkbox" ng-model="category.enabled" ng-change="ctrl.toggleCategory(category)"/>
+                    {{ category.label }}
+
                 </label>
+                <div ng-bind="category.desc" class="template-type-description"></div>
+
+                <div ng-repeat="t in category.templates">
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox" ng-model="t[0].enabled"/>
+                            {{t[0].body}}
+                        </label>
+                    </div>
+                </div>
             </div>
 
         </form>
 
+        <p class="text-muted"></p>
+
         <a href="#/installed?step=try" class="btn btn-primary btn-lg btn-wizard-next">
-            Try out the templates
+            Add selected templates
             <i class="fa fa-angle-right"></i>
         </a>
 
@@ -166,23 +177,13 @@
 
     <div class="gorgias-wizard-step gorgias-wizard-step-try">
 
-        <h2>
-            Try out some of the templates we've added for you.
+        <h2>Done!
+            <small>of course, you can add your own templates</small>
         </h2>
 
-        -or-
-
         <a class="btn btn-primary btn-lg btn-wizard-next">
-            Add your own custom templates
             <i class="fa fa-angle-right"></i>
         </a>
-
-        <!--
-        TODO
-        open popup with add template
-        then redirect to ?step=custom
-        -->
-
     </div>
 
     <div class="gorgias-wizard-step gorgias-wizard-step-custom">

@@ -9,49 +9,57 @@ gqApp.controller('InstallCtrl', function ($scope, $rootScope, $routeParams, Inst
         'demo',
         'language',
         'types',
-        'try',
-        'custom'
+        'try'
     ];
 
     ctrl.demoPlayed = false;
+    ctrl.languages = InstallService.languages;
+    ctrl.templates = InstallService.templates;
 
-    ctrl.languages = [
-        {
-            label: 'English',
-            enabled: true
-        },
-        {
-            label: 'French',
-            enabled: false
-        },
-        {
-            label: 'Romanian',
-            enabled: false
+    ctrl.enabledLanguages = function () {
+        var res = [];
+        for (var i in ctrl.languages) {
+            if (ctrl.languages[i].enabled) {
+                res.push(ctrl.languages[i].iso);
+            }
         }
-    ];
+        return res;
+    };
 
-    ctrl.templateTypes = [
-        {
-            label: 'Greetings',
-            description: 'Basic greetings used in most emails.',
-            enabled: true
-        },
-        {
-            label: 'Sales',
-            description: 'Standard sales templates.',
-            enabled: false
+    ctrl.enabledLanguagesLabels = function (){
+        var res = [];
+        for (var i in ctrl.languages) {
+            if (ctrl.languages[i].enabled) {
+                res.push(ctrl.languages[i].label);
+            }
         }
-    ];
+        if (res.length > 1) {
+            return res.slice(0, res.length - 1).join(", ") + " and " + res.slice(res.length-1, res.length);
+        }
+        return res[0];
+    };
 
-    var checkStep = function() {
+    // when a category is toggled, enable or disable all the templates inside it
+    ctrl.toggleCategory = function (category){
+        for (var i in category.templates){
+            for (var j in category.templates[i]){
+                category.templates[i][j].enabled = category.enabled;
+
+            }
+        }
+    };
+
+    var checkStep = function () {
 
         ctrl.step = $routeParams.step || 'demo';
 
         ctrl.stepNumber = ctrl.steps.indexOf(ctrl.step);
 
-        if(ctrl.step === 'demo' && !ctrl.demoPlayed) {
+        if (ctrl.step === 'demo' && !ctrl.demoPlayed) {
             gorgiasDemo.init();
             ctrl.demoPlayed = true;
+        } else {
+            gorgiasDemo.stopAnimation();
         }
 
     };

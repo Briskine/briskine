@@ -546,12 +546,13 @@ var gorgiasDemo = (function() {
 
     var lastFrameName = '';
     var globalTimer = 0;
+    var animationTimers = [];
 
     var animationFrame = function(name, time, callback) {
 
         globalTimer += time;
 
-        setTimeout(function() {
+        animationTimers.push(setTimeout(function() {
 
             $($container).removeClass('gorgias-demo-frame--' + lastFrameName);
 
@@ -561,8 +562,14 @@ var gorgiasDemo = (function() {
 
             callback();
 
-        }, globalTimer * 1000);
+        }, globalTimer * 1000));
 
+    };
+
+    var stopAnimation = function(){
+        for (var i in animationTimers){
+            clearTimeout(animationTimers[i]);
+        }
     };
 
     var rmCharByChar = function(callback) {
@@ -684,16 +691,12 @@ var gorgiasDemo = (function() {
 
                 // make the editor really editable
                 $editor.setAttribute('contentEditable', true);
-
-                var wasFocused = false;
+                $($container).addClass('gdemo-editor-was-focused');
+                $editor.focus();
                 $container.addEventListener('click', function() {
-                    if(!wasFocused) {
-                        $($container).addClass('gdemo-editor-was-focused');
-                        $editor.focus();
-                        wasFocused = true;
-                    }
+                    $($container).addClass('gdemo-editor-was-focused');
+                    $editor.focus();
                 });
-
             });
 
         });
@@ -765,7 +768,8 @@ var gorgiasDemo = (function() {
     };
 
     return {
-        init: init
+        init: init,
+        stopAnimation: stopAnimation
     };
 
 }());
