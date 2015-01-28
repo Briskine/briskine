@@ -8,11 +8,10 @@ App.autocomplete.keyboard = {
         var element = e.target;
         var selection = window.getSelection();
         var focusNode = selection.focusNode;
-
         // if it's not an editable element
         // don't trigger anything
         if(!App.autocomplete.isEditable(element)) {
-            return false;
+            return true;
         }
 
         if(selection.rangeCount) {
