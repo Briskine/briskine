@@ -23,6 +23,7 @@
     "font-awesome": "~4.0",
     "mousetrap": "https://github.com/xarg/mousetrap.git#master",
     "analytics": "~2.4.16",
-    "raven-js": "~1.1.16"
+    "raven-js": "~1.1.16",
+    "textAngular": "~1.3.3"
   }
 }

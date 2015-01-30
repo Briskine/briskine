@@ -29,6 +29,9 @@ module.exports = function (grunt) {
                 'bower_components/angular-animate/angular-animate.js',
                 'bower_components/angular-md5/angular-md5.js',
                 'bower_components/angular-moment/angular-moment.js',
+                'bower_components/textAngular/dist/textAngular-sanitize.min.js',
+                'bower_components/textAngular/dist/textAngular-rangy.min.js',
+                'bower_components/textAngular/dist/textAngular.min.js',
 
                 // Should be first
                 'background/js/environment.js',
