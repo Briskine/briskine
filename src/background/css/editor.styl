@@ -1,0 +1,27 @@
+/* Editor styles
+ */
+
+.editor-qt-variable {
+    position: relative;
+    padding: 2px;
+    background: #efefef;
+    border-radius: 2px;
+}
+
+.editor-qt-variable:after {
+    content: 'This will be replaced with the right value when used.';
+    position: absolute;
+    top: 100%;
+    display: none;
+    width: 200px;
+    padding: 2px;
+    background: rgba(#000, .8);
+    border-radius: 2px;
+    
+    color: #fff;
+}
+
+.editor-qt-variable:hover:after {
+    display: block;
+}
+

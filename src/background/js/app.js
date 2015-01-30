@@ -6,7 +6,8 @@ var gqApp = angular.module('gqApp', [
         'ngResource',
         'ngAnimate',
         'angular-md5',
-        'angularMoment'
+        'angularMoment',
+        'textAngular'
     ]).config(function ($routeProvider, $compileProvider) {
 
         $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|chrome-extension):/);
