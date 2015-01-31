@@ -3,50 +3,39 @@
 
 gqApp.config(function ($provide) {
 
-    $provide.decorator('taOptions', [ 'taRegisterTool', '$delegate',
-    function(taRegisterTool, taOptions) {
+    $provide.decorator('taOptions', [ 'taRegisterTool', '$delegate', '$timeout', 
+    function(taRegisterTool, taOptions, $timeout) {
         
-        var templateVar = function(variable) {
+        //var $editor;
+        
+        var insertHtml = function(qtvar) {
             var template = '<span class="editor-qt-variable">%var%</span><br><br>';
+            template =  template.replace(/%var%/g, qtvar);
             
-            return template.replace(/%var%/g, variable);
+            this.$editor().wrapSelection('inserthtml', template);
         };
         
-        // register the tool with textAngular
-        taRegisterTool('subject', {
-            buttontext: 'Subject',
-            action: function(){
-                this.$editor().wrapSelection('inserthtml', templateVar('{{ subject }}'));
-            }
-        });
+        var qtMethods = {};
+    
+        qtMethods.InsertSubject = function() {
+            insertHtml.call(this, '{{ subject }}');
+        };
         
-        taRegisterTool('firstFromName', {
-            buttontext: 'First FROM Name',
-            action: function(){
-                this.$editor().wrapSelection('inserthtml', templateVar('{{from.0.name}}'));
-            }
-        });
+        qtMethods.InsertFirstFromName = function() {
+            insertHtml.call(this, '{{from.0.name}}');
+        };
         
-        taRegisterTool('firstFromEmail', {
-            buttontext: 'First FROM Email',
-            action: function(){
-                this.$editor().wrapSelection('inserthtml', templateVar('{{from.0.email}}'));
-            }
-        });
+        qtMethods.InsertFirstFromEmail = function() {
+            insertHtml.call(this, '{{from.0.email}}');
+        };
         
-        taRegisterTool('firstToName', {
-            buttontext: 'First TO Name',
-            action: function(){
-                this.$editor().wrapSelection('inserthtml', templateVar('{{to.0.name}}'));
-            }
-        });
+        qtMethods.InsertFirstToName = function() {
+            insertHtml.call(this, '{{to.0.name}}');
+        };
         
-        taRegisterTool('firstToEmail', {
-            buttontext: 'First TO Email',
-            action: function(){
-                this.$editor().wrapSelection('inserthtml', templateVar('{{from.0.email}})'));
-            }
-        });
+        qtMethods.InsertFirstToEmail = function() {
+            insertHtml.call(this, '{{to.0.email}}');
+        };
         
         var listTemplate = '';
         listTemplate += '{{#each %list%}}<br>';
@@ -56,40 +45,74 @@ gqApp.config(function ($provide) {
         listTemplate += '- Email {{email}}<br>';
         listTemplate += '{{/each}}';
         
-        taRegisterTool('fromList', {
-            buttontext: 'FROM List',
-            action: function(){
-                var template = listTemplate.replace(/%list%/g, 'from');
-                
-                this.$editor().wrapSelection('inserthtml', templateVar(template));
-            }
-        });
+        qtMethods.InsertFromList = function() {
+            var template = listTemplate.replace(/%list%/g, 'from');
+            
+            insertHtml.call(this, template);
+        };
         
-        taRegisterTool('toList', {
-            buttontext: 'TO List',
-            action: function(){
-                var template = listTemplate.replace(/%list%/g, 'to');
-                
-                this.$editor().wrapSelection('inserthtml', templateVar(template));
-            }
-        });
+        qtMethods.InsertToList = function() {
+            var template = listTemplate.replace(/%list%/g, 'to');
+            
+            insertHtml.call(this, template);
+        };
         
-        taRegisterTool('ccList', {
-            buttontext: 'CC List',
-            action: function(){
-                var template = listTemplate.replace(/%list%/g, 'cc');
-                
-                this.$editor().wrapSelection('inserthtml', templateVar(template));
-            }
-        });
+        qtMethods.InsertCcList = function() {
+            var template = listTemplate.replace(/%list%/g, 'cc');
+            
+            insertHtml.call(this, template);
+        };
         
-        taRegisterTool('bccList', {
-            buttontext: 'BCC List',
-            action: function(){
-                var template = listTemplate.replace(/%list%/g, 'bcc');
+        qtMethods.InsertBccList = function() {
+            var template = listTemplate.replace(/%list%/g, 'bcc');
+            
+            insertHtml.call(this, template);
+        };
+
+        var dropMenuTemplate = '<div class="dropdown insert-var-container">';
+        dropMenuTemplate += '<button class="btn btn-default dropdown-toggle" data-toggle="dropdown" ng-mouseup="focusHack()">';
+        dropMenuTemplate += 'Insert variable<span class="caret"></span>';
+        dropMenuTemplate += '</button>';
+        dropMenuTemplate += '<ul class="dropdown-menu">';
+        //dropMenuTemplate += '<li><a ng-click="InsertSubject()">Subject</a></li>';
+        dropMenuTemplate += '<li><a ng-click="InsertFirstFromName()">First FROM Name</a></li>';
+        dropMenuTemplate += '<li><a ng-click="InsertFirstFromEmail()">First FROM Email</a></li>';
+        dropMenuTemplate += '<li><a ng-click="InsertFirstToName()">First TO Name</a></li>';
+        dropMenuTemplate += '<li><a ng-click="InsertFirstToEmail()">First TO Email</a></li>';
+        dropMenuTemplate += '<li><a ng-click="InsertFromList()">FROM List</a></li>';
+        dropMenuTemplate += '<li><a ng-click="InsertToList()">TO List</a></li>';
+        dropMenuTemplate += '<li><a ng-click="InsertCcList()">CC List</a></li>';
+        dropMenuTemplate += '<li><a ng-click="InsertBccList()">BCC List</a></li>';
+        dropMenuTemplate += '</ul>';
+        dropMenuTemplate += '</div>';
+        
+        // register the tool with textAngular
+        taRegisterTool('insertVariable', {
+            display: dropMenuTemplate,
+            disabled: function() {
                 
-                this.$editor().wrapSelection('inserthtml', templateVar(template));
-            }
+                // runs as an init function
+                
+                // hack to get around the errors thrown by textAngular
+                // because it didn't get to store a pointer to the editor,
+                // because it's not focused.
+                this.focusHack = function() {
+                    $('.ta-scroll-window [contenteditable]')[0].focus();
+                };
+                
+                var self = this;
+                
+                // insert all qtMethods into the scope
+                Object.keys(qtMethods).forEach(function(key) {
+                    self[key] = qtMethods[key];
+                });
+                
+                this.isDisabled = function() {
+                    return false;
+                };
+
+            },
+            action: function(){}
         });
         
         return taOptions;
