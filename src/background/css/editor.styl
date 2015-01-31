@@ -1,6 +1,37 @@
 /* Editor styles
  */
 
+/* insert var dropdown
+ */
+
+.insert-var-container {
+    padding: 0;
+    border: 0;
+}
+
+.insert-var-container > button:hover {
+    box-shadow: none;
+}
+
+.insert-var-container > button .caret {
+    margin: 0 0 0 emCalc(4);
+}
+
+.insert-var-container ul {
+    padding: 0;
+    overflow: hidden;
+    
+    text-align: left;
+}
+
+.insert-var-container ul a {
+    padding: emCalc(3) emCalc(12);
+}
+
+
+/* variable highlight
+ */
+
 .editor-qt-variable {
     position: relative;
     padding: 2px;
@@ -12,6 +43,7 @@
     content: 'This will be replaced with the right value when used.';
     position: absolute;
     top: 100%;
+    z-index: 999;
     display: none;
     width: 200px;
     padding: 2px;
