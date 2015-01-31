@@ -74,7 +74,7 @@ gqApp.config(function ($provide) {
         dropMenuTemplate += 'Insert variable<span class="caret"></span>';
         dropMenuTemplate += '</button>';
         dropMenuTemplate += '<ul class="dropdown-menu">';
-        //dropMenuTemplate += '<li><a ng-click="InsertSubject()">Subject</a></li>';
+        dropMenuTemplate += '<li><a ng-click="InsertSubject()">Subject</a></li>';
         dropMenuTemplate += '<li><a ng-click="InsertFirstFromName()">First FROM Name</a></li>';
         dropMenuTemplate += '<li><a ng-click="InsertFirstFromEmail()">First FROM Email</a></li>';
         dropMenuTemplate += '<li><a ng-click="InsertFirstToName()">First TO Name</a></li>';
