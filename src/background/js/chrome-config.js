@@ -67,7 +67,8 @@ if (chrome.runtime) {
 
         });
 
-        if (details.reason == "update") {
+        if (details.reason == "install") {
+        //if (details.reason == "update") {
             chrome.tabs.create({url: "pages/frameless.html#/installed"});
         }
     });

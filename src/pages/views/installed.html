@@ -85,7 +85,8 @@
                         Type <span class="keyboard-key">kr</span> then press <span class="keyboard-key">Tab ↹</span>
                     </li>
                     <li>
-                        Press <span class="keyboard-key">Ctrl</span> + <span class="keyboard-key">Space</span> and <span class="keyboard-key">Enter &#9166;</span>
+                        Press <span class="keyboard-key">Ctrl</span> + <span class="keyboard-key">Space</span> and <span
+                        class="keyboard-key">Enter &#9166;</span>
                     </li>
                 </ul>
 
@@ -121,13 +122,14 @@
 
             <div class="checkbox" ng-repeat="lang in ctrl.languages">
                 <label>
-                    <input type="checkbox" ng-model="lang.enabled">
+                    <input type="checkbox" ng-model="lang.enabled" ng-change="ctrl.toggleLanguage(lang)">
                     {{ lang.label }}
                 </label>
             </div>
 
         </form>
-        <p class="text-muted">Coming very soon: Spanish and Arabic. Contact us if you want to see your language here: support@gorgias.io</p>
+        <p class="text-muted">Coming very soon: Spanish and Arabic. Contact us if you want to see your language here:
+            support@gorgias.io</p>
         <a href="#/installed?step=types" class="btn btn-primary btn-lg btn-wizard-next">
             Add selected languages
             <i class="fa fa-angle-right"></i>
@@ -152,12 +154,13 @@
                     {{ category.label }}
 
                 </label>
+
                 <div ng-bind="category.desc" class="template-type-description"></div>
 
                 <div ng-repeat="t in category.templates">
                     <div class="checkbox">
                         <label>
-                            <input type="checkbox" ng-model="t[0].enabled"/>
+                            <input type="checkbox" ng-model="t[0].enabled" ng-change="ctrl.toggleTemplate(t)"/>
                             {{t[0].body}}
                         </label>
                     </div>
@@ -177,23 +180,28 @@
 
     <div class="gorgias-wizard-step gorgias-wizard-step-try">
 
-        <h2>Done!
+        <h2>You're done!
             <small>of course, you can add your own templates</small>
         </h2>
 
-        <a class="btn btn-primary btn-lg btn-wizard-next">
+        <a class="btn btn-primary btn-lg btn-wizard-next" href="/pages/bg.html#/list?id=new">
+            Continue adding your own templates
             <i class="fa fa-angle-right"></i>
         </a>
+
+        <br/><br/>
+        <br/><br/>
+        <div>
+            <h4>Want to share your templates with your team?</h4>
+
+            <div>
+                <a class="btn btn-primary btn-lg btn-wizard-next" href="https://gorgias.io">
+                    Register on gorgias.io
+                    <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+        </div>
     </div>
-
-    <div class="gorgias-wizard-step gorgias-wizard-step-custom">
-
-        <h2>
-            Try out your custom template.
-        </h2>
-
-    </div>
-
     <div class="wizard-step-status" ng-if="ctrl.stepNumber > 0">
         Step
         <strong>

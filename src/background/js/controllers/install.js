@@ -1,4 +1,4 @@
-gqApp.controller('InstallCtrl', function ($scope, $rootScope, $routeParams, InstallService) {
+gqApp.controller('InstallCtrl', function ($scope, $rootScope, $routeParams, InstallService, QuicktextService) {
 
     var ctrl = this;
 
@@ -39,15 +39,62 @@ gqApp.controller('InstallCtrl', function ($scope, $rootScope, $routeParams, Inst
         return res[0];
     };
 
+    ctrl.toggleLanguage = function (lang) {
+        analytics.track("Wizard Language", {
+            iso: lang.iso,
+            enabled: lang.enabled
+        });
+    };
+
     // when a category is toggled, enable or disable all the templates inside it
     ctrl.toggleCategory = function (category){
         for (var i in category.templates){
             for (var j in category.templates[i]){
                 category.templates[i][j].enabled = category.enabled;
-
+                analytics.track("Wizard Template", {
+                    title: category.templates[i][j].title,
+                    enabled: category.enabled
+                });
             }
         }
     };
+
+    ctrl.toggleTemplate = function (template) {
+        analytics.track("Wizard Template", {
+            title: template[0].title,
+            enabled: template[0].enabled
+        });
+
+        var langs = ctrl.enabledLanguages();
+        for (var j in template) {
+            var t = template[j];
+            if (langs.indexOf(t.iso) !== -1) {
+                t.enabled = template[0].enabled;
+            }
+        }
+    };
+
+
+    var installTemplates = function() {
+        var langs = ctrl.enabledLanguages();
+
+        for (var i in ctrl.templates) {
+            var category = ctrl.templates[i];
+            for (var j in category.templates) {
+                var template = category.templates[j];
+                for (var k in template) {
+                    var t = template[k];
+                    if (t.enabled && langs.indexOf(t.iso) !== -1){
+                        // set the remote_id to empty string so we don't have any 'undefined' strings in the db
+                        t.remote_id = "";
+                        QuicktextService.create(t).then();
+                    }
+                }
+            }
+        }
+    };
+
+
 
     var checkStep = function () {
 
@@ -55,14 +102,22 @@ gqApp.controller('InstallCtrl', function ($scope, $rootScope, $routeParams, Inst
 
         ctrl.stepNumber = ctrl.steps.indexOf(ctrl.step);
 
+        // Send some info about the creation of templates
+        analytics.track("Wizard Step", {
+            step: ctrl.step
+        });
+
         if (ctrl.step === 'demo' && !ctrl.demoPlayed) {
             gorgiasDemo.init();
             ctrl.demoPlayed = true;
+        } else if (ctrl.step === 'try') {
+            installTemplates();
         } else {
             gorgiasDemo.stopAnimation();
         }
 
     };
+
 
     $scope.$on('$routeUpdate', checkStep);
 
