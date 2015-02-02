@@ -1,6 +1,6 @@
 {
     "name": "quicktext-chrome",
-    "version": "1.6.1",
+    "version": "2.0",
     "description": "Gorgias grunt package",
     "main": "Gruntfile.js",
     "scripts": {
