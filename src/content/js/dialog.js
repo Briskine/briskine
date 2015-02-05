@@ -270,7 +270,9 @@ App.autocomplete.dialog.liTemplate = '' +
     '{{#each elements}}' +
     '<li class="qt-item" data-id="{{id}}" title="{{{originalBody}}}">' +
     '<span class="qt-title">{{{title}}}</span>' +
+    '{{#if shortcut}}' +
     '<span class="qt-shortcut">{{{shortcut}}}</span>' +
+    '{{/if}}' +
     '<span class="qt-body">{{{body}}}</span>' +
     '</li>' +
     '{{/each}}' +
