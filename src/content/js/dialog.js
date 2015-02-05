@@ -184,14 +184,49 @@ App.autocomplete.dialog = {
         App.autocomplete.dialog.isActive = true;
         App.autocomplete.dialog.isEmpty = true;
 
-        $(this.dialogSelector).css({
-            top: (cursorPosition.absolute.top + cursorPosition.absolute.height - $(window).scrollTop()) + 'px',
-            left: (cursorPosition.absolute.left + cursorPosition.absolute.width - $(window).scrollLeft()) + 'px'
+        // TODO call the positioning method on window scroll
+        // and active element scroll
+        // to fix issues with the dialog positioning and scrolling
+        // IF the dialog is active
+
+        var topPos = cursorPosition.absolute.top + cursorPosition.absolute.height;
+        var leftPos = cursorPosition.absolute.left + cursorPosition.absolute.width;
+
+        App.autocomplete.dialog.setDialogPosition({
+            top: topPos,
+            left: leftPos
         });
 
         $(this.dialogSelector).addClass('qt-dropdown-show');
         $(this.searchSelector).focus();
         $(App.autocomplete.dialog.contentSelector).scrollTop();
+    },
+    setDialogPosition: function(params) {
+
+        var dialogMaxHeight = 250;
+        var pageHeight = window.innerHeight;
+        var scrollTop = $(window).scrollTop();
+        var scrollLeft = $(window).scrollLeft();
+
+        var topPos = params.top;
+        var bottomPos = 'auto';
+        var leftPos = params.left - scrollLeft;
+
+        // check if we have enough space at the bottom
+        // for the maximum dialog height
+        if((pageHeight - params.top) < dialogMaxHeight) {
+            topPos = 'auto';
+            bottomPos = pageHeight - params.top + scrollTop;
+        } else {
+            topPos = topPos - scrollTop;
+        }
+
+        $(this.dialogSelector).css({
+            top: topPos,
+            bottom: bottomPos,
+            left: leftPos
+        });
+
     },
     selectItem: function (index) {
         if (App.autocomplete.dialog.isActive && !App.autocomplete.dialog.isEmpty) {
