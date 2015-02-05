@@ -156,12 +156,15 @@ App.autocomplete.dialog = {
             return '<span class="qt-search-highlight">' + match + '</span>';
         };
 
-        clonedElements.forEach(function (elem) {
-            elem.title = elem.title.replace(searchRe, highlightMatch);
-            elem.originalBody = elem.body;
-            elem.body = elem.body.replace(searchRe, highlightMatch);
-            elem.shortcut = elem.shortcut.replace(searchRe, highlightMatch);
-        });
+        // only match if we have a search string
+        if(App.autocomplete.cursorPosition.word.text) {
+            clonedElements.forEach(function (elem) {
+                elem.title = elem.title.replace(searchRe, highlightMatch);
+                elem.originalBody = elem.body;
+                elem.body = elem.body.replace(searchRe, highlightMatch);
+                elem.shortcut = elem.shortcut.replace(searchRe, highlightMatch);
+            });
+        }
 
         var content = Handlebars.compile(App.autocomplete.dialog.liTemplate)({
             elements: clonedElements
@@ -305,8 +308,8 @@ App.autocomplete.dialog.liTemplate = '' +
     '{{#each elements}}' +
     '<li class="qt-item" data-id="{{id}}" title="{{{originalBody}}}">' +
     '<span class="qt-title">{{{title}}}</span>' +
-    '{{#if shortcut}}' +
-    '<span class="qt-shortcut">{{{shortcut}}}</span>' +
+    '{{#if this.shortcut}}' +
+    '<span class="qt-shortcut">{{{this.shortcut}}}</span>' +
     '{{/if}}' +
     '<span class="qt-body">{{{body}}}</span>' +
     '</li>' +
