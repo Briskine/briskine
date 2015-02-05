@@ -6,10 +6,23 @@ gqApp.config(function ($provide) {
     $provide.decorator('taOptions', [ 'taRegisterTool', '$delegate', '$timeout', 
     function(taRegisterTool, taOptions, $timeout) {
         
-        //var $editor;
-        
+        // place focus at the end of a contenteditable
+        var focusEnd = function(el) {
+
+            el.focus();
+
+            var range = document.createRange();
+            range.selectNodeContents(el);
+            range.collapse(false);
+
+            var sel = window.getSelection();
+            sel.removeAllRanges();
+            sel.addRange(range);
+
+        };
+
         var insertHtml = function(qtvar) {
-            var template = '<span class="editor-qt-variable">%var%</span><br><br>';
+            var template = '%var%<br><br>';
             template =  template.replace(/%var%/g, qtvar);
             
             this.$editor().wrapSelection('inserthtml', template);
@@ -97,7 +110,27 @@ gqApp.config(function ($provide) {
                 // because it didn't get to store a pointer to the editor,
                 // because it's not focused.
                 this.focusHack = function() {
-                    $('.ta-scroll-window [contenteditable]')[0].focus();
+
+                    var $editor =  $('.ta-scroll-window [contenteditable]').get(0);
+
+                    // if the editor was not the focused element
+                    // place the focus at the end of the text
+                    if($editor !== document.activeElement) {
+
+                        // focus the editor, to make sure textAngular
+                        // has the editor reference
+                        $editor.focus();
+
+                        // place focus at the end of the editor
+                        // to insert the variable at the end of the text
+
+                        // we need settimeout otherwise textAngular
+                        // will place the caret at the begining
+                        setTimeout(function() {
+                            focusEnd($editor);
+                        });
+
+                    }
                 };
                 
                 var self = this;
