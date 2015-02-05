@@ -1,6 +1,46 @@
 /* Editor styles
  */
 
+.qt-editor {}
+
+toolbar-bg = #f8f8f8;
+
+.qt-editor .ta-toolbar {
+    padding: 3px;
+    border-color: darken(toolbar-bg, 4%) darken(toolbar-bg, 10%);
+    border-width: 1px 1px 0;
+    border-style: solid;
+    border-radius: 3px 3px 0 0;
+    background: toolbar-bg;
+}
+
+.qt-editor .ta-toolbar .btn {
+    margin-bottom: 0;
+    border-radius: 2px;
+    background: toolbar-bg;
+    border-color: darken(toolbar-bg, 12%);
+}
+
+.qt-editor .ta-toolbar .btn:hover {
+    background: #fff;
+    border-color: darken(toolbar-bg, 16%);
+}
+
+
+.qt-editor .ta-editor {
+    border-radius: 0 0 3px 3px;
+}
+
+.qt-editor .ta-editor [contenteditable]:focus {
+    outline: 0;
+    box-shadow: none;
+}
+
+.ta-root.focussed > .ta-scroll-window.form-control {
+    box-shadow: none;
+    border-color: $color1;
+}
+
 /* insert var dropdown
  */
 
