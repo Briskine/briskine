@@ -60,7 +60,6 @@ App.autocomplete.dialog = {
         });
 
     },
-    // TODO(@ghinda): make dropdown position relative so on scrolling it will stay in right place
     create: function () {
 
         // Create only once in the root of the document
@@ -198,19 +197,16 @@ App.autocomplete.dialog = {
         $(this.searchSelector).focus();
         $(App.autocomplete.dialog.contentSelector).scrollTop();
 
-        // TODO in case we scroll the content element
-        //App.autocomplete.dialog.editor.removeEventListener('scroll', App.autocomplete.dialog.setDialogPosition);
-
-        console.log(App.autocomplete.dialog.editor);
-
+        // if we scroll the content element
+        
+        // remove it just in case we added it previously
+        App.autocomplete.dialog.editor.removeEventListener('scroll', App.autocomplete.dialog.setDialogPosition);
+        
         App.autocomplete.dialog.editor.addEventListener('scroll', App.autocomplete.dialog.setDialogPosition);
-
 
     },
     setDialogPosition: function() {
-
-        console.log($(window).scrollTop());
-
+        
         if(!App.autocomplete.dialog.isActive) {
             return;
         }
@@ -219,6 +215,9 @@ App.autocomplete.dialog = {
         var pageHeight = window.innerHeight;
         var scrollTop = $(window).scrollTop();
         var scrollLeft = $(window).scrollLeft();
+        
+        scrollTop += $(App.autocomplete.dialog.editor).scrollTop();
+        scrollLeft += $(App.autocomplete.dialog.editor).scrollLeft();
 
         var topPos = App.autocomplete.cursorPosition.absolute.top + App.autocomplete.cursorPosition.absolute.height;
         var bottomPos = 'auto';
@@ -233,9 +232,7 @@ App.autocomplete.dialog = {
             topPos = topPos - scrollTop;
         }
 
-        console.log(topPos);
-
-        $(this.dialogSelector).css({
+        $(App.autocomplete.dialog.dialogSelector).css({
             top: topPos,
             bottom: bottomPos,
             left: leftPos
