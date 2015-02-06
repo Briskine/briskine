@@ -21,6 +21,9 @@ module.exports = function (grunt) {
                 'bower_components/moment/moment.js',
                 'bower_components/mousetrap/mousetrap.js',
                 'bower_components/mousetrap/plugins/record/mousetrap-record.js',
+                'bower_components/marked/lib/marked.js',
+                'bower_components/to-markdown/src/to-markdown.js',
+                'bower_components/he/he.js',
 
                 'bower_components/angular/angular.js',
                 'bower_components/angular-route/angular-route.js',
