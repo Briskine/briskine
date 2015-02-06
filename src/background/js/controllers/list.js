@@ -114,7 +114,13 @@ gqApp.controller('ListCtrl',
                 // update qt
                 QuicktextService.get(id).then(function (r) {
                     $scope.selectedQt = angular.copy(r);
+                    
+                    // convert qt body from markdown to html
+                    $scope.selectedQt.body = marked($scope.selectedQt.body);
+                    
+                    // TODO qt variables are broken/missing
                 });
+                
             }
 
             $formModal.modal('show');
@@ -166,6 +172,9 @@ gqApp.controller('ListCtrl',
                 alert("Please enter a body");
                 return false;
             }
+            
+            // convert qt body to markdown
+            $scope.selectedQt.body = toMarkdown($scope.selectedQt.body);
 
             QuicktextService.quicktexts().then(function(quicktexts){
                 if ($scope.selectedQt.shortcut) {
