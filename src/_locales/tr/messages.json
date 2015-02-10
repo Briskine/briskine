@@ -1,11 +1,8 @@
 {
     "extName": {
-        "message": "Gorgias - Email templates for Gmail"
+        "message": "Gorgias - Gmail için e-posta şablonları"
     },
     "extDesc": {
-        "message": "Write emails faster! Increase your productivity with templates and keyboard shortcuts on Gmail, Outlook and LinkedIn."
-    },
-    "new_quicktext": {
-        "message": "New template"
+        "message": "Daha hızlı e-posta yaz ! Gmail , Outlook ve LinkedIn şablonlar ve klavye kısayolları ile verimliliğinizi artırın ."
     }
 }

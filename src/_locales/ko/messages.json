@@ -1,11 +1,8 @@
 {
     "extName": {
-        "message": "Gorgias - Email templates for Gmail"
+        "message": "Gorgias - 의 Gmail 이메일 템플릿"
     },
     "extDesc": {
-        "message": "Write emails faster! Increase your productivity with templates and keyboard shortcuts on Gmail, Outlook and LinkedIn."
-    },
-    "new_quicktext": {
-        "message": "New template"
+        "message": "빠른 이메일 쓰기! Gmail은, Outlook과 링크드 인 에 템플릿과 키보드 단축키를 사용하여 생산성을 높입니다."
     }
 }

@@ -1,11 +1,8 @@
 {
     "extName": {
-        "message": "Gorgias - Email templates for Gmail"
+        "message": "Gorgias - แม่แบบอีเมล สำหรับ Gmail"
     },
     "extDesc": {
-        "message": "Write emails faster! Increase your productivity with templates and keyboard shortcuts on Gmail, Outlook and LinkedIn."
-    },
-    "new_quicktext": {
-        "message": "New template"
+        "message": "เขียนอีเมล ได้เร็วขึ้น! เพิ่มผลผลิตของคุณ กับแม่ และทางลัด แป้นพิมพ์บน Gmail , Outlook และ LinkedIn ."
     }
 }

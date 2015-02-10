@@ -1,11 +1,8 @@
 {
     "extName": {
-        "message": "Gorgias - Email templates for Gmail"
+        "message": "Gorgias - जीमेल ई-मेल साचे"
     },
     "extDesc": {
-        "message": "Write emails faster! Increase your productivity with templates and keyboard shortcuts on Gmail, Outlook and LinkedIn."
-    },
-    "new_quicktext": {
-        "message": "New template"
+        "message": "जलद ईमेल लिहा ! जीमेल , आउटलुक आणि संलग्न वर टेम्पलेट आणि कीबोर्ड शॉर्टकट आपल्या उत्पादकता वाढविण्यासाठी."
     }
 }

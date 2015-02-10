@@ -1,11 +1,8 @@
 {
     "extName": {
-        "message": "Gorgias - Email templates for Gmail"
+        "message": "Gorgias - Plantilles de correu electrònic per Gmail"
     },
     "extDesc": {
-        "message": "Write emails faster! Increase your productivity with templates and keyboard shortcuts on Gmail, Outlook and LinkedIn."
-    },
-    "new_quicktext": {
-        "message": "New template"
+        "message": "Escriure missatges de correu electrònic més ràpid ! Augmenta la teva productivitat amb plantilles i les dreceres de teclat a Gmail, Outlook i LinkedIn."
     }
 }
