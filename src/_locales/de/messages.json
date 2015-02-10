@@ -1,8 +1,8 @@
 {
-    "extName": {
-        "message": "Gorgias"
-    },
     "extDesc": {
-        "message": "Schreibe schneller! Spare tausende von Tastenanschlägen pro Tag durch das Benutzen von Templates und TAB Vervollständigung"
+        "message": "Schreiben Sie E-Mails schneller! Steigern Sie Ihre Produktivität mit Vorlagen und Tastenkombinationen auf Gmail™, Outlook™ und LinkedIn™."
+    }, 
+    "extName": {
+        "message": "Gorgias - E-Mail-Vorlagen für Google Mail"
     }
 }
