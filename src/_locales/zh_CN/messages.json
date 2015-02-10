@@ -1,8 +1,8 @@
 {
-    "extName": {
-        "message": "Gorgias - 为Gmail电子邮件模板"
-    },
     "extDesc": {
-        "message": "写更快！节省数千每天的按键使用模板和选项卡完成"
+        "message": "写电子邮件更快！加大对Gmail™时，Outlook™和LinkedIn™模板和键盘快捷键您的工作效率。"
+    }, 
+    "extName": {
+        "message": "Gorgias - 为Gmail™电子邮件模板"
     }
 }

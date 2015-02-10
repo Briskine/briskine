@@ -1,8 +1,8 @@
 {
-    "extName": {
-        "message": "Gorgias - E-pasta veidnes Gmail"
-    },
     "extDesc": {
-        "message": "Rakstiet e-pastus ātrāk! Palieliniet savu produktivitāti ar veidnes un tastatūras īsceļus uz Gmail, Outlook un LinkedIn."
+        "message": "Rakstiet e-pastus ātrāk! Palieliniet savu produktivitāti ar veidnes un tastatūras īsceļus uz Gmail™, Outlook™ un LinkedIn™."
+    }, 
+    "extName": {
+        "message": "Gorgias - E-pasta veidnes Gmail™"
     }
 }

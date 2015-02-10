@@ -1,8 +1,8 @@
 {
-    "extName": {
-        "message": "Gorgias"
-    },
     "extDesc": {
-        "message": "Écrivez plus rapidement sur le web! Gagnez du temps en utilisant les modèles et la fonction d’auto-complétion."
+        "message": "Écrire des emails plus vite! Augmentez votre productivité avec des modèles et des raccourcis clavier sur Gmail™, Outlook™ et LinkedIn™."
+    }, 
+    "extName": {
+        "message": "Gorgias - Modèles de courriel pour Gmail™"
     }
 }

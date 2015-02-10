@@ -1,8 +1,8 @@
 {
-    "extName": {
-        "message": "Gorgias - E-post maler for Gmail"
-    },
     "extDesc": {
-        "message": "Skriv e-post raskere ! Øk produktiviteten med maler og hurtigtaster på Gmail , Outlook og Linkedin."
+        "message": "Skriv e-post raskere! Øk produktiviteten med maler og hurtigtaster på Gmail™, Outlook™ og Linkedin."
+    }, 
+    "extName": {
+        "message": "Gorgias - E-post maler for Gmail™"
     }
 }

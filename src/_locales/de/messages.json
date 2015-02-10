@@ -1,8 +1,8 @@
 {
-    "extName": {
-        "message": "Gorgias - E-Mail vorlagen für Google Mail"
-    },
     "extDesc": {
-        "message": "Schreiben Sie E-Mails schneller! Steigern Sie Ihre Produktivität mit Vorlagen und Tastenkombinationen auf Gmail, Outlook und LinkedIn."
+        "message": "Schreiben Sie E-Mails schneller! Steigern Sie Ihre Produktivität mit Vorlagen und Tastenkombinationen auf Gmail™, Outlook™ und LinkedIn™."
+    }, 
+    "extName": {
+        "message": "Gorgias - E-Mail-Vorlagen für Google Mail"
     }
 }

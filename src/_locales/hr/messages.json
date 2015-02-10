@@ -1,8 +1,8 @@
 {
-    "extName": {
-        "message": "Gorgias - E-mail predlošci za Gmail"
-    },
     "extDesc": {
-        "message": "Napišite e-pošte brže ! Povećajte svoju produktivnost s predlošcima i tipkovničkih prečaca na Gmail, Outlook i LinkedIn."    }
+        "message": "Napišite e-pošte brže! Povećajte svoju produktivnost s predlošcima i tipkovničkih prečaca na Gmail™, Outlook™ i LinkedIn™."
+    }, 
+    "extName": {
+        "message": "Gorgias - E-mail predlošci za Gmail™"
     }
 }

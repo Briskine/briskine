@@ -1,8 +1,8 @@
 {
-    "extName": {
-        "message": "Gorgias - plantillas de correo electrónico para Gmail"
-    },
     "extDesc": {
-        "message": "Escribir mensajes de correo electrónico más rápido! Aumenta tu productividad con plantillas y los atajos de teclado en Gmail, Outlook y LinkedIn."
+        "message": "Escribir mensajes de correo electrónico más rápido! Aumenta tu productividad con plantillas y los atajos de teclado en Gmail™, Outlook™ y LinkedIn™."
+    }, 
+    "extName": {
+        "message": "Gorgias - Plantillas de correo electrónico para Gmail™"
     }
 }

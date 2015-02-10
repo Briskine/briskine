@@ -1,8 +1,8 @@
 {
-    "extName": {
-        "message": "Gorgias - Email mẫu cho Gmail"
-    },
     "extDesc": {
-        "message": "Viết email nhanh hơn ! Tăng năng suất của bạn với các mẫu và các phím tắt trên Gmail , Outlook và LinkedIn ."
+        "message": "Viết email nhanh hơn! Tăng năng suất của bạn với các mẫu và các phím tắt trên Gmail™, Outlook™ và LinkedIn™."
+    }, 
+    "extName": {
+        "message": "Gorgias - Email mẫu cho Gmail™"
     }
 }

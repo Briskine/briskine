@@ -1,8 +1,8 @@
 {
-    "extName": {
-        "message": "Gorgias - Имейл шаблони за Gmail"
-    },
     "extDesc": {
-        "message": "Напиши имейли по-бързо ! Увеличете производителността си с шаблони и клавишни комбинации за Gmail , Outlook и LinkedIn ."
+        "message": "Напиши имейли по-бързо! Увеличете производителността си с шаблони и клавишни комбинации за Gmail™, Outlook™ и LinkedIn™."
+    }, 
+    "extName": {
+        "message": "Gorgias - Имейл шаблони за Gmail™"
     }
 }

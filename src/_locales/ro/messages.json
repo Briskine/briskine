@@ -1,8 +1,8 @@
 {
-    "extName": {
-        "message": "Gorgias - template-uri de e-mail pentru Gmail"
-    },
     "extDesc": {
-        "message": "Scrie mai rapid! Poți scrie pe web mult mai rapid folosind template-uri and completare automată cu TAB"
+        "message": "Scrie e-mailuri mai repede! Creșteți productivitatea cu șabloane și scurtături de la tastatură pe Gmail™, Outlook™ și LinkedIn™."
+    }, 
+    "extName": {
+        "message": "Gorgias - Template-uri de e-mail pentru Gmail™"
     }
 }

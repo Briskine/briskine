@@ -1,8 +1,8 @@
 {
-    "extName": {
-        "message": "Gorgias - แม่แบบอีเมล สำหรับ Gmail"
-    },
     "extDesc": {
-        "message": "เขียนอีเมล ได้เร็วขึ้น! เพิ่มผลผลิตของคุณ กับแม่ และทางลัด แป้นพิมพ์บน Gmail , Outlook และ LinkedIn ."
+        "message": "���������������������! ������������������������������������������� Gmail™, Outlook™ ��� LinkedIn™"
+    }, 
+    "extName": {
+        "message": "Gorgias - ����������������� Gmail™"
     }
 }
