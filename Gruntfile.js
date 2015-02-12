@@ -33,7 +33,8 @@ module.exports = function (grunt) {
                 'bower_components/angular-moment/angular-moment.js',
                 'bower_components/textAngular/dist/textAngular-sanitize.min.js',
                 'bower_components/textAngular/dist/textAngular-rangy.min.js',
-                'bower_components/textAngular/dist/textAngular.min.js',
+                'bower_components/textAngular/src/textAngular.js',
+                'bower_components/textAngular/src/textAngularSetup.js',
 
                 // Should be first
                 'background/js/environment.js',
