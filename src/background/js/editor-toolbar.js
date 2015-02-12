@@ -52,10 +52,10 @@ gqApp.config(function ($provide) {
         
         var listTemplate = '';
         listTemplate += '{{#each %list%}}<br>';
-        listTemplate += '- Name {{name}}<br>';
-        listTemplate += '- First name {{first_name}}<br>';
-        listTemplate += '- Last name {{last_name}}<br>';
-        listTemplate += '- Email {{email}}<br>';
+        listTemplate += 'Name {{name}}<br>';
+        listTemplate += 'First name {{first_name}}<br>';
+        listTemplate += 'Last name {{last_name}}<br>';
+        listTemplate += 'Email {{email}}<br>';
         listTemplate += '{{/each}}';
         
         qtMethods.InsertFromList = function() {
