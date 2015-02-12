@@ -22,7 +22,14 @@ gqApp.config(function ($provide) {
         };
 
         var insertHtml = function(qtvar) {
-            var template = '%var%<br><br>';
+            
+            // we can't wrap the variable in a html tag
+            // because it will cause issues when adding multiple vars
+            // one after the other.
+            // eg. if adding a br tag after it
+            // textAngular will add the second/next inserted var
+            // inside (!) the br tag.
+            var template = '%var%';
             template =  template.replace(/%var%/g, qtvar);
             
             this.$editor().wrapSelection('inserthtml', template);
@@ -31,7 +38,7 @@ gqApp.config(function ($provide) {
         var qtMethods = {};
     
         qtMethods.InsertSubject = function() {
-            insertHtml.call(this, '{{ subject }}');
+            insertHtml.call(this, '{{subject}}');
         };
         
         qtMethods.InsertFirstFromName = function() {
@@ -114,8 +121,11 @@ gqApp.config(function ($provide) {
                     var $editor =  $('.ta-scroll-window [contenteditable]').get(0);
 
                     // if the editor was not the focused element
-                    // place the focus at the end of the text
-                    if($editor !== document.activeElement) {
+                    // place the focus at the end of the text.
+                    // the element reference won't match
+                    // but we can compare the element id
+                    // because textAngular adds a dynamic id
+                    if($editor.id !== document.activeElement.id) {
 
                         // focus the editor, to make sure textAngular
                         // has the editor reference

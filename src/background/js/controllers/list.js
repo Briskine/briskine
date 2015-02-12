@@ -174,6 +174,7 @@ gqApp.controller('ListCtrl',
             }
             
             // convert qt body to markdown
+            // TODO remove empty html nodes for cleaner markdown
             $scope.selectedQt.body = toMarkdown($scope.selectedQt.body);
 
             QuicktextService.quicktexts().then(function(quicktexts){
