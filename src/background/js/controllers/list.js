@@ -114,7 +114,13 @@ gqApp.controller('ListCtrl',
                 // update qt
                 QuicktextService.get(id).then(function (r) {
                     $scope.selectedQt = angular.copy(r);
-                    
+
+                    // markdown requires two spaces and \n to for a line break
+                    // so we use this to also turn any \n into a line break
+                    $scope.selectedQt.body =
+                    $scope.selectedQt.body
+                    .replace(/\n/g,' <br />\n');
+
                     // convert qt body from markdown to html
                     $scope.selectedQt.body = marked($scope.selectedQt.body);
                     
@@ -172,7 +178,7 @@ gqApp.controller('ListCtrl',
         
         // remove comments and empty dom nodes
         var cleanDomNodes = function(parent) {
-            
+
             for(var n = 0; n < parent.childNodes.length; n++) {
                 var child = parent.childNodes[n];
                 
@@ -216,8 +222,7 @@ gqApp.controller('ListCtrl',
                 alert("Please enter a body");
                 return false;
             }
-            
-            
+
             // remove empty dom nodes to generate cleaner markdown
             
             // create a document fragment to use as a vdom
@@ -227,11 +232,11 @@ gqApp.controller('ListCtrl',
             var div = document.createElement('div');
             div.innerHTML = $scope.selectedQt.body;
             docFragment.appendChild(div);
-            
+
             cleanDomNodes(div);
             
             $scope.selectedQt.body = div.innerHTML;
-            
+
             // convert qt body to markdown
             $scope.selectedQt.body = toMarkdown($scope.selectedQt.body);
 
