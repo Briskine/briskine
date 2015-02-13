@@ -285,12 +285,11 @@ App.autocomplete.replaceWith = function (params) {
                 var $textarea = $(params.element),
                     value = $textarea.val();
 
-                // TODO fix to not remove word if it's not the qt shortcut
-
                 var valueNew = '';
                 var cursorOffset = params.quicktext.body.length;
 
-                // if the current word matches the shortcut then remove it otherwise skip it (ex: from dialog)
+                // if the current word matches the shortcut then remove it
+                // otherwise skip it (ex: from dialog)
                 if (word.text === params.quicktext.shortcut) {
 
                     valueNew = value.substr(0, word.start) + parsedTemplate + value.substr(word.end);
@@ -298,10 +297,9 @@ App.autocomplete.replaceWith = function (params) {
 
                 } else {
 
-                    // TODO don't delete anything
+                    // don't delete anything in the textarea
                     // just add the qt
-
-                    valueNew = value.substr(0, word.start) + parsedTemplate + value.substr(word.start);
+                    valueNew = value.substr(0, word.end) + parsedTemplate + value.substr(word.end);
 
                 }
 
