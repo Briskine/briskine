@@ -49,6 +49,7 @@ module.exports = function (grunt) {
                 'bower_components/handlebars/handlebars.js',
                 'bower_components/mousetrap/mousetrap.js',
                 'bower_components/mousetrap/plugins/global-bind/mousetrap-global-bind.js',
+                'bower_components/marked/lib/marked.js',
 
                 'content/js/patterns.js',
                 'content/js/index.js',
