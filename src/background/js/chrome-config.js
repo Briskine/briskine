@@ -115,7 +115,7 @@ if (chrome.runtime) {
                     }
                     var injector = angular.element('body').injector();
                     if (port.name === 'shortcut') {
-                        injector.get('QuicktextService').filtered("shortcut = '" + msg.text + "'" /* TODO: <- fix this sql */).then(function (res) {
+                        injector.get('QuicktextService').filtered("shortcut = ?", [msg.text]).then(function (res) {
                             port.postMessage({'quicktexts': res, 'action': 'insert'});
                             // find a way to identify the insertion from the dialog in the future
                             analytics.track("Inserted template", {
@@ -130,9 +130,10 @@ if (chrome.runtime) {
                                 port.postMessage({'quicktexts': res, 'action': 'list'});
                             });
                         } else {
+                            var text = "%" + msg.text + "%";
                             injector.get('QuicktextService').filtered(
-                                "shortcut LIKE '%" + msg.text + "%' OR title LIKE '%" + msg.text + "%' OR body LIKE '% " + msg.text + " %'",
-                                msg.limit).then(function (res) {
+                                "shortcut LIKE ? OR title LIKE ? OR body LIKE ?",
+                                [text, text, text], msg.limit).then(function (res) {
                                     port.postMessage({'quicktexts': res, 'action': 'list'});
                                 });
                         }
