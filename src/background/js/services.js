@@ -49,7 +49,7 @@ gqApp.service('QuicktextService', function ($q, $resource, SettingsService) {
         return deferred.promise;
     };
 
-    self.filtered = function (filters, limit) {
+    self.filtered = function (filters, args, limit) {
         var deferred = $q.defer();
         self.db.transaction(function (tx) {
             if (filters) {
@@ -65,10 +65,9 @@ gqApp.service('QuicktextService', function ($q, $resource, SettingsService) {
             }
 
             var sql = "SELECT * FROM quicktext WHERE deleted = 0 " + filters + " ORDER BY created_datetime DESC" + limit;
-            tx.executeSql(sql, [], function (tx, res) {
-                var len = res.rows.length, i;
+            tx.executeSql(sql, args, function (tx, res) {
                 var list = [];
-                for (i = 0; i < len; i++) {
+                for (var i = 0; i < res.rows.length; i++) {
                     list.push(res.rows.item(i));
                 }
                 deferred.resolve(list);

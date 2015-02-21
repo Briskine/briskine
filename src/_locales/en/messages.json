@@ -1,11 +1,8 @@
 {
     "extName": {
-        "message": "Gorgias"
+        "message": "Gorgias - Email templates for Gmail™"
     },
     "extDesc": {
-        "message": "Write on the web faster! Save thousands of keystrokes per day by using templates and tab completion"
-    },
-    "new_quicktext": {
-        "message": "New template"
+        "message": "Write emails faster! Increase your productivity with templates and keyboard shortcuts on Gmail™, Outlook™ and LinkedIn™."
     }
 }

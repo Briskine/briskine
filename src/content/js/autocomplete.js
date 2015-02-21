@@ -294,13 +294,29 @@ App.autocomplete.replaceWith = function (params) {
                 var $textarea = $(params.element),
                     value = $textarea.val();
 
-                var valueNew = value.substr(0, word.start) + parsedTemplate + value.substr(word.end),
-                    cursorOffset = word.start + params.quicktext.body.length;
+                var valueNew = '';
+                var cursorOffset = word.end + parsedTemplate.length;
+
+                // if the current word matches the shortcut then remove it
+                // otherwise skip it (ex: from dialog)
+                if (word.text === params.quicktext.shortcut) {
+
+                    valueNew = value.substr(0, word.start) + parsedTemplate + value.substr(word.end);
+                    
+                    // decrease the cursor offset with the removed text length 
+                    cursorOffset -= word.end - word.start;
+
+                } else {
+
+                    // don't delete anything in the textarea
+                    // just add the qt
+                    valueNew = value.substr(0, word.end) + parsedTemplate + value.substr(word.end);
+
+                }
 
                 $textarea.val(valueNew);
 
-                // Set focus at the end of patch
-                $textarea.focus();
+                // set focus at the end of the added qt
                 $textarea[0].setSelectionRange(cursorOffset, cursorOffset);
 
             }

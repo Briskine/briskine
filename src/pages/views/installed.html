@@ -1,0 +1,212 @@
+<link href="../background/css/installed.css" rel="stylesheet" type="text/css" media="screen" charset="utf-8">
+
+<div class="container installed-container gorgias-wizard-show--{{ ctrl.step }}" ng-controller="InstallCtrl as ctrl">
+
+    <div class="header">
+        <!--
+        <a href="https://gorgias.io/#login" class="btn btn-lg btn-primary pull-right">Sign In</a>
+        -->
+        <a ng-href="{{ settings.get('baseURL') }}" class="brand" target="_blank">
+            <img src="../icons/white-logo.png" alt="Gorgias"/>
+        </a>
+    </div>
+
+
+    <div class="gorgias-wizard-step gorgias-wizard-step-demo">
+
+        <div class="hero text-center">
+            <h1>Welcome aboard!</h1>
+
+            <p class="lead">Strap on your seat belts, you're about to write much faster!</p>
+        </div>
+
+        <div class="gorgias-demo">
+
+            <div class="gorgias-editor-container">
+                <div class="gorgias-to-field"><span class="to">To:</span> Malala Yousafzai &lt;malala@example.org&gt;
+                </div>
+                <div class="gorgias-demo-editor"></div>
+                <span class="gorgias-demo-vcursor"></span>
+            </div>
+
+            <div class="gorgias-demo-frame-info gorgias-demo-frame-info--empty-state">
+
+                <p>
+                    Here are a few of the cool things you can do with Gorgias.
+                </p>
+
+            </div>
+
+            <div class="gorgias-demo-frame-info gorgias-demo-frame-info--activate-first-shortcut">
+
+                <p>
+                    Dead-simple keyboard completion.
+                </p>
+
+            </div>
+
+            <div class="gorgias-demo-key key-tab">
+                Tab ↹
+            </div>
+
+            <div class="gorgias-demo-frame-info gorgias-demo-frame-info--dialog-show">
+
+                <p>
+                    Search through your templates.
+                </p>
+
+            </div>
+
+            <div class="gorgias-demo-key key-dialog-shortcut">
+                Ctrl + Space
+            </div>
+
+            <div class="gorgias-demo-frame-info gorgias-demo-frame-info--dialog-activate">
+
+                <p>
+                    And get the same smart autocomplete.
+                </p>
+
+            </div>
+
+            <div class="gorgias-demo-key key-enter">
+                Enter &#9166;
+            </div>
+
+            <div class="gorgias-demo-frame-info gorgias-demo-frame-info--try-it">
+
+                <p class="call-action">Go ahead, try it out for yourself!</p>
+
+                <ul class="gorgias-demo-final-list">
+                    <li>
+                        Type <span class="keyboard-key">h</span> and press <span class="keyboard-key">Tab ↹</span>
+                    </li>
+                    <li>
+                        Type <span class="keyboard-key">kr</span> then press <span class="keyboard-key">Tab ↹</span>
+                    </li>
+                    <li>
+                        Press <span class="keyboard-key">Ctrl</span> + <span class="keyboard-key">Space</span> and <span
+                        class="keyboard-key">Enter &#9166;</span>
+                    </li>
+                </ul>
+
+            </div>
+
+        </div>
+
+        <div class="text-center">
+            <a href="#/installed?step=language" class="btn btn-lg btn-primary btn-wizard-start">
+                Quickly set up Gorgias
+                <i class="fa fa-angle-right"></i>
+            </a>
+        </div>
+
+        <div class="browser-action-pointer"></div>
+        <div class="browser-action-pointer-tip">
+            <p>
+                Click on the "Gorgias" button to manage your templates.
+            </p>
+        </div>
+
+    </div>
+
+    <div class="gorgias-wizard-step gorgias-wizard-step-language">
+        <h2>
+            Choose your languages
+            <small>
+                and we'll automatically set up templates for them.
+            </small>
+        </h2>
+
+        <form>
+
+            <div class="checkbox" ng-repeat="lang in ctrl.languages">
+                <label>
+                    <input type="checkbox" ng-model="lang.enabled" ng-change="ctrl.toggleLanguage(lang)">
+                    {{ lang.label }}
+                </label>
+            </div>
+
+        </form>
+        <p class="text-muted">Coming very soon: Spanish and Arabic. Contact us if you want to see your language here:
+            support@gorgias.io</p>
+        <a href="#/installed?step=types" class="btn btn-primary btn-lg btn-wizard-next">
+            Add selected languages
+            <i class="fa fa-angle-right"></i>
+        </a>
+
+    </div>
+
+    <div class="gorgias-wizard-step gorgias-wizard-step-types">
+
+        <h2>
+            Choose a few templates to get started
+            <small>
+                and we'll add their translations in {{ctrl.enabledLanguagesLabels()}}.
+            </small>
+        </h2>
+
+        <form>
+
+            <div class="checkbox category" ng-repeat="category in ctrl.templates">
+                <label class="category-label">
+                    <input type="checkbox" ng-model="category.enabled" ng-change="ctrl.toggleCategory(category)"/>
+                    {{ category.label }}
+
+                </label>
+
+                <div ng-bind="category.desc" class="template-type-description"></div>
+
+                <div ng-repeat="t in category.templates">
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox" ng-model="t[0].enabled" ng-change="ctrl.toggleTemplate(t)"/>
+                            {{t[0].body}}
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+        </form>
+
+        <p class="text-muted"></p>
+
+        <a href="#/installed?step=try" class="btn btn-primary btn-lg btn-wizard-next">
+            Add selected templates
+            <i class="fa fa-angle-right"></i>
+        </a>
+
+    </div>
+
+    <div class="gorgias-wizard-step gorgias-wizard-step-try">
+
+        <h2>You're done!
+            <small>of course, you can add your own templates</small>
+        </h2>
+
+        <a class="btn btn-primary btn-lg btn-wizard-next" href="/pages/bg.html#/list?id=new">
+            Continue adding your own templates
+            <i class="fa fa-angle-right"></i>
+        </a>
+
+        <br/><br/>
+        <br/><br/>
+        <div>
+            <h4>Want to share your templates with your team?</h4>
+
+            <div>
+                <a class="btn btn-primary btn-lg btn-wizard-next" href="https://gorgias.io">
+                    Register on gorgias.io
+                    <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="wizard-step-status" ng-if="ctrl.stepNumber > 0">
+        Step
+        <strong>
+            {{ ctrl.stepNumber + 1 }} of {{ ctrl.steps.length }}
+        </strong>
+    </div>
+
+</div>

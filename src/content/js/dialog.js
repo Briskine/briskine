@@ -60,7 +60,6 @@ App.autocomplete.dialog = {
         });
 
     },
-    // TODO(@ghinda): make dropdown position relative so on scrolling it will stay in right place
     create: function () {
 
         // Create only once in the root of the document
@@ -101,6 +100,11 @@ App.autocomplete.dialog = {
 
             });
         });
+
+        // when scrolling the element or the page
+        // set the autocomplete dialog position
+        window.addEventListener('scroll', App.autocomplete.dialog.setDialogPosition);
+
     },
     bindKeyboardEvents: function () {
         Mousetrap.bindGlobal('up', function (e) {
@@ -140,7 +144,7 @@ App.autocomplete.dialog = {
     populate: function (quicktexts) {
         App.autocomplete.quicktexts = quicktexts;
         if (!App.autocomplete.dialog.isActive) {
-            App.autocomplete.dialog.show(App.autocomplete.cursorPosition);
+            App.autocomplete.dialog.show();
         }
 
 
@@ -156,12 +160,15 @@ App.autocomplete.dialog = {
             return '<span class="qt-search-highlight">' + match + '</span>';
         };
 
-        clonedElements.forEach(function (elem) {
-            elem.title = elem.title.replace(searchRe, highlightMatch);
-            elem.originalBody = elem.body;
-            elem.body = elem.body.replace(searchRe, highlightMatch);
-            elem.shortcut = elem.shortcut.replace(searchRe, highlightMatch);
-        });
+        // only match if we have a search string
+        if(App.autocomplete.cursorPosition.word.text) {
+            clonedElements.forEach(function (elem) {
+                elem.title = elem.title.replace(searchRe, highlightMatch);
+                elem.originalBody = elem.body;
+                elem.body = elem.body.replace(searchRe, highlightMatch);
+                elem.shortcut = elem.shortcut.replace(searchRe, highlightMatch);
+            });
+        }
 
         var content = Handlebars.compile(App.autocomplete.dialog.liTemplate)({
             elements: clonedElements
@@ -173,8 +180,8 @@ App.autocomplete.dialog = {
         // Set first element active
         App.autocomplete.dialog.selectItem(0);
     },
-    show: function (cursorPosition) {
-       // get current focused element - the editor
+    show: function () {
+        // get current focused element - the editor
         App.autocomplete.dialog.editor = document.activeElement;
 
         var selection = window.getSelection();
@@ -184,14 +191,53 @@ App.autocomplete.dialog = {
         App.autocomplete.dialog.isActive = true;
         App.autocomplete.dialog.isEmpty = true;
 
-        $(this.dialogSelector).css({
-            top: (cursorPosition.absolute.top + cursorPosition.absolute.height - $(window).scrollTop()) + 'px',
-            left: (cursorPosition.absolute.left + cursorPosition.absolute.width - $(window).scrollLeft()) + 'px'
-        });
+        App.autocomplete.dialog.setDialogPosition();
 
         $(this.dialogSelector).addClass('qt-dropdown-show');
         $(this.searchSelector).focus();
         $(App.autocomplete.dialog.contentSelector).scrollTop();
+
+        // if we scroll the content element
+        
+        // remove it just in case we added it previously
+        App.autocomplete.dialog.editor.removeEventListener('scroll', App.autocomplete.dialog.setDialogPosition);
+        
+        App.autocomplete.dialog.editor.addEventListener('scroll', App.autocomplete.dialog.setDialogPosition);
+
+    },
+    setDialogPosition: function() {
+        
+        if(!App.autocomplete.dialog.isActive) {
+            return;
+        }
+
+        var dialogMaxHeight = 250;
+        var pageHeight = window.innerHeight;
+        var scrollTop = $(window).scrollTop();
+        var scrollLeft = $(window).scrollLeft();
+        
+        scrollTop += $(App.autocomplete.dialog.editor).scrollTop();
+        scrollLeft += $(App.autocomplete.dialog.editor).scrollLeft();
+
+        var topPos = App.autocomplete.cursorPosition.absolute.top + App.autocomplete.cursorPosition.absolute.height;
+        var bottomPos = 'auto';
+        var leftPos = App.autocomplete.cursorPosition.absolute.left + App.autocomplete.cursorPosition.absolute.width - scrollLeft;
+
+        // check if we have enough space at the bottom
+        // for the maximum dialog height
+        if((pageHeight - App.autocomplete.cursorPosition.absolute.top) < dialogMaxHeight) {
+            topPos = 'auto';
+            bottomPos = pageHeight - App.autocomplete.cursorPosition.absolute.top + scrollTop;
+        } else {
+            topPos = topPos - scrollTop;
+        }
+
+        $(App.autocomplete.dialog.dialogSelector).css({
+            top: topPos,
+            bottom: bottomPos,
+            left: leftPos
+        });
+
     },
     selectItem: function (index) {
         if (App.autocomplete.dialog.isActive && !App.autocomplete.dialog.isEmpty) {
@@ -270,7 +316,9 @@ App.autocomplete.dialog.liTemplate = '' +
     '{{#each elements}}' +
     '<li class="qt-item" data-id="{{id}}" title="{{{originalBody}}}">' +
     '<span class="qt-title">{{{title}}}</span>' +
-    '<span class="qt-shortcut">{{{shortcut}}}</span>' +
+    '{{#if this.shortcut}}' +
+    '<span class="qt-shortcut">{{{this.shortcut}}}</span>' +
+    '{{/if}}' +
     '<span class="qt-body">{{{body}}}</span>' +
     '</li>' +
     '{{/each}}' +

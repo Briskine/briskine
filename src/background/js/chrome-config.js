@@ -30,7 +30,11 @@ if (chrome.runtime) {
 
     // Called after installation: https://developer.chrome.com/extensions/runtime.html#event-onInstalled
     chrome.runtime.onInstalled.addListener(function (details) {
-        analytics.track("Installed Gorgias");
+        if (details.reason == "install") {
+            analytics.track("Installed Gorgias");
+        } else if (details.reason == "update") {
+            analytics.track("Updated Gorgias", {'version': details.previousVersion});
+        }
 
         // perform the necessary migrations
         if (!document.querySelector('body[class=ng-scope]')) {
@@ -40,7 +44,7 @@ if (chrome.runtime) {
         var injector = angular.element('body').injector();
         injector.get('QuicktextService').migrate_043_100();
 
-        // All gmail tabs shoul be reloaded if the extension was installed
+        // All gmail tabs should be reloaded if the extension was installed
         chrome.tabs.query({'url': urlMatchPatterns}, function (tabs) {
             for (var i in tabs) {
                 chrome.tabs.reload(tabs[i].id, {});
@@ -62,6 +66,11 @@ if (chrome.runtime) {
             window.open(chrome.extension.getURL('/pages/bg.html') + '#/list?id=new&body=' + quicktextBody, 'quicktextOptions');
 
         });
+
+        if (details.reason == "install") {
+        //if (details.reason == "update") {
+            chrome.tabs.create({url: "pages/frameless.html#/installed"});
+        }
     });
 
     if (!chrome.runtime.onMessage.hasListeners()) {
@@ -106,7 +115,7 @@ if (chrome.runtime) {
                     }
                     var injector = angular.element('body').injector();
                     if (port.name === 'shortcut') {
-                        injector.get('QuicktextService').filtered("shortcut = '" + msg.text + "'" /* TODO: <- fix this sql */).then(function (res) {
+                        injector.get('QuicktextService').filtered("shortcut = ?", [msg.text]).then(function (res) {
                             port.postMessage({'quicktexts': res, 'action': 'insert'});
                             // find a way to identify the insertion from the dialog in the future
                             analytics.track("Inserted template", {
@@ -121,11 +130,12 @@ if (chrome.runtime) {
                                 port.postMessage({'quicktexts': res, 'action': 'list'});
                             });
                         } else {
+                            var text = "%" + msg.text + "%";
                             injector.get('QuicktextService').filtered(
-                                    "shortcut LIKE '%" + msg.text + "%' OR title LIKE '%" + msg.text + "%' OR body LIKE '% " + msg.text + " %'",
-                                    msg.limit).then(function (res) {
-                                port.postMessage({'quicktexts': res, 'action': 'list'});
-                            });
+                                "shortcut LIKE ? OR title LIKE ? OR body LIKE ?",
+                                [text, text, text], msg.limit).then(function (res) {
+                                    port.postMessage({'quicktexts': res, 'action': 'list'});
+                                });
                         }
                         analytics.track("Searched template", {
                             'query_size': msg.text.length
