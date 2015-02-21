@@ -294,6 +294,31 @@ App.autocomplete.replaceWith = function (params) {
                 var $textarea = $(params.element),
                     value = $textarea.val();
 
+                // convert markdown images and links to
+                // regular links
+            
+                // crazy regex to match markdown links
+                // [text](http://)
+                var linkRegex = '\\[([^\\]]*)\\]\\(([^)"]+)(?: \\"([^\\"]+)\\")?\\)';
+            
+                // prepend ! for markdown images
+                // ![alt text](http://)
+                //var imgRegex = '!' + linkRegex;
+                var imgRegex = '!' + linkRegex;
+            
+                // replace images first
+                // because the link regex also matches parts of images
+                // but not the other way around
+                parsedTemplate = 
+                parsedTemplate.replace(new RegExp(imgRegex, 'g'), function(whole, a, b, c) {
+                    return b;
+                });
+                
+                // replace links
+                parsedTemplate = parsedTemplate.replace(new RegExp(linkRegex, 'g'), function(whole, a, b, c) {
+                    return b;
+                });
+                    
                 var valueNew = '';
                 var cursorOffset = word.end + parsedTemplate.length;
 
