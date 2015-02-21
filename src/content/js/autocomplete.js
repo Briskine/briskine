@@ -206,10 +206,14 @@ App.autocomplete.replaceWith = function (params) {
                 // markdown requires two spaces and \n to for a line break
                 // so we use this to also turn any \n into a line break
                 replacement = parsedTemplate.replace(/\n/g,' <br />\n');
-
+                
+                // wrap the template in a div
+                // so `marked` doesn't wrap lines in p's
+                replacement = '<div>' + replacement + '</div>';
+                
                 // convert markdown body to html
                 replacement = marked(replacement);
-
+                
                 // setStart/setEnd work differently based on
                 // the type of node
                 // https://developer.mozilla.org/en-US/docs/Web/API/range.setStart

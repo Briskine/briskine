@@ -210,6 +210,38 @@ gqApp.controller('ListCtrl',
                 }
             }
         };
+        
+        // convert to markdown 
+        // and remove any html from it
+        var cleanMarkdown = function(md) {
+            
+            var cleanedMd = md;
+            
+            // remove empty dom nodes to generate cleaner markdown
+            
+            // create a document fragment to use as a vdom
+            // to not have to mess with the actual editor dom
+            var docFragment = document.createDocumentFragment();
+
+            var div = document.createElement('div');
+            div.innerHTML = cleanedMd;
+            docFragment.appendChild(div);
+
+            cleanDomNodes(div);
+            
+            cleanedMd = div.innerHTML;
+            
+            // convert qt body to markdown
+            cleanedMd = toMarkdown(cleanedMd);
+            
+            // remove remaning html markup
+            // just in case
+            div.innerHTML = cleanedMd;
+            cleanedMd = div.textContent || div.innerText;
+            
+            return cleanedMd;
+            
+        };
 
         // Save a quicktext, perform some checks before
         $scope.saveQt = function () {
@@ -222,23 +254,9 @@ gqApp.controller('ListCtrl',
                 alert("Please enter a body");
                 return false;
             }
-
-            // remove empty dom nodes to generate cleaner markdown
             
-            // create a document fragment to use as a vdom
-            // to not have to mess with the actual editor dom
-            var docFragment = document.createDocumentFragment();
-
-            var div = document.createElement('div');
-            div.innerHTML = $scope.selectedQt.body;
-            docFragment.appendChild(div);
-
-            cleanDomNodes(div);
-            
-            $scope.selectedQt.body = div.innerHTML;
-
-            // convert qt body to markdown
-            $scope.selectedQt.body = toMarkdown($scope.selectedQt.body);
+            // return clean markdown
+            $scope.selectedQt.body = cleanMarkdown($scope.selectedQt.body);
 
             QuicktextService.quicktexts().then(function(quicktexts){
                 if ($scope.selectedQt.shortcut) {

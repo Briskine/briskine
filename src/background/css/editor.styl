@@ -68,3 +68,13 @@ toolbar-bg = #f8f8f8;
     padding: emCalc(3) emCalc(12);
 }
 
+/* we need to still use paragraphs as element wrappers 
+ * so that textAngular turns them into newlines.
+ * TODO once
+ * https://github.com/domchristie/to-markdown/issues/49
+ * is merged, we can use divs.
+ */
+
+.qt-editor [contenteditable] p {
+    margin: 0;
+}
