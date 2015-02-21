@@ -303,7 +303,6 @@ App.autocomplete.replaceWith = function (params) {
             
                 // prepend ! for markdown images
                 // ![alt text](http://)
-                //var imgRegex = '!' + linkRegex;
                 var imgRegex = '!' + linkRegex;
             
                 // replace images first
