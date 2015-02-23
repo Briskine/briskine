@@ -9,6 +9,17 @@ gqApp.controller('ListCtrl',
         $scope.filterTags = [];
         $scope.limitQuicktexts = 42; // I know.. it's a cliche
 
+        // Hide Subject and Tags fields by default
+        $scope.settings = SettingsService.get('settings');
+        $scope.subjectEnabled = $scope.settings.fields.subject;
+        $scope.tagsEnabled = $scope.settings.fields.tags;
+
+        $scope.toggleField = function (field, enabled) {
+            var settings = SettingsService.get('settings');
+            settings.fields[field] = enabled;
+            SettingsService.set('settings', settings);
+        };
+
         // by default the load more button is disabled
         $('.load-more').hide();
 
@@ -135,11 +146,12 @@ gqApp.controller('ListCtrl',
         $scope.deleteQt = function () {
             if (this.quicktext) {
                 r = confirm("Are you sure you want to delete '" + this.quicktext.title + "' template?");
-                QuicktextService.delete(this.quicktext).then(function (remotePromise) {
-                    $scope.reloadQuicktexts(remotePromise);
-                });
+                if (r === true) {
+                    QuicktextService.delete(this.quicktext).then(function (remotePromise) {
+                        $scope.reloadQuicktexts(remotePromise);
+                    });
+                }
             }
-
         };
 
 

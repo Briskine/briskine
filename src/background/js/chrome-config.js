@@ -36,15 +36,7 @@ if (chrome.runtime) {
             analytics.track("Updated Gorgias", {'version': details.previousVersion});
         }
 
-        // perform the necessary migrations
-        if (!document.querySelector('body[class=ng-scope]')) {
-            angular.bootstrap('body', ['gqApp']);
-        }
-
-        var injector = angular.element('body').injector();
-        injector.get('QuicktextService').migrate_043_100();
-
-        // All gmail tabs should be reloaded if the extension was installed
+        // All affected tabs should be reloaded if the extension was installed
         chrome.tabs.query({'url': urlMatchPatterns}, function (tabs) {
             for (var i in tabs) {
                 chrome.tabs.reload(tabs[i].id, {});
@@ -68,8 +60,14 @@ if (chrome.runtime) {
         });
 
         if (details.reason == "install") {
-        //if (details.reason == "update") {
             chrome.tabs.create({url: "pages/frameless.html#/installed"});
+        } else if (details.reason == "update") {
+            // perform the necessary migrations
+            if (!document.querySelector('body[class=ng-scope]')) {
+                angular.bootstrap('body', ['gqApp']);
+            }
+            var injector = angular.element('body').injector();
+            injector.get('MigrationService').migrate();
         }
     });
 

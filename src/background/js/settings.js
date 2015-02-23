@@ -43,7 +43,12 @@ var Settings = {
             stats: {
                 enabled: true  // send anonymous statistics - doesn't include GA
             },
-            blacklist: []
+            blacklist: [],
+            fields: {
+                subject: false,
+                tags: false
+            },
+            migration_head: 0
         },
         // refactor this into 'local' and 'remote'
         isLoggedIn: false,

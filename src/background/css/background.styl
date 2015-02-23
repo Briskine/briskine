@@ -46,7 +46,6 @@ header {
     left: $sidebarWidth;
     width: $contentWidth;
     z-index: 999;
-    max-width: 700px;
     background: linear-gradient(white, white 40%, rgba(255, 255, 255, 0.92));
 }
 
@@ -213,6 +212,9 @@ header {
         &:hover {
             background-color: $grey1;
         }
+        .label {
+            font-size: 80%;
+        }
     }
 
     .quicktext-detail {
@@ -235,6 +237,27 @@ header {
         }
     }
 
+    .quicktext-shortcut {
+        padding-top: 8px;
+        span {
+            font-size: 16px;
+            padding: .25em .5em;
+            border: 1px solid #CCC;
+            background-color: #F2F2F2;
+            -webkit-border-radius: 5px;
+            border-radius: 5px;
+            -webkit-box-shadow: 0 2px 2px #F2F2F2;
+            box-shadow: 0 2px 2px #F2F2F2;
+        }
+    }
+}
+
+.quicktext-filters {
+    padding-top: 16px;
+    padding-bottom: 5px;
+    .label {
+        font-size: 80%;
+    }
 }
 
 /* Login modal
@@ -254,7 +277,17 @@ header {
     .modal-dialog {
         max-width: 480px;
     }
-
+    .modal-footer .btn + .btn {
+        margin-bottom: 0.25em;
+        margin-left: 5px;
+    }
+    .configure-fields {
+        padding-top: 2px;
+        margin-right: 8px;
+        .dropdown-menu {
+            padding: 8px;
+        }
+    }
 }
 
 /* Register modal

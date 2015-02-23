@@ -23,10 +23,6 @@ gqApp.service('QuicktextService', function ($q, $resource, SettingsService) {
     self.db.transaction(function (tx) {
         var now = new Date().toISOString();
         tx.executeSql('CREATE TABLE quicktext (\n  id               INTEGER PRIMARY KEY AUTOINCREMENT,\n  remote_id        VARCHAR(50) DEFAULT "",\n  title            VARCHAR(250) NOT NULL,\n  shortcut         VARCHAR(250) DEFAULT "",\n  subject          TEXT DEFAULT "",\n  tags             TEXT DEFAULT "",\n  body             TEXT DEFAULT "",\n  created_datetime DATETIME     NOT NULL,\n  updated_datetime DATETIME DEFAULT NULL, -- updated locally\n  sync_datetime    DATETIME DEFAULT NULL, -- last sync datetime\n  deleted          INTEGER DEFAULT 0, -- mark as deleted\n  nosync          INTEGER DEFAULT 0\n);');
-        tx.executeSql('INSERT INTO quicktext (title, shortcut, body, created_datetime, nosync) VALUES ("Say Hello", "h", \'Hello {{to.0.first_name}},\n\n\', ?, 1)',
-            [now]);
-        tx.executeSql('INSERT INTO quicktext (title, shortcut, body, created_datetime, nosync) VALUES ("Kind regards", "kr", \'Kind regards,\n{{from.0.first_name}}.\n\', ?, 1)',
-            [now]);
     });
 
     self.quicktexts = function (limit) {
@@ -439,24 +435,7 @@ gqApp.service('QuicktextService', function ($q, $resource, SettingsService) {
         return deferred.promise;
     };
 
-// perform migration from version 0.4.3 to the new version 1.0.0
-    self.migrate_043_100 = function () {
-        var quicktexts = Settings.get("quicktexts");
-        if (quicktexts) {
-            for (var i in quicktexts) {
-                var qt = quicktexts[i];
-                qt.body = qt.body.replace("<%=", "{{");
-                qt.body = qt.body.replace("%>", "}}");
-                qt.body = qt.body.replace("to[0].", "to.0.");
-                qt.body = qt.body.replace("from[0].", "from.0.");
-                qt.remote_id = "";
-                self.create(qt);
-            }
-            Settings.set("quicktexts", []);
-        }
-    };
-})
-;
+});
 
 // Handle stats (publish stats on the remote server)
 gqApp.service('StatsService', function ($resource, SettingsService) {
