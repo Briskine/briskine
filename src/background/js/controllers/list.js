@@ -103,7 +103,18 @@ gqApp.controller('ListCtrl',
                 // update qt
                 QuicktextService.get(id).then(function (r) {
                     $scope.selectedQt = angular.copy(r);
+
+                    // markdown requires two spaces and \n to for a line break
+                    // so we use this to also turn any \n into a line break
+                    $scope.selectedQt.body =
+                    $scope.selectedQt.body
+                    .replace(/\n/g,' <br />\n');
+
+                    // convert qt body from markdown to html
+                    $scope.selectedQt.body = marked($scope.selectedQt.body);
+                    
                 });
+                
             }
 
             $formModal.modal('show');
@@ -141,7 +152,84 @@ gqApp.controller('ListCtrl',
             }
 
         };
+        
+        // list of tags we don't want to remove
+        // even if their innerHTML is empty
+        var dontCleanTags = {
+            'br': '',
+            'embed': '',
+            'hr': '',
+            'img': '',
+            'input': '',
+            'link': ''
+        };
+        
+        // remove comments and empty dom nodes
+        var cleanDomNodes = function(parent) {
 
+            for(var n = 0; n < parent.childNodes.length; n++) {
+                var child = parent.childNodes[n];
+                
+                // check if it's a comment node,
+                // or an element node (not in the dontCleanTags array)
+                // with whitespace-only innerHTML,
+                // or a text node with whitespace-only nodeValue
+                if(
+                    child.nodeType === 8 ||
+                    (child.nodeType === 1 && !/\S/.test(child.innerHTML) && !(child.tagName.toLowerCase() in dontCleanTags)) ||
+                    (child.nodeType === 3 && !/\S/.test(child.nodeValue))
+                ) {
+                    
+                    parent.removeChild(child);
+                    n--;
+                    
+                    // if the parent has no other childNodes
+                    // remove it
+                    if(!parent.childNodes.length) {
+                        parent.parentNode.removeChild(parent);
+                    }
+                    
+                } else if(child.nodeType === 1) {
+                    
+                    // if it's a non-empty element node
+                    // check it
+                    cleanDomNodes(child);
+                    
+                }
+            }
+        };
+        
+        // convert to markdown 
+        // and remove any html from it
+        var cleanMarkdown = function(md) {
+            
+            var cleanedMd = md;
+            
+            // remove empty dom nodes to generate cleaner markdown
+            
+            // create a document fragment to use as a vdom
+            // to not have to mess with the actual editor dom
+            var docFragment = document.createDocumentFragment();
+
+            var div = document.createElement('div');
+            div.innerHTML = cleanedMd;
+            docFragment.appendChild(div);
+
+            cleanDomNodes(div);
+            
+            cleanedMd = div.innerHTML;
+            
+            // convert qt body to markdown
+            cleanedMd = toMarkdown(cleanedMd);
+            
+            // remove remaning html markup
+            // just in case
+            div.innerHTML = cleanedMd;
+            cleanedMd = div.textContent || div.innerText;
+            
+            return cleanedMd;
+            
+        };
 
         // Save a quicktext, perform some checks before
         $scope.saveQt = function () {
@@ -154,6 +242,9 @@ gqApp.controller('ListCtrl',
                 alert("Please enter a body");
                 return false;
             }
+            
+            // return clean markdown
+            $scope.selectedQt.body = cleanMarkdown($scope.selectedQt.body);
 
             QuicktextService.quicktexts().then(function(quicktexts){
                 if ($scope.selectedQt.shortcut) {

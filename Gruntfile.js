@@ -22,6 +22,9 @@ module.exports = function (grunt) {
                 'bower_components/moment/moment.js',
                 'bower_components/mousetrap/mousetrap.js',
                 'bower_components/mousetrap/plugins/record/mousetrap-record.js',
+                'bower_components/marked/lib/marked.js',
+                'bower_components/to-markdown/src/to-markdown.js',
+                'bower_components/he/he.js',
 
                 'bower_components/angular/angular.js',
                 'bower_components/angular-route/angular-route.js',
@@ -29,6 +32,10 @@ module.exports = function (grunt) {
                 'bower_components/angular-animate/angular-animate.js',
                 'bower_components/angular-md5/angular-md5.js',
                 'bower_components/angular-moment/angular-moment.js',
+                'bower_components/textAngular/dist/textAngular-sanitize.min.js',
+                'bower_components/textAngular/dist/textAngular-rangy.min.js',
+                'bower_components/textAngular/src/textAngular.js',
+                'bower_components/textAngular/src/textAngularSetup.js',
 
                 // Should be first
                 'background/js/environment.js',
@@ -43,6 +50,7 @@ module.exports = function (grunt) {
                 'bower_components/handlebars/handlebars.js',
                 'bower_components/mousetrap/mousetrap.js',
                 'bower_components/mousetrap/plugins/global-bind/mousetrap-global-bind.js',
+                'bower_components/marked/lib/marked.js',
 
                 'content/js/patterns.js',
                 'content/js/index.js',
