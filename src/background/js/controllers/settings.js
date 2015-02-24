@@ -6,8 +6,15 @@ gqApp.controller('SettingsCtrl', function ($scope, $rootScope, $timeout,  Quickt
         $scope.updateSettings(data)
     }, true);
 
-    $scope.updateSettings = function(data){
-        SettingsService.set('settings', data);
+    $scope.updateSettings = function(settings){
+        // check if we have to disable stats
+        if (!settings.stats.enabled) {
+            mixpanel.disable();
+        } else {
+            // enable all events
+            mixpanel._flags.disable_all_events = false;
+        }
+        SettingsService.set('settings', settings);
     };
 
     // Delete all quicktexts. This will not delete the quicktexts on the server side

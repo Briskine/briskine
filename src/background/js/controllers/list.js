@@ -92,7 +92,7 @@ gqApp.controller('ListCtrl',
 
         // Show the form for adding a new quicktext or creating one
         $scope.showForm = function (id) {
-            analytics.track("Show edit form");
+            mixpanel.track("Show edit form");
 
             var defaults = {
                 'id': '',
@@ -123,9 +123,9 @@ gqApp.controller('ListCtrl',
 
                     // convert qt body from markdown to html
                     $scope.selectedQt.body = marked($scope.selectedQt.body);
-                    
+
                 });
-                
+
             }
 
             $formModal.modal('show');
@@ -164,7 +164,7 @@ gqApp.controller('ListCtrl',
                 }
             }
         };
-        
+
         // list of tags we don't want to remove
         // even if their innerHTML is empty
         var dontCleanTags = {
@@ -175,13 +175,13 @@ gqApp.controller('ListCtrl',
             'input': '',
             'link': ''
         };
-        
+
         // remove comments and empty dom nodes
         var cleanDomNodes = function(parent) {
 
             for(var n = 0; n < parent.childNodes.length; n++) {
                 var child = parent.childNodes[n];
-                
+
                 // check if it's a comment node,
                 // or an element node (not in the dontCleanTags array)
                 // with whitespace-only innerHTML,
@@ -191,34 +191,34 @@ gqApp.controller('ListCtrl',
                     (child.nodeType === 1 && !/\S/.test(child.innerHTML) && !(child.tagName.toLowerCase() in dontCleanTags)) ||
                     (child.nodeType === 3 && !/\S/.test(child.nodeValue))
                 ) {
-                    
+
                     parent.removeChild(child);
                     n--;
-                    
+
                     // if the parent has no other childNodes
                     // remove it
                     if(!parent.childNodes.length) {
                         parent.parentNode.removeChild(parent);
                     }
-                    
+
                 } else if(child.nodeType === 1) {
-                    
+
                     // if it's a non-empty element node
                     // check it
                     cleanDomNodes(child);
-                    
+
                 }
             }
         };
-        
-        // convert to markdown 
+
+        // convert to markdown
         // and remove any html from it
         var cleanMarkdown = function(md) {
-            
+
             var cleanedMd = md;
-            
+
             // remove empty dom nodes to generate cleaner markdown
-            
+
             // create a document fragment to use as a vdom
             // to not have to mess with the actual editor dom
             var docFragment = document.createDocumentFragment();
@@ -228,19 +228,19 @@ gqApp.controller('ListCtrl',
             docFragment.appendChild(div);
 
             cleanDomNodes(div);
-            
+
             cleanedMd = div.innerHTML;
-            
+
             // convert qt body to markdown
             cleanedMd = toMarkdown(cleanedMd);
-            
+
             // remove remaning html markup
             // just in case
             div.innerHTML = cleanedMd;
             cleanedMd = div.textContent || div.innerText;
-            
+
             return cleanedMd;
-            
+
         };
 
         // Save a quicktext, perform some checks before
@@ -254,7 +254,7 @@ gqApp.controller('ListCtrl',
                 alert("Please enter a body");
                 return false;
             }
-            
+
             // return clean markdown
             $scope.selectedQt.body = cleanMarkdown($scope.selectedQt.body);
 
@@ -412,7 +412,7 @@ gqApp.controller('ListCtrl',
          */
         $scope.insertQuicktext = function (quicktextId) {
             // get the quicktext id
-            analytics.track("Popup insert template");
+            mixpanel.track("Popup insert template");
 
             // getch the quicktext
             QuicktextService.get(quicktextId).then(function (quicktext) {

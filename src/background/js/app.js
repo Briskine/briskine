@@ -1,5 +1,13 @@
-/* Quicktext chrome extension
- */
+mixpanel.init("f1afffc82208d20529daf9cc527b29a1");
+
+Raven.config('https://af2f5e9fb2744c359c19d08c8319d9c5@app.getsentry.com/30379', {
+    tags: {
+        version: chrome.runtime.getManifest().version
+    },
+    linesOfContext: 11,
+    fetchContext: true,
+    collectWindowErrors: true
+}).install();
 
 var gqApp = angular.module('gqApp', [
         'ngRoute',
@@ -35,14 +43,7 @@ var gqApp = angular.module('gqApp', [
             });
     });
 
-Raven.config('https://af2f5e9fb2744c359c19d08c8319d9c5@app.getsentry.com/30379', {
-    tags: {
-        version: chrome.runtime.getManifest().version
-    },
-    linesOfContext: 11,
-    fetchContext: true,
-    collectWindowErrors: true
-}).install();
+
 
 gqApp.config(["$provide", function ($provide) {
         $provide.decorator("$exceptionHandler", ["$delegate", "$window", function ($delegate, $window) {
@@ -66,6 +67,14 @@ gqApp.run(function ($rootScope, $location, $http, $timeout, ProfileService, Sett
     $rootScope.pageAction = ($location.path() === '/popup');
     $rootScope.profile = ProfileService;
     $rootScope.settings = SettingsService;
+
+
+    // disable mixpanel if
+    var settings = SettingsService.get('settings');
+
+    if (!settings.stats.enabled) {
+        mixpanel.disable();
+    }
 
     // last sync date
     $rootScope.lastSync = QuicktextService.lastSync;

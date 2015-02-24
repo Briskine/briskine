@@ -39,7 +39,9 @@ module.exports = function (grunt) {
 
                 // Should be first
                 'background/js/environment.js',
-                'background/js/**/*.js'
+                'background/js/mixpanel.js',
+                'bower_components/mixpanel/mixpanel.js',
+                'background/js/**/*.js',
             ]
         },
         content: {
@@ -149,7 +151,8 @@ module.exports = function (grunt) {
                 '<%= config.app %>/background/js/*.js'
             ],
             options: {
-                multistr: true
+                multistr: true,
+                sub: true
                 //ignores: "src/content/js/gmailr.js"
             }
         },

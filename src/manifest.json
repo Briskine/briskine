@@ -49,5 +49,5 @@
         },
         "default_popup": "pages/bg.html#/popup"
     },
-    "content_security_policy": "script-src 'self' 'unsafe-eval' https://cdn.segment.com https://www.google-analytics.com https://cdn.mxpnl.com; object-src 'self'"
+    "content_security_policy": "script-src 'self'; object-src 'self'"
 }

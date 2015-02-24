@@ -31,9 +31,9 @@ if (chrome.runtime) {
     // Called after installation: https://developer.chrome.com/extensions/runtime.html#event-onInstalled
     chrome.runtime.onInstalled.addListener(function (details) {
         if (details.reason == "install") {
-            analytics.track("Installed Gorgias");
+            mixpanel.track("Installed Gorgias");
         } else if (details.reason == "update") {
-            analytics.track("Updated Gorgias", {'version': details.previousVersion});
+            mixpanel.track("Updated Gorgias", {'version': details.previousVersion});
         }
 
         // All affected tabs should be reloaded if the extension was installed
@@ -79,7 +79,7 @@ if (chrome.runtime) {
             var injector = angular.element('body').injector();
             if (request.request === 'get') {
                 injector.get('QuicktextService').quicktexts().then(function (res) {
-                    analytics.track("Inserted template", {
+                    mixpanel.track("Inserted template", {
                         "title_size": res[0].title.length,
                         "body_size": res[0].body.length,
                         "source": "message"
@@ -116,7 +116,7 @@ if (chrome.runtime) {
                         injector.get('QuicktextService').filtered("shortcut = ?", [msg.text]).then(function (res) {
                             port.postMessage({'quicktexts': res, 'action': 'insert'});
                             // find a way to identify the insertion from the dialog in the future
-                            analytics.track("Inserted template", {
+                            mixpanel.track("Inserted template", {
                                 "source": "keyboard",
                                 "title_size": res[0].title.length,
                                 "body_size": res[0].body.length
@@ -135,7 +135,7 @@ if (chrome.runtime) {
                                     port.postMessage({'quicktexts': res, 'action': 'list'});
                                 });
                         }
-                        analytics.track("Searched template", {
+                        mixpanel.track("Searched template", {
                             'query_size': msg.text.length
                         });
                     }

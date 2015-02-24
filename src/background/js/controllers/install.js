@@ -40,7 +40,7 @@ gqApp.controller('InstallCtrl', function ($scope, $rootScope, $routeParams, Inst
     };
 
     ctrl.toggleLanguage = function (lang) {
-        analytics.track("Wizard Language", {
+        mixpanel.track("Wizard Language", {
             iso: lang.iso,
             enabled: lang.enabled
         });
@@ -51,7 +51,7 @@ gqApp.controller('InstallCtrl', function ($scope, $rootScope, $routeParams, Inst
         for (var i in category.templates){
             for (var j in category.templates[i]){
                 category.templates[i][j].enabled = category.enabled;
-                analytics.track("Wizard Template", {
+                mixpanel.track("Wizard Template", {
                     title: category.templates[i][j].title,
                     enabled: category.enabled
                 });
@@ -60,7 +60,7 @@ gqApp.controller('InstallCtrl', function ($scope, $rootScope, $routeParams, Inst
     };
 
     ctrl.toggleTemplate = function (template) {
-        analytics.track("Wizard Template", {
+        mixpanel.track("Wizard Template", {
             title: template[0].title,
             enabled: template[0].enabled
         });
@@ -103,7 +103,7 @@ gqApp.controller('InstallCtrl', function ($scope, $rootScope, $routeParams, Inst
         ctrl.stepNumber = ctrl.steps.indexOf(ctrl.step);
 
         // Send some info about the creation of templates
-        analytics.track("Wizard Step", {
+        mixpanel.track("Wizard Step", {
             step: ctrl.step
         });
 

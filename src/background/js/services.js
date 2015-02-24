@@ -276,7 +276,7 @@ gqApp.service('QuicktextService', function ($q, $resource, SettingsService) {
                 });
 
                 // Send some info about the creation of templates
-                analytics.track("Created template", {
+                mixpanel.track("Created template", {
                     "with_subject": true ? qt.subject !== "": false,
                     "with_shortcut": true ? qt.shortcut !== "": false,
                     "with_tags": true ? qt.tags !== "": false,
@@ -335,7 +335,7 @@ gqApp.service('QuicktextService', function ($q, $resource, SettingsService) {
                     });
                 }
                 // Send some info about the creation of templates
-                analytics.track("Updated template", {
+                mixpanel.track("Updated template", {
                     "with_subject": true ? qt.subject !== "": false,
                     "with_shortcut": true ? qt.shortcut !== "": false,
                     "with_tags": true ? qt.tags !== "": false,
@@ -387,7 +387,7 @@ gqApp.service('QuicktextService', function ($q, $resource, SettingsService) {
                 });
             });
         });
-        analytics.track("Deleted template");
+        mixpanel.track("Deleted template");
         return deferred.promise;
     };
 
@@ -397,7 +397,7 @@ gqApp.service('QuicktextService', function ($q, $resource, SettingsService) {
         var deferred = $q.defer();
         self.db.transaction(function (tx) {
             tx.executeSql("DELETE FROM quicktext");
-            analytics.track("Deleted all templates");
+            mixpanel.track("Deleted all templates");
             deferred.resolve();
         });
         return deferred.promise;
