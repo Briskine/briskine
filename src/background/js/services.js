@@ -3,21 +3,25 @@
 // Quicktexts operations
 gqApp.service('QuicktextService', function ($q, $resource, SettingsService) {
     var self = this;
-    self.qRes = $resource(SettingsService.get('apiBaseURL') + 'quicktexts/:quicktextId', {
-        quicktextId: '@remote_id'
-    }, {
-        update: {
-            method: "PUT"
-        },
-        delete: {
-            method: "DELETE",
-            isArray: false
-        }
+
+    SettingsService.get('apiBaseURL').then(function (apiBaseURL) {
+        self.qRes = $resource(apiBaseURL + 'quicktexts/:quicktextId', {
+            quicktextId: '@remote_id'
+        }, {
+            update: {
+                method: "PUT"
+            },
+            delete: {
+                method: "DELETE",
+                isArray: false
+            }
+        });
     });
 
-    self.isLoggedin = function () {
-        return SettingsService.get("isLoggedIn");
-    };
+    self.isLoggedin = false;
+    SettingsService.get("isLoggedIn").then(function (isLoggedIn) {
+        self.isLoggedin = isLoggedIn;
+    });
 
     self.db = openDatabase('qt', '1.0.0', '', 2 * 1024 * 1024);
     self.db.transaction(function (tx) {
@@ -90,7 +94,7 @@ gqApp.service('QuicktextService', function ($q, $resource, SettingsService) {
     self.lastSync = null;
 
     self.sync = function (callback) {
-        if (!self.isLoggedin()) {
+        if (!self.isLoggedin) {
             return;
         }
 
@@ -255,7 +259,7 @@ gqApp.service('QuicktextService', function ($q, $resource, SettingsService) {
                 var remoteDefer = $q.defer();
                 deferred.resolve(remoteDefer.promise);
 
-                if (!self.isLoggedin()) {
+                if (!self.isLoggedin) {
                     remoteDefer.resolve();
                     return;
                 }
@@ -277,9 +281,9 @@ gqApp.service('QuicktextService', function ($q, $resource, SettingsService) {
 
                 // Send some info about the creation of templates
                 mixpanel.track("Created template", {
-                    "with_subject": true ? qt.subject !== "": false,
-                    "with_shortcut": true ? qt.shortcut !== "": false,
-                    "with_tags": true ? qt.tags !== "": false,
+                    "with_subject": true ? qt.subject !== "" : false,
+                    "with_shortcut": true ? qt.shortcut !== "" : false,
+                    "with_tags": true ? qt.tags !== "" : false,
                     "title_size": qt.title.length,
                     "body_size": qt.body.length
                 });
@@ -303,7 +307,7 @@ gqApp.service('QuicktextService', function ($q, $resource, SettingsService) {
                 var remoteDefer = $q.defer();
                 deferred.resolve(remoteDefer.promise);
 
-                if (!self.isLoggedin()) {
+                if (!self.isLoggedin) {
                     remoteDefer.resolve();
                     return;
                 }
@@ -336,9 +340,9 @@ gqApp.service('QuicktextService', function ($q, $resource, SettingsService) {
                 }
                 // Send some info about the creation of templates
                 mixpanel.track("Updated template", {
-                    "with_subject": true ? qt.subject !== "": false,
-                    "with_shortcut": true ? qt.shortcut !== "": false,
-                    "with_tags": true ? qt.tags !== "": false,
+                    "with_subject": true ? qt.subject !== "" : false,
+                    "with_shortcut": true ? qt.shortcut !== "" : false,
+                    "with_tags": true ? qt.tags !== "" : false,
                     "title_size": qt.title.length,
                     "body_size": qt.body.length
                 });
@@ -365,7 +369,7 @@ gqApp.service('QuicktextService', function ($q, $resource, SettingsService) {
                 var remoteDefer = $q.defer();
                 deferred.resolve(remoteDefer.promise);
 
-                if (!self.isLoggedin()) {
+                if (!self.isLoggedin) {
                     remoteDefer.resolve();
                     return;
                 }
@@ -442,21 +446,30 @@ gqApp.service('StatsService', function ($resource, SettingsService) {
     var self = this;
 
     self.syncStatsTimer = null;
-    self.statsRes = $resource(SettingsService.get('apiBaseURL') + 'stats/');
+    SettingsService.get('apiBaseURL').then(function (apiBaseURL) {
+        self.statsRes = $resource(apiBaseURL + 'stats/');
+    });
 
     // should probably be called every few minutes or so
     self.sync = function () {
-        if (SettingsService.get("sendStatsEnabled")) { // do this only if user allowed sending anonymous statistics
-            var newWords = SettingsService.get("words") - SettingsService.get('syncedWords');
-            if (newWords > 0) {
-                var stats = new self.statsRes();
-                stats.words = newWords;
-                stats.$save(function () {
-                    SettingsService.set("syncedWords", SettingsService.get("words"));
-                    SettingsService.set("lastStatsSync", new Date());
+        SettingsService.get("sendStatsEnabled").then(function (sendStatsEnabled) {
+            if (sendStatsEnabled) { // do this only if user allowed sending anonymous statistics
+                SettingsService.get("words").then(function (words) {
+                    SettingsService.get('syncedWords').then(function (syncedWords) {
+                        var newWords = words - syncedWords;
+                        if (newWords > 0) {
+                            var stats = new self.statsRes();
+                            stats.words = newWords;
+                            stats.$save(function () {
+                                SettingsService.set("syncedWords", words);
+                                SettingsService.set("lastStatsSync", new Date());
+                            });
+                        }
+                    });
                 });
             }
-        }
+        });
+
         window.clearTimeout(self.syncStatsTimer);
         self.syncStatsTimer = window.setTimeout(self.sync, 15 * 60 * 1000); // every 15minutes
     };
@@ -464,19 +477,34 @@ gqApp.service('StatsService', function ($resource, SettingsService) {
 });
 
 // Settings
-gqApp.service('SettingsService', function () {
+gqApp.service('SettingsService', function ($q) {
     var self = this;
     self.get = function (key, def) {
-        return Settings.get(key, def);
+        var deferred = $q.defer();
+        Settings.get(key, def, function (data) {
+            deferred.resolve(data);
+        });
+        return deferred.promise;
     };
     self.set = function (key, val) {
-        return Settings.set(key, val);
+        var deferred = $q.defer();
+        Settings.set(key, val, function () {
+            deferred.resolve();
+        });
+        return deferred.promise;
+    };
+    self.reset = function() {
+        for (var k in Settings.defaults){
+            Settings.set(k, Settings.defaults[k], function () {
+                // nothing to do here
+            });
+        }
     };
     return self;
 });
 
 // User Profile - check if the user is logged in. Get it's info
-gqApp.service('ProfileService', function (SettingsService, md5) {
+gqApp.service('ProfileService', function ($q, SettingsService, md5) {
     var self = this;
 
     self.gravatar = function (email, size) {
@@ -511,8 +539,10 @@ gqApp.service('ProfileService', function (SettingsService, md5) {
         return (Math.floor((n / p) * p) / p).toFixed(2) + mag;
     };
 
-    self.words = SettingsService.get("words", 0);
-    self.savedWords = self.reduceNumbers(self.words);
+    self.words = function(){
+        return SettingsService.get("words", 0);
+    };
+    //self.savedWords = self.reduceNumbers(self.words);
 
     self.niceTime = function (minutes) {
         if (!minutes) {
@@ -529,8 +559,14 @@ gqApp.service('ProfileService', function (SettingsService, md5) {
         }
     };
     // average WPM: http://en.wikipedia.org/wiki/Words_per_minute
-    self.avgWPM = 33;
-    self.savedTime = self.niceTime(Math.round(self.words / self.avgWPM));
+    self.avgWPM = 25;
+    self.savedTime = function(){
+        var deferred = $q.defer();
+        self.words().then(function(words){
+            deferred.resolve(self.niceTime(Math.round(words / self.avgWPM)));
+        });
+        return deferred.promise;
+    };
 
     return self;
 });

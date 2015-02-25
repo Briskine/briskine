@@ -10,14 +10,19 @@ gqApp.controller('ListCtrl',
         $scope.limitQuicktexts = 42; // I know.. it's a cliche
 
         // Hide Subject and Tags fields by default
-        $scope.settings = SettingsService.get('settings');
-        $scope.subjectEnabled = $scope.settings.fields.subject;
-        $scope.tagsEnabled = $scope.settings.fields.tags;
+        $scope.settings = {};
+        SettingsService.get('settings').then(function (settings) {
+            $scope.settings = settings;
+            $scope.subjectEnabled = $scope.settings.fields.subject;
+            $scope.tagsEnabled = $scope.settings.fields.tags;
+        });
+
 
         $scope.toggleField = function (field, enabled) {
-            var settings = SettingsService.get('settings');
-            settings.fields[field] = enabled;
-            SettingsService.set('settings', settings);
+            SettingsService.get('settings').then(function (settings) {
+                settings.fields[field] = enabled;
+                SettingsService.set('settings', settings);
+            });
         };
 
         // by default the load more button is disabled
@@ -118,8 +123,8 @@ gqApp.controller('ListCtrl',
                     // markdown requires two spaces and \n to for a line break
                     // so we use this to also turn any \n into a line break
                     $scope.selectedQt.body =
-                    $scope.selectedQt.body
-                    .replace(/\n/g,' <br />\n');
+                        $scope.selectedQt.body
+                            .replace(/\n/g, ' <br />\n');
 
                     // convert qt body from markdown to html
                     $scope.selectedQt.body = marked($scope.selectedQt.body);
@@ -177,16 +182,16 @@ gqApp.controller('ListCtrl',
         };
 
         // remove comments and empty dom nodes
-        var cleanDomNodes = function(parent) {
+        var cleanDomNodes = function (parent) {
 
-            for(var n = 0; n < parent.childNodes.length; n++) {
+            for (var n = 0; n < parent.childNodes.length; n++) {
                 var child = parent.childNodes[n];
 
                 // check if it's a comment node,
                 // or an element node (not in the dontCleanTags array)
                 // with whitespace-only innerHTML,
                 // or a text node with whitespace-only nodeValue
-                if(
+                if (
                     child.nodeType === 8 ||
                     (child.nodeType === 1 && !/\S/.test(child.innerHTML) && !(child.tagName.toLowerCase() in dontCleanTags)) ||
                     (child.nodeType === 3 && !/\S/.test(child.nodeValue))
@@ -197,11 +202,11 @@ gqApp.controller('ListCtrl',
 
                     // if the parent has no other childNodes
                     // remove it
-                    if(!parent.childNodes.length) {
+                    if (!parent.childNodes.length) {
                         parent.parentNode.removeChild(parent);
                     }
 
-                } else if(child.nodeType === 1) {
+                } else if (child.nodeType === 1) {
 
                     // if it's a non-empty element node
                     // check it
@@ -213,7 +218,7 @@ gqApp.controller('ListCtrl',
 
         // convert to markdown
         // and remove any html from it
-        var cleanMarkdown = function(md) {
+        var cleanMarkdown = function (md) {
 
             var cleanedMd = md;
 
@@ -258,7 +263,7 @@ gqApp.controller('ListCtrl',
             // return clean markdown
             $scope.selectedQt.body = cleanMarkdown($scope.selectedQt.body);
 
-            QuicktextService.quicktexts().then(function(quicktexts){
+            QuicktextService.quicktexts().then(function (quicktexts) {
                 if ($scope.selectedQt.shortcut) {
                     for (var i in quicktexts) {
                         var qt = quicktexts[i];
@@ -298,7 +303,7 @@ gqApp.controller('ListCtrl',
             // append a (copy) to the title
             var newQt = angular.copy($scope.selectedQt);
             newQt.title = newQt.title + " (copy)";
-            $('.modal').on('hidden.bs.modal', function(){
+            $('.modal').on('hidden.bs.modal', function () {
                 $('#duplicate-alert-box').addClass('hide');
             });
 
@@ -384,7 +389,7 @@ gqApp.controller('ListCtrl',
             var scrollContainer = $("#quicktext-table-container");
             var active = $('.active');
             scrollContainer.scrollTop(
-                    active.offset().top - scrollContainer.offset().top + scrollContainer.scrollTop()
+                active.offset().top - scrollContainer.offset().top + scrollContainer.scrollTop()
             );
         };
 

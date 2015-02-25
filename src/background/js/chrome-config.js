@@ -25,6 +25,13 @@ if (chrome.runtime) {
         return false;
     };
 
+    var angularInjector = function () {
+        if (!document.querySelector('html[class=ng-scope]')) {
+            angular.bootstrap('html', ['gqApp']);
+        }
+        return angular.element('html').injector();
+    };
+
     // Listen for any changes to the URL of any tab.
     chrome.tabs.onUpdated.addListener(updatedTab);
 
@@ -63,41 +70,40 @@ if (chrome.runtime) {
             chrome.tabs.create({url: "pages/frameless.html#/installed"});
         } else if (details.reason == "update") {
             // perform the necessary migrations
-            if (!document.querySelector('body[class=ng-scope]')) {
-                angular.bootstrap('body', ['gqApp']);
-            }
-            var injector = angular.element('body').injector();
-            injector.get('MigrationService').migrate();
+            angularInjector().get('MigrationService').migrate();
         }
     });
 
     if (!chrome.runtime.onMessage.hasListeners()) {
         chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
-            if (!document.querySelector('body[class=ng-scope]')) {
-                angular.bootstrap('body', ['gqApp']);
-            }
-            var injector = angular.element('body').injector();
+            var injector = angularInjector();
             if (request.request === 'get') {
                 injector.get('QuicktextService').quicktexts().then(function (res) {
-                    mixpanel.track("Inserted template", {
-                        "title_size": res[0].title.length,
-                        "body_size": res[0].body.length,
-                        "source": "message"
-                    });
+                    if (res.length) {
+                        mixpanel.track("Inserted template", {
+                            "title_size": res[0].title.length,
+                            "body_size": res[0].body.length,
+                            "source": "message"
+                        });
+                    }
                     sendResponse(res);
-
                 });
             }
+
             var settingsService = injector.get('SettingsService');
             if (request.request === 'stats') {
                 if (request.key === 'words') {
                     var words = parseInt(request.val, 10);
-                    settingsService.set("words", settingsService.get("words") + words);
+                    settingsService.get("words").then(function (oldWords) {
+                        settingsService.set("words", oldWords + words);
+                    });
                 }
                 sendResponse(true);
             }
             if (request.request === 'settings') {
-                sendResponse(settingsService.get("settings"));
+                settingsService.get("settings").then(function (settings) {
+                    sendResponse(settings);
+                });
             }
             return true;
         });
@@ -108,19 +114,20 @@ if (chrome.runtime) {
             // Attach listener only once
             if (!port.onMessage.hasListeners()) {
                 port.onMessage.addListener(function (msg) {
-                    if (!document.querySelector('body[class=ng-scope]')) {
-                        angular.bootstrap('body', ['gqApp']);
-                    }
-                    var injector = angular.element('body').injector();
+                    var injector = angularInjector();
+
                     if (port.name === 'shortcut') {
                         injector.get('QuicktextService').filtered("shortcut = ?", [msg.text]).then(function (res) {
                             port.postMessage({'quicktexts': res, 'action': 'insert'});
                             // find a way to identify the insertion from the dialog in the future
-                            mixpanel.track("Inserted template", {
-                                "source": "keyboard",
-                                "title_size": res[0].title.length,
-                                "body_size": res[0].body.length
-                            });
+                            if (res.length) {
+                                mixpanel.track("Inserted template", {
+                                    "source": "keyboard",
+                                    "title_size": res[0].title.length,
+                                    "body_size": res[0].body.length
+                                });
+                            }
+
                         });
                     } else if (port.name === 'search') {
                         if (!msg.text) { // if text is empty get all of them

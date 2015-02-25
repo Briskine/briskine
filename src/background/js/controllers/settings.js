@@ -1,31 +1,21 @@
 gqApp.controller('SettingsCtrl', function ($scope, $rootScope, $timeout,  QuicktextService, SettingsService) {
+    $scope.settings = {};
+    SettingsService.get('settings').then(function(settings){
+        $scope.settings = settings;
+    });
 
-    $scope.settings =  SettingsService.get('settings');
-
-    $scope.$watch("settings", function(data){
-        $scope.updateSettings(data)
-    }, true);
-
-    $scope.updateSettings = function(settings){
+    $scope.updateSettings = function(){
         // check if we have to disable stats
-        if (!settings.stats.enabled) {
+        if (!$scope.settings.stats.enabled) {
             mixpanel.disable();
         } else {
             // enable all events
             mixpanel._flags.disable_all_events = false;
         }
-        SettingsService.set('settings', settings);
+        SettingsService.set('settings', $scope.settings);
     };
 
-    // Delete all quicktexts. This will not delete the quicktexts on the server side
-    $scope.deleteAll = function () {
-        var r = confirm("Are you sure you want to delete all templates?\n\nNote: they will NOT be deleted from the sync server if it's setup.");
-        if (r === true) {
-            QuicktextService.deleteAll().then(function(){
-                alert("All templates have been deleted. You can still get them back if you are registered gorgias.io");
-            });
-        }
-    };
+
 
     $scope.recordSequence = function(selector) {
         var input = $('#' + selector);
@@ -42,18 +32,21 @@ gqApp.controller('SettingsCtrl', function ($scope, $rootScope, $timeout,  Quickt
                 $scope.settings.dialog.shortcut = val;
             }
             input.val(val);
-            $scope.updateSettings($scope.settings);
+            $scope.updateSettings();
 
+            // refresh all tabs except the current tab
             chrome.tabs.query({'url': '<all_urls>', 'windowType': 'normal'}, function (tabs) {
                 for (var i in tabs) {
-                    chrome.tabs.reload(tabs[i].id, {});
+                    var tab = tabs[i];
+                    if (!tab.active) {
+                        chrome.tabs.reload(tab.id, {});
+                    }
                 }
             });
         });
     };
 
     $scope.AddBlacklistItem = function() {
-
         $scope.settings.blacklist.push('');
 
         // focus the last element blacklist website
@@ -64,22 +57,38 @@ gqApp.controller('SettingsCtrl', function ($scope, $rootScope, $timeout,  Quickt
 
             $newItem.focus();
         });
-
+        $scope.updateSettings();
     };
 
     $scope.RemoveBlacklistItem = function(index) {
-
         $scope.settings.blacklist.splice(index, 1);
-
+        $scope.updateSettings();
     };
 
     $scope.CheckBlacklistItem = function(index) {
-
         // if the url is blank, remove it
         if($scope.settings.blacklist[index].trim() === '') {
             $scope.settings.blacklist.splice(index, 1);
         }
-
     };
 
+    // Delete all quicktexts. This will not delete the quicktexts on the server side
+    $scope.deleteAll = function () {
+        var r = confirm("Are you sure you want to delete all templates?\n\nNote: they will NOT be deleted from the sync server if it's setup.");
+        if (r === true) {
+            QuicktextService.deleteAll().then(function(){
+                alert("All templates have been deleted. You can still get them back if you are registered gorgias.io");
+            });
+        }
+    };
+
+    // Delete all quicktexts. This will not delete the quicktexts on the server side
+    $scope.resetSettings = function () {
+        var r = confirm("Are you sure you want reset your settings?\n\nNote: Your stats will be reset");
+        if (r === true) {
+            SettingsService.reset().then(function(){
+                alert("Settings are reset to default values");
+            });
+        }
+    };
 });

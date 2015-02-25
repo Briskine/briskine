@@ -1,29 +1,70 @@
 // Settings
-var Settings = {
-    get: function (key, def) {
+var _localStorageSettings = {
+    get: function (key, def, callback) {
         if (key in window.localStorage && window.localStorage[key] !== '') {
-            return JSON.parse(window.localStorage[key]);
+            return callback(JSON.parse(window.localStorage[key]));
         } else {
-            if (!def) {
-                return angular.copy(this.defaults[key]);
+            if (!def) { // return the default in the Settings
+                return callback(angular.copy(Settings.defaults[key]));
             } else {
-                return def;
+                // return the supplied default
+                return callback(def);
             }
         }
     },
-    set: function (key, value) {
-        if (_.isEqual(value, this.defaults[key])) {
-            return this.clear(key);
+    set: function (key, value, callback) {
+        if (_.isEqual(value, Settings.defaults[key])) {
+            return callback(this.clear(key));
         } else {
             window.localStorage[key] = JSON.stringify(value);
-            return window.localStorage[key];
+            return callback(window.localStorage[key]);
         }
     },
     clear: function (key) {
         return delete window.localStorage[key];
+    }
+};
+
+var _chromeStorageSettings = {
+    get: function (key, def, callback) {
+        chrome.storage.sync.get(key, function (data) {
+            if (chrome.runtime.lastError || _.isEmpty(data)) {
+                if (!def) {
+                    return callback(angular.copy(Settings.defaults[key]));
+                } else {
+                    return callback(def);
+                }
+            } else {
+                return callback(data[key]);
+            }
+        });
     },
-    has: function (key) {
-        return key in window.localStorage;
+    set: function (key, value, callback) {
+        var data = {};
+        data[key] = value;
+
+        chrome.storage.sync.set(data, function () {
+            chrome.storage.sync.get(key, function (data) {
+                return callback(data);
+            });
+        });
+    }
+};
+
+var Settings = {
+    get: function (key, def, callback) {
+        if (chrome && chrome.storage) {
+            return _chromeStorageSettings.get(key, def, callback);
+        } else {
+            return _localStorageSettings.get(key, def, callback);
+        }
+    },
+    set: function (key, value, callback) {
+        if (chrome && chrome.storage) {
+            return _chromeStorageSettings.set(key, value, callback);
+        } else {
+            return _localStorageSettings.set(key, value, callback);
+        }
     },
     defaults: {
         baseURL: "https://gorgias.io/",

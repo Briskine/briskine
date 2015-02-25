@@ -1,5 +1,5 @@
 <!doctype html>
-<html data-ng-app="gqApp">
+<html data-ng-app="gqApp" ng-csp="">
 <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
     <title>Gorgias Options</title>
@@ -11,7 +11,7 @@
 <div class="container">
     <div class="sidebar-wrapper">
 
-        <a ng-href="{{ settings.get('baseURL') }}" class="brand" target="_blank">
+        <a ng-href="{{ baseURL }}" class="brand" target="_blank">
             <img src="../icons/white-logo.png" alt="Gorgias"/>
         </a>
 
@@ -20,7 +20,7 @@
             <div class="profile-body" ng-show="profile.user">
 
                 <a class="profile-picture" href="https://gorgias.io/app#/account" target="_blank">
-                    <img class="img-circle" title="Setup your avatar on gravatar.com" alt="gravatar" ng-src="{{ profile.gravatar(profile.user.email) }}">
+                    <img class="img-circle" title="Setup your avatar on gravatar.com" alt="gravatar" ng-src="{{ profileService.gravatar(profile.user.email) }}">
                 </a>
 
                 <div class="profile-details">
@@ -32,8 +32,8 @@
             </div>
 
             <div class="anonymous" ng-show="!profile.user">
-                <a ng-href="{{settings.get('baseURL')}}#login" ng-click="checkLogin()" target="_blank">Login</a> or
-                <a ng-href="{{settings.get('baseURL')}}#registration" target="_blank" ng-click="checkLogin()">Sign Up</a>
+                <a ng-href="{{baseURL}}#login" ng-click="checkLogin()" target="_blank">Login</a> or
+                <a ng-href="{{baseURL}}#registration" target="_blank" ng-click="checkLogin()">Sign Up</a>
                 to <em>share</em> templates with your team.
             </div>
 
