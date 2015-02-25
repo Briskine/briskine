@@ -39,7 +39,7 @@ module.exports = function (grunt) {
 
                 // Should be first
                 'background/js/environment.js',
-                'background/js/mixpanel.js',
+                'background/js/utils/mixpanel.js',
                 'bower_components/mixpanel/mixpanel.js',
                 'background/js/**/*.js',
             ]
