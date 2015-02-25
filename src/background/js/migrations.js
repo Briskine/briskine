@@ -1,4 +1,4 @@
-gqApp.service('MigrationService', function ($q, $resource, SettingsService, QuicktextService) {
+gApp.service('MigrationService', function ($q, $resource, SettingsService, QuicktextService) {
     var self = this;
 
     self.migrations = [

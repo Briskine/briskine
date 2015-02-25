@@ -1,7 +1,7 @@
 /* custom toolbar items for textAngular
  */
 
-gqApp.config(function ($provide) {
+gApp.config(function ($provide) {
 
     $provide.decorator('taOptions', [ 'taRegisterTool', '$delegate', '$timeout',
     function(taRegisterTool, taOptions, $timeout) {

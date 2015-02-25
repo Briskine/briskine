@@ -1,4 +1,4 @@
-gqApp.controller('ListCtrl',
+gApp.controller('ListCtrl',
     function ($scope, $rootScope, $routeParams, $location, $timeout, $filter, QuicktextService, SettingsService, ProfileService, StatsService) {
 
         var $formModal;

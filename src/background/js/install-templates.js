@@ -1,4 +1,4 @@
-gqApp.service('InstallService', function () {
+gApp.service('InstallService', function () {
 
     // available languages
     this.languages = [

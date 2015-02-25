@@ -27,7 +27,7 @@ if (chrome.runtime) {
 
     var angularInjector = function () {
         if (!document.querySelector('html[class=ng-scope]')) {
-            angular.bootstrap('html', ['gqApp']);
+            angular.bootstrap('html', ['gApp']);
         }
         return angular.element('html').injector();
     };

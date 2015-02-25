@@ -9,7 +9,7 @@ Raven.config('https://af2f5e9fb2744c359c19d08c8319d9c5@app.getsentry.com/30379',
     collectWindowErrors: true
 }).install();
 
-var gqApp = angular.module('gqApp', [
+var gApp = angular.module('gApp', [
     'ngRoute',
     'ngResource',
     'ngAnimate',
@@ -44,7 +44,7 @@ var gqApp = angular.module('gqApp', [
 });
 
 
-gqApp.config(["$provide", function ($provide) {
+gApp.config(["$provide", function ($provide) {
     $provide.decorator("$exceptionHandler", ["$delegate", "$window", function ($delegate, $window) {
         return function (exception, cause) {
             Raven.captureException(exception);
@@ -57,7 +57,7 @@ gqApp.config(["$provide", function ($provide) {
 
 /* Global run
  */
-gqApp.run(function ($rootScope, $location, $http, $timeout, ProfileService, SettingsService, QuicktextService) {
+gApp.run(function ($rootScope, $location, $http, $timeout, ProfileService, SettingsService, QuicktextService) {
 
     $rootScope.$on('$routeChangeStart', function (next, current) {
         $rootScope.path = $location.path();

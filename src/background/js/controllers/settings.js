@@ -1,4 +1,4 @@
-gqApp.controller('SettingsCtrl', function ($scope, $rootScope, $timeout,  QuicktextService, SettingsService) {
+gApp.controller('SettingsCtrl', function ($scope, $rootScope, $timeout,  QuicktextService, SettingsService) {
     $scope.settings = {};
     SettingsService.get('settings').then(function(settings){
         $scope.settings = settings;

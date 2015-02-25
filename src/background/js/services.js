@@ -1,7 +1,7 @@
 /*jshint multistr: true */
 
 // Quicktexts operations
-gqApp.service('QuicktextService', function ($q, $resource, SettingsService) {
+gApp.service('QuicktextService', function ($q, $resource, SettingsService) {
     var self = this;
 
     SettingsService.get('apiBaseURL').then(function (apiBaseURL) {
@@ -442,7 +442,7 @@ gqApp.service('QuicktextService', function ($q, $resource, SettingsService) {
 });
 
 // Handle stats (publish stats on the remote server)
-gqApp.service('StatsService', function ($resource, SettingsService) {
+gApp.service('StatsService', function ($resource, SettingsService) {
     var self = this;
 
     self.syncStatsTimer = null;
@@ -477,7 +477,7 @@ gqApp.service('StatsService', function ($resource, SettingsService) {
 });
 
 // Settings
-gqApp.service('SettingsService', function ($q) {
+gApp.service('SettingsService', function ($q) {
     var self = this;
     self.get = function (key, def) {
         var deferred = $q.defer();
@@ -504,7 +504,7 @@ gqApp.service('SettingsService', function ($q) {
 });
 
 // User Profile - check if the user is logged in. Get it's info
-gqApp.service('ProfileService', function ($q, SettingsService, md5) {
+gApp.service('ProfileService', function ($q, SettingsService, md5) {
     var self = this;
 
     self.gravatar = function (email, size) {

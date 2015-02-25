@@ -1,4 +1,4 @@
-gqApp.controller('InstallCtrl', function ($scope, $rootScope, $routeParams, InstallService, QuicktextService) {
+gApp.controller('InstallCtrl', function ($scope, $rootScope, $routeParams, InstallService, QuicktextService) {
 
     var ctrl = this;
 
