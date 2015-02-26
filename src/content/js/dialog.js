@@ -30,13 +30,15 @@ App.autocomplete.dialog = {
     isEmpty: true,
     RESULTS_LIMIT: 5, // only show 5 results at a time
     editor: null,
+    qaBtn: null,
+    prevFocus: null,
     dialogSelector: ".qt-dropdown",
     contentSelector: ".qt-dropdown-content",
     searchSelector: ".qt-dropdown-search",
 
     completion: function (e) {
-        e.preventDefault();
-        e.stopPropagation();
+        e.preventDefault && e.preventDefault();
+        e.stopPropagation && e.stopPropagation();
 
         var element = e.target;
 
@@ -68,6 +70,10 @@ App.autocomplete.dialog = {
         // Add loading dropdown
         var dialog = $(this.template);
         container.append(dialog);
+
+        // add the dialog quick access icon
+        this.qaBtn = $(this.qaBtnTemplate);
+        container.append(this.qaBtn);
 
         //Gmail HACK: set z-index to auto to a parent, otherwise the autocomplete
         //      dropdown will not be displayed with the correct stacking
@@ -104,6 +110,31 @@ App.autocomplete.dialog = {
         // when scrolling the element or the page
         // set the autocomplete dialog position
         window.addEventListener('scroll', App.autocomplete.dialog.setDialogPosition);
+
+        // move the quick access button around
+        // to the focused text field
+        // the focus event doesn't support bubbling
+        container.on('focusin', this.setQaBtnPosition);
+
+        this.qaBtn.on('mouseup', function() {
+
+            // return the focus to the element focused
+            // before clicking the qa button
+            App.autocomplete.dialog.prevFocus.focus();
+
+            App.settings.getFiltered('', App.autocomplete.dialog.RESULTS_LIMIT, function (quicktexts) {
+                App.autocomplete.quicktexts = quicktexts;
+
+                // TODO find a way to position the dialog under the qa button
+                // not next to the last focused position
+
+                // hack the event param to pass a different element
+                App.autocomplete.dialog.completion({
+                    target: App.autocomplete.dialog.prevFocus
+                });
+            });
+
+        });
 
     },
     bindKeyboardEvents: function () {
@@ -180,7 +211,9 @@ App.autocomplete.dialog = {
         // Set first element active
         App.autocomplete.dialog.selectItem(0);
     },
-    show: function () {
+    show: function (params) {
+        params = params || {};
+
         // get current focused element - the editor
         App.autocomplete.dialog.editor = document.activeElement;
 
@@ -191,18 +224,20 @@ App.autocomplete.dialog = {
         App.autocomplete.dialog.isActive = true;
         App.autocomplete.dialog.isEmpty = true;
 
-        App.autocomplete.dialog.setDialogPosition();
-
         $(this.dialogSelector).addClass('qt-dropdown-show');
         $(this.searchSelector).focus();
         $(App.autocomplete.dialog.contentSelector).scrollTop();
 
-        // if we scroll the content element
-        
-        // remove it just in case we added it previously
-        App.autocomplete.dialog.editor.removeEventListener('scroll', App.autocomplete.dialog.setDialogPosition);
-        
-        App.autocomplete.dialog.editor.addEventListener('scroll', App.autocomplete.dialog.setDialogPosition);
+        if(!params.skipPositioning) {
+            App.autocomplete.dialog.setDialogPosition();
+
+            // if we scroll the content element
+
+            // remove it just in case we added it previously
+            App.autocomplete.dialog.editor.removeEventListener('scroll', App.autocomplete.dialog.setDialogPosition);
+
+            App.autocomplete.dialog.editor.addEventListener('scroll', App.autocomplete.dialog.setDialogPosition);
+        }
 
     },
     setDialogPosition: function() {
@@ -301,6 +336,67 @@ App.autocomplete.dialog = {
         App.autocomplete.dialog.quicktexts = [];
         App.autocomplete.dialog.cursorPosition = null;
 
+    },
+    showQaForElement: function(elem) {
+
+        var show = true;
+
+        // if the element is not a textarea or contenteditable
+        // TODO should we also use it on input[type=text]?
+        if(!elem.tagName.toLowerCase() in {
+            'textarea': '',
+            'contenteditable': ''
+        }) {
+            show = false;
+        }
+
+        // if the quick access button is focused/clicked
+        if(elem.className.indexOf('gorgias-qa-btn') !== -1) {
+            show = false;
+        }
+
+        // if the dialog search field is focused
+        if(elem.className.indexOf('qt-dropdown-search') !== -1) {
+            show = false;
+        }
+
+        return show;
+
+    },
+    setQaBtnPosition: function(e) {
+
+        var textfield = e.target;
+
+        // only show it for valid elements
+        if(!App.autocomplete.dialog.showQaForElement(textfield)) {
+            return false;
+        }
+
+        App.autocomplete.dialog.prevFocus = textfield;
+
+        var qaBtn = App.autocomplete.dialog.qaBtn.get(0);
+
+        // padding from the top-right corner of the textfield
+        var padding = 5;
+
+        var metrics = {
+            top: textfield.offsetTop + padding,
+            left: textfield.offsetLeft - padding
+        };
+
+        // move the quick access button to the right
+        // of the textfield
+        metrics.left += textfield.offsetWidth - qaBtn.offsetWidth;
+
+        // move the btn using transforms
+        // for performance
+        var transform = 'translate3d(' + metrics.left + 'px, ' + metrics.top + 'px, 0)';
+
+        qaBtn.style.transform = transform;
+        qaBtn.style.msTransform = transform;
+        qaBtn.style.mozTransform = transform;
+        qaBtn.style.webkitTransform = transform;
+
     }
 };
 
@@ -309,6 +405,11 @@ App.autocomplete.dialog.template = '' +
     '<input type="search" class="qt-dropdown-search" value="" placeholder="Search templates...">' +
     '<ul class="qt-dropdown-content"></ul>' +
     '</div>' +
+    '';
+
+// quick access button for the dialog
+App.autocomplete.dialog.qaBtnTemplate = '' +
+    '<button class="gorgias-qa-btn"></button>' +
     '';
 
 App.autocomplete.dialog.liTemplate = '' +

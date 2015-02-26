@@ -69,6 +69,11 @@ var App = {
                 callback(templates);
             });
         },
+        get: function (key, callback) {
+            chrome.runtime.sendMessage({'request': 'get', 'data': key}, function (response) {
+                callback(response);
+            });
+        },
         stats: function (key, val, callback) {
             chrome.runtime.sendMessage({'request': 'stats', 'key': key, 'val': val}, function (response) {
                 callback(response);
