@@ -31,9 +31,12 @@ var App = {
             // use the callback function as a uuid for the debouncers
 
             var debouncerId = callback.toString();
+            var debouncerTime = 0;
 
             if (App.data.debouncer[debouncerId]) {
                 clearTimeout(App.data.debouncer[debouncerId]);
+
+                debouncerTime = 200;
             }
 
             App.data.debouncer[debouncerId] = setTimeout(function () {
@@ -51,7 +54,7 @@ var App = {
                 } else {
                     callback(App.data.searchCache[text]);
                 }
-            }, 200);
+            }, 0);
         },
         get: function (key, callback) {
             chrome.runtime.sendMessage({'request': 'get', 'data': key}, function (response) {
