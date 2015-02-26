@@ -86,9 +86,7 @@ gApp.controller('SettingsCtrl', function ($scope, $rootScope, $timeout,  Quickte
     $scope.resetSettings = function () {
         var r = confirm("Are you sure you want reset your settings?\n\nNote: Your stats will be reset");
         if (r === true) {
-            SettingsService.reset().then(function(){
-                alert("Settings are reset to default values");
-            });
+            SettingsService.reset();
         }
     };
 });
