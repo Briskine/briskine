@@ -36,7 +36,9 @@ App.autocomplete.dialog = {
     contentSelector: ".qt-dropdown-content",
     searchSelector: ".qt-dropdown-search",
 
-    completion: function (e) {
+    completion: function (e, params) {
+        params = params || {};
+
         if(e.preventDefault) {
             e.preventDefault();
         }
@@ -63,7 +65,10 @@ App.autocomplete.dialog = {
         App.settings.getFiltered("", App.autocomplete.dialog.RESULTS_LIMIT, function (quicktexts) {
             App.autocomplete.quicktexts = quicktexts;
 
-            App.autocomplete.dialog.populate(App.autocomplete.quicktexts);
+            params.quicktexts = App.autocomplete.quicktexts;
+
+            App.autocomplete.dialog.populate(params);
+
         });
 
     },
@@ -75,10 +80,6 @@ App.autocomplete.dialog = {
         // Add loading dropdown
         var dialog = $(this.template);
         container.append(dialog);
-
-        // add the dialog quick access icon
-        this.qaBtn = $(this.qaBtnTemplate);
-        container.append(this.qaBtn);
 
         //Gmail HACK: set z-index to auto to a parent, otherwise the autocomplete
         //      dropdown will not be displayed with the correct stacking
@@ -107,7 +108,9 @@ App.autocomplete.dialog = {
             App.settings.getFiltered(App.autocomplete.cursorPosition.word.text, App.autocomplete.dialog.RESULTS_LIMIT, function (quicktexts) {
 
                 App.autocomplete.quicktexts = quicktexts;
-                App.autocomplete.dialog.populate(App.autocomplete.quicktexts);
+                App.autocomplete.dialog.populate({
+                    quicktexts: App.autocomplete.quicktexts
+                });
 
             });
         });
@@ -116,33 +119,36 @@ App.autocomplete.dialog = {
         // set the autocomplete dialog position
         window.addEventListener('scroll', App.autocomplete.dialog.setDialogPosition);
 
+    },
+    createQaBtn: function() {
+
+        var container = $('body');
+
+        // add the dialog quick access icon
+        this.qaBtn = $(this.qaBtnTemplate);
+        container.append(this.qaBtn);
+
         // move the quick access button around
         // to the focused text field
         // the focus event doesn't support bubbling
         container.on('focusin', this.setQaBtnPosition);
 
-        this.qaBtn.on('mouseup', function() {
+        this.qaBtn.on('mouseup', function(e) {
 
             // return the focus to the element focused
             // before clicking the qa button
             App.autocomplete.dialog.prevFocus.focus();
 
-            // TODO find a way to position the dialog under the qa button
-            // not next to the last focused position
+            // position the dialog under the qa button
 
             // hack the event param to pass a different element
             App.autocomplete.dialog.completion({
                 target: App.autocomplete.dialog.prevFocus
+            }, {
+                dialogPositionNode: e.target
             });
 
-            /*
-            App.settings.getFiltered('', App.autocomplete.dialog.RESULTS_LIMIT, function (quicktexts) {
-                App.autocomplete.quicktexts = quicktexts;
-
-
-
-            }, 0);
-        */
+            $(App.autocomplete.dialog.dialogSelector).addClass('qa-btn-dropdown-show');
 
         });
 
@@ -182,10 +188,12 @@ App.autocomplete.dialog = {
         });
 
     },
-    populate: function (quicktexts) {
-        App.autocomplete.quicktexts = quicktexts;
+    populate: function (params) {
+        params = params || {};
+
+        App.autocomplete.quicktexts = params.quicktexts;
         if (!App.autocomplete.dialog.isActive) {
-            App.autocomplete.dialog.show();
+            App.autocomplete.dialog.show(params);
         }
 
 
@@ -238,19 +246,22 @@ App.autocomplete.dialog = {
         $(this.searchSelector).focus();
         $(App.autocomplete.dialog.contentSelector).scrollTop();
 
-        if(!params.skipPositioning) {
-            App.autocomplete.dialog.setDialogPosition();
+        App.autocomplete.dialog.setDialogPosition(params.dialogPositionNode);
 
-            // if we scroll the content element
+        // if we scroll the content element.
+        // only if we're positioning next the cursor,
+        // not another element.
+        if(!params.dialogPositionNode) {
 
             // remove it just in case we added it previously
             App.autocomplete.dialog.editor.removeEventListener('scroll', App.autocomplete.dialog.setDialogPosition);
 
             App.autocomplete.dialog.editor.addEventListener('scroll', App.autocomplete.dialog.setDialogPosition);
+
         }
 
     },
-    setDialogPosition: function() {
+    setDialogPosition: function(positionNode) {
         
         if(!App.autocomplete.dialog.isActive) {
             return;
@@ -264,15 +275,37 @@ App.autocomplete.dialog = {
         scrollTop += $(App.autocomplete.dialog.editor).scrollTop();
         scrollLeft += $(App.autocomplete.dialog.editor).scrollLeft();
 
-        var topPos = App.autocomplete.cursorPosition.absolute.top + App.autocomplete.cursorPosition.absolute.height;
+        var dialogMetrics = {
+            width: 220
+        };
+
+        var topPos = 'auto';
         var bottomPos = 'auto';
-        var leftPos = App.autocomplete.cursorPosition.absolute.left + App.autocomplete.cursorPosition.absolute.width - scrollLeft;
+        var leftPos = 'auto';
+
+        // in case we want to position the dialog next to
+        // another element,
+        // not next to the cursor.
+        // eg. when we position it next to the qa button.
+        if(positionNode) {
+
+            var metrics = positionNode.getBoundingClientRect();
+
+            topPos = metrics.top + metrics.height;
+            leftPos = metrics.left + metrics.width - dialogMetrics.width - scrollLeft;
+
+        } else {
+
+            topPos = App.autocomplete.cursorPosition.absolute.top + App.autocomplete.cursorPosition.absolute.height;
+            leftPos = App.autocomplete.cursorPosition.absolute.left + App.autocomplete.cursorPosition.absolute.width - scrollLeft;
+
+        }
 
         // check if we have enough space at the bottom
         // for the maximum dialog height
-        if((pageHeight - App.autocomplete.cursorPosition.absolute.top) < dialogMaxHeight) {
+        if((pageHeight - topPos) < dialogMaxHeight) {
             topPos = 'auto';
-            bottomPos = pageHeight - App.autocomplete.cursorPosition.absolute.top + scrollTop;
+            bottomPos = pageHeight - topPos + scrollTop;
         } else {
             topPos = topPos - scrollTop;
         }
@@ -338,6 +371,7 @@ App.autocomplete.dialog = {
         }
 
         $(this.dialogSelector).removeClass('qt-dropdown-show');
+        $(this.dialogSelector).removeClass('qa-btn-dropdown-show');
         $(this.searchSelector).val('');
 
         App.autocomplete.dialog.isActive = false;
@@ -349,15 +383,12 @@ App.autocomplete.dialog = {
     },
     showQaForElement: function(elem) {
 
-        var show = true;
+        var show = false;
 
-        // if the element is not a textarea or contenteditable
-        // TODO should we also use it on input[type=text]?
-        if(!(elem.tagName.toLowerCase() in {
-            'textarea': '',
-            'contenteditable': ''
-        })) {
-            show = false;
+        // if the element is not a textarea
+        // input[type=text] or contenteditable
+        if($(elem).is('textarea, input[type=text], [contenteditable]')) {
+            show = true;
         }
 
         // if the quick access button is focused/clicked
