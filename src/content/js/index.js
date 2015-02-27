@@ -4,10 +4,6 @@
  */
 
 var App = {
-    data: {
-        searchCache: {},
-        debouncer: {}
-    },
     editor_enabled: true,
     autocomplete: {},
     settings: {
