@@ -226,6 +226,10 @@ App.init = function (settings) {
     App.autocomplete.dialog.create();
     App.autocomplete.dialog.bindKeyboardEvents();
 
+    if (settings.qaBtn.enabled) {
+        App.autocomplete.dialog.createQaBtn();
+    }
+
     App.activatePlugins();
 
     if (!App.shortcutPort) {

@@ -9,8 +9,10 @@ gqApp.controller('SettingsCtrl', function ($scope, $rootScope, $timeout,  Quickt
         if (!$scope.settings.stats.enabled) {
             mixpanel.disable();
         } else {
-            // enable all events
-            mixpanel._flags.disable_all_events = false;
+            if(mixpanel && mixpanel._flags) {
+                // enable all events
+                mixpanel._flags.disable_all_events = false;
+            }
         }
         SettingsService.set('settings', $scope.settings);
     };

@@ -91,6 +91,14 @@
 
     <h4>Other</h4>
     <div class="checkbox">
+        <label for="showQaButton">
+            Show the Quick Access button on textfields.
+        </label>
+
+        <input type="checkbox" id="showQaButton" ng-model="settings.qaBtn.enabled"  ng-change="updateSettings()"  />
+
+    </div>
+    <div class="checkbox">
         <label for="sendStats" data-toggle="tooltip" data-placement="bottom"
                data-original-title="Help improve Gorgias by sending anonymous statistics.">
             Send usage statistics

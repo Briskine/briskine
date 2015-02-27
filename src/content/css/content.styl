@@ -25,6 +25,7 @@ $padding = 8px;
 
 .qt-dropdown {
     display: none;
+    width: 220px;
 
     position: fixed;
     z-index: 9999999;
@@ -61,7 +62,6 @@ $padding = 8px;
     li {
         position: relative;
         padding: $padding;
-        max-width: 20em;
         overflow: hidden;
         cursor: pointer;
 
@@ -143,6 +143,7 @@ $padding = 8px;
     position: absolute;
     top: 0;
     left: 0;
+    z-index: 2147483647;
     display: block;
     width: 2em;
     height: 2em;
@@ -196,15 +197,28 @@ $padding = 8px;
     background-size: contain;
 }
 
-/* show the qa button when a textarea or contenteditable is focused
+/* show the qa button when a textarea, input or contenteditable is focused
  * when the button is clicked
  * when the dropdown is shown (after the button is clicked)
- * TODO should we also show it for text inputs?
  */
+
 .gorgias-qa-btn:active,
-.qt-dropdown-show ~ .gorgias-qa-btn,
+.qa-btn-dropdown-show ~ .gorgias-qa-btn,
+input[type=text]:focus ~ .gorgias-qa-btn,
 textarea:focus ~ .gorgias-qa-btn,
 [contenteditable]:focus ~ .gorgias-qa-btn {
     opacity: .6;
     visibility: visible;
+}
+
+/* blend the button into the dropdown when active
+ */
+
+.qa-btn-dropdown-show ~ .gorgias-qa-btn {
+    top: 1px;
+    left: 2px;
+    background: #fff;
+    border-width: 1px 1px 0 1px;
+    box-shadow: none;
+    opacity: 1;
 }
