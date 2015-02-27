@@ -6,7 +6,8 @@
 var App = {
     data: {
         searchCache: {},
-        debouncer: {}
+        debouncer: {},
+        lastFilterRun: 0,
     },
     autocomplete: {},
     settings: {
@@ -24,7 +25,7 @@ var App = {
 
             App.shortcutPort.postMessage({text: text});
         },
-        getFiltered: function (text, limit, callback) {
+        getFiltered: function (text, limit, callback, debouncerTime) {
             // search even the empty strings. It's not a problem because the dialog is now triggered by a user shortcut
 
             // use a debouncer to not trigger the filter too many times
@@ -33,10 +34,20 @@ var App = {
             var debouncerId = callback.toString();
             var debouncerTime = 0;
 
-            if (App.data.debouncer[debouncerId]) {
-                clearTimeout(App.data.debouncer[debouncerId]);
+            // check if the function was previsouly called
+            // earlier than X ms ago.
+            // if it was, debounce the next run.
+            // we do this to make sure the first independent run,
+            // not part of a succession of runs
+            // (keyup events one after the other),
+            // runs instantly, and does not have any delay.
+            // helps with the dialog show delay.
+            if(Date.now() - App.data.lastFilterRun < 400) {
+                debouncerTime = 400;
 
-                debouncerTime = 200;
+                if (App.data.debouncer[debouncerId]) {
+                    clearTimeout(App.data.debouncer[debouncerId]);
+                }
             }
 
             App.data.debouncer[debouncerId] = setTimeout(function () {
@@ -54,7 +65,11 @@ var App = {
                 } else {
                     callback(App.data.searchCache[text]);
                 }
-            }, 0);
+            }, debouncerTime);
+
+            // update the timer with the last time the function was ran
+            App.data.lastFilterRun = Date.now();
+
         },
         get: function (key, callback) {
             chrome.runtime.sendMessage({'request': 'get', 'data': key}, function (response) {

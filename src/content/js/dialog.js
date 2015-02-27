@@ -37,8 +37,13 @@ App.autocomplete.dialog = {
     searchSelector: ".qt-dropdown-search",
 
     completion: function (e) {
-        e.preventDefault && e.preventDefault();
-        e.stopPropagation && e.stopPropagation();
+        if(e.preventDefault) {
+            e.preventDefault();
+        }
+
+        if(e.stopPropagation) {
+            e.stopPropagation();
+        }
 
         var element = e.target;
 
@@ -122,17 +127,22 @@ App.autocomplete.dialog = {
             // before clicking the qa button
             App.autocomplete.dialog.prevFocus.focus();
 
+            // TODO find a way to position the dialog under the qa button
+            // not next to the last focused position
+
+            // hack the event param to pass a different element
+            App.autocomplete.dialog.completion({
+                target: App.autocomplete.dialog.prevFocus
+            });
+
+            /*
             App.settings.getFiltered('', App.autocomplete.dialog.RESULTS_LIMIT, function (quicktexts) {
                 App.autocomplete.quicktexts = quicktexts;
 
-                // TODO find a way to position the dialog under the qa button
-                // not next to the last focused position
 
-                // hack the event param to pass a different element
-                App.autocomplete.dialog.completion({
-                    target: App.autocomplete.dialog.prevFocus
-                });
-            });
+
+            }, 0);
+        */
 
         });
 
@@ -343,10 +353,10 @@ App.autocomplete.dialog = {
 
         // if the element is not a textarea or contenteditable
         // TODO should we also use it on input[type=text]?
-        if(!elem.tagName.toLowerCase() in {
+        if(!(elem.tagName.toLowerCase() in {
             'textarea': '',
             'contenteditable': ''
-        }) {
+        })) {
             show = false;
         }
 
