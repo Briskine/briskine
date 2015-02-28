@@ -8,6 +8,7 @@ var App = {
         searchCache: {},
         debouncer: {}
     },
+    editor_enabled: true,
     autocomplete: {},
     settings: {
         // Get quicktexts filtered out by shortcut
@@ -167,6 +168,9 @@ Raven.config('https://af2f5e9fb2744c359c19d08c8319d9c5@app.getsentry.com/30379',
 App.init = function (settings) {
 
     var currentUrl = window.location.href;
+
+    // Check if we should use editor markup
+    App.settings.editor_enabled = settings.editor.enabled;
 
     var blacklistPrivate = [
         'https://gorgias.io'

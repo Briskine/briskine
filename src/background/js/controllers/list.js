@@ -127,8 +127,11 @@ gApp.controller('ListCtrl',
                             .replace(/\n/g, ' <br />\n');
 
                     // convert qt body from markdown to html
-                    $scope.selectedQt.body = marked($scope.selectedQt.body);
-
+                    SettingsService.get("settings", function(settings){
+                        if (settings.editor.enabled){
+                            $scope.selectedQt.body = marked($scope.selectedQt.body);
+                        }
+                    });
                 });
 
             }

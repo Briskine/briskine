@@ -49,6 +49,17 @@ gApp.service('MigrationService', function ($q, $resource, SettingsService, Quick
                     callback();
                 });
             }
+        },
+        {
+            description: 'Enabling settings.editor.enabled',
+            revision: 3,
+            upgrade: function (callback) {
+                SettingsService.get('settings').then(function (settings) {
+                    settings.editor.enabled = true;
+                    SettingsService.set('settings', settings);
+                    callback();
+                });
+            }
         }
     ];
 

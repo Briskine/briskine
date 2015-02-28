@@ -89,6 +89,9 @@ var Settings = {
                 subject: false,
                 tags: false
             },
+            editor: {
+                enabled: true
+            },
             migration_head: 0
         },
         // refactor this into 'local' and 'remote'
