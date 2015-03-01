@@ -27,7 +27,7 @@ $padding = 8px;
     display: none;
     width: 220px;
 
-    position: fixed;
+    position: absolute;
     z-index: 9999999;
 
     overflow: hidden;
@@ -204,9 +204,7 @@ $padding = 8px;
 
 .gorgias-qa-btn:active,
 .qa-btn-dropdown-show ~ .gorgias-qa-btn,
-input[type=text]:focus ~ .gorgias-qa-btn,
-textarea:focus ~ .gorgias-qa-btn,
-[contenteditable]:focus ~ .gorgias-qa-btn {
+.gorgias-show-qa-btn .gorgias-qa-btn {
     opacity: .6;
     visibility: visible;
 }
