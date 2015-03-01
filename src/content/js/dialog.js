@@ -118,7 +118,7 @@ App.autocomplete.dialog = {
         // when scrolling the element or the page
         // set the autocomplete dialog position
         window.addEventListener('scroll', function() {
-            App.autocomplete.dialog.setDialogPosition()
+            App.autocomplete.dialog.setDialogPosition();
         });
 
     },
