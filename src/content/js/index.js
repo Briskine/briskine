@@ -25,7 +25,7 @@ var App = {
 
             App.shortcutPort.postMessage({text: text});
         },
-        getFiltered: function (text, limit, callback, debouncerTime) {
+        getFiltered: function (text, limit, callback) {
             // search even the empty strings. It's not a problem because the dialog is now triggered by a user shortcut
 
             // use a debouncer to not trigger the filter too many times
