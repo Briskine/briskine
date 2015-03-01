@@ -117,7 +117,9 @@ App.autocomplete.dialog = {
 
         // when scrolling the element or the page
         // set the autocomplete dialog position
-        window.addEventListener('scroll', App.autocomplete.dialog.setDialogPosition);
+        window.addEventListener('scroll', function() {
+            App.autocomplete.dialog.setDialogPosition()
+        });
 
     },
     createQaBtn: function() {
@@ -131,7 +133,9 @@ App.autocomplete.dialog = {
         // move the quick access button around
         // to the focused text field
         // the focus event doesn't support bubbling
-        container.on('focusin', this.setQaBtnPosition);
+        container.on('focusin', this.showQaBtn);
+        
+        container.on('focusout', this.hideQaBtn);
 
         this.qaBtn.on('mouseup', function(e) {
 
@@ -274,22 +278,27 @@ App.autocomplete.dialog = {
         
         scrollTop += $(App.autocomplete.dialog.editor).scrollTop();
         scrollLeft += $(App.autocomplete.dialog.editor).scrollLeft();
+        
+        var $dialog = $(App.autocomplete.dialog.dialogSelector);
 
-        var dialogMetrics = {
-            width: 220
-        };
+        var dialogMetrics = $dialog.get(0).getBoundingClientRect();
 
         var topPos = 'auto';
-        var bottomPos = 'auto';
         var leftPos = 'auto';
 
         // in case we want to position the dialog next to
         // another element,
         // not next to the cursor.
         // eg. when we position it next to the qa button.
-        if(positionNode) {
+        
+        console.log(positionNode);
+        
+        if(positionNode && positionNode.tagName) {
 
-            var metrics = positionNode.getBoundingClientRect();
+            var metrics = JSON.parse(JSON.stringify(positionNode.getBoundingClientRect()));
+        
+            //metrics.top += $(window).scrollTop();
+            //metrics.left += $(window).scrollLeft();
 
             topPos = metrics.top + metrics.height;
             leftPos = metrics.left + metrics.width - dialogMetrics.width - scrollLeft;
@@ -300,19 +309,17 @@ App.autocomplete.dialog = {
             leftPos = App.autocomplete.cursorPosition.absolute.left + App.autocomplete.cursorPosition.absolute.width - scrollLeft;
 
         }
-
+        
         // check if we have enough space at the bottom
         // for the maximum dialog height
         if((pageHeight - topPos) < dialogMaxHeight) {
-            topPos = 'auto';
-            bottomPos = pageHeight - topPos + scrollTop;
+            topPos = topPos - dialogMetrics.height - App.autocomplete.cursorPosition.absolute.height;
         } else {
             topPos = topPos - scrollTop;
         }
 
-        $(App.autocomplete.dialog.dialogSelector).css({
+        $dialog.css({
             top: topPos,
-            bottom: bottomPos,
             left: leftPos
         });
 
@@ -404,7 +411,7 @@ App.autocomplete.dialog = {
         return show;
 
     },
-    setQaBtnPosition: function(e) {
+    showQaBtn: function(e) {
 
         var textfield = e.target;
 
@@ -420,10 +427,13 @@ App.autocomplete.dialog = {
         // padding from the top-right corner of the textfield
         var padding = 5;
 
-        var metrics = {
-            top: textfield.offsetTop + padding,
-            left: textfield.offsetLeft - padding
-        };
+        var metrics = JSON.parse(JSON.stringify(textfield.getBoundingClientRect()));
+        
+        metrics.top += $(window).scrollTop();
+        metrics.left += $(window).scrollLeft();
+        
+        metrics.top += padding;
+        metrics.left -= padding;
 
         // move the quick access button to the right
         // of the textfield
@@ -437,7 +447,14 @@ App.autocomplete.dialog = {
         qaBtn.style.msTransform = transform;
         qaBtn.style.mozTransform = transform;
         qaBtn.style.webkitTransform = transform;
+        
+        $('body').addClass('gorgias-show-qa-btn');
 
+    },
+    hideQaBtn: function() {
+        
+        $('body').removeClass('gorgias-show-qa-btn');
+        
     }
 };
 
