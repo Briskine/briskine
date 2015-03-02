@@ -1,4 +1,4 @@
-gApp.controller('SettingsCtrl', function ($scope, $rootScope, $timeout,  TemplateService, SettingsService) {
+gApp.controller('SettingsCtrl', function ($scope, $rootScope, $timeout,  QuicktextService, SettingsService) {
     $scope.settings = {};
     SettingsService.get('settings').then(function(settings){
         $scope.settings = settings;
@@ -76,7 +76,7 @@ gApp.controller('SettingsCtrl', function ($scope, $rootScope, $timeout,  Templat
     $scope.deleteAll = function () {
         var r = confirm("Are you sure you want to delete all templates?\n\nNote: they will NOT be deleted from the sync server if it's setup.");
         if (r === true) {
-            TemplateService.deleteAll().then(function(){
+            QuicktextService.deleteAll().then(function(){
                 alert("All templates have been deleted. You can still get them back if you are registered gorgias.io");
             });
         }

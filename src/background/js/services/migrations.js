@@ -1,4 +1,4 @@
-gApp.service('MigrationService', function ($q, $resource, SettingsService, TemplateService, QuicktextService) {
+gApp.service('MigrationService', function ($q, $resource, SettingsService, QuicktextService) {
     var self = this;
 
     self.migrations = [
@@ -6,7 +6,7 @@ gApp.service('MigrationService', function ($q, $resource, SettingsService, Templ
             description: 'Enable template fields if we have templates containing subject or tags',
             revision: 1,
             upgrade: function (callback) {
-                TemplateService.quicktexts().then(function (quicktexts) {
+                QuicktextService.quicktexts().then(function (quicktexts) {
                     SettingsService.get('settings').then(function (settings) {
                         settings.fields.subject = false;
                         settings.fields.tags = false;
@@ -28,7 +28,7 @@ gApp.service('MigrationService', function ($q, $resource, SettingsService, Templ
             }
         },
         {
-            description: 'Migrating from window.localStorage to chrome.storage.sync',
+            description: 'Migrating from window.localStorage to chrome.storage',
             revision: 2,
             upgrade: function (callback) {
                 // if chrome.storage is not present then there is nothing to do
@@ -43,7 +43,7 @@ gApp.service('MigrationService', function ($q, $resource, SettingsService, Templ
                 }
 
                 chrome.storage.sync.set(data, function () {
-                    _.each(_.keys(data), function (k) {
+                    _.each(_.keys(data), function(k){
                         localStorage.removeItem(k);
                     });
                     callback();
@@ -60,22 +60,6 @@ gApp.service('MigrationService', function ($q, $resource, SettingsService, Templ
                     callback();
                 });
             }
-        },
-        {
-            description: 'Migrate from WebSQL templates to chrome.storage.local',
-            revision: 4,
-            upgrade: function (callback) {
-                QuicktextService.quicktexts().then(function (quicktexts) {
-                    for (var i in quicktexts) {
-                        var q = quicktexts[i];
-                        TemplateService.create(q, true).then(function () {
-                            if (parseInt(i, 10) === quicktexts.length - 1) {
-                                callback(); //callback when we reached the end
-                            }
-                        });
-                    }
-                });
-            }
         }
     ];
 
@@ -88,8 +72,8 @@ gApp.service('MigrationService', function ($q, $resource, SettingsService, Templ
                 self.HEAD = 0;
             }
 
-            var run = function () {
-                _.each(self.migrations, function (m) {
+            var run = function() {
+                _.each(self.migrations, function(m){
                     // each migration upon finishing runs the next migration
                     // It's done recursively because of the async callbacks
                     if (m.revision === self.HEAD + 1) {

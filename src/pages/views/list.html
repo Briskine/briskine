@@ -17,7 +17,7 @@
         <span ng-repeat="(tag, count) in tags">
           <a href='' class="label label-default"
              ng-class="{true: 'label-primary', false: 'label-default'}[filterTags.indexOf(tag) !== -1]"
-             ng-click="toggleFilterTag()">{{::tag}}<span ng-if="::count > 1"> ({{::count}})</span></a>
+             ng-click="toggleFilterTag()">{{tag}}<span ng-if="count > 1"> ({{count}})</span></a>
         </span>
     </div>
 
@@ -28,20 +28,21 @@
     <div class="list-group quicktexts-list">
 
         <div class="list-group-item"
-             ng-repeat="quicktext in filteredQuicktexts | limitTo:limitQuicktexts">
+             ng-repeat="quicktext in filteredQuicktexts | limitTo:limitQuicktexts"
+             ng-class="{ 'active': $index === focusIndex }">
 
             <a class="list-group-item-link"
                tabindex="0"
-               ng-href="#/list?id={{ ::quicktext.id }}">
+               ng-click="activateQuicktext(quicktext.id)"
+               ng-focus="setFocus($index)">
 
                 <div class="row">
                     <div class="col-xs-4">
                         <h4 class="list-group-item-heading"
-                            ng-bind-html="quicktext.title | truncate: 50 | newlines | safe"></h4>
+                            ng-bind-html="quicktext.title | truncate: 50 | newlines | safe"
+                            title="Template name: {{ quicktext.title }}"></h4>
 
-                        <p class="quicktext-shortcut"
-                           title="Text shortcut: type this text and press TAB to insert your template"
-                           ng-show="quicktext.shortcut" >
+                        <p class="quicktext-shortcut" ng-show="quicktext.shortcut" title="Text shortcut: type this text and press TAB to insert your template">
                             <span>{{ quicktext.shortcut }}</span>
                         </p>
                     </div>
@@ -50,16 +51,15 @@
                     <div class="col-xs-6">
 
                         <p class="list-group-item-text quicktext-detail">
-                            <span class="quicktext-template" title="{{::quicktext.body}}"
+                            <span class="quicktext-template" title="{{quicktext.body}}"
                                   ng-bind-html="quicktext.body | truncate:100 | newlines | safe"></span>
                         </p>
 
-                        <p class="list-group-item-text quicktext-tags" ng-if="::quicktext.tags">
-                            <!--
+                        <p class="list-group-item-text quicktext-tags" ng-show="quicktext.tags">
                             <span ng-repeat="tag in quicktext.tags.split(',')">
-                                <span class="label label-default">{{::tag}}</span>
+                                <span class="label"
+                                      ng-class="{true: 'label-primary', false: 'label-default'}[filterTags.indexOf(tag.trim()) !== -1]">{{tag.trim()}}</span>
                             </span>
-                            -->
                         </p>
                     </div>
 
@@ -70,12 +70,12 @@
 
             <div class="hover-actions">
                 <button type="button" class="btn btn-default" ng-click="deleteQt()" title="Delete">Delete</button>
-                <a ng-href="#/list?id={{ ::quicktext.id }}" target="{{ pageAction ? 'quicktextOptionsTab' : '' }}"
+                <a ng-href="#/list?id={{ quicktext.id }}" target="{{ pageAction ? 'quicktextOptionsTab' : '' }}"
                    class="btn btn-primary edit-button">Edit</a>
             </div>
         </div>
     </div>
-    <div class="row load-more text-center">
+    <div class="row load-more" style="text-align: center">
         <button ng-click="loadMore()" class="btn btn-default">Load more templates</button>
     </div>
 </div>

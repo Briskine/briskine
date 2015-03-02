@@ -57,7 +57,7 @@ gApp.config(["$provide", function ($provide) {
 
 /* Global run
  */
-gApp.run(function ($rootScope, $location, $http, $timeout, ProfileService, SettingsService, TemplateService) {
+gApp.run(function ($rootScope, $location, $http, $timeout, ProfileService, SettingsService, QuicktextService) {
 
     $rootScope.$on('$routeChangeStart', function (next, current) {
         $rootScope.path = $location.path();
@@ -98,36 +98,18 @@ gApp.run(function ($rootScope, $location, $http, $timeout, ProfileService, Setti
                     if (data.is_loggedin) {
                         $http.get(apiBaseURL + "account").success(function (data) {
                             $rootScope.profile.user = data;
-                            mixpanel.register({
-                                authenticated: true,
-                                user: data
-                            });
                         });
-                        // Once logged in, upload the local templates
-                        TemplateService.syncLocal();
-                    } else {
-                        mixpanel.register({
-                            authenticated: false,
-                            user: {}
-                        });
-                        SettingsService.set("isLoggedIn", false);
                     }
                 });
-            }).error(function(){
-                mixpanel.register({
-                    authenticated: false,
-                    user: {}
-                });
-                SettingsService.set("isLoggedIn", false);
             });
         });
     };
 
     // last sync date
-    $rootScope.lastSync = TemplateService.lastSync;
+    $rootScope.lastSync = QuicktextService.lastSync;
 
     $rootScope.SyncNow = function () {
-        TemplateService.sync(function (lastSync) {
+        QuicktextService.sync(function (lastSync) {
             $rootScope.$broadcast("quicktexts-sync");
             $rootScope.lastSync = lastSync;
         });
@@ -148,9 +130,8 @@ gApp.run(function ($rootScope, $location, $http, $timeout, ProfileService, Setti
             $(this).find('input[type!="hidden"]:first').focus();
         });
 
+        $rootScope.isLoggedIn();
     };
-
-    $rootScope.isLoggedIn();
 
     $rootScope.$on('$viewContentLoaded', initDom);
     $rootScope.$on('$includeContentLoaded', initDom);

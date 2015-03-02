@@ -1,4 +1,4 @@
-gApp.controller('InstallCtrl', function ($scope, $rootScope, $routeParams, InstallService, TemplateService) {
+gApp.controller('InstallCtrl', function ($scope, $rootScope, $routeParams, InstallService, QuicktextService) {
 
     var ctrl = this;
 
@@ -87,7 +87,7 @@ gApp.controller('InstallCtrl', function ($scope, $rootScope, $routeParams, Insta
                     if (t.enabled && langs.indexOf(t.iso) !== -1){
                         // set the remote_id to empty string so we don't have any 'undefined' strings in the db
                         t.remote_id = "";
-                        TemplateService.create(t).then();
+                        QuicktextService.create(t).then();
                     }
                 }
             }

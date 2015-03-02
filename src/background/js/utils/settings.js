@@ -1,20 +1,3 @@
-// template storage
-
-var TemplateStorage = {
-    set: function (data, callback) {
-        chrome.storage.local.set(data, callback);
-    },
-    get: function (k, callback) {
-        chrome.storage.local.get(k, callback);
-    },
-    remove: function (k, callback) {
-        chrome.storage.local.remove(k, callback);
-    },
-    clear: function (callback) {
-        chrome.storage.local.clear(callback);
-    }
-};
-
 // Settings
 var _localStorageSettings = {
     get: function (key, def, callback) {
@@ -22,7 +5,7 @@ var _localStorageSettings = {
             return callback(JSON.parse(window.localStorage[key]));
         } else {
             if (!def) { // return the default in the Settings
-                return callback(Settings.defaults[key]);
+                return callback(angular.copy(Settings.defaults[key]));
             } else {
                 // return the supplied default
                 return callback(def);
@@ -47,7 +30,7 @@ var _chromeStorageSettings = {
         chrome.storage.sync.get(key, function (data) {
             if (chrome.runtime.lastError || _.isEmpty(data)) {
                 if (!def) {
-                    return callback(Settings.defaults[key]);
+                    return callback(angular.copy(Settings.defaults[key]));
                 } else {
                     return callback(def);
                 }
