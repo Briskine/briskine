@@ -110,7 +110,6 @@ gApp.service('MigrationService', function ($q, $resource, SettingsService, Templ
                 _.each(self.migrations, function (m) {
                     // each migration upon finishing runs the next migration
                     // It's done recursively because of the async callbacks
-                    console.log("Check:", m.revision, self.HEAD + 1);
                     if (m.revision === self.HEAD + 1) {
                         console.log("Migrating", m);
                         // upgrade and call the callback that increments the HEAD
