@@ -32,11 +32,11 @@ gApp.filter('safe', function ($sce) {
 });
 
 // Filter quicktexts by tags
-gApp.filter('tagFilter', function (QuicktextService) {
+gApp.filter('tagFilter', function (TemplateService) {
     return function (quicktexts, filterTags) {
         if (filterTags && filterTags.length) {
             return _.filter(quicktexts, function (qt) {
-                tags = QuicktextService.tags(qt);
+                tags = TemplateService.tags(qt);
                 return _.intersection(filterTags, tags).length === filterTags.length;
             });
         } else {

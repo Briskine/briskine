@@ -78,7 +78,7 @@ if (chrome.runtime) {
         chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
             var injector = angularInjector();
             if (request.request === 'get') {
-                injector.get('QuicktextService').quicktexts().then(function (res) {
+                injector.get('TemplateService').quicktexts().then(function (res) {
                     if (res.length) {
                         mixpanel.track("Inserted template", {
                             "title_size": res[0].title.length,
@@ -105,49 +105,21 @@ if (chrome.runtime) {
                     sendResponse(settings);
                 });
             }
-            return true;
-        });
-    }
-
-    if (!chrome.runtime.onConnect.hasListeners()) {
-        chrome.runtime.onConnect.addListener(function (port) {
-            // Attach listener only once
-            if (!port.onMessage.hasListeners()) {
-                port.onMessage.addListener(function (msg) {
-                    var injector = angularInjector();
-
-                    if (port.name === 'shortcut') {
-                        injector.get('QuicktextService').filtered("shortcut = ?", [msg.text]).then(function (res) {
-                            port.postMessage({'quicktexts': res, 'action': 'insert'});
-                            // find a way to identify the insertion from the dialog in the future
-                            if (res.length) {
-                                mixpanel.track("Inserted template", {
-                                    "source": "keyboard",
-                                    "title_size": res[0].title.length,
-                                    "body_size": res[0].body.length
-                                });
-                            }
-
-                        });
-                    } else if (port.name === 'search') {
-                        if (!msg.text) { // if text is empty get all of them
-                            injector.get('QuicktextService').quicktexts(msg.limit).then(function (res) {
-                                port.postMessage({'quicktexts': res, 'action': 'list'});
-                            });
-                        } else {
-                            var text = "%" + msg.text + "%";
-                            injector.get('QuicktextService').filtered(
-                                "shortcut LIKE ? OR title LIKE ? OR body LIKE ?",
-                                [text, text, text], msg.limit).then(function (res) {
-                                    port.postMessage({'quicktexts': res, 'action': 'list'});
-                                });
-                        }
-                        mixpanel.track("Searched template", {
-                            'query_size': msg.text.length
-                        });
-                    }
+            if (request.request === 'insert') {
+                mixpanel.track("Inserted template", {
+                    "source": "keyboard",
+                    "title_size": request.template.title.length,
+                    "body_size": request.template.body.length
                 });
+                sendResponse(true);
             }
+            if (request.request === 'search') {
+                mixpanel.track("Searched template", {
+                    'query_size': request.query_size
+                });
+                sendResponse(true);
+            }
+            return true;
         });
     }
 }
