@@ -62,7 +62,9 @@ gApp.service('MigrationService', function ($q, $resource, SettingsService, Templ
                         return;
                     }
 
-                    settings.editor.enabled = true;
+                    settings.editor = {
+                        enabled: true
+                    };
                     SettingsService.set('settings', settings);
                     callback();
                 });
