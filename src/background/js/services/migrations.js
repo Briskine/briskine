@@ -35,11 +35,12 @@ gApp.service('MigrationService', function ($q, $resource, SettingsService, Templ
                 if (!(chrome && chrome.storage)) {
                     return;
                 }
-
                 var data = {};
                 for (var i = 0; i < localStorage.length; i++) {
                     var key = localStorage.key(i);
-                    data[key] = JSON.parse(localStorage[key]);
+                    if (_.keys(Settings.defaults).indexOf(key) !== -1) {
+                        data[key] = JSON.parse(localStorage[key]);
+                    }
                 }
 
                 chrome.storage.sync.set(data, function () {
@@ -55,6 +56,12 @@ gApp.service('MigrationService', function ($q, $resource, SettingsService, Templ
             revision: 3,
             upgrade: function (callback) {
                 SettingsService.get('settings').then(function (settings) {
+                    // check first if it's not set
+                    if (settings.editor && typeof settings.editor.enabled !== 'undefined'){
+                        callback();
+                        return;
+                    }
+
                     settings.editor.enabled = true;
                     SettingsService.set('settings', settings);
                     callback();
@@ -62,18 +69,29 @@ gApp.service('MigrationService', function ($q, $resource, SettingsService, Templ
             }
         },
         {
-            description: 'Migrate from WebSQL templates to chrome.storage.local',
+            description: 'Noop - broken migration',
             revision: 4,
             upgrade: function (callback) {
-                QuicktextService.quicktexts().then(function (quicktexts) {
-                    for (var i in quicktexts) {
-                        var q = quicktexts[i];
-                        TemplateService.create(q, true).then(function () {
-                            if (parseInt(i, 10) === quicktexts.length - 1) {
-                                callback(); //callback when we reached the end
-                            }
-                        });
-                    }
+               callback();
+            }
+        },
+        {
+            description: 'Migrate from WebSQL templates to chrome.storage.local',
+            revision: 5,
+            upgrade: function (callback) {
+                // First clean any existing templates
+                TemplateService.deleteAll().then(function () {
+                    QuicktextService.quicktexts().then(function (quicktexts) {
+                        for (var i in quicktexts) {
+                            var q = quicktexts[i];
+                            TemplateService.create(q, true).then(function () {
+                                if (parseInt(i, 10) === quicktexts.length - 1) {
+                                    console.log("Finished", quicktexts.length);
+                                    callback(); //callback when we reached the end
+                                }
+                            });
+                        }
+                    });
                 });
             }
         }
@@ -92,6 +110,7 @@ gApp.service('MigrationService', function ($q, $resource, SettingsService, Templ
                 _.each(self.migrations, function (m) {
                     // each migration upon finishing runs the next migration
                     // It's done recursively because of the async callbacks
+                    console.log("Check:", m.revision, self.HEAD + 1);
                     if (m.revision === self.HEAD + 1) {
                         console.log("Migrating", m);
                         // upgrade and call the callback that increments the HEAD
