@@ -120,8 +120,8 @@ gApp.controller('ListCtrl',
                             .replace(/\n/g, ' <br />\n');
 
                     // convert qt body from markdown to html
-                    SettingsService.get("settings", function(settings){
-                        if (settings.editor.enabled){
+                    SettingsService.get("settings", function (settings) {
+                        if (settings.editor.enabled) {
                             $scope.selectedQt.body = marked($scope.selectedQt.body);
                         }
                     });
@@ -245,31 +245,35 @@ gApp.controller('ListCtrl',
                 return false;
             }
 
-            // return clean markdown
-            $scope.selectedQt.body = cleanMarkdown($scope.selectedQt.body);
-
-            TemplateService.quicktexts().then(function (quicktexts) {
-                if ($scope.selectedQt.shortcut) {
-                    for (var i in quicktexts) {
-                        var qt = quicktexts[i];
-                        if (qt.id !== $scope.selectedQt.id && qt.shortcut === $scope.selectedQt.shortcut) {
-                            alert("There is another a template with the '" + $scope.selectedQt.shortcut + "' keyboard shortcut");
-                            return false;
+            SettingsService.get('settings').then(function (settings) {
+                if (settings.editor.enabled) {
+                    // return clean markdown
+                    $scope.selectedQt.body = cleanMarkdown($scope.selectedQt.body);
+                }
+ 
+                TemplateService.quicktexts().then(function (quicktexts) {
+                    if ($scope.selectedQt.shortcut) {
+                        for (var i in quicktexts) {
+                            var qt = quicktexts[i];
+                            if (qt.id !== $scope.selectedQt.id && qt.shortcut === $scope.selectedQt.shortcut) {
+                                alert("There is another a template with the '" + $scope.selectedQt.shortcut + "' keyboard shortcut");
+                                return false;
+                            }
                         }
                     }
-                }
-                if ($scope.selectedQt.id) {
-                    TemplateService.update($scope.selectedQt).then(function () {
-                        $scope.reloadQuicktexts();
-                    });
-                } else {
-                    TemplateService.create($scope.selectedQt).then(function () {
-                        $scope.reloadQuicktexts();
-                    });
-                }
+                    if ($scope.selectedQt.id) {
+                        TemplateService.update($scope.selectedQt).then(function () {
+                            $scope.reloadQuicktexts();
+                        });
+                    } else {
+                        TemplateService.create($scope.selectedQt).then(function () {
+                            $scope.reloadQuicktexts();
+                        });
+                    }
 
-                // hide teh modal
-                $('.modal').modal('hide');
+                    // hide teh modal
+                    $('.modal').modal('hide');
+                });
             });
         };
 
