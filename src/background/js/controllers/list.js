@@ -12,9 +12,16 @@ gApp.controller('ListCtrl',
         // Hide Subject and Tags fields by default
         $scope.settings = {};
         SettingsService.get('settings').then(function (settings) {
+            if (!settings.fields) {
+                settings.fields = {
+                    subject: false,
+                    tags: false
+                }
+            }
+
             $scope.settings = settings;
-            $scope.subjectEnabled = $scope.settings.fields.subject;
-            $scope.tagsEnabled = $scope.settings.fields.tags;
+            $scope.subjectEnabled = settings.fields.subject;
+            $scope.tagsEnabled = settings.fields.tags;
         });
 
 
@@ -250,7 +257,7 @@ gApp.controller('ListCtrl',
                     // return clean markdown
                     $scope.selectedQt.body = cleanMarkdown($scope.selectedQt.body);
                 }
- 
+
                 TemplateService.quicktexts().then(function (quicktexts) {
                     if ($scope.selectedQt.shortcut) {
                         for (var i in quicktexts) {

@@ -8,8 +8,16 @@ gApp.service('MigrationService', function ($q, $resource, SettingsService, Templ
             upgrade: function (callback) {
                 TemplateService.quicktexts().then(function (quicktexts) {
                     SettingsService.get('settings').then(function (settings) {
-                        settings.fields.subject = false;
-                        settings.fields.tags = false;
+                        if (!settings) {
+                            SettingsService.set('settings', Settings.defaults.settings);
+                            callback();
+                            return;
+                        }
+
+                        settings.fields = {
+                            subject: false,
+                            tags: false
+                        };
 
                         for (var i in quicktexts) {
                             var q = quicktexts[i];
