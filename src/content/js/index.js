@@ -212,7 +212,7 @@ App.init = function (settings) {
 
     document.addEventListener("blur", App.onBlur, true);
     document.addEventListener("focus", App.onFocus, true);
-    document.addEventListener("scroll", App.onScroll, true);
+    //document.addEventListener("scroll", App.onScroll, true);
 
     // use custom keyboard shortcuts
     if (settings.keyboard.enabled) {

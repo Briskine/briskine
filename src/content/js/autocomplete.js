@@ -151,30 +151,46 @@ App.autocomplete.getCursorPosition = function (e) {
 
         var $mirror = $('<div id="qt-mirror" class="qt-mirror"></div>').addClass(position.element.className),
             $source = $(position.element),
-            $sourcePosition = $source.position();
+            //$sourcePosition = $source.position();
+            $sourcePosition = $source.offset();
+
+        console.log(App.autocomplete.mirrorStyles);
 
         // copy all styles
         for (var i in App.autocomplete.mirrorStyles) {
             var style = App.autocomplete.mirrorStyles[i];
             $mirror.css(style, $source.css(style));
+
+            console.log(style, $source.css(style));
         }
 
+
+        console.log($sourcePosition);
+
+        var sourceMetrics = $source.get(0).getBoundingClientRect();
+
         // set absolute position
-        $mirror.css({top: $sourcePosition.top + 'px', left: $sourcePosition.left + 'px'});
+        $mirror.css({
+            top: $sourcePosition.top + 'px',
+            left: $sourcePosition.left + 'px',
+            width: sourceMetrics.width,
+            height: sourceMetrics.height
+        });
 
         // copy content
         $mirror.html($source.val().substr(0, position.end).split("\n").join('<br>'));
         $mirror.append('<span id="qt-caret" class="qt-caret"></span>');
 
         // insert mirror
-        $mirror.insertAfter($source);
+        //$mirror.insertAfter($source);
+        $mirror.insertAfter($('body'));
 
         $caret = $('#qt-caret');
         position.absolute = $caret.offset();
         position.absolute.width = $caret.width();
         position.absolute.height = $caret.height();
 
-        $mirror.remove();
+        //$mirror.remove();
 
     }
 
@@ -386,4 +402,17 @@ App.autocomplete.focusEditor = function(element, callback) {
     }, 50);
 
 };
+
+// Mirror styles are used for creating a mirror element in order to track the cursor in a textarea
+App.autocomplete.mirrorStyles = [
+    // Box Styles.
+    'box-sizing', 'height', 'width', 'padding', 'padding-bottom', 'padding-left', 'padding-right', 'padding-top', 'margin', 'margin-top',
+    'margin-bottom', 'margin-left', 'margin-right', 'border-width',
+    // Font stuff.
+    'font-family', 'font-size', 'font-style', 'font-variant', 'font-weight',
+    // Spacing etc.
+    'word-spacing', 'letter-spacing', 'line-height', 'text-decoration', 'text-indent', 'text-transform',
+    // The direction.
+    'direction'
+];
 
