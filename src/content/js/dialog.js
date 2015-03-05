@@ -14,18 +14,6 @@ PubSub.subscribe('focus', function (action, element) {
 });
 
 App.autocomplete.dialog = {
-    // Mirror styles are used for creating a mirror element in order to track the cursor in a textarea
-    mirrorStyles: [
-        // Box Styles.
-        'box-sizing', 'height', 'width', 'padding-bottom', 'padding-left', 'padding-right', 'padding-top', 'margin-top',
-        'margin-bottom', 'margin-left', 'margin-right', 'border-width',
-        // Font stuff.
-        'font-family', 'font-size', 'font-style', 'font-variant', 'font-weight',
-        // Spacing etc.
-        'word-spacing', 'letter-spacing', 'line-height', 'text-decoration', 'text-indent', 'text-transform',
-        // The direction.
-        'direction'
-    ],
     isActive: false,
     isEmpty: true,
     RESULTS_LIMIT: 5, // only show 5 results at a time
@@ -47,7 +35,7 @@ App.autocomplete.dialog = {
             e.stopPropagation();
         }
 
-        var element = e.target;
+        var element = params.focusNode || e.target;
 
         // if it's not an editable element
         // don't trigger anything
@@ -117,9 +105,14 @@ App.autocomplete.dialog = {
 
         // when scrolling the element or the page
         // set the autocomplete dialog position
+
+        // TODO we probably don't need this any more
+        // because we no longer use position fixed
+        /*
         window.addEventListener('scroll', function() {
             App.autocomplete.dialog.setDialogPosition();
         });
+        */
 
     },
     createQaBtn: function() {
@@ -143,12 +136,11 @@ App.autocomplete.dialog = {
             // before clicking the qa button
             App.autocomplete.dialog.prevFocus.focus();
 
-            // position the dialog under the qa button
-
-            // hack the event param to pass a different element
-            App.autocomplete.dialog.completion({
-                target: App.autocomplete.dialog.prevFocus
-            }, {
+            // position the dialog under the qa button.
+            // since the focus node is now the button
+            // we have to pass the previous focus (the text node).
+            App.autocomplete.dialog.completion(e, {
+                focusNode: App.autocomplete.dialog.prevFocus,
                 dialogPositionNode: e.target
             });
 
@@ -247,7 +239,10 @@ App.autocomplete.dialog = {
         App.autocomplete.dialog.isEmpty = true;
 
         $(this.dialogSelector).addClass('qt-dropdown-show');
-        $(this.searchSelector).focus();
+
+        // TODO see why this triggers show
+        //$(this.searchSelector).focus();
+
         $(App.autocomplete.dialog.contentSelector).scrollTop();
 
         App.autocomplete.dialog.setDialogPosition(params.dialogPositionNode);
@@ -255,6 +250,10 @@ App.autocomplete.dialog = {
         // if we scroll the content element.
         // only if we're positioning next the cursor,
         // not another element.
+
+        // TODO refactor this since we now use position absolute
+        // on the dialog
+        /*
         if(!params.dialogPositionNode) {
 
             // remove it just in case we added it previously
@@ -263,6 +262,7 @@ App.autocomplete.dialog = {
             App.autocomplete.dialog.editor.addEventListener('scroll', App.autocomplete.dialog.setDialogPosition);
 
         }
+        */
 
     },
     setDialogPosition: function(positionNode) {
@@ -276,47 +276,68 @@ App.autocomplete.dialog = {
         var scrollTop = $(window).scrollTop();
         var scrollLeft = $(window).scrollLeft();
         
-        scrollTop += $(App.autocomplete.dialog.editor).scrollTop();
-        scrollLeft += $(App.autocomplete.dialog.editor).scrollLeft();
+        //scrollTop += $(App.autocomplete.dialog.editor).scrollTop();
+        //scrollLeft += $(App.autocomplete.dialog.editor).scrollLeft();
         
         var $dialog = $(App.autocomplete.dialog.dialogSelector);
 
         var dialogMetrics = $dialog.get(0).getBoundingClientRect();
 
-        var topPos = 'auto';
-        var leftPos = 'auto';
+        var topPos = 0;
+        var leftPos = 0;
 
         // in case we want to position the dialog next to
         // another element,
         // not next to the cursor.
         // eg. when we position it next to the qa button.
         
-        console.log(positionNode);
-        
+        var metrics;
+
         if(positionNode && positionNode.tagName) {
 
-            var metrics = JSON.parse(JSON.stringify(positionNode.getBoundingClientRect()));
-        
-            //metrics.top += $(window).scrollTop();
-            //metrics.left += $(window).scrollLeft();
+            metrics = JSON.parse(JSON.stringify(positionNode.getBoundingClientRect()));
 
-            topPos = metrics.top + metrics.height;
-            leftPos = metrics.left + metrics.width - dialogMetrics.width - scrollLeft;
+            leftPos -=  dialogMetrics.width;
 
         } else {
 
-            topPos = App.autocomplete.cursorPosition.absolute.top + App.autocomplete.cursorPosition.absolute.height;
-            leftPos = App.autocomplete.cursorPosition.absolute.left + App.autocomplete.cursorPosition.absolute.width - scrollLeft;
+            // TODO contenteditable has scrolltop in it
+            // textarea does not
+
+            metrics = App.autocomplete.cursorPosition.absolute;
 
         }
+
+        console.log(metrics);
+
+        topPos += metrics.top + metrics.height;
+        leftPos += metrics.left + metrics.width;
         
         // check if we have enough space at the bottom
         // for the maximum dialog height
-        if((pageHeight - topPos) < dialogMaxHeight) {
-            topPos = topPos - dialogMetrics.height - App.autocomplete.cursorPosition.absolute.height;
+        if((pageHeight - topPos) > dialogMaxHeight) {
+
+            console.log('bottom', topPos);
+
+            //topPos = topPos - dialogMetrics.height;
+
+            //topPos = topPos - dialogMetrics.height - App.autocomplete.cursorPosition.absolute.height;
+
         } else {
-            topPos = topPos - scrollTop;
+
+            console.log('top', topPos);
+
+            //topPos -= dialogMetrics.height;
+
+            if(positionNode && positionNode.tagName) {
+
+            } else {
+
+            }
         }
+
+        //topPos += scrollTop;
+        //leftPos += scrollLeft;
 
         $dialog.css({
             top: topPos,
@@ -365,6 +386,7 @@ App.autocomplete.dialog = {
     },
     // remove dropdown and cleanup
     close: function (callback) {
+
         if(!App.autocomplete.dialog.isActive) {
 
             return;
