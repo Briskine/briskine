@@ -435,6 +435,8 @@ App.autocomplete.dialog = {
     },
     showQaBtn: function(e) {
 
+        // TODO only show the qa button for large textfields
+
         var textfield = e.target;
 
         // only show it for valid elements
