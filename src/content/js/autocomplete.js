@@ -154,16 +154,11 @@ App.autocomplete.getCursorPosition = function (e) {
             //$sourcePosition = $source.position();
             $sourcePosition = $source.offset();
 
-        console.log(App.autocomplete.mirrorStyles);
-
         // copy all styles
         for (var i in App.autocomplete.mirrorStyles) {
             var style = App.autocomplete.mirrorStyles[i];
             $mirror.css(style, $source.css(style));
-
-            console.log(style, $source.css(style));
         }
-
 
         console.log($sourcePosition);
 
@@ -406,8 +401,7 @@ App.autocomplete.focusEditor = function(element, callback) {
 // Mirror styles are used for creating a mirror element in order to track the cursor in a textarea
 App.autocomplete.mirrorStyles = [
     // Box Styles.
-    'box-sizing', 'height', 'width', 'padding', 'padding-bottom', 'padding-left', 'padding-right', 'padding-top', 'margin', 'margin-top',
-    'margin-bottom', 'margin-left', 'margin-right', 'border-width',
+    'box-sizing', 'height', 'width', 'padding', 'padding-bottom', 'padding-left', 'padding-right', 'padding-top', 'border-width',
     // Font stuff.
     'font-family', 'font-size', 'font-style', 'font-variant', 'font-weight',
     // Spacing etc.
