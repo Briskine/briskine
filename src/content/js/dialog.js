@@ -323,23 +323,20 @@ App.autocomplete.dialog = {
         topPos += metrics.top + metrics.height;
         leftPos += metrics.left + metrics.width;
 
-        // check if we have enough sp            ace at the bottom
+        // TODO the position is not correct when no word is selected?
+        console.log(App.autocomplete.cursorPosition.absolute);
+
+        // check if we have enough space at the bottom
         // for the maximum dialog height
-        if((pageHeight - (topPos - scrollTop)) > dialogMaxHeight) {
-
-            console.log('bottom', topPos);
-
-            //topPos = topPos - dialogMetrics.height;
-
-            //topPos = topPos - dialogMetrics.height - App.autocomplete.cursorPosition.absolute.height;
-
-        } else {
+        if((pageHeight - (topPos - scrollTop)) < dialogMaxHeight) {
 
             console.log('top', topPos);
 
             topPos -= dialogMetrics.height;
+            topPos -= metrics.height;
 
-            // TODO still places it at the bottom
+            // TODO qa button looks ugly when dialog is placed at the top
+
         }
 
         $dialog.css({
