@@ -25,6 +25,11 @@ App.autocomplete.dialog = {
     searchSelector: ".qt-dropdown-search",
 
     completion: function (e, params) {
+
+        if(typeof params !== 'object') {
+            params = {};
+        }
+
         params = params || {};
 
         if(e.preventDefault) {
@@ -188,9 +193,6 @@ App.autocomplete.dialog = {
         params = params || {};
 
         App.autocomplete.quicktexts = params.quicktexts;
-        if (!App.autocomplete.dialog.isActive) {
-            App.autocomplete.dialog.show(params);
-        }
 
 
         // clone the elements
@@ -220,10 +222,16 @@ App.autocomplete.dialog = {
         });
 
         $(this.contentSelector).html(content);
+
+        if (!App.autocomplete.dialog.isActive) {
+            App.autocomplete.dialog.show(params);
+        }
+
         App.autocomplete.dialog.isEmpty = false;
 
         // Set first element active
         App.autocomplete.dialog.selectItem(0);
+
     },
     show: function (params) {
         params = params || {};
@@ -299,23 +307,25 @@ App.autocomplete.dialog = {
 
             leftPos -=  dialogMetrics.width;
 
+            // because we use getBoundingClientRect
+            // we need to add the scroll position
+            topPos += scrollTop;
+            leftPos += scrollLeft;
+
         } else {
 
-            // TODO contenteditable has scrolltop in it
-            // textarea does not
-
+            // cursorPosition doesn't need scrollTop/Left
+            // because it uses the absolute page offset positions
             metrics = App.autocomplete.cursorPosition.absolute;
 
         }
 
-        console.log(metrics);
-
         topPos += metrics.top + metrics.height;
         leftPos += metrics.left + metrics.width;
-        
-        // check if we have enough space at the bottom
+
+        // check if we have enough sp            ace at the bottom
         // for the maximum dialog height
-        if((pageHeight - topPos) > dialogMaxHeight) {
+        if((pageHeight - (topPos - scrollTop)) > dialogMaxHeight) {
 
             console.log('bottom', topPos);
 
@@ -327,17 +337,10 @@ App.autocomplete.dialog = {
 
             console.log('top', topPos);
 
-            //topPos -= dialogMetrics.height;
+            topPos -= dialogMetrics.height;
 
-            if(positionNode && positionNode.tagName) {
-
-            } else {
-
-            }
+            // TODO still places it at the bottom
         }
-
-        //topPos += scrollTop;
-        //leftPos += scrollLeft;
 
         $dialog.css({
             top: topPos,
