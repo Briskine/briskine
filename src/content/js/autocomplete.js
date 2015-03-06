@@ -60,10 +60,14 @@ App.autocomplete.getSelectedWord = function (params) {
     return word;
 };
 
-App.autocomplete.getCursorPosition = function (e) {
+App.autocomplete.getCursorPosition = function (element) {
+
+    if(!element) {
+        return false;
+    }
 
     var position = {
-            element: e && e.target ? e.target : null,
+            element: element || null,
             offset: 0,
             absolute: {
                 left: 0,
@@ -145,13 +149,11 @@ App.autocomplete.getCursorPosition = function (e) {
         // Insert text until selectionEnd
         // Insert a virtual cursor and find its position
 
-        //position.element = e.target;
         position.start = position.element.selectionStart;
         position.end = position.element.selectionEnd;
 
         var $mirror = $('<div id="qt-mirror" class="qt-mirror"></div>').addClass(position.element.className),
             $source = $(position.element),
-            //$sourcePosition = $source.position();
             $sourcePosition = $source.offset();
 
         // copy all styles
@@ -159,8 +161,6 @@ App.autocomplete.getCursorPosition = function (e) {
             var style = App.autocomplete.mirrorStyles[i];
             $mirror.css(style, $source.css(style));
         }
-
-        console.log($sourcePosition);
 
         var sourceMetrics = $source.get(0).getBoundingClientRect();
 
@@ -185,7 +185,7 @@ App.autocomplete.getCursorPosition = function (e) {
         position.absolute.width = $caret.width();
         position.absolute.height = $caret.height();
 
-        //$mirror.remove();
+        $mirror.remove();
 
     }
 
