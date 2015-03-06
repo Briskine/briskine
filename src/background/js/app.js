@@ -12,7 +12,6 @@ Raven.config('https://af2f5e9fb2744c359c19d08c8319d9c5@app.getsentry.com/30379',
 var gApp = angular.module('gApp', [
     'ngRoute',
     'ngResource',
-    'ngAnimate',
     'angular-md5',
     'angularMoment',
     'textAngular'

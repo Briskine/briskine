@@ -18,12 +18,17 @@ gApp.controller('ListCtrl',
                     tags: false
                 }
             }
-
             $scope.settings = settings;
             $scope.subjectEnabled = settings.fields.subject;
             $scope.tagsEnabled = settings.fields.tags;
-        });
 
+            $scope.showInstallHint = false;
+            if (!settings.shownInstallHint && !$rootScope.pageAction) {
+                $scope.showInstallHint = true;
+                settings.shownInstallHint = true;
+                SettingsService.set('settings', settings);
+            }
+        });
 
         $scope.toggleField = function (field, enabled) {
             SettingsService.get('settings').then(function (settings) {
@@ -137,18 +142,19 @@ gApp.controller('ListCtrl',
             }
 
             $formModal.modal('show');
+            $formModal.on('shown.bs.modal', function () {
+                $('#qt-title').focus();
+            })
         };
 
         /* Check search params to see if adding or editing items
          */
         var checkRoute = function () {
-
             // if not the default list
             // new or edit, so show the modal
             if ($routeParams.id) {
                 $scope.showForm();
             }
-
         };
 
         $scope.$on('$routeUpdate', checkRoute);

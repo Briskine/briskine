@@ -28,6 +28,7 @@ gApp.service('QuicktextService', function ($q, $resource, SettingsService) {
         var now = new Date().toISOString();
         tx.executeSql('CREATE TABLE quicktext (\n  id               INTEGER PRIMARY KEY AUTOINCREMENT,\n  remote_id        VARCHAR(50) DEFAULT "",\n  title            VARCHAR(250) NOT NULL,\n  shortcut         VARCHAR(250) DEFAULT "",\n  subject          TEXT DEFAULT "",\n  tags             TEXT DEFAULT "",\n  body             TEXT DEFAULT "",\n  created_datetime DATETIME     NOT NULL,\n  updated_datetime DATETIME DEFAULT NULL, -- updated locally\n  sync_datetime    DATETIME DEFAULT NULL, -- last sync datetime\n  deleted          INTEGER DEFAULT 0, -- mark as deleted\n  nosync          INTEGER DEFAULT 0\n);');
     });
+    var db = openDatabase('qt', '1.0.0', '', 2 * 1024 * 1024);
 
     self.quicktexts = function (limit) {
         var deferred = $q.defer();

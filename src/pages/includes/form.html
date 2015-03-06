@@ -59,10 +59,10 @@
                     <div class="row">
                         <div class="col-xs-7">
 
-                            <div class="form-group">
+                            <div class="form-group" data-toggle="tooltip" data-placement="bottom">
                                 <label for="qt-title">Name</label>
                                 <input type="text" class="form-control" id="qt-title" ng-model="selectedQt.title"
-                                       placeholder="Ex: Kind regards" autofocus required/>
+                                       placeholder="Ex: Nice talking to you" autofocus required/>
                             </div>
 
                         </div>
@@ -70,14 +70,14 @@
                         <div class="col-xs-5">
 
                             <div class="form-group" data-toggle="tooltip" data-placement="bottom"
-                                 title="Trigger the completion of a template by using this text shortcut and the Tab key to trigger it">
+                                 title="Use this text shortcut to trigger the completion of the template using the TAB key">
                                 <label for="qt-shortcut">
                                     Text shortcut
                                     <span class="text-muted">(Optional)</span>
                                 </label>
                                 <input type="text" class="form-control" id="qt-shortcut"
                                        ng-model="selectedQt.shortcut"
-                                       placeholder="kr"/>
+                                       placeholder="nice"/>
 
                             </div>
 
@@ -108,9 +108,18 @@
                     </div>
                     <div class="form-group">
                         <label>Content</label>
-                         <textarea ng-if="!settings.editor.enabled" id="qt-body" class="form-control" cols="100" rows="6" ng-model="selectedQt.body"
-                                   required></textarea>
-                        <div ng-if="settings.editor.enabled" class="qt-editor" text-angular ng-model="selectedQt.body" ta-toolbar="[['bold','italics','underline'], ['insertLink', 'insertImage'], ['insertVariable']]"></div>
+                         <textarea
+                             ng-if="!settings.editor.enabled"
+                             id="qt-body" class="form-control"
+                             cols="100"  rows="6" required="required"
+                             placeholder="It was nice talking to you today..."
+                             ng-model="selectedQt.body"></textarea>
+                        <div ng-if="settings.editor.enabled"
+                             class="qt-editor"
+                             text-angular
+                             placeholder="It was nice talking to you today..."
+                             ng-model="selectedQt.body"
+                             ta-toolbar="[['bold','italics','underline'], ['insertLink', 'insertImage'], ['insertVariable']]"></div>
                     </div>
                 </div>
 

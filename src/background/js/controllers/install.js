@@ -1,4 +1,4 @@
-gApp.controller('InstallCtrl', function ($scope, $rootScope, $routeParams, InstallService, TemplateService) {
+gApp.controller('InstallCtrl', function ($scope, $rootScope, $routeParams, InstallService, TemplateService, SettingsService) {
 
     var ctrl = this;
 
@@ -16,6 +16,19 @@ gApp.controller('InstallCtrl', function ($scope, $rootScope, $routeParams, Insta
     ctrl.languages = InstallService.languages;
     ctrl.templates = InstallService.templates;
 
+    TemplateService.quicktexts().then(function (templates) {
+        // add default templates only if we don't have others
+        if (templates.length) {
+            return;
+        }
+        for (var i in InstallService.preloadedTemplates) {
+            var t = InstallService.preloadedTemplates[i];
+            t.nosync = 1;
+            TemplateService.create(t, true);
+        }
+    });
+
+
     ctrl.enabledLanguages = function () {
         var res = [];
         for (var i in ctrl.languages) {
@@ -26,7 +39,7 @@ gApp.controller('InstallCtrl', function ($scope, $rootScope, $routeParams, Insta
         return res;
     };
 
-    ctrl.enabledLanguagesLabels = function (){
+    ctrl.enabledLanguagesLabels = function () {
         var res = [];
         for (var i in ctrl.languages) {
             if (ctrl.languages[i].enabled) {
@@ -34,7 +47,7 @@ gApp.controller('InstallCtrl', function ($scope, $rootScope, $routeParams, Insta
             }
         }
         if (res.length > 1) {
-            return res.slice(0, res.length - 1).join(", ") + " and " + res.slice(res.length-1, res.length);
+            return res.slice(0, res.length - 1).join(", ") + " and " + res.slice(res.length - 1, res.length);
         }
         return res[0];
     };
@@ -47,9 +60,9 @@ gApp.controller('InstallCtrl', function ($scope, $rootScope, $routeParams, Insta
     };
 
     // when a category is toggled, enable or disable all the templates inside it
-    ctrl.toggleCategory = function (category){
-        for (var i in category.templates){
-            for (var j in category.templates[i]){
+    ctrl.toggleCategory = function (category) {
+        for (var i in category.templates) {
+            for (var j in category.templates[i]) {
                 category.templates[i][j].enabled = category.enabled;
                 mixpanel.track("Wizard Template", {
                     title: category.templates[i][j].title,
@@ -75,7 +88,7 @@ gApp.controller('InstallCtrl', function ($scope, $rootScope, $routeParams, Insta
     };
 
 
-    var installTemplates = function() {
+    var installTemplates = function () {
         var langs = ctrl.enabledLanguages();
 
         for (var i in ctrl.templates) {
@@ -84,7 +97,7 @@ gApp.controller('InstallCtrl', function ($scope, $rootScope, $routeParams, Insta
                 var template = category.templates[j];
                 for (var k in template) {
                     var t = template[k];
-                    if (t.enabled && langs.indexOf(t.iso) !== -1){
+                    if (t.enabled && langs.indexOf(t.iso) !== -1) {
                         // set the remote_id to empty string so we don't have any 'undefined' strings in the db
                         t.remote_id = "";
                         TemplateService.create(t).then();
@@ -93,7 +106,6 @@ gApp.controller('InstallCtrl', function ($scope, $rootScope, $routeParams, Insta
             }
         }
     };
-
 
 
     var checkStep = function () {

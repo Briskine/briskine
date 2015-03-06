@@ -99,7 +99,7 @@ var Settings = {
                 shortcut: 'tab'
             },
             stats: {
-                enabled: true  // send anonymous statistics - doesn't include GA
+                enabled: true  // send anonymous statistics
             },
             blacklist: [],
             fields: {
@@ -117,6 +117,7 @@ var Settings = {
         words: 0,
         syncedWords: 0,
         lastStatsSync: null,
-        lastSync: null
+        lastSync: null,
+        shownInstallHint: false
     }
 };
