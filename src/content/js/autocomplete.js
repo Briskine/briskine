@@ -133,13 +133,22 @@ App.autocomplete.getCursorPosition = function (element) {
         // Virtual caret
         $caret = $('#qt-caret');
 
+        // TODO caret placed at the wrong position when no text is selected
+        // and the container si a scroller contenteditable
+        console.log(position.word);
+
         if ($caret.length) {
+
+            console.log($caret);
+
             position.absolute = $caret.offset();
             position.absolute.width = $caret.width();
             position.absolute.height = $caret.height();
 
+            console.log(position.absolute);
+
             // Remove virtual caret
-            $caret.remove();
+            //$caret.remove();
         }
 
     } else {
