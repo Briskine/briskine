@@ -64,12 +64,26 @@ gApp.run(function ($rootScope, $location, $http, $timeout, ProfileService, Setti
     $rootScope.pageAction = ($location.path() === '/popup');
 
 
-    SettingsService.get('baseURL').then(function(baseURL){
+    SettingsService.get('baseURL').then(function (baseURL) {
         $rootScope.baseURL = baseURL;
     });
 
-    // disable mixpanel if stats are not enabled
     SettingsService.get('settings').then(function (settings) {
+        // Make sure that we have all the default
+        var keys = Object.keys(settings);
+        var changed = false;
+        for (var key in Settings.defaults.settings) {
+            if (keys.indexOf(key) === -1) {
+                settings[key] = Settings.defaults.settings[key];
+                changed = true
+            }
+        }
+        if (changed) {
+            SettingsService.set('settings', settings);
+        }
+
+
+        // disable mixpanel if stats are not enabled
         if (!settings.stats.enabled) {
             mixpanel.disable();
         }
@@ -78,11 +92,11 @@ gApp.run(function ($rootScope, $location, $http, $timeout, ProfileService, Setti
     // setup profile
     $rootScope.profile = {};
     $rootScope.profileService = ProfileService;
-    ProfileService.savedTime().then(function(savedTime){
+    ProfileService.savedTime().then(function (savedTime) {
         $rootScope.profile.savedTime = savedTime;
     });
 
-    ProfileService.words().then(function(words){
+    ProfileService.words().then(function (words) {
         $rootScope.profile.savedWords = ProfileService.reduceNumbers(words);
     });
 
@@ -112,7 +126,7 @@ gApp.run(function ($rootScope, $location, $http, $timeout, ProfileService, Setti
                         SettingsService.set("isLoggedIn", false);
                     }
                 });
-            }).error(function(){
+            }).error(function () {
                 mixpanel.register({
                     authenticated: false,
                     user: {}

@@ -8,27 +8,28 @@ gApp.controller('ListCtrl',
         $scope.tags = [];
         $scope.filterTags = [];
         $scope.limitQuicktexts = 42; // I know.. it's a cliche
+        $scope.showInstallHint = false;
 
         // Hide Subject and Tags fields by default
         $scope.settings = {};
         SettingsService.get('settings').then(function (settings) {
-            if (!settings.fields) {
-                settings.fields = {
-                    subject: false,
-                    tags: false
-                }
-            }
             $scope.settings = settings;
             $scope.subjectEnabled = settings.fields.subject;
             $scope.tagsEnabled = settings.fields.tags;
 
-            $scope.showInstallHint = false;
             if (!settings.shownInstallHint && !$rootScope.pageAction) {
                 $scope.showInstallHint = true;
-                settings.shownInstallHint = true;
-                SettingsService.set('settings', settings);
             }
         });
+
+        $scope.closeHint = function () {
+            SettingsService.get('settings').then(function (settings) {
+                $scope.showInstallHint = false;
+
+                settings.shownInstallHint = true;
+                SettingsService.set('settings', settings);
+            });
+        };
 
         $scope.toggleField = function (field, enabled) {
             SettingsService.get('settings').then(function (settings) {
