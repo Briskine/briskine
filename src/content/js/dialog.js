@@ -43,7 +43,7 @@ App.autocomplete.dialog = {
             return false;
         }
 
-        App.autocomplete.cursorPosition = App.autocomplete.getCursorPosition(e);
+        App.autocomplete.cursorPosition = App.autocomplete.getCursorPosition(element);
         var word = App.autocomplete.getSelectedWord({
             element: element
         });
