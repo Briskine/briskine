@@ -4,12 +4,14 @@
 
 @import 'nib';
 
-.qt-mirror {
-    position: absolute;
+div.qt-mirror {
     overflow: auto;
+    position: absolute;
+    z-index: -9999;
+    margin: 0;
+
     white-space: pre-wrap;
     word-wrap: break-word;
-    z-index: -9999;
 
     .qt-caret {
         display: inline-block;
