@@ -256,23 +256,6 @@ App.autocomplete.dialog = {
         // because it messes with the window scroll focused
         $(App.autocomplete.dialog.searchSelector).focus();
 
-        // if we scroll the content element.
-        // only if we're positioning next the cursor,
-        // not another element.
-
-        // TODO refactor this since we now use position absolute
-        // on the dialog
-        /*
-        if(!params.dialogPositionNode) {
-
-            // remove it just in case we added it previously
-            App.autocomplete.dialog.editor.removeEventListener('scroll', App.autocomplete.dialog.setDialogPosition);
-
-            App.autocomplete.dialog.editor.addEventListener('scroll', App.autocomplete.dialog.setDialogPosition);
-
-        }
-        */
-
     },
     setDialogPosition: function(positionNode) {
         
@@ -284,9 +267,6 @@ App.autocomplete.dialog = {
         var pageHeight = window.innerHeight;
         var scrollTop = $(window).scrollTop();
         var scrollLeft = $(window).scrollLeft();
-
-        //scrollTop += $(App.autocomplete.dialog.editor).scrollTop();
-        //scrollLeft += $(App.autocomplete.dialog.editor).scrollLeft();
         
         var $dialog = $(App.autocomplete.dialog.dialogSelector);
 
@@ -425,13 +405,24 @@ App.autocomplete.dialog = {
         if(elem.className.indexOf('qt-dropdown-search') !== -1) {
             show = false;
         }
+        
+        // check if the element is big enough
+        // to only show the qa button for large textfields
+        if(show === true) {
+            
+            var metrics = elem.getBoundingClientRect();
+            
+            // only show for elements 
+            if(metrics.width < 100 || metrics.height < 100) {
+                show = false;
+            }
+            
+        }
 
         return show;
 
     },
     showQaBtn: function(e) {
-
-        // TODO only show the qa button for large textfields
 
         var textfield = e.target;
 
