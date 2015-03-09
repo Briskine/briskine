@@ -186,10 +186,12 @@ App.autocomplete.getCursorPosition = function (element) {
         $mirror.append('<span id="qt-caret" class="qt-caret"></span>');
 
         // insert mirror
-        //$mirror.insertAfter($source);
-        $mirror.insertAfter($('body'));
+        $('body').append($mirror);
 
-        $caret = $('#qt-caret');
+        $caret = $('#qt-caret', $mirror);
+        
+        console.log($caret);
+        
         position.absolute = $caret.offset();
         position.absolute.width = $caret.width();
         position.absolute.height = $caret.height();
