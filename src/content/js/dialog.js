@@ -248,8 +248,11 @@ App.autocomplete.dialog = {
 
         $(this.dialogSelector).addClass('qt-dropdown-show');
 
-        // TODO see why this triggers show
-        $(this.searchSelector).focus();
+        // delay the input focus because it messes
+        // with the scrollTop value when focused
+        setTimeout(function() {
+            $(App.autocomplete.dialog.searchSelector).focus();
+        }, 10);
 
         $(App.autocomplete.dialog.contentSelector).scrollTop();
 
@@ -274,7 +277,7 @@ App.autocomplete.dialog = {
 
     },
     setDialogPosition: function(positionNode) {
-
+        
         if(!App.autocomplete.dialog.isActive) {
             return;
         }
@@ -319,18 +322,13 @@ App.autocomplete.dialog = {
             metrics = App.autocomplete.cursorPosition.absolute;
 
         }
-
+        
         topPos += metrics.top + metrics.height;
         leftPos += metrics.left + metrics.width;
-
-        // TODO the position is not correct when no word is selected?
-        console.log(App.autocomplete.cursorPosition.absolute);
 
         // check if we have enough space at the bottom
         // for the maximum dialog height
         if((pageHeight - (topPos - scrollTop)) < dialogMaxHeight) {
-
-            console.log('top', topPos);
 
             topPos -= dialogMetrics.height;
             topPos -= metrics.height;
