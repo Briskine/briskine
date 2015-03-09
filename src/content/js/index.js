@@ -4,6 +4,11 @@
  */
 
 var App = {
+    data: {
+        searchCache: {},
+        debouncer: {},
+        lastFilterRun: 0
+    },
     editor_enabled: true,
     autocomplete: {},
     settings: {
@@ -22,48 +27,75 @@ var App = {
         },
         getFiltered: function (text, limit, callback) {
             // search even the empty strings. It's not a problem because the dialog is now triggered by a user shortcut
-            TemplateStorage.get(null, function (res) {
-                var templates = [];
-                var count = 0;
-                for (var id in res) {
-                    var t = res[id];
-                    if (t.deleted !== 0) {
-                        continue;
-                    }
-                    // we have some text, do the filtering
-                    if (text) {
-                        if (t.shortcut.indexOf(text) !== -1 ||
-                            t.title.indexOf(text) !== -1 ||
-                            t.body.indexOf(text) !== -1) {
 
+            // use a debouncer to not trigger the filter too many times
+            // use the callback function as a uuid for the debouncers
+
+            var debouncerId = callback.toString();
+            var debouncerTime = 0;
+
+            // check if the function was previsouly called
+            // earlier than X ms ago.
+            // if it was, debounce the next run.
+            // we do this to make sure the first independent run,
+            // not part of a succession of runs
+            // (keyup events one after the other),
+            // runs instantly, and does not have any delay.
+            // helps with the dialog show delay.
+            if (Date.now() - App.data.lastFilterRun < 400) {
+                debouncerTime = 200;
+
+                if (App.data.debouncer[debouncerId]) {
+                    clearTimeout(App.data.debouncer[debouncerId]);
+                }
+            }
+
+            App.data.debouncer[debouncerId] = setTimeout(function () {
+                // search even the empty strings. It's not a problem because the dialog is now triggered by a user shortcut
+                TemplateStorage.get(null, function (res) {
+                    var templates = [];
+                    var count = 0;
+                    for (var id in res) {
+                        var t = res[id];
+                        if (t.deleted !== 0) {
+                            continue;
+                        }
+                        // we have some text, do the filtering
+                        if (text) {
+                            if (t.shortcut.indexOf(text) !== -1 ||
+                                t.title.indexOf(text) !== -1 ||
+                                t.body.indexOf(text) !== -1) {
+
+                                if (limit && limit < count) {
+                                    break;
+                                }
+                                count++;
+                                templates.push(t);
+                            }
+                        } else { // no text, get all
                             if (limit && limit < count) {
                                 break;
                             }
                             count++;
                             templates.push(t);
                         }
-                    } else { // no text, get all
-                        if (limit && limit < count) {
-                            break;
-                        }
-                        count++;
-                        templates.push(t);
                     }
-                }
-                // sort by created_datetime desc
-                templates.sort(function (a, b) {
-                    return new Date(b.created_datetime) - new Date(a.created_datetime);
-                });
+                    // sort by created_datetime desc
+                    templates.sort(function (a, b) {
+                        return new Date(b.created_datetime) - new Date(a.created_datetime);
+                    });
 
-                // then sort by updated_datetime so the last one updated is first
-                templates.sort(function (a, b) {
-                    return new Date(b.updated_datetime) - new Date(a.updated_datetime);
-                });
+                    // then sort by updated_datetime so the last one updated is first
+                    templates.sort(function (a, b) {
+                        return new Date(b.updated_datetime) - new Date(a.updated_datetime);
+                    });
 
-                // Too many requests sent. Send only once
-                //chrome.runtime.sendMessage({'request': 'search', 'query_size': templates.length});
-                callback(templates);
-            });
+                    // Too many requests sent. Send only once
+                    //chrome.runtime.sendMessage({'request': 'search', 'query_size': templates.length});
+                    callback(templates);
+                });
+            }, debouncerTime);
+            App.data.lastFilterRun = Date.now();
         },
         get: function (key, callback) {
             chrome.runtime.sendMessage({'request': 'get', 'data': key}, function (response) {
@@ -76,7 +108,7 @@ var App = {
             });
         },
         fetchSettings: function (callback) {
-            Settings.get("settings", "", function(settings){
+            Settings.get("settings", "", function (settings) {
                 callback(settings);
             });
         }

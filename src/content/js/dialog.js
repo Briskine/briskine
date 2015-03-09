@@ -132,7 +132,7 @@ App.autocomplete.dialog = {
         // to the focused text field
         // the focus event doesn't support bubbling
         container.on('focusin', this.showQaBtn);
-        
+
         container.on('focusout', this.hideQaBtn);
 
         this.qaBtn.on('mouseup', function(e) {
@@ -274,7 +274,7 @@ App.autocomplete.dialog = {
 
     },
     setDialogPosition: function(positionNode) {
-        
+
         if(!App.autocomplete.dialog.isActive) {
             return;
         }
@@ -283,10 +283,10 @@ App.autocomplete.dialog = {
         var pageHeight = window.innerHeight;
         var scrollTop = $(window).scrollTop();
         var scrollLeft = $(window).scrollLeft();
-        
+
         //scrollTop += $(App.autocomplete.dialog.editor).scrollTop();
         //scrollLeft += $(App.autocomplete.dialog.editor).scrollLeft();
-        
+
         var $dialog = $(App.autocomplete.dialog.dialogSelector);
 
         var dialogMetrics = $dialog.get(0).getBoundingClientRect();
@@ -298,7 +298,7 @@ App.autocomplete.dialog = {
         // another element,
         // not next to the cursor.
         // eg. when we position it next to the qa button.
-        
+
         var metrics;
 
         if(positionNode && positionNode.tagName) {
@@ -452,10 +452,10 @@ App.autocomplete.dialog = {
         var padding = 5;
 
         var metrics = JSON.parse(JSON.stringify(textfield.getBoundingClientRect()));
-        
+
         metrics.top += $(window).scrollTop();
         metrics.left += $(window).scrollLeft();
-        
+
         metrics.top += padding;
         metrics.left -= padding;
 
@@ -471,14 +471,14 @@ App.autocomplete.dialog = {
         qaBtn.style.msTransform = transform;
         qaBtn.style.mozTransform = transform;
         qaBtn.style.webkitTransform = transform;
-        
+
         $('body').addClass('gorgias-show-qa-btn');
 
     },
     hideQaBtn: function() {
-        
+
         $('body').removeClass('gorgias-show-qa-btn');
-        
+
     }
 };
 
@@ -491,7 +491,7 @@ App.autocomplete.dialog.template = '' +
 
 // quick access button for the dialog
 App.autocomplete.dialog.qaBtnTemplate = '' +
-    '<button class="gorgias-qa-btn"></button>' +
+    '<button class="gorgias-qa-btn" data-tooltip="Search templates (CTRL+Space)"></button>' +
     '';
 
 App.autocomplete.dialog.liTemplate = '' +
