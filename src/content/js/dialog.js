@@ -248,15 +248,13 @@ App.autocomplete.dialog = {
 
         $(this.dialogSelector).addClass('qt-dropdown-show');
 
-        // delay the input focus because it messes
-        // with the scrollTop value when focused
-        setTimeout(function() {
-            $(App.autocomplete.dialog.searchSelector).focus();
-        }, 10);
-
         $(App.autocomplete.dialog.contentSelector).scrollTop();
 
         App.autocomplete.dialog.setDialogPosition(params.dialogPositionNode);
+        
+        // focus the input focus after setting the position
+        // because it messes with the window scroll focused
+        $(App.autocomplete.dialog.searchSelector).focus();
 
         // if we scroll the content element.
         // only if we're positioning next the cursor,
