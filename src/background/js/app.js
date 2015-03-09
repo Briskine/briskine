@@ -4,6 +4,15 @@ Raven.config('https://af2f5e9fb2744c359c19d08c8319d9c5@app.getsentry.com/30379',
     tags: {
         version: chrome.runtime.getManifest().version
     },
+    whitelistUrls: [
+        /https:\/\/mail\.google\.com/,
+        /https:\/\/.*mail\.yahoo\.com/,
+        /https:\/\/.*mail\.live\.com/,
+        /https:\/\/.*linkedin\.com/,
+        /https:\/\/.*fastmail\.com/,
+        /chrome-extension:\/\/jcaagnkpclhhpghggjoemjjneoimjbid/, // chrome
+        /chrome-extension:\/\/ammheiinddkagoaegldpipmmjfoggahh/ // opera
+    ],
     linesOfContext: 11,
     fetchContext: true,
     collectWindowErrors: true
@@ -75,7 +84,7 @@ gApp.run(function ($rootScope, $location, $http, $timeout, ProfileService, Setti
         for (var key in Settings.defaults.settings) {
             if (keys.indexOf(key) === -1) {
                 settings[key] = Settings.defaults.settings[key];
-                changed = true
+                changed = true;
             }
         }
         if (changed) {
@@ -104,6 +113,11 @@ gApp.run(function ($rootScope, $location, $http, $timeout, ProfileService, Setti
         $('#check-login').removeClass("hide");
     };
 
+    var browser = "Chrome";
+    if (Boolean(navigator.userAgent.match(/OPR\/(\d+)/))) {
+        browser = "Opera";
+    }
+
     $rootScope.isLoggedIn = function () {
         SettingsService.get("apiBaseURL").then(function (apiBaseURL) {
             $http.get(apiBaseURL + 'login-info').success(function (data) {
@@ -112,6 +126,7 @@ gApp.run(function ($rootScope, $location, $http, $timeout, ProfileService, Setti
                         $http.get(apiBaseURL + "account").success(function (data) {
                             $rootScope.profile.user = data;
                             mixpanel.register({
+                                "$browser": browser,
                                 authenticated: true,
                                 user: data
                             });
@@ -120,6 +135,7 @@ gApp.run(function ($rootScope, $location, $http, $timeout, ProfileService, Setti
                         TemplateService.syncLocal();
                     } else {
                         mixpanel.register({
+                            "$browser": browser,
                             authenticated: false,
                             user: {}
                         });
@@ -128,6 +144,7 @@ gApp.run(function ($rootScope, $location, $http, $timeout, ProfileService, Setti
                 });
             }).error(function () {
                 mixpanel.register({
+                    "$browser": browser,
                     authenticated: false,
                     user: {}
                 });
