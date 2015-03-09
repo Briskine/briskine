@@ -30,7 +30,7 @@ $padding = 8px;
     width: 220px;
 
     position: absolute;
-    z-index: 9999999;
+    z-index: 2147483646;
 
     overflow: hidden;
     margin: 0;
@@ -184,6 +184,29 @@ $padding = 8px;
 
 }
 
+/* white arrow used on active
+ */
+
+.gorgias-qa-btn:before {
+    content: '';
+    position: absolute;
+    bottom: -3px;
+    left: 50%;
+    display: block;
+    margin: 0 0 0 -5px;
+    border-width: 0 5px 5px;
+    border-color: transparent transparent #fff;
+    border-style: solid;
+    visibility: hidden;
+}
+
+.qt-dropdown-show-top ~ .gorgias-qa-btn:before {
+    bottom: auto;
+    top: -3px;
+    border-width: 5px 5px 0;
+    border-color: #fff transparent transparent;
+}
+
 /* gorgias icon on the qa button
  */
 .gorgias-qa-btn:after {
@@ -211,14 +234,16 @@ $padding = 8px;
     visibility: visible;
 }
 
-/* blend the button into the dropdown when active
+/* qa button active styles
  */
 
 .qa-btn-dropdown-show ~ .gorgias-qa-btn {
-    top: 1px;
-    left: 2px;
-    background: #fff;
-    border-width: 1px 1px 0 1px;
+    background: #efefef;
     box-shadow: none;
     opacity: 1;
 }
+
+.qa-btn-dropdown-show ~ .gorgias-qa-btn:before {
+    visibility: visible;
+}
+

@@ -108,17 +108,6 @@ App.autocomplete.dialog = {
             });
         });
 
-        // when scrolling the element or the page
-        // set the autocomplete dialog position
-
-        // TODO we probably don't need this any more
-        // because we no longer use position fixed
-        /*
-        window.addEventListener('scroll', function() {
-            App.autocomplete.dialog.setDialogPosition();
-        });
-        */
-
     },
     createQaBtn: function() {
 
@@ -262,11 +251,14 @@ App.autocomplete.dialog = {
         if(!App.autocomplete.dialog.isActive) {
             return;
         }
-
+        
+        var paddingTop = 1;
         var dialogMaxHeight = 250;
         var pageHeight = window.innerHeight;
         var scrollTop = $(window).scrollTop();
         var scrollLeft = $(window).scrollLeft();
+        
+        $(this.dialogSelector).removeClass('qt-dropdown-show-top');
         
         var $dialog = $(App.autocomplete.dialog.dialogSelector);
 
@@ -304,14 +296,19 @@ App.autocomplete.dialog = {
         topPos += metrics.top + metrics.height;
         leftPos += metrics.left + metrics.width;
 
+        topPos += paddingTop;
+        
         // check if we have enough space at the bottom
         // for the maximum dialog height
         if((pageHeight - (topPos - scrollTop)) < dialogMaxHeight) {
 
             topPos -= dialogMetrics.height;
             topPos -= metrics.height;
-
-            // TODO qa button looks ugly when dialog is placed at the top
+            
+            topPos -= paddingTop * 2;
+            
+            // add class for qa button styling
+            $(this.dialogSelector).addClass('qt-dropdown-show-top');
 
         }
 
@@ -376,6 +373,7 @@ App.autocomplete.dialog = {
         }
 
         $(this.dialogSelector).removeClass('qt-dropdown-show');
+        $(this.dialogSelector).removeClass('qt-dropdown-show-top');
         $(this.dialogSelector).removeClass('qa-btn-dropdown-show');
         $(this.searchSelector).val('');
 
