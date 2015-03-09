@@ -8,28 +8,12 @@
     position: relative;
     overflow: hidden;
     min-height: 300px;
-
-    // don't mess with my demo
-    pointer-events: none;
 }
 
-@keyframes gdemo-bring-in-editor {
-    0% {
-        opacity: 0;
-        transform: translate3d(0, 20px, 0);
-    }
-    100% {
-        opacity: 1;
-        transform: translate3d(0, 0, 0);
-    }
-}
-
-container-box-shadow = 0 2px 2px rgba(0,0,0,.5);
+container-box-shadow = 0 2px 2px rgba(0, 0, 0, .5);
 
 .gorgias-editor-container {
-    position: absolute;
-    bottom: 0;
-    right: 10%;
+    margin: 0 auto;
     width: 100%;
     max-width: 400px;
     height: 240px;
@@ -40,8 +24,6 @@ container-box-shadow = 0 2px 2px rgba(0,0,0,.5);
 
     color: #333;
     text-align: left;
-
-    animation: gdemo-bring-in-editor .4s linear;
 }
 
 .gorgias-to-field {
@@ -54,20 +36,35 @@ container-box-shadow = 0 2px 2px rgba(0,0,0,.5);
     color: #737373;
 }
 
+.gorgias-demo-hint {
+    font-size: 20px;
+    padding: 18px;
+}
+
+@-webkit-keyframes blinker {
+    from {
+        background-color: #FFE5A2;
+    }
+    to {
+        background-color: #fff;
+    }
+}
+
+.blink {
+    padding: 3px;
+    -webkit-animation-name: blinker;
+    -webkit-animation-iteration-count: 2;
+    //-webkit-animation-timing-function: cubic-bezier(.5, 0, 1, 1);
+    -webkit-animation-timing-function: linear;
+    -webkit-animation-duration: 1s;
+}
+
 .gorgias-demo-editor {
     position: relative;
-    display: inline-block;
-}
-
-@keyframes gdemo-vcursor-blink {
-    0% { opacity:1; }
-    50% { opacity:0; }
-    100% { opacity:1; }
-}
-
-.gorgias-demo-vcursor {
-    border-right: 1px solid #666;
-    animation: gdemo-vcursor-blink 0.7s infinite;
+    height: 155px;
+    width: 100%;
+    border: none;
+    outline: none;
 }
 
 .gorgias-demo-frame-info {
@@ -99,20 +96,13 @@ container-box-shadow = 0 2px 2px rgba(0,0,0,.5);
     text-align: left;
 }
 
-@keyframes hideTip {
-    to {
-        opacity: 0;
-        visibility: hidden;
-    }
-}
-
 .gorgias-demo-key {
     position: absolute;
     bottom: 40px;
     right: 10%;
     margin-right: 32px;
     padding: 8px 16px;
-    background: rgba(0,0,0,.4);
+    background: rgba(0, 0, 0, .4);
     border-radius: 2px;
 
     color: #fff;
@@ -124,83 +114,8 @@ container-box-shadow = 0 2px 2px rgba(0,0,0,.5);
     opacity: 0;
 }
 
-.gorgias-demo-frame--activate-first-shortcut .key-tab,
-.gorgias-demo-frame--dialog-show .key-dialog-shortcut,
-.gorgias-demo-frame--dialog-activate .key-enter {
-    visibility: visible;
-    opacity: 1;
-
-    animation: hideTip .5s ease-in 1.2s forwards;
-}
-
-.gorgias-demo-frame--empty-state .gorgias-demo-frame-info--empty-state,
-.gorgias-demo-frame--type-first-shortcut .gorgias-demo-frame-info--empty-state,
-.gorgias-demo-frame--activate-first-shortcut .gorgias-demo-frame-info--activate-first-shortcut,
-.gorgias-demo-frame--dialog-show .gorgias-demo-frame-info--dialog-show,
-.gorgias-demo-frame--dialog-activate .gorgias-demo-frame-info--dialog-activate,
-.gorgias-demo-frame--try-it .gorgias-demo-frame-info--try-it {
-    opacity: 1;
-    transform: translate3d(0, 0, 0);
-}
-
-/* activate the real editor only when the last frame is active
- */
-.gorgias-demo-frame--try-it {
-    pointer-events: auto;
-}
-
-.gorgias-demo-final-list .btn {
-    font-size: 1em;
-}
-
-.gorgias-demo-final-list li{
-    padding-bottom: 10px;
-}
-
-/* bring attention to the editor
- * on the try-it step
- */
-
-@keyframes gdemo-editor-attention {
-    0%,
-    100% {
-        box-shadow: container-box-shadow;
-    }
-    50% {
-        box-shadow: 0 0 18px rgba(#067b82, .5);
-    }
-}
-
-.gorgias-demo-frame--try-it .gorgias-editor-container {
-    cursor: text;
-    animation: gdemo-editor-attention 3s ease-in-out infinite;
-}
-
-.gdemo-editor-was-focused .gorgias-editor-container {
-    animation: none;
-}
-
-.gdemo-editor-was-focused .gorgias-editor-container {
-    padding: 0;
-}
-
-.gdemo-editor-was-focused .gorgias-demo-editor {
-    display: block;
-    height: 100%;
-    padding: 10px;
-}
-
-.gdemo-editor-was-focused .gorgias-to-field {
-    margin: 0;
-}
-
-.gdemo-editor-was-focused .gorgias-demo-vcursor {
-    display: none;
-}
-
 /* content styles
  */
-
 
 @import 'nib';
 

@@ -249,7 +249,7 @@ App.autocomplete.dialog = {
         $(this.dialogSelector).addClass('qt-dropdown-show');
 
         // TODO see why this triggers show
-        //$(this.searchSelector).focus();
+        $(this.searchSelector).focus();
 
         $(App.autocomplete.dialog.contentSelector).scrollTop();
 
@@ -274,7 +274,7 @@ App.autocomplete.dialog = {
 
     },
     setDialogPosition: function(positionNode) {
-        
+
         if(!App.autocomplete.dialog.isActive) {
             return;
         }
@@ -283,7 +283,7 @@ App.autocomplete.dialog = {
         var pageHeight = window.innerHeight;
         var scrollTop = $(window).scrollTop();
         var scrollLeft = $(window).scrollLeft();
-        
+
         //scrollTop += $(App.autocomplete.dialog.editor).scrollTop();
         //scrollLeft += $(App.autocomplete.dialog.editor).scrollLeft();
         

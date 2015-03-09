@@ -35,7 +35,13 @@
         <br/>
         <input type="text" id="dialog-shortcut" readonly="readonly" ng-model="settings.dialog.shortcut" placeholder="Press any key combination" size="25" />
         <button class="btn btn-default" ng-click="recordSequence('dialog-shortcut')">Change</button>
-
+    </div>
+    <br/>
+    <h4>WYSIWYG Editor</h4>
+    <p class="help-block">WYSIWYG editor helps you write rich templates.</p>
+    <div class="checkbox">
+        <label for="editor-enabled">Enable WYSIWYG Editor</label>
+        <input type="checkbox" id="editor-enabled" ng-model="settings.editor.enabled"  ng-change="updateSettings()" />
     </div>
 
     <!--

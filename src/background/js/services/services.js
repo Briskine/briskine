@@ -1,7 +1,7 @@
 /*jshint multistr: true */
 
 // Quicktexts operations
-gqApp.service('QuicktextService', function ($q, $resource, SettingsService) {
+gApp.service('QuicktextService', function ($q, $resource, SettingsService) {
     var self = this;
 
     SettingsService.get('apiBaseURL').then(function (apiBaseURL) {
@@ -28,6 +28,7 @@ gqApp.service('QuicktextService', function ($q, $resource, SettingsService) {
         var now = new Date().toISOString();
         tx.executeSql('CREATE TABLE quicktext (\n  id               INTEGER PRIMARY KEY AUTOINCREMENT,\n  remote_id        VARCHAR(50) DEFAULT "",\n  title            VARCHAR(250) NOT NULL,\n  shortcut         VARCHAR(250) DEFAULT "",\n  subject          TEXT DEFAULT "",\n  tags             TEXT DEFAULT "",\n  body             TEXT DEFAULT "",\n  created_datetime DATETIME     NOT NULL,\n  updated_datetime DATETIME DEFAULT NULL, -- updated locally\n  sync_datetime    DATETIME DEFAULT NULL, -- last sync datetime\n  deleted          INTEGER DEFAULT 0, -- mark as deleted\n  nosync          INTEGER DEFAULT 0\n);');
     });
+    var db = openDatabase('qt', '1.0.0', '', 2 * 1024 * 1024);
 
     self.quicktexts = function (limit) {
         var deferred = $q.defer();
@@ -442,7 +443,7 @@ gqApp.service('QuicktextService', function ($q, $resource, SettingsService) {
 });
 
 // Handle stats (publish stats on the remote server)
-gqApp.service('StatsService', function ($resource, SettingsService) {
+gApp.service('StatsService', function ($resource, SettingsService) {
     var self = this;
 
     self.syncStatsTimer = null;
@@ -477,7 +478,7 @@ gqApp.service('StatsService', function ($resource, SettingsService) {
 });
 
 // Settings
-gqApp.service('SettingsService', function ($q) {
+gApp.service('SettingsService', function ($q) {
     var self = this;
     self.get = function (key, def) {
         var deferred = $q.defer();
@@ -504,7 +505,7 @@ gqApp.service('SettingsService', function ($q) {
 });
 
 // User Profile - check if the user is logged in. Get it's info
-gqApp.service('ProfileService', function ($q, SettingsService, md5) {
+gApp.service('ProfileService', function ($q, SettingsService, md5) {
     var self = this;
 
     self.gravatar = function (email, size) {

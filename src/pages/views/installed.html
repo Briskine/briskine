@@ -11,101 +11,69 @@
         </a>
     </div>
 
+    <div class="gdemo-dropdown">
+        <input type="search" class="gdemo-dropdown-search" value="" placeholder="Search templates...">
+        <ul class="gdemo-dropdown-content">
+            <li class="gdemo-item">
+                <span class="gdemo-title">Hello</span>
+                <span class="gdemo-shortcut">h</span>
+                <span class="gdemo-body">Hello {<span></span>{to.first_name}}, </span>
+            </li>
+            <li class="gdemo-item">
+                <span class="gdemo-title">Nice talking</span>
+                <span class="gdemo-shortcut">nice</span>
+                <span class="gdemo-body">It was nice talking to you.</span>
+            </li>
+            <li class="gdemo-item">
+                <span class="gdemo-title">Kind Regards</span>
+                <span class="gdemo-shortcut">kr</span>
+                <span class="gdemo-body">Kind regards, {<span></span>{from.first_name}}.</span>
+            </li>
+            <li class="gdemo-blank-state hidden">No templates found.</li>
+        </ul>
+    </div>
 
     <div class="gorgias-wizard-step gorgias-wizard-step-demo">
 
         <div class="hero text-center">
-            <h1>Welcome aboard!</h1>
-
-            <p class="lead">Strap on your seat belts, you're about to write much faster!</p>
+            <h2 class="gorgias-demo-first-step-h2">Let's see how Gorgias works</h2>
+            <h2 class="gorgias-demo-last-step-h2 hidden">Now let's create your first template!</h2>
         </div>
 
         <div class="gorgias-demo">
+            <p class="gorgias-demo-hint text-center">
+                <span class="h">Type <span class="keyboard-key">h</span> and press <span
+                    class="keyboard-key">Tab ↹</span></span>
+                <span class="nice hidden">Great! Now type <span class="keyboard-key">nice</span> and press <span
+                    class="keyboard-key">Tab ↹</span></span>
+                <span class="space hidden">Finally, press <span class="keyboard-key">CTRL</span> + <span
+                    class="keyboard-key">SPACE</span> and choose a template from the list.</span>
+            </p>
 
             <div class="gorgias-editor-container">
-                <div class="gorgias-to-field"><span class="to">To:</span> Malala Yousafzai &lt;malala@example.org&gt;
+                <div class="gorgias-to-field"><span class="to">To:</span> <span class="h">John</span> Doe &lt;john.doe@acme.org&gt;
                 </div>
-                <div class="gorgias-demo-editor"></div>
-                <span class="gorgias-demo-vcursor"></span>
+                <div class="gorgias-demo-editor" contenteditable="true">&nbsp;</div>
             </div>
-
-            <div class="gorgias-demo-frame-info gorgias-demo-frame-info--empty-state">
-
-                <p>
-                    Here are a few of the cool things you can do with Gorgias.
-                </p>
-
-            </div>
-
-            <div class="gorgias-demo-frame-info gorgias-demo-frame-info--activate-first-shortcut">
-
-                <p>
-                    Dead-simple keyboard completion.
-                </p>
-
-            </div>
-
-            <div class="gorgias-demo-key key-tab">
-                Tab ↹
-            </div>
-
-            <div class="gorgias-demo-frame-info gorgias-demo-frame-info--dialog-show">
-
-                <p>
-                    Search through your templates.
-                </p>
-
-            </div>
-
-            <div class="gorgias-demo-key key-dialog-shortcut">
-                Ctrl + Space
-            </div>
-
-            <div class="gorgias-demo-frame-info gorgias-demo-frame-info--dialog-activate">
-
-                <p>
-                    And get the same smart autocomplete.
-                </p>
-
-            </div>
-
-            <div class="gorgias-demo-key key-enter">
-                Enter &#9166;
-            </div>
-
-            <div class="gorgias-demo-frame-info gorgias-demo-frame-info--try-it">
-
-                <p class="call-action">Go ahead, try it out for yourself!</p>
-
-                <ul class="gorgias-demo-final-list">
-                    <li>
-                        Type <span class="keyboard-key">h</span> and press <span class="keyboard-key">Tab ↹</span>
-                    </li>
-                    <li>
-                        Type <span class="keyboard-key">kr</span> then press <span class="keyboard-key">Tab ↹</span>
-                    </li>
-                    <li>
-                        Press <span class="keyboard-key">Ctrl</span> + <span class="keyboard-key">Space</span> and <span
-                        class="keyboard-key">Enter &#9166;</span>
-                    </li>
-                </ul>
-
-            </div>
-
         </div>
 
-        <div class="text-center">
+        <!--
+        <div class="hidden text-center">
             <a href="#/installed?step=language" class="btn btn-lg btn-primary btn-wizard-start">
                 Quickly set up Gorgias
                 <i class="fa fa-angle-right"></i>
             </a>
         </div>
+        -->
 
-        <div class="browser-action-pointer"></div>
-        <div class="browser-action-pointer-tip">
-            <p>
-                Click on the "Gorgias" button to manage your templates.
-            </p>
+        <div class="browser-action hidden">
+            <div class="browser-action-pointer"></div>
+            <div class="browser-action-pointer-tip">
+                <p>
+                    <strong>Click </strong> on <img src="/icons/icon48.png" alt="gorgias icon"/> icon &
+                    <strong>click</strong> on the <button class="btn btn-default">New template</button> button.
+                </p>
+            </div>
         </div>
 
     </div>
@@ -191,6 +159,7 @@
 
         <br/><br/>
         <br/><br/>
+
         <div>
             <h4>Want to share your templates with your team?</h4>
 

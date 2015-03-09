@@ -1,4 +1,4 @@
-gqApp.service('InstallService', function () {
+gApp.service('InstallService', function () {
 
     // available languages
     this.languages = [
@@ -40,6 +40,37 @@ gqApp.service('InstallService', function () {
         }
     }
 
+    // these are installed templates by default
+    this.preloadedTemplates = [
+        {
+            'title': 'Say Hello',
+            'shortcut': 'h',
+            'subject': '',
+            'tags': 'en, greetings',
+            'body': 'Hello {{to.0.first_name}},\n\n'
+        },
+        {
+            'title': 'Nice talking to you',
+            'shortcut': 'nic',
+            'subject': '',
+            'tags': 'en, followup',
+            'body': 'It was nice talking to you.'
+        },
+        {
+            'title': 'Kind Regards',
+            'shortcut': 'kr',
+            'subject': '',
+            'tags': 'en, closing',
+            'body': 'Kind regards,\n{{from.0.first_name}}.'
+        },
+        {
+            'title': 'My email',
+            'shortcut': 'e',
+            'subject': '',
+            'tags': 'en, personal',
+            'body': '{{from.0.email}}'
+        }
+    ];
 
     this.templates = [
         {

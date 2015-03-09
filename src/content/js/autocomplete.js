@@ -226,14 +226,16 @@ App.autocomplete.replaceWith = function (params) {
                 // markdown requires two spaces and \n to for a line break
                 // so we use this to also turn any \n into a line break
                 replacement = parsedTemplate.replace(/\n/g,' <br />\n');
-                
-                // wrap the template in a div
-                // so `marked` doesn't wrap lines in p's
-                replacement = '<div>' + replacement + '</div>';
-                
-                // convert markdown body to html
-                replacement = marked(replacement);
-                
+
+                if (App.settings.editor_enabled) {
+                    // wrap the template in a div
+                    // so `marked` doesn't wrap lines in p's
+                    replacement = '<div>' + replacement + '</div>';
+
+                    // convert markdown body to html
+                    replacement = marked(replacement);
+                }
+
                 // setStart/setEnd work differently based on
                 // the type of node
                 // https://developer.mozilla.org/en-US/docs/Web/API/range.setStart
@@ -316,28 +318,27 @@ App.autocomplete.replaceWith = function (params) {
 
                 // convert markdown images and links to
                 // regular links
-            
+
                 // crazy regex to match markdown links
                 // [text](http://)
                 var linkRegex = '\\[([^\\]]*)\\]\\(([^)"]+)(?: \\"([^\\"]+)\\")?\\)';
-            
+
                 // prepend ! for markdown images
                 // ![alt text](http://)
                 var imgRegex = '!' + linkRegex;
-            
+
                 // replace images first
                 // because the link regex also matches parts of images
                 // but not the other way around
-                parsedTemplate = 
-                parsedTemplate.replace(new RegExp(imgRegex, 'g'), function(whole, a, b, c) {
+                parsedTemplate = parsedTemplate.replace(new RegExp(imgRegex, 'g'), function(whole, a, b, c) {
                     return b;
                 });
-                
+
                 // replace links
                 parsedTemplate = parsedTemplate.replace(new RegExp(linkRegex, 'g'), function(whole, a, b, c) {
                     return b;
                 });
-                    
+
                 var valueNew = '';
                 var cursorOffset = word.end + parsedTemplate.length;
 
@@ -346,8 +347,8 @@ App.autocomplete.replaceWith = function (params) {
                 if (word.text === params.quicktext.shortcut) {
 
                     valueNew = value.substr(0, word.start) + parsedTemplate + value.substr(word.end);
-                    
-                    // decrease the cursor offset with the removed text length 
+
+                    // decrease the cursor offset with the removed text length
                     cursorOffset -= word.end - word.start;
 
                 } else {

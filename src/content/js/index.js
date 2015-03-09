@@ -9,24 +9,23 @@ var App = {
         debouncer: {},
         lastFilterRun: 0,
     },
+    editor_enabled: true,
     autocomplete: {},
     settings: {
         // Get quicktexts filtered out by shortcut
         getQuicktextsShortcut: function (text, callback) {
-
-            var listener = function (msg) {
-                // bind listener only once
-                App.shortcutPort.onMessage.removeListener(listener);
-
-                callback(msg.quicktexts);
-            };
-
-            App.shortcutPort.onMessage.addListener(listener);
-
-            App.shortcutPort.postMessage({text: text});
+            TemplateStorage.get(null, function (templates) {
+                for (var id in templates) {
+                    var t = templates[id];
+                    if (t.deleted === 0 && t.shortcut === text) {
+                        chrome.runtime.sendMessage({'request': 'insert', 'template': t});
+                        callback([t]);
+                        return;
+                    }
+                }
+            });
         },
         getFiltered: function (text, limit, callback) {
-            // search even the empty strings. It's not a problem because the dialog is now triggered by a user shortcut
 
             // use a debouncer to not trigger the filter too many times
             // use the callback function as a uuid for the debouncers
@@ -51,25 +50,55 @@ var App = {
             }
 
             App.data.debouncer[debouncerId] = setTimeout(function () {
-                if (!App.data.searchCache[text] || !App.data.searchCache[text].length) {
-                    App.searchPort.onMessage.addListener(function (msg) {
-                        App.data.searchCache[text] = msg.quicktexts.slice();
-                        callback(App.data.searchCache[text]);
-                        App.searchPort.onMessage.removeListener(arguments.callee);
+                
+                // search even the empty strings. It's not a problem because the dialog is now triggered by a user shortcut
+                TemplateStorage.get(null, function (res) {
+                    var templates = [];
+                    var count = 0;
+                    for (var id in res) {
+                        var t = res[id];
+                        if (t.deleted !== 0) {
+                            continue;
+                        }
+                        // we have some text, do the filtering
+                        if (text) {
+                            if (t.shortcut.indexOf(text) !== -1 ||
+                                t.title.indexOf(text) !== -1 ||
+                                t.body.indexOf(text) !== -1) {
+
+                                if (limit && limit < count) {
+                                    break;
+                                }
+                                count++;
+                                templates.push(t);
+                            }
+                        } else { // no text, get all
+                            if (limit && limit < count) {
+                                break;
+                            }
+                            count++;
+                            templates.push(t);
+                        }
+                    }
+                    // sort by created_datetime desc
+                    templates.sort(function (a, b) {
+                        return new Date(b.created_datetime) - new Date(a.created_datetime);
                     });
-                    App.searchPort.postMessage({text: text, limit: limit});
-                    // expire cache after a while
-                    setTimeout(function(){
-                        delete App.data.searchCache[text];
-                    }, 1500);
-                } else {
-                    callback(App.data.searchCache[text]);
-                }
+
+                    // then sort by updated_datetime so the last one updated is first
+                    templates.sort(function (a, b) {
+                        return new Date(b.updated_datetime) - new Date(a.updated_datetime);
+                    });
+
+                    // Too many requests sent. Send only once
+                    //chrome.runtime.sendMessage({'request': 'search', 'query_size': templates.length});
+                    callback(templates);
+                    
+                });
+                
             }, debouncerTime);
-
-            // update the timer with the last time the function was ran
+            
             App.data.lastFilterRun = Date.now();
-
         },
         get: function (key, callback) {
             chrome.runtime.sendMessage({'request': 'get', 'data': key}, function (response) {
@@ -82,8 +111,8 @@ var App = {
             });
         },
         fetchSettings: function (callback) {
-            chrome.runtime.sendMessage({'request': 'settings'}, function (response) {
-                callback(response);
+            Settings.get("settings", "", function (settings) {
+                callback(settings);
             });
         }
     }
@@ -92,13 +121,13 @@ var App = {
 // the active plugin, based on the plugin.init response
 // blank at first
 App.activePlugin = {
-    setTitle: function(params, callback) {
+    setTitle: function (params, callback) {
         callback();
     },
-    getData: function(params, callback) {
+    getData: function (params, callback) {
         callback();
     },
-    init: function(params, callback) {
+    init: function (params, callback) {
         callback();
     }
 };
@@ -107,7 +136,7 @@ App.activePlugin = {
 App.plugins = {};
 
 // main plugin creation method, used by plugins
-App.plugin = function(id, obj) {
+App.plugin = function (id, obj) {
 
     // check if plugin has all the required methods
     var requiredMethods = [
@@ -117,8 +146,8 @@ App.plugin = function(id, obj) {
     ];
 
     // mix in the plugin
-    requiredMethods.forEach(function(prop) {
-        if(!obj.hasOwnProperty(prop)) {
+    requiredMethods.forEach(function (prop) {
+        if (!obj.hasOwnProperty(prop)) {
             throw new Error('Invalid plugin *' + id + '*! Missing method: ' + prop);
         }
     });
@@ -128,24 +157,24 @@ App.plugin = function(id, obj) {
 };
 
 // run the init method on all adapters
-App.activatePlugins = function() {
+App.activatePlugins = function () {
 
     var allPlugins = Object.keys(App.plugins);
     var pluginResponse = {};
 
     // check if all plugins were loaded
-    var checkPluginsLoaded = function() {
+    var checkPluginsLoaded = function () {
 
         var pluginResponseArray = Object.keys(pluginResponse);
 
-        if(pluginResponseArray.length === allPlugins.length) {
+        if (pluginResponseArray.length === allPlugins.length) {
 
             // all plugins loaded
-            pluginResponseArray.some(function(pluginName) {
+            pluginResponseArray.some(function (pluginName) {
 
                 // find the first plugin that returned true
                 // and set it as the active one
-                if(pluginResponse[pluginName] === true) {
+                if (pluginResponse[pluginName] === true) {
                     App.activePlugin = App.plugins[pluginName];
                     return true;
                 }
@@ -159,9 +188,9 @@ App.activatePlugins = function() {
     };
 
     // trigger the init function on all plugins
-    allPlugins.forEach(function(pluginName) {
+    allPlugins.forEach(function (pluginName) {
 
-        App.plugins[pluginName].init({}, function(err, response) {
+        App.plugins[pluginName].init({}, function (err, response) {
 
             pluginResponse[pluginName] = response;
 
@@ -186,6 +215,9 @@ App.init = function (settings) {
 
     var currentUrl = window.location.href;
 
+    // Check if we should use editor markup
+    App.settings.editor_enabled = settings.editor.enabled;
+
     var blacklistPrivate = [
         'https://gorgias.io'
     ];
@@ -198,21 +230,21 @@ App.init = function (settings) {
 
     // check if url is in blacklist
     var isBlacklisted = false;
-    fullBlacklist.some(function(item) {
-        if(currentUrl.indexOf(item) !== -1) {
+    fullBlacklist.some(function (item) {
+        if (currentUrl.indexOf(item) !== -1) {
             isBlacklisted = true;
             return true;
         }
         return false;
     });
 
-    if(isBlacklisted) {
+    if (isBlacklisted) {
         return false;
     }
 
     document.addEventListener("blur", App.onBlur, true);
     document.addEventListener("focus", App.onFocus, true);
-    //document.addEventListener("scroll", App.onScroll, true);
+    document.addEventListener("scroll", App.onScroll, true);
 
     // use custom keyboard shortcuts
     if (settings.keyboard.enabled) {
@@ -231,15 +263,6 @@ App.init = function (settings) {
     }
 
     App.activatePlugins();
-
-    if (!App.shortcutPort) {
-        App.shortcutPort = chrome.runtime.connect({name: "shortcut"});
-    }
-
-    if (!App.searchPort) {
-        App.searchPort = chrome.runtime.connect({name: "search"});
-    }
-
 };
 
 $(function () {

@@ -1,5 +1,5 @@
 // Truncate and end with ...
-gqApp.filter('truncate', function () {
+gApp.filter('truncate', function () {
     return function (text, length, end) {
         if (isNaN(length)) {
             length = 100;
@@ -18,25 +18,25 @@ gqApp.filter('truncate', function () {
 });
 
 // replace \n by <br />
-gqApp.filter('newlines', function () {
+gApp.filter('newlines', function () {
     return function (text) {
         return text.replace("\n", "<br />");
     };
 });
 
 // tell angular that an output is safe
-gqApp.filter('safe', function ($sce) {
+gApp.filter('safe', function ($sce) {
     return function (val) {
         return $sce.trustAsHtml(val);
     };
 });
 
 // Filter quicktexts by tags
-gqApp.filter('tagFilter', function (QuicktextService) {
+gApp.filter('tagFilter', function (TemplateService) {
     return function (quicktexts, filterTags) {
         if (filterTags && filterTags.length) {
             return _.filter(quicktexts, function (qt) {
-                tags = QuicktextService.tags(qt);
+                tags = TemplateService.tags(qt);
                 return _.intersection(filterTags, tags).length === filterTags.length;
             });
         } else {

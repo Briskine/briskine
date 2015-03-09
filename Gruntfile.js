@@ -39,9 +39,10 @@ module.exports = function (grunt) {
 
                 // Should be first
                 'background/js/environment.js',
-                'background/js/mixpanel.js',
+                'background/js/utils/mixpanel.js',
                 'bower_components/mixpanel/mixpanel.js',
-                'background/js/**/*.js',
+                'common/*.js',
+                'background/js/**/*.js'
             ]
         },
         content: {
@@ -53,6 +54,8 @@ module.exports = function (grunt) {
                 'bower_components/mousetrap/mousetrap.js',
                 'bower_components/mousetrap/plugins/global-bind/mousetrap-global-bind.js',
                 'bower_components/marked/lib/marked.js',
+
+                'common/*.js',
 
                 'content/js/patterns.js',
                 'content/js/index.js',

@@ -4,15 +4,23 @@ Raven.config('https://af2f5e9fb2744c359c19d08c8319d9c5@app.getsentry.com/30379',
     tags: {
         version: chrome.runtime.getManifest().version
     },
+    whitelistUrls: [
+        /https:\/\/mail\.google\.com/,
+        /https:\/\/.*mail\.yahoo\.com/,
+        /https:\/\/.*mail\.live\.com/,
+        /https:\/\/.*linkedin\.com/,
+        /https:\/\/.*fastmail\.com/,
+        /chrome-extension:\/\/jcaagnkpclhhpghggjoemjjneoimjbid/, // chrome
+        /chrome-extension:\/\/ammheiinddkagoaegldpipmmjfoggahh/ // opera
+    ],
     linesOfContext: 11,
     fetchContext: true,
     collectWindowErrors: true
 }).install();
 
-var gqApp = angular.module('gqApp', [
+var gApp = angular.module('gApp', [
     'ngRoute',
     'ngResource',
-    'ngAnimate',
     'angular-md5',
     'angularMoment',
     'textAngular'
@@ -44,7 +52,7 @@ var gqApp = angular.module('gqApp', [
 });
 
 
-gqApp.config(["$provide", function ($provide) {
+gApp.config(["$provide", function ($provide) {
     $provide.decorator("$exceptionHandler", ["$delegate", "$window", function ($delegate, $window) {
         return function (exception, cause) {
             Raven.captureException(exception);
@@ -57,7 +65,7 @@ gqApp.config(["$provide", function ($provide) {
 
 /* Global run
  */
-gqApp.run(function ($rootScope, $location, $http, $timeout, ProfileService, SettingsService, QuicktextService) {
+gApp.run(function ($rootScope, $location, $http, $timeout, ProfileService, SettingsService, TemplateService) {
 
     $rootScope.$on('$routeChangeStart', function (next, current) {
         $rootScope.path = $location.path();
@@ -65,12 +73,26 @@ gqApp.run(function ($rootScope, $location, $http, $timeout, ProfileService, Sett
     $rootScope.pageAction = ($location.path() === '/popup');
 
 
-    SettingsService.get('baseURL').then(function(baseURL){
+    SettingsService.get('baseURL').then(function (baseURL) {
         $rootScope.baseURL = baseURL;
     });
 
-    // disable mixpanel if stats are not enabled
     SettingsService.get('settings').then(function (settings) {
+        // Make sure that we have all the default
+        var keys = Object.keys(settings);
+        var changed = false;
+        for (var key in Settings.defaults.settings) {
+            if (keys.indexOf(key) === -1) {
+                settings[key] = Settings.defaults.settings[key];
+                changed = true;
+            }
+        }
+        if (changed) {
+            SettingsService.set('settings', settings);
+        }
+
+
+        // disable mixpanel if stats are not enabled
         if (!settings.stats.enabled) {
             mixpanel.disable();
         }
@@ -79,17 +101,22 @@ gqApp.run(function ($rootScope, $location, $http, $timeout, ProfileService, Sett
     // setup profile
     $rootScope.profile = {};
     $rootScope.profileService = ProfileService;
-    ProfileService.savedTime().then(function(savedTime){
+    ProfileService.savedTime().then(function (savedTime) {
         $rootScope.profile.savedTime = savedTime;
     });
 
-    ProfileService.words().then(function(words){
+    ProfileService.words().then(function (words) {
         $rootScope.profile.savedWords = ProfileService.reduceNumbers(words);
     });
 
     $rootScope.checkLogin = function () {
         $('#check-login').removeClass("hide");
     };
+
+    var browser = "Chrome";
+    if (Boolean(navigator.userAgent.match(/OPR\/(\d+)/))) {
+        browser = "Opera";
+    }
 
     $rootScope.isLoggedIn = function () {
         SettingsService.get("apiBaseURL").then(function (apiBaseURL) {
@@ -98,18 +125,39 @@ gqApp.run(function ($rootScope, $location, $http, $timeout, ProfileService, Sett
                     if (data.is_loggedin) {
                         $http.get(apiBaseURL + "account").success(function (data) {
                             $rootScope.profile.user = data;
+                            mixpanel.register({
+                                "$browser": browser,
+                                authenticated: true,
+                                user: data
+                            });
                         });
+                        // Once logged in, upload the local templates
+                        TemplateService.syncLocal();
+                    } else {
+                        mixpanel.register({
+                            "$browser": browser,
+                            authenticated: false,
+                            user: {}
+                        });
+                        SettingsService.set("isLoggedIn", false);
                     }
                 });
+            }).error(function () {
+                mixpanel.register({
+                    "$browser": browser,
+                    authenticated: false,
+                    user: {}
+                });
+                SettingsService.set("isLoggedIn", false);
             });
         });
     };
 
     // last sync date
-    $rootScope.lastSync = QuicktextService.lastSync;
+    $rootScope.lastSync = TemplateService.lastSync;
 
     $rootScope.SyncNow = function () {
-        QuicktextService.sync(function (lastSync) {
+        TemplateService.sync(function (lastSync) {
             $rootScope.$broadcast("quicktexts-sync");
             $rootScope.lastSync = lastSync;
         });
@@ -130,8 +178,9 @@ gqApp.run(function ($rootScope, $location, $http, $timeout, ProfileService, Sett
             $(this).find('input[type!="hidden"]:first').focus();
         });
 
-        $rootScope.isLoggedIn();
     };
+
+    $rootScope.isLoggedIn();
 
     $rootScope.$on('$viewContentLoaded', initDom);
     $rootScope.$on('$includeContentLoaded', initDom);

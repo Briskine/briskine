@@ -1,4 +1,4 @@
-gqApp.controller('SettingsCtrl', function ($scope, $rootScope, $timeout,  QuicktextService, SettingsService) {
+gApp.controller('SettingsCtrl', function ($scope, $rootScope, $timeout,  TemplateService, SettingsService) {
     $scope.settings = {};
     SettingsService.get('settings').then(function(settings){
         $scope.settings = settings;
@@ -78,7 +78,7 @@ gqApp.controller('SettingsCtrl', function ($scope, $rootScope, $timeout,  Quickt
     $scope.deleteAll = function () {
         var r = confirm("Are you sure you want to delete all templates?\n\nNote: they will NOT be deleted from the sync server if it's setup.");
         if (r === true) {
-            QuicktextService.deleteAll().then(function(){
+            TemplateService.deleteAll().then(function(){
                 alert("All templates have been deleted. You can still get them back if you are registered gorgias.io");
             });
         }
@@ -88,9 +88,7 @@ gqApp.controller('SettingsCtrl', function ($scope, $rootScope, $timeout,  Quickt
     $scope.resetSettings = function () {
         var r = confirm("Are you sure you want reset your settings?\n\nNote: Your stats will be reset");
         if (r === true) {
-            SettingsService.reset().then(function(){
-                alert("Settings are reset to default values");
-            });
+            SettingsService.reset();
         }
     };
 });

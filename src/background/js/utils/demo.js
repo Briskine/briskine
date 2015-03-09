@@ -2,7 +2,7 @@
  * demo
  */
 
-var gorgiasDemo = (function() {
+var gorgiasDemo = (function () {
 
     var KEY_TAB = 9;
     var KEY_UP = 38;
@@ -18,31 +18,36 @@ var gorgiasDemo = (function() {
     var quicktexts = [
         {
             shortcut: 'h',
-            title: 'hello',
-            body: 'Hello Malala,'
+            title: 'Say Hello',
+            body: "Hello <span class='h'>John</span>,<br><br><br>"
+        },
+        {
+            shortcut: 'nice',
+            title: 'Nice talking',
+            body: 'It was nice talking to you!<br><br><br>'
         },
         {
             shortcut: 'kr',
-            title: 'kindregards',
-            body: 'Kind Regards, \nGorgias'
+            title: 'Kind regards,',
+            body: 'Kind Regards, <br>Jane'
         }
     ];
 
-    var getQuicktext = function(shortcut) {
+    var getQuicktext = function (shortcut) {
 
         var q;
 
         shortcut = shortcut.toLowerCase();
 
         // find quicktext by shortcut
-        quicktexts.some(function(quicktext) {
+        quicktexts.some(function (quicktext) {
 
-        if(quicktext.shortcut === shortcut) {
-            q = quicktext;
-            return true;
-        }
+            if (quicktext.shortcut === shortcut) {
+                q = quicktext;
+                return true;
+            }
 
-        return false;
+            return false;
 
         });
 
@@ -50,30 +55,30 @@ var gorgiasDemo = (function() {
 
     };
 
-    var filterQuicktexts = function(word) {
+    var filterQuicktexts = function (word) {
 
         var add;
         var filtered = [];
 
-        quicktexts.forEach(function(qt) {
+        quicktexts.forEach(function (qt) {
 
-        add = false;
+            add = false;
 
-        if(qt.shortcut.indexOf(word) !== -1) {
-            add = true;
-        }
+            if (qt.shortcut.indexOf(word) !== -1) {
+                add = true;
+            }
 
-        if(!add && qt.title.indexOf(word) !== -1) {
-            add = true;
-        }
+            if (!add && qt.title.indexOf(word) !== -1) {
+                add = true;
+            }
 
-        if(!add && qt.body.indexOf(word) !== -1) {
-            add = true;
-        }
+            if (!add && qt.body.indexOf(word) !== -1) {
+                add = true;
+            }
 
-        if(add === true) {
-            filtered.push(qt);
-        }
+            if (add === true) {
+                filtered.push(qt);
+            }
 
         });
 
@@ -82,47 +87,24 @@ var gorgiasDemo = (function() {
     };
 
 
-    var dialogTemplate = '' +
-        '<div class="gdemo-dropdown">' +
-        '<input type="search" class="gdemo-dropdown-search" value="" placeholder="Search templates...">' +
-        '<ul class="gdemo-dropdown-content"></ul>' +
-        '</div>' +
-        '';
-
-    var dialogLiTemplate = '' +
-        '{{#if elements.length}}' +
-        '{{#each elements}}' +
-        '<li class="gdemo-item" title="{{{originalBody}}}">' +
-        '<span class="gdemo-title">{{{title}}}</span>' +
-        '<span class="gdemo-shortcut">{{{shortcut}}}</span>' +
-        '<span class="gdemo-body">{{{body}}}</span>' +
-        '</li>' +
-        '{{/each}}' +
-        '{{else}}' +
-        '<li class="gdemo-blank-state">' +
-        'No templates found.' +
-        '</li>' +
-        '{{/if}}' +
-        '';
-
-    var getCursorPosition = function(e, params) {
+    var getCursorPosition = function (e, params) {
 
         params = params || {};
 
         var position = {
-                element: e && e.target ? e.target : null,
-                offset: 0,
-                absolute: {
-                    left: 0,
-                    top: 0
-                },
-                word: null
-            };
+            element: e && e.target ? e.target : null,
+            offset: 0,
+            absolute: {
+                left: 0,
+                top: 0
+            },
+            word: null
+        };
 
-        var getRanges = function(sel){
-            if (sel.rangeCount){
+        var getRanges = function (sel) {
+            if (sel.rangeCount) {
                 var ranges = [];
-                for (var i= 0; i < sel.rangeCount; i++){
+                for (var i = 0; i < sel.rangeCount; i++) {
                     ranges.push(sel.getRangeAt(i));
                 }
                 return ranges;
@@ -130,7 +112,7 @@ var gorgiasDemo = (function() {
             return [];
         };
 
-        var restoreRanges = function(sel, ranges){
+        var restoreRanges = function (sel, ranges) {
             for (var i in ranges) {
                 sel.addRange(ranges[i]);
             }
@@ -146,7 +128,7 @@ var gorgiasDemo = (function() {
         position.element = params.focusNode || selection.focusNode;
         position.offset = selection.focusOffset;
 
-        if(typeof params.focusOffset !== 'undefined') {
+        if (typeof params.focusOffset !== 'undefined') {
             position.offset = params.focusOffset;
         }
 
@@ -198,19 +180,24 @@ var gorgiasDemo = (function() {
         var selection = window.getSelection();
 
         var focusNode = params.focusNode || selection.focusNode;
+        if (focusNode) {
+            switch (focusNode.nodeType) {
+                // In most cases, the focusNode property refers to a Text Node.
+                case (document.TEXT_NODE): // for text nodes it's easy. Just take the text and find the closest word
+                    beforeSelection = focusNode.textContent;
+                    break;
+                // However, in some cases it may refer to an Element Node
+                case (document.ELEMENT_NODE):
+                    // In that case, the focusOffset property returns the index in the childNodes collection of the focus node where the selection ends.
+                    beforeNode = focusNode.childNodes[selection.focusOffset];
+                    if (beforeNode) {
+                        beforeSelection = beforeNode.textContent;
+                    }
 
-        switch (focusNode.nodeType) {
-            // In most cases, the focusNode property refers to a Text Node.
-            case (document.TEXT_NODE): // for text nodes it's easy. Just take the text and find the closest word
-                beforeSelection = focusNode.textContent;
-                break;
-            // However, in some cases it may refer to an Element Node
-            case (document.ELEMENT_NODE):
-                // In that case, the focusOffset property returns the index in the childNodes collection of the focus node where the selection ends.
-                beforeSelection = focusNode.childNodes[selection.focusOffset].textContent;
-
-                break;
+                    break;
+            }
         }
+
 
         // Replace all &nbsp; with normal spaces
         beforeSelection = beforeSelection.replace('\xa0', ' ').trim();
@@ -222,34 +209,34 @@ var gorgiasDemo = (function() {
 
     };
 
-    var getData = function(params, callback) {
+    var getData = function (params, callback) {
 
         var data = {
-        from: [{
-            name: '',
-            first_name: '',
-            last_name: '',
-            email: ''
-        }],
-        to: [{
-            name: '',
-            first_name: '',
-            last_name: '',
-            email: ''
-        }],
-        cc: [{
-            name: '',
-            first_name: '',
-            last_name: '',
-            email: ''
-        }],
-        bcc: [{
-            name: '',
-            first_name: '',
-            last_name: '',
-            email: ''
-        }],
-        subject: ''
+            from: [{
+                name: '',
+                first_name: '',
+                last_name: '',
+                email: ''
+            }],
+            to: [{
+                name: '',
+                first_name: '',
+                last_name: '',
+                email: ''
+            }],
+            cc: [{
+                name: '',
+                first_name: '',
+                last_name: '',
+                email: ''
+            }],
+            bcc: [{
+                name: '',
+                first_name: '',
+                last_name: '',
+                email: ''
+            }],
+            subject: ''
         };
 
         return callback(null, data);
@@ -264,9 +251,9 @@ var gorgiasDemo = (function() {
 
         getData({
             element: params.element
-        }, function(err, response) {
+        }, function (err, response) {
 
-            var parsedTemplate = Handlebars.compile(params.quicktext.body)(response);
+            var parsedTemplate = params.quicktext.body;
 
             var selection = window.getSelection();
             var range = document.createRange();
@@ -291,7 +278,7 @@ var gorgiasDemo = (function() {
             }
 
             // clear whitespace in the focused textnode
-            if(focusNode.nodeValue) {
+            if (focusNode.nodeValue) {
                 focusNode.nodeValue = focusNode.nodeValue.trim();
             }
 
@@ -316,17 +303,11 @@ var gorgiasDemo = (function() {
     };
 
 
-    var triggerKey = function(e) {
+    var triggerKey = function (e) {
 
-        if(e.keyCode === KEY_TAB) {
+        if (e.keyCode === KEY_TAB) {
 
             var element = e.target;
-
-            // prevent errors
-            if(!element.innerHTML) {
-                return;
-            }
-
             var focusNode = window.getSelection().focusNode;
 
             var word = getSelectedWord({
@@ -335,17 +316,20 @@ var gorgiasDemo = (function() {
 
             var quicktext = getQuicktext(word.text);
 
-            if(quicktext) {
-                replaceWith({
+            if (quicktext) {
+                var params = {
                     element: element,
                     quicktext: quicktext,
                     focusNode: focusNode,
                     word: word
-                });
+                };
+
+                replaceWith(params);
+                $('body').trigger("template-inserted", params);
             }
         }
 
-        if(e.keyCode === KEY_SPACE && e.ctrlKey) {
+        if (e.keyCode === KEY_SPACE && e.ctrlKey) {
 
             dialogShow(e);
 
@@ -364,7 +348,7 @@ var gorgiasDemo = (function() {
         $element.addClass('active');
     };
 
-    var dialogPopulate = function(params) {
+    var dialogPopulate = function (params) {
 
         var quicktexts = filterQuicktexts(params.word.text);
 
@@ -377,6 +361,9 @@ var gorgiasDemo = (function() {
         var searchRe = new RegExp(params.word.text, 'gi');
 
         var highlightMatch = function (match) {
+            if (!params.word.text) {
+                return match;
+            }
             return '<span class="gdemo-search-highlight">' + match + '</span>';
         };
 
@@ -387,11 +374,23 @@ var gorgiasDemo = (function() {
             elem.shortcut = elem.shortcut.replace(searchRe, highlightMatch);
         });
 
-        var content = Handlebars.compile(dialogLiTemplate)({
-            elements: clonedElements
+        $(contentSelector).empty();
+        clonedElements.forEach(function (elem) {
+            var body = elem.body.replace(/<br>/g, "\n");
+            $(contentSelector).append('<li class="gdemo-item active">' +
+            '<span class="gdemo-title">' + elem.title + '</span>' +
+            '<span class="gdemo-shortcut">' + elem.shortcut + '</span>' +
+            '<span class="gdemo-body">' + body + '</span>' +
+            '</li>');
         });
 
-        $(contentSelector).html(content);
+        /*
+         var content = Handlebars.compile(dialogLiTemplate)({
+         elements: clonedElements
+         });
+
+         $(contentSelector).html(content);
+         */
 
         // Set first element active
         dialogSelectItem(0);
@@ -418,8 +417,7 @@ var gorgiasDemo = (function() {
         var container = $('body');
 
         // Add loading dropdown
-        var dialog = $(dialogTemplate);
-        container.append(dialog);
+        var dialog = $(dialogSelector);
 
         //HACK: set z-index to auto to a parent, otherwise the autocomplete
         //      dropdown will not be displayed with the correct stacking
@@ -442,17 +440,17 @@ var gorgiasDemo = (function() {
             e.preventDefault();
             e.stopPropagation();
 
-            if(e.keyCode === KEY_UP) {
+            if (e.keyCode === KEY_UP) {
                 dialogChangeSelection('prev');
                 return;
             }
 
-            if(e.keyCode === KEY_DOWN) {
+            if (e.keyCode === KEY_DOWN) {
                 dialogChangeSelection('next');
                 return;
             }
 
-            if(e.keyCode === KEY_ENTER) {
+            if (e.keyCode === KEY_ENTER) {
 
                 dialogSelectActive();
                 dialogHide();
@@ -460,7 +458,7 @@ var gorgiasDemo = (function() {
                 return;
             }
 
-            if(e.keyCode === KEY_ESC) {
+            if (e.keyCode === KEY_ESC) {
 
                 dialogHide();
 
@@ -487,15 +485,19 @@ var gorgiasDemo = (function() {
             focusNode: $focusNode
         });
 
-        replaceWith({
-            element: $editor,
-            quicktext: quicktext,
-            focusNode: $focusNode,
-            word: word
-        });
+        if (typeof $focusNode !== 'undefined') {
+            var params = {
+                element: $editor,
+                quicktext: quicktext,
+                focusNode: $focusNode,
+                word: word
+            };
+            $($editor).append(quicktext.body);
+            $('body').trigger('dialog-used', params);
+        }
     };
 
-    var dialogShow = function(e, params) {
+    var dialogShow = function (e, params) {
 
         params = params || {};
 
@@ -506,7 +508,7 @@ var gorgiasDemo = (function() {
         // so we can use it as a textnode.
         // otherwise, if the focusNode is the $editor
         // the quicktext is appended before it in the dom, not in it.
-        if(!$editor.innerHTML) {
+        if (!$editor.innerHTML) {
             $editor.innerHTML = ' ';
         }
 
@@ -515,7 +517,7 @@ var gorgiasDemo = (function() {
         var cursorPosition = getCursorPosition(e, params);
 
         dialogPopulate({
-            word: { text: '' }
+            word: {text: ''}
         });
 
         $(dialogSelector).css({
@@ -529,7 +531,7 @@ var gorgiasDemo = (function() {
 
         // when manually triggering the dialog shortcut
         // (not in animation frame)
-        if(!params.focusNode) {
+        if (!params.focusNode) {
             $focusNode = window.getSelection().focusNode;
 
             $(searchSelector).focus();
@@ -537,173 +539,14 @@ var gorgiasDemo = (function() {
 
     };
 
-    var dialogHide = function(e) {
+    var dialogHide = function (e) {
 
         $(dialogSelector).removeClass('gdemo-dropdown-show');
         $(searchSelector).val('');
 
     };
 
-    var lastFrameName = '';
-    var globalTimer = 0;
-    var animationTimers = [];
-
-    var animationFrame = function(name, time, callback) {
-
-        globalTimer += time;
-
-        animationTimers.push(setTimeout(function() {
-
-            $($container).removeClass('gorgias-demo-frame--' + lastFrameName);
-
-            $($container).addClass('gorgias-demo-frame--' + name);
-
-            lastFrameName = name;
-
-            callback();
-
-        }, globalTimer * 1000));
-
-    };
-
-    var stopAnimation = function(){
-        for (var i in animationTimers){
-            clearTimeout(animationTimers[i]);
-        }
-    };
-
-    var rmCharByChar = function(callback) {
-
-        var editorText = $editor.innerText;
-        editorText = editorText.substr(0, editorText.length - 1);
-
-        $editor.innerHTML = editorText;
-
-        if($editor.innerHTML) {
-
-            $editor.innerHTML = editorText;
-
-            setTimeout(function() {
-                rmCharByChar(callback);
-            }, 100);
-
-        } else {
-
-            if(callback) {
-                callback();
-            }
-
-        }
-
-    };
-
-    var startAnimation = function() {
-
-        animationStarted = true;
-
-        animationFrame('empty-state', 1, function() {
-
-            // empty first frame
-
-        });
-
-        // add quicktext shortcut
-        animationFrame('type-first-shortcut', 1.1, function() {
-
-            $editor.innerHTML = 'h';
-
-            var shortcutNode = $editor.childNodes[0];
-
-            // focus last char
-            var selection = window.getSelection();
-            var caretRange = document.createRange();
-            caretRange.setStartAfter(shortcutNode);
-            caretRange.collapse(true);
-            selection.removeAllRanges();
-            selection.addRange(caretRange);
-
-        });
-
-        // trigger the quicktext
-        animationFrame('activate-first-shortcut', 1.1, function() {
-
-            var shortcutNode = $editor.childNodes[0];
-
-            var word = getSelectedWord({
-                focusNode: shortcutNode
-            });
-
-            replaceWith({
-                element: $editor,
-                quicktext: getQuicktext('h'),
-                focusNode: shortcutNode,
-                word: word
-            });
-
-        });
-
-        // delete everything in the editor
-        animationFrame('rm-qt', 2, function() {
-
-            rmCharByChar();
-
-        });
-
-        // activate the dialog
-        animationFrame('dialog-show', 2, function() {
-
-            var e = jQuery.Event('keydown', {
-                ctrlKey: true,
-                keyCode: KEY_SPACE
-            });
-
-            //jQuery($editor).trigger(e);
-
-            $editor.innerHTML = ' ';
-            $focusNode = $editor.firstChild;
-
-            dialogShow(e, {
-                focusNode: $focusNode,
-                focusOffset: 0
-            });
-
-        });
-
-        // activate the first quicktext
-        animationFrame('dialog-activate', 2, function() {
-
-            var e = jQuery.Event('keyup', {
-                keyCode: KEY_ENTER
-            });
-
-            $editor.innerHTML = ' ';
-            $focusNode = $editor.firstChild;
-
-            jQuery(searchSelector).trigger(e);
-
-        });
-
-        // try it
-        animationFrame('try-it', 2, function() {
-
-            // clear out the editor
-            rmCharByChar(function() {
-
-                // make the editor really editable
-                $editor.setAttribute('contentEditable', true);
-                $($container).addClass('gdemo-editor-was-focused');
-                $editor.focus();
-                $container.addEventListener('click', function() {
-                    $($container).addClass('gdemo-editor-was-focused');
-                    $editor.focus();
-                });
-            });
-
-        });
-
-    };
-
-    var isElementInViewport = function(el) {
+    var isElementInViewport = function (el) {
 
         //special bonus for those using jQuery
         if (typeof jQuery === "function" && el instanceof jQuery) {
@@ -713,44 +556,44 @@ var gorgiasDemo = (function() {
         var rect = el.getBoundingClientRect();
 
         return (
-            rect.top >= 0 &&
-            rect.left >= 0 &&
-            rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) && /*or $(window).height() */
-            rect.right <= (window.innerWidth || document.documentElement.clientWidth) /*or $(window).width() */
+        rect.top >= 0 &&
+        rect.left >= 0 &&
+        rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) && /*or $(window).height() */
+        rect.right <= (window.innerWidth || document.documentElement.clientWidth) /*or $(window).width() */
         );
     };
 
     var animationStarted = false;
 
-    var visibilityChange = function() {
-        if(isElementInViewport($container) && !animationStarted) {
-            startAnimation();
+    var visibilityChange = function () {
+        if (isElementInViewport($container) && !animationStarted) {
+            $($container).addClass('gorgias-demo-frame--' + name);
 
             $(window).off('DOMContentLoaded load resize scroll', visibilityChange);
         }
     };
 
-    var preventShortcuts = function(e) {
+    var preventShortcuts = function (e) {
 
         // always prevent the default key action
         // for a better experience.
         // used just in the homepage demo, not in the extension.
-        if(e.keyCode === KEY_SPACE || e.keyCode === KEY_TAB) {
+        if (e.keyCode === KEY_TAB) {
             e.preventDefault();
             e.stopImmediatePropagation();
         }
 
     };
 
-    var init = function() {
-
+    var init = function () {
         dialogCreate();
 
         $editor = document.querySelector('.gorgias-demo-editor');
         $container = document.querySelector('.gorgias-demo');
 
         // only start the demo if we have the editor
-        if($editor) {
+        if ($editor) {
+            $($editor).focus();
 
             $($editor).on('keydown', triggerKey);
 
@@ -765,11 +608,43 @@ var gorgiasDemo = (function() {
 
         }
 
+        $('body').on('template-inserted', function (e, params) {
+            mixpanel.track("Tutorial Shortcut", {
+                shortcut: params.quicktext.shortcut
+            });
+
+            if (params.quicktext.shortcut === 'h') {
+                $('.gorgias-editor-container .h').addClass('blink');
+
+                setTimeout(function () {
+                    $('.gorgias-demo-hint .h').addClass('hidden');
+                    $('.gorgias-demo-hint .nice').removeClass('hidden');
+                }, 2000);
+
+            }
+
+            if (params.quicktext.shortcut === 'nice') {
+                $('.gorgias-demo-hint .nice').addClass('hidden');
+                $('.gorgias-demo-hint .space').removeClass('hidden');
+            }
+        });
+
+        $('body').on('dialog-used', function (e, params) {
+            mixpanel.track("Tutorial Dialog", {
+                shortcut: params.quicktext.shortcut
+            });
+
+            $('.gorgias-demo-hint .space').addClass('hidden');
+            $('.gorgias-demo-first-step-h2').addClass('hidden');
+
+            $('.browser-action').removeClass('hidden');
+            $('.gorgias-demo-last-step-h2').removeClass('hidden');
+        });
+
     };
 
     return {
-        init: init,
-        stopAnimation: stopAnimation
+        init: init
     };
 
 }());
