@@ -121,7 +121,7 @@ App.autocomplete.dialog = {
         // to the focused text field
         // the focus event doesn't support bubbling
         container.on('focusin', this.showQaBtn);
-        
+
         container.on('focusout', this.hideQaBtn);
 
         this.qaBtn.on('mouseup', function(e) {
@@ -240,26 +240,26 @@ App.autocomplete.dialog = {
         $(App.autocomplete.dialog.contentSelector).scrollTop();
 
         App.autocomplete.dialog.setDialogPosition(params.dialogPositionNode);
-        
+
         // focus the input focus after setting the position
         // because it messes with the window scroll focused
         $(App.autocomplete.dialog.searchSelector).focus();
 
     },
     setDialogPosition: function(positionNode) {
-        
+
         if(!App.autocomplete.dialog.isActive) {
             return;
         }
-        
+
         var paddingTop = 1;
         var dialogMaxHeight = 250;
         var pageHeight = window.innerHeight;
         var scrollTop = $(window).scrollTop();
         var scrollLeft = $(window).scrollLeft();
-        
+
         $(this.dialogSelector).removeClass('qt-dropdown-show-top');
-        
+
         var $dialog = $(App.autocomplete.dialog.dialogSelector);
 
         var dialogMetrics = $dialog.get(0).getBoundingClientRect();
@@ -271,7 +271,7 @@ App.autocomplete.dialog = {
         // another element,
         // not next to the cursor.
         // eg. when we position it next to the qa button.
-        
+
         var metrics;
 
         if(positionNode && positionNode.tagName) {
@@ -292,21 +292,21 @@ App.autocomplete.dialog = {
             metrics = App.autocomplete.cursorPosition.absolute;
 
         }
-        
+
         topPos += metrics.top + metrics.height;
         leftPos += metrics.left + metrics.width;
 
         topPos += paddingTop;
-        
+
         // check if we have enough space at the bottom
         // for the maximum dialog height
         if((pageHeight - (topPos - scrollTop)) < dialogMaxHeight) {
 
             topPos -= dialogMetrics.height;
             topPos -= metrics.height;
-            
+
             topPos -= paddingTop * 2;
-            
+
             // add class for qa button styling
             $(this.dialogSelector).addClass('qt-dropdown-show-top');
 
@@ -403,18 +403,18 @@ App.autocomplete.dialog = {
         if(elem.className.indexOf('qt-dropdown-search') !== -1) {
             show = false;
         }
-        
+
         // check if the element is big enough
         // to only show the qa button for large textfields
         if(show === true) {
-            
+
             var metrics = elem.getBoundingClientRect();
-            
-            // only show for elements 
+
+            // only show for elements
             if(metrics.width < 100 || metrics.height < 100) {
                 show = false;
             }
-            
+
         }
 
         return show;
@@ -437,10 +437,10 @@ App.autocomplete.dialog = {
         var padding = 5;
 
         var metrics = JSON.parse(JSON.stringify(textfield.getBoundingClientRect()));
-        
+
         metrics.top += $(window).scrollTop();
         metrics.left += $(window).scrollLeft();
-        
+
         metrics.top += padding;
         metrics.left -= padding;
 
@@ -456,14 +456,14 @@ App.autocomplete.dialog = {
         qaBtn.style.msTransform = transform;
         qaBtn.style.mozTransform = transform;
         qaBtn.style.webkitTransform = transform;
-        
+
         $('body').addClass('gorgias-show-qa-btn');
 
     },
     hideQaBtn: function() {
-        
+
         $('body').removeClass('gorgias-show-qa-btn');
-        
+
     }
 };
 
@@ -476,7 +476,7 @@ App.autocomplete.dialog.template = '' +
 
 // quick access button for the dialog
 App.autocomplete.dialog.qaBtnTemplate = '' +
-    '<button class="gorgias-qa-btn"></button>' +
+    '<button class="gorgias-qa-btn" data-tooltip="Search templates (CTRL+Space)" data-tooltip-align="t,l" data-tooltip-offset="-5" data-tooltip-delay="500" />' +
     '';
 
 App.autocomplete.dialog.liTemplate = '' +
