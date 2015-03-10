@@ -3,9 +3,6 @@ gApp.service('MigrationService', function ($q, $resource, SettingsService, Templ
 
     // Perform migrations in order
     self.migrate = function () {
-        SettingsService.get('settings').then(function (settings) {
-            settings.shownInstallHint = true;
-            SettingsService.set('settings', settings);
-        });
+
     };
 });

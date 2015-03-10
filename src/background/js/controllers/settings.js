@@ -1,4 +1,5 @@
 gApp.controller('SettingsCtrl', function ($scope, $rootScope, $timeout,  TemplateService, SettingsService) {
+    $scope.showWarning = false;
     $scope.settings = {};
     SettingsService.get('settings').then(function(settings){
         $scope.settings = settings;
@@ -12,7 +13,9 @@ gApp.controller('SettingsCtrl', function ($scope, $rootScope, $timeout,  Templat
             // enable all events
             mixpanel._flags.disable_all_events = false;
         }
-        SettingsService.set('settings', $scope.settings);
+        SettingsService.set('settings', $scope.settings).then(function(){
+            $scope.showWarning = true;
+        });
     };
 
 
@@ -33,16 +36,6 @@ gApp.controller('SettingsCtrl', function ($scope, $rootScope, $timeout,  Templat
             }
             input.val(val);
             $scope.updateSettings();
-
-            // refresh all tabs except the current tab
-            chrome.tabs.query({'url': '<all_urls>', 'windowType': 'normal'}, function (tabs) {
-                for (var i in tabs) {
-                    var tab = tabs[i];
-                    if (!tab.active) {
-                        chrome.tabs.reload(tab.id, {});
-                    }
-                }
-            });
         });
     };
 

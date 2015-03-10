@@ -214,7 +214,10 @@ App.init = function (settings) {
     if (settings.keyboard.enabled) {
         Mousetrap.bindGlobal(settings.keyboard.shortcut, App.autocomplete.keyboard.completion);
     }
-    if (settings.dialog.shortcut) {
+    if (settings.dialog.enabled) {
+        if (settings.dialog.limit) {
+            App.autocomplete.dialog.RESULTS_LIMIT = settings.dialog.limit;
+        }
         Mousetrap.bindGlobal(settings.dialog.shortcut, App.autocomplete.dialog.completion);
     }
 
