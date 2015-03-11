@@ -22,9 +22,9 @@ var gorgiasDemo = (function () {
             body: "Hello <span class='h'>John</span>,<br><br><br>"
         },
         {
-            shortcut: 'nice',
-            title: 'Nice talking',
-            body: 'It was nice talking to you!<br><br><br>'
+            shortcut: 'use',
+            title: 'How to use Gorgias',
+            body: 'There are two ways to insert templates, you can:<br>- type its shortcut and press TAB<br>- search your templates and select one with CTRL+SPACE<br><br>'
         },
         {
             shortcut: 'kr',
@@ -618,13 +618,13 @@ var gorgiasDemo = (function () {
 
                 setTimeout(function () {
                     $('.gorgias-demo-hint .h').addClass('hidden');
-                    $('.gorgias-demo-hint .nice').removeClass('hidden');
+                    $('.gorgias-demo-hint .use').removeClass('hidden');
                 }, 2000);
 
             }
 
-            if (params.quicktext.shortcut === 'nice') {
-                $('.gorgias-demo-hint .nice').addClass('hidden');
+            if (params.quicktext.shortcut === 'use') {
+                $('.gorgias-demo-hint .use').addClass('hidden');
                 $('.gorgias-demo-hint .space').removeClass('hidden');
             }
         });
