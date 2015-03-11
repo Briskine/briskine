@@ -435,7 +435,7 @@ App.autocomplete.dialog = {
             var metrics = elem.getBoundingClientRect();
 
             // only show for elements
-            if(metrics.width < 100 || metrics.height < 100) {
+            if(metrics.width < 100 || metrics.height < 80) {
                 show = false;
             }
 
