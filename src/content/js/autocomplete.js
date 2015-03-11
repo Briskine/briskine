@@ -60,10 +60,14 @@ App.autocomplete.getSelectedWord = function (params) {
     return word;
 };
 
-App.autocomplete.getCursorPosition = function (e) {
+App.autocomplete.getCursorPosition = function (element) {
+
+    if(!element) {
+        return false;
+    }
 
     var position = {
-            element: e && e.target ? e.target : null,
+            element: element || null,
             offset: 0,
             absolute: {
                 left: 0,
@@ -130,6 +134,7 @@ App.autocomplete.getCursorPosition = function (e) {
         $caret = $('#qt-caret');
 
         if ($caret.length) {
+
             position.absolute = $caret.offset();
             position.absolute.width = $caret.width();
             position.absolute.height = $caret.height();
@@ -145,13 +150,12 @@ App.autocomplete.getCursorPosition = function (e) {
         // Insert text until selectionEnd
         // Insert a virtual cursor and find its position
 
-        //position.element = e.target;
         position.start = position.element.selectionStart;
         position.end = position.element.selectionEnd;
 
         var $mirror = $('<div id="qt-mirror" class="qt-mirror"></div>').addClass(position.element.className),
             $source = $(position.element),
-            $sourcePosition = $source.position();
+            $sourcePosition = $source.offset();
 
         // copy all styles
         for (var i in App.autocomplete.mirrorStyles) {
@@ -159,17 +163,25 @@ App.autocomplete.getCursorPosition = function (e) {
             $mirror.css(style, $source.css(style));
         }
 
+        var sourceMetrics = $source.get(0).getBoundingClientRect();
+
         // set absolute position
-        $mirror.css({top: $sourcePosition.top + 'px', left: $sourcePosition.left + 'px'});
+        $mirror.css({
+            top: $sourcePosition.top + 'px',
+            left: $sourcePosition.left + 'px',
+            width: sourceMetrics.width,
+            height: sourceMetrics.height
+        });
 
         // copy content
         $mirror.html($source.val().substr(0, position.end).split("\n").join('<br>'));
         $mirror.append('<span id="qt-caret" class="qt-caret"></span>');
 
         // insert mirror
-        $mirror.insertAfter($source);
+        $('body').append($mirror);
 
-        $caret = $('#qt-caret');
+        $caret = $('#qt-caret', $mirror);
+        
         position.absolute = $caret.offset();
         position.absolute.width = $caret.width();
         position.absolute.height = $caret.height();
@@ -387,4 +399,16 @@ App.autocomplete.focusEditor = function(element, callback) {
     }, 50);
 
 };
+
+// Mirror styles are used for creating a mirror element in order to track the cursor in a textarea
+App.autocomplete.mirrorStyles = [
+    // Box Styles.
+    'box-sizing', 'height', 'width', 'padding', 'padding-bottom', 'padding-left', 'padding-right', 'padding-top', 'border-width',
+    // Font stuff.
+    'font-family', 'font-size', 'font-style', 'font-variant', 'font-weight',
+    // Spacing etc.
+    'word-spacing', 'letter-spacing', 'line-height', 'text-decoration', 'text-indent', 'text-transform',
+    // The direction.
+    'direction'
+];
 

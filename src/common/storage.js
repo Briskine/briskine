@@ -95,6 +95,9 @@ var Settings = {
                 delay: 1000, // if we want to trigger it automatically
                 limit: 5 // how many templates are shown in the dialog
             },
+            qaBtn: {
+                enabled: true
+            },
             keyboard: {
                 enabled: true,
                 shortcut: 'tab'
