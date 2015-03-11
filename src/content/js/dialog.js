@@ -112,7 +112,7 @@ App.autocomplete.dialog = {
     createQaBtn: function() {
 
         var container = $('body');
-        
+
         var instance = this;
 
         // add the dialog quick access icon
@@ -120,31 +120,31 @@ App.autocomplete.dialog = {
         container.append(instance.qaBtn);
 
         var showQaBtnTimer;
-        
+
         // move the quick access button around
         // to the focused text field
         // the focus event doesn't support bubbling
         container.on('focusin', function(e) {
-        
+
             if(showQaBtnTimer) {
                 clearTimeout(showQaBtnTimer);
             }
-            
+
             // add a small delay for showing the qa button.
             // in case the element's styles change its position on focus.
             // eg. gmail when you have multiple addresses configured,
             // and the from fields shows/hides on focus.
             showQaBtnTimer = setTimeout(function() {
                 instance.showQaBtn(e);
-            }, 500);
-            
+            }, 350);
+
         });
-        
+
         container.on('focusout', function(e) {
             if(showQaBtnTimer) {
                 clearTimeout(showQaBtnTimer);
             }
-            
+
             instance.hideQaBtn(e);
         });
 
