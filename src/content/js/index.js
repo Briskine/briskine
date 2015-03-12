@@ -50,7 +50,7 @@ var App = {
             }
 
             App.data.debouncer[debouncerId] = setTimeout(function () {
-                
+
                 // search even the empty strings. It's not a problem because the dialog is now triggered by a user shortcut
                 TemplateStorage.get(null, function (res) {
                     var templates = [];
@@ -93,11 +93,11 @@ var App = {
                     // Too many requests sent. Send only once
                     //chrome.runtime.sendMessage({'request': 'search', 'query_size': templates.length});
                     callback(templates);
-                    
+
                 });
-                
+
             }, debouncerTime);
-            
+
             App.data.lastFilterRun = Date.now();
         },
         get: function (key, callback) {
@@ -212,7 +212,6 @@ Raven.config('https://af2f5e9fb2744c359c19d08c8319d9c5@app.getsentry.com/30379',
 }).install();
 
 App.init = function (settings) {
-
     var currentUrl = window.location.href;
 
     // Check if we should use editor markup
@@ -251,18 +250,17 @@ App.init = function (settings) {
         Mousetrap.bindGlobal(settings.keyboard.shortcut, App.autocomplete.keyboard.completion);
     }
     if (settings.dialog.enabled) {
+        if (settings.qaBtn.enabled) {
+            App.autocomplete.dialog.createQaBtn();
+        }
         if (settings.dialog.limit) {
             App.autocomplete.dialog.RESULTS_LIMIT = settings.dialog.limit;
         }
         Mousetrap.bindGlobal(settings.dialog.shortcut, App.autocomplete.dialog.completion);
-    }
 
-    // create dialog once and then reuse the same element
-    App.autocomplete.dialog.create();
-    App.autocomplete.dialog.bindKeyboardEvents();
-
-    if (settings.qaBtn.enabled) {
-        App.autocomplete.dialog.createQaBtn();
+        // create dialog once and then reuse the same element
+        App.autocomplete.dialog.create();
+        App.autocomplete.dialog.bindKeyboardEvents();
     }
 
     App.activatePlugins();
