@@ -119,6 +119,9 @@ if (chrome.runtime) {
                 });
                 sendResponse(true);
             }
+            if (request.request === 'new') {
+                window.open(chrome.extension.getURL('/pages/bg.html') + '#/list?id=new', 'New Template');
+            }
             return true;
         });
     }
