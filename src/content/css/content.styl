@@ -140,7 +140,6 @@ $padding = 8px;
 
 .g-dropdown-toolbar {
     padding: 4px;
-    text-align: center;
     button {
         appearance: none;
         background: linear-gradient(#ededed, #ededed 38%, #dedede);
@@ -151,6 +150,12 @@ $padding = 8px;
         text-shadow: 0 1px 0 #F0F0F0;
         transition: all .1s ease-out;
         cursor: pointer;
+    }
+    .g-hide-button {
+        visibility: hidden;
+        float: right;
+        margin-top: 4px;
+        font-size: 12px;
     }
 }
 
@@ -216,7 +221,7 @@ $padding = 8px;
     visibility: hidden;
 }
 
-.qt-dropdown-show-top ~ .gorgias-qa-btn:before {
+.qt-dropdown-show-top .gorgias-qa-btn:before {
     bottom: auto;
     top: -3px;
     border-width: 5px 5px 0;
@@ -244,7 +249,7 @@ $padding = 8px;
  */
 
 .gorgias-qa-btn:active,
-.qa-btn-dropdown-show ~ .gorgias-qa-btn,
+.qa-btn-dropdown-show .gorgias-qa-btn,
 .gorgias-show-qa-btn .gorgias-qa-btn {
     opacity: .6;
     visibility: visible;
@@ -253,13 +258,47 @@ $padding = 8px;
 /* qa button active styles
  */
 
-.qa-btn-dropdown-show ~ .gorgias-qa-btn {
+.qa-btn-dropdown-show .gorgias-qa-btn {
     background: #efefef;
     box-shadow: none;
     opacity: 1;
 }
 
-.qa-btn-dropdown-show ~ .gorgias-qa-btn:before {
+.qa-dropdown-show .gorgias-qa-btn:before {
     visibility: visible;
 }
 
+.qa-btn-dropdown-show .g-hide-button {
+    visibility: visible;
+}
+
+.gorgias-qa-tooltip {
+    display: none;
+    position: absolute;
+    z-index: 2147483647;
+    width: 175px;
+    height: 14px;
+    padding: 5px;
+    background: #2A2A2A;
+    -webkit-border-radius: 2px;
+    -moz-border-radius: 2px;
+    border-radius: 2px;
+    color: #fff;
+    font-size: 70%;
+    font-weight: bold;
+
+}
+
+.gorgias-qa-tooltip:after
+{
+    content: '';
+    position: absolute;
+    border-style: solid;
+    border-width: 8px 8px 0;
+    border-color: #2A2A2A transparent;
+    display: block;
+    width: 0;
+    z-index: 1;
+    bottom: -8px;
+    left: 133px;
+}

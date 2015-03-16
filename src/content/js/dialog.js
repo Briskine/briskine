@@ -23,7 +23,9 @@ App.autocomplete.dialog = {
     dialogSelector: ".qt-dropdown",
     contentSelector: ".qt-dropdown-content",
     searchSelector: ".qt-dropdown-search",
+    qaBtnSelector: '.gorgias-qa-btn',
     newTemplateSelector: ".g-new-template",
+    hideButtonSelector: ".g-hide-button",
     qaPositionIntervals: [],
 
     completion: function (e, params) {
@@ -63,7 +65,6 @@ App.autocomplete.dialog = {
             params.quicktexts = App.autocomplete.quicktexts;
 
             App.autocomplete.dialog.populate(params);
-
         });
 
     },
@@ -92,8 +93,20 @@ App.autocomplete.dialog = {
             }
         });
 
-        $(App.autocomplete.dialog.newTemplateSelector).on('mousedown', function(){
+        $(App.autocomplete.dialog.newTemplateSelector).on('mousedown', function () {
             chrome.runtime.sendMessage({'request': 'new'});
+        });
+
+        $(App.autocomplete.dialog.hideButtonSelector).on('mousedown', function () {
+            Settings.get('settings', {}, function (settings) {
+                if (settings.qaBtn && settings.qaBtn.enabled) {
+                    settings.qaBtn.enabled = false;
+                }
+
+                Settings.set('settings', settings, function () {
+                });
+            });
+
         });
 
         dialog.on('keyup', this.searchSelector, function (e) {
@@ -123,7 +136,10 @@ App.autocomplete.dialog = {
 
         // add the dialog quick access icon
         instance.qaBtn = $(instance.qaBtnTemplate);
+        instance.qaTooltip = $(instance.qaBtnTooltip);
+
         container.append(instance.qaBtn);
+        container.append(instance.qaTooltip);
 
         var showQaBtnTimer;
 
@@ -150,7 +166,6 @@ App.autocomplete.dialog = {
             if (showQaBtnTimer) {
                 clearTimeout(showQaBtnTimer);
             }
-
             instance.hideQaBtn(e);
         });
 
@@ -168,9 +183,33 @@ App.autocomplete.dialog = {
                 dialogPositionNode: e.target
             });
 
-            $(App.autocomplete.dialog.dialogSelector).addClass('qa-btn-dropdown-show');
+            $('body').addClass('qa-btn-dropdown-show');
+        });
+
+        var showQaTooltip;
+        // Show tooltip
+        instance.qaBtn.on('mouseenter', function (e) {
+            if (showQaTooltip) {
+                clearTimeout(showQaTooltip);
+            }
+            showQaTooltip = setTimeout(function () {
+                var padding = 22;
+                var rect = instance.qaBtn[0].getBoundingClientRect();
+                instance.qaTooltip.css({
+                    top: rect.top - padding - parseInt(instance.qaTooltip.css('height'), 10) + "px",
+                    left: rect.left + 45 - parseInt(instance.qaTooltip.css('width'), 10) + "px"
+                });
+                instance.qaTooltip.show();
+            }, 500);
 
         });
+
+        // Hide tooltip
+        instance.qaBtn.on('mouseleave', function (e) {
+            clearTimeout(showQaTooltip);
+            instance.qaTooltip.hide();
+        });
+
     },
     bindKeyboardEvents: function () {
         Mousetrap.bindGlobal('up', function (e) {
@@ -274,7 +313,6 @@ App.autocomplete.dialog = {
         // focus the input focus after setting the position
         // because it messes with the window scroll focused
         $(App.autocomplete.dialog.searchSelector).focus();
-
     },
     setDialogPosition: function (positionNode) {
 
@@ -288,7 +326,7 @@ App.autocomplete.dialog = {
         var scrollTop = $(window).scrollTop();
         var scrollLeft = $(window).scrollLeft();
 
-        $(this.dialogSelector).removeClass('qt-dropdown-show-top');
+        $('body').removeClass('qt-dropdown-show-top');
 
         var $dialog = $(App.autocomplete.dialog.dialogSelector);
 
@@ -338,7 +376,7 @@ App.autocomplete.dialog = {
             topPos -= paddingTop * 2;
 
             // add class for qa button styling
-            $(this.dialogSelector).addClass('qt-dropdown-show-top');
+            $('body').addClass('qt-dropdown-show-top');
 
         }
 
@@ -403,8 +441,8 @@ App.autocomplete.dialog = {
         }
 
         $(this.dialogSelector).removeClass('qt-dropdown-show');
-        $(this.dialogSelector).removeClass('qt-dropdown-show-top');
-        $(this.dialogSelector).removeClass('qa-btn-dropdown-show');
+        $('body').removeClass('qt-dropdown-show-top');
+        $('body').removeClass('qa-btn-dropdown-show');
         $(this.searchSelector).val('');
 
         App.autocomplete.dialog.isActive = false;
@@ -423,7 +461,7 @@ App.autocomplete.dialog = {
         if ($(elem).is('textarea, input[type=text], [contenteditable]')) {
             show = true;
         }
-
+        // only show for gmail now
         if (window.location.origin !== "https://mail.google.com") {
             show = false;
         }
@@ -463,73 +501,78 @@ App.autocomplete.dialog = {
             return false;
         }
 
-        $('body').addClass('gorgias-show-qa-btn');
-
-        App.autocomplete.dialog.prevFocus = textfield;
-
-        var qaBtn = App.autocomplete.dialog.qaBtn.get(0);
-
-        // padding from the top-right corner of the textfield
-        var padding = 10;
-
-        // Gmail is custom made
-        if (window.location.origin === "https://mail.google.com") {
-            var gmailHook = $(textfield).closest('td');
-            if (gmailHook.length) {
-                $(qaBtn).css({
-                    'top': padding + "px",
-                    'right': padding + "px",
-                    'left': 'initial'
-                });
-                qaBtn.remove();
-                gmailHook.append(qaBtn);
-
+        Settings.get('settings', {}, function (settings) {
+            if (settings.qaBtn && settings.qaBtn.enabled === false) {
                 return;
             }
-        }
 
+            $('body').addClass('gorgias-show-qa-btn');
 
-        var setPosition = function () {
-            var metrics = JSON.parse(JSON.stringify(textfield.getBoundingClientRect()));
+            App.autocomplete.dialog.prevFocus = textfield;
 
-            metrics.top += $(window).scrollTop();
-            metrics.left += $(window).scrollLeft();
+            var qaBtn = App.autocomplete.dialog.qaBtn.get(0);
 
-            metrics.top += padding;
-            metrics.left -= padding;
+            // padding from the top-right corner of the textfield
+            var padding = 10;
 
-            // move the quick access button to the right
-            // of the textfield
-            metrics.left += textfield.offsetWidth - qaBtn.offsetWidth;
+            // Gmail is custom made
+            if (window.location.origin === "https://mail.google.com") {
+                var gmailHook = $(textfield).closest('td');
+                if (gmailHook.length) {
+                    $(qaBtn).css({
+                        'top': padding + "px",
+                        'right': padding + "px",
+                        'left': 'initial'
+                    });
+                    qaBtn.remove();
+                    gmailHook.append(qaBtn);
 
-
-            // move the btn using transforms
-            // for performance
-            var transform = 'translate3d(' + metrics.left + 'px, ' + metrics.top + 'px, 0)';
-
-            qaBtn.style.transform = transform;
-            qaBtn.style.msTransform = transform;
-            qaBtn.style.mozTransform = transform;
-            qaBtn.style.webkitTransform = transform;
-
-            if (textfield.style.zIndex) {
-                qaBtn.style.zIndex = textfield.style.zIndex + 1;
-            } else {
-                qaBtn.style.zIndex = 1;
+                    return;
+                }
             }
-        };
-        setPosition();
 
-        // recalculate the width
-        for (var i in App.autocomplete.dialog.qaPositionIntervals) {
-            clearInterval(App.autocomplete.dialog.qaPositionIntervals[i]);
-        }
 
-        var intervalID = setInterval(function () {
+            var setPosition = function () {
+                var metrics = JSON.parse(JSON.stringify(textfield.getBoundingClientRect()));
+
+                metrics.top += $(window).scrollTop();
+                metrics.left += $(window).scrollLeft();
+
+                metrics.top += padding;
+                metrics.left -= padding;
+
+                // move the quick access button to the right
+                // of the textfield
+                metrics.left += textfield.offsetWidth - qaBtn.offsetWidth;
+
+
+                // move the btn using transforms
+                // for performance
+                var transform = 'translate3d(' + metrics.left + 'px, ' + metrics.top + 'px, 0)';
+
+                qaBtn.style.transform = transform;
+                qaBtn.style.msTransform = transform;
+                qaBtn.style.mozTransform = transform;
+                qaBtn.style.webkitTransform = transform;
+
+                if (textfield.style.zIndex) {
+                    qaBtn.style.zIndex = textfield.style.zIndex + 1;
+                } else {
+                    qaBtn.style.zIndex = 1;
+                }
+            };
             setPosition();
-        }, 1000);
-        App.autocomplete.dialog.qaPositionIntervals.push(intervalID);
 
+            // recalculate the width
+            for (var i in App.autocomplete.dialog.qaPositionIntervals) {
+                clearInterval(App.autocomplete.dialog.qaPositionIntervals[i]);
+            }
+
+            var intervalID = setInterval(function () {
+                setPosition();
+            }, 1000);
+            App.autocomplete.dialog.qaPositionIntervals.push(intervalID);
+        });
     },
     hideQaBtn: function () {
         $('body').removeClass('gorgias-show-qa-btn');
@@ -540,13 +583,23 @@ App.autocomplete.dialog.template = '' +
 '<div class="qt-dropdown">' +
 '<input type="search" class="qt-dropdown-search" value="" placeholder="Search templates...">' +
 '<ul class="qt-dropdown-content"></ul>' +
-'<div class="g-dropdown-toolbar"><button class="g-new-template">New Template</button></div>'+
+'<div class="g-dropdown-toolbar">' +
+'<button class="g-new-template">New Template</button>' +
+'<a href="javascript:void(0)" class="g-hide-button" title="Hide Quick Access button. The dialog will still be accessible using CTRL+SPACE.">Hide button</a>' +
+'</div>' +
 '</div>' +
 '';
 
 // quick access button for the dialog
 App.autocomplete.dialog.qaBtnTemplate = '' +
-'<button class="gorgias-qa-btn" data-tooltip="Search templates (CTRL+Space)" data-tooltip-align="t,l" data-tooltip-offset="-5" data-tooltip-delay="500" />' +
+'<button class="gorgias-qa-btn" />' +
+'';
+
+// quick access button tooltip
+App.autocomplete.dialog.qaBtnTooltip = '' +
+'<div class="gorgias-qa-tooltip">' +
+'Search templates (CTRL+Space)' +
+'</div>' +
 '';
 
 App.autocomplete.dialog.liTemplate = '' +
