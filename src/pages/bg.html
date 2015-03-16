@@ -32,14 +32,14 @@
             </div>
 
             <div class="anonymous" ng-show="!profile.user">
-                <a ng-href="{{baseURL}}#login" ng-click="checkLogin()" target="_blank">Login</a> or
-                <a ng-href="{{baseURL}}#registration" target="_blank" ng-click="checkLogin()">Sign Up</a>
+                <a ng-href="{{baseURL}}#login" target="_blank" ng-click="checkLogin()">Login</a> or
+                <a ng-href="{{baseURL}}#pricing" target="_blank">Sign Up</a>
                 to <em>share</em> templates with your team.
             </div>
 
             <div class="profile-extra">
                 <div class="profile-stats" data-toggle="tooltip" data-placement="bottom"
-                     data-original-title="33 Words per Minute: http://tinyurl.com/wiki-wpm">
+                     data-original-title="25 Words per Minute: http://tinyurl.com/wiki-wpm">
                     So far you saved <strong>{{profile.savedWords}}</strong> words or
                     <strong>{{profile.savedTime}}</strong>.
                     <span class="glyphicon glyphicon-question-sign"></span>
@@ -54,10 +54,35 @@
         <ul class="nav nav-pills nav-stacked">
             <li ng-class="{ 'active': (path === '/list') }"><a href="#/list">Templates</a></li>
             <li ng-class="{ 'active': (path === '/settings') }"><a href="#/settings">Settings</a></li>
-            <li><a href="http://help.gorgias.io/">Help <i class="fa fa-external-link"></i></a></li>
+            <li><a href="https://chrome.google.com/webstore/detail/gorgias-email-templates-f/lmcngpkjkplipamgflhioabnhnopeabf/support" target="_blank">Help <i class="fa fa-external-link"></i></a></li>
         </ul>
 
+        <br/>
+        <br/>
+        <br/>
+        <div class="sidebar-spam" ng-show="!(profile.user || savedEmail || showEmailAwesome)">
+            <p><strong>Help us make Gorgias better!</strong><br/>We'd love to get in touch.</p>
+            <form ng-submit="saveEmail()" class="form-inline">
+                <div class="form-group">
+                    <input type="email" class="form-control" placeholder="your@email.com" ng-model="userEmail" />
+                </div>
+                <button class="btn btn-default">Send</button>
+            </form>
+            <p></p>
+            <p>Thanks!</p>
+            <div class="signature">
+                <a href="https://twitter.com/humanfromearth" target="_blank" title="@humanfromearth"><img src="/icons/alex.jpg" alt="Alex Plugaru" class="img-circle" /></a>
+                <a href="https://twitter.com/Romain_Lapeyre" target="_blank" title="@Romain_Lapeyre"><img src="/icons/romain.jpg" alt="Romain Lapeyre" class="img-circle" /></a>
+            </div>
+        </div>
+        <div class="thanks" ng-show="showEmailAwesome">
+            Thanks! You're awesome! <i class="fa fa-smile-o"></i>
+        </div>
+
         <div class="sidebar-footer">
+            <a href="https://twitter.com/gorgiasio" title="Follow @gorgiasio and get some awesome tips on how to use it!" target="_blank"><img src="/icons/twitter.jpg" class="twitter-badge" alt="Follow on twitter"/></a>
+            <br/>
+            <br/>
             <div class="sync-status" ng-show="profile.user">
                 <div class="sync-label" ng-show="lastSync">
                   Last sync

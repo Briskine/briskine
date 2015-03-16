@@ -77,6 +77,9 @@ gApp.run(function ($rootScope, $location, $http, $timeout, ProfileService, Setti
         $rootScope.baseURL = baseURL;
     });
 
+    $rootScope.userEmail = '';
+    $rootScope.savedEmail = false;
+
     SettingsService.get('settings').then(function (settings) {
         // Make sure that we have all the default
         var keys = Object.keys(settings);
@@ -95,6 +98,11 @@ gApp.run(function ($rootScope, $location, $http, $timeout, ProfileService, Setti
         // disable mixpanel if stats are not enabled
         if (!settings.stats.enabled) {
             mixpanel.disable();
+        }
+
+        if (settings.userEmail) {
+            $rootScope.userEmail = settings.userEmail;
+            $rootScope.savedEmail = true;
         }
     });
 
@@ -137,7 +145,9 @@ gApp.run(function ($rootScope, $location, $http, $timeout, ProfileService, Setti
                         mixpanel.register({
                             "$browser": browser,
                             authenticated: false,
-                            user: {}
+                            user: {
+                                'email': $rootScope.userEmail
+                            }
                         });
                         SettingsService.set("isLoggedIn", false);
                     }
@@ -146,7 +156,9 @@ gApp.run(function ($rootScope, $location, $http, $timeout, ProfileService, Setti
                 mixpanel.register({
                     "$browser": browser,
                     authenticated: false,
-                    user: {}
+                    user: {
+                        'email': $rootScope.userEmail
+                    }
                 });
                 SettingsService.set("isLoggedIn", false);
             });
@@ -160,6 +172,26 @@ gApp.run(function ($rootScope, $location, $http, $timeout, ProfileService, Setti
         TemplateService.sync(function (lastSync) {
             $rootScope.$broadcast("quicktexts-sync");
             $rootScope.lastSync = lastSync;
+        });
+    };
+
+    $rootScope.saveEmail = function () {
+        var req = {
+            method: 'POST',
+            url: "https://docs.google.com/forms/d/1Z2vVKT_fNVrWWkvnnT-L1Mry3bsTIxZYlXfYwmbcigM/formResponse",
+            params: {
+                'entry.1617944603': $rootScope.userEmail
+            }
+        };
+        $http(req).success(function(){
+            SettingsService.get('settings').then(function(settings){
+                settings.userEmail = $rootScope.userEmail;
+                SettingsService.set('settings', settings).then(function(){
+                    $rootScope.showEmailAwesome = true;
+                });
+            });
+        }).error( function(){
+            $rootScope.showEmailAwesome = false;
         });
     };
 
