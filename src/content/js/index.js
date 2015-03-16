@@ -230,7 +230,7 @@ App.init = function (settings) {
     // check if url is in blacklist
     var isBlacklisted = false;
     fullBlacklist.some(function (item) {
-        if (currentUrl.indexOf(item) !== -1) {
+        if (item && currentUrl.indexOf(item) !== -1) {
             isBlacklisted = true;
             return true;
         }
