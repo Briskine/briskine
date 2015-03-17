@@ -143,9 +143,10 @@ gApp.controller('ListCtrl',
             }
 
             $formModal.modal('show');
+
             $formModal.on('shown.bs.modal', function () {
                 $('#qt-title').focus();
-            })
+            });
         };
 
         /* Check search params to see if adding or editing items
