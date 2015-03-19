@@ -43,8 +43,9 @@ App.autocomplete.getSelectedWord = function (params) {
             // However, in some cases it may refer to an Element Node
             case (document.ELEMENT_NODE):
                 // In that case, the focusOffset property returns the index in the childNodes collection of the focus node where the selection ends.
-                beforeSelection = selection.focusNode.childNodes[selection.focusOffset].textContent;
-
+                if (selection.focusNode.childNodes.length) {
+                    beforeSelection = selection.focusNode.childNodes[selection.focusOffset].textContent;
+                }
                 break;
         }
     } else {
@@ -181,7 +182,7 @@ App.autocomplete.getCursorPosition = function (element) {
         $('body').append($mirror);
 
         $caret = $('#qt-caret', $mirror);
-        
+
         position.absolute = $caret.offset();
         position.absolute.width = $caret.width();
         position.absolute.height = $caret.height();
