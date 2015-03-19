@@ -103,7 +103,11 @@ gApp.controller('ListCtrl',
 
         // Show the form for adding a new quicktext or creating one
         $scope.showForm = function (id) {
-            mixpanel.track("Show edit form");
+            // Where did we open the dialog from.
+            var source = $routeParams.src ? $routeParams.src: "background";
+            mixpanel.track("Show edit form", {
+                source: source
+            });
 
             var defaults = {
                 'id': '',

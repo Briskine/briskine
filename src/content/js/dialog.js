@@ -101,12 +101,12 @@ App.autocomplete.dialog = {
             Settings.get('settings', {}, function (settings) {
                 if (settings.qaBtn && settings.qaBtn.enabled) {
                     settings.qaBtn.enabled = false;
+                    chrome.runtime.sendMessage({'request': 'track', 'event': 'Hide Quick Access Button', 'data': {}});
                 }
 
                 Settings.set('settings', settings, function () {
                 });
             });
-
         });
 
         dialog.on('keyup', this.searchSelector, function (e) {
@@ -170,6 +170,7 @@ App.autocomplete.dialog = {
         });
 
         instance.qaBtn.on('mouseup', function (e) {
+            chrome.runtime.sendMessage({'request': 'track', 'event': 'Showed Quick Access Button', 'data': {}});
 
             // return the focus to the element focused
             // before clicking the qa button
@@ -500,6 +501,7 @@ App.autocomplete.dialog = {
         if (!App.autocomplete.dialog.showQaForElement(textfield)) {
             return false;
         }
+
 
         Settings.get('settings', {}, function (settings) {
             if (settings.qaBtn && settings.qaBtn.enabled === false) {

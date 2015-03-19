@@ -120,7 +120,10 @@ if (chrome.runtime) {
                 sendResponse(true);
             }
             if (request.request === 'new') {
-                window.open(chrome.extension.getURL('/pages/bg.html') + '#/list?id=new', 'New Template');
+                window.open(chrome.extension.getURL('/pages/bg.html') + '#/list?id=new&src=qa-button', 'New Template');
+            }
+            if (request.request === 'track') {
+                mixpanel.track(request.event, request.data);
             }
             return true;
         });
