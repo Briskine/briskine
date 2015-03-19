@@ -1,10 +1,13 @@
-<div class="modal quicktext-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static">
+<div class="modal quicktext-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
+     data-backdrop="static">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" data-whatever="hello" aria-hidden="true" aria-label="Close">&times;</button>
+                <button type="button" class="close" data-dismiss="modal" data-whatever="hello" aria-hidden="true"
+                        aria-label="Close">&times;</button>
                 <div class="dropdown pull-right small configure-fields">
-                    <a href="javascript:void(0)" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" role="button"
+                    <a href="javascript:void(0)" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                       role="button"
                        ng-click=""><i class="fa fa-gear"></i> Configure fields</a>
                     <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
                         <p class="muted small">Show/hide template fields below</p>
@@ -22,12 +25,14 @@
                         </li>
                         <li>
                             <div class="checkbox">
-                                <label><input type="checkbox" ng-model="subjectEnabled" ng-change="toggleField('subject', subjectEnabled)"/>Subject</label>
+                                <label><input type="checkbox" ng-model="subjectEnabled"
+                                              ng-change="toggleField('subject', subjectEnabled)"/>Subject</label>
                             </div>
                         </li>
                         <li>
                             <div class="checkbox">
-                                <label><input type="checkbox" ng-model="tagsEnabled" ng-change="toggleField('tags', tagsEnabled)"/>Tags</label>
+                                <label><input type="checkbox" ng-model="tagsEnabled"
+                                              ng-change="toggleField('tags', tagsEnabled)"/>Tags</label>
                             </div>
                         </li>
                         <li>
@@ -91,7 +96,8 @@
                             Subject
                             <span class="text-muted">(Optional)</span>
                         </label>
-                        <input type="text" class="form-control" id="qt-subject" ng-model="selectedQt.subject" placeholder=""/>
+                        <input type="text" class="form-control" id="qt-subject" ng-model="selectedQt.subject"
+                               placeholder=""/>
                     </div>
 
                     <div class="form-group" data-toggle="tooltip" data-placement="bottom"
@@ -108,12 +114,35 @@
                     </div>
                     <div class="form-group">
                         <label>Content</label>
-                         <textarea
-                             ng-if="!settings.editor.enabled"
-                             id="qt-body" class="form-control"
-                             cols="100"  rows="6" required="required"
-                             placeholder="It was nice talking to you today..."
-                             ng-model="selectedQt.body"></textarea>
+                           <div ng-if="!settings.editor.enabled" class="toolbar-area pull-right">
+                                <div class="dropdown insert-var-container">
+                                    <button class="btn btn-default dropdown-toggle" data-toggle="dropdown" ng-mouseup="focusHack()">Insert Variable<span class="caret"></span></button>
+                                    <ul class="dropdown-menu">
+                                    <li><a ng-click="insertVar('to.0.first_name')" title="First name of the person in the \'To\' field"><strong>To:</strong> First Name</a></li>
+                                    <li><a ng-click="insertVar('to.0.email')" title="Email address of the person in the \'To\' field"><strong>To:</strong> Email</a></li>
+                                    <li><a ng-click="insertVar('from.0.first_name')" title="First name of the person in the \'From\' field"><strong>From:</strong> First Name</a></li>
+                                    <li><a ng-click="insertVar('from.0.email')" title="Email address of the person in the \'From\' field"><strong>From:</strong> Email</a></li>
+                                    <li><a ng-click="insertVar('subject')" title="The subject of the e-mail"><strong>Subject</strong></a></li>
+                                    <li class="divider"></li>
+                                    <li><a class="help-block text-muted small" href="http://help.gorgias.io/en/latest/src/04-templates.html" rel="external" target="_blank">Learn more about template variables <i class="fa fa-external-link"></i></a></li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                        <div ng-if="!settings.editor.enabled">
+                            <textarea
+                                id="qt-body" class="form-control"
+                                cols="100" rows="6" required="required"
+                                placeholder="It was nice talking to you today..."
+                                ng-model="selectedQt.body"></textarea>
+
+                            <p class="help-block">
+                                Supports <a href="http://help.gorgias.io/en/latest/src/04-templates.html#html-tags"
+                                            target="_blank">HTML tags</a> and
+                                <a href="http://help.gorgias.io/en/latest/src/04-templates.html#complete-list-of-available-variables"
+                                   target="_blank">template variables</a>.
+                            </p>
+                        </div>
                         <div ng-if="settings.editor.enabled"
                              class="qt-editor"
                              text-angular
@@ -129,7 +158,7 @@
                     </span>
 
                     <button class="btn btn-default" data-dismiss="modal">Cancel</button>
-                    <button class="btn btn-primary" type="submit" >Save template</button>
+                    <button class="btn btn-primary" type="submit">Save template</button>
 
                 </div>
 

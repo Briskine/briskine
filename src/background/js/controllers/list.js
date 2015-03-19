@@ -126,20 +126,16 @@ gApp.controller('ListCtrl',
                 TemplateService.get(id).then(function (r) {
                     $scope.selectedQt = angular.copy(r);
 
-                    // markdown requires two spaces and \n to for a line break
-                    // so we use this to also turn any \n into a line break
-                    $scope.selectedQt.body =
-                        $scope.selectedQt.body
-                            .replace(/\n/g, ' <br />\n');
-
                     // convert qt body from markdown to html
                     SettingsService.get("settings", function (settings) {
                         if (settings.editor.enabled) {
+                            // markdown requires two spaces and \n to for a line break
+                            // so we use this to also turn any \n into a line break
+                            $scope.selectedQt.body = $scope.selectedQt.body.replace(/\n/g, ' <br />\n');
                             $scope.selectedQt.body = marked($scope.selectedQt.body);
                         }
                     });
                 });
-
             }
 
             $formModal.modal('show');
@@ -147,6 +143,24 @@ gApp.controller('ListCtrl',
             $formModal.on('shown.bs.modal', function () {
                 $('#qt-title').focus();
             });
+        };
+
+        $scope.insertVar = function(variable) {
+            var body = $('#qt-body');
+            var start = body[0].selectionStart;
+            var end = body[0].selectionEnd;
+
+            var val = body.val();
+
+            var startVal = val.slice(0, start);
+            var endVal = val.slice(end);
+
+            var newPos = (startVal + "{{" + variable +  "}}").length;
+            var newVal = startVal + "{{" + variable +  "}}" + endVal;
+
+            body.val(newVal);
+            body[0].setSelectionRange(newPos, newPos);
+            body.focus();
         };
 
         /* Check search params to see if adding or editing items

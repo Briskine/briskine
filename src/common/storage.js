@@ -111,7 +111,7 @@ var Settings = {
                 tags: false
             },
             editor: {
-                enabled: true
+                enabled: false // disable by default for new users - numerous complaints
             },
             migration_head: 0
         },
