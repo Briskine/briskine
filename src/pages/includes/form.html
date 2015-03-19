@@ -113,10 +113,10 @@
                         <p class="help-block">Comma separated list of tags.</p>
                     </div>
                     <div class="form-group">
-                        <label>Content</label>
+                        <label class="body-label">Content</label>
                            <div ng-if="!settings.editor.enabled" class="toolbar-area pull-right">
                                 <div class="dropdown insert-var-container">
-                                    <button class="btn btn-default dropdown-toggle" data-toggle="dropdown" ng-mouseup="focusHack()">Insert Variable<span class="caret"></span></button>
+                                    <button class="btn btn-default dropdown-toggle" data-toggle="dropdown" tabindex="-1">Insert Variable<span class="caret"></span></button>
                                     <ul class="dropdown-menu">
                                     <li><a ng-click="insertVar('to.0.first_name')" title="First name of the person in the \'To\' field"><strong>To:</strong> First Name</a></li>
                                     <li><a ng-click="insertVar('to.0.email')" title="Email address of the person in the \'To\' field"><strong>To:</strong> Email</a></li>
@@ -132,15 +132,15 @@
                         <div ng-if="!settings.editor.enabled">
                             <textarea
                                 id="qt-body" class="form-control"
-                                cols="100" rows="6" required="required"
+                                cols="100" rows="10" required="required"
                                 placeholder="It was nice talking to you today..."
                                 ng-model="selectedQt.body"></textarea>
 
                             <p class="help-block">
                                 Supports <a href="http://help.gorgias.io/en/latest/src/04-templates.html#html-tags"
-                                            target="_blank">HTML tags</a> and
+                                            target="_blank" tabindex="-1">HTML tags</a> and
                                 <a href="http://help.gorgias.io/en/latest/src/04-templates.html#complete-list-of-available-variables"
-                                   target="_blank">template variables</a>.
+                                   target="_blank" tabindex="-1">template variables</a>.
                             </p>
                         </div>
                         <div ng-if="settings.editor.enabled"
@@ -154,10 +154,10 @@
 
                 <div class="modal-footer">
                     <span ng-show="selectedQt.id">
-                        <button class="btn btn-default pull-left" ng-click="duplicateQt()">Duplicate template</button>
+                        <button class="btn btn-default pull-left" ng-click="duplicateQt()" tabindex="-1">Duplicate template</button>
                     </span>
 
-                    <button class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    <button class="btn btn-default" data-dismiss="modal" tabindex="-1">Cancel</button>
                     <button class="btn btn-primary" type="submit">Save template</button>
 
                 </div>
@@ -166,3 +166,5 @@
 
         </div>
     </div>
+</div>
+
