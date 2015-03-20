@@ -41,7 +41,7 @@ var App = {
             // (keyup events one after the other),
             // runs instantly, and does not have any delay.
             // helps with the dialog show delay.
-            if(Date.now() - App.data.lastFilterRun < 400) {
+            if (Date.now() - App.data.lastFilterRun < 400) {
                 debouncerTime = 400;
 
                 if (App.data.debouncer[debouncerId]) {
@@ -262,6 +262,45 @@ App.init = function (settings) {
         App.autocomplete.dialog.create();
         App.autocomplete.dialog.bindKeyboardEvents();
     }
+
+    var isGmailUIFrame = function () {
+        try {
+            return document.getElementsByClassName('aic').length > 0;
+        } catch (e) {
+            return false;
+        }
+    };
+
+    var loadSidebar = function () {
+        if (isGmailUIFrame()) {
+            console.log("Loading sidebar");
+            if (settings.sidebar && settings.sidebar.enabled && settings.sidebar.url) {
+                App.sidebar.enabled = true;
+                if (window.sidebarTimer) {
+                    window.clearInterval(window.sidebarTimer);
+                }
+
+                // Periodically check if we need to display the sidebar
+                window.sidebarTimer = window.setInterval(function () {
+                    App.sidebar.check(settings.sidebar.url);
+                }, 1000);
+            }
+        }
+    };
+    loadSidebar();
+
+    var pollSidebar = function (timeout) {
+        window.setTimeout(function () {
+            if (!App.sidebar.enabled && isGmailUIFrame()) {
+                console.log("Another attempt at loading sidebar");
+                loadSidebar();
+            }
+        }, timeout);
+    };
+    pollSidebar(5000);
+    pollSidebar(10000);
+    pollSidebar(30000);
+
 
     App.activatePlugins();
 };

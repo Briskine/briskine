@@ -113,7 +113,11 @@ var Settings = {
             editor: {
                 enabled: false // disable by default for new users - numerous complaints
             },
-            migration_head: 0
+            migration_head: 0,
+            sidebar: { // this sidebar to the right
+                enabled: true,
+                url: ""
+            }
         },
         // refactor this into 'local' and 'remote'
         isLoggedIn: false,

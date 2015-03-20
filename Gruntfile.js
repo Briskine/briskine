@@ -62,6 +62,7 @@ module.exports = function (grunt) {
                 'content/js/autocomplete.js',
                 'content/js/keyboard.js',
                 'content/js/dialog.js',
+                'content/js/sidebar.js',
                 'content/js/events.js',
 
                 'content/js/plugins/gmail.js',
