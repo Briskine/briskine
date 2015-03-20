@@ -7,31 +7,42 @@ App.sidebar = {
     enabled: false,
     query: null,
     check: function (url) {
-        var container = $('table div[role=complementary]');
-        if (container.length) {
+        var containers = $('table div[role=complementary]');
+        if (containers.length) {
             var changeSidebar = function (err, response) {
                 var parsedUrl = Handlebars.compile(url)(response);
                 if (parsedUrl !== App.sidebar.query) {
                     console.log("Setting sidebar to: " + parsedUrl);
                     App.sidebar.query = parsedUrl;
 
-                    var existingSidebar = $('.g-sidebar');
-                    var sidebarEl;
-                    if (existingSidebar.length) {
-                        sidebarEl = existingSidebar;
-                        sidebarEl.attr('src', parsedUrl);
-                    } else {
-                        sidebarEl = $(App.sidebar.sidebarTemplate);
-                        sidebarEl.attr('src', parsedUrl);
-                        container.find('div.nH:last').remove();
-                        container.append(sidebarEl);
-                    }
-                    sidebarEl = document.querySelector('.g-sidebar');
-                    var paddingBottom = 20;
-                    var height = document.querySelector('body').scrollHeight - sidebarEl.getBoundingClientRect().top - paddingBottom;
-                    $(sidebarEl).css('height', height + "px");
+                    containers.each(function () {
+                        var container = $(this);
+                        var sidebarEl;
+
+                        var existingSidebar = container.find('.g-sidebar');
+                        if (existingSidebar.length) {
+                            sidebarEl = existingSidebar;
+                            sidebarEl.attr('src', parsedUrl);
+                        } else {
+                            sidebarEl = $(App.sidebar.sidebarTemplate);
+                            sidebarEl.attr('src', parsedUrl);
+                            container.find('div.nH:last').remove();
+                            container.append(sidebarEl);
+                        }
+
+                        container.find('.g-sidebar').each(function () {
+                            var sidebarEl = $(this);
+                            var paddingBottom = 20;
+                            var height =
+                                document.querySelector('body').scrollHeight -
+                                sidebarEl[0].getBoundingClientRect().top -
+                                paddingBottom;
+                            sidebarEl.css('height', height + "px");
+                        });
+                    });
                 }
             };
+
             // Check if we have a card iframe and it's active
             var cardIframe = $('.tq iframe');
             if (cardIframe.length && cardIframe.css('top') === 'auto') {
