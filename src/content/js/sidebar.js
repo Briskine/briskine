@@ -7,7 +7,7 @@ App.sidebar = {
     enabled: false,
     query: null,
     check: function (url) {
-        var container = $('table[role=presentation] div[role=complementary]');
+        var container = $('table div[role=complementary]');
         if (container.length) {
             var changeSidebar = function (err, response) {
                 var parsedUrl = Handlebars.compile(url)(response);
