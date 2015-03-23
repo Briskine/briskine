@@ -76,7 +76,7 @@ App.plugin('gmail', (function() {
             bcc = $container.find('input[name=bcc]').toArray().map(function (a) {
                 return a.value;
             });
-            subject = $container.find('input[name=subject]').val();
+            subject = $container.find('input[name=subject]').val().replace(/^Re: /, "");
 
         } else {
 
