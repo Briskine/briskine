@@ -72,6 +72,9 @@ gApp.run(function ($rootScope, $location, $http, $timeout, ProfileService, Setti
     });
     $rootScope.pageAction = ($location.path() === '/popup');
 
+    var userAgent = window.navigator.userAgent;
+    $rootScope.isOpera = /OPR/g.test(userAgent);
+    $rootScope.isChrome = /chrome/i.test(userAgent);
 
     SettingsService.get('baseURL').then(function (baseURL) {
         $rootScope.baseURL = baseURL;
