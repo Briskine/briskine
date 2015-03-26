@@ -4,7 +4,7 @@
 
 var fs = require('fs');
 
-var extensionb64 = fs.readFileSync('./ext/quicktext-chrome.crx');
+var extensionb64 = fs.readFileSync('./ext/gorgias-chrome.crx');
 
 // convert to base64
 extensionb64 = new Buffer(extensionb64).toString('base64');

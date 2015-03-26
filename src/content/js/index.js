@@ -7,7 +7,7 @@ var App = {
     data: {
         searchCache: {},
         debouncer: {},
-        lastFilterRun: 0,
+        lastFilterRun: 0
     },
     editor_enabled: true,
     autocomplete: {},
@@ -18,7 +18,15 @@ var App = {
                 for (var id in templates) {
                     var t = templates[id];
                     if (t.deleted === 0 && t.shortcut === text) {
-                        chrome.runtime.sendMessage({'request': 'insert', 'template': t});
+                        chrome.runtime.sendMessage({
+                            'request': 'track',
+                            'event': 'Inserted template',
+                            'data': {
+                                "source": "keyboard",
+                                "title_size": t.title.length,
+                                "body_size": t.body.length
+                            }
+                        });
                         callback([t]);
                         return;
                     }
@@ -89,21 +97,12 @@ var App = {
                     templates.sort(function (a, b) {
                         return new Date(b.updated_datetime) - new Date(a.updated_datetime);
                     });
-
-                    // Too many requests sent. Send only once
-                    //chrome.runtime.sendMessage({'request': 'search', 'query_size': templates.length});
                     callback(templates);
-
                 });
 
             }, debouncerTime);
 
             App.data.lastFilterRun = Date.now();
-        },
-        get: function (key, callback) {
-            chrome.runtime.sendMessage({'request': 'get', 'data': key}, function (response) {
-                callback(response);
-            });
         },
         stats: function (key, val, callback) {
             chrome.runtime.sendMessage({'request': 'stats', 'key': key, 'val': val}, function (response) {

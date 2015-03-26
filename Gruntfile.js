@@ -22,6 +22,7 @@ module.exports = function (grunt) {
                 'bower_components/moment/moment.js',
                 'bower_components/mousetrap/mousetrap.js',
                 'bower_components/mousetrap/plugins/record/mousetrap-record.js',
+
                 'bower_components/marked/lib/marked.js',
                 'bower_components/to-markdown/src/to-markdown.js',
                 'bower_components/he/he.js',
@@ -32,6 +33,7 @@ module.exports = function (grunt) {
                 'bower_components/angular-animate/angular-animate.js',
                 'bower_components/angular-md5/angular-md5.js',
                 'bower_components/angular-moment/angular-moment.js',
+
                 'bower_components/textAngular/dist/textAngular-sanitize.min.js',
                 'bower_components/textAngular/dist/textAngular-rangy.min.js',
                 'bower_components/textAngular/src/textAngular.js',
@@ -120,7 +122,8 @@ module.exports = function (grunt) {
                 tasks: [],
                 options: {
                     cwd: config.dist,
-                    livereload: true
+                    spawn: false,
+                    livereload: 1338
                 }
             }
         },
@@ -236,12 +239,12 @@ module.exports = function (grunt) {
                         '*'
                     ]
                 }]
-            },
+            }
         },
         crx: {
             extension: {
-                privateKey: 'key.pem',
-                filename: 'quicktext-chrome.crx',
+                privateKey: 'ext.pem',
+                filename: 'gorgias-chrome.crx',
                 src: '<%= config.dist %>',
                 dest: '<%= config.dist %>'
             }

@@ -65,6 +65,12 @@ App.autocomplete.dialog = {
             params.quicktexts = App.autocomplete.quicktexts;
 
             App.autocomplete.dialog.populate(params);
+            chrome.runtime.sendMessage({
+                'request': 'track',
+                'event': 'Showed dialog',
+                'data': {
+                    source: params.source ? params.source : "keyboard"
+                }});
         });
 
     },
@@ -170,7 +176,6 @@ App.autocomplete.dialog = {
         });
 
         instance.qaBtn.on('mouseup', function (e) {
-            chrome.runtime.sendMessage({'request': 'track', 'event': 'Showed Quick Access Button', 'data': {}});
 
             // return the focus to the element focused
             // before clicking the qa button
@@ -181,7 +186,8 @@ App.autocomplete.dialog = {
             // we have to pass the previous focus (the text node).
             App.autocomplete.dialog.completion(e, {
                 focusNode: App.autocomplete.dialog.prevFocus,
-                dialogPositionNode: e.target
+                dialogPositionNode: e.target,
+                source: 'button'
             });
 
             $('body').addClass('qa-btn-dropdown-show');
@@ -266,15 +272,24 @@ App.autocomplete.dialog = {
             return '<span class="qt-search-highlight">' + match + '</span>';
         };
 
-        // only match if we have a search string
-        if (App.autocomplete.cursorPosition.word.text) {
-            clonedElements.forEach(function (elem) {
+        var stripHtml = function(html) {
+            var tmp = document.createElement("DIV");
+            tmp.innerHTML = html;
+            return tmp.textContent || tmp.innerText || "";
+        };
+
+        clonedElements.forEach(function (elem) {
+            elem.originalBody = stripHtml(elem.body);
+
+            // only match if we have a search string
+            if (App.autocomplete.cursorPosition.word.text) {
                 elem.title = elem.title.replace(searchRe, highlightMatch);
-                elem.originalBody = elem.body;
-                elem.body = elem.body.replace(searchRe, highlightMatch);
+                elem.body = elem.originalBody.replace(searchRe, highlightMatch);
                 elem.shortcut = elem.shortcut.replace(searchRe, highlightMatch);
-            });
-        }
+            } else {
+                elem.body = elem.originalBody;
+            }
+        });
 
         var content = Handlebars.compile(App.autocomplete.dialog.liTemplate)({
             elements: clonedElements
@@ -607,7 +622,8 @@ App.autocomplete.dialog.qaBtnTooltip = '' +
 App.autocomplete.dialog.liTemplate = '' +
 '{{#if elements.length}}' +
 '{{#each elements}}' +
-'<li class="qt-item" data-id="{{id}}" title="{{{originalBody}}}">' +
+'<li class="qt-item" data-id="{{id}}" ' +
+'title="Title: {{{title}}}{{#if this.tags}}\nTags: {{{this.tags}}}{{/if}}\n\n{{{originalBody}}}">' +
 '<span class="qt-title">{{{title}}}</span>' +
 '{{#if this.shortcut}}' +
 '<span class="qt-shortcut">{{{this.shortcut}}}</span>' +
