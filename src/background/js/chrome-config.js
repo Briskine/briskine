@@ -35,6 +35,10 @@ if (chrome.runtime) {
     // Listen for any changes to the URL of any tab.
     chrome.tabs.onUpdated.addListener(updatedTab);
 
+    chrome.browserAction.onClicked.addListener(function (){
+        window.open(chrome.extension.getURL('/pages/bg.html') + '#/list', 'quicktextOptions');
+    });
+
     // Called after installation: https://developer.chrome.com/extensions/runtime.html#event-onInstalled
     chrome.runtime.onInstalled.addListener(function (details) {
         if (details.reason == "install") {
@@ -73,6 +77,8 @@ if (chrome.runtime) {
             angularInjector().get('MigrationService').migrate();
         }
     });
+
+
 
     if (!chrome.runtime.onMessage.hasListeners()) {
         chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
