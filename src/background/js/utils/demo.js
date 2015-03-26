@@ -492,6 +492,10 @@ var gorgiasDemo = (function () {
             $($editor).append(quicktext.body);
             $('body').trigger('dialog-used', params);
 
+            mixpanel.track("Tutorial Dialog Insert", {
+                shortcut: quicktext.shortcut
+            });
+
             setTimeout(function(){
                 $('.gorgias-demo-hint>*').addClass('hidden');
                 $('.gorgias-demo-hint .new-template').removeClass('hidden').addClass('fadein');
@@ -639,6 +643,7 @@ var gorgiasDemo = (function () {
         });
 
         $('.gorgias-qa-btn').on('click', function(e){
+            mixpanel.track("Tutorial Button");
             dialogShow(e);
             setTimeout(function () {
                 $('.gorgias-demo-hint>*').addClass('hidden');
