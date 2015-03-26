@@ -31,6 +31,14 @@ gApp.filter('safe', function ($sce) {
     };
 });
 
+gApp.filter('stripHTML', function ($sce) {
+    return function (html) {
+        var tmp = document.createElement("DIV");
+        tmp.innerHTML = html;
+        return tmp.textContent || tmp.innerText || "";
+    };
+});
+
 // Filter quicktexts by tags
 gApp.filter('tagFilter', function (TemplateService) {
     return function (quicktexts, filterTags) {
