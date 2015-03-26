@@ -18,12 +18,19 @@ container-box-shadow = 0 2px 2px rgba(0, 0, 0, .5);
     max-width: 400px;
     height: 240px;
     padding: 10px;
-    border-top: 30px solid #efefef;
+
+    /* border-top: 30px solid #efefef; */
     box-shadow: container-box-shadow;
     background: #fff;
-
     color: #333;
     text-align: left;
+}
+
+.gorgias-email-header-field {
+    background-color: #404040;
+    padding: 10px;
+    margin: -10px -10px 10px -10px;
+    color: white;
 }
 
 .gorgias-to-field {
@@ -34,10 +41,11 @@ container-box-shadow = 0 2px 2px rgba(0, 0, 0, .5);
 
 .gorgias-to-field .to {
     color: #737373;
+    margin-right: 10px;
 }
 
 .gorgias-demo-hint {
-    font-size: 20px;
+    font-size: 2em;
     padding: 18px;
 }
 
@@ -140,7 +148,6 @@ $padding = 8px;
 
 .gdemo-dropdown {
     display: none;
-
     position: fixed;
     z-index: 9999999;
 
@@ -192,6 +199,28 @@ $padding = 8px;
             background: $colorActiveBg;
         }
 
+    }
+}
+
+.g-dropdown-toolbar {
+    padding: 4px;
+    
+    button {
+        appearance: none;
+        background: linear-gradient(#ededed, #ededed 38%, #dedede);
+        border: 1px solid rgba(0, 0, 0, 0.25);
+        border-radius: 2px;
+        box-shadow: 0 1px 0 rgba(0, 0, 0, 0.08), inset 0 1px 2px rgba(255, 255, 255, 0.75);
+        color: #444;
+        text-shadow: 0 1px 0 #F0F0F0;
+        transition: all .1s ease-out;
+        cursor: pointer;
+    }
+    .g-hide-button {
+        visibility: hidden;
+        float: right;
+        margin-top: 4px;
+        font-size: 12px;
     }
 }
 

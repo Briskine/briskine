@@ -21,10 +21,15 @@ var gorgiasDemo = (function () {
             title: 'Say Hello',
             body: "Hello <span class='h'>John</span>,<br><br><br>"
         },
+        /*{
+            shortcut: 'nice',
+            title: 'Nice talking',
+            body: 'It was nice talking to you!'
+        },*/
         {
             shortcut: 'use',
             title: 'How to use Gorgias',
-            body: 'There are two ways to insert templates, you can:<br>- type its shortcut and press TAB<br>- search your templates and select one with CTRL+SPACE<br><br>'
+            body: 'There are two ways to insert templates, you can:<br>- Type its shortcut and press TAB<br>- Click on the "g" button and select it<br><br>'
         },
         {
             shortcut: 'kr',
@@ -629,6 +634,8 @@ var gorgiasDemo = (function () {
             }
         });
 
+        // Removes 1st step and adds 2nd step
+        /*
         $('body').on('dialog-used', function (e, params) {
             mixpanel.track("Tutorial Dialog", {
                 shortcut: params.quicktext.shortcut
@@ -640,6 +647,7 @@ var gorgiasDemo = (function () {
             $('.browser-action').removeClass('hidden');
             $('.gorgias-demo-last-step-h2').removeClass('hidden');
         });
+        */
 
     };
 

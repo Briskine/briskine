@@ -20,8 +20,8 @@
                 <span class="gdemo-body">Hello {<span></span>{to.first_name}}, </span>
             </li>
             <li class="gdemo-item">
-                <span class="gdemo-title">Nice talking</span>
-                <span class="gdemo-shortcut">nice</span>
+                <span class="gdemo-title">How to use Gorgias</span>
+                <span class="gdemo-shortcut">use</span>
                 <span class="gdemo-body">It was nice talking to you.</span>
             </li>
             <li class="gdemo-item">
@@ -31,13 +31,17 @@
             </li>
             <li class="gdemo-blank-state hidden">No templates found.</li>
         </ul>
+        <div class="g-dropdown-toolbar-highlighted">
+            <button class="g-new-template">New Template</button>
+        </div>
     </div>
 
     <div class="gorgias-wizard-step gorgias-wizard-step-demo">
 
         <div class="hero text-center">
-            <h2 class="gorgias-demo-first-step-h2">Let's see how Gorgias works</h2>
-            <h2 class="gorgias-demo-last-step-h2 hidden">Now let's create your first template!</h2>
+            <h3 class="gorgias-demo-first-step-h2">Let's see how Gorgias works!</h3>
+            <!-- Not in sure because only 1 step
+            <h3 class="gorgias-demo-last-step-h2 hidden">Let's create your first template!</h3>-->
         </div>
 
         <div class="gorgias-demo">
@@ -46,14 +50,17 @@
                     class="keyboard-key">Tab ↹</span></span>
                 <span class="use hidden">Great! Now type <span class="keyboard-key">use</span> and press <span
                     class="keyboard-key">Tab ↹</span></span>
-                <span class="space hidden">Finally, press <span class="keyboard-key">CTRL</span> + <span
-                    class="keyboard-key">SPACE</span> and choose a template from the list.</span>
+                <span class="space hidden">Now let's <span class="highlighted-text">create a template</span>, click on <button class="gorgias-qa-btn gorgias-qa-btn-icon"></button></span>
             </p>
 
             <div class="gorgias-editor-container">
+                <div class="gorgias-email-header-field">
+                    <span>New message</span>
+                </div>
                 <div class="gorgias-to-field"><span class="to">To:</span> <span class="h">John</span> Doe &lt;john.doe@acme.org&gt;
                 </div>
                 <div class="gorgias-demo-editor" contenteditable="true">&nbsp;</div>
+                <button class="gorgias-qa-btn"></button>
             </div>
         </div>
 
@@ -66,7 +73,7 @@
         </div>
         -->
 
-        <div class="browser-action hidden">
+        <!--<div class="browser-action hidden">
             <div class="browser-action-pointer"></div>
             <div class="browser-action-pointer-tip">
                 <p>
@@ -74,7 +81,7 @@
                     <strong>click</strong> on the <button class="btn btn-default">New template</button> button.
                 </p>
             </div>
-        </div>
+        </div>-->
 
     </div>
 
