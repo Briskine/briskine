@@ -6,7 +6,7 @@
         <!--
         <a href="https://gorgias.io/#login" class="btn btn-lg btn-primary pull-right">Sign In</a>
         -->
-        <a ng-href="{{ settings.get('baseURL') }}" class="brand" target="_blank">
+        <a ng-href="https://gorgias.io" class="brand" target="_blank">
             <img src="../icons/white-logo.png" alt="Gorgias"/>
         </a>
     </div>
@@ -32,14 +32,13 @@
             <li class="gdemo-blank-state hidden">No templates found.</li>
         </ul>
         <div class="g-dropdown-toolbar-highlighted">
-            <button class="g-new-template">New Template</button>
+            <a class="btn btn-primary" href="/pages/bg.html#/list?id=new&src=tutorial">New Template</a>
         </div>
     </div>
 
     <div class="gorgias-wizard-step gorgias-wizard-step-demo">
 
         <div class="hero text-center">
-            <h3 class="gorgias-demo-first-step-h2">Let's see how Gorgias works!</h3>
             <!-- Not in sure because only 1 step
             <h3 class="gorgias-demo-last-step-h2 hidden">Let's create your first template!</h3>-->
         </div>
@@ -50,7 +49,9 @@
                     class="keyboard-key">Tab ↹</span></span>
                 <span class="use hidden">Great! Now type <span class="keyboard-key">use</span> and press <span
                     class="keyboard-key">Tab ↹</span></span>
-                <span class="space hidden">Now let's <span class="highlighted-text">create a template</span>, click on <button class="gorgias-qa-btn gorgias-qa-btn-icon"></button></span>
+                <span class="search hidden">You can also search for templates. <span class="g-search-arrow"></span></span>
+                <span class="select hidden">Select one that fits. Click on any template.</span>
+                <span class="new-template hidden">You got it! Create your own template. It's easy!</span>
             </p>
 
             <div class="gorgias-editor-container">
@@ -63,6 +64,7 @@
                 <button class="gorgias-qa-btn"></button>
             </div>
         </div>
+        <span class="g-template-arrow hidden"></span>
 
         <!--
         <div class="hidden text-center">

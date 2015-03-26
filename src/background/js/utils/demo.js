@@ -333,13 +333,6 @@ var gorgiasDemo = (function () {
                 $('body').trigger("template-inserted", params);
             }
         }
-
-        if (e.keyCode === KEY_SPACE && e.ctrlKey) {
-
-            dialogShow(e);
-
-        }
-
     };
 
     var dialogSelectItem = function (index) {
@@ -436,7 +429,6 @@ var gorgiasDemo = (function () {
             dialogSelectItem($(this).index());
             if (e.type === 'mousedown') {
                 dialogSelectActive();
-                dialogHide();
             }
         });
 
@@ -499,6 +491,12 @@ var gorgiasDemo = (function () {
             };
             $($editor).append(quicktext.body);
             $('body').trigger('dialog-used', params);
+
+            setTimeout(function(){
+                $('.gorgias-demo-hint>*').addClass('hidden');
+                $('.gorgias-demo-hint .new-template').removeClass('hidden').addClass('fadein');
+                $('.g-template-arrow').removeClass('hidden');
+            }, 1000);
         }
     };
 
@@ -525,9 +523,12 @@ var gorgiasDemo = (function () {
             word: {text: ''}
         });
 
+        var topPos = $('.gorgias-demo-editor').offset().top;
+        var leftPos = $('.gorgias-demo-editor').offset().left + parseInt($('.gorgias-demo-editor').css('width'), 10) - parseInt($('.gdemo-dropdown').width(), 10);
+
         $(dialogSelector).css({
-            top: (cursorPosition.absolute.top + 20 + cursorPosition.absolute.height - $(window).scrollTop()) + 'px',
-            left: (cursorPosition.absolute.left + 15 + cursorPosition.absolute.width - $(window).scrollLeft()) + 'px'
+            top: topPos + 25 + 'px',
+            left: leftPos + 'px'
         });
 
         $(dialogSelector).addClass('gdemo-dropdown-show');
@@ -622,16 +623,27 @@ var gorgiasDemo = (function () {
                 $('.gorgias-editor-container .h').addClass('blink');
 
                 setTimeout(function () {
-                    $('.gorgias-demo-hint .h').addClass('hidden');
-                    $('.gorgias-demo-hint .use').removeClass('hidden');
+                    $('.gorgias-demo-hint>*').addClass('hidden');
+                    $('.gorgias-demo-hint .use').removeClass('hidden').addClass('fadein');
                 }, 2000);
 
             }
 
             if (params.quicktext.shortcut === 'use') {
-                $('.gorgias-demo-hint .use').addClass('hidden');
-                $('.gorgias-demo-hint .space').removeClass('hidden');
+                setTimeout(function () {
+                    $('.gorgias-demo-hint>*').addClass('hidden');
+                    $('.gorgias-demo-hint .search').removeClass('hidden').addClass('fadein');
+                    $('.gorgias-qa-btn').css('visibility', 'visible');
+                }, 1000);
             }
+        });
+
+        $('.gorgias-qa-btn').on('click', function(e){
+            dialogShow(e);
+            setTimeout(function () {
+                $('.gorgias-demo-hint>*').addClass('hidden');
+                $('.gorgias-demo-hint .select').removeClass('hidden').addClass('fadein');
+            }, 1000);
         });
 
         // Removes 1st step and adds 2nd step
