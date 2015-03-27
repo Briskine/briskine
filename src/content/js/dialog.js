@@ -279,6 +279,7 @@ App.autocomplete.dialog = {
         };
 
         clonedElements.forEach(function (elem) {
+            elem.originalTitle = elem.title;
             elem.originalBody = stripHtml(elem.body);
 
             // only match if we have a search string
@@ -623,7 +624,7 @@ App.autocomplete.dialog.liTemplate = '' +
 '{{#if elements.length}}' +
 '{{#each elements}}' +
 '<li class="qt-item" data-id="{{id}}" ' +
-'title="Title: {{{title}}}{{#if this.tags}}\nTags: {{{this.tags}}}{{/if}}\n\n{{{originalBody}}}">' +
+'title="Title: {{{originalTitle}}}{{#if this.tags}}\nTags: {{{this.tags}}}{{/if}}\n\n{{{originalBody}}}">' +
 '<span class="qt-title">{{{title}}}</span>' +
 '{{#if this.shortcut}}' +
 '<span class="qt-shortcut">{{{this.shortcut}}}</span>' +
