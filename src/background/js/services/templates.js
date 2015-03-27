@@ -39,11 +39,10 @@ gApp.service('TemplateService', function ($q, $resource, SettingsService) {
             templates.sort(function (a, b) {
                 return new Date(b.created_datetime) - new Date(a.created_datetime);
             });
-            // sort by created_datetime desc
+            // sort by updated_datetime desc
             templates.sort(function (a, b) {
                 return new Date(b.updated_datetime) - new Date(a.updated_datetime);
             });
-
 
             if (limit) {
                 templates = templates.splice(0, limit);
@@ -247,9 +246,11 @@ gApp.service('TemplateService', function ($q, $resource, SettingsService) {
         });
         t.nosync = typeof t.nosync !== 'undefined' ? t.nosync : 0;
         t.deleted = 0;
+        t.use_count = 0;
         t.created_datetime = new Date().toUTCString();
         t.updated_datetime = t.updated_datetime || "";
         t.sync_datetime = t.sync_datetime || "";
+        t.lastuse_datetime = t.lastuse_datetime || "";
         t.tags = self._clean_tags(t.tags);
 
         var data = {};
@@ -431,6 +432,23 @@ gApp.service('TemplateService', function ($q, $resource, SettingsService) {
         return deferred.promise;
     };
 
+    // Update lastuse_datetime
+    self.used = function(id, onlyLocal) {
+        var deferred = $q.defer();
+        self.get(id).then(function(template){
+            var data = {};
+            if (typeof template.use_count === 'undefined') {
+                template.use_count = 0;
+            }
+            template.use_count++;
+            template.lastuse_datetime = new Date().toUTCString();
+            data[template.id] = template;
+            TemplateStorage.set(data, function () {
+                deferred.resolve();
+            });
+        });
+        return deferred.promise;
+    };
 })
 ;
 

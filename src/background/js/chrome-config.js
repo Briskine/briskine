@@ -98,6 +98,9 @@ if (chrome.runtime) {
                 window.open(chrome.extension.getURL('/pages/bg.html') + '#/list?id=new&src=qa-button', 'New Template');
             }
             if (request.request === 'track') {
+                if (request.event === "Inserted template") {
+                    injector.get('TemplateService').used(request.data.id);
+                }
                 mixpanel.track(request.event, request.data);
             }
             return true;

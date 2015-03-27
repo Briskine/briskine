@@ -22,6 +22,7 @@ var App = {
                             'request': 'track',
                             'event': 'Inserted template',
                             'data': {
+                                "id": t.id,
                                 "source": "keyboard",
                                 "title_size": t.title.length,
                                 "body_size": t.body.length
@@ -62,7 +63,6 @@ var App = {
                 // search even the empty strings. It's not a problem because the dialog is now triggered by a user shortcut
                 TemplateStorage.get(null, function (res) {
                     var templates = [];
-                    var count = 0;
                     for (var id in res) {
                         var t = res[id];
                         if (t.deleted !== 0) {
@@ -73,18 +73,9 @@ var App = {
                             if (t.shortcut.indexOf(text) !== -1 ||
                                 t.title.indexOf(text) !== -1 ||
                                 t.body.indexOf(text) !== -1) {
-
-                                if (limit && limit < count) {
-                                    break;
-                                }
-                                count++;
                                 templates.push(t);
                             }
                         } else { // no text, get all
-                            if (limit && limit < count) {
-                                break;
-                            }
-                            count++;
                             templates.push(t);
                         }
                     }
@@ -97,6 +88,22 @@ var App = {
                     templates.sort(function (a, b) {
                         return new Date(b.updated_datetime) - new Date(a.updated_datetime);
                     });
+
+                    // sort by lastuse_datetime desc
+                    templates.sort(function (a, b) {
+                        if (!a.lastuse_datetime) {
+                            a.lastuse_datetime = new Date(0);
+                        }
+
+                        if (!b.lastuse_datetime) {
+                            b.lastuse_datetime = new Date(0);
+                        }
+                        return new Date(b.lastuse_datetime) - new Date(a.lastuse_datetime);
+                    });
+
+                    if (limit && limit < templates.length) {
+                       templates = templates.splice(0, limit);
+                    }
                     callback(templates);
                 });
 

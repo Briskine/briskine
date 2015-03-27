@@ -427,6 +427,17 @@ App.autocomplete.dialog = {
                 quicktext: quicktext,
                 focusNode: App.autocomplete.dialog.focusNode
             });
+
+            chrome.runtime.sendMessage({
+                'request': 'track',
+                'event': 'Inserted template',
+                'data': {
+                    "id": quicktext.id,
+                    "source": "dialog",
+                    "title_size": quicktext.title.length,
+                    "body_size": quicktext.body.length
+                }
+            });
         }
     },
     changeSelection: function (direction) {
