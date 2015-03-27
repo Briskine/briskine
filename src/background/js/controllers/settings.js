@@ -67,7 +67,7 @@ gApp.controller('SettingsCtrl', function ($scope, $rootScope, $timeout,  Templat
         }
     };
 
-    // Delete all quicktexts. This will not delete the quicktexts on the server side
+    // Delete all templates. This will not delete the templates on the server side
     $scope.deleteAll = function () {
         var r = confirm("Are you sure you want to delete all templates?\n\nNote: they will NOT be deleted from the sync server if it's setup.");
         if (r === true) {
@@ -77,7 +77,6 @@ gApp.controller('SettingsCtrl', function ($scope, $rootScope, $timeout,  Templat
         }
     };
 
-    // Delete all quicktexts. This will not delete the quicktexts on the server side
     $scope.resetSettings = function () {
         var r = confirm("Are you sure you want reset your settings?\n\nNote: Your stats will be reset");
         if (r === true) {

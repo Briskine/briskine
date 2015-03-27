@@ -173,7 +173,7 @@ gApp.run(function ($rootScope, $location, $http, $timeout, ProfileService, Setti
 
     $rootScope.SyncNow = function () {
         TemplateService.sync(function (lastSync) {
-            $rootScope.$broadcast("quicktexts-sync");
+            $rootScope.$broadcast("templates-sync");
             $rootScope.lastSync = lastSync;
         });
     };

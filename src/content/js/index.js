@@ -12,7 +12,7 @@ var App = {
     editor_enabled: true,
     autocomplete: {},
     settings: {
-        // Get quicktexts filtered out by shortcut
+        // Get template filtered out by shortcut
         getQuicktextsShortcut: function (text, callback) {
             TemplateStorage.get(null, function (templates) {
                 for (var id in templates) {

@@ -47,27 +47,27 @@ describe('Background script', function () {
 
     it('should submit a New Quicktext and hide the dialog', function () {
 
-        element(by.model('selectedQt.tags')).clear().sendKeys(config.quicktextNew.tags);
+        element(by.model('selectedTemplate.tags')).clear().sendKeys(config.quicktextNew.tags);
 
         browser.sleep(5000);
 
-        element(by.model('selectedQt.title')).clear().sendKeys(config.quicktextNew.title);
+        element(by.model('selectedTemplate.title')).clear().sendKeys(config.quicktextNew.title);
 
         browser.sleep(5000);
 
-        element(by.model('selectedQt.body')).clear().sendKeys(config.quicktextNew.body);
+        element(by.model('selectedTemplate.body')).clear().sendKeys(config.quicktextNew.body);
 
         browser.sleep(5000);
 
-        element(by.model('selectedQt.subject')).clear().sendKeys(config.quicktextNew.subject);
+        element(by.model('selectedTemplate.subject')).clear().sendKeys(config.quicktextNew.subject);
 
         browser.sleep(5000);
 
-        element(by.model('selectedQt.shortcut')).clear().sendKeys(config.quicktextNew.shortcut);
+        element(by.model('selectedTemplate.shortcut')).clear().sendKeys(config.quicktextNew.shortcut);
 
         browser.sleep(5000);
 
-        element(by.model('selectedQt.body')).submit().then(function() {
+        element(by.model('selectedTemplate.body')).submit().then(function() {
 
             browser.sleep(config.sleepTime);
 
@@ -95,19 +95,19 @@ describe('Background script', function () {
 
     it('should contain the quicktext details', function () {
 
-        var title = element(by.model('selectedQt.title'));
+        var title = element(by.model('selectedTemplate.title'));
         expect(title.getAttribute('value')).toBe(config.quicktextNew.title);
 
-        var shortcut = element(by.model('selectedQt.shortcut'));
+        var shortcut = element(by.model('selectedTemplate.shortcut'));
         expect(shortcut.getAttribute('value')).toBe(config.quicktextNew.shortcut);
 
-        var subject = element(by.model('selectedQt.subject'));
+        var subject = element(by.model('selectedTemplate.subject'));
         expect(subject.getAttribute('value')).toBe(config.quicktextNew.subject);
 
-        var tags = element(by.model('selectedQt.tags'));
+        var tags = element(by.model('selectedTemplate.tags'));
         expect(tags.getAttribute('value')).toBe(config.quicktextNew.tags);
 
-        var body = element(by.model('selectedQt.body'));
+        var body = element(by.model('selectedTemplate.body'));
         expect(body.getAttribute('value')).toBe(config.quicktextNew.body);
 
     });
@@ -124,7 +124,7 @@ describe('Background script', function () {
 
         config.quicktextNew.title += '2';
 
-        var title = element(by.model('selectedQt.title'));
+        var title = element(by.model('selectedTemplate.title'));
         title.sendKeys(config.deleteAll + config.quicktextNew.title);
 
         btnSubmit.click();

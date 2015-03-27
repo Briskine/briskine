@@ -1,4 +1,4 @@
-gApp.service('MigrationService', function ($q, $resource, SettingsService, TemplateService, QuicktextService) {
+gApp.service('MigrationService', function ($q, $resource, SettingsService, TemplateService) {
     var self = this;
 
     // Perform migrations in order

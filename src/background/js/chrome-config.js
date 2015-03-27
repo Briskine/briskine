@@ -36,7 +36,7 @@ if (chrome.runtime) {
     chrome.tabs.onUpdated.addListener(updatedTab);
 
     chrome.browserAction.onClicked.addListener(function (){
-        window.open(chrome.extension.getURL('/pages/bg.html') + '#/list', 'quicktextOptions');
+        window.open(chrome.extension.getURL('/pages/bg.html') + '#/list', 'Options');
     });
 
     // Called after installation: https://developer.chrome.com/extensions/runtime.html#event-onInstalled
@@ -65,8 +65,8 @@ if (chrome.runtime) {
         // this fixes issues with the onclick function not being triggered
         // or the new tab not being opened.
         chrome.contextMenus.onClicked.addListener(function (info, tab) {
-            var quicktextBody = encodeURIComponent(info.selectionText);
-            window.open(chrome.extension.getURL('/pages/bg.html') + '#/list?id=new&body=' + quicktextBody, 'quicktextOptions');
+            var body = encodeURIComponent(info.selectionText);
+            window.open(chrome.extension.getURL('/pages/bg.html') + '#/list?id=new&body=' + body , 'Options');
 
         });
 

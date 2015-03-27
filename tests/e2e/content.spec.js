@@ -49,17 +49,17 @@ describe('Content script', function () {
             return browser.driver.isElementPresent(by.css('.quicktext-modal'));
         });
 
-        setValue(element(by.model('selectedQt.tags')), config.quicktextNew.tags);
+        setValue(element(by.model('selectedTemplate.tags')), config.quicktextNew.tags);
 
-        setValue(element(by.model('selectedQt.title')), config.quicktextNew.title);
+        setValue(element(by.model('selectedTemplate.title')), config.quicktextNew.title);
 
-        setValue(element(by.model('selectedQt.body')), config.quicktextNew.body);
+        setValue(element(by.model('selectedTemplate.body')), config.quicktextNew.body);
 
-        setValue(element(by.model('selectedQt.subject')), config.quicktextNew.subject);
+        setValue(element(by.model('selectedTemplate.subject')), config.quicktextNew.subject);
 
-        setValue(element(by.model('selectedQt.shortcut')), config.quicktextNew.shortcut);
+        setValue(element(by.model('selectedTemplate.shortcut')), config.quicktextNew.shortcut);
 
-        element(by.model('selectedQt.body')).submit().then(function() {
+        element(by.model('selectedTemplate.body')).submit().then(function() {
 
             browser.sleep(config.sleepTime);
 

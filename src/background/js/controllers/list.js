@@ -3,11 +3,11 @@ gApp.controller('ListCtrl',
 
         var $formModal;
 
-        $scope.filteredQuicktexts = [];
-        $scope.quicktexts = [];
+        $scope.filteredTemplates = [];
+        $scope.templates = [];
         $scope.tags = [];
         $scope.filterTags = [];
-        $scope.limitQuicktexts = 42; // I know.. it's a cliche
+        $scope.limitTemplates = 42; // I know.. it's a cliche
         $scope.showInstallHint = false;
 
         // Hide Subject and Tags fields by default
@@ -41,39 +41,39 @@ gApp.controller('ListCtrl',
         // by default the load more button is disabled
         $('.load-more').hide();
 
-        $scope.reloadQuicktexts = function () {
+        $scope.reloadTemplates = function () {
             TemplateService.quicktexts().then(function (r) {
-                $scope.quicktexts = r;
+                $scope.templates = r;
             });
 
             TemplateService.allTags().then(function (r) {
                 $scope.tags = r;
             });
         };
-        $scope.reloadQuicktexts();
+        $scope.reloadTemplates();
 
         // Setup recuring syncing interval
         this.syncInterval = null;
         this.sync = function () {
             window.clearInterval(this.syncInterval);
             TemplateService.sync(function () {
-                $scope.reloadQuicktexts();
+                $scope.reloadTemplates();
             });
         };
         this.sync(); // sync right now
         this.syncInterval = window.setInterval(this.sync, 15000); // every 15 seconds
 
 
-        $scope.$watch('quicktexts', function () {
-            if ($scope.quicktexts && $scope.quicktexts.length) {
-                // trigger filterQuicktexts to update filtered quicktexts
+        $scope.$watch('templates', function () {
+            if ($scope.templates && $scope.templates.length) {
+                // trigger filterQuicktexts to update filtered templates
                 filterQuicktexts();
             }
         });
 
         // Listen on syncing events
-        $scope.$on("quicktexts-sync", function () {
-            $scope.reloadQuicktexts();
+        $scope.$on("templates-sync", function () {
+            $scope.reloadTemplates();
         });
 
 
@@ -122,21 +122,21 @@ gApp.controller('ListCtrl',
             id = id ? id : $routeParams.id;
 
             if (id === 'new') {
-                // new qt
-                $scope.selectedQt = angular.copy(defaults);
-                $scope.selectedQt.body = $routeParams.body;
+                // new template
+                $scope.selectedTemplate = angular.copy(defaults);
+                $scope.selectedTemplate.body = $routeParams.body;
             } else if (id) {
-                // update qt
+                // update template
                 TemplateService.get(id).then(function (r) {
-                    $scope.selectedQt = angular.copy(r);
+                    $scope.selectedTemplate = angular.copy(r);
 
-                    // convert qt body from markdown to html
+                    // convert body from markdown to html
                     SettingsService.get("settings", function (settings) {
                         if (settings.editor.enabled) {
                             // markdown requires two spaces and \n to for a line break
                             // so we use this to also turn any \n into a line break
-                            $scope.selectedQt.body = $scope.selectedQt.body.replace(/\n/g, ' <br />\n');
-                            $scope.selectedQt.body = marked($scope.selectedQt.body);
+                            $scope.selectedTemplate.body = $scope.selectedTemplate.body.replace(/\n/g, ' <br />\n');
+                            $scope.selectedTemplate.body = marked($scope.selectedTemplate.body);
                         }
                     });
                 });
@@ -180,10 +180,10 @@ gApp.controller('ListCtrl',
         $scope.$on('$routeUpdate', checkRoute);
 
         $scope.loadMore = function () {
-            $scope.limitQuicktexts += 42;
-            if ($scope.limitQuicktexts > $scope.filteredQuicktexts.length) {
+            $scope.limitTemplates += 42;
+            if ($scope.limitTemplates > $scope.filteredTemplates.length) {
                 $(".load-more").hide();
-                $scope.limitQuicktexts = 42;
+                $scope.limitTemplates = 42;
             }
         };
 
@@ -254,7 +254,7 @@ gApp.controller('ListCtrl',
 
             cleanedMd = div.innerHTML;
 
-            // convert qt body to markdown
+            // convert body to markdown
             cleanedMd = toMarkdown(cleanedMd);
 
             // remove remaning html markup
@@ -268,12 +268,12 @@ gApp.controller('ListCtrl',
 
         // Save a quicktext, perform some checks before
         $scope.saveQt = function () {
-            if (!$scope.selectedQt.title) {
+            if (!$scope.selectedTemplate.title) {
                 alert("Please enter a title");
                 return false;
             }
 
-            if (!$scope.selectedQt.body) {
+            if (!$scope.selectedTemplate.body) {
                 alert("Please enter a body");
                 return false;
             }
@@ -281,26 +281,26 @@ gApp.controller('ListCtrl',
             SettingsService.get('settings').then(function (settings) {
                 if (settings.editor.enabled) {
                     // return clean markdown
-                    $scope.selectedQt.body = cleanMarkdown($scope.selectedQt.body);
+                    $scope.selectedTemplate.body = cleanMarkdown($scope.selectedTemplate.body);
                 }
 
-                TemplateService.quicktexts().then(function (quicktexts) {
-                    if ($scope.selectedQt.shortcut) {
-                        for (var i in quicktexts) {
-                            var qt = quicktexts[i];
-                            if (qt.id !== $scope.selectedQt.id && qt.shortcut === $scope.selectedQt.shortcut) {
-                                alert("There is another a template with the '" + $scope.selectedQt.shortcut + "' keyboard shortcut");
+                TemplateService.quicktexts().then(function (templates) {
+                    if ($scope.selectedTemplate.shortcut) {
+                        for (var i in templates) {
+                            var qt = templates[i];
+                            if (qt.id !== $scope.selectedTemplate.id && qt.shortcut === $scope.selectedTemplate.shortcut) {
+                                alert("There is another a template with the '" + $scope.selectedTemplate.shortcut + "' keyboard shortcut");
                                 return false;
                             }
                         }
                     }
-                    if ($scope.selectedQt.id) {
-                        TemplateService.update($scope.selectedQt).then(function () {
-                            $scope.reloadQuicktexts();
+                    if ($scope.selectedTemplate.id) {
+                        TemplateService.update($scope.selectedTemplate).then(function () {
+                            $scope.reloadTemplates();
                         });
                     } else {
-                        TemplateService.create($scope.selectedQt).then(function () {
-                            $scope.reloadQuicktexts();
+                        TemplateService.create($scope.selectedTemplate).then(function () {
+                            $scope.reloadTemplates();
                         });
                     }
 
@@ -312,18 +312,18 @@ gApp.controller('ListCtrl',
 
         // Save a quicktext, perform some checks before
         $scope.duplicateQt = function () {
-            if (!$scope.selectedQt.title) {
+            if (!$scope.selectedTemplate.title) {
                 alert("Please enter a title");
                 return false;
             }
 
-            if (!$scope.selectedQt.body) {
+            if (!$scope.selectedTemplate.body) {
                 alert("Please enter a body");
                 return false;
             }
 
             // append a (copy) to the title
-            var newQt = angular.copy($scope.selectedQt);
+            var newQt = angular.copy($scope.selectedTemplate);
             newQt.title = newQt.title + " (copy)";
             $('.modal').on('hidden.bs.modal', function () {
                 $('#duplicate-alert-box').addClass('hide');
@@ -332,7 +332,7 @@ gApp.controller('ListCtrl',
             TemplateService.create(newQt).then(function (id) {
                 if (typeof id !== 'undefined') {
                     $('#duplicate-alert-box').removeClass('hide');
-                    $scope.reloadQuicktexts();
+                    $scope.reloadTemplates();
                     $scope.showForm(id);
                 }
             });
@@ -345,7 +345,7 @@ gApp.controller('ListCtrl',
                 r = confirm("Are you sure you want to delete '" + this.quicktext.title + "' template?");
                 if (r === true) {
                     TemplateService.delete(this.quicktext).then(function () {
-                        $scope.reloadQuicktexts();
+                        $scope.reloadTemplates();
                     });
                 }
             }
@@ -363,15 +363,15 @@ gApp.controller('ListCtrl',
         // apply filters to the list of quicktexts
         var filterQuicktexts = function () {
             // apply the text search filter
-            $scope.filteredQuicktexts = $filter('filter')($scope.quicktexts, $scope.searchText);
+            $scope.filteredTemplates = $filter('filter')($scope.templates, $scope.searchText);
             // apply the tag serach filter
-            $scope.filteredQuicktexts = $filter('tagFilter')($scope.filteredQuicktexts, $scope.filterTags);
+            $scope.filteredTemplates = $filter('tagFilter')($scope.filteredTemplates, $scope.filterTags);
 
             $scope.focusIndex = 0;
 
-            if ($scope.filteredQuicktexts.length < $scope.limitQuicktexts) {
+            if ($scope.filteredTemplates.length < $scope.limitTemplates) {
                 $('.load-more').hide();
-                $scope.limitQuicktexts = 42;
+                $scope.limitTemplates = 42;
             } else {
                 $('.load-more').show();
             }

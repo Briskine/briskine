@@ -44,8 +44,8 @@
                     </ul>
                 </div>
                 <h4 class="modal-title">
-                    <span ng-show="selectedQt.id">Edit template</span>
-                    <span ng-show="!selectedQt.id">New template</span>
+                    <span ng-show="selectedTemplate.id">Edit template</span>
+                    <span ng-show="!selectedTemplate.id">New template</span>
                 </h4>
             </div>
 
@@ -53,8 +53,8 @@
 
 
                 <div class="modal-body">
-                    <input type="hidden" id="qt-id" ng-model="selectedQt.id"/> <!-- local id -->
-                    <input type="hidden" id="qt-key" ng-model="selectedQt.key"/> <!-- sync server id -->
+                    <input type="hidden" id="qt-id" ng-model="selectedTemplate.id"/> <!-- local id -->
+                    <input type="hidden" id="qt-key" ng-model="selectedTemplate.key"/> <!-- sync server id -->
                     <div id="duplicate-alert-box" class="alert alert-info fade in hide">
                         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
                         <strong>Duplicated!</strong> Please edit this new template and hit <strong>Save
@@ -66,7 +66,7 @@
 
                             <div class="form-group" data-toggle="tooltip" data-placement="bottom">
                                 <label for="qt-title">Name</label>
-                                <input type="text" class="form-control" id="qt-title" ng-model="selectedQt.title"
+                                <input type="text" class="form-control" id="qt-title" ng-model="selectedTemplate.title"
                                        placeholder="Ex: Nice talking to you" autofocus required/>
                             </div>
 
@@ -81,7 +81,7 @@
                                     <span class="text-muted">(Optional)</span>
                                 </label>
                                 <input type="text" class="form-control" id="qt-shortcut"
-                                       ng-model="selectedQt.shortcut"
+                                       ng-model="selectedTemplate.shortcut"
                                        placeholder="nice"/>
 
                             </div>
@@ -91,23 +91,23 @@
 
                     <div class="form-group" data-toggle="tooltip" data-placement="bottom"
                          title="The e-mail subject will be replaced with this field. Only when this template is used."
-                         ng-show="selectedQt.subject || subjectEnabled">
+                         ng-show="selectedTemplate.subject || subjectEnabled">
                         <label for="qt-subject">
                             Subject
                             <span class="text-muted">(Optional)</span>
                         </label>
-                        <input type="text" class="form-control" id="qt-subject" ng-model="selectedQt.subject"
+                        <input type="text" class="form-control" id="qt-subject" ng-model="selectedTemplate.subject"
                                placeholder=""/>
                     </div>
 
                     <div class="form-group" data-toggle="tooltip" data-placement="bottom"
-                         ng-show="selectedQt.tags || tagsEnabled"
+                         ng-show="selectedTemplate.tags || tagsEnabled"
                          title="Tags are useful to search and filter templates (when you have many).">
                         <label for="qt-tags">
                             Tags
                             <span class="text-muted">(Optional)</span>
                         </label>
-                        <input type="text" class="form-control" id="qt-tags" size="50" ng-model="selectedQt.tags"
+                        <input type="text" class="form-control" id="qt-tags" size="50" ng-model="selectedTemplate.tags"
                                placeholder="Ex: en, sales, discounts"/>
 
                         <p class="help-block">Comma separated list of tags.</p>
@@ -134,7 +134,7 @@
                                 id="qt-body" class="form-control"
                                 cols="100" rows="10" required="required"
                                 placeholder="It was nice talking to you today..."
-                                ng-model="selectedQt.body"></textarea>
+                                ng-model="selectedTemplate.body"></textarea>
 
                             <p class="help-block">
                                 Supports <a href="http://help.gorgias.io/en/latest/src/04-templates.html#html-tags"
@@ -147,13 +147,13 @@
                              class="qt-editor"
                              text-angular
                              placeholder="It was nice talking to you today..."
-                             ng-model="selectedQt.body"
+                             ng-model="selectedTemplate.body"
                              ta-toolbar="[['bold','italics','underline'], ['insertLink', 'insertImage'], ['insertVariable']]"></div>
                     </div>
                 </div>
 
                 <div class="modal-footer">
-                    <span ng-show="selectedQt.id">
+                    <span ng-show="selectedTemplate.id">
                         <button class="btn btn-default pull-left" ng-click="duplicateQt()" tabindex="-1">Duplicate template</button>
                     </span>
 

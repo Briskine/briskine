@@ -2,7 +2,7 @@
     <h1>Templates</h1>
 
     <div class="pull-right header-actions">
-        <input type="text" class="form-control" ng-model="searchText" placeholder="Search quicktexts" tabindex="0"
+        <input type="text" class="form-control" ng-model="searchText" placeholder="Search templates" tabindex="0"
                autofocus/>
     </div>
 </header>
@@ -34,10 +34,10 @@
         </p>
     </div>
 
-    <div class="list-group quicktexts-list" ng-show="filteredQuicktexts.length">
+    <div class="list-group quicktexts-list" ng-show="filteredTemplates.length">
 
         <div class="list-group-item"
-             ng-repeat="quicktext in filteredQuicktexts | limitTo:limitQuicktexts">
+             ng-repeat="quicktext in filteredTemplates | limitTo:limitTemplates">
 
             <a class="list-group-item-link"
                tabindex="0"
@@ -86,7 +86,7 @@
     <div class="row load-more text-center">
         <button ng-click="loadMore()" class="btn btn-default">Load more templates</button>
     </div>
-    <div class="template-list-empty" ng-show="!filteredQuicktexts.length && pageAction">
+    <div class="template-list-empty" ng-show="!filteredTemplates.length && pageAction">
         <p class="alert alert-info">Once you add your first templates, you'll find them here.</p>
     </div>
 

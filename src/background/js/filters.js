@@ -39,16 +39,16 @@ gApp.filter('stripHTML', function ($sce) {
     };
 });
 
-// Filter quicktexts by tags
+// Filter templates by tags
 gApp.filter('tagFilter', function (TemplateService) {
-    return function (quicktexts, filterTags) {
+    return function (templates, filterTags) {
         if (filterTags && filterTags.length) {
-            return _.filter(quicktexts, function (qt) {
-                tags = TemplateService.tags(qt);
+            return _.filter(templates, function (t) {
+                tags = TemplateService.tags(t);
                 return _.intersection(filterTags, tags).length === filterTags.length;
             });
         } else {
-            return quicktexts;
+            return templates;
         }
     };
 });
