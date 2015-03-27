@@ -8,11 +8,7 @@
 </header>
 
 <div class="btn-toolbar">
-    <a href="#/list?id=new" target="{{ pageAction ? 'quicktextOptionsTab' : '' }}" class="btn btn-primary">New
-        template</a>
-    <a ng-if="pageAction" href="#/list" target="{{ pageAction ? 'quicktextOptionsTab' : '' }}" class="pull-right"><i
-        class="fa fa-gear"></i> Options</a>
-
+    <a href="#/list?id=new" class="btn btn-primary">New template</a>
     <div class="quicktext-filters pull-right">
         <span ng-repeat="(tag, count) in tags">
           <a href='' class="label label-default"
@@ -41,7 +37,6 @@
 
             <a class="list-group-item-link"
                tabindex="0"
-               target="{{ pageAction ? 'quicktextOptionsTab' : '' }}"
                ng-href="#/list?id={{ ::quicktext.id }}">
 
                 <div class="row">
@@ -78,18 +73,13 @@
 
             <div class="hover-actions">
                 <button type="button" class="btn btn-default" ng-click="deleteQt()" title="Delete">Delete</button>
-                <a ng-href="#/list?id={{ ::quicktext.id }}" target="{{ pageAction ? 'quicktextOptionsTab' : '' }}"
-                   class="btn btn-primary edit-button">Edit</a>
+                <a ng-href="#/list?id={{ ::quicktext.id }}" class="btn btn-primary edit-button">Edit</a>
             </div>
         </div>
     </div>
     <div class="row load-more text-center">
         <button ng-click="loadMore()" class="btn btn-default">Load more templates</button>
     </div>
-    <div class="template-list-empty" ng-show="!filteredTemplates.length && pageAction">
-        <p class="alert alert-info">Once you add your first templates, you'll find them here.</p>
-    </div>
-
 </div>
 
 <div ng-include="'includes/form.html'"></div>

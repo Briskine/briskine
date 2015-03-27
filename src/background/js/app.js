@@ -38,10 +38,6 @@ var gApp = angular.module('gApp', [
             controller: 'SettingsCtrl',
             templateUrl: 'views/settings.html'
         })
-        .when('/popup', {
-            controller: 'ListCtrl',
-            templateUrl: 'views/list.html'
-        })
         .when('/installed', {
             templateUrl: 'views/installed.html',
             reloadOnSearch: false
@@ -70,7 +66,6 @@ gApp.run(function ($rootScope, $location, $http, $timeout, ProfileService, Setti
     $rootScope.$on('$routeChangeStart', function (next, current) {
         $rootScope.path = $location.path();
     });
-    $rootScope.pageAction = ($location.path() === '/popup');
 
     var userAgent = window.navigator.userAgent;
     $rootScope.isOpera = /OPR/g.test(userAgent);

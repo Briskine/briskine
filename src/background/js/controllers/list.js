@@ -17,7 +17,7 @@ gApp.controller('ListCtrl',
             $scope.subjectEnabled = settings.fields.subject;
             $scope.tagsEnabled = settings.fields.tags;
 
-            if (!settings.shownInstallHint && !$rootScope.pageAction) {
+            if (!settings.shownInstallHint) {
                 $scope.showInstallHint = true;
             }
         });
