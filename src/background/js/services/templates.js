@@ -6,6 +6,7 @@ gApp.service('TemplateService', function ($q, $resource, SettingsService) {
     var self = this;
 
     SettingsService.get('apiBaseURL').then(function (apiBaseURL) {
+
         self.qRes = $resource(apiBaseURL + 'quicktexts/:quicktextId', {
             quicktextId: '@remote_id'
         }, {
@@ -17,6 +18,8 @@ gApp.service('TemplateService', function ($q, $resource, SettingsService) {
                 isArray: false
             }
         });
+
+        self.statsRes = $resource(apiBaseURL + 'quicktexts/stats');
     });
 
     self.isLoggedin = false;
@@ -68,11 +71,7 @@ gApp.service('TemplateService', function ($q, $resource, SettingsService) {
 
     /* Sync - assume that there was no connectivity and now we have it
 
-     Local templates:
 
-     * Created (doesn't have a 'remote_id' set)
-     * Deleted (deleted=1 in the db) - delete remotely and then completely in the db
-     * Updated (sync_datetime is null or lower than the updated_date)
 
      Remote templates (after local sync):
 
@@ -131,6 +130,13 @@ gApp.service('TemplateService', function ($q, $resource, SettingsService) {
         }
     };
 
+    /**
+     * Local templates:
+     * Created (doesn't have a 'remote_id' set)
+     * Deleted (deleted=1 in the db) - delete remotely and then completely in the db
+     * Updated (sync_datetime is null or lower than the updated_date)
+     *
+     */
     self.syncLocal = function (callback) {
         if (!self.isLoggedin) {
             return;
@@ -146,6 +152,7 @@ gApp.service('TemplateService', function ($q, $resource, SettingsService) {
 
                 // no remote_id means that it's local only and we have to sync it with the remote sync service
                 if (!t.remote_id) {
+                    // skipping deleted templates - there should not be any.. but ok.
                     if (t.deleted === 1) {
                         continue;
                     }
@@ -154,36 +161,69 @@ gApp.service('TemplateService', function ($q, $resource, SettingsService) {
                     tRemote = self._copy(angular.copy(t), tRemote);
 
                     // create new template on the server
-                    tRemote.$save(function (res) {
-                        t.remote_id = res.id;
-                        t.sync_datetime = new Date().toUTCString();
+                    var save = function (ut) {
+                        // we're in a for loop so we need this closure here because the `t` var will be overridden
+                        // before the remote request is finished
+                        return function (res) {
+                            ut.remote_id = res.id;
+                            ut.sync_datetime = new Date().toUTCString();
 
-                        var data = {};
-                        data[t.id] = t;
-                        self.create(t, true);
-                    });
+                            var data = {};
+                            data[ut.id] = ut;
+                            self.update(ut, true);
+                        };
+                    };
+                    tRemote.$save(save(angular.copy(t)));
                 } else { // was synced at some point
-                    // if it's deleted locally, delete it remotely and then delete it locally
+                    // if it's deleted locally, delete it remotely and then delete it completely
                     if (t.deleted === 1) {
-                        self.qRes.get({quicktextId: t.remote_id}, function (remote) {
-                            remote.$delete(function () {
-                                TemplateStorage.remove(t.id);
-                            });
-                        });
+                        var deleted = function (ut) {
+                            return function (remote) {
+                                remote.remote_id = ut.remote_id;
+                                remote.$delete(function () {
+                                    TemplateStorage.remove(ut.id);
+                                });
+                            }
+                        };
+                        self.qRes.get({quicktextId: t.remote_id}, deleted(angular.copy(t)));
                     } else if (t.updated_datetime) { // only if we have an updated_datetime
                         if (!t.sync_datetime || new Date(t.sync_datetime) < new Date(t.updated_datetime)) {
-
-                            // template was updated locally, synced yet
-                            self.qRes.get({quicktextId: t.remote_id}, function (remote) {
-                                remote = self._copy(t, remote);
-                                remote.$update(function () {
-                                    t.sync_datetime = new Date().toUTCString();
-                                    var data = {};
-                                    data[t.id] = t;
-                                    TemplateStorage.set(data);
-                                });
-                            });
+                            var update = function (ut) {
+                                // we're in a for loop so we need this closure here because the `t` var will be overridden
+                                // before the remote request is finished
+                                return function (remote) {
+                                    remote = self._copy(ut, remote);
+                                    remote.$update(function () {
+                                        ut.sync_datetime = new Date().toUTCString();
+                                        var data = {};
+                                        data[ut.id] = ut;
+                                        TemplateStorage.set(data);
+                                    });
+                                };
+                            };
+                            // template was updated locally, not synced yet
+                            self.qRes.get({quicktextId: t.remote_id}, update(angular.copy(t)));
                         }
+                    }
+
+                    // send stats to server if we templates used
+                    if (t.use_count) { // if we have a use_count, then we can update the stats on the server.
+                        var stat = new self.statsRes();
+                        stat.quicktext_id = t.remote_id;
+                        stat.key = 'use_count';
+                        stat.value = t.use_count;
+
+                        // we need this closure to make sure we don't duplicate the same template
+                        var save = function (ut) {
+                            return function () {
+                                ut.use_count = 0;
+                                var data = {};
+                                data[ut.id] = ut;
+                                TemplateStorage.set(data, function () {
+                                });
+                            }
+                        };
+                        stat.$save(save(angular.copy(t)));
                     }
                 }
             }
@@ -433,9 +473,9 @@ gApp.service('TemplateService', function ($q, $resource, SettingsService) {
     };
 
     // Update lastuse_datetime
-    self.used = function(id, onlyLocal) {
+    self.used = function (id, onlyLocal) {
         var deferred = $q.defer();
-        self.get(id).then(function(template){
+        self.get(id).then(function (template) {
             var data = {};
             if (typeof template.use_count === 'undefined') {
                 template.use_count = 0;

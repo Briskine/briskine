@@ -52,18 +52,6 @@ gApp.controller('ListCtrl',
         };
         $scope.reloadTemplates();
 
-        // Setup recuring syncing interval
-        this.syncInterval = null;
-        this.sync = function () {
-            window.clearInterval(this.syncInterval);
-            TemplateService.sync(function () {
-                $scope.reloadTemplates();
-            });
-        };
-        this.sync(); // sync right now
-        this.syncInterval = window.setInterval(this.sync, 15000); // every 15 seconds
-
-
         $scope.$watch('templates', function () {
             if ($scope.templates && $scope.templates.length) {
                 // trigger filterQuicktexts to update filtered templates

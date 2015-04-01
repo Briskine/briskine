@@ -137,8 +137,8 @@ gApp.run(function ($rootScope, $location, $http, $timeout, ProfileService, Setti
                                 user: data
                             });
                         });
-                        // Once logged in, upload the local templates
-                        TemplateService.syncLocal();
+                        // Once logged in start syncing
+                        $rootScope.SyncNow();
                     } else {
                         mixpanel.register({
                             "$browser": browser,
@@ -167,11 +167,21 @@ gApp.run(function ($rootScope, $location, $http, $timeout, ProfileService, Setti
     $rootScope.lastSync = TemplateService.lastSync;
 
     $rootScope.SyncNow = function () {
+        console.log("Synced: ", new Date().toUTCString());
         TemplateService.sync(function (lastSync) {
             $rootScope.$broadcast("templates-sync");
             $rootScope.lastSync = lastSync;
+            TemplateService.syncLocal();
         });
     };
+
+    // Setup recurring syncing interval
+    var syncInterval = null;
+    var sync = function () {
+        window.clearInterval(syncInterval);
+        $rootScope.SyncNow();
+    };
+    syncInterval = window.setInterval(sync, 60 * 1000); // every minute
 
     $rootScope.saveEmail = function () {
         var req = {
