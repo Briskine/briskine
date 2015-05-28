@@ -489,6 +489,7 @@ gApp.service('TemplateService', function ($q, $resource, SettingsService) {
         });
         return deferred.promise;
     };
-})
-;
+
+
+});
 

@@ -65,12 +65,15 @@ App.autocomplete.dialog = {
             params.quicktexts = App.autocomplete.quicktexts;
 
             App.autocomplete.dialog.populate(params);
+            App.autocomplete.dialog.suggestion(params);
+
             chrome.runtime.sendMessage({
                 'request': 'track',
                 'event': 'Showed dialog',
                 'data': {
                     source: params.source ? params.source : "keyboard"
-                }});
+                }
+            });
         });
 
     },
@@ -122,15 +125,15 @@ App.autocomplete.dialog = {
             }
 
             App.autocomplete.cursorPosition.word.text = $(this).val();
+            if (App.autocomplete.cursorPosition.word.text) {
+                App.settings.getFiltered(App.autocomplete.cursorPosition.word.text, App.autocomplete.dialog.RESULTS_LIMIT, function (quicktexts) {
 
-            App.settings.getFiltered(App.autocomplete.cursorPosition.word.text, App.autocomplete.dialog.RESULTS_LIMIT, function (quicktexts) {
-
-                App.autocomplete.quicktexts = quicktexts;
-                App.autocomplete.dialog.populate({
-                    quicktexts: App.autocomplete.quicktexts
+                    App.autocomplete.quicktexts = quicktexts;
+                    App.autocomplete.dialog.populate({
+                        quicktexts: App.autocomplete.quicktexts
+                    });
                 });
-
-            });
+            }
         });
 
     },
@@ -258,7 +261,6 @@ App.autocomplete.dialog = {
 
         App.autocomplete.quicktexts = params.quicktexts;
 
-
         // clone the elements
         // so we can safely highlight the matched text
         // without breaking the generated handlebars markup
@@ -272,7 +274,7 @@ App.autocomplete.dialog = {
             return '<span class="qt-search-highlight">' + match + '</span>';
         };
 
-        var stripHtml = function(html) {
+        var stripHtml = function (html) {
             var tmp = document.createElement("DIV");
             tmp.innerHTML = html;
             return tmp.textContent || tmp.innerText || "";
@@ -307,6 +309,51 @@ App.autocomplete.dialog = {
         // Set first element active
         App.autocomplete.dialog.selectItem(0);
 
+    },
+    suggestion: function (params) {
+        // Awesome selectors right?
+        var body_text = $(App.autocomplete.dialog.editor).closest('.nH .h7').find('.ii.gt:visible').text().trim();
+        if (body_text) {
+            chrome.runtime.sendMessage({
+                'request': 'suggestion',
+                'data': {
+                    'subject': $('.hP').text(),
+                    'to': '',
+                    'cc': '',
+                    'bcc': '',
+                    'from': '',
+                    'body': body_text
+                }
+            }, function (templates) {
+                if (!_.size(templates)) {
+                    return;
+                }
+
+                var template_id = _.keys(templates)[0];
+                for (var remote_id in templates) {
+                    if (templates[remote_id] > templates[template_id]) {
+                        template_id = remote_id;
+                    }
+                }
+                TemplateStorage.get(null, function(storedTemplates){
+                    var suggestedTemplate = null;
+                    for (var tid in storedTemplates) {
+                        var t = storedTemplates[tid];
+                        if (t.remote_id === template_id) {
+                            suggestedTemplate = t;
+                            break;
+                        }
+                    }
+                    if (suggestedTemplate) {
+                        //App.autocomplete.dialog.insertTemplate(suggestedTemplate);
+                        suggestedTemplate.score = templates[template_id];
+                        params.quicktexts.splice(tid, 1);
+                        params.quicktexts.splice(0, 0, suggestedTemplate);
+                        App.autocomplete.dialog.populate(params);
+                    }
+                });
+            });
+        }
     },
     show: function (params) {
         params = params || {};
@@ -435,7 +482,8 @@ App.autocomplete.dialog = {
                     "id": quicktext.id,
                     "source": "dialog",
                     "title_size": quicktext.title.length,
-                    "body_size": quicktext.body.length
+                    "body_size": quicktext.body.length,
+                    "suggested": quicktext.score ? true : false
                 }
             });
         }
@@ -634,8 +682,8 @@ App.autocomplete.dialog.qaBtnTooltip = '' +
 App.autocomplete.dialog.liTemplate = '' +
 '{{#if elements.length}}' +
 '{{#each elements}}' +
-'<li class="qt-item" data-id="{{id}}" ' +
-'title="Title: {{{originalTitle}}}{{#if this.tags}}\nTags: {{{this.tags}}}{{/if}}\n\n{{{originalBody}}}">' +
+'<li class="qt-item{{#if this.score }} suggested{{/if}}" data-id="{{id}}" ' +
+'title="{{#if this.score }}Match score: {{{this.score}}}\n{{/if}}Title: {{{originalTitle}}}{{#if this.tags}}\nTags: {{{this.tags}}}{{/if}}\n\n{{{originalBody}}}">' +
 '<span class="qt-title">{{{title}}}</span>' +
 '{{#if this.shortcut}}' +
 '<span class="qt-shortcut">{{{this.shortcut}}}</span>' +

@@ -86,8 +86,10 @@ var Settings = {
     defaults: {
         baseURL: "https://gorgias.io/",
         apiBaseURL: "https://gorgias.io/api/1/",
+        //apiBaseURL: "http://localhost:5000/api/1/",
 
         settings: { // settings for the settings view
+
             dialog: {
                 enabled: true,
                 shortcut: 'ctrl+space', // shortcut that triggers the complete dialog
@@ -117,6 +119,9 @@ var Settings = {
             sidebar: { // this sidebar to the right
                 enabled: true,
                 url: ""
+            },
+            suggestions: { // automatic suggestions from the server
+                enabled: true
             }
         },
         // refactor this into 'local' and 'remote'

@@ -4,36 +4,44 @@
 
 <form role="form">
     <p class="alert alert-warning alert-dismissable" ng-show="showWarning">
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <strong>Warning!</strong> For the changes to take effect, please refresh all tabs (web pages) where you are using Gorgias.
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+            aria-hidden="true">&times;</span></button>
+        <strong>Warning!</strong> For the changes to take effect, please refresh all tabs (web pages) where you are
+        using Gorgias.
     </p>
     <h4>Keyboard Shortcut</h4>
+
     <p class="help-block">Quickly expand templates using a keyboard shortcut.</p>
+
     <div class="checkbox">
         <label for="keyboard-enabled">Enable Keyboard Shortcut</label>
-        <input type="checkbox" id="keyboard-enabled" ng-model="settings.keyboard.enabled" ng-change="updateSettings()" />
+        <input type="checkbox" id="keyboard-enabled" ng-model="settings.keyboard.enabled" ng-change="updateSettings()"/>
     </div>
     <div class="form-group" ng-show="settings.keyboard.enabled">
         <label for="keyboard-shortcut" data-toggle="tooltip" data-placement="bottom"
-               data-original-title="Setup keyboard shortcut to expand templates">
+               data-original-title="Setup keyboard shortcut to insert templates">
             Keyboard Shortcut
             <span class="glyphicon glyphicon-question-sign"></span>
         </label>
         <br/>
-        <input type="text" id="keyboard-shortcut" ng-model="settings.keyboard.shortcut" readonly="readonly" placeholder="Press any key combination" size="25" />
-        <button class="btn btn-default" ng-click="recordSequence('keyboard-shortcut')">Change</button>
+        <input type="text" id="keyboard-shortcut" ng-model="settings.keyboard.shortcut"
+               placeholder="Press any key combination" size="25" ng-click="recordSequence('keyboard-shortcut')"/>
+        <button class="btn btn-default" ng-click="saveSequence()">Save</button>
     </div>
     <br/>
     <h4>Auto-complete Dialog</h4>
+
     <p class="help-block">Auto-complete dialog helps you search templates faster.</p>
+
     <div class="checkbox">
         <label for="dialog-enabled">Enable Auto-complete Dialog</label>
-        <input type="checkbox" id="dialog-enabled" ng-model="settings.dialog.enabled"  ng-change="updateSettings()" />
+        <input type="checkbox" id="dialog-enabled" ng-model="settings.dialog.enabled" ng-change="updateSettings()"/>
     </div>
     <div class="checkbox" ng-show="settings.dialog.enabled">
         <label for="showQaButton">Enable Quick Access button</label>
-        <input type="checkbox" id="showQaButton" ng-model="settings.qaBtn.enabled"  ng-change="updateSettings()" />
-        <span class="glyphicon glyphicon-question-sign" data-toggle="tooltip" data-placement="bottom" data-original-title="The Quick Access button is placed in the right corner of input fields"></span>
+        <input type="checkbox" id="showQaButton" ng-model="settings.qaBtn.enabled" ng-change="updateSettings()"/>
+        <span class="glyphicon glyphicon-question-sign" data-toggle="tooltip" data-placement="bottom"
+              data-original-title="The Quick Access button is placed in the right corner of input fields"></span>
     </div>
     <div class="form-group" ng-show="settings.dialog.enabled">
         <label for="dialog-shortcut" data-toggle="tooltip" data-placement="bottom"
@@ -42,7 +50,8 @@
             <span class="glyphicon glyphicon-question-sign"></span>
         </label>
         <br/>
-        <input type="text" id="dialog-shortcut" readonly="readonly" ng-model="settings.dialog.shortcut" placeholder="Press any key combination" size="25" />
+        <input type="text" id="dialog-shortcut" readonly="readonly" ng-model="settings.dialog.shortcut"
+               placeholder="Press any key combination" size="25"/>
         <button class="btn btn-default" ng-click="recordSequence('dialog-shortcut')">Change</button>
     </div>
     <div class="form-group" ng-show="settings.dialog.enabled">
@@ -52,15 +61,17 @@
             <span class="glyphicon glyphicon-question-sign"></span>
         </label>
         <br/>
-        <input type="text" id="dialog-limit" ng-model="settings.dialog.limit" ng-change="updateSettings()" />
+        <input type="text" id="dialog-limit" ng-model="settings.dialog.limit" ng-change="updateSettings()"/>
     </div>
 
     <br/>
     <h4>WYSIWYG Editor</h4>
+
     <p class="help-block">WYSIWYG editor helps you write rich templates.</p>
+
     <div class="checkbox">
         <label for="editor-enabled">Enable WYSIWYG Editor</label>
-        <input type="checkbox" id="editor-enabled" ng-model="settings.editor.enabled"  ng-change="updateSettings()" />
+        <input type="checkbox" id="editor-enabled" ng-model="settings.editor.enabled" ng-change="updateSettings()"/>
     </div>
 
     <!--
@@ -87,16 +98,20 @@
     <br/>
 
     <h4>Blacklist</h4>
+
     <p class="help-block">
         List of websites where Gorgias will not be active.
     </p>
+
     <div class="blacklist-list">
 
         <div class="blacklist-item" ng-repeat="item in settings.blacklist track by $index">
 
-            <input ng-model="settings.blacklist[$index]" placeholder="www.example.com" class="blacklist-item-url" ng-blur="CheckBlacklistItem($index)">
+            <input ng-model="settings.blacklist[$index]" placeholder="www.example.com" class="blacklist-item-url"
+                   ng-blur="CheckBlacklistItem($index)">
 
-            <button type="button" class="blacklist-item-remove" title="Remove website from blacklist" ng-click="RemoveBlacklistItem($index)">
+            <button type="button" class="blacklist-item-remove" title="Remove website from blacklist"
+                    ng-click="RemoveBlacklistItem($index)">
                 <span class="glyphicon glyphicon-remove"></span>
             </button>
         </div>
@@ -115,10 +130,12 @@
     <br/>
 
     <h4>Gmail™ <i class="fa fa-flask" title="Experimental features"></i></h4>
+
     <p class="help-block">Gmail™ specific settings</p>
+
     <div class="checkbox">
         <label for="sidebar-enabled">Enable Gmail™ Custom Sidebar</label>
-        <input type="checkbox" id="sidebar-enabled" ng-model="settings.sidebar.enabled"  ng-change="updateSettings()" />
+        <input type="checkbox" id="sidebar-enabled" ng-model="settings.sidebar.enabled" ng-change="updateSettings()"/>
     </div>
     <div class="form-group" ng-show="settings.sidebar.enabled">
         <label for="sidebar-url" data-toggle="tooltip" data-placement="bottom"
@@ -127,9 +144,18 @@
             <span class="glyphicon glyphicon-question-sign"></span>
         </label>
         <br/>
-        <p class="help-block">You can display info about your customers in Gmail™ from your CRM by setting the URL below. </p>
-        <input type="text" id="sidebar-url" ng-model="settings.sidebar.url" size="50" placeholder="http://your-crm.com/search={&#8203;{to.0.email}}"/>
+
+        <p class="help-block">You can display info about your customers in Gmail™ from your CRM by setting the URL
+            below. </p>
+        <input type="text" id="sidebar-url" ng-model="settings.sidebar.url" size="50"
+               placeholder="http://your-crm.com/search={&#8203;{to.0.email}}"/>
         <button class="btn btn-default" ng-click="updateSettings()">Set URL</button>
+    </div>
+
+    <div class="checkbox" ng-if="profile.user">
+        <label for="suggestions-enabled">Enable Smart Suggestions</label>
+        <input type="checkbox" id="suggestions-enabled" ng-model="settings.suggestions.enabled"
+               ng-change="updateSettings()"/>
     </div>
 
     <br/>
@@ -142,7 +168,7 @@
             <span class="glyphicon glyphicon-question-sign"></span>
         </label>
 
-        <input type="checkbox" id="sendStats" ng-model="settings.stats.enabled"  ng-change="updateSettings()"  />
+        <input type="checkbox" id="sendStats" ng-model="settings.stats.enabled" ng-change="updateSettings()"/>
 
     </div>
     <div class="form-group">

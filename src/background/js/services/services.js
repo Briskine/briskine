@@ -35,6 +35,41 @@ gApp.service('StatsService', function ($resource, SettingsService) {
     self.sync();
 });
 
+// Handle stats (publish stats on the remote server)
+gApp.service('SuggestionService', function ($q, $resource, SettingsService) {
+    var self = this;
+
+    SettingsService.get('apiBaseURL').then(function (apiBaseURL) {
+        self.suggestRes = $resource(apiBaseURL + 'quicktexts/suggest/');
+    });
+
+    // Given a body of text suggest a template
+    self.suggest = function(query) {
+        var deferred = $q.defer();
+        SettingsService.get('settings').then(function(settings){
+            if (!settings.suggestions.enabled){
+                deferred.resolve([]);
+            }
+
+            var suggest = new self.suggestRes();
+
+            suggest.body = query.body;
+            suggest.to = query.to;
+            suggest.cc = query.cc;
+            suggest.bcc = query.bcc;
+            suggest.from = query.from;
+            suggest.subject = query.subject;
+
+            suggest.$save(function(data){
+                deferred.resolve(data.templates);
+            });
+        });
+
+        return deferred.promise;
+    };
+});
+
+
 // Settings
 gApp.service('SettingsService', function ($q) {
     var self = this;

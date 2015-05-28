@@ -103,6 +103,11 @@ if (chrome.runtime) {
                 }
                 mixpanel.track(request.event, request.data);
             }
+            if (request.request === 'suggestion') {
+                injector.get('SuggestionService').suggest(request.data).then(function(res){
+                    sendResponse(res);
+                });
+            }
             return true;
         });
     }
