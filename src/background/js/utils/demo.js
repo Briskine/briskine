@@ -19,7 +19,7 @@ var gorgiasDemo = (function () {
         {
             shortcut: 'h',
             title: 'Say Hello',
-            body: "Hello <span class='h'>John</span>,<br><br><br>"
+            body: "Hello <span class='h'>Gorgias Team</span>,<br><br><br>"
         },
         /*{
             shortcut: 'nice',
@@ -28,13 +28,13 @@ var gorgiasDemo = (function () {
         },*/
         {
             shortcut: 'use',
-            title: 'How to use Gorgias',
-            body: 'There are two ways to insert templates, you can:<br>- Type its shortcut and press TAB<br>- Click on the "g" button and select it<br><br>'
+            title: 'Glad to use Gorgias',
+            body: "I'm glad to use Gorgias for the first time. Keyboard completion is great!"
         },
         {
             shortcut: 'kr',
             title: 'Kind regards,',
-            body: 'Kind Regards, <br>Jane'
+            body: 'Kind Regards, <br>Me'
         }
     ];
 
