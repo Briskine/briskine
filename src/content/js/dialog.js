@@ -379,7 +379,6 @@ App.autocomplete.dialog = {
         $(App.autocomplete.dialog.searchSelector).focus();
     },
     setDialogPosition: function (positionNode) {
-
         if (!App.autocomplete.dialog.isActive) {
             return;
         }
@@ -408,7 +407,7 @@ App.autocomplete.dialog = {
 
         if (positionNode && positionNode.tagName) {
 
-            metrics = JSON.parse(JSON.stringify(positionNode.getBoundingClientRect()));
+            metrics = positionNode.getBoundingClientRect();
 
             leftPos -= dialogMetrics.width;
 
