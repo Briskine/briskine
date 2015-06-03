@@ -29,7 +29,6 @@ App.autocomplete.dialog = {
     qaPositionIntervals: [],
 
     completion: function (e, params) {
-
         if (typeof params !== 'object') {
             params = {};
         }
@@ -45,6 +44,7 @@ App.autocomplete.dialog = {
         }
 
         var element = params.focusNode || e.target;
+        params.element = element;
 
         // if it's not an editable element
         // don't trigger anything
@@ -221,7 +221,7 @@ App.autocomplete.dialog = {
         });
 
     },
-    bindKeyboardEvents: function () {
+    bindKeyboardEvents: function (doc) {
         Mousetrap.bindGlobal('up', function (e) {
             if (App.autocomplete.dialog.isActive) {
                 App.autocomplete.dialog.changeSelection('prev');
@@ -239,8 +239,8 @@ App.autocomplete.dialog = {
 
                 // restore the previous caret position
                 // since we didn't select any quicktext
-                var selection = window.getSelection();
-                var caretRange = document.createRange();
+                var selection = doc.getSelection();
+                var caretRange = doc.createRange();
                 caretRange.setStartAfter(App.autocomplete.dialog.focusNode);
                 caretRange.collapse(true);
                 selection.removeAllRanges();
@@ -359,9 +359,10 @@ App.autocomplete.dialog = {
         params = params || {};
 
         // get current focused element - the editor
-        App.autocomplete.dialog.editor = document.activeElement;
+        var doc = params.element.ownerDocument;
+        App.autocomplete.dialog.editor = doc.activeElement;
 
-        var selection = window.getSelection();
+        var selection = doc.getSelection();
         var focusNode = selection.focusNode;
         App.autocomplete.dialog.focusNode = focusNode;
 

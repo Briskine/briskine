@@ -46,6 +46,8 @@ App.autocomplete.isContentEditable = function(element) {
 };
 
 App.autocomplete.getSelectedWord = function (params) {
+    var doc = params.element.ownerDocument;
+
     var word = {
         start: 0,
         end: 0,
@@ -53,7 +55,7 @@ App.autocomplete.getSelectedWord = function (params) {
     };
 
     var beforeSelection = "";
-    var selection = window.getSelection();
+    var selection = doc.getSelection();
 
     if (App.autocomplete.isContentEditable(params.element)) {
         switch (selection.focusNode.nodeType) {
@@ -83,6 +85,7 @@ App.autocomplete.getSelectedWord = function (params) {
 };
 
 App.autocomplete.getCursorPosition = function (element) {
+    var doc = element.ownerDocument;
 
     if(!element) {
         return false;
@@ -122,7 +125,7 @@ App.autocomplete.getCursorPosition = function (element) {
         // Insert a virtual cursor, find its position
         // http://stackoverflow.com/questions/16580841/insert-text-at-caret-in-contenteditable-div
 
-        var selection = window.getSelection();
+        var selection = doc.getSelection();
         // get the element that we are focused + plus the offset
         // Read more about this here: https://developer.mozilla.org/en-US/docs/Web/API/Selection.focusNode
         position.element = selection.focusNode;
@@ -219,6 +222,8 @@ App.autocomplete.getCursorPosition = function (element) {
 //App.autocomplete.replaceWith = function (quicktext, event) {
 App.autocomplete.replaceWith = function (params) {
 
+    var doc = params.element.ownerDocument;
+
     var word = App.autocomplete.cursorPosition.word;
     var replacement = '';
 
@@ -234,8 +239,8 @@ App.autocomplete.replaceWith = function (params) {
 
             if(App.autocomplete.isContentEditable(params.element)) {
 
-                var selection = window.getSelection();
-                var range = document.createRange();
+                var selection = doc.getSelection();
+                var range = doc.createRange();
 
                 // markdown requires two spaces and \n to for a line break
                 // so we use this to also turn any \n into a line break
@@ -254,6 +259,9 @@ App.autocomplete.replaceWith = function (params) {
                 // the type of node
                 // https://developer.mozilla.org/en-US/docs/Web/API/range.setStart
                 var focusNode = params.focusNode;
+                if (focusNode === null) {
+                    focusNode = selection.focusNode;
+                }
 
 
                 // we need to have a text node in the end
@@ -262,7 +270,7 @@ App.autocomplete.replaceWith = function (params) {
                         focusNode = focusNode.childNodes[selection.focusOffset]; // select a text node
                     } else {
                         // create an empty text node and attach it before the node
-                        var tnode = document.createTextNode('');
+                        var tnode = doc.createTextNode('');
                         focusNode.parentNode.insertBefore(tnode, focusNode);
                         focusNode = tnode;
                     }
@@ -289,7 +297,7 @@ App.autocomplete.replaceWith = function (params) {
 
                 range.insertNode(qtNode);
 
-                var caretRange = document.createRange();
+                var caretRange = doc.createRange();
                 caretRange.setStartAfter(lastQtChild);
                 caretRange.collapse(true);
                 selection.removeAllRanges();

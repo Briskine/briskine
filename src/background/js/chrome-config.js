@@ -10,7 +10,8 @@ if (chrome.runtime) {
         '*://*.mail.live.com/*',
         '*://*.linkedin.com/*',
         '*://*.facebook.com/*',
-        '*://*.fastmail.com/*'
+        '*://*.fastmail.com/*',
+        '*://*.uservoice.com/*'
     ];
 
     // Called when the url of a tab changes.
@@ -38,6 +39,8 @@ if (chrome.runtime) {
     chrome.browserAction.onClicked.addListener(function (){
         window.open(chrome.extension.getURL('/pages/bg.html') + '#/list', 'Options');
     });
+
+    chrome.runtime.setUninstallURL("https://gorgias.io/uninstall");
 
     // Called after installation: https://developer.chrome.com/extensions/runtime.html#event-onInstalled
     chrome.runtime.onInstalled.addListener(function (details) {

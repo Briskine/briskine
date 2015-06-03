@@ -6,7 +6,8 @@ App.autocomplete.keyboard = {
     completion: function (e) {
 
         var element = e.target;
-        var selection = window.getSelection();
+        var doc = element.ownerDocument;
+        var selection = doc.getSelection();
         var focusNode = selection.focusNode;
         // if it's not an editable element
         // don't trigger anything

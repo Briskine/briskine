@@ -116,9 +116,9 @@ var App = {
                 callback(response);
             });
         },
-        fetchSettings: function (callback) {
+        fetchSettings: function (callback, doc, disablePlugins) {
             Settings.get("settings", "", function (settings) {
-                callback(settings);
+                callback(settings, doc, disablePlugins);
             });
         }
     }
@@ -217,7 +217,15 @@ Raven.config('https://af2f5e9fb2744c359c19d08c8319d9c5@app.getsentry.com/30379',
     collectWindowErrors: true
 }).install();
 
-App.init = function (settings) {
+App.init = function (settings, doc) {
+    var body = $(doc).find('body');
+
+    if (!body.length || body.hasClass('gorgias-loaded')) {
+        return;
+    }
+    // mark the doc that extension has been loaded
+    body.addClass('gorgias-loaded');
+
     var currentUrl = window.location.href;
 
     // Check if we should use editor markup
@@ -247,9 +255,10 @@ App.init = function (settings) {
         return false;
     }
 
-    document.addEventListener("blur", App.onBlur, true);
-    document.addEventListener("focus", App.onFocus, true);
-    document.addEventListener("scroll", App.onScroll, true);
+
+    doc.addEventListener("blur", App.onBlur, true);
+    doc.addEventListener("focus", App.onFocus, true);
+    doc.addEventListener("scroll", App.onScroll, true);
 
     // use custom keyboard shortcuts
     if (settings.keyboard.enabled) {
@@ -266,12 +275,12 @@ App.init = function (settings) {
 
         // create dialog once and then reuse the same element
         App.autocomplete.dialog.create();
-        App.autocomplete.dialog.bindKeyboardEvents();
+        App.autocomplete.dialog.bindKeyboardEvents(doc);
     }
 
     var isGmailUIFrame = function () {
         try {
-            return document.getElementsByClassName('aic').length > 0;
+            return doc.getElementsByClassName('aic').length > 0;
         } catch (e) {
             return false;
         }
@@ -307,10 +316,15 @@ App.init = function (settings) {
     pollSidebar(10000);
     pollSidebar(30000);
 
-
     App.activatePlugins();
 };
 
 $(function () {
-    App.settings.fetchSettings(App.init);
+    //var isLocal = (window.location != window.parent.location) ? true : false;
+    //if (isLocal) { // don't load for remote iframes
+    //    return;
+    //}
+
+    //console.log("Loaded Gorgias in", window.location.href);
+    App.settings.fetchSettings(App.init, window.document);
 });
