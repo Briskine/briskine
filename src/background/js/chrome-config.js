@@ -40,7 +40,9 @@ if (chrome.runtime) {
         window.open(chrome.extension.getURL('/pages/bg.html') + '#/list', 'Options');
     });
 
-    chrome.runtime.setUninstallURL("https://gorgias.io/uninstall");
+    if (typeof chrome.runtime.setUninstallURL === 'function'){
+        chrome.runtime.setUninstallURL("https://gorgias.io/uninstall");
+    }
 
     // Called after installation: https://developer.chrome.com/extensions/runtime.html#event-onInstalled
     chrome.runtime.onInstalled.addListener(function (details) {
