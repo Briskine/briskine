@@ -49,13 +49,9 @@ describe('Content script', function () {
             return browser.driver.isElementPresent(by.css('.quicktext-modal'));
         });
 
-        setValue(element(by.model('selectedTemplate.tags')), config.quicktextNew.tags);
-
         setValue(element(by.model('selectedTemplate.title')), config.quicktextNew.title);
 
         setValue(element(by.model('selectedTemplate.body')), config.quicktextNew.body);
-
-        setValue(element(by.model('selectedTemplate.subject')), config.quicktextNew.subject);
 
         setValue(element(by.model('selectedTemplate.shortcut')), config.quicktextNew.shortcut);
 

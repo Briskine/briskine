@@ -15,7 +15,9 @@ src/backgrount/js/environment.js
 
 # chrome extension
 ext/
+tmp/
 *.pem
 *.pub
 *.crx
 *.nex
+
