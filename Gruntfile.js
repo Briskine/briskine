@@ -245,10 +245,12 @@ module.exports = function (grunt) {
         },
         crx: {
             extension: {
-                privateKey: 'ext.pem',
-                filename: 'gorgias-chrome.crx',
-                src: '<%= config.dist %>',
-                dest: '<%= config.dist %>'
+                src: '<%= config.dist %>/**',
+                dest: '<%= config.dist %>',
+                options: {
+                    privateKey: 'ext.pem',
+                    filename: 'gorgias-chrome.crx',
+                }
             }
         },
         protractor: {
