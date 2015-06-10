@@ -327,4 +327,12 @@ $(function () {
 
     //console.log("Loaded Gorgias in", window.location.href);
     App.settings.fetchSettings(App.init, window.document);
+
+    // add font-awesome
+    var fa = document.createElement('style');
+    fa.type = 'text/css';
+    fa.textContent = '@font-face { font-family: FontAwesome; src: url("' +
+        chrome.extension.getURL('background/fonts/fontawesome-webfont.woff?v=4.0.3') +
+        '"); }';
+    document.head.appendChild(fa);
 });

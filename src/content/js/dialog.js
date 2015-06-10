@@ -91,11 +91,11 @@ App.autocomplete.dialog = {
         dialog.parents('.qz').css('z-index', 'auto');
 
         // Handle mouse hover and click
-        dialog.on('mouseover mousedown', 'li.qt-item', function (e) {
+        dialog.on('mouseover mousedown', '.qt-item', function (e) {
             e.preventDefault();
             e.stopPropagation();
 
-            App.autocomplete.dialog.selectItem($(this).index());
+            App.autocomplete.dialog.selectItem($(this).index('.qt-item'));
             if (e.type === 'mousedown') {
                 App.autocomplete.dialog.selectActive();
                 //App.autocomplete.dialog.close();
@@ -453,11 +453,9 @@ App.autocomplete.dialog = {
     selectItem: function (index) {
         if (App.autocomplete.dialog.isActive && !App.autocomplete.dialog.isEmpty) {
             var content = $(this.contentSelector);
-            var $element = content.children().eq(index);
+            var $element = content.children('.qt-item').eq(index);
 
-            content.children()
-                .removeClass('active')
-                .eq(index);
+            content.children('.qt-item').removeClass('active');
 
             $element.addClass('active');
         }
@@ -491,14 +489,14 @@ App.autocomplete.dialog = {
     changeSelection: function (direction) {
         var index_diff = direction === 'prev' ? -1 : 1,
             content = $(this.contentSelector),
-            elements_count = content.children().length,
-            index_active = content.find('.active').index(),
+            elements_count = content.children('.qt-item').length,
+            index_active = content.find('.active').index('.qt-item'),
             index_new = Math.max(0, Math.min(elements_count - 1, index_active + index_diff));
 
         App.autocomplete.dialog.selectItem(index_new);
 
         // scroll the active element into view
-        var $element = content.children().eq(index_new);
+        var $element = content.children('.qt-item').eq(index_new);
         $element.get(0).scrollIntoView();
     },
     // remove dropdown and cleanup
@@ -656,45 +654,22 @@ App.autocomplete.dialog = {
     }
 };
 
-App.autocomplete.dialog.template = '' +
-'<div class="qt-dropdown">' +
-'<input type="search" class="qt-dropdown-search" value="" placeholder="Search templates...">' +
-'<ul class="qt-dropdown-content"></ul>' +
-'<div class="g-dropdown-toolbar">' +
-'<button class="g-new-template">New Template</button>' +
-'<a href="javascript:void(0)" class="g-hide-button" title="Hide Quick Access button. The dialog will still be accessible using CTRL+SPACE.">Hide button</a>' +
-'</div>' +
-'</div>' +
-'';
+// fetch template content from the extension
+var contentUrl = chrome.extension.getURL("pages/content.html");
+$.get(contentUrl, function(data){
+    var vars = [
+        'App.autocomplete.dialog.qaBtnTemplate',
+        'App.autocomplete.dialog.qaBtnTooltip',
+        'App.autocomplete.dialog.template',
+        'App.autocomplete.dialog.liTemplate'
+    ];
 
-// quick access button for the dialog
-App.autocomplete.dialog.qaBtnTemplate = '' +
-'<button class="gorgias-qa-btn" />' +
-'';
-
-// quick access button tooltip
-App.autocomplete.dialog.qaBtnTooltip = '' +
-'<div class="gorgias-qa-tooltip">' +
-'Search templates (CTRL+Space)' +
-'</div>' +
-'';
-
-App.autocomplete.dialog.liTemplate = '' +
-'{{#if elements.length}}' +
-'{{#each elements}}' +
-'<li class="qt-item{{#if this.score }} suggested{{/if}}" data-id="{{id}}" ' +
-'title="{{#if this.score }}Match score: {{{this.score}}}\n{{/if}}Title: {{{originalTitle}}}{{#if this.tags}}\nTags: {{{this.tags}}}{{/if}}\n\n{{{originalBody}}}">' +
-'<span class="qt-title">{{{title}}}</span>' +
-'{{#if this.shortcut}}' +
-'<span class="qt-shortcut">{{{this.shortcut}}}</span>' +
-'{{/if}}' +
-'<span class="qt-body">{{{body}}}</span>' +
-'</li>' +
-'{{/each}}' +
-'{{else}}' +
-'<li class="qt-blank-state">' +
-'No templates found.' +
-'</li>' +
-'{{/if}}' +
-'';
+    for (var i in vars) {
+        var v = vars[i];
+        var start = data.indexOf(v);
+        var end = data.lastIndexOf(v);
+        // todo(@xarg): sorry the barbarian splitting, could have been done much better.
+        App.autocomplete.dialog[v.split('.').slice(-1)] = data.slice(start + v.length + 3, end-4);
+    }
+}, "html");
 

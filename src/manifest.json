@@ -37,6 +37,10 @@
             "all_frames": true
         }
     ],
+    "web_accessible_resources": [
+        "pages/content.html",
+        "background/fonts/*"
+    ],
     "browser_action": {
         "default_title": "Gorgias",
         "default_icon": {
