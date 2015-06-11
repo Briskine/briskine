@@ -268,6 +268,11 @@ App.autocomplete.dialog = {
                 }
                 if (found) {
                     break;
+                } else {
+                    for (var j in App.autocomplete.dialog.suggestedTemplates) {
+                        var s = App.autocomplete.dialog.suggestedTemplates[j];
+                        App.autocomplete.quicktexts.splice(0, 1, s);
+                    }
                 }
             }
         }
