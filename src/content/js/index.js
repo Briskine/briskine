@@ -10,6 +10,7 @@ var App = {
         lastFilterRun: 0
     },
     editor_enabled: true,
+    suggestions_enabled: false,
     autocomplete: {},
     settings: {
         // Get template filtered out by shortcut
@@ -228,6 +229,7 @@ App.init = function (settings, doc) {
 
     var currentUrl = window.location.href;
 
+    App.settings.suggestions_enabled = settings.suggestions.enabled;
     // Check if we should use editor markup
     App.settings.editor_enabled = settings.editor.enabled;
 
@@ -288,8 +290,8 @@ App.init = function (settings, doc) {
 
     var loadSidebar = function () {
         if (isGmailUIFrame()) {
-            console.log("Loading sidebar");
             if (settings.sidebar && settings.sidebar.enabled && settings.sidebar.url) {
+                console.log("Loading sidebar");
                 App.sidebar.enabled = true;
                 if (window.sidebarTimer) {
                     window.clearInterval(window.sidebarTimer);
@@ -305,9 +307,12 @@ App.init = function (settings, doc) {
     loadSidebar();
 
     var pollSidebar = function (timeout) {
+        if (settings.sidebar.enabled && settings.sidebar.url){
+            return;
+        }
         window.setTimeout(function () {
             if (!App.sidebar.enabled && isGmailUIFrame()) {
-                console.log("Another attempt at loading sidebar");
+                console.log("Attempt at loading sidebar");
                 loadSidebar();
             }
         }, timeout);

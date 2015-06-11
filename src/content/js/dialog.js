@@ -25,8 +25,9 @@ App.autocomplete.dialog = {
     searchSelector: ".qt-dropdown-search",
     qaBtnSelector: '.gorgias-qa-btn',
     newTemplateSelector: ".g-new-template",
-    hideButtonSelector: ".g-hide-button",
     qaPositionIntervals: [],
+    suggestedTemplates: [],
+    suggestionHidden: false,
 
     completion: function (e, params) {
         if (typeof params !== 'object') {
@@ -65,7 +66,6 @@ App.autocomplete.dialog = {
             params.quicktexts = App.autocomplete.quicktexts;
 
             App.autocomplete.dialog.populate(params);
-            App.autocomplete.dialog.suggestion(params);
 
             chrome.runtime.sendMessage({
                 'request': 'track',
@@ -78,7 +78,6 @@ App.autocomplete.dialog = {
 
     },
     create: function () {
-
         // Create only once in the root of the document
         var container = $('body');
 
@@ -106,18 +105,6 @@ App.autocomplete.dialog = {
             chrome.runtime.sendMessage({'request': 'new'});
         });
 
-        $(App.autocomplete.dialog.hideButtonSelector).on('mousedown', function () {
-            Settings.get('settings', {}, function (settings) {
-                if (settings.qaBtn && settings.qaBtn.enabled) {
-                    settings.qaBtn.enabled = false;
-                    chrome.runtime.sendMessage({'request': 'track', 'event': 'Hide Quick Access Button', 'data': {}});
-                }
-
-                Settings.set('settings', settings, function () {
-                });
-            });
-        });
-
         dialog.on('keyup', this.searchSelector, function (e) {
             // ignore modifier keys because they manipulate
             if (_.contains([KEY_ENTER, KEY_UP, KEY_DOWN], e.keyCode)) {
@@ -125,20 +112,19 @@ App.autocomplete.dialog = {
             }
 
             App.autocomplete.cursorPosition.word.text = $(this).val();
-            if (App.autocomplete.cursorPosition.word.text) {
-                App.settings.getFiltered(App.autocomplete.cursorPosition.word.text, App.autocomplete.dialog.RESULTS_LIMIT, function (quicktexts) {
+            App.autocomplete.dialog.suggestionHidden = App.autocomplete.cursorPosition.word.text ? true : false;
 
-                    App.autocomplete.quicktexts = quicktexts;
-                    App.autocomplete.dialog.populate({
-                        quicktexts: App.autocomplete.quicktexts
-                    });
+            App.settings.getFiltered(App.autocomplete.cursorPosition.word.text, App.autocomplete.dialog.RESULTS_LIMIT, function (quicktexts) {
+
+                App.autocomplete.quicktexts = quicktexts;
+                App.autocomplete.dialog.populate({
+                    quicktexts: App.autocomplete.quicktexts
                 });
-            }
+            });
         });
 
     },
     createQaBtn: function () {
-
         var container = $('body');
 
         var instance = this;
@@ -166,6 +152,9 @@ App.autocomplete.dialog = {
             // eg. gmail when you have multiple addresses configured,
             // and the from fields shows/hides on focus.
             showQaBtnTimer = setTimeout(function () {
+                // Start fetching suggestions
+                App.autocomplete.dialog.fetchSuggestions(e.target);
+
                 instance.showQaBtn(e);
             }, 350);
 
@@ -220,6 +209,7 @@ App.autocomplete.dialog = {
             instance.qaTooltip.hide();
         });
 
+
     },
     bindKeyboardEvents: function (doc) {
         Mousetrap.bindGlobal('up', function (e) {
@@ -261,13 +251,39 @@ App.autocomplete.dialog = {
 
         App.autocomplete.quicktexts = params.quicktexts;
 
+        if (App.autocomplete.dialog.suggestedTemplates.length && !App.autocomplete.dialog.suggestionHidden) {
+
+            var found = false;
+            for (var i in App.autocomplete.quicktexts) {
+                var t = App.autocomplete.quicktexts[i];
+                for (var j in App.autocomplete.dialog.suggestedTemplates) {
+                    var s = App.autocomplete.dialog.suggestedTemplates[j];
+                    if (t.id === s.id) {
+                        App.autocomplete.quicktexts.splice(i, 1);
+                        // insert at the beginning
+                        App.autocomplete.quicktexts.splice(0, 1, s);
+                        found = true;
+                        break;
+                    }
+                }
+                if (found) {
+                    break;
+                }
+            }
+        }
+
         // clone the elements
         // so we can safely highlight the matched text
         // without breaking the generated handlebars markup
         var clonedElements = jQuery.extend(true, [], App.autocomplete.quicktexts);
 
         // highlight found string in element title, body and shortcut
-        var text = App.autocomplete.cursorPosition.word.text.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
+        var word_text = '';
+        var text = '';
+        if (App.autocomplete.cursorPosition && App.autocomplete.cursorPosition.word) {
+            word_text = App.autocomplete.cursorPosition.word.text;
+            text = word_text.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
+        }
         var searchRe = new RegExp(text, 'gi');
 
         var highlightMatch = function (match) {
@@ -285,7 +301,7 @@ App.autocomplete.dialog = {
             elem.originalBody = stripHtml(elem.body);
 
             // only match if we have a search string
-            if (App.autocomplete.cursorPosition.word.text) {
+            if (word_text) {
                 elem.title = elem.title.replace(searchRe, highlightMatch);
                 elem.body = elem.originalBody.replace(searchRe, highlightMatch);
                 elem.shortcut = elem.shortcut.replace(searchRe, highlightMatch);
@@ -310,9 +326,18 @@ App.autocomplete.dialog = {
         App.autocomplete.dialog.selectItem(0);
 
     },
-    suggestion: function (params) {
+    fetchSuggestions: function (target) {
+        // reset suggestions
+        App.autocomplete.dialog.suggestedTemplates = [];
+        $('.gorgias-qa-btn-badge').css('display', 'none');
+
+        if (!App.settings.suggestions_enabled) {
+            return;
+        }
+
+
         // Awesome selectors right?
-        var body_text = $(App.autocomplete.dialog.editor).closest('.nH .h7').find('.ii.gt:visible').text().trim();
+        var body_text = $(target).closest('.nH .h7').find('.ii.gt:visible').text().trim();
         if (body_text) {
             chrome.runtime.sendMessage({
                 'request': 'suggestion',
@@ -335,21 +360,18 @@ App.autocomplete.dialog = {
                         template_id = remote_id;
                     }
                 }
-                TemplateStorage.get(null, function(storedTemplates){
-                    var suggestedTemplate = null;
+
+                TemplateStorage.get(null, function (storedTemplates) {
                     for (var tid in storedTemplates) {
                         var t = storedTemplates[tid];
                         if (t.remote_id === template_id) {
-                            suggestedTemplate = t;
+                            $('.gorgias-qa-btn-badge').css('display', 'block');
+
+                            t.score = templates[template_id];
+
+                            App.autocomplete.dialog.suggestedTemplates.push(t);
                             break;
                         }
-                    }
-                    if (suggestedTemplate) {
-                        //App.autocomplete.dialog.insertTemplate(suggestedTemplate);
-                        suggestedTemplate.score = templates[template_id];
-                        params.quicktexts.splice(tid, 1);
-                        params.quicktexts.splice(0, 0, suggestedTemplate);
-                        App.autocomplete.dialog.populate(params);
                     }
                 });
             });
@@ -656,7 +678,7 @@ App.autocomplete.dialog = {
 
 // fetch template content from the extension
 var contentUrl = chrome.extension.getURL("pages/content.html");
-$.get(contentUrl, function(data){
+$.get(contentUrl, function (data) {
     var vars = [
         'App.autocomplete.dialog.qaBtnTemplate',
         'App.autocomplete.dialog.qaBtnTooltip',
@@ -669,7 +691,7 @@ $.get(contentUrl, function(data){
         var start = data.indexOf(v);
         var end = data.lastIndexOf(v);
         // todo(@xarg): sorry the barbarian splitting, could have been done much better.
-        App.autocomplete.dialog[v.split('.').slice(-1)] = data.slice(start + v.length + 3, end-4);
+        App.autocomplete.dialog[v.split('.').slice(-1)] = data.slice(start + v.length + 3, end - 4);
     }
 }, "html");
 

@@ -14,8 +14,6 @@
     </ul>
     <div class="g-dropdown-toolbar">
         <button class="g-new-template">New Template</button>
-        <a href="javascript:void(0)" class="g-hide-button"
-           title="Hide Quick Access button. The dialog will still be accessible using CTRL+SPACE.">Hide button</a>
     </div>
 </div>
 <!--App.autocomplete.dialog.template-->
@@ -30,8 +28,8 @@
 {{/if}}
 {{/if}}
 <li class="qt-item" data-id="{{id}}"
-    title="{{#if this.score }}Match score: {{{this.score}}}{{/if}}
-Title: {{{originalTitle}}}{{#if this.tags}}
+    title="{{#if this.score }}Match score: {{{this.score}}}
+{{/if}}Title: {{{originalTitle}}}{{#if this.tags }}
 Tags: {{{this.tags}}}{{/if}}
 
 {{{originalBody}}}">
