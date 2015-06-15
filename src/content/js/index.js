@@ -10,9 +10,10 @@ var App = {
         lastFilterRun: 0
     },
     editor_enabled: true,
-    suggestions_enabled: false,
     autocomplete: {},
     settings: {
+        suggestions_enabled: false,
+
         // Get template filtered out by shortcut
         getQuicktextsShortcut: function (text, callback) {
             TemplateStorage.get(null, function (templates) {
@@ -120,6 +121,11 @@ var App = {
         fetchSettings: function (callback, doc, disablePlugins) {
             Settings.get("settings", "", function (settings) {
                 callback(settings, doc, disablePlugins);
+            });
+        },
+        isLoggedIn: function (callback) {
+            Settings.get("isLoggedIn", "", function (isLoggedIn) {
+                callback(isLoggedIn);
             });
         }
     }

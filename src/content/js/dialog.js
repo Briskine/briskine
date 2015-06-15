@@ -269,9 +269,8 @@ App.autocomplete.dialog = {
                 if (found) {
                     break;
                 } else {
-                    for (var j in App.autocomplete.dialog.suggestedTemplates) {
-                        var s = App.autocomplete.dialog.suggestedTemplates[j];
-                        App.autocomplete.quicktexts.splice(0, 1, s);
+                    for (var k in App.autocomplete.dialog.suggestedTemplates) {
+                        App.autocomplete.quicktexts.splice(0, 1, App.autocomplete.dialog.suggestedTemplates[k]);
                     }
                 }
             }
@@ -332,55 +331,55 @@ App.autocomplete.dialog = {
 
     },
     fetchSuggestions: function (target) {
-        // reset suggestions
-        App.autocomplete.dialog.suggestedTemplates = [];
-        $('.gorgias-qa-btn-badge').css('display', 'none');
+        App.settings.isLoggedIn(function (isLoggedIn) {
+            App.autocomplete.dialog.suggestedTemplates = [];
+            $('.gorgias-qa-btn-badge').css('display', 'none');
 
-        if (!App.settings.suggestions_enabled) {
-            return;
-        }
+            if (!(isLoggedIn && App.settings.suggestions_enabled)) {
+                return;
+            }
 
-
-        // Awesome selectors right?
-        var body_text = $(target).closest('.nH .h7').find('.ii.gt:visible').text().trim();
-        if (body_text) {
-            chrome.runtime.sendMessage({
-                'request': 'suggestion',
-                'data': {
-                    'subject': $('.hP').text(),
-                    'to': '',
-                    'cc': '',
-                    'bcc': '',
-                    'from': '',
-                    'body': body_text
-                }
-            }, function (templates) {
-                if (!_.size(templates)) {
-                    return;
-                }
-
-                var template_id = _.keys(templates)[0];
-                for (var remote_id in templates) {
-                    if (templates[remote_id] > templates[template_id]) {
-                        template_id = remote_id;
+            // Awesome selectors right?
+            var body_text = $(target).closest('.nH .h7').find('.ii.gt:visible').text().trim();
+            if (body_text) {
+                chrome.runtime.sendMessage({
+                    'request': 'suggestion',
+                    'data': {
+                        'subject': $('.hP').text(),
+                        'to': '',
+                        'cc': '',
+                        'bcc': '',
+                        'from': '',
+                        'body': body_text
                     }
-                }
+                }, function (templates) {
+                    if (!_.size(templates)) {
+                        return;
+                    }
 
-                TemplateStorage.get(null, function (storedTemplates) {
-                    for (var tid in storedTemplates) {
-                        var t = storedTemplates[tid];
-                        if (t.remote_id === template_id) {
-                            $('.gorgias-qa-btn-badge').css('display', 'block');
-
-                            t.score = templates[template_id];
-
-                            App.autocomplete.dialog.suggestedTemplates.push(t);
-                            break;
+                    var template_id = _.keys(templates)[0];
+                    for (var remote_id in templates) {
+                        if (templates[remote_id] > templates[template_id]) {
+                            template_id = remote_id;
                         }
                     }
+
+                    TemplateStorage.get(null, function (storedTemplates) {
+                        for (var tid in storedTemplates) {
+                            var t = storedTemplates[tid];
+                            if (t.remote_id === template_id) {
+                                $('.gorgias-qa-btn-badge').css('display', 'block');
+
+                                t.score = templates[template_id];
+
+                                App.autocomplete.dialog.suggestedTemplates.push(t);
+                                break;
+                            }
+                        }
+                    });
                 });
-            });
-        }
+            }
+        });
     },
     show: function (params) {
         params = params || {};
