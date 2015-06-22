@@ -104,7 +104,7 @@ var App = {
                     });
 
                     if (limit && limit < templates.length) {
-                       templates = templates.splice(0, limit);
+                        templates = templates.splice(0, limit);
                     }
                     callback(templates);
                 });
@@ -313,7 +313,7 @@ App.init = function (settings, doc) {
     loadSidebar();
 
     var pollSidebar = function (timeout) {
-        if (settings.sidebar.enabled && settings.sidebar.url){
+        if (!(settings.sidebar.enabled && settings.sidebar.url)) {
             return;
         }
         window.setTimeout(function () {
@@ -339,11 +339,14 @@ $(function () {
     //console.log("Loaded Gorgias in", window.location.href);
     App.settings.fetchSettings(App.init, window.document);
 
-    // add font-awesome
-    var fa = document.createElement('style');
-    fa.type = 'text/css';
-    fa.textContent = '@font-face { font-family: FontAwesome; src: url("' +
+    // add font-awesome - only on Gmail
+    if (window.location.hostname === 'mail.google.com') {
+        var fa = document.createElement('style');
+        fa.type = 'text/css';
+        fa.textContent = '@font-face { font-family: FontAwesome; src: url("' +
         chrome.extension.getURL('background/fonts/fontawesome-webfont.woff?v=4.0.3') +
         '"); }';
-    document.head.appendChild(fa);
+        document.head.appendChild(fa);
+    }
+
 });
