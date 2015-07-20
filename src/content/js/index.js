@@ -328,6 +328,7 @@ App.init = function (settings, doc) {
     pollSidebar(30000);
 
     App.activatePlugins();
+    App.helpdesk.init();
 };
 
 $(function () {

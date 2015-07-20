@@ -1,0 +1,35 @@
+(function ($) {
+    "use strict";
+
+    if (!$) {
+        return;
+    }
+
+    $(function () {
+        window.gorgiasApplyMacroSuggestion = function(macroId){
+            var view = null;
+            var macro = require('models/macro').create({id: macroId});
+
+            for (var viewId in window.Ember.View.views) {
+                var v = window.Ember.View.views[viewId];
+                if (v.hasOwnProperty('delegate') && v.delegate.id === 'mn_5') {
+                    view = v;
+                    break;
+                }
+            }
+
+            if (view) {
+                view.get("controller").applyMacro(macro);
+                Em.run.next(view, function () {
+                    this.set("value", this.delegate.defaultValue)
+                });
+            }
+
+        };
+        window.setInterval(function(){
+            $('[data-toggle=tooltip]').tooltip();
+        }, 1000);
+    });
+}(window.jQuery));
+
+

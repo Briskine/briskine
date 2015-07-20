@@ -66,6 +66,7 @@ module.exports = function (grunt) {
                 'content/js/dialog.js',
                 'content/js/sidebar.js',
                 'content/js/events.js',
+                'content/js/helpdesk.js',
 
                 'content/js/plugins/gmail.js',
                 'content/js/plugins/yahoo.js',

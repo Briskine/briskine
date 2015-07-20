@@ -39,6 +39,7 @@
     ],
     "web_accessible_resources": [
         "pages/content.html",
+        "pages/helpdesk/zendesk.js",
         "background/fonts/*"
     ],
     "browser_action": {
