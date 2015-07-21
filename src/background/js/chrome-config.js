@@ -114,6 +114,11 @@ if (chrome.runtime) {
                     sendResponse(res);
                 });
             }
+            if (request.request === 'suggestion-used') {
+                injector.get('SuggestionService').stats(request.data).then(function(res){
+                    sendResponse(res);
+                });
+            }
             return true;
         });
     }

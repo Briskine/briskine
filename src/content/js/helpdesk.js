@@ -21,6 +21,24 @@ App.helpdesk = {
                     document.body.removeChild(script);
                 };
             }
+
+            // forward the message to the
+            window.addEventListener('message', function(event) {
+                if (event.data && event.data.request && event.data.request === 'suggestion-used') {
+                    chrome.runtime.sendMessage({
+                        'request': 'suggestion-used',
+                        'data': {
+                            'agent': {
+                                'host': window.location.host,
+                                'name': $('#face_box .name').text()
+                            },
+                            'url': window.location.href,
+                            'template_id': event.data.template_id
+                        }
+                    });
+                }
+            });
+
             var ticketUrl = "";
             var ticketInterval = setInterval(function () {
                 if (window.location.pathname.indexOf('/agent/tickets/') !== -1) {
@@ -63,6 +81,7 @@ App.helpdesk = {
                                         'host': window.location.host,
                                         'name': $('#face_box .name').text()
                                     },
+                                    'url': window.location.href,
                                     'subject': subject,
                                     'to': '',
                                     'cc': '',

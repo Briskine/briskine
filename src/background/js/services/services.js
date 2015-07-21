@@ -40,7 +40,7 @@ gApp.service('SuggestionService', function ($q, $resource, SettingsService) {
     var self = this;
 
     // Given a body of text suggest a template
-    self.suggest = function(query) {
+    self.suggest = function (query) {
         var deferred = $q.defer();
 
         SettingsService.get('apiBaseURL').then(function (apiBaseURL) {
@@ -51,21 +51,39 @@ gApp.service('SuggestionService', function ($q, $resource, SettingsService) {
 
             var suggestRes = $resource(apiBaseURL + url);
 
-            SettingsService.get('settings').then(function(settings){
-                if (!settings.suggestions.enabled){
+            SettingsService.get('settings').then(function (settings) {
+                if (!settings.suggestions.enabled) {
                     deferred.resolve([]);
                 }
 
                 var suggest = new suggestRes();
                 angular.copy(query, suggest);
 
-                suggest.$save(function(data){
+                suggest.$save(function (data) {
                     deferred.resolve(data.templates);
                 });
             });
         });
 
 
+        return deferred.promise;
+    };
+
+    // Given a body of text suggest a template
+    self.stats = function (data) {
+        var deferred = $q.defer();
+
+        SettingsService.get('apiBaseURL').then(function (apiBaseURL) {
+            var res = $resource(apiBaseURL + 'helpdesk/stats');
+
+            var stat = new res();
+            stat.url = data.url;
+            stat.agent = data.agent;
+            stat.template_id = data.template_id;
+            stat.$save(function() {
+                deferred.resolve();
+            });
+        });
         return deferred.promise;
     };
 });
@@ -88,8 +106,8 @@ gApp.service('SettingsService', function ($q) {
         });
         return deferred.promise;
     };
-    self.reset = function() {
-        for (var k in Settings.defaults){
+    self.reset = function () {
+        for (var k in Settings.defaults) {
             Settings.set(k, Settings.defaults[k], function () {
                 // nothing to do here
             });
@@ -134,7 +152,7 @@ gApp.service('ProfileService', function ($q, SettingsService, md5) {
         return (Math.floor((n / p) * p) / p).toFixed(2) + mag;
     };
 
-    self.words = function(){
+    self.words = function () {
         return SettingsService.get("words", 0);
     };
     //self.savedWords = self.reduceNumbers(self.words);
@@ -155,9 +173,9 @@ gApp.service('ProfileService', function ($q, SettingsService, md5) {
     };
     // average WPM: http://en.wikipedia.org/wiki/Words_per_minute
     self.avgWPM = 25;
-    self.savedTime = function(){
+    self.savedTime = function () {
         var deferred = $q.defer();
-        self.words().then(function(words){
+        self.words().then(function (words) {
             deferred.resolve(self.niceTime(Math.round(words / self.avgWPM)));
         });
         return deferred.promise;

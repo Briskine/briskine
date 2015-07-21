@@ -23,6 +23,12 @@
                 Em.run.next(view, function () {
                     this.set("value", this.delegate.defaultValue)
                 });
+
+                // notify the content-script that a suggestion was used
+                window.postMessage({
+                    'request': 'suggestion-used',
+                    'template_id': macroId
+                }, '*');
             }
 
         };
