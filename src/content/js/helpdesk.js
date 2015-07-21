@@ -50,7 +50,7 @@ App.helpdesk = {
                                 }
                             });
 
-                            if (!subject.length || !body.length) {
+                            if (!subject || !subject.length || !body.length) {
                                 return;
                             }
 
@@ -107,12 +107,12 @@ App.helpdesk = {
                                 }
                                 $('.comment_input .content .options').before(macroContainer);
                             });
-                        }, 100);
+                        }, 200);
                     }
                 } else {
                     ticketUrl = "";
                 }
-            }, 100);
+            }, 200);
         }
     }
 };
