@@ -33,10 +33,20 @@ App.helpdesk = {
                             var subject = '';
                             var body = '';
 
-                            $('.workspace').each(function (i, w) {
-                                if ($(w).css('display') !== 'none') {
-                                    subject = $(w).find('input[name=subject]').val();
-                                    body = $(w).find('.event-container .zd-comment:first').text();
+                            $('.workspace').each(function (i, workspace) {
+                                workspace = $(workspace);
+
+                                if (workspace.css('display') !== 'none') {
+                                    var firstEvent = workspace.find('.event-container .event:first');
+                                    var isAgent = firstEvent.find('.user_photo').hasClass('agent');
+
+                                    // If it's an agent who has the last comment no point in suggesting anything
+                                    if (isAgent) {
+                                        return false;
+                                    }
+
+                                    subject = workspace.find('input[name=subject]').val();
+                                    body = firstEvent.find('.zd-comment').text();
                                 }
                             });
 
@@ -85,10 +95,10 @@ App.helpdesk = {
                                     }
 
                                     macroEl.attr('onclick', "gorgiasApplyMacroSuggestion(" + macro["external_id"] + ")");
-                                    macroEl.attr('title', macro.body.replace(/\n/g, "<br />"));
-                                    macroEl.attr('data-toggle', "tooltip");
-                                    macroEl.attr('data-html', "true");
-                                    macroEl.attr('data-placement', "bottom");
+                                    macroBtn.attr('title', macro.body.replace(/\n/g, "<br />"));
+                                    macroBtn.attr('data-toggle', "tooltip");
+                                    macroBtn.attr('data-html', "true");
+                                    macroBtn.attr('data-placement', "bottom");
                                     macroEl.html(macro.title);
 
                                     macroBtn.append(macroEl);
