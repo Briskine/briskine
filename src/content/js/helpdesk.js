@@ -84,13 +84,13 @@ App.helpdesk = {
                                     var macroBtn = $("<a class='macro-suggestion'>");
                                     var macroEl = $("<span class='macro-title'>");
                                     var scoreEl = $('<span class="macro-score">&nbsp;</span>');
-                                    if (macro.score >= 0.8) {
+                                    if (macro.score >= 0.9) {
                                         scoreEl.addClass('macro-score-high');
                                     }
-                                    if (macro.score >= 0.6 && macro.score < 0.8) {
+                                    if (macro.score >= 0.7 && macro.score < 0.9) {
                                         scoreEl.addClass('macro-score-medium');
                                     }
-                                    if (macro.score < 0.6) {
+                                    if (macro.score < 0.7) {
                                         scoreEl.addClass('macro-score-low');
                                     }
 
