@@ -94,7 +94,7 @@ App.helpdesk = {
                                         scoreEl.addClass('macro-score-low');
                                     }
 
-                                    macroEl.attr('onclick', "gorgiasApplyMacroSuggestion(" + macro["external_id"] + ")");
+                                    macroBtn.attr('onclick', "gorgiasApplyMacroSuggestion(" + macro["external_id"] + ")");
                                     macroBtn.attr('title', macro.body.replace(/\n/g, "<br />"));
                                     macroBtn.attr('data-toggle', "tooltip");
                                     macroBtn.attr('data-html', "true");
