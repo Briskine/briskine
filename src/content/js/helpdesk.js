@@ -50,7 +50,7 @@ App.helpdesk = {
                                 }
                             });
 
-                            if (!body.length) {
+                            if (!subject.length || !body.length) {
                                 return;
                             }
 
