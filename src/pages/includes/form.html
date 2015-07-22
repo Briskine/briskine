@@ -144,9 +144,10 @@
                         <div ng-if="settings.editor.enabled"
                              class="qt-editor"
                              text-angular
-                             placeholder="It was nice talking to you today..."
                              ng-model="selectedTemplate.body"
-                             ta-toolbar="[['bold','italics','underline'], ['insertLink', 'insertImage'], ['insertVariable']]"></div>
+                             ta-default-wrap=""
+                             ta-toolbar="[['bold','italics','underline'], ['insertLink', 'insertImage'], ['clear', 'html'], [], ['insertVariable'],]"></div>
+
                     </div>
                     <p ng-show="templates.length > 5 && !profile.user" class="premium-feature">
                         Share this template with your team. <a href="https://gorgias.io/?utm_source=ChromeExtension&utm_medium=link&utm_term=Upgrade&utm_campaign=Upgrade-to-share#pricing" target="_blank">Upgrade now!</a>

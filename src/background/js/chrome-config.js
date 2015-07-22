@@ -37,11 +37,11 @@ if (chrome.runtime) {
     // Listen for any changes to the URL of any tab.
     chrome.tabs.onUpdated.addListener(updatedTab);
 
-    chrome.browserAction.onClicked.addListener(function (){
+    chrome.browserAction.onClicked.addListener(function () {
         window.open(chrome.extension.getURL('/pages/bg.html') + '#/list', 'Options');
     });
 
-    if (typeof chrome.runtime.setUninstallURL === 'function'){
+    if (typeof chrome.runtime.setUninstallURL === 'function') {
         chrome.runtime.setUninstallURL("https://gorgias.io/uninstall");
     }
 
@@ -71,9 +71,13 @@ if (chrome.runtime) {
         // this fixes issues with the onclick function not being triggered
         // or the new tab not being opened.
         chrome.contextMenus.onClicked.addListener(function (info, tab) {
-            var body = encodeURIComponent(info.selectionText);
-            window.open(chrome.extension.getURL('/pages/bg.html') + '#/list?id=new&body=' + body , 'Options');
-
+            // get the HTML selection
+            chrome.tabs.executeScript(tab.id, {
+                code: "var getHtmlSelection = function() { var selection = window.getSelection(); if (selection && selection.rangeCount > 0) { range = selection.getRangeAt(0); var clonedSelection = range.cloneContents(); var div = document.createElement('div'); div.appendChild(clonedSelection); return div.innerHTML; } else { return ''; } }; getHtmlSelection();"
+            }, function (selection) {
+                var body = encodeURIComponent(selection[0]);
+                window.open(chrome.extension.getURL('/pages/bg.html') + '#/list?id=new&body=' + body , 'Options');
+            });
         });
 
         if (details.reason == "install") {
@@ -83,7 +87,6 @@ if (chrome.runtime) {
             angularInjector().get('MigrationService').migrate();
         }
     });
-
 
 
     if (!chrome.runtime.onMessage.hasListeners()) {
@@ -110,12 +113,12 @@ if (chrome.runtime) {
                 mixpanel.track(request.event, request.data);
             }
             if (request.request === 'suggestion') {
-                injector.get('SuggestionService').suggest(request.data).then(function(res){
+                injector.get('SuggestionService').suggest(request.data).then(function (res) {
                     sendResponse(res);
                 });
             }
             if (request.request === 'suggestion-used') {
-                injector.get('SuggestionService').stats(request.data).then(function(res){
+                injector.get('SuggestionService').stats(request.data).then(function (res) {
                     sendResponse(res);
                 });
             }

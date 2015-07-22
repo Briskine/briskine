@@ -13,52 +13,47 @@ module.exports = function (grunt) {
     var dependencies = {
         background: {
             js: [
-                'bower_components/raven-js/dist/raven.js',
-                'bower_components/jquery/jquery.js',
+                'bower_components/raven-js/dist/raven.min.js',
+                'bower_components/jquery/jquery.min.js',
                 'bower_components/bootstrap/dist/js/bootstrap.min.js',
-                'bower_components/underscore/underscore.js',
-                'bower_components/underscore.string/lib/underscore.string.js',
-                'bower_components/handlebars/handlebars.js',
-                'bower_components/moment/moment.js',
-                'bower_components/mousetrap/mousetrap.js',
-                'bower_components/mousetrap/plugins/record/mousetrap-record.js',
+                'bower_components/underscore/underscore-min.js',
+                'bower_components/underscore.string/dist/underscore.string.min.js',
+                'bower_components/handlebars/handlebars.min.js',
+                'bower_components/moment/min/moment.min.js',
+                'bower_components/mousetrap/mousetrap.min.js',
+                'bower_components/mousetrap/plugins/record/mousetrap-record.min.js',
 
-                'bower_components/marked/lib/marked.js',
-                'bower_components/to-markdown/src/to-markdown.js',
-                'bower_components/he/he.js',
-
-                'bower_components/angular/angular.js',
-                'bower_components/angular-route/angular-route.js',
-                'bower_components/angular-resource/angular-resource.js',
-                'bower_components/angular-animate/angular-animate.js',
+                'bower_components/angular/angular.min.js',
+                'bower_components/angular-route/angular-route.min.js',
+                'bower_components/angular-resource/angular-resource.min.js',
+                'bower_components/angular-animate/angular-animate.min.js',
                 'bower_components/angular-md5/angular-md5.js',
-                'bower_components/angular-moment/angular-moment.js',
+                'bower_components/angular-moment/angular-moment.min.js',
 
-                'bower_components/textAngular/dist/textAngular-sanitize.min.js',
                 'bower_components/textAngular/dist/textAngular-rangy.min.js',
-                'bower_components/textAngular/src/textAngular.js',
-                'bower_components/textAngular/src/textAngularSetup.js',
+                'bower_components/textAngular/dist/textAngular-sanitize.min.js',
+                'bower_components/textAngular/dist/textAngular.min.js',
 
                 // Should be first
                 'background/js/environment.js',
                 'background/js/utils/mixpanel.js',
-                'bower_components/mixpanel/mixpanel.js',
+                'bower_components/mixpanel/mixpanel.min.js',
                 'common/*.js',
                 'background/js/**/*.js'
             ]
         },
         content: {
             js: [
-                'bower_components/raven-js/dist/raven.js',
-                'bower_components/jquery/jquery.js',
-                'bower_components/underscore/underscore.js',
-                'bower_components/handlebars/handlebars.js',
+                'bower_components/raven-js/dist/raven.min.js',
+                'bower_components/jquery/jquery.min.js',
+                'bower_components/underscore/underscore-min.js',
+                'bower_components/handlebars/handlebars.min.js',
                 'bower_components/mousetrap/mousetrap.js',
                 'bower_components/mousetrap/plugins/global-bind/mousetrap-global-bind.js',
-                'bower_components/marked/lib/marked.js',
 
                 'common/*.js',
 
+                // order is important here
                 'content/js/patterns.js',
                 'content/js/index.js',
                 'content/js/autocomplete.js',
@@ -68,14 +63,7 @@ module.exports = function (grunt) {
                 'content/js/events.js',
                 'content/js/helpdesk.js',
 
-                'content/js/plugins/gmail.js',
-                'content/js/plugins/yahoo.js',
-                'content/js/plugins/outlook.js',
-                'content/js/plugins/linkedin.js',
-                'content/js/plugins/facebook.js',
-                'content/js/plugins/fastmail.js',
-
-                'content/js/plugins/uservoice.js'
+                'content/js/plugins/*.js'
             ]
         }
     };

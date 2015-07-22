@@ -109,7 +109,6 @@ var Settings = {
             },
             blacklist: [],
             fields: {
-                subject: false,
                 tags: false
             },
             editor: {

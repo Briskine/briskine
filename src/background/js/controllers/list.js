@@ -92,7 +92,7 @@ gApp.controller('ListCtrl',
         // Show the form for adding a new quicktext or creating one
         $scope.showForm = function (id) {
             // Where did we open the dialog from.
-            var source = $routeParams.src ? $routeParams.src: "background";
+            var source = $routeParams.src ? $routeParams.src : "background";
             mixpanel.track("Show edit form", {
                 source: source
             });
@@ -119,14 +119,14 @@ gApp.controller('ListCtrl',
                     $scope.selectedTemplate = angular.copy(r);
 
                     // convert body from markdown to html
-                    SettingsService.get("settings", function (settings) {
-                        if (settings.editor.enabled) {
-                            // markdown requires two spaces and \n to for a line break
-                            // so we use this to also turn any \n into a line break
-                            $scope.selectedTemplate.body = $scope.selectedTemplate.body.replace(/\n/g, ' <br />\n');
-                            $scope.selectedTemplate.body = marked($scope.selectedTemplate.body);
-                        }
-                    });
+                    //SettingsService.get("settings", function (settings) {
+                    //    if (settings.editor.enabled) {
+                    //        // markdown requires two spaces and \n to for a line break
+                    //        // so we use this to also turn any \n into a line break
+                    //        $scope.selectedTemplate.body = $scope.selectedTemplate.body.replace(/\n/g, ' <br />\n');
+                    //        $scope.selectedTemplate.body = marked($scope.selectedTemplate.body);
+                    //    }
+                    //});
                 });
             }
 
@@ -137,7 +137,7 @@ gApp.controller('ListCtrl',
             });
         };
 
-        $scope.insertVar = function(variable) {
+        $scope.insertVar = function (variable) {
             var body = $('#qt-body');
             var start = body[0].selectionStart;
             var end = body[0].selectionEnd;
@@ -147,8 +147,8 @@ gApp.controller('ListCtrl',
             var startVal = val.slice(0, start);
             var endVal = val.slice(end);
 
-            var newPos = (startVal + "{{" + variable +  "}}").length;
-            var newVal = startVal + "{{" + variable +  "}}" + endVal;
+            var newPos = (startVal + "{{" + variable + "}}").length;
+            var newVal = startVal + "{{" + variable + "}}" + endVal;
 
             body.val(newVal);
             body[0].setSelectionRange(newPos, newPos);
@@ -222,38 +222,6 @@ gApp.controller('ListCtrl',
             }
         };
 
-        // convert to markdown
-        // and remove any html from it
-        var cleanMarkdown = function (md) {
-
-            var cleanedMd = md;
-
-            // remove empty dom nodes to generate cleaner markdown
-
-            // create a document fragment to use as a vdom
-            // to not have to mess with the actual editor dom
-            var docFragment = document.createDocumentFragment();
-
-            var div = document.createElement('div');
-            div.innerHTML = cleanedMd;
-            docFragment.appendChild(div);
-
-            cleanDomNodes(div);
-
-            cleanedMd = div.innerHTML;
-
-            // convert body to markdown
-            cleanedMd = toMarkdown(cleanedMd);
-
-            // remove remaning html markup
-            // just in case
-            div.innerHTML = cleanedMd;
-            cleanedMd = div.textContent || div.innerText;
-
-            return cleanedMd;
-
-        };
-
         // Save a quicktext, perform some checks before
         $scope.saveQt = function () {
             if (!$scope.selectedTemplate.title) {
@@ -266,35 +234,29 @@ gApp.controller('ListCtrl',
                 return false;
             }
 
-            SettingsService.get('settings').then(function (settings) {
-                if (settings.editor.enabled) {
-                    // return clean markdown
-                    $scope.selectedTemplate.body = cleanMarkdown($scope.selectedTemplate.body);
-                }
 
-                TemplateService.quicktexts().then(function (templates) {
-                    if ($scope.selectedTemplate.shortcut) {
-                        for (var i in templates) {
-                            var qt = templates[i];
-                            if (qt.id !== $scope.selectedTemplate.id && qt.shortcut === $scope.selectedTemplate.shortcut) {
-                                alert("There is another a template with the '" + $scope.selectedTemplate.shortcut + "' keyboard shortcut");
-                                return false;
-                            }
+            TemplateService.quicktexts().then(function (templates) {
+                if ($scope.selectedTemplate.shortcut) {
+                    for (var i in templates) {
+                        var qt = templates[i];
+                        if (qt.id !== $scope.selectedTemplate.id && qt.shortcut === $scope.selectedTemplate.shortcut) {
+                            alert("There is another a template with the '" + $scope.selectedTemplate.shortcut + "' keyboard shortcut");
+                            return false;
                         }
                     }
-                    if ($scope.selectedTemplate.id) {
-                        TemplateService.update($scope.selectedTemplate).then(function () {
-                            $scope.reloadTemplates();
-                        });
-                    } else {
-                        TemplateService.create($scope.selectedTemplate).then(function () {
-                            $scope.reloadTemplates();
-                        });
-                    }
+                }
+                if ($scope.selectedTemplate.id) {
+                    TemplateService.update($scope.selectedTemplate).then(function () {
+                        $scope.reloadTemplates();
+                    });
+                } else {
+                    TemplateService.create($scope.selectedTemplate).then(function () {
+                        $scope.reloadTemplates();
+                    });
+                }
 
-                    // hide teh modal
-                    $('.modal').modal('hide');
-                });
+                // hide teh modal
+                $('.modal').modal('hide');
             });
         };
 
