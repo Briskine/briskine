@@ -1,7 +1,8 @@
 /* Editor styles
  */
 
-.qt-editor {}
+.qt-editor {
+}
 
 toolbar-bg = #f8f8f8;
 
@@ -26,7 +27,6 @@ toolbar-bg = #f8f8f8;
     border-color: darken(toolbar-bg, 16%);
 }
 
-
 .qt-editor .ta-editor {
     border-radius: 0 0 3px 3px;
 }
@@ -34,6 +34,9 @@ toolbar-bg = #f8f8f8;
 .qt-editor .ta-editor [contenteditable]:focus {
     outline: 0;
     box-shadow: none;
+}
+.qt-editor .btn-group:last-child {
+    float: right;
 }
 
 .ta-root.focussed > .ta-scroll-window.form-control {
@@ -47,6 +50,9 @@ toolbar-bg = #f8f8f8;
 .insert-var-container {
     padding: 0;
     border: 0;
+    .dropdown-toggle {
+        padding: 0.25em 1em;
+    }
 }
 
 .insert-var-container > button:hover {
@@ -60,7 +66,7 @@ toolbar-bg = #f8f8f8;
 .insert-var-container ul {
     padding: 0;
     overflow: hidden;
-    
+
     text-align: left;
 }
 
@@ -68,7 +74,8 @@ toolbar-bg = #f8f8f8;
     padding: emCalc(3) emCalc(12);
 }
 
-/* we need to still use paragraphs as element wrappers 
+
+/* we need to still use paragraphs as element wrappers
  * so that textAngular turns them into newlines.
  * TODO once
  * https://github.com/domchristie/to-markdown/issues/49
