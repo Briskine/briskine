@@ -1,0 +1,30 @@
+{
+  "name": "mixpanel",
+  "homepage": "https://github.com/mixpanel/mixpanel-js",
+  "description": "Mixpanel JavaScript Library",
+  "main": "mixpanel-jslib-snippet.js",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:mixpanel/mixpanel-js.git"
+  },
+  "keywords": [
+    "mixpanel",
+    "mixpaneljs",
+    "mixpanel-js"
+  ],
+  "license": "Apache-2.0",
+  "ignore": [
+    "tests"
+  ],
+  "version": "2.3.6",
+  "_release": "2.3.6",
+  "_resolution": {
+    "type": "version",
+    "tag": "v2.3.6",
+    "commit": "e0603b171473ccc57b289a879989ea96ee8916d3"
+  },
+  "_source": "git://github.com/mixpanel/mixpanel-js.git",
+  "_target": "~2.3.6",
+  "_originalSource": "mixpanel",
+  "_direct": true
+}

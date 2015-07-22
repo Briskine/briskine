@@ -1,0 +1,17 @@
+{
+  "name": "raven-js",
+  "version": "1.1.17",
+  "dependencies": {},
+  "main": "dist/raven.js",
+  "ignore": {},
+  "homepage": "https://github.com/getsentry/raven-js",
+  "_release": "1.1.17",
+  "_resolution": {
+    "type": "version",
+    "tag": "1.1.17",
+    "commit": "cbf0a0583f342b0190729c07acbf97ab889506bb"
+  },
+  "_source": "git://github.com/getsentry/raven-js.git",
+  "_target": "~1.1.16",
+  "_originalSource": "raven-js"
+}

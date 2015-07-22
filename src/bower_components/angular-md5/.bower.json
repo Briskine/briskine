@@ -1,0 +1,27 @@
+{
+  "name": "angular-md5",
+  "version": "0.0.6",
+  "main": "angular-md5.js",
+  "ignore": [
+    "**/.*",
+    "*.yml",
+    "*.xml",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "*"
+  },
+  "homepage": "https://github.com/gdi2290/angular-md5",
+  "_release": "0.0.6",
+  "_resolution": {
+    "type": "version",
+    "tag": "v0.0.6",
+    "commit": "f25fd43d4cf925dfec960ddee5e8a255438f10d0"
+  },
+  "_source": "git://github.com/gdi2290/angular-md5.git",
+  "_target": "~0.0.6",
+  "_originalSource": "angular-md5"
+}
