@@ -12,9 +12,16 @@
 
             for (var viewId in window.Ember.View.views) {
                 var v = window.Ember.View.views[viewId];
-                if (v.hasOwnProperty('delegate') && v.delegate.id === 'mn_5') {
-                    view = v;
-                    break;
+
+                if (v.hasOwnProperty('elementId')){
+                    var el = $('#' + v.elementId);
+                    // make sure our view is a visible macro selector
+                    if (el.hasClass('macro-selector') &&
+                        el.parents('.workspace').length &&
+                        el.parents('.workspace').css('display') !== 'none') {
+                        view = v;
+                        break;
+                    }
                 }
             }
 

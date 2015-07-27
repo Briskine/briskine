@@ -98,8 +98,10 @@ module.exports = function (grunt) {
                 }
             },
             js: {
-                files: dependencies.background.js.concat(dependencies.content.js)
-                ,
+                files: [
+                    dependencies.background.js.concat(dependencies.content.js),
+                    'pages/**/*.js'
+                ],
                 tasks: ['concat'],
                 options: {
                     cwd: config.app,
