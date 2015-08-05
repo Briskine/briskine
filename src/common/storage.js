@@ -112,7 +112,7 @@ var Settings = {
                 tags: false
             },
             editor: {
-                enabled: false // disable by default for new users - numerous complaints
+                enabled: true // new editor - enable by default
             },
             migration_head: 0,
             sidebar: { // this sidebar to the right

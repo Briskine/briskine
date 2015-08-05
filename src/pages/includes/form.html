@@ -75,7 +75,7 @@
                         <div class="col-xs-5">
 
                             <div class="form-group" data-toggle="tooltip" data-placement="bottom"
-                                 title="Use this text shortcut to trigger the completion of the template using the TAB key">
+                                 title="Use this text shortcut to trigger the completion of the template using the TAB key. No spaces are allowed.">
                                 <label for="qt-shortcut">
                                     Text shortcut
                                     <span class="text-muted">(Optional)</span>
@@ -114,20 +114,34 @@
                     </div>
                     <div class="form-group">
                         <label class="body-label">Template Content</label>
-                           <div ng-if="!settings.editor.enabled" class="toolbar-area pull-right">
-                                <div class="dropdown insert-var-container">
-                                    <button class="btn btn-default dropdown-toggle" data-toggle="dropdown" tabindex="-1">Insert Variable<span class="caret"></span></button>
-                                    <ul class="dropdown-menu">
-                                    <li><a ng-click="insertVar('to.0.first_name')" title="First name of the person in the \'To\' field"><strong>To:</strong> First Name</a></li>
-                                    <li><a ng-click="insertVar('to.0.email')" title="Email address of the person in the \'To\' field"><strong>To:</strong> Email</a></li>
-                                    <li><a ng-click="insertVar('from.0.first_name')" title="First name of the person in the \'From\' field"><strong>From:</strong> First Name</a></li>
-                                    <li><a ng-click="insertVar('from.0.email')" title="Email address of the person in the \'From\' field"><strong>From:</strong> Email</a></li>
-                                    <li><a ng-click="insertVar('subject')" title="The subject of the e-mail"><strong>Subject</strong></a></li>
+
+                        <div ng-if="!settings.editor.enabled" class="toolbar-area pull-right">
+                            <div class="dropdown insert-var-container">
+                                <button class="btn btn-default dropdown-toggle" data-toggle="dropdown" tabindex="-1">
+                                    Insert Variable<span class="caret"></span></button>
+                                <ul class="dropdown-menu">
+                                    <li><a ng-click="insertVar('to.0.first_name')"
+                                           title="First name of the person in the \'To\' field"><strong>To:</strong>
+                                        First Name</a></li>
+                                    <li><a ng-click="insertVar('to.0.email')"
+                                           title="Email address of the person in the \'To\' field"><strong>To:</strong>
+                                        Email</a></li>
+                                    <li><a ng-click="insertVar('from.0.first_name')"
+                                           title="First name of the person in the \'From\' field"><strong>From:</strong>
+                                        First Name</a></li>
+                                    <li><a ng-click="insertVar('from.0.email')"
+                                           title="Email address of the person in the \'From\' field"><strong>From:</strong>
+                                        Email</a></li>
+                                    <li><a ng-click="insertVar('subject')" title="The subject of the e-mail"><strong>Subject</strong></a>
+                                    </li>
                                     <li class="divider"></li>
-                                    <li><a class="help-block text-muted small" href="http://help.gorgias.io/en/latest/src/04-templates.html" rel="external" target="_blank">Learn more about template variables <i class="fa fa-external-link"></i></a></li>
-                                    </ul>
-                                </div>
+                                    <li><a class="help-block text-muted small"
+                                           href="http://help.gorgias.io/en/latest/src/04-templates.html" rel="external"
+                                           target="_blank">Learn more about template variables <i
+                                        class="fa fa-external-link"></i></a></li>
+                                </ul>
                             </div>
+                        </div>
 
                         <div ng-if="!settings.editor.enabled">
                             <textarea
@@ -137,8 +151,11 @@
                                 ng-model="selectedTemplate.body"></textarea>
 
                             <p class="help-block">
-                                Supports <a href="http://help.gorgias.io/en/latest/src/04-templates.html?utm_source=ChromeExtension&utm_medium=product&utm_term=formatting&utm_campaign=GorgiasChromeExtension" target="_blank" tabindex="-1">formatting in HTML</a> and
-                                <a href="http://help.gorgias.io/en/latest/src/04-templates.html?utm_source=ChromeExtension&utm_medium=product&utm_term=template%20variables&utm_campaign=GorgiasChromeExtension#variables" target="_blank" tabindex="-1">template variables</a>.
+                                Supports <a
+                                href="http://help.gorgias.io/en/latest/src/04-templates.html?utm_source=ChromeExtension&utm_medium=product&utm_term=formatting&utm_campaign=GorgiasChromeExtension"
+                                target="_blank" tabindex="-1">formatting in HTML</a> and
+                                <a href="http://help.gorgias.io/en/latest/src/04-templates.html?utm_source=ChromeExtension&utm_medium=product&utm_term=template%20variables&utm_campaign=GorgiasChromeExtension#variables"
+                                   target="_blank" tabindex="-1">template variables</a>.
                             </p>
                         </div>
                         <div ng-if="settings.editor.enabled"
@@ -150,13 +167,17 @@
 
                     </div>
                     <p ng-show="templates.length > 5 && !profile.user" class="premium-feature">
-                        Share this template with your team. <a href="https://gorgias.io/?utm_source=ChromeExtension&utm_medium=link&utm_term=Upgrade&utm_campaign=Upgrade-to-share#pricing" target="_blank">Upgrade now!</a>
+                        Share this template with your team. <a
+                        href="https://gorgias.io/?utm_source=ChromeExtension&utm_medium=link&utm_term=Upgrade&utm_campaign=Upgrade-to-share#pricing"
+                        target="_blank">Upgrade now!</a>
                     </p>
                 </div>
 
                 <div class="modal-footer">
                     <span ng-show="selectedTemplate.id">
-                        <button class="btn btn-default pull-left" ng-click="duplicateQt()" tabindex="-1">Duplicate template</button>
+                        <button class="btn btn-default pull-left" ng-click="duplicateQt()" tabindex="-1">Duplicate
+                            template
+                        </button>
                     </span>
 
                     <button class="btn btn-default" data-dismiss="modal" tabindex="-1">Cancel</button>

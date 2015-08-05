@@ -47,28 +47,28 @@ gApp.service('InstallService', function () {
             'shortcut': 'h',
             'subject': '',
             'tags': 'en, greetings',
-            'body': 'Hello {{to.0.first_name}},\n\n'
+            'body': '<div>Hello {{to.0.first_name}},</div><div></div>'
         },
         {
             'title': 'Nice talking to you',
             'shortcut': 'nic',
             'subject': '',
             'tags': 'en, followup',
-            'body': 'It was nice talking to you.'
+            'body': '<div>It was nice talking to you.</div>'
         },
         {
             'title': 'Kind Regards',
             'shortcut': 'kr',
             'subject': '',
             'tags': 'en, closing',
-            'body': 'Kind regards,\n{{from.0.first_name}}.'
+            'body': '<div>Kind regards,</div><div>{{from.0.first_name}}.</div>'
         },
         {
             'title': 'My email',
             'shortcut': 'e',
             'subject': '',
             'tags': 'en, personal',
-            'body': '{{from.0.email}}'
+            'body': '<div>{{from.0.email}}</div>'
         }
     ];
 

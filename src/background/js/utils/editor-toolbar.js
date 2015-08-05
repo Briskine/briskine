@@ -2,12 +2,9 @@
  */
 
 gApp.config(function ($provide) {
-
-    $provide.decorator('taOptions', [ 'taRegisterTool', '$delegate', '$timeout',
-    function(taRegisterTool, taOptions, $timeout) {
-
+    $provide.decorator('taOptions', ['taRegisterTool', '$delegate', '$timeout', function (taRegisterTool, taOptions, $timeout) {
         // place focus at the end of a contenteditable
-        var focusEnd = function(el) {
+        var focusEnd = function (el) {
 
             el.focus();
 
@@ -21,7 +18,7 @@ gApp.config(function ($provide) {
 
         };
 
-        var insertHtml = function(qtvar) {
+        var insertHtml = function (qtvar) {
 
             // we can't wrap the variable in a html tag
             // because it will cause issues when adding multiple vars
@@ -30,30 +27,30 @@ gApp.config(function ($provide) {
             // textAngular will add the second/next inserted var
             // inside (!) the br tag.
             var template = '%var%';
-            template =  template.replace(/%var%/g, qtvar);
+            template = template.replace(/%var%/g, qtvar);
 
             this.$editor().wrapSelection('inserthtml', template);
         };
 
         var qtMethods = {};
 
-        qtMethods.InsertSubject = function() {
+        qtMethods.InsertSubject = function () {
             insertHtml.call(this, '{{subject}}');
         };
 
-        qtMethods.InsertFirstFromName = function() {
+        qtMethods.InsertFirstFromName = function () {
             insertHtml.call(this, '{{from.0.first_name}}');
         };
 
-        qtMethods.InsertFirstFromEmail = function() {
+        qtMethods.InsertFirstFromEmail = function () {
             insertHtml.call(this, '{{from.0.email}}');
         };
 
-        qtMethods.InsertFirstToName = function() {
+        qtMethods.InsertFirstToName = function () {
             insertHtml.call(this, '{{to.0.first_name}}');
         };
 
-        qtMethods.InsertFirstToEmail = function() {
+        qtMethods.InsertFirstToEmail = function () {
             insertHtml.call(this, '{{to.0.email}}');
         };
 
@@ -65,25 +62,25 @@ gApp.config(function ($provide) {
         listTemplate += 'Email {{email}}<br>';
         listTemplate += '{{/each}}';
 
-        qtMethods.InsertFromList = function() {
+        qtMethods.InsertFromList = function () {
             var template = listTemplate.replace(/%list%/g, 'from');
 
             insertHtml.call(this, template);
         };
 
-        qtMethods.InsertToList = function() {
+        qtMethods.InsertToList = function () {
             var template = listTemplate.replace(/%list%/g, 'to');
 
             insertHtml.call(this, template);
         };
 
-        qtMethods.InsertCcList = function() {
+        qtMethods.InsertCcList = function () {
             var template = listTemplate.replace(/%list%/g, 'cc');
 
             insertHtml.call(this, template);
         };
 
-        qtMethods.InsertBccList = function() {
+        qtMethods.InsertBccList = function () {
             var template = listTemplate.replace(/%list%/g, 'bcc');
 
             insertHtml.call(this, template);
@@ -107,23 +104,23 @@ gApp.config(function ($provide) {
         // register the tool with textAngular
         taRegisterTool('insertVariable', {
             display: dropMenuTemplate,
-            disabled: function() {
+            disabled: function () {
 
                 // runs as an init function
 
                 // hack to get around the errors thrown by textAngular
                 // because it didn't get to store a pointer to the editor,
                 // because it's not focused.
-                this.focusHack = function() {
+                this.focusHack = function () {
 
-                    var $editor =  $('.ta-scroll-window [contenteditable]').get(0);
+                    var $editor = $('.ta-scroll-window [contenteditable]').get(0);
 
                     // if the editor was not the focused element
                     // place the focus at the end of the text.
                     // the element reference won't match
                     // but we can compare the element id
                     // because textAngular adds a dynamic id
-                    if($editor.id !== document.activeElement.id) {
+                    if ($editor.id !== document.activeElement.id) {
 
                         // focus the editor, to make sure textAngular
                         // has the editor reference
@@ -134,7 +131,7 @@ gApp.config(function ($provide) {
 
                         // we need settimeout otherwise textAngular
                         // will place the caret at the begining
-                        setTimeout(function() {
+                        setTimeout(function () {
                             focusEnd($editor);
                         });
 
@@ -144,22 +141,20 @@ gApp.config(function ($provide) {
                 var self = this;
 
                 // insert all qtMethods into the scope
-                Object.keys(qtMethods).forEach(function(key) {
+                Object.keys(qtMethods).forEach(function (key) {
                     self[key] = qtMethods[key];
                 });
 
-                this.isDisabled = function() {
+                this.isDisabled = function () {
                     return false;
                 };
 
             },
-            action: function(){}
+            action: function () {
+
+            }
         });
 
         return taOptions;
-
     }]);
-
-
-
 });

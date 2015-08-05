@@ -1,13 +1,13 @@
 /*
  * Generic methods for autocompletion
  */
-Handlebars.registerHelper("splitString", function(context, options){
-    if(context){
+Handlebars.registerHelper("splitString", function (context, options) {
+    if (context) {
         var ret = "";
 
 
         var tempArr = context.trim().split(options.hash["delimiter"]);
-        for(var i=0; i < tempArr.length; i++){
+        for (var i = 0; i < tempArr.length; i++) {
             if (options.data) {
                 data = Handlebars.createFrame(options.data || {});
                 data.index = i;
@@ -31,7 +31,7 @@ var KEY_TAB = 9,
 App.autocomplete.quicktexts = [];
 App.autocomplete.cursorPosition = null;
 
-App.autocomplete.isEditable = function(element) {
+App.autocomplete.isEditable = function (element) {
 
     var isTextfield = (element.tagName.toLowerCase() === 'input');
     var isTextarea = (element.tagName.toLowerCase() === 'textarea');
@@ -41,7 +41,7 @@ App.autocomplete.isEditable = function(element) {
 
 };
 
-App.autocomplete.isContentEditable = function(element) {
+App.autocomplete.isContentEditable = function (element) {
     return element && element.hasAttribute('contenteditable');
 };
 
@@ -87,26 +87,26 @@ App.autocomplete.getSelectedWord = function (params) {
 App.autocomplete.getCursorPosition = function (element) {
     var doc = element.ownerDocument;
 
-    if(!element) {
+    if (!element) {
         return false;
     }
 
     var position = {
-            element: element || null,
-            offset: 0,
-            absolute: {
-                left: 0,
-                top: 0
-            },
-            word: null
-        };
+        element: element || null,
+        offset: 0,
+        absolute: {
+            left: 0,
+            top: 0
+        },
+        word: null
+    };
 
     var $caret;
 
-    var getRanges = function(sel){
-        if (sel.rangeCount){
+    var getRanges = function (sel) {
+        if (sel.rangeCount) {
             var ranges = [];
-            for (var i= 0; i < sel.rangeCount; i++){
+            for (var i = 0; i < sel.rangeCount; i++) {
                 ranges.push(sel.getRangeAt(i));
             }
             return ranges;
@@ -114,13 +114,13 @@ App.autocomplete.getCursorPosition = function (element) {
         return [];
     };
 
-    var restoreRanges = function(sel, ranges){
+    var restoreRanges = function (sel, ranges) {
         for (var i in ranges) {
             sel.addRange(ranges[i]);
         }
     };
 
-    if(App.autocomplete.isContentEditable(position.element)) {
+    if (App.autocomplete.isContentEditable(position.element)) {
         // Working with editable div
         // Insert a virtual cursor, find its position
         // http://stackoverflow.com/questions/16580841/insert-text-at-caret-in-contenteditable-div
@@ -218,8 +218,6 @@ App.autocomplete.getCursorPosition = function (element) {
     return position;
 };
 
-
-//App.autocomplete.replaceWith = function (quicktext, event) {
 App.autocomplete.replaceWith = function (params) {
 
     var doc = params.element.ownerDocument;
@@ -229,15 +227,15 @@ App.autocomplete.replaceWith = function (params) {
 
     App.autocomplete.justCompleted = true; // the idea is that we don't want any completion to popup after we just completed
 
-    var setText = function() {
+    var setText = function () {
 
         App.activePlugin.getData({
             element: params.element
-        }, function(err, response) {
+        }, function (err, response) {
 
             var parsedTemplate = Handlebars.compile(params.quicktext.body)(response);
 
-            if(App.autocomplete.isContentEditable(params.element)) {
+            if (App.autocomplete.isContentEditable(params.element)) {
 
                 var selection = doc.getSelection();
                 var range = doc.createRange();
@@ -245,7 +243,7 @@ App.autocomplete.replaceWith = function (params) {
                 replacement = parsedTemplate;
 
                 if (!App.settings.editor_enabled) {
-                    replacement = replacement.replace(/\n/g,' <br />\n');
+                    replacement = replacement.replace(/\n/g, ' <br />\n');
                 }
 
                 // setStart/setEnd work differently based on
@@ -270,7 +268,7 @@ App.autocomplete.replaceWith = function (params) {
                 }
 
                 // clear whitespace in the focused textnode
-                if(focusNode.nodeValue) {
+                if (focusNode.nodeValue) {
                     focusNode.nodeValue = focusNode.nodeValue.trim();
                 }
 
@@ -298,61 +296,72 @@ App.autocomplete.replaceWith = function (params) {
 
                 /*
 
-                switch (focusNode.nodeType) {
-                    case (document.TEXT_NODE):
-                        // clear whitespace in the focused textnode
-                        if(focusNode.nodeValue) {
-                            focusNode.nodeValue = focusNode.nodeValue.trim();
-                        }
+                 switch (focusNode.nodeType) {
+                 case (document.TEXT_NODE):
+                 // clear whitespace in the focused textnode
+                 if(focusNode.nodeValue) {
+                 focusNode.nodeValue = focusNode.nodeValue.trim();
+                 }
 
-                        // remove the shorcut text
-                        range.setStart(focusNode, word.start);
-                        range.setEnd(focusNode, word.end);
-                        range.deleteContents();
+                 // remove the shorcut text
+                 range.setStart(focusNode, word.start);
+                 range.setEnd(focusNode, word.end);
+                 range.deleteContents();
 
-                        var qtNode = range.createContextualFragment(replacement);
-                        var lastQtChild = qtNode.lastChild;
+                 var qtNode = range.createContextualFragment(replacement);
+                 var lastQtChild = qtNode.lastChild;
 
-                        range.insertNode(qtNode);
+                 range.insertNode(qtNode);
 
-                        var caretRange = document.createRange();
-                        caretRange.setStartAfter(lastQtChild);
-                        caretRange.collapse(true);
-                        selection.removeAllRanges();
-                        selection.addRange(caretRange);
-                        break;
-                    case (document.ELEMENT_NODE):
+                 var caretRange = document.createRange();
+                 caretRange.setStartAfter(lastQtChild);
+                 caretRange.collapse(true);
+                 selection.removeAllRanges();
+                 selection.addRange(caretRange);
+                 break;
+                 case (document.ELEMENT_NODE):
 
-                        break;
-                }
-                */
+                 break;
+                 }
+                 */
             } else {
 
                 var $textarea = $(params.element),
                     value = $textarea.val();
 
-                // convert markdown images and links to
-                // regular links
+                // if the editor is enabled, we need to convert html into text
+                if (App.settings.editor_enabled) {
+                    // we want to display the text momentarily before inserting it into the textarea
+                    // this is needed to give the correct spaces
+                    var temp = $('<div id="gorgias-temp-placeholder">').html(parsedTemplate);
 
-                // crazy regex to match markdown links
-                // [text](http://)
-                var linkRegex = '\\[([^\\]]*)\\]\\(([^)"]+)(?: \\"([^\\"]+)\\")?\\)';
+                    // find and replace links with plaintext
+                    temp.find('a').each(function(){
+                        var e = $(this);
+                        var href = e.attr('href');
+                        var text = $.trim(e.text());
+                        var replacement = "";
 
-                // prepend ! for markdown images
-                // ![alt text](http://)
-                var imgRegex = '!' + linkRegex;
+                        if (!text.length) {
+                            e.replaceWith("<span>" + href + "</span>");
+                        } else if (href.length) {
+                            e.replaceWith("<span>" + text + " ( " + href+ " )</span>");
+                        } else {
+                            // remove it completly if there is no url
+                            e.remove();
+                        }
 
-                // replace images first
-                // because the link regex also matches parts of images
-                // but not the other way around
-                parsedTemplate = parsedTemplate.replace(new RegExp(imgRegex, 'g'), function(whole, a, b, c) {
-                    return b;
-                });
+                    });
 
-                // replace links
-                parsedTemplate = parsedTemplate.replace(new RegExp(linkRegex, 'g'), function(whole, a, b, c) {
-                    return b;
-                });
+                    temp.find('img').each(function(){
+                        var e = $(this);
+                        e.replaceWith("<span>" + e.attr('src') + "</span>");
+                    });
+
+                    $('body').append(temp);
+                    parsedTemplate = $('#gorgias-temp-placeholder')[0].innerText;
+                    $('#gorgias-temp-placeholder').remove();
+                }
 
                 var valueNew = '';
                 var cursorOffset = word.end + parsedTemplate.length;
@@ -405,18 +414,18 @@ App.autocomplete.replaceWith = function (params) {
 
 };
 
-App.autocomplete.focusEditor = function(element, callback) {
+App.autocomplete.focusEditor = function (element, callback) {
 
     // return focus to the editor
 
     // gmail auto-focuses the to field
     // so we need the delay
-    setTimeout(function() {
-        if(element) {
+    setTimeout(function () {
+        if (element) {
             element.focus();
         }
 
-        if(callback) {
+        if (callback) {
             callback();
         }
     }, 50);
