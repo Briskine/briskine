@@ -49,6 +49,7 @@ if (chrome.runtime) {
     chrome.runtime.onInstalled.addListener(function (details) {
         if (details.reason == "install") {
             mixpanel.track("Installed Gorgias");
+            angularInjector().get('SettingsService').reset();
         } else if (details.reason == "update") {
             mixpanel.track("Updated Gorgias", {'version': details.previousVersion});
         }
