@@ -102,6 +102,7 @@ App.helpdesk = {
                                     var macro = macros[i];
                                     var macroBtn = $("<a class='macro-suggestion'>");
                                     var macroEl = $("<span class='macro-title'>");
+                                    /*
                                     var scoreEl = $('<span class="macro-score">&nbsp;</span>');
                                     if (macro.score >= 0.9) {
                                         scoreEl.addClass('macro-score-high');
@@ -112,6 +113,7 @@ App.helpdesk = {
                                     if (macro.score < 0.7) {
                                         scoreEl.addClass('macro-score-low');
                                     }
+                                    */
 
                                     macroBtn.attr('onclick', "gorgiasApplyMacroSuggestion(" + macro["external_id"] + ")");
                                     macroBtn.attr('title', macro.body.replace(/\n/g, "<br />"));
@@ -121,7 +123,7 @@ App.helpdesk = {
                                     macroEl.html(macro.title);
 
                                     macroBtn.append(macroEl);
-                                    macroBtn.append(scoreEl);
+                                    //macroBtn.append(scoreEl);
                                     macroContainer.append(macroBtn);
                                 }
                                 $('.comment_input .content .options').before(macroContainer);
