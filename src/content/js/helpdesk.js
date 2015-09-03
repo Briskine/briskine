@@ -55,7 +55,7 @@ App.helpdesk = {
                                 workspace = $(workspace);
 
                                 if (workspace.css('display') !== 'none') {
-                                    var firstEvent = workspace.find('.event-container .event:first');
+                                    var firstEvent = workspace.find('.event-container .event.is-public:first');
                                     var isAgent = firstEvent.find('.user_photo').hasClass('agent');
 
                                     // If it's an agent who has the last comment no point in suggesting anything
