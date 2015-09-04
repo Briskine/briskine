@@ -25,7 +25,7 @@ App.autocomplete.dialog = {
     searchSelector: ".qt-dropdown-search",
     qaBtnSelector: '.gorgias-qa-btn',
     newTemplateSelector: ".g-new-template",
-    qaPositionIntervals: [],
+    qaPositionInterval: null,
     suggestedTemplates: [],
     suggestionHidden: false,
 
@@ -674,8 +674,6 @@ App.autocomplete.dialog = {
                 // of the textfield
                 left += textfield.offsetWidth - qaBtn.offsetWidth;
 
-                console.log(left, top);
-
                 // move the btn using transforms
                 // for performance
                 var transform = 'translate3d(' + left + 'px, ' + top + 'px, 0)';
@@ -693,20 +691,18 @@ App.autocomplete.dialog = {
             };
             setPosition();
 
-            // recalculate the width
-            for (var i in App.autocomplete.dialog.qaPositionIntervals) {
-                clearInterval(App.autocomplete.dialog.qaPositionIntervals[i]);
-            }
-
-            // TODO stop the interval on focusout
-            var intervalID = setInterval(function () {
-                setPosition();
-            }, 1000);
-            App.autocomplete.dialog.qaPositionIntervals.push(intervalID);
+            // re-calculate the qa-btn position at an interval,
+            // in case it's position or size changes
+            dialog.qaPositionInterval = setInterval(setPosition, 1000);
         });
     },
     hideQaBtn: function () {
         $('body').removeClass('gorgias-show-qa-btn');
+
+        // stop the position recalculation interval, on focusout
+        if(this.qaPositionInterval) {
+            clearInterval(this.qaPositionInterval);
+        }
     }
 };
 
