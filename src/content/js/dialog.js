@@ -561,10 +561,6 @@ App.autocomplete.dialog = {
         if ($(elem).is('textarea, input[type=text], [contenteditable]')) {
             show = true;
         }
-        // only show for gmail now
-        if (window.location.origin !== "https://mail.google.com") {
-            show = false;
-        }
 
         // if the quick access button is focused/clicked
         if (elem.className.indexOf('gorgias-qa-btn') !== -1) {
@@ -596,11 +592,12 @@ App.autocomplete.dialog = {
 
         var textfield = e.target;
 
+        var dialog = this;
+
         // only show it for valid elements
         if (!App.autocomplete.dialog.showQaForElement(textfield)) {
             return false;
         }
-
 
         Settings.get('settings', {}, function (settings) {
             if (settings.qaBtn && settings.qaBtn.enabled === false) {
@@ -609,9 +606,37 @@ App.autocomplete.dialog = {
 
             $('body').addClass('gorgias-show-qa-btn');
 
-            App.autocomplete.dialog.prevFocus = textfield;
+            // TODO refresh the qaBtn reference, so we can check
+            // if it stil exists. (outlook clears the entire body)
+            dialog.qaBtn = $(dialog.qaBtnSelector);
 
-            var qaBtn = App.autocomplete.dialog.qaBtn.get(0);
+            // TODO in case the qa-btn doesn't exist, recreate it
+            if(dialog.qaBtn.length < 1) {
+                // TODO if the body is contenteditable,
+                // add an empty div, so we don't break
+                // editability
+
+
+                if (settings.dialog.enabled) {
+                    if (settings.qaBtn.enabled) {
+                        // re-create the qa-btn
+                        App.autocomplete.dialog.createQaBtn();
+                    }
+
+                    // re-create the dialog
+                    App.autocomplete.dialog.create();
+
+                    // TODO refresh any dialog references?
+                }
+            }
+
+            dialog.prevFocus = textfield;
+
+            var qaBtn = dialog.qaBtn.get(0);
+
+            // TODO check if the body still has the qa-btn,
+            // if it doesn't, re-create it.
+            // TODO use contentditable=false on all templates
 
             // padding from the top-right corner of the textfield
             var padding = 10;
@@ -634,22 +659,26 @@ App.autocomplete.dialog = {
 
 
             var setPosition = function () {
-                var metrics = JSON.parse(JSON.stringify(textfield.getBoundingClientRect()));
+                var metrics = textfield.getBoundingClientRect();
 
-                metrics.top += $(window).scrollTop();
-                metrics.left += $(window).scrollLeft();
+                var top = metrics.top;
+                var left = metrics.left;
 
-                metrics.top += padding;
-                metrics.left -= padding;
+                top += $(window).scrollTop();
+                left += $(window).scrollLeft();
+
+                top += padding;
+                left -= padding;
 
                 // move the quick access button to the right
                 // of the textfield
-                metrics.left += textfield.offsetWidth - qaBtn.offsetWidth;
+                left += textfield.offsetWidth - qaBtn.offsetWidth;
 
+                console.log(left, top);
 
                 // move the btn using transforms
                 // for performance
-                var transform = 'translate3d(' + metrics.left + 'px, ' + metrics.top + 'px, 0)';
+                var transform = 'translate3d(' + left + 'px, ' + top + 'px, 0)';
 
                 qaBtn.style.transform = transform;
                 qaBtn.style.msTransform = transform;
@@ -669,6 +698,7 @@ App.autocomplete.dialog = {
                 clearInterval(App.autocomplete.dialog.qaPositionIntervals[i]);
             }
 
+            // TODO stop the interval on focusout
             var intervalID = setInterval(function () {
                 setPosition();
             }, 1000);
@@ -698,4 +728,3 @@ $.get(contentUrl, function (data) {
         App.autocomplete.dialog[v.split('.').slice(-1)] = data.slice(start + v.length + 3, end - 4);
     }
 }, "html");
-
