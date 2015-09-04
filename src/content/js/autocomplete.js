@@ -42,7 +42,7 @@ App.autocomplete.isEditable = function (element) {
 };
 
 App.autocomplete.isContentEditable = function (element) {
-    return element && element.hasAttribute('contenteditable');
+    return (element.contentEditable === 'true');
 };
 
 App.autocomplete.getSelectedWord = function (params) {
@@ -443,4 +443,3 @@ App.autocomplete.mirrorStyles = [
     // The direction.
     'direction'
 ];
-

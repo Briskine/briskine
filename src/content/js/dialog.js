@@ -19,7 +19,6 @@ App.autocomplete.dialog = {
     RESULTS_LIMIT: 5, // only show 5 results at a time
     editor: null,
     qaBtn: null,
-    prevFocus: null,
     dialogSelector: ".qt-dropdown",
     contentSelector: ".qt-dropdown-content",
     searchSelector: ".qt-dropdown-search",
@@ -44,7 +43,7 @@ App.autocomplete.dialog = {
             e.stopPropagation();
         }
 
-        var element = params.focusNode || e.target;
+        var element = params.editor || e.target;
         params.element = element;
 
         // if it's not an editable element
@@ -169,15 +168,11 @@ App.autocomplete.dialog = {
 
         instance.qaBtn.on('mouseup', function (e) {
 
-            // return the focus to the element focused
-            // before clicking the qa button
-            App.autocomplete.dialog.prevFocus.focus();
-
             // position the dialog under the qa button.
             // since the focus node is now the button
             // we have to pass the previous focus (the text node).
             App.autocomplete.dialog.completion(e, {
-                focusNode: App.autocomplete.dialog.prevFocus,
+                editor: App.autocomplete.dialog.editor,
                 dialogPositionNode: e.target,
                 source: 'button'
             });
@@ -384,14 +379,6 @@ App.autocomplete.dialog = {
     show: function (params) {
         params = params || {};
 
-        // get current focused element - the editor
-        var doc = params.element.ownerDocument;
-        App.autocomplete.dialog.editor = doc.activeElement;
-
-        var selection = doc.getSelection();
-        var focusNode = selection.focusNode;
-        App.autocomplete.dialog.focusNode = focusNode;
-
         App.autocomplete.dialog.isActive = true;
         App.autocomplete.dialog.isEmpty = true;
 
@@ -590,12 +577,11 @@ App.autocomplete.dialog = {
     },
     showQaBtn: function (e) {
 
+        var dialog = this;
         var textfield = e.target;
 
-        var dialog = this;
-
         // only show it for valid elements
-        if (!App.autocomplete.dialog.showQaForElement(textfield)) {
+        if (!dialog.showQaForElement(textfield)) {
             return false;
         }
 
@@ -606,37 +592,38 @@ App.autocomplete.dialog = {
 
             $('body').addClass('gorgias-show-qa-btn');
 
-            // TODO refresh the qaBtn reference, so we can check
+            // TODO fix the qa-btn tooltip position
+            // because it's not visible in an iframe
+
+            // refresh the qaBtn reference, so we can check
             // if it stil exists. (outlook clears the entire body)
             dialog.qaBtn = $(dialog.qaBtnSelector);
 
-            // TODO in case the qa-btn doesn't exist, recreate it
+            // in case the qa-btn doesn't exist, recreate it
             if(dialog.qaBtn.length < 1) {
-                // TODO if the body is contenteditable,
+
+                // if the body is contenteditable,
                 // add an empty div, so we don't break
                 // editability
-
+                if(document.body.contentEditable === 'true') {
+                    var blankDiv = document.createElement('div');
+                    blankDiv.innerHTML = '&nbsp;';
+                    document.body.appendChild(blankDiv);
+                }
 
                 if (settings.dialog.enabled) {
                     if (settings.qaBtn.enabled) {
                         // re-create the qa-btn
-                        App.autocomplete.dialog.createQaBtn();
+                        dialog.createQaBtn();
                     }
 
                     // re-create the dialog
-                    App.autocomplete.dialog.create();
+                    dialog.create();
 
-                    // TODO refresh any dialog references?
                 }
             }
 
-            dialog.prevFocus = textfield;
-
             var qaBtn = dialog.qaBtn.get(0);
-
-            // TODO check if the body still has the qa-btn,
-            // if it doesn't, re-create it.
-            // TODO use contentditable=false on all templates
 
             // padding from the top-right corner of the textfield
             var padding = 10;
@@ -724,3 +711,24 @@ $.get(contentUrl, function (data) {
         App.autocomplete.dialog[v.split('.').slice(-1)] = data.slice(start + v.length + 3, end - 4);
     }
 }, "html");
+
+/* focus management. rememeber the last active editor and
+* node in the editor.
+* TODO should probably be moved inside an init function.
+*/
+$(document.body).on('focus keyup mouseup', function(e) {
+
+    if(App.autocomplete.isEditable(e.target)) {
+
+        if(!e.target.classList.contains('qt-dropdown-search')) {
+            var dialog = App.autocomplete.dialog;
+            dialog.editor = e.target;
+
+            var doc = e.target.ownerDocument;
+            var selection = doc.getSelection();
+            dialog.focusNode = selection.focusNode;
+        }
+
+    }
+
+});
