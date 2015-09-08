@@ -12,7 +12,8 @@ if (chrome.runtime) {
         '*://*.facebook.com/*',
         '*://*.fastmail.com/*',
         '*://*.uservoice.com/*',
-        '*://*.zendesk.com/*'
+        '*://*.zendesk.com/*',
+        '*://*.desk.com/*'
     ];
 
     // Called when the url of a tab changes.
