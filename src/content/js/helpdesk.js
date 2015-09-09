@@ -186,8 +186,14 @@ App.helpdesk = {
 
                 ticketId = activeTicket.attr('id');
 
+                var lastComment = activeTicket.find('.customer_history_ticket_container.not(.customer_history_ticket_outside_note):last');
+                var isAgent = lastComment.find('.a-user-icon').hasClass('agent_thumb_50');
+                if (isAgent) { //last comment by the agent
+                    return;
+                }
+
                 var subject = activeTicket.find('.a-ticket-subject').text().trim();
-                var body = activeTicket.find('.a-ticket-meat').text();
+                var body = lastComment.find('.a-ticket-meat').text();
 
                 if (!subject || !subject.length || !body.length) {
                     return;
@@ -218,6 +224,7 @@ App.helpdesk = {
                     var macroContainer = $("<div class='macro-suggestions-container'>");
                     macroContainer.css('margin-left', '63px');
                     macroContainer.css('margin-top', '0px');
+                    macroContainer.css('margin-bottom', '6px');
 
                     for (var i in macros) {
                         var macro = macros[i];
