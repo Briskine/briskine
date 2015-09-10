@@ -186,7 +186,7 @@ App.helpdesk = {
 
                 ticketId = activeTicket.attr('id');
 
-                var lastComment = activeTicket.find('.customer_history_ticket_container.not(.customer_history_ticket_outside_note):last');
+                var lastComment = activeTicket.find('.customer_history_ticket_container:not(.customer_history_ticket_outside_note):last');
                 var isAgent = lastComment.find('.a-user-icon').hasClass('agent_thumb_50');
                 if (isAgent) { //last comment by the agent
                     return;
