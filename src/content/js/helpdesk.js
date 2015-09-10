@@ -45,11 +45,12 @@ App.helpdesk = {
             var ticketUrl = "";
             var ticketCheck = function () {
                 if (window.location.pathname.indexOf('/agent/tickets/') === -1) {
+                    // reset the ticket url if we're not inside a ticket anymore
+                    ticketUrl = "";
                     return;
                 }
-
-                if (!ticketUrl || ticketUrl === window.location.pathname) {
-                    ticketUrl = "";
+                // don't fetch for the same ticket
+                if (ticketUrl === window.location.pathname) {
                     return;
                 }
 
@@ -81,7 +82,6 @@ App.helpdesk = {
                     if (!subject || !subject.length || !body.length) {
                         return;
                     }
-
                     clearInterval(bodyInterval);
 
                     chrome.runtime.sendMessage({
@@ -238,7 +238,7 @@ App.helpdesk = {
                         macroBtn.append(macroEl);
                         macroContainer.append(macroBtn);
                     }
-                    $('.a-ticket-reply .a-float-wrap').after(macroContainer);
+                    activeTicket.find('.a-ticket-reply form:first').after(macroContainer);
                 });
             };
             var caseInterval = setInterval(caseCheck, 200);
