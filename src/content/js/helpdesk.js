@@ -223,8 +223,6 @@ App.helpdesk = {
                     $('.macro-suggestions-container').remove();
                     var macroContainer = $("<div class='macro-suggestions-container'>");
                     macroContainer.css('margin-left', '63px');
-                    macroContainer.css('margin-top', '0px');
-                    macroContainer.css('margin-bottom', '6px');
 
                     for (var i in macros) {
                         var macro = macros[i];
