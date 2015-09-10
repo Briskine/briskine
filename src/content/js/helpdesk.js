@@ -5,10 +5,10 @@
 App.helpdesk = {
     init: function () {
         // fetch template content from the extension
-        if (window.location.hostname.indexOf('zendesk.com') !== -1) {
+        if (window.location.hostname.indexOf('.zendesk.com') !== -1) {
             App.helpdesk.zendesk.init();
         }
-        if (window.location.hostname.indexOf('desk.com') !== -1) {
+        if (window.location.hostname.indexOf('.desk.com') !== -1) {
             App.helpdesk.desk.init();
         }
     },
