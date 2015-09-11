@@ -577,6 +577,11 @@ App.autocomplete.dialog = {
     },
     showQaBtn: function (e) {
 
+        // show the qabtn only on gmail and outlook
+        if (App.activePlugin !== App.plugins['gmail'] && App.activePlugin !== App.plugins['outlook']) {
+            return;
+        }
+
         var dialog = this;
         var textfield = e.target;
 

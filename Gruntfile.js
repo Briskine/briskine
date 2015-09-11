@@ -90,7 +90,7 @@ module.exports = function (grunt) {
                     dependencies.background.js.concat(dependencies.content.js),
                     'pages/**/*.js'
                 ],
-                tasks: ['concat'],
+                tasks: ['concat','jshint'],
                 options: {
                     cwd: config.app,
                     spawn: false
