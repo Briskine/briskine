@@ -296,8 +296,9 @@ $padding = 8px;
     display: none;
     position: absolute;
     z-index: 2147483647;
-    width: 175px;
-    height: 14px;
+    box-sizing: border-box;
+    width: 185px;
+    height: 24px;
     padding: 5px;
     background: #2A2A2A;
     -webkit-border-radius: 2px;
@@ -306,21 +307,33 @@ $padding = 8px;
     color: #fff;
     font-size: 70%;
     font-weight: bold;
-
 }
 
-.gorgias-qa-tooltip:after
-{
+.gorgias-qa-tooltip:after,
+.gorgias-qa-tooltip-bottom:after {
     content: '';
     position: absolute;
-    border-style: solid;
-    border-width: 8px 8px 0;
-    border-color: #2A2A2A transparent;
+    left: 160px;
     display: block;
     width: 0;
     z-index: 1;
+    border-style: solid;
+    border-color: #2A2A2A transparent;
+}
+
+.gorgias-qa-tooltip:after {
+    border-width: 8px 8px 0;
     bottom: -8px;
-    left: 133px;
+}
+
+.gorgias-qa-tooltip-bottom:after {
+    border-width: 0 8px 8px 8px;
+    top: -8px;
+    bottom: auto;
+}
+
+.qa-btn-dropdown-show .gorgias-qa-tooltip {
+    display: none !important;
 }
 
 .g-sidebar {

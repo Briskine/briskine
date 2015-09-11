@@ -188,18 +188,36 @@ App.autocomplete.dialog = {
         });
 
         var showQaTooltip;
+        //var pageHeight = window.innerHeight;
+
+        var tooltip = {
+            height: parseInt(instance.qaTooltip.css('height'), 10),
+            width: parseInt(instance.qaTooltip.css('width'), 10)
+        }
         // Show tooltip
         instance.qaBtn.on('mouseenter', function (e) {
             if (showQaTooltip) {
                 clearTimeout(showQaTooltip);
             }
             showQaTooltip = setTimeout(function () {
-                var padding = 22;
+                var padding = 14;
                 var rect = instance.qaBtn[0].getBoundingClientRect();
+                var top = rect.top - padding - tooltip.height + 'px';
+
+                instance.qaTooltip.removeClass('gorgias-qa-tooltip-bottom');
+
+                // check if we don't have enough space at the top
+                if (rect.top < tooltip.height + padding) {
+                    top = rect.top + rect.height + padding + 'px';
+
+                    instance.qaTooltip.addClass('gorgias-qa-tooltip-bottom');
+                }
+
                 instance.qaTooltip.css({
-                    top: rect.top - padding - parseInt(instance.qaTooltip.css('height'), 10) + "px",
-                    left: rect.left + 45 - parseInt(instance.qaTooltip.css('width'), 10) + "px"
+                    top: top,
+                    left: rect.left - tooltip.width + 28 + 'px'
                 });
+
                 instance.qaTooltip.show();
             }, 500);
 
