@@ -52,6 +52,13 @@ App.autocomplete.dialog = {
             return false;
         }
 
+        // make sure the focus is on the element, before getting its selection.
+        // hack because both getCursorPosition and getSelectedWord depend on the
+        // editor being focused
+        if(document.activeElement !== params.element) {
+            params.element.focus();
+        }
+
         App.autocomplete.cursorPosition = App.autocomplete.getCursorPosition(element);
         var word = App.autocomplete.getSelectedWord({
             element: element
@@ -717,23 +724,30 @@ $.get(contentUrl, function (data) {
     }
 }, "html");
 
-/* focus management. rememeber the last active editor and
-* node in the editor.
-* TODO should probably be moved inside an init function.
-*/
-$(document.body).on('focus keyup mouseup', function(e) {
+// focus management. rememeber the last active editor and
+// node in the editor.
+// TODO should move this to a separate focus module
+// and replace the cursorposition and getSelectedWord functionality
+$(document.body).on('focusin', function(e) {
 
     if(App.autocomplete.isEditable(e.target)) {
 
         if(!e.target.classList.contains('qt-dropdown-search')) {
             var dialog = App.autocomplete.dialog;
             dialog.editor = e.target;
-
-            var doc = e.target.ownerDocument;
-            var selection = doc.getSelection();
-            dialog.focusNode = selection.focusNode;
         }
 
+    }
+
+});
+
+$(document.body).on('mouseup keyup', function(e) {
+
+    // if the target is the editor, or a child
+    if(App.autocomplete.dialog.editor === e.target || $.contains(App.autocomplete.dialog.editor, e.target)) {
+        var doc = e.target.ownerDocument;
+        var selection = doc.getSelection();
+        App.autocomplete.dialog.focusNode = selection.focusNode;
     }
 
 });
