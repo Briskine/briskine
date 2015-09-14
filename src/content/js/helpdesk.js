@@ -8,7 +8,8 @@ App.helpdesk = {
         if (window.location.hostname.indexOf('.zendesk.com') !== -1) {
             App.helpdesk.zendesk.init();
         }
-        if (window.location.hostname.indexOf('.desk.com') !== -1) {
+        // for desk.com it's more complicated as there are custom domains
+        if ($('link[href^=https\\:\\/\\/cdn\\.desk\\.com]').length) {
             App.helpdesk.desk.init();
         }
     },
