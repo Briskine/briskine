@@ -131,6 +131,8 @@ App.autocomplete.dialog = {
 
     },
     createQaBtn: function () {
+        // TODO move all qa-btn functionality to the qabtn.js file
+
         var container = $('body');
 
         var instance = this;
@@ -147,31 +149,31 @@ App.autocomplete.dialog = {
         // move the quick access button around
         // to the focused text field
         // the focus event doesn't support bubbling
-        container.on('focusin', function (e) {
+        // container.on('focusin', function (e) {
+        //
+        //     if (showQaBtnTimer) {
+        //         clearTimeout(showQaBtnTimer);
+        //     }
+        //
+        //     // add a small delay for showing the qa button.
+        //     // in case the element's styles change its position on focus.
+        //     // eg. gmail when you have multiple addresses configured,
+        //     // and the from fields shows/hides on focus.
+        //     showQaBtnTimer = setTimeout(function () {
+        //         // Start fetching suggestions
+        //         App.autocomplete.dialog.fetchSuggestions(e.target);
+        //
+        //         instance.showQaBtn(e);
+        //     }, 350);
+        //
+        // });
 
-            if (showQaBtnTimer) {
-                clearTimeout(showQaBtnTimer);
-            }
-
-            // add a small delay for showing the qa button.
-            // in case the element's styles change its position on focus.
-            // eg. gmail when you have multiple addresses configured,
-            // and the from fields shows/hides on focus.
-            showQaBtnTimer = setTimeout(function () {
-                // Start fetching suggestions
-                App.autocomplete.dialog.fetchSuggestions(e.target);
-
-                instance.showQaBtn(e);
-            }, 350);
-
-        });
-
-        container.on('focusout', function (e) {
-            if (showQaBtnTimer) {
-                clearTimeout(showQaBtnTimer);
-            }
-            instance.hideQaBtn(e);
-        });
+        // container.on('focusout', function (e) {
+        //     if (showQaBtnTimer) {
+        //         clearTimeout(showQaBtnTimer);
+        //     }
+        //     instance.hideQaBtn(e);
+        // });
 
         instance.qaBtn.on('mouseup', function (e) {
 
@@ -193,7 +195,7 @@ App.autocomplete.dialog = {
         var tooltip = {
             height: parseInt(instance.qaTooltip.css('height'), 10),
             width: parseInt(instance.qaTooltip.css('width'), 10)
-        }
+        };
         // Show tooltip
         instance.qaBtn.on('mouseenter', function (e) {
             if (showQaTooltip) {
@@ -644,7 +646,7 @@ App.autocomplete.dialog = {
                 if (settings.dialog.enabled) {
                     if (settings.qaBtn.enabled) {
                         // re-create the qa-btn
-                        dialog.createQaBtn();
+                        //dialog.createQaBtn();
                     }
 
                     // re-create the dialog

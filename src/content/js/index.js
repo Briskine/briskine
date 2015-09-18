@@ -7,7 +7,15 @@ var App = {
     data: {
         searchCache: {},
         debouncer: {},
-        lastFilterRun: 0
+        lastFilterRun: 0,
+        iframe: function() {
+            // check if we're in an iframe
+            try {
+                return window.self !== window.top;
+            } catch (e) {
+                return true;
+            }
+        }()
     },
     editor_enabled: true,
     autocomplete: {},
@@ -274,7 +282,8 @@ App.init = function (settings, doc) {
     }
     if (settings.dialog.enabled) {
         if (settings.qaBtn.enabled) {
-            App.autocomplete.dialog.createQaBtn();
+            //App.autocomplete.dialog.createQaBtn();
+            App.qaBtn.call(App);
         }
         if (settings.dialog.limit) {
             App.autocomplete.dialog.RESULTS_LIMIT = settings.dialog.limit;
