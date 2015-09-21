@@ -7,8 +7,11 @@
 
     $(function () {
         window.gorgiasApplyMacroSuggestion = function (macroId) {
-            $('.ui-macrobox-select button').click();
-            $('.ui-macrobox-select button').click();
+            var activeTicket = $('.active_ticket_type:not(.ui-tabs-hide)');
+            var button = activeTicket.find('.ui-macrobox-select button');
+
+            button.click();
+            button.click();
 
             $('a[itemid=' + macroId + ']').click();
 
