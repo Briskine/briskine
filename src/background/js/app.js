@@ -167,21 +167,22 @@ gApp.run(function ($rootScope, $location, $http, $timeout, ProfileService, Setti
     $rootScope.lastSync = TemplateService.lastSync;
 
     $rootScope.SyncNow = function () {
-        console.log("Synced: ", new Date().toUTCString());
-        TemplateService.sync(function (lastSync) {
-            $rootScope.$broadcast("templates-sync");
-            $rootScope.lastSync = lastSync;
-            TemplateService.syncLocal();
+        TemplateService.sync().then(function (lastSync) {
+            console.log("Synced: ", new Date().toUTCString());
+            var waitForLocal = function(){
+                $rootScope.$broadcast("templates-sync");
+                $rootScope.lastSync = lastSync;
+                TemplateService.syncLocal();
+            };
+            // wait a bit before doing the local sync
+            setTimeout(waitForLocal, 1000);
         });
     };
 
     // Setup recurring syncing interval
-    var syncInterval = null;
-    var sync = function () {
-        window.clearInterval(syncInterval);
-        $rootScope.SyncNow();
-    };
-    syncInterval = window.setInterval(sync, 60 * 1000); // every minute
+    var syncInterval = 10 * 1000;
+
+    window.setInterval($rootScope.SyncNow, syncInterval);
 
     $rootScope.saveEmail = function () {
         var req = {
