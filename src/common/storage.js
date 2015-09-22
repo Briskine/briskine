@@ -85,8 +85,8 @@ var Settings = {
     },
     defaults: {
         baseURL: "https://gorgias.io/",
-        //apiBaseURL: "https://gorgias.io/api/1/",
-        apiBaseURL: "http://localhost:5000/api/1/",
+        apiBaseURL: "https://gorgias.io/api/1/",
+        //apiBaseURL: "http://localhost:5000/api/1/",
 
         settings: { // settings for the settings view
 
