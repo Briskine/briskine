@@ -180,7 +180,7 @@ gApp.run(function ($rootScope, $location, $http, $timeout, ProfileService, Setti
     };
 
     // Setup recurring syncing interval
-    var syncInterval = 10 * 1000;
+    var syncInterval = 30 * 1000;
 
     window.setInterval($rootScope.SyncNow, syncInterval);
 

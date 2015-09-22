@@ -13,10 +13,10 @@ gApp.service('TemplateService', function ($q, $resource, SettingsService) {
             query: {
                 method: "GET",
                 isArray: true,
-                timeout: 9000
+                timeout: 20 * 1000
             },
             update: {
-                method: "PUT",
+                method: "PUT"
             },
             delete: {
                 method: "DELETE",
