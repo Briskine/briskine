@@ -207,7 +207,7 @@ App.helpdesk = {
                             'host': window.location.host,
                             'name': $('#systembar-user-settings-nav>.a-gravatar>span').text()
                         },
-                        'url': window.location.href,
+                        'url': activeTicket.find('input[name^=direct_link]').val(),
                         'subject': subject,
                         'to': '',
                         'cc': '',
