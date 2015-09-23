@@ -92,6 +92,7 @@ gApp.service('TemplateService', function ($q, $resource, SettingsService) {
 
         if (!self.isLoggedin) {
             deferred.resolve();
+            return;
         }
 
         // Get the new or updated templates from the remote server
