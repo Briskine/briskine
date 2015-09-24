@@ -161,6 +161,7 @@ App.helpdesk = {
             // forward the message to the
             window.addEventListener('message', function (event) {
                 if (event.data && event.data.request && event.data.request === 'suggestion-used') {
+                    var activeTicket = $('.active_ticket_type:not(.ui-tabs-hide)');
                     chrome.runtime.sendMessage({
                         'request': 'suggestion-used',
                         'data': {
@@ -168,7 +169,7 @@ App.helpdesk = {
                                 'host': window.location.host,
                                 'name': $('#systembar-user-settings-nav>.a-gravatar>span').text()
                             },
-                            'url': window.location.href,
+                            'url': activeTicket.find('input[name^=direct_link]').val(),
                             'template_id': event.data.template_id
                         }
                     });
