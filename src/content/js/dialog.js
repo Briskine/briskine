@@ -463,24 +463,16 @@ App.autocomplete.dialog = {
     }
 };
 
-// fetch template content from the extension
-var contentUrl = chrome.extension.getURL("pages/content.html");
-$.get(contentUrl, function (data) {
-    var vars = [
-        'App.autocomplete.dialog.qaBtnTemplate',
-        'App.autocomplete.dialog.qaBtnTooltip',
-        'App.autocomplete.dialog.template',
-        'App.autocomplete.dialog.liTemplate'
-    ];
+App.autocomplete.dialog.dispatcher = function(res) {
 
-    for (var i in vars) {
-        var v = vars[i];
-        var start = data.indexOf(v);
-        var end = data.lastIndexOf(v);
-        // todo(@xarg): sorry the barbarian splitting, could have been done much better.
-        App.autocomplete.dialog[v.split('.').slice(-1)] = data.slice(start + v.length + 3, end - 4);
-    }
-}, "html");
+};
+
+App.autocomplete.dialog.init = function(doc) {
+    App.autocomplete.dialog.create();
+    App.autocomplete.dialog.bindKeyboardEvents(doc);
+};
+
+
 
 // focus management. rememeber the last active editor and
 // node in the editor.

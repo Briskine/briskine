@@ -253,6 +253,11 @@ App.qaBtn = (function() {
             hideDialog(res);
         }
 
+        // create the qabtn when the templates are done loading
+        if(res.data.action === 'g-templates-loaded') {
+            create(res);
+        }
+
     };
 
     var create = function() {
@@ -278,13 +283,6 @@ App.qaBtn = (function() {
     var init = function() {
         // only attach the event to the top window
         if(!g.data.iframe) {
-
-            // wait for the template to load
-            // TODO to this differently
-            setTimeout(function() {
-                create();
-            }, 1000);
-
             window.addEventListener('message', dispatcher);
         }
 

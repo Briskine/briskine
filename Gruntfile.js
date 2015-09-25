@@ -63,6 +63,7 @@ module.exports = function (grunt) {
                 'content/js/events.js',
                 'content/js/helpdesk.js',
                 'content/js/qabtn.js',
+                'content/js/templates.js',
 
                 'content/js/plugins/*.js'
             ]

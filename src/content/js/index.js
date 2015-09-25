@@ -232,6 +232,8 @@ Raven.config('https://af2f5e9fb2744c359c19d08c8319d9c5@app.getsentry.com/30379',
     collectWindowErrors: true
 }).install();
 
+// TODO one the postmessage architecture is done
+// we won't need to reference the document here (eg. for the uservoice plugin)
 App.init = function (settings, doc) {
     var body = $(doc).find('body');
 
@@ -289,9 +291,7 @@ App.init = function (settings, doc) {
         }
         Mousetrap.bindGlobal(settings.dialog.shortcut, App.autocomplete.dialog.completion);
 
-        // create dialog once and then reuse the same element
-        App.autocomplete.dialog.create();
-        App.autocomplete.dialog.bindKeyboardEvents(doc);
+        App.autocomplete.dialog.init();
     }
 
     var isGmailUIFrame = function () {
