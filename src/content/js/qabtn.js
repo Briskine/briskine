@@ -253,15 +253,10 @@ App.qaBtn = (function() {
             hideDialog(res);
         }
 
-        // create the qabtn when the templates are done loading
-        if(res.data.action === 'g-templates-loaded') {
-            create(res);
-        }
-
     };
 
     var create = function() {
-        var container = $(document.body);
+        var $container = $(document.body);
 
         // add the dialog quick access icon
         $qaBtn = $(g.autocomplete.dialog.qaBtnTemplate);
@@ -271,8 +266,8 @@ App.qaBtn = (function() {
         $qaBtn.on('mouseenter', showTooltip);
         $qaBtn.on('mouseleave', hideTooltip);
 
-        container.append($qaBtn);
-        container.append($qaTooltip);
+        $container.append($qaBtn);
+        $container.append($qaTooltip);
 
         tooltip = {
             height: parseInt($qaTooltip.css('height'), 10),
@@ -284,6 +279,7 @@ App.qaBtn = (function() {
         // only attach the event to the top window
         if(!g.data.iframe) {
             window.addEventListener('message', dispatcher);
+            create();
         }
 
         // warning:

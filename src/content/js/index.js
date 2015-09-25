@@ -346,7 +346,16 @@ $(function () {
     //}
 
     //console.log("Loaded Gorgias in", window.location.href);
-    App.settings.fetchSettings(App.init, window.document);
+
+    // load templates
+    App.templates.load();
+
+    // initialize the app when the templates are done loading
+    window.addEventListener('message', function(res) {
+        if(res.data && res.data.action === 'g-templates-loaded') {
+            App.settings.fetchSettings(App.init, window.document);
+        }
+    });
 
     // add font-awesome - only on Gmail
     if (window.location.hostname === 'mail.google.com') {
