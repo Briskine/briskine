@@ -281,9 +281,8 @@ App.init = function (settings, doc) {
         Mousetrap.bindGlobal(settings.keyboard.shortcut, App.autocomplete.keyboard.completion);
     }
     if (settings.dialog.enabled) {
-        if (settings.qaBtn.enabled) {
-            //App.autocomplete.dialog.createQaBtn();
-            App.qaBtn.call(App);
+        if (settings.qaBtn && settings.qaBtn.enabled) {
+            App.qaBtn.init();
         }
         if (settings.dialog.limit) {
             App.autocomplete.dialog.RESULTS_LIMIT = settings.dialog.limit;

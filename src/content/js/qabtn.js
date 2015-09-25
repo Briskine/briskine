@@ -2,13 +2,15 @@
  * quick-action button
  */
 
-App.qaBtn = function() {
+App.qaBtn = (function() {
     // the gorgias instance
     var g = this;
 
     var qaPositionInterval;
     var $qaBtn;
     var $qaTooltip;
+    var showQaTooltip;
+    var tooltip;
 
     var showQaForElement = function (elem) {
 
@@ -84,11 +86,16 @@ App.qaBtn = function() {
         }, '*');
     };
 
+    var click = function() {
+        window.top.postMessage({
+            action: 'g-dialog-show'
+        }, '*');
+    };
+
     var setPosition = function (textfield) {
         // TODO just for hacking, rewrite
         var padding = 10;
         var qaBtn = $qaBtn.get(0);
-        document.body.classList.add('gorgias-show-qa-btn');
 
         if(!qaBtn) {
             return;
@@ -126,7 +133,6 @@ App.qaBtn = function() {
     };
 
     var show = function(res) {
-
         var textfield = res.data.textfield;
 
         // if the event came from an iframe,
@@ -155,6 +161,7 @@ App.qaBtn = function() {
             setPosition(textfield);
         }, 1000);
 
+        document.body.classList.add('gorgias-show-qa-btn');
     };
 
     var hide = function(res) {
@@ -166,6 +173,62 @@ App.qaBtn = function() {
             clearInterval(qaPositionInterval);
         }
 
+    };
+
+    var showDialog = function() {
+
+        // TODO change the dialog to also use postmessage
+        // and move this there
+
+        // position the dialog under the qa button.
+        // since the focus node is now the button
+        // we have to pass the previous focus (the text node).
+        // g.autocomplete.dialog.completion(e, {
+        //     editor: g.autocomplete.dialog.editor,
+        //     dialogPositionNode: e.target,
+        //     source: 'button'
+        // });
+
+        document.body.classList.add('qa-btn-dropdown-show');
+    };
+
+    var hideDialog = function() {
+        document.body.classList.remove('qa-btn-dropdown-show');
+    };
+
+    var showTooltip = function() {
+
+        if (showQaTooltip) {
+            clearTimeout(showQaTooltip);
+        }
+
+        showQaTooltip = setTimeout(function () {
+            var padding = 14;
+            var rect = $qaBtn.get(0).getBoundingClientRect();
+            var top = rect.top - padding - tooltip.height + 'px';
+
+            $qaTooltip.removeClass('gorgias-qa-tooltip-bottom');
+
+            // check if we don't have enough space at the top
+            if (rect.top < tooltip.height + padding) {
+                top = rect.top + rect.height + padding + 'px';
+
+                $qaTooltip.addClass('gorgias-qa-tooltip-bottom');
+            }
+
+            $qaTooltip.css({
+                top: top,
+                left: rect.left - tooltip.width + 28 + 'px'
+            });
+
+            $qaTooltip.show();
+        }, 500);
+
+    };
+
+    var hideTooltip = function () {
+        clearTimeout(showQaTooltip);
+        $qaTooltip.hide();
     };
 
     var dispatcher = function (res) {
@@ -182,24 +245,37 @@ App.qaBtn = function() {
             hide(res);
         }
 
+        if(res.data.action === 'g-dialog-show') {
+            showDialog(res);
+        }
+
+        if(res.data.action === 'g-dialog-hide') {
+            hideDialog(res);
+        }
+
     };
 
     var create = function() {
-
-        // TODO needs some refactoring
-        var container = $('body');
+        var container = $(document.body);
 
         // add the dialog quick access icon
         $qaBtn = $(g.autocomplete.dialog.qaBtnTemplate);
         $qaTooltip = $(g.autocomplete.dialog.qaBtnTooltip);
 
+        $qaBtn.on('click', click);
+        $qaBtn.on('mouseenter', showTooltip);
+        $qaBtn.on('mouseleave', hideTooltip);
+
         container.append($qaBtn);
         container.append($qaTooltip);
 
+        tooltip = {
+            height: parseInt($qaTooltip.css('height'), 10),
+            width: parseInt($qaTooltip.css('width'), 10)
+        };
     };
 
     var init = function() {
-
         // only attach the event to the top window
         if(!g.data.iframe) {
 
@@ -217,12 +293,9 @@ App.qaBtn = function() {
         // but only chrome supports focusin.
         document.body.addEventListener('focusin', focusin);
         document.body.addEventListener('focusout', focusout);
-
     };
-
-    init();
 
     return {
         init: init
     };
-};
+}).call(App);
