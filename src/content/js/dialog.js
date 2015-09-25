@@ -22,11 +22,14 @@ App.autocomplete.dialog = {
     contentSelector: '.qt-dropdown-content',
     searchSelector: '.qt-dropdown-search',
     newTemplateSelector: '.g-new-template',
+    qaBtnSelector: '.gorgias-qa-btn',
     qaPositionInterval: null,
     suggestedTemplates: [],
     suggestionHidden: false,
 
     completion: function (e, params) {
+        // TODO refactor the completion so we don't have to use e.target
+        // and support postmesage
         if (typeof params !== 'object') {
             params = {};
         }
@@ -402,6 +405,11 @@ App.autocomplete.dialog = {
                 return quicktext.id === activeItemId;
             })[0];
 
+            // TODO refactor replaceWith so that is works with postmessage.
+            // * we can't pass the Element around with postmessage
+            // so we need to find a way to do focus management in each
+            // iframe automatically.(eg. similar to how the new dialog
+            // focus management works)
             App.autocomplete.replaceWith({
                 element: App.autocomplete.dialog.editor,
                 quicktext: quicktext,
@@ -464,20 +472,46 @@ App.autocomplete.dialog = {
 };
 
 App.autocomplete.dialog.dispatcher = function(res) {
+    var dialog = App.autocomplete.dialog;
+    var g = App;
+
+    if(!res.data) {
+        return;
+    }
+
+    if(res.data.action === 'g-dialog-show') {
+        dialog.show();
+    }
+
+    if(res.data.action === 'g-dialog-show-qa') {
+        // position the dialog under the qa button.
+        // since the focus node is now the button
+        // we have to pass the previous focus (the text node).
+        g.autocomplete.dialog.completion({}, {
+            editor: g.autocomplete.dialog.editor,
+            dialogPositionNode: document.querySelector(dialog.qaBtnSelector),
+            source: 'button'
+        });
+    }
 
 };
 
 App.autocomplete.dialog.init = function(doc) {
-    App.autocomplete.dialog.create();
-    App.autocomplete.dialog.bindKeyboardEvents(doc);
+    // only create the dialog in the top window
+    if(!App.data.iframe) {
+        this.create();
+        window.addEventListener('message', this.dispatcher);
+    }
+
+    // TODO refactor keyboard events to use postmessage
+    this.bindKeyboardEvents(doc);
 };
-
-
 
 // focus management. rememeber the last active editor and
 // node in the editor.
-// TODO should move this to a separate focus module
-// and replace the cursorposition and getSelectedWord functionality
+// TODO should improve this and probably
+// replace the cursorposition and getSelectedWord functionality
+App.focus = {};
 $(document.body).on('focusin', function(e) {
 
     if(App.autocomplete.isEditable(e.target)) {
@@ -485,6 +519,8 @@ $(document.body).on('focusin', function(e) {
         if(!e.target.classList.contains('qt-dropdown-search')) {
             var dialog = App.autocomplete.dialog;
             dialog.editor = e.target;
+
+            App.focus.editor = e.target;
         }
 
     }
@@ -498,6 +534,9 @@ $(document.body).on('mouseup keyup', function(e) {
         var doc = e.target.ownerDocument;
         var selection = doc.getSelection();
         App.autocomplete.dialog.focusNode = selection.focusNode;
+
+        App.focus.node = selection.focusNode;
+        App.focus.selection = selection;
     }
 
 });

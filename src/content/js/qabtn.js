@@ -88,7 +88,7 @@ App.qaBtn = (function() {
 
     var click = function() {
         window.top.postMessage({
-            action: 'g-dialog-show'
+            action: 'g-dialog-show-qa'
         }, '*');
     };
 
@@ -164,7 +164,7 @@ App.qaBtn = (function() {
         document.body.classList.add('gorgias-show-qa-btn');
     };
 
-    var hide = function(res) {
+    var hide = function(e) {
 
         document.body.classList.remove('gorgias-show-qa-btn');
 
@@ -176,19 +176,6 @@ App.qaBtn = (function() {
     };
 
     var showDialog = function() {
-
-        // TODO change the dialog to also use postmessage
-        // and move this there
-
-        // position the dialog under the qa button.
-        // since the focus node is now the button
-        // we have to pass the previous focus (the text node).
-        // g.autocomplete.dialog.completion(e, {
-        //     editor: g.autocomplete.dialog.editor,
-        //     dialogPositionNode: e.target,
-        //     source: 'button'
-        // });
-
         document.body.classList.add('qa-btn-dropdown-show');
     };
 
@@ -242,10 +229,13 @@ App.qaBtn = (function() {
         }
 
         if(res.data.action === 'g-qabtn-hide') {
-            hide(res);
+            hide();
+            // hide the dialog along with the button
+            // in case it's open
+            hideDialog();
         }
 
-        if(res.data.action === 'g-dialog-show') {
+        if(res.data.action === 'g-dialog-show-qa') {
             showDialog(res);
         }
 
@@ -278,8 +268,8 @@ App.qaBtn = (function() {
     var init = function() {
         // only attach the event to the top window
         if(!g.data.iframe) {
-            window.addEventListener('message', dispatcher);
             create();
+            window.addEventListener('message', dispatcher);
         }
 
         // warning:
@@ -287,6 +277,8 @@ App.qaBtn = (function() {
         // but only chrome supports focusin.
         document.body.addEventListener('focusin', focusin);
         document.body.addEventListener('focusout', focusout);
+        // use mouseout, so focus triggers after it
+        document.body.addEventListener('mousedown', focusout);
     };
 
     return {

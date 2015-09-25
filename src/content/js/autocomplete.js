@@ -227,6 +227,9 @@ App.autocomplete.replaceWith = function (params) {
 
     App.autocomplete.justCompleted = true; // the idea is that we don't want any completion to popup after we just completed
 
+    // TODO experimental
+    params.element = App.focus.editor;
+
     var setText = function () {
 
         App.activePlugin.getData({
@@ -237,7 +240,9 @@ App.autocomplete.replaceWith = function (params) {
 
             if (App.autocomplete.isContentEditable(params.element)) {
 
-                var selection = doc.getSelection();
+                // var selection = doc.getSelection();
+                var selection = App.focus.selection;
+
                 var range = doc.createRange();
 
                 replacement = parsedTemplate;
@@ -249,10 +254,11 @@ App.autocomplete.replaceWith = function (params) {
                 // setStart/setEnd work differently based on
                 // the type of node
                 // https://developer.mozilla.org/en-US/docs/Web/API/range.setStart
-                var focusNode = params.focusNode;
-                if (focusNode === null) {
-                    focusNode = selection.focusNode;
-                }
+                //var focusNode = params.focusNode;
+                var focusNode = App.focus.node;
+                // if (focusNode === null) {
+                //     focusNode = selection.focusNode;
+                // }
 
 
                 // we need to have a text node in the end
@@ -278,7 +284,10 @@ App.autocomplete.replaceWith = function (params) {
                     range.setEnd(focusNode, word.end);
                     range.deleteContents();
                 } else {
-                    range.setStart(focusNode, word.end);
+                    // TODO `word` is sometimes wrong, throwing errors like
+                    // `The offset 5 is larger than or equal to the node's length (0).`
+                    // after adding multiple quicktexts.
+                    range.setStart(focusNode, word.start);
                     range.setEnd(focusNode, word.end);
                 }
 
