@@ -88,8 +88,7 @@ module.exports = function (grunt) {
             },
             js: {
                 files: [
-                    dependencies.background.js.concat(dependencies.content.js),
-                    'pages/**/*.js'
+                    dependencies.background.js.concat(dependencies.content.js)
                 ],
                 tasks: ['concat','jshint'],
                 options: {
@@ -100,7 +99,8 @@ module.exports = function (grunt) {
             copy: {
                 files: [
                     '**/*.html',
-                    '**/*.png'
+                    '**/*.png',
+                    'pages/*/*.js'
                 ],
                 tasks: [ 'copy:development' ],
                 options: {

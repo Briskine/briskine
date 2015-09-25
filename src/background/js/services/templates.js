@@ -10,6 +10,11 @@ gApp.service('TemplateService', function ($q, $resource, SettingsService) {
         self.qRes = $resource(apiBaseURL + 'quicktexts/:quicktextId', {
             quicktextId: '@remote_id'
         }, {
+            query: {
+                method: "GET",
+                isArray: true,
+                timeout: 20 * 1000
+            },
             update: {
                 method: "PUT"
             },
@@ -77,57 +82,83 @@ gApp.service('TemplateService', function ($q, $resource, SettingsService) {
 
      * Created (no similar remote_id found locally) - update sync_date
      * Updated (found remote_id - update) - update sync_date
+     * Deleted (present locally, but not present in remote templates)
      */
 
     self.lastSync = null;
 
-    self.sync = function (callback) {
+    self.sync = function () {
+        var deferred = $q.defer();
+
         if (!self.isLoggedin) {
-            return;
+            deferred.resolve();
+            return deferred.promise;
         }
 
         // Get the new or updated templates from the remote server
         self.qRes.query(function (remoteTemplates) {
             var now = new Date().toUTCString();
 
+            var localSeen = [];
+            var remoteSeen = [];
             TemplateStorage.get(null, function (localTemplates) {
-                _.each(remoteTemplates, function (remote) {
-                    var t;
-                    var lastVersion = remote.versions[0];
+                for (var id in localTemplates) {
+                    var t = localTemplates[id];
+                    if (t.remote_id) {
+                        localSeen.push(t.remote_id);
+                    }
+                }
+
+                _.each(remoteTemplates, function (remoteTemplate) {
+                    var localTemplate;
+                    var lastVersion = remoteTemplate.versions[0];
+
+                    remoteSeen.push(remoteTemplate.id);
 
                     var updated = false;
                     for (var id in localTemplates) {
-                        t = localTemplates[id];
-                        if (t.remote_id === remote.id) {
-                            t = self._copy(lastVersion, t);
-                            t.remote_id = remote.id;
-                            self.update(t, true, true);
+                        localTemplate = localTemplates[id];
+
+                        if (localTemplate.remote_id === remoteTemplate.id) {
+                            localTemplate = self._copy(lastVersion, localTemplate);
+                            localTemplate.remote_id = remoteTemplate.id;
+                            self.update(localTemplate, true, true);
 
                             updated = true;
                             break;
                         }
                     }
 
+                    // If we haven't seen a local template, create it
                     // I wish there was for..else in JS
                     if (!updated) {
-                        t = self._copy(lastVersion, {});
-                        t.remote_id = remote.id;
-                        t.sync_datetime = now;
+                        localTemplate = self._copy(lastVersion, {});
+                        localTemplate.remote_id = remoteTemplate.id;
+                        localTemplate.sync_datetime = now;
 
-                        self.create(t, true).then(function () {
+                        self.create(localTemplate, true).then(function () {
 
                         });
                     }
                 });
+
+                // delete local templates that have a remote_id, but are not present through the API request
+                var deleteLocal = _.difference(localSeen, remoteSeen);
+                _.each(deleteLocal, function(remoteId){
+                    TemplateStorage.get(null, function (localTemplates) {
+                        _.each(localTemplates, function(localTemplate){
+                            if(localTemplate.remote_id === remoteId){
+                                self.delete(localTemplate, true);
+                            }
+                        });
+                    });
+                });
+                self.lastSync = new Date();
+                deferred.resolve(self.lastSync);
             });
         });
 
-        // TODO should probably be done in one of the query callbacks
-        // after a successful sync
-        self.lastSync = new Date();
-        if (callback) {
-            callback(self.lastSync);
-        }
+        return deferred.promise;
     };
 
     /**
@@ -397,9 +428,9 @@ gApp.service('TemplateService', function ($q, $resource, SettingsService) {
     };
 
 // delete a template and try to sync
-    self.delete = function (t) {
+    self.delete = function (t, onlyLocal) {
         var deferred = $q.defer();
-        if (!t.remote_id) {
+        if (onlyLocal || !t.remote_id) {
             TemplateStorage.remove(t.id, function () {
                 mixpanel.track("Deleted template");
                 deferred.resolve();
