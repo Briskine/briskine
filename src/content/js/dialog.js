@@ -23,29 +23,12 @@ App.autocomplete.dialog = {
     searchSelector: '.qt-dropdown-search',
     newTemplateSelector: '.g-new-template',
     qaBtnSelector: '.gorgias-qa-btn',
-    qaPositionInterval: null,
     suggestedTemplates: [],
     suggestionHidden: false,
 
-    completion: function (e, params) {
-        // TODO refactor the completion so we don't have to use e.target
-        // and support postmesage
-        if (typeof params !== 'object') {
-            params = {};
-        }
-
+    completion: function (params) {
         params = params || {};
-
-        if (e.preventDefault) {
-            e.preventDefault();
-        }
-
-        if (e.stopPropagation) {
-            e.stopPropagation();
-        }
-
-        var element = params.editor || e.target;
-        params.element = element;
+        var element = App.focus.editor;
 
         // if it's not an editable element
         // don't trigger anything
@@ -56,8 +39,8 @@ App.autocomplete.dialog = {
         // make sure the focus is on the element, before getting its selection.
         // hack because both getCursorPosition and getSelectedWord depend on the
         // editor being focused
-        if(document.activeElement !== params.element) {
-            params.element.focus();
+        if(document.activeElement !== element) {
+            element.focus();
         }
 
         App.autocomplete.cursorPosition = App.autocomplete.getCursorPosition(element);
@@ -67,20 +50,15 @@ App.autocomplete.dialog = {
 
         App.autocomplete.cursorPosition.word = word;
 
-        App.settings.getFiltered("", App.autocomplete.dialog.RESULTS_LIMIT, function (quicktexts) {
+        if (params.source !== 'button') {
+            params.metrics = App.autocomplete.cursorPosition.absolute;
+        }
+
+        App.settings.getFiltered('', App.autocomplete.dialog.RESULTS_LIMIT, function (quicktexts) {
             App.autocomplete.quicktexts = quicktexts;
+            params.action = 'g-dialog-populate';
 
-            params.quicktexts = App.autocomplete.quicktexts;
-
-            App.autocomplete.dialog.populate(params);
-
-            chrome.runtime.sendMessage({
-                'request': 'track',
-                'event': 'Showed dialog',
-                'data': {
-                    source: params.source ? params.source : "keyboard"
-                }
-            });
+            window.top.postMessage(params, '*');
         });
 
     },
@@ -122,11 +100,12 @@ App.autocomplete.dialog = {
             App.autocomplete.dialog.suggestionHidden = App.autocomplete.cursorPosition.word.text ? true : false;
 
             App.settings.getFiltered(App.autocomplete.cursorPosition.word.text, App.autocomplete.dialog.RESULTS_LIMIT, function (quicktexts) {
-
-                App.autocomplete.quicktexts = quicktexts;
-                App.autocomplete.dialog.populate({
-                    quicktexts: App.autocomplete.quicktexts
-                });
+                // if the dialog was closed before we got the results
+                // leave it alone
+                if(App.autocomplete.dialog.isActive) {
+                    App.autocomplete.quicktexts = quicktexts;
+                    App.autocomplete.dialog.populate();
+                }
             });
         });
 
@@ -166,15 +145,15 @@ App.autocomplete.dialog = {
         });
 
     },
-    populate: function (params) {
-        params = params || {};
-
-        App.autocomplete.quicktexts = params.quicktexts;
+    populate: function (res) {
+        res = res || {};
+        params = res.data || {};
+        var i;
 
         if (App.autocomplete.dialog.suggestedTemplates.length && !App.autocomplete.dialog.suggestionHidden) {
 
             var found = false;
-            for (var i in App.autocomplete.quicktexts) {
+            for (i in App.autocomplete.quicktexts) {
                 var t = App.autocomplete.quicktexts[i];
                 for (var j in App.autocomplete.dialog.suggestedTemplates) {
                     var s = App.autocomplete.dialog.suggestedTemplates[j];
@@ -204,7 +183,7 @@ App.autocomplete.dialog = {
         // highlight found string in element title, body and shortcut
         var word_text = '';
         var text = '';
-        if (App.autocomplete.cursorPosition && App.autocomplete.cursorPosition.word) {
+        if (App.autocomplete.cursorPosition.word.text) {
             word_text = App.autocomplete.cursorPosition.word.text;
             text = word_text.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
         }
@@ -241,6 +220,23 @@ App.autocomplete.dialog = {
         $(this.contentSelector).html(content);
 
         if (!App.autocomplete.dialog.isActive) {
+            // if the event came from an iframe,
+            // find the iframe dom node where it came from,
+            // get its positions and merge them with the textfield position
+            if(window !== res.source && params.source !== 'button') {
+                var iframes = document.querySelectorAll('iframe');
+                for(i = 0; i < iframes.length; i++) {
+                    // found the iframe where the event came from
+                    if(iframes[i].contentWindow === res.source) {
+                        // add the extra x/y to it
+                        var rect = iframes[i].getBoundingClientRect();
+                        params.metrics.left += rect.left;
+                        params.metrics.top += rect.top;
+                        break;
+                    }
+                }
+            }
+
             App.autocomplete.dialog.show(params);
         }
 
@@ -311,13 +307,28 @@ App.autocomplete.dialog = {
 
         $(App.autocomplete.dialog.contentSelector).scrollTop();
 
-        App.autocomplete.dialog.setDialogPosition(params.dialogPositionNode);
+        // TODO refactor to use absolute px data from postmessage
+        // instead of dom node
+        App.autocomplete.dialog.setPosition(params);
 
         // focus the input focus after setting the position
         // because it messes with the window scroll focused
         $(App.autocomplete.dialog.searchSelector).focus();
+
+        chrome.runtime.sendMessage({
+            'request': 'track',
+            'event': 'Showed dialog',
+            'data': {
+                source: params.source ? params.source : 'keyboard'
+            }
+        });
     },
-    setDialogPosition: function (positionNode) {
+    setPosition: function (params) {
+        params = params || {};
+
+        // TODO sometimes params.metrics comes empty from the keyboard
+        // shortcut.
+
         if (!App.autocomplete.dialog.isActive) {
             return;
         }
@@ -330,7 +341,7 @@ App.autocomplete.dialog = {
 
         $('body').removeClass('qt-dropdown-show-top');
 
-        var $dialog = $(App.autocomplete.dialog.dialogSelector);
+        var $dialog = $(this.dialogSelector);
 
         var dialogMetrics = $dialog.get(0).getBoundingClientRect();
 
@@ -338,15 +349,11 @@ App.autocomplete.dialog = {
         var leftPos = 0;
 
         // in case we want to position the dialog next to
-        // another element,
-        // not next to the cursor.
-        // eg. when we position it next to the qa button.
+        // the qa-button
+        if (params.source === 'button') {
+            var positionNode =  document.querySelector(this.qaBtnSelector);
 
-        var metrics;
-
-        if (positionNode && positionNode.tagName) {
-
-            metrics = positionNode.getBoundingClientRect();
+            params.metrics = positionNode.getBoundingClientRect();
 
             leftPos -= dialogMetrics.width;
 
@@ -355,16 +362,13 @@ App.autocomplete.dialog = {
             topPos += scrollTop;
             leftPos += scrollLeft;
 
-        } else {
-
-            // cursorPosition doesn't need scrollTop/Left
-            // because it uses the absolute page offset positions
-            metrics = App.autocomplete.cursorPosition.absolute;
-
+            // the default params.metrics (cursorPosition)
+            // don't need scrollTop/Left
+            // because they use the absolute page offset positions
         }
 
-        topPos += metrics.top + metrics.height;
-        leftPos += metrics.left + metrics.width;
+        topPos += params.metrics.top + params.metrics.height;
+        leftPos += params.metrics.left + params.metrics.width;
 
         topPos += paddingTop;
 
@@ -373,7 +377,7 @@ App.autocomplete.dialog = {
         if ((pageHeight - (topPos - scrollTop)) < dialogMaxHeight) {
 
             topPos -= dialogMetrics.height;
-            topPos -= metrics.height;
+            topPos -= params.metrics.height;
 
             topPos -= paddingTop * 2;
 
@@ -479,19 +483,23 @@ App.autocomplete.dialog.dispatcher = function(res) {
         return;
     }
 
-    if(res.data.action === 'g-dialog-show') {
-        dialog.show();
+    // events that should only be cought in the top window
+    if(!App.data.iframe) {
+
+        if(res.data.action === 'g-dialog-populate') {
+            dialog.populate(res);
+        }
+
     }
 
-    if(res.data.action === 'g-dialog-show-qa') {
-        // position the dialog under the qa button.
-        // since the focus node is now the button
-        // we have to pass the previous focus (the text node).
-        g.autocomplete.dialog.completion({}, {
-            editor: g.autocomplete.dialog.editor,
-            dialogPositionNode: document.querySelector(dialog.qaBtnSelector),
-            source: 'button'
-        });
+    if(res.data.action === 'g-dialog-completion') {
+        var completionOptions = {};
+        if(res.data.source === 'button') {
+            completionOptions.source = 'button';
+        }
+
+
+        dialog.completion(completionOptions);
     }
 
 };
@@ -500,8 +508,9 @@ App.autocomplete.dialog.init = function(doc) {
     // only create the dialog in the top window
     if(!App.data.iframe) {
         this.create();
-        window.addEventListener('message', this.dispatcher);
     }
+
+    window.addEventListener('message', this.dispatcher);
 
     // TODO refactor keyboard events to use postmessage
     this.bindKeyboardEvents(doc);
@@ -528,6 +537,11 @@ $(document.body).on('focusin', function(e) {
 });
 
 $(document.body).on('mouseup keyup', function(e) {
+
+    // if we haven't got the editor yet
+    if(!App.autocomplete.dialog.editor) {
+        return;
+    }
 
     // if the target is the editor, or a child
     if(App.autocomplete.dialog.editor === e.target || $.contains(App.autocomplete.dialog.editor, e.target)) {

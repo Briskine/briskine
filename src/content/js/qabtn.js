@@ -11,6 +11,7 @@ App.qaBtn = (function() {
     var $qaTooltip;
     var showQaTooltip;
     var tooltip;
+    var currentWindow = window;
 
     var showQaForElement = function (elem) {
 
@@ -52,7 +53,10 @@ App.qaBtn = (function() {
     var focusin = function(e) {
 
         // show the qabtn only on gmail and outlook
-        if (g.activePlugin !== g.plugins['gmail'] && g.activePlugin !== g.plugins['outlook']) {
+        // and allow on localhost, for testing
+        if (
+            (g.activePlugin !== g.plugins['gmail'] && g.activePlugin !== g.plugins['outlook']) && window.location.href.indexOf('http://localhost') === -1
+        ) {
             return;
         }
 
@@ -87,8 +91,9 @@ App.qaBtn = (function() {
     };
 
     var click = function() {
-        window.top.postMessage({
-            action: 'g-dialog-show-qa'
+        currentWindow.postMessage({
+            action: 'g-dialog-completion',
+            source: 'button'
         }, '*');
     };
 
@@ -134,6 +139,7 @@ App.qaBtn = (function() {
 
     var show = function(res) {
         var textfield = res.data.textfield;
+        currentWindow = window;
 
         // if the event came from an iframe,
         // find the iframe dom node where it came from,
@@ -151,6 +157,10 @@ App.qaBtn = (function() {
                     break;
                 }
             }
+
+            // save the currentWindow, for which iframe the btn was shown
+            // so we can post to this window, on btn click
+            currentWindow = res.source;
         }
 
         setPosition(textfield);

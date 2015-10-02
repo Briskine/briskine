@@ -289,7 +289,11 @@ App.init = function (settings, doc) {
         if (settings.dialog.limit) {
             App.autocomplete.dialog.RESULTS_LIMIT = settings.dialog.limit;
         }
-        Mousetrap.bindGlobal(settings.dialog.shortcut, App.autocomplete.dialog.completion);
+        Mousetrap.bindGlobal(settings.dialog.shortcut, function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            App.autocomplete.dialog.completion();
+        });
 
         App.autocomplete.dialog.init();
     }

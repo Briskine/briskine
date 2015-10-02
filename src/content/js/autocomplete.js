@@ -29,7 +29,9 @@ var KEY_TAB = 9,
     KEY_ENTER = 13;
 
 App.autocomplete.quicktexts = [];
-App.autocomplete.cursorPosition = null;
+App.autocomplete.cursorPosition = {
+    word: {}
+};
 
 App.autocomplete.isEditable = function (element) {
 
