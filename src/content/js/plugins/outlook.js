@@ -94,7 +94,7 @@ App.plugin('outlook', (function() {
         var response = {};
 
         var $subjectField = $('input[name=fSubject]', window.parent.document);
-        $subjectField.val(params.subject);
+        $subjectField.val(params.quicktext.subject);
 
         if(callback) {
             callback(null, response);
@@ -107,7 +107,7 @@ App.plugin('outlook', (function() {
         var outlookUrl = '.mail.live.com/';
 
         var activateExtension = false;
-        
+
         // trigger the extension based on url
         if(window.location.href.indexOf(outlookUrl) !== -1) {
             activateExtension = true;

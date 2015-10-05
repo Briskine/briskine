@@ -404,7 +404,7 @@ App.autocomplete.replaceWith = function (params) {
 
     // set subject field
     if (params.quicktext.subject) {
-        App.activePlugin.setTitle(params.quicktext);
+        App.activePlugin.setTitle(params);
     }
 
     // updates stats

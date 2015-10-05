@@ -123,8 +123,8 @@ App.plugin('gmail', (function() {
 
         var response = {};
 
-        var $subjectField = $('input[name=subjectbox]');
-        $subjectField.val(params.subject);
+        var $subjectField = $(params.element).closest('table.aoP').find('input[name=subjectbox]');
+        $subjectField.val(params.quicktext.subject);
 
         if(callback) {
             callback(null, response);
