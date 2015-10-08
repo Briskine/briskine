@@ -234,13 +234,13 @@ gApp.controller('ListCtrl',
                 return false;
             }
 
-
+            console.log('before update', $scope.selectedTemplate);
             TemplateService.quicktexts().then(function (templates) {
                 if ($scope.selectedTemplate.shortcut) {
                     for (var i in templates) {
                         var qt = templates[i];
                         if (qt.id !== $scope.selectedTemplate.id && qt.shortcut === $scope.selectedTemplate.shortcut) {
-                            alert("There is another a template with the '" + $scope.selectedTemplate.shortcut + "' keyboard shortcut");
+                            alert("There is another template with the '" + $scope.selectedTemplate.shortcut + "' keyboard shortcut");
                             return false;
                         }
                     }
@@ -248,6 +248,7 @@ gApp.controller('ListCtrl',
                 if ($scope.selectedTemplate.id) {
                     TemplateService.update($scope.selectedTemplate).then(function () {
                         $scope.reloadTemplates();
+                        console.log('after update', $scope.selectedTemplate);
                     });
                 } else {
                     TemplateService.create($scope.selectedTemplate).then(function () {
@@ -275,6 +276,9 @@ gApp.controller('ListCtrl',
             // append a (copy) to the title
             var newQt = angular.copy($scope.selectedTemplate);
             newQt.title = newQt.title + " (copy)";
+            if (newQt.shortcut) {
+                newQt.shortcut = newQt.shortcut + "-copy";
+            }
             $('.modal').on('hidden.bs.modal', function () {
                 $('#duplicate-alert-box').addClass('hide');
             });

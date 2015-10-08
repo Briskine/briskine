@@ -33,9 +33,13 @@ gApp.filter('safe', function ($sce) {
 
 gApp.filter('stripHTML', function ($sce) {
     return function (html) {
-        var tmp = document.createElement("DIV");
-        tmp.innerHTML = html;
-        return tmp.innerText || "";
+        try {
+            var doc = document.implementation.createDocument('http://www.w3.org/1999/xhtml', 'html', null);
+            doc.documentElement.innerHTML = html;
+            return doc.documentElement.textContent||doc.documentElement.innerText;
+        } catch(e) {
+            return "";
+        }
     };
 });
 

@@ -97,7 +97,7 @@ gApp.service('TemplateService', function ($q, $resource, SettingsService) {
 
         // Get the new or updated templates from the remote server
         self.qRes.query(function (remoteTemplates) {
-            var now = new Date().toUTCString();
+            var now = new Date().toISOString();
 
             var localSeen = [];
             var remoteSeen = [];
@@ -122,6 +122,8 @@ gApp.service('TemplateService', function ($q, $resource, SettingsService) {
                         if (localTemplate.remote_id === remoteTemplate.id) {
                             localTemplate = self._copy(lastVersion, localTemplate);
                             localTemplate.remote_id = remoteTemplate.id;
+                            // use the remote created_datetime as reference
+                            localTemplate.created_datetime = remoteTemplate.created_datetime;
                             self.update(localTemplate, true, true);
 
                             updated = true;
@@ -197,7 +199,7 @@ gApp.service('TemplateService', function ($q, $resource, SettingsService) {
                         // before the remote request is finished
                         return function (res) {
                             ut.remote_id = res.id;
-                            ut.sync_datetime = new Date().toUTCString();
+                            ut.sync_datetime = new Date().toISOString();
 
                             var data = {};
                             data[ut.id] = ut;
@@ -225,7 +227,7 @@ gApp.service('TemplateService', function ($q, $resource, SettingsService) {
                                 return function (remote) {
                                     remote = self._copy(ut, remote);
                                     remote.$update(function () {
-                                        ut.sync_datetime = new Date().toUTCString();
+                                        ut.sync_datetime = new Date().toISOString();
                                         var data = {};
                                         data[ut.id] = ut;
                                         TemplateStorage.set(data);
@@ -318,7 +320,7 @@ gApp.service('TemplateService', function ($q, $resource, SettingsService) {
         t.nosync = typeof t.nosync !== 'undefined' ? t.nosync : 0;
         t.deleted = 0;
         t.use_count = 0;
-        t.created_datetime = new Date().toUTCString();
+        t.created_datetime = new Date().toISOString();
         t.updated_datetime = t.updated_datetime || "";
         t.sync_datetime = t.sync_datetime || "";
         t.lastuse_datetime = t.lastuse_datetime || "";
@@ -353,7 +355,7 @@ gApp.service('TemplateService', function ($q, $resource, SettingsService) {
             remote.$save(function (remote) {
                 // once it's saved server side, store the remote_id in the database
                 t.remote_id = remote.id;
-                t.sync_datetime = new Date().toUTCString();
+                t.sync_datetime = new Date().toISOString();
                 TemplateStorage.set(data, function () {
                     deferred.resolve(t.id);
                 });
@@ -362,15 +364,15 @@ gApp.service('TemplateService', function ($q, $resource, SettingsService) {
         return deferred.promise;
     };
 
-// update a template and try to sync
+    // update a template and try to sync
     self.update = function (t, onlyLocal, synced) {
         var deferred = $q.defer();
 
         // this template was synced. Update only sync_datetime and not updated_datetime
         if (synced) {
-            t.sync_datetime = new Date().toUTCString();
+            t.sync_datetime = new Date().toISOString();
         } else {
-            t.updated_datetime = t.updated_datetime || new Date().toUTCString();
+            t.updated_datetime = t.updated_datetime || new Date().toISOString();
         }
         var data = {};
         data[t.id] = t;
@@ -400,7 +402,7 @@ gApp.service('TemplateService', function ($q, $resource, SettingsService) {
                 remote.$save(function (res) {
 
                     t.remote_id = res.id;
-                    t.sync_datetime = new Date().toUTCString();
+                    t.sync_datetime = new Date().toISOString();
 
                     var data = {};
                     data[t.id] = t;
@@ -413,7 +415,7 @@ gApp.service('TemplateService', function ($q, $resource, SettingsService) {
                 self.qRes.get({quicktextId: t.remote_id}, function (remote) {
                     remote = self._copy(t, remote);
                     remote.$update(function () {
-                        t.sync_datetime = new Date().toUTCString();
+                        t.sync_datetime = new Date().toISOString();
                         var data = {};
                         data[t.id] = t;
                         TemplateStorage.set(data, function () {
@@ -512,7 +514,7 @@ gApp.service('TemplateService', function ($q, $resource, SettingsService) {
                 template.use_count = 0;
             }
             template.use_count++;
-            template.lastuse_datetime = new Date().toUTCString();
+            template.lastuse_datetime = new Date().toISOString();
             data[template.id] = template;
             TemplateStorage.set(data, function () {
                 deferred.resolve();
