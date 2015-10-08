@@ -48,9 +48,9 @@ gApp.service('TemplateService', function ($q, $resource, SettingsService) {
                 return new Date(b.created_datetime) - new Date(a.created_datetime);
             });
             // sort by updated_datetime desc
-            templates.sort(function (a, b) {
-                return new Date(b.updated_datetime) - new Date(a.updated_datetime);
-            });
+            // templates.sort(function (a, b) {
+            //     return new Date(b.updated_datetime) - new Date(a.updated_datetime);
+            // });
 
             if (limit) {
                 templates = templates.splice(0, limit);
@@ -144,10 +144,10 @@ gApp.service('TemplateService', function ($q, $resource, SettingsService) {
 
                 // delete local templates that have a remote_id, but are not present through the API request
                 var deleteLocal = _.difference(localSeen, remoteSeen);
-                _.each(deleteLocal, function(remoteId){
+                _.each(deleteLocal, function (remoteId) {
                     TemplateStorage.get(null, function (localTemplates) {
-                        _.each(localTemplates, function(localTemplate){
-                            if(localTemplate.remote_id === remoteId){
+                        _.each(localTemplates, function (localTemplate) {
+                            if (localTemplate.remote_id === remoteId) {
                                 self.delete(localTemplate, true);
                             }
                         });
