@@ -117,16 +117,18 @@ App.plugin('gmail', (function() {
     };
 
     var setTitle = function(params, callback) {
+        getData(params, function(_, vars){
+            var parsedSubject = Handlebars.compile(params.quicktext.subject)(vars);
 
-        var response = {};
+            var $subjectField = $(params.element).closest('table.aoP').find('input[name=subjectbox]');
+            $subjectField.val(parsedSubject);
 
-        var $subjectField = $(params.element).closest('table.aoP').find('input[name=subjectbox]');
-        $subjectField.val(params.quicktext.subject);
+            var response = {};
 
-        if(callback) {
-            callback(null, response);
-        }
-
+            if(callback) {
+                callback(null, response);
+            }
+        });
     };
 
     var init = function(params, callback) {
