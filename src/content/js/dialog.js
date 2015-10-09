@@ -55,7 +55,7 @@ App.autocomplete.dialog = {
         }
 
         App.settings.getFiltered('', App.autocomplete.dialog.RESULTS_LIMIT, function (quicktexts) {
-            App.autocomplete.quicktexts = quicktexts;
+            params.quicktexts = quicktexts;
             params.action = 'g-dialog-populate';
 
             window.top.postMessage(params, '*');
@@ -149,6 +149,8 @@ App.autocomplete.dialog = {
         res = res || {};
         params = res.data || {};
         var i;
+
+        App.autocomplete.quicktexts = params.quicktexts;
 
         if (App.autocomplete.dialog.suggestedTemplates.length && !App.autocomplete.dialog.suggestionHidden) {
 
