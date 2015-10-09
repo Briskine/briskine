@@ -2,6 +2,20 @@
  * Autocomplete dialog code.
  */
 
+/*
+ * This is how the postMessage functionality works,
+ * in an iframe scenario:
+
+window.top        |   iframe
+------------------+---------------------
+click qabtn       ->
+                  |  dialog.completion
+dialog.populate  <-
+                  |
+click dialog qt   ->
+                  |  dialog.selectActive
+
+*/
 
 PubSub.subscribe('focus', function (action, element) {
     if (action === 'off') {
@@ -107,7 +121,11 @@ App.autocomplete.dialog = {
                 // leave it alone
                 if(App.autocomplete.dialog.isActive) {
                     App.autocomplete.quicktexts = quicktexts;
-                    App.autocomplete.dialog.populate();
+                    App.autocomplete.dialog.populate({
+                        data: {
+                            quicktexts: quicktexts
+                        }
+                    });
                 }
             });
         });
@@ -129,14 +147,9 @@ App.autocomplete.dialog = {
                 App.autocomplete.dialog.close();
                 App.autocomplete.focusEditor(App.autocomplete.dialog.editor);
 
-                // restore the previous caret position
-                // since we didn't select any quicktext
-                var selection = doc.getSelection();
-                var caretRange = doc.createRange();
-                caretRange.setStartAfter(App.autocomplete.dialog.focusNode);
-                caretRange.collapse(true);
-                selection.removeAllRanges();
-                selection.addRange(caretRange);
+                App.autocomplete.dialog.childWindow.postMessage({
+                    action: 'g-dialog-restore-selection'
+                }, '*');
             }
         });
         Mousetrap.bindGlobal('enter', function (e) {
@@ -327,8 +340,6 @@ App.autocomplete.dialog = {
 
         $(App.autocomplete.dialog.contentSelector).scrollTop();
 
-        // TODO refactor to use absolute px data from postmessage
-        // instead of dom node
         App.autocomplete.dialog.setPosition(params);
 
         // focus the input focus after setting the position
@@ -345,9 +356,6 @@ App.autocomplete.dialog = {
     },
     setPosition: function (params) {
         params = params || {};
-
-        // TODO sometimes params.metrics comes empty from the keyboard
-        // shortcut.
 
         if (!App.autocomplete.dialog.isActive) {
             return;
@@ -480,6 +488,16 @@ App.autocomplete.dialog = {
         App.autocomplete.dialog.quicktexts = [];
         App.autocomplete.dialog.cursorPosition = null;
 
+    },
+    restoreSelection: function() {
+        // restore the previous caret position
+        // since we didn't select any quicktext
+        var selection = document.getSelection();
+        var caretRange = document.createRange();
+        caretRange.setStartAfter(App.autocomplete.dialog.focusNode);
+        caretRange.collapse(true);
+        selection.removeAllRanges();
+        selection.addRange(caretRange);
     }
 };
 
@@ -515,6 +533,10 @@ App.autocomplete.dialog.dispatcher = function(res) {
         dialog.selectActive(res.data);
     }
 
+    if(res.data.action === 'g-dialog-restore-selection') {
+        dialog.restoreSelection();
+    }
+
 };
 
 App.autocomplete.dialog.init = function(doc) {
@@ -524,8 +546,6 @@ App.autocomplete.dialog.init = function(doc) {
     }
 
     window.addEventListener('message', this.dispatcher);
-
-    // TODO refactor keyboard events to use postmessage
     this.bindKeyboardEvents(doc);
 };
 
