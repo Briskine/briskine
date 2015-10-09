@@ -85,11 +85,6 @@ App.qaBtn = (function() {
     };
 
     var focusout = function(e) {
-        // don't hide the button if the dialog is visible
-        if (App.autocomplete.dialog.isActive) {
-            return;
-        }
-
         window.top.postMessage({
             action: 'g-qabtn-hide'
         }, '*');
@@ -244,6 +239,11 @@ App.qaBtn = (function() {
         }
 
         if(res.data.action === 'g-qabtn-hide') {
+            // don't hide the button if the dialog is visible
+            if (App.autocomplete.dialog.isActive) {
+                return;
+            }
+
             hide();
             // hide the dialog along with the button
             // in case it's open
