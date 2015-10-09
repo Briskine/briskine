@@ -25,6 +25,7 @@ App.autocomplete.dialog = {
     qaBtnSelector: '.gorgias-qa-btn',
     suggestedTemplates: [],
     suggestionHidden: false,
+    childWindow: window,
 
     completion: function (params) {
         params = params || {};
@@ -81,8 +82,10 @@ App.autocomplete.dialog = {
 
             App.autocomplete.dialog.selectItem($(this).index('.qt-item'));
             if (e.type === 'mousedown') {
-                App.autocomplete.dialog.selectActive();
-                //App.autocomplete.dialog.close();
+                App.autocomplete.dialog.childWindow.postMessage({
+                    action: 'g-dialog-select-active',
+                    quicktext: App.autocomplete.dialog.getActiveQt()
+                }, '*');
             }
         });
 
@@ -138,12 +141,23 @@ App.autocomplete.dialog = {
         });
         Mousetrap.bindGlobal('enter', function (e) {
             if (App.autocomplete.dialog.isActive) {
-                App.autocomplete.dialog.selectActive();
+                App.autocomplete.dialog.childWindow.postMessage({
+                    action: 'g-dialog-select-active',
+                    quicktext: App.autocomplete.dialog.getActiveQt()
+                }, '*');
+
                 App.autocomplete.dialog.close();
                 App.autocomplete.focusEditor(App.autocomplete.dialog.editor);
             }
         });
 
+    },
+    getActiveQt: function() {
+        var activeItemId = $(this.contentSelector).find('.active').data('id');
+        var quicktext = App.autocomplete.quicktexts.filter(function (quicktext) {
+            return quicktext.id === activeItemId;
+        })[0];
+        return quicktext;
     },
     populate: function (res) {
         res = res || {};
@@ -408,36 +422,25 @@ App.autocomplete.dialog = {
             $element.addClass('active');
         }
     },
-    selectActive: function () {
-        if (App.autocomplete.dialog.isActive && !this.isEmpty && App.autocomplete.quicktexts.length) {
-            var activeItemId = $(this.contentSelector).find('.active').data('id');
-            var quicktext = App.autocomplete.quicktexts.filter(function (quicktext) {
-                return quicktext.id === activeItemId;
-            })[0];
+    selectActive: function (params) {
+        var quicktext = params.quicktext;
+        App.autocomplete.replaceWith({
+            element: App.autocomplete.dialog.editor,
+            quicktext: quicktext,
+            focusNode: App.autocomplete.dialog.focusNode
+        });
 
-            // TODO refactor replaceWith so that is works with postmessage.
-            // * we can't pass the Element around with postmessage
-            // so we need to find a way to do focus management in each
-            // iframe automatically.(eg. similar to how the new dialog
-            // focus management works)
-            App.autocomplete.replaceWith({
-                element: App.autocomplete.dialog.editor,
-                quicktext: quicktext,
-                focusNode: App.autocomplete.dialog.focusNode
-            });
-
-            chrome.runtime.sendMessage({
-                'request': 'track',
-                'event': 'Inserted template',
-                'data': {
-                    "id": quicktext.id,
-                    "source": "dialog",
-                    "title_size": quicktext.title.length,
-                    "body_size": quicktext.body.length,
-                    "suggested": quicktext.score ? true : false
-                }
-            });
-        }
+        chrome.runtime.sendMessage({
+            'request': 'track',
+            'event': 'Inserted template',
+            'data': {
+                "id": quicktext.id,
+                "source": "dialog",
+                "title_size": quicktext.title.length,
+                "body_size": quicktext.body.length,
+                "suggested": quicktext.score ? true : false
+            }
+        });
     },
     changeSelection: function (direction) {
         var index_diff = direction === 'prev' ? -1 : 1,
@@ -488,10 +491,11 @@ App.autocomplete.dialog.dispatcher = function(res) {
         return;
     }
 
-    // events that should only be cought in the top window
+    // events that should only be caught in the top window
     if(!App.data.iframe) {
 
         if(res.data.action === 'g-dialog-populate') {
+            dialog.childWindow = res.source;
             dialog.populate(res);
         }
 
@@ -505,6 +509,10 @@ App.autocomplete.dialog.dispatcher = function(res) {
 
 
         dialog.completion(completionOptions);
+    }
+
+    if(res.data.action === 'g-dialog-select-active') {
+        dialog.selectActive(res.data);
     }
 
 };
