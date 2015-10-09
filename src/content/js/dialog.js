@@ -557,6 +557,8 @@ $(document.body).on('focusin', function(e) {
             dialog.editor = e.target;
 
             App.focus.editor = e.target;
+
+            console.log(e.target);
         }
 
     }
@@ -574,10 +576,14 @@ $(document.body).on('mouseup keyup', function(e) {
     if(App.autocomplete.dialog.editor === e.target || $.contains(App.autocomplete.dialog.editor, e.target)) {
         var doc = e.target.ownerDocument;
         var selection = doc.getSelection();
+        // TODO something's not right with the focusNode
+        // causing errors after inserting multiple qts
         App.autocomplete.dialog.focusNode = selection.focusNode;
 
         App.focus.node = selection.focusNode;
         App.focus.selection = selection;
+
+        console.log(selection.focusNode);
     }
 
 });
