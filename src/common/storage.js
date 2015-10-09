@@ -109,7 +109,8 @@ var Settings = {
             },
             blacklist: [],
             fields: {
-                tags: false
+                tags: false,
+                subject: true
             },
             editor: {
                 enabled: true // new editor - enable for new users

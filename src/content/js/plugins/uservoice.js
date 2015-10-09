@@ -73,7 +73,7 @@ App.plugin('uservoice', (function () {
         var response = {};
 
         var $subjectField = $('input[name=subjectbox]');
-        $subjectField.val(params.subject);
+        $subjectField.val(params.quicktext.subject);
 
         if (callback) {
             callback(null, response);

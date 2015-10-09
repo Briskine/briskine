@@ -86,7 +86,7 @@ App.plugin('yahoo', (function() {
         var response = {};
 
         var $subjectField = $('#subject-field');
-        $subjectField.val(params.subject);
+        $subjectField.val(params.quicktext.subject);
 
         if(callback) {
             callback(null, response);

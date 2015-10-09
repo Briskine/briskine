@@ -82,7 +82,7 @@ App.plugin('fastmail', (function() {
         var response = {};
 
         var $subjectField = $('input[id$="subject-input"]');
-        $subjectField.val(params.subject);
+        $subjectField.val(params.quicktext.subject);
 
         if(callback) {
             callback(null, response);

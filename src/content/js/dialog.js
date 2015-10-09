@@ -194,9 +194,13 @@ App.autocomplete.dialog = {
         };
 
         var stripHtml = function (html) {
-            var tmp = document.createElement("DIV");
-            tmp.innerHTML = html;
-            return tmp.textContent || tmp.innerText || "";
+            try {
+                var doc = document.implementation.createDocument('http://www.w3.org/1999/xhtml', 'html', null);
+                doc.documentElement.innerHTML = html;
+                return doc.documentElement.textContent||doc.documentElement.innerText;
+            } catch(e) {
+                return "";
+            }
         };
 
         clonedElements.forEach(function (elem) {
