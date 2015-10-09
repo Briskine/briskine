@@ -468,8 +468,7 @@ App.autocomplete.dialog = {
         }
 
         $(this.dialogSelector).removeClass('qt-dropdown-show');
-        $('body').removeClass('qt-dropdown-show-top');
-        //$('body').removeClass('qa-btn-dropdown-show');
+        $(document.body).removeClass('qt-dropdown-show-top');
         $(this.searchSelector).val('');
 
         App.autocomplete.dialog.isActive = false;

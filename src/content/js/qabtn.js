@@ -84,7 +84,12 @@ App.qaBtn = (function() {
 
     };
 
-    var focusout = function() {
+    var focusout = function(e) {
+        // don't hide the button if the dialog is visible
+        if (App.autocomplete.dialog.isActive) {
+            return;
+        }
+
         window.top.postMessage({
             action: 'g-qabtn-hide'
         }, '*');
@@ -245,7 +250,7 @@ App.qaBtn = (function() {
             hideDialog();
         }
 
-        if(res.data.action === 'g-dialog-show-qa') {
+        if(res.data.action === 'g-dialog-completion') {
             showDialog(res);
         }
 
@@ -287,8 +292,6 @@ App.qaBtn = (function() {
         // but only chrome supports focusin.
         document.body.addEventListener('focusin', focusin);
         document.body.addEventListener('focusout', focusout);
-        // use mouseout, so focus triggers after it
-        document.body.addEventListener('mousedown', focusout);
     };
 
     return {
