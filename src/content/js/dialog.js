@@ -145,7 +145,7 @@ App.autocomplete.dialog = {
         Mousetrap.bindGlobal('escape', function (e) {
             if (App.autocomplete.dialog.isActive) {
                 App.autocomplete.dialog.close();
-                App.autocomplete.focusEditor(App.autocomplete.dialog.editor);
+//                 App.autocomplete.focusEditor(App.autocomplete.dialog.editor);
 
                 App.autocomplete.dialog.childWindow.postMessage({
                     action: 'g-dialog-restore-selection'
@@ -160,7 +160,7 @@ App.autocomplete.dialog = {
                 }, '*');
 
                 App.autocomplete.dialog.close();
-                App.autocomplete.focusEditor(App.autocomplete.dialog.editor);
+//                 App.autocomplete.focusEditor(App.autocomplete.dialog.editor);
             }
         });
 
@@ -464,18 +464,9 @@ App.autocomplete.dialog = {
         $element.get(0).scrollIntoView();
     },
     // remove dropdown and cleanup
-    close: function (callback) {
-
+    close: function () {
         if (!App.autocomplete.dialog.isActive) {
-
             return;
-
-            /*
-             if(callback) {
-             return callback();
-             }
-             */
-
         }
 
         $(this.dialogSelector).removeClass('qt-dropdown-show');
@@ -498,6 +489,9 @@ App.autocomplete.dialog = {
         caretRange.collapse(true);
         selection.removeAllRanges();
         selection.addRange(caretRange);
+
+        // focus the editor
+        App.autocomplete.dialog.editor.focus();
     }
 };
 
