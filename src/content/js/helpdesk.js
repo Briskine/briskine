@@ -66,9 +66,9 @@ App.helpdesk = {
 
             var searchFocused = false;
             var selectElement = function (dir) {
-                var currentlyFocused = $('.zd-item-focus');
+                var currentlyFocused = $('.macro-list-item.zd-item-focus');
                 if (currentlyFocused.length) {
-                    var nextEl = dir === 'up' ? currentlyFocused.prev('.macro-list-item') : currentlyFocused.next('.macro-list-item');
+                    var nextEl = dir === 'up' ? currentlyFocused.prevAll(':not(.g-hide):first') : currentlyFocused.nextAll(':not(.g-hide):first');
 
                     if (nextEl.length) {
                         currentlyFocused.removeClass('zd-item-focus');
@@ -140,7 +140,7 @@ App.helpdesk = {
 
                 $('.macro-suggestions-container').remove();
 
-                var emailCheck = function() {
+                var emailCheck = function () {
                     var emailLink = $('a.email');
                     if (emailLink.length) {
                         emailLink.
@@ -217,11 +217,15 @@ App.helpdesk = {
                             }
                         });
                         searchInput.on('blur', function () {
-                            searchFocused = true;
+                            searchFocused = false;
                         });
 
 
                         searchInput.on('keyup', function (e) {
+                            if (e.keyCode === 40 || e.keyCode === 38) {
+                                return;
+                            }
+
                             var macros = $('.macro-suggestion-btn');
                             var searchQuery = $(this).val().toLowerCase();
 
@@ -236,7 +240,7 @@ App.helpdesk = {
 
                                 if (searchQuery !== '') {
                                     $('.macro-list-item').removeClass('zd-item-focus');
-                                    $('.macro-list-item:not(.g-hide)').eq(0).addClass('zd-item-focus');
+                                    $('.macro-list-item:not(.g-hide):first').addClass('zd-item-focus');
 
                                     var startPos = titleText.toLowerCase().search(searchQuery);
 
@@ -245,13 +249,13 @@ App.helpdesk = {
                                         var newText = titleText.substring(0, startPos) + highlight + titleText.substring(startPos + searchQuery.length, titleText.length);
 
                                         title.html(newText);
-                                        $(this).removeClass('g-hide');
+                                        $(this).parent().removeClass('g-hide');
                                     } else {
-                                        $(this).addClass('g-hide');
+                                        $(this).parent().addClass('g-hide');
                                     }
                                 } else {
                                     // show all macros
-                                    macros.removeClass('g-hide');
+                                    $('.macro-list-item').removeClass('g-hide');
                                     return false;
                                 }
                             });
@@ -259,7 +263,7 @@ App.helpdesk = {
 
                             var emptyMsg = $('.macro-empty-message');
                             // show or hide the empty macro message accordingly
-                            if (macros.length === $('.macro-suggestion-btn.g-hide').length) {
+                            if (macros.length === $('.macro-list-item.g-hide').length) {
                                 emptyMsg.removeClass('g-hide');
                             } else {
                                 emptyMsg.addClass('g-hide');
@@ -270,10 +274,6 @@ App.helpdesk = {
 
                         var macroList = $("<ul class='zd-menu-list-holder macro-list'>");
                         macroList.append($('<li class="macro-empty-message g-hide">No macros found</li>'));
-
-                        //macros.push(macros[0]);
-                        //macros.push(macros[1]);
-                        //macros.push(macros[2]);
 
                         $.each(macros, function (i, macro) {
                             var macroLi = $("<li class='zd-menu-item macro-list-item'>");
