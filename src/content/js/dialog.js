@@ -54,12 +54,11 @@ App.autocomplete.dialog = {
         }
 
         App.autocomplete.cursorPosition = App.autocomplete.getCursorPosition(element);
-        var word = App.autocomplete.getSelectedWord({
+        App.autocomplete.cursorPosition.word = App.autocomplete.getSelectedWord({
             element: element
         });
 
-        App.autocomplete.cursorPosition.word = word;
-
+        // fetch templates from storage to populate the dialog
         App.settings.getFiltered("", App.autocomplete.dialog.RESULTS_LIMIT, function (quicktexts) {
             App.autocomplete.quicktexts = quicktexts;
 
@@ -632,6 +631,14 @@ App.autocomplete.dialog = {
                     qaBtn.remove();
                     gmailHook.append(qaBtn);
 
+                    // First time a user uses our extension, we show it and then hide it
+                    if (settings.qaBtn && settings.qaBtn.hasOwnProperty('shownPostInstall')) {
+                        if (!settings.qaBtn.shownPostInstall) {
+                            $(qaBtn).trigger('mouseup');
+                            settings.qaBtn.shownPostInstall = true;
+                            Settings.set('settings', settings, function(){});
+                        }
+                    }
                     return;
                 }
             }
@@ -677,6 +684,7 @@ App.autocomplete.dialog = {
                 setPosition();
             }, 1000);
             App.autocomplete.dialog.qaPositionIntervals.push(intervalID);
+
         });
     },
     hideQaBtn: function () {
