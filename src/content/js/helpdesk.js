@@ -44,10 +44,10 @@ App.helpdesk = {
             });
 
             var keys = {
-                49: 1,
-                50: 2,
-                51: 3,
-                52: 4
+                "U+0031": 1,
+                "U+0032": 2,
+                "U+0033": 3,
+                "U+0034": 4
             };
 
             var sendShortcut = function (e) {
@@ -55,7 +55,7 @@ App.helpdesk = {
 
                 window.postMessage({
                     'action': 'gorgiasApplyMacroSuggestion',
-                    'macroId': $('.macro-list-item:eq(' + keys[e.keyCode] + ') .macro-suggestion-btn').attr('macro-id')
+                    'macroId': $('.macro-list-item:eq(' + keys[e.keyIdentifier] + ') .macro-suggestion-btn').attr('macro-id')
                 }, '*');
             };
 
