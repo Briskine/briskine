@@ -43,6 +43,87 @@ App.helpdesk = {
                 }
             });
 
+            var keys = {
+                49: 1,
+                50: 2,
+                51: 3,
+                52: 4
+            };
+
+            var sendShortcut = function (e) {
+                e.preventDefault();
+
+                window.postMessage({
+                    'action': 'gorgiasApplyMacroSuggestion',
+                    'macroId': $('.macro-list-item:eq(' + keys[e.keyCode] + ') .macro-suggestion-btn').attr('macro-id')
+                }, '*');
+            };
+
+            Mousetrap.bindGlobal('alt+1', sendShortcut);
+            Mousetrap.bindGlobal('alt+2', sendShortcut);
+            Mousetrap.bindGlobal('alt+3', sendShortcut);
+            Mousetrap.bindGlobal('alt+4', sendShortcut);
+
+            var searchFocused = false;
+            var selectElement = function (dir) {
+                var currentlyFocused = $('.zd-item-focus');
+                if (currentlyFocused.length) {
+                    var nextEl = dir === 'up' ? currentlyFocused.prev('.macro-list-item') : currentlyFocused.next('.macro-list-item');
+
+                    if (nextEl.length) {
+                        currentlyFocused.removeClass('zd-item-focus');
+                        nextEl.addClass('zd-item-focus');
+                        nextEl.get(0).scrollIntoView(false);
+                    }
+                }
+            };
+
+            Mousetrap.bindGlobal('up', function (e) {
+                if (searchFocused) {
+                    e.preventDefault();
+                    selectElement('up');
+                }
+            });
+            Mousetrap.bindGlobal('down', function (e) {
+                if (searchFocused) {
+                    e.preventDefault();
+                    selectElement('down');
+                }
+            });
+
+            // Copy email address shortcut
+            Mousetrap.bindGlobal('ctrl+shift+c', function (e) {
+                var emailLink = $('a.email');
+                var selection = window.getSelection();
+
+                // create new range and remove all others
+                var range = document.createRange();
+                range.selectNode(emailLink[0]);
+                selection.removeAllRanges();
+                selection.addRange(range);
+
+                try {
+                    // Now that we've selected the anchor text, execute the copy command
+                    document.execCommand('copy');
+                } catch (err) {
+                    console.error('Oops, unable to copy');
+                }
+
+                // Remove the selections
+                selection.removeAllRanges();
+            });
+            Mousetrap.bindGlobal('enter', function (e) {
+                if (searchFocused) {
+                    e.preventDefault();
+
+                    window.postMessage({
+                        'action': 'gorgiasApplyMacroSuggestion',
+                        'macroId': $('.macro-list-item.zd-item-focus .macro-suggestion-btn').attr('macro-id')
+                    }, '*');
+                }
+            });
+
+
             var ticketUrl = "";
             var ticketCheck = function () {
                 if (window.location.pathname.indexOf('/agent/tickets/') === -1) {
@@ -59,9 +140,23 @@ App.helpdesk = {
 
                 $('.macro-suggestions-container').remove();
 
+                var emailCheck = function() {
+                    var emailLink = $('a.email');
+                    if (emailLink.length) {
+                        emailLink.
+                            attr('title', "Copy email shortcut: CTRL+SHIFT+C").
+                            attr('data-toggle', "tooltip").
+                            attr('data-html', "true").
+                            attr('data-placement', "bottom");
+                        clearInterval(emailInterval);
+                    }
+                };
+                var emailInterval = setInterval(emailCheck, 200);
+
                 var bodyCheck = function () {
                     var subject = '';
                     var body = '';
+
 
                     $('.workspace').each(function (i, workspace) {
                         workspace = $(workspace);
@@ -77,6 +172,8 @@ App.helpdesk = {
 
                             subject = workspace.find('input[name=subject]').val();
                             body = firstEvent.find('.zd-comment').text();
+
+
                         }
                     });
 
@@ -106,38 +203,115 @@ App.helpdesk = {
                             return;
                         }
 
+
                         $('.macro-suggestions-container').remove();
                         var macroContainer = $("<div class='macro-suggestions-container'>");
+                        var searchBar = $("<div class='macro-search-bar'></div>");
+                        var searchInput = $("<input type='text' class='macro-search-input' placeholder='Search macros' />");
 
-                        for (var i in macros) {
-                            var macro = macros[i];
-                            var macroBtn = $("<a class='macro-suggestion'>");
-                            var macroEl = $("<span class='macro-title'>");
-                            /*
-                             var scoreEl = $('<span class="macro-score">&nbsp;</span>');
-                             if (macro.score >= 0.9) {
-                             scoreEl.addClass('macro-score-high');
-                             }
-                             if (macro.score >= 0.7 && macro.score < 0.9) {
-                             scoreEl.addClass('macro-score-medium');
-                             }
-                             if (macro.score < 0.7) {
-                             scoreEl.addClass('macro-score-low');
-                             }
-                             */
+                        searchInput.on('focus', function () {
+                            searchFocused = true;
+                            // also if no element in the macro list is focused, focus the first one
+                            if ($('.macro-list-item.zd-item-focus').length === 0) {
+                                $('.macro-list-item:first').addClass('zd-item-focus');
+                            }
+                        });
+                        searchInput.on('blur', function () {
+                            searchFocused = true;
+                        });
+
+
+                        searchInput.on('keyup', function (e) {
+                            var macros = $('.macro-suggestion-btn');
+                            var searchQuery = $(this).val().toLowerCase();
+
+                            // revert all highlights if any
+                            $('.macro-title').each(function () {
+                                $(this).html($(this).text());
+                            });
+
+                            macros.each(function () {
+                                var title = $(this).find('.macro-title');
+                                var titleText = title.text();
+
+                                if (searchQuery !== '') {
+                                    $('.macro-list-item').removeClass('zd-item-focus');
+                                    $('.macro-list-item:not(.g-hide)').eq(0).addClass('zd-item-focus');
+
+                                    var startPos = titleText.toLowerCase().search(searchQuery);
+
+                                    if (startPos !== -1) {
+                                        var highlight = '<strong>' + titleText.substring(startPos, startPos + searchQuery.length) + '</strong>';
+                                        var newText = titleText.substring(0, startPos) + highlight + titleText.substring(startPos + searchQuery.length, titleText.length);
+
+                                        title.html(newText);
+                                        $(this).removeClass('g-hide');
+                                    } else {
+                                        $(this).addClass('g-hide');
+                                    }
+                                } else {
+                                    // show all macros
+                                    macros.removeClass('g-hide');
+                                    return false;
+                                }
+                            });
+
+
+                            var emptyMsg = $('.macro-empty-message');
+                            // show or hide the empty macro message accordingly
+                            if (macros.length === $('.macro-suggestion-btn.g-hide').length) {
+                                emptyMsg.removeClass('g-hide');
+                            } else {
+                                emptyMsg.addClass('g-hide');
+                            }
+                        });
+                        searchBar.append(searchInput);
+                        macroContainer.append(searchBar);
+
+                        var macroList = $("<ul class='zd-menu-list-holder macro-list'>");
+                        macroList.append($('<li class="macro-empty-message g-hide">No macros found</li>'));
+
+                        //macros.push(macros[0]);
+                        //macros.push(macros[1]);
+                        //macros.push(macros[2]);
+
+                        $.each(macros, function (i, macro) {
+                            var macroLi = $("<li class='zd-menu-item macro-list-item'>");
+                            var macroBtn = $("<a class='macro-suggestion-btn'>");
+                            var macroTitle = $("<span class='macro-title'>");
 
                             macroBtn.attr('onclick', "gorgiasApplyMacroSuggestion(" + macro["external_id"] + ")");
-                            macroBtn.attr('title', macro.body.replace(/\n/g, "<br />"));
+                            macroBtn.attr('macro-id', macro['external_id']);
+
+                            var title = macro.body.replace(/\n/g, "<br />");
+                            macroBtn.attr('title', title);
                             macroBtn.attr('data-toggle', "tooltip");
                             macroBtn.attr('data-html', "true");
-                            macroBtn.attr('data-placement', "bottom");
-                            macroEl.html(macro.title);
+                            macroBtn.attr('data-placement', "right");
+                            macroBtn.on('mouseenter', function () {
+                                // remove others
+                                $('.macro-list-item').removeClass('zd-item-focus');
+                                $(this).parent().addClass('zd-item-focus');
+                            });
 
-                            macroBtn.append(macroEl);
+                            macroTitle.html(macro.title);
+
+                            macroBtn.append(macroTitle);
+
+                            if (i < 4) {
+                                var macroShortcut = $("<span class='macro-shortcut'>alt+" + (i + 1) + "</span>");
+                                macroBtn.append(macroShortcut);
+                            }
                             //macroBtn.append(scoreEl);
-                            macroContainer.append(macroBtn);
-                        }
+                            macroLi.append(macroBtn);
+                            macroList.append(macroLi);
+                        });
+                        macroContainer.append(macroList);
+
                         $('.comment_input .content .options').before(macroContainer);
+
+                        // select the first macro by default
+                        $('.macro-list-item').eq(0).addClass('zd-item-focus');
                     });
                 };
                 var bodyInterval = setInterval(bodyCheck, 200);
@@ -244,4 +418,5 @@ App.helpdesk = {
             var caseInterval = setInterval(caseCheck, 200);
         }
     }
-};
+}
+;

@@ -6,6 +6,12 @@
     }
 
     $(function () {
+        window.addEventListener('message', function (event) {
+            if (event.data && event.data.action && event.data.action == 'gorgiasApplyMacroSuggestion') {
+                window.gorgiasApplyMacroSuggestion(event.data.macroId);
+            }
+        });
+
         window.gorgiasApplyMacroSuggestion = function(macroId){
             var view = null;
             var macro = require('models/macro').create({id: macroId});
