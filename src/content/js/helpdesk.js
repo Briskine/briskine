@@ -40,6 +40,10 @@ App.helpdesk = {
                             'template_id': event.data.template_id
                         }
                     });
+                    chrome.runtime.sendMessage({
+                        'request': 'track',
+                        'event': 'Suggestion Used'
+                    });
                 }
             });
 
@@ -203,6 +207,10 @@ App.helpdesk = {
                             return;
                         }
 
+                        chrome.runtime.sendMessage({
+                            'request': 'track',
+                            'event': 'Showed suggestions'
+                        });
 
                         $('.macro-suggestions-container').remove();
                         var macroContainer = $("<div class='macro-suggestions-container'>");
