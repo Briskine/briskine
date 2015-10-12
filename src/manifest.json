@@ -40,6 +40,7 @@
     "web_accessible_resources": [
         "pages/content.html",
         "pages/helpdesk/zendesk.js",
+        "pages/helpdesk/zendesk.html",
         "pages/helpdesk/desk.js",
         "background/fonts/*"
     ],
