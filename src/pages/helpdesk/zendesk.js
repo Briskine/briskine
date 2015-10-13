@@ -37,10 +37,12 @@
                     this.set("value", this.delegate.defaultValue)
                 });
 
+                var macroScore = $('macro-suggestion-btn[macro-id=' + macroId + ']').attr('score');
                 // notify the content-script that a suggestion was used
                 window.postMessage({
                     'request': 'suggestion-used',
-                    'template_id': macroId
+                    'template_id': macroId,
+                    'score': macroScore
                 }, '*');
             }
 

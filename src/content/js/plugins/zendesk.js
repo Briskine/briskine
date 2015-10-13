@@ -65,9 +65,18 @@ App.plugin('zendesk', (function () {
                         'template_id': event.data.template_id
                     }
                 });
+
+                var score = 0;
+                if (event.data.score) {
+                    score = event.data.score;
+                }
+
                 chrome.runtime.sendMessage({
                     'request': 'track',
-                    'event': 'Suggestion Used'
+                    'event': 'Macro Used',
+                    'data': {
+                        'score': score
+                    }
                 });
             }
         });
@@ -414,8 +423,13 @@ App.plugin('zendesk', (function () {
 
                 chrome.runtime.sendMessage({
                     'request': 'track',
-                    'event': 'Showed suggestions'
+                    'event': 'Suggested macros'
                 });
+            });
+
+            chrome.runtime.sendMessage({
+                'request': 'track',
+                'event': 'Showed macros'
             });
         };
         var bodyInterval = setInterval(bodyCheck, 200);
