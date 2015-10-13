@@ -73,7 +73,6 @@ App.plugin('zendesk', (function () {
         });
 
         // Search input box
-
         var searchFocused = false;
         var searchInput = $('.macro-search-input');
 
@@ -93,52 +92,61 @@ App.plugin('zendesk', (function () {
             if (e.keyCode === 40 || e.keyCode === 38) {
                 return;
             }
+            updateSearch();
+        });
 
+        var updateSearch = function() {
             var macros = $('.macro-suggestion-btn');
-            var searchQuery = $(this).val().toLowerCase();
+            var searchQuery = searchInput.val().toLowerCase();
 
             // revert all highlights if any
-            $('.macro-title').each(function () {
-                $(this).html($(this).text());
+            $('.macro-title strong').each(function(){
+                var btn = $(this).parent();
+                btn.html(btn.text());
             });
 
-            macros.each(function () {
-                var title = $(this).find('.macro-title');
-                var titleText = title.text();
+            if (searchQuery !== '') {
+                // hide all items at first
+                $('.macro-list-item').addClass('g-hide');
 
-                if (searchQuery !== '') {
-                    $('.macro-list-item').removeClass('zd-item-focus');
-                    $('.macro-list-item:not(.g-hide):first').addClass('zd-item-focus');
+                // then show only items that match
+                $('.macro-title').each(function () {
+                    var title = $(this);
+                    var titleText = title.text();
 
                     var startPos = titleText.toLowerCase().search(searchQuery);
-
                     if (startPos !== -1) {
                         var highlight = '<strong>' + titleText.substring(startPos, startPos + searchQuery.length) + '</strong>';
                         var newText = titleText.substring(0, startPos) + highlight + titleText.substring(startPos + searchQuery.length, titleText.length);
 
                         title.html(newText);
-                        $(this).parent().removeClass('g-hide');
+                        title.parent().parent().removeClass('g-hide');
                     } else {
-                        $(this).parent().addClass('g-hide');
+                        title.parent().parent().addClass('g-hide');
                     }
-                    setShortcutLabels();
-                } else {
-                    // show all macros
-                    setShortcutLabels();
-                    $('.macro-list-item').removeClass('g-hide');
-                    return false;
-                }
-            });
 
+                    // put focus on the first item
+                    $('.macro-list-item').removeClass('zd-item-focus');
+                    $('.macro-list-item:not(.g-hide):first').addClass('zd-item-focus');
 
+                    // update shortcuts
+                    setShortcutLabels();
+                });
+
+            } else {
+                // show all items and update labels
+                $('.macro-list-item').removeClass('g-hide');
+                setShortcutLabels();
+            }
+
+            // if no macros match show the empty message
             var emptyMsg = $('.macro-empty-message');
-            // show or hide the empty macro message accordingly
             if (macros.length === $('.macro-list-item.g-hide').length) {
                 emptyMsg.removeClass('g-hide');
             } else {
                 emptyMsg.addClass('g-hide');
             }
-        });
+        };
 
         // bind keyboard shortcuts
         var keysMaps = {
@@ -266,6 +274,8 @@ App.plugin('zendesk', (function () {
         $('.macro-list-item:not(.g-hide)').each(function(macroIndex, macroLi){
             if (macroIndex < 4) {
                 $(macroLi).find('.macro-suggestion-btn').append("<span class='macro-shortcut'>alt+" + (macroIndex + 1) + "</span>");
+            } else {
+                return false; //stop the loop
             }
         });
     };
