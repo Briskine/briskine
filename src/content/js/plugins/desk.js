@@ -119,6 +119,11 @@ App.plugin('desk', (function () {
                 macroContainer.css('width', '100%');
 
                 for (var i in macros) {
+                    // limit to 3 macros
+                    if (i > 2) {
+                        break;
+                    }
+
                     var macro = macros[i];
                     var macroBtn = $("<button class='macro-suggestion a-grey-button'>");
                     var macroEl = $("<span class='macro-title'>");
