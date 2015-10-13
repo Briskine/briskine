@@ -42,6 +42,7 @@
         "pages/helpdesk/zendesk.js",
         "pages/helpdesk/zendesk.html",
         "pages/helpdesk/desk.js",
+        "pages/helpdesk/desk.html",
         "background/fonts/*"
     ],
     "browser_action": {

@@ -4,20 +4,48 @@ App.plugin('desk', (function () {
             // return true as response if plugin should be activated
             return callback(null, false);
         }
+        callback(null, true);
+
+        injectScript().then(function (widgetHtml) {
+            load({
+                widget: widgetHtml
+            });
+        }, function (err) {
+            console.error("Injecting script failed", Error(err));
+        });
     };
 
+    // inject the zendesk script into the dom - this is done for interacting with the macro insertion
     var injectScript = function () {
-        // inject the zendesk script into the dom
-        var script = document.createElement('script');
-        script.type = "text/javascript";
-        script.src = chrome.extension.getURL("pages/helpdesk/desk.js");
-        if (document.body) {
-            document.body.appendChild(script);
-            script.onload = function () {
-                document.body.removeChild(script);
-            };
-        }
+        return new Promise(function (resolve, reject) {
+            var script = document.createElement('script');
+            script.type = "text/javascript";
+            script.src = chrome.extension.getURL("pages/helpdesk/desk.js");
+            if (document.body) {
+                document.body.appendChild(script);
+                script.onload = function () {
+                    document.body.removeChild(script);
+                };
+            }
 
+            // fetch our widget of the template
+            $.get(chrome.extension.getURL('pages/helpdesk/desk.html'), function (res) {
+                resolve(res);
+            });
+        });
+    };
+
+    // get macros from Zendesk API
+    var fetchMacros = function () {
+        return new Promise(function (resolve, reject) {
+            var macros = [];
+            $.getJSON('/api/v2/macros.json?per_page=1000&enabled=1&embed=macro_actions', function (res) {
+                resolve(res.macros);
+            });
+        });
+    };
+
+    var bindEvents = function () {
         // forward the message to the
         window.addEventListener('message', function (event) {
             if (event.data && event.data.request && event.data.request === 'suggestion-used') {
@@ -35,7 +63,9 @@ App.plugin('desk', (function () {
                 });
             }
         });
+    };
 
+    var load = function (params) {
         // check if we are in a ticket at regular intervals
         var ticketId = '';
         var caseCheck = function () {
@@ -85,6 +115,8 @@ App.plugin('desk', (function () {
                 $('.macro-suggestions-container').remove();
                 var macroContainer = $("<div class='macro-suggestions-container'>");
                 macroContainer.css('margin-left', '63px');
+                macroContainer.css('height', '100%');
+                macroContainer.css('width', '100%');
 
                 for (var i in macros) {
                     var macro = macros[i];
@@ -99,13 +131,15 @@ App.plugin('desk', (function () {
                     macroContainer.append(macroBtn);
                 }
                 activeTicket.find('.a-ticket-reply form:first').after(macroContainer);
+
+                bindEvents();
             });
         };
         var caseInterval = setInterval(caseCheck, 200);
     };
 
-    var getData = function () {
-
+    var getData = function (params, callback) {
+        return callback(null, vars)
     };
 
     var setTitle = function () {
