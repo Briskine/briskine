@@ -131,6 +131,22 @@ gApp.run(function ($rootScope, $location, $http, $timeout, ProfileService, Setti
                     if (data.is_loggedin) {
                         $http.get(apiBaseURL + "account").success(function (data) {
                             $rootScope.profile.user = data;
+
+                            // identify people that are logged in to our website
+                            mixpanel.identify(data.id);
+                            mixpanel.people.set({
+                                "$email": data.email,
+                                "$created": data.created_datetime,
+                                "$first_name": data.info.first_name,
+                                "$last_name": data.info.last_name,
+                                "sub_active": data.active_subscription.active,
+                                "sub_created": data.active_subscription.created_datetime,
+                                "sub_plan": data.active_subscription.plan,
+                                "sub_quantity": data.active_subscription.quantity,
+                                "is_customer": data.is_customer,
+                                "is_staff": data.is_staff
+                            });
+
                             mixpanel.register({
                                 "$browser": browser,
                                 authenticated: true,
