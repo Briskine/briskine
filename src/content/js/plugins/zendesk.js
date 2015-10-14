@@ -4,19 +4,25 @@ App.plugin('zendesk', (function () {
             // return true as response if plugin should be activated
             return callback(null, false);
         }
-        callback(null, true);
 
-        injectScript().then(function (widgetHtml) {
-            fetchMacros().then(function (macros) {
-                load({
-                    widget: widgetHtml,
-                    macros: macros
+        Settings.get('settings', {}, function (settings) {
+            if (settings.suggestions && settings.suggestions.enabled === false) {
+                return callback(null, false);
+            }
+            callback(null, true);
+
+            injectScript().then(function (widgetHtml) {
+                fetchMacros().then(function (macros) {
+                    load({
+                        widget: widgetHtml,
+                        macros: macros
+                    });
+                }, function (err) {
+                    console.error("Fething macros failed", Error(err));
                 });
             }, function (err) {
-                console.error("Fething macros failed", Error(err));
+                console.error("Injecting script failed", Error(err));
             });
-        }, function (err) {
-            console.error("Injecting script failed", Error(err));
         });
     };
 
