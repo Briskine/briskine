@@ -7,12 +7,12 @@
 
     $(function () {
         window.addEventListener('message', function (event) {
-            if (event.data && event.data.action && event.data.action == 'gorgiasApplyMacroSuggestion') {
-                window.gorgiasApplyMacroSuggestion(event.data.macroId);
+            if (event.data && event.data.action && event.data.action == 'gorgiasApplyMacro') {
+                window.gorgiasApplyMacro(event.data.macroId);
             }
         });
 
-        window.gorgiasApplyMacroSuggestion = function(macroId){
+        window.gorgiasApplyMacro = function(macroId){
             var view = null;
             var macro = require('models/macro').create({id: macroId});
 
@@ -37,10 +37,11 @@
                     this.set("value", this.delegate.defaultValue)
                 });
 
-                var macroScore = $('macro-suggestion-btn[macro-id=' + macroId + ']').attr('score');
+                var macroScore = parseFloat($('.macro-suggestion-btn[macro-id=' + macroId + ']').attr('macro-score'));
+
                 // notify the content-script that a suggestion was used
                 window.postMessage({
-                    'request': 'suggestion-used',
+                    'request': 'macro-used',
                     'template_id': macroId,
                     'score': macroScore
                 }, '*');

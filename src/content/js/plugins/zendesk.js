@@ -53,7 +53,7 @@ App.plugin('zendesk', (function () {
     var bindEvents = function () {
         // forward the message of usage to the bg script (for stats)
         window.addEventListener('message', function (event) {
-            if (event.data && event.data.request && event.data.request === 'suggestion-used') {
+            if (event.data && event.data.request && event.data.request === 'macro-used') {
                 chrome.runtime.sendMessage({
                     'request': 'suggestion-used',
                     'data': {
@@ -73,8 +73,10 @@ App.plugin('zendesk', (function () {
 
                 chrome.runtime.sendMessage({
                     'request': 'track',
-                    'event': 'Macro Used',
+                    'event': 'Used Macro',
                     'data': {
+                        'is_suggested': score > 0,
+                        'helpdesk_host': window.location.hostname,
                         'score': score
                     }
                 });
@@ -169,7 +171,7 @@ App.plugin('zendesk', (function () {
             e.preventDefault();
 
             window.postMessage({
-                'action': 'gorgiasApplyMacroSuggestion',
+                'action': 'gorgiasApplyMacro',
                 'macroId': $('.macro-list-item:not(.g-hide)').eq(keysMaps[e.keyCode] - 1).find('.macro-suggestion-btn').attr('macro-id')
             }, '*');
         };
@@ -232,7 +234,7 @@ App.plugin('zendesk', (function () {
                 e.preventDefault();
 
                 window.postMessage({
-                    'action': 'gorgiasApplyMacroSuggestion',
+                    'action': 'gorgiasApplyMacro',
                     'macroId': $('.macro-list-item.zd-item-focus .macro-suggestion-btn').attr('macro-id')
                 }, '*');
             }
@@ -326,7 +328,7 @@ App.plugin('zendesk', (function () {
                 var macroBtn = $("<a class='macro-suggestion-btn'>");
                 var macroTitle = $("<span class='macro-title'>");
 
-                macroBtn.attr('onclick', "gorgiasApplyMacroSuggestion(" + macro.id + ")");
+                macroBtn.attr('onclick', "gorgiasApplyMacro(" + macro.id + ")");
                 macroBtn.attr('macro-id', macro.id);
                 macroBtn.attr('macro-score', 0);
 
@@ -423,13 +425,21 @@ App.plugin('zendesk', (function () {
 
                 chrome.runtime.sendMessage({
                     'request': 'track',
-                    'event': 'Suggested macros'
+                    'event': 'Suggested macros',
+                    'data': {
+                        'suggested_macros_count': _.size(suggestedMacros),
+                        'helpdesk_host': window.location.hostname
+                    }
                 });
             });
 
             chrome.runtime.sendMessage({
                 'request': 'track',
-                'event': 'Showed macros'
+                'event': 'Showed macros',
+                'data': {
+                    'macros_count': _.size(params.macros),
+                    'helpdesk_host': window.location.hostname
+                }
             });
         };
         var bodyInterval = setInterval(bodyCheck, 200);
