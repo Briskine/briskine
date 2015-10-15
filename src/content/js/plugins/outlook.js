@@ -113,6 +113,15 @@ App.plugin('outlook', (function() {
             activateExtension = true;
         }
 
+        // only in outlook, if there is no previous text added
+        // in the editor, adding quicktexts with the dialog
+        // adds them between the head and the body.
+        var $editor = document.querySelector('.RichText');
+        // if there's no text in the editor, add a blank line
+        if($editor && !$editor.innerText.length) {
+            $editor.appendChild(document.createTextNode('\n'));
+        }
+
         // return true as response if plugin should be activated
         if(callback) {
             // first param is the error

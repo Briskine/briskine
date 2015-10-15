@@ -98,6 +98,8 @@ App.autocomplete.dialog = {
                     action: 'g-dialog-select-active',
                     quicktext: App.autocomplete.dialog.getActiveQt()
                 }, '*');
+
+                App.autocomplete.dialog.close();
             }
         });
 
@@ -143,11 +145,13 @@ App.autocomplete.dialog = {
         Mousetrap.bindGlobal('escape', function (e) {
             if (App.autocomplete.dialog.isActive) {
                 App.autocomplete.dialog.close();
-//                 App.autocomplete.focusEditor(App.autocomplete.dialog.editor);
 
                 App.autocomplete.dialog.childWindow.postMessage({
                     action: 'g-dialog-restore-selection'
                 }, '*');
+
+                // outlook does fake browser back on 'esc'
+                e.preventDefault()
             }
         });
         Mousetrap.bindGlobal('enter', function (e) {
@@ -158,7 +162,6 @@ App.autocomplete.dialog = {
                 }, '*');
 
                 App.autocomplete.dialog.close();
-//                 App.autocomplete.focusEditor(App.autocomplete.dialog.editor);
             }
         });
 
@@ -516,7 +519,6 @@ App.autocomplete.dialog.dispatcher = function(res) {
         if(res.data.source === 'button') {
             completionOptions.source = 'button';
         }
-
 
         dialog.completion(completionOptions);
     }

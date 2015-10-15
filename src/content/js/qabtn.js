@@ -56,10 +56,10 @@ App.qaBtn = (function() {
             return;
         }
 
-        var textfield = e.target;
+        var textfield = showQaForElement(e.target);
 
         // only show it for valid elements
-        if (!showQaForElement(textfield)) {
+        if (!textfield) {
             return false;
         }
 
