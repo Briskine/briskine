@@ -310,6 +310,11 @@ gApp.service('TemplateService', function ($q, $resource, SettingsService) {
 
 // create and try to sync with the server
     self.create = function (t, onlyLocal) {
+
+        // Remove wrapper div from textangular
+        t.body = t.body.replace(/^<div>/, '');
+        t.body = t.body.replace(/<\/div>$/, '');
+
         var deferred = $q.defer();
 
         // UUID4 as an id for the template
