@@ -12,6 +12,7 @@ App.qaBtn = (function() {
     var showQaTooltip;
     var tooltip;
     var currentWindow = window;
+    var settings;
 
     var showQaForElement = function (elem) {
 
@@ -78,6 +79,21 @@ App.qaBtn = (function() {
             }
         }, '*');
 
+        // First time a user uses our extension
+        // we show it and then hide it
+        if (settings.qaBtn && settings.qaBtn.hasOwnProperty('shownPostInstall')) {
+            if (!settings.qaBtn.shownPostInstall) {
+                settings.qaBtn.shownPostInstall = true;
+                Settings.set('settings', settings, function(){});
+
+                window.top.postMessage({
+                    action: 'g-dialog-completion',
+                    source: 'button'
+                }, '*');
+            }
+        }
+        return;
+
     };
 
     var focusout = function(e) {
@@ -94,15 +110,12 @@ App.qaBtn = (function() {
     };
 
     var setPosition = function (textfield) {
-        // TODO just for hacking, rewrite
-        var padding = 10;
         var qaBtn = $qaBtn.get(0);
-
         if(!qaBtn) {
             return;
         }
-        // end hack
 
+        var padding = 10;
         var top = textfield.top;
         var left = textfield.left;
 
@@ -289,16 +302,9 @@ App.qaBtn = (function() {
         document.body.addEventListener('focusin', focusin);
         document.body.addEventListener('focusout', focusout);
 
-        // TODO re-implement this here
-         // First time a user uses our extension, we show it and then hide it
-//         if (settings.qaBtn && settings.qaBtn.hasOwnProperty('shownPostInstall')) {
-//             if (!settings.qaBtn.shownPostInstall) {
-//                 $(qaBtn).trigger('mouseup');
-//                 settings.qaBtn.shownPostInstall = true;
-//                 Settings.set('settings', settings, function(){});
-//             }
-//         }
-//         return;
+        App.settings.fetchSettings(function(s) {
+            settings = s;
+        }, window.document);
     };
 
     return {
