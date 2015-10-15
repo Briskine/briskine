@@ -292,6 +292,17 @@ App.qaBtn = (function() {
         // but only chrome supports focusin.
         document.body.addEventListener('focusin', focusin);
         document.body.addEventListener('focusout', focusout);
+
+        // TODO re-implement this here
+         // First time a user uses our extension, we show it and then hide it
+//         if (settings.qaBtn && settings.qaBtn.hasOwnProperty('shownPostInstall')) {
+//             if (!settings.qaBtn.shownPostInstall) {
+//                 $(qaBtn).trigger('mouseup');
+//                 settings.qaBtn.shownPostInstall = true;
+//                 Settings.set('settings', settings, function(){});
+//             }
+//         }
+//         return;
     };
 
     return {

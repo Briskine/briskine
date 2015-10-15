@@ -129,7 +129,7 @@
     </div>
     <br/>
 
-    <h4>Gmail™ <i class="fa fa-flask" title="Experimental features"></i></h4>
+    <h4>Experimental <i class="fa fa-flask" title="Experimental features"></i></h4>
 
     <p class="help-block">Gmail™ specific settings</p>
 
@@ -152,8 +152,9 @@
         <button class="btn btn-default" ng-click="updateSettings()">Set URL</button>
     </div>
 
-    <div class="checkbox" ng-if="profile.user">
-        <label for="suggestions-enabled">Enable Smart Suggestions</label>
+    <p class="help-block">Zendesk™ specific settings</p>
+    <div class="checkbox">
+        <label for="suggestions-enabled">Enable macro suggestions</label>
         <input type="checkbox" id="suggestions-enabled" ng-model="settings.suggestions.enabled"
                ng-change="updateSettings()"/>
     </div>

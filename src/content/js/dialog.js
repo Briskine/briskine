@@ -59,11 +59,9 @@ App.autocomplete.dialog = {
         }
 
         App.autocomplete.cursorPosition = App.autocomplete.getCursorPosition(element);
-        var word = App.autocomplete.getSelectedWord({
+        App.autocomplete.cursorPosition.word = App.autocomplete.getSelectedWord({
             element: element
         });
-
-        App.autocomplete.cursorPosition.word = word;
 
         if (params.source !== 'button') {
             params.metrics = App.autocomplete.cursorPosition.absolute;

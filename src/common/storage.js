@@ -98,7 +98,8 @@ var Settings = {
                 limit: 5 // how many templates are shown in the dialog
             },
             qaBtn: {
-                enabled: true
+                enabled: true,
+                shownPostInstall: false
             },
             keyboard: {
                 enabled: true,

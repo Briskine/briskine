@@ -55,15 +55,12 @@ App.plugin('gmail', (function() {
             subject = '';
 
         if (isContentEditable(params.element)) {
-
             var $container = $(params.element).closest('table').parent().closest('table').parent().closest('table'),
                 from_email = $container.find('input[name=from]').val(),
-            // , from_name = $('span[email="'+from_email+'"]').length ? $('span[email="'+from_email+'"]').attr('name') : ''
-            // Taking name based on Google+ avatar name
-                fromNameEl = $('a[href^="https://plus.google.com/u/0/me"][title]'),
-                fromName = fromNameEl.length ? fromNameEl.attr('title').split('\n')[0] : '';
+                fromName = $('.gb_7a').text().trim();
+
             if (!from_email) {
-                from_email = fromNameEl.length ? fromNameEl.attr('title').split('\n')[1]: '';
+                from_email = $('.gb_8a');
             }
 
             from.push(from_email ? fromName + ' <' + from_email + '>' : fromName);
@@ -120,16 +117,18 @@ App.plugin('gmail', (function() {
     };
 
     var setTitle = function(params, callback) {
+        getData(params, function(_, vars){
+            var parsedSubject = Handlebars.compile(params.quicktext.subject)(vars);
 
-        var response = {};
+            var $subjectField = $(params.element).closest('table.aoP').find('input[name=subjectbox]');
+            $subjectField.val(parsedSubject);
 
-        var $subjectField = $(params.element).closest('table.aoP').find('input[name=subjectbox]');
-        $subjectField.val(params.quicktext.subject);
+            var response = {};
 
-        if(callback) {
-            callback(null, response);
-        }
-
+            if(callback) {
+                callback(null, response);
+            }
+        });
     };
 
     var init = function(params, callback) {

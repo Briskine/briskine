@@ -185,23 +185,19 @@ App.activatePlugins = function () {
 
     // check if all plugins were loaded
     var checkPluginsLoaded = function () {
-
         var pluginResponseArray = Object.keys(pluginResponse);
 
         if (pluginResponseArray.length === allPlugins.length) {
 
             // all plugins loaded
             pluginResponseArray.some(function (pluginName) {
-
                 // find the first plugin that returned true
                 // and set it as the active one
                 if (pluginResponse[pluginName] === true) {
                     App.activePlugin = App.plugins[pluginName];
                     return true;
                 }
-
                 return false;
-
             });
 
         }
@@ -210,17 +206,11 @@ App.activatePlugins = function () {
 
     // trigger the init function on all plugins
     allPlugins.forEach(function (pluginName) {
-
         App.plugins[pluginName].init({}, function (err, response) {
-
             pluginResponse[pluginName] = response;
-
             checkPluginsLoaded();
-
         });
-
     });
-
 };
 
 Raven.config('https://af2f5e9fb2744c359c19d08c8319d9c5@app.getsentry.com/30379', {
@@ -340,7 +330,6 @@ App.init = function (settings, doc) {
     pollSidebar(30000);
 
     App.activatePlugins();
-    App.helpdesk.init();
 };
 
 $(function () {
