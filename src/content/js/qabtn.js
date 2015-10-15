@@ -15,13 +15,7 @@ App.qaBtn = (function() {
 
     var showQaForElement = function (elem) {
 
-        var show = false;
-
-        // if the element is not a textarea
-        // input[type=text] or contenteditable
-        if ($(elem).is('textarea, input[type=text], [contenteditable]')) {
-            show = true;
-        }
+        var show = true;
 
         // if the quick access button is focused/clicked
         if (elem.className.indexOf('gorgias-qa-btn') !== -1) {
@@ -33,20 +27,22 @@ App.qaBtn = (function() {
             show = false;
         }
 
-        // check if the element is big enough
-        // to only show the qa button for large textfields
-        if (show === true) {
+        // in case we're focusing children of a contenteditable
+        // get the parent contenteditable
+        elem = App.autocomplete.isEditable(elem);
 
+        if(elem) {
+            // check if the element is big enough
+            // to only show the qa button for large textfields
             var metrics = elem.getBoundingClientRect();
 
             // only show for elements
             if (metrics.width < 100 || metrics.height < 80) {
                 show = false;
             }
-
         }
 
-        return show;
+        return show && elem;
 
     };
 

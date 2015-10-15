@@ -34,17 +34,34 @@ App.autocomplete.cursorPosition = {
 };
 
 App.autocomplete.isEditable = function (element) {
-
     var isTextfield = (element.tagName.toLowerCase() === 'input');
     var isTextarea = (element.tagName.toLowerCase() === 'textarea');
     var isContenteditable = App.autocomplete.isContentEditable(element);
 
-    return (isTextfield || isTextarea || isContenteditable);
-
+    if (isTextfield || isTextarea) {
+        return element;
+    } else {
+        return isContenteditable;
+    }
 };
 
 App.autocomplete.isContentEditable = function (element) {
-    return (element.contentEditable === 'true');
+    // if the element is editable
+    if(element.contentEditable === 'true') {
+        return element;
+    }
+
+    // if one of it's parents is editable
+    var editable = false;
+    while (element.parentNode) {
+        element = element.parentNode;
+        if (element.contentEditable === 'true') {
+            editable = true;
+            break;
+        }
+    }
+
+    return editable && element;
 };
 
 App.autocomplete.getSelectedWord = function (params) {
