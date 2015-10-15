@@ -107,6 +107,12 @@ App.qaBtn = (function() {
             action: 'g-dialog-completion',
             source: 'button'
         }, '*');
+
+        // send the `-completion-qa` event to the top window
+        // so the qabtn doesn't hide when the dialog opens
+        window.top.postMessage({
+            action: 'g-dialog-completion-qa'
+        }, '*');
     };
 
     var setPosition = function (textfield) {
@@ -259,7 +265,7 @@ App.qaBtn = (function() {
             hideDialog();
         }
 
-        if(res.data.action === 'g-dialog-completion') {
+        if(res.data.action === 'g-dialog-completion-qa') {
             showDialog(res);
         }
 
@@ -290,7 +296,7 @@ App.qaBtn = (function() {
     };
 
     var init = function() {
-        // only attach the event to the top window
+        // only create the qa button in the top window
         if(!g.data.iframe) {
             create();
             window.addEventListener('message', dispatcher);
