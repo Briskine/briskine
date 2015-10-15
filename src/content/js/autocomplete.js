@@ -221,16 +221,12 @@ App.autocomplete.getCursorPosition = function (element) {
 };
 
 App.autocomplete.replaceWith = function (params) {
-
     var doc = params.element.ownerDocument;
 
     var word = App.autocomplete.cursorPosition.word;
     var replacement = '';
 
     App.autocomplete.justCompleted = true; // the idea is that we don't want any completion to popup after we just completed
-
-    // TODO experimental
-    params.element = App.focus.editor;
 
     var setText = function () {
 
@@ -241,10 +237,10 @@ App.autocomplete.replaceWith = function (params) {
             var parsedTemplate = Handlebars.compile(params.quicktext.body)(response);
 
             if (App.autocomplete.isContentEditable(params.element)) {
-
-                // var selection = doc.getSelection();
-                var selection = App.focus.selection;
-
+                // since we're running the function in the editor window,
+                // we can get the focus node from here
+                var selection = window.getSelection();
+                var focusNode = selection.focusNode;
                 var range = doc.createRange();
 
                 replacement = parsedTemplate;
@@ -256,17 +252,12 @@ App.autocomplete.replaceWith = function (params) {
                 // setStart/setEnd work differently based on
                 // the type of node
                 // https://developer.mozilla.org/en-US/docs/Web/API/range.setStart
-                //var focusNode = params.focusNode;
-                var focusNode = App.focus.node;
-                // if (focusNode === null) {
-                //     focusNode = selection.focusNode;
-                // }
-
 
                 // we need to have a text node in the end
                 while (focusNode.nodeType === document.ELEMENT_NODE) {
                     if (focusNode.childNodes.length > 0) {
-                        focusNode = focusNode.childNodes[selection.focusOffset]; // select a text node
+                        focusNode = focusNode.childNodes[selection.focusOffset];
+                        // select a text node
                     } else {
                         // create an empty text node and attach it before the node
                         var tnode = doc.createTextNode('');

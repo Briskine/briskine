@@ -43,7 +43,7 @@ App.autocomplete.dialog = {
 
     completion: function (params) {
         params = params || {};
-        var element = App.focus.editor;
+        var element = this.editor;
 
         // if it's not an editable element
         // don't trigger anything
@@ -541,47 +541,12 @@ App.autocomplete.dialog.init = function(doc) {
     this.bindKeyboardEvents(doc);
 };
 
-// focus management. rememeber the last active editor and
-// node in the editor.
-// TODO should improve this and probably
-// replace the cursorposition and getSelectedWord functionality
-App.focus = {};
+// remember the last active editor
 $(document.body).on('focusin', function(e) {
-
     if(App.autocomplete.isEditable(e.target)) {
-
         if(!e.target.classList.contains('qt-dropdown-search')) {
             var dialog = App.autocomplete.dialog;
             dialog.editor = e.target;
-
-            App.focus.editor = e.target;
-
-            console.log(e.target);
         }
-
     }
-
-});
-
-$(document.body).on('mouseup keyup', function(e) {
-
-    // if we haven't got the editor yet
-    if(!App.autocomplete.dialog.editor) {
-        return;
-    }
-
-    // if the target is the editor, or a child
-    if(App.autocomplete.dialog.editor === e.target || $.contains(App.autocomplete.dialog.editor, e.target)) {
-        var doc = e.target.ownerDocument;
-        var selection = doc.getSelection();
-        // TODO something's not right with the focusNode
-        // causing errors after inserting multiple qts
-        App.autocomplete.dialog.focusNode = selection.focusNode;
-
-        App.focus.node = selection.focusNode;
-        App.focus.selection = selection;
-
-        console.log(selection.focusNode);
-    }
-
 });

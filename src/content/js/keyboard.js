@@ -37,8 +37,7 @@ App.autocomplete.keyboard = {
                     // replace with the first quicktext found
                     App.autocomplete.replaceWith({
                         element: element,
-                        quicktext: quicktexts[0],
-                        focusNode: focusNode
+                        quicktext: quicktexts[0]
                     });
                 }
 
