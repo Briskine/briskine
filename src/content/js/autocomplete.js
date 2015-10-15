@@ -295,37 +295,6 @@ App.autocomplete.replaceWith = function (params) {
                 caretRange.collapse(true);
                 selection.removeAllRanges();
                 selection.addRange(caretRange);
-
-                /*
-
-                 switch (focusNode.nodeType) {
-                 case (document.TEXT_NODE):
-                 // clear whitespace in the focused textnode
-                 if(focusNode.nodeValue) {
-                 focusNode.nodeValue = focusNode.nodeValue.trim();
-                 }
-
-                 // remove the shorcut text
-                 range.setStart(focusNode, word.start);
-                 range.setEnd(focusNode, word.end);
-                 range.deleteContents();
-
-                 var qtNode = range.createContextualFragment(replacement);
-                 var lastQtChild = qtNode.lastChild;
-
-                 range.insertNode(qtNode);
-
-                 var caretRange = document.createRange();
-                 caretRange.setStartAfter(lastQtChild);
-                 caretRange.collapse(true);
-                 selection.removeAllRanges();
-                 selection.addRange(caretRange);
-                 break;
-                 case (document.ELEMENT_NODE):
-
-                 break;
-                 }
-                 */
             } else {
 
                 var $textarea = $(params.element),
@@ -391,7 +360,6 @@ App.autocomplete.replaceWith = function (params) {
                 $textarea[0].setSelectionRange(cursorOffset, cursorOffset);
 
             }
-
         });
 
     };
