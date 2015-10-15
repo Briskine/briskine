@@ -149,9 +149,6 @@ App.autocomplete.dialog = {
                 App.autocomplete.dialog.childWindow.postMessage({
                     action: 'g-dialog-restore-selection'
                 }, '*');
-
-                // outlook does fake browser back on 'esc'
-                e.preventDefault()
             }
         });
         Mousetrap.bindGlobal('enter', function (e) {
