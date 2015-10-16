@@ -235,8 +235,9 @@ gApp.controller('ListCtrl',
             }
 
             // Remove wrapper div from textangular
-            $scope.selectedTemplate.body = $scope.selectedTemplate.body.replace(/^<div>/, '');
-            $scope.selectedTemplate.body = $scope.selectedTemplate.body.replace(/<\/div>$/, '');
+            $scope.selectedTemplate.body = $scope.selectedTemplate.body
+                                                 .replace(/^<div>/, '')
+                                                 .replace(/<\/div>$/, '');
 
             console.log('before update', $scope.selectedTemplate);
             TemplateService.quicktexts().then(function (templates) {
