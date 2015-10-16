@@ -234,7 +234,6 @@ gApp.controller('ListCtrl',
                 return false;
             }
 
-            console.log('before update', $scope.selectedTemplate);
             TemplateService.quicktexts().then(function (templates) {
                 if ($scope.selectedTemplate.shortcut) {
                     for (var i in templates) {
@@ -248,7 +247,6 @@ gApp.controller('ListCtrl',
                 if ($scope.selectedTemplate.id) {
                     TemplateService.update($scope.selectedTemplate).then(function () {
                         $scope.reloadTemplates();
-                        console.log('after update', $scope.selectedTemplate);
                     });
                 } else {
                     TemplateService.create($scope.selectedTemplate).then(function () {

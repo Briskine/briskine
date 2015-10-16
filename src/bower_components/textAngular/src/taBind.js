@@ -64,13 +64,86 @@ angular.module('textAngular.taBind', ['textAngular.factories', 'textAngular.DOM'
 			var _skipRender = false;
 			var _disableSanitizer = attrs.taUnsafeSanitizer || taOptions.disableSanitizer;
 			var _lastKey;
+			// see http://www.javascripter.net/faq/keycodes.htm for good information
+			// NOTE Mute On|Off 173 (Opera MSIE Safari Chrome) 181 (Firefox)
+			// BLOCKED_KEYS are special keys...
+			// Tab, pause/break, CapsLock, Esc, Page Up, End, Home,
+			// Left arrow, Up arrow, Right arrow, Down arrow, Insert, Delete,
+			// f1, f2, f3, f4, f5, f6, f7, f8, f9, f10, f11, f12
+			// NumLock, ScrollLock
 			var BLOCKED_KEYS = /^(9|19|20|27|33|34|35|36|37|38|39|40|45|112|113|114|115|116|117|118|119|120|121|122|123|144|145)$/i;
-			var UNDO_TRIGGER_KEYS = /^(8|13|32|46|59|61|107|109|186|187|188|189|190|191|192|219|220|221|222)$/i; // spaces, enter, delete, backspace, all punctuation
+			// UNDO_TRIGGER_KEYS - spaces, enter, delete, backspace, all punctuation
+			// Backspace, Enter, Space, Delete, (; :) (Firefox), (= +) (Firefox),
+			// Numpad +, Numpad -, (; :), (= +),
+			// (, <), (- _), (. >), (/ ?), (` ~), ([ {), (\ |), (] }), (' ")
+			// NOTE - Firefox: 173 = (- _) -- adding this to UNDO_TRIGGER_KEYS
+			var UNDO_TRIGGER_KEYS = /^(8|13|32|46|59|61|107|109|173|186|187|188|189|190|191|192|219|220|221|222)$/i;
 			var _pasteHandler;
 
 			// defaults to the paragraph element, but we need the line-break or it doesn't allow you to type into the empty element
 			// non IE is '<p><br/></p>', ie is '<p></p>' as for once IE gets it correct...
 			var _defaultVal, _defaultTest;
+
+			var _CTRL_KEY = 0x0001;
+			var _META_KEY = 0x0002;
+			var _ALT_KEY = 0x0004;
+			var _SHIFT_KEY = 0x0008;
+			// map events to special keys...
+			// mappings is an array of maps from events to specialKeys as declared in textAngularSetup
+			var _keyMappings = [
+				//		ctrl/command + z
+				{
+					specialKey: 'UndoKey',
+					forbiddenModifiers: _ALT_KEY + _SHIFT_KEY,
+					mustHaveModifiers: [_META_KEY + _CTRL_KEY],
+					keyCode: 90
+				},
+				//		ctrl/command + shift + z
+				{
+					specialKey: 'RedoKey',
+					forbiddenModifiers: _ALT_KEY,
+					mustHaveModifiers: [_META_KEY + _CTRL_KEY, _SHIFT_KEY],
+					keyCode: 90
+				},
+				//		ctrl/command + y
+				{
+					specialKey: 'RedoKey',
+					forbiddenModifiers: _ALT_KEY + _SHIFT_KEY,
+					mustHaveModifiers: [_META_KEY + _CTRL_KEY],
+					keyCode: 89
+				},
+				//		TabKey
+				{
+					specialKey: 'TabKey',
+					forbiddenModifiers: _META_KEY + _SHIFT_KEY + _ALT_KEY + _CTRL_KEY,
+					mustHaveModifiers: [],
+					keyCode: 9
+				},
+				//		shift + TabKey
+				{
+					specialKey: 'ShiftTabKey',
+					forbiddenModifiers: _META_KEY + _ALT_KEY + _CTRL_KEY,
+					mustHaveModifiers: [_SHIFT_KEY],
+					keyCode: 9
+				}
+			];
+			function _mapKeys(event) {
+				var specialKey;
+				_keyMappings.forEach(function (map){
+					if (map.keyCode === event.keyCode) {
+						var netModifiers = (event.metaKey ? _META_KEY: 0) +
+							(event.ctrlKey ? _CTRL_KEY: 0) +
+							(event.shiftKey ? _SHIFT_KEY: 0) +
+							(event.altKey ? _ALT_KEY: 0);
+						if (map.forbiddenModifiers & netModifiers) return;
+						if (map.mustHaveModifiers.every(function (modifier) { return netModifiers & modifier; })){
+							specialKey = map.specialKey;
+						}
+					}
+				});
+				return specialKey;
+			}
+
 			// set the default to be a paragraph value
 			if(attrs.taDefaultWrap === undefined) attrs.taDefaultWrap = 'p';
 			/* istanbul ignore next: ie specific test */
@@ -95,35 +168,55 @@ angular.module('textAngular.taBind', ['textAngular.factories', 'textAngular.DOM'
 
 			var _blankTest = _taBlankTest(_defaultTest);
 
-			var _ensureContentWrapped = function(value){
-				if(_blankTest(value)) return value;
+			var _ensureContentWrapped = function(value) {
+				if (_blankTest(value)) return value;
 				var domTest = angular.element("<div>" + value + "</div>");
-				if(domTest.children().length === 0){
+				//console.log('domTest.children().length():', domTest.children().length);
+				if (domTest.children().length === 0) {
 					value = "<" + attrs.taDefaultWrap + ">" + value + "</" + attrs.taDefaultWrap + ">";
-				}else{
+				} else {
 					var _children = domTest[0].childNodes;
 					var i;
 					var _foundBlockElement = false;
-					for(i = 0; i < _children.length; i++){
-						if(_foundBlockElement = _children[i].nodeName.toLowerCase().match(BLOCKELEMENTS)) break;
+					for (i = 0; i < _children.length; i++) {
+						if (_foundBlockElement = _children[i].nodeName.toLowerCase().match(BLOCKELEMENTS)) break;
 					}
-					if(!_foundBlockElement){
+					if (!_foundBlockElement) {
 						value = "<" + attrs.taDefaultWrap + ">" + value + "</" + attrs.taDefaultWrap + ">";
-					}else{
+					}
+					else{
 						value = "";
 						for(i = 0; i < _children.length; i++){
-							if(!_children[i].nodeName.toLowerCase().match(BLOCKELEMENTS)){
-								var _subVal = (_children[i].outerHTML || _children[i].nodeValue);
+							var node = _children[i];
+							var nodeName = node.nodeName.toLowerCase();
+							//console.log(nodeName);
+							if(nodeName === '#comment') {
+								value += '<!--' + node.nodeValue + '-->';
+							} else if(nodeName === '#text') {
+								// determine if this is all whitespace, if so, we will leave it as it is.
+								// otherwise, we will wrap it as it is
+								var text = node.textContent;
+								if (!text.trim()) {
+									// just whitespace
+									value += text;
+								} else {
+									// not pure white space so wrap in <p>...</p> or whatever attrs.taDefaultWrap is set to.
+									value += "<" + attrs.taDefaultWrap + ">" + text + "</" + attrs.taDefaultWrap + ">";
+								}
+							} else if(!nodeName.match(BLOCKELEMENTS)){
+								/* istanbul ignore  next: Doesn't seem to trigger on tests */
+								var _subVal = (node.outerHTML || node.nodeValue);
 								/* istanbul ignore else: Doesn't seem to trigger on tests, is tested though */
 								if(_subVal.trim() !== '')
 									value += "<" + attrs.taDefaultWrap + ">" + _subVal + "</" + attrs.taDefaultWrap + ">";
 								else value += _subVal;
-							}else{
-								value += _children[i].outerHTML;
+							} else {
+								value += node.outerHTML;
 							}
 						}
 					}
 				}
+				//console.log(value);
 				return value;
 			};
 
@@ -299,36 +392,99 @@ angular.module('textAngular.taBind', ['textAngular.factories', 'textAngular.DOM'
 						return result;
 					};
 
-					var recursiveListFormat = function(listNode, tablevel){
-						var _html = '', _children = listNode.childNodes;
-						tablevel++;
-						_html += _repeat('\t', tablevel-1) + listNode.outerHTML.substring(0, listNode.outerHTML.indexOf('<li'));
-						for(var _i = 0; _i < _children.length; _i++){
-							/* istanbul ignore next: browser catch */
-							if(!_children[_i].outerHTML) continue;
-							if(_children[_i].nodeName.toLowerCase() === 'ul' || _children[_i].nodeName.toLowerCase() === 'ol')
-								_html += '\n' + recursiveListFormat(_children[_i], tablevel);
-							else
-								_html += '\n' + _repeat('\t', tablevel) + _children[_i].outerHTML;
+					// add a forEach function that will work on a NodeList, etc..
+					var forEach = function (array, callback, scope) {
+						for (var i= 0; i<array.length; i++) {
+							callback.call(scope, i, array[i]);
 						}
+					};
+
+					// handle <ul> or <ol> nodes
+					var recursiveListFormat = function(listNode, tablevel){
+						var _html = '';
+						var _subnodes = listNode.childNodes;
+						tablevel++;
+						// tab out and add the <ul> or <ol> html piece
+						_html += _repeat('\t', tablevel-1) + listNode.outerHTML.substring(0, 4);
+						forEach(_subnodes, function (index, node) {
+							/* istanbul ignore next: browser catch */
+							var nodeName = node.nodeName.toLowerCase();
+							if (nodeName === '#comment') {
+								_html += '<!--' + node.nodeValue + '-->';
+								return;
+							}
+							if (nodeName === '#text') {
+								_html += node.textContent;
+								return;
+							}
+							/* istanbul ignore next: not tested, and this was original code -- so not wanting to possibly cause an issue, leaving it... */
+							if(!node.outerHTML) {
+								// no html to add
+								return;
+							}
+							if(nodeName === 'ul' || nodeName === 'ol') {
+								_html += '\n' + recursiveListFormat(node, tablevel);
+							}
+							else {
+								// no reformatting within this subnode, so just do the tabing...
+								_html += '\n' + _repeat('\t', tablevel) + node.outerHTML;
+							}
+						});
+						// now add on the </ol> or </ul> piece
 						_html += '\n' + _repeat('\t', tablevel-1) + listNode.outerHTML.substring(listNode.outerHTML.lastIndexOf('<'));
 						return _html;
 					};
+					// handle formating of something like:
+					// <ol><!--First comment-->
+					//  <li>Test Line 1<!--comment test list 1--></li>
+					//    <ul><!--comment ul-->
+					//      <li>Nested Line 1</li>
+					//        <!--comment between nested lines--><li>Nested Line 2</li>
+					//    </ul>
+					//  <li>Test Line 3</li>
+					// </ol>
 					ngModel.$formatters.unshift(function(htmlValue){
 						// tabulate the HTML so it looks nicer
-						var _children = angular.element('<div>' + htmlValue + '</div>')[0].childNodes;
-						if(_children.length > 0){
+						//
+						// first get a list of the nodes...
+						// we do this by using the element parser...
+						//
+						// doing this -- which is simpiler -- breaks our tests...
+						//var _nodes=angular.element(htmlValue);
+						var _nodes = angular.element('<div>' + htmlValue + '</div>')[0].childNodes;
+						if(_nodes.length > 0){
+							// do the reformatting of the layout...
 							htmlValue = '';
-							for(var i = 0; i < _children.length; i++){
-								/* istanbul ignore next: browser catch */
-								if(!_children[i].outerHTML) continue;
-								if(htmlValue.length > 0) htmlValue += '\n';
-								if(_children[i].nodeName.toLowerCase() === 'ul' || _children[i].nodeName.toLowerCase() === 'ol')
-									htmlValue += '' + recursiveListFormat(_children[i], 0);
-								else htmlValue += '' + _children[i].outerHTML;
-							}
+							forEach(_nodes, function (index, node) {
+								var nodeName = node.nodeName.toLowerCase();
+								if (nodeName === '#comment') {
+									htmlValue += '<!--' + node.nodeValue + '-->';
+									return;
+								}
+								if (nodeName === '#text') {
+									htmlValue += node.textContent;
+									return;
+								}
+								/* istanbul ignore next: not tested, and this was original code -- so not wanting to possibly cause an issue, leaving it... */
+								if(!node.outerHTML)
+								{
+									// nothing to format!
+									return;
+								}
+								if(htmlValue.length > 0) {
+									// we aready have some content, so drop to a new line
+									htmlValue += '\n';
+								}
+								if(nodeName === 'ul' || nodeName === 'ol') {
+									// okay a set of list stuff we want to reformat in a nested way
+									htmlValue += '' + recursiveListFormat(node, 0);
+								}
+								else {
+									// just use the original without any additional formating
+									htmlValue += '' + node.outerHTML;
+								}
+							});
 						}
-
 						return htmlValue;
 					});
 				}else{
@@ -451,7 +607,11 @@ angular.module('textAngular.taBind', ['textAngular.factories', 'textAngular.DOM'
 									}
 								}else if(text.match(/^<span/)){
 									// in case of pasting only a span - chrome paste, remove them. THis is just some wierd formatting
-									text = text.replace(/<(|\/)span[^>]*?>/ig, '');
+									// if we remove the '<span class="Apple-converted-space"> </span>' here we destroy the spacing
+									// on paste from even ourselves!
+									if (!text.match(/<span class=(\"Apple-converted-space\"|\'Apple-converted-space\')>.<\/span>/ig)) {
+										text = text.replace(/<(|\/)span[^>]*?>/ig, '');
+									}
 								}
 								// Webkit on Apple tags
 								text = text.replace(/<br class="Apple-interchange-newline"[^>]*?>/ig, '').replace(/<span class="Apple-converted-space">( |&nbsp;)<\/span>/ig, '&nbsp;');
@@ -461,6 +621,15 @@ angular.module('textAngular.taBind', ['textAngular.factories', 'textAngular.DOM'
 								// insert missing parent of li element
 								text = text.replace(/<li(\s.*)?>.*<\/li(\s.*)?>/i, '<ul>$&</ul>');
 							}
+
+							// parse whitespace from plaintext input, starting with preceding spaces that get stripped on paste
+							text = text.replace(/^[ |\u00A0]+/gm, function (match) {
+								var result = '';
+								for (var i = 0; i < match.length; i++) {
+									result += '&nbsp;';
+								}
+								return result;
+							}).replace(/\n|\r\n|\r/g, '<br />').replace(/\t/g, '&nbsp;&nbsp;&nbsp;&nbsp;');
 
 							if(_pasteHandler) text = _pasteHandler(scope, {$html: text}) || text;
 
@@ -533,30 +702,48 @@ angular.module('textAngular.taBind', ['textAngular.factories', 'textAngular.DOM'
 					element.on('keydown', scope.events.keydown = function(event, eventData){
 						/* istanbul ignore else: this is for catching the jqLite testing*/
 						if(eventData) angular.extend(event, eventData);
-						// keyCode 9 is the TAB key
-						/* istanbul ignore next: not sure how to test this  */
-						if (event.ctrlKey===false && event.metaKey===false && event.keyCode===9) {
-							event.preventDefault();
-							event.specialKey = 'TabKey';
-							if (event.shiftKey) {
-								event.specialKey = 'ShiftTabKey';
+						event.specialKey = _mapKeys(event);
+						var userSpecialKey;
+						/* istanbul ignore next: difficult to test */
+						taOptions.keyMappings.forEach(function (mapping) {
+							if (event.specialKey === mapping.commandKeyCode) {
+								// taOptions has remapped this binding... so
+								// we disable our own
+								event.specialKey = undefined;
 							}
+							if (mapping.testForKey(event)) {
+								userSpecialKey = mapping.commandKeyCode;
+							}
+							if ((mapping.commandKeyCode === 'UndoKey') || (mapping.commandKeyCode === 'RedoKey')) {
+								// this is necessary to fully stop the propagation.
+								if (!mapping.enablePropagation) {
+									event.preventDefault();
+								}
+							}
+						});
+						/* istanbul ignore next: difficult to test */
+						if (typeof userSpecialKey !== 'undefined') {
+							event.specialKey = userSpecialKey;
+						}
+						/* istanbul ignore next: difficult to test as can't seem to select */
+						if ((typeof event.specialKey !== 'undefined') && (
+								event.specialKey !== 'UndoKey' || event.specialKey !== 'RedoKey'
+							)) {
+							event.preventDefault();
 							textAngularManager.sendKeyCommand(scope, event);
 						}
 						/* istanbul ignore else: readonly check */
 						if(!_isReadonly){
-							if(!event.altKey && (event.metaKey || event.ctrlKey)){
-								// covers ctrl/command + z
-								if((event.keyCode === 90 && !event.shiftKey)){
-									_undo();
-									event.preventDefault();
-								// covers ctrl + y, command + shift + z
-								}else if((event.keyCode === 90 && event.shiftKey) || (event.keyCode === 89 && !event.shiftKey)){
-									_redo();
-									event.preventDefault();
-								}
+							if (event.specialKey==='UndoKey') {
+								_undo();
+								event.preventDefault();
+							}
+							if (event.specialKey==='RedoKey') {
+								_redo();
+								event.preventDefault();
+							}
 							/* istanbul ignore next: difficult to test as can't seem to select */
-							}else if(event.keyCode === 13 && !event.shiftKey){
+							if(event.keyCode === 13 && !event.shiftKey){
 								var $selection;
 								var selection = taSelection.getSelectionElement();
 								if(!selection.tagName.match(VALIDELEMENTS)) return;
@@ -613,11 +800,13 @@ angular.module('textAngular.taBind', ['textAngular.factories', 'textAngular.DOM'
 								_setInnerHTML(_defaultVal);
 								taSelection.setSelectionToElementStart(element.children()[0]);
 							}else if(val.substring(0, 1) !== '<' && attrs.taDefaultWrap !== ''){
+								/* we no longer do this, since there can be comments here and white space
 								var _savedSelection = $window.rangy.saveSelection();
 								val = _compileHtml();
 								val = "<" + attrs.taDefaultWrap + ">" + val + "</" + attrs.taDefaultWrap + ">";
 								_setInnerHTML(val);
 								$window.rangy.restoreSelection(_savedSelection);
+								*/
 							}
 							var triggerUndo = _lastKey !== event.keyCode && UNDO_TRIGGER_KEYS.test(event.keyCode);
 							if(_keyupTimeout) $timeout.cancel(_keyupTimeout);

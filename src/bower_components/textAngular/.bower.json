@@ -1,6 +1,6 @@
 {
   "name": "textAngular",
-  "version": "1.4.2",
+  "version": "1.4.6",
   "main": [
     "./dist/textAngular.js",
     "./dist/textAngular-sanitize.js",
@@ -33,13 +33,13 @@
   },
   "license": "MIT",
   "homepage": "https://github.com/fraywing/textAngular",
-  "_release": "1.4.2",
+  "_release": "1.4.6",
   "_resolution": {
     "type": "version",
-    "tag": "v1.4.2",
-    "commit": "073b81fa145449202754cd966fd8f538e4f37318"
+    "tag": "v1.4.6",
+    "commit": "19517594485dcf57d6d45f028296d8afdb7a4c56"
   },
   "_source": "git://github.com/fraywing/textAngular.git",
-  "_target": "~1.4.0",
+  "_target": "~1.4.6",
   "_originalSource": "textAngular"
 }
