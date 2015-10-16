@@ -5,15 +5,30 @@
 App.autocomplete.keyboard = {
     completion: function (e) {
 
+        // https://developer.mozilla.org/en-US/docs/Web/Guide/Events/Creating_and_triggering_events
+
         var element = e.target;
         var doc = element.ownerDocument;
         var selection = doc.getSelection();
         var focusNode = selection.focusNode;
+
+
+        var getNextElement = function(event) {
+            var nextElement = document.activeElement;
+            element.focus();
+
+            element.addEventListener('no-template', function(){
+                nextElement.focus();
+            });
+        };
+
         // if it's not an editable element
         // don't trigger anything
         if(!App.autocomplete.isEditable(element)) {
             return true;
         }
+
+        element.addEventListener('blur', getNextElement);
 
         if(selection.rangeCount) {
             var range = selection.getRangeAt(0);
@@ -40,10 +55,13 @@ App.autocomplete.keyboard = {
                         quicktext: quicktexts[0],
                         focusNode: focusNode
                     });
+                } else {
+                    element.trigger('no-template');
                 }
-
             });
 
+        } else {
+            element.trigger('no-template');
         }
 
     }
