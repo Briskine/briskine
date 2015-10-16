@@ -310,7 +310,6 @@ gApp.service('TemplateService', function ($q, $resource, SettingsService) {
 
 // create and try to sync with the server
     self.create = function (t, onlyLocal) {
-
         var deferred = $q.defer();
 
         // UUID4 as an id for the template
