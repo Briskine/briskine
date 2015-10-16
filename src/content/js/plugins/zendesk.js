@@ -1,4 +1,6 @@
 App.plugin('zendesk', (function () {
+    var zendeskMacros = [];
+
     var init = function (params, callback) {
         if (window.location.hostname.indexOf('.zendesk.com') === -1) {
             // return true as response if plugin should be activated
@@ -13,6 +15,7 @@ App.plugin('zendesk', (function () {
 
             injectScript().then(function (widgetHtml) {
                 fetchMacros().then(function (macros) {
+                    zendeskMacros = macros;
                     load({
                         widget: widgetHtml,
                         macros: macros
@@ -105,11 +108,16 @@ App.plugin('zendesk', (function () {
             searchFocused = false;
         });
 
+        var updateSearchTimeout = null;
         searchInput.on('keyup', function (e) {
             if (e.keyCode === 40 || e.keyCode === 38) {
                 return;
             }
-            updateSearch();
+
+            if (updateSearchTimeout) {
+                clearInterval(updateSearchTimeout);
+            }
+            updateSearchTimeout = setTimeout(updateSearch, 50);
         });
 
         var updateSearch = function() {
@@ -126,30 +134,33 @@ App.plugin('zendesk', (function () {
                 // hide all items at first
                 $('.macro-list-item').addClass('g-hide');
 
-                // then show only items that match
-                $('.macro-title').each(function () {
-                    var title = $(this);
-                    var titleText = title.text();
+                var matchedOne = false;
+                for (var i in zendeskMacros) {
+                    var macro = zendeskMacros[i];
+                    var startPos = macro.title.toLowerCase().search(searchQuery);
+                    var macroEl = $('.macro-suggestion-btn[macro-id=' + macro.id +']');
 
-                    var startPos = titleText.toLowerCase().search(searchQuery);
                     if (startPos !== -1) {
-                        var highlight = '<strong>' + titleText.substring(startPos, startPos + searchQuery.length) + '</strong>';
-                        var newText = titleText.substring(0, startPos) + highlight + titleText.substring(startPos + searchQuery.length, titleText.length);
+                        matchedOne = true;
+                        var highlight = '<strong>' + macro.title.substring(startPos, startPos + searchQuery.length) + '</strong>';
+                        var newText = macro.title.substring(0, startPos) + highlight + macro.title.substring(startPos + searchQuery.length, macro.title.length);
 
-                        title.html(newText);
-                        title.parent().parent().removeClass('g-hide');
-                    } else {
-                        title.parent().parent().addClass('g-hide');
+                        // update title with the new text
+                        macroEl.find('.macro-title').html(newText);
+                        macroEl.parent().removeClass('g-hide');
                     }
+                }
 
-                    // put focus on the first item
-                    $('.macro-list-item').removeClass('zd-item-focus');
-                    $('.macro-list-item:not(.g-hide):first').addClass('zd-item-focus');
+                if (!matchedOne) {
+                    $('.macro-list-item').removeClass('g-hide');
+                }
 
-                    // update shortcuts
-                    setShortcutLabels();
-                });
+                // put focus on the first item
+                $('.macro-list-item').removeClass('zd-item-focus');
+                $('.macro-list-item:not(.g-hide):first').addClass('zd-item-focus');
 
+                // update shortcuts
+                setShortcutLabels();
             } else {
                 // show all items and update labels
                 $('.macro-list-item').removeClass('g-hide');
@@ -270,7 +281,7 @@ App.plugin('zendesk', (function () {
 
     // add tooltip to the email link
     var loadEmail = function () {
-        var emailInterval = setInterval(loadEmail, 200);
+        var emailInterval = setInterval(loadEmail, 1000);
 
         var emailLink = $('a.email');
         if (emailLink.length) {
