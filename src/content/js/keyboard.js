@@ -12,23 +12,31 @@ App.autocomplete.keyboard = {
         var selection = doc.getSelection();
         var focusNode = selection.focusNode;
 
-
-        var getNextElement = function(event) {
-            var nextElement = document.activeElement;
-            element.focus();
-
-            element.addEventListener('no-template', function(){
-                nextElement.focus();
-            });
-        };
-
         // if it's not an editable element
         // don't trigger anything
         if(!App.autocomplete.isEditable(element)) {
             return true;
         }
 
-        element.addEventListener('blur', getNextElement);
+
+        var notemplate = 'notemplate',
+                  blur = 'blur';
+
+        var notemplateEvent = new CustomEvent(notemplate);
+        var getNextElement = function(event) {
+            var nextElement = document.activeElement;
+            element.focus();
+
+            var returnToElement = function(){
+                nextElement.focus();
+                element.removeEventListener(notemplate, returnToElement);
+            };
+
+            element.removeEventListener(blur, getNextElement);
+            element.addEventListener(notemplate, returnToElement);
+        };
+
+        element.addEventListener(blur, getNextElement);
 
         if(selection.rangeCount) {
             var range = selection.getRangeAt(0);
@@ -56,12 +64,12 @@ App.autocomplete.keyboard = {
                         focusNode: focusNode
                     });
                 } else {
-                    element.trigger('no-template');
+                    element.dispatchEvent(notemplateEvent);
                 }
             });
 
         } else {
-            element.trigger('no-template');
+            element.dispatchEvent(notemplateEvent);
         }
 
     }
