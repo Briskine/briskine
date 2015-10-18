@@ -33,15 +33,16 @@ App.autocomplete.keyboard = {
 
             var notemplateEvent = new CustomEvent('notemplate');
             var getNextElement = function(event) {
+                console.log('foo');
                 var nextElement = document.activeElement;
                 element.focus();
 
-                var returnToElement = function(){
+                var returnToElement = function() {
+                    console.log('bar');
                     nextElement.focus();
                     element.removeEventListener('notemplate', returnToElement);
                 };
 
-                element.removeEventListener('blur', getNextElement);
                 element.addEventListener('notemplate', returnToElement);
             };
 
@@ -58,6 +59,7 @@ App.autocomplete.keyboard = {
                         focusNode: focusNode
                     });
                 } else {
+                    element.removeEventListener('blur', getNextElement);
                     element.dispatchEvent(notemplateEvent);
                 }
             });
