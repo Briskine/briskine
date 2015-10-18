@@ -18,22 +18,6 @@ App.autocomplete.keyboard = {
             return true;
         }
 
-        var notemplateEvent = new CustomEvent('notemplate');
-        var getNextElement = function(event) {
-            var nextElement = document.activeElement;
-            element.focus();
-
-            var returnToElement = function(){
-                nextElement.focus();
-                element.removeEventListener('notemplate', returnToElement);
-            };
-
-            element.removeEventListener('blur', getNextElement);
-            element.addEventListener('notemplate', returnToElement);
-        };
-
-        element.addEventListener('blur', getNextElement);
-
         if(selection.rangeCount) {
             var range = selection.getRangeAt(0);
             var caretPos = range.endOffset;
@@ -48,6 +32,22 @@ App.autocomplete.keyboard = {
         App.autocomplete.cursorPosition.word = word;
 
         if (word.text) {
+
+            var notemplateEvent = new CustomEvent('notemplate');
+            var getNextElement = function(event) {
+                var nextElement = document.activeElement;
+                element.focus();
+
+                var returnToElement = function(){
+                    nextElement.focus();
+                    element.removeEventListener('notemplate', returnToElement);
+                };
+
+                element.removeEventListener('blur', getNextElement);
+                element.addEventListener('notemplate', returnToElement);
+            };
+
+            element.addEventListener('blur', getNextElement);
 
             // Find a matching Quicktext shortcut in the bg script
             App.settings.getQuicktextsShortcut(word.text, function (quicktext) {
