@@ -5,8 +5,6 @@
 App.autocomplete.keyboard = {
     completion: function (e) {
 
-        // https://developer.mozilla.org/en-US/docs/Web/Guide/Events/Creating_and_triggering_events
-
         var element = e.target;
         var doc = element.ownerDocument;
         var selection = doc.getSelection();
