@@ -18,7 +18,6 @@ var App = {
         getQuicktextsShortcut: function (text, callback) {
             TemplateStorage.get(null, function (templates) {
 
-                var matchingTemplates = [];
 
                 for (var id in templates) {
                     var t = templates[id];
@@ -34,11 +33,12 @@ var App = {
                             }
                         });
 
-                        matchingTemplates.push(t);
+                        callback(t);
+                        return;
                     }
                 }
 
-                callback(matchingTemplates);
+                callback(null);
             });
         },
         getFiltered: function (text, limit, callback) {
