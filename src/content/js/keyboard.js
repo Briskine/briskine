@@ -18,25 +18,21 @@ App.autocomplete.keyboard = {
             return true;
         }
 
-
-        var notemplate = 'notemplate',
-                  blur = 'blur';
-
-        var notemplateEvent = new CustomEvent(notemplate);
+        var notemplateEvent = new CustomEvent('notemplate');
         var getNextElement = function(event) {
             var nextElement = document.activeElement;
             element.focus();
 
             var returnToElement = function(){
                 nextElement.focus();
-                element.removeEventListener(notemplate, returnToElement);
+                element.removeEventListener('notemplate', returnToElement);
             };
 
-            element.removeEventListener(blur, getNextElement);
-            element.addEventListener(notemplate, returnToElement);
+            element.removeEventListener('blur', getNextElement);
+            element.addEventListener('notemplate', returnToElement);
         };
 
-        element.addEventListener(blur, getNextElement);
+        element.addEventListener('blur', getNextElement);
 
         if(selection.rangeCount) {
             var range = selection.getRangeAt(0);
