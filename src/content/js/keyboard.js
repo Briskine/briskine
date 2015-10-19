@@ -5,6 +5,11 @@
 App.autocomplete.keyboard = {
     completion: function (e) {
 
+        if (window.location.hostname === 'mail.google.com') {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
         var element = e.target;
         var doc = element.ownerDocument;
         var selection = doc.getSelection();
@@ -12,6 +17,20 @@ App.autocomplete.keyboard = {
         // if it's not an editable element
         // don't trigger anything
         if(!App.autocomplete.isEditable(element)) {
+            console.log('Not editable!');
+            var tabbableElements = document.querySelectorAll('[tabindex="1"], [tabindex="0"]');
+            var nextElement = null;
+            for (var tabbableElementIdx in tabbableElements) {
+                var tabbableElement = tabbableElements[tabbableElementIdx];
+                if (tabbableElement === element) {
+                    nextElement = tabbableElements[parseInt(tabbableElementIdx) + 1];
+                    break;
+                }
+            }
+
+            if (nextElement) {
+                nextElement.focus();
+            }
             return true;
         }
 
@@ -40,11 +59,41 @@ App.autocomplete.keyboard = {
                         quicktext: quicktexts[0],
                         focusNode: focusNode
                     });
-                }
+                } else {
+                    console.log('No template!');
+                    var tabbableElements = document.querySelectorAll('[tabindex="1"], [tabindex="0"]');
+                    var nextElement = null;
+                    for (var tabbableElementIdx in tabbableElements) {
+                        var tabbableElement = tabbableElements[tabbableElementIdx];
+                        if (tabbableElement === element) {
+                            nextElement = tabbableElements[parseInt(tabbableElementIdx) + 1];
+                            break;
+                        }
+                    }
 
+                    if (nextElement) {
+                        nextElement.focus();
+                    }
+                }
             });
 
-        }
+        } else {
+            console.log('No word!');
+            var tabbableElements = document.querySelectorAll('[tabindex="1"], [tabindex="0"]');
+            var nextElement = null;
+            for (var tabbableElementIdx in tabbableElements) {
+                var tabbableElement = tabbableElements[tabbableElementIdx];
+                if (tabbableElement === element) {
+                    nextElement = tabbableElements[parseInt(tabbableElementIdx) + 1];
+                    break;
+                }
+            }
 
+            console.log(nextElement);
+
+            if (nextElement) {
+                nextElement.focus();
+            }
+        }
     }
 };
