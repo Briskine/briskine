@@ -50,15 +50,16 @@ App.autocomplete.keyboard = {
         if (word.text) {
 
             // Find a matching Quicktext shortcut in the bg script
-            App.settings.getQuicktextsShortcut(word.text, function (quicktexts) {
+            App.settings.getQuicktextsShortcut(word.text, function (quicktext) {
 
-                if (quicktexts.length) {
+                if (quicktext) {
                     // replace with the first quicktext found
                     App.autocomplete.replaceWith({
                         element: element,
-                        quicktext: quicktexts[0],
+                        quicktext: quicktext,
                         focusNode: focusNode
                     });
+
                 } else {
                     console.log('No template!');
                     var tabbableElements = document.querySelectorAll('[tabindex="1"], [tabindex="0"]');
