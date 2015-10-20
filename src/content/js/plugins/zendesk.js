@@ -53,13 +53,13 @@ App.plugin('zendesk', (function () {
     var fetchMacros = function () {
         return new Promise(function (resolve, reject) {
             var macros = [];
-            $.getJSON('/api/v2/macros.json?active=true&sort_by=usage_7d', function (res) {
+            $.getJSON('/api/v2/macros.json?active=true&only_viewable=true&sort_by=usage_7d', function (res) {
                 resolve(res.macros);
             });
         });
     };
 
-    var bindEvents = function () {
+    var bindOnce = function () {
         // forward the message of usage to the bg script (for stats)
         window.addEventListener('message', function (event) {
             if (event.data && event.data.request && event.data.request === 'macro-used') {
@@ -91,90 +91,6 @@ App.plugin('zendesk', (function () {
                 });
             }
         });
-
-        // Search input box
-        var searchFocused = false;
-        var searchInput = $('.macro-search-input');
-
-        searchInput.on('focus', function () {
-            searchFocused = true;
-            // also if no element in the macro list is focused, focus the first one
-            if ($('.macro-list-item.zd-item-focus').length === 0) {
-                $('.macro-list-item:first').addClass('zd-item-focus');
-            }
-        });
-
-        searchInput.on('blur', function () {
-            searchFocused = false;
-        });
-
-        var updateSearchTimeout = null;
-        searchInput.on('keyup', function (e) {
-            if (e.keyCode === 40 || e.keyCode === 38) {
-                return;
-            }
-
-            if (updateSearchTimeout) {
-                clearInterval(updateSearchTimeout);
-            }
-            updateSearchTimeout = setTimeout(updateSearch, 50);
-        });
-
-        var updateSearch = function() {
-            var macros = $('.macro-suggestion-btn');
-            var searchQuery = searchInput.val().toLowerCase();
-
-            // revert all highlights if any
-            $('.macro-title strong').each(function(){
-                var btn = $(this).parent();
-                btn.html(btn.text());
-            });
-
-            if (searchQuery !== '') {
-                // hide all items at first
-                $('.macro-list-item').addClass('g-hide');
-
-                var matchedOne = false;
-                for (var i in zendeskMacros) {
-                    var macro = zendeskMacros[i];
-                    var startPos = macro.title.toLowerCase().search(searchQuery);
-                    var macroEl = $('.macro-suggestion-btn[macro-id=' + macro.id +']');
-
-                    if (startPos !== -1) {
-                        matchedOne = true;
-                        var highlight = '<strong>' + macro.title.substring(startPos, startPos + searchQuery.length) + '</strong>';
-                        var newText = macro.title.substring(0, startPos) + highlight + macro.title.substring(startPos + searchQuery.length, macro.title.length);
-
-                        // update title with the new text
-                        macroEl.find('.macro-title').html(newText);
-                        macroEl.parent().removeClass('g-hide');
-                    }
-                }
-
-                if (!matchedOne) {
-                    $('.macro-list-item').removeClass('g-hide');
-                }
-
-                // put focus on the first item
-                $('.macro-list-item').removeClass('zd-item-focus');
-                $('.macro-list-item:not(.g-hide):first').addClass('zd-item-focus');
-
-                // update shortcuts
-                setShortcutLabels();
-            } else {
-                // show all items and update labels
-                $('.macro-list-item').removeClass('g-hide');
-                setShortcutLabels();
-            }
-
-            // if no macros match show the empty message
-            var emptyMsg = $('.macro-empty-message');
-            if (macros.length === $('.macro-list-item.g-hide').length) {
-                emptyMsg.removeClass('g-hide');
-            } else {
-                emptyMsg.addClass('g-hide');
-            }
-        };
 
         // bind keyboard shortcuts
         var keysMaps = {
@@ -211,14 +127,14 @@ App.plugin('zendesk', (function () {
             }
         };
 
-        Mousetrap.bindGlobal('up', function (e) {
-            if (searchFocused) {
+        Mousetrap.bind('up', function (e) {
+            if ($(document.activeElement).hasClass('macro-search-input')) {
                 e.preventDefault();
                 selectElement('up');
             }
         });
-        Mousetrap.bindGlobal('down', function (e) {
-            if (searchFocused) {
+        Mousetrap.bind('down', function (e) {
+            if ($(document.activeElement).hasClass('macro-search-input')) {
                 e.preventDefault();
                 selectElement('down');
             }
@@ -246,8 +162,8 @@ App.plugin('zendesk', (function () {
             selection.removeAllRanges();
         });
 
-        Mousetrap.bindGlobal('enter', function (e) {
-            if (searchFocused) {
+        Mousetrap.bind('enter', function (e) {
+            if ($(document.activeElement).hasClass('macro-search-input')) {
                 e.preventDefault();
 
                 window.postMessage({
@@ -258,8 +174,93 @@ App.plugin('zendesk', (function () {
         });
     };
 
+
+    var bindSearchEvents = function(){
+        // Search input box
+        var searchInput = $('.macro-search-input');
+        searchInput.on('focus', function () {
+            // also if no element in the macro list is focused, focus the first one
+            if ($('.macro-list-item.zd-item-focus').length === 0) {
+                $('.macro-list-item:first').addClass('zd-item-focus');
+            }
+        });
+
+
+        var updateSearchTimeout = null;
+        searchInput.on('keyup', function (e) {
+            if (e.keyCode === 40 || e.keyCode === 38) {
+                return;
+            }
+
+            if (updateSearchTimeout) {
+                clearInterval(updateSearchTimeout);
+            }
+            updateSearchTimeout = setTimeout(updateSearch, 50);
+        });
+
+        var updateSearch = function() {
+            var macros = $('.macro-suggestion-btn');
+            var searchQuery = searchInput.val().toLowerCase();
+
+            // revert all highlights if any
+            $('.macro-title strong').each(function(){
+                var btn = $(this).parent();
+                btn.html(btn.text());
+            });
+
+            if (searchQuery !== '') {
+                // hide all items at first
+                var macroItems = $('.macro-list-item')
+                macroItems.addClass('g-hide');
+
+                var matchedOne = false;
+                for (var i in zendeskMacros) {
+                    var macro = zendeskMacros[i];
+                    var startPos = macro.title.toLowerCase().search(searchQuery);
+                    var macroEl = $('.macro-suggestion-btn[macro-id=' + macro.id +']');
+
+                    if (startPos !== -1) {
+                        matchedOne = true;
+                        var highlight = '<strong>' + macro.title.substring(startPos, startPos + searchQuery.length) + '</strong>';
+                        var newText = macro.title.substring(0, startPos) + highlight + macro.title.substring(startPos + searchQuery.length, macro.title.length);
+
+                        // update title with the new text
+                        macroEl.find('.macro-title').html(newText);
+                        macroEl.parent().removeClass('g-hide');
+                    }
+                }
+
+                if (!matchedOne) {
+                    macroItems.removeClass('g-hide');
+                }
+
+                // put focus on the first item
+                macroItems.removeClass('zd-item-focus');
+                $('.macro-list-item:not(.g-hide):first').addClass('zd-item-focus');
+
+                // update shortcuts
+                setShortcutLabels();
+            } else {
+                // show all items and update labels
+                $('.macro-list-item').removeClass('g-hide');
+                setShortcutLabels();
+            }
+
+            // if no macros match show the empty message
+            var emptyMsg = $('.macro-empty-message');
+            if (macros.length === $('.macro-list-item.g-hide').length) {
+                emptyMsg.removeClass('g-hide');
+            } else {
+                emptyMsg.addClass('g-hide');
+            }
+        };
+    };
+
     var load = function (params) {
         // continuously check if our URL has changed and load the data accordingly
+
+        //bind events only once here
+        bindOnce();
         var ticketUrl = "";
         var ticketCheck = function () {
             if (window.location.pathname.indexOf('/agent/tickets/') === -1) {
@@ -276,22 +277,23 @@ App.plugin('zendesk', (function () {
             loadEmail();
             loadMacroWidget(params);
         };
-        setInterval(ticketCheck, 200);
+        setInterval(ticketCheck, 300);
     };
 
     // add tooltip to the email link
     var loadEmail = function () {
-        var emailInterval = setInterval(loadEmail, 1000);
-
-        var emailLink = $('a.email');
-        if (emailLink.length) {
-            emailLink.
-                attr('title', "Copy email shortcut: CTRL+SHIFT+C").
-                attr('data-toggle', "tooltip").
-                attr('data-html', "true").
-                attr('data-placement', "bottom");
-            clearInterval(emailInterval);
-        }
+        var emailCheck = function() {
+            var emailLink = $('a.email');
+            if (emailLink.length) {
+                emailLink.
+                    attr('title', "Copy email shortcut: CTRL+SHIFT+C").
+                    attr('data-toggle', "tooltip").
+                    attr('data-html', "true").
+                    attr('data-placement', "bottom");
+                clearInterval(emailInterval);
+            }
+        };
+        var emailInterval = setInterval(emailCheck, 1000);
     };
 
     // set the keyboard shortcut labels everytime the list changes
@@ -337,6 +339,7 @@ App.plugin('zendesk', (function () {
             clearInterval(bodyInterval);
 
             $('.macro-suggestions-container').remove();
+
             var macroContainer = $(params.widget);
             var macroList = macroContainer.find('.macro-list');
 
@@ -386,7 +389,17 @@ App.plugin('zendesk', (function () {
             setShortcutLabels();
 
             // Once the list is populated, bind the events
-            bindEvents();
+            bindSearchEvents();
+
+            chrome.runtime.sendMessage({
+                'request': 'track',
+                'event': 'Showed macros',
+                'data': {
+                    'macros_count': _.size(params.macros),
+                    'helpdesk_host': window.location.hostname
+                }
+            });
+
 
             if (!isAgent && !subject || !subject.length || !body.length) {
                 return;
@@ -449,17 +462,8 @@ App.plugin('zendesk', (function () {
                     }
                 });
             });
-
-            chrome.runtime.sendMessage({
-                'request': 'track',
-                'event': 'Showed macros',
-                'data': {
-                    'macros_count': _.size(params.macros),
-                    'helpdesk_host': window.location.hostname
-                }
-            });
         };
-        var bodyInterval = setInterval(bodyCheck, 200);
+        var bodyInterval = setInterval(bodyCheck, 300);
     };
 
     var getData = function (params, callback) {
