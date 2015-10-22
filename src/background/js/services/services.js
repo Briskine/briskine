@@ -86,6 +86,21 @@ gApp.service('SuggestionService', function ($q, $resource, SettingsService) {
         });
         return deferred.promise;
     };
+
+    // Check if we have an enabled helpdesk
+    self.enabled = function (query) {
+        var deferred = $q.defer();
+
+        SettingsService.get('apiBaseURL').then(function (apiBaseURL) {
+            var suggestRes = $resource(apiBaseURL + 'helpdesk/enabled/:domain', {'domain': '@domain'});
+            var suggest = new suggestRes();
+            suggest.$get(query, function(data){
+                deferred.resolve(data.enabled);
+            });
+        });
+
+        return deferred.promise;
+    };
 });
 
 

@@ -331,7 +331,24 @@ $padding = 8px;
 
 .macro-suggestions-container {
     float: left;
-    margin-bottom: 8px;
+    margin-top: 6px;
+    margin-bottom: 6px;
+
+    width: 400px;
+    height: 120px;
+
+    .g-hide {
+        display: none !important;
+    }
+
+    .macro-search-bar {
+        width: 390px;
+    }
+
+    .macro-search-input {
+        border-bottom-left-radius: 0;
+        border-bottom-right-radius: 0;
+    }
 
     .macro-list {
         height: 90px;
@@ -345,6 +362,11 @@ $padding = 8px;
         border-top-left-radius: 0;
         border-top-right-radius: 0;
     }
+    .macro-shortcut{
+        float: right;
+        font-size: .9em;
+        font-style: italic;
+    }
     .macro-suggestion {
         background-color: #F7F7F7;
         border: 1px solid #DDD;
@@ -352,16 +374,55 @@ $padding = 8px;
         color: #333;
         padding: 5px 9px 6px 9px;
         margin-right: 4px;
-        margin-top: 4px;
+        margin-top: 6px;
         white-space: nowrap;
         float: left;
     }
 
     .macro-title {
+        //font-size: 11px;
         strong {
             font-weight: 400;
             background: #fedb4b;
             color: #3d4649;
         }
+    }
+
+    .macro-empty-message {
+        height: 113px;
+        text-align: center;
+        font-size: 1.2em;
+        padding-top: 7px;
+    }
+
+    .macro-shortcut {
+        display: none;
+    }
+
+    .zd-item-focus {
+        .macro-shortcut {
+            display: inherit;
+        }
+    }
+
+    .macro-score {
+        margin-left: 4px;
+        width: 11px;
+        height: 11px;
+        border-radius: 50%;
+
+        vertical-align: middle;
+        display: inline-block;
+    }
+
+    .macro-score-high {
+        background-color: #95BE22;
+    }
+    .macro-score-medium {
+        background-color: #95be22;
+        opacity: .4;
+    }
+    .macro-score-low {
+        background-color: lightgrey;
     }
 }
