@@ -191,7 +191,7 @@ App.plugin('zendesk', (function () {
                     macroBtn.attr('title', title);
                     macroBtn.attr('data-toggle', "tooltip");
                     macroBtn.attr('data-html', "true");
-                    macroBtn.attr('data-placement', "top");
+                    macroBtn.attr('data-placement', "bottom");
                     macroBtn.on('mouseenter', function () {
                         // remove others
                         $('.macro-list-item').removeClass('zd-item-focus');
