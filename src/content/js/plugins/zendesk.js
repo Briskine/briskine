@@ -204,7 +204,12 @@ App.plugin('zendesk', (function () {
                     macroContainer.append(macroBtn);
                 });
 
-                currentWorkspace.find('.comment_input .content .options').before(macroContainer);
+                var before = currentWorkspace.find('.comment_input .content .options');
+                if (before.length) {
+                    before.before(macroContainer);
+                } else {
+                    currentWorkspace.find('.comment_input .content .editor').after('<div class="clearfix">').after(macroContainer);
+                }
 
                 chrome.runtime.sendMessage({
                     'request': 'track',
