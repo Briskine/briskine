@@ -129,6 +129,13 @@ gApp.run(function ($rootScope, $location, $http, $timeout, ProfileService, Setti
             $http.get(apiBaseURL + 'login-info').success(function (data) {
                 SettingsService.set("isLoggedIn", data.is_loggedin).then(function () {
                     if (data.is_loggedin) {
+                        if (!data.editor.enabled){ // disable editor if disabled server side
+                            SettingsService.get("settings").then(function(settings){
+                                settings.editor = data.editor;
+                                SettingsService.set("settings", settings);
+                            });
+                        }
+
                         $http.get(apiBaseURL + "account").success(function (data) {
                             $rootScope.profile.user = data;
 
