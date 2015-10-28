@@ -46,11 +46,14 @@ App.plugin('uservoice', (function () {
             subject = $('.ticket-subject-header').text().trim();
 
         var mailRows = $('.ticket-contact-summary .ticket-contact-summary-row');
+        var fromEmail = ' <email>';
         if (mailRows.length) {
             to = parseString(mailRows.eq(0).find('.ticket-contact-summary-values').text().trim());
+            fromEmail = " <" + mailRows.eq(-1).text().trim().split('From:')[1].trim() + ">";
             // todo(@xarg): implement CC and BCC
         }
-        from = parseString($(".ticket-assignee .select-selected").text().trim()  + '<email>');
+        from = $(".ticket-assignee .select-selected").text().trim() + fromEmail;
+        from = parseString(from);
 
         var vars = {
             to: [to],
