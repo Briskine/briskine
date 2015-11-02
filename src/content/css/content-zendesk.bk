@@ -120,13 +120,11 @@ $padding = 8px;
 .qt-dropdown-search {
     display: block;
     width: 100%;
-    height: 32px !important;
     padding: $padding;
-    border: 0 !important;
+    border: 0;
     box-shadow: 0 1px 2px darken($colorActiveBg, 8%);
 
-    font-size: 16px;
-    line-height: 1em;
+    font-size: 1em;
 
     &:focus {
         outline: none;
@@ -190,6 +188,7 @@ $padding = 8px;
     box-shadow: 0 1px 0 rgba(0, 0, 0, 0.08), inset 0 1px 2px rgba(255, 255, 255, 0.75);
     color: #444;
     text-shadow: 0 1px 0 #F0F0F0;
+    transition: all .1s ease-out;
 
     &:hover {
         opacity: 1 !important;
@@ -298,9 +297,8 @@ $padding = 8px;
     display: none;
     position: absolute;
     z-index: 2147483647;
-    box-sizing: border-box;
-    width: 185px;
-    height: 24px;
+    width: 175px;
+    height: 14px;
     padding: 5px;
     background: #2A2A2A;
     -webkit-border-radius: 2px;
@@ -309,33 +307,21 @@ $padding = 8px;
     color: #fff;
     font-size: 70%;
     font-weight: bold;
+
 }
 
-.gorgias-qa-tooltip:after,
-.gorgias-qa-tooltip-bottom:after {
+.gorgias-qa-tooltip:after
+{
     content: '';
     position: absolute;
-    left: 160px;
+    border-style: solid;
+    border-width: 8px 8px 0;
+    border-color: #2A2A2A transparent;
     display: block;
     width: 0;
     z-index: 1;
-    border-style: solid;
-    border-color: #2A2A2A transparent;
-}
-
-.gorgias-qa-tooltip:after {
-    border-width: 8px 8px 0;
     bottom: -8px;
-}
-
-.gorgias-qa-tooltip-bottom:after {
-    border-width: 0 8px 8px 8px;
-    top: -8px;
-    bottom: auto;
-}
-
-.qa-btn-dropdown-show .gorgias-qa-tooltip {
-    display: none !important;
+    left: 133px;
 }
 
 .g-sidebar {
@@ -345,7 +331,24 @@ $padding = 8px;
 
 .macro-suggestions-container {
     float: left;
-    margin-bottom: 8px;
+    margin-top: 6px;
+    margin-bottom: 6px;
+
+    width: 400px;
+    height: 120px;
+
+    .g-hide {
+        display: none !important;
+    }
+
+    .macro-search-bar {
+        width: 390px;
+    }
+
+    .macro-search-input {
+        border-bottom-left-radius: 0;
+        border-bottom-right-radius: 0;
+    }
 
     .macro-list {
         height: 90px;
@@ -359,6 +362,11 @@ $padding = 8px;
         border-top-left-radius: 0;
         border-top-right-radius: 0;
     }
+    .macro-shortcut{
+        float: right;
+        font-size: .9em;
+        font-style: italic;
+    }
     .macro-suggestion {
         background-color: #F7F7F7;
         border: 1px solid #DDD;
@@ -366,16 +374,55 @@ $padding = 8px;
         color: #333;
         padding: 5px 9px 6px 9px;
         margin-right: 4px;
-        margin-top: 4px;
+        margin-top: 6px;
         white-space: nowrap;
         float: left;
     }
 
     .macro-title {
+        //font-size: 11px;
         strong {
             font-weight: 400;
             background: #fedb4b;
             color: #3d4649;
         }
+    }
+
+    .macro-empty-message {
+        height: 113px;
+        text-align: center;
+        font-size: 1.2em;
+        padding-top: 7px;
+    }
+
+    .macro-shortcut {
+        display: none;
+    }
+
+    .zd-item-focus {
+        .macro-shortcut {
+            display: inherit;
+        }
+    }
+
+    .macro-score {
+        margin-left: 4px;
+        width: 11px;
+        height: 11px;
+        border-radius: 50%;
+
+        vertical-align: middle;
+        display: inline-block;
+    }
+
+    .macro-score-high {
+        background-color: #95BE22;
+    }
+    .macro-score-medium {
+        background-color: #95be22;
+        opacity: .4;
+    }
+    .macro-score-low {
+        background-color: lightgrey;
     }
 }

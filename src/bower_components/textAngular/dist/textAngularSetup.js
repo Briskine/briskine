@@ -1,19 +1,108 @@
+
+// tests against the current jqLite/jquery implementation if this can be an element
+function validElementString(string){
+	try{
+		return angular.element(string).length !== 0;
+	}catch(any){
+		return false;
+	}
+}
+// setup the global contstant functions for setting up the toolbar
+
+// all tool definitions
+var taTools = {};
 /*
-@license textAngular
-Author : Austin Anderson
-License : 2013 MIT
-Version 1.3.7
-
-See README.md or https://github.com/fraywing/textAngular/wiki for requirements and use.
+	A tool definition is an object with the following key/value parameters:
+		action: [function(deferred, restoreSelection)]
+				a function that is executed on clicking on the button - this will allways be executed using ng-click and will
+				overwrite any ng-click value in the display attribute.
+				The function is passed a deferred object ($q.defer()), if this is wanted to be used `return false;` from the action and
+				manually call `deferred.resolve();` elsewhere to notify the editor that the action has finished.
+				restoreSelection is only defined if the rangy library is included and it can be called as `restoreSelection()` to restore the users
+				selection in the WYSIWYG editor.
+		display: [string]?
+				Optional, an HTML element to be displayed as the button. The `scope` of the button is the tool definition object with some additional functions
+				If set this will cause buttontext and iconclass to be ignored
+		class: [string]?
+				Optional, if set will override the taOptions.classes.toolbarButton class.
+		buttontext: [string]?
+				if this is defined it will replace the contents of the element contained in the `display` element
+		iconclass: [string]?
+				if this is defined an icon (<i>) will be appended to the `display` element with this string as it's class
+		tooltiptext: [string]?
+				Optional, a plain text description of the action, used for the title attribute of the action button in the toolbar by default.
+		activestate: [function(commonElement)]?
+				this function is called on every caret movement, if it returns true then the class taOptions.classes.toolbarButtonActive
+				will be applied to the `display` element, else the class will be removed
+		disabled: [function()]?
+				if this function returns true then the tool will have the class taOptions.classes.disabled applied to it, else it will be removed
+	Other functions available on the scope are:
+		name: [string]
+				the name of the tool, this is the first parameter passed into taRegisterTool
+		isDisabled: [function()]
+				returns true if the tool is disabled, false if it isn't
+		displayActiveToolClass: [function(boolean)]
+				returns true if the tool is 'active' in the currently focussed toolbar
+		onElementSelect: [Object]
+				This object contains the following key/value pairs and is used to trigger the ta-element-select event
+				element: [String]
+					an element name, will only trigger the onElementSelect action if the tagName of the element matches this string
+				filter: [function(element)]?
+					an optional filter that returns a boolean, if true it will trigger the onElementSelect.
+				action: [function(event, element, editorScope)]
+					the action that should be executed if the onElementSelect function runs
 */
-angular.module('textAngularSetup', [])
+// name and toolDefinition to add into the tools available to be added on the toolbar
+function registerTextAngularTool(name, toolDefinition){
+	if(!name || name === '' || taTools.hasOwnProperty(name)) throw('textAngular Error: A unique name is required for a Tool Definition');
+	if(
+		(toolDefinition.display && (toolDefinition.display === '' || !validElementString(toolDefinition.display))) ||
+		(!toolDefinition.display && !toolDefinition.buttontext && !toolDefinition.iconclass)
+	)
+		throw('textAngular Error: Tool Definition for "' + name + '" does not have a valid display/iconclass/buttontext value');
+	taTools[name] = toolDefinition;
+}
 
+angular.module('textAngularSetup', [])
+.constant('taRegisterTool', registerTextAngularTool)
+.value('taTools', taTools)
 // Here we set up the global display defaults, to set your own use a angular $provider#decorator.
 .value('taOptions',  {
+	//////////////////////////////////////////////////////////////////////////////////////
+    // forceTextAngularSanitize
+    // set false to allow the textAngular-sanitize provider to be replaced
+    // with angular-sanitize or a custom provider.
+	forceTextAngularSanitize: true,
+	///////////////////////////////////////////////////////////////////////////////////////
+	// keyMappings
+	// allow customizable keyMappings for specialized key boards or languages
+	//
+	// keyMappings provides key mappings that are attached to a given commandKeyCode.
+	// To modify a specific keyboard binding, simply provide function which returns true
+	// for the event you wish to map to.
+	// Or to disable a specific keyboard binding, provide a function which returns false.
+	// Note: 'RedoKey' and 'UndoKey' are internally bound to the redo and undo functionality.
+	// At present, the following commandKeyCodes are in use:
+	// 98, 'TabKey', 'ShiftTabKey', 105, 117, 'UndoKey', 'RedoKey'
+	//
+	// To map to an new commandKeyCode, add a new key mapping such as:
+	// {commandKeyCode: 'CustomKey', testForKey: function (event) {
+	//  if (event.keyCode=57 && event.ctrlKey && !event.shiftKey && !event.altKey) return true;
+	// } }
+	// to the keyMappings. This example maps ctrl+9 to 'CustomKey'
+	// Then where taRegisterTool(...) is called, add a commandKeyCode: 'CustomKey' and your
+	// tool will be bound to ctrl+9.
+	//
+	// To disble one of the already bound commandKeyCodes such as 'RedoKey' or 'UndoKey' add:
+	// {commandKeyCode: 'RedoKey', testForKey: function (event) { return false; } },
+	// {commandKeyCode: 'UndoKey', testForKey: function (event) { return false; } },
+	// to disable them.
+	//
+	keyMappings : [],
 	toolbar: [
 		['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'pre', 'quote'],
 		['bold', 'italics', 'underline', 'strikeThrough', 'ul', 'ol', 'redo', 'undo', 'clear'],
-		['justifyLeft','justifyCenter','justifyRight','indent','outdent'],
+		['justifyLeft','justifyCenter','justifyRight','justifyFull','indent','outdent'],
 		['html', 'insertImage', 'insertLink', 'insertVideo', 'wordcount', 'charcount']
 	],
 	classes: {
@@ -132,6 +221,9 @@ angular.module('textAngularSetup', [])
 	},
 	justifyRight: {
 		tooltip: 'Align text right'
+	},
+	justifyFull: {
+		tooltip: 'Justify text'
 	},
 	justifyCenter: {
 		tooltip: 'Center'
@@ -336,10 +428,22 @@ angular.module('textAngularSetup', [])
 			buttonGroup.append(targetToggle);
 			container.append(buttonGroup);
 			editorScope.showPopover($element);
+		},
+		extractYoutubeVideoId: function(url) {
+			var re = /(?:youtube(?:-nocookie)?\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/i;
+			var match = url.match(re);
+			return (match && match[1]) || null;
 		}
 	};
 }])
-.run(['taRegisterTool', '$window', 'taTranslations', 'taSelection', 'taToolFunctions', function(taRegisterTool, $window, taTranslations, taSelection, taToolFunctions){
+.run(['taRegisterTool', '$window', 'taTranslations', 'taSelection', 'taToolFunctions', '$sanitize', 'taOptions', function(taRegisterTool, $window, taTranslations, taSelection, taToolFunctions, $sanitize, taOptions){
+	// test for the version of $sanitize that is in use
+	// You can disable this check by setting taOptions.textAngularSanitize == false
+	var gv = {}; $sanitize('', gv);
+	/* istanbul ignore next, throws error */
+	if ((taOptions.forceTextAngularSanitize===true) && (gv.version !== 'taSanitize')) {
+		throw angular.$$minErr('textAngular')("textAngularSetup", "The textAngular-sanitize provider has been replaced by another -- have you included angular-sanitize by mistake?");
+	}
 	taRegisterTool("html", {
 		iconclass: 'fa fa-code',
 		tooltiptext: taTranslations.html.tooltip,
@@ -467,6 +571,19 @@ angular.module('textAngularSetup', [])
 			var result = false;
 			if(commonElement) result = commonElement.css('text-align') === 'right';
 			result = result || this.$editor().queryCommandState('justifyRight');
+			return result;
+		}
+	});
+	taRegisterTool('justifyFull', {
+		iconclass: 'fa fa-align-justify',
+		tooltiptext: taTranslations.justifyFull.tooltip,
+		action: function(){
+			return this.$editor().wrapSelection("justifyFull", null);
+		},
+		activeState: function(commonElement){
+			var result = false;
+			if(commonElement) result = commonElement.css('text-align') === 'justify';
+			result = result || this.$editor().queryCommandState('justifyFull');
 			return result;
 		}
 	});
@@ -629,16 +746,17 @@ angular.module('textAngularSetup', [])
 			var urlPrompt;
 			urlPrompt = $window.prompt(taTranslations.insertVideo.dialogPrompt, 'https://');
 			if (urlPrompt && urlPrompt !== '' && urlPrompt !== 'https://') {
-				// get the video ID
-				var ids = urlPrompt.match(/(\?|&)v=[^&]*/);
+
+				videoId = taToolFunctions.extractYoutubeVideoId(urlPrompt);
+
 				/* istanbul ignore else: if it's invalid don't worry - though probably should show some kind of error message */
-				if(ids && ids.length > 0){
+				if(videoId){
 					// create the embed link
-					var urlLink = "https://www.youtube.com/embed/" + ids[0].substring(3);
+					var urlLink = "https://www.youtube.com/embed/" + videoId;
 					// create the HTML
 					// for all options see: http://stackoverflow.com/questions/2068344/how-do-i-get-a-youtube-video-thumbnail-from-the-youtube-api
 					// maxresdefault.jpg seems to be undefined on some.
-					var embed = '<img class="ta-insert-video" src="https://img.youtube.com/vi/' + ids[0].substring(3) + '/hqdefault.jpg" ta-insert-video="' + urlLink + '" contenteditable="false" allowfullscreen="true" frameborder="0" />';
+					var embed = '<img class="ta-insert-video" src="https://img.youtube.com/vi/' + videoId + '/hqdefault.jpg" ta-insert-video="' + urlLink + '" contenteditable="false" allowfullscreen="true" frameborder="0" />';
 					// insert
 					return this.$editor().wrapSelection('insertHTML', embed, true);
 				}

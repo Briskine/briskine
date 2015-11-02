@@ -124,6 +124,11 @@ if (chrome.runtime) {
                     sendResponse(res);
                 });
             }
+            if (request.request === 'suggestion-enabled') {
+                injector.get('SuggestionService').enabled(request.data).then(function (res) {
+                    sendResponse(res);
+                });
+            }
             return true;
         });
     }

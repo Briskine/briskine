@@ -2,10 +2,17 @@
 @license textAngular
 Author : Austin Anderson
 License : 2013 MIT
-Version 1.4.2
+Version 1.4.6
 
 See README.md or https://github.com/fraywing/textAngular/wiki for requirements and use.
 */
+
+/*
+Commonjs package manager support (eg componentjs).
+*/
+
+/* istanbul ignore next:  */
+'undefined'!=typeof module&&'undefined'!=typeof exports&&module.exports===exports&&(module.exports='textAngular');
 
 (function(){ // encapsulate all variables so they don't become global vars
 "use strict";
@@ -83,15 +90,6 @@ if (!String.prototype.trim) {
 	String.prototype.trim = function () {
 		return this.replace(/^\s+|\s+$/g, '');
 	};
-}
-
-// tests against the current jqLite/jquery implementation if this can be an element
-function validElementString(string){
-	try{
-		return angular.element(string).length !== 0;
-	}catch(any){
-		return false;
-	}
 }
 
 /*
@@ -173,7 +171,7 @@ if(_browserDetect.ie > 8 || _browserDetect.ie === undefined){
 	/* istanbul ignore next: tests are browser specific */
 	_removeCSSRule = function(sheet, rule){
 		var rules = sheet.cssRules || sheet.rules;
-		if(!rules) return;
+		if(!rules || rules.length === 0) return;
 		var ruleIndex = _getRuleIndex(rule, rules);
 		if(sheet.removeRule){
 			sheet.removeRule(ruleIndex);
@@ -1040,13 +1038,86 @@ angular.module('textAngular.taBind', ['textAngular.factories', 'textAngular.DOM'
 			var _skipRender = false;
 			var _disableSanitizer = attrs.taUnsafeSanitizer || taOptions.disableSanitizer;
 			var _lastKey;
+			// see http://www.javascripter.net/faq/keycodes.htm for good information
+			// NOTE Mute On|Off 173 (Opera MSIE Safari Chrome) 181 (Firefox)
+			// BLOCKED_KEYS are special keys...
+			// Tab, pause/break, CapsLock, Esc, Page Up, End, Home,
+			// Left arrow, Up arrow, Right arrow, Down arrow, Insert, Delete,
+			// f1, f2, f3, f4, f5, f6, f7, f8, f9, f10, f11, f12
+			// NumLock, ScrollLock
 			var BLOCKED_KEYS = /^(9|19|20|27|33|34|35|36|37|38|39|40|45|112|113|114|115|116|117|118|119|120|121|122|123|144|145)$/i;
-			var UNDO_TRIGGER_KEYS = /^(8|13|32|46|59|61|107|109|186|187|188|189|190|191|192|219|220|221|222)$/i; // spaces, enter, delete, backspace, all punctuation
+			// UNDO_TRIGGER_KEYS - spaces, enter, delete, backspace, all punctuation
+			// Backspace, Enter, Space, Delete, (; :) (Firefox), (= +) (Firefox),
+			// Numpad +, Numpad -, (; :), (= +),
+			// (, <), (- _), (. >), (/ ?), (` ~), ([ {), (\ |), (] }), (' ")
+			// NOTE - Firefox: 173 = (- _) -- adding this to UNDO_TRIGGER_KEYS
+			var UNDO_TRIGGER_KEYS = /^(8|13|32|46|59|61|107|109|173|186|187|188|189|190|191|192|219|220|221|222)$/i;
 			var _pasteHandler;
 
 			// defaults to the paragraph element, but we need the line-break or it doesn't allow you to type into the empty element
 			// non IE is '<p><br/></p>', ie is '<p></p>' as for once IE gets it correct...
 			var _defaultVal, _defaultTest;
+
+			var _CTRL_KEY = 0x0001;
+			var _META_KEY = 0x0002;
+			var _ALT_KEY = 0x0004;
+			var _SHIFT_KEY = 0x0008;
+			// map events to special keys...
+			// mappings is an array of maps from events to specialKeys as declared in textAngularSetup
+			var _keyMappings = [
+				//		ctrl/command + z
+				{
+					specialKey: 'UndoKey',
+					forbiddenModifiers: _ALT_KEY + _SHIFT_KEY,
+					mustHaveModifiers: [_META_KEY + _CTRL_KEY],
+					keyCode: 90
+				},
+				//		ctrl/command + shift + z
+				{
+					specialKey: 'RedoKey',
+					forbiddenModifiers: _ALT_KEY,
+					mustHaveModifiers: [_META_KEY + _CTRL_KEY, _SHIFT_KEY],
+					keyCode: 90
+				},
+				//		ctrl/command + y
+				{
+					specialKey: 'RedoKey',
+					forbiddenModifiers: _ALT_KEY + _SHIFT_KEY,
+					mustHaveModifiers: [_META_KEY + _CTRL_KEY],
+					keyCode: 89
+				},
+				//		TabKey
+				{
+					specialKey: 'TabKey',
+					forbiddenModifiers: _META_KEY + _SHIFT_KEY + _ALT_KEY + _CTRL_KEY,
+					mustHaveModifiers: [],
+					keyCode: 9
+				},
+				//		shift + TabKey
+				{
+					specialKey: 'ShiftTabKey',
+					forbiddenModifiers: _META_KEY + _ALT_KEY + _CTRL_KEY,
+					mustHaveModifiers: [_SHIFT_KEY],
+					keyCode: 9
+				}
+			];
+			function _mapKeys(event) {
+				var specialKey;
+				_keyMappings.forEach(function (map){
+					if (map.keyCode === event.keyCode) {
+						var netModifiers = (event.metaKey ? _META_KEY: 0) +
+							(event.ctrlKey ? _CTRL_KEY: 0) +
+							(event.shiftKey ? _SHIFT_KEY: 0) +
+							(event.altKey ? _ALT_KEY: 0);
+						if (map.forbiddenModifiers & netModifiers) return;
+						if (map.mustHaveModifiers.every(function (modifier) { return netModifiers & modifier; })){
+							specialKey = map.specialKey;
+						}
+					}
+				});
+				return specialKey;
+			}
+
 			// set the default to be a paragraph value
 			if(attrs.taDefaultWrap === undefined) attrs.taDefaultWrap = 'p';
 			/* istanbul ignore next: ie specific test */
@@ -1071,35 +1142,55 @@ angular.module('textAngular.taBind', ['textAngular.factories', 'textAngular.DOM'
 
 			var _blankTest = _taBlankTest(_defaultTest);
 
-			var _ensureContentWrapped = function(value){
-				if(_blankTest(value)) return value;
+			var _ensureContentWrapped = function(value) {
+				if (_blankTest(value)) return value;
 				var domTest = angular.element("<div>" + value + "</div>");
-				if(domTest.children().length === 0){
+				//console.log('domTest.children().length():', domTest.children().length);
+				if (domTest.children().length === 0) {
 					value = "<" + attrs.taDefaultWrap + ">" + value + "</" + attrs.taDefaultWrap + ">";
-				}else{
+				} else {
 					var _children = domTest[0].childNodes;
 					var i;
 					var _foundBlockElement = false;
-					for(i = 0; i < _children.length; i++){
-						if(_foundBlockElement = _children[i].nodeName.toLowerCase().match(BLOCKELEMENTS)) break;
+					for (i = 0; i < _children.length; i++) {
+						if (_foundBlockElement = _children[i].nodeName.toLowerCase().match(BLOCKELEMENTS)) break;
 					}
-					if(!_foundBlockElement){
+					if (!_foundBlockElement) {
 						value = "<" + attrs.taDefaultWrap + ">" + value + "</" + attrs.taDefaultWrap + ">";
-					}else{
+					}
+					else{
 						value = "";
 						for(i = 0; i < _children.length; i++){
-							if(!_children[i].nodeName.toLowerCase().match(BLOCKELEMENTS)){
-								var _subVal = (_children[i].outerHTML || _children[i].nodeValue);
+							var node = _children[i];
+							var nodeName = node.nodeName.toLowerCase();
+							//console.log(nodeName);
+							if(nodeName === '#comment') {
+								value += '<!--' + node.nodeValue + '-->';
+							} else if(nodeName === '#text') {
+								// determine if this is all whitespace, if so, we will leave it as it is.
+								// otherwise, we will wrap it as it is
+								var text = node.textContent;
+								if (!text.trim()) {
+									// just whitespace
+									value += text;
+								} else {
+									// not pure white space so wrap in <p>...</p> or whatever attrs.taDefaultWrap is set to.
+									value += "<" + attrs.taDefaultWrap + ">" + text + "</" + attrs.taDefaultWrap + ">";
+								}
+							} else if(!nodeName.match(BLOCKELEMENTS)){
+								/* istanbul ignore  next: Doesn't seem to trigger on tests */
+								var _subVal = (node.outerHTML || node.nodeValue);
 								/* istanbul ignore else: Doesn't seem to trigger on tests, is tested though */
 								if(_subVal.trim() !== '')
 									value += "<" + attrs.taDefaultWrap + ">" + _subVal + "</" + attrs.taDefaultWrap + ">";
 								else value += _subVal;
-							}else{
-								value += _children[i].outerHTML;
+							} else {
+								value += node.outerHTML;
 							}
 						}
 					}
 				}
+				//console.log(value);
 				return value;
 			};
 
@@ -1275,36 +1366,99 @@ angular.module('textAngular.taBind', ['textAngular.factories', 'textAngular.DOM'
 						return result;
 					};
 
-					var recursiveListFormat = function(listNode, tablevel){
-						var _html = '', _children = listNode.childNodes;
-						tablevel++;
-						_html += _repeat('\t', tablevel-1) + listNode.outerHTML.substring(0, listNode.outerHTML.indexOf('<li'));
-						for(var _i = 0; _i < _children.length; _i++){
-							/* istanbul ignore next: browser catch */
-							if(!_children[_i].outerHTML) continue;
-							if(_children[_i].nodeName.toLowerCase() === 'ul' || _children[_i].nodeName.toLowerCase() === 'ol')
-								_html += '\n' + recursiveListFormat(_children[_i], tablevel);
-							else
-								_html += '\n' + _repeat('\t', tablevel) + _children[_i].outerHTML;
+					// add a forEach function that will work on a NodeList, etc..
+					var forEach = function (array, callback, scope) {
+						for (var i= 0; i<array.length; i++) {
+							callback.call(scope, i, array[i]);
 						}
+					};
+
+					// handle <ul> or <ol> nodes
+					var recursiveListFormat = function(listNode, tablevel){
+						var _html = '';
+						var _subnodes = listNode.childNodes;
+						tablevel++;
+						// tab out and add the <ul> or <ol> html piece
+						_html += _repeat('\t', tablevel-1) + listNode.outerHTML.substring(0, 4);
+						forEach(_subnodes, function (index, node) {
+							/* istanbul ignore next: browser catch */
+							var nodeName = node.nodeName.toLowerCase();
+							if (nodeName === '#comment') {
+								_html += '<!--' + node.nodeValue + '-->';
+								return;
+							}
+							if (nodeName === '#text') {
+								_html += node.textContent;
+								return;
+							}
+							/* istanbul ignore next: not tested, and this was original code -- so not wanting to possibly cause an issue, leaving it... */
+							if(!node.outerHTML) {
+								// no html to add
+								return;
+							}
+							if(nodeName === 'ul' || nodeName === 'ol') {
+								_html += '\n' + recursiveListFormat(node, tablevel);
+							}
+							else {
+								// no reformatting within this subnode, so just do the tabing...
+								_html += '\n' + _repeat('\t', tablevel) + node.outerHTML;
+							}
+						});
+						// now add on the </ol> or </ul> piece
 						_html += '\n' + _repeat('\t', tablevel-1) + listNode.outerHTML.substring(listNode.outerHTML.lastIndexOf('<'));
 						return _html;
 					};
+					// handle formating of something like:
+					// <ol><!--First comment-->
+					//  <li>Test Line 1<!--comment test list 1--></li>
+					//    <ul><!--comment ul-->
+					//      <li>Nested Line 1</li>
+					//        <!--comment between nested lines--><li>Nested Line 2</li>
+					//    </ul>
+					//  <li>Test Line 3</li>
+					// </ol>
 					ngModel.$formatters.unshift(function(htmlValue){
 						// tabulate the HTML so it looks nicer
-						var _children = angular.element('<div>' + htmlValue + '</div>')[0].childNodes;
-						if(_children.length > 0){
+						//
+						// first get a list of the nodes...
+						// we do this by using the element parser...
+						//
+						// doing this -- which is simpiler -- breaks our tests...
+						//var _nodes=angular.element(htmlValue);
+						var _nodes = angular.element('<div>' + htmlValue + '</div>')[0].childNodes;
+						if(_nodes.length > 0){
+							// do the reformatting of the layout...
 							htmlValue = '';
-							for(var i = 0; i < _children.length; i++){
-								/* istanbul ignore next: browser catch */
-								if(!_children[i].outerHTML) continue;
-								if(htmlValue.length > 0) htmlValue += '\n';
-								if(_children[i].nodeName.toLowerCase() === 'ul' || _children[i].nodeName.toLowerCase() === 'ol')
-									htmlValue += '' + recursiveListFormat(_children[i], 0);
-								else htmlValue += '' + _children[i].outerHTML;
-							}
+							forEach(_nodes, function (index, node) {
+								var nodeName = node.nodeName.toLowerCase();
+								if (nodeName === '#comment') {
+									htmlValue += '<!--' + node.nodeValue + '-->';
+									return;
+								}
+								if (nodeName === '#text') {
+									htmlValue += node.textContent;
+									return;
+								}
+								/* istanbul ignore next: not tested, and this was original code -- so not wanting to possibly cause an issue, leaving it... */
+								if(!node.outerHTML)
+								{
+									// nothing to format!
+									return;
+								}
+								if(htmlValue.length > 0) {
+									// we aready have some content, so drop to a new line
+									htmlValue += '\n';
+								}
+								if(nodeName === 'ul' || nodeName === 'ol') {
+									// okay a set of list stuff we want to reformat in a nested way
+									htmlValue += '' + recursiveListFormat(node, 0);
+								}
+								else {
+									// just use the original without any additional formating
+									htmlValue += '' + node.outerHTML;
+								}
+							});
 						}
-
 						return htmlValue;
 					});
 				}else{
@@ -1427,7 +1581,11 @@ angular.module('textAngular.taBind', ['textAngular.factories', 'textAngular.DOM'
 									}
 								}else if(text.match(/^<span/)){
 									// in case of pasting only a span - chrome paste, remove them. THis is just some wierd formatting
-									text = text.replace(/<(|\/)span[^>]*?>/ig, '');
+									// if we remove the '<span class="Apple-converted-space"> </span>' here we destroy the spacing
+									// on paste from even ourselves!
+									if (!text.match(/<span class=(\"Apple-converted-space\"|\'Apple-converted-space\')>.<\/span>/ig)) {
+										text = text.replace(/<(|\/)span[^>]*?>/ig, '');
+									}
 								}
 								// Webkit on Apple tags
 								text = text.replace(/<br class="Apple-interchange-newline"[^>]*?>/ig, '').replace(/<span class="Apple-converted-space">( |&nbsp;)<\/span>/ig, '&nbsp;');
@@ -1437,6 +1595,15 @@ angular.module('textAngular.taBind', ['textAngular.factories', 'textAngular.DOM'
 								// insert missing parent of li element
 								text = text.replace(/<li(\s.*)?>.*<\/li(\s.*)?>/i, '<ul>$&</ul>');
 							}
+
+							// parse whitespace from plaintext input, starting with preceding spaces that get stripped on paste
+							text = text.replace(/^[ |\u00A0]+/gm, function (match) {
+								var result = '';
+								for (var i = 0; i < match.length; i++) {
+									result += '&nbsp;';
+								}
+								return result;
+							}).replace(/\n|\r\n|\r/g, '<br />').replace(/\t/g, '&nbsp;&nbsp;&nbsp;&nbsp;');
 
 							if(_pasteHandler) text = _pasteHandler(scope, {$html: text}) || text;
 
@@ -1509,30 +1676,48 @@ angular.module('textAngular.taBind', ['textAngular.factories', 'textAngular.DOM'
 					element.on('keydown', scope.events.keydown = function(event, eventData){
 						/* istanbul ignore else: this is for catching the jqLite testing*/
 						if(eventData) angular.extend(event, eventData);
-						// keyCode 9 is the TAB key
-						/* istanbul ignore next: not sure how to test this  */
-						if (event.ctrlKey===false && event.metaKey===false && event.keyCode===9) {
-							event.preventDefault();
-							event.specialKey = 'TabKey';
-							if (event.shiftKey) {
-								event.specialKey = 'ShiftTabKey';
+						event.specialKey = _mapKeys(event);
+						var userSpecialKey;
+						/* istanbul ignore next: difficult to test */
+						taOptions.keyMappings.forEach(function (mapping) {
+							if (event.specialKey === mapping.commandKeyCode) {
+								// taOptions has remapped this binding... so
+								// we disable our own
+								event.specialKey = undefined;
 							}
+							if (mapping.testForKey(event)) {
+								userSpecialKey = mapping.commandKeyCode;
+							}
+							if ((mapping.commandKeyCode === 'UndoKey') || (mapping.commandKeyCode === 'RedoKey')) {
+								// this is necessary to fully stop the propagation.
+								if (!mapping.enablePropagation) {
+									event.preventDefault();
+								}
+							}
+						});
+						/* istanbul ignore next: difficult to test */
+						if (typeof userSpecialKey !== 'undefined') {
+							event.specialKey = userSpecialKey;
+						}
+						/* istanbul ignore next: difficult to test as can't seem to select */
+						if ((typeof event.specialKey !== 'undefined') && (
+								event.specialKey !== 'UndoKey' || event.specialKey !== 'RedoKey'
+							)) {
+							event.preventDefault();
 							textAngularManager.sendKeyCommand(scope, event);
 						}
 						/* istanbul ignore else: readonly check */
 						if(!_isReadonly){
-							if(!event.altKey && (event.metaKey || event.ctrlKey)){
-								// covers ctrl/command + z
-								if((event.keyCode === 90 && !event.shiftKey)){
-									_undo();
-									event.preventDefault();
-								// covers ctrl + y, command + shift + z
-								}else if((event.keyCode === 90 && event.shiftKey) || (event.keyCode === 89 && !event.shiftKey)){
-									_redo();
-									event.preventDefault();
-								}
+							if (event.specialKey==='UndoKey') {
+								_undo();
+								event.preventDefault();
+							}
+							if (event.specialKey==='RedoKey') {
+								_redo();
+								event.preventDefault();
+							}
 							/* istanbul ignore next: difficult to test as can't seem to select */
-							}else if(event.keyCode === 13 && !event.shiftKey){
+							if(event.keyCode === 13 && !event.shiftKey){
 								var $selection;
 								var selection = taSelection.getSelectionElement();
 								if(!selection.tagName.match(VALIDELEMENTS)) return;
@@ -1589,11 +1774,13 @@ angular.module('textAngular.taBind', ['textAngular.factories', 'textAngular.DOM'
 								_setInnerHTML(_defaultVal);
 								taSelection.setSelectionToElementStart(element.children()[0]);
 							}else if(val.substring(0, 1) !== '<' && attrs.taDefaultWrap !== ''){
+								/* we no longer do this, since there can be comments here and white space
 								var _savedSelection = $window.rangy.saveSelection();
 								val = _compileHtml();
 								val = "<" + attrs.taDefaultWrap + ">" + val + "</" + attrs.taDefaultWrap + ">";
 								_setInnerHTML(val);
 								$window.rangy.restoreSelection(_savedSelection);
+								*/
 							}
 							var triggerUndo = _lastKey !== event.keyCode && UNDO_TRIGGER_KEYS.test(event.keyCode);
 							if(_keyupTimeout) $timeout.cancel(_keyupTimeout);
@@ -1827,65 +2014,6 @@ angular.module('textAngular.taBind', ['textAngular.factories', 'textAngular.DOM'
 var dropFired = false;
 var textAngular = angular.module("textAngular", ['ngSanitize', 'textAngularSetup', 'textAngular.factories', 'textAngular.DOM', 'textAngular.validators', 'textAngular.taBind']); //This makes ngSanitize required
 
-// setup the global contstant functions for setting up the toolbar
-
-// all tool definitions
-var taTools = {};
-/*
-	A tool definition is an object with the following key/value parameters:
-		action: [function(deferred, restoreSelection)]
-				a function that is executed on clicking on the button - this will allways be executed using ng-click and will
-				overwrite any ng-click value in the display attribute.
-				The function is passed a deferred object ($q.defer()), if this is wanted to be used `return false;` from the action and
-				manually call `deferred.resolve();` elsewhere to notify the editor that the action has finished.
-				restoreSelection is only defined if the rangy library is included and it can be called as `restoreSelection()` to restore the users
-				selection in the WYSIWYG editor.
-		display: [string]?
-				Optional, an HTML element to be displayed as the button. The `scope` of the button is the tool definition object with some additional functions
-				If set this will cause buttontext and iconclass to be ignored
-		class: [string]?
-				Optional, if set will override the taOptions.classes.toolbarButton class.
-		buttontext: [string]?
-				if this is defined it will replace the contents of the element contained in the `display` element
-		iconclass: [string]?
-				if this is defined an icon (<i>) will be appended to the `display` element with this string as it's class
-		tooltiptext: [string]?
-				Optional, a plain text description of the action, used for the title attribute of the action button in the toolbar by default.
-		activestate: [function(commonElement)]?
-				this function is called on every caret movement, if it returns true then the class taOptions.classes.toolbarButtonActive
-				will be applied to the `display` element, else the class will be removed
-		disabled: [function()]?
-				if this function returns true then the tool will have the class taOptions.classes.disabled applied to it, else it will be removed
-	Other functions available on the scope are:
-		name: [string]
-				the name of the tool, this is the first parameter passed into taRegisterTool
-		isDisabled: [function()]
-				returns true if the tool is disabled, false if it isn't
-		displayActiveToolClass: [function(boolean)]
-				returns true if the tool is 'active' in the currently focussed toolbar
-		onElementSelect: [Object]
-				This object contains the following key/value pairs and is used to trigger the ta-element-select event
-				element: [String]
-					an element name, will only trigger the onElementSelect action if the tagName of the element matches this string
-				filter: [function(element)]?
-					an optional filter that returns a boolean, if true it will trigger the onElementSelect.
-				action: [function(event, element, editorScope)]
-					the action that should be executed if the onElementSelect function runs
-*/
-// name and toolDefinition to add into the tools available to be added on the toolbar
-function registerTextAngularTool(name, toolDefinition){
-	if(!name || name === '' || taTools.hasOwnProperty(name)) throw('textAngular Error: A unique name is required for a Tool Definition');
-	if(
-		(toolDefinition.display && (toolDefinition.display === '' || !validElementString(toolDefinition.display))) ||
-		(!toolDefinition.display && !toolDefinition.buttontext && !toolDefinition.iconclass)
-	)
-		throw('textAngular Error: Tool Definition for "' + name + '" does not have a valid display/iconclass/buttontext value');
-	taTools[name] = toolDefinition;
-}
-
-textAngular.constant('taRegisterTool', registerTextAngularTool);
-textAngular.value('taTools', taTools);
-
 textAngular.config([function(){
 	// clear taTools variable. Just catches testing and any other time that this config may run multiple times...
 	angular.forEach(taTools, function(value, key){ delete taTools[key];	});
@@ -1894,12 +2022,26 @@ textAngular.config([function(){
 textAngular.run([function(){
 	/* istanbul ignore next: not sure how to test this */
 	// Require Rangy and rangy savedSelection module.
-	if(!window.rangy){
-		throw("rangy-core.js and rangy-selectionsaverestore.js are required for textAngular to work correctly, rangy-core is not yet loaded.");
-	}else{
-		window.rangy.init();
-		if(!window.rangy.saveSelection){
-			throw("rangy-selectionsaverestore.js is required for textAngular to work correctly.");
+	if (typeof define === 'function' && define.amd) {
+		// AMD. Register as an anonymous module.
+		define(function(require) {
+			window.rangy = require('rangy');
+			window.rangy.saveSelection = require('rangy/lib/rangy-selectionsaverestore');
+		});
+	} else if (typeof require ==='function' && typeof module !== 'undefined' && typeof exports === 'object') {
+		// Node/CommonJS style
+		window.rangy = require('rangy');
+		window.rangy.saveSelection = require('rangy/lib/rangy-selectionsaverestore');
+	} else {
+		// Ensure that rangy and rangy.saveSelection exists on the window (global scope).
+		// TODO: Refactor so that the global scope is no longer used.
+		if(!window.rangy){
+			throw("rangy-core.js and rangy-selectionsaverestore.js are required for textAngular to work correctly, rangy-core is not yet loaded.");
+		}else{
+			window.rangy.init();
+			if(!window.rangy.saveSelection){
+				throw("rangy-selectionsaverestore.js is required for textAngular to work correctly.");
+			}
 		}
 	}
 }]);
@@ -2039,13 +2181,10 @@ textAngular.directive("textAngular", [
 					scope.displayElements.popoverArrow.css('margin-left', (Math.min(_targetLeft, (Math.max(0, _targetLeft - _maxLeft))) - 11) + 'px');
 				};
 				scope.hidePopover = function(){
-					/* istanbul ignore next: dosen't test with mocked animate */
-					var doneCb = function(){
-						scope.displayElements.popover.css('display', '');
-						scope.displayElements.popoverContainer.attr('style', '');
-						scope.displayElements.popoverContainer.attr('class', 'popover-content');
-					};
-					$q.when($animate.removeClass(scope.displayElements.popover, 'in', doneCb)).then(doneCb);
+					scope.displayElements.popover.css('display', '');
+					scope.displayElements.popoverContainer.attr('style', '');
+					scope.displayElements.popoverContainer.attr('class', 'popover-content');
+					scope.displayElements.popover.removeClass('in');
 				};
 
 				// setup the resize overlay
@@ -2101,8 +2240,11 @@ textAngular.directive("textAngular", [
 								pos.y = ratio > newRatio ? pos.x * ratio : pos.y;
 							}
 							var el = angular.element(_el);
-							el.css('height', Math.round(Math.max(0, pos.y)));
-							el.css('width', Math.round(Math.max(0, pos.x)));
+							function roundedMaxVal(val) {
+								return Math.round(Math.max(0, val));
+							}
+							el.css('height', roundedMaxVal(pos.y) + 'px');
+							el.css('width', roundedMaxVal(pos.x) + 'px');
 
 							// reflow the popover tooltip
 							scope.reflowResizeOverlay(_el);
@@ -2358,6 +2500,7 @@ textAngular.directive("textAngular", [
 
 				scope.$on('$destroy', function(){
 					textAngularManager.unregisterEditor(scope._name);
+					angular.element(window).off('blur');
 				});
 
 				// catch element select event and pass to toolbar tools
@@ -2739,7 +2882,7 @@ textAngular.service('textAngularManager', ['taToolExecuteAction', 'taTools', 'ta
 					}
 					event.preventDefault();
 					return false;
-				} 
+				}
 			});
 		}
 	};

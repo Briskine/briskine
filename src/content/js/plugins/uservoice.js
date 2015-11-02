@@ -12,8 +12,6 @@ App.plugin('uservoice', (function () {
     var regExEmail = /([\w!.%+\-])+@([\w\-])+(?:\.[\w\-]+)+/;
 
     var parseString = function (string) {
-        //XXX: Gmail changed the title to: Account  Firstname Lastname so we remove it
-        string = string.replace('Account ', '');
         var match = regExString.exec(string),
             data = {
                 name: '',
@@ -48,11 +46,14 @@ App.plugin('uservoice', (function () {
             subject = $('.ticket-subject-header').text().trim();
 
         var mailRows = $('.ticket-contact-summary .ticket-contact-summary-row');
+        var fromEmail = ' <email>';
         if (mailRows.length) {
             to = parseString(mailRows.eq(0).find('.ticket-contact-summary-values').text().trim());
-            from = parseString(mailRows.eq(-1).text().trim().split('From:')[1].trim());
+            fromEmail = " <" + mailRows.eq(-1).text().trim().split('From:')[1].trim() + ">";
             // todo(@xarg): implement CC and BCC
         }
+        from = $(".ticket-assignee .select-selected").text().trim() + fromEmail;
+        from = parseString(from);
 
         var vars = {
             to: [to],
