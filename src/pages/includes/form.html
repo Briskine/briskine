@@ -115,56 +115,50 @@
                     <div class="form-group">
                         <label class="body-label">Template Content</label>
 
-                        <div ng-if="!settings.editor.enabled" class="toolbar-area pull-right">
-                            <div class="dropdown insert-var-container">
-                                <button class="btn btn-default dropdown-toggle" data-toggle="dropdown" tabindex="-1">
-                                    Insert Variable<span class="caret"></span></button>
-                                <ul class="dropdown-menu">
-                                    <li><a ng-click="insertVar('to.0.first_name')"
-                                           title="First name of the person in the \'To\' field"><strong>To:</strong>
-                                        First Name</a></li>
-                                    <li><a ng-click="insertVar('to.0.email')"
-                                           title="Email address of the person in the \'To\' field"><strong>To:</strong>
-                                        Email</a></li>
-                                    <li><a ng-click="insertVar('from.0.first_name')"
-                                           title="First name of the person in the \'From\' field"><strong>From:</strong>
-                                        First Name</a></li>
-                                    <li><a ng-click="insertVar('from.0.email')"
-                                           title="Email address of the person in the \'From\' field"><strong>From:</strong>
-                                        Email</a></li>
-                                    <li><a ng-click="insertVar('subject')" title="The subject of the e-mail"><strong>Subject</strong></a>
-                                    </li>
-                                    <li class="divider"></li>
-                                    <li><a class="help-block text-muted small"
-                                           href="http://help.gorgias.io/en/latest/src/04-templates.html" rel="external"
-                                           target="_blank">Learn more about template variables <i
-                                        class="fa fa-external-link"></i></a></li>
-                                </ul>
+                        <div class="editor-wrapper">
+                            <div class="toolbar">
+                                <span class="ql-format-group">
+                                    <select title="Font size" class="ql-size">
+                                        <option value="10px">Small</option>
+                                        <option value="13px" selected="">Normal</option>
+                                        <option value="18px">Large</option>
+                                        <option value="32px">Huge</option>
+                                    </select>
+                                 </span>
+
+                                <span class="ql-format-group">
+                                    <span title="Bold" class="ql-format-button ql-bold"></span>
+                                    <span class="ql-format-separator"></span>
+                                    <span title="Italic" class="ql-format-button ql-italic"></span>
+                                    <span class="ql-format-separator"></span>
+                                    <span title="Underline" class="ql-format-button ql-underline"></span>
+                                </span>
+
+                                <span class="ql-format-group">
+                                    <span title="List" class="ql-format-button ql-list"></span>
+                                    <span class="ql-format-separator"></span>
+                                    <span title="Bullet" class="ql-format-button ql-bullet"></span>
+                                    <span class="ql-format-separator"></span>
+                                    <select title="Text Alignment" class="ql-align">
+                                        <option value="left" label="Left" selected=""></option>
+                                        <option value="center" label="Center"></option>
+                                        <option value="right" label="Right"></option>
+                                        <option value="justify" label="Justify"></option>
+                                    </select>
+                                </span>
+
+                                <span class="ql-format-group">
+                                    <span title="Select the text you want to link" class="ql-format-button ql-link"></span>
+                                    <span class="ql-format-separator"></span>
+                                    <span title="Insert image" class="ql-format-button ql-image"></span>
+                                </span>
+
+                                <span class="ql-format-group pull-right ">
+                                    <span title="Show HTML source" class="ql-format-button fa fa-code" ng-class="{'ql-active': showHTMLSource}" ng-click="toggleHTMLSource()"></span>
+                                </span>
                             </div>
+                            <div class="editor"></div>
                         </div>
-
-                        <div ng-if="!settings.editor.enabled">
-                            <textarea
-                                id="qt-body" class="form-control"
-                                cols="100" rows="10" required="required"
-                                placeholder="It was nice talking to you today..."
-                                ng-model="selectedTemplate.body"></textarea>
-
-                            <p class="help-block">
-                                Supports <a
-                                href="http://help.gorgias.io/en/latest/src/04-templates.html?utm_source=ChromeExtension&utm_medium=product&utm_term=formatting&utm_campaign=GorgiasChromeExtension"
-                                target="_blank" tabindex="-1">formatting in HTML</a> and
-                                <a href="http://help.gorgias.io/en/latest/src/04-templates.html?utm_source=ChromeExtension&utm_medium=product&utm_term=template%20variables&utm_campaign=GorgiasChromeExtension#variables"
-                                   target="_blank" tabindex="-1">template variables</a>.
-                            </p>
-                        </div>
-                        <div ng-if="settings.editor.enabled"
-                             class="qt-editor"
-                             text-angular
-                             ng-model="selectedTemplate.body"
-                             ta-default-wrap="span"
-                             ta-toolbar="[['bold','italics','underline'], ['insertLink', 'insertImage'], ['insertVariable'], ['html']]"></div>
-
                     </div>
                     <p ng-show="templates.length > 5 && !profile.user" class="premium-feature">
                         Share this template with your team. <a

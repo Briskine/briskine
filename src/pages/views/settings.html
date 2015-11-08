@@ -21,7 +21,7 @@
         <label for="keyboard-shortcut" data-toggle="tooltip" data-placement="bottom"
                data-original-title="Setup keyboard shortcut to insert templates">
             Keyboard Shortcut
-            <span class="glyphicon glyphicon-question-sign"></span>
+            <span class="fa fa-question-circle"></span>
         </label>
         <br/>
         <input type="text" id="keyboard-shortcut" ng-model="settings.keyboard.shortcut"
@@ -40,14 +40,14 @@
     <div class="checkbox" ng-show="settings.dialog.enabled">
         <label for="showQaButton">Enable Quick Access button</label>
         <input type="checkbox" id="showQaButton" ng-model="settings.qaBtn.enabled" ng-change="updateSettings()"/>
-        <span class="glyphicon glyphicon-question-sign" data-toggle="tooltip" data-placement="bottom"
+        <span class="fa fa-question-circle" data-toggle="tooltip" data-placement="bottom"
               data-original-title="The Quick Access button is placed in the right corner of input fields"></span>
     </div>
     <div class="form-group" ng-show="settings.dialog.enabled">
         <label for="dialog-shortcut" data-toggle="tooltip" data-placement="bottom"
                data-original-title="Setup keyboard shortcut that triggers the auto-complete dialog">
             Keyboard Shortcut
-            <span class="glyphicon glyphicon-question-sign"></span>
+            <span class="fa fa-question-circle"></span>
         </label>
         <br/>
         <input type="text" id="dialog-shortcut" readonly="readonly" ng-model="settings.dialog.shortcut"
@@ -58,7 +58,7 @@
         <label for="dialog-limit" data-toggle="tooltip" data-placement="bottom"
                data-original-title="How many templates should be displayed in the dialog. Choosing a bigger number might reduce performance.">
             How many templates are shown
-            <span class="glyphicon glyphicon-question-sign"></span>
+            <span class="fa fa-question-circle"></span>
         </label>
         <br/>
         <input type="text" id="dialog-limit" ng-model="settings.dialog.limit" ng-change="updateSettings()"/>
@@ -74,27 +74,6 @@
         <input type="checkbox" id="editor-enabled" ng-model="settings.editor.enabled" ng-change="updateSettings()"/>
     </div>
 
-    <!--
-    <div class="checkbox" ng-show="settings.dialog.enabled">
-        <label for="dialog-auto">Automatic popup
-            <span data-toggle="tooltip" data-placement="top"
-                  data-original-title="Automatically pop up the dialog while you type">
-                <span class="glyphicon glyphicon-question-sign"></span>
-            </span>
-        </label>
-        <input type="checkbox" id="dialog-auto" ng-model="settings.dialog.auto"/>
-    </div>
-    <div class="form-group" ng-show="settings.dialog.enabled && settings.dialog.auto">
-        <label for="dialog-delay" data-toggle="tooltip" data-placement="bottom"
-               data-original-title="How much time (miliseconds) to wait until the Autocomplete Dialog should be displayed.">
-            Autocomplete Dialog Popup Delay
-            <span class="glyphicon glyphicon-question-sign"></span>
-        </label>
-        <br/>
-        <input type="text" id="dialog-delay" ng-model="settings.dialog.delay" />
-
-    </div>
-    -->
     <br/>
 
     <h4>Blacklist</h4>
@@ -112,7 +91,7 @@
 
             <button type="button" class="blacklist-item-remove" title="Remove website from blacklist"
                     ng-click="RemoveBlacklistItem($index)">
-                <span class="glyphicon glyphicon-remove"></span>
+                <span class="fa fa-remove"></span>
             </button>
         </div>
 
@@ -141,7 +120,7 @@
         <label for="sidebar-url" data-toggle="tooltip" data-placement="bottom"
                data-original-title="You can use custom variables such as {&#8203;{to.0.email}} or {&#8203;{to.0.name}}. For best experience the width of the page should be less than 220px.">
             Sidebar URL
-            <span class="glyphicon glyphicon-question-sign"></span>
+            <span class="fa fa-question-circle"></span>
         </label>
         <br/>
 
@@ -166,7 +145,7 @@
         <label for="sendStats" data-toggle="tooltip" data-placement="bottom"
                data-original-title="Help improve Gorgias by sending anonymous statistics.">
             Send usage statistics
-            <span class="glyphicon glyphicon-question-sign"></span>
+            <span class="fa fa-question-circle"></span>
         </label>
 
         <input type="checkbox" id="sendStats" ng-model="settings.stats.enabled" ng-change="updateSettings()"/>

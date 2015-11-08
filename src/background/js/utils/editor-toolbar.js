@@ -2,6 +2,7 @@
  */
 
 gApp.config(function ($provide) {
+    return;
     $provide.decorator('taOptions', ['taRegisterTool', '$delegate', '$timeout', function (taRegisterTool, taOptions, $timeout) {
         // place focus at the end of a contenteditable
         var focusEnd = function (el) {

@@ -23,7 +23,7 @@ module.exports = function (grunt) {
                 'bower_components/mousetrap/mousetrap.min.js',
                 'bower_components/mousetrap/plugins/record/mousetrap-record.min.js',
 
-                'bower_components/angular/angular.js',
+                'bower_components/angular/angular.min.js',
                 'bower_components/angular-route/angular-route.min.js',
                 'bower_components/angular-resource/angular-resource.min.js',
                 'bower_components/angular-md5/angular-md5.min.js',
@@ -188,16 +188,6 @@ module.exports = function (grunt) {
                         flatten: true,
                         dot: true,
                         cwd: '<%= config.app %>/bower_components/font-awesome/fonts/',
-                        dest: '<%= config.dist %>/background/fonts',
-                        src: [
-                            '*'
-                        ]
-                    },
-                    {
-                        expand: true,
-                        flatten: true,
-                        dot: true,
-                        cwd: '<%= config.app %>/bower_components/bootstrap/dist/fonts/',
                         dest: '<%= config.dist %>/background/fonts',
                         src: [
                             '*'

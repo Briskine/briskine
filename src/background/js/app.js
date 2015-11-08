@@ -21,13 +21,12 @@ Raven.config('https://af2f5e9fb2744c359c19d08c8319d9c5@app.getsentry.com/30379',
 var gApp = angular.module('gApp', [
     'ngRoute',
     'ngResource',
-    'angular-md5',
-    'angularMoment',
-    'textAngular'
-]).config(function ($routeProvider, $compileProvider) {
+    'ngMd5',
+    'angularMoment'
+]);
 
+gApp.config(function ($routeProvider, $compileProvider) {
     $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|chrome-extension):/);
-
     $routeProvider
         .when('/list', {
             controller: 'ListCtrl',
@@ -47,11 +46,12 @@ var gApp = angular.module('gApp', [
         });
 });
 
-
 gApp.config(["$provide", function ($provide) {
     $provide.decorator("$exceptionHandler", ["$delegate", "$window", function ($delegate, $window) {
         return function (exception, cause) {
-            Raven.captureException(exception);
+            if (ENV === 'production') {
+                Raven.captureException(exception);
+            }
             // (Optional) Pass the error through to the delegate formats it for the console
             $delegate(exception, cause);
         };

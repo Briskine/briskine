@@ -2,6 +2,7 @@ gApp.controller('ListCtrl',
     function ($scope, $rootScope, $routeParams, $location, $timeout, $filter, TemplateService, SettingsService) {
 
         var $formModal;
+        var editor;
 
         $scope.filteredTemplates = [];
         $scope.templates = [];
@@ -83,10 +84,38 @@ gApp.controller('ListCtrl',
                 });
             });
 
-            checkRoute();
+            $formModal.on('shown.bs.modal', function () {
+                $('#qt-title').focus();
+            });
 
+            // Initialize editor with custom theme and modules
+            editor = new Quill('.editor-wrapper .editor', {
+                modules: {
+                    'toolbar': {container: '.editor-wrapper .toolbar'},
+                    'link-tooltip': true
+                },
+                theme: 'snow'
+            });
+
+            editor.on('text-change', function (delta, source) {
+                if (source === 'user') {
+                    $scope.selectedTemplate.body = editor.getHTML();
+                }
+            });
+            checkRoute();
         };
 
+        /* Check search params to see if adding or editing items
+         */
+        var checkRoute = function () {
+            // if not the default list
+            // new or edit, so show the modal
+            if ($routeParams.id) {
+                $scope.showForm();
+            }
+        };
+
+        $scope.$on('$routeUpdate', checkRoute);
         $rootScope.$on('$includeContentLoaded', initDom);
 
         // Show the form for adding a new quicktext or creating one
@@ -113,28 +142,26 @@ gApp.controller('ListCtrl',
                 // new template
                 $scope.selectedTemplate = angular.copy(defaults);
                 $scope.selectedTemplate.body = $routeParams.body;
+                editor.setHTML($scope.selectedTemplate.body);
             } else if (id) {
                 // update template
                 TemplateService.get(id).then(function (r) {
                     $scope.selectedTemplate = angular.copy(r);
 
-                    // convert body from markdown to html
-                    //SettingsService.get("settings", function (settings) {
-                    //    if (settings.editor.enabled) {
-                    //        // markdown requires two spaces and \n to for a line break
-                    //        // so we use this to also turn any \n into a line break
-                    //        $scope.selectedTemplate.body = $scope.selectedTemplate.body.replace(/\n/g, ' <br />\n');
-                    //        $scope.selectedTemplate.body = marked($scope.selectedTemplate.body);
-                    //    }
-                    //});
+                    editor.setHTML($scope.selectedTemplate.body);
                 });
             }
-
             $formModal.modal('show');
+        };
 
-            $formModal.on('shown.bs.modal', function () {
-                $('#qt-title').focus();
-            });
+        $scope.showHTMLSource = false;
+        $scope.toggleHTMLSource = function(){
+            $scope.showHTMLSource = !$scope.showHTMLSource;
+            if ($scope.showHTMLSource) {
+                editor.setText($scope.selectedTemplate.body);
+            } else {
+                editor.setHTML($scope.selectedTemplate.body);
+            }
         };
 
         $scope.insertVar = function (variable) {
@@ -153,73 +180,6 @@ gApp.controller('ListCtrl',
             body.val(newVal);
             body[0].setSelectionRange(newPos, newPos);
             body.focus();
-        };
-
-        /* Check search params to see if adding or editing items
-         */
-        var checkRoute = function () {
-            // if not the default list
-            // new or edit, so show the modal
-            if ($routeParams.id) {
-                $scope.showForm();
-            }
-        };
-
-        $scope.$on('$routeUpdate', checkRoute);
-
-        $scope.loadMore = function () {
-            $scope.limitTemplates += 42;
-            if ($scope.limitTemplates > $scope.filteredTemplates.length) {
-                $(".load-more").hide();
-                $scope.limitTemplates = 42;
-            }
-        };
-
-
-        // list of tags we don't want to remove
-        // even if their innerHTML is empty
-        var dontCleanTags = {
-            'br': '',
-            'embed': '',
-            'hr': '',
-            'img': '',
-            'input': '',
-            'link': ''
-        };
-
-        // remove comments and empty dom nodes
-        var cleanDomNodes = function (parent) {
-
-            for (var n = 0; n < parent.childNodes.length; n++) {
-                var child = parent.childNodes[n];
-
-                // check if it's a comment node,
-                // or an element node (not in the dontCleanTags array)
-                // with whitespace-only innerHTML,
-                // or a text node with whitespace-only nodeValue
-                if (
-                    child.nodeType === 8 ||
-                    (child.nodeType === 1 && !/\S/.test(child.innerHTML) && !(child.tagName.toLowerCase() in dontCleanTags)) ||
-                    (child.nodeType === 3 && !/\S/.test(child.nodeValue))
-                ) {
-
-                    parent.removeChild(child);
-                    n--;
-
-                    // if the parent has no other childNodes
-                    // remove it
-                    if (!parent.childNodes.length) {
-                        parent.parentNode.removeChild(parent);
-                    }
-
-                } else if (child.nodeType === 1) {
-
-                    // if it's a non-empty element node
-                    // check it
-                    cleanDomNodes(child);
-
-                }
-            }
         };
 
         // Save a quicktext, perform some checks before
@@ -326,6 +286,14 @@ gApp.controller('ListCtrl',
                 $scope.limitTemplates = 42;
             } else {
                 $('.load-more').show();
+            }
+        };
+
+        $scope.loadMore = function () {
+            $scope.limitTemplates += 42;
+            if ($scope.limitTemplates > $scope.filteredTemplates.length) {
+                $(".load-more").hide();
+                $scope.limitTemplates = 42;
             }
         };
 
