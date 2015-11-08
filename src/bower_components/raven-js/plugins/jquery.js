@@ -3,13 +3,15 @@
  *
  * Patches event handler callbacks and ajax callbacks.
  */
-;(function(window, Raven, $) {
+;(function(window) {
 'use strict';
 
+if (window.Raven) Raven.addPlugin(function jQueryPlugin() {
+
+var $ = window.jQuery;
+
 // quit if jQuery isn't on the page
-if (!$) {
-    return;
-}
+if (!$) return;
 
 var _oldEventAdd = $.event.add;
 $.event.add = function ravenEventAdd(elem, types, handler, data, selector) {
@@ -57,7 +59,7 @@ $.ajax = function ravenAjaxWrapper(url, options) {
     options = options || {};
 
     /*jshint -W084*/
-    while(key = keys.pop()) {
+    while (key = keys.pop()) {
         if ($.isFunction(options[key])) {
             options[key] = Raven.wrap(options[key]);
         }
@@ -65,11 +67,42 @@ $.ajax = function ravenAjaxWrapper(url, options) {
     /*jshint +W084*/
 
     try {
-        return _oldAjax.call(this, url, options);
+        var jqXHR = _oldAjax.call(this, url, options);
+        // jqXHR.complete is not a regular deferred callback
+        if ($.isFunction(jqXHR.complete))
+            jqXHR.complete = Raven.wrap(jqXHR.complete);
+        return jqXHR;
     } catch (e) {
         Raven.captureException(e);
         throw e;
     }
 };
 
-}(window, window.Raven, window.jQuery));
+var _oldDeferred = $.Deferred;
+$.Deferred = function ravenDeferredWrapper(func) {
+    return !_oldDeferred ? null : _oldDeferred(function beforeStartWrapper(deferred) {
+        var methods = ['resolve', 'reject', 'notify', 'resolveWith', 'rejectWith', 'notifyWith'], method;
+
+        // since jQuery 1.9, deferred[resolve | reject | notify] are calling internally
+        // deferred[resolveWith | rejectWith | notifyWith] but we need to wrap them as well
+        // to support all previous versions.
+
+        /*jshint -W084*/
+        while (method = methods.pop()) {
+            if ($.isFunction(deferred[method])) {
+                deferred[method] = Raven.wrap(deferred[method]);
+            }
+        }
+        /*jshint +W084*/
+
+        // Call given func if any
+        if (func) {
+            func.call(deferred, deferred);
+        }
+    });
+};
+
+// End of plugin factory
+});
+
+}(typeof window !== 'undefined' ? window : this));

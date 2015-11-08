@@ -14,7 +14,7 @@ module.exports = function (grunt) {
         background: {
             js: [
                 'bower_components/raven-js/dist/raven.min.js',
-                'bower_components/jquery/jquery.min.js',
+                'bower_components/jquery/dist/jquery.min.js',
                 'bower_components/bootstrap/dist/js/bootstrap.min.js',
                 'bower_components/underscore/underscore-min.js',
                 'bower_components/underscore.string/dist/underscore.string.min.js',
@@ -23,16 +23,13 @@ module.exports = function (grunt) {
                 'bower_components/mousetrap/mousetrap.min.js',
                 'bower_components/mousetrap/plugins/record/mousetrap-record.min.js',
 
-                'bower_components/angular/angular.min.js',
+                'bower_components/angular/angular.js',
                 'bower_components/angular-route/angular-route.min.js',
                 'bower_components/angular-resource/angular-resource.min.js',
-                'bower_components/angular-animate/angular-animate.min.js',
-                'bower_components/angular-md5/angular-md5.js',
+                'bower_components/angular-md5/angular-md5.min.js',
                 'bower_components/angular-moment/angular-moment.min.js',
 
-                'bower_components/textAngular/dist/textAngular-rangy.min.js',
-                'bower_components/textAngular/dist/textAngular-sanitize.min.js',
-                'bower_components/textAngular/dist/textAngular.min.js',
+                'bower_components/quill/dist/quill.min.js',
 
                 // Should be first
                 'background/js/environment.js',

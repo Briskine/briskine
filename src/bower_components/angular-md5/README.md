@@ -16,21 +16,23 @@ You can download angular-md5 by:
   <input type="email" ng-model="email" placeholder="Email Address">
   {{ message }}
 </body>
-<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.0-rc.2/angular.min.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.10/angular.js"></script>
 <script src="app/bower_components/angular-md5/angular-md5.js"></script>
 <script>
   angular.module('YOUR_APP', [
-    'angular-md5',
+    'angular-md5', // you may also use 'ngMd5' or 'gdi2290.md5'
     'controllers'
   ]);
   angular.module('controllers', [])
     .controller('MainCtrl', ['$scope', 'md5', function($scope, md5) {
-      
+
       $scope.$watch('email' ,function() {
         $scope.message = 'Your email Hash is: ' + md5.createHash($scope.email || '');
       });
-      
+
     }]);
 </script>
 
 ````
+
+[MIT](https://github.com/gdi2290/angular-md5/blob/master/LICENSE)
