@@ -331,10 +331,6 @@ App.autocomplete.dialog = {
     show: function (params) {
         params = params || {};
 
-        // used when restoring selection (eg. close dialog with Esc)
-        // so we can restore the cursor to the exact previous position.
-        App.autocomplete.dialog.focusNode = window.getSelection().focusNode;
-
         App.autocomplete.dialog.isActive = true;
         App.autocomplete.dialog.isEmpty = true;
 
@@ -544,11 +540,21 @@ App.autocomplete.dialog.init = function(doc) {
 };
 
 // remember the last active editor
-$(document.body).on('focusin', function(e) {
+document.body.addEventListener('focusin', function(e) {
     if(App.autocomplete.isEditable(e.target)) {
         if(!e.target.classList.contains('qt-dropdown-search')) {
             var dialog = App.autocomplete.dialog;
             dialog.editor = e.target;
         }
+    }
+});
+
+document.body.addEventListener('focusout', function(e) {
+    var dialog = App.autocomplete.dialog;
+    // if we un-focused the editor
+    if(e.target === dialog.editor) {
+        // used when restoring selection (eg. close dialog with Esc)
+        // so we can restore the cursor to the exact previous position.
+        dialog.focusNode = window.getSelection().focusNode;
     }
 });
