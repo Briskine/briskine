@@ -23,7 +23,6 @@ toolbar-bg = #f8f8f8;
         }
     }
     .editor {
-        min-height: 300px;
         border: 1px solid #bfbfbf;
         border-radius: 0 0 3px 3px;
 
@@ -32,56 +31,19 @@ toolbar-bg = #f8f8f8;
             box-shadow: none;
         }
     }
-
-    .qt-editor .ta-editor
-    .qt-editor .btn-group:last-child {
+    .ql-container {
+        padding: 7px 7px 9px;
+    }
+    .ql-active {
+        color: #337ab7;
+    }
+    .ql-tooltip .btn {
+        width: 20%;
         float: right;
+        margin-left: 5px;
     }
-
-    .ta-root.focussed > .ta-scroll-window.form-control {
-        box-shadow: none;
-        border-color: $color1;
-    }
-
-    /* insert var dropdown
-     */
-
-    .insert-var-container {
-        padding: 0;
-        border: 0;
-        .dropdown-toggle {
-            padding: 0.25em 1em;
-        }
-    }
-
-    .insert-var-container > button:hover {
-        box-shadow: none;
-    }
-
-    .insert-var-container > button .caret {
-        margin: 0 0 0 emCalc(4);
-    }
-
-    .insert-var-container ul {
-        padding: 0;
-        overflow: hidden;
-
-        text-align: left;
-    }
-
-    .insert-var-container ul a {
-        padding: emCalc(3) emCalc(12);
-    }
-
-    /* we need to still use paragraphs as element wrappers
-     * so that textAngular turns them into newlines.
-     * TODO once
-     * https://github.com/domchristie/to-markdown/issues/49
-     * is merged, we can use divs.
-     */
-
-    .qt-editor [contenteditable] p {
-        margin: 0;
+    .ql-editor {
+        min-height: 340px;
     }
 }
 

@@ -88,13 +88,20 @@ gApp.controller('ListCtrl',
                 $('#qt-title').focus();
             });
 
-            // Initialize editor with custom theme and modules
+            // Initialize editor
             editor = new Quill('.editor-wrapper .editor', {
                 modules: {
                     'toolbar': {container: '.editor-wrapper .toolbar'},
                     'link-tooltip': true
                 },
                 theme: 'snow'
+            });
+            editor.addModule('image-tooltip', {
+                template: '<input class="input" type="textbox">' +
+                '<div class="preview">' +
+                '<span>Preview</span> </div> ' +
+                '<a href="javascript:;" class="insert btn btn-primary">Insert</a>' +
+                '<a href="javascript:;" class="cancel btn btn-default">Cancel</a>'
             });
 
             editor.on('text-change', function (delta, source) {
@@ -141,7 +148,7 @@ gApp.controller('ListCtrl',
             if (id === 'new') {
                 // new template
                 $scope.selectedTemplate = angular.copy(defaults);
-                $scope.selectedTemplate.body = $routeParams.body;
+                $scope.selectedTemplate.body = $routeParams.body || '';
                 editor.setHTML($scope.selectedTemplate.body);
             } else if (id) {
                 // update template
@@ -155,7 +162,7 @@ gApp.controller('ListCtrl',
         };
 
         $scope.showHTMLSource = false;
-        $scope.toggleHTMLSource = function(){
+        $scope.toggleHTMLSource = function () {
             $scope.showHTMLSource = !$scope.showHTMLSource;
             if ($scope.showHTMLSource) {
                 editor.setText($scope.selectedTemplate.body);

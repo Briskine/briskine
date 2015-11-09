@@ -29,7 +29,7 @@ module.exports = function (grunt) {
                 'bower_components/angular-md5/angular-md5.min.js',
                 'bower_components/angular-moment/angular-moment.min.js',
 
-                'bower_components/quill/dist/quill.min.js',
+                'bower_components/quill/dist/quill.js',
 
                 // Should be first
                 'background/js/environment.js',
@@ -42,7 +42,7 @@ module.exports = function (grunt) {
         content: {
             js: [
                 'bower_components/raven-js/dist/raven.min.js',
-                'bower_components/jquery/jquery.min.js',
+                'bower_components/jquery/dist/jquery.min.js',
                 'bower_components/underscore/underscore-min.js',
                 'bower_components/handlebars/handlebars.min.js',
                 'bower_components/mousetrap/mousetrap.js',
