@@ -331,6 +331,10 @@ App.autocomplete.dialog = {
     show: function (params) {
         params = params || {};
 
+        // used when restoring selection (eg. close dialog with Esc)
+        // so we can restore the cursor to the exact previous position.
+        App.autocomplete.dialog.focusNode = window.getSelection().focusNode;
+
         App.autocomplete.dialog.isActive = true;
         App.autocomplete.dialog.isEmpty = true;
 
@@ -432,8 +436,7 @@ App.autocomplete.dialog = {
         var quicktext = params.quicktext;
         App.autocomplete.replaceWith({
             element: App.autocomplete.dialog.editor,
-            quicktext: quicktext,
-            focusNode: App.autocomplete.dialog.focusNode
+            quicktext: quicktext
         });
 
         chrome.runtime.sendMessage({
