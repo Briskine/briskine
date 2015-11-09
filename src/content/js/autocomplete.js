@@ -245,6 +245,15 @@ App.autocomplete.replaceWith = function (params) {
 
     App.autocomplete.justCompleted = true; // the idea is that we don't want any completion to popup after we just completed
 
+    // since we're running the function in the editor window,
+    // we can get the focus node from here
+//     var selection = window.getSelection();
+//     var focusNode = selection.focusNode;
+    var selection = App.autocomplete.focus.selection;
+    var focusNode = App.autocomplete.focus.focusNode;
+
+    // TODO the focusnode is incorrect in gmail because of the auto-focus on the to-field
+
     var setText = function () {
 
         App.activePlugin.getData({
@@ -254,10 +263,6 @@ App.autocomplete.replaceWith = function (params) {
             var parsedTemplate = Handlebars.compile(params.quicktext.body)(response);
 
             if (App.autocomplete.isContentEditable(params.element)) {
-                // since we're running the function in the editor window,
-                // we can get the focus node from here
-                var selection = window.getSelection();
-                var focusNode = selection.focusNode;
                 var range = doc.createRange();
 
                 replacement = parsedTemplate;
@@ -405,7 +410,7 @@ App.autocomplete.focusEditor = function (element, callback) {
 
     // return focus to the editor
 
-    // gmail auto-focuses the to field
+    // gmail auto-focuses the Send button on Tab,
     // so we need the delay
     setTimeout(function () {
         if (element) {
@@ -430,3 +435,31 @@ App.autocomplete.mirrorStyles = [
     // The direction.
     'direction'
 ];
+
+// focus management
+App.autocomplete.focus = {
+    editor: null,
+    focusNode: null,
+    selection: null
+};
+
+// remember the last active editor
+document.body.addEventListener('focus', function(e) {
+    if(App.autocomplete.isEditable(e.target)) {
+        if(!e.target.classList.contains('qt-dropdown-search')) {
+            App.autocomplete.focus.editor = e.target;
+        }
+    }
+}, true);
+
+// get the last focused node, when blurring the editor
+document.body.addEventListener('blur', function(e) {
+    var focus = App.autocomplete.focus;
+    // if we un-focused the editor
+    if(e.target === focus.editor) {
+        // used when restoring selection (eg. close dialog with Esc)
+        // so we can restore the cursor to the exact previous position.
+        focus.selection = window.getSelection();
+        focus.focusNode = focus.selection.focusNode;
+    }
+}, true);

@@ -43,7 +43,7 @@ App.autocomplete.dialog = {
 
     completion: function (params) {
         params = params || {};
-        var element = this.editor;
+        var element = App.autocomplete.focus.editor;
 
         // if it's not an editable element
         // don't trigger anything
@@ -431,7 +431,7 @@ App.autocomplete.dialog = {
     selectActive: function (params) {
         var quicktext = params.quicktext;
         App.autocomplete.replaceWith({
-            element: App.autocomplete.dialog.editor,
+            element: App.autocomplete.focus.editor,
             quicktext: quicktext
         });
 
@@ -482,13 +482,13 @@ App.autocomplete.dialog = {
         // since we didn't select any quicktext
         var selection = document.getSelection();
         var caretRange = document.createRange();
-        caretRange.setStartAfter(App.autocomplete.dialog.focusNode);
+        caretRange.setStartAfter(App.autocomplete.focus.focusNode);
         caretRange.collapse(true);
         selection.removeAllRanges();
         selection.addRange(caretRange);
 
         // focus the editor
-        App.autocomplete.dialog.editor.focus();
+        App.autocomplete.focus.editor.focus();
     }
 };
 
@@ -524,7 +524,9 @@ App.autocomplete.dialog.dispatcher = function(res) {
     }
 
     if(res.data.action === 'g-dialog-restore-selection') {
-        dialog.restoreSelection();
+        // we need to use a timeout because Gmail automatically
+        // focuses the To field, after we focus the editor.
+        setTimeout(dialog.restoreSelection);
     }
 
 };
@@ -539,22 +541,3 @@ App.autocomplete.dialog.init = function(doc) {
     this.bindKeyboardEvents(doc);
 };
 
-// remember the last active editor
-document.body.addEventListener('focusin', function(e) {
-    if(App.autocomplete.isEditable(e.target)) {
-        if(!e.target.classList.contains('qt-dropdown-search')) {
-            var dialog = App.autocomplete.dialog;
-            dialog.editor = e.target;
-        }
-    }
-});
-
-document.body.addEventListener('focusout', function(e) {
-    var dialog = App.autocomplete.dialog;
-    // if we un-focused the editor
-    if(e.target === dialog.editor) {
-        // used when restoring selection (eg. close dialog with Esc)
-        // so we can restore the cursor to the exact previous position.
-        dialog.focusNode = window.getSelection().focusNode;
-    }
-});
