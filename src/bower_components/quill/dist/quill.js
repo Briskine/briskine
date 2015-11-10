@@ -10359,7 +10359,7 @@ Quill = (function(superClass) {
       source = Quill.sources.API;
     }
     if (!html.trim()) {
-      html = "<" + dom.DEFAULT_BLOCK_TAG + "><" + dom.DEFAULT_BREAK_TAG + "></" + dom.DEFAULT_BLOCK_TAG + ">";
+      html = "<" + dom.DEFAULT_BLOCK_TAG + "><" + dom.DEFAULT_BREAK_TAG + " /></" + dom.DEFAULT_BLOCK_TAG + ">";
     }
     this.editor.doc.setHTML(html);
     return this.editor.checkUpdate(source);

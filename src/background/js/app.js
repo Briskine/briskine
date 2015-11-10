@@ -207,26 +207,6 @@ gApp.run(function ($rootScope, $location, $http, $timeout, ProfileService, Setti
 
     window.setInterval($rootScope.SyncNow, syncInterval);
 
-    $rootScope.saveEmail = function () {
-        var req = {
-            method: 'POST',
-            url: "https://docs.google.com/forms/d/1Z2vVKT_fNVrWWkvnnT-L1Mry3bsTIxZYlXfYwmbcigM/formResponse",
-            params: {
-                'entry.1617944603': $rootScope.userEmail
-            }
-        };
-        $http(req).success(function(){
-            SettingsService.get('settings').then(function(settings){
-                settings.userEmail = $rootScope.userEmail;
-                SettingsService.set('settings', settings).then(function(){
-                    $rootScope.showEmailAwesome = true;
-                });
-            });
-        }).error( function(){
-            $rootScope.showEmailAwesome = false;
-        });
-    };
-
     // init dom plugins
     var initDom = function () {
 

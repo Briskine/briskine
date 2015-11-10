@@ -58,28 +58,6 @@
             <li ng-if="isOpera"><a href="https://addons.opera.com/en/extensions/details/gorgias/?display=en&reports#feedback-container" target="_blank">Help <i class="fa fa-external-link"></i></a></li>
         </ul>
 
-        <br/>
-        <br/>
-        <br/>
-        <div class="sidebar-spam" ng-show="!(profile.user || savedEmail || showEmailAwesome)">
-            <p><strong>Help us make Gorgias better!</strong><br/>We'd love to get in touch.</p>
-            <form ng-submit="saveEmail()" class="form-inline">
-                <div class="form-group">
-                    <input type="email" class="form-control" placeholder="your@email.com" ng-model="userEmail" />
-                </div>
-                <button class="btn btn-default">Send</button>
-            </form>
-            <p></p>
-            <p>Thanks!</p>
-            <div class="signature">
-                <a href="https://twitter.com/humanfromearth" target="_blank" title="@humanfromearth"><img src="/icons/alex.jpg" alt="Alex Plugaru" class="img-circle" /></a>
-                <a href="https://twitter.com/Romain_Lapeyre" target="_blank" title="@Romain_Lapeyre"><img src="/icons/romain.jpg" alt="Romain Lapeyre" class="img-circle" /></a>
-            </div>
-        </div>
-        <div class="thanks" ng-show="showEmailAwesome">
-            Thanks! You're awesome! <i class="fa fa-smile-o"></i>
-        </div>
-
         <div class="sidebar-footer">
             <a href="https://twitter.com/gorgiasio" title="Follow @gorgiasio and get some awesome tips on how to use it!" target="_blank"><img src="/icons/twitter.jpg" class="twitter-badge" alt="Follow on twitter"/></a>
             <br/>

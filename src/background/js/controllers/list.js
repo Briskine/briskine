@@ -165,9 +165,9 @@ gApp.controller('ListCtrl',
         $scope.toggleHTMLSource = function () {
             $scope.showHTMLSource = !$scope.showHTMLSource;
             if ($scope.showHTMLSource) {
-                editor.setText($scope.selectedTemplate.body);
+                editor.setText(editor.getHTML());
             } else {
-                editor.setHTML($scope.selectedTemplate.body);
+                editor.setHTML(editor.getText());
             }
         };
 
@@ -199,6 +199,10 @@ gApp.controller('ListCtrl',
             if (!$scope.selectedTemplate.body) {
                 alert("Please enter a body");
                 return false;
+            }
+
+            if ($scope.showHTMLSource) {
+                $scope.selectedTemplate.body = editor.getText();
             }
 
             TemplateService.quicktexts().then(function (templates) {
