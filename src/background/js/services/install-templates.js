@@ -47,7 +47,7 @@ gApp.service('InstallService', function () {
             'shortcut': 'h',
             'subject': '',
             'tags': 'en, greetings',
-            'body': '<div>Hello {{to.0.first_name}},</div><div></div>'
+            'body': '<div>Hello {{to.first_name}},</div><div></div>'
         },
         {
             'title': 'Nice talking to you',
@@ -61,14 +61,14 @@ gApp.service('InstallService', function () {
             'shortcut': 'kr',
             'subject': '',
             'tags': 'en, closing',
-            'body': '<div>Kind regards,</div><div>{{from.0.first_name}}.</div>'
+            'body': '<div>Kind regards,</div><div>{{from.first_name}}.</div>'
         },
         {
             'title': 'My email',
             'shortcut': 'e',
             'subject': '',
             'tags': 'en, personal',
-            'body': '<div>{{from.0.email}}</div>'
+            'body': '<div>{{from.email}}</div>'
         }
     ];
 

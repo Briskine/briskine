@@ -118,7 +118,7 @@ App.plugin('gmail', (function() {
 
     var setTitle = function(params, callback) {
         getData(params, function(_, vars){
-            var parsedSubject = Handlebars.compile(params.quicktext.subject)(vars);
+            var parsedSubject = Handlebars.compile(params.quicktext.subject)(PrepareVars(vars));
 
             var $subjectField = $(params.element).closest('table.aoP').find('input[name=subjectbox]');
             $subjectField.val(parsedSubject);

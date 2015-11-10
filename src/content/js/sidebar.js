@@ -10,7 +10,7 @@ App.sidebar = {
         var containers = $('table div[role=complementary]');
         if (containers.length) {
             var changeSidebar = function (err, response) {
-                var parsedUrl = Handlebars.compile(url)(response);
+                var parsedUrl = Handlebars.compile(url)(PrepareVars(response));
                 if (parsedUrl !== App.sidebar.query) {
                     console.log("Setting sidebar to: " + parsedUrl);
                     App.sidebar.query = parsedUrl;
