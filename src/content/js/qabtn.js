@@ -64,7 +64,7 @@ App.qaBtn = (function() {
             return false;
         }
 
-        var rect = e.target.getBoundingClientRect();
+        var rect = textfield.getBoundingClientRect();
 
         // TODO add scroll position to x/y
         window.top.postMessage({
@@ -184,7 +184,7 @@ App.qaBtn = (function() {
         // in case it's position or size changes
         qaPositionInterval = setInterval(function() {
             setPosition(textfield);
-        }, 1000);
+        }, 2000);
 
         document.body.classList.add('gorgias-show-qa-btn');
     };
