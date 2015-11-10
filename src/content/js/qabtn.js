@@ -189,7 +189,10 @@ App.qaBtn = (function() {
         document.body.classList.add('gorgias-show-qa-btn');
     };
 
-    var hide = function(e) {
+    var hide = function() {
+        if(document.activeElement.classList.contains('gorgias-qa-btn')) {
+            return;
+        }
 
         document.body.classList.remove('gorgias-show-qa-btn');
 
@@ -302,11 +305,8 @@ App.qaBtn = (function() {
             window.addEventListener('message', dispatcher);
         }
 
-        // warning:
-        // we have to use focusin because focus does not bubble,
-        // but only chrome supports focusin.
-        document.body.addEventListener('focusin', focusin);
-        document.body.addEventListener('focusout', focusout);
+        document.body.addEventListener('focus', focusin, true);
+        document.body.addEventListener('blur', focusout, true);
 
         App.settings.fetchSettings(function(s) {
             settings = s;
