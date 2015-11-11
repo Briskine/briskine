@@ -126,7 +126,8 @@ module.exports = function (grunt) {
                 options: {
                     'include css': true,
                     compress: false,
-                    linenos: true
+                    linenos: true,
+                    urlfunc: 'url'
                 },
                 files: {
                     '<%= config.dist %>/background/css/installed.css': '<%= config.app %>/background/css/installed.styl',
@@ -137,7 +138,8 @@ module.exports = function (grunt) {
             },
             production: {
                 options: {
-                    'include css': true
+                    'include css': true,
+                     urlfunc: 'url'
                 },
                 files: {
                     '<%= config.dist %>/background/css/installed.css': '<%= config.app %>/background/css/installed.styl',
