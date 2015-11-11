@@ -66,7 +66,6 @@ App.qaBtn = (function() {
 
         var rect = textfield.getBoundingClientRect();
 
-        // TODO add scroll position to x/y
         window.top.postMessage({
             action: 'g-qabtn-show',
             textfield: {
@@ -80,7 +79,8 @@ App.qaBtn = (function() {
         }, '*');
 
         // First time a user uses our extension
-        // we show it and then hide it
+        // we open the dialog automatically
+        // (as if the button was clicked).
         if (settings.qaBtn && settings.qaBtn.hasOwnProperty('shownPostInstall')) {
             if (!settings.qaBtn.shownPostInstall) {
                 settings.qaBtn.shownPostInstall = true;
@@ -125,8 +125,8 @@ App.qaBtn = (function() {
         var top = textfield.top;
         var left = textfield.left;
 
-        top += $(window).scrollTop();
-        left += $(window).scrollLeft();
+        top += window.scrollY;
+        left += window.scrollX;
 
         top += padding;
         left -= padding;
@@ -143,13 +143,6 @@ App.qaBtn = (function() {
         qaBtn.style.msTransform = transform;
         qaBtn.style.mozTransform = transform;
         qaBtn.style.webkitTransform = transform;
-
-        // TODO we need to do this differently, after the postmessage refactor
-        // if (textfield.style.zIndex) {
-        //     qaBtn.style.zIndex = textfield.style.zIndex + 1;
-        // } else {
-        //     qaBtn.style.zIndex = 1;
-        // }
     };
 
     var show = function(res) {
@@ -180,11 +173,9 @@ App.qaBtn = (function() {
 
         setPosition(textfield);
 
-        // re-calculate the qa-btn position at an interval,
-        // in case it's position or size changes
-        qaPositionInterval = setInterval(function() {
-            setPosition(textfield);
-        }, 2000);
+        // we can't recalculate the position at an interval,
+        // because the top windows can't recalculate getBoundingClientRect
+        // from the node in the child window.
 
         document.body.classList.add('gorgias-show-qa-btn');
     };
