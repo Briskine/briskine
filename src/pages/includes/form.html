@@ -118,53 +118,45 @@
                         <div class="editor-wrapper">
                             <div class="toolbar">
                                 <!-- This part of the toolbar only visible for richtext editor -->
-                                    <span ng-if="settings.editor.enabled">
-                                        <span class="ql-format-group">
-                                            <select title="Font size" class="ql-size">
-                                                <option value="10px">Small</option>
-                                                <option value="13px" selected="">Normal</option>
-                                                <option value="18px">Large</option>
-                                                <option value="32px">Huge</option>
-                                            </select>
-                                         </span>
-
-                                        <span class="ql-format-group">
-                                            <span title="Bold" class="ql-format-button ql-bold"></span>
-                                            <span class="ql-format-separator"></span>
-                                            <span title="Italic" class="ql-format-button ql-italic"></span>
-                                            <span class="ql-format-separator"></span>
-                                            <span title="Underline" class="ql-format-button ql-underline"></span>
-                                        </span>
-
-                                        <span class="ql-format-group">
-                                            <span title="List" class="ql-format-button ql-list"></span>
-                                            <span class="ql-format-separator"></span>
-                                            <span title="Bullet" class="ql-format-button ql-bullet"></span>
-                                            <span class="ql-format-separator"></span>
-                                            <select title="Text Alignment" class="ql-align">
-                                                <option value="left" label="Left" selected=""></option>
-                                                <option value="center" label="Center"></option>
-                                                <option value="right" label="Right"></option>
-                                                <option value="justify" label="Justify"></option>
-                                            </select>
-                                        </span>
-
-                                        <span class="ql-format-group">
-                                            <span title="Select the text you want to link"
-                                                  class="ql-format-button ql-link"></span>
-                                            <span class="ql-format-separator"></span>
-                                            <span title="Insert image" class="ql-format-button ql-image"></span>
-                                        </span>
-
-                                        <span class="ql-format-group pull-right ">
-                                            <span title="Show HTML source" class="ql-format-button fa fa-code"
-                                                  ng-class="{'ql-active': showHTMLSource}"
-                                                  ng-click="toggleHTMLSource()"></span>
-                                        </span>
-                                    </span>
-
-
-                                <div class="dropdown insert-var-container">
+                                <span class="ql-format-group" ng-show="settings.editor.enabled">
+                                    <select title="Font size" class="ql-size">
+                                        <option value="10px">Small</option>
+                                        <option value="13px" selected="">Normal</option>
+                                        <option value="18px">Large</option>
+                                        <option value="32px">Huge</option>
+                                    </select>
+                                 </span>
+                                <span class="ql-format-group" ng-show="settings.editor.enabled">
+                                    <span title="Bold" class="ql-format-button ql-bold"></span>
+                                    <span class="ql-format-separator"></span>
+                                    <span title="Italic" class="ql-format-button ql-italic"></span>
+                                    <span class="ql-format-separator"></span>
+                                    <span title="Underline" class="ql-format-button ql-underline"></span>
+                                </span>
+                                <span class="ql-format-group" ng-show="settings.editor.enabled">
+                                    <span title="List" class="ql-format-button ql-list"></span>
+                                    <span class="ql-format-separator"></span>
+                                    <span title="Bullet" class="ql-format-button ql-bullet"></span>
+                                    <span class="ql-format-separator"></span>
+                                    <select title="Text Alignment" class="ql-align">
+                                        <option value="left" label="Left" selected=""></option>
+                                        <option value="center" label="Center"></option>
+                                        <option value="right" label="Right"></option>
+                                        <option value="justify" label="Justify"></option>
+                                    </select>
+                                </span>
+                                <span class="ql-format-group" ng-show="settings.editor.enabled">
+                                    <span title="Select the text you want to link"
+                                          class="ql-format-button ql-link"></span>
+                                    <span class="ql-format-separator"></span>
+                                    <span title="Insert image" class="ql-format-button ql-image"></span>
+                                </span>
+                                <span class="ql-format-group" ng-show="settings.editor.enabled">
+                                    <span title="Show HTML source" class="ql-format-button fa fa-code"
+                                          ng-class="{'ql-active': showHTMLSource}"
+                                          ng-click="toggleHTMLSource()"></span>
+                                </span>
+                                <span class="dropdown insert-var-container">
                                     <button class="btn btn-default dropdown-toggle" data-toggle="dropdown"
                                             tabindex="-1">
                                         Insert Variable <span class="caret"></span></button>
@@ -191,9 +183,9 @@
                                                target="_blank">Learn more about template variables <i
                                             class="fa fa-external-link"></i></a></li>
                                     </ul>
-                                </div>
+                                </span>
                             </div>
-                            <div ng-if="settings.editor.enabled" class="editor"></div>
+                            <div class="editor"></div>
                             <textarea ng-if="!settings.editor.enabled"
                                       id="qt-body" class="form-control"
                                       required="required"

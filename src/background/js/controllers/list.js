@@ -179,21 +179,29 @@ gApp.controller('ListCtrl',
         };
 
         $scope.insertVar = function (variable) {
-            var body = $('#qt-body');
-            var start = body[0].selectionStart;
-            var end = body[0].selectionEnd;
+            if (editor) {
+                editor.focus();
+                var range = editor.getSelection();
+                if (range) {
+                    editor.insertText(range.start, '{{' + variable + '}}');
+                }
+            } else {
+                var body = $('#qt-body');
+                var start = body[0].selectionStart;
+                var end = body[0].selectionEnd;
 
-            var val = body.val();
+                var val = body.val();
 
-            var startVal = val.slice(0, start);
-            var endVal = val.slice(end);
+                var startVal = val.slice(0, start);
+                var endVal = val.slice(end);
 
-            var newPos = (startVal + "{{" + variable + "}}").length;
-            var newVal = startVal + "{{" + variable + "}}" + endVal;
+                var newPos = (startVal + "{{" + variable + "}}").length;
+                var newVal = startVal + "{{" + variable + "}}" + endVal;
 
-            body.val(newVal);
-            body[0].setSelectionRange(newPos, newPos);
-            body.focus();
+                body.val(newVal);
+                body[0].setSelectionRange(newPos, newPos);
+                body.focus();
+            }
         };
 
         // Save a quicktext, perform some checks before
