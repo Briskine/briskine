@@ -29,7 +29,7 @@ module.exports = function (grunt) {
                 'bower_components/angular-md5/angular-md5.min.js',
                 'bower_components/angular-moment/angular-moment.min.js',
 
-                'bower_components/quill/dist/quill.js',
+                'bower_components/quill/dist/quill.min.js',
 
                 // Should be first
                 'background/js/environment.js',
