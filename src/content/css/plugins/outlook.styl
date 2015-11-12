@@ -1,0 +1,27 @@
+/* Outlook plugin styles
+ */
+
+.gorgias-plugin-outlook .gorgias-qa-btn {
+    width: 20px;
+    height: 20px;
+    margin-top: 2px;
+    background: none;
+    border: 0;
+    box-shadow: none;
+
+    /* we need the transition so the button doesn't just `pop-in`
+     * after the page transition animation.
+     */
+    transition: opacity .5s ease-out;
+}
+
+.gorgias-outlook-editor .gorgias-qa-btn {
+    visibility: visible;
+    opacity: .9 !important;
+}
+
+.gorgias-outlook-editor .gorgias-qa-btn:hover {
+    background: none;
+    opacity: 1;
+    box-shadow: none;
+}
