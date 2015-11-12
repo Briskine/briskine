@@ -430,6 +430,15 @@ App.autocomplete.dialog = {
     },
     selectActive: function (params) {
         var quicktext = params.quicktext;
+
+        // in outlook, if there is no previous text added
+        // in the editor, adding quicktexts with the dialog
+        // adds them between the head and the body.
+        // if there's no text in the editor, add a blank line.
+        if(App.autocomplete.focus.editor && !App.autocomplete.focus.editor.innerText.length) {
+            App.autocomplete.focus.editor.appendChild(document.createTextNode('\n'));
+        }
+
         App.autocomplete.replaceWith({
             element: App.autocomplete.focus.editor,
             quicktext: quicktext

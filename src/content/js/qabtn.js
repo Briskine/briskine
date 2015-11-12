@@ -81,7 +81,7 @@ App.qaBtn = (function() {
         // First time a user uses our extension
         // we open the dialog automatically
         // (as if the button was clicked).
-        if (settings.qaBtn && settings.qaBtn.hasOwnProperty('shownPostInstall')) {
+        if (settings && settings.qaBtn && settings.qaBtn.hasOwnProperty('shownPostInstall')) {
             if (!settings.qaBtn.shownPostInstall) {
                 settings.qaBtn.shownPostInstall = true;
                 Settings.set('settings', settings, function(){});
@@ -121,19 +121,26 @@ App.qaBtn = (function() {
             return;
         }
 
+        var top;
+        var left;
         var padding = 10;
-        var top = textfield.top;
-        var left = textfield.left;
 
-        top += window.scrollY;
-        left += window.scrollX;
+        // check if the active plugin has
+        // custom quick action button positioning.
+        if(typeof g.activePlugin.setBtnPosition === 'function') {
+            var pluginPos = g.activePlugin.setBtnPosition(textfield);
+            top = pluginPos.top;
+            left = pluginPos.left;
+        } else {
+            // otherwise just position the button on the top-right
+            // of the focused field.
+            top = textfield.top + window.scrollX + padding;
+            left = textfield.left + window.scrollX - padding;
 
-        top += padding;
-        left -= padding;
-
-        // move the quick access button to the right
-        // of the textfield
-        left += textfield.width - qaBtn.offsetWidth;
+            // move the quick access button to the right
+            // of the textfield
+            left += textfield.width - qaBtn.offsetWidth;
+        }
 
         // move the btn using transforms
         // for performance

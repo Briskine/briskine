@@ -195,6 +195,9 @@ App.activatePlugins = function () {
                 // and set it as the active one
                 if (pluginResponse[pluginName] === true) {
                     App.activePlugin = App.plugins[pluginName];
+                    // add a plugin class on the body
+                    // so we can style plugins differently with CSS.
+                    document.body.classList.add('gorgias-plugin-' + pluginName);
                     return true;
                 }
                 return false;

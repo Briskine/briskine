@@ -3,6 +3,14 @@
 
 App.plugin('outlook', (function() {
 
+    var $editor;
+    var $toolbar;
+    var $qaBtn;
+    var $pageCompose;
+    var $iframe;
+    var editPageClass = 'gorgias-outlook-editor';
+    var editPageTimer;
+
     var parseName = function(name) {
         name = name.trim();
 
@@ -102,24 +110,96 @@ App.plugin('outlook', (function() {
 
     };
 
+    var setBtnPosition = function(textfield) {
+        // get the position of the last element in the toolbar
+        // and place the button next to it.
+        var top = 0;
+        var left = 0;
+        var $lastToolbarBtn = $toolbar.querySelector('ul li:last-child');
+        var toolbarBtnRect = $lastToolbarBtn.getBoundingClientRect();
+
+        top = toolbarBtnRect.top;
+        left = toolbarBtnRect.right;
+
+        return {
+            top: top,
+            left: left
+        }
+    };
+
+    var setEditPage = function() {
+        // check if the editor is rendered,
+        // and the active element is not the editor,
+        // because outlook usually auto-focuses it.
+        if($editor && document.activeElement !== $editor) {
+            // focus it to trigger positioning.
+            // we need the custom event trick to make sure
+            // we bypass browser focus stealing prevention that triggers
+            // when using .focus().
+            var focus = new Event('focus');
+            $editor.dispatchEvent(focus);
+        }
+
+        // add the edit page class if it's not already added
+        if(!document.body.classList.contains(editPageClass)) {
+            document.body.classList.add(editPageClass);
+        }
+    };
+
+    var domChange = function() {
+        $pageCompose = document.getElementById('pageCompose');
+
+        if(editPageTimer) {
+            clearTimeout(editPageTimer);
+        }
+
+        // if we're on the compose page
+        if($pageCompose && $pageCompose.offsetParent !== null) {
+            // get the toolbar node
+            $toolbar = document.querySelector('.RteToolbar');
+            $iframe = document.querySelector('iframe.RichText');
+
+            if($iframe) {
+                // get the editor node
+                $editor = $iframe.contentWindow.document.querySelector('body.RichText');
+
+                // wait for the page animation to finish
+                editPageTimer = setTimeout(setEditPage, 150);
+            }
+        } else {
+            // remove the edit page class if we're not on the edit page
+            document.body.classList.remove(editPageClass);
+        }
+    };
+
+    var focusEditor = function() {
+        if($editor && document.activeElement !== $editor) {
+            $editor.focus();
+        }
+    };
+
     var init = function(params, callback) {
-
         var outlookUrl = '.mail.live.com/';
-
         var activateExtension = false;
 
         // trigger the extension based on url
         if(window.location.href.indexOf(outlookUrl) !== -1) {
             activateExtension = true;
-        }
 
-        // only in outlook, if there is no previous text added
-        // in the editor, adding quicktexts with the dialog
-        // adds them between the head and the body.
-        var $editor = document.querySelector('.RichText');
-        // if there's no text in the editor, add a blank line
-        if($editor && !$editor.innerText.length) {
-            $editor.appendChild(document.createTextNode('\n'));
+            // use an observer to detect page change
+            var observer = new MutationObserver(domChange);
+            observer.observe(document.body, {
+                attributes: true
+            });
+
+            // focus the editor before clicking the qa btn,
+            // so we can have a reference of the editor and the focusNode
+            // in the extension and can run `getSelectedWord`,
+            // when the button is clicked.
+            var $qaBtn = document.querySelector('.gorgias-qa-btn');
+            if($qaBtn) {
+                $qaBtn.addEventListener('mousedown', focusEditor);
+            }
         }
 
         // return true as response if plugin should be activated
@@ -134,7 +214,8 @@ App.plugin('outlook', (function() {
     return {
         init: init,
         getData: getData,
-        setTitle: setTitle
+        setTitle: setTitle,
+        setBtnPosition: setBtnPosition
     }
 
 })());

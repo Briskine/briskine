@@ -245,14 +245,8 @@ App.autocomplete.replaceWith = function (params) {
 
     App.autocomplete.justCompleted = true; // the idea is that we don't want any completion to popup after we just completed
 
-    // since we're running the function in the editor window,
-    // we can get the focus node from here
-//     var selection = window.getSelection();
-//     var focusNode = selection.focusNode;
     var selection = App.autocomplete.focus.selection;
     var focusNode = App.autocomplete.focus.focusNode;
-
-    // TODO the focusnode is incorrect in gmail because of the auto-focus on the to-field
 
     var setText = function () {
 
@@ -299,13 +293,10 @@ App.autocomplete.replaceWith = function (params) {
                     range.setEnd(focusNode, word.end);
                     range.deleteContents();
                 } else {
-                    // TODO `word` is sometimes wrong, throwing errors like
-                    // `The offset 5 is larger than or equal to the node's length (0).`
                     // after adding multiple quicktexts.
                     range.setStart(focusNode, word.start);
                     range.setEnd(focusNode, word.end);
                 }
-
 
                 var qtNode = range.createContextualFragment(replacement);
                 var lastQtChild = qtNode.lastChild;
