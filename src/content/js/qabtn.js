@@ -123,7 +123,7 @@ App.qaBtn = (function() {
 
         var top;
         var left;
-        var padding = 10;
+        var padding = 1;
 
         // check if the active plugin has
         // custom quick action button positioning.
