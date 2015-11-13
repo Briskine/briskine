@@ -390,29 +390,15 @@ header {
 .profile-body {
     clearfix();
 
-    transition: all .1s ease-out;
-    transition-delay: .3s;
-    transform: translateX(emCalc(-68));
-    opacity: .5;
-
-    &:hover {
-        transform: translateX(0);
-        opacity: 1;
-
-        .profile-picture {
-            transform: translateX(0);
-            opacity: 1;
-        }
-    }
-
     .profile-picture {
-        float: left;
+        /*float: left;
         margin-right: emCalc(12);
 
         transition: all .15s ease-out;
         transition-delay: .3s;
         transform: translateX(emCalc(8));
-        opacity: .6;
+        opacity: 1;*/
+        padding: 0;
 
         img {
             max-width: emCalc(60);
@@ -420,7 +406,7 @@ header {
     }
 
     .profile-details {
-        float: left;
+        padding: 0;
         padding-top: emCalc(6);
         cursor: default;
 
@@ -434,6 +420,20 @@ header {
                 color: $black;
             }
         }
+    }
+
+    .profile-dropdown {
+      padding: 0;
+      padding-top: emCalc(8);
+
+      .dropdown-toggle {
+        cursor: pointer;
+        background: none;
+
+        &:hover {
+          background: none;
+        }
+      }
     }
 }
 
@@ -555,7 +555,7 @@ header {
 
 /* Premium feature
  */
- 
+
 .premium-feature {
     padding: .75rem 1rem .75rem 1rem;
     border: 1px solid #e8e8e8;

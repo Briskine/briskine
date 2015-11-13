@@ -11,24 +11,29 @@
 <div class="container">
     <div class="sidebar-wrapper">
 
-        <a ng-href="{{ baseURL }}" class="brand" target="_blank">
-            <img src="../icons/white-logo.png" alt="Gorgias"/>
-        </a>
-
         <div class="profile">
 
             <div class="profile-body" ng-show="profile.user">
 
-                <a class="profile-picture" href="https://gorgias.io/app#/account" target="_blank">
+              <div class="profile-picture col-md-3 col-xs-3">
+                <a href="https://gorgias.io/app#/account" target="_blank">
                     <img class="img-circle" title="Setup your avatar on gravatar.com" alt="gravatar" ng-src="{{ profileService.gravatar(profile.user.email) }}">
                 </a>
+              </div>
 
-                <div class="profile-details">
-                    <p>
-                      <strong>{{profile.user.info.given_name}} {{profile.user.info.family_name}}</strong>
-                    </p>
-                    <p>{{profile.user.email}}</p>
-                </div>
+              <div class="profile-details col-md-7 col-xs-7">
+                <p>
+                  <strong>{{profile.user.info.name}}</strong>
+                </p>
+                <p>{{profile.user.email}}</p>
+              </div>
+
+              <div class="profile-dropdown col-md-2 col-xs-2 dropdown">
+                <i class="fa fa-angle-down fa-2x dropdown-toggle" type="button" data-toggle="dropdown" id="profile-dropdown" aria-haspopup="true" aria-expanded="false"></i>
+                <ul class="dropdown-menu pull-right" aria-labelledby="profile-dropdown">
+                  <li><a href="#/settings">Settings</a></li>
+                </ul>
+              </div>
             </div>
 
             <div class="anonymous" ng-show="!profile.user">
