@@ -354,18 +354,17 @@ header {
         clearfix();
 
         .profile-picture {
-            float: left;
+            padding: 0;
 
             img {
                 max-width: emCalc(60);
             }
         }
 
-        .profile-details {
-            float: left;
-            padding-left: emCalc(12);
-            padding-top: emCalc(6);
-            cursor: default;
+    .profile-details {
+        padding: 0;
+        padding-top: emCalc(6);
+        cursor: default;
 
             p {
                 margin: 0;
@@ -378,6 +377,21 @@ header {
                 }
             }
         }
+    }
+
+    .profile-dropdown {
+      padding: 0;
+      padding-top: emCalc(8);
+
+      .dropdown-toggle {
+        cursor: pointer;
+        background: none;
+
+        &:hover {
+          background: none;
+        }
+      }
+    }
 
     }
     .profile-stats {
@@ -486,7 +500,18 @@ header {
     cursor: pointer;
 }
 
-/* Premium feature */
+.dropdown-toggle {
+    padding-top: 5px;
+    background: #FAFAFA;
+    &:hover {
+        background: #f2f2f2;
+    }
+}
+
+
+/* Premium feature
+ */
+
 .premium-feature {
     padding: .75rem 1rem .75rem 1rem;
     border: 1px solid #e8e8e8;
