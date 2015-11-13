@@ -14,6 +14,10 @@ App.qaBtn = (function() {
     var currentWindow = window;
     var settings;
 
+    var qaShowClass = 'gorgias-show-qa-btn';
+    var qaHideClass = 'gorgias-hide-qa-btn';
+    var qaDropdownShowClass = 'qa-btn-dropdown-show';
+
     var showQaForElement = function (elem) {
 
         var show = true;
@@ -140,6 +144,16 @@ App.qaBtn = (function() {
             // move the quick access button to the right
             // of the textfield
             left += textfield.width - qaBtn.offsetWidth;
+
+            // if the element under the qa button is not the editor,
+            // hide the qa button.
+            // (eg. when the gmail compose window overlaps the reply box,
+            // or when we scroll the content in the gmail compose window)
+            if(document.elementFromPoint(left - 1, top - 1) !== document.activeElement) {
+                document.body.classList.add(qaHideClass);
+            } else {
+                document.body.classList.remove(qaHideClass);
+            }
         }
 
         // move the btn using transforms
@@ -178,13 +192,8 @@ App.qaBtn = (function() {
             currentWindow = res.source;
         }
 
+        document.body.classList.add(qaShowClass);
         setPosition(textfield);
-
-        // we can't recalculate the position at an interval,
-        // because the top windows can't recalculate getBoundingClientRect
-        // from the node in the child window.
-
-        document.body.classList.add('gorgias-show-qa-btn');
     };
 
     var hide = function() {
@@ -192,7 +201,7 @@ App.qaBtn = (function() {
             return;
         }
 
-        document.body.classList.remove('gorgias-show-qa-btn');
+        document.body.classList.remove(qaShowClass);
 
         // stop the position recalculation interval, on focusout
         if(qaPositionInterval) {
@@ -202,11 +211,11 @@ App.qaBtn = (function() {
     };
 
     var showDialog = function() {
-        document.body.classList.add('qa-btn-dropdown-show');
+        document.body.classList.add(qaDropdownShowClass);
     };
 
     var hideDialog = function() {
-        document.body.classList.remove('qa-btn-dropdown-show');
+        document.body.classList.remove(qaDropdownShowClass);
     };
 
     var showTooltip = function() {
@@ -245,7 +254,6 @@ App.qaBtn = (function() {
     };
 
     var dispatcher = function (res) {
-
         if(!res.data) {
             return;
         }
@@ -273,7 +281,6 @@ App.qaBtn = (function() {
         if(res.data.action === 'g-dialog-hide') {
             hideDialog(res);
         }
-
     };
 
     var create = function() {
@@ -296,6 +303,19 @@ App.qaBtn = (function() {
         };
     };
 
+    // re-position the button, if visible, on scroll
+    var positionOnScroll = function(e) {
+        // only if the button is visible
+        // and we're not scrolling the active element.
+        if(!document.body.classList.contains(qaShowClass) || !document.activeElement || document.activeElement === e.target) {
+            return;
+        }
+
+        // trigger a fake focus event, to trigger the positioning flow
+        var focus = new Event('focus');
+        document.activeElement.dispatchEvent(focus);
+    };
+
     var init = function() {
         // only create the qa button in the top window
         if(!g.data.iframe) {
@@ -305,6 +325,8 @@ App.qaBtn = (function() {
 
         document.body.addEventListener('focus', focusin, true);
         document.body.addEventListener('blur', focusout, true);
+
+        document.body.addEventListener('scroll', positionOnScroll, true);
 
         App.settings.fetchSettings(function(s) {
             settings = s;

@@ -263,6 +263,13 @@ $padding = 8px;
     opacity: .6;
 }
 
+/* hide the qa button when it wouldn't be placed on top of the editor
+ * used by the default qabtn positioning method.
+ */
+.gorgias-hide-qa-btn .gorgias-qa-btn {
+    visibility: hidden !important;
+}
+
 .gorgias-qa-btn-badge {
     display: none;
 
