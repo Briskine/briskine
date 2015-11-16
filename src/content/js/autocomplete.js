@@ -29,39 +29,20 @@ var KEY_TAB = 9,
     KEY_ENTER = 13;
 
 App.autocomplete.quicktexts = [];
-App.autocomplete.cursorPosition = {
-    word: {}
-};
+App.autocomplete.cursorPosition = null;
 
 App.autocomplete.isEditable = function (element) {
+
     var isTextfield = (element.tagName.toLowerCase() === 'input');
     var isTextarea = (element.tagName.toLowerCase() === 'textarea');
     var isContenteditable = App.autocomplete.isContentEditable(element);
 
-    if (isTextfield || isTextarea) {
-        return element;
-    } else {
-        return isContenteditable;
-    }
+    return (isTextfield || isTextarea || isContenteditable);
+
 };
 
 App.autocomplete.isContentEditable = function (element) {
-    // if the element is editable
-    if(element.contentEditable === 'true') {
-        return element;
-    }
-
-    // if one of it's parents is editable
-    var editable = false;
-    while (element.parentNode) {
-        element = element.parentNode;
-        if (element.contentEditable === 'true') {
-            editable = true;
-            break;
-        }
-    }
-
-    return editable && element;
+    return element && element.hasAttribute('contenteditable');
 };
 
 App.autocomplete.getSelectedWord = function (params) {
@@ -238,15 +219,13 @@ App.autocomplete.getCursorPosition = function (element) {
 };
 
 App.autocomplete.replaceWith = function (params) {
+
     var doc = params.element.ownerDocument;
 
     var word = App.autocomplete.cursorPosition.word;
     var replacement = '';
 
     App.autocomplete.justCompleted = true; // the idea is that we don't want any completion to popup after we just completed
-
-    var selection = App.autocomplete.focus.selection;
-    var focusNode = App.autocomplete.focus.focusNode;
 
     var setText = function () {
 
@@ -257,6 +236,8 @@ App.autocomplete.replaceWith = function (params) {
             var parsedTemplate = Handlebars.compile(params.quicktext.body)(response);
 
             if (App.autocomplete.isContentEditable(params.element)) {
+
+                var selection = doc.getSelection();
                 var range = doc.createRange();
 
                 replacement = parsedTemplate;
@@ -268,12 +249,16 @@ App.autocomplete.replaceWith = function (params) {
                 // setStart/setEnd work differently based on
                 // the type of node
                 // https://developer.mozilla.org/en-US/docs/Web/API/range.setStart
+                var focusNode = params.focusNode;
+                if (focusNode === null) {
+                    focusNode = selection.focusNode;
+                }
+
 
                 // we need to have a text node in the end
                 while (focusNode.nodeType === document.ELEMENT_NODE) {
                     if (focusNode.childNodes.length > 0) {
-                        focusNode = focusNode.childNodes[selection.focusOffset];
-                        // select a text node
+                        focusNode = focusNode.childNodes[selection.focusOffset]; // select a text node
                     } else {
                         // create an empty text node and attach it before the node
                         var tnode = doc.createTextNode('');
@@ -293,10 +278,10 @@ App.autocomplete.replaceWith = function (params) {
                     range.setEnd(focusNode, word.end);
                     range.deleteContents();
                 } else {
-                    // after adding multiple quicktexts.
-                    range.setStart(focusNode, word.start);
+                    range.setStart(focusNode, word.end);
                     range.setEnd(focusNode, word.end);
                 }
+
 
                 var qtNode = range.createContextualFragment(replacement);
                 var lastQtChild = qtNode.lastChild;
@@ -308,6 +293,7 @@ App.autocomplete.replaceWith = function (params) {
                 caretRange.collapse(true);
                 selection.removeAllRanges();
                 selection.addRange(caretRange);
+
             } else {
 
                 var $textarea = $(params.element),
@@ -373,6 +359,7 @@ App.autocomplete.replaceWith = function (params) {
                 $textarea[0].setSelectionRange(cursorOffset, cursorOffset);
 
             }
+
         });
 
     };
@@ -401,7 +388,7 @@ App.autocomplete.focusEditor = function (element, callback) {
 
     // return focus to the editor
 
-    // gmail auto-focuses the Send button on Tab,
+    // gmail auto-focuses the to field
     // so we need the delay
     setTimeout(function () {
         if (element) {
@@ -427,30 +414,3 @@ App.autocomplete.mirrorStyles = [
     'direction'
 ];
 
-// focus management
-App.autocomplete.focus = {
-    editor: null,
-    focusNode: null,
-    selection: null
-};
-
-// remember the last active editor
-document.body.addEventListener('focus', function(e) {
-    if(App.autocomplete.isEditable(e.target)) {
-        if(!e.target.classList.contains('qt-dropdown-search')) {
-            App.autocomplete.focus.editor = e.target;
-        }
-    }
-}, true);
-
-// get the last focused node, when blurring the editor
-document.body.addEventListener('blur', function(e) {
-    var focus = App.autocomplete.focus;
-    // if we un-focused the editor
-    if(e.target === focus.editor) {
-        // used when restoring selection (eg. close dialog with Esc)
-        // so we can restore the cursor to the exact previous position.
-        focus.selection = window.getSelection();
-        focus.focusNode = focus.selection.focusNode;
-    }
-}, true);
