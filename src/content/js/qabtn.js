@@ -77,7 +77,7 @@ App.qaBtn = (function() {
 
         dimensionChangeTimer = setInterval(function() {
             checkDimensionChange(textfield, dimensions);
-        }, 2000);
+        }, 1000);
 
         // First time a user uses our extension
         // we open the dialog automatically
@@ -119,7 +119,7 @@ App.qaBtn = (function() {
         // message body)
         setTimeout(function() {
             sendShowMessage(textfield);
-        });
+        }, 50);
     };
 
     var checkDimensionChange = function(textfield, dimensions) {
@@ -167,7 +167,6 @@ App.qaBtn = (function() {
 
         var top;
         var left;
-        var padding = 1;
 
         // check if the active plugin has
         // custom quick action button positioning.
@@ -178,12 +177,15 @@ App.qaBtn = (function() {
         } else {
             // otherwise just position the button on the top-right
             // of the focused field.
-            top = textfield.top + window.scrollX + padding;
-            left = textfield.left + window.scrollX - padding;
+            top = textfield.top + window.scrollX;
+            left = textfield.left + window.scrollX;
 
             // move the quick access button to the right
             // of the textfield
             left += textfield.width - qaBtn.offsetWidth;
+
+            var computedStyles = window.getComputedStyle(qaBtn);
+            var btnMarginLeft = parseInt(computedStyles.getPropertyValue('margin-left'), 10);
 
             // if the element under the qa button is not the editor,
             // hide the qa button.
@@ -191,7 +193,8 @@ App.qaBtn = (function() {
             // or when we scroll the content in the gmail compose window)
             // we also need to check children, in case elementFromPoint
             // returns a child of the contenteditable.
-            var nodeUnderBtn = document.elementFromPoint(left - 1, top - 1);
+            var nodeUnderBtn = document.elementFromPoint(left + btnMarginLeft - 1, top);
+
             if(nodeUnderBtn !== document.activeElement && !document.activeElement.contains(nodeUnderBtn)) {
                 document.body.classList.add(qaHideClass);
             } else {
