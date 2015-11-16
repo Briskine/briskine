@@ -179,7 +179,10 @@ App.qaBtn = (function() {
             // hide the qa button.
             // (eg. when the gmail compose window overlaps the reply box,
             // or when we scroll the content in the gmail compose window)
-            if(document.elementFromPoint(left - 1, top - 1) !== document.activeElement) {
+            // we also need to check children, in case elementFromPoint
+            // returns a child of the contenteditable.
+            var nodeUnderBtn = document.elementFromPoint(left - 1, top - 1);
+            if(nodeUnderBtn !== document.activeElement && !document.activeElement.contains(nodeUnderBtn)) {
                 document.body.classList.add(qaHideClass);
             } else {
                 document.body.classList.remove(qaHideClass);
