@@ -28,6 +28,11 @@ App.autocomplete.keyboard = {
         });
         App.autocomplete.cursorPosition.word = word;
 
+        // get the selection and focused node,
+        // before the focus changes (by using Tab).
+        App.autocomplete.focus.selection = window.getSelection();
+        App.autocomplete.focus.focusNode = App.autocomplete.focus.selection.focusNode;
+
         if (word.text) {
 
             // Find a matching Quicktext shortcut in the bg script
@@ -37,8 +42,7 @@ App.autocomplete.keyboard = {
                     // replace with the first quicktext found
                     App.autocomplete.replaceWith({
                         element: element,
-                        quicktext: quicktexts[0],
-                        focusNode: focusNode
+                        quicktext: quicktexts[0]
                     });
                 }
 

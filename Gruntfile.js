@@ -61,7 +61,9 @@ module.exports = function (grunt) {
                 'content/js/dialog.js',
                 'content/js/sidebar.js',
                 'content/js/events.js',
-
+                'content/js/helpdesk.js',
+                'content/js/qabtn.js',
+                'content/js/templates.js',
                 'content/js/plugins/*.js'
             ]
         }
@@ -88,7 +90,7 @@ module.exports = function (grunt) {
                 files: [
                     dependencies.background.js.concat(dependencies.content.js)
                 ],
-                tasks: ['concat'],
+                tasks: ['concat','jshint'],
                 options: {
                     cwd: config.app,
                     spawn: false
@@ -124,7 +126,8 @@ module.exports = function (grunt) {
                 options: {
                     'include css': true,
                     compress: false,
-                    linenos: true
+                    linenos: true,
+                    urlfunc: 'url'
                 },
                 files: {
                     '<%= config.dist %>/background/css/installed.css': '<%= config.app %>/background/css/installed.styl',
@@ -135,7 +138,8 @@ module.exports = function (grunt) {
             },
             production: {
                 options: {
-                    'include css': true
+                    'include css': true,
+                     urlfunc: 'url'
                 },
                 files: {
                     '<%= config.dist %>/background/css/installed.css': '<%= config.app %>/background/css/installed.styl',

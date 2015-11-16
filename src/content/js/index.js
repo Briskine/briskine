@@ -7,7 +7,15 @@ var App = {
     data: {
         searchCache: {},
         debouncer: {},
-        lastFilterRun: 0
+        lastFilterRun: 0,
+        iframe: function() {
+            // check if we're in an iframe
+            try {
+                return window.self !== window.top;
+            } catch (e) {
+                return true;
+            }
+        }()
     },
     editor_enabled: true,
     autocomplete: {},
@@ -187,6 +195,9 @@ App.activatePlugins = function () {
                 // and set it as the active one
                 if (pluginResponse[pluginName] === true) {
                     App.activePlugin = App.plugins[pluginName];
+                    // add a plugin class on the body
+                    // so we can style plugins differently with CSS.
+                    document.body.classList.add('gorgias-plugin-' + pluginName);
                     return true;
                 }
                 return false;
@@ -214,6 +225,8 @@ Raven.config('https://af2f5e9fb2744c359c19d08c8319d9c5@app.getsentry.com/30379',
     collectWindowErrors: true
 }).install();
 
+// TODO one the postmessage architecture is done
+// we won't need to reference the document here (eg. for the uservoice plugin)
 App.init = function (settings, doc) {
     var body = $(doc).find('body');
 
@@ -263,17 +276,19 @@ App.init = function (settings, doc) {
         Mousetrap.bindGlobal(settings.keyboard.shortcut, App.autocomplete.keyboard.completion);
     }
     if (settings.dialog.enabled) {
-        if (settings.qaBtn.enabled) {
-            App.autocomplete.dialog.createQaBtn();
+        if (settings.qaBtn && settings.qaBtn.enabled) {
+            App.qaBtn.init();
         }
         if (settings.dialog.limit) {
             App.autocomplete.dialog.RESULTS_LIMIT = settings.dialog.limit;
         }
-        Mousetrap.bindGlobal(settings.dialog.shortcut, App.autocomplete.dialog.completion);
+        Mousetrap.bindGlobal(settings.dialog.shortcut, function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            App.autocomplete.dialog.completion();
+        });
 
-        // create dialog once and then reuse the same element
-        App.autocomplete.dialog.create();
-        App.autocomplete.dialog.bindKeyboardEvents(doc);
+        App.autocomplete.dialog.init();
     }
 
     var isGmailUIFrame = function () {
@@ -327,7 +342,16 @@ $(function () {
     //}
 
     //console.log("Loaded Gorgias in", window.location.href);
-    App.settings.fetchSettings(App.init, window.document);
+
+    // load templates
+    App.templates.load();
+
+    // initialize the app when the templates are done loading
+    window.addEventListener('message', function(res) {
+        if(res.data && res.data.action === 'g-templates-loaded') {
+            App.settings.fetchSettings(App.init, window.document);
+        }
+    });
 
     // add font-awesome - only on Gmail
     if (window.location.hostname === 'mail.google.com') {
