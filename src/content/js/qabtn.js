@@ -13,6 +13,7 @@ App.qaBtn = (function() {
     var tooltip;
     var currentWindow = window;
     var settings;
+    var dimensionChangeTimer;
 
     var qaShowClass = 'gorgias-show-qa-btn';
     var qaHideClass = 'gorgias-hide-qa-btn';
@@ -52,7 +53,6 @@ App.qaBtn = (function() {
     };
 
     var focusin = function(e) {
-
         // show the qabtn only on gmail and outlook
         // and allow on localhost, for testing
         if (
@@ -69,18 +69,30 @@ App.qaBtn = (function() {
         }
 
         var rect = textfield.getBoundingClientRect();
+        var dimensions = {
+            left: rect.left,
+            right: rect.right,
+            top: rect.top,
+            bottom: rect.bottom,
+            width: rect.width,
+            height: rect.height
+        };
 
         window.top.postMessage({
             action: 'g-qabtn-show',
-            textfield: {
-                left: rect.left,
-                right: rect.right,
-                top: rect.top,
-                bottom: rect.bottom,
-                width: rect.width,
-                height: rect.height
-            }
+            textfield: dimensions
         }, '*');
+
+        // check if the textfield dimensions or position changes.
+        // clear if we have an existing interval,
+        // eg. when we trigger a manual focus.
+        if(dimensionChangeTimer) {
+            clearInterval(dimensionChangeTimer);
+        }
+
+        dimensionChangeTimer = setInterval(function() {
+            checkDimensionChange(textfield, dimensions);
+        }, 1000);
 
         // First time a user uses our extension
         // we open the dialog automatically
@@ -96,14 +108,32 @@ App.qaBtn = (function() {
                 }, '*');
             }
         }
-        return;
 
+        return;
+    };
+
+    var checkDimensionChange = function(textfield, dimensions) {
+        var currentRect = textfield.getBoundingClientRect();
+        var key;
+
+        for(key in dimensions) {
+            if(currentRect[key] !== dimensions[key]) {
+                // trigger a new position and interval
+                var focus = new Event('focus');
+                textfield.dispatchEvent(focus);
+                return;
+            }
+        }
     };
 
     var focusout = function(e) {
         window.top.postMessage({
             action: 'g-qabtn-hide'
         }, '*');
+
+        if(dimensionChangeTimer) {
+            clearInterval(dimensionChangeTimer);
+        }
     };
 
     var click = function() {
