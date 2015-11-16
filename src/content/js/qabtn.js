@@ -52,22 +52,7 @@ App.qaBtn = (function() {
 
     };
 
-    var focusin = function(e) {
-        // show the qabtn only on gmail and outlook
-        // and allow on localhost, for testing
-        if (
-            (g.activePlugin !== g.plugins['gmail'] && g.activePlugin !== g.plugins['outlook']) && window.location.href.indexOf('http://localhost') === -1
-        ) {
-            return;
-        }
-
-        var textfield = showQaForElement(e.target);
-
-        // only show it for valid elements
-        if (!textfield) {
-            return false;
-        }
-
+    var sendShowMessage = function(textfield) {
         var rect = textfield.getBoundingClientRect();
         var dimensions = {
             left: rect.left,
@@ -92,7 +77,7 @@ App.qaBtn = (function() {
 
         dimensionChangeTimer = setInterval(function() {
             checkDimensionChange(textfield, dimensions);
-        }, 1000);
+        }, 2000);
 
         // First time a user uses our extension
         // we open the dialog automatically
@@ -108,8 +93,33 @@ App.qaBtn = (function() {
                 }, '*');
             }
         }
+    };
 
-        return;
+    var focusin = function(e) {
+        // show the qabtn only on gmail and outlook
+        // and allow on localhost, for testing
+        if (
+            (g.activePlugin !== g.plugins['gmail'] && g.activePlugin !== g.plugins['outlook']) && window.location.href.indexOf('http://localhost') === -1
+        ) {
+            return;
+        }
+
+        var textfield = showQaForElement(e.target);
+
+        // only show it for valid elements
+        if (!textfield) {
+            return false;
+        }
+
+        // delay getting the textfield positions and showing the button
+        // in case the app changes the textfield dimensions/position
+        // on focus.
+        // (eg. gmail changes the contenteditable size if you're editing
+        // the CC field, but enter no addresses, and then focus the
+        // message body)
+        setTimeout(function() {
+            sendShowMessage(textfield);
+        });
     };
 
     var checkDimensionChange = function(textfield, dimensions) {
