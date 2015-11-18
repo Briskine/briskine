@@ -1,0 +1,49 @@
+<div class="modal fade" id="add-members-modal" tabindex="-1" role="dialog" data-aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form role="form" class="form-horizontal" name="member-form0" action="" ng-submit="saveMembers()">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title">Add team members</h4>
+                </div>
+                <div class="modal-body members-form">
+                    <p class="help-block">Adding team members will allow them to <strong>create</strong> and <strong>edit</strong> templates with you.
+                        <br/>
+                        It will also allow to keep <strong>everything in sync</strong> for the team.</p>
+
+                    <div ng-if="formErrors" class="alert alert-danger updated-account-message">
+                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                        <p ng-repeat="(field, errors) in formErrors">
+                            <span ng-repeat="err in errors">{{ err }}</span>
+                        </p>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group" ng-repeat="u in newUsers">
+                            <div class="col-xs-6">
+                                <input type="text" class="form-control" placeholder="Full Name" ng-model="u.name" ng-required="u.email"/>
+                            </div>
+                            <div class="col-xs-6">
+                                <input type="email" class="form-control" placeholder="team-mate@company.com" ng-model="u.email"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div ng-show="!newUsers.length">
+                        <p class="alert alert-warning">
+                            You reached the maximum number of available licenses.
+                            To add more team members you can <a href="" ng-click="closeModal('#add-members-modal', '/app#/account/subscriptions')">upgrade</a> or deactivate a few.
+                        </p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <label for="sendNotification" class="pull-left" ng-show="newUsers.length">
+                        <input type="checkbox" id="sendNotification" ng-model="sendNotification" ng-false-value=""/>
+                        Send login instructions by email
+                    </label>
+                    <a class="btn btn-default" data-dismiss="modal">Cancel</a>
+                    <button type="submit" class="btn btn-primary" ng-show="newUsers.length">Add Team Members</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

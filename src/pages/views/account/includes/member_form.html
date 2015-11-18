@@ -1,0 +1,38 @@
+<div class="modal fade" id="member-modal" tabindex="-1" role="dialog" data-aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">Manage Team Members</h4>
+            </div>
+            <form role="form" class="form-inline" name="member-form0" action="" ng-submit="saveMembers()">
+
+                <div class="modal-body quicktext-form">
+                    Existing
+                    <div ng-repeat="member in members">
+                        <div class="form-group">
+                            <input type="text" id="name" class="form-control" ng-model="members[i].name" placeholder="Ada Lovelace"
+                                   autofocus required/>
+                        </div>
+                        <div class="form-group">
+                            <input type="email" id="email" class="form-control" ng-model="members[i].email" placeholder="ada@lovelace.com"
+                                   required/>
+                        </div>
+                    </div>
+
+                    <div class="checkbox">
+                        <label for="sendNotification">
+                            <input type="checkbox" id="sendNotification" ng-model="selectedMember.sendNotification"
+                                   ng-false-value=""/>
+                            Send e-mail notification (with login instructions)
+                        </label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Add Team Members</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

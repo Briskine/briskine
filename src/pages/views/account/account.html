@@ -1,0 +1,42 @@
+<div class="alert alert-success updated-account-message hide">
+    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+    Saved account info
+</div>
+
+<div class="row">
+    <div class="col-sm-6">
+        <form data-role="form" name="account-form0" ng-submit="saveAccount()"
+              autocomplete="off">
+            <div class="form-group">
+                <label for="given_name" class="control-label">Full Name</label>
+                <input type="text" class="form-control" id="name" ng-model="profile.info.name" name="fakename"/>
+            </div>
+            <div class="form-group">
+                <label for="email" class="control-label">Email</label>
+                <input type="email" class="form-control" id="email" ng-model="profile.email" required
+                       autocomplete="off" name="fakeemail"/>
+            </div>
+            <div class="form-group">
+                <label for="password" class="control-label">New Password</label>
+                <input type="password" class="form-control" id="password" ng-model="profile.password" value=""
+                       autocomplete="off" name="fakepassword"/>
+            </div>
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" id="share_all" ng-model="user.share_all" ng-false-value=""/> Share
+                    templates by default
+                    with all your team.
+                </label>
+            </div>
+            <button type="submit" class="btn btn-primary">Save</button>
+        </form>
+    </div>
+</div>
+
+<div class="unsubscribe" ng-show="user.is_customer">
+    <div class="well col-sm-6">
+        Gorgias is not right for you? No problem! <br/>
+        You can cancel your account and subscriptions. <br/>
+        Just send us an email: <a href="mailto:support+cancel@gorgias.io?Subject=I%27m%20not%20pleased%20with%20Gorgias&Body=I%20want%20to%20cancel%20because%3A%0A%0AI%20also%20understand%20that%20all%20my%20templates%2C%20team%20members%20data%2C%20statistics%20and%20backups%20will%20be%20deleted%20once%20my%20account%20is%20canceled." target="_blank">support@gorgias.io</a>
+    </div>
+</div>

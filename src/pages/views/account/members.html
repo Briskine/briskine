@@ -1,0 +1,104 @@
+<p>You are signed in as <strong>{{ user.email }}</strong><span ng-if="user.is_customer">, the <strong>Account
+    Owner</strong>.
+        You are using
+        <button class="label label-licenses" data-container="body"
+                data-toggle="popover"
+                data-placement="top"
+                data-html="true"
+                data-trigger="focus"
+                ng-class="licensesUsed >= activeSubscription.quantity - 1 ? 'label-warning' : 'label-success'"
+                data-title="Number of licenses used"
+                data-content="You can add more licenses on <a href='#/account/subscriptions'>Subscriptions</a> page.">
+            {{ licensesUsed }}/{{ activeSubscription.quantity }}
+        </button>
+        licenses.
+    </span>
+</p>
+
+<div class="toolbar">
+    <div class="search-container input-group pull-right col-xs-4">
+                <span class="input-group-addon">
+                    <i class="fa fa-search"></i>
+                </span>
+        <input type="text" class="form-control" ng-model="searchText" placeholder="Find by name or email"/>
+    </div>
+    <button class="btn btn-primary" ng-if="user.is_customer" ng-click="showMemberModal()"><i
+            class="fa fa-user-plus"></i>
+        Add team members
+    </button>
+    <button class="btn btn-default" ng-if="user.is_customer"
+            ng-click="user.connections.google.apps.enabled?showMemberAppsModal():connectSocial('google', 'apps')">
+        <i class="fa fa-google"></i> Import Users from Google Apps
+    </button>
+</div>
+
+<div ng-if="formErrors" class="alert alert-danger updated-account-message">
+    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+    <p ng-repeat="(field, errors) in formErrors">
+        <span ng-repeat="err in errors">{{ err }}</span>
+    </p>
+</div>
+
+<table class="table col-sm-12 member-table">
+    <tr>
+        <th>
+            <img ng-if="!user.thumbnail_photo_url"
+                 ng-src="//www.gravatar.com/avatar/{{ user.email | gravatar }}?d=retro" class="avatar"/>
+            <img ng-if="user.thumbnail_photo_url" ng-src="{{ user.thumbnail_photo_url }}" class="avatar"/>
+        </th>
+        <td>{{ user.name }}</td>
+        <td>{{ user.email }}</td>
+        <td class="pull-right"><a href="/app#/account">My account</a></td>
+    </tr>
+    <tr ng-repeat="u in filteredUsers = (users | filter:searchText)">
+        <th>
+            <img ng-if="!u.thumbnail_photo_url"
+                 ng-src="//www.gravatar.com/avatar/{{ u.email | gravatar }}?d=retro" class="avatar"/>
+            <img ng-if="u.thumbnail_photo_url" ng-src="{{ u.thumbnail_photo_url }}" class="avatar"/>
+        </th>
+        <td class="col-xs-4">
+            <span ng-if="!user.is_customer">{{ u.name }}</span>
+            <span ng-if="user.is_customer" class="editable" ng-click="edit()" title="Click to edit">{{ u.name }}</span>
+            <input type="text" class="form-control hidden edit-{{ u.id }}" ng-model="u.name"/>
+        </td>
+        <td class="col-xs-4">
+            <span ng-if="!user.is_customer">{{ u.email }}</span>
+            <span ng-if="user.is_customer" class="editable" ng-click="edit()" title="Click to edit">{{ u.email }}</span>
+            <input type="text" class="form-control hidden edit-{{ u.id }}" ng-model="u.email"/>
+        </td>
+        <td class="pull-right">
+            <input bs-switch ng-model="u.active" ng-if="user.is_customer" switch-on-text="Active"
+                   switch-off-text="Inactive" switch-size="small" switch-label-width="1"
+                   ng-change="toggleMember()" type="checkbox"/>
+            <button class="btn btn-primary hidden edit-{{ u.id }}" ng-click="saveMember()">Save Changes</button>
+        </td>
+    </tr>
+</table>
+
+<div class="blank-state" ng-cloak="">
+    <div ng-show="(searchText && !filteredUsers.length)">
+        <p>
+            No members found when looking up
+            <strong ng-show="searchText">"{{ searchText }}"</strong>
+        </p>
+
+        <p>
+            <button class="btn btn-primary" ng-click="searchText = ''"><i class="fa fa-times-circle-o"></i>
+                Reset Search
+            </button>
+        </p>
+    </div>
+    <div ng-show="(!searchText && !users.length)">
+        You don't have any team members <i class="fa fa-frown-o"></i> <br/>
+        <span class="">
+            Go ahead <a href="" ng-click="showMemberModal()"><i class="fa fa-user-plus"></i> add</a> or
+            <a href=""
+               ng-click="user.connections.google.apps.enabled?showMemberAppsModal():connectSocial('google', 'apps')">
+                <i class="fa fa-google"></i> import
+            </a> some!
+        </span>
+    </div>
+</div>
+
+<div ng-include="'/static/js/auth/views/account/includes/add_members.html'"></div>
+<div ng-include="'/static/js/auth/views/account/includes/add_members_apps.html'"></div>
