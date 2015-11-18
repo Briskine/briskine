@@ -1,0 +1,70 @@
+<div class="toolbar">
+    <div class="search-container input-group pull-right col-xs-4">
+                <span class="input-group-addon">
+                    <i class="fa fa-search"></i>
+                </span>
+        <input type="text" class="form-control" ng-model="searchText" placeholder="Find by name"/>
+    </div>
+
+    <button class="btn btn-primary" ng-if="user.is_customer" ng-click="showGroupModal()">
+        <i class="fa fa-user-plus"></i> Add member group
+    </button>
+
+    <button class="btn btn-default"
+            ng-if="user.is_customer"
+            ng-click="user.connections.google.apps.enabled?showGroupAppsModal():connectSocial('google', 'apps')">
+        <i class="fa fa-google"></i> Import Groups from Google Apps
+    </button>
+</div>
+
+<div ng-if="formErrors" class="alert alert-danger updated-account-message">
+    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+    <p ng-repeat="(field, errors) in formErrors">
+        <span ng-repeat="err in errors">{{ err }}</span>
+    </p>
+</div>
+<table class="table col-sm-12 member-table">
+    <tr ng-repeat="g in filteredGroups = (groups | filter:searchText)">
+        <td class="col-xs-3">{{ g.name }}</td>
+        <td class="col-xs-6">
+            <span class="google-apps-member" ng-repeat="u in g.users">
+                <img src="//www.gravatar.com/avatar/{{ u.email | gravatar }}?d=retro"
+                     class="avatar"
+                     alt="{{ u.name }}" title="{{ u.name }} &lt;{{ u.email }}&gt;"/>
+            </span>
+        </td>
+        <td class="pull-right">
+            <div class="btn-group" ng-if="user.is_customer">
+                <button class="btn btn-default" ng-click="editGroup()">Edit</button>
+                <button class="btn btn-danger" ng-click="deleteGroup()">Delete</button>
+            </div>
+        </td>
+    </tr>
+</table>
+
+<div class="blank-state" ng-cloak="">
+    <div ng-show="(searchText && !filteredGroups.length)">
+        <p>No member groups found when looking up
+            <strong ng-show="searchText">"{{ searchText }}"</strong>
+        </p>
+
+        <p>
+            <button class="btn btn-primary" ng-click="searchText = ''"><i class="fa fa-times-circle-o"></i>
+                Reset Search
+            </button>
+        </p>
+    </div>
+    <div ng-show="(!searchText && !groups.length)">
+        You don't have any member groups <i class="fa fa-frown-o"></i><br/>
+        <span ng-if="user.is_customer">
+            Go ahead <a href="" ng-click="showGroupModal()"><i class="fa fa-user-plus"></i> add</a> or
+            <a href=""
+               ng-click="user.connections.google.apps.enabled?showGroupAppsModal():connectSocial('google', 'apps')">
+                <i class="fa fa-google"></i> import
+            </a> some!
+        </span>
+    </div>
+</div>
+
+<div ng-include="'/pages/views/includes/add_groups.html'"></div>
+<div ng-include="'/pages/views/includes/add_groups_apps.html'"></div>

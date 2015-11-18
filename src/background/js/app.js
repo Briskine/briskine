@@ -38,6 +38,22 @@ var gApp = angular.module('gApp', [
             controller: 'SettingsCtrl',
             templateUrl: 'views/settings.html'
         })
+        .when('/account', {
+            controller: 'AccountCtrl',
+            templateUrl: 'views/account/base.html'
+        })
+        .when('/account/members', {
+            controller: 'MembersCtrl',
+            templateUrl: 'views/account/base.html'
+        })
+        .when('/account/groups', {
+            controller: 'GroupsCtrl',
+            templateUrl: 'views/account/base.html'
+        })
+        .when('/account/subscriptions', {
+            controller: 'SubscriptionsCtrl',
+            templateUrl: 'views/account/base.html'
+        })
         .when('/installed', {
             templateUrl: 'views/installed.html',
             reloadOnSearch: false
@@ -47,6 +63,7 @@ var gApp = angular.module('gApp', [
         });
 });
 
+gApp.API_BASE_URL = "http://gorgias.io/api/1/";
 
 gApp.config(["$provide", function ($provide) {
     $provide.decorator("$exceptionHandler", ["$delegate", "$window", function ($delegate, $window) {

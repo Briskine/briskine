@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Send invitations{% endblock %}
+{% block content %}
+{% from "_formhelpers.html" import render_field %}
+<p>By inviting members of your team you automatically begin sharing Templates with them.</p>
+<form method="post" action="#/invite">
+  <dl>
+    {{ render_field(form.email0) }}
+    {{ render_field(form.email1) }}
+    {{ render_field(form.email2) }}
+    {{ render_field(form.email3) }}
+    {{ render_field(form.email4) }}
+  </dl>
+  <p><input type="submit" value="Send invitations"/></p>
+</form>
+{% if invitations %}
+<h2>Sent invitations</h2>
+<ul>
+  {% for invitation in invitations %}
+  <li>{{invitation.email}}
+  {% if invitation.accepted %}
+  - Accepted on {{invitation.accepted}}
+  {% endif %}
+  </li>
+  {% endfor %}
+</ul>
+{% endif %}
+{% endblock %}
