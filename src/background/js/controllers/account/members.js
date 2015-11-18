@@ -1,5 +1,7 @@
-gApp.controller('MembersCtrl', function ($scope, $rootScope, $timeout, MemberService, SubscriptionService) {
+gApp.controller('MembersCtrl', function ($scope, $rootScope, $timeout, AccountService, MemberService, SubscriptionService) {
     $scope.activeTab = 'members';
+
+
 
     $scope.users = [];
     $scope.appsUsers = [];
@@ -39,7 +41,7 @@ gApp.controller('MembersCtrl', function ($scope, $rootScope, $timeout, MemberSer
             });
         };
 
-        if ($rootScope.profile.is_customer) {
+        if ($scope.account.is_customer) {
             // check the active subscription first
             SubscriptionService.getActiveSubscription().then(function (sub) {
                 $scope.activeSubscription = sub;
@@ -50,7 +52,13 @@ gApp.controller('MembersCtrl', function ($scope, $rootScope, $timeout, MemberSer
             getData();
         }
     };
-    $scope.refresh();
+
+    // setup account
+    AccountService.get()
+      .then(function(data) {
+        $scope.account = data;
+      })
+      .then($scope.refresh);
 
     $scope.saveMembers = function () {
         mixpanel.track("Add team members");

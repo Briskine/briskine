@@ -9,24 +9,24 @@
 <body key-trap>
 
 <div class="container">
-    <div class="sidebar-wrapper">
+    <div class="sidebar-wrapper" ng-controller="SidebarCtrl">
 
         <div class="profile">
 
-            <div class="profile-body" ng-show="profile.user">
+            <div class="profile-body" ng-show="account">
 
               <div class="profile-picture col-md-3 col-xs-3">
                 <a href="https://gorgias.io/app#/account" target="_blank">
-                    <img class="img-circle" title="Setup your avatar on gravatar.com" alt="gravatar" ng-src="{{ profileService.gravatar(profile.user.email) }}">
+                    <img class="img-circle" title="Setup your avatar on gravatar.com" alt="gravatar" ng-src="{{ profileService.gravatar(account.email) }}">
                 </a>
               </div>
 
               <div class="profile-details col-md-7 col-xs-7">
                 <p>
-                  <strong ng-if="profile.user.info.name">{{profile.user.info.name}}</strong>
-                  <strong ng-if="!profile.user.info.name">{{profile.user.info.given_name}} {{profile.user.info.family_name}}</strong>
+                  <strong ng-if="account.user.info.name">{{account.user.info.name}}</strong>
+                  <strong ng-if="!account.user.info.name">{{account.user.info.given_name}} {{account.user.info.family_name}}</strong>
                 </p>
-                <p>{{profile.user.email}}</p>
+                <p>{{ account.email }}</p>
               </div>
 
               <div class="profile-dropdown col-md-2 col-xs-2 dropdown">
@@ -38,7 +38,7 @@
               </div>
             </div>
 
-            <div class="anonymous premium-feature" ng-show="!profile.user">
+            <div class="anonymous" ng-show="!account">
                 <a ng-href="{{baseURL}}#login" target="_blank" ng-click="checkLogin()">Login</a> or
                 <a ng-href="{{baseURL}}#pricing" target="_blank">Sign Up</a>
                 to <em>share</em> templates with your team.
