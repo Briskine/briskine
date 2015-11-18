@@ -1,0 +1,57 @@
+<div class="modal fade" id="add-groups-apps-modal" tabindex="-1" role="dialog" data-aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form role="form" class="form-horizontal" name="member-form0" action="" ng-submit="saveGroups()">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title">Import Groups from Google Apps</h4>
+                </div>
+                <div class="modal-body members-form">
+                    <div ng-if="formErrors" class="alert alert-danger updated-account-message">
+                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                        <p ng-repeat="(field, errors) in formErrors">
+                            <span ng-repeat="err in errors">{{ err }}</span>
+                        </p>
+                    </div>
+
+                    <div ng-show="appsGroups" class="apps-groups">
+                        <p class="help-block">Select the Groups below to import them to Gorgias.
+                            Users in these groups will be <strong>added</strong> automatically.</p>
+
+                        <table class="table col-sm-12 member-table">
+                            <tr ng-repeat="g in appsGroups">
+                                <td class="col-xs-3">{{ g.name }}</td>
+                                <td class="col-xs-6">
+                                    <span class="google-apps-member" ng-repeat="u in g.users">
+                                        <img ng-src="{{ u.thumbnail_photo_url}}"
+                                             class="avatar"
+                                             alt="{{ u.name }}" title="{{ u.name }} &lt;{{ u.email }}&gt;" />
+                                    </span>
+                                </td>
+                                <td class="pull-right">
+                                    <input type="checkbox"
+                                           bs-switch=""
+                                           switch-on-text="Selected"
+                                           switch-off-text="Select"
+                                           switch-size="small" switch-label-width="1"
+                                           ng-model="g.selected"/>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+
+                </div>
+                <div class="clearfix"></div>
+
+                <div class="modal-footer">
+                    <label for="sendNotification" class="pull-left small">
+                        <input type="checkbox" id="sendNotification" ng-model="sendNotification" ng-false-value="''"/>
+                        Send login instructions by email (for new users)
+                    </label>
+                    <button class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary" ng-click="saveGroupsApps()">Import selected Groups</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

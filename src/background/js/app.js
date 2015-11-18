@@ -37,6 +37,22 @@ gApp.config(function ($routeProvider, $compileProvider) {
             controller: 'SettingsCtrl',
             templateUrl: 'views/settings.html'
         })
+        .when('/account', {
+            controller: 'AccountCtrl',
+            templateUrl: 'views/account/base.html'
+        })
+        .when('/account/members', {
+            controller: 'MembersCtrl',
+            templateUrl: 'views/account/base.html'
+        })
+        .when('/account/groups', {
+            controller: 'GroupsCtrl',
+            templateUrl: 'views/account/base.html'
+        })
+        .when('/account/subscriptions', {
+            controller: 'SubscriptionsCtrl',
+            templateUrl: 'views/account/base.html'
+        })
         .when('/installed', {
             templateUrl: 'views/installed.html',
             reloadOnSearch: false
@@ -45,6 +61,8 @@ gApp.config(function ($routeProvider, $compileProvider) {
             redirectTo: '/list'
         });
 });
+
+gApp.API_BASE_URL = "http://localhost:8080/api/1/";
 
 gApp.config(["$provide", function ($provide) {
     $provide.decorator("$exceptionHandler", ["$delegate", "$window", function ($delegate, $window) {
@@ -105,8 +123,8 @@ gApp.run(function ($rootScope, $location, $http, $timeout, ProfileService, Setti
     });
 
     // setup profile
-    $rootScope.profile = {};
     $rootScope.profileService = ProfileService;
+
     ProfileService.savedTime().then(function (savedTime) {
         $rootScope.profile.savedTime = savedTime;
     });
@@ -115,6 +133,14 @@ gApp.run(function ($rootScope, $location, $http, $timeout, ProfileService, Setti
         $rootScope.profile.savedWords = words;
         $rootScope.profile.savedWordsNice = ProfileService.reduceNumbers(words);
     });
+
+    $rootScope.connectSocial = function(provider, scope) {
+          $http.post('https://gorgias.io/authorize/' + provider, {'scope': scope}).success(function(res){
+              window.location = res.location;
+          }).error(function(){
+              alert("Error! Please try again or contact support@gorgias.io");
+          });
+    };
 
     $rootScope.checkLogin = function () {
         $('#check-login').removeClass("hide");
@@ -138,7 +164,7 @@ gApp.run(function ($rootScope, $location, $http, $timeout, ProfileService, Setti
                         }
 
                         $http.get(apiBaseURL + "account").success(function (data) {
-                            $rootScope.profile.user = data;
+                            //$rootScope.profile.user = data;
 
                             // identify people that are logged in to our website
                             mixpanel.identify(data.id);
