@@ -122,15 +122,7 @@ gApp.run(function ($rootScope, $location, $http, $timeout, ProfileService, Setti
     });
 
     // setup profile
-    $rootScope.profile = {};
     $rootScope.profileService = ProfileService;
-    ProfileService.savedTime().then(function (savedTime) {
-        $rootScope.profile.savedTime = savedTime;
-    });
-
-    ProfileService.words().then(function (words) {
-        $rootScope.profile.savedWords = ProfileService.reduceNumbers(words);
-    });
 
     $rootScope.checkLogin = function () {
         $('#check-login').removeClass("hide");
@@ -154,7 +146,7 @@ gApp.run(function ($rootScope, $location, $http, $timeout, ProfileService, Setti
                         }
 
                         $http.get(apiBaseURL + "account").success(function (data) {
-                            $rootScope.profile.user = data;
+                            //$rootScope.profile.user = data;
 
                             // identify people that are logged in to our website
                             mixpanel.identify(data.id);

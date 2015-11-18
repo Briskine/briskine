@@ -1,4 +1,4 @@
-<p>You are signed in as <strong>{{ user.email }}</strong><span ng-if="user.is_customer">, the <strong>Account
+<p>You are signed in as <strong>{{ account.email }}</strong><span ng-if="user.is_customer">, the <strong>Account
     Owner</strong>.
         You are using
         <button class="label label-licenses" data-container="body"
@@ -43,18 +43,18 @@
     <tr>
         <th>
             <img ng-if="!user.thumbnail_photo_url"
-                 ng-src="//www.gravatar.com/avatar/{{ user.email | gravatar }}?d=retro" class="avatar"/>
-            <img ng-if="user.thumbnail_photo_url" ng-src="{{ user.thumbnail_photo_url }}" class="avatar"/>
+                 ng-src="http://www.gravatar.com/avatar/{{ account.email | gravatar }}?d=retro" class="img-circle"/>
+            <img ng-if="user.thumbnail_photo_url" ng-src="{{ account.thumbnail_photo_url }}" class="img-circle"/>
         </th>
-        <td>{{ user.name }}</td>
-        <td>{{ user.email }}</td>
-        <td class="pull-right"><a href="/app#/account">My account</a></td>
+        <td>{{ account.info.name }}</td>
+        <td>{{ account.email }}</td>
+        <td class="pull-right"><a href="#/account">My account</a></td>
     </tr>
     <tr ng-repeat="u in filteredUsers = (users | filter:searchText)">
         <th>
             <img ng-if="!u.thumbnail_photo_url"
-                 ng-src="//www.gravatar.com/avatar/{{ u.email | gravatar }}?d=retro" class="avatar"/>
-            <img ng-if="u.thumbnail_photo_url" ng-src="{{ u.thumbnail_photo_url }}" class="avatar"/>
+                 ng-src="http://www.gravatar.com/avatar/{{ u.email | gravatar }}?d=retro" class="img-circle"/>
+            <img ng-if="u.thumbnail_photo_url" ng-src="{{ u.thumbnail_photo_url }}" class="img-circle"/>
         </th>
         <td class="col-xs-4">
             <span ng-if="!user.is_customer">{{ u.name }}</span>
