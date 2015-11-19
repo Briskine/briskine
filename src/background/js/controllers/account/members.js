@@ -1,8 +1,6 @@
 gApp.controller('MembersCtrl', function ($scope, $rootScope, $timeout, AccountService, MemberService, SubscriptionService) {
     $scope.activeTab = 'members';
 
-
-
     $scope.users = [];
     $scope.appsUsers = [];
 

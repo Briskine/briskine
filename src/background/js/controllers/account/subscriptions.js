@@ -1,5 +1,7 @@
-gApp.controller('SubscriptionsCtrl', function($scope, $rootScope, $routeParams, $q, SubscriptionService) {
+gApp.controller('SubscriptionsCtrl', function($scope, $rootScope, $routeParams, $q, SubscriptionService, AccountService) {
     $scope.activeTab = 'subscriptions';
+
+    AccountService.get().then(function(data){ $scope.account = AccountService.user; });
 
     $scope.plans = {};
     $scope.subscriptions = [];
