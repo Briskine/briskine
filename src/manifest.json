@@ -28,7 +28,8 @@
                 "http://*/*"
             ],
             "js": [
-                "content/js/content.js"
+                "content/js/content.js",
+                "https://checkout.stripe.com/checkout.js"
             ],
             "css": [
                 "content/css/content.css"
