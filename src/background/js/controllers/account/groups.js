@@ -1,5 +1,7 @@
-gApp.controller('GroupsCtrl', function ($scope, $rootScope, $timeout, MemberService, GroupService, GroupAppsService) {
+gApp.controller('GroupsCtrl', function ($scope, $rootScope, $timeout, MemberService, GroupService, GroupAppsService, AccountService) {
     $scope.activeTab = 'groups';
+
+    AccountService.get().then(function(data){ $scope.account = AccountService.user; });
 
     $scope.members = [];
     $scope.appsUsers = [];

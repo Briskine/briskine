@@ -17,6 +17,10 @@
         {
             "name": "Alex Bumbu",
             "email": "bmbalex@gmail.com"
+        },
+        {
+            "name": "Martin Latrille",
+            "email": "martin@gorgias.io"
         }
     ],
     "license": "MIT",

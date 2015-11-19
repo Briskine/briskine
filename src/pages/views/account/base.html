@@ -9,10 +9,10 @@
         <li role="presentation" ng-class="activeTab == 'members'?'active':''">
             <a href="#/account/members" aria-controls="members" role="tab" data-toggle="tab" data-target="#">Team Members</a>
         </li>
-        <li role="presentation" ng-if="user.is_staff" ng-class="activeTab == 'groups'?'active':''">
+        <li role="presentation" ng-if="account.is_staff" ng-class="activeTab == 'groups'?'active':''">
             <a href="#/account/groups" aria-controls="groups" role="tab" data-toggle="tab" data-target="#">Member Groups</a>
         </li>
-        <li role="presentation" ng-show="user.is_customer" ng-class="activeTab == 'subscriptions'?'active':''">
+        <li role="presentation" ng-show="account.is_customer" ng-class="activeTab == 'subscriptions'?'active':''">
             <a href="#/account/subscriptions" aria-controls="subscriptions" role="tab" data-target="#"
                data-toggle="tab">Subscriptions</a>
         </li>
@@ -24,10 +24,10 @@
         <div role="tabpanel" class="tab-pane" ng-class="activeTab === 'members'?'active':''" id="members">
             <div class="tab-container" ng-include="'/pages/views/account/members.html'"></div>
         </div>
-        <div role="tabpanel" class="tab-pane" ng-if="user.is_staff" ng-class="activeTab === 'groups'?'active':''" id="groups">
+        <div role="tabpanel" class="tab-pane" ng-if="account.is_staff" ng-class="activeTab === 'groups'?'active':''" id="groups">
             <div class="tab-container" ng-include="'/pages/views/account/groups.html'"></div>
         </div>
-        <div ng-show="user.is_customer" role="tabpanel" class="tab-pane" ng-class="activeTab == 'subscriptions'?'active':''" id="subscriptions">
+        <div role="tabpanel" class="tab-pane" ng-if="account.is_customer" ng-class="activeTab == 'subscriptions'?'active':''" id="subscriptions">
             <div class="tab-container" ng-include="'/pages/views/account/subscriptions.html'"></div>
         </div>
     </div>
