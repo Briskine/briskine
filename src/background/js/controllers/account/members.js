@@ -30,11 +30,13 @@ gApp.controller('MembersCtrl', function ($scope, $rootScope, $timeout, AccountSe
                     return m.active;
                 }).length + 1;
 
-                for (var i = 0; i <= $scope.activeSubscription.quantity - $scope.licensesUsed - 1; i++) {
-                    $scope.newUsers.push({
-                        'name': '',
-                        'email': ''
-                    });
+                if ($scope.activeSubscription != null) {
+                  for (var i = 0; i <= $scope.activeSubscription.quantity - $scope.licensesUsed - 1; i++) {
+                      $scope.newUsers.push({
+                          'name': '',
+                          'email': ''
+                      });
+                  }
                 }
             });
         };
@@ -53,9 +55,7 @@ gApp.controller('MembersCtrl', function ($scope, $rootScope, $timeout, AccountSe
 
     // setup account
     AccountService.get()
-      .then(function(data) {
-        $scope.account = data;
-      })
+      .then(function(data) { $scope.account = data; })
       .then($scope.refresh);
 
     $scope.saveMembers = function () {
