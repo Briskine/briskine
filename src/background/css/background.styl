@@ -5,6 +5,7 @@
 @import "../../bower_components/angular/angular-csp.css";
 @import "../../bower_components/bootstrap/dist/css/bootstrap.css";
 @import "../../bower_components/font-awesome/css/font-awesome.css";
+@import "../../bower_components/selectize/dist/css/selectize.bootstrap3.css";
 @import "../../bower_components/quill/dist/quill.base.css";
 @import "../../bower_components/quill/dist/quill.snow.css";
 
@@ -20,6 +21,7 @@ emCalc(h) {
 
 $grey1 = #eee;
 $black = #333;
+$link = #15C;
 $color1 = rgb(77, 144, 254);
 $sidebarWidth = 248px;
 $contentWidth = 800px;
@@ -169,7 +171,7 @@ header {
         button
         .btn {
             display: inline-block;
-            margin-left: emCalc(8);
+            margin-left: 10px;
 
             transition: all .1s ease-out;
             opacity: 0;
@@ -266,9 +268,6 @@ header {
 .quicktext-filters {
     padding-top: 16px;
     padding-bottom: 5px;
-    .label {
-        font-size: 80%;
-    }
     line-height: 21px;
 }
 
@@ -347,45 +346,6 @@ header {
     }
 }
 
-/* Page Action Popup
- */
-
-.popup {
-    width: 630px;
-    height: 600px;
-
-    .sidebar-wrapper {
-        display: none;
-    }
-
-    header {
-        left: 0;
-        padding: emCalc(8) emCalc(20);
-    }
-
-    .view-container {
-        margin: 0;
-    }
-
-    header,
-    .view-container {
-        width: 100%;
-    }
-
-    /* Don't use view transition in the action popup
-    */
-    .container-animation.ng-enter,
-    .container-animation.ng-leave {
-        transition: none;
-    }
-
-    /* More padding for the btn-toolbar
-     */
-    .btn-toolbar {
-        padding: emCalc(12) emCalc(16);
-    }
-}
-
 /* Profile
  */
 .profile-body {
@@ -434,15 +394,6 @@ header {
                 font-size: emCalc(20);
                 color: $black;
             }
-        }
-    }
-}
-
-.sidebar-spam {
-    .signature {
-        .img-circle {
-            margin-right: 8px;
-            width: 50px;
         }
     }
 }
@@ -545,18 +496,7 @@ header {
     cursor: pointer;
 }
 
-.dropdown-toggle {
-    padding-top: 5px;
-    background: #FAFAFA;
-    &:hover {
-        background: #f2f2f2;
-    }
-}
-
-
-/* Premium feature
- */
-
+/* Premium feature */
 .premium-feature {
     padding: .75rem 1rem .75rem 1rem;
     border: 1px solid #e8e8e8;

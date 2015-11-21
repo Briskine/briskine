@@ -34,13 +34,11 @@ gApp.filter('safe', function ($sce) {
 gApp.filter('stripHTML', function ($sce) {
     return function (html) {
         try {
-            var doc = document.implementation.createDocument('http://www.w3.org/1999/xhtml', 'html', null);
-            var body = document.createElementNS('http://www.w3.org/1999/xhtml', 'body');
-            html = html.replace(/<br>/g, '<br />');
-            doc.documentElement.innerHTML = html;
-            return doc.documentElement.textContent||doc.documentElement.innerText;
+            var doc = document.implementation.createHTMLDocument();
+            var body = doc.createElement('div');
+            body.innerHTML = html;
+            return body.textContent||body.innerText;
         } catch(e) {
-            console.error(e);
             return "";
         }
     };

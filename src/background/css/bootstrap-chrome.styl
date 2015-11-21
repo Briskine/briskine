@@ -6,12 +6,16 @@
 
 html,
 body {
-    font-family: sans-serif;
+    font-family: 'Helvetica Neue', 'Lucida Grande', sans-serif;
     font-size: emCalc(14);
 }
 
 .container {
     margin: 0;
+}
+
+a {
+    color: $link;
 }
 
 p {
@@ -42,21 +46,37 @@ h2 small {
 /* Forms
  */
 input[type='text'],
-input[type='email'] {
+input[type='email'],
+.selectize-input {
     border: 1px solid #bfbfbf;
     border-radius: 2px;
     color: #444;
     font: inherit;
     margin: 0;
     height: auto;
+    min-height: inherit;
 
     padding: emCalc(4) emCalc(6);
 }
 
-  .form-control {
+.form-control {
     &:focus {
         box-shadow: none;
         border-color: $color1;
+    }
+}
+
+.selectize-input {
+    padding: 2px 2px 5px 6px !important;
+    &.focus {
+        box-shadow: none;
+        border-color: $color1;
+    }
+    .item {
+        margin-right: 4px;
+        &.active {
+            background-color: $color1;
+        }
     }
 }
 
@@ -181,6 +201,20 @@ input[type='email'] {
 
 /* Modal
  */
+.modal-header {
+    .close {
+        background-image: -webkit-image-set(url(/icons/close.png) 1x, url(/icons/close@2x.png) 2x);
+        background-position: center;
+        background-repeat: no-repeat;
+        height: 14px;
+        width: 14px;
+        z-index: 1;
+        &:hover {
+            background-image: -webkit-image-set(url(/icons/close_h.png) 1x, url(/icons/close_h@2x.png) 2x);
+        }
+    }
+}
+
 .modal-backdrop {
     background-color: #fff;
 
@@ -191,6 +225,7 @@ input[type='email'] {
 
 .modal-content {
     border: 0;
+    border-radius: 3px;
     box-shadow: 0 4px 23px 5px rgba(0, 0, 0, 0.2), 0 2px 6px rgba(0, 0, 0, 0.15);
 
     .modal-header {
@@ -213,4 +248,29 @@ input[type='email'] {
             margin-right: 0;
         }
     }
+}
+
+/* Dropdown */
+.dropdown-toggle {
+    padding-top: 2px;
+    background: #FAFAFA;
+    &:hover {
+        background: #f2f2f2;
+    }
+}
+
+.dropdown-menu {
+    margin-top: 8px;
+}
+
+/* Labels */
+.label {
+    font-size: 80%;
+}
+
+.label-primary{
+    background-color: $color1;
+}
+.label-primary[href]:hover, .label-primary[href]:focus {
+    background-color: darken($color1, 10%);
 }

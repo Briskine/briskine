@@ -4,54 +4,13 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" data-whatever="hello" aria-hidden="true"
-                        aria-label="Close">&times;</button>
-                <div class="dropdown pull-right small configure-fields">
-                    <a href="javascript:void(0)" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
-                       role="button"
-                       ng-click=""><i class="fa fa-gear"></i> Configure fields</a>
-                    <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
-                        <p class="muted small">Show/hide template fields below</p>
-                        <li>
-                            <div class="checkbox">
-                                <label><input type="checkbox" checked="checked" readonly="readonly"
-                                              disabled="disabled"/>Template Name</label>
-                            </div>
-                        </li>
-                        <li>
-                            <div class="checkbox">
-                                <label><input type="checkbox" checked="checked" readonly="readonly"
-                                              disabled="disabled"/>Text shortcut</label>
-                            </div>
-                        </li>
-                        <li>
-                            <div class="checkbox">
-                                <label><input type="checkbox" ng-model="subjectEnabled"
-                                              ng-change="toggleField('subject', subjectEnabled)"/>Subject</label>
-                            </div>
-                        </li>
-                        <li>
-                            <div class="checkbox">
-                                <label><input type="checkbox" ng-model="tagsEnabled"
-                                              ng-change="toggleField('tags', tagsEnabled)"/>Tags</label>
-                            </div>
-                        </li>
-                        <li>
-                            <div class="checkbox">
-                                <label><input type="checkbox" checked="checked" readonly="readonly"
-                                              disabled="disabled"/>Content</label>
-                            </div>
-                        </li>
-                    </ul>
-                </div>
+                        aria-label="Close"></button>
                 <h4 class="modal-title">
                     <span ng-show="selectedTemplate.id">Edit template</span>
                     <span ng-show="!selectedTemplate.id">New template</span>
                 </h4>
             </div>
-
-            <form role="form" name="quicktext-form0" ng-submit="saveQt()">
-
-
+            <form ng-submit="saveQt()">
                 <div class="modal-body">
                     <input type="hidden" id="qt-id" ng-model="selectedTemplate.id"/> <!-- local id -->
                     <input type="hidden" id="qt-key" ng-model="selectedTemplate.key"/> <!-- sync server id -->
@@ -63,17 +22,14 @@
 
                     <div class="row">
                         <div class="col-xs-7">
-
                             <div class="form-group" data-toggle="tooltip" data-placement="bottom">
                                 <label for="qt-title">Template Name</label>
                                 <input type="text" class="form-control" id="qt-title" ng-model="selectedTemplate.title"
                                        placeholder="Ex: Nice talking to you" autofocus required/>
                             </div>
-
                         </div>
 
                         <div class="col-xs-5">
-
                             <div class="form-group" data-toggle="tooltip" data-placement="bottom"
                                  title="Use this text shortcut to trigger the completion of the template using the TAB key. No spaces are allowed.">
                                 <label for="qt-shortcut">
@@ -85,32 +41,14 @@
                                        pattern="^[^\s]*$"
                                        placeholder="nice"/>
                             </div>
-
                         </div>
                     </div>
 
                     <div class="form-group" data-toggle="tooltip" data-placement="bottom"
-                         title="The e-mail subject will be replaced with this field. Only when this template is used."
-                         ng-show="selectedTemplate.subject || subjectEnabled">
-                        <label for="qt-subject">
-                            Subject
-                            <span class="text-muted">(Optional)</span>
-                        </label>
+                         title="The e-mail subject will be replaced with this field. Only when this template is used.">
+                        <label for="qt-subject">Subject <span class="text-muted">(Optional)</span></label>
                         <input type="text" class="form-control" id="qt-subject" ng-model="selectedTemplate.subject"
                                placeholder=""/>
-                    </div>
-
-                    <div class="form-group" data-toggle="tooltip" data-placement="bottom"
-                         ng-show="selectedTemplate.tags || tagsEnabled"
-                         title="Tags are useful to search and filter templates (when you have many).">
-                        <label for="qt-tags">
-                            Tags
-                            <span class="text-muted">(Optional)</span>
-                        </label>
-                        <input type="text" class="form-control" id="qt-tags" size="50" ng-model="selectedTemplate.tags"
-                               placeholder="Ex: en, sales, discounts"/>
-
-                        <p class="help-block">Comma separated list of tags.</p>
                     </div>
                     <div class="form-group">
                         <label class="body-label">Template Content</label>
@@ -177,7 +115,7 @@
                                                title="The subject of the e-mail"><strong>Subject</strong></a>
                                         </li>
                                         <li class="divider"></li>
-                                        <li><a class="help-block text-muted small"
+                                        <li><a class="text-muted small"
                                                href="http://help.gorgias.io/en/latest/src/04-templates.html"
                                                rel="external"
                                                target="_blank">Learn more about template variables <i
@@ -192,6 +130,24 @@
                                       placeholder="It was nice talking to you today..."
                                       ng-model="selectedTemplate.body"></textarea>
                         </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="qt-tags">
+                            Tags
+                            <span class="text-muted">(Optional)</span>
+                        </label>
+
+                        <div data-toggle="tooltip" data-placement="top"
+                             title="Tags are useful to search and filter templates (when you have many).">
+                            <input
+                                type="text"
+                                class="form-control"
+                                id="qt-tags"
+                                size="50"
+                                ng-model="selectedTemplate.tags"
+                                placeholder="Ex: en, sales, discounts"/>
+                        </div>
+
                     </div>
                     <p ng-show="templates.length > 5 && !profile.user" class="premium-feature">
                         Share this template with your team. <a

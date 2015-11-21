@@ -38,11 +38,14 @@
             </div>
 
             <div class="profile-extra">
-                <div class="profile-stats" data-toggle="tooltip" data-placement="bottom"
-                     data-original-title="25 Words per Minute: http://tinyurl.com/wiki-wpm">
+                <div class="profile-stats">
                     So far you saved <strong>{{profile.savedWords}}</strong> words or
                     <strong>{{profile.savedTime}}</strong>.
-                    <span class="fa fa-question-circle"></span>
+
+                    <br>
+                    <a href="https://twitter.com/intent/tweet?hashtags=custserv%2C&related=gorgiasio&text=Saved%20{{profile.savedTime}}%20writing%20emails%20using%20Gorgias%20Chrome%20Extension&tw_p=tweetbutton&url=https%3A%2F%2Fchrome.google.com%2Fwebstore%2Fdetail%2Fgorgias-email-templates-f%2Flmcngpkjkplipamgflhioabnhnopeabf"
+                       class="twitter-hashtag-button" data-related="gorgiasio"
+                       data-url="https://chrome.google.com/webstore/detail/gorgias-email-templates-f/lmcngpkjkplipamgflhioabnhnopeabf" target="_blank">Spread <i class="fa fa-heart"></i></a>
                 </div>
 
                 <!-- <div class="profile-subscription">You have a <strong>{{profile.currentSubscription}}</strong> subscription.</div> -->

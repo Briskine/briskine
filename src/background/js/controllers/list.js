@@ -88,7 +88,7 @@ gApp.controller('ListCtrl',
                 $('#qt-title').focus();
             });
 
-            if ($scope.settings.editor.enabled) {
+            if ($scope.settings.editor && $scope.settings.editor.enabled) {
                 // Initialize editor
                 editor = new Quill('.editor-wrapper .editor', {
                     modules: {
@@ -106,9 +106,7 @@ gApp.controller('ListCtrl',
                 });
 
                 editor.on('text-change', function (delta, source) {
-                    if (source === 'user') {
-                        $scope.selectedTemplate.body = editor.getHTML();
-                    }
+                    $scope.selectedTemplate.body = editor.getHTML();
                 });
             } else {
                 editor = null;
@@ -137,34 +135,61 @@ gApp.controller('ListCtrl',
                 source: source
             });
 
-            var defaults = {
-                'id': '',
-                'remote_id': '',
-                'subject': '',
-                'shortcut': '',
-                'title': '',
-                'tags': '',
-                'body': ''
-            };
-
-            id = id ? id : $routeParams.id;
-
-            if (id === 'new') {
-                // new template
-                $scope.selectedTemplate = angular.copy(defaults);
-                $scope.selectedTemplate.body = $routeParams.body || '';
-                if (editor) {
-                    editor.setHTML($scope.selectedTemplate.body);
+            TemplateService.allTags().then(function (tags) {
+                var tagOptions = [];
+                var tagNames = Object.keys(tags);
+                for (var t in tagNames) {
+                    tagOptions.push({
+                        text: tagNames[t],
+                        value: tagNames[t]
+                    });
                 }
-            } else if (id) {
-                // update template
-                TemplateService.get(id).then(function (r) {
-                    $scope.selectedTemplate = angular.copy(r);
+
+                $('#qt-tags').selectize({
+                    plugins: ['remove_button'],
+                    delimiter: ',',
+                    persist: false,
+                    options: tagOptions,
+                    render: {
+                        item: function(item, escape) {
+                            return '<span class="label label-default item">' + escape(item.text) + '</span>';
+                        }
+                    }
+                });
+                $('#qt-tags')[0].selectize.clear();
+                var defaults = {
+                    'id': '',
+                    'remote_id': '',
+                    'subject': '',
+                    'shortcut': '',
+                    'title': '',
+                    'tags': '',
+                    'body': ''
+                };
+
+                id = id ? id : $routeParams.id;
+
+                if (id === 'new') {
+                    // new template
+                    $scope.selectedTemplate = angular.copy(defaults);
+                    $scope.selectedTemplate.body = $routeParams.body || '';
                     if (editor) {
                         editor.setHTML($scope.selectedTemplate.body);
                     }
-                });
-            }
+                } else if (id) {
+                    // update template
+                    TemplateService.get(id).then(function (r) {
+                        $scope.selectedTemplate = angular.copy(r);
+                        if (editor) {
+                            editor.setHTML($scope.selectedTemplate.body);
+                        }
+                        $.each($scope.selectedTemplate.tags.split(','), function(_, tag){
+                            $('#qt-tags')[0].selectize.addItem($.trim(tag));
+                        });
+                    });
+                }
+            });
+
             $formModal.modal('show');
         };
 
@@ -184,6 +209,7 @@ gApp.controller('ListCtrl',
                 var range = editor.getSelection();
                 if (range) {
                     editor.insertText(range.start, '{{' + variable + '}}');
+
                 }
             } else {
                 var body = $('#qt-body');
