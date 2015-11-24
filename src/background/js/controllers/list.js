@@ -88,29 +88,31 @@ gApp.controller('ListCtrl',
                 $('#qt-title').focus();
             });
 
-            if ($scope.settings.editor && $scope.settings.editor.enabled) {
-                // Initialize editor
-                editor = new Quill('.editor-wrapper .editor', {
-                    modules: {
-                        'toolbar': {container: '.editor-wrapper .toolbar'},
-                        'link-tooltip': true
-                    },
-                    theme: 'snow'
-                });
-                editor.addModule('image-tooltip', {
-                    template: '<input class="input" type="textbox">' +
-                    '<div class="preview">' +
-                    '<span>Preview</span> </div> ' +
-                    '<a href="javascript:;" class="insert btn btn-primary">Insert</a>' +
-                    '<a href="javascript:;" class="cancel btn btn-default">Cancel</a>'
-                });
+            SettingsService.get('settings').then(function (settings) {
+                if (settings.editor && settings.editor.enabled) {
+                    // Initialize editor
+                    editor = new Quill('.editor-wrapper .editor', {
+                        modules: {
+                            'toolbar': {container: '.editor-wrapper .toolbar'},
+                            'link-tooltip': true
+                        },
+                        theme: 'snow'
+                    });
+                    editor.addModule('image-tooltip', {
+                        template: '<input class="input" type="textbox">' +
+                        '<div class="preview">' +
+                        '<span>Preview</span> </div> ' +
+                        '<a href="javascript:;" class="insert btn btn-primary">Insert</a>' +
+                        '<a href="javascript:;" class="cancel btn btn-default">Cancel</a>'
+                    });
 
-                editor.on('text-change', function (delta, source) {
-                    $scope.selectedTemplate.body = editor.getHTML();
-                });
-            } else {
-                editor = null;
-            }
+                    editor.on('text-change', function (delta, source) {
+                        $scope.selectedTemplate.body = editor.getHTML();
+                    });
+                } else {
+                    editor = null;
+                }
+            });
             checkRoute();
         };
 
