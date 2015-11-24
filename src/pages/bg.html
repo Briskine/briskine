@@ -11,21 +11,17 @@
 <div class="container">
     <div class="sidebar-wrapper">
 
-        <a ng-href="{{ baseURL }}" class="brand" target="_blank">
-            <img src="../icons/white-logo.png" alt="Gorgias"/>
-        </a>
-
         <div class="profile">
 
             <div class="profile-body" ng-show="profile.user">
-
                 <a class="profile-picture" href="https://gorgias.io/app#/account" target="_blank">
                     <img class="img-circle" title="Setup your avatar on gravatar.com" alt="gravatar" ng-src="{{ profileService.gravatar(profile.user.email) }}">
                 </a>
 
                 <div class="profile-details">
                     <p>
-                      <strong>{{profile.user.info.given_name}} {{profile.user.info.family_name}}</strong>
+                      <strong ng-if="profile.user.info.name">{{profile.user.info.name}}</strong>
+                      <strong ng-if="!profile.user.info.name">{{profile.user.info.given_name}} {{profile.user.info.family_name}}</strong>
                     </p>
                     <p>{{profile.user.email}}</p>
                 </div>
@@ -37,21 +33,17 @@
                 to <em>share</em> templates with your team.
             </div>
 
-            <div class="profile-extra">
+            <div class="profile-extra alert alert-info" ng-if="profile.savedWords > 1500">
                 <div class="profile-stats">
-                    So far you saved <strong>{{profile.savedWords}}</strong> words or
+                    So far you saved <strong>{{profile.savedWordsNice}}</strong> words or
                     <strong>{{profile.savedTime}}</strong>.
-
-                    <br>
-                    <a href="https://twitter.com/intent/tweet?hashtags=custserv%2C&related=gorgiasio&text=Saved%20{{profile.savedTime}}%20writing%20emails%20using%20Gorgias%20Chrome%20Extension&tw_p=tweetbutton&url=https%3A%2F%2Fchrome.google.com%2Fwebstore%2Fdetail%2Fgorgias-email-templates-f%2Flmcngpkjkplipamgflhioabnhnopeabf"
-                       class="twitter-hashtag-button" data-related="gorgiasio"
-                       data-url="https://chrome.google.com/webstore/detail/gorgias-email-templates-f/lmcngpkjkplipamgflhioabnhnopeabf" target="_blank">Spread <i class="fa fa-heart"></i></a>
                 </div>
-
-                <!-- <div class="profile-subscription">You have a <strong>{{profile.currentSubscription}}</strong> subscription.</div> -->
-
+                <a class="btn-twitter" target="_blank"
+                   href="https://twitter.com/intent/tweet?hashtags=custserv&text=I%20saved%20{{profile.savedTime}}%20since%20I%20started%20using%20%40gorgiasio.%20Check%20it%20out!&tw_p=tweetbutton&url=https%3A%2F%2Fchrome.google.com%2Fwebstore%2Fdetail%2Fgorgias%2Flmcngpkjkplipamgflhioabnhnopeabf">
+                    <i class="fa fa-twitter"></i>
+                    <span>Tweet about it</span>
+                </a>
             </div>
-
         </div>
 
         <ul class="nav nav-pills nav-stacked">
@@ -62,7 +54,10 @@
         </ul>
 
         <div class="sidebar-footer">
-            <a href="https://twitter.com/gorgiasio" title="Follow @gorgiasio and get some awesome tips on how to use it!" target="_blank"><img src="/icons/twitter.jpg" class="twitter-badge" alt="Follow on twitter"/></a>
+            <a class="btn-twitter" href="https://twitter.com/gorgiasio" title="Follow @gorgiasio and get some awesome tips on how to use it!" target="_blank">
+                <i class="fa fa-twitter"></i>
+                <span>Follow @gorgiasio</span>
+            </a>
             <br/>
             <br/>
             <div class="sync-status" ng-show="profile.user">

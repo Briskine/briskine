@@ -348,54 +348,44 @@ header {
 
 /* Profile
  */
-.profile-body {
-    clearfix();
-
-    transition: all .1s ease-out;
-    transition-delay: .3s;
-    transform: translateX(emCalc(-68));
-    opacity: .5;
-
-    &:hover {
-        transform: translateX(0);
-        opacity: 1;
+.profile {
+    text-align: center;
+    .profile-body {
+        clearfix();
 
         .profile-picture {
-            transform: translateX(0);
-            opacity: 1;
-        }
-    }
+            float: left;
 
-    .profile-picture {
-        float: left;
-        margin-right: emCalc(12);
-
-        transition: all .15s ease-out;
-        transition-delay: .3s;
-        transform: translateX(emCalc(8));
-        opacity: .6;
-
-        img {
-            max-width: emCalc(60);
-        }
-    }
-
-    .profile-details {
-        float: left;
-        padding-top: emCalc(6);
-        cursor: default;
-
-        p {
-            margin: 0;
-
-            color: lighten($black, 20%);
-
-            strong {
-                font-size: emCalc(20);
-                color: $black;
+            img {
+                max-width: emCalc(60);
             }
         }
+
+        .profile-details {
+            float: left;
+            padding-left: emCalc(12);
+            padding-top: emCalc(6);
+            cursor: default;
+
+            p {
+                margin: 0;
+
+                color: lighten($black, 20%);
+
+                strong {
+                    font-size: emCalc(20);
+                    color: $black;
+                }
+            }
+        }
+
     }
+    .profile-stats {
+        font-size: 1.2em;
+        color: $black !important;
+        margin-bottom: 7px;
+    }
+    margin-right: 18px;
 }
 
 /* Sidebar footer
@@ -492,7 +482,7 @@ header {
     margin-top: 8px;
 }
 
-.insert-var-container li{
+.insert-var-container li {
     cursor: pointer;
 }
 
@@ -505,4 +495,34 @@ header {
     margin: 0 auto 1rem;
     border-radius: .25rem;
     border-left-color: #E6AF3A;
+}
+
+.btn-twitter {
+    position: relative;
+    height: 20px;
+    padding: 1px 8px 1px 6px;
+    font-weight: 500;
+    color: #fff;
+    cursor: pointer;
+    background-color: #1b95e0;
+    border-radius: 3px;
+    box-sizing: border-box;
+
+    span {
+        font-size: 11px;
+        margin-left: 3px;
+        white-space: nowrap;
+    }
+    span, .fa {
+        vertical-align: top;
+    }
+    .fa {
+        padding-top: 2px;
+    }
+
+    &:hover, &:active {
+        background-color: #0c7abf;
+        color: #fff;
+        text-decoration: none;
+    }
 }

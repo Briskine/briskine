@@ -112,7 +112,8 @@ gApp.run(function ($rootScope, $location, $http, $timeout, ProfileService, Setti
     });
 
     ProfileService.words().then(function (words) {
-        $rootScope.profile.savedWords = ProfileService.reduceNumbers(words);
+        $rootScope.profile.savedWords = words;
+        $rootScope.profile.savedWordsNice = ProfileService.reduceNumbers(words);
     });
 
     $rootScope.checkLogin = function () {
