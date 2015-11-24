@@ -135,6 +135,11 @@ gApp.controller('ListCtrl',
                 source: source
             });
 
+            var selectize = $('#qt-tags')[0].selectize;
+            if (selectize) {
+                selectize.clear();
+            }
+
             TemplateService.allTags().then(function (tags) {
                 var tagOptions = [];
                 var tagNames = Object.keys(tags);
@@ -151,12 +156,11 @@ gApp.controller('ListCtrl',
                     persist: false,
                     options: tagOptions,
                     render: {
-                        item: function(item, escape) {
+                        item: function (item, escape) {
                             return '<span class="label label-default item">' + escape(item.text) + '</span>';
                         }
                     }
                 });
-                $('#qt-tags')[0].selectize.clear();
                 var defaults = {
                     'id': '',
                     'remote_id': '',
@@ -183,7 +187,7 @@ gApp.controller('ListCtrl',
                         if (editor) {
                             editor.setHTML($scope.selectedTemplate.body);
                         }
-                        $.each($scope.selectedTemplate.tags.split(','), function(_, tag){
+                        $.each($scope.selectedTemplate.tags.split(','), function (_, tag) {
                             $('#qt-tags')[0].selectize.addItem($.trim(tag));
                         });
                     });
