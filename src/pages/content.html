@@ -21,15 +21,8 @@
 <!--App.autocomplete.dialog.liTemplate-->
 {{#if elements.length}}
 {{#each elements}}
-
-{{#if @first }}
-{{#if this.score }}
-<li class="qt-section"><i class="fa fa-lightbulb-o"></i> Suggested template</li>
-{{/if}}
-{{/if}}
 <li class="qt-item" data-id="{{id}}"
-    title="{{#if this.score }}Match score: {{{this.score}}}
-{{/if}}Title: {{{originalTitle}}}{{#if this.tags }}
+    title="Title: {{{originalTitle}}}{{#if this.tags }}
 Tags: {{{this.tags}}}{{/if}}
 
 {{{originalBody}}}">
@@ -39,11 +32,6 @@ Tags: {{{this.tags}}}{{/if}}
     {{/if}}
     <span class="qt-body">{{{body}}}</span>
 </li>
-{{#if @first }}
-{{#if this.score }}
-<li class="qt-section"><i class="fa fa-clock-o"></i> Recently used</li>
-{{/if}}
-{{/if}}
 {{/each}}
 {{else}}
 <li class="qt-blank-state">No templates found.</li>
