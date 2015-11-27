@@ -321,10 +321,9 @@ App.init = function (settings, doc) {
 };
 
 $(function () {
-    //var isLocal = (window.location != window.parent.location) ? true : false;
-    //if (isLocal) { // don't load for remote iframes
-    //    return;
-    //}
+    if (document.contentType !== 'text/html') {
+        return; // don't load gorgias in non html pages (json, xml, etc..)
+    }
 
     //console.log("Loaded Gorgias in", window.location.href);
     App.settings.fetchSettings(App.init, window.document);
