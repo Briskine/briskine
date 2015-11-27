@@ -295,7 +295,7 @@ App.autocomplete.dialog = {
 
         var stripHtml = function (html) {
             try {
-                var doc = document.implementation.createDocument('http://www.w3.org/1999/xhtml', 'html', null);
+                var doc = document.implementation.createHTMLDocument();
                 doc.documentElement.innerHTML = html;
                 return doc.documentElement.textContent||doc.documentElement.innerText;
             } catch(e) {
