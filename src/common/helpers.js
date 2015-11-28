@@ -39,26 +39,32 @@ Handlebars.registerHelper("splitString", function (context, options) {
 });
 
 var PrepareVars = function (vars) {
+    if (!vars) {
+        return vars;
+    }
+
     var prep = function (data) {
         // convert array to object
-        var data = _.extend({}, data);
+        data = _.extend({}, data);
         var flat = data[0];
         for (var i in flat) {
-            data[i] = flat[i];
+            if (flat.hasOwnProperty(i)) {
+                data[i] = flat[i];
+            }
         }
         return data;
     };
 
-    if (vars.to.length) {
+    if (vars.to && vars.to.length) {
         vars.to = prep(vars.to);
     }
-    if (vars.from.length) {
+    if (vars.from && vars.from.length) {
         vars.from = prep(vars.from);
     }
-    if (vars.cc.length) {
+    if (vars.cc && vars.cc.length) {
         vars.cc = prep(vars.cc);
     }
-    if (vars.bcc.length) {
+    if (vars.bcc && vars.bcc.length) {
         vars.bcc = prep(vars.bcc);
     }
     return vars;
