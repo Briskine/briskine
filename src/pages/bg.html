@@ -21,15 +21,15 @@
                 </a>
               </div>
 
-              <div class="profile-details col-md-7 col-xs-7">
+              <div class="profile-details col-md-8 col-xs-8">
                 <p>
-                  <strong ng-if="account.user.info.name">{{account.user.info.name}}</strong>
-                  <strong ng-if="!account.user.info.name">{{account.user.info.given_name}} {{account.user.info.family_name}}</strong>
+                  <strong ng-if="account.info.name">{{account.info.name}}</strong>
+                  <strong ng-if="!account.info.name">{{account.info.given_name}} {{account.info.family_name}}</strong>
                 </p>
                 <p>{{ account.email }}</p>
               </div>
 
-              <div class="profile-dropdown col-md-2 col-xs-2 dropdown">
+              <div class="profile-dropdown col-md-1 col-xs-1 dropdown">
                 <i class="fa fa-angle-down fa-2x dropdown-toggle" type="button" data-toggle="dropdown" id="profile-dropdown" aria-haspopup="true" aria-expanded="false"></i>
                 <ul class="dropdown-menu pull-right" aria-labelledby="profile-dropdown">
                   <li><a href="#/settings">Settings</a></li>
@@ -46,7 +46,7 @@
 
             <div class="profile-extra alert alert-info" ng-if="profile.savedWords > 1500">
                 <div class="profile-stats">
-                    So far you saved <strong>{{profile.savedWordsNice}}</strong> words or
+                    So far you saved <strong>{{profile.savedWords}}</strong> words or
                     <strong>{{profile.savedTime}}</strong>.
                 </div>
                 <a class="btn-twitter" target="_blank"
@@ -59,6 +59,7 @@
 
         <ul class="nav nav-pills nav-stacked">
             <li ng-class="{ 'active': (path === '/list') }"><a href="#/list"><b>All</b></a></li>
+            <li ng-show="!account" ng-class="{ 'active': (path === '/settings') }"><a href="#/settings"><b>Settings</b></a></li>
             <!--<li><span ng-repeat="(tag, count) in tags">
           <a href='' class="label label-default"
              ng-class="{true: 'label-primary', false: 'label-default'}[filterTags.indexOf(tag) !== -1]"
@@ -75,7 +76,7 @@
             </a>
             <br/>
             <br/>
-            <div class="sync-status" ng-show="profile.user">
+            <div class="sync-status" ng-show="account">
                 <div class="sync-label" ng-show="lastSync">
                   Last sync
                   <span am-time-ago="lastSync"></span>.
