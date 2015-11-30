@@ -1,19 +1,19 @@
 gApp.service('AccountService', function ($q, $resource, SettingsService) {
     var self = this;
 
-    var accResource = $resource(gApp.API_BASE_URL + 'account', {}, {
-        update: {
-            method: "PUT"
-        },
-        delete: {
-            method: "DELETE"
-        }
+    self.accResource = $resource(Settings.defaults.apiBaseURL + 'account', {}, {
+      update: {
+          method: "PUT"
+      },
+      delete: {
+          method: "DELETE"
+      }
     });
 
     self.get = function () {
         var deferred = $q.defer();
 
-        var user = accResource.get(function () {
+        var user = self.accResource.get(function () {
             self.user = user;
             deferred.resolve(user);
         });
@@ -38,7 +38,7 @@ gApp.service('AccountService', function ($q, $resource, SettingsService) {
 
 gApp.service('MemberService', function ($q, $resource) {
     var self = this;
-    var memberResource = $resource(gApp.API_BASE_URL + 'members/:memberId', {memberId: "@id"}, {
+    var memberResource = $resource(Settings.defaults.apiBaseURL + 'members/:memberId', {memberId: "@id"}, {
         update: {
             method: "PUT"
         },
@@ -108,7 +108,7 @@ gApp.service('MemberService', function ($q, $resource) {
 
 gApp.service('GroupService', function ($q, $resource) {
     var self = this;
-    var groupResource = $resource(gApp.API_BASE_URL + 'groups/:groupId', {groupId: "@id"}, {
+    var groupResource = $resource(Settings.defaults.apiBaseURL + 'groups/:groupId', {groupId: "@id"}, {
         update: {
             method: "PUT"
         },
@@ -178,7 +178,7 @@ gApp.service('GroupService', function ($q, $resource) {
 
 gApp.service('GroupAppsService', function ($q, $resource) {
     var self = this;
-    var groupResource = $resource(gApp.API_BASE_URL + 'groups/apps');
+    var groupResource = $resource(Settings.defaults.apiBaseURL + 'groups/apps');
 
     self.import = function (appsGroups, sendNotification) {
         var deferred = $q.defer();
