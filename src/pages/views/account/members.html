@@ -43,8 +43,8 @@
     <tr>
         <th>
             <img ng-if="!account.thumbnail_photo_url"
-                 ng-src="http://www.gravatar.com/avatar/{{ account.email | gravatar }}?d=retro" class="img-circle"/>
-            <img ng-if="account.thumbnail_photo_url" ng-src="{{ account.thumbnail_photo_url }}" class="img-circle"/>
+                 ng-src="http://www.gravatar.com/avatar/{{ account.email | gravatar }}?d=retro" class="avatar"/>
+            <img ng-if="account.thumbnail_photo_url" ng-src="{{ account.thumbnail_photo_url }}" class="avatar"/>
         </th>
         <td>{{ account.info.name }}</td>
         <td>{{ account.email }}</td>
@@ -53,8 +53,8 @@
     <tr ng-repeat="u in filteredUsers = (users | filter:searchText)">
         <th>
             <img ng-if="!u.thumbnail_photo_url"
-                 ng-src="http://www.gravatar.com/avatar/{{ u.email | gravatar }}?d=retro" class="img-circle"/>
-            <img ng-if="u.thumbnail_photo_url" ng-src="{{ u.thumbnail_photo_url }}" class="img-circle"/>
+                 ng-src="http://www.gravatar.com/avatar/{{ u.email | gravatar }}?d=retro" class="avatar"/>
+            <img ng-if="u.thumbnail_photo_url" ng-src="{{ u.thumbnail_photo_url }}" class="avatar"/>
         </th>
         <td class="col-xs-4">
             <span ng-if="!account.is_customer">{{ u.name }}</span>

@@ -1,0 +1,28 @@
+<!-- This is not used anymore. Instead the cancellations are manual -->
+<div class="modal fade" id="delete-account-modal" tabindex="-1" role="dialog" data-aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">Are you sure?</h4>
+            </div>
+            <div class="modal-body text-center">
+                <p>All your templates, team members data, statistics will be deleted immediately.
+                Once you cancel your subscription information will be deleted from our system and you'll be redirected
+                to the homepage.</p>
+                <form class="form">
+                    <div class="form-group">
+                        <label for="feedback">* Please help us improve by letting us know why you're canceling your account:</label>
+                        <textarea id="feedback" name="feedback" class="form-control" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <button class="btn btn-default">I don't want to Cancel</button>
+                        <button class="btn btn-danger">I'm sure. Delete my account!</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://checkout.stripe.com/checkout.js"></script>

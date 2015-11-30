@@ -143,7 +143,6 @@ gApp.service('GroupService', function ($q, $resource) {
             groupResource.get({groupId: data.id}, function (group) {
                 group.name = data.name;
                 group.desc = data.desc;
-                group.tags = data.tags;
                 group.users = data.members;
                 group.$update(function () {
                     deferred.resolve();
@@ -155,7 +154,6 @@ gApp.service('GroupService', function ($q, $resource) {
             var group = new groupResource();
             group.name = data.name;
             group.desc = data.desc;
-            group.tags = data.tags;
             group.users = data.members;
             group.$save(function () {
                 deferred.resolve();

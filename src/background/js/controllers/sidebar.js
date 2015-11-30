@@ -1,4 +1,4 @@
-gApp.controller('SidebarCtrl', function ($scope, AccountService, SettingsService, ProfileService) {
+gApp.controller('SidebarCtrl', function ($scope, AccountService, SettingsService, ProfileService, TemplateService) {
     $scope.profile = {};
 
     // setup account
@@ -13,5 +13,10 @@ gApp.controller('SidebarCtrl', function ($scope, AccountService, SettingsService
 
     ProfileService.words().then(function(words) {
       $scope.profile.savedWords = ProfileService.reduceNumbers(words);
+    });
+
+    // gather tags
+    TemplateService.allTags().then(function (r) {
+        $scope.tags = r;
     });
 });

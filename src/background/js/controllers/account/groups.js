@@ -33,6 +33,11 @@ gApp.controller('GroupsCtrl', function ($scope, $rootScope, $timeout, MemberServ
     $scope.refresh = function () {
         MemberService.members().then(function (data) {
             $scope.members = data.members;
+
+            for (var i = 0; i < $scope.members.length; i++) {
+              $scope.members[i].selected = false;
+            }
+
             $scope.groups = data.groups;
             $scope.appsGroups = data.apps_groups;
             $scope.appsUsers = data.apps_users;

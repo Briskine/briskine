@@ -59,6 +59,11 @@
 
         <ul class="nav nav-pills nav-stacked">
             <li ng-class="{ 'active': (path === '/list') }"><a href="#/list"><b>All</b></a></li>
+            <li><span ng-repeat="(tag, count) in tags">
+          <a href='' class="label label-default"
+             ng-class="{true: 'label-primary', false: 'label-default'}[filterTags.indexOf(tag) !== -1]"
+             ng-click="toggleFilterTag()" title="Toggle this tag to filter the templates">{{::tag}}<span ng-if="::count > 1"> ({{::count}})</span></a>
+        </span></li>
             <li ng-if="isChrome && !isOpera"><a href="https://chrome.google.com/webstore/detail/gorgias-email-templates-f/lmcngpkjkplipamgflhioabnhnopeabf/support" target="_blank">Help <i class="fa fa-external-link"></i></a></li>
             <li ng-if="isOpera"><a href="https://addons.opera.com/en/extensions/details/gorgias/?display=en&reports#feedback-container" target="_blank">Help <i class="fa fa-external-link"></i></a></li>
         </ul>
