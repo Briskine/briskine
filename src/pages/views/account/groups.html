@@ -1,10 +1,14 @@
 <div class="toolbar">
+    <div class="">
+        <p>
+            Create groups for each team in your company.
+        </p>
+    </div>
+
     <div class="search-container input-group pull-right col-xs-4">
-                <span class="input-group-addon">
-                    <i class="fa fa-search"></i>
-                </span>
         <input type="text" class="form-control" ng-model="searchText" placeholder="Find by name"/>
     </div>
+
 
     <button class="btn btn-primary" ng-if="account.is_customer" ng-click="showGroupModal()">
         <i class="fa fa-user-plus"></i> Add member group
