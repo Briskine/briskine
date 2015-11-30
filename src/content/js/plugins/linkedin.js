@@ -51,9 +51,9 @@ App.plugin('linkedin', (function() {
 
         vars.from.push(from);
 
-        var $contact = $('#compose-dialog-member-name');
+        var $contact = $('.one-to-one h2.name');
         if ($contact.length) {
-            var parsedName = parseName($contact.text());
+            parsedName = parseName($contact.text());
             var to = {
                 name: name,
                 first_name: '',
@@ -65,7 +65,7 @@ App.plugin('linkedin', (function() {
             to.last_name = parsedName.last_name;
             vars.to.push(to);
         } else {
-            $('#recipients-composeForm .beanName').each(function(){
+            $('.pillbox-list .pill-name').each(function(){
                 var parsedName = parseName($(this).text());
                 var to = {
                     name: name,
