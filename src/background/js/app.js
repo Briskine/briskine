@@ -124,6 +124,15 @@ gApp.run(function ($rootScope, $location, $http, $timeout, ProfileService, Setti
     // setup profile
     $rootScope.profileService = ProfileService;
 
+    $rootScope.connectSocial = function(provider, scope) {
+          $http.post('https://gorgias.io/authorize/' + provider, {'scope': scope}).success(function(res){
+              window.location = res.location;
+          }).error(function(){
+              alert("Error! Please try again or contact support@gorgias.io");
+          });
+    };
+
+
     $rootScope.checkLogin = function () {
         $('#check-login').removeClass("hide");
     };
