@@ -94,7 +94,7 @@ input[type='email'],
 /* Nav pills
  */
 
-.nav {
+.nav.nav-pills {
 
     > li {
         margin-left: emCalc(-22) !important;
@@ -141,8 +141,24 @@ input[type='email'],
     }
 }
 
+/* Table
+ */
+.table {
+  & > tbody > tr > td, & > tbody > tr > th {
+    border-top: none;
+  }
+}
+
 /* Buttons
  */
+
+.label-licenses {
+  border: none;
+  font-size: 100%;
+  margin-top: -6px;
+  margin-left: 5px;
+  vertical-align: middle;
+}
 
 .btn {
     appearance: none;

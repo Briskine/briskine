@@ -62,7 +62,7 @@ gApp.config(function ($routeProvider, $compileProvider) {
         });
 });
 
-gApp.API_BASE_URL = "http://gorgias.io/api/1/";
+gApp.API_BASE_URL = "http://localhost:8080/api/1/";
 
 gApp.config(["$provide", function ($provide) {
     $provide.decorator("$exceptionHandler", ["$delegate", "$window", function ($delegate, $window) {

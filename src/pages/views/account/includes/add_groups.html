@@ -20,9 +20,6 @@
                             <label for="group-name">Group Name</label>
                             <input type="text" class="form-control" id="group-name" ng-model="selectedGroup.name"
                                    required=""/>
-                            <label for="group-name">Group Tags</label>
-                            <input type="text" class="form-control" id="group-tags" ng-model="selectedGroup.tags"
-                                   required=""/>
                             <!--
                             <label for="group-desc">Group Description <span class="text-muted">(optional)</span></label>
                             <textarea class="form-control" id="group-desc" ng-model="newGroup.desc"/>
@@ -37,7 +34,7 @@
                             <tr ng-repeat="u in selectedGroup.members">
                                 <th class="col-xs-1">
                                     <img ng-if="!u.thumbnail_photo_url"
-                                         ng-src="//www.gravatar.com/avatar/{{ u.email | gravatar }}?d=retro"
+                                         ng-src="http://www.gravatar.com/avatar/{{ u.email | gravatar }}?d=retro"
                                          class="avatar"/>
                                     <img ng-if="u.thumbnail_photo_url" ng-src="{{ u.thumbnail_photo_url }}"
                                          class="avatar"/>
@@ -55,7 +52,7 @@
                             </tr>
                         </table>
 
-                        <div ng-if="!user.connections.google.apps.enabled">
+                        <div ng-if="!profile.connections.google.apps.enabled">
                             <h4>-- or --</h4>
                             <button class="btn btn-default pull-right" ng-click="connectSocial('google', 'apps')">
                                 Import groups from Google Apps
