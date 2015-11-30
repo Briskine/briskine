@@ -134,6 +134,14 @@ gApp.run(function ($rootScope, $location, $http, $timeout, ProfileService, Setti
         $rootScope.profile.savedWordsNice = ProfileService.reduceNumbers(words);
     });
 
+    $rootScope.connectSocial = function(provider, scope) {
+          $http.post('https://gorgias.io/authorize/' + provider, {'scope': scope}).success(function(res){
+              window.location = res.location;
+          }).error(function(){
+              alert("Error! Please try again or contact support@gorgias.io");
+          });
+    };
+
     $rootScope.checkLogin = function () {
         $('#check-login').removeClass("hide");
     };
