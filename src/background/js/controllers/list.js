@@ -146,16 +146,19 @@ gApp.controller('ListCtrl',
                 var tagOptions = [];
                 var tagNames = Object.keys(tags);
                 for (var t in tagNames) {
-                    tagOptions.push({
-                        text: tagNames[t],
-                        value: tagNames[t]
-                    });
+                    if (tagNames.hasOwnProperty(t)) {
+                        tagOptions.push({
+                            text: tagNames[t],
+                            value: tagNames[t]
+                        });
+                    }
                 }
 
                 $('#qt-tags').selectize({
                     plugins: ['remove_button'],
                     delimiter: ',',
-                    persist: false,
+                    create: true,
+                    persist: true,
                     options: tagOptions,
                     render: {
                         item: function (item, escape) {
