@@ -124,6 +124,7 @@ gApp.run(function ($rootScope, $location, $http, $timeout, ProfileService, Setti
 
     // setup profile
     $rootScope.profileService = ProfileService;
+    $rootScope.profile = {};
 
     ProfileService.savedTime().then(function (savedTime) {
         $rootScope.profile.savedTime = savedTime;

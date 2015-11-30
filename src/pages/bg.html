@@ -21,15 +21,15 @@
                 </a>
               </div>
 
-              <div class="profile-details col-md-7 col-xs-7">
+              <div class="profile-details col-md-8 col-xs-8">
                 <p>
-                  <strong ng-if="account.user.info.name">{{account.user.info.name}}</strong>
-                  <strong ng-if="!account.user.info.name">{{account.user.info.given_name}} {{account.user.info.family_name}}</strong>
+                  <strong ng-if="account.info.name">{{account.info.name}}</strong>
+                  <strong ng-if="!account.info.name">{{account.info.given_name}} {{account.info.family_name}}</strong>
                 </p>
                 <p>{{ account.email }}</p>
               </div>
 
-              <div class="profile-dropdown col-md-2 col-xs-2 dropdown">
+              <div class="profile-dropdown col-md-1 col-xs-1 dropdown">
                 <i class="fa fa-angle-down fa-2x dropdown-toggle" type="button" data-toggle="dropdown" id="profile-dropdown" aria-haspopup="true" aria-expanded="false"></i>
                 <ul class="dropdown-menu pull-right" aria-labelledby="profile-dropdown">
                   <li><a href="#/settings">Settings</a></li>
