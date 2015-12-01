@@ -79,6 +79,12 @@ gApp.config(["$provide", function ($provide) {
  */
 gApp.run(function ($rootScope, $location, $http, $timeout, ProfileService, SettingsService, TemplateService) {
 
+    if (ENV == "development") {
+      SettingsService.set('apiBaseURL', 'http://localhost:5000/api/1/');
+    } else if (ENV == "production") {
+      SettingsService.set('apiBaseURL', 'https://gorgias.io/api/1/');
+    }
+
     $rootScope.$on('$routeChangeStart', function (next, current) {
         $rootScope.path = $location.path();
     });
