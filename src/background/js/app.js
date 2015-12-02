@@ -120,18 +120,7 @@ gApp.run(function ($rootScope, $location, $http, $timeout, ProfileService, Setti
         }
     });
 
-    // setup profile
     $rootScope.profileService = ProfileService;
-    $rootScope.profile = {};
-
-    ProfileService.savedTime().then(function (savedTime) {
-        $rootScope.profile.savedTime = savedTime;
-    });
-
-    ProfileService.words().then(function (words) {
-        $rootScope.profile.savedWords = words;
-        $rootScope.profile.savedWordsNice = ProfileService.reduceNumbers(words);
-    });
 
     $rootScope.connectSocial = function(provider, scope) {
           $http.post('https://gorgias.io/authorize/' + provider, {'scope': scope}).success(function(res){
@@ -140,15 +129,6 @@ gApp.run(function ($rootScope, $location, $http, $timeout, ProfileService, Setti
               alert("Error! We're unable to authorize : " + provider + ". Please try again or contact support@gorgias.io");
           });
     };
-
-    $rootScope.connectSocial = function(provider, scope) {
-          $http.post('https://gorgias.io/authorize/' + provider, {'scope': scope}).success(function(res){
-              window.location = res.location;
-          }).error(function(){
-              alert("Error! Please try again or contact support@gorgias.io");
-          });
-    };
-
 
     $rootScope.checkLogin = function () {
         $('#check-login').removeClass("hide");
@@ -172,8 +152,6 @@ gApp.run(function ($rootScope, $location, $http, $timeout, ProfileService, Setti
                         }
 
                         $http.get(apiBaseURL + "account").success(function (data) {
-                            //$rootScope.profile.user = data;
-
                             // identify people that are logged in to our website
                             mixpanel.identify(data.id);
                             mixpanel.people.set({

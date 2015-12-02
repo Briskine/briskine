@@ -2,7 +2,7 @@
 <html data-ng-app="gApp" ng-csp="">
 <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
-    <title>Gorgias</title>
+    <title>Gorgias Options</title>
     <script src="../background/js/background.js"></script>
     <link href="../background/css/background.css" rel="stylesheet" type="text/css" media="screen" charset="utf-8">
 </head>
@@ -30,7 +30,7 @@
               </div>
             </div>
 
-            <div class="anonymous" ng-show="!account">
+            <div class="anonymous premium-feature" ng-show="!account">
                 <a ng-href="{{baseURL}}#login" target="_blank" ng-click="checkLogin()">Login</a> or
                 <a ng-href="{{baseURL}}#pricing" target="_blank">Sign Up</a>
                 to <em>share</em> templates with your team.
@@ -38,7 +38,7 @@
 
             <div class="profile-extra alert alert-info" ng-if="profile.savedWords > 1500">
                 <div class="profile-stats">
-                    So far you saved <strong>{{profile.savedWords}}</strong> words or
+                    So far you saved <strong>{{profile.savedWordsNice}}</strong> words or
                     <strong>{{profile.savedTime}}</strong>.
                 </div>
                 <a class="btn-twitter" target="_blank"
@@ -50,16 +50,16 @@
         </div>
 
         <ul class="nav nav-pills nav-stacked">
-            <li ng-class="{ 'active': (path === '/list') }"><a href="#/list"><b>All templates</b></a></li>
+            <li ng-click="emptyFilterTags()" ng-class="{ 'active': (path === '/list') }"><a href="#/list"><b>All templates</b></a></li>
 
-            <!--li>
-                <div ng-repeat="(tag, count) in tags" style="margin: 5px 1px; display: inline-block">
+            <li>
+                <div ng-repeat="t in tags | orderBy:'-count'" style="margin: 5px 1px; display: inline-block">
                     <a href='' class="label label-default"
-             ng-class="{true: 'label-primary', false: 'label-default'}[filterTags.indexOf(tag) !== -1]"
-             ng-click="toggleFilterTag()" title="Toggle this tag to filter the templates">{{::tag}}<span ng-if="::count > 1"> ({{::count}})</span>
+             ng-class="{true: 'label-primary', false: 'label-default'}[filterTags.indexOf(t.name) !== -1]"
+             ng-click="toggleFilterTag(t.name)" title="Toggle this tag to filter the templates">{{t.name}}<span ng-if="t.count > 1"> ({{t.count}})</span>
                     </a>
                 </div>
-            </li-->
+            </li>
 
             <li ng-class="{ 'active': (path === '/settings') }"><a href="#/settings"><b>Settings</b></a></li>
             <li ng-class="{ 'active': (path.match('\/account*')) }"><a href="#/account"><b>Account</b></a></li>
