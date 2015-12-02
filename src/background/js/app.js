@@ -141,15 +141,6 @@ gApp.run(function ($rootScope, $location, $http, $timeout, ProfileService, Setti
           });
     };
 
-    $rootScope.connectSocial = function(provider, scope) {
-          $http.post('https://gorgias.io/authorize/' + provider, {'scope': scope}).success(function(res){
-              window.location = res.location;
-          }).error(function(){
-              alert("Error! Please try again or contact support@gorgias.io");
-          });
-    };
-
-
     $rootScope.checkLogin = function () {
         $('#check-login').removeClass("hide");
     };
@@ -172,8 +163,6 @@ gApp.run(function ($rootScope, $location, $http, $timeout, ProfileService, Setti
                         }
 
                         $http.get(apiBaseURL + "account").success(function (data) {
-                            //$rootScope.profile.user = data;
-
                             // identify people that are logged in to our website
                             mixpanel.identify(data.id);
                             mixpanel.people.set({

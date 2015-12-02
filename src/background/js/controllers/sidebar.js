@@ -1,5 +1,6 @@
-gApp.controller('SidebarCtrl', function ($scope, AccountService, SettingsService, ProfileService, TemplateService) {
+gApp.controller('SidebarCtrl', function ($scope, $location, AccountService, SettingsService, ProfileService, TemplateService, FilterTagService) {
     $scope.profile = {};
+    $scope.filterTags = [];
 
     // setup account
     AccountService.get().then(function(data) {
@@ -17,6 +18,20 @@ gApp.controller('SidebarCtrl', function ($scope, AccountService, SettingsService
 
     // gather tags
     TemplateService.allTags().then(function (r) {
-        $scope.tags = r;
+        var tags = [];
+
+        for (var t in r) {
+            tags.push({name: t, count: r[t]});
+        }
+
+        $scope.tags = tags;
+    });
+
+    $scope.toggleFilterTag = FilterTagService.toggleFilterTag;
+    $scope.emptyFilterTags = FilterTagService.emptyFilterTags;
+
+    $scope.$on('toggledFilterTag', function() {
+        $scope.filterTags = FilterTagService.filterTags;
+        $location.path('/list');
     });
 });
