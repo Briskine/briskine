@@ -1,5 +1,33 @@
 /*jshint multistr: true */
 
+gApp.service('FilterTagService', function($rootScope) {
+    var filterTags = [];
+
+    function toggleFilterTag(tag) {
+        var index = filterTags.indexOf(tag);
+
+        if (index === -1) {
+            filterTags.push(tag);
+        } else {
+            filterTags.splice(index, 1); // remove from tags
+        }
+
+        $rootScope.$broadcast('toggledFilterTag');
+    }
+
+    function emptyFilterTags() {
+        filterTags.splice(0, filterTags.length);
+        $rootScope.$broadcast('toggledFilterTag');
+    }
+
+    var filterTagService = {
+        toggleFilterTag: toggleFilterTag,
+        emptyFilterTags: emptyFilterTags,
+        filterTags: filterTags
+    };
+
+    return filterTagService;
+});
 
 // Template operations
 gApp.service('TemplateService', function ($q, $resource, SettingsService) {
