@@ -1,5 +1,5 @@
 gApp.controller('ListCtrl',
-    function ($scope, $rootScope, $routeParams, $location, $timeout, $filter, TemplateService, SettingsService) {
+    function ($scope, $rootScope, $routeParams, $location, $timeout, $filter, TemplateService, SettingsService, FilterTagService) {
 
         var $formModal;
         var editor;
@@ -326,21 +326,12 @@ gApp.controller('ListCtrl',
             }
         };
 
-        $scope.toggleFilterTag = function () {
-            var index = $scope.filterTags.indexOf(this.tag);
-            if (index === -1) {
-                $scope.filterTags.push(this.tag);
-            } else {
-                $scope.filterTags.splice(index, 1); // remove from tags
-            }
-        };
-
         // apply filters to the list of quicktexts
         var filterQuicktexts = function () {
             // apply the text search filter
             $scope.filteredTemplates = $filter('filter')($scope.templates, $scope.searchText);
             // apply the tag serach filter
-            $scope.filteredTemplates = $filter('tagFilter')($scope.filteredTemplates, $scope.filterTags);
+            $scope.filteredTemplates = $filter('tagFilter')($scope.filteredTemplates, FilterTagService.filterTags);
 
             $scope.focusIndex = 0;
 
@@ -352,6 +343,10 @@ gApp.controller('ListCtrl',
             }
         };
 
+        $scope.$on('toggledFilterTag', function () {
+            filterQuicktexts();
+        });
+
         $scope.loadMore = function () {
             $scope.limitTemplates += 42;
             if ($scope.limitTemplates > $scope.filteredTemplates.length) {
@@ -361,5 +356,4 @@ gApp.controller('ListCtrl',
         };
 
         $scope.$watch('searchText', filterQuicktexts);
-        $scope.$watch('filterTags', filterQuicktexts, true);
     });
