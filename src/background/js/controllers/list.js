@@ -87,9 +87,20 @@ gApp.controller('ListCtrl',
             $formModal.on('shown.bs.modal', function () {
                 $('#qt-title').focus();
             });
+            checkRoute();
+        };
+
+        var loadEditor = function () {
+
+            $scope.showHTMLSource = false;
+            if (editor) { //already loaded
+                return;
+            }
 
             SettingsService.get('settings').then(function (settings) {
                 if (settings.editor && settings.editor.enabled) {
+
+
                     // Initialize editor
                     editor = new Quill('.editor-wrapper .editor', {
                         modules: {
@@ -99,7 +110,7 @@ gApp.controller('ListCtrl',
                         theme: 'snow'
                     });
                     editor.addModule('image-tooltip', {
-                        template: '<input class="input" type="textbox">' +
+                        template: '<input class="input" type="textbox" />' +
                         '<div class="preview">' +
                         '<span>Preview</span> </div> ' +
                         '<a href="javascript:;" class="insert btn btn-primary">Insert</a>' +
@@ -113,7 +124,6 @@ gApp.controller('ListCtrl',
                     editor = null;
                 }
             });
-            checkRoute();
         };
 
         /* Check search params to see if adding or editing items
@@ -136,6 +146,8 @@ gApp.controller('ListCtrl',
             mixpanel.track("Show edit form", {
                 source: source
             });
+
+            loadEditor();
 
             var selectize = $('#qt-tags')[0].selectize;
             if (selectize) {
