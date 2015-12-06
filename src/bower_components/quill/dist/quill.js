@@ -1,4 +1,4 @@
-/*! Quill Editor v0.20.0
+/*! Quill Editor v0.20.1
  *  https://quilljs.com/
  *  Copyright (c) 2014, Jason Chen
  *  Copyright (c) 2013, salesforce.com
@@ -8,7 +8,7 @@
 /**
  * @license
  * lodash 3.9.3 (Custom Build) <https://lodash.com/>
- * Build: `lodash modern include="difference,intersection,last,all,each,find,invoke,map,reduce,bind,defer,partial,clone,extend,defaults,omit,values,isElement,isEqual,isFunction,isNumber,isObject,isString,uniqueId" --development --output .build/lodash.js`
+ * Build: `lodash modern include="difference,intersection,last,all,each,find,invoke,map,reduce,partition,bind,defer,partial,clone,extend,defaults,omit,values,isElement,isEqual,isFunction,isNumber,isObject,isString,uniqueId" --development --output .build/lodash.js`
  * Copyright 2012-2015 The Dojo Foundation <http://dojofoundation.org/>
  * Based on Underscore.js 1.8.3 <http://underscorejs.org/LICENSE>
  * Copyright 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
@@ -1676,6 +1676,41 @@
   }
 
   /**
+   * Creates a function that aggregates a collection, creating an accumulator
+   * object composed from the results of running each element in the collection
+   * through an iteratee.
+   *
+   * **Note:** This function is used to create `_.countBy`, `_.groupBy`, `_.indexBy`,
+   * and `_.partition`.
+   *
+   * @private
+   * @param {Function} setter The function to set keys and values of the accumulator object.
+   * @param {Function} [initializer] The function to initialize the accumulator object.
+   * @returns {Function} Returns the new aggregator function.
+   */
+  function createAggregator(setter, initializer) {
+    return function(collection, iteratee, thisArg) {
+      var result = initializer ? initializer() : {};
+      iteratee = getCallback(iteratee, thisArg, 3);
+
+      if (isArray(collection)) {
+        var index = -1,
+            length = collection.length;
+
+        while (++index < length) {
+          var value = collection[index];
+          setter(result, value, iteratee(value, index, collection), collection);
+        }
+      } else {
+        baseEach(collection, function(value, key, collection) {
+          setter(result, value, iteratee(value, key, collection), collection);
+        });
+      }
+      return result;
+    };
+  }
+
+  /**
    * Creates a function that assigns properties of source object(s) to a given
    * destination object.
    *
@@ -3178,6 +3213,69 @@
   }
 
   /**
+   * Creates an array of elements split into two groups, the first of which
+   * contains elements `predicate` returns truthy for, while the second of which
+   * contains elements `predicate` returns falsey for. The predicate is bound
+   * to `thisArg` and invoked with three arguments: (value, index|key, collection).
+   *
+   * If a property name is provided for `predicate` the created `_.property`
+   * style callback returns the property value of the given element.
+   *
+   * If a value is also provided for `thisArg` the created `_.matchesProperty`
+   * style callback returns `true` for elements that have a matching property
+   * value, else `false`.
+   *
+   * If an object is provided for `predicate` the created `_.matches` style
+   * callback returns `true` for elements that have the properties of the given
+   * object, else `false`.
+   *
+   * @static
+   * @memberOf _
+   * @category Collection
+   * @param {Array|Object|string} collection The collection to iterate over.
+   * @param {Function|Object|string} [predicate=_.identity] The function invoked
+   *  per iteration.
+   * @param {*} [thisArg] The `this` binding of `predicate`.
+   * @returns {Array} Returns the array of grouped elements.
+   * @example
+   *
+   * _.partition([1, 2, 3], function(n) {
+   *   return n % 2;
+   * });
+   * // => [[1, 3], [2]]
+   *
+   * _.partition([1.2, 2.3, 3.4], function(n) {
+   *   return this.floor(n) % 2;
+   * }, Math);
+   * // => [[1.2, 3.4], [2.3]]
+   *
+   * var users = [
+   *   { 'user': 'barney',  'age': 36, 'active': false },
+   *   { 'user': 'fred',    'age': 40, 'active': true },
+   *   { 'user': 'pebbles', 'age': 1,  'active': false }
+   * ];
+   *
+   * var mapper = function(array) {
+   *   return _.pluck(array, 'user');
+   * };
+   *
+   * // using the `_.matches` callback shorthand
+   * _.map(_.partition(users, { 'age': 1, 'active': false }), mapper);
+   * // => [['pebbles'], ['barney', 'fred']]
+   *
+   * // using the `_.matchesProperty` callback shorthand
+   * _.map(_.partition(users, 'active', false), mapper);
+   * // => [['barney', 'pebbles'], ['fred']]
+   *
+   * // using the `_.property` callback shorthand
+   * _.map(_.partition(users, 'active'), mapper);
+   * // => [['fred'], ['barney', 'pebbles']]
+   */
+  var partition = createAggregator(function(result, value, key) {
+    result[key ? 0 : 1].push(value);
+  }, function() { return [[], []]; });
+
+  /**
    * Reduces `collection` to a value which is the accumulated result of running
    * each element in `collection` through `iteratee`, where each successive
    * invocation is supplied the return value of the previous. If `accumulator`
@@ -4237,6 +4335,7 @@
   lodash.omit = omit;
   lodash.pairs = pairs;
   lodash.partial = partial;
+  lodash.partition = partition;
   lodash.property = property;
   lodash.restParam = restParam;
   lodash.values = values;
@@ -5051,6 +5150,15 @@ Delta.prototype.compose = function (other) {
     }
   }
   return delta.chop();
+};
+
+Delta.prototype.concat = function (other) {
+  var delta = this.slice();
+  if (other.ops.length > 0) {
+    delta.push(other.ops[0]);
+    delta.ops = delta.ops.concat(other.ops.slice(1));
+  }
+  return delta;
 };
 
 Delta.prototype.diff = function (other) {
@@ -5910,7 +6018,7 @@ diff.EQUAL = DIFF_EQUAL;
 module.exports = diff;
 
 },{}],7:[function(_dereq_,module,exports){
-module.exports={"version":"0.20.0"}
+module.exports={"version":"0.20.1"}
 },{}],8:[function(_dereq_,module,exports){
 var Delta, Document, Format, Line, LinkedList, Normalizer, _, dom;
 
@@ -6966,7 +7074,7 @@ Line = (function(superClass) {
       return function(node, value, name) {
         var format;
         format = _this.doc.formats[name];
-        if (format != null) {
+        if ((format != null) && !format.isType(Format.types.LINE)) {
           node = format.add(node, value);
         }
         return node;
@@ -7161,9 +7269,10 @@ Normalizer = (function() {
         return node.removeAttribute(attribute);
       }
     });
-    if (node.style.fontWeight === 'bold') {
+    if (node.style.fontWeight === 'bold' || node.style.fontWeight > 500) {
       node.style.fontWeight = '';
       dom(node).wrap(document.createElement('b'));
+      node = node.parentNode;
     }
     this.whitelistStyles(node);
     return this.whitelistTags(node);
@@ -7396,6 +7505,25 @@ Selection = (function() {
       return this._setNativeRange(startNode, startOffset, endNode, endOffset);
     } else {
       return fn();
+    }
+  };
+
+  Selection.prototype.scrollIntoView = function() {
+    var containerBounds, containerHeight, editor, endBounds, line, offset, ref, ref1, startBounds;
+    if (!this.range) {
+      return;
+    }
+    editor = this.emitter.editor;
+    startBounds = editor.getBounds(this.range.start);
+    endBounds = this.range.isCollapsed() ? startBounds : editor.getBounds(this.range.end);
+    containerBounds = editor.root.parentNode.getBoundingClientRect();
+    containerHeight = containerBounds.bottom - containerBounds.top;
+    if (containerHeight < endBounds.top + endBounds.height) {
+      ref = editor.doc.findLineAt(this.range.end), line = ref[0], offset = ref[1];
+      return line.node.scrollIntoView(false);
+    } else if (startBounds.top < 0) {
+      ref1 = editor.doc.findLineAt(this.range.start), line = ref1[0], offset = ref1[1];
+      return line.node.scrollIntoView();
     }
   };
 
@@ -8843,6 +8971,24 @@ Keyboard = (function() {
     })(this));
   };
 
+  Keyboard.prototype.removeHotkeys = function(hotkey, callback) {
+    var base, kept, ref, removed, which;
+    hotkey = _.isString(hotkey) ? hotkey.toUpperCase() : hotkey;
+    hotkey = Keyboard.hotkeys[hotkey] ? Keyboard.hotkeys[hotkey] : hotkey;
+    hotkey = _.isObject(hotkey) ? hotkey : {
+      key: hotkey
+    };
+    which = _.isNumber(hotkey.key) ? hotkey.key : hotkey.key.charCodeAt(0);
+    if ((base = this.hotkeys)[which] == null) {
+      base[which] = [];
+    }
+    ref = _.partition(this.hotkeys[which], function(handler) {
+      return _.isEqual(hotkey, _.omit(handler, 'callback')) && (!callback || callback === handler.callback);
+    }), removed = ref[0], kept = ref[1];
+    this.hotkeys[which] = kept;
+    return _.map(removed, 'callback');
+  };
+
   Keyboard.prototype.toggleFormat = function(range, format) {
     var delta, value;
     if (range.isCollapsed()) {
@@ -8890,6 +9036,7 @@ Keyboard = (function() {
             _this.toolbar.setActive(format, value);
           }
         });
+        _this.quill.editor.selection.scrollIntoView();
         return false;
       };
     })(this));
@@ -8907,7 +9054,7 @@ Keyboard = (function() {
               ref = _this.quill.editor.doc.findLineAt(range.start), line = ref[0], offset = ref[1];
               if (offset === 0 && (line.formats.bullet || line.formats.list)) {
                 format = line.formats.bullet ? 'bullet' : 'list';
-                _this.quill.formatLine(range.start, range.start, format, false);
+                _this.quill.formatLine(range.start, range.start, format, false, Quill.sources.USER);
               } else if (range.start > 0) {
                 _this.quill.deleteText(range.start - 1, range.start, Quill.sources.USER);
               }
@@ -8916,6 +9063,7 @@ Keyboard = (function() {
             }
           }
         }
+        _this.quill.editor.selection.scrollIntoView();
         return false;
       };
     })(this));
@@ -8936,7 +9084,9 @@ Keyboard = (function() {
     _.each(['bold', 'italic', 'underline'], (function(_this) {
       return function(format) {
         return _this.addHotkey(Keyboard.hotkeys[format.toUpperCase()], function(range) {
-          _this.toggleFormat(range, format);
+          if (_this.quill.editor.doc.formats[format]) {
+            _this.toggleFormat(range, format);
+          }
           return false;
         });
       };
@@ -9236,6 +9386,9 @@ MultiCursor = (function(superClass) {
   MultiCursor.prototype.moveCursor = function(userId, index) {
     var cursor;
     cursor = this.cursors[userId];
+    if (cursor == null) {
+      return;
+    }
     cursor.index = index;
     dom(cursor.elem).removeClass('hidden');
     clearTimeout(cursor.timer);
@@ -9284,10 +9437,16 @@ MultiCursor = (function(superClass) {
     }
     return _.each(this.cursors, (function(_this) {
       return function(cursor, id) {
-        if (!(cursor && (cursor.index > index || cursor.userId === authorId))) {
+        var shift;
+        if (!cursor) {
           return;
         }
-        return cursor.index += Math.max(length, index - cursor.index);
+        shift = Math.max(length, index - cursor.index);
+        if (cursor.userId === authorId) {
+          return _this.moveCursor(authorId, cursor.index + shift);
+        } else if (cursor.index > index) {
+          return cursor.index += shift;
+        }
       };
     })(this));
   };
@@ -9388,6 +9547,7 @@ PasteManager = (function() {
     this._onConvert = bind(this._onConvert, this);
     this.container = this.quill.addContainer('ql-paste-manager');
     this.container.setAttribute('contenteditable', true);
+    this.container.setAttribute('tabindex', '-1');
     dom(this.quill.root).on('paste', _.bind(this._paste, this));
     this.options = _.defaults(options, PasteManager.DEFAULTS);
     if ((base = this.options).onConvert == null) {
@@ -9416,7 +9576,7 @@ PasteManager = (function() {
     this.container.focus();
     return _.defer((function(_this) {
       return function() {
-        var delta, lengthAdded, line, lineBottom, offset, ref, windowBottom;
+        var delta, lengthAdded;
         delta = _this.options.onConvert(_this.container);
         lengthAdded = delta.length();
         if (lengthAdded > 0) {
@@ -9429,12 +9589,7 @@ PasteManager = (function() {
           _this.quill.updateContents(delta, 'user');
         }
         _this.quill.setSelection(range.start + lengthAdded, range.start + lengthAdded);
-        ref = _this.quill.editor.doc.findLineAt(range.start + lengthAdded), line = ref[0], offset = ref[1];
-        lineBottom = line.node.getBoundingClientRect().bottom;
-        windowBottom = document.documentElement.clientHeight;
-        if (lineBottom > windowBottom) {
-          line.node.scrollIntoView(false);
-        }
+        _this.quill.editor.selection.scrollIntoView();
         return _this.container.innerHTML = "";
       };
     })(this));
@@ -9572,8 +9727,11 @@ Toolbar = (function() {
         if (range != null) {
           callback(range, value);
         }
+        if (dom.isIE(11)) {
+          _this.quill.editor.selection.scrollIntoView();
+        }
         _this.preventUpdate = false;
-        return true;
+        return false;
       };
     })(this));
   };
@@ -9873,12 +10031,20 @@ UndoManager = (function() {
   UndoManager.prototype.initListeners = function() {
     this.quill.onModuleLoad('keyboard', (function(_this) {
       return function(keyboard) {
+        var redoKey;
         keyboard.addHotkey(UndoManager.hotkeys.UNDO, function() {
           _this.quill.editor.checkUpdate();
           _this.undo();
           return false;
         });
-        return keyboard.addHotkey(UndoManager.hotkeys.REDO, function() {
+        redoKey = [UndoManager.hotkeys.REDO];
+        if (navigator.platform.indexOf('Win') > -1) {
+          redoKey.push({
+            key: 'Y',
+            metaKey: true
+          });
+        }
+        return keyboard.addHotkey(redoKey, function() {
           _this.quill.editor.checkUpdate();
           _this.redo();
           return false;
@@ -10359,7 +10525,7 @@ Quill = (function(superClass) {
       source = Quill.sources.API;
     }
     if (!html.trim()) {
-      html = "<" + dom.DEFAULT_BLOCK_TAG + "><" + dom.DEFAULT_BREAK_TAG + " /></" + dom.DEFAULT_BLOCK_TAG + ">";
+      html = "<" + dom.DEFAULT_BLOCK_TAG + "><" + dom.DEFAULT_BREAK_TAG + "></" + dom.DEFAULT_BLOCK_TAG + ">";
     }
     this.editor.doc.setHTML(html);
     return this.editor.checkUpdate(source);

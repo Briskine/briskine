@@ -1,6 +1,6 @@
 {
   "name": "quill",
-  "version": "0.20.0",
+  "version": "0.20.1",
   "homepage": "http://quilljs.com",
   "authors": [
     "Jason Chen <jhchen7@gmail.com>"
@@ -22,14 +22,13 @@
     "index.js",
     "package.json"
   ],
-  "_release": "0.20.0",
+  "_release": "0.20.1",
   "_resolution": {
     "type": "version",
-    "tag": "v0.20.0",
-    "commit": "31996ed0bf4ddec3f7068d1290ddcb96cee93bbf"
+    "tag": "v0.20.1",
+    "commit": "07b7f54dfe8997e1c8fe180be6f0817693215c48"
   },
   "_source": "git://github.com/quilljs/quill.git",
-  "_target": "~0.20.0",
-  "_originalSource": "quill",
-  "_direct": true
+  "_target": "~0.20.1",
+  "_originalSource": "quill"
 }
