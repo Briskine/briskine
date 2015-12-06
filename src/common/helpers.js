@@ -38,6 +38,12 @@ Handlebars.registerHelper("splitString", function (context, options) {
     }
 });
 
+Handlebars.registerHelper("choice", function (args) {
+    // split by comma and trim
+    args = _.map(args.split(','), _.trim);
+    return args[Math.floor(Math.random() * args.length)];
+});
+
 var PrepareVars = function (vars) {
     if (!vars) {
         return vars;
