@@ -49,6 +49,7 @@ module.exports = function (grunt) {
                 'bower_components/jquery/dist/jquery.min.js',
                 'bower_components/underscore/underscore-min.js',
                 'bower_components/handlebars/handlebars.min.js',
+                'bower_components/moment/min/moment.min.js',
                 'bower_components/mousetrap/mousetrap.js',
                 'bower_components/mousetrap/plugins/global-bind/mousetrap-global-bind.js',
 

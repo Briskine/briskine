@@ -114,6 +114,15 @@
                                         <li><a ng-click="insertVar('subject')"
                                                title="The subject of the e-mail"><strong>Subject</strong></a>
                                         </li>
+                                        <li><a ng-click="insertVar('date \'+7\' \'days\' \'DD MMMM\'')"
+                                               title="Date in 1 week"><strong>Date:</strong> Next week</a>
+                                        </li>
+                                        <li><a ng-click="insertVar('date \'-7\' \'days\' \'YYYY-MM-DD\'')"
+                                               title="Last week - iso format"><strong>Date:</strong> Last week</a>
+                                        </li>
+                                        <li><a ng-click="insertVar('choice \'Hello, Hi, Hey\'')"
+                                               title="Randomly choose an option from a comma-separated list"><strong>Random choice</strong></a>
+                                        </li>
                                         <li class="divider"></li>
                                         <li><a class="text-muted small"
                                                href="http://help.gorgias.io/en/latest/src/04-templates.html"

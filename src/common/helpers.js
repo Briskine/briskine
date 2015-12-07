@@ -1,14 +1,19 @@
-//  format an ISO date using Moment.js
+//  format a date using Moment.js
 //  http://momentjs.com/
 //  moment syntax example: moment(Date("2011-07-18T15:50:52")).format("MMMM YYYY")
-//  usage: {{dateFormat creation_date format="MMMM YYYY"}}
-Handlebars.registerHelper('dateFormat', function (context, block) {
-    if (window.moment) {
-        var f = block.hash.format || "MMM DD, YYYY hh:mm:ss A";
-        return moment(context).format(f); //had to remove Date(context)
-    } else {
-        return context;   //  moment plugin not available. return data as is.
+//  usage: {{date '+7' 'days' "DD MMMM"}} -> 13 December
+//  usage: {{date '-7' 'days' "DD MMMM YYYY"}} -> 29 November 2015
+Handlebars.registerHelper('date', function (literal, unit, format) {
+    format = typeof(format) === 'string' ? format : 'YYYY-MM-DD';
+    unit = typeof(unit) === 'string' ? unit : 'days';
+
+    if (typeof literal === 'string') {
+        literal = parseInt(literal, 10);
+    } else if (typeof literal !== 'number') {
+        throw Error('Date literal ' + literal + ' should be string or number')
     }
+
+    return moment().add(literal, unit).format(format);
 });
 
 // This is useful for template variables
