@@ -47,6 +47,11 @@ body {
     padding: 0;
 }
 
+.avatar {
+  width: 30px;
+  border-radius: 100%;
+}
+
 /* Fixed header
  */
 header {
@@ -197,6 +202,7 @@ header {
 
 /* list
   */
+
 .quicktexts-list {
 
     .list-group-item {
@@ -220,9 +226,6 @@ header {
 
         &:hover {
             background-color: $grey1;
-        }
-        .label {
-            font-size: 80%;
         }
     }
 
@@ -350,11 +353,13 @@ header {
  */
 .profile {
     text-align: center;
+    margin-right: 0;
+
     .profile-body {
         clearfix();
 
         .profile-picture {
-            float: left;
+            padding: 0;
 
             img {
                 max-width: emCalc(60);
@@ -362,15 +367,14 @@ header {
         }
 
         .profile-details {
-            float: left;
-            padding-left: emCalc(12);
+            padding: 0;
             padding-top: emCalc(6);
             cursor: default;
 
             p {
                 margin: 0;
-
                 color: lighten($black, 20%);
+                text-align: left;
 
                 strong {
                     font-size: emCalc(20);
@@ -379,17 +383,41 @@ header {
             }
         }
 
+        .profile-dropdown {
+          padding: 0;
+          padding-top: emCalc(8);
+
+          .dropdown-toggle {
+            cursor: pointer;
+            background: none;
+
+            &:hover {
+              background: none;
+            }
+          }
+        }
+
     }
+
     .profile-stats {
         font-size: 1.2em;
         color: $black !important;
         margin-bottom: 3px;
     }
-    margin-right: 18px;
 }
 
 /* Sidebar footer
  */
+
+.label-container {
+    margin: 5px 1px;
+    display: inline-block;
+
+    .label {
+        font-size: 80%;
+    }
+}
+
 .sidebar-footer {
     position: fixed;
     bottom: 0;
@@ -486,7 +514,18 @@ header {
     cursor: pointer;
 }
 
-/* Premium feature */
+.dropdown-toggle {
+    padding-top: 5px;
+    background: #FAFAFA;
+    &:hover {
+        background: #f2f2f2;
+    }
+}
+
+
+/* Premium feature
+ */
+
 .premium-feature {
     padding: .75rem 1rem .75rem 1rem;
     border: 1px solid #e8e8e8;

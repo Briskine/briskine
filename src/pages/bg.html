@@ -9,25 +9,28 @@
 <body key-trap>
 
 <div class="container">
-    <div class="sidebar-wrapper">
+    <div class="sidebar-wrapper" ng-controller="SidebarCtrl">
 
         <div class="profile">
 
-            <div class="profile-body" ng-show="profile.user">
-                <a class="profile-picture" href="https://gorgias.io/app#/account" target="_blank">
-                    <img class="img-circle" title="Setup your avatar on gravatar.com" alt="gravatar" ng-src="{{ profileService.gravatar(profile.user.email) }}">
-                </a>
+            <div class="profile-body" ng-show="account">
 
-                <div class="profile-details">
-                    <p>
-                      <strong ng-if="profile.user.info.name">{{profile.user.info.name}}</strong>
-                      <strong ng-if="!profile.user.info.name">{{profile.user.info.given_name}} {{profile.user.info.family_name}}</strong>
-                    </p>
-                    <p>{{profile.user.email}}</p>
-                </div>
+              <div class="profile-picture col-md-4 col-xs-4">
+                <a href="https://gorgias.io/app#/account" target="_blank">
+                    <img class="img-circle" title="Setup your avatar on gravatar.com" alt="gravatar" ng-src="{{ profileService.gravatar(account.email) }}">
+                </a>
+              </div>
+
+              <div class="profile-details col-md-8 col-xs-8">
+                <p>
+                  <strong ng-if="account.info.name">{{account.info.name}}</strong>
+                  <strong ng-if="!account.info.name">{{account.info.given_name}} {{account.info.family_name}}</strong>
+                </p>
+                <p>{{ account.email }}</p>
+              </div>
             </div>
 
-            <div class="anonymous premium-feature" ng-show="!profile.user">
+            <div class="anonymous" ng-show="!account">
                 <a ng-href="{{baseURL}}#login" target="_blank" ng-click="checkLogin()">Login</a> or
                 <a ng-href="{{baseURL}}#pricing" target="_blank">Sign Up</a>
                 to <em>share</em> templates with your team.
@@ -35,7 +38,7 @@
 
             <div class="profile-extra alert alert-info" ng-if="profile.savedWords > 1500">
                 <div class="profile-stats">
-                    So far you saved <strong>{{profile.savedWordsNice}}</strong> words or
+                    So far you saved <strong>{{profile.savedWords}}</strong> words or
                     <strong>{{profile.savedTime}}</strong>.
                 </div>
                 <a class="btn-twitter" target="_blank"
@@ -47,8 +50,19 @@
         </div>
 
         <ul class="nav nav-pills nav-stacked">
-            <li ng-class="{ 'active': (path === '/list') }"><a href="#/list">Templates</a></li>
-            <li ng-class="{ 'active': (path === '/settings') }"><a href="#/settings">Settings</a></li>
+            <li ng-click="emptyFilterTags()" ng-class="{ 'active': (path === '/list') }"><a href="#/list"><b>All templates</b></a></li>
+
+            <li>
+                <div ng-repeat="t in tags | orderBy:'-count'" style="margin: 5px 1px; display: inline-block">
+                    <a href='' class="label label-default"
+             ng-class="{true: 'label-primary', false: 'label-default'}[filterTags.indexOf(t.name) !== -1]"
+             ng-click="toggleFilterTag(t.name)" title="Toggle this tag to filter the templates">{{t.name}}<span ng-if="t.count > 1"> ({{t.count}})</span>
+                    </a>
+                </div>
+            </li>
+
+            <li ng-class="{ 'active': (path === '/settings') }"><a href="#/settings"><b>Settings</b></a></li>
+            <li ng-class="{ 'active': (path.match('\/account*')) }"><a href="#/account"><b>Account</b></a></li>
             <li ng-if="isChrome && !isOpera"><a href="https://chrome.google.com/webstore/detail/gorgias-email-templates-f/lmcngpkjkplipamgflhioabnhnopeabf/support" target="_blank">Help <i class="fa fa-external-link"></i></a></li>
             <li ng-if="isOpera"><a href="https://addons.opera.com/en/extensions/details/gorgias/?display=en&reports#feedback-container" target="_blank">Help <i class="fa fa-external-link"></i></a></li>
         </ul>
@@ -60,7 +74,7 @@
             </a>
             <br/>
             <br/>
-            <div class="sync-status" ng-show="profile.user">
+            <div class="sync-status" ng-show="account">
                 <div class="sync-label" ng-show="lastSync">
                   Last sync
                   <span am-time-ago="lastSync"></span>.

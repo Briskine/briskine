@@ -20,8 +20,6 @@ gApp.controller('SettingsCtrl', function ($scope, $rootScope, $timeout,  Templat
         });
     };
 
-
-
     $scope.recordSequence = function(selector) {
         var input = $('#' + selector);
         var model = input.attr('ng-model');

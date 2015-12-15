@@ -16,6 +16,7 @@ Developing extension
 --------------------
 
 Development is done using Grunt. So first you need to install [Node.js](http://nodejs.org/) and [Grunt](http://gruntjs.com/).
+Then, run `npm install` to install all dependencies.
 
 There are available following commands:
 
