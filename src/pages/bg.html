@@ -51,10 +51,14 @@
         </div>
 
         <ul class="nav nav-pills nav-stacked">
-            <li ng-click="emptyFilterTags()" ng-class="{ 'active': (path === '/list') }"><a href="#/list"><b>All templates</b></a></li>
+            <li class="title"><h4>Templates</h4></li>
+            <li ng-click="emptyFilterTags()" ng-class="{ 'active': (path === '/list') }"><a href="#/list"><b>All</b></a></li>
+            <li ng-click="emptyFilterTags()" ng-class="{ 'active': (path === '/list/private') }"><a href="#/list/private"><b>Private</b></a></li>
+            <li ng-click="emptyFilterTags()" ng-class="{ 'active': (path === '/list/shared') }"><a href="#/list/shared"><b>Shared</b></a></li>
 
+            <li class="title"><h4>Tags</h4></li>
             <li>
-                <div ng-repeat="t in tags | orderBy:'-count'" style="margin: 5px 1px; display: inline-block">
+                <div ng-repeat="t in tags | orderBy:'-count'" class="label-wrapper">
                     <a href='' class="label label-default"
              ng-class="{true: 'label-primary', false: 'label-default'}[filterTags.indexOf(t.name) !== -1]"
              ng-click="toggleFilterTag(t.name)" title="Toggle this tag to filter the templates">{{t.name}}<span ng-if="t.count > 1"> ({{t.count}})</span>
@@ -63,7 +67,6 @@
             </li>
 
             <li ng-class="{ 'active': (path === '/settings') }"><a href="#/settings"><b>Settings</b></a></li>
-            <li ng-class="{ 'active': (path.match('\/account*')) }"><a href="#/account"><b>Account</b></a></li>
             <li ng-if="isChrome && !isOpera"><a href="https://chrome.google.com/webstore/detail/gorgias-email-templates-f/lmcngpkjkplipamgflhioabnhnopeabf/support" target="_blank">Help <i class="fa fa-external-link"></i></a></li>
             <li ng-if="isOpera"><a href="https://addons.opera.com/en/extensions/details/gorgias/?display=en&reports#feedback-container" target="_blank">Help <i class="fa fa-external-link"></i></a></li>
         </ul>

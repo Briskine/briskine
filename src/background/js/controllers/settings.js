@@ -1,4 +1,8 @@
-gApp.controller('SettingsCtrl', function ($scope, $rootScope, $timeout,  TemplateService, SettingsService) {
+gApp.controller('SettingsCtrl', function ($scope, $rootScope, $timeout,  AccountService, TemplateService, SettingsService) {
+    $scope.activeTab = "settings";
+
+    AccountService.get().then(function(data){ $scope.account = AccountService.user; });
+
     $scope.showWarning = false;
     $scope.settings = {};
     SettingsService.get('settings').then(function(settings){

@@ -1,12 +1,15 @@
 <header>
-    <h1>Manage account</h1>
+    <h1>Settings</h1>
 </header>
 <div role="tabpanel">
     <ul class="nav nav-tabs" role="tablist">
-        <li role="presentation" ng-class="activeTab == 'account'?'active':''">
+        <li role="presentation" ng-class="activeTab == 'settings'?'active':''">
+            <a href="#/settings" aria-controls="settings" role="tab" data-toggle="tab" data-target="#">Extension Settings</a>
+        </li>
+        <li role="presentation" ng-if="account" ng-class="activeTab == 'account'?'active':''">
             <a href="#/account" aria-controls="account" role="tab" data-toggle="tab" data-target="#">My Account</a>
         </li>
-        <li role="presentation" ng-class="activeTab == 'members'?'active':''">
+        <li role="presentation" ng-if="account" ng-class="activeTab == 'members'?'active':''">
             <a href="#/account/members" aria-controls="members" role="tab" data-toggle="tab" data-target="#">Team Members</a>
         </li>
         <li role="presentation" ng-if="account.is_staff" ng-class="activeTab == 'groups'?'active':''">
@@ -18,6 +21,9 @@
         </li>
     </ul>
     <div class="tab-content">
+        <div role="tabpanel" class="tab-pane" ng-class="activeTab === 'settings'?'active':''" id="settings">
+            <div class="tab-container" ng-include="'/pages/views/settings.html'"></div>
+        </div>
         <div role="tabpanel" class="tab-pane" ng-class="activeTab === 'account'?'active':''" id="account">
             <div class="tab-container" ng-include="'/pages/views/account/account.html'"></div>
         </div>

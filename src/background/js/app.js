@@ -35,7 +35,7 @@ gApp.config(function ($routeProvider, $compileProvider) {
         })
         .when('/settings', {
             controller: 'SettingsCtrl',
-            templateUrl: 'views/settings.html'
+            templateUrl: 'views/account/base.html'
         })
         .when('/account', {
             controller: 'AccountCtrl',

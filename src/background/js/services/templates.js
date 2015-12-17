@@ -67,7 +67,7 @@ gApp.service('TemplateService', function ($q, $resource, SettingsService) {
             var templates = [];
             for (var id in res) {
                 var row = res[id];
-                if (row.deleted === 0) {
+                if (row != null && row.deleted === 0) {
                     templates.push(row);
                 }
             }
@@ -132,7 +132,7 @@ gApp.service('TemplateService', function ($q, $resource, SettingsService) {
             TemplateStorage.get(null, function (localTemplates) {
                 for (var id in localTemplates) {
                     var t = localTemplates[id];
-                    if (t.remote_id) {
+                    if (t != null && t.remote_id) {
                         localSeen.push(t.remote_id);
                     }
                 }
@@ -207,7 +207,7 @@ gApp.service('TemplateService', function ($q, $resource, SettingsService) {
         TemplateStorage.get(null, function (templates) {
             for (var id in templates) {
                 var t = templates[id];
-                if (t.nosync !== 0) {
+                if (t == null || t.nosync !== 0) {
                     continue;
                 }
 
