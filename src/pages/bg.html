@@ -27,26 +27,16 @@
                   <strong ng-if="account.info.name">{{account.info.name}}</strong>
                   <strong ng-if="!account.info.name">{{account.info.given_name}} {{account.info.family_name}}</strong>
                 </p>
-                <p>{{ account.email }}</p>
+                <!--<p>{{ account.email }}</p>-->
+                <p><a href="#/settings">Settings</a></p>
               </div>
             </div>
 
             <div class="anonymous premium-feature" ng-show="!account">
                 <a ng-href="{{baseURL}}#login" target="_blank" ng-click="checkLogin()">Login</a> or
                 <a ng-href="{{baseURL}}#pricing" target="_blank">Sign Up</a>
-                to <em>share</em> templates with your team.
-            </div>
-
-            <div class="profile-extra alert alert-info" ng-if="profile.savedWords > 1500">
-                <div class="profile-stats">
-                    So far you saved <strong>{{profile.savedWordsNice}}</strong> words or
-                    <strong>{{profile.savedTime}}</strong>.
-                </div>
-                <a class="btn-twitter" target="_blank"
-                   href="https://twitter.com/intent/tweet?hashtags=custserv&text=I%20saved%20{{profile.savedTime}}%20writing%20emails.%20Install%20%40gorgiasio%20and%20see%20how%20much%20time%20you%20can%20save!%20https%3A%2F%2Fgoo.gl%2FDoVLoQ">
-                    <i class="fa fa-twitter"></i>
-                    <span>Tweet about it</span>
-                </a>
+                to <em>share</em> templates with your team.<br>
+                You can also change the <a ng-href="#/settings">Settings</a> to your convenience.
             </div>
         </div>
 
@@ -57,7 +47,7 @@
             <li ng-click="emptyFilterTags()" ng-class="{ 'active': (path === '/list/shared') }"><a href="#/list/shared"><b>Shared</b></a></li>
 
             <li class="title"><h4>Tags</h4></li>
-            <li>
+            <li class="tag-list">
                 <div ng-repeat="t in tags | orderBy:'-count'" class="label-wrapper">
                     <a href='' class="label label-default"
              ng-class="{true: 'label-primary', false: 'label-default'}[filterTags.indexOf(t.name) !== -1]"
@@ -66,10 +56,21 @@
                 </div>
             </li>
 
-            <li ng-class="{ 'active': (path === '/settings') }"><a href="#/settings"><b>Settings</b></a></li>
             <li ng-if="isChrome && !isOpera"><a href="https://chrome.google.com/webstore/detail/gorgias-email-templates-f/lmcngpkjkplipamgflhioabnhnopeabf/support" target="_blank">Help <i class="fa fa-external-link"></i></a></li>
             <li ng-if="isOpera"><a href="https://addons.opera.com/en/extensions/details/gorgias/?display=en&reports#feedback-container" target="_blank">Help <i class="fa fa-external-link"></i></a></li>
         </ul>
+
+        <div class="profile-extra alert alert-info" ng-show="profile.savedWords > 1500">
+            <div class="profile-stats">
+                So far you saved <strong>{{profile.savedWordsNice}}</strong> words or
+                <strong>{{profile.savedTime}}</strong>.
+            </div>
+            <a class="btn-twitter" target="_blank"
+               href="https://twitter.com/intent/tweet?hashtags=custserv&text=I%20saved%20{{profile.savedTime}}%20writing%20emails.%20Install%20%40gorgiasio%20and%20see%20how%20much%20time%20you%20can%20save!%20https%3A%2F%2Fgoo.gl%2FDoVLoQ">
+                <i class="fa fa-twitter"></i>
+                <span>Tweet about it</span>
+            </a>
+        </div>
 
         <div class="sidebar-footer">
             <a class="btn-twitter" href="https://twitter.com/gorgiasio" title="Follow @gorgiasio and get some awesome tips on how to use it!" target="_blank">

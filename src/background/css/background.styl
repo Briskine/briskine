@@ -126,6 +126,8 @@ header {
     top: 0;
     left: 0;
     width: $sidebarWidth;
+    height: 100%;
+    overflow-y: scroll;
     padding: emCalc(16) emCalc(20) 0 emCalc(22);
 
     .label-wrapper {
@@ -135,6 +137,15 @@ header {
 
     .title {
         padding: 10px 15px;
+    }
+
+    .tag-list {
+        padding-top: 5px;
+        padding-bottom: 5px;
+        height: 18em;
+        overflow-y: scroll;
+        border: 1px solid $grey1;
+        border-radius: 3px;
     }
 }
 
@@ -360,7 +371,7 @@ header {
 
 /* Profile
  */
-.profile {
+.profile, .profile-extra {
     text-align: center;
     margin-right: 0;
 
@@ -411,7 +422,7 @@ header {
     .profile-stats {
         font-size: 1.2em;
         color: $black !important;
-        margin-bottom: 3px;
+        margin-bottom: 10px;
     }
 }
 
@@ -431,7 +442,7 @@ header {
     position: fixed;
     bottom: 0;
     left: 0;
-    padding: emCalc(16) emCalc(20) emCalc(20) emCalc(22);
+    padding: emCalc(16) emCalc(20) emCalc(20) emCalc(20);
 
     .twitter-badge {
         width: 120px;

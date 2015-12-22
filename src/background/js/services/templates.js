@@ -4,12 +4,10 @@ gApp.service('FilterTagService', function($rootScope) {
     var filterTags = [];
 
     function toggleFilterTag(tag) {
-        var index = filterTags.indexOf(tag);
-
-        if (index === -1) {
-            filterTags.push(tag);
+        if (filterTags.length == 0 || filterTags[0] != tag) {
+            filterTags[0] = tag;
         } else {
-            filterTags.splice(index, 1); // remove from tags
+            filterTags.splice(0, 1); // remove from tags
         }
 
         $rootScope.$broadcast('toggledFilterTag');

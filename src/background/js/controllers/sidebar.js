@@ -33,7 +33,7 @@ gApp.controller('SidebarCtrl', function ($scope, $location, AccountService, Sett
     $scope.emptyFilterTags = FilterTagService.emptyFilterTags;
 
     $scope.$on('toggledFilterTag', function() {
-        $scope.filterTags = FilterTagService.filterTags;
+        $scope.filterTags[0] = FilterTagService.filterTags[0];
         $location.path('/list');
     });
 });
