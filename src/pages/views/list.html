@@ -9,6 +9,8 @@
 
 <div class="btn-toolbar">
     <a href="#/list?id=new" class="btn btn-primary">New template</a>
+    <button ng-if="selectedQuicktexts.length" ng-click="deleteQts(selectedQuicktexts)" class="btn btn-error">Delete templates</button>
+    <a ng-if="selectedQuicktexts.length" data-toggle="modal" data-target="#quicktext-share-modal" class="btn btn-error">Share templates</a>
 </div>
 
 <div id="quicktext-table-container">
@@ -23,9 +25,13 @@
     </div>
 
     <div class="list-group quicktexts-list" ng-show="filteredTemplates.length">
-
         <div class="list-group-item"
              ng-repeat="quicktext in filteredTemplates | limitTo:limitTemplates">
+
+            <div class="col-xs-1">
+                <input type="checkbox" checklist-model="getSelectedQuicktexts()" checklist-value="quicktext.id"
+                       ng-change="updateSelectedQuicktexts(quicktext, checked)">
+            </div>
 
             <a class="list-group-item-link"
                tabindex="0"
@@ -64,8 +70,7 @@
 
 
             <div class="hover-actions">
-                <button type="button" class="btn btn-default btn-delete" ng-click="deleteQt()" title="Delete">Delete</button>
-                <a ng-href="#/list?id={{ ::quicktext.id }}" class="btn btn-primary edit-button">Edit</a>
+                <button type="button" class="btn btn-default btn-delete" ng-click="deleteQt(quicktext)" title="Delete">Delete</button>
             </div>
         </div>
     </div>
@@ -75,3 +80,4 @@
 </div>
 
 <div ng-include="'includes/form.html'"></div>
+<div ng-include="'views/includes/share_form.html'"></div>

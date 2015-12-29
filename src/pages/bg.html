@@ -43,11 +43,14 @@
         <ul class="nav nav-pills nav-stacked">
             <li class="title"><h4>Templates</h4></li>
             <li ng-click="emptyFilterTags()" ng-class="{ 'active': (path === '/list') }"><a href="#/list"><b>All</b></a></li>
-            <li ng-click="emptyFilterTags()" ng-class="{ 'active': (path === '/list/private') }"><a href="#/list/private"><b>Private</b></a></li>
-            <li ng-click="emptyFilterTags()" ng-class="{ 'active': (path === '/list/shared') }"><a href="#/list/shared"><b>Shared</b></a></li>
 
-            <li class="title"><h4>Tags</h4></li>
-            <li class="tag-list">
+            <li ng-show="account" ng-click="emptyFilterTags()" ng-class="{ 'active': (path === '/list/private') }"><a href="#/list/private"><b>Private</b></a></li>
+            <li ng-show="account" ng-click="emptyFilterTags()" ng-class="{ 'active': (path === '/list/shared') }"><a href="#/list/shared"><b>Shared</b></a></li>
+
+            <li ng-show="!account" ng-click="emptyFilterTags()" class="pill-premium-feature"><a href="https://gorgias.io/#pricing" target="_blank"><b>Shared</b></a></li>
+
+            <li class="title" ng-show="tags.length"><h4>Tags</h4></li>
+            <li class="tag-list" ng-show="tags.length">
                 <div ng-repeat="t in tags | orderBy:'-count'" class="label-wrapper">
                     <a href='' class="label label-default"
              ng-class="{true: 'label-primary', false: 'label-default'}[filterTags.indexOf(t.name) !== -1]"

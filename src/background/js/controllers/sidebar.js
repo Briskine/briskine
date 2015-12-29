@@ -19,15 +19,19 @@ gApp.controller('SidebarCtrl', function ($scope, $location, AccountService, Sett
     });
 
     // gather tags
-    TemplateService.allTags().then(function (r) {
-        var tags = [];
+    var loadTags = function() {
+        TemplateService.allTags().then(function (r) {
+            var tags = [];
 
-        for (var t in r) {
-            tags.push({name: t, count: r[t]});
-        }
+            for (var t in r) {
+                tags.push({name: t, count: r[t]});
+            }
 
-        $scope.tags = tags;
-    });
+            $scope.tags = tags;
+        });
+    };
+
+    loadTags();
 
     $scope.toggleFilterTag = FilterTagService.toggleFilterTag;
     $scope.emptyFilterTags = FilterTagService.emptyFilterTags;
@@ -36,4 +40,8 @@ gApp.controller('SidebarCtrl', function ($scope, $location, AccountService, Sett
         $scope.filterTags[0] = FilterTagService.filterTags[0];
         $location.path('/list');
     });
+
+    $scope.$on('reload', function() {
+        loadTags();
+    })
 });

@@ -1,12 +1,16 @@
 gApp.controller('ListCtrl',
-    function ($scope, $rootScope, $routeParams, $location, $timeout, $filter, TemplateService, SettingsService, FilterTagService) {
+    function ($route, $q, $scope, $rootScope, $routeParams, $location, $timeout, $filter,
+              AccountService, TemplateService, SettingsService, FilterTagService, QuicktextSharingService) {
 
         var $formModal;
+        var $shareModal;
         var editor;
+
+        var properties = $route.current.locals.properties;
 
         $scope.filteredTemplates = [];
         $scope.templates = [];
-        $scope.tags = [];
+        $scope.selectedQuicktexts = [];
         $scope.filterTags = [];
         $scope.limitTemplates = 42; // I know.. it's a cliche
         $scope.showInstallHint = false;
@@ -43,14 +47,16 @@ gApp.controller('ListCtrl',
         $('.load-more').hide();
 
         $scope.reloadTemplates = function () {
-            TemplateService.quicktexts().then(function (r) {
+            $rootScope.$broadcast('reload')
+            TemplateService.filtered([function(template) {
+                if (properties.list == 'all') { return true;}
+                else if (properties.list == 'private') { return template.user.id == AccountService.user.id; }
+                else if (properties.list == 'shared') { return template.user.id != AccountService.user.id; }
+            }]).then(function (r) {
                 $scope.templates = r;
             });
-
-            TemplateService.allTags().then(function (r) {
-                $scope.tags = r;
-            });
         };
+
         $scope.reloadTemplates();
 
         $scope.$watch('templates', function () {
@@ -74,6 +80,7 @@ gApp.controller('ListCtrl',
             /* New/Edit modal
              */
             $formModal = $('.quicktext-modal');
+
             $formModal.modal({
                 show: false
             });
@@ -87,6 +94,14 @@ gApp.controller('ListCtrl',
             $formModal.on('shown.bs.modal', function () {
                 $('#qt-title').focus();
             });
+
+            // Share modal
+            $shareModal = $('#quicktext-share-modal');
+
+            $shareModal.on('shown.bs.modal', function () {
+               $scope.sharing = QuicktextSharingService.get($scope.selectedQuicktexts[0].remote_id);
+            });
+
             checkRoute();
         };
 
@@ -133,6 +148,8 @@ gApp.controller('ListCtrl',
             // new or edit, so show the modal
             if ($routeParams.id) {
                 $scope.showForm();
+            } else if ($routeParams.action) {
+                $scope.showShareForm();
             }
         };
 
@@ -327,14 +344,49 @@ gApp.controller('ListCtrl',
 
         // Delete a quicktext. This operation should first delete from the localStorage
         // then it should imedially go to the service and delete on the server
-        $scope.deleteQt = function () {
-            if (this.quicktext) {
-                r = confirm("Are you sure you want to delete '" + this.quicktext.title + "' template?");
+        $scope.deleteQt = function (quicktext) {
+            if (quicktext) {
+                r = confirm("Are you sure you want to delete '" + quicktext.title + "' template?");
                 if (r === true) {
-                    TemplateService.delete(this.quicktext).then(function () {
+                    TemplateService.delete(quicktext).then(function () {
                         $scope.reloadTemplates();
                     });
                 }
+            }
+        };
+
+        // Delete a list of selected quicktexts.
+        $scope.deleteQts = function() {
+            if ($scope.selectedQuicktexts.length > 0) {
+                r = confirm("Are you sure you want to delete " + $scope.selectedQuicktexts.length + " templates?")
+                if (r === true) {
+                    for (var qt in $scope.selectedQuicktexts) {
+                        TemplateService.delete($scope.selectedQuicktexts[qt]).then(function () {
+                            $scope.reloadTemplates();
+                        })
+                        $scope.selectedQuicktexts.splice($scope.selectedQuicktexts.indexOf(qt), 1);
+                    }
+                }
+            }
+        };
+
+        $scope.getSelectedQuicktexts = function() {
+            var qt_ids = [];
+            for (var qt in $scope.selectedQuicktexts) {
+              qt_ids.push($scope.selectedQuicktexts[qt].id);
+            }
+            return qt_ids;
+        };
+
+        $scope.updateSelectedQuicktexts = function(quicktext, checked) {
+            if (!checked) {
+                for (var qt in $scope.selectedQuicktexts) {
+                    if ($scope.selectedQuicktexts[qt].id == quicktext.id) {
+                        $scope.selectedQuicktexts.splice($scope.selectedQuicktexts.indexOf(qt), 1);
+                    }
+                }
+            } else {
+                $scope.selectedQuicktexts.push(quicktext);
             }
         };
 
@@ -342,7 +394,7 @@ gApp.controller('ListCtrl',
         var filterQuicktexts = function () {
             // apply the text search filter
             $scope.filteredTemplates = $filter('filter')($scope.templates, $scope.searchText);
-            // apply the tag serach filter
+            // apply the tag search filter
             $scope.filteredTemplates = $filter('tagFilter')($scope.filteredTemplates, FilterTagService.filterTags);
 
             $scope.focusIndex = 0;

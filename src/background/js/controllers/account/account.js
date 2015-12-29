@@ -1,7 +1,7 @@
 gApp.controller('AccountCtrl', function ($scope, $rootScope, $timeout, AccountService) {
     $scope.activeTab = 'account';
 
-    AccountService.get().then(function(data){ $scope.account = AccountService.user; });
+    AccountService.get().then(function(data){ $scope.account = data; });
 
     $scope.saveAccount = function () {
         mixpanel.track("Saved Account Settings");

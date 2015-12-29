@@ -8,7 +8,7 @@
         <form data-role="form" name="account-form0" ng-submit="saveAccount()"
               autocomplete="off">
             <div class="form-group">
-                <label for="given_name" class="control-label">Full Name</label>
+                <label for="name" class="control-label">Full Name</label>
                 <input type="text" class="form-control" id="name" ng-model="account.info.name" name="fakename"/>
             </div>
             <div class="form-group">
@@ -23,7 +23,7 @@
             </div>
             <div class="checkbox">
                 <label>
-                    <input type="checkbox" id="share_all" ng-model="user.share_all" ng-false-value="''"/> Share
+                    <input type="checkbox" id="share_all" ng-model="account.info.share_all" ng-false-value="'false'" ng-true-value="'true'"/> Share
                     templates by default
                     with all your team.
                 </label>

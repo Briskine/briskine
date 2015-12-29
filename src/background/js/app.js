@@ -22,7 +22,8 @@ var gApp = angular.module('gApp', [
     'ngRoute',
     'ngResource',
     'ngMd5',
-    'angularMoment'
+    'angularMoment',
+    'checklist-model'
 ]);
 
 gApp.config(function ($routeProvider, $compileProvider) {
@@ -31,7 +32,32 @@ gApp.config(function ($routeProvider, $compileProvider) {
         .when('/list', {
             controller: 'ListCtrl',
             templateUrl: 'views/list.html',
-            reloadOnSearch: false
+            reloadOnSearch: false,
+            resolve: {
+              properties: function() {
+                return { list: 'all' };
+              }
+            }
+        })
+        .when('/list/private', {
+            controller: 'ListCtrl',
+            templateUrl: 'views/list.html',
+            reloadOnSearch: false,
+            resolve: {
+              properties: function() {
+                return { list: 'private' };
+              }
+            }
+        })
+        .when('/list/shared', {
+            controller: 'ListCtrl',
+            templateUrl: 'views/list.html',
+            reloadOnSearch: false,
+            resolve: {
+              properties: function() {
+                return { list: 'shared' };
+              }
+            }
         })
         .when('/settings', {
             controller: 'SettingsCtrl',

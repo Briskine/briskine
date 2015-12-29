@@ -1,7 +1,7 @@
-gApp.service('AccountService', function ($q, $resource, SettingsService) {
+gApp.service('AccountService', function ($q, $resource) {
     var self = this;
 
-    self.accResource = $resource(Settings.defaults.apiBaseURL + 'account', {}, {
+    var accResource = $resource(Settings.defaults.apiBaseURL + 'account', {}, {
       update: {
           method: "PUT"
       },
@@ -13,7 +13,7 @@ gApp.service('AccountService', function ($q, $resource, SettingsService) {
     self.get = function () {
         var deferred = $q.defer();
 
-        var user = self.accResource.get(function () {
+        accResource.get(function (user) {
             self.user = user;
             deferred.resolve(user);
         });
@@ -27,7 +27,7 @@ gApp.service('AccountService', function ($q, $resource, SettingsService) {
         user.email = data.email;
         user.name = data.info.name;
         user.password = data.password;
-        user.share_all = data.share_all;
+        user.share_all = data.info.share_all;
 
         user.$update(function () {
             deferred.resolve();
