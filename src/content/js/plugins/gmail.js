@@ -55,15 +55,14 @@ App.plugin('gmail', (function() {
             subject = '';
 
         if (isContentEditable(params.element)) {
-            var $container = $(params.element).closest('table').parent().closest('table').parent().closest('table'),
-                from_email = $container.find('input[name=from]').val(),
-                fromName = $('.gb_7a').text().trim();
+            var $container = $(params.element).closest('table').parent().closest('table').parent().closest('table');
 
-            if (!from_email) {
-                from_email = $('.gb_8a');
-            }
+            var fromEmailName = $.trim($('.gb_2a').attr('title').split(":")[1]).
+                replace('(', '<').
+                replace(')', '>').
+                replace("\n", '');
 
-            from.push(from_email ? fromName + ' <' + from_email + '>' : fromName);
+            from.push(fromEmailName);
             to = $container.find('input[name=to]').toArray().map(function (a) {
                 return a.value;
             });
