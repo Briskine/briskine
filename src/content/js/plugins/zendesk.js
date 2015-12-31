@@ -131,7 +131,7 @@ App.plugin('zendesk', (function () {
 
                 if (workspace.css('display') !== 'none') {
                     subject = workspace.find('input[name=subject]').val();
-                    if (!subject.length){
+                    if (!(subject && subject.length)){
                         return;
                     }
 
