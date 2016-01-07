@@ -1,25 +1,20 @@
-gApp.controller('SidebarCtrl', function ($scope, $location, AccountService, SettingsService, ProfileService, TemplateService, FilterTagService) {
+gApp.controller('SidebarCtrl', function ($scope, $location, $http,
+                                         AccountService, SettingsService, ProfileService, TemplateService, FilterTagService) {
     $scope.profile = {};
     $scope.filterTags = [];
 
     // setup account
-    AccountService.get().then(function(data) {
-      $scope.account = data;
-    });
 
-    // setup profile
+    function loadAccount() {
+        AccountService.get().then(function(account) {
+            $scope.account = account;
+        });
+    }
 
-    ProfileService.savedTime().then(function (savedTime) {
-        $scope.profile.savedTime = savedTime;
-    });
-
-    ProfileService.words().then(function (words) {
-        $scope.profile.savedWords = words;
-        $scope.profile.savedWordsNice = ProfileService.reduceNumbers(words);
-    });
+    loadAccount();
 
     // gather tags
-    var loadTags = function() {
+    function loadTags() {
         TemplateService.allTags().then(function (r) {
             var tags = [];
 
@@ -29,19 +24,40 @@ gApp.controller('SidebarCtrl', function ($scope, $location, AccountService, Sett
 
             $scope.tags = tags;
         });
-    };
+    }
 
     loadTags();
 
     $scope.toggleFilterTag = FilterTagService.toggleFilterTag;
     $scope.emptyFilterTags = FilterTagService.emptyFilterTags;
 
+
+    // setup profile
+    ProfileService.savedTime().then(function (savedTime) {
+        $scope.profile.savedTime = savedTime;
+    });
+
+    ProfileService.words().then(function (words) {
+        $scope.profile.savedWords = words;
+        $scope.profile.savedWordsNice = ProfileService.reduceNumbers(words);
+    });
+
+    // logout function
+    $scope.logOut = function () {
+        $http({
+            method: 'GET',
+            url: Settings.defaults.baseURL + 'logout'
+        }).then(function () {
+            location.reload(true);
+        });
+    }
+
+    // event listeners
     $scope.$on('toggledFilterTag', function() {
         $scope.filterTags[0] = FilterTagService.filterTags[0];
         $location.path('/list');
     });
 
-    $scope.$on('reload', function() {
-        loadTags();
-    })
+    $scope.$on('reload', loadTags);
+    $scope.$on('loggedIn', loadAccount);
 });

@@ -32,7 +32,7 @@ gApp.service('QuicktextSharingService', function($q, $resource) {
         var acls = new self.res();
 
         acls.quicktext_ids = _.map(qtList, function(qt){
-            return qt.id;
+            return qt.remote_id;
         });
 
         acls.$post(function(result){
@@ -54,11 +54,11 @@ gApp.service('QuicktextSharingService', function($q, $resource) {
         }
 
         _.each(qtList, function(q){
-            if (!_.contains(data[q.id])) {
-                data.quicktexts[q.id] = {};
+            if (!_.contains(data[q.remote_id])) {
+                data.quicktexts[q.remote_id] = {};
             }
-            data.quicktexts[q.id].emails = shareData.emails;
-            data.quicktexts[q.id].permission = permission;
+            data.quicktexts[q.remote_id].emails = shareData.emails;
+            data.quicktexts[q.remote_id].permission = permission;
         });
 
         var acls = new self.res();
@@ -77,7 +77,7 @@ gApp.service('QuicktextSharingService', function($q, $resource) {
         var acls = new self.res();
         acls.acl = {
             quicktext_ids: _.map(qtList, function(qt){
-                return qt.id;
+                return qt.remote_id;
             }),
             user_id: userId
         };

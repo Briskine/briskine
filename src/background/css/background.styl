@@ -121,13 +121,14 @@ header {
 
 /* Sidebar
  */
+
 .sidebar-wrapper {
     position: fixed;
     top: 0;
     left: 0;
     width: $sidebarWidth;
     height: 100%;
-    overflow-y: scroll;
+    overflow-y: auto;
     padding: emCalc(16) emCalc(20) 0 emCalc(22);
 
     .label-wrapper {
@@ -143,7 +144,7 @@ header {
         padding-top: 5px;
         padding-bottom: 5px;
         max-height: 18em;
-        overflow-y: scroll;
+        overflow-y: auto;
         border: 1px solid $grey1;
         border-radius: 3px;
     }
@@ -220,10 +221,26 @@ header {
     }
 }
 
-/* list
+/* List
   */
 
+.checkbox-wrapper {
+    padding: 0.8em 0 0 0.4em;
+    float: left;
+}
+
+.btn-toolbar {
+    .btn.pull-right, .btn-group.pull-right {
+        margin-left: 10px;
+    }
+}
+
 .quicktexts-list {
+
+    .label-wrapper {
+        margin: 4px 2px;
+        display: inline-block;
+    }
 
     .list-group-item {
         padding: 0;
@@ -292,6 +309,12 @@ header {
     padding-top: 16px;
     padding-bottom: 5px;
     line-height: 21px;
+}
+
+.selectize-dropdown-content {
+    .label {
+        color: black;
+    }
 }
 
 /* Login modal

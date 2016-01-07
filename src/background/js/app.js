@@ -113,12 +113,9 @@ gApp.run(function ($rootScope, $location, $http, $timeout, ProfileService, Setti
     $rootScope.isOpera = /OPR/g.test(userAgent);
     $rootScope.isChrome = /chrome/i.test(userAgent);
 
-    SettingsService.get('baseURL').then(function (baseURL) {
-        $rootScope.baseURL = baseURL;
-    });
-
     $rootScope.userEmail = '';
     $rootScope.savedEmail = false;
+    $rootScope.baseURL = Settings.defaults.baseURL;
 
     SettingsService.get('settings').then(function (settings) {
         // Make sure that we have all the default
@@ -154,10 +151,6 @@ gApp.run(function ($rootScope, $location, $http, $timeout, ProfileService, Setti
           }).error(function(){
               alert("Error! We're unable to authorize : " + provider + ". Please try again or contact support@gorgias.io");
           });
-    };
-
-    $rootScope.checkLogin = function () {
-        $('#check-login').removeClass("hide");
     };
 
     var browser = "Chrome";

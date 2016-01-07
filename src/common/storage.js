@@ -84,7 +84,8 @@ var Settings = {
         }
     },
     defaults: {
-        baseURL: "https://gorgias.io/",
+        //baseURL: "https://gorgias.io/",
+        baseURL: "http://localhost:5000/",
         //apiBaseURL: "https://gorgias.io/api/1/",
         apiBaseURL: "http://localhost:5000/api/1/",
 

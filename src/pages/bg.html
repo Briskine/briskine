@@ -29,11 +29,12 @@
                 </p>
                 <!--<p>{{ account.email }}</p>-->
                 <p><a href="#/settings">Settings</a></p>
+                <p><a ng-click="logOut()">Log out</a></p>
               </div>
             </div>
 
             <div class="anonymous premium-feature" ng-show="!account">
-                <a ng-href="{{baseURL}}#login" target="_blank" ng-click="checkLogin()">Login</a> or
+                <a data-toggle="modal" data-target="#signin-modal">Login</a> or
                 <a ng-href="{{baseURL}}#pricing" target="_blank">Sign Up</a>
                 to <em>share</em> templates with your team.<br>
                 You can also change the <a ng-href="#/settings">Settings</a> to your convenience.
@@ -44,10 +45,11 @@
             <li class="title"><h4>Templates</h4></li>
             <li ng-click="emptyFilterTags()" ng-class="{ 'active': (path === '/list') }"><a href="#/list"><b>All</b></a></li>
 
-            <li ng-show="account" ng-click="emptyFilterTags()" ng-class="{ 'active': (path === '/list/private') }"><a href="#/list/private"><b>Private</b></a></li>
-            <li ng-show="account" ng-click="emptyFilterTags()" ng-class="{ 'active': (path === '/list/shared') }"><a href="#/list/shared"><b>Shared</b></a></li>
+            <li ng-show="account.info.name" ng-click="emptyFilterTags()" ng-class="{ 'active': (path === '/list/private') }"><a href="#/list/private"><b>Private</b></a></li>
+            <li ng-show="account.info.name" ng-click="emptyFilterTags()" ng-class="{ 'active': (path === '/list/shared') }"><a href="#/list/shared"><b>Shared</b></a></li>
 
-            <li ng-show="!account" ng-click="emptyFilterTags()" class="pill-premium-feature"><a href="https://gorgias.io/#pricing" target="_blank"><b>Shared</b></a></li>
+            <li ng-show="!account.info.name" ng-click="emptyFilterTags()" class="pill-premium-feature"><a href="https://gorgias.io/#pricing" target="_blank"><b>Private</b></a></li>
+            <li ng-show="!account.info.name" ng-click="emptyFilterTags()" class="pill-premium-feature"><a href="https://gorgias.io/#pricing" target="_blank"><b>Shared</b></a></li>
 
             <li class="title" ng-show="tags.length"><h4>Tags</h4></li>
             <li class="tag-list" ng-show="tags.length">
@@ -100,6 +102,9 @@
         </div>
         <div class="container-animation" data-ng-view></div>
     </div>
+
+    <div ng-include="'includes/login.html'"></div>
+
 </div>
 </body>
 </html>

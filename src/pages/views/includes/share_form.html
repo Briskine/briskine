@@ -28,10 +28,10 @@
                     <div class="access">
                         <label>Who has access:</label>
                         <ul class="share-user-list">
-                            <li class="row" ng-repeat="share in sharing.acl">
+                            <li class="row" ng-repeat="share in shareData.acl">
 
                                 <div class="col-xs-1">
-                                    <img src="//www.gravatar.com/avatar/{{ share.email | gravatar }}?d=retro"
+                                    <img src="http://www.gravatar.com/avatar/{{ share.email | gravatar }}?d=retro"
                                          class="avatar">
                                 </div>
 
