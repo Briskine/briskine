@@ -23,7 +23,8 @@ var gApp = angular.module('gApp', [
     'ngResource',
     'ngMd5',
     'angularMoment',
-    'checklist-model'
+    'checklist-model',
+    'ngFileUpload'
 ]);
 
 gApp.config(function ($routeProvider, $compileProvider) {

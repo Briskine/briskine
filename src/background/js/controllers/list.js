@@ -16,6 +16,9 @@ gApp.controller('ListCtrl',
             message: ""
         };
 
+
+        $scope.baseUrl = Settings.defaults.baseURL;
+
         $scope.account = {};
         $scope.filteredTemplates = [];
         $scope.templates = [];
@@ -66,17 +69,20 @@ gApp.controller('ListCtrl',
         $('.load-more').hide();
 
         $scope.reloadTemplates = function () {
-            $rootScope.$broadcast('reload')
             TemplateService.filtered([function(template) {
                 if (properties.list == 'all') { return true;}
                 else if (properties.list == 'private') { return template.user.id == $scope.account.id; }
                 else if (properties.list == 'shared') { return template.user.id != $scope.account.id; }
             }]).then(function (r) {
                 $scope.templates = r;
+                $rootScope.$broadcast('reload')
             });
         };
 
         $scope.reloadTemplates();
+
+        // Listen on syncing events
+        $scope.$on("templates-sync", $scope.reloadTemplates);
 
         $scope.$watch('templates', function () {
             if ($scope.templates && $scope.templates.length) {
@@ -85,10 +91,6 @@ gApp.controller('ListCtrl',
             }
         });
 
-        // Listen on syncing events
-        $scope.$on("templates-sync", function () {
-            $scope.reloadTemplates();
-        });
 
 
         /* Init modal and other dom manipulation
@@ -433,9 +435,11 @@ gApp.controller('ListCtrl',
                     });
                 }
 
-                // hide teh modal
+                // hide the modal
                 $('.modal').modal('hide');
             });
+
+            $scope.selectedAll = false;
         };
 
         // Save a quicktext, perform some checks before
@@ -493,20 +497,25 @@ gApp.controller('ListCtrl',
 
                 if (r === true) {
                     for (var qt in $scope.selectedQuicktexts) {
-                        TemplateService.delete($scope.selectedQuicktexts[qt]).then(function () {
-                            $scope.reloadTemplates();
-                        })
-                        $scope.selectedQuicktexts.splice($scope.selectedQuicktexts.indexOf(qt), 1);
+                        TemplateService.delete($scope.selectedQuicktexts[qt]);
+                        $scope.templates.splice($scope.templates.indexOf($scope.selectedQuicktexts), 1);
                     }
+                    $scope.reloadTemplates();
                 }
             }
+
+            $scope.selectedAll = false;
         };
 
         $scope.toggleSelectAll = function () {
-            _.each($scope.filteredTemplates, function (qt) {
-                qt.selected = $scope.selectedAll;
-            });
-            $scope.selectedQuicktexts = $scope.selectedAll ? angular.copy($scope.filteredTemplates) : [];
+            if ($scope.templates.length > 0) {
+                _.each($scope.filteredTemplates, function (qt) {
+                    qt.selected = $scope.selectedAll;
+                });
+                $scope.selectedQuicktexts = $scope.selectedAll ? angular.copy($scope.filteredTemplates) : [];
+            } else {
+                $scope.selectedAll = false;
+            }
         };
 
         $scope.getSelectedQuicktexts = function() {
