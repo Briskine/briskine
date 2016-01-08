@@ -1,7 +1,15 @@
-gApp.controller('SidebarCtrl', function ($scope, $location, $http,
+gApp.controller('SidebarCtrl', function ($scope, $location, $http, $window,
                                          AccountService, SettingsService, ProfileService, TemplateService, FilterTagService) {
     $scope.profile = {};
     $scope.filterTags = [];
+    $scope.baseURL = Settings.defaults.baseURL;
+
+    $window.addEventListener('message', function(e){
+        console.log(e.data);
+        if (e.data == "signedup-goreload"){
+            location.reload(true);
+        }
+    });
 
     // setup account
 

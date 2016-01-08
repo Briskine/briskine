@@ -35,7 +35,7 @@
 
             <div class="anonymous premium-feature" ng-show="!account">
                 <a href data-toggle="modal" data-target="#signin-modal">Login</a> or
-                <a ng-href="{{baseURL}}#pricing" target="_blank">Sign Up</a>
+                <a href data-toggle="modal" data-target="#signup-modal">Sign Up</a>
                 to <em>share</em> templates with your team.<br>
                 You can also change the <a ng-href="#/settings">Settings</a> to your convenience.
             </div>
@@ -92,7 +92,6 @@
                 <button class="btn btn-primary" ng-click="SyncNow()">Sync now</button>
             </div>
         </div>
-
     </div>
 
     <div class="view-container">
@@ -103,8 +102,11 @@
         <div class="container-animation" data-ng-view></div>
     </div>
 
-    <div ng-include="'includes/login.html'"></div>
 
 </div>
 </body>
+
+<div ng-include="'includes/login.html'"></div>
+<div ng-include="'includes/signup.html'"></div>
+
 </html>
