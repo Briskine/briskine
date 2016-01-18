@@ -6,7 +6,7 @@ gApp.controller('SidebarCtrl', function ($scope, $location, $http, $window,
 
     $window.addEventListener('message', function(e){
         console.log(e.data);
-        if (e.data == "signedup-goreload"){
+        if (e.data == "gorgias-signedup-reload"){
             location.reload(true);
         }
     });

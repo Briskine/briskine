@@ -15,6 +15,7 @@ gApp.controller('GroupsCtrl', function ($scope, $rootScope, $timeout, MemberServ
         'desc': '',
         'members': []
     };
+
     $scope.selectedGroup = angular.copy(defaultGroup);
 
     $scope.sendNotification = true;

@@ -117,6 +117,7 @@ gApp.run(function ($rootScope, $location, $http, $timeout, ProfileService, Setti
     $rootScope.userEmail = '';
     $rootScope.savedEmail = false;
     $rootScope.baseURL = Settings.defaults.baseURL;
+    $rootScope.apiBaseURL = Settings.defaults.apiBaseURL;
 
     SettingsService.get('settings').then(function (settings) {
         // Make sure that we have all the default
@@ -147,11 +148,12 @@ gApp.run(function ($rootScope, $location, $http, $timeout, ProfileService, Setti
     $rootScope.profileService = ProfileService;
 
     $rootScope.connectSocial = function(provider, scope) {
-          $http.post('https://gorgias.io/authorize/' + provider, {'scope': scope}).success(function(res){
-              window.location = res.location;
-          }).error(function(){
-              alert("Error! We're unable to authorize : " + provider + ". Please try again or contact support@gorgias.io");
-          });
+        url = $rootScope.baseURL + 'authorize/' + provider;
+        $http.post(url, {'scope': scope}).success(function(res){
+            window.location = res.location;
+        }).error(function(){
+            alert("Error! We're unable to authorize : " + provider + ". Please try again or contact support@gorgias.io");
+        });
     };
 
     var browser = "Chrome";

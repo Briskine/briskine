@@ -45,11 +45,11 @@
             <li class="title"><h4>Templates</h4></li>
             <li ng-click="emptyFilterTags()" ng-class="{ 'active': (path === '/list') }"><a href="#/list"><b>All</b></a></li>
 
-            <li ng-show="account.info.name" ng-click="emptyFilterTags()" ng-class="{ 'active': (path === '/list/private') }"><a href="#/list/private"><b>Private</b></a></li>
             <li ng-show="account.info.name" ng-click="emptyFilterTags()" ng-class="{ 'active': (path === '/list/shared') }"><a href="#/list/shared"><b>Shared</b></a></li>
+            <li ng-show="account.info.name" ng-click="emptyFilterTags()" ng-class="{ 'active': (path === '/list/private') }"><a href="#/list/private"><b>Private</b></a></li>
 
-            <li ng-show="!account.info.name" ng-click="emptyFilterTags()" class="pill-premium-feature"><a href="https://gorgias.io/#pricing" target="_blank"><b>Private</b></a></li>
             <li ng-show="!account.info.name" ng-click="emptyFilterTags()" class="pill-premium-feature"><a href="https://gorgias.io/#pricing" target="_blank"><b>Shared</b></a></li>
+            <li ng-show="!account.info.name" ng-click="emptyFilterTags()" class="pill-premium-feature"><a href="https://gorgias.io/#pricing" target="_blank"><b>Private</b></a></li>
 
             <li class="title" ng-show="tags.length"><h4>Tags</h4></li>
             <li class="tag-list" ng-show="tags.length">
