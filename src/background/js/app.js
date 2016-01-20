@@ -27,8 +27,9 @@ var gApp = angular.module('gApp', [
     'ngFileUpload'
 ]);
 
-gApp.config(function ($routeProvider, $compileProvider) {
+gApp.config(function ($routeProvider, $compileProvider, $sceDelegateProvider) {
     $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|chrome-extension):/);
+    $sceDelegateProvider.resourceUrlWhitelist(['self', 'https://gorgias.io/**', 'http://localhost:*/**']);
     $routeProvider
         .when('/list', {
             controller: 'ListCtrl',
@@ -118,21 +119,23 @@ gApp.run(function ($rootScope, $location, $http, $timeout, ProfileService, Setti
     $rootScope.savedEmail = false;
     $rootScope.baseURL = Settings.defaults.baseURL;
     $rootScope.apiBaseURL = Settings.defaults.apiBaseURL;
+    $rootScope.trustedSignupURL = $rootScope.baseURL + "signup/startup-monthly-usd-1/is_iframe=yes";
 
     SettingsService.get('settings').then(function (settings) {
         // Make sure that we have all the default
         var keys = Object.keys(settings);
         var changed = false;
+
         for (var key in Settings.defaults.settings) {
             if (keys.indexOf(key) === -1) {
                 settings[key] = Settings.defaults.settings[key];
                 changed = true;
             }
         }
+
         if (changed) {
             SettingsService.set('settings', settings);
         }
-
 
         // disable mixpanel if stats are not enabled
         if (!settings.stats.enabled) {

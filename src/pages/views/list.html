@@ -34,8 +34,8 @@
     </div>
     <div class="row no-margin checkbox-wrapper">
         <input type="checkbox" ng-click="toggleSelectAll()" ng-model="selectedAll"/>
-        <span ng-show="!selectedAll">Select all</span>
-        <span ng-show="selectedAll">Selected <strong>{{ selectedQuicktexts.length }}</strong> templates</span>
+        <span ng-show="!selectedAll" ng-click="toggleSelectAll(true)" >Select all</span>
+        <span ng-show="selectedAll" ng-click="toggleSelectAll(false)" >Selected <strong>{{ selectedQuicktexts.length }}</strong> templates</span>
     </div>
 </div>
 

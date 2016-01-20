@@ -501,13 +501,16 @@ gApp.controller('ListCtrl',
                         $scope.templates.splice($scope.templates.indexOf($scope.selectedQuicktexts), 1);
                     }
                     $scope.reloadTemplates();
+
+                    $scope.selectedAll = false;
                 }
             }
-
-            $scope.selectedAll = false;
         };
 
-        $scope.toggleSelectAll = function () {
+        $scope.toggleSelectAll = function (state) {
+            if (state != undefined) {
+                $scope.selectedAll = state;
+            }
             if ($scope.templates.length > 0) {
                 _.each($scope.filteredTemplates, function (qt) {
                     qt.selected = $scope.selectedAll;
