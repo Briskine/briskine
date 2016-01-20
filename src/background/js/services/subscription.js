@@ -2,7 +2,7 @@ gApp.service('SubscriptionService', function($q, $resource) {
     var self = this;
     var subResource = $resource(Settings.defaults.apiBaseURL + 'subscriptions');
     var couponResource = $resource(Settings.defaults.apiBaseURL + 'coupons');
-    var planResource = $resource(Settings.defaults.apiBaseURL + 'plans');
+    var planResource = $resource(Settings.defaults.apiBaseURL + 'plans/startup');
 
     self.plans = function() {
         var deferred = $q.defer();
