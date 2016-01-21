@@ -149,6 +149,16 @@ gApp.run(function ($rootScope, $location, $http, $timeout, ProfileService, Setti
     });
 
     $rootScope.profileService = ProfileService;
+    $rootScope.profile = {};
+    // setup profile
+    ProfileService.savedTime().then(function (savedTime) {
+        $rootScope.profile.savedTime = savedTime;
+    });
+
+    ProfileService.words().then(function (words) {
+        $rootScope.profile.savedWords = words;
+        $rootScope.profile.savedWordsNice = ProfileService.reduceNumbers(words);
+    });
 
     $rootScope.connectSocial = function(provider, scope) {
         url = $rootScope.baseURL + 'authorize/' + provider;

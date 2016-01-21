@@ -1,12 +1,12 @@
 gApp.controller('SidebarCtrl', function ($scope, $location, $http, $window,
-                                         AccountService, SettingsService, ProfileService, TemplateService, FilterTagService) {
+                                         AccountService, SettingsService, TemplateService, FilterTagService) {
     $scope.profile = {};
     $scope.filterTags = [];
     $scope.baseURL = Settings.defaults.baseURL;
 
-    $window.addEventListener('message', function(e){
+    $window.addEventListener('message', function (e) {
         console.log(e.data);
-        if (e.data == "gorgias-signedup-reload"){
+        if (e.data == "gorgias-signedup-reload") {
             location.reload(true);
         }
     });
@@ -14,7 +14,7 @@ gApp.controller('SidebarCtrl', function ($scope, $location, $http, $window,
     // setup account
 
     function loadAccount() {
-        AccountService.get().then(function(account) {
+        AccountService.get().then(function (account) {
             $scope.account = account;
         });
     }
@@ -29,7 +29,15 @@ gApp.controller('SidebarCtrl', function ($scope, $location, $http, $window,
             for (var t in r) {
                 tags.push({name: t, count: r[t]});
             }
-
+            tags.sort(function (a, b) {
+                var aName = a.name.toLowerCase();
+                var bName = b.name.toLowerCase();
+                if (aName < bName)
+                    return -1;
+                if (aName > bName)
+                    return 1;
+                return 0;
+            });
             $scope.tags = tags;
         });
     }
@@ -38,17 +46,6 @@ gApp.controller('SidebarCtrl', function ($scope, $location, $http, $window,
 
     $scope.toggleFilterTag = FilterTagService.toggleFilterTag;
     $scope.emptyFilterTags = FilterTagService.emptyFilterTags;
-
-
-    // setup profile
-    ProfileService.savedTime().then(function (savedTime) {
-        $scope.profile.savedTime = savedTime;
-    });
-
-    ProfileService.words().then(function (words) {
-        $scope.profile.savedWords = words;
-        $scope.profile.savedWordsNice = ProfileService.reduceNumbers(words);
-    });
 
     // logout function
     $scope.logOut = function () {
@@ -61,7 +58,7 @@ gApp.controller('SidebarCtrl', function ($scope, $location, $http, $window,
     }
 
     // event listeners
-    $scope.$on('toggledFilterTag', function() {
+    $scope.$on('toggledFilterTag', function () {
         $scope.filterTags[0] = FilterTagService.filterTags[0];
         $location.path('/list');
     });

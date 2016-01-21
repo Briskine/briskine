@@ -48,8 +48,8 @@ body {
 }
 
 .avatar {
-  width: 30px;
-  border-radius: 100%;
+    width: 30px;
+    border-radius: 100%;
 }
 
 /* Fixed header
@@ -119,6 +119,22 @@ header {
     transform: translate3d(-50px, 0, 0);
 }
 
+.tag {
+    color: #777;
+    font-size: 1.2em;
+    .icon {
+        color: #d6d6d6;
+        font-size: .8em;
+    }
+    text-decoration: none;
+    //font-style: italic;
+
+    &:focus {
+        text-decoration: none;
+        color: inherit;
+    }
+}
+
 /* Sidebar
  */
 
@@ -128,12 +144,15 @@ header {
     left: 0;
     width: $sidebarWidth;
     height: 100%;
-    overflow-y: auto;
-    padding: emCalc(16) emCalc(20) 0 emCalc(22);
+    padding: 0 emCalc(20) 0 emCalc(22);
 
     .label-wrapper {
         margin: 7px 1px;
-        display: inline-block;
+    }
+    .sidebar-container {
+        overflow-y: auto;
+        height: 89%;
+        padding-left: 10px;
     }
 
     .title {
@@ -143,10 +162,12 @@ header {
     .tag-list {
         padding-top: 5px;
         padding-bottom: 5px;
-        max-height: 18em;
-        overflow-y: auto;
-        border: 1px solid $grey1;
-        border-radius: 3px;
+    }
+    .nav-stacked {
+        margin: 0;
+        .a {
+            font-size: 1.1em;
+        }
     }
 }
 
@@ -176,6 +197,160 @@ header {
 .profile-body {
     margin-bottom: emCalc(28);
 }
+
+/* Profile
+*/
+.profile {
+    text-align: center;
+    margin-right: 0;
+    padding-top: 5px;
+
+    .profile-body {
+        clearfix();
+
+        .profile-picture {
+            padding: 0;
+
+            img {
+                max-width: emCalc(80);
+                float: left;
+            }
+        }
+
+        .profile-details {
+            padding: 0;
+            padding-top: emCalc(6);
+            cursor: default;
+
+            p {
+                margin: 0;
+                color: lighten($black, 20%);
+                text-align: left;
+
+                strong {
+                    font-size: emCalc(20);
+                    color: $black;
+                }
+            }
+        }
+
+        .profile-dropdown {
+            padding: 0;
+            padding-top: emCalc(8);
+
+            .dropdown-toggle {
+                cursor: pointer;
+                background: none;
+
+                &:hover {
+                    background: none;
+                }
+            }
+        }
+
+    }
+}
+
+.profile-stats {
+    font-size: 1.2em;
+    text-align: center;
+    color: $black !important;
+    width: 220px;
+
+    padding-right: 9px;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+
+    .close {
+        top: -9px;
+        right: 0;
+    }
+
+    .btn-twitter {
+        text-align: center;
+        display: block;
+        width: 120px;
+        height: 20px;
+        padding: 1px 8px 3px 6px;
+        margin: 0 auto;
+        margin-top: 6px;
+        font-weight: 500;
+        color: #fff;
+        cursor: pointer;
+        background-color: #1b95e0;
+        border-radius: 3px;
+        box-sizing: border-box;
+
+        span {
+            font-size: 11px;
+            margin-left: 3px;
+            white-space: nowrap;
+        }
+        span, .fa {
+            vertical-align: top;
+        }
+        .fa {
+            padding-top: 2px;
+        }
+
+        &:hover, &:active, &:focus {
+            background-color: #0c7abf;
+            color: #fff;
+            text-decoration: none;
+        }
+    }
+}
+
+/* Sidebar footer
+ */
+
+.label-container {
+    margin: 5px 1px;
+    display: inline-block;
+
+    .label {
+        font-size: 80%;
+    }
+}
+
+.sidebar-separator {
+    width: 120px;
+    height: 1px;
+    margin: 0 auto;
+    border-radius: 1px 1px;
+    //background-color: #e5e5e5;
+}
+
+.sidebar-footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    height: 10%;
+    background: #fff;
+    padding: emCalc(16) emCalc(20) emCalc(20) emCalc(20);
+
+    img.avatar {
+        border-radius: 5px;
+        width: 50px;
+    }
+
+    .sync-status {
+        transition: all .1s ease-in;
+        opacity: .6;
+
+        &:hover {
+            opacity: 1;
+        }
+
+        .sync-label {
+            padding-bottom: emCalc(8);
+        }
+    }
+}
+
+/* List
+  */
 
 /* List group item
  */
@@ -220,9 +395,6 @@ header {
         background: lighten($color1, 90%);
     }
 }
-
-/* List
-  */
 
 .checkbox-wrapper {
     padding: 0.8em 0 0 0.4em;
@@ -392,100 +564,6 @@ header {
     }
 }
 
-/* Profile
- */
-.profile, .profile-extra {
-    text-align: center;
-    margin-right: 0;
-
-    .profile-body {
-        clearfix();
-
-        .profile-picture {
-            padding: 0;
-
-            img {
-                max-width: emCalc(80);
-                float: left;
-            }
-        }
-
-        .profile-details {
-            padding: 0;
-            padding-top: emCalc(6);
-            cursor: default;
-
-            p {
-                margin: 0;
-                color: lighten($black, 20%);
-                text-align: left;
-
-                strong {
-                    font-size: emCalc(20);
-                    color: $black;
-                }
-            }
-        }
-
-        .profile-dropdown {
-          padding: 0;
-          padding-top: emCalc(8);
-
-          .dropdown-toggle {
-            cursor: pointer;
-            background: none;
-
-            &:hover {
-              background: none;
-            }
-          }
-        }
-
-    }
-
-    .profile-stats {
-        font-size: 1.2em;
-        color: $black !important;
-        margin-bottom: 10px;
-    }
-}
-
-/* Sidebar footer
- */
-
-.label-container {
-    margin: 5px 1px;
-    display: inline-block;
-
-    .label {
-        font-size: 80%;
-    }
-}
-
-.sidebar-footer {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    padding: emCalc(16) emCalc(20) emCalc(20) emCalc(20);
-
-    .twitter-badge {
-        width: 120px;
-    }
-
-    .sync-status {
-        transition: all .1s ease-in;
-        opacity: .6;
-
-        &:hover {
-            opacity: 1;
-        }
-
-        .sync-label {
-            padding-bottom: emCalc(8);
-        }
-    }
-}
-
 /* Blacklist
  */
 
@@ -566,7 +644,6 @@ header {
     }
 }
 
-
 /* Premium feature
  */
 
@@ -580,32 +657,4 @@ header {
     border-left-color: #E6AF3A;
 }
 
-.btn-twitter {
-    position: relative;
-    height: 20px;
-    padding: 3px 8px 3px 6px;
-    font-weight: 500;
-    color: #fff;
-    cursor: pointer;
-    background-color: #1b95e0;
-    border-radius: 3px;
-    box-sizing: border-box;
 
-    span {
-        font-size: 11px;
-        margin-left: 3px;
-        white-space: nowrap;
-    }
-    span, .fa {
-        vertical-align: top;
-    }
-    .fa {
-        padding-top: 2px;
-    }
-
-    &:hover, &:active, &:focus {
-        background-color: #0c7abf;
-        color: #fff;
-        text-decoration: none;
-    }
-}

@@ -9,6 +9,17 @@ gApp.controller('ListCtrl',
 
         var properties = $route.current.locals.properties;
 
+        $scope.title = "All templates";
+
+        switch(properties.list) {
+            case 'shared':
+                $scope.title = "Shared templates";
+                break
+            case 'private':
+                $scope.title = "Private templates";
+                break
+        }
+
         $scope.shareData = {
             sharing: {},
             members: [],

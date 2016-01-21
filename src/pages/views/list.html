@@ -1,5 +1,5 @@
 <header>
-    <h1>Templates</h1>
+    <h1>{{title}}</h1>
 
     <div class="pull-right header-actions">
         <input type="text" class="form-control" ng-model="searchText" placeholder="Search templates" tabindex="0"
@@ -84,9 +84,7 @@
                         </p>
 
                         <p class="list-group-item-text quicktext-tags" ng-if="::quicktext.tags">
-                            <div class="label-wrapper" ng-repeat="tag in quicktext.tags.split(',')">
-                                <span class="label label-default">{{::tag}}</span>
-                            </div>
+                            <div class="label-wrapper" ng-repeat="tag in quicktext.tags.split(',')"><span class="tag" ng-if="tag"><i class="fa fa-hashtag icon"></i>{{::tag}} </span></div>
                         </p>
                     </div>
 
