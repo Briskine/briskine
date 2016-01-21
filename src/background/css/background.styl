@@ -1,4 +1,4 @@
-/* Gorgias Chrome Extension
+///* Gorgias Chrome Extension
  */
 
 @import "nib";
@@ -151,8 +151,9 @@ header {
     }
     .sidebar-container {
         overflow-y: auto;
-        height: 89%;
+        height: 100%;
         padding-left: 10px;
+        padding-bottom: 100px;
     }
 
     .title {
@@ -314,14 +315,6 @@ header {
     }
 }
 
-.sidebar-separator {
-    width: 120px;
-    height: 1px;
-    margin: 0 auto;
-    border-radius: 1px 1px;
-    //background-color: #e5e5e5;
-}
-
 .sidebar-footer {
     position: fixed;
     bottom: 0;
@@ -329,6 +322,7 @@ header {
     height: 10%;
     background: #fff;
     padding: emCalc(16) emCalc(20) emCalc(20) emCalc(20);
+    //border-top: 1px solid #e5e5e5;
 
     img.avatar {
         border-radius: 5px;
