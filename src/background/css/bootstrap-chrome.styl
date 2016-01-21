@@ -74,18 +74,25 @@ input[type='password'],
 
 .selectize-input {
     padding: 2px 2px 5px 6px !important;
+
     &.focus {
         box-shadow: none;
-        border-color: $color1;
+        border-color: $ligthgrey;
     }
     .item {
         margin-right: 4px;
+        border: 1px solid $ligthgrey;
+        border-radius: 3px;
+        padding-left: 4px;
+        margin-top: 2px;
+        cursor: pointer;
+
         &.active {
-            background-color: $color1;
+            background-color: $lightergrey;
         }
 
         a {
-            padding-top: 4px !important;
+            padding-top: 3px !important;
         }
     }
 }

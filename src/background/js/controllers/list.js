@@ -331,7 +331,7 @@ gApp.controller('ListCtrl',
                     options: tagOptions,
                     render: {
                         item: function (item, escape) {
-                            return '<span class="label label-default item">' + escape(item.text) + '</span>';
+                            return '<span class="tag item"><i class="fa fa-hashtag"></i>' + escape(item.text) + '</span>';
                         }
                     }
                 });
@@ -570,6 +570,11 @@ gApp.controller('ListCtrl',
         };
 
         $scope.$on('toggledFilterTag', function () {
+            if (FilterTagService.filterTags[0]) {
+                $scope.title = "<i class='fa fa-hashtag'/>" + FilterTagService.filterTags[0] + " templates";
+            } else {
+                $scope.title = "All templates";
+            }
             filterQuicktexts();
         });
 

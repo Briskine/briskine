@@ -1,6 +1,6 @@
 /*jshint multistr: true */
 
-gApp.service('FilterTagService', function($rootScope) {
+gApp.service('FilterTagService', function ($rootScope) {
     var filterTags = [];
 
     function toggleFilterTag(tag) {
@@ -18,13 +18,11 @@ gApp.service('FilterTagService', function($rootScope) {
         $rootScope.$broadcast('toggledFilterTag');
     }
 
-    var filterTagService = {
+    return {
         toggleFilterTag: toggleFilterTag,
         emptyFilterTags: emptyFilterTags,
         filterTags: filterTags
     };
-
-    return filterTagService;
 });
 
 // Template operations

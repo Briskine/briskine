@@ -20,6 +20,8 @@ emCalc(h) {
  */
 
 $grey1 = #eee;
+$ligthgrey = rgba(0, 0, 0, 0.15);
+$lightergrey = rgba(0, 0, 0, 0.05);
 $black = #333;
 $link = #15C;
 $premiumColor = #FFB821;
@@ -165,12 +167,18 @@ header {
     }
 }
 
+img.avatar {
+    border-radius: 5px;
+    width: 40px;
+}
+
 /* Premium feature
 */
 
 .premium {
-   color: $premiumColor !important;
+    color: $premiumColor !important;
 }
+
 .premium-feature {
     padding: 9px 6px 9px 6px;
     border: 1px solid #e8e8e8;
