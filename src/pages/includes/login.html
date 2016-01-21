@@ -13,26 +13,28 @@
 
             <div class="row">
                 <div class="col-xs-12">
-                <div class="panel-body">
+                    <div class="panel-body">
 
-            <div id="signin-error" class="alert alert-danger" role="alert" ng-show="login.error != null">
-                <p><b>{{ login.error }}</b></p>
-            </div>
-                    <form novalidate>
-                        <div class="form-group">
-                            <label for="signin-email"><h5>Email adress</h5></label>
-                            <input type="email" class="form-control" id="signin-email" placeholder="Your email" ng-model="login.credentials.email"/>
+                        <div id="signin-error" class="alert alert-danger" role="alert" ng-show="login.error != null">
+                            <p><b>{{ login.error }}</b></p>
                         </div>
-                        <div class="form-group">
-                            <label for="signin-pwd"><h5>Password</h5></label>
-                            <input type="password" class="form-control" id="signin-pwd" placeholder="Your password" ng-model="login.credentials.password"/>
-                        </div>
-                        <div class="text-right">
-                            <a class="recover-password" href="/#forgot">Forgot password?</a>
-                            <button type="submit" class="btn btn-default" ng-click="login.signin()">Login</button>
-                        </div>
-                    </form>
-                </div>
+                        <form novalidate>
+                            <div class="form-group">
+                                <label for="signin-email">Email</label>
+                                <input type="email" class="form-control" id="signin-email" placeholder="Your email"
+                                       ng-model="login.credentials.email"/>
+                            </div>
+                            <div class="form-group">
+                                <label for="signin-pwd">Password</label>
+                                <input type="password" class="form-control" id="signin-pwd" placeholder="Your password"
+                                       ng-model="login.credentials.password"/>
+                            </div>
+                            <div class="text-right">
+                                <a class="recover-password" href ng-click="login.forgot()">Forgot password?</a>&nbsp;&nbsp;
+                                <button type="submit" class="btn btn-default" ng-click="login.signin()">Login</button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
 

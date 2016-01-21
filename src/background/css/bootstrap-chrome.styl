@@ -105,25 +105,26 @@ input[type='password'],
  */
 
 .nav.nav-pills {
+    ul {
+        padding-left: 0;
+    }
 
-    > li {
-        margin-left: emCalc(-22) !important;
+    li {
+        margin-left: -10px;
         border-left: 6px solid transparent;
 
         line-height: .8em;
+        list-style: none;
 
-        > a {
+        a {
             color: darken($grey1, 40%);
             border-radius: 0;
+            padding: 5px 15px;
 
             &:focus,
             &:hover {
                 background: none;
             }
-        }
-
-        &.pill-premium-feature {
-            border-color: #E6AF3A;
         }
 
         &.active {
@@ -147,10 +148,6 @@ input[type='password'],
 
 .nav-stacked {
     margin: 1em 0;
-
-    > li:last-child {
-        margin-top: 2em;
-    }
 }
 
 /* Table

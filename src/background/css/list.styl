@@ -1,0 +1,164 @@
+@import "nib";
+
+/* Template List styles
+  */
+
+/* List group item
+ */
+.list-group-item {
+    position: relative;
+    display: block;
+    overflow: hidden;
+    border-radius: 0 !important;
+
+    .hover-actions {
+        display: block;
+        position: absolute;
+        top: 50%;
+        right: emCalc(12);
+        transform: translateY(-50%);
+        min-width: 200px;
+        text-align: right;
+
+        button
+        .btn {
+            display: inline-block;
+            margin-left: 10px;
+
+            transition: all .1s ease-out;
+            opacity: 0;
+
+            &:focus {
+                opacity: 1;
+            }
+        }
+    }
+
+    .list-group-item-link:focus ~ .hover-actions,
+    &:hover .hover-actions {
+        .btn,
+        button {
+            opacity: 1;
+        }
+    }
+
+    &.active {
+        background: lighten($color1, 90%);
+    }
+}
+
+.checkbox-wrapper {
+    padding: 0.8em 0 0 0.4em;
+    float: left;
+    label {
+        cursor: pointer;
+    }
+}
+
+.btn-toolbar {
+    .btn.pull-right, .btn-group.pull-right {
+        margin-left: 10px;
+    }
+}
+
+.quicktexts-list {
+
+    .label-wrapper {
+        margin: 4px 2px;
+        display: inline-block;
+    }
+
+    .list-group-item {
+        padding: 0;
+
+        .list-group-item-link {
+            display: block;
+            padding: emCalc(12) emCalc(16);
+            cursor: pointer;
+
+            color: $black;
+
+            &:hover {
+                text-decoration: none;
+            }
+
+            &:focus {
+                background: lighten($color1, 90%);
+            }
+        }
+
+        &:hover {
+            background-color: $grey1;
+        }
+    }
+
+    .quicktext-detail {
+        margin-bottom: emCalc(8);
+
+        strong {
+            font-weight: normal;
+            font-size: emCalc(12);
+            color: rgba($black, 50%);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .quicktext-template {
+            display: block;
+        }
+
+        p {
+            margin: 0;
+        }
+    }
+
+    .quicktext-shortcut {
+        padding-top: 8px;
+        span {
+            font-size: 16px;
+            padding: .25em .5em;
+            border: 1px solid #CCC;
+            background-color: #F2F2F2;
+            -webkit-border-radius: 5px;
+            border-radius: 5px;
+            -webkit-box-shadow: 0 2px 2px #F2F2F2;
+            box-shadow: 0 2px 2px #F2F2F2;
+        }
+    }
+}
+
+.template-list-empty {
+    padding: 12px;
+}
+
+.quicktext-filters {
+    padding-top: 16px;
+    padding-bottom: 5px;
+    line-height: 21px;
+}
+
+.selectize-dropdown-content {
+    .label {
+        color: black;
+    }
+}
+
+/* new/edit modal
+*/
+.quicktext-modal {
+    .modal-footer .btn + .btn {
+        margin-bottom: 0.25em;
+        margin-left: 5px;
+    }
+    .configure-fields {
+        padding-top: 2px;
+        margin-right: 8px;
+        .dropdown-menu {
+            padding: 8px;
+        }
+    }
+    .modal-title {
+        font-weight: bold;
+        font-size: 1.8em;
+    }
+}

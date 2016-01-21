@@ -21,4 +21,12 @@ gApp.controller('LoginCtrl', function ($http, $route, $rootScope) {
             $('#signin-error').alert();
         });
     };
+
+    self.forgot= function() {
+        $('#signin-modal').modal('hide');
+        setTimeout(function(){
+            $('#forgot-modal').modal();
+        }, 300)
+
+    };
 });

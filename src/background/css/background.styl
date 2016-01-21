@@ -22,34 +22,27 @@ emCalc(h) {
 $grey1 = #eee;
 $black = #333;
 $link = #15C;
+$premiumColor = #FFB821;
 $color1 = rgb(77, 144, 254);
 $sidebarWidth = 248px;
 $contentWidth = 800px;
 
-/* Bootstrap theme
- */
+// Bootstrap theme
 @import "bootstrap-chrome.styl";
-
-/* Editor styles
- */
 @import "editor.styl";
+@import "sidebar.styl";
+@import "list.styl";
 
 /* General
  */
 body {
     padding-top: emCalc(86);
-
     color: $black;
 }
 
 .container {
     width: 100%;
     padding: 0;
-}
-
-.avatar {
-    width: 30px;
-    border-radius: 100%;
 }
 
 /* Fixed header
@@ -79,98 +72,25 @@ header {
     margin-left: $sidebarWidth;
 }
 
-.container-animation {
-    position: relative;
-    display: block;
-    width: 100%;
-}
-
-.container-animation.ng-enter,
-.container-animation.ng-leave {
-    transition: all .1s ease-out;
-
-    header {
-        position: absolute;
-        top: emCalc(-88);
-        left: 0;
-        width: 100%;
-    }
-}
-
-.container-animation.ng-enter {
-    opacity: 0;
-    transform: translate3d(50px, 0, 0);
-}
-
-.container-animation.ng-enter.ng-enter-active {
-    opacity: 1;
-    z-index: 1000;
-    transform: translate3d(0, 0, 0);
-}
-
-.container-animation.ng-leave {
-    position: absolute;
-    z-index: 101;
-    transform: translate3d(0, 0, 0);
-}
-
-.container-animation.ng-leave.ng-leave-active {
-    opacity: 0;
-    transform: translate3d(-50px, 0, 0);
-}
-
+// Tags, how are they displayed
 .tag {
-    color: #777;
-    font-size: 1.2em;
+    color: #777 !important;
+    font-size: 1.2em !important;
     .icon {
-        color: #d6d6d6;
-        font-size: .8em;
+        color: #d6d6d6 !important;
+        font-size: .8em !important;
     }
-    text-decoration: none;
+    font-weight: normal !important;
+    text-decoration: none !important;
     //font-style: italic;
 
-    &:focus {
+    &:focus, &:hover {
         text-decoration: none;
         color: inherit;
     }
 }
 
-/* Sidebar
- */
-
-.sidebar-wrapper {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: $sidebarWidth;
-    height: 100%;
-    padding: 0 emCalc(20) 0 emCalc(22);
-
-    .label-wrapper {
-        margin: 7px 1px;
-    }
-    .sidebar-container {
-        overflow-y: auto;
-        height: 89%;
-        padding-left: 10px;
-    }
-
-    .title {
-        padding: 10px 15px;
-    }
-
-    .tag-list {
-        padding-top: 5px;
-        padding-bottom: 5px;
-    }
-    .nav-stacked {
-        margin: 0;
-        .a {
-            font-size: 1.1em;
-        }
-    }
-}
-
+// deprecated - should be removed
 .brand {
     display: block;
     margin-bottom: emCalc(8);
@@ -193,64 +113,7 @@ header {
     }
 }
 
-.anonymous,
-.profile-body {
-    margin-bottom: emCalc(28);
-}
-
-/* Profile
-*/
-.profile {
-    text-align: center;
-    margin-right: 0;
-    padding-top: 5px;
-
-    .profile-body {
-        clearfix();
-
-        .profile-picture {
-            padding: 0;
-
-            img {
-                max-width: emCalc(80);
-                float: left;
-            }
-        }
-
-        .profile-details {
-            padding: 0;
-            padding-top: emCalc(6);
-            cursor: default;
-
-            p {
-                margin: 0;
-                color: lighten($black, 20%);
-                text-align: left;
-
-                strong {
-                    font-size: emCalc(20);
-                    color: $black;
-                }
-            }
-        }
-
-        .profile-dropdown {
-            padding: 0;
-            padding-top: emCalc(8);
-
-            .dropdown-toggle {
-                cursor: pointer;
-                background: none;
-
-                &:hover {
-                    background: none;
-                }
-            }
-        }
-
-    }
-}
-
+// Stats + please tweet about us button to the right side
 .profile-stats {
     font-size: 1.2em;
     text-align: center;
@@ -302,231 +165,36 @@ header {
     }
 }
 
-/* Sidebar footer
- */
+/* Premium feature
+*/
 
-.label-container {
-    margin: 5px 1px;
-    display: inline-block;
-
-    .label {
-        font-size: 80%;
-    }
+.premium {
+   color: $premiumColor !important;
 }
-
-.sidebar-separator {
-    width: 120px;
-    height: 1px;
-    margin: 0 auto;
-    border-radius: 1px 1px;
-    //background-color: #e5e5e5;
-}
-
-.sidebar-footer {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    height: 10%;
-    background: #fff;
-    padding: emCalc(16) emCalc(20) emCalc(20) emCalc(20);
-
-    img.avatar {
-        border-radius: 5px;
-        width: 50px;
-    }
-
-    .sync-status {
-        transition: all .1s ease-in;
-        opacity: .6;
-
-        &:hover {
-            opacity: 1;
-        }
-
-        .sync-label {
-            padding-bottom: emCalc(8);
-        }
-    }
-}
-
-/* List
-  */
-
-/* List group item
- */
-.list-group-item {
-    position: relative;
-    display: block;
-    overflow: hidden;
-    border-radius: 0 !important;
-
-    .hover-actions {
-        display: block;
-        position: absolute;
-        top: 50%;
-        right: emCalc(12);
-        transform: translateY(-50%);
-        min-width: 200px;
-        text-align: right;
-
-        button
-        .btn {
-            display: inline-block;
-            margin-left: 10px;
-
-            transition: all .1s ease-out;
-            opacity: 0;
-
-            &:focus {
-                opacity: 1;
-            }
-        }
-    }
-
-    .list-group-item-link:focus ~ .hover-actions,
-    &:hover .hover-actions {
-        .btn,
-        button {
-            opacity: 1;
-        }
-    }
-
-    &.active {
-        background: lighten($color1, 90%);
-    }
-}
-
-.checkbox-wrapper {
-    padding: 0.8em 0 0 0.4em;
-    float: left;
-}
-
-.btn-toolbar {
-    .btn.pull-right, .btn-group.pull-right {
-        margin-left: 10px;
-    }
-}
-
-.quicktexts-list {
-
-    .label-wrapper {
-        margin: 4px 2px;
-        display: inline-block;
-    }
-
-    .list-group-item {
-        padding: 0;
-
-        .list-group-item-link {
-            display: block;
-            padding: emCalc(12) emCalc(16);
-            cursor: pointer;
-
-            color: $black;
-
-            &:hover {
-                text-decoration: none;
-            }
-
-            &:focus {
-                background: lighten($color1, 90%);
-            }
-        }
-
-        &:hover {
-            background-color: $grey1;
-        }
-    }
-
-    .quicktext-detail {
-        margin-bottom: emCalc(8);
-
-        strong {
-            font-weight: normal;
-            font-size: emCalc(12);
-            color: rgba($black, 50%);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .quicktext-template {
-            display: block;
-        }
-
-        p {
-            margin: 0;
-        }
-    }
-
-    .quicktext-shortcut {
-        padding-top: 8px;
-        span {
-            font-size: 16px;
-            padding: .25em .5em;
-            border: 1px solid #CCC;
-            background-color: #F2F2F2;
-            -webkit-border-radius: 5px;
-            border-radius: 5px;
-            -webkit-box-shadow: 0 2px 2px #F2F2F2;
-            box-shadow: 0 2px 2px #F2F2F2;
-        }
-    }
-}
-
-.template-list-empty {
-    padding: 12px;
-}
-
-.quicktext-filters {
-    padding-top: 16px;
-    padding-bottom: 5px;
-    line-height: 21px;
-}
-
-.selectize-dropdown-content {
-    .label {
-        color: black;
-    }
+.premium-feature {
+    padding: 9px 6px 9px 6px;
+    border: 1px solid #e8e8e8;
+    /*color: #555459;*/
+    border-left-width: 5px;
+    margin: 0 auto 1rem;
+    border-radius: .25rem;
+    border-left-color: $premiumColor;
 }
 
 /* Login modal
  */
 .login-modal {
-
     .modal-dialog {
         max-width: 360px;
-    }
-
-}
-
-/* new/edit modal
- */
-.quicktext-modal {
-    .modal-footer .btn + .btn {
-        margin-bottom: 0.25em;
-        margin-left: 5px;
-    }
-    .configure-fields {
-        padding-top: 2px;
-        margin-right: 8px;
-        .dropdown-menu {
-            padding: 8px;
-        }
-    }
-    .modal-title {
-        font-weight: bold;
-        font-size: 1.8em;
     }
 }
 
 /* Register modal
  */
 .register-modal {
-
     .modal-dialog {
         max-width: 420px;
     }
-
 }
 
 .btn-social {
@@ -644,17 +312,6 @@ header {
     }
 }
 
-/* Premium feature
- */
 
-.premium-feature {
-    padding: .75rem 1rem .75rem 1rem;
-    border: 1px solid #e8e8e8;
-    /*color: #555459;*/
-    border-left-width: 5px;
-    margin: 0 auto 1rem;
-    border-radius: .25rem;
-    border-left-color: #E6AF3A;
-}
 
 

@@ -11,43 +11,47 @@
 
 <div class="container">
     <div class="sidebar-wrapper" ng-controller="SidebarCtrl">
-
         <div class="sidebar-container">
             <ul class="nav nav-pills nav-stacked">
                 <li class="title"><h4>Templates</h4></li>
-                <li ng-click="emptyFilterTags()" ng-class="{ 'active': (path === '/list') }"><a href="#/list"><b>All</b></a>
+                <!-- templates -->
+                <li ng-click="emptyFilterTags()" ng-class="{ 'active': (path === '/list') }"><a href="#/list">All</a>
+                </li>
+                <li ng-show="account.info.name" ng-click="emptyFilterTags()"
+                    ng-class="{ 'active': (path === '/list/shared') }"><a href="#/list/shared">Shared</a></li>
+                <li ng-show="account.info.name" ng-click="emptyFilterTags()"
+                    ng-class="{ 'active': (path === '/list/private') }"><a href="#/list/private">Private</a></li>
+
+                <li ng-show="!account.info.name" ng-click="emptyFilterTags()">
+                    <a href data-toggle="modal" data-target="#signup-modal">
+                        <span data-toggle="tooltip"
+                              data-placement="bottom"
+                              title="Upgrade to share templates with your team"><i class="fa fa-briefcase premium"></i> Shared</span></a>
+                </li>
+                <li ng-show="!account.info.name" ng-click="emptyFilterTags()">
+                    <a href data-toggle="modal" data-target="#signup-modal">
+                        <span data-toggle="tooltip"
+                              data-placement="bottom"
+                              title="Upgrade to share templates with your team"><i class="fa fa-briefcase premium"></i> Private</span></a>
                 </li>
 
-                <li ng-show="account.info.name" ng-click="emptyFilterTags()"
-                    ng-class="{ 'active': (path === '/list/shared') }"><a href="#/list/shared"><b>Shared</b></a></li>
-                <li ng-show="account.info.name" ng-click="emptyFilterTags()"
-                    ng-class="{ 'active': (path === '/list/private') }"><a href="#/list/private"><b>Private</b></a></li>
-
-                <li ng-show="!account.info.name" ng-click="emptyFilterTags()" class="pill-premium-feature"><a
-                    href="https://gorgias.io/#pricing" target="_blank"><b>Shared</b></a></li>
-                <li ng-show="!account.info.name" ng-click="emptyFilterTags()" class="pill-premium-feature"><a
-                    href="https://gorgias.io/#pricing" target="_blank"><b>Private</b></a></li>
-
+                <!-- tags -->
                 <li class="title" ng-show="tags.length"><h4>Tags</h4></li>
-                <li class="tag-list" ng-show="tags.length">
-                    <div ng-repeat="t in tags" class="label-wrapper">
-                        <a href='' class="tag"
-                           ng-class="{true: 'active', false: ''}[filterTags.indexOf(t.name) !== -1]"
-                           ng-click="toggleFilterTag(t.name)"
-                           title="Toggle this tag to filter the templates">
-                            <i class="fa fa-hashtag icon"></i> {{t.name}}<span ng-if="t.count > 1"> ({{t.count}})</span>
-                        </a>
-                    </div>
+                <li ng-repeat="t in tags" class="tags-wrapper"
+                    ng-class="{true: 'active', false: ''}[filterTags.indexOf(t.name) !== -1]">
+                    <a href class="tag"
+                       ng-click="toggleFilterTag(t.name)"
+                       title="Toggle this tag to filter the templates">
+                        <i class="fa fa-hashtag icon"></i> {{t.name}}<span ng-if="t.count > 1"> ({{t.count}})</span>
+                    </a>
                 </li>
-
-                <li><a
-                    href="https://chrome.google.com/webstore/detail/gorgias-email-templates-f/lmcngpkjkplipamgflhioabnhnopeabf/support"
-                    class="btn btn-xs btn-default"
-                    target="_blank">Support &amp; Feedback</a></li>
+                <li class="support-link">
+                    <a href="https://chrome.google.com/webstore/detail/gorgias-email-templates-f/lmcngpkjkplipamgflhioabnhnopeabf/support"
+                       target="_blank">Support &amp; Feedback</a>
+                </li>
             </ul>
         </div>
         <div class="sidebar-footer">
-            <div class="sidebar-separator"></div>
             <div class="profile">
                 <div class="profile-body" ng-show="account">
                     <div class="profile-picture col-md-4 col-xs-4">
@@ -66,14 +70,17 @@
                         <!--<p>{{ account.email }}</p>-->
                         <p><a href ng-click="logOut()">Log out</a></p>
                     </div>
-                    <a ng-href="#/settings">Settings</a>
                 </div>
-
-                <div class="anonymous premium-feature" ng-show="!account">
-                    <a href data-toggle="modal" data-target="#signin-modal">Login</a> or
+                <div class="anonymous" ng-show="!account">
+                    <a href data-toggle="modal" data-target="#signin-modal">Login</a> or <i
+                    class="fa fa-briefcase premium"></i>
                     <a href data-toggle="modal" data-target="#signup-modal">Upgrade</a>
                     to <em>share</em> templates with your team.<br>
                 </div>
+            </div>
+            <div class="tools">
+                <a ng-href="#/settings" class="settings-icon" title="Settings"><i class="fa fa-gear"></i></a>
+
             </div>
         </div>
     </div>
@@ -86,6 +93,7 @@
         <div class="container-animation" data-ng-view></div>
     </div>
 </div>
+
 <div class="profile-stats alert alert-info alert-dismissible" ng-show="profile.savedWords > 1500">
     <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span>
     </button>
@@ -102,6 +110,7 @@
 </body>
 
 <div ng-include="'includes/login.html'"></div>
+<div ng-include="'includes/forgot.html'"></div>
 <div ng-include="'includes/signup.html'"></div>
 
 </html>
