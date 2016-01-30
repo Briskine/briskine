@@ -230,7 +230,9 @@ App.init = function (settings, doc) {
     App.settings.editor_enabled = settings.editor.enabled;
 
     var blacklistPrivate = [
-        'https://gorgias.io'
+        'https://gorgias.io',
+        'https://usecanvas.com',
+        'http://usecanvas.com'
     ];
 
     // create the full blacklist
