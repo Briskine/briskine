@@ -119,6 +119,7 @@ gApp.run(function ($rootScope, $location, $http, $timeout, ProfileService, Setti
     $rootScope.savedEmail = false;
     $rootScope.baseURL = Settings.defaults.baseURL;
     $rootScope.apiBaseURL = Settings.defaults.apiBaseURL;
+
     $rootScope.trustedSignupURL = $rootScope.baseURL + "signup/startup-monthly-usd-1/is_iframe=yes";
 
     SettingsService.get('settings').then(function (settings) {
