@@ -9,15 +9,15 @@ gApp.controller('ListCtrl',
 
         var properties = $route.current.locals.properties;
 
-        $scope.title = "All templates";
-
         switch(properties.list) {
+            case 'all':
+                $scope.title = "All templates";
             case 'shared':
                 $scope.title = "Shared templates";
-                break
+                break;
             case 'private':
                 $scope.title = "Private templates";
-                break
+                break;
         }
 
         $scope.shareData = {
@@ -82,8 +82,8 @@ gApp.controller('ListCtrl',
         $scope.reloadTemplates = function () {
             TemplateService.filtered([function(template) {
                 if (properties.list == 'all') { return true;}
-                else if (properties.list == 'private') { return template.user.id == $scope.account.id; }
-                else if (properties.list == 'shared') { return template.user.id != $scope.account.id; }
+                else if (properties.list == 'private') { return template.private; }
+                else if (properties.list == 'shared') { return !template.private; }
             }]).then(function (r) {
                 $scope.templates = r;
                 $rootScope.$broadcast('reload')
@@ -572,7 +572,16 @@ gApp.controller('ListCtrl',
             if (FilterTagService.filterTags.length > 0) {
                 $scope.title = "<i class='fa fa-hashtag'/>" + FilterTagService.filterTags[0] + " templates";
             } else {
-                $scope.title = "All templates";
+                switch(properties.list) {
+                    case 'all':
+                        $scope.title = "All templates";
+                    case 'shared':
+                        $scope.title = "Shared templates";
+                        break;
+                    case 'private':
+                        $scope.title = "Private templates";
+                        break;
+                }
             }
             filterQuicktexts();
         });

@@ -107,7 +107,7 @@ gApp.config(["$provide", function ($provide) {
  */
 gApp.run(function ($rootScope, $location, $http, $timeout, ProfileService, SettingsService, TemplateService) {
 
-    $rootScope.$on('$routeChangeStart', function (next, current) {
+    $rootScope.$on('$routeChangeStart', function () {
         $rootScope.path = $location.path();
     });
 
