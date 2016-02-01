@@ -114,11 +114,6 @@ gApp.service('TemplateService', function ($q, $resource, SettingsService) {
     self.sync = function () {
         var deferred = $q.defer();
 
-        if (!self.isLoggedin) {
-            deferred.resolve();
-            return deferred.promise;
-        }
-
         // Get the new or updated templates from the remote server
         self.qRes.query(function (remoteTemplates) {
             var now = new Date().toISOString();

@@ -1,4 +1,4 @@
-gApp.controller('LoginCtrl', function ($http, $route, $rootScope) {
+gApp.controller('LoginCtrl', function ($http, $route, $rootScope, TemplateService, SettingsService) {
     var self = this;
 
     self.credentials = {
@@ -13,9 +13,15 @@ gApp.controller('LoginCtrl', function ($http, $route, $rootScope) {
             method: 'POST',
             url: Settings.defaults.apiBaseURL + 'signin',
             data: self.credentials
-        }).then(function success(response){
+        }).then(function success(){
             $rootScope.$broadcast('loggedIn');
             $('#signin-modal').modal('hide');
+
+            SettingsService.set('isLoggedIn', true).then(
+                TemplateService.sync().then(function() {
+                    $rootScope.$broadcast("templates-sync");
+                })
+            );
         }, function error(response){
             self.error = response.data.error;
             $('#signin-error').alert();
