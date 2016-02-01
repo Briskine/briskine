@@ -569,13 +569,15 @@ gApp.controller('ListCtrl',
         };
 
         $scope.$on('toggledFilterTag', function () {
-            if (FilterTagService.filterTags[0]) {
+            if (FilterTagService.filterTags.length > 0) {
                 $scope.title = "<i class='fa fa-hashtag'/>" + FilterTagService.filterTags[0] + " templates";
             } else {
                 $scope.title = "All templates";
             }
             filterQuicktexts();
         });
+
+        $rootScope.$broadcast('toggledFilterTag');
 
         $scope.loadMore = function () {
             $scope.limitTemplates += 42;
