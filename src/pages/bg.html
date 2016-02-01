@@ -15,20 +15,20 @@
             <ul class="nav nav-pills nav-stacked">
                 <li class="title"><h4>Templates</h4></li>
                 <!-- templates -->
-                <li ng-click="emptyFilterTags()" ng-class="{ 'active': (path === '/list' && filterTags[0] == undefined) }"><a href="#/list">All</a>
+                <li ng-click="emptyFilterTags()" class="template-tab" ng-class="{ 'active': (path === '/list' && filterTags[0] == undefined) }"><a href="#/list">All</a>
                 </li>
-                <li ng-show="account.info.name" ng-click="emptyFilterTags()"
+                <li ng-show="account.info.name" ng-click="emptyFilterTags()" class="template-tab"
                     ng-class="{ 'active': (path === '/list/shared') }"><a href="#/list/shared">Shared</a></li>
-                <li ng-show="account.info.name" ng-click="emptyFilterTags()"
+                <li ng-show="account.info.name" ng-click="emptyFilterTags()" class="template-tab"
                     ng-class="{ 'active': (path === '/list/private') }"><a href="#/list/private">Private</a></li>
 
-                <li ng-show="!account.info.name" ng-click="emptyFilterTags()">
+                <li ng-show="!account.info.name" class="template-tab" ng-click="emptyFilterTags()">
                     <a href data-toggle="modal" data-target="#signup-modal">
                         <span data-toggle="tooltip"
                               data-placement="bottom"
                               title="Upgrade to share templates with your team"><i class="fa fa-briefcase premium"></i> Shared</span></a>
                 </li>
-                <li ng-show="!account.info.name" ng-click="emptyFilterTags()">
+                <li ng-show="!account.info.name" class="template-tab" ng-click="emptyFilterTags()">
                     <a href data-toggle="modal" data-target="#signup-modal">
                         <span data-toggle="tooltip"
                               data-placement="bottom"

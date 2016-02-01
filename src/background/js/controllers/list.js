@@ -103,7 +103,6 @@ gApp.controller('ListCtrl',
         });
 
 
-
         /* Init modal and other dom manipulation
          * when the templates have loaded
          */
