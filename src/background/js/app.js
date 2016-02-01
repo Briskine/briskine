@@ -61,6 +61,16 @@ gApp.config(function ($routeProvider, $compileProvider, $sceDelegateProvider) {
               }
             }
         })
+        .when('/list/tag', {
+            controller: 'ListCtrl',
+            templateUrl: 'views/list.html',
+            reloadOnSearch: false,
+            resolve: {
+              properties: function() {
+                return { list: 'tag' };
+              }
+            }
+        })
         .when('/settings', {
             controller: 'SettingsCtrl',
             templateUrl: 'views/account/base.html'

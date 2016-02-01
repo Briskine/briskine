@@ -60,7 +60,7 @@ gApp.controller('SidebarCtrl', function ($scope, $location, $http, $window,
     // event listeners
     $scope.$on('toggledFilterTag', function () {
         $scope.filterTags[0] = FilterTagService.filterTags[0];
-        $location.path('/list');
+        $location.path('/list/tag');
     });
 
     $scope.$on('reload', loadTags);

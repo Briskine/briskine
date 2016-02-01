@@ -6,8 +6,6 @@ gApp.service('FilterTagService', function ($rootScope) {
     function toggleFilterTag(tag) {
         if (filterTags.length == 0 || filterTags[0] != tag) {
             filterTags[0] = tag;
-        } else {
-            filterTags.splice(0, 1); // remove from tags
         }
 
         $rootScope.$broadcast('toggledFilterTag');
@@ -120,6 +118,7 @@ gApp.service('TemplateService', function ($q, $resource, SettingsService) {
 
             var localSeen = [];
             var remoteSeen = [];
+
             TemplateStorage.get(null, function (localTemplates) {
                 for (var id in localTemplates) {
                     var t = localTemplates[id];
@@ -139,6 +138,7 @@ gApp.service('TemplateService', function ($q, $resource, SettingsService) {
                         localTemplate = localTemplates[id];
 
                         if (localTemplate.remote_id === remoteTemplate.id) {
+                            lastVersion.private = remoteTemplate.private;
                             localTemplate = self._copy(lastVersion, localTemplate);
                             localTemplate.remote_id = remoteTemplate.id;
                             // use the remote created_datetime as reference

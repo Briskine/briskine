@@ -10,13 +10,17 @@ gApp.controller('ListCtrl',
         var properties = $route.current.locals.properties;
 
         switch(properties.list) {
-            case 'all':
-                $scope.title = "All templates";
             case 'shared':
                 $scope.title = "Shared templates";
                 break;
             case 'private':
                 $scope.title = "Private templates";
+                break;
+            case 'tag':
+                $scope.title = "<i class='fa fa-hashtag'/>" + FilterTagService.filterTags[0] + " templates";
+                break;
+            default:
+                $scope.title = "All templates";
                 break;
         }
 
@@ -81,7 +85,7 @@ gApp.controller('ListCtrl',
 
         $scope.reloadTemplates = function () {
             TemplateService.filtered([function(template) {
-                if (properties.list == 'all') { return true;}
+                if (properties.list == 'all' || properties.list == 'tag') { return true;}
                 else if (properties.list == 'private') { return template.private; }
                 else if (properties.list == 'shared') { return !template.private; }
             }]).then(function (r) {
@@ -569,24 +573,23 @@ gApp.controller('ListCtrl',
         };
 
         $scope.$on('toggledFilterTag', function () {
-            if (FilterTagService.filterTags.length > 0) {
-                $scope.title = "<i class='fa fa-hashtag'/>" + FilterTagService.filterTags[0] + " templates";
-            } else {
-                switch(properties.list) {
-                    case 'all':
-                        $scope.title = "All templates";
-                    case 'shared':
-                        $scope.title = "Shared templates";
-                        break;
-                    case 'private':
-                        $scope.title = "Private templates";
-                        break;
-                }
+            switch(properties.list) {
+                case 'shared':
+                    $scope.title = "Shared templates";
+                    break;
+                case 'private':
+                    $scope.title = "Private templates";
+                    break;
+                case 'tag':
+                    $scope.title = "<i class='fa fa-hashtag'/>" + FilterTagService.filterTags[0] + " templates";
+                    break;
+                default:
+                    $scope.title = "All templates";
+                    break;
             }
+
             filterQuicktexts();
         });
-
-        $rootScope.$broadcast('toggledFilterTag');
 
         $scope.loadMore = function () {
             $scope.limitTemplates += 42;
