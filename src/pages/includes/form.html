@@ -1,4 +1,4 @@
-<div class="modal quicktext-modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
+<div id="template-form-modal" ng-controller="TemplateFormCtrl as templateForm" class="modal quicktext-modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
      data-backdrop="static">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -6,14 +6,14 @@
                 <button type="button" class="close" data-dismiss="modal" data-whatever="hello" aria-hidden="true"
                         aria-label="Close"></button>
                 <h4 class="modal-title">
-                    <span ng-show="selectedTemplate.id">Edit template</span>
-                    <span ng-show="!selectedTemplate.id">New template</span>
+                    <span ng-show="templateForm.selectedTemplate.id">Edit template</span>
+                    <span ng-show="!templateForm.selectedTemplate.id">New template</span>
                 </h4>
             </div>
-            <form ng-submit="saveQt()">
+            <form ng-submit="templateForm.saveQt()">
                 <div class="modal-body">
-                    <input type="hidden" id="qt-id" ng-model="selectedTemplate.id"/> <!-- local id -->
-                    <input type="hidden" id="qt-key" ng-model="selectedTemplate.key"/> <!-- sync server id -->
+                    <input type="hidden" id="qt-id" ng-model="templateForm.selectedTemplate.id"/> <!-- local id -->
+                    <input type="hidden" id="qt-key" ng-model="templateForm.selectedTemplate.key"/> <!-- sync server id -->
                     <div id="duplicate-alert-box" class="alert alert-info fade in hide">
                         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
                         <strong>Duplicated!</strong> Please edit this new template and hit <strong>Save
@@ -24,7 +24,7 @@
                         <div class="col-xs-7">
                             <div class="form-group" data-toggle="tooltip" data-placement="bottom">
                                 <label for="qt-title">Template Name</label>
-                                <input type="text" class="form-control" id="qt-title" ng-model="selectedTemplate.title"
+                                <input type="text" class="form-control" id="qt-title" ng-model="templateForm.selectedTemplate.title"
                                        placeholder="Ex: Nice talking to you" autofocus required/>
                             </div>
                         </div>
@@ -47,7 +47,7 @@
                     <div class="form-group" data-toggle="tooltip" data-placement="bottom"
                          title="The e-mail subject will be replaced with this field. Only when this template is used.">
                         <label for="qt-subject">Subject <span class="text-muted">(Optional)</span></label>
-                        <input type="text" class="form-control" id="qt-subject" ng-model="selectedTemplate.subject"
+                        <input type="text" class="form-control" id="qt-subject" ng-model="templateForm.selectedTemplate.subject"
                                placeholder=""/>
                     </div>
                     <div class="form-group">
@@ -99,28 +99,28 @@
                                             tabindex="-1">
                                         Insert Variable <span class="caret"></span></button>
                                     <ul class="dropdown-menu">
-                                        <li><a ng-click="insertVar('to.first_name')"
+                                        <li><a ng-click="templateForm.insertVar('to.first_name')"
                                                title="First name of the person in the 'To' field"><strong>To:</strong>
                                             First Name</a></li>
-                                        <li><a ng-click="insertVar('to.email')"
+                                        <li><a ng-click="templateForm.insertVar('to.email')"
                                                title="Email address of the person in the 'To' field"><strong>To:</strong>
                                             Email</a></li>
-                                        <li><a ng-click="insertVar('from.first_name')"
+                                        <li><a ng-click="templateForm.insertVar('from.first_name')"
                                                title="First name of the person in the 'From' field"><strong>From:</strong>
                                             First Name</a></li>
-                                        <li><a ng-click="insertVar('from.email')"
+                                        <li><a ng-click="templateForm.insertVar('from.email')"
                                                title="Email address of the person in the 'From' field"><strong>From:</strong>
                                             Email</a></li>
-                                        <li><a ng-click="insertVar('subject')"
+                                        <li><a ng-click="templateForm.insertVar('subject')"
                                                title="The subject of the e-mail"><strong>Subject</strong></a>
                                         </li>
-                                        <li><a ng-click="insertVar('date \'+7\' \'days\' \'DD MMMM\'')"
+                                        <li><a ng-click="templateForm.insertVar('date \'+7\' \'days\' \'DD MMMM\'')"
                                                title="Date in 1 week"><strong>Date:</strong> Next week</a>
                                         </li>
-                                        <li><a ng-click="insertVar('date \'-7\' \'days\' \'YYYY-MM-DD\'')"
+                                        <li><a ng-click="templateForm.insertVar('date \'-7\' \'days\' \'YYYY-MM-DD\'')"
                                                title="Last week - iso format"><strong>Date:</strong> Last week</a>
                                         </li>
-                                        <li><a ng-click="insertVar('choice \'Hello, Hi, Hey\'')"
+                                        <li><a ng-click="templateForm.insertVar('choice \'Hello, Hi, Hey\'')"
                                                title="Randomly choose an option from a comma-separated list"><strong>Random choice</strong></a>
                                         </li>
                                         <li class="divider"></li>
@@ -137,7 +137,7 @@
                                       id="qt-body" class="form-control"
                                       required="required"
                                       placeholder="It was nice talking to you today..."
-                                      ng-model="selectedTemplate.body"></textarea>
+                                      ng-model="templateForm.selectedTemplate.body"></textarea>
                         </div>
                     </div>
                     <div class="form-group">
@@ -153,7 +153,7 @@
                                 class="form-control"
                                 id="qt-tags"
                                 size="50"
-                                ng-model="selectedTemplate.tags"
+                                ng-model="templateForm.selectedTemplate.tags"
                                 placeholder="Ex: en, sales, discounts"/>
                         </div>
 
@@ -163,11 +163,41 @@
                         href="https://gorgias.io/?utm_source=ChromeExtension&utm_medium=link&utm_term=Upgrade&utm_campaign=Upgrade-to-share#pricing"
                         target="_blank">Upgrade now!</a>
                     </p>
+                    <div class="form-group">
+                        <label for="qt-sharing">
+                            Sharing
+                        </label>
+
+                        <select class="form-control" id="qt-sharing" ng-model="templateForm.sharing_setting">
+                            <option>Private</option>
+                            <option>Share with everyone</option>
+                            <option>Share with...</option>
+                        </select>
+                    </div>
+
+                    <div class="well" ng-show="templateForm.sharing_setting == 'Share with...'">
+                        <div class="panel-body">
+
+                            <div class="form-group">
+                                <label for="template-qt-invite-people">People:</label>
+                                <input type="text" class="form-control" id="template-qt-invite-people" ng-model="shareData.emails"
+                                       placeholder="Email addresses"/>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="row">
+                        <p class="col-md-12 help-block"><strong>Note:</strong>
+                        Sharing will allow both <em>editing</em> and <em>re-sharing</em> of your templates.
+                        </p>
+                    </div>
+
                 </div>
 
+
                 <div class="modal-footer">
-                    <span ng-show="selectedTemplate.id">
-                        <button class="btn btn-default pull-left" ng-click="duplicateQt()" tabindex="-1">Duplicate
+                    <span ng-show="templateForm.selectedTemplate.id">
+                        <button class="btn btn-default pull-left" ng-click="templateForm.duplicateQt()" tabindex="-1">Duplicate
                             template
                         </button>
                     </span>

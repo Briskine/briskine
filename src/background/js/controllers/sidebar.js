@@ -55,12 +55,15 @@ gApp.controller('SidebarCtrl', function ($scope, $location, $http, $window,
         }).then(function () {
             location.reload(true);
         });
-    }
+    };
 
     // event listeners
     $scope.$on('toggledFilterTag', function () {
         $scope.filterTags[0] = FilterTagService.filterTags[0];
-        $location.path('/list/tag');
+
+        if ($scope.filterTags[0] != undefined) {
+            $location.path('/list/tag');
+        }
     });
 
     $scope.$on('reload', loadTags);

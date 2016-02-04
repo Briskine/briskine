@@ -28,7 +28,7 @@
                     <div class="access">
                         <label>Who has access:</label>
                         <ul class="share-user-list">
-                            <li class="row" ng-repeat="share in shareData.acl">
+                            <li class="share-row row" ng-repeat="share in shareData.acl">
 
                                 <div class="col-xs-1">
                                     <img src="http://www.gravatar.com/avatar/{{ share.email | gravatar }}?d=retro"
@@ -70,7 +70,7 @@
                                        placeholder="Email addresses"/>
                             </div>
 
-                            <div ng-show="shareData.emails">
+                            <div ng-show="shareData.emails.length">
                                <div class="form-group share-message-container">
                                     <textarea class="form-control" rows="4" placeholder="Optional message"
                                               ng-model="shareData.message"></textarea>
