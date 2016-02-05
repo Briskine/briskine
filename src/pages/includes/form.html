@@ -175,17 +175,12 @@
                         </select>
                     </div>
 
-                    <div class="well" ng-show="templateForm.sharing_setting == 'Share with...'">
-                        <div class="panel-body">
-
-                            <div class="form-group">
-                                <label for="template-qt-invite-people">People:</label>
-                                <input type="text" class="form-control" id="template-qt-invite-people" ng-model="shareData.emails"
-                                       placeholder="Email addresses"/>
-                            </div>
-
-                        </div>
+                    <div class="form-group" ng-show="templateForm.sharing_setting == 'Share with...'">
+                        <label for="template-qt-invite-people">People:</label>
+                        <input type="text" class="form-control" id="template-qt-invite-people" ng-model="shareData.emails"
+                               placeholder="Email addresses"/>
                     </div>
+
                     <div class="row">
                         <p class="col-md-12 help-block"><strong>Note:</strong>
                         Sharing will allow both <em>editing</em> and <em>re-sharing</em> of your templates.

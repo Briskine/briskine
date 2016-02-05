@@ -32,7 +32,8 @@ gApp.controller('ListCtrl',
             sharing: {},
             members: [],
             emails: "",
-            message: ""
+            message: "",
+            acl: []
         };
 
         $scope.baseUrl = Settings.defaults.baseURL;
@@ -136,23 +137,40 @@ gApp.controller('ListCtrl',
             // Share modal
             $shareModal = $('#quicktext-share-modal');
 
-            $scope.shareQuicktexts = function () {
+            $scope.shareQuicktexts = function (quicktexts) {
                 // Only edit permission for now - meaning that
-                QuicktextSharingService.create($scope.selectedQuicktexts, $scope.shareData, 'edit').then(function () {
-                    $scope.reloadSharing();
+                QuicktextSharingService.create(quicktexts, $scope.shareData, 'edit').then(function () {
+                    $scope.reloadSharing(quicktexts);
                     $scope.shareData.emails = "";
-                    $scope.selectizeField[0].selectize.clear();
+                    $scope.shareModalSelectizeField[0].selectize.clear();
+                    $scope.templateModalSelectizeField[0].selectize.clear();
+                    $rootScope.SyncNow();
                 });
             };
 
-            $scope.revokeAccess = function () {
-                QuicktextSharingService.delete($scope.selectedQuicktexts, this.share.target_user_id).then(function () {
-                    $scope.reloadSharing();
+            $scope.shareQuicktextsWithEveryone = function(quicktexts) {
+                $scope.shareData.emails = "";
+                var i = 0;
+                $scope.shareData.members.forEach(function (member) {
+                    if (member.active) {
+                        if (i != 0) {
+                            $scope.shareData.emails += ',';
+                        }
+                        $scope.shareData.emails += member.email;
+                        i++;
+                    }
+                });
+                $scope.shareQuicktexts(quicktexts);
+            }
+
+            $scope.revokeAccess = function (quicktexts, target_user_id) {
+                QuicktextSharingService.delete(quicktexts, target_user_id).then(function () {
+                    $scope.reloadSharing(quicktexts);
                 });
             };
 
-            $scope.reloadSharing = function () {
-                QuicktextSharingService.list($scope.selectedQuicktexts).then(function (result) {
+            $scope.reloadSharing = function (quicktexts) {
+                QuicktextSharingService.list(quicktexts).then(function (result) {
                     // Show a user only once
                     var acl = [];
                     var userIds = []; // Show each user only once
@@ -163,12 +181,18 @@ gApp.controller('ListCtrl',
                             acl.push(row);
                         }
                     });
+
                     $scope.shareData.acl = acl;
                 });
             };
 
-            $scope.showShareModal = function () {
-                $scope.reloadSharing();
+            $scope.showShareModalListener = function () {
+                $scope.reloadSharing($scope.selectedQuicktexts);
+                $scope.showShareModal($scope.selectedQuicktexts);
+            };
+
+            $scope.showShareModal = function (quicktexts) {
+                var deferred = $q.defer();
 
                 MemberService.members().then(function (data) {
                     $scope.shareData.members = data.members;
@@ -176,15 +200,13 @@ gApp.controller('ListCtrl',
                     var options = [];
 
                     _.each(data.members, function (member) {
-                        if (!member.active) {
-                            return;
+                        if (member.active) {
+                            options.push({
+                                'user_id': member.user_id,
+                                'email': member.email,
+                                'name': member.name
+                            });
                         }
-
-                        options.push({
-                            'user_id': member.user_id,
-                            'email': member.email,
-                            'name': member.name
-                        });
                     });
 
                     var REGEX_EMAIL = '([a-z0-9!#$%&\'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&\'*+/=?^_`{|}~-]+)*@' +
@@ -246,10 +268,13 @@ gApp.controller('ListCtrl',
 
                     $scope.shareModalSelectizeField = $('#qt-invite-people').selectize(selectize_data);
                     $scope.templateModalSelectizeField = $('#template-qt-invite-people').selectize(selectize_data);
+                    deferred.resolve();
                 });
+
+                return deferred.promise;
             };
 
-            $shareModal.on('shown.bs.modal', $scope.showShareModal);
+            $shareModal.on('shown.bs.modal', $scope.showShareModalListener);
         };
 
         $rootScope.$on('$includeContentLoaded', initDom);

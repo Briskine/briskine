@@ -54,7 +54,7 @@
                                 </div>
                                 <div class="col-xs-1" ng-if="share.permission !== 'owner'">
                                     <button type="button" class="close" title="Revoke access"
-                                            ng-click="revokeAccess()">&times;</button>
+                                            ng-click="revokeAccess(selectedQuicktexts, share.target_user_id)">&times;</button>
                                 </div>
 
                             </li>
@@ -71,11 +71,11 @@
                             </div>
 
                             <div ng-show="shareData.emails.length">
-                               <div class="form-group share-message-container">
+                                <div class="form-group share-message-container">
                                     <textarea class="form-control" rows="4" placeholder="Optional message"
                                               ng-model="shareData.message"></textarea>
                                 </div>
-                                <button type="button" class="btn btn-primary" ng-click="shareQuicktexts()">Share</button>
+                                <button type="button" class="btn btn-primary" ng-click="shareQuicktexts(selectedQuicktexts)">Share</button>
                             </div>
 
                             <!-- TODO: add permissions later

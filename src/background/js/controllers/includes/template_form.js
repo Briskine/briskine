@@ -1,7 +1,6 @@
 gApp.controller('TemplateFormCtrl',
     function ($route, $q, $scope, $rootScope, $routeParams, $location, $timeout, $filter,
-              AccountService, TemplateService, SettingsService, QuicktextSharingService,
-              MemberService) {
+              AccountService, TemplateService, SettingsService) {
 
         var editor;
         var self = this;
@@ -68,34 +67,30 @@ gApp.controller('TemplateFormCtrl',
             }
         };
 
-        self.getSharing = function(quicktext) {
-            QuicktextSharingService.list([quicktext]).then(function (result) {
-                // Show a user only once
-                var acl = [];
-                var userIds = []; // Show each user only once
+        self.fillUpSelectizeField = function() {
+            var acl = $scope.shareData.acl;
 
-                _.each(result, function (row) {
-                    if (!_.contains(userIds, row.target_user_id)) {
-                        userIds.push(row.target_user_id);
-                        acl.push(row);
-                    }
-                });
+            var members = [];
 
-                if (acl.length > 1) {
-                    self.sharing_setting = "Share with...";
+            $scope.shareData.members.forEach(function (member) {
+                if (member.active) {
+                    members.push(member);
                 }
+            });
 
-                var selectize = $scope.templateModalSelectizeField[0].selectize;
-                selectize.clear();
+            if (acl.length == members.length + 1) {
+                self.sharing_setting = "Share with everyone";
+            } else if (acl.length > 1) {
+                self.sharing_setting = "Share with...";
+            }
 
-                acl.forEach(function (acl){
-                    if (acl.permission != "owner") {
-                        console.log(acl);
-                        selectize.addItem(acl.email);
-                    }
-                });
+            var selectize = $scope.templateModalSelectizeField[0].selectize;
+            selectize.clear();
 
-                $scope.shareData.acl = acl;
+            acl.forEach(function (acl){
+                if (acl.permission != "owner") {
+                    selectize.addItem(acl.email);
+                }
             });
         };
 
@@ -118,6 +113,7 @@ gApp.controller('TemplateFormCtrl',
                 TemplateService.allTags().then(function (tags) {
                     var tagOptions = [];
                     var tagNames = Object.keys(tags);
+
                     for (var t in tagNames) {
                         if (tagNames.hasOwnProperty(t)) {
                             tagOptions.push({
@@ -175,12 +171,18 @@ gApp.controller('TemplateFormCtrl',
 
             if (id == "new") {
                 self.selectedTemplate = null;
-                initForm();
+                $scope.showShareModal([self.selectedTemplate]).then(function() {
+                    self.fillUpSelectizeField(self.selectedTemplate);
+                    initForm();
+                });
             } else {
                 TemplateService.get($routeParams.id).then(function(quicktext){
                     self.selectedTemplate = angular.copy(quicktext);
-                    self.getSharing(self.selectedTemplate);
-                    initForm();
+                    $scope.reloadSharing([quicktext]);
+                    $scope.showShareModal([self.selectedTemplate]).then(function() {
+                        self.fillUpSelectizeField(self.selectedTemplate);
+                        initForm();
+                    });
                 });
             }
         };
@@ -213,13 +215,43 @@ gApp.controller('TemplateFormCtrl',
                         }
                     }
                 }
+
+                var post_update = function() {
+                    if (self.sharing_setting == 'Share with...') {
+                        var old_emails = [];
+
+                        for (i in $scope.shareData.acl){
+                            if ($scope.shareData.acl[i].permission != 'owner') {
+                                old_emails.push({
+                                    'email' : $scope.shareData.acl[i].email,
+                                    'target_user_id': $scope.shareData.acl[i].target_user_id
+                                });
+                            }
+                        }
+
+                        var new_emails = $scope.shareData.emails.split(',');
+
+                        old_emails.forEach(function(acl){
+                            if (new_emails.indexOf(acl.email) == -1){
+                                $scope.revokeAccess([self.selectedTemplate], acl.target_user_id)
+                            }
+                        });
+
+                        $scope.shareQuicktexts([self.selectedTemplate]);
+                    } else if (self.sharing_setting == 'Private') {
+                        self.revokeAllAccess([self.selectedTemplate]);
+                    } else if (self.sharing_setting == 'Share with everyone') {
+                        $scope.shareQuicktextsWithEveryone([self.selectedTemplate]);
+                    }
+                };
+
                 if (self.selectedTemplate.id) {
                     TemplateService.update(self.selectedTemplate).then(function () {
-                        $scope.reloadTemplates();
+                        post_update();
                     });
                 } else {
                     TemplateService.create(self.selectedTemplate).then(function () {
-                        $scope.reloadTemplates();
+                        post_update();
                     });
                 }
 
@@ -230,7 +262,7 @@ gApp.controller('TemplateFormCtrl',
             $scope.selectedAll = false;
         };
 
-        // Save a quicktext, perform some checks before
+        // Duplicate a quicktext, perform some checks before
         self.duplicateQt = function () {
             if (!self.selectedTemplate.title) {
                 alert("Please enter a title");
@@ -261,12 +293,20 @@ gApp.controller('TemplateFormCtrl',
             });
         };
 
+        self.revokeAllAccess = function(quicktexts) {
+            $scope.shareData.acl.forEach(function(acl){
+                if (acl.permission != 'owner') {
+                    $scope.revokeAccess(quicktexts, acl.target_user_id);
+                }
+            });
+            $rootScope.SyncNow();
+        }
+
         /* Check search params to see if adding or editing items */
         var checkRoute = function () {
             // if not the default list
             // new or edit, so show the modal
             if ($routeParams.id) {
-                $scope.showShareModal();
                 self.showForm($routeParams.id);
             }
         };
