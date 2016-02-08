@@ -386,21 +386,7 @@ gApp.controller('ListCtrl',
         };
 
         $scope.$on('toggledFilterTag', function () {
-            switch(properties.list) {
-                case 'shared':
-                    $scope.title = "Shared templates";
-                    break;
-                case 'private':
-                    $scope.title = "Private templates";
-                    break;
-                case 'tag':
-                    $scope.title = "<i class='fa fa-hashtag'/>" + FilterTagService.filterTags[0] + " templates";
-                    break;
-                default:
-                    $scope.title = "All templates";
-                    break;
-            }
-
+            $scope.title = "<i class='fa fa-hashtag'/>" + FilterTagService.filterTags[0] + " templates";
             filterQuicktexts();
         });
 

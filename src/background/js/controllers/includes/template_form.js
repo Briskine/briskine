@@ -90,7 +90,7 @@ gApp.controller('TemplateFormCtrl',
             selectize.clear();
 
             acl.forEach(function (acl){
-                if (acl.permission != "owner") {
+                if (acl.target_user_id != $scope.account.id) {
                     selectize.addItem(acl.email);
                 }
             });
@@ -313,6 +313,13 @@ gApp.controller('TemplateFormCtrl',
                 }
             });
             $rootScope.SyncNow();
+        }
+
+        self.upgradeNow = function() {
+            $('#template-form-modal').modal('hide');
+            $timeout(function() {
+                $('#signup-modal').modal('show')
+            }, 500);
         }
 
         /* Check search params to see if adding or editing items */

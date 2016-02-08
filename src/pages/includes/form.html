@@ -158,33 +158,29 @@
                         </div>
 
                     </div>
+
                     <p ng-show="templates.length > 5 && !account" class="premium-feature">
-                        Share this template with your team. <a
-                        href="https://gorgias.io/?utm_source=ChromeExtension&utm_medium=link&utm_term=Upgrade&utm_campaign=Upgrade-to-share#pricing"
-                        target="_blank">Upgrade now!</a>
+                        Share this template with your team. <a ng-click="templateForm.upgradeNow()">Upgrade now!</a>
                     </p>
+
                     <div class="form-group" ng-show="account">
                         <label for="qt-sharing">
                             Sharing
                         </label>
-
-                        <select class="form-control" id="qt-sharing" ng-model="templateForm.sharing_setting">
-                            <option>Private</option>
-                            <option>Share with everyone</option>
-                            <option>Share with...</option>
-                        </select>
+                        <div data-toggle="tooltip" data-placement="top"
+                             title="Sharing will allow both editing and re-sharing of your templates.">
+                            <select class="form-control" id="qt-sharing" ng-model="templateForm.sharing_setting">
+                                <option>Private</option>
+                                <option>Share with everyone</option>
+                                <option>Share with...</option>
+                            </select>
+                        </div>
                     </div>
 
                     <div class="form-group" ng-show="account && templateForm.sharing_setting == 'Share with...'">
                         <label for="template-qt-invite-people">People:</label>
                         <input type="text" class="form-control" id="template-qt-invite-people" ng-model="shareData.emails"
                                placeholder="Email addresses"/>
-                    </div>
-
-                    <div class="row">
-                        <p class="col-md-12 help-block"><strong>Note:</strong>
-                        Sharing will allow both <em>editing</em> and <em>re-sharing</em> of your templates.
-                        </p>
                     </div>
 
                 </div>
