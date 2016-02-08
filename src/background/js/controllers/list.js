@@ -198,10 +198,10 @@ gApp.controller('ListCtrl',
 
             $scope.showShareModalListener = function () {
                 $scope.reloadSharing($scope.selectedQuicktexts);
-                $scope.showShareModal($scope.selectedQuicktexts);
+                $scope.showShareModal();
             };
 
-            $scope.showShareModal = function (quicktexts) {
+            $scope.showShareModal = function () {
                 var deferred = $q.defer();
 
                 MemberService.members().then(function (data) {
@@ -223,6 +223,7 @@ gApp.controller('ListCtrl',
                         '(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)';
 
                     var selectize_data = {
+                        plugins: ['remove_button'],
                         persist: false,
                         maxItems: null,
                         valueField: 'email',
@@ -231,7 +232,7 @@ gApp.controller('ListCtrl',
                         options: options,
                         render: {
                             item: function (item, escape) {
-                                return '<div>' +
+                                return '<div class="email-selectize-item">' +
                                     (item.name ? '<strong class="name">' + escape(item.name) + '</strong> ' : '') +
                                     (item.email ? '<span class="email">' + escape(item.email) + '</span>' : '') +
                                     '</div>';

@@ -54,7 +54,7 @@ input[type='text'],
 input[type='email'],
 input[type='password'],
 .selectize-input {
-    border: 1px solid #bfbfbf;
+    border: 1px solid rgba(0, 0, 0, 0.15);
     border-radius: 2px;
     color: #444;
     font: inherit;
@@ -73,18 +73,17 @@ input[type='password'],
 }
 
 .selectize-input {
-    padding: 2px 2px 5px 6px !important;
+    padding: 0 0 5px 5px !important;
 
     &.focus {
         box-shadow: none;
         border-color: $ligthgrey;
     }
     .item {
-        margin-right: 4px;
         border: 1px solid $ligthgrey;
         border-radius: 3px;
         padding-left: 4px;
-        margin-top: 2px;
+        margin: 5px 5px 0 0;
         cursor: pointer;
 
         &.active {
@@ -93,6 +92,18 @@ input[type='password'],
 
         a {
             padding-top: 1px !important;
+        }
+    }
+
+    .email-selectize-item {
+        margin: 5px 5px 0 0 !important;
+        background: none !important;
+        border: 1px solid $ligthgrey !important;
+        padding-left: 4px !important;
+
+        &.active {
+            color: black !important;
+            background: $lightergrey !important;
         }
     }
 }

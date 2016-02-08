@@ -169,6 +169,8 @@ gApp.controller('TemplateFormCtrl',
                         });
                     }
                 });
+
+                $('#template-form-modal').modal('show');
             };
 
             if (id == "new") {

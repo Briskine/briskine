@@ -9,7 +9,7 @@
 
 <div class="btn-toolbar">
     <div class="row no-margin">
-        <a data-toggle="modal" data-target="#template-form-modal" ng-href="#{{location}}?id=new" class="btn btn-primary">New template</a>
+        <a ng-href="#{{location}}?id=new" class="btn btn-primary">New template</a>
         <div ng-show="account.info.name" class="btn-group btn-more pull-right">
             <a class="btn btn-default" href data-toggle="modal" data-target="#import-modal">Import</a>
             <a class="btn btn-default" href="{{baseUrl}}app/export/templates.csv" target="_blank"
@@ -52,7 +52,7 @@
             </div>
 
             <a class="list-group-item-link"
-               tabindex="0" data-toggle="modal" data-target="#template-form-modal"
+               tabindex="0"
                ng-href="#{{location}}?id={{ ::quicktext.id }}">
 
                 <div class="row">
