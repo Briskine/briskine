@@ -344,6 +344,7 @@ gApp.service('TemplateService', function ($q, $resource, SettingsService) {
         t.sync_datetime = t.sync_datetime || "";
         t.lastuse_datetime = t.lastuse_datetime || "";
         t.tags = self._clean_tags(t.tags);
+        t.private = true;
 
         var data = {};
         data[t.id] = t;
