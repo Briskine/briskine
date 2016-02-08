@@ -52,6 +52,13 @@ gApp.controller('ListCtrl',
         function loadAccount() {
             AccountService.get().then(function(account) {
                 $scope.account = account;
+
+                if ($scope.account.info.share_all == "true" &&
+                    (properties.list == "tag" || properties.list == "all")) {
+                    $scope.sharing_setting = "Share with everyone";
+                } else {
+                    $scope.sharing_setting = "Private";
+                }
             });
         }
 
