@@ -82,6 +82,8 @@ gApp.controller('TemplateFormCtrl',
                 self.sharing_setting = "Share with everyone";
             } else if (acl.length > 1) {
                 self.sharing_setting = "Share with...";
+            } else {
+                self.sharing_setting = "Private";
             }
 
             var selectize = $scope.templateModalSelectizeField[0].selectize;
@@ -172,7 +174,7 @@ gApp.controller('TemplateFormCtrl',
             if (id == "new") {
                 self.selectedTemplate = null;
                 $scope.showShareModal([self.selectedTemplate]).then(function() {
-                    self.fillUpSelectizeField(self.selectedTemplate);
+                    self.sharing_setting = angular.copy($scope.sharing_setting);
                     initForm();
                 });
             } else {

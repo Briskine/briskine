@@ -13,18 +13,22 @@ gApp.controller('ListCtrl',
             case 'shared':
                 $scope.title = "Shared templates";
                 $scope.location = "/list/shared";
+                $scope.sharing_setting = "Share with everyone";
                 break;
             case 'private':
                 $scope.title = "Private templates";
                 $scope.location = "/list/private";
+                $scope.sharing_setting = "Private";
                 break;
             case 'tag':
                 $scope.title = "<i class='fa fa-hashtag'/>" + FilterTagService.filterTags[0] + " templates";
                 $scope.location = "/list/tag";
+                $scope.sharing_setting = "Private";
                 break;
             default:
                 $scope.title = "All templates";
                 $scope.location = "/list";
+                $scope.sharing_setting = "Private";
                 break;
         }
 
