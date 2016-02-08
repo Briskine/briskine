@@ -42,7 +42,6 @@ gApp.controller('ListCtrl',
 
         $scope.baseUrl = Settings.defaults.baseURL;
 
-        $scope.account = {};
         $scope.filteredTemplates = [];
         $scope.templates = [];
         $scope.selectedQuicktexts = [];

@@ -173,18 +173,29 @@ gApp.controller('TemplateFormCtrl',
 
             if (id == "new") {
                 self.selectedTemplate = null;
-                $scope.showShareModal([self.selectedTemplate]).then(function() {
-                    self.sharing_setting = angular.copy($scope.sharing_setting);
+
+                if ($scope.account) {
+                    $scope.showShareModal([self.selectedTemplate]).then(function () {
+                        self.sharing_setting = angular.copy($scope.sharing_setting);
+                        initForm();
+                    });
+                } else {
                     initForm();
-                });
+                }
+
             } else {
                 TemplateService.get($routeParams.id).then(function(quicktext){
                     self.selectedTemplate = angular.copy(quicktext);
-                    $scope.reloadSharing([quicktext]);
-                    $scope.showShareModal([self.selectedTemplate]).then(function() {
-                        self.fillUpSelectizeField(self.selectedTemplate);
+
+                    if ($scope.account) {
+                        $scope.reloadSharing([quicktext]);
+                        $scope.showShareModal([self.selectedTemplate]).then(function() {
+                            self.fillUpSelectizeField(self.selectedTemplate);
+                            initForm();
+                        });
+                    } else {
                         initForm();
-                    });
+                    }
                 });
             }
         };
