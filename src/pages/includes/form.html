@@ -167,13 +167,20 @@
                         <label for="qt-sharing">
                             Sharing
                         </label>
-                        <div data-toggle="tooltip" data-placement="top"
-                             title="Sharing will allow both editing and re-sharing of your templates.">
-                            <select class="form-control" id="qt-sharing" ng-model="templateForm.sharing_setting">
-                                <option>Private</option>
-                                <option>Share with everyone</option>
-                                <option>Share with...</option>
-                            </select>
+                        <div class="row">
+                            <div class="col-xs-8">
+                                <div data-toggle="tooltip" data-placement="top"
+                                     title="Sharing will allow both editing and re-sharing of your templates.">
+                                    <select class="form-control" id="qt-sharing" ng-model="templateForm.sharing_setting">
+                                        <option>Private</option>
+                                        <option>Share with everyone</option>
+                                        <option>Share with...</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-xs-4" style="margin-top: 6px">
+                                <p>Notify people by email : <input type="checkbox" ng-model="templateForm.send_email" ng-true-value="'true'" ng-false-value="'false'"></p>
+                            </div>
                         </div>
                     </div>
 

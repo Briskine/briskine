@@ -5,6 +5,7 @@ gApp.controller('TemplateFormCtrl',
         var editor;
         var self = this;
         self.sharing_setting = "Private";
+        self.send_email = 'false';
 
         var loadEditor = function () {
             $scope.showHTMLSource = false;
@@ -252,11 +253,11 @@ gApp.controller('TemplateFormCtrl',
                             }
                         });
 
-                        $scope.shareQuicktexts([self.selectedTemplate]);
+                        $scope.shareQuicktexts([self.selectedTemplate], self.send_email);
                     } else if (self.sharing_setting == 'Private') {
                         self.revokeAllAccess([self.selectedTemplate]);
                     } else if (self.sharing_setting == 'Share with everyone') {
-                        $scope.shareQuicktextsWithEveryone([self.selectedTemplate]);
+                        $scope.shareQuicktextsWithEveryone([self.selectedTemplate], self.send_email);
                     }
                 };
 

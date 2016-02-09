@@ -42,7 +42,7 @@ gApp.service('QuicktextSharingService', function($q, $resource) {
     };
 
     // Add users to a the ACL list of a bunch of quicktexts
-    self.create = function(qtList, shareData, permission) {
+    self.create = function(qtList, shareData, permission, send_email) {
         var deferred = $q.defer();
         var data = {
             message: shareData.message,
@@ -64,6 +64,7 @@ gApp.service('QuicktextSharingService', function($q, $resource) {
         var acls = new self.res();
         acls.acl = data;
         acls.action = 'create';
+        acls.send_email = send_email;
         acls.$update(function(res){
             mixpanel.track('Shared Quicktext');
             deferred.resolve(res);

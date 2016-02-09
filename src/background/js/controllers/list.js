@@ -9,6 +9,10 @@ gApp.controller('ListCtrl',
 
         var properties = $route.current.locals.properties;
 
+        if ($routeParams.id) {
+            $location.search('id', null);
+        }
+
         switch(properties.list) {
             case 'shared':
                 $scope.title = "Shared templates";
@@ -155,9 +159,9 @@ gApp.controller('ListCtrl',
             // Share modal
             $shareModal = $('#quicktext-share-modal');
 
-            $scope.shareQuicktexts = function (quicktexts) {
+            $scope.shareQuicktexts = function (quicktexts, send_email) {
                 // Only edit permission for now - meaning that
-                QuicktextSharingService.create(quicktexts, $scope.shareData, 'edit').then(function () {
+                QuicktextSharingService.create(quicktexts, $scope.shareData, 'edit', send_email).then(function () {
                     $scope.reloadSharing(quicktexts);
                     $scope.shareData.emails = "";
                     $scope.shareModalSelectizeField[0].selectize.clear();
@@ -166,7 +170,7 @@ gApp.controller('ListCtrl',
                 });
             };
 
-            $scope.shareQuicktextsWithEveryone = function(quicktexts) {
+            $scope.shareQuicktextsWithEveryone = function(quicktexts, send_email) {
                 $scope.shareData.emails = "";
                 var i = 0;
                 $scope.shareData.members.forEach(function (member) {
@@ -178,7 +182,7 @@ gApp.controller('ListCtrl',
                         i++;
                     }
                 });
-                $scope.shareQuicktexts(quicktexts);
+                $scope.shareQuicktexts(quicktexts, send_email);
             }
 
             $scope.revokeAccess = function (quicktexts, target_user_id) {
@@ -188,20 +192,22 @@ gApp.controller('ListCtrl',
             };
 
             $scope.reloadSharing = function (quicktexts) {
-                QuicktextSharingService.list(quicktexts).then(function (result) {
-                    // Show a user only once
-                    var acl = [];
-                    var userIds = []; // Show each user only once
+                if (quicktexts.length != 0) {
+                    QuicktextSharingService.list(quicktexts).then(function (result) {
+                        // Show a user only once
+                        var acl = [];
+                        var userIds = []; // Show each user only once
 
-                    _.each(result, function (row) {
-                        if (!_.contains(userIds, row.target_user_id)) {
-                            userIds.push(row.target_user_id);
-                            acl.push(row);
-                        }
+                        _.each(result, function (row) {
+                            if (!_.contains(userIds, row.target_user_id)) {
+                                userIds.push(row.target_user_id);
+                                acl.push(row);
+                            }
+                        });
+
+                        $scope.shareData.acl = acl;
                     });
-
-                    $scope.shareData.acl = acl;
-                });
+                }
             };
 
             $scope.showShareModalListener = function () {
@@ -414,5 +420,4 @@ gApp.controller('ListCtrl',
         };
 
         $scope.$watch('searchText', filterQuicktexts);
-        //$scope.$watch('properties.list', filterQuicktexts);
     });
