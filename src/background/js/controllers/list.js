@@ -65,6 +65,7 @@ gApp.controller('ListCtrl',
                 } else {
                     $scope.sharing_setting = "Private";
                 }
+                $rootScope.SyncNow();
             });
         }
 
