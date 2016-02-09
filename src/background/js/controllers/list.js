@@ -13,6 +13,10 @@ gApp.controller('ListCtrl',
             $location.search('id', null);
         }
 
+        if ($routeParams.action) {
+            $location.search('action', null);
+        }
+
         switch(properties.list) {
             case 'shared':
                 $scope.title = "Shared templates";
@@ -146,7 +150,7 @@ gApp.controller('ListCtrl',
                 show: false
             });
 
-            $formModal.on('hide.bs.modal', function (e) {
+            $formModal.on('hide.bs.modal', function () {
                 $timeout(function () {
                     $location.search('id', null);
                 });
@@ -158,6 +162,12 @@ gApp.controller('ListCtrl',
 
             // Share modal
             $shareModal = $('#quicktext-share-modal');
+
+            $shareModal.on('hide.bs.modal', function () {
+                $timeout(function () {
+                    $location.search('action', null);
+                });
+            });
 
             $scope.shareQuicktexts = function (quicktexts, send_email) {
                 // Only edit permission for now - meaning that
@@ -192,6 +202,7 @@ gApp.controller('ListCtrl',
             };
 
             $scope.reloadSharing = function (quicktexts) {
+                var deferred = $q.defer();
                 if (quicktexts.length != 0) {
                     QuicktextSharingService.list(quicktexts).then(function (result) {
                         // Show a user only once
@@ -206,16 +217,22 @@ gApp.controller('ListCtrl',
                         });
 
                         $scope.shareData.acl = acl;
+                        deferred.resolve();
                     });
                 }
+                else { deferred.resolve(); }
+                return deferred.promise;
             };
 
             $scope.showShareModalListener = function () {
-                $scope.reloadSharing($scope.selectedQuicktexts);
-                $scope.showShareModal();
+                var deferred = $q.defer();
+
+                $q.all([$scope.reloadSharing($scope.selectedQuicktexts),
+                        $scope.initializeMemberSelectize()]).then(deferred.resolve);
+                return deferred.promise;
             };
 
-            $scope.showShareModal = function () {
+            $scope.initializeMemberSelectize = function () {
                 var deferred = $q.defer();
 
                 MemberService.members().then(function (data) {
@@ -298,8 +315,6 @@ gApp.controller('ListCtrl',
 
                 return deferred.promise;
             };
-
-            $shareModal.on('shown.bs.modal', $scope.showShareModalListener);
         };
 
         $rootScope.$on('$includeContentLoaded', initDom);

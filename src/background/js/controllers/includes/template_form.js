@@ -178,7 +178,7 @@ gApp.controller('TemplateFormCtrl',
                 self.selectedTemplate = null;
 
                 if ($scope.account) {
-                    $scope.showShareModal([self.selectedTemplate]).then(function () {
+                    $scope.initializeMemberSelectize([self.selectedTemplate]).then(function () {
                         self.sharing_setting = angular.copy($scope.sharing_setting);
                         initForm();
                     });
@@ -192,7 +192,7 @@ gApp.controller('TemplateFormCtrl',
 
                     if ($scope.account) {
                         $scope.reloadSharing([quicktext]);
-                        $scope.showShareModal([self.selectedTemplate]).then(function() {
+                        $scope.initializeMemberSelectize([self.selectedTemplate]).then(function() {
                             self.fillUpSelectizeField(self.selectedTemplate);
                             initForm();
                         });
@@ -316,14 +316,14 @@ gApp.controller('TemplateFormCtrl',
                 }
             });
             $rootScope.SyncNow();
-        }
+        };
 
         self.upgradeNow = function() {
             $('#template-form-modal').modal('hide');
             $timeout(function() {
                 $('#signup-modal').modal('show')
             }, 500);
-        }
+        };
 
         /* Check search params to see if adding or editing items */
         var checkRoute = function () {

@@ -18,9 +18,8 @@
         <button type="button" ng-if="selectedQuicktexts.length" ng-click="deleteQts(selectedQuicktexts)"
                 class="btn btn-error pull-right">Delete
         </button>
-        <button type="button" ng-if="selectedQuicktexts.length && account.info.name" data-toggle="modal"
-                data-target="#quicktext-share-modal" class="btn btn-primary pull-right">Share
-        </button>
+        <a type="button" ng-if="selectedQuicktexts.length && account.info.name" ng-href="#{{location}}?action=share" class="btn btn-primary pull-right">Share
+        </a>
     </div>
     <div class="row no-margin checkbox-wrapper">
         <label>
