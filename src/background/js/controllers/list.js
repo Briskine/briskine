@@ -21,6 +21,12 @@ gApp.controller('ListCtrl',
                 $scope.sharing_setting = "Private";
                 break;
             case 'tag':
+                var tag = FilterTagService.filterTags[0];
+
+                if (tag == undefined) {
+                    $location.path('/list');
+                }
+
                 $scope.title = "<i class='fa fa-hashtag'/>" + FilterTagService.filterTags[0] + " templates";
                 $scope.location = "/list/tag";
                 $scope.sharing_setting = "Private";
@@ -98,11 +104,7 @@ gApp.controller('ListCtrl',
         $('.load-more').hide();
 
         $scope.reloadTemplates = function () {
-            TemplateService.filtered([function(template) {
-                if (properties.list == 'all' || properties.list == 'tag') { return true;}
-                else if (properties.list == 'private') { return template.private; }
-                else if (properties.list == 'shared') { return !template.private; }
-            }]).then(function (r) {
+            TemplateService.quicktexts().then(function (r) {
                 $scope.templates = r;
                 $rootScope.$broadcast('reload')
             });
@@ -375,6 +377,8 @@ gApp.controller('ListCtrl',
             $scope.filteredTemplates = $filter('filter')($scope.templates, $scope.searchText);
             // apply the tag search filter
             $scope.filteredTemplates = $filter('tagFilter')($scope.filteredTemplates, FilterTagService.filterTags);
+            // apply the sharing setting filter
+            $scope.filteredTemplates = $filter('sharingFilter')($scope.filteredTemplates, properties.list);
 
             $scope.focusIndex = 0;
 
@@ -387,8 +391,12 @@ gApp.controller('ListCtrl',
         };
 
         $scope.$on('toggledFilterTag', function () {
-            $scope.title = "<i class='fa fa-hashtag'/>" + FilterTagService.filterTags[0] + " templates";
-            filterQuicktexts();
+            tag = FilterTagService.filterTags[0];
+
+            if (tag != undefined) {
+                $scope.title = "<i class='fa fa-hashtag'/>" + tag + " templates";
+                filterQuicktexts();
+            }
         });
 
         $scope.loadMore = function () {
@@ -400,4 +408,5 @@ gApp.controller('ListCtrl',
         };
 
         $scope.$watch('searchText', filterQuicktexts);
+        //$scope.$watch('properties.list', filterQuicktexts);
     });

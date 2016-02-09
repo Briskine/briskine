@@ -57,3 +57,17 @@ gApp.filter('tagFilter', function (TemplateService) {
         }
     };
 });
+
+// Filter templates by sharing setting
+gApp.filter('sharingFilter', function () {
+    return function (templates, sharing_setting) {
+        if (sharing_setting != 'all' && sharing_setting != 'tag') {
+            var private = sharing_setting == 'private';
+            return _.filter(templates, function (t) {
+                return t.private === private;
+            });
+        } else {
+            return templates;
+        }
+    };
+});
