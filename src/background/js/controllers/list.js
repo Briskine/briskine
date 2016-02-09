@@ -65,13 +65,15 @@ gApp.controller('ListCtrl',
                 } else {
                     $scope.sharing_setting = "Private";
                 }
-                $rootScope.SyncNow();
             });
         }
 
         loadAccount();
 
-        $scope.$on('loggedIn', loadAccount);
+        $scope.$on('loggedIn', function() {
+            loadAccount();
+            $rootScope.SyncNow();
+        });
 
         // Hide Subject and Tags fields by default
         $scope.settings = {};
@@ -116,7 +118,7 @@ gApp.controller('ListCtrl',
         // Listen on syncing events
         $scope.$on("templates-sync", function() {
             $scope.reloadTemplates();
-            $scope.loadAccount();
+            loadAccount();
         });
 
         $scope.$watch('templates', function () {
