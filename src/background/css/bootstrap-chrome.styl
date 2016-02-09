@@ -183,15 +183,36 @@ input[type='password'],
   padding: 15px 6px 0 6px;
 }
 
+.nav-tabs {
+    border: none;
+
+    & > li > a {
+        border: none;
+        border-radius: 4px;
+
+        &:hover {
+            background: $lightergrey;
+        }
+    }
+
+    & > li.active {
+        & > a, & > a:hover, & > a:focus {
+            border: none;
+            background: $lightergrey;
+            border-radius: 4px;
+        }
+    }
+}
+
 /* Buttons
  */
 
 .label-licenses {
-  border: none;
-  font-size: 100%;
-  margin-top: -6px;
-  margin-left: 5px;
-  vertical-align: middle;
+    border: none;
+    font-size: 100%;
+    margin-top: -6px;
+    margin-left: 5px;
+    vertical-align: middle;
 }
 
 .btn {
