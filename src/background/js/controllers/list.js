@@ -236,7 +236,15 @@ gApp.controller('ListCtrl',
                 var deferred = $q.defer();
 
                 MemberService.members().then(function (data) {
-                    $scope.shareData.members = data.members;
+                    var members = [];
+
+                    data.members.forEach(function (member) {
+                        if (member.active) {
+                            members.push(member);
+                        }
+                    });
+
+                    $scope.shareData.members = members;
 
                     var options = [];
 

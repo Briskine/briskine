@@ -70,14 +70,7 @@ gApp.controller('TemplateFormCtrl',
 
         self.fillUpSelectizeField = function() {
             var acl = $scope.shareData.acl;
-
-            var members = [];
-
-            $scope.shareData.members.forEach(function (member) {
-                if (member.active) {
-                    members.push(member);
-                }
-            });
+            var members = $scope.shareData.members;
 
             if (acl.length == members.length + 1) {
                 self.sharing_setting = "Share with everyone";

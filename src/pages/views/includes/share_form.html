@@ -88,15 +88,14 @@
                                 <label for="qt-invite-people">People:</label>
                                 <input type="text" class="form-control" id="qt-invite-people" ng-model="shareData.emails"
                                        placeholder="Email addresses"/>
-                                <p>Notify people by email : <input type="checkbox" ng-model="templateForm.send_email" ng-true-value="'true'" ng-false-value="'false'"></p>
+                                <p>Notify people by email <input type="checkbox" ng-model="shareForm.send_email" ng-true-value="'true'" ng-false-value="'false'"></p>
                             </div>
 
                             <div>
-                                <div class="form-group share-message-container" ng-show="shareForm.send_email == 'true'">
+                                <div class="form-group share-message-container" style="margin-bottom: 0" ng-show="shareForm.send_email == 'true'">
                                     <textarea class="form-control" rows="4" placeholder="Optional message"
                                               ng-model="shareData.message"></textarea>
                                 </div>
-                                <button type="button" class="btn btn-primary" ng-click="shareForm.shareQt()">Share</button>
                             </div>
 
                             <!-- TODO: add permissions later
@@ -120,7 +119,7 @@
 
                 <div class="modal-footer">
 
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Done</button>
+                    <button type="button" class="btn btn-default" ng-click="shareForm.shareQt()">Done</button>
                 </div>
 
             </form>
