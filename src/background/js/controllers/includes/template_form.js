@@ -6,6 +6,7 @@ gApp.controller('TemplateFormCtrl',
         var self = this;
         self.sharing_setting = "Private";
         self.send_email = 'false';
+        self.extended = false;
 
         var loadEditor = function () {
             $scope.showHTMLSource = false;
@@ -164,6 +165,7 @@ gApp.controller('TemplateFormCtrl',
                     }
                 });
 
+                self.extended = false;
                 $('#template-form-modal').modal('show');
             };
 
