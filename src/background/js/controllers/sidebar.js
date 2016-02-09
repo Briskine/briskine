@@ -66,6 +66,10 @@ gApp.controller('SidebarCtrl', function ($scope, $location, $http, $window,
         }
     });
 
-    $scope.$on('reload', loadTags);
+    $scope.$on('reload', function() {
+        loadTags();
+        loadAccount();
+    });
+
     $scope.$on('loggedIn', loadAccount);
 });

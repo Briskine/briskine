@@ -114,7 +114,10 @@ gApp.controller('ListCtrl',
         $scope.reloadTemplates();
 
         // Listen on syncing events
-        $scope.$on("templates-sync", $scope.reloadTemplates);
+        $scope.$on("templates-sync", function() {
+            $scope.reloadTemplates();
+            $scope.loadAccount();
+        });
 
         $scope.$watch('templates', function () {
             if ($scope.templates && $scope.templates.length) {
