@@ -30,8 +30,7 @@
                         <ul class="share-user-list">
                             <li class="share-row row">
                                 <div class="col-xs-1">
-                                    <img src="https://cdn3.iconfinder.com/data/icons/token/128/Lock.png"
-                                         class="avatar">
+                                    <i ng-class="{'fa-lock': shareData.acl.length == 1, 'fa-unlock': shareData.acl.length > 1}" class="fa fa-3x"></i>
                                 </div>
 
                                 <div class="col-xs-5 margin-top-10">
