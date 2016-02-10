@@ -5,7 +5,6 @@ gApp.controller('SidebarCtrl', function ($scope, $location, $http, $window,
     $scope.baseURL = Settings.defaults.baseURL;
 
     $window.addEventListener('message', function (e) {
-        console.log(e.data);
         if (e.data == "gorgias-signedup-reload") {
             location.reload(true);
         }
@@ -53,7 +52,7 @@ gApp.controller('SidebarCtrl', function ($scope, $location, $http, $window,
             method: 'GET',
             url: Settings.defaults.baseURL + 'logout'
         }).then(function () {
-            location.reload(true);
+            SettingsService.set('isLoggedIn', false).then(location.reload(true));
         });
     };
 
