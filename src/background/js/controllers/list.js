@@ -18,34 +18,42 @@ gApp.controller('ListCtrl',
             $location.search('action', null);
         }
 
-        switch(properties.list) {
-            case 'shared':
-                $scope.title = "Shared templates";
-                $scope.location = "/list/shared";
-                $scope.sharing_setting = "everyone";
-                break;
-            case 'private':
-                $scope.title = "Private templates";
-                $scope.location = "/list/private";
-                $scope.sharing_setting = "private";
-                break;
-            case 'tag':
-                var tag = FilterTagService.filterTags[0];
+        SettingsService.get('isLoggedIn').then(function(isLoggedIn){
+            switch(properties.list) {
+                case 'shared':
+                    if (!isLoggedIn){
+                        $location.path("#/list");
+                    }
+                    $scope.title = "Shared templates";
+                    $scope.location = "/list/shared";
+                    $scope.sharing_setting = "everyone";
+                    break;
+                case 'private':
+                    if (!isLoggedIn){
+                        $location.path("#/list");
+                    }
+                    $scope.title = "Private templates";
+                    $scope.location = "/list/private";
+                    $scope.sharing_setting = "private";
+                    break;
+                case 'tag':
+                    var tag = FilterTagService.filterTags[0];
 
-                if (tag == undefined) {
-                    $location.path('/list');
-                }
+                    if (tag == undefined) {
+                        $location.path('/list');
+                    }
 
-                $scope.title = "<i class='fa fa-hashtag'/>" + FilterTagService.filterTags[0] + " templates";
-                $scope.location = "/list/tag";
-                $scope.sharing_setting = "private";
-                break;
-            default:
-                $scope.title = "All templates";
-                $scope.location = "/list";
-                $scope.sharing_setting = "private";
-                break;
-        }
+                    $scope.title = "<i class='fa fa-hashtag'/>" + FilterTagService.filterTags[0] + " templates";
+                    $scope.location = "/list/tag";
+                    $scope.sharing_setting = "private";
+                    break;
+                default:
+                    $scope.title = "All templates";
+                    $scope.location = "/list";
+                    $scope.sharing_setting = "private";
+                    break;
+            }
+        });
 
         $scope.shareData = {
             sharing: {},
