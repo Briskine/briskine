@@ -4,7 +4,7 @@ gApp.controller('TemplateFormCtrl',
 
         var editor;
         var self = this;
-        self.sharing_setting = "Private";
+        self.sharing_setting = "private";
         self.send_email = 'false';
         self.extended = false;
 
@@ -73,12 +73,12 @@ gApp.controller('TemplateFormCtrl',
             var acl = $scope.shareData.acl;
             var members = $scope.shareData.members;
 
-            if (acl.length == members.length + 1) {
-                self.sharing_setting = "Share with everyone";
+            if (acl.length >= members.length + 1) {
+                self.sharing_setting = "everyone";
             } else if (acl.length > 1) {
-                self.sharing_setting = "Share with...";
+                self.sharing_setting = "specific";
             } else {
-                self.sharing_setting = "Private";
+                self.sharing_setting = "private";
             }
 
             var selectize = $scope.templateModalSelectizeField[0].selectize;
@@ -190,8 +190,7 @@ gApp.controller('TemplateFormCtrl',
                     self.selectedTemplate = angular.copy(quicktext);
 
                     if ($scope.account) {
-                        $scope.reloadSharing([quicktext]);
-                        $scope.initializeMemberSelectize([self.selectedTemplate]).then(function() {
+                        $q.all([$scope.reloadSharing([quicktext]), $scope.initializeMemberSelectize([self.selectedTemplate])]).then(function() {
                             self.fillUpSelectizeField(self.selectedTemplate);
                             initForm();
                         });
@@ -232,7 +231,7 @@ gApp.controller('TemplateFormCtrl',
                 }
 
                 var post_update = function() {
-                    if (self.sharing_setting == 'Share with...') {
+                    if (self.sharing_setting == 'specific') {
                         var old_emails = [];
 
                         for (i in $scope.shareData.acl){
@@ -253,9 +252,9 @@ gApp.controller('TemplateFormCtrl',
                         });
 
                         $scope.shareQuicktexts([self.selectedTemplate], self.send_email);
-                    } else if (self.sharing_setting == 'Private') {
+                    } else if (self.sharing_setting == 'private') {
                         self.revokeAllAccess([self.selectedTemplate]);
-                    } else if (self.sharing_setting == 'Share with everyone') {
+                    } else if (self.sharing_setting == 'everyone') {
                         $scope.shareQuicktextsWithEveryone([self.selectedTemplate], self.send_email);
                     }
                 };

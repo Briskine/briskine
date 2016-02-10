@@ -166,18 +166,18 @@
                     <div class="form-group" ng-show="account">
                         <label for="qt-sharing">
                             Who has access :
-                            <a ng-click="templateForm.extended = true" style="font-weight: 400" ng-show="templateForm.sharing_setting == 'Private'">only you</a>
-                            <a ng-click="templateForm.extended = true" style="font-weight: 400" ng-show="templateForm.sharing_setting == 'Share with...'">only specific people</a>
-                            <a ng-click="templateForm.extended = true" style="font-weight: 400" ng-show="templateForm.sharing_setting == 'Share with everyone'">everyone</a>
+                            <a ng-click="templateForm.extended = true" style="font-weight: 400" ng-show="templateForm.sharing_setting == 'private'">only you</a>
+                            <a ng-click="templateForm.extended = true" style="font-weight: 400" ng-show="templateForm.sharing_setting == 'specific'">only specific people</a>
+                            <a ng-click="templateForm.extended = true" style="font-weight: 400" ng-show="templateForm.sharing_setting == 'everyone'">everyone</a>
                         </label>
                         <div class="row" ng-show="templateForm.extended">
                             <div class="col-xs-8">
                                 <div data-toggle="tooltip" data-placement="left"
                                      title="Sharing will allow both editing and re-sharing of your templates.">
                                     <select class="form-control" id="qt-sharing" ng-model="templateForm.sharing_setting">
-                                        <option>Private</option>
-                                        <option>Share with everyone</option>
-                                        <option>Share with...</option>
+                                        <option value="private">Private</option>
+                                        <option value="everyone">Share with everyone</option>
+                                        <option value="specific">Share with...</option>
                                     </select>
                                 </div>
                             </div>
@@ -187,7 +187,7 @@
                         </div>
                     </div>
 
-                    <div class="form-group" ng-show="account && templateForm.extended && templateForm.sharing_setting == 'Share with...'">
+                    <div class="form-group" ng-show="account && templateForm.extended && templateForm.sharing_setting == 'specific'">
                         <label for="template-qt-invite-people">People:</label>
                         <input type="text" class="form-control" id="template-qt-invite-people" ng-model="shareData.emails"
                                placeholder="Email addresses"/>
