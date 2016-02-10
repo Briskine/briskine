@@ -230,14 +230,14 @@ gApp.controller('TemplateFormCtrl',
                     }
                 }
 
-                var post_update = function() {
+                var post_update = function () {
                     if (self.sharing_setting == 'specific') {
                         var old_emails = [];
 
-                        for (i in $scope.shareData.acl){
+                        for (i in $scope.shareData.acl) {
                             if ($scope.shareData.acl[i].permission != 'owner') {
                                 old_emails.push({
-                                    'email' : $scope.shareData.acl[i].email,
+                                    'email': $scope.shareData.acl[i].email,
                                     'target_user_id': $scope.shareData.acl[i].target_user_id
                                 });
                             }
@@ -245,8 +245,8 @@ gApp.controller('TemplateFormCtrl',
 
                         var new_emails = $scope.shareData.emails.split(',');
 
-                        old_emails.forEach(function(acl){
-                            if (new_emails.indexOf(acl.email) == -1){
+                        old_emails.forEach(function (acl) {
+                            if (new_emails.indexOf(acl.email) == -1) {
                                 $scope.revokeAccess([self.selectedTemplate], acl.target_user_id)
                             }
                         });
@@ -260,12 +260,20 @@ gApp.controller('TemplateFormCtrl',
                 };
 
                 if (self.selectedTemplate.id) {
-                    TemplateService.update(self.selectedTemplate).then(function () {
-                        post_update();
+                    TemplateService.update(self.selectedTemplate, $scope.account).then(function () {
+                        if ($scope.account) {
+                            post_update();
+                        } else {
+                            $scope.reloadTemplates();
+                        }
                     });
                 } else {
-                    TemplateService.create(self.selectedTemplate).then(function () {
-                        post_update();
+                    TemplateService.create(self.selectedTemplate, $scope.account).then(function () {
+                        if ($scope.account) {
+                            post_update();
+                        } else {
+                            $scope.reloadTemplates();
+                        }
                     });
                 }
 

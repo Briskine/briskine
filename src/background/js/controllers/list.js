@@ -10,9 +10,7 @@ gApp.controller('ListCtrl',
         var properties = $route.current.locals.properties;
 
         if ($routeParams.id) {
-            console.log('checking');
-            if (!$routeParams.src || $routeParams.src != 'qa-button') {
-                console.log('killing id');
+            if (!$routeParams.src) {
                 $location.search('id', null);
             }
         }
