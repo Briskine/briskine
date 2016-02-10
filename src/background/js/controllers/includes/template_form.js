@@ -9,7 +9,7 @@ gApp.controller('TemplateFormCtrl',
         self.extended = false;
 
         var loadEditor = function () {
-            $scope.showHTMLSource = false;
+            self.showHTMLSource = false;
             if (editor) { //already loaded
                 return;
             }
@@ -40,6 +40,17 @@ gApp.controller('TemplateFormCtrl',
                     editor = null;
                 }
             });
+        };
+
+        self.showHTMLSource = false;
+
+        self.toggleHTMLSource = function () {
+            self.showHTMLSource = !self.showHTMLSource;
+            if (self.showHTMLSource) {
+                editor.setText(editor.getHTML());
+            } else {
+                editor.setHTML(editor.getText());
+            }
         };
 
         self.insertVar = function (variable) {
@@ -214,7 +225,7 @@ gApp.controller('TemplateFormCtrl',
             }
 
             if (editor) {
-                if ($scope.showHTMLSource) {
+                if (self.showHTMLSource) {
                     self.selectedTemplate.body = editor.getText();
                 }
             }

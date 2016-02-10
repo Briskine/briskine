@@ -5,7 +5,6 @@ gApp.controller('ListCtrl',
 
         var $formModal;
         var $shareModal;
-        var editor;
 
         var properties = $route.current.locals.properties;
 
@@ -328,17 +327,6 @@ gApp.controller('ListCtrl',
         };
 
         $rootScope.$on('$includeContentLoaded', initDom);
-
-
-        $scope.showHTMLSource = false;
-        $scope.toggleHTMLSource = function () {
-            $scope.showHTMLSource = !$scope.showHTMLSource;
-            if ($scope.showHTMLSource) {
-                editor.setText(editor.getHTML());
-            } else {
-                editor.setHTML(editor.getText());
-            }
-        };
 
         // Delete a quicktext. This operation should first delete from the localStorage
         // then it should imedially go to the service and delete on the server
