@@ -96,7 +96,7 @@ var Settings = {
                 shortcut: 'ctrl+space', // shortcut that triggers the complete dialog
                 auto: false, //trigger automatically while typing - should be disabled cause it's annoying sometimes
                 delay: 1000, // if we want to trigger it automatically
-                limit: 5 // how many templates are shown in the dialog
+                limit: 100 // how many templates are shown in the dialog
             },
             qaBtn: {
                 enabled: true,

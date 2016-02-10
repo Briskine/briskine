@@ -1,7 +1,7 @@
 gApp.controller('SubscriptionsCtrl', function($scope, $rootScope, $routeParams, $q, SubscriptionService, AccountService) {
     $scope.activeTab = 'subscriptions';
 
-    AccountService.get().then(function(data){ $scope.account = AccountService.user; });
+    AccountService.get().then(function(account){ $scope.account = account; });
 
     $scope.plans = {};
     $scope.subscriptions = [];
@@ -52,6 +52,7 @@ gApp.controller('SubscriptionsCtrl', function($scope, $rootScope, $routeParams, 
     $scope.reloadSubscriptions = function() {
         SubscriptionService.subscriptions().then(function(data) {
             $scope.subscriptions = data;
+            $scope.quantity = $scope.subscriptions[0].quantity;
         });
     };
 
