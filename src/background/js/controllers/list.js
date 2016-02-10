@@ -427,6 +427,8 @@ gApp.controller('ListCtrl',
 
         $scope.$on('toggledFilterTag', function () {
             tag = FilterTagService.filterTags[0];
+            $scope.selectedQuicktexts = [];
+            $scope.selectedAll = false;
 
             if (tag != undefined) {
                 $scope.title = "<i class='fa fa-hashtag'/>" + tag + " templates";
