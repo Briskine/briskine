@@ -1,6 +1,6 @@
 gApp.controller('TemplateFormCtrl',
     function ($route, $q, $scope, $rootScope, $routeParams, $location, $timeout, $filter,
-              AccountService, TemplateService, SettingsService) {
+              AccountService, TemplateService, SettingsService, FilterTagService) {
 
         var editor;
         var self = this;
@@ -150,6 +150,10 @@ gApp.controller('TemplateFormCtrl',
                         self.selectedTemplate.body = $routeParams.body || '';
                         if (editor) {
                             editor.setHTML(self.selectedTemplate.body);
+
+                            if ($scope.location == '/list/tag') {
+                                $('#qt-tags')[0].selectize.addItem($.trim(FilterTagService.filterTags[0]));
+                            }
                         }
                     } else if (id) {
                         // update template
