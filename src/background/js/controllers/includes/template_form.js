@@ -270,7 +270,7 @@ gApp.controller('TemplateFormCtrl',
                 };
 
                 if (self.selectedTemplate.id) {
-                    TemplateService.update(self.selectedTemplate, $scope.account).then(function () {
+                    TemplateService.update(self.selectedTemplate, !$scope.account).then(function () {
                         if ($scope.account) {
                             post_update();
                         } else {
@@ -278,7 +278,7 @@ gApp.controller('TemplateFormCtrl',
                         }
                     });
                 } else {
-                    TemplateService.create(self.selectedTemplate, $scope.account).then(function () {
+                    TemplateService.create(self.selectedTemplate, !$scope.account).then(function (t) {
                         if ($scope.account) {
                             post_update();
                         } else {

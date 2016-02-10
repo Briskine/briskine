@@ -202,7 +202,7 @@ gApp.controller('ListCtrl',
                     }
                 });
                 $scope.shareQuicktexts(quicktexts, send_email);
-            }
+            };
 
             $scope.revokeAccess = function (quicktexts, target_user_id) {
                 QuicktextSharingService.delete(quicktexts, target_user_id).then(function () {
@@ -343,6 +343,7 @@ gApp.controller('ListCtrl',
                 r = confirm("Are you sure you want to delete '" + quicktext.title + "' template?");
                 if (r === true) {
                     TemplateService.delete(quicktext).then(function () {
+                        $scope.updateSelectedQuicktexts(quicktext, false);
                         $scope.reloadTemplates();
                     });
                 }
@@ -365,6 +366,7 @@ gApp.controller('ListCtrl',
                     }
                     $scope.reloadTemplates();
 
+                    $scope.selectedQuicktexts = [];
                     $scope.selectedAll = false;
                 }
             }

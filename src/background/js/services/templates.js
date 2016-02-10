@@ -417,7 +417,7 @@ gApp.service('TemplateService', function ($q, $resource, SettingsService) {
             });
 
             SettingsService.get('isLoggedIn').then(function(isLoggedIn){
-                if (!isLoggedin) { // if it's not logged in
+                if (!isLoggedIn) { // if it's not logged in
                     deferred.resolve();
                     return;
                 }
