@@ -257,14 +257,12 @@ gApp.controller('ListCtrl',
 
                     var options = [];
 
-                    _.each(data.members, function (member) {
-                        if (member.active) {
-                            options.push({
-                                'user_id': member.user_id,
-                                'email': member.email,
-                                'name': member.name
-                            });
-                        }
+                    _.each(members, function (member) {
+                        options.push({
+                            'user_id': member.user_id,
+                            'email': member.email,
+                            'name': member.name
+                        });
                     });
 
                     var REGEX_EMAIL = '([a-z0-9!#$%&\'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&\'*+/=?^_`{|}~-]+)*@' +

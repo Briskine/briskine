@@ -200,7 +200,7 @@ gApp.controller('TemplateFormCtrl',
                     self.selectedTemplate = angular.copy(quicktext);
 
                     if ($scope.account && quicktext.nosync == 0) {
-                        $q.all([$scope.reloadSharing([quicktext]), $scope.initializeMemberSelectize([self.selectedTemplate])]).then(function() {
+                        $q.all([$scope.reloadSharing([self.selectedTemplate]), $scope.initializeMemberSelectize([self.selectedTemplate])]).then(function() {
                             self.fillUpSelectizeField(self.selectedTemplate);
                             initForm();
                         });
