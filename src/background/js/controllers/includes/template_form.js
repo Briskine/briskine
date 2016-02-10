@@ -333,4 +333,5 @@ gApp.controller('TemplateFormCtrl',
         };
 
         $scope.$on('$routeUpdate', checkRoute);
+        checkRoute();
     });

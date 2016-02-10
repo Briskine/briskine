@@ -10,7 +10,11 @@ gApp.controller('ListCtrl',
         var properties = $route.current.locals.properties;
 
         if ($routeParams.id) {
-            $location.search('id', null);
+            console.log('checking');
+            if (!$routeParams.src || $routeParams.src != 'qa-button') {
+                console.log('killing id');
+                $location.search('id', null);
+            }
         }
 
         if ($routeParams.action) {
@@ -21,12 +25,12 @@ gApp.controller('ListCtrl',
             case 'shared':
                 $scope.title = "Shared templates";
                 $scope.location = "/list/shared";
-                $scope.sharing_setting = "Share with everyone";
+                $scope.sharing_setting = "everyone";
                 break;
             case 'private':
                 $scope.title = "Private templates";
                 $scope.location = "/list/private";
-                $scope.sharing_setting = "Private";
+                $scope.sharing_setting = "private";
                 break;
             case 'tag':
                 var tag = FilterTagService.filterTags[0];
@@ -37,12 +41,12 @@ gApp.controller('ListCtrl',
 
                 $scope.title = "<i class='fa fa-hashtag'/>" + FilterTagService.filterTags[0] + " templates";
                 $scope.location = "/list/tag";
-                $scope.sharing_setting = "Private";
+                $scope.sharing_setting = "private";
                 break;
             default:
                 $scope.title = "All templates";
                 $scope.location = "/list";
-                $scope.sharing_setting = "Private";
+                $scope.sharing_setting = "private";
                 break;
         }
 
@@ -69,9 +73,9 @@ gApp.controller('ListCtrl',
 
                 if (($scope.account.info.share_all == "true" && (properties.list == "tag" || properties.list == "all"))
                 || properties.list == "shared") {
-                    $scope.sharing_setting = "Share with everyone";
+                    $scope.sharing_setting = "everyone";
                 } else {
-                    $scope.sharing_setting = "Private";
+                    $scope.sharing_setting = "private";
                 }
             });
         }
