@@ -7,6 +7,7 @@ gApp.controller('TemplateFormCtrl',
         self.sharing_setting = "private";
         self.send_email = 'false';
         self.extended = false;
+        self.showHTMLSource = false;
 
         var loadEditor = function () {
             self.showHTMLSource = false;
@@ -41,8 +42,6 @@ gApp.controller('TemplateFormCtrl',
                 }
             });
         };
-
-        self.showHTMLSource = false;
 
         self.toggleHTMLSource = function () {
             self.showHTMLSource = !self.showHTMLSource;
@@ -200,7 +199,7 @@ gApp.controller('TemplateFormCtrl',
                 TemplateService.get($routeParams.id).then(function(quicktext){
                     self.selectedTemplate = angular.copy(quicktext);
 
-                    if ($scope.account) {
+                    if ($scope.account && quicktext.nosync == 0) {
                         $q.all([$scope.reloadSharing([quicktext]), $scope.initializeMemberSelectize([self.selectedTemplate])]).then(function() {
                             self.fillUpSelectizeField(self.selectedTemplate);
                             initForm();

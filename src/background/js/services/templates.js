@@ -203,7 +203,12 @@ gApp.service('TemplateService', function ($q, $resource, SettingsService) {
                 }
 
                 // no remote_id means that it's local only and we have to sync it with the remote sync service
+                if (id == '4b082cc1-d69a-49c8-abdf-396f0c0af0b9') {
+                    console.log(t.remote_id);
+                }
+
                 if (!t.remote_id) {
+
                     // skipping deleted templates - there should not be any.. but ok.
                     if (t.deleted === 1) {
                         continue;

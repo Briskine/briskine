@@ -64,7 +64,7 @@ gApp.filter('sharingFilter', function () {
         if (sharing_setting != 'all' && sharing_setting != 'tag') {
             var private = sharing_setting == 'private';
             return _.filter(templates, function (t) {
-                return t.private === private;
+                return t.private === private || t.nosync === 1;
             });
         } else {
             return templates;
