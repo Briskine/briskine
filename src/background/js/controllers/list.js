@@ -376,6 +376,12 @@ gApp.controller('ListCtrl',
             }
         };
 
+        var selectAllWatcher = function() {
+            if ($scope.templates.length > 0) {
+                $scope.selectedAll = $scope.selectedQuicktexts.length == $scope.filteredTemplates.length;
+            }
+        };
+
         $scope.getSelectedQuicktexts = function() {
             var qt_ids = [];
             for (var qt in $scope.selectedQuicktexts) {
@@ -435,4 +441,5 @@ gApp.controller('ListCtrl',
         };
 
         $scope.$watch('searchText', filterQuicktexts);
+        $scope.$watch('selectedQuicktexts.length', selectAllWatcher);
     });
