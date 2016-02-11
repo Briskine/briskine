@@ -18,7 +18,8 @@
         <button type="button" ng-if="selectedQuicktexts.length" ng-click="deleteQts(selectedQuicktexts)"
                 class="btn btn-error pull-right">Delete
         </button>
-        <a type="button" ng-if="selectedQuicktexts.length && account.info.name" ng-href="#{{location}}?action=share" class="btn btn-primary pull-right">Share
+        <a type="button" ng-if="selectedQuicktexts.length && account.info.name" ng-href="#{{location}}?action=share"
+           class="btn btn-primary pull-right">Share
         </a>
     </div>
     <div class="row no-margin checkbox-wrapper">
@@ -56,8 +57,10 @@
 
                 <div class="row">
                     <div class="col-xs-4">
-                        <h4 class="list-group-item-heading"
-                            ng-bind-html="quicktext.title | truncate: 50 | newlines | safe"></h4>
+                        <h4 class="list-group-item-heading">
+                            <span ng-bind-html="quicktext.title| truncate: 50 | newlines | safe"/>
+                            <i class='private-icon fa fa-lock' ng-if="quicktext.private && location.indexOf('private') === -1" title="This template is only visible by you" />
+                        </h4>
 
                         <p class="quicktext-shortcut"
                            title="Text shortcut: type this text and press TAB to insert your template"

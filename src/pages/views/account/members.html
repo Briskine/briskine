@@ -47,7 +47,7 @@
         <td>{{ account.email }}</td>
         <td class="pull-right"><a href="#/account">My account</a></td>
     </tr>
-    <tr ng-repeat="u in filteredUsers = (users | filter:searchText)">
+    <tr ng-repeat="u in filteredUsers = (users | filter:searchText)" ng-class="u.active == true ? '': 'inactive'">
         <th>
             <img ng-if="!u.thumbnail_photo_url"
                  ng-src="http://www.gravatar.com/avatar/{{ u.email | gravatar }}?d=retro" class="avatar"/>
@@ -64,13 +64,15 @@
             <input type="text" class="form-control hidden edit-{{ u.id }}" ng-model="u.email"/>
         </td>
         <td class="pull-right">
-            <div class="btn-group" ng-if="account.is_customer">
-                <button class="btn btn-default" ng-click="edit()">Edit</button>
-                <button class="btn btn-primary hidden edit-{{ u.id }}" ng-click="saveMember()">Save Changes</button>
-            </div>
-            <div class="btn-group" ng-if="account.is_customer" ng-switch on="u.active">
-                <button class="btn btn-danger" ng-switch-when="true" ng-click="toggleMember()">Disable</button>
-                <button class="btn btn-danger" ng-switch-when="false" ng-click="toggleMember()">Enable</button>
+            <div class="hover-actions">
+                <div class="btn-group" ng-if="account.is_customer">
+                    <button class="btn btn-default" ng-click="edit()">Edit</button>
+                    <button class="btn btn-primary hidden edit-{{ u.id }}" ng-click="saveMember()">Save Changes</button>
+                </div>
+                <div class="btn-group" ng-if="account.is_customer" ng-switch on="u.active">
+                    <button class="btn btn-danger" ng-switch-when="true" ng-click="toggleMember()">Disable</button>
+                    <button class="btn btn-danger" ng-switch-when="false" ng-click="toggleMember()">Enable</button>
+                </div>
             </div>
             <!--input bs-switch  switch-size="small" switch-label-width="1"
                    ng-change="toggleMember()" type="checkbox"/>-->

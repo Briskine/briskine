@@ -22,7 +22,7 @@ gApp.controller('MembersCtrl', function ($scope, $rootScope, $timeout, AccountSe
     $scope.refresh = function () {
         var getData = function () {
             MemberService.members().then(function (data) {
-                $scope.users = data.members;
+                $scope.users = _.sortBy(data.members, 'active').reverse();
                 $scope.appsUsers = data.apps_users;
                 $scope.newUsers = [];
 
