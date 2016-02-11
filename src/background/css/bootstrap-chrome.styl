@@ -22,6 +22,11 @@ p {
     margin: 0 0 emCalc(8);
 }
 
+.row.no-margin {
+    margin-left: 0;
+    margin-right: 0;
+}
+
 /* Header
  */
 header {
@@ -47,8 +52,9 @@ h2 small {
  */
 input[type='text'],
 input[type='email'],
+input[type='password'],
 .selectize-input {
-    border: 1px solid #bfbfbf;
+    border: 1px solid rgba(0, 0, 0, 0.15);
     border-radius: 2px;
     color: #444;
     font: inherit;
@@ -57,6 +63,10 @@ input[type='email'],
     min-height: inherit;
 
     padding: emCalc(4) emCalc(6);
+
+    input {
+        margin-top: 4px !important;
+    }
 }
 
 .form-control {
@@ -67,15 +77,37 @@ input[type='email'],
 }
 
 .selectize-input {
-    padding: 2px 2px 5px 6px !important;
+    padding: 0 0 5px 5px !important;
+
     &.focus {
         box-shadow: none;
-        border-color: $color1;
+        border-color: $ligthgrey;
     }
     .item {
-        margin-right: 4px;
+        border: 1px solid $ligthgrey;
+        border-radius: 3px;
+        padding-left: 4px;
+        margin: 5px 5px 0 0;
+        cursor: pointer;
+
         &.active {
-            background-color: $color1;
+            background-color: $lightergrey;
+        }
+
+        a {
+            padding-top: 1px !important;
+        }
+    }
+
+    .email-selectize-item {
+        margin: 5px 5px 0 0 !important;
+        background: none !important;
+        border: 1px solid $ligthgrey !important;
+        padding-left: 4px !important;
+
+        &.active {
+            color: black !important;
+            background: $lightergrey !important;
         }
     }
 }
@@ -94,17 +126,22 @@ input[type='email'],
 /* Nav pills
  */
 
-.nav {
+.nav.nav-pills {
+    ul {
+        padding-left: 0;
+    }
 
-    > li {
-        margin-left: emCalc(-22) !important;
+    li {
+        margin-left: -10px;
         border-left: 6px solid transparent;
 
         line-height: .8em;
+        list-style: none;
 
-        > a {
+        a {
             color: darken($grey1, 40%);
             border-radius: 0;
+            padding: 5px 15px;
 
             &:focus,
             &:hover {
@@ -123,8 +160,6 @@ input[type='email'],
                 &:focus,
                 &:hover {
                     background: none;
-                    cursor: default;
-
                     color: darken($grey1, 60%);
                 }
             }
@@ -135,14 +170,54 @@ input[type='email'],
 
 .nav-stacked {
     margin: 1em 0;
+}
 
-    > li:last-child {
-        margin-top: 2em;
+/* Table
+ */
+.table {
+  & > tbody > tr > td, & > tbody > tr > th {
+    border-top: none;
+  }
+}
+
+/* Tabs
+ */
+
+.tab-container {
+  padding: 15px 6px 0 6px;
+}
+
+.nav-tabs {
+    border: none;
+
+    & > li > a {
+        border: none;
+        border-radius: 4px;
+
+        &:hover {
+            background: $lightergrey;
+        }
+    }
+
+    & > li.active {
+        & > a, & > a:hover, & > a:focus {
+            border: none;
+            background: $lightergrey;
+            border-radius: 4px;
+        }
     }
 }
 
 /* Buttons
  */
+
+.label-licenses {
+    border: none;
+    font-size: 100%;
+    margin-top: -6px;
+    margin-left: 5px;
+    vertical-align: middle;
+}
 
 .btn {
     appearance: none;
@@ -194,6 +269,7 @@ input[type='email'],
 }
 
 .btn-toolbar {
+    margin-left: 0;
     padding-bottom: emCalc(12);
     margin-bottom: 0;
     border-bottom: 1px solid $grey1;
@@ -201,6 +277,10 @@ input[type='email'],
 
 /* Modal
  */
+.modal-dialog.thin-modal {
+    max-width: 400px;
+}
+
 .modal-header {
     .close {
         background-image: -webkit-image-set(url(/icons/close.png) 1x, url(/icons/close@2x.png) 2x);
@@ -250,6 +330,13 @@ input[type='email'],
     }
 }
 
+#quicktext-share-modal {
+    .well {
+        padding: 0;
+        margin-top: 30px;
+    }
+}
+
 /* Dropdown */
 .dropdown-toggle {
     padding-top: 2px;
@@ -265,7 +352,7 @@ input[type='email'],
 
 /* Labels */
 .label {
-    font-size: 80%;
+    font-size: 100%;
 }
 
 .label-primary{

@@ -3,6 +3,10 @@
  All declarations are done here
  */
 
+document.addEventListener("launchGorgias", function() {
+   chrome.runtime.sendMessage({request: 'launchGorgias'});
+});
+
 var App = {
     data: {
         searchCache: {},

@@ -85,6 +85,7 @@ var Settings = {
     },
     defaults: {
         baseURL: "https://gorgias.io/",
+        //baseURL: "http://localhost:5000/",
         apiBaseURL: "https://gorgias.io/api/1/",
         //apiBaseURL: "http://localhost:5000/api/1/",
 
@@ -95,7 +96,7 @@ var Settings = {
                 shortcut: 'ctrl+space', // shortcut that triggers the complete dialog
                 auto: false, //trigger automatically while typing - should be disabled cause it's annoying sometimes
                 delay: 1000, // if we want to trigger it automatically
-                limit: 5 // how many templates are shown in the dialog
+                limit: 100 // how many templates are shown in the dialog
             },
             qaBtn: {
                 enabled: true,
