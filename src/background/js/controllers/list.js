@@ -1,15 +1,98 @@
 gApp.controller('ListCtrl',
-    function ($scope, $rootScope, $routeParams, $location, $timeout, $filter, TemplateService, SettingsService) {
+    function ($route, $q, $scope, $rootScope, $routeParams, $location, $timeout, $filter,
+              AccountService, TemplateService, SettingsService, FilterTagService, QuicktextSharingService,
+              MemberService) {
 
         var $formModal;
-        var editor;
+        var $shareModal;
+
+        var properties = $route.current.locals.properties;
+
+        if ($routeParams.id) {
+            if (!$routeParams.src) {
+                $location.search('id', null);
+            }
+        }
+
+        if ($routeParams.action) {
+            $location.search('action', null);
+        }
+
+        // set the header titles of the list based on the URL
+        SettingsService.get('isLoggedIn').then(function(isLoggedIn){
+            switch(properties.list) {
+                case 'shared':
+                    if (!isLoggedIn){
+                        $location.path("#/list");
+                    }
+                    $scope.title = "Shared templates";
+                    $scope.location = "/list/shared";
+                    $scope.sharing_setting = "everyone";
+                    break;
+                case 'private':
+                    if (!isLoggedIn){
+                        $location.path("#/list");
+                    }
+                    $scope.title = "Private templates";
+                    $scope.location = "/list/private";
+                    $scope.sharing_setting = "private";
+                    break;
+                case 'tag':
+                    var tag = FilterTagService.filterTags[0];
+
+                    if (tag == undefined) {
+                        $location.path('/list');
+                    }
+
+                    $scope.title = "<i class='fa fa-hashtag'/>" + FilterTagService.filterTags[0] + " templates";
+                    $scope.location = "/list/tag";
+                    $scope.sharing_setting = "private";
+                    break;
+                default:
+                    $scope.title = "All templates";
+                    $scope.location = "/list";
+                    $scope.sharing_setting = "private";
+                    break;
+            }
+        });
+
+        // Store the ACL of all templates
+        $scope.shareData = {
+            sharing: {},
+            members: [],
+            emails: "",
+            message: "",
+            acl: []
+        };
+
+        $scope.baseUrl = Settings.defaults.baseURL;
 
         $scope.filteredTemplates = [];
         $scope.templates = [];
-        $scope.tags = [];
+        $scope.selectedQuicktexts = [];
         $scope.filterTags = [];
         $scope.limitTemplates = 42; // I know.. it's a cliche
         $scope.showInstallHint = false;
+
+        function loadAccount() {
+            AccountService.get().then(function(account) {
+                $scope.account = account;
+
+                if (($scope.account.info.share_all == "true" && (properties.list == "tag" || properties.list == "all"))
+                || properties.list == "shared") {
+                    $scope.sharing_setting = "everyone";
+                } else {
+                    $scope.sharing_setting = "private";
+                }
+            });
+        }
+
+        loadAccount();
+
+        $scope.$on('loggedIn', function() {
+            loadAccount();
+            $rootScope.SyncNow();
+        });
 
         // Hide Subject and Tags fields by default
         $scope.settings = {};
@@ -45,24 +128,23 @@ gApp.controller('ListCtrl',
         $scope.reloadTemplates = function () {
             TemplateService.quicktexts().then(function (r) {
                 $scope.templates = r;
-            });
-
-            TemplateService.allTags().then(function (r) {
-                $scope.tags = r;
+                $rootScope.$broadcast('reload')
             });
         };
+
         $scope.reloadTemplates();
+
+        // Listen on syncing events
+        $scope.$on("templates-sync", function() {
+            $scope.reloadTemplates();
+            loadAccount();
+        });
 
         $scope.$watch('templates', function () {
             if ($scope.templates && $scope.templates.length) {
                 // trigger filterQuicktexts to update filtered templates
                 filterQuicktexts();
             }
-        });
-
-        // Listen on syncing events
-        $scope.$on("templates-sync", function () {
-            $scope.reloadTemplates();
         });
 
 
@@ -74,276 +156,259 @@ gApp.controller('ListCtrl',
             /* New/Edit modal
              */
             $formModal = $('.quicktext-modal');
+
             $formModal.modal({
                 show: false
             });
 
-            $formModal.on('hide.bs.modal', function (e) {
+            $formModal.on('hide.bs.modal', function () {
                 $timeout(function () {
-                    $location.path('/list').search({});
+                    $location.search('id', null);
                 });
             });
 
             $formModal.on('shown.bs.modal', function () {
                 $('#qt-title').focus();
             });
-            checkRoute();
-        };
 
-        var loadEditor = function () {
+            // Share modal
+            $shareModal = $('#quicktext-share-modal');
 
-            $scope.showHTMLSource = false;
-            if (editor) { //already loaded
-                return;
-            }
-
-            SettingsService.get('settings').then(function (settings) {
-                if (settings.editor && settings.editor.enabled) {
-
-
-                    // Initialize editor
-                    editor = new Quill('.editor-wrapper .editor', {
-                        modules: {
-                            'toolbar': {container: '.editor-wrapper .toolbar'},
-                            'link-tooltip': true
-                        },
-                        theme: 'snow'
-                    });
-                    editor.addModule('image-tooltip', {
-                        template: '<input class="input" type="textbox" />' +
-                        '<div class="preview">' +
-                        '<span>Preview</span> </div> ' +
-                        '<a href="javascript:;" class="insert btn btn-primary">Insert</a>' +
-                        '<a href="javascript:;" class="cancel btn btn-default">Cancel</a>'
-                    });
-
-                    editor.on('text-change', function (delta, source) {
-                        $scope.selectedTemplate.body = editor.getHTML();
-                    });
-                } else {
-                    editor = null;
-                }
-            });
-        };
-
-        /* Check search params to see if adding or editing items
-         */
-        var checkRoute = function () {
-            // if not the default list
-            // new or edit, so show the modal
-            if ($routeParams.id) {
-                $scope.showForm();
-            }
-        };
-
-        $scope.$on('$routeUpdate', checkRoute);
-        $rootScope.$on('$includeContentLoaded', initDom);
-
-        // Show the form for adding a new quicktext or creating one
-        $scope.showForm = function (id) {
-            // Where did we open the dialog from.
-            var source = $routeParams.src ? $routeParams.src : "background";
-            mixpanel.track("Show edit form", {
-                source: source
+            $shareModal.on('hide.bs.modal', function () {
+                $timeout(function () {
+                    $location.search('action', null);
+                });
             });
 
-            loadEditor();
+            $scope.shareQuicktexts = function (quicktexts, send_email) {
+                // Only edit permission for now - meaning that
+                QuicktextSharingService.create(quicktexts, $scope.shareData, 'edit', send_email).then(function () {
+                    $scope.reloadSharing(quicktexts);
+                    $scope.shareData.emails = "";
+                    $scope.shareModalSelectizeField[0].selectize.clear();
+                    $scope.templateModalSelectizeField[0].selectize.clear();
+                    $rootScope.SyncNow();
+                });
+            };
 
-            var selectize = $('#qt-tags')[0].selectize;
-            if (selectize) {
-                selectize.clear();
-            }
-
-            TemplateService.allTags().then(function (tags) {
-                var tagOptions = [];
-                var tagNames = Object.keys(tags);
-                for (var t in tagNames) {
-                    if (tagNames.hasOwnProperty(t)) {
-                        tagOptions.push({
-                            text: tagNames[t],
-                            value: tagNames[t]
-                        });
-                    }
-                }
-
-                $('#qt-tags').selectize({
-                    plugins: ['remove_button'],
-                    delimiter: ',',
-                    create: true,
-                    persist: true,
-                    options: tagOptions,
-                    render: {
-                        item: function (item, escape) {
-                            return '<span class="label label-default item">' + escape(item.text) + '</span>';
+            $scope.shareQuicktextsWithEveryone = function(quicktexts, send_email) {
+                $scope.shareData.emails = "";
+                var i = 0;
+                $scope.shareData.members.forEach(function (member) {
+                    if (member.active) {
+                        if (i != 0) {
+                            $scope.shareData.emails += ',';
                         }
+                        $scope.shareData.emails += member.email;
+                        i++;
                     }
                 });
-                var defaults = {
-                    'id': '',
-                    'remote_id': '',
-                    'subject': '',
-                    'shortcut': '',
-                    'title': '',
-                    'tags': '',
-                    'body': ''
-                };
+                $scope.shareQuicktexts(quicktexts, send_email);
+            };
 
-                id = id ? id : $routeParams.id;
+            $scope.revokeAccess = function (quicktexts, target_user_id) {
+                QuicktextSharingService.delete(quicktexts, target_user_id).then(function () {
+                    $scope.reloadSharing(quicktexts);
+                });
+            };
 
-                if (id === 'new') {
-                    // new template
-                    $scope.selectedTemplate = angular.copy(defaults);
-                    $scope.selectedTemplate.body = $routeParams.body || '';
-                    if (editor) {
-                        editor.setHTML($scope.selectedTemplate.body);
-                    }
-                } else if (id) {
-                    // update template
-                    TemplateService.get(id).then(function (r) {
-                        $scope.selectedTemplate = angular.copy(r);
-                        if (editor) {
-                            editor.setHTML($scope.selectedTemplate.body);
+            $scope.reloadSharing = function (quicktexts) {
+                var deferred = $q.defer();
+                if (quicktexts.length != 0) {
+                    QuicktextSharingService.list(quicktexts).then(function (result) {
+                        // Show a user only once
+                        var acl = [];
+                        var userIds = []; // Show each user only once
+
+                        _.each(result, function (row) {
+                            if (!_.contains(userIds, row.target_user_id)) {
+                                userIds.push(row.target_user_id);
+                                acl.push(row);
+                            }
+                        });
+
+                        $scope.shareData.acl = acl;
+                        deferred.resolve();
+                    });
+                }
+                else { deferred.resolve(); }
+                return deferred.promise;
+            };
+
+            $scope.showShareModalListener = function () {
+                var deferred = $q.defer();
+
+                $q.all([$scope.reloadSharing($scope.selectedQuicktexts),
+                        $scope.initializeMemberSelectize()]).then(deferred.resolve);
+                return deferred.promise;
+            };
+
+            $scope.initializeMemberSelectize = function () {
+                var deferred = $q.defer();
+
+                MemberService.members().then(function (data) {
+                    var members = [];
+
+                    data.members.forEach(function (member) {
+                        if (member.active) {
+                            members.push(member);
                         }
-                        $.each($scope.selectedTemplate.tags.split(','), function (_, tag) {
-                            $('#qt-tags')[0].selectize.addItem($.trim(tag));
+                    });
+
+                    $scope.shareData.members = members;
+
+                    var options = [];
+
+                    _.each(members, function (member) {
+                        options.push({
+                            'user_id': member.user_id,
+                            'email': member.email,
+                            'name': member.name
                         });
                     });
-                }
-            });
 
-            $formModal.modal('show');
-        };
+                    var REGEX_EMAIL = '([a-z0-9!#$%&\'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&\'*+/=?^_`{|}~-]+)*@' +
+                        '(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)';
 
-        $scope.showHTMLSource = false;
-        $scope.toggleHTMLSource = function () {
-            $scope.showHTMLSource = !$scope.showHTMLSource;
-            if ($scope.showHTMLSource) {
-                editor.setText(editor.getHTML());
-            } else {
-                editor.setHTML(editor.getText());
-            }
-        };
+                    var selectize_data = {
+                        plugins: ['remove_button'],
+                        persist: false,
+                        maxItems: null,
+                        valueField: 'email',
+                        labelField: 'name',
+                        searchField: ['name', 'email'],
+                        options: options,
+                        render: {
+                            item: function (item, escape) {
+                                return '<div class="email-selectize-item">' +
+                                    (item.name ? '<strong class="name">' + escape(item.name) + '</strong> ' : '') +
+                                    (item.email ? '<span class="email">' + escape(item.email) + '</span>' : '') +
+                                    '</div>';
+                            },
+                            option: function (item, escape) {
+                                var label = item.name || item.email;
+                                var caption = item.name ? item.email : null;
+                                return '<div>' +
+                                    '<span class="label">' + escape(label) + '</span>' +
+                                    (caption ? '<span class="caption">' + escape(caption) + '</span>' : '') +
+                                    '</div>';
+                            }
+                        },
+                        createFilter: function (input) {
+                            var match, regex;
 
-        $scope.insertVar = function (variable) {
-            if (editor) {
-                editor.focus();
-                var range = editor.getSelection();
-                if (range) {
-                    editor.insertText(range.start, '{{' + variable + '}}');
+                            // email@address.com
+                            regex = new RegExp('^' + REGEX_EMAIL + '$', 'i');
+                            match = input.match(regex);
+                            if (match) return !this.options.hasOwnProperty(match[0]);
 
-                }
-            } else {
-                var body = $('#qt-body');
-                var start = body[0].selectionStart;
-                var end = body[0].selectionEnd;
+                            // name <email@address.com>
+                            regex = new RegExp('^([^<]*)<' + REGEX_EMAIL + '>$', 'i');
+                            match = input.match(regex);
+                            if (match) return !this.options.hasOwnProperty(match[2]);
 
-                var val = body.val();
-
-                var startVal = val.slice(0, start);
-                var endVal = val.slice(end);
-
-                var newPos = (startVal + "{{" + variable + "}}").length;
-                var newVal = startVal + "{{" + variable + "}}" + endVal;
-
-                body.val(newVal);
-                body[0].setSelectionRange(newPos, newPos);
-                body.focus();
-            }
-        };
-
-        // Save a quicktext, perform some checks before
-        $scope.saveQt = function () {
-            if (!$scope.selectedTemplate.title) {
-                alert("Please enter a title");
-                return false;
-            }
-
-            if (!$scope.selectedTemplate.body) {
-                alert("Please enter a body");
-                return false;
-            }
-
-            if (editor) {
-                if ($scope.showHTMLSource) {
-                    $scope.selectedTemplate.body = editor.getText();
-                }
-            }
-
-            TemplateService.quicktexts().then(function (templates) {
-                if ($scope.selectedTemplate.shortcut) {
-                    for (var i in templates) {
-                        var qt = templates[i];
-                        if (qt.id !== $scope.selectedTemplate.id && qt.shortcut === $scope.selectedTemplate.shortcut) {
-                            alert("There is another template with the '" + $scope.selectedTemplate.shortcut + "' keyboard shortcut");
+                            return false;
+                        },
+                        create: function (input) {
+                            if ((new RegExp('^' + REGEX_EMAIL + '$', 'i')).test(input)) {
+                                return {email: input};
+                            }
+                            var match = input.match(new RegExp('^([^<]*)<' + REGEX_EMAIL + '\\>$', 'i'));
+                            if (match) {
+                                return {
+                                    email: match[2],
+                                    name: $.trim(match[1])
+                                };
+                            }
+                            alert('Invalid email address.');
                             return false;
                         }
-                    }
-                }
-                if ($scope.selectedTemplate.id) {
-                    TemplateService.update($scope.selectedTemplate).then(function () {
-                        $scope.reloadTemplates();
-                    });
-                } else {
-                    TemplateService.create($scope.selectedTemplate).then(function () {
-                        $scope.reloadTemplates();
-                    });
-                }
+                    };
 
-                // hide teh modal
-                $('.modal').modal('hide');
-            });
+                    $scope.shareModalSelectizeField = $('#qt-invite-people').selectize(selectize_data);
+                    $scope.templateModalSelectizeField = $('#template-qt-invite-people').selectize(selectize_data);
+                    deferred.resolve();
+                });
+
+                return deferred.promise;
+            };
         };
 
-        // Save a quicktext, perform some checks before
-        $scope.duplicateQt = function () {
-            if (!$scope.selectedTemplate.title) {
-                alert("Please enter a title");
-                return false;
-            }
-
-            if (!$scope.selectedTemplate.body) {
-                alert("Please enter a body");
-                return false;
-            }
-
-            // append a (copy) to the title
-            var newQt = angular.copy($scope.selectedTemplate);
-            newQt.title = newQt.title + " (copy)";
-            if (newQt.shortcut) {
-                newQt.shortcut = newQt.shortcut + "-copy";
-            }
-            $('.modal').on('hidden.bs.modal', function () {
-                $('#duplicate-alert-box').addClass('hide');
-            });
-
-            TemplateService.create(newQt).then(function (id) {
-                if (typeof id !== 'undefined') {
-                    $('#duplicate-alert-box').removeClass('hide');
-                    $scope.reloadTemplates();
-                    $scope.showForm(id);
-                }
-            });
-        };
+        $rootScope.$on('$includeContentLoaded', initDom);
 
         // Delete a quicktext. This operation should first delete from the localStorage
         // then it should imedially go to the service and delete on the server
-        $scope.deleteQt = function () {
-            if (this.quicktext) {
-                r = confirm("Are you sure you want to delete '" + this.quicktext.title + "' template?");
+        $scope.deleteQt = function (quicktext) {
+            if (quicktext) {
+                r = confirm("Are you sure you want to delete '" + quicktext.title + "' template?");
                 if (r === true) {
-                    TemplateService.delete(this.quicktext).then(function () {
+                    TemplateService.delete(quicktext).then(function () {
+                        $scope.updateSelectedQuicktexts(quicktext, false);
                         $scope.reloadTemplates();
                     });
                 }
             }
         };
 
-        $scope.toggleFilterTag = function () {
-            var index = $scope.filterTags.indexOf(this.tag);
-            if (index === -1) {
-                $scope.filterTags.push(this.tag);
+        // Delete a list of selected quicktexts.
+        $scope.deleteQts = function() {
+            if ($scope.selectedQuicktexts.length > 0) {
+                if ($scope.selectedQuicktexts.length > 1) {
+                    r = confirm("Are you sure you want to delete " + $scope.selectedQuicktexts.length + " templates?");
+                } else {
+                    r = confirm("Are you sure you want to delete '" + $scope.selectedQuicktexts[0].title + "' template?");
+                }
+
+                if (r === true) {
+                    for (var qt in $scope.selectedQuicktexts) {
+                        TemplateService.delete($scope.selectedQuicktexts[qt]);
+                        $scope.templates.splice($scope.templates.indexOf($scope.selectedQuicktexts), 1);
+                    }
+                    $scope.reloadTemplates();
+
+                    $scope.selectedQuicktexts = [];
+                    $scope.selectedAll = false;
+                }
+            }
+        };
+
+        $scope.toggleSelectAll = function (state) {
+            if (state != undefined) {
+                $scope.selectedAll = state;
+            }
+            if ($scope.templates.length > 0) {
+                _.each($scope.filteredTemplates, function (qt) {
+                    qt.selected = $scope.selectedAll;
+                });
+                $scope.selectedQuicktexts = $scope.selectedAll ? angular.copy($scope.filteredTemplates) : [];
             } else {
-                $scope.filterTags.splice(index, 1); // remove from tags
+                $scope.selectedAll = false;
+            }
+        };
+
+        var selectAllWatcher = function() {
+            if ($scope.templates.length > 0) {
+                $scope.selectedAll = $scope.selectedQuicktexts.length == $scope.filteredTemplates.length;
+            }
+        };
+
+        $scope.getSelectedQuicktexts = function() {
+            var qt_ids = [];
+            for (var qt in $scope.selectedQuicktexts) {
+              qt_ids.push($scope.selectedQuicktexts[qt].id);
+            }
+            return qt_ids;
+        };
+
+        $scope.updateSelectedQuicktexts = function(quicktext, checked) {
+            if (!checked) {
+                for (var qt in $scope.selectedQuicktexts) {
+                    if ($scope.selectedQuicktexts[qt].id == quicktext.id) {
+                        $scope.selectedQuicktexts.splice(qt, 1);
+                    }
+                }
+            } else {
+                $scope.selectedQuicktexts.push(quicktext);
             }
         };
 
@@ -351,8 +416,10 @@ gApp.controller('ListCtrl',
         var filterQuicktexts = function () {
             // apply the text search filter
             $scope.filteredTemplates = $filter('filter')($scope.templates, $scope.searchText);
-            // apply the tag serach filter
-            $scope.filteredTemplates = $filter('tagFilter')($scope.filteredTemplates, $scope.filterTags);
+            // apply the tag search filter
+            $scope.filteredTemplates = $filter('tagFilter')($scope.filteredTemplates, FilterTagService.filterTags);
+            // apply the sharing setting filter
+            $scope.filteredTemplates = $filter('sharingFilter')($scope.filteredTemplates, properties.list);
 
             $scope.focusIndex = 0;
 
@@ -364,6 +431,17 @@ gApp.controller('ListCtrl',
             }
         };
 
+        $scope.$on('toggledFilterTag', function () {
+            tag = FilterTagService.filterTags[0];
+            $scope.selectedQuicktexts = [];
+            $scope.selectedAll = false;
+
+            if (tag != undefined) {
+                $scope.title = "<i class='fa fa-hashtag'/>" + tag + " templates";
+                filterQuicktexts();
+            }
+        });
+
         $scope.loadMore = function () {
             $scope.limitTemplates += 42;
             if ($scope.limitTemplates > $scope.filteredTemplates.length) {
@@ -373,5 +451,5 @@ gApp.controller('ListCtrl',
         };
 
         $scope.$watch('searchText', filterQuicktexts);
-        $scope.$watch('filterTags', filterQuicktexts, true);
+        $scope.$watch('selectedQuicktexts.length', selectAllWatcher);
     });

@@ -29,6 +29,9 @@ module.exports = function (grunt) {
                 'bower_components/angular-md5/angular-md5.min.js',
                 'bower_components/angular-moment/angular-moment.min.js',
 
+                'bower_components/checklist-model/checklist-model.js',
+                'bower_components/ng-file-upload/ng-file-upload-all.min.js',
+
                 'bower_components/microplugin/src/microplugin.js',
                 'bower_components/sifter/sifter.min.js',
                 'bower_components/selectize/dist/js/selectize.min.js',

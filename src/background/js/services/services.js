@@ -170,7 +170,8 @@ gApp.service('ProfileService', function ($q, SettingsService, md5) {
     self.words = function () {
         return SettingsService.get("words", 0);
     };
-    //self.savedWords = self.reduceNumbers(self.words);
+
+    self.savedWords = self.reduceNumbers(self.words);
 
     self.niceTime = function (minutes) {
         if (!minutes) {

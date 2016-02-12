@@ -4,71 +4,85 @@
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
     <title>Gorgias Options</title>
     <script src="../background/js/background.js"></script>
+    <script src="https://checkout.stripe.com/checkout.js"></script>
     <link href="../background/css/background.css" rel="stylesheet" type="text/css" media="screen" charset="utf-8">
 </head>
 <body key-trap>
 
 <div class="container">
-    <div class="sidebar-wrapper">
+    <div class="sidebar-wrapper" ng-controller="SidebarCtrl">
+        <div class="sidebar-container">
+            <ul class="nav nav-pills nav-stacked">
+                <li class="title"><h4>Templates</h4></li>
+                <!-- templates -->
+                <li ng-click="emptyFilterTags()" class="template-tab" ng-class="{ 'active': (path === '/list' && filterTags[0] == undefined) }"><a href="#/list">All</a>
+                </li>
+                <li ng-show="account.info.name" ng-click="emptyFilterTags()" class="template-tab"
+                    ng-class="{ 'active': (path === '/list/shared') }"><a href="#/list/shared">Shared</a></li>
+                <li ng-show="account.info.name" ng-click="emptyFilterTags()" class="template-tab"
+                    ng-class="{ 'active': (path === '/list/private') }"><a href="#/list/private">Private</a></li>
 
-        <div class="profile">
+                <li ng-show="!account.info.name" class="template-tab" ng-click="emptyFilterTags()">
+                    <a href data-toggle="modal" data-target="#signup-modal">
+                        <span data-toggle="tooltip"
+                              data-placement="bottom"
+                              title="Upgrade to share templates with your team"><i class="fa fa-briefcase premium"></i> Shared</span></a>
+                </li>
+                <li ng-show="!account.info.name" class="template-tab" ng-click="emptyFilterTags()">
+                    <a href data-toggle="modal" data-target="#signup-modal">
+                        <span data-toggle="tooltip"
+                              data-placement="bottom"
+                              title="Upgrade to share templates with your team"><i class="fa fa-briefcase premium"></i> Private</span></a>
+                </li>
 
-            <div class="profile-body" ng-show="profile.user">
-                <a class="profile-picture" href="https://gorgias.io/app#/account" target="_blank">
-                    <img class="img-circle" title="Setup your avatar on gravatar.com" alt="gravatar" ng-src="{{ profileService.gravatar(profile.user.email) }}">
-                </a>
-
-                <div class="profile-details">
-                    <p>
-                      <strong ng-if="profile.user.info.name">{{profile.user.info.name}}</strong>
-                      <strong ng-if="!profile.user.info.name">{{profile.user.info.given_name}} {{profile.user.info.family_name}}</strong>
-                    </p>
-                    <p>{{profile.user.email}}</p>
-                </div>
-            </div>
-
-            <div class="anonymous premium-feature" ng-show="!profile.user">
-                <a ng-href="{{baseURL}}#login" target="_blank" ng-click="checkLogin()">Login</a> or
-                <a ng-href="{{baseURL}}#pricing" target="_blank">Sign Up</a>
-                to <em>share</em> templates with your team.
-            </div>
-
-            <div class="profile-extra alert alert-info" ng-if="profile.savedWords > 1500">
-                <div class="profile-stats">
-                    So far you saved <strong>{{profile.savedWordsNice}}</strong> words or
-                    <strong>{{profile.savedTime}}</strong>.
-                </div>
-                <a class="btn-twitter" target="_blank"
-                   href="https://twitter.com/intent/tweet?hashtags=custserv&text=I%20saved%20{{profile.savedTime}}%20writing%20emails.%20Install%20%40gorgiasio%20and%20see%20how%20much%20time%20you%20can%20save!%20https%3A%2F%2Fgoo.gl%2FDoVLoQ">
-                    <i class="fa fa-twitter"></i>
-                    <span>Tweet about it</span>
-                </a>
-            </div>
+                <!-- tags -->
+                <li class="title" ng-show="tags.length"><h4>Tags</h4></li>
+                <li ng-repeat="t in tags" class="tags-wrapper"
+                    ng-class="{true: 'active', false: ''}[filterTags.indexOf(t.name) !== -1]">
+                    <a href class="tag"
+                       ng-click="toggleFilterTag(t.name)"
+                       title="Toggle this tag to filter the templates">
+                        <i class="fa fa-hashtag icon"></i> {{t.name}}<span ng-if="t.count > 1"> ({{t.count}})</span>
+                    </a>
+                </li>
+                <li class="support-link">
+                    <a href="https://chrome.google.com/webstore/detail/gorgias-email-templates-f/lmcngpkjkplipamgflhioabnhnopeabf/support"
+                       target="_blank">Support &amp; Feedback</a>
+                </li>
+            </ul>
         </div>
-
-        <ul class="nav nav-pills nav-stacked">
-            <li ng-class="{ 'active': (path === '/list') }"><a href="#/list">Templates</a></li>
-            <li ng-class="{ 'active': (path === '/settings') }"><a href="#/settings">Settings</a></li>
-            <li ng-if="isChrome && !isOpera"><a href="https://chrome.google.com/webstore/detail/gorgias-email-templates-f/lmcngpkjkplipamgflhioabnhnopeabf/support" target="_blank">Help <i class="fa fa-external-link"></i></a></li>
-            <li ng-if="isOpera"><a href="https://addons.opera.com/en/extensions/details/gorgias/?display=en&reports#feedback-container" target="_blank">Help <i class="fa fa-external-link"></i></a></li>
-        </ul>
-
         <div class="sidebar-footer">
-            <a class="btn-twitter" href="https://twitter.com/gorgiasio" title="Follow @gorgiasio and get some awesome tips on how to use it!" target="_blank">
-                <i class="fa fa-twitter"></i>
-                <span>Follow @gorgiasio</span>
-            </a>
-            <br/>
-            <br/>
-            <div class="sync-status" ng-show="profile.user">
-                <div class="sync-label" ng-show="lastSync">
-                  Last sync
-                  <span am-time-ago="lastSync"></span>.
+            <div class="profile">
+                <div class="profile-body" ng-show="account">
+                    <div class="profile-picture col-md-4 col-xs-4">
+                        <a href="https://gorgias.io/app#/account" target="_blank">
+                            <img class="avatar" title="Setup your avatar on gravatar.com" alt="gravatar"
+                                 ng-src="{{ profileService.gravatar(account.email) }}">
+                        </a>
+                    </div>
+
+                    <div class="profile-details col-md-8 col-xs-8">
+                        <p>
+                            <strong ng-if="account.info.name">{{account.info.name}}</strong>
+                            <strong ng-if="!account.info.name">{{account.info.given_name}}
+                                {{account.info.family_name}}</strong>
+                        </p>
+                        <!--<p>{{ account.email }}</p>-->
+                        <p><a href ng-click="logOut()">Log out</a></p>
+                    </div>
                 </div>
-                <button class="btn btn-primary" ng-click="SyncNow()">Sync now</button>
+                <div class="anonymous" ng-show="!account">
+                    <a href data-toggle="modal" data-target="#signin-modal">Login</a> or <i
+                    class="fa fa-briefcase premium"></i>
+                    <a href data-toggle="modal" data-target="#signup-modal">Upgrade</a>
+                    to <em>share</em> templates with your team.<br>
+                </div>
+            </div>
+            <div class="tools">
+                <a ng-href="#/settings" ng-click="emptyFilterTags()" class="settings-icon" title="Settings"><i class="fa fa-gear"></i></a>
+
             </div>
         </div>
-
     </div>
 
     <div class="view-container">
@@ -79,5 +93,24 @@
         <div class="container-animation" data-ng-view></div>
     </div>
 </div>
+
+<div class="profile-stats alert alert-info alert-dismissible" ng-show="profile.savedWords > 1500">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span>
+    </button>
+    You saved <strong>{{profile.savedTime}}</strong> using Gorgias!<br>
+    <span ng-if="profile.savedWords > 1500 && profile.savedWords < 2500">&#127775; Good job &#127775;</span>
+    <span ng-if="profile.savedWords >= 2500 && profile.savedWords < 7500">&#127812; Congrats &#127812;</span>
+    <span ng-if="profile.savedWords > 7500">You're awesome &#9996;</span>
+    <a class="btn-twitter" target="_blank"
+       href="https://twitter.com/intent/tweet?hashtags=custserv&text=I%20saved%20{{profile.savedTime}}%20writing%20emails.%20Install%20%40gorgiasio%20and%20see%20how%20much%20time%20you%20can%20save!%20https%3A%2F%2Fgoo.gl%2FDoVLoQ">
+        <i class="fa fa-twitter"></i>
+        <span>Tweet about it</span>
+    </a>
+</div>
 </body>
+
+<div ng-include="'includes/login.html'"></div>
+<div ng-include="'includes/forgot.html'"></div>
+<div ng-include="'includes/signup.html'"></div>
+
 </html>

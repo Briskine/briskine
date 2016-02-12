@@ -22,20 +22,74 @@ var gApp = angular.module('gApp', [
     'ngRoute',
     'ngResource',
     'ngMd5',
-    'angularMoment'
+    'angularMoment',
+    'checklist-model',
+    'ngFileUpload'
 ]);
 
-gApp.config(function ($routeProvider, $compileProvider) {
+gApp.config(function ($routeProvider, $compileProvider, $sceDelegateProvider) {
     $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|chrome-extension):/);
+    $sceDelegateProvider.resourceUrlWhitelist(['self', 'https://gorgias.io/**', 'http://localhost:*/**']);
     $routeProvider
         .when('/list', {
             controller: 'ListCtrl',
             templateUrl: 'views/list.html',
-            reloadOnSearch: false
+            reloadOnSearch: false,
+            resolve: {
+              properties: function() {
+                return { list: 'all' };
+              }
+            }
+        })
+        .when('/list/private', {
+            controller: 'ListCtrl',
+            templateUrl: 'views/list.html',
+            reloadOnSearch: false,
+            resolve: {
+              properties: function() {
+                return { list: 'private' };
+              }
+            }
+        })
+        .when('/list/shared', {
+            controller: 'ListCtrl',
+            templateUrl: 'views/list.html',
+            reloadOnSearch: false,
+            resolve: {
+              properties: function() {
+                return { list: 'shared' };
+              }
+            }
+        })
+        .when('/list/tag', {
+            controller: 'ListCtrl',
+            templateUrl: 'views/list.html',
+            reloadOnSearch: false,
+            resolve: {
+              properties: function() {
+                return { list: 'tag' };
+              }
+            }
         })
         .when('/settings', {
             controller: 'SettingsCtrl',
-            templateUrl: 'views/settings.html'
+            templateUrl: 'views/account/base.html'
+        })
+        .when('/account', {
+            controller: 'AccountCtrl',
+            templateUrl: 'views/account/base.html'
+        })
+        .when('/account/members', {
+            controller: 'MembersCtrl',
+            templateUrl: 'views/account/base.html'
+        })
+        .when('/account/groups', {
+            controller: 'GroupsCtrl',
+            templateUrl: 'views/account/base.html'
+        })
+        .when('/account/subscriptions', {
+            controller: 'SubscriptionsCtrl',
+            templateUrl: 'views/account/base.html'
         })
         .when('/installed', {
             templateUrl: 'views/installed.html',
@@ -63,7 +117,7 @@ gApp.config(["$provide", function ($provide) {
  */
 gApp.run(function ($rootScope, $location, $http, $timeout, ProfileService, SettingsService, TemplateService) {
 
-    $rootScope.$on('$routeChangeStart', function (next, current) {
+    $rootScope.$on('$routeChangeStart', function () {
         $rootScope.path = $location.path();
     });
 
@@ -71,27 +125,28 @@ gApp.run(function ($rootScope, $location, $http, $timeout, ProfileService, Setti
     $rootScope.isOpera = /OPR/g.test(userAgent);
     $rootScope.isChrome = /chrome/i.test(userAgent);
 
-    SettingsService.get('baseURL').then(function (baseURL) {
-        $rootScope.baseURL = baseURL;
-    });
-
     $rootScope.userEmail = '';
     $rootScope.savedEmail = false;
+    $rootScope.baseURL = Settings.defaults.baseURL;
+    $rootScope.apiBaseURL = Settings.defaults.apiBaseURL;
+
+    $rootScope.trustedSignupURL = $rootScope.baseURL + "signup/startup-monthly-usd-1/is_iframe=yes";
 
     SettingsService.get('settings').then(function (settings) {
         // Make sure that we have all the default
         var keys = Object.keys(settings);
         var changed = false;
+
         for (var key in Settings.defaults.settings) {
             if (keys.indexOf(key) === -1) {
                 settings[key] = Settings.defaults.settings[key];
                 changed = true;
             }
         }
+
         if (changed) {
             SettingsService.set('settings', settings);
         }
-
 
         // disable mixpanel if stats are not enabled
         if (!settings.stats.enabled) {
@@ -104,9 +159,9 @@ gApp.run(function ($rootScope, $location, $http, $timeout, ProfileService, Setti
         }
     });
 
-    // setup profile
-    $rootScope.profile = {};
     $rootScope.profileService = ProfileService;
+    $rootScope.profile = {};
+    // setup profile
     ProfileService.savedTime().then(function (savedTime) {
         $rootScope.profile.savedTime = savedTime;
     });
@@ -116,8 +171,13 @@ gApp.run(function ($rootScope, $location, $http, $timeout, ProfileService, Setti
         $rootScope.profile.savedWordsNice = ProfileService.reduceNumbers(words);
     });
 
-    $rootScope.checkLogin = function () {
-        $('#check-login').removeClass("hide");
+    $rootScope.connectSocial = function(provider, scope) {
+        url = $rootScope.baseURL + 'authorize/' + provider;
+        $http.post(url, {'scope': scope}).success(function(res){
+            window.location = res.location;
+        }).error(function(){
+            alert("Error! We're unable to authorize : " + provider + ". Please try again or contact support@gorgias.io");
+        });
     };
 
     var browser = "Chrome";
@@ -138,8 +198,6 @@ gApp.run(function ($rootScope, $location, $http, $timeout, ProfileService, Setti
                         }
 
                         $http.get(apiBaseURL + "account").success(function (data) {
-                            $rootScope.profile.user = data;
-
                             // identify people that are logged in to our website
                             mixpanel.identify(data.id);
                             mixpanel.people.set({

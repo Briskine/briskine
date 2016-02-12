@@ -1,0 +1,128 @@
+<div ng-controller="ShareFormCtrl as shareForm" class="modal fade" id="quicktext-share-modal" tabindex="-1" role="dialog" data-aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title">
+                    <span ng-if="selectedQuicktexts.length == 1">Share template <b>{{ selectedQuicktexts[0].title }}</b></span>
+                    <span ng-if="selectedQuicktexts.length > 1">Share {{ selectedQuicktexts.length }} templates</span>
+                </h4>
+            </div>
+
+            <form role="form" class="form-horizontal" name="quicktext-form0" ng-submit="saveQt()">
+                <div class="modal-body quicktext-form">
+                    <!-- TODO: Don't see how this fits just yet.
+                    <div class="row">
+                      <div class="col-xs-12">
+
+                        <div class="form-group">
+                          <label for="qt-link">Link to share (only accessible by collaborators)</label>
+                          <input type="text" class="form-control" id="qt-link" ng-model="selectedQt.share.url" />
+                        </div>
+
+                      </div>
+                    </div>
+                    -->
+
+                    <div class="access">
+                        <label>Who has access:</label>
+                        <ul class="share-user-list">
+                            <li class="share-row row">
+                                <div class="col-xs-1">
+                                    <i ng-class="{'fa-lock': shareData.acl.length == 1, 'fa-unlock': shareData.acl.length > 1}" class="fa fa-3x"></i>
+                                </div>
+
+                                <div class="col-xs-5 margin-top-10">
+                                    <p ng-show="shareData.acl.length == 1"><b>Private</b></p>
+                                    <p ng-show="shareData.acl.length > 1 && shareData.acl.length - 1 < shareData.members.length"><b>Only specific people</b></p>
+                                    <p ng-show="shareData.acl.length - 1 >= shareData.members.length"><b>Everyone</b></p>
+                                </div>
+                                <div class="col-xs-6 margin-top-10">
+                                    <select class="form-control" id="qt-sharing" ng-model="shareForm.sharing_setting" ng-change="shareForm.switchPermission()">
+                                        <option value="specific">Share only with specific people</option>
+                                        <option value="everyone">Share with everyone</option>
+                                        <option value="private">Private</option>
+                                    </select>
+                                </div>
+                            </li>
+                            <li class="share-row row" ng-show="shareData.acl.length > 1 && shareData.acl.length - 1 < shareData.members.length" ng-repeat="share in shareData.acl">
+
+                                <div class="col-xs-1">
+                                    <img src="http://www.gravatar.com/avatar/{{ share.email | gravatar }}?d=retro"
+                                         class="avatar">
+                                </div>
+
+                                <div class="col-xs-6 margin-top-10">
+                                    <strong ng-bind="share.given_name"></strong>
+                                    <strong ng-bind="share.family_name"></strong>
+                                    <span class="muted" ng-bind="share.email"></span>
+                                </div>
+                                <div class="col-xs-3 margin-top-10">
+                                    <p ng-if="share.permission === 'owner'">Is owner</p>
+
+                                    <p ng-if="share.permission === 'edit'">Can edit</p>
+                                    <!--
+                                    <select ng-model="share.permission">
+                                      <option value="view">Can view</option>
+                                      <option value="edit">Can edit</option>
+                                      <option value="edit">Can edit</option>
+                                    </select>
+                                    -->
+                                </div>
+                                <div class="col-xs-1" ng-if="share.permission !== 'owner'">
+                                    <button type="button" class="close" title="Revoke access"
+                                            ng-click="shareForm.revokeAccess(selectedQuicktexts, share.target_user_id)">&times;</button>
+                                </div>
+
+                            </li>
+                        </ul>
+                    </div>
+
+
+                    <div class="well">
+                        <div class="panel-body">
+
+                            <div class="form-group">
+                                <label for="qt-invite-people">People:</label>
+                                <input type="text" class="form-control" id="qt-invite-people" ng-model="shareData.emails"
+                                       placeholder="Email addresses"/>
+                                <p>Notify people by email <input type="checkbox" ng-model="shareForm.send_email" ng-true-value="'true'" ng-false-value="'false'"></p>
+                            </div>
+
+                            <div>
+                                <div class="form-group share-message-container" style="margin-bottom: 0" ng-show="shareForm.send_email == 'true'">
+                                    <textarea class="form-control" rows="4" placeholder="Optional message"
+                                              ng-model="shareData.message"></textarea>
+                                </div>
+                            </div>
+
+                            <!-- TODO: add permissions later
+                              <div class="col-xs-3">
+                                <select>
+                                  <option value="view">Can view</option>
+                                  <option value="edit">Can edit</option>
+                                </select>
+                              </div>
+                             -->
+
+                        </div>
+                    </div>
+                    <div class="row">
+                        <p class="col-md-12 help-block"><strong>Note:</strong>
+                        Sharing will allow both <em>editing</em> and <em>re-sharing</em> of your templates.
+                        </p>
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+
+                    <button type="button" class="btn btn-default" ng-click="shareForm.shareQt()">Done</button>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+</div>
