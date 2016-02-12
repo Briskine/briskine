@@ -108,6 +108,9 @@ if (chrome.runtime) {
             if (request.request === 'new') {
                 window.open(chrome.extension.getURL('/pages/bg.html') + '#/list?id=new&src=qa-button', 'New Template');
             }
+            if (request.request === 'launchGorgias') {
+                window.open(chrome.extension.getURL('/pages/bg.html') + '#/list');
+            }
             if (request.request === 'track') {
                 if (request.event === "Inserted template") {
                     injector.get('TemplateService').used(request.data.id);

@@ -3,6 +3,7 @@
  All declarations are done here
  */
 
+
 var App = {
     data: {
         searchCache: {},
@@ -255,6 +256,11 @@ App.init = function (settings, doc) {
         return false;
     }
 
+    // This is used to open the Chrome extension options from a HTML page - it's when you signup you'd be redirected
+    // directly to the extension
+    document.addEventListener("launchGorgias", function() {
+        chrome.runtime.sendMessage({request: 'launchGorgias'});
+    });
 
     doc.addEventListener("blur", App.onBlur, true);
     doc.addEventListener("focus", App.onFocus, true);
