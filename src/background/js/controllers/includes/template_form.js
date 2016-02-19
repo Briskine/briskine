@@ -105,11 +105,6 @@ gApp.controller('TemplateFormCtrl',
         self.showForm = function (id) {
             var initForm = function() {
                 // Where did we open the dialog from.
-                var source = $routeParams.src ? $routeParams.src : "background";
-                mixpanel.track("Show edit form", {
-                    source: source
-                });
-
                 loadEditor();
 
                 var selectize = $('#qt-tags')[0].selectize;
@@ -278,7 +273,7 @@ gApp.controller('TemplateFormCtrl',
                         }
                     });
                 } else {
-                    TemplateService.create(self.selectedTemplate, !$scope.account).then(function (t) {
+                    TemplateService.create(self.selectedTemplate, !$scope.account, self.sharing_setting === 'private').then(function (t) {
                         if ($scope.account) {
                             post_update();
                         } else {
@@ -335,6 +330,7 @@ gApp.controller('TemplateFormCtrl',
         };
 
         self.upgradeNow = function() {
+            $rootScope.trackSignup('templateForm');
             $('#template-form-modal').modal('hide');
             $timeout(function() {
                 $('#signup-modal').modal('show')

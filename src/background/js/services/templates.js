@@ -331,7 +331,7 @@ gApp.service('TemplateService', function ($q, $resource, SettingsService) {
     };
 
 // create and try to sync with the server
-    self.create = function (t, onlyLocal) {
+    self.create = function (t, onlyLocal, isPrivate) {
         var deferred = $q.defer();
 
         // UUID4 as an id for the template
@@ -347,24 +347,25 @@ gApp.service('TemplateService', function ($q, $resource, SettingsService) {
         t.sync_datetime = t.sync_datetime || "";
         t.lastuse_datetime = t.lastuse_datetime || "";
         t.tags = self._clean_tags(t.tags);
-        t.private = 'true';
+        t.private = !!isPrivate;
 
         var data = {};
         data[t.id] = t;
 
         TemplateStorage.set(data, function () {
-            if (onlyLocal) { // create only locally - don't do any remote operations
-                deferred.resolve();
-                return;
-            }
-
             mixpanel.track("Created template", {
                 "with_subject": t.subject.length > 0,
                 "with_shortcut": t.shortcut.length > 0,
                 "with_tags": t.tags.length > 0,
                 "title_size": t.title.length,
-                "body_size": t.body.length
+                "body_size": t.body.length,
+                "private": t.private
             });
+
+            if (onlyLocal) { // create only locally - don't do any remote operations
+                deferred.resolve();
+                return;
+            }
 
             SettingsService.get("isLoggedIn").then(function (isLoggedIn) {
                 if (!isLoggedIn) {

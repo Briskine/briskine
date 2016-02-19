@@ -159,6 +159,12 @@ gApp.run(function ($rootScope, $location, $http, $timeout, ProfileService, Setti
         }
     });
 
+    $rootScope.trackSignup = function (source){
+        mixpanel.track("Opened Signup form", {
+            'source': source
+        });
+    };
+
     $rootScope.profileService = ProfileService;
     $rootScope.profile = {};
     // setup profile

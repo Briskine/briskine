@@ -56,6 +56,12 @@ gApp.controller('SidebarCtrl', function ($scope, $location, $http, $window,
         });
     };
 
+    $scope.trackSettings = function(isLoggedIn) {
+        mixpanel.track("Opened Settings", {
+            'isLoggedIn': isLoggedIn
+        });
+    };
+
     // event listeners
     $scope.$on('toggledFilterTag', function () {
         $scope.filterTags[0] = FilterTagService.filterTags[0];
