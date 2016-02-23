@@ -251,7 +251,7 @@ gApp.controller('TemplateFormCtrl',
                         var new_emails = $scope.shareData.emails.split(',');
 
                         old_emails.forEach(function (acl) {
-                            if (new_emails.indexOf(acl.email) == -1) {
+                            if (new_emails.indexOf(acl.email) == -1 && $scope.account.email != acl.email) {
                                 $scope.revokeAccess([self.selectedTemplate], acl.target_user_id)
                             }
                         });
