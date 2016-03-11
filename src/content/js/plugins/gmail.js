@@ -1,9 +1,9 @@
 /* Gmail plugin
  */
 
-App.plugin('gmail', (function() {
+App.plugin('gmail', (function () {
 
-    var isContentEditable = function(element) {
+    var isContentEditable = function (element) {
         return element && element.hasAttribute('contenteditable');
     };
 
@@ -46,7 +46,7 @@ App.plugin('gmail', (function() {
     };
 
     // get all required data from the dom
-    var getData = function(params, callback) {
+    var getData = function (params, callback) {
 
         var from = [],
             to = [],
@@ -59,15 +59,16 @@ App.plugin('gmail', (function() {
 
             var fromContainer = $('.gb_2a');
             if (!fromContainer.length) {
-                fromContainer  = $('.gb_4a');
+                fromContainer = $('.gb_4a');
             }
 
             var fromEmailName = '';
             if (fromContainer.length) {
-                fromEmailName = $.trim(fromContainer.attr('title').split(":")[1]).
-                replace('(', '<').
-                replace(')', '>').
-                replace("\n", '');
+                fromEmailName = '';
+                var title = fromContainer.attr('title');
+                if (title) {
+                    fromEmailName = $.trim(title.split(":")[1]).replace('(', '<').replace(')', '>').replace("\n", '');
+                }
             }
 
             from.push(fromEmailName);
@@ -117,14 +118,14 @@ App.plugin('gmail', (function() {
             bcc: parseList(bcc),
             subject: subject
         };
-        if(callback) {
+        if (callback) {
             callback(null, vars);
         }
 
     };
 
-    var setTitle = function(params, callback) {
-        getData(params, function(_, vars){
+    var setTitle = function (params, callback) {
+        getData(params, function (_, vars) {
             var parsedSubject = Handlebars.compile(params.quicktext.subject)(PrepareVars(vars));
 
             var $subjectField = $(params.element).closest('table.aoP').find('input[name=subjectbox]');
@@ -132,25 +133,25 @@ App.plugin('gmail', (function() {
 
             var response = {};
 
-            if(callback) {
+            if (callback) {
                 callback(null, response);
             }
         });
     };
 
-    var init = function(params, callback) {
+    var init = function (params, callback) {
 
         var gmailUrl = '//mail.google.com/';
 
         var activateExtension = false;
 
         // trigger the extension based on url
-        if(window.location.href.indexOf(gmailUrl) !== -1) {
+        if (window.location.href.indexOf(gmailUrl) !== -1) {
             activateExtension = true;
         }
 
         // return true as response if plugin should be activated
-        if(callback) {
+        if (callback) {
             // first param is the error
             // second is the response
             callback(null, activateExtension);
