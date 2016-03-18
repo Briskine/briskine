@@ -11,6 +11,7 @@ App.autocomplete.quicktexts = [];
 App.autocomplete.cursorPosition = null;
 
 App.autocomplete.isEditable = function (element) {
+  console.log('app, isEditable');
 
     var isTextfield = (element.tagName.toLowerCase() === 'input');
     var isTextarea = (element.tagName.toLowerCase() === 'textarea');
@@ -21,10 +22,12 @@ App.autocomplete.isEditable = function (element) {
 };
 
 App.autocomplete.isContentEditable = function (element) {
+  console.log('app, isContentEditable');
     return element && element.hasAttribute('contenteditable');
 };
 
 App.autocomplete.getSelectedWord = function (params) {
+  console.log('app, getSelectedWord');
     var doc = params.element.ownerDocument;
 
     var word = {
@@ -64,6 +67,7 @@ App.autocomplete.getSelectedWord = function (params) {
 };
 
 App.autocomplete.getCursorPosition = function (element) {
+    console.log('app, getCursorPosition');
     var doc = element.ownerDocument;
 
     if (!element) {
@@ -198,6 +202,7 @@ App.autocomplete.getCursorPosition = function (element) {
 };
 
 App.autocomplete.replaceWith = function (params) {
+    console.log('app, replaceWith');
 
     var doc = params.element.ownerDocument;
 
@@ -364,6 +369,7 @@ App.autocomplete.replaceWith = function (params) {
 };
 
 App.autocomplete.focusEditor = function (element, callback) {
+    console.log('app, focusEditor');
 
     // return focus to the editor
 
@@ -392,4 +398,3 @@ App.autocomplete.mirrorStyles = [
     // The direction.
     'direction'
 ];
-

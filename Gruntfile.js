@@ -37,6 +37,7 @@ module.exports = function (grunt) {
                 'bower_components/selectize/dist/js/selectize.min.js',
 
                 'bower_components/quill/dist/quill.min.js',
+                'bower_components/filepicker-js-bower/filepicker.min.js',
 
                 // Should be first
                 'background/js/environment.js',

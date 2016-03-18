@@ -52,7 +52,6 @@
                     </div>
                     <div class="form-group">
                         <label class="body-label">Template Content</label>
-
                         <div class="editor-wrapper">
                             <div class="toolbar">
                                 <!-- This part of the toolbar only visible for richtext editor -->
@@ -88,11 +87,8 @@
                                           class="ql-format-button ql-link"></span>
                                     <span class="ql-format-separator"></span>
                                     <span title="Insert image" class="ql-format-button ql-image"></span>
-                                </span>
-                                <span class="ql-format-group" ng-show="settings.editor.enabled">
-                                    <span title="Show HTML source" class="ql-format-button fa fa-code"
-                                          ng-class="{'ql-active': templateForm.showHTMLSource}"
-                                          ng-click="templateForm.toggleHTMLSource()"></span>
+                                    <span class="ql-format-separator"></span>
+                                    <span title="Show HTML source" class="ql-format-button fa fa-code" ng-class="{'ql-active': templateForm.showHTMLSource}" ng-click="templateForm.toggleHTMLSource()"></span>
                                 </span>
                                 <span class="dropdown insert-var-container">
                                     <button class="btn btn-default dropdown-toggle" data-toggle="dropdown"
@@ -132,12 +128,19 @@
                                     </ul>
                                 </span>
                             </div>
-                            <div class="editor"></div>
+                            <div class="editor">
+                            </div>
+                            <span class='drag-and-drop'>Attach files by dragging & dropping or <a>select them</a> <i ng-show="templateForm.fileloading" class='fa fa-spin fa-spinner'/>
+                              <input type='file' multiple='multiple' class='manual-file-chooser' custom-on-change='onFileSubmit'/>
+                            </span>
                             <textarea ng-if="!settings.editor.enabled"
                                       id="qt-body" class="form-control"
                                       required="required"
                                       placeholder="It was nice talking to you today..."
                                       ng-model="templateForm.selectedTemplate.body"></textarea>
+                        </div>
+                        <div ng-repeat='file in templateForm.selectedTemplate.files' class='files'>
+                          <i class='fa fa-paperclip'/><a class='attachedfile' href={{file.mediaLink}}>{{file.name}}</a><i class='fa fa-close' ng-click="templateForm.removeAttachment($index)"/>
                         </div>
                     </div>
                     <div class="form-group">
@@ -213,4 +216,3 @@
         </div>
     </div>
 </div>
-

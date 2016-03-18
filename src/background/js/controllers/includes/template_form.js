@@ -8,7 +8,73 @@ gApp.controller('TemplateFormCtrl',
         self.send_email = 'false';
         self.extended = false;
         self.showHTMLSource = false;
+        self.fileLinks = [];
+        //************************Upload file parts*******************
+        //bucketName
+        var bucketName = window.bucketName || 'mybucket';
+        //select the editor body content
+        var dropzone = angular.element(document.querySelector('div.editor-wrapper .editor'));
 
+        //attach drag event on editor body content
+        dropzone.bind("dragover dragenter", function (evt) {
+            evt.stopPropagation();
+            evt.preventDefault();
+            return false;
+        });
+        //on drop event read data file as url
+        dropzone.bind("drop", function (evt) {
+            evt.stopPropagation();
+            evt.preventDefault();
+            self.fileloading = true;
+            $rootScope.$broadcast('reload'); //TODO find the proper way to update page state;
+            //for now accept only one file on drop event
+            var file = evt.originalEvent.dataTransfer.files[0];
+            self.sendFile(file);
+        });
+        self.sendFile = function (file) {
+          //AccessToken are variables fetching from server and regenerated every hours https://developers.google.com/identity/protocols/OAuth2ServiceAccount#authorizingrequests
+          //for now we use unfunctional token just for developpment.
+          //TODO make a server request to get the token if !token
+          AccessToken = window.AccessToken || {
+            access_token : "1/8xbJqaOZXSUZbHLl5EOtu1pxz3fmmetKx9W8CV4t79M", //random unfunctional accesstoken
+            token_type : "Bearer",
+            expires_in : 3600
+          };
+          var xhr = new XMLHttpRequest();
+          var jsonApiUrl = 'https://www.googleapis.com/upload/storage/v1/b/'+ bucketName + '/o?uploadType=media&name='+ file.name;
+          xhr.open('post', jsonApiUrl, true);
+          //set authorization header filed with accessToken loaded from server.
+          xhr.setRequestHeader("authorization", AccessToken.token_type + ' ' + AccessToken.access_token);
+          xhr.send(file);
+          xhr.onloadend = function (e) {
+            // handle error case and success case here.
+            self.fileloading = false;
+            if(e.currentTarget.status === '200') {
+              file = e.currentTarget.response;
+            } else {
+              //the request was unsuccessful, generate a link anyway for developpment purpose
+              file = {
+                name: file.name,
+                size: file.size,
+                mediaLink: 'https://www.smashingmagazine.com/images/404-errors-reloaded/10.jpg'
+              }
+            }
+            if(!self.selectedTemplate.files) self.selectedTemplate.files = [];
+            self.selectedTemplate.files.push(file);
+            console.log(self.selectedTemplate);
+            TemplateService.update(self.selectedTemplate);
+            //$rootScope.$broadcast('reload');
+          }
+        }
+        $scope.onfileSubmit = function (e) {
+          console.log(e);
+        }
+        //remove an attached file
+        self.removeAttachment = function(index) {
+          self.selectedTemplate.files.splice(index, 1);
+          $rootScope.$broadcast('reload');
+        }
+        //****************END of Upload File Part ********************************************
         var loadEditor = function () {
             self.showHTMLSource = false;
             if (editor) { //already loaded
@@ -43,6 +109,8 @@ gApp.controller('TemplateFormCtrl',
             });
         };
 
+
+
         self.toggleHTMLSource = function () {
             self.showHTMLSource = !self.showHTMLSource;
             if (self.showHTMLSource) {
@@ -58,7 +126,6 @@ gApp.controller('TemplateFormCtrl',
                 var range = editor.getSelection();
                 if (range) {
                     editor.insertText(range.start, '{{' + variable + '}}');
-
                 }
             } else {
                 var body = $('#qt-body');
@@ -193,7 +260,6 @@ gApp.controller('TemplateFormCtrl',
             } else {
                 TemplateService.get($routeParams.id).then(function(quicktext){
                     self.selectedTemplate = angular.copy(quicktext);
-
                     if ($scope.account && quicktext.nosync == 0) {
                         $q.all([$scope.reloadSharing([self.selectedTemplate]), $scope.initializeMemberSelectize([self.selectedTemplate])]).then(function() {
                             self.fillUpSelectizeField(self.selectedTemplate);
@@ -207,6 +273,7 @@ gApp.controller('TemplateFormCtrl',
         };
 
         // Save a quicktext, perform some checks before
+        // TODO rewrite this function to accept an attachment as well
         self.saveQt = function () {
             if (!self.selectedTemplate.title) {
                 alert("Please enter a title");
@@ -234,7 +301,7 @@ gApp.controller('TemplateFormCtrl',
                         }
                     }
                 }
-
+                //post_update is actually for sharing quickText with contributors.
                 var post_update = function () {
                     if (self.sharing_setting == 'specific') {
                         var old_emails = [];
