@@ -54,7 +54,8 @@ gApp.controller('TemplateFormCtrl',
                 url: doc.url
               };
             });
-            self.selectedTemplate.files ? self.selectedTemplate.files = self.selectedTemplate.files.concat(files) : files;
+            self.selectedTemplate.files = self.selectedTemplate.files ? self.selectedTemplate.files.concat(files) : files;
+            console.log('pickerResponse', self.selectedTemplate.files);
             $rootScope.$broadcast('reload');
           }
         }

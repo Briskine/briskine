@@ -1,6 +1,5 @@
 gApp.service('gDrivePickerService', function($window) {
     var self = this;
-    console.log('gdrivepickerservice');
     // The Browser API key obtained from the Google Developers Console.
     var clientId = '1049522365838-9f5rgq5dotmt1038j2rebof756m2f87k.apps.googleusercontent.com';
 
@@ -21,7 +20,6 @@ gApp.service('gDrivePickerService', function($window) {
     });
 
     function onPickerApiLoad() {
-        console.log('pickerloaded');
         pickerApiLoaded = true;
         createPicker();
     }
@@ -43,7 +41,6 @@ gApp.service('gDrivePickerService', function($window) {
     }
 
     self.onPickerClicked = function() {
-        console.log('onpickerClicked', self.picker);
         self.picker.setVisible(true);
     }
 });
