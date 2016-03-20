@@ -17,10 +17,17 @@
     "permissions": [
         "https://*/*",
         "http://*/*",
+        "identity",
         "tabs",
         "contextMenus",
         "storage"
     ],
+    "oauth2": {
+    "client_id": "1049522365838-9f5rgq5dotmt1038j2rebof756m2f87k.apps.googleusercontent.com",
+    "scopes": [
+      "https://www.googleapis.com/auth/drive"
+      ]
+    },
     "content_scripts": [
         {
             "matches": [
@@ -51,5 +58,5 @@
             "38": "icons/icon38.png"
         }
     },
-    "content_security_policy": "script-src 'self' https://checkout.stripe.com/checkout.js; https://apis.google.com/js/api.js; object-src 'self'"
+    "content_security_policy": "script-src 'self' https://checkout.stripe.com/checkout.js https://apis.google.com https://www-onepick-opensocial.googleusercontent.com; object-src 'self'"
 }

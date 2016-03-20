@@ -1,6 +1,6 @@
 gApp.controller('TemplateFormCtrl',
-    function ($route, $q, $scope, $rootScope, $routeParams, $location, $timeout, $filter,
-              AccountService, TemplateService, SettingsService, FilterTagService) {
+    function ($route, $q, $scope, $rootScope, $routeParams, $location, $window, $timeout, $filter,
+              AccountService, TemplateService, SettingsService, FilterTagService, gDrivePickerService) {
 
         var editor;
         var self = this;
@@ -42,6 +42,29 @@ gApp.controller('TemplateFormCtrl',
                 }
             });
         };
+
+        //**********************upload parts*****************
+
+        gDrivePickerService.pickerResponse = function (data) {
+          if (data.action === google.picker.Action.PICKED) {
+            var files = data.docs.map(function(doc) {
+              return {
+                name: doc.name,
+                size: doc.sizeBytes,
+                url: doc.url
+              };
+            });
+            self.selectedTemplate.files ? self.selectedTemplate.files = self.selectedTemplate.files.concat(files) : files;
+            $rootScope.$broadcast('reload');
+          }
+        }
+        self.removeAttachment = function(index) {
+           self.selectedTemplate.files.splice(index, 1);
+           $rootScope.$broadcast('reload');
+        }
+        self.onPickerClicked = gDrivePickerService.onPickerClicked;
+
+        //******************end of upload part****************
 
         self.toggleHTMLSource = function () {
             self.showHTMLSource = !self.showHTMLSource;
