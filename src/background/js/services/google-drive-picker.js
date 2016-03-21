@@ -7,13 +7,16 @@ gApp.service('gDrivePickerService', function($window) {
 
     var pickerApiLoaded = false;
     var oauthToken;
+
     //getAuthToken for the picker
-    chrome.identity.getAuthToken({
+    function getAuthToken() {
+      chrome.identity.getAuthToken({
         'interactive': true
-    }, function(token) {
+      }, function(token) {
         oauthToken = token;
         createPicker();
-    });
+      });
+    }
     //load picker script;
     gapi.load('picker', {
         'callback': onPickerApiLoad
@@ -23,6 +26,38 @@ gApp.service('gDrivePickerService', function($window) {
         pickerApiLoaded = true;
         createPicker();
     }
+
+    function webAuthFlow(userEmail, forceApprovalPrompt) {
+        var baseUrl = 'https://accounts.google.com/o/oauth2/auth';
+        var forceApprovalPrompt = forceApprovalPrompt || 'auto';
+        var urlParams = {
+            'redirect_uri': 'https://'+chrome.runtime.id+'.chromiumapp.org/callback',
+            'response_type': 'token',
+            'client_id': clientId,
+            'scope': scope[0],
+            'approval_prompt': 'force',
+            'include_granted_scopes': 'true'
+        };
+
+        var providerDetails = {
+            url: baseUrl + '?' + stringify(urlParams),
+            interactive: true
+        }
+        var callback = function(responseUrl) {
+            var params = {},
+                queryString = responseUrl.split('#')[1],
+                regex = /([^&=]+)=([^&]*)/g,
+                m,
+                validateUrl = 'https://www.googleapis.com/oauth2/v1/tokeninfo'
+            while (m = regex.exec(queryString)) {
+                params[decodeURIComponent(m[1])] = decodeURIComponent(m[2]);
+            }
+            console.log(params.access_token);
+            oauthToken = params.access_token;
+            createPicker();
+        };
+        chrome.identity.launchWebAuthFlow(providerDetails, callback);
+    };
     /**
      * Callback invoked when interacting with the picker
      * data: Object returned by the API
@@ -37,10 +72,15 @@ gApp.service('gDrivePickerService', function($window) {
             enableFeature('multiselectEnabled').
             setCallback(self.pickerResponse).
             build();
+            self.picker.setVisible('true');
         }
     }
 
     self.onPickerClicked = function() {
+      if(!self.picker) {
+        getAuthToken();
+      } else {
         self.picker.setVisible(true);
+      }
     }
 });
