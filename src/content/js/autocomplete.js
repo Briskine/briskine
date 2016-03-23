@@ -7,6 +7,24 @@ var KEY_TAB = 9,
     KEY_DOWN = 40,
     KEY_ENTER = 13;
 
+
+
+function getGmailHtmlStringAttachment(href) {
+  return(
+    `
+    &nbsp;
+    <div contenteditable="false" class="gmail_chip gmail_drive_chip" style="width: 396px; height: 18px; max-height: 18px; padding: 5px; color: rgb(34, 34, 34); font-family: arial; font-style: normal; font-weight: bold; font-size: 13px; cursor: default; border: 1px solid rgb(221, 221, 221); line-height: 1; background-color: rgb(245, 245, 245);">
+    <img src="//ssl.gstatic.com/ui/v1/icons/common/x_8px.png" style="opacity: 0.55; cursor: pointer; float: right; position: relative; top: -1px; display: none;">
+      <a href="${href}" target="_blank" style=" display:inline-block; max-width: 366px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; text-decoration: none; cursor: pointer; padding: 1px 0; border: none; " aria-label="image.jpg">
+        <img style="vertical-align: bottom; border: none;" src="https://ssl.gstatic.com/docs/doclist/images/icon_11_image_list.png">
+        &nbsp;
+        <span dir="ltr" style="color: rgb(17, 85, 204); text-decoration: none; vertical-align: bottom;">image.jpg</span>
+      </a>
+    </div>
+    &nbsp;
+    `);
+}
+
 App.autocomplete.quicktexts = [];
 App.autocomplete.cursorPosition = null;
 
@@ -60,6 +78,7 @@ App.autocomplete.getSelectedWord = function (params) {
     word.start = Math.max(beforeSelection.lastIndexOf(" "), beforeSelection.lastIndexOf("\n"), beforeSelection.lastIndexOf("<br>")) + 1;
     word.text = beforeSelection.substr(word.start);
     word.end = word.start + word.text.length;
+    //console.log('autocomplete.getSelectedWord',params, word, selection, doc);
     return word;
 };
 
@@ -193,7 +212,7 @@ App.autocomplete.getCursorPosition = function (element) {
         $mirror.remove();
 
     }
-
+    //console.log('autocomplete.getCursorPosition, position: ', position,'ranges: ', ranges, 'range: ', range);
     return position;
 };
 
@@ -215,6 +234,7 @@ App.autocomplete.replaceWith = function (params) {
             var parsedTemplate = Handlebars.compile(params.quicktext.body)(PrepareVars(response));
 
             if (App.autocomplete.isContentEditable(params.element)) {
+                console.log(App.activePlugin);
 
                 var selection = doc.getSelection();
                 var range = doc.createRange();
@@ -224,7 +244,6 @@ App.autocomplete.replaceWith = function (params) {
                 if (!App.settings.editor_enabled) {
                     replacement = replacement.replace(/\n/g, ' <br />\n');
                 }
-
                 // setStart/setEnd work differently based on
                 // the type of node
                 // https://developer.mozilla.org/en-US/docs/Web/API/range.setStart
@@ -232,7 +251,6 @@ App.autocomplete.replaceWith = function (params) {
                 if (focusNode === null) {
                     focusNode = selection.focusNode;
                 }
-
 
                 // we need to have a text node in the end
                 while (focusNode.nodeType === document.ELEMENT_NODE) {
@@ -265,6 +283,16 @@ App.autocomplete.replaceWith = function (params) {
                 var qtNode = range.createContextualFragment(replacement);
                 var lastQtChild = qtNode.lastChild;
 
+                if(params.quicktext.files && response.plugin === 'gmail') {
+                  if(params.quicktext.files.length) //in case there was files in that quicktext that have been removed then..
+                  params.quicktext.files.map(function(file, index) {
+                    //console.log(getGmailHtmlStringAttachment(file.url));
+                    var qtNodeAttachment = range.createContextualFragment(getGmailHtmlStringAttachment(file.url));
+                    console.log(range, index);
+                    range.insertNode(qtNodeAttachment);
+                  });
+                }
+
                 range.insertNode(qtNode);
 
                 var caretRange = doc.createRange();
@@ -274,7 +302,6 @@ App.autocomplete.replaceWith = function (params) {
                 selection.addRange(caretRange);
 
             } else {
-
                 var $textarea = $(params.element),
                     value = $textarea.val();
 
@@ -359,8 +386,6 @@ App.autocomplete.replaceWith = function (params) {
     // updates stats
     App.settings.stats('words', params.quicktext.body.split(' ').length, function () {
     });
-
-
 };
 
 App.autocomplete.focusEditor = function (element, callback) {
@@ -392,4 +417,3 @@ App.autocomplete.mirrorStyles = [
     // The direction.
     'direction'
 ];
-
