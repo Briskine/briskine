@@ -139,6 +139,120 @@ App.plugin('gmail', (function () {
             }
         });
     };
+    //get the html string for a gmail file node.
+    var setAttachmentNode = function (file, range) {
+      function concatIconString(number, type) {
+        return "https://ssl.gstatic.com/docs/doclist/images/icon_"+number+"_"+type+"_list.png";
+      }
+      var driveIcons = {
+        image: concatIconString('11', 'image'),
+        audio: concatIconString('10', 'audio'),
+        pdf: concatIconString('12', 'pdf'),
+        video: concatIconString('11', 'video'),
+        archive: concatIconString('9', 'archive'),
+        word: concatIconString('10', 'word'),
+        text: concatIconString('10', 'text'),
+        generic: concatIconString('10', 'generic')
+      };
+      function getDriveIcon(file) {
+        var fileIcon;
+        switch (file.name.split('.').pop()) {
+          case 'jpg':
+          case 'png':
+          case 'gif':
+          case 'svg':
+            fileIcon = driveIcons.image;
+            break;
+          case 'doc':
+            fileIcon = driveIcons.word;
+            break;
+          case 'pdf':
+            fileIcon = driveIcons.pdf;
+            break;
+          case 'tar':
+          case 'zip':
+          case 'rar':
+          case 'gz':
+          case 'uca':
+          case 'dmg':
+          case 'iso':
+            fileIcon = driveIcons.archive;
+            break;
+          case 'riff':
+          case 'wav':
+          case 'bwf':
+          case 'ogg':
+          case 'aiff':
+          case 'caf':
+          case 'flac':
+          case 'mp3':
+          case 'wma':
+          case 'au':
+          case 'aac':
+          case 'mp4':
+          case 'm4a':
+            fileIcon = driveIcons.audio;
+            break;
+          case 'webm':
+          case 'flv':
+          case 'f4v':
+          case 'f4p':
+          case 'f4a':
+          case 'f4b':
+          case 'ogv':
+          case 'ogg':
+          case 'avi':
+          case 'mov':
+          case 'qt':
+          case 'yuv':
+          case 'm4p':
+          case 'm4v':
+          case 'mpg':
+          case 'mpeg':
+          case 'm2v':
+          case 'm4v':
+          case 'svi':
+          case '3gp':
+          case 'roq':
+            fileIcon = driveIcons.video;
+            break;
+          case 'js':
+          case 'txt':
+          case 'css':
+          case 'html':
+          case 'json':
+            fileIcon = driveIcons.text
+            break;
+          default:
+            fileIcon = driveIcons.generic
+        }
+        return fileIcon;
+      };
+      var icon = getDriveIcon(file);
+
+      var attachmentString = '&#8203;<div contenteditable="false" class="gmail_chip gmail_drive_chip" style="width: 396px; height: 18px; max-height: 18px; padding: 5px; color: rgb(34, 34, 34); font-family: arial; font-style: normal; font-weight: bold; font-size: 13px; cursor: default; border: 1px solid rgb(221, 221, 221); line-height: 1; background-color: rgb(245, 245, 245);"><img src="//ssl.gstatic.com/ui/v1/icons/common/x_8px.png" style="opacity: 0.55; cursor: pointer; float: right; position: relative; top: -1px; display: none;"><a href='+file.url+' target="_blank" style=" display:inline-block; max-width: 366px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; text-decoration: none; cursor: pointer; padding: 1px 0; border: none; " aria-label='+file.name+'><img style="vertical-align: bottom; border: none;" src='+icon+'>&nbsp;<span dir="ltr" style="color: rgb(17, 85, 204); text-decoration: none; vertical-align: bottom;">'+file.name+'</span></a></div>&#8203;';
+      function addEventToAttachment(node) {
+        var closeImage = node.querySelector('img');
+        var link = node.querySelector('a');
+        var spanLink = link.querySelector('span');
+        node.onmouseenter = function() {
+          this.style.border = "1px solid rgb(204, 204, 204)";
+          closeImage.style.display = 'block';
+          spanLink.style.textDecoration = 'underline';
+        }
+        node.onmouseleave = function() {
+          this.style.border = "1px solid rgb(221, 221, 221)";
+          closeImage.style.display = 'none';
+          spanLink.style.textDecoration = 'none';
+        }
+        node.onclick = function() {
+          window.open(link.href, '_blank');
+        }
+      }
+      var attachmentNode = range.createContextualFragment(attachmentString);
+      addEventToAttachment(attachmentNode.firstElementChild);
+      range.insertNode(attachmentNode);
+    };
 
     var init = function (params, callback) {
 
@@ -163,6 +277,7 @@ App.plugin('gmail', (function () {
     return {
         init: init,
         getData: getData,
+        setAttachment: setAttachmentNode,
         setTitle: setTitle
     }
 
