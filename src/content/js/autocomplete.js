@@ -7,21 +7,6 @@ var KEY_TAB = 9,
     KEY_DOWN = 40,
     KEY_ENTER = 13;
 
-
-
-function getGmailHtmlStringAttachment(href) {
-  return(
-    `&#8203;<div contenteditable="false" class="gmail_chip gmail_drive_chip" style="width: 396px; height: 18px; max-height: 18px; padding: 5px; color: rgb(34, 34, 34); font-family: arial; font-style: normal; font-weight: bold; font-size: 13px; cursor: default; border: 1px solid rgb(221, 221, 221); line-height: 1; background-color: rgb(245, 245, 245);">
-    <img src="//ssl.gstatic.com/ui/v1/icons/common/x_8px.png" style="opacity: 0.55; cursor: pointer; float: right; position: relative; top: -1px; display: none;">
-      <a href="${href}" target="_blank" style=" display:inline-block; max-width: 366px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; text-decoration: none; cursor: pointer; padding: 1px 0; border: none; " aria-label="image.jpg">
-        <img style="vertical-align: bottom; border: none;" src="https://ssl.gstatic.com/docs/doclist/images/icon_11_image_list.png">
-        &nbsp;
-        <span dir="ltr" style="color: rgb(17, 85, 204); text-decoration: none; vertical-align: bottom;">image.jpg</span>
-      </a>
-    </div>&#8203;`);
-}
-
-
 App.autocomplete.quicktexts = [];
 App.autocomplete.cursorPosition = null;
 
@@ -280,9 +265,7 @@ App.autocomplete.replaceWith = function (params) {
                 if(params.quicktext.files && response.plugin === 'gmail') {
                   if(params.quicktext.files.length) //in case there was files in that quicktext that have been removed then..
                   params.quicktext.files.map(function(file, index) {
-                    //Note: asas you add a native gdrive file below existing ones, existing ones get the right behaviour....
-                    var qtNodeAttachment = range.createContextualFragment(getGmailHtmlStringAttachment(file.url));
-                    range.insertNode(qtNodeAttachment);
+                    App.activePlugin.setAttachment(file, range);
                   });
                 }
 
