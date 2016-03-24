@@ -248,6 +248,10 @@ App.plugin('gmail', (function () {
         node.onclick = function() {
           window.open(link.href, '_blank');
         }
+        closeImage.onclick = function(e) {
+          e.stopPropagation();
+          range.commonAncestorContainer.removeChild(node);
+        }
       }
       var attachmentNode = range.createContextualFragment(attachmentString);
       addEventToAttachment(attachmentNode.firstElementChild);
