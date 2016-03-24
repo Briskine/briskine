@@ -47,20 +47,19 @@ gApp.controller('TemplateFormCtrl',
 
         gDrivePickerService.pickerResponse = function (data) {
           if (data.action === google.picker.Action.PICKED) {
-            var files = data.docs.map(function(doc) {
+            var attachments = data.docs.map(function(doc) {
               return {
                 name: doc.name,
                 size: doc.sizeBytes,
                 url: doc.url
               };
             });
-            self.selectedTemplate.files = self.selectedTemplate.files ? self.selectedTemplate.files.concat(files) : files;
-            console.log('pickerResponse', self.selectedTemplate.files);
+            self.selectedTemplate.attachments = self.selectedTemplate.attachments ? self.selectedTemplate.attachments.concat(attachments) : attachments;
             $rootScope.$broadcast('reload');
           }
         }
         self.removeAttachment = function(index) {
-           self.selectedTemplate.files.splice(index, 1);
+           self.selectedTemplate.attachments.splice(index, 1);
            $rootScope.$broadcast('reload');
         }
         self.onPickerClicked = gDrivePickerService.onPickerClicked;

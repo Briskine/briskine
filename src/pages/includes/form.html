@@ -93,7 +93,7 @@
                                         ng-class="{'ql-active': templateForm.showHTMLSource}"
                                         ng-click="templateForm.toggleHTMLSource()"></span>
                                     <span class="ql-format-separator"></span>
-                                    <span title="file attachment" class="ql-format-button fa fa-upload"
+                                    <span title="file attachment" class="ql-format-button google-drive-icon"
                                         ng-click="templateForm.onPickerClicked()"></span>
                                 </span>
                                 <span class="dropdown insert-var-container">
@@ -141,8 +141,8 @@
                                       placeholder="It was nice talking to you today..."
                                       ng-model="templateForm.selectedTemplate.body"></textarea>
                         </div>
-                        <div ng-repeat='file in templateForm.selectedTemplate.files' class='files'>
-                            <i class='fa fa-paperclip'/><a class='attachedfile' href='{{file.url}}'>{{file.name}}</a><i class='fa fa-close' ng-click="templateForm.removeAttachment($index)"/>
+                        <div ng-repeat='attachment in templateForm.selectedTemplate.attachments' class='attachments'>
+                            <i class='fa fa-paperclip'/><a class='attachment' href='{{attachment.url}}'>{{attachment.name}}</a><i class='fa fa-close' ng-click="templateForm.removeAttachment($index)"/>
                         </div>
                     </div>
                     <div class="form-group">

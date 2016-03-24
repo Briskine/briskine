@@ -139,8 +139,8 @@ App.plugin('gmail', (function () {
             }
         });
     };
-    //get the html string for a gmail file node.
-    var setAttachmentNode = function (file, range) {
+    //get the html string for a gmail attachment node.
+    var setAttachmentNode = function (attachment, range) {
       function concatIconString(number, type) {
         return "https://ssl.gstatic.com/docs/doclist/images/icon_"+number+"_"+type+"_list.png";
       }
@@ -154,20 +154,21 @@ App.plugin('gmail', (function () {
         text: concatIconString('10', 'text'),
         generic: concatIconString('10', 'generic')
       };
-      function getDriveIcon(file) {
-        var fileIcon;
-        switch (file.name.split('.').pop()) {
+      function getDriveIcon(attachment) {
+        var attachmentIcon;
+        switch (attachment.name.split('.').pop()) {
           case 'jpg':
           case 'png':
           case 'gif':
           case 'svg':
-            fileIcon = driveIcons.image;
+            attachmentIcon = driveIcons.image;
             break;
           case 'doc':
-            fileIcon = driveIcons.word;
+          case 'docx':
+            attachmentIcon = driveIcons.word;
             break;
           case 'pdf':
-            fileIcon = driveIcons.pdf;
+            attachmentIcon = driveIcons.pdf;
             break;
           case 'tar':
           case 'zip':
@@ -176,7 +177,7 @@ App.plugin('gmail', (function () {
           case 'uca':
           case 'dmg':
           case 'iso':
-            fileIcon = driveIcons.archive;
+            attachmentIcon = driveIcons.archive;
             break;
           case 'riff':
           case 'wav':
@@ -191,7 +192,7 @@ App.plugin('gmail', (function () {
           case 'aac':
           case 'mp4':
           case 'm4a':
-            fileIcon = driveIcons.audio;
+            attachmentIcon = driveIcons.audio;
             break;
           case 'webm':
           case 'flv':
@@ -214,23 +215,23 @@ App.plugin('gmail', (function () {
           case 'svi':
           case '3gp':
           case 'roq':
-            fileIcon = driveIcons.video;
+            attachmentIcon = driveIcons.video;
             break;
           case 'js':
           case 'txt':
           case 'css':
           case 'html':
           case 'json':
-            fileIcon = driveIcons.text
+            attachmentIcon = driveIcons.text
             break;
           default:
-            fileIcon = driveIcons.generic
+            attachmentIcon = driveIcons.generic
         }
-        return fileIcon;
+        return attachmentIcon;
       };
-      var icon = getDriveIcon(file);
+      var icon = getDriveIcon(attachment);
 
-      var attachmentString = '&#8203;<div contenteditable="false" class="gmail_chip gmail_drive_chip" style="width: 396px; height: 18px; max-height: 18px; padding: 5px; color: rgb(34, 34, 34); font-family: arial; font-style: normal; font-weight: bold; font-size: 13px; cursor: default; border: 1px solid rgb(221, 221, 221); line-height: 1; background-color: rgb(245, 245, 245);"><img src="//ssl.gstatic.com/ui/v1/icons/common/x_8px.png" style="opacity: 0.55; cursor: pointer; float: right; position: relative; top: -1px; display: none;"><a href='+file.url+' target="_blank" style=" display:inline-block; max-width: 366px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; text-decoration: none; cursor: pointer; padding: 1px 0; border: none; " aria-label='+file.name+'><img style="vertical-align: bottom; border: none;" src='+icon+'>&nbsp;<span dir="ltr" style="color: rgb(17, 85, 204); text-decoration: none; vertical-align: bottom;">'+file.name+'</span></a></div>&#8203;';
+      var attachmentString = '&#8203;<div contenteditable="false" class="gmail_chip gmail_drive_chip" style="width: 396px; height: 18px; max-height: 18px; padding: 5px; color: rgb(34, 34, 34); font-family: arial; font-style: normal; font-weight: bold; font-size: 13px; cursor: default; border: 1px solid rgb(221, 221, 221); line-height: 1; background-color: rgb(245, 245, 245);"><img src="//ssl.gstatic.com/ui/v1/icons/common/x_8px.png" style="opacity: 0.55; cursor: pointer; float: right; position: relative; top: -1px; display: none;"><a href='+attachment.url+' target="_blank" style=" display:inline-block; max-width: 366px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; text-decoration: none; cursor: pointer; padding: 1px 0; border: none; " aria-label='+attachment.name+'><img style="vertical-align: bottom; border: none;" src='+icon+'>&nbsp;<span dir="ltr" style="color: rgb(17, 85, 204); text-decoration: none; vertical-align: bottom;">'+attachment.name+'</span></a></div>&#8203;';
       function addEventToAttachment(node) {
         var closeImage = node.querySelector('img');
         var link = node.querySelector('a');
@@ -245,7 +246,7 @@ App.plugin('gmail', (function () {
           closeImage.style.display = 'none';
           spanLink.style.textDecoration = 'none';
         }
-        node.onclick = function() {
+        link.onclick = function() {
           window.open(link.href, '_blank');
         }
         closeImage.onclick = function(e) {
