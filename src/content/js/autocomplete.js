@@ -262,10 +262,10 @@ App.autocomplete.replaceWith = function (params) {
                 var qtNode = range.createContextualFragment(replacement);
                 var lastQtChild = qtNode.lastChild;
 
-                if(params.quicktext.files && response.plugin === 'gmail') {
-                  if(params.quicktext.files.length) //in case there was files in that quicktext that have been removed then..
-                  params.quicktext.files.map(function(file, index) {
-                    App.activePlugin.setAttachment(file, range);
+                if(params.quicktext.attachments && response.plugin === 'gmail') {
+                  if(params.quicktext.attachments.length) //in case there was attachments in that quicktext that have been removed then..
+                  params.quicktext.attachments.map(function(attachment, index) {
+                    App.activePlugin.setAttachment(attachment, range);
                   });
                 }
 
