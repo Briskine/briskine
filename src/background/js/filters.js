@@ -73,3 +73,18 @@ gApp.filter('sharingFilter', function () {
         }
     };
 });
+
+gApp.filter('gravatar', function () {
+    var cache = {};
+    return function(text, defaultText) {
+        if (!text) {
+            return '';
+        }
+
+        if (!cache[text]) {
+            defaultText = (defaultText) ? md5(defaultText.toString().toLowerCase()) : '';
+            cache[text] = (text) ? md5(text.toString().toLowerCase()) : defaultText;
+        }
+        return 'https://www.gravatar.com/avatar/' + cache[text] +  '?d=retro';
+    };
+});

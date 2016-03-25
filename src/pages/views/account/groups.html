@@ -32,7 +32,7 @@
         <td class="col-xs-3">{{ g.name }}</td>
         <td class="col-xs-6">
             <span class="google-apps-member" ng-repeat="u in g.users">
-                <img src="http://www.gravatar.com/avatar/{{ u.email | gravatar }}?d=retro"
+                <img ng-src="{{ u.email | gravatar }}"
                      class="avatar"
                      alt="{{ u.name }}" title="{{ u.name }} &lt;{{ u.email }}&gt;"/>
             </span>

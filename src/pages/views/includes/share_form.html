@@ -1,4 +1,5 @@
-<div ng-controller="ShareFormCtrl as shareForm" class="modal fade" id="quicktext-share-modal" tabindex="-1" role="dialog" data-aria-hidden="true">
+<div ng-controller="ShareFormCtrl as shareForm" class="modal fade" id="quicktext-share-modal" tabindex="-1"
+     role="dialog" data-aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
 
@@ -30,27 +31,34 @@
                         <ul class="share-user-list">
                             <li class="share-row row">
                                 <div class="col-xs-1">
-                                    <i ng-class="{'fa-lock': shareData.acl.length == 1, 'fa-unlock': shareData.acl.length > 1}" class="fa fa-3x"></i>
+                                    <i ng-class="{'fa-lock': shareData.acl.length == 1, 'fa-unlock': shareData.acl.length > 1}"
+                                       class="fa fa-3x"></i>
                                 </div>
 
                                 <div class="col-xs-5 margin-top-10">
                                     <p ng-show="shareData.acl.length == 1"><b>Private</b></p>
-                                    <p ng-show="shareData.acl.length > 1 && shareData.acl.length - 1 < shareData.members.length"><b>Only specific people</b></p>
-                                    <p ng-show="shareData.acl.length - 1 >= shareData.members.length"><b>Everyone</b></p>
+                                    <p ng-show="shareData.acl.length > 1 && shareData.acl.length - 1 < shareData.members.length">
+                                        <b>Only specific people</b></p>
+                                    <p ng-show="shareData.acl.length - 1 >= shareData.members.length"><b>Everyone</b>
+                                    </p>
                                 </div>
                                 <div class="col-xs-6 margin-top-10">
-                                    <select class="form-control" id="qt-sharing" ng-model="shareForm.sharing_setting" ng-change="shareForm.switchPermission()">
+                                    <select class="form-control" id="qt-sharing" ng-model="shareForm.sharing_setting"
+                                            ng-change="shareForm.switchPermission()">
                                         <option value="specific">Share only with specific people</option>
                                         <option value="everyone">Share with everyone</option>
                                         <option value="private">Private</option>
                                     </select>
                                 </div>
                             </li>
-                            <li class="share-row row" ng-show="shareData.acl.length > 1 && shareData.acl.length - 1 < shareData.members.length" ng-repeat="share in shareData.acl">
+                            <li class="share-row row"
+                                ng-show="shareData.acl.length > 1 && shareData.acl.length - 1 < shareData.members.length"
+                                ng-repeat="share in shareData.acl">
 
                                 <div class="col-xs-1">
-                                    <img src="http://www.gravatar.com/avatar/{{ share.email | gravatar }}?d=retro"
-                                         class="avatar">
+                                    <img
+                                        ng-src="{{ share.email | gravatar }}"
+                                        class="avatar">
                                 </div>
 
                                 <div class="col-xs-6 margin-top-10">
@@ -85,13 +93,16 @@
 
                             <div class="form-group">
                                 <label for="qt-invite-people">People:</label>
-                                <input type="text" class="form-control" id="qt-invite-people" ng-model="shareData.emails"
+                                <input type="text" class="form-control" id="qt-invite-people"
+                                       ng-model="shareData.emails"
                                        placeholder="Email addresses"/>
-                                <p>Notify people by email <input type="checkbox" ng-model="shareForm.send_email" ng-true-value="'true'" ng-false-value="'false'"></p>
+                                <p>Notify people by email <input type="checkbox" ng-model="shareForm.send_email"
+                                                                 ng-true-value="'true'" ng-false-value="'false'"></p>
                             </div>
 
                             <div>
-                                <div class="form-group share-message-container" style="margin-bottom: 0" ng-show="shareForm.send_email == 'true'">
+                                <div class="form-group share-message-container" style="margin-bottom: 0"
+                                     ng-show="shareForm.send_email == 'true'">
                                     <textarea class="form-control" rows="4" placeholder="Optional message"
                                               ng-model="shareData.message"></textarea>
                                 </div>
@@ -110,7 +121,7 @@
                     </div>
                     <div class="row">
                         <p class="col-md-12 help-block"><strong>Note:</strong>
-                        Sharing will allow both <em>editing</em> and <em>re-sharing</em> of your templates.
+                            Sharing will allow both <em>editing</em> and <em>re-sharing</em> of your templates.
                         </p>
                     </div>
 

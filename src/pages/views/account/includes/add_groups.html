@@ -34,7 +34,7 @@
                             <tr ng-repeat="u in selectedGroup.members">
                                 <th class="col-xs-1">
                                     <img ng-if="!u.thumbnail_photo_url"
-                                         ng-src="http://www.gravatar.com/avatar/{{ u.email | gravatar }}?d=retro"
+                                         ng-src="{{ u.email | gravatar }}"
                                          class="avatar"/>
                                     <img ng-if="u.thumbnail_photo_url" ng-src="{{ u.thumbnail_photo_url }}"
                                          class="avatar"/>

@@ -19,10 +19,10 @@ gApp.controller('ListCtrl',
         }
 
         // set the header titles of the list based on the URL
-        SettingsService.get('isLoggedIn').then(function(isLoggedIn){
-            switch(properties.list) {
+        SettingsService.get('isLoggedIn').then(function (isLoggedIn) {
+            switch (properties.list) {
                 case 'shared':
-                    if (!isLoggedIn){
+                    if (!isLoggedIn) {
                         $location.path("#/list");
                     }
                     $scope.title = "Shared templates";
@@ -30,7 +30,7 @@ gApp.controller('ListCtrl',
                     $scope.sharing_setting = "everyone";
                     break;
                 case 'private':
-                    if (!isLoggedIn){
+                    if (!isLoggedIn) {
                         $location.path("#/list");
                     }
                     $scope.title = "Private templates";
@@ -75,21 +75,26 @@ gApp.controller('ListCtrl',
         $scope.showInstallHint = false;
 
         function loadAccount() {
-            AccountService.get().then(function(account) {
-                $scope.account = account;
-
-                if (($scope.account.info.share_all == "true" && (properties.list == "tag" || properties.list == "all"))
-                || properties.list == "shared") {
-                    $scope.sharing_setting = "everyone";
-                } else {
-                    $scope.sharing_setting = "private";
+            SettingsService.get("isLoggedIn").then(function (isLoggedIn) {
+                if (!isLoggedIn) {
+                    return;
                 }
+                AccountService.get().then(function (account) {
+                    $scope.account = account;
+
+                    if (($scope.account.info.share_all == "true" && (properties.list == "tag" || properties.list == "all"))
+                        || properties.list == "shared") {
+                        $scope.sharing_setting = "everyone";
+                    } else {
+                        $scope.sharing_setting = "private";
+                    }
+                });
             });
         }
 
         loadAccount();
 
-        $scope.$on('loggedIn', function() {
+        $scope.$on('loggedIn', function () {
             loadAccount();
             $rootScope.SyncNow();
         });
@@ -135,7 +140,7 @@ gApp.controller('ListCtrl',
         $scope.reloadTemplates();
 
         // Listen on syncing events
-        $scope.$on("templates-sync", function() {
+        $scope.$on("templates-sync", function () {
             $scope.reloadTemplates();
             loadAccount();
         });
@@ -191,7 +196,7 @@ gApp.controller('ListCtrl',
                 });
             };
 
-            $scope.shareQuicktextsWithEveryone = function(quicktexts, send_email) {
+            $scope.shareQuicktextsWithEveryone = function (quicktexts, send_email) {
                 $scope.shareData.emails = "";
                 var i = 0;
                 $scope.shareData.members.forEach(function (member) {
@@ -231,7 +236,9 @@ gApp.controller('ListCtrl',
                         deferred.resolve();
                     });
                 }
-                else { deferred.resolve(); }
+                else {
+                    deferred.resolve();
+                }
                 return deferred.promise;
             };
 
@@ -239,7 +246,7 @@ gApp.controller('ListCtrl',
                 var deferred = $q.defer();
 
                 $q.all([$scope.reloadSharing($scope.selectedQuicktexts),
-                        $scope.initializeMemberSelectize()]).then(deferred.resolve);
+                    $scope.initializeMemberSelectize()]).then(deferred.resolve);
                 return deferred.promise;
             };
 
@@ -351,7 +358,7 @@ gApp.controller('ListCtrl',
         };
 
         // Delete a list of selected quicktexts.
-        $scope.deleteQts = function() {
+        $scope.deleteQts = function () {
             if ($scope.selectedQuicktexts.length > 0) {
                 if ($scope.selectedQuicktexts.length > 1) {
                     r = confirm("Are you sure you want to delete " + $scope.selectedQuicktexts.length + " templates?");
@@ -386,21 +393,21 @@ gApp.controller('ListCtrl',
             }
         };
 
-        var selectAllWatcher = function() {
+        var selectAllWatcher = function () {
             if ($scope.templates.length > 0) {
                 $scope.selectedAll = $scope.selectedQuicktexts.length == $scope.filteredTemplates.length;
             }
         };
 
-        $scope.getSelectedQuicktexts = function() {
+        $scope.getSelectedQuicktexts = function () {
             var qt_ids = [];
             for (var qt in $scope.selectedQuicktexts) {
-              qt_ids.push($scope.selectedQuicktexts[qt].id);
+                qt_ids.push($scope.selectedQuicktexts[qt].id);
             }
             return qt_ids;
         };
 
-        $scope.updateSelectedQuicktexts = function(quicktext, checked) {
+        $scope.updateSelectedQuicktexts = function (quicktext, checked) {
             if (!checked) {
                 for (var qt in $scope.selectedQuicktexts) {
                     if ($scope.selectedQuicktexts[qt].id == quicktext.id) {

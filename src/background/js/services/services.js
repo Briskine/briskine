@@ -80,7 +80,7 @@ gApp.service('SuggestionService', function ($q, $resource, SettingsService) {
             stat.url = data.url;
             stat.agent = data.agent;
             stat.template_id = data.template_id;
-            stat.$save(function() {
+            stat.$save(function () {
                 deferred.resolve();
             });
         });
@@ -94,7 +94,7 @@ gApp.service('SuggestionService', function ($q, $resource, SettingsService) {
         SettingsService.get('apiBaseURL').then(function (apiBaseURL) {
             var suggestRes = $resource(apiBaseURL + 'helpdesk/enabled/:domain', {'domain': '@domain'});
             var suggest = new suggestRes();
-            suggest.$get(query, function(data){
+            suggest.$get(query, function (data) {
                 deferred.resolve(data.enabled);
             });
         });
@@ -132,14 +132,8 @@ gApp.service('SettingsService', function ($q) {
 });
 
 // User Profile - check if the user is logged in. Get it's info
-gApp.service('ProfileService', function ($q, SettingsService, md5) {
+gApp.service('ProfileService', function ($q, SettingsService) {
     var self = this;
-
-    self.gravatar = function (email, size) {
-        if (email) {
-            return 'https://www.gravatar.com/avatar/' + md5.createHash(email) + '?d=identicon';
-        }
-    };
 
     self.reduceNumbers = function (n) {
         /* Write nice numbers. Ex: 1000 -> 1k */
