@@ -325,6 +325,7 @@ gApp.service('TemplateService', function ($q, $resource, SettingsService) {
     self.get = function (id) {
         var deferred = $q.defer();
         TemplateStorage.get(id, function (res) {
+            console.log('TemplateStorage.get:res', res);
             deferred.resolve(res[id]);
         });
         return deferred.promise;
@@ -553,4 +554,3 @@ gApp.service('TemplateService', function ($q, $resource, SettingsService) {
 
 
 });
-

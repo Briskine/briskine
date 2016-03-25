@@ -217,12 +217,14 @@ Raven.config('https://af2f5e9fb2744c359c19d08c8319d9c5@app.getsentry.com/30379',
 
 App.init = function (settings, doc) {
     var body = $(doc).find('body');
+    console.log('App');
 
     if (!body.length || body.hasClass('gorgias-loaded')) {
         return;
     }
     // mark the doc that extension has been loaded
-    body.addClass('gorgias-loaded');
+    //body.addClass('gorgias-loaded');
+    body.addClass('gorgias-loaaaaded');
 
     var currentUrl = window.location.href;
 
@@ -333,6 +335,6 @@ $(function () {
         return; // don't load gorgias in non html pages (json, xml, etc..)
     }
 
-    //console.log("Loaded Gorgias in", window.location.href);
+    console.log("Loaded Gorgias in", window.location.href);
     App.settings.fetchSettings(App.init, window.document);
 });

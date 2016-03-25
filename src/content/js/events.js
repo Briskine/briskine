@@ -24,10 +24,12 @@ App.onFocus = function (e) {
 */
 
 App.onBlur = function (e) {
+  console.log('App', 'onBlur');
     PubSub.publish('focus', 'off', e.relatedTarget);
 };
 
 App.onScroll = function (e) {
+  console.log('App', 'onScroll');
     // if search is focused
     if(document.activeElement !== $(App.autocomplete.dialog.searchSelector).get(0)) {
         App.autocomplete.dialog.close();
