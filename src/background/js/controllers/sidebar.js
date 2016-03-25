@@ -11,10 +11,15 @@ gApp.controller('SidebarCtrl', function ($scope, $location, $http, $window,
     });
 
     // setup account
-
     function loadAccount() {
-        AccountService.get().then(function (account) {
-            $scope.account = account;
+        SettingsService.get("isLoggedIn").then(function (isLoggedIn) {
+            if (!isLoggedIn) {
+                return;
+            }
+
+            AccountService.get().then(function (account) {
+                $scope.account = account;
+            });
         });
     }
 
@@ -56,7 +61,7 @@ gApp.controller('SidebarCtrl', function ($scope, $location, $http, $window,
         });
     };
 
-    $scope.trackSettings = function(isLoggedIn) {
+    $scope.trackSettings = function (isLoggedIn) {
         mixpanel.track("Opened Settings", {
             'isLoggedIn': isLoggedIn
         });
@@ -71,7 +76,7 @@ gApp.controller('SidebarCtrl', function ($scope, $location, $http, $window,
         }
     });
 
-    $scope.$on('reload', function(){
+    $scope.$on('reload', function () {
         loadTags();
         loadAccount();
     });

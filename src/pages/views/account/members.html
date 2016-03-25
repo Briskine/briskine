@@ -40,7 +40,7 @@
     <tr>
         <th>
             <img ng-if="!account.thumbnail_photo_url"
-                 ng-src="http://www.gravatar.com/avatar/{{ account.email | gravatar }}?d=retro" class="avatar"/>
+                 ng-src="{{ account.email | gravatar }}" class="avatar"/>
             <img ng-if="account.thumbnail_photo_url" ng-src="{{ account.thumbnail_photo_url }}" class="avatar"/>
         </th>
         <td>{{ account.info.name }}</td>
@@ -50,7 +50,7 @@
     <tr ng-repeat="u in filteredUsers = (users | filter:searchText)" ng-class="u.active == true ? '': 'inactive'">
         <th>
             <img ng-if="!u.thumbnail_photo_url"
-                 ng-src="http://www.gravatar.com/avatar/{{ u.email | gravatar }}?d=retro" class="avatar"/>
+                 ng-src="{{ u.email | gravatar }}" class="avatar"/>
             <img ng-if="u.thumbnail_photo_url" ng-src="{{ u.thumbnail_photo_url }}" class="avatar"/>
         </th>
         <td class="col-xs-4">

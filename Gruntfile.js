@@ -18,6 +18,7 @@ module.exports = function (grunt) {
                 'bower_components/bootstrap/dist/js/bootstrap.min.js',
                 'bower_components/underscore/underscore-min.js',
                 'bower_components/underscore.string/dist/underscore.string.min.js',
+                'bower_components/js-md5/build/md5.min.js',
                 'bower_components/handlebars/handlebars.min.js',
                 'bower_components/moment/min/moment.min.js',
                 'bower_components/mousetrap/mousetrap.min.js',
@@ -26,7 +27,6 @@ module.exports = function (grunt) {
                 'bower_components/angular/angular.min.js',
                 'bower_components/angular-route/angular-route.min.js',
                 'bower_components/angular-resource/angular-resource.min.js',
-                'bower_components/angular-md5/angular-md5.min.js',
                 'bower_components/angular-moment/angular-moment.min.js',
 
                 'bower_components/checklist-model/checklist-model.js',

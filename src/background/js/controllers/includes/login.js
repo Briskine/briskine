@@ -23,7 +23,11 @@ gApp.controller('LoginCtrl', function ($http, $route, $rootScope, TemplateServic
                 })
             );
         }, function error(response){
-            self.error = response.data.error;
+            if (response.data) {
+                self.error = response.data.error;
+            } else {
+                self.error = 'Could not connect to login server. Please try again.'
+            }
             $('#signin-error').alert();
         });
     };

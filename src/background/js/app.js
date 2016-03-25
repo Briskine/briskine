@@ -1,4 +1,7 @@
-mixpanel.init("f1afffc82208d20529daf9cc527b29a1");
+mixpanel.init("f1afffc82208d20529daf9cc527b29a1", {
+    track_pageview: false,
+    secure_cookie: true
+});
 
 Raven.config('https://af2f5e9fb2744c359c19d08c8319d9c5@app.getsentry.com/30379', {
     tags: {
@@ -21,7 +24,6 @@ Raven.config('https://af2f5e9fb2744c359c19d08c8319d9c5@app.getsentry.com/30379',
 var gApp = angular.module('gApp', [
     'ngRoute',
     'ngResource',
-    'ngMd5',
     'angularMoment',
     'checklist-model',
     'ngFileUpload'
@@ -36,9 +38,9 @@ gApp.config(function ($routeProvider, $compileProvider, $sceDelegateProvider) {
             templateUrl: 'views/list.html',
             reloadOnSearch: false,
             resolve: {
-              properties: function() {
-                return { list: 'all' };
-              }
+                properties: function () {
+                    return {list: 'all'};
+                }
             }
         })
         .when('/list/private', {
@@ -46,9 +48,9 @@ gApp.config(function ($routeProvider, $compileProvider, $sceDelegateProvider) {
             templateUrl: 'views/list.html',
             reloadOnSearch: false,
             resolve: {
-              properties: function() {
-                return { list: 'private' };
-              }
+                properties: function () {
+                    return {list: 'private'};
+                }
             }
         })
         .when('/list/shared', {
@@ -56,9 +58,9 @@ gApp.config(function ($routeProvider, $compileProvider, $sceDelegateProvider) {
             templateUrl: 'views/list.html',
             reloadOnSearch: false,
             resolve: {
-              properties: function() {
-                return { list: 'shared' };
-              }
+                properties: function () {
+                    return {list: 'shared'};
+                }
             }
         })
         .when('/list/tag', {
@@ -66,9 +68,9 @@ gApp.config(function ($routeProvider, $compileProvider, $sceDelegateProvider) {
             templateUrl: 'views/list.html',
             reloadOnSearch: false,
             resolve: {
-              properties: function() {
-                return { list: 'tag' };
-              }
+                properties: function () {
+                    return {list: 'tag'};
+                }
             }
         })
         .when('/settings', {
@@ -127,6 +129,8 @@ gApp.run(function ($rootScope, $location, $http, $timeout, ProfileService, Setti
 
     $rootScope.userEmail = '';
     $rootScope.savedEmail = false;
+    $rootScope.loginChecked = false;
+    $rootScope.isLoggedIn = false;
     $rootScope.baseURL = Settings.defaults.baseURL;
     $rootScope.apiBaseURL = Settings.defaults.apiBaseURL;
 
@@ -159,7 +163,16 @@ gApp.run(function ($rootScope, $location, $http, $timeout, ProfileService, Setti
         }
     });
 
-    $rootScope.trackSignup = function (source){
+    $rootScope.signupURL = function () {
+        // only provide an URL if the user is not authenticated
+        // this will prevent the iframe from loading for authenticated users
+        if ($rootScope.loginChecked && !$rootScope.isLoggedIn) {
+            return $rootScope.trustedSignupURL;
+        }
+        return '';
+    };
+
+    $rootScope.trackSignup = function (source) {
         mixpanel.track("Opened Signup form", {
             'source': source
         });
@@ -177,11 +190,11 @@ gApp.run(function ($rootScope, $location, $http, $timeout, ProfileService, Setti
         $rootScope.profile.savedWordsNice = ProfileService.reduceNumbers(words);
     });
 
-    $rootScope.connectSocial = function(provider, scope) {
+    $rootScope.connectSocial = function (provider, scope) {
         url = $rootScope.baseURL + 'authorize/' + provider;
-        $http.post(url, {'scope': scope}).success(function(res){
+        $http.post(url, {'scope': scope}).success(function (res) {
             window.location = res.location;
-        }).error(function(){
+        }).error(function () {
             alert("Error! We're unable to authorize : " + provider + ". Please try again or contact support@gorgias.io");
         });
     };
@@ -191,13 +204,18 @@ gApp.run(function ($rootScope, $location, $http, $timeout, ProfileService, Setti
         browser = "Opera";
     }
 
-    $rootScope.isLoggedIn = function () {
+    $rootScope.checkLoggedIn = function () {
         SettingsService.get("apiBaseURL").then(function (apiBaseURL) {
             $http.get(apiBaseURL + 'login-info').success(function (data) {
+                $rootScope.loginChecked = true;
+                if (data.is_loggedin) {
+                    $rootScope.isLoggedIn = true;
+                }
+
                 SettingsService.set("isLoggedIn", data.is_loggedin).then(function () {
                     if (data.is_loggedin) {
-                        if (!data.editor.enabled){ // disable editor if disabled server side
-                            SettingsService.get("settings").then(function(settings){
+                        if (!data.editor.enabled) { // disable editor if disabled server side
+                            SettingsService.get("settings").then(function (settings) {
                                 settings.editor = data.editor;
                                 SettingsService.set("settings", settings);
                             });
@@ -255,15 +273,20 @@ gApp.run(function ($rootScope, $location, $http, $timeout, ProfileService, Setti
     $rootScope.lastSync = TemplateService.lastSync;
 
     $rootScope.SyncNow = function () {
-        TemplateService.sync().then(function (lastSync) {
-            console.log("Synced: ", new Date().toUTCString());
-            var waitForLocal = function(){
-                $rootScope.$broadcast("templates-sync");
-                $rootScope.lastSync = lastSync;
-                TemplateService.syncLocal();
-            };
-            // wait a bit before doing the local sync
-            setTimeout(waitForLocal, 1000);
+        SettingsService.get("isLoggedIn").then(function (isLoggedIn) {
+            if (!isLoggedIn) {
+                return;
+            }
+            TemplateService.sync().then(function (lastSync) {
+                console.log("Synced: ", new Date().toUTCString());
+                var waitForLocal = function () {
+                    $rootScope.$broadcast("templates-sync");
+                    $rootScope.lastSync = lastSync;
+                    TemplateService.syncLocal();
+                };
+                // wait a bit before doing the local sync
+                setTimeout(waitForLocal, 1000);
+            });
         });
     };
 
@@ -289,7 +312,7 @@ gApp.run(function ($rootScope, $location, $http, $timeout, ProfileService, Setti
 
     };
 
-    $rootScope.isLoggedIn();
+    $rootScope.checkLoggedIn();
 
     $rootScope.$on('$viewContentLoaded', initDom);
     $rootScope.$on('$includeContentLoaded', initDom);
