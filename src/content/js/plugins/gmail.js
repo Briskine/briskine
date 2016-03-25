@@ -139,8 +139,9 @@ App.plugin('gmail', (function () {
             }
         });
     };
-    //get the html string for a gmail attachment node.
+    //insert attachment node on gmail editor.
     var setAttachmentNode = function (attachment, range) {
+
       function concatIconString(number, type) {
         return "https://ssl.gstatic.com/docs/doclist/images/icon_"+number+"_"+type+"_list.png";
       }
@@ -231,11 +232,13 @@ App.plugin('gmail', (function () {
       };
       var icon = getDriveIcon(attachment);
 
-      var attachmentString = '&#8203;<div contenteditable="false" class="gmail_chip gmail_drive_chip" style="width: 396px; height: 18px; max-height: 18px; padding: 5px; color: rgb(34, 34, 34); font-family: arial; font-style: normal; font-weight: bold; font-size: 13px; cursor: default; border: 1px solid rgb(221, 221, 221); line-height: 1; background-color: rgb(245, 245, 245);"><img src="//ssl.gstatic.com/ui/v1/icons/common/x_8px.png" style="opacity: 0.55; cursor: pointer; float: right; position: relative; top: -1px; display: none;"><a href='+attachment.url+' target="_blank" style=" display:inline-block; max-width: 366px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; text-decoration: none; cursor: pointer; padding: 1px 0; border: none; " aria-label='+attachment.name+'><img style="vertical-align: bottom; border: none;" src='+icon+'>&nbsp;<span dir="ltr" style="color: rgb(17, 85, 204); text-decoration: none; vertical-align: bottom;">'+attachment.name+'</span></a></div>&#8203;';
+      var attachmentString = '&#8203;<div contenteditable="false" class="gmail_chip" style="width: 396px; height: 18px; max-height: 18px; padding: 5px; color: rgb(34, 34, 34); font-family: arial; font-style: normal; font-weight: bold; font-size: 13px; cursor: default; border: 1px solid rgb(221, 221, 221); line-height: 1; background-color: rgb(245, 245, 245);"><img src="//ssl.gstatic.com/ui/v1/icons/common/x_8px.png" style="opacity: 0.55; cursor: pointer; float: right; position: relative; top: -1px; display: none;"><a href='+attachment.url+' target="_blank" style=" display:inline-block; max-width: 366px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; text-decoration: none; cursor: pointer; padding: 1px 0; border: none; " aria-label='+attachment.name+'><img style="vertical-align: bottom; border: none;" src='+icon+'>&nbsp;<span dir="ltr" style="color: rgb(17, 85, 204); text-decoration: none; vertical-align: bottom;">'+attachment.name+'</span></a></div>&#8203;';
       function addEventToAttachment(node) {
+
         var closeImage = node.querySelector('img');
         var link = node.querySelector('a');
         var spanLink = link.querySelector('span');
+
         node.onmouseenter = function() {
           this.style.border = "1px solid rgb(204, 204, 204)";
           closeImage.style.display = 'block';
