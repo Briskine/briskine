@@ -1,5 +1,4 @@
-mixpanel.init("f1afffc82208d20529daf9cc527b29a1");
-
+amplitude.init('YOUR_API_KEY_HERE');
 Raven.config('https://af2f5e9fb2744c359c19d08c8319d9c5@app.getsentry.com/30379', {
     tags: {
         version: chrome.runtime.getManifest().version
@@ -150,7 +149,8 @@ gApp.run(function ($rootScope, $location, $http, $timeout, ProfileService, Setti
 
         // disable mixpanel if stats are not enabled
         if (!settings.stats.enabled) {
-            mixpanel.disable();
+            //mixpanel.disable();
+            amplitude.setOptOut(true);
         }
 
         if (settings.userEmail) {
@@ -160,7 +160,7 @@ gApp.run(function ($rootScope, $location, $http, $timeout, ProfileService, Setti
     });
 
     $rootScope.trackSignup = function (source){
-        mixpanel.track("Opened Signup form", {
+        amplitude.logEvent("Opened Signup form", {
             'source': source
         });
     };
@@ -205,8 +205,9 @@ gApp.run(function ($rootScope, $location, $http, $timeout, ProfileService, Setti
 
                         $http.get(apiBaseURL + "account").success(function (data) {
                             // identify people that are logged in to our website
-                            mixpanel.identify(data.id);
-                            mixpanel.people.set({
+                            amplitude.setUserID(data.id);
+
+                            amplitude.setUserProperties({
                                 "$email": data.email,
                                 "$created": data.created_datetime,
                                 "$first_name": data.info.first_name,
@@ -219,33 +220,21 @@ gApp.run(function ($rootScope, $location, $http, $timeout, ProfileService, Setti
                                 "is_staff": data.is_staff
                             });
 
-                            mixpanel.register({
-                                "$browser": browser,
-                                authenticated: true,
-                                user: data
-                            });
+                            var identify = new amplitude.identify.set('$browser', browser).set('authenticated', true).set('user', data);
+                            amplitude.identify(identify);
+
                         });
                         // Once logged in start syncing
                         $rootScope.SyncNow();
                     } else {
-                        mixpanel.register({
-                            "$browser": browser,
-                            authenticated: false,
-                            user: {
-                                'email': $rootScope.userEmail
-                            }
-                        });
+                        var identify = new amplitude.identify.set('$browser', browser).set('authenticated', false).set('user', {'email': $rootScope.userEmail});
+                        amplitude.identify(identify);
                         SettingsService.set("isLoggedIn", false);
                     }
                 });
             }).error(function () {
-                mixpanel.register({
-                    "$browser": browser,
-                    authenticated: false,
-                    user: {
-                        'email': $rootScope.userEmail
-                    }
-                });
+                var identify = new amplitude.identify.set('$browser', browser).set('authenticated', false).set('user', {'email': $rootScope.userEmail});
+                amplitude.identify(identify);
                 SettingsService.set("isLoggedIn", false);
             });
         });

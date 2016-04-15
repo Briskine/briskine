@@ -353,7 +353,7 @@ gApp.service('TemplateService', function ($q, $resource, SettingsService) {
         data[t.id] = t;
 
         TemplateStorage.set(data, function () {
-            mixpanel.track("Created template", {
+            amplitude.logEvent("Created template", {
                 "with_subject": t.subject.length > 0,
                 "with_shortcut": t.shortcut.length > 0,
                 "with_tags": t.tags.length > 0,
@@ -409,7 +409,7 @@ gApp.service('TemplateService', function ($q, $resource, SettingsService) {
                 return;
             }
             // Send some info about the creation of templates
-            mixpanel.track("Updated template", {
+            amplitude.logEvent("Updated template", {
                 "with_subject": true ? t.subject : false,
                 "with_shortcut": true ? t.shortcut : false,
                 "with_tags": true ? t.tags : false,
@@ -462,7 +462,7 @@ gApp.service('TemplateService', function ($q, $resource, SettingsService) {
         var deferred = $q.defer();
         if (onlyLocal || !t.remote_id) {
             TemplateStorage.remove(t.id, function () {
-                mixpanel.track("Deleted template");
+                amplitude.logEvent("Deleted template");
                 deferred.resolve();
             });
         } else {
@@ -470,7 +470,7 @@ gApp.service('TemplateService', function ($q, $resource, SettingsService) {
             t.deleted = 1;
             data[t.id] = t;
             TemplateStorage.set(data, function () {
-                mixpanel.track("Deleted template");
+                amplitude.logEvent("Deleted template");
                 self.qRes.get({quicktextId: t.remote_id}, function (remote) {
                     // make sure we have the remote id otherwise the delete will not find the right resource
                     remote.remote_id = remote.id;
@@ -480,7 +480,7 @@ gApp.service('TemplateService', function ($q, $resource, SettingsService) {
                         //
                         // NOTE: We delete locally to save space.
                         TemplateStorage.remove(t.id, function () {
-                            mixpanel.track("Deleted template");
+                            amplitude.logEvent("Deleted template");
                             deferred.resolve();
                         });
                     });
@@ -495,7 +495,7 @@ gApp.service('TemplateService', function ($q, $resource, SettingsService) {
     self.deleteAll = function () {
         var deferred = $q.defer();
         TemplateStorage.clear(function () {
-            mixpanel.track("Deleted all templates");
+            amplitude.logEvent("Deleted all templates");
             deferred.resolve();
         });
         return deferred.promise;
@@ -553,4 +553,3 @@ gApp.service('TemplateService', function ($q, $resource, SettingsService) {
 
 
 });
-
