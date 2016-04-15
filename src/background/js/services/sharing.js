@@ -66,7 +66,7 @@ gApp.service('QuicktextSharingService', function($q, $resource) {
         acls.action = 'create';
         acls.send_email = send_email;
         acls.$update(function(res){
-            mixpanel.track('Shared Quicktext');
+            amplitude.logEvent('Shared Quicktext');
             deferred.resolve(res);
         });
         return deferred.promise;
@@ -84,7 +84,7 @@ gApp.service('QuicktextSharingService', function($q, $resource) {
         };
         acls.action = 'delete';
         acls.$update(function(){
-            mixpanel.track('Deleted Quicktext Sharing');
+            amplitude.logEvent('Deleted Quicktext Sharing');
             deferred.resolve();
         });
         return deferred.promise;

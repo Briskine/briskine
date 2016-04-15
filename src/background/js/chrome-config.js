@@ -51,10 +51,10 @@ if (chrome.runtime) {
     // Called after installation: https://developer.chrome.com/extensions/runtime.html#event-onInstalled
     chrome.runtime.onInstalled.addListener(function (details) {
         if (details.reason == "install") {
-            mixpanel.track("Installed Gorgias");
+            amplitude.logEvent("Installed Gorgias");
             angularInjector().get('SettingsService').reset();
         } else if (details.reason == "update") {
-            mixpanel.track("Updated Gorgias", {'version': details.previousVersion});
+            amplitude.logEvent("Updated Gorgias", {'version': details.previousVersion});
         }
 
         // All affected tabs should be reloaded if the extension was installed
@@ -117,7 +117,7 @@ if (chrome.runtime) {
                 if (request.event === "Inserted template") {
                     injector.get('TemplateService').used(request.data.id);
                 }
-                mixpanel.track(request.event, request.data);
+                amplitude.logEvent(request.event, request.data);
             }
             if (request.request === 'suggestion') {
                 injector.get('SuggestionService').suggest(request.data).then(function (res) {

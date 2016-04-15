@@ -94,7 +94,7 @@ gApp.controller('SubscriptionsCtrl', function($scope, $rootScope, $routeParams, 
     };
 
     $scope.showDeleteAccountModal = function() {
-        mixpanel.track("Opened delete account modal");
+        amplitude.logEvent("Opened delete account modal");
         $("#delete-account-modal").modal();
     };
 

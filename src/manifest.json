@@ -58,5 +58,5 @@
             "38": "icons/icon38.png"
         }
     },
-    "content_security_policy": "script-src 'self' https://checkout.stripe.com/checkout.js https://apis.google.com https://www-onepick-opensocial.googleusercontent.com; object-src 'self'"
+    "content_security_policy": "script-src 'self' https://checkout.stripe.com/checkout.js https://apis.google.com https://www-onepick-opensocial.googleusercontent.com https://d24n15hnbwhuhn.cloudfront.net; object-src 'self'"
 }
