@@ -193,7 +193,6 @@ App.autocomplete.getCursorPosition = function (element) {
         $mirror.remove();
 
     }
-
     return position;
 };
 
@@ -224,7 +223,6 @@ App.autocomplete.replaceWith = function (params) {
                 if (!App.settings.editor_enabled) {
                     replacement = replacement.replace(/\n/g, ' <br />\n');
                 }
-
                 // setStart/setEnd work differently based on
                 // the type of node
                 // https://developer.mozilla.org/en-US/docs/Web/API/range.setStart
@@ -232,7 +230,6 @@ App.autocomplete.replaceWith = function (params) {
                 if (focusNode === null) {
                     focusNode = selection.focusNode;
                 }
-
 
                 // we need to have a text node in the end
                 while (focusNode.nodeType === document.ELEMENT_NODE) {
@@ -265,6 +262,13 @@ App.autocomplete.replaceWith = function (params) {
                 var qtNode = range.createContextualFragment(replacement);
                 var lastQtChild = qtNode.lastChild;
 
+                if(params.quicktext.attachments && response.plugin === 'gmail') {
+                  if(params.quicktext.attachments.length) //in case there was attachments in that quicktext that have been removed then..
+                  params.quicktext.attachments.map(function(attachment, index) {
+                    App.activePlugin.setAttachment(attachment, range);
+                  });
+                }
+
                 range.insertNode(qtNode);
 
                 var caretRange = doc.createRange();
@@ -274,7 +278,6 @@ App.autocomplete.replaceWith = function (params) {
                 selection.addRange(caretRange);
 
             } else {
-
                 var $textarea = $(params.element),
                     value = $textarea.val();
 
@@ -359,8 +362,6 @@ App.autocomplete.replaceWith = function (params) {
     // updates stats
     App.settings.stats('words', params.quicktext.body.split(' ').length, function () {
     });
-
-
 };
 
 App.autocomplete.focusEditor = function (element, callback) {
@@ -392,4 +393,3 @@ App.autocomplete.mirrorStyles = [
     // The direction.
     'direction'
 ];
-
