@@ -1,7 +1,7 @@
 amplitude.init('YOUR_API_KEY_HERE');
 Raven.config('https://af2f5e9fb2744c359c19d08c8319d9c5@app.getsentry.com/30379', {
     tags: {
-        version: "1.0"//chrome.runtime.getManifest().version (log getManifest() is not a function)
+        version: chrome.runtime.getManifest().version
     },
     whitelistUrls: [
         /https:\/\/mail\.google\.com/,
@@ -208,10 +208,10 @@ gApp.run(function ($rootScope, $location, $http, $timeout, ProfileService, Setti
                             amplitude.setUserID(data.id);
 
                             amplitude.setUserProperties({
-                                "$email": data.email,
-                                "$created": data.created_datetime,
-                                "$first_name": data.info.first_name,
-                                "$last_name": data.info.last_name,
+                                "email": data.email,
+                                "created": data.created_datetime,
+                                "first_name": data.info.first_name,
+                                "last_name": data.info.last_name,
                                 "sub_active": data.active_subscription.active,
                                 "sub_created": data.active_subscription.created_datetime,
                                 "sub_plan": data.active_subscription.plan,
@@ -220,14 +220,14 @@ gApp.run(function ($rootScope, $location, $http, $timeout, ProfileService, Setti
                                 "is_staff": data.is_staff
                             });
 
-                            var identify = new amplitude.identify().set('$browser', browser).set('authenticated', true).set('user', data);
+                            var identify = new amplitude.identify().set('browser', browser).set('authenticated', true).set('user', data);
                             amplitude.identify(identify);
 
                         });
                         // Once logged in start syncing
                         $rootScope.SyncNow();
                     } else {
-                        var identify = new amplitude.identify().set('$browser', browser).set('authenticated', false).set('user', {'email': $rootScope.userEmail});
+                        var identify = new amplitude.identify().set('browser', browser).set('authenticated', false).set('user', {'email': $rootScope.userEmail});
                         amplitude.identify(identify);
                         SettingsService.set("isLoggedIn", false);
                     }
