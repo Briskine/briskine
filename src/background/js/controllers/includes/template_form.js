@@ -167,7 +167,8 @@ gApp.controller('TemplateFormCtrl',
                         'shortcut': '',
                         'title': '',
                         'tags': '',
-                        'body': ''
+                        'body': '',
+                        'attachments': []
                     };
 
                     id = id ? id : $routeParams.id;
@@ -246,6 +247,7 @@ gApp.controller('TemplateFormCtrl',
                     self.selectedTemplate.body = editor.getText();
                 }
             }
+
 
             TemplateService.quicktexts().then(function (templates) {
                 if (self.selectedTemplate.shortcut) {
