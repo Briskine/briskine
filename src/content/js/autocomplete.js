@@ -277,6 +277,13 @@ App.autocomplete.replaceWith = function (params) {
                 selection.removeAllRanges();
                 selection.addRange(caretRange);
 
+                window.postMessage({
+                    source: 'gorgias-extension',
+                    payload: {
+                        event: 'template-inserted'
+                    }
+                }, '*');
+
             } else {
                 var $textarea = $(params.element),
                     value = $textarea.val();
