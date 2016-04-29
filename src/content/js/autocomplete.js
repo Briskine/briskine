@@ -262,11 +262,11 @@ App.autocomplete.replaceWith = function (params) {
                 var qtNode = range.createContextualFragment(replacement);
                 var lastQtChild = qtNode.lastChild;
 
-                if(params.quicktext.attachments && response.plugin === 'gmail') {
-                  if(params.quicktext.attachments.length) //in case there was attachments in that quicktext that have been removed then..
-                  params.quicktext.attachments.map(function(attachment, index) {
-                    App.activePlugin.setAttachment(attachment, range);
-                  });
+                if (params.quicktext.attachments.length > 0 && response && response.plugin === 'gmail') {
+                    if (params.quicktext.attachments.length) //in case there was attachments in that quicktext that have been removed then..
+                        params.quicktext.attachments.map(function (attachment, index) {
+                            App.activePlugin.setAttachment(attachment, range);
+                        });
                 }
 
                 range.insertNode(qtNode);
@@ -295,7 +295,7 @@ App.autocomplete.replaceWith = function (params) {
                     var temp = $('<div id="gorgias-temp-placeholder">').html(parsedTemplate);
 
                     // find and replace links with plaintext
-                    temp.find('a').each(function(){
+                    temp.find('a').each(function () {
                         var e = $(this);
                         var href = e.attr('href');
                         var text = $.trim(e.text());
@@ -304,7 +304,7 @@ App.autocomplete.replaceWith = function (params) {
                         if (!text.length) {
                             e.replaceWith("<span>" + href + "</span>");
                         } else if (href.length) {
-                            e.replaceWith("<span>" + text + " ( " + href+ " )</span>");
+                            e.replaceWith("<span>" + text + " ( " + href + " )</span>");
                         } else {
                             // remove it completly if there is no url
                             e.remove();
@@ -312,7 +312,7 @@ App.autocomplete.replaceWith = function (params) {
 
                     });
 
-                    temp.find('img').each(function(){
+                    temp.find('img').each(function () {
                         var e = $(this);
                         e.replaceWith("<span>" + e.attr('src') + "</span>");
                     });
