@@ -262,7 +262,7 @@ App.autocomplete.replaceWith = function (params) {
                 var qtNode = range.createContextualFragment(replacement);
                 var lastQtChild = qtNode.lastChild;
 
-                if (params.quicktext.attachments.length > 0 && response && response.plugin === 'gmail') {
+                if (params.quicktext.attachments && params.quicktext.attachments.length > 0 && response && response.plugin === 'gmail') {
                     if (params.quicktext.attachments.length) //in case there was attachments in that quicktext that have been removed then..
                         params.quicktext.attachments.map(function (attachment, index) {
                             App.activePlugin.setAttachment(attachment, range);
