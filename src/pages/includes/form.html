@@ -142,7 +142,7 @@
                                       ng-model="templateForm.selectedTemplate.body"></textarea>
                         </div>
                         <div ng-repeat='attachment in templateForm.selectedTemplate.attachments' class='attachments'>
-                            <i class='fa fa-paperclip'/><a class='attachment' href='{{attachment.url}}'>{{attachment.name}}</a><i class='fa fa-close' ng-click="templateForm.removeAttachment($index)"/>
+                            <i class='fa fa-paperclip'/><a target='_blank' class='attachment' href='{{attachment.url}}'>{{attachment.name}}</a><i class='fa fa-close' ng-click="templateForm.removeAttachment($index)"/>
                         </div>
                     </div>
                     <div class="form-group">
