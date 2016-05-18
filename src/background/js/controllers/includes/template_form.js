@@ -60,6 +60,7 @@ gApp.controller('TemplateFormCtrl',
         }
         self.removeAttachment = function(index) {
            self.selectedTemplate.attachments.splice(index, 1);
+           if(self.selectedTemplate.attachments.length === 0) self.selectedTemplate.attachments = null;
            $rootScope.$broadcast('reload');
         }
         self.onPickerClicked = gDrivePickerService.onPickerClicked;
@@ -168,7 +169,7 @@ gApp.controller('TemplateFormCtrl',
                         'title': '',
                         'tags': '',
                         'body': '',
-                        'attachments': []
+                        'attachments': null
                     };
 
                     id = id ? id : $routeParams.id;
