@@ -17,7 +17,7 @@ App.plugin('zendesk', (function () {
                     'domain': window.location.hostname
                 }
             }, function(enabled){
-                callback(null, enabled);
+                callback(null, true);
 
                 if (enabled) {
                     injectScript();
