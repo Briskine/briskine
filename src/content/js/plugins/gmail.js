@@ -79,7 +79,6 @@ App.plugin('gmail', (function () {
 
         } else {
 
-            // from.push($('#guser').find('b').text());
             var toEl = $('#to');
 
             // Full options window
