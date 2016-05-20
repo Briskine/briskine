@@ -47,23 +47,26 @@ App.plugin('gmail', (function () {
 
     // get all required data from the dom
     var getData = function (params, callback) {
-        var fullName = document.querySelector('.gb_ob').innerHTML
-        var firstName = document.querySelector('.gb_P.gb_R').innerHTML
-
-        var fromData = {
-            name: fullName,
-            first_name: firstName,
-            last_name: fullName.replace(firstName + ' ', ''),
-            email:  document.querySelector('.gb_pb').innerHTML
-        }
-
-        var from = [fromData],
+        var from = [],
             to = [],
             cc = [],
             bcc = [],
             subject = '';
 
         if (isContentEditable(params.element)) {
+
+            var fullName = document.querySelector('.gb_ob').innerHTML;
+            var firstName = document.querySelector('.gb_P.gb_R').innerHTML;
+
+            var fromData = {
+                name: fullName,
+                first_name: firstName,
+                last_name: fullName.replace(firstName + ' ', ''),
+                email:  document.querySelector('.gb_pb').innerHTML
+            };
+
+            from.push(fromData);
+
             var $container = $(params.element).closest('table').parent().closest('table').parent().closest('table');
 
             to = $container.find('input[name=to]').toArray().map(function (a) {
@@ -79,6 +82,7 @@ App.plugin('gmail', (function () {
 
         } else {
 
+            from.push($('#guser').find('b').text());
             var toEl = $('#to');
 
             // Full options window
