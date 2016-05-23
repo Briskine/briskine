@@ -47,7 +47,6 @@ App.plugin('gmail', (function () {
 
     // get all required data from the dom
     var getData = function (params, callback) {
-
         var from = [],
             to = [],
             cc = [],
@@ -55,23 +54,21 @@ App.plugin('gmail', (function () {
             subject = '';
 
         if (isContentEditable(params.element)) {
+
+            var fullName = document.querySelector('.gb_ob').innerHTML;
+            var firstName = document.querySelector('.gb_P.gb_R').innerHTML;
+
+            var fromData = {
+                name: fullName,
+                first_name: firstName,
+                last_name: fullName.replace(firstName + ' ', ''),
+                email:  document.querySelector('.gb_pb').innerHTML
+            };
+
+            from.push(fromData);
+
             var $container = $(params.element).closest('table').parent().closest('table').parent().closest('table');
 
-            var fromContainer = $('.gb_2a');
-            if (!fromContainer.length) {
-                fromContainer = $('.gb_4a');
-            }
-
-            var fromEmailName = '';
-            if (fromContainer.length) {
-                fromEmailName = '';
-                var title = fromContainer.attr('title');
-                if (title) {
-                    fromEmailName = $.trim(title.split(":")[1]).replace('(', '<').replace(')', '>').replace("\n", '');
-                }
-            }
-
-            from.push(fromEmailName);
             to = $container.find('input[name=to]').toArray().map(function (a) {
                 return a.value;
             });
@@ -112,13 +109,14 @@ App.plugin('gmail', (function () {
         }
 
         var vars = {
-            from: parseList(from),
+            from: from,
             to: parseList(to),
             cc: parseList(cc),
             bcc: parseList(bcc),
             subject: subject,
             plugin: 'gmail'//maybe there is another way to get the active plugin..
         };
+
         if (callback) {
             callback(null, vars);
         }
