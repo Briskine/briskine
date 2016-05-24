@@ -115,6 +115,12 @@ gApp.config(["$provide", function ($provide) {
 
 }]);
 
+gApp.config(['$compileProvider', function ($compileProvider) {
+    if (ENV && ENV === 'production') {
+        $compileProvider.debugInfoEnabled(false);
+    }
+}]);
+
 /* Global run
  */
 gApp.run(function ($rootScope, $location, $http, $timeout, ProfileService, SettingsService, TemplateService) {
