@@ -29,10 +29,12 @@ if (chrome.runtime) {
     };
 
     var angularInjector = function () {
-        if (!document.querySelector('html[class=ng-scope]')) {
+        var injector = angular.element('html').injector();
+        if (!injector) {
             angular.bootstrap('html', ['gApp']);
+            return angular.element('html').injector();
         }
-        return angular.element('html').injector();
+        return injector;
     };
 
     // Listen for any changes to the URL of any tab.
@@ -78,7 +80,7 @@ if (chrome.runtime) {
                 code: "var getHtmlSelection = function() { var selection = window.getSelection(); if (selection && selection.rangeCount > 0) { range = selection.getRangeAt(0); var clonedSelection = range.cloneContents(); var div = document.createElement('div'); div.appendChild(clonedSelection); return div.innerHTML; } else { return ''; } }; getHtmlSelection();"
             }, function (selection) {
                 var body = encodeURIComponent(selection[0]);
-                window.open(chrome.extension.getURL('/pages/bg.html') + '#/list?id=new&body=' + body , 'Options');
+                window.open(chrome.extension.getURL('/pages/bg.html') + '#/list?id=new&body=' + body, 'Options');
             });
         });
 
