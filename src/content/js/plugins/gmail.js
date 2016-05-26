@@ -54,15 +54,15 @@ App.plugin('gmail', (function () {
             subject = '';
 
         if (isContentEditable(params.element)) {
-
-            var fullName = document.querySelector('.gb_ob').innerHTML;
-            var firstName = document.querySelector('.gb_P.gb_R').innerHTML;
+            var fullName = $('.gb_pb').text();
+            var firstName = $('.gb_P.gb_R').text();
+            var email = $('.gb_qb').text();
 
             var fromData = {
                 name: fullName,
                 first_name: firstName,
                 last_name: fullName.replace(firstName + ' ', ''),
-                email:  document.querySelector('.gb_pb').innerHTML
+                email: email
             };
 
             from.push(fromData);
