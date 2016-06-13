@@ -94,7 +94,6 @@ gApp.controller('SubscriptionsCtrl', function($scope, $rootScope, $routeParams, 
     };
 
     $scope.showDeleteAccountModal = function() {
-        amplitude.logEvent("Opened delete account modal");
         $("#delete-account-modal").modal();
     };
 
