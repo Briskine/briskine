@@ -61,8 +61,8 @@ gApp.controller('SidebarCtrl', function ($scope, $location, $http, $window,
         });
     };
 
-    $scope.trackSettings = function (isLoggedIn) {
-        mixpanel.track("Opened Settings", {
+    $scope.trackSettings = function(isLoggedIn) {
+        amplitude.getInstance().logEvent("Opened Settings", {
             'isLoggedIn': isLoggedIn
         });
     };

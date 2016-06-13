@@ -53,7 +53,7 @@ gApp.controller('InstallCtrl', function ($scope, $rootScope, $routeParams, Insta
     };
 
     ctrl.toggleLanguage = function (lang) {
-        mixpanel.track("Wizard Language", {
+        amplitude.getInstance().logEvent("Wizard Language", {
             iso: lang.iso,
             enabled: lang.enabled
         });
@@ -64,7 +64,7 @@ gApp.controller('InstallCtrl', function ($scope, $rootScope, $routeParams, Insta
         for (var i in category.templates) {
             for (var j in category.templates[i]) {
                 category.templates[i][j].enabled = category.enabled;
-                mixpanel.track("Wizard Template", {
+                amplitude.getInstance().logEvent("Wizard Template", {
                     title: category.templates[i][j].title,
                     enabled: category.enabled
                 });
@@ -73,7 +73,7 @@ gApp.controller('InstallCtrl', function ($scope, $rootScope, $routeParams, Insta
     };
 
     ctrl.toggleTemplate = function (template) {
-        mixpanel.track("Wizard Template", {
+        amplitude.getInstance().logEvent("Wizard Template", {
             title: template[0].title,
             enabled: template[0].enabled
         });
@@ -115,7 +115,7 @@ gApp.controller('InstallCtrl', function ($scope, $rootScope, $routeParams, Insta
         ctrl.stepNumber = ctrl.steps.indexOf(ctrl.step);
 
         // Send some info about the creation of templates
-        mixpanel.track("Wizard Step", {
+        amplitude.getInstance().logEvent("Wizard Step", {
             step: ctrl.step
         });
 

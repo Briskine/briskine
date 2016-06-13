@@ -1,8 +1,3 @@
-mixpanel.init("f1afffc82208d20529daf9cc527b29a1", {
-    track_pageview: false,
-    secure_cookie: true
-});
-
 Raven.config('https://af2f5e9fb2744c359c19d08c8319d9c5@app.getsentry.com/30379', {
     tags: {
         version: chrome.runtime.getManifest().version
@@ -124,7 +119,6 @@ gApp.config(['$compileProvider', function ($compileProvider) {
 /* Global run
  */
 gApp.run(function ($rootScope, $location, $http, $timeout, ProfileService, SettingsService, TemplateService) {
-
     $rootScope.$on('$routeChangeStart', function () {
         $rootScope.path = $location.path();
     });
@@ -143,6 +137,11 @@ gApp.run(function ($rootScope, $location, $http, $timeout, ProfileService, Setti
     $rootScope.trustedSignupURL = $rootScope.baseURL + "signup/startup-monthly-usd-1/is_iframe=yes";
 
     SettingsService.get('settings').then(function (settings) {
+        if (ENV && ENV === 'production') {
+            amplitude.getInstance().init("e50d000bcba1aa363cd1f71642ed466a");
+        } else if (ENV && ENV == 'development') {
+            amplitude.getInstance().init("a31babba9c8dedf2334c44d8acdad247");
+        }
         // Make sure that we have all the default
         var keys = Object.keys(settings);
         var changed = false;
@@ -158,9 +157,9 @@ gApp.run(function ($rootScope, $location, $http, $timeout, ProfileService, Setti
             SettingsService.set('settings', settings);
         }
 
-        // disable mixpanel if stats are not enabled
+        // disable amplitude if stats are not enabled
         if (!settings.stats.enabled) {
-            mixpanel.disable();
+            amplitude.getInstance().setOptOut(true);
         }
 
         if (settings.userEmail) {
@@ -178,8 +177,8 @@ gApp.run(function ($rootScope, $location, $http, $timeout, ProfileService, Setti
         return '';
     };
 
-    $rootScope.trackSignup = function (source) {
-        mixpanel.track("Opened Signup form", {
+    $rootScope.trackSignup = function (source){
+        amplitude.getInstance().logEvent("Opened Signup form", {
             'source': source
         });
     };
@@ -197,7 +196,7 @@ gApp.run(function ($rootScope, $location, $http, $timeout, ProfileService, Setti
     });
 
     $rootScope.connectSocial = function (provider, scope) {
-        url = $rootScope.baseURL + 'authorize/' + provider;
+        var url = $rootScope.baseURL + 'authorize/' + provider;
         $http.post(url, {'scope': scope}).success(function (res) {
             window.location = res.location;
         }).error(function () {
@@ -229,13 +228,13 @@ gApp.run(function ($rootScope, $location, $http, $timeout, ProfileService, Setti
 
                         $http.get(apiBaseURL + "account").success(function (data) {
                             // identify people that are logged in to our website
-                            mixpanel.identify(data.id);
-                            mixpanel.people.set({
-                                "$email": data.email,
-                                "$created": data.created_datetime,
-                                "$first_name": data.info.first_name,
-                                "$last_name": data.info.last_name,
-                                "sub_active": data.active_subscription.active,
+                            amplitude.getInstance().setUserId(data.id);
+
+                            amplitude.getInstance().setUserProperties({
+                                "email": data.email,
+                                "created": data.created_datetime,
+                                "name": data.info.name,
+                                "sub_active": data.active_subscription.active || false,
                                 "sub_created": data.active_subscription.created_datetime,
                                 "sub_plan": data.active_subscription.plan,
                                 "sub_quantity": data.active_subscription.quantity,
@@ -243,33 +242,21 @@ gApp.run(function ($rootScope, $location, $http, $timeout, ProfileService, Setti
                                 "is_staff": data.is_staff
                             });
 
-                            mixpanel.register({
-                                "$browser": browser,
-                                authenticated: true,
-                                user: data
-                            });
+                            var identify = new amplitude.Identify().set('browser', browser).set('authenticated', true).set('user', data);
+                            amplitude.getInstance().identify(identify);
+
                         });
                         // Once logged in start syncing
                         $rootScope.SyncNow();
                     } else {
-                        mixpanel.register({
-                            "$browser": browser,
-                            authenticated: false,
-                            user: {
-                                'email': $rootScope.userEmail
-                            }
-                        });
+                        var identify = new amplitude.Identify().set('browser', browser).set('authenticated', false).set('user', {'email': $rootScope.userEmail});
+                        amplitude.getInstance().identify(identify);
                         SettingsService.set("isLoggedIn", false);
                     }
                 });
             }).error(function () {
-                mixpanel.register({
-                    "$browser": browser,
-                    authenticated: false,
-                    user: {
-                        'email': $rootScope.userEmail
-                    }
-                });
+                var identify = new amplitude.Identify().set('$browser', browser).set('authenticated', false).set('user', {'email': $rootScope.userEmail});
+                amplitude.getInstance().identify(identify);
                 SettingsService.set("isLoggedIn", false);
             });
         });

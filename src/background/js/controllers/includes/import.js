@@ -3,7 +3,7 @@ gApp.controller('ImportCtrl', function ($scope, $rootScope, $timeout, Upload) {
 
     // Importing Thunderbird quicktexts
     self.onFileSelect = function (file) {
-        mixpanel.track("Imported template");
+        amplitude.getInstance().logEvent("Imported template");
 
         $('#file-upload-progress').removeClass('hide');
         $('#file-upload-progress .progress-note').removeClass('hide');

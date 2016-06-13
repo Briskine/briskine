@@ -15,11 +15,11 @@ gApp.controller('SettingsCtrl', function ($scope, $rootScope, $timeout,  Account
     $scope.updateSettings = function(){
         // check if we have to disable stats
         if (!$scope.settings.stats.enabled) {
-            mixpanel.disable();
+            amplitude.setOptOut(true);
         } else {
-            if(mixpanel && mixpanel._flags) {
-                // enable all events
-                mixpanel._flags.disable_all_events = false;
+            if(amplitude) {
+                //enable events
+                amplitude.setOptOut(false);
             }
         }
         SettingsService.set('settings', $scope.settings).then(function(){
