@@ -492,7 +492,7 @@ var gorgiasDemo = (function () {
             $($editor).append(quicktext.body);
             $('body').trigger('dialog-used', params);
 
-            amplitude.logEvent("Tutorial Dialog Insert", {
+            amplitude.getInstance().logEvent("Tutorial Dialog Insert", {
                 shortcut: quicktext.shortcut
             });
 
@@ -619,7 +619,7 @@ var gorgiasDemo = (function () {
         }
 
         $('body').on('template-inserted', function (e, params) {
-            amplitude.logEvent("Tutorial Shortcut", {
+            amplitude.getInstance().logEvent("Tutorial Shortcut", {
                 shortcut: params.quicktext.shortcut
             });
 
@@ -643,7 +643,7 @@ var gorgiasDemo = (function () {
         });
 
         $('.gorgias-qa-btn').on('click', function(e){
-            amplitude.logEvent("Tutorial Button");
+            amplitude.getInstance().logEvent("Tutorial Button");
             dialogShow(e);
             setTimeout(function () {
                 $('.gorgias-demo-hint>*').addClass('hidden');
@@ -654,7 +654,7 @@ var gorgiasDemo = (function () {
         // Removes 1st step and adds 2nd step
         /*
         $('body').on('dialog-used', function (e, params) {
-            amplitude.logEvent("Tutorial Dialog", {
+            amplitude.getInstance().logEvent("Tutorial Dialog", {
                 shortcut: params.quicktext.shortcut
             });
 

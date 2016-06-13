@@ -62,7 +62,7 @@ gApp.controller('SidebarCtrl', function ($scope, $location, $http, $window,
     };
 
     $scope.trackSettings = function(isLoggedIn) {
-        amplitude.logEvent("Opened Settings", {
+        amplitude.getInstance().logEvent("Opened Settings", {
             'isLoggedIn': isLoggedIn
         });
     };
