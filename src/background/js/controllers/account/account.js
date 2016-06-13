@@ -4,7 +4,6 @@ gApp.controller('AccountCtrl', function ($scope, $rootScope, $timeout, AccountSe
     AccountService.get().then(function(data){ $scope.account = data; });
 
     $scope.saveAccount = function () {
-        amplitude.logEvent("Saved Account Settings");
         AccountService.update($scope.account).then(function () {
             $(".updated-account-message").removeClass("hide");
         });

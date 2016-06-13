@@ -49,7 +49,6 @@ gApp.controller('GroupsCtrl', function ($scope, $rootScope, $timeout, MemberServ
     $scope.refresh();
 
     $scope.saveGroup = function () {
-        amplitude.logEvent("Add member group");
         GroupService.update($scope.selectedGroup).then(function () {
             $scope.formErrors = null;
             $('.modal').modal('hide');
@@ -60,7 +59,6 @@ gApp.controller('GroupsCtrl', function ($scope, $rootScope, $timeout, MemberServ
     };
 
     $scope.saveGroupsApps = function () {
-        amplitude.logEvent("Import group from Google Apps");
         GroupAppsService.import($scope.appsGroups, $scope.sendNotification).then(function () {
             $scope.formErrors = null;
             $('.modal').modal('hide');
@@ -95,7 +93,6 @@ gApp.controller('GroupsCtrl', function ($scope, $rootScope, $timeout, MemberServ
 
     $scope.deleteGroup = function () {
         if (confirm("Are you sure you want to delete this group? No members will be deleted as a result.")) {
-            amplitude.logEvent("Deleted Member Group");
             GroupService.delete(this.g).then(function () {
                 $scope.refresh();
             });

@@ -155,9 +155,8 @@ gApp.run(function ($rootScope, $location, $http, $timeout, ProfileService, Setti
             SettingsService.set('settings', settings);
         }
 
-        // disable mixpanel if stats are not enabled
+        // disable amplitude if stats are not enabled
         if (!settings.stats.enabled) {
-            //mixpanel.disable();
             amplitude.setOptOut(true);
         }
 
@@ -174,12 +173,6 @@ gApp.run(function ($rootScope, $location, $http, $timeout, ProfileService, Setti
             return $rootScope.trustedSignupURL;
         }
         return '';
-    };
-
-    $rootScope.trackSignup = function (source){
-        amplitude.logEvent("Opened Signup form", {
-            'source': source
-        });
     };
 
     $rootScope.profileService = ProfileService;
