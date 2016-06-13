@@ -59,7 +59,6 @@ gApp.controller('MembersCtrl', function ($scope, $rootScope, $timeout, AccountSe
       .then($scope.refresh);
 
     $scope.saveMembers = function () {
-        amplitude.logEvent("Add team members");
         _.each($scope.newUsers, function (u) {
             if (!(u.name && u.email)) {
                 return;
@@ -94,7 +93,6 @@ gApp.controller('MembersCtrl', function ($scope, $rootScope, $timeout, AccountSe
 
     $scope.toggleMember = function () {
         var user = this.u;
-        amplitude.logEvent("Toggle member", {enabled: user.active});
         MemberService.toggle(user).then(function () {
             $scope.formErrors = null;
             $scope.refresh();
@@ -105,7 +103,6 @@ gApp.controller('MembersCtrl', function ($scope, $rootScope, $timeout, AccountSe
 
     $scope.deleteMember = function () {
         if (confirm("Are you sure you want to delete this member from your team?")) {
-            amplitude.logEvent("Deleted Member");
             MemberService.delete(this.member).then(function () {
                 $scope.refresh();
             });
