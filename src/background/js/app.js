@@ -137,7 +137,11 @@ gApp.run(function ($rootScope, $location, $http, $timeout, ProfileService, Setti
     $rootScope.trustedSignupURL = $rootScope.baseURL + "signup/startup-monthly-usd-1/is_iframe=yes";
 
     SettingsService.get('settings').then(function (settings) {
-        amplitude.getInstance().init("a31babba9c8dedf2334c44d8acdad247");
+        if (ENV && ENV === 'production') {
+            amplitude.getInstance().init("e50d000bcba1aa363cd1f71642ed466a");
+        } else if (ENV && ENV == 'development') {
+            amplitude.getInstance().init("a31babba9c8dedf2334c44d8acdad247");
+        }
         // Make sure that we have all the default
         var keys = Object.keys(settings);
         var changed = false;
