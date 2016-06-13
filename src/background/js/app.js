@@ -1,5 +1,3 @@
-amplitude.init('YOUR_API_KEY_HERE');
-
 Raven.config('https://af2f5e9fb2744c359c19d08c8319d9c5@app.getsentry.com/30379', {
     tags: {
         version: chrome.runtime.getManifest().version
@@ -121,7 +119,6 @@ gApp.config(['$compileProvider', function ($compileProvider) {
 /* Global run
  */
 gApp.run(function ($rootScope, $location, $http, $timeout, ProfileService, SettingsService, TemplateService) {
-
     $rootScope.$on('$routeChangeStart', function () {
         $rootScope.path = $location.path();
     });
@@ -140,6 +137,7 @@ gApp.run(function ($rootScope, $location, $http, $timeout, ProfileService, Setti
     $rootScope.trustedSignupURL = $rootScope.baseURL + "signup/startup-monthly-usd-1/is_iframe=yes";
 
     SettingsService.get('settings').then(function (settings) {
+        amplitude.getInstance().init("a31babba9c8dedf2334c44d8acdad247");
         // Make sure that we have all the default
         var keys = Object.keys(settings);
         var changed = false;
@@ -157,7 +155,7 @@ gApp.run(function ($rootScope, $location, $http, $timeout, ProfileService, Setti
 
         // disable amplitude if stats are not enabled
         if (!settings.stats.enabled) {
-            amplitude.setOptOut(true);
+            amplitude.getInstance().setOptOut(true);
         }
 
         if (settings.userEmail) {
@@ -173,6 +171,12 @@ gApp.run(function ($rootScope, $location, $http, $timeout, ProfileService, Setti
             return $rootScope.trustedSignupURL;
         }
         return '';
+    };
+
+    $rootScope.trackSignup = function (source){
+        amplitude.getInstance().logEvent("Opened Signup form", {
+            'source': source
+        });
     };
 
     $rootScope.profileService = ProfileService;
@@ -220,9 +224,9 @@ gApp.run(function ($rootScope, $location, $http, $timeout, ProfileService, Setti
 
                         $http.get(apiBaseURL + "account").success(function (data) {
                             // identify people that are logged in to our website
-                            amplitude.setUserID(data.id);
+                            amplitude.getInstance().setUserId(data.id);
 
-                            amplitude.setUserProperties({
+                            amplitude.getInstance().setUserProperties({
                                 "email": data.email,
                                 "created": data.created_datetime,
                                 "first_name": data.info.first_name,
@@ -235,21 +239,21 @@ gApp.run(function ($rootScope, $location, $http, $timeout, ProfileService, Setti
                                 "is_staff": data.is_staff
                             });
 
-                            var identify = new amplitude.identify().set('browser', browser).set('authenticated', true).set('user', data);
-                            amplitude.identify(identify);
+                            var identify = new amplitude.Identify().set('browser', browser).set('authenticated', true).set('user', data);
+                            amplitude.getInstance().identify(identify);
 
                         });
                         // Once logged in start syncing
                         $rootScope.SyncNow();
                     } else {
-                        var identify = new amplitude.identify().set('browser', browser).set('authenticated', false).set('user', {'email': $rootScope.userEmail});
-                        amplitude.identify(identify);
+                        var identify = new amplitude.getInstance().identify().set('browser', browser).set('authenticated', false).set('user', {'email': $rootScope.userEmail});
+                        amplitude.getInstance().identify(identify);
                         SettingsService.set("isLoggedIn", false);
                     }
                 });
             }).error(function () {
-                var identify = new amplitude.identify().set('$browser', browser).set('authenticated', false).set('user', {'email': $rootScope.userEmail});
-                amplitude.identify(identify);
+                var identify = new amplitude.getInstance().identify().set('$browser', browser).set('authenticated', false).set('user', {'email': $rootScope.userEmail});
+                amplitude.getInstance().identify(identify);
                 SettingsService.set("isLoggedIn", false);
             });
         });
