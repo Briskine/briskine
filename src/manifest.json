@@ -1,7 +1,7 @@
 {
     "manifest_version": 2,
     "name": "__MSG_extName__",
-    "version": "5.1.8",
+    "version": "5.1.9",
     "description": "__MSG_extDesc__",
     "short_name": "Gorgias",
     "default_locale": "en",
