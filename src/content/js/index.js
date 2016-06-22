@@ -74,21 +74,13 @@ var App = {
                         }
                         // we have some text, do the filtering
                         if (text) {
-                            if (App.settings.case_sensitive_search) {
-                                if (t.shortcut.toLowerCase().indexOf(text.toLowerCase()) !== -1 ||
-                                    t.title.toLowerCase().indexOf(text.toLowerCase()) !== -1 ||
-                                    t.body.toLowerCase().indexOf(text.toLowerCase()) !== -1) {
-                                    templates.push(t);
-                                }
+                            var templateRegex = new RegExp(text, App.settings.case_sensitive_search ? 'i' : '');
+
+                            if (templateRegex.test([t.shortcut, t.title, t.body].join())) {
+                                templates.push(t);
                             }
-                            else {
-                                if (t.shortcut.indexOf(text) !== -1 ||
-                                    t.title.indexOf(text) !== -1 ||
-                                    t.body.indexOf(text) !== -1) {
-                                    templates.push(t);
-                                }
-                            }
-                        } else { // no text, get all
+                        }
+                        else { // no text, get all
                             templates.push(t);
                         }
                     }
@@ -239,7 +231,7 @@ App.init = function (settings, doc) {
     App.settings.suggestions_enabled = settings.suggestions.enabled;
     // Check if we should use editor markup
     App.settings.editor_enabled = settings.editor.enabled;
-    // Check if case sensitive search is enable
+    // Check if case sensitive search is enabled
     App.settings.case_sensitive_search = settings.qaBtn.caseSensitiveSearch;
 
     var blacklistPrivate = [
