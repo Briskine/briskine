@@ -2,7 +2,7 @@
     <h1 ng-bind-html="title | safe"></h1>
 
     <div class="pull-right header-actions">
-        <input type="text" class="form-control" ng-model="searchText" placeholder="Search templates" tabindex="0"
+        <input type="text" class="form-control" ng-model="searchText" placeholder="Search templates" tabindex="0" ng-change="clearSelectedTemplates()"
                autofocus/>
     </div>
 </header>
@@ -15,10 +15,10 @@
             <a class="btn btn-default" href="{{baseUrl}}app/export/templates.csv" target="_blank"
                ng-if="filteredTemplates.length">Export</a>
         </div>
-        <button type="button" ng-if="selectedQuicktexts.length" ng-click="deleteQts(selectedQuicktexts)"
+        <button type="button" ng-if="hasSelected" ng-click="deleteQts()"
                 class="btn btn-error pull-right">Delete
         </button>
-        <a type="button" ng-if="selectedQuicktexts.length && account.info.name" ng-href="#{{location}}?action=share"
+        <a type="button" ng-if="hasSelected && account.info.name" ng-href="#{{location}}?action=share"
            class="btn btn-primary pull-right">Share
         </a>
     </div>
@@ -26,7 +26,7 @@
         <label>
             <input type="checkbox" ng-click="toggleSelectAll()" ng-model="selectedAll"/>
             <span ng-show="!selectedAll">Select all</span>
-            <span ng-show="selectedAll">Selected <strong>{{selectedQuicktexts.length}}</strong> templates</span>
+            <span ng-show="selectedAll">Selected <strong>{{filteredTemplates.length}}</strong> templates</span>
         </label>
     </div>
 </div>
@@ -42,13 +42,12 @@
         </p>
     </div>
 
-    <div class="list-group quicktexts-list" ng-show="filteredTemplates.length">
+    <div class="list-group quicktexts-list">
         <div class="list-group-item"
-             ng-repeat="quicktext in filteredTemplates | limitTo:limitTemplates">
+             ng-repeat="quicktext in templates | limitTo:limitTemplates | filter:searchText | tagFilter:filterTags | sharingFilter:properties.list as filteredTemplates">
 
             <div class="checkbox-wrapper">
-                <input type="checkbox" checklist-model="getSelectedQuicktexts()" checklist-value="quicktext.id"
-                       ng-change="updateSelectedQuicktexts(quicktext, checked)">
+                <input type="checkbox" ng-change="checkHasSelected()" ng-model="quicktext.selected">
             </div>
 
             <a class="list-group-item-link"
@@ -94,7 +93,7 @@
             </div>
         </div>
     </div>
-    <div class="row load-more text-center">
+    <div class="row load-more text-center" ng-show="templates.length > limitTemplates">
         <button ng-click="loadMore()" class="btn btn-default">Load more templates</button>
     </div>
 </div>
