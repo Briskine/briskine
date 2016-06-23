@@ -14,7 +14,7 @@ var App = {
     autocomplete: {},
     settings: {
         suggestions_enabled: false,
-        case_sensitive_search: false,
+        case_sensitive_search: true,
 
         // Get template filtered out by shortcut
         getQuicktextsShortcut: function (text, callback) {
@@ -74,7 +74,7 @@ var App = {
                         }
                         // we have some text, do the filtering
                         if (text) {
-                            var templateRegex = new RegExp(text, App.settings.case_sensitive_search ? 'i' : '');
+                            var templateRegex = new RegExp(text, App.settings.case_sensitive_search ? '' : 'i');
 
                             if (templateRegex.test([t.shortcut, t.title, t.body].join())) {
                                 templates.push(t);
