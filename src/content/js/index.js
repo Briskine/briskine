@@ -14,7 +14,7 @@ var App = {
     autocomplete: {},
     settings: {
         suggestions_enabled: false,
-        case_sensitive_search: true,
+        case_sensitive_search: false,
 
         // Get template filtered out by shortcut
         getQuicktextsShortcut: function (text, callback) {
@@ -74,9 +74,14 @@ var App = {
                         }
                         // we have some text, do the filtering
                         if (text) {
-                            var templateRegex = new RegExp(text, App.settings.case_sensitive_search ? '' : 'i');
-
-                            if (templateRegex.test([t.shortcut, t.title, t.body].join())) {
+                            var findText = function (pattern) {
+                                return App.settings.case_sensitive_search
+                                    ? pattern.indexOf(text) !== -1
+                                    : pattern.toLowerCase().indexOf(text.toLowerCase()) !== -1;
+                            }
+                            if (findText(t.shortcut, text) ||
+                                findText(t.title, text) ||
+                                findText(t.body, text)) {
                                 templates.push(t);
                             }
                         }

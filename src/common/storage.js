@@ -101,7 +101,7 @@ var Settings = {
             qaBtn: {
                 enabled: true,
                 shownPostInstall: false,
-                caseSensitiveSearch: true
+                caseSensitiveSearch: false
             },
             keyboard: {
                 enabled: true,
