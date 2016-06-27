@@ -14,6 +14,7 @@ var App = {
     autocomplete: {},
     settings: {
         suggestions_enabled: false,
+        case_sensitive_search: false,
 
         // Get template filtered out by shortcut
         getQuicktextsShortcut: function (text, callback) {
@@ -73,12 +74,18 @@ var App = {
                         }
                         // we have some text, do the filtering
                         if (text) {
-                            if (t.shortcut.indexOf(text) !== -1 ||
-                                t.title.indexOf(text) !== -1 ||
-                                t.body.indexOf(text) !== -1) {
+                            var findText = function (pattern) {
+                                return App.settings.case_sensitive_search
+                                    ? pattern.indexOf(text) !== -1
+                                    : pattern.toLowerCase().indexOf(text.toLowerCase()) !== -1;
+                            }
+                            if (findText(t.shortcut, text) ||
+                                findText(t.title, text) ||
+                                findText(t.body, text)) {
                                 templates.push(t);
                             }
-                        } else { // no text, get all
+                        }
+                        else { // no text, get all
                             templates.push(t);
                         }
                     }
@@ -229,6 +236,8 @@ App.init = function (settings, doc) {
     App.settings.suggestions_enabled = settings.suggestions.enabled;
     // Check if we should use editor markup
     App.settings.editor_enabled = settings.editor.enabled;
+    // Check if case sensitive search is enabled
+    App.settings.case_sensitive_search = settings.qaBtn.caseSensitiveSearch;
 
     var blacklistPrivate = [
         'https://gorgias.io',
