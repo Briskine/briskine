@@ -38,6 +38,7 @@ var App = {
                 }
             });
         },
+
         getFiltered: function (text, limit, callback) {
 
             // use a debouncer to not trigger the filter too many times
@@ -67,28 +68,29 @@ var App = {
                 // search even the empty strings. It's not a problem because the dialog is now triggered by a user shortcut
                 TemplateStorage.get(null, function (res) {
                     var templates = [];
-                    for (var id in res) {
-                        var t = res[id];
-                        if (t.deleted !== 0) {
-                            continue;
-                        }
-                        // we have some text, do the filtering
-                        if (text) {
-                            var findText = function (pattern) {
-                                return App.settings.case_sensitive_search
-                                    ? pattern.indexOf(text) !== -1
-                                    : pattern.toLowerCase().indexOf(text.toLowerCase()) !== -1;
-                            }
-                            if (findText(t.shortcut, text) ||
-                                findText(t.title, text) ||
-                                findText(t.body, text)) {
-                                templates.push(t);
-                            }
-                        }
-                        else { // no text, get all
-                            templates.push(t);
+                    for (var t in res) {
+                        if (!res[t].deleted) {
+                            templates.push(res[t]);
                         }
                     }
+
+                    if (text) {
+                        var options = {
+                            caseSensitive: App.settings.case_sensitive_search,
+                            includeScore: false,
+                            shouldSort: true,
+                            tokenize: false,
+                            threshold: 0.5,
+                            location: 0,
+                            distance: 60,
+                            maxPatternLength: 32,
+                            keys: ['shortcut', 'title', 'body']
+                        };
+
+                        var fuse = new Fuse(templates, options);
+                        templates = fuse.search(text);
+                    }
+
                     // sort by created_datetime desc
                     templates.sort(function (a, b) {
                         return new Date(b.created_datetime) - new Date(a.created_datetime);
@@ -112,7 +114,7 @@ var App = {
                     });
 
                     if (limit && limit < templates.length) {
-                        templates = templates.splice(0, limit);
+                        templates = templates.slice(0, limit);
                     }
                     callback(templates);
                 });
@@ -267,7 +269,7 @@ App.init = function (settings, doc) {
 
     // This is used to open the Chrome extension options from a HTML page - it's when you signup you'd be redirected
     // directly to the extension
-    document.addEventListener("launchGorgias", function() {
+    document.addEventListener("launchGorgias", function () {
         chrome.runtime.sendMessage({request: 'launchGorgias'});
     });
 

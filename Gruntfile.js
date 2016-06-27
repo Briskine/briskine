@@ -54,6 +54,7 @@ module.exports = function (grunt) {
                 'bower_components/moment/min/moment.min.js',
                 'bower_components/mousetrap/mousetrap.js',
                 'bower_components/mousetrap/plugins/global-bind/mousetrap-global-bind.js',
+                'bower_components/fuse.js/src/fuse.min.js',
 
                 'common/*.js',
 
