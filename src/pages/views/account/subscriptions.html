@@ -3,19 +3,21 @@
     <div class="col-sm-4">
 
         <div class="subscriptions">
-            <p class="subscription" ng-repeat="sub in subscriptions">
-                Your <em ng-if="sub.active">current</em> <strong>{{ sub.plan.name }}</strong> subscription
-                <span ng-if="sub.active === null">will start on</span>
-                <span ng-if="sub.active !== null">started on</span>
-                <strong>{{ sub.start_datetime | date:'dd MMMM yyyy' }}</strong><span ng-if="sub.active === false">
-                 and ended on <strong>{{ sub.end_datetime | date:'dd MMMM yyyy' }}</strong></span><span ng-if="sub.quantity">
-                 with <strong>{{ sub.quantity }}</strong> member<span ng-if="sub.quantity > 1">s</span></span>.
+            <p class="subscription">
+                Your <em ng-if="activeSubscription.active">current</em> <strong>{{ activeSubscription.plan.name }}</strong> subscription
+                <span ng-if="activeSubscription.active === null">will start on</span>
+                <span ng-if="activeSubscription.active !== null">started on</span>
+                <strong>{{ activeSubscription.start_datetime | date:'dd MMMM yyyy' }}</strong><span ng-if="activeSubscription.active === false">
+                 and ended on <strong>{{ activeSubscription.end_datetime | date:'dd MMMM yyyy' }}</strong></span><span ng-if="activeSubscription.quantity">
+                 with <strong>{{ activeSubscription.quantity }}</strong> member<span ng-if="activeSubscription.quantity > 1">s</span></span>.
             </p>
         </div>
 
         <p class="small">Only you, as the account owner, can upgrade, downgrade or change the billing information for
             the account.</p>
-
+        <br>
+        <p>If your card expired, or you want to switch to another card:</p>
+        <a class="btn update-cc-btn" href="" ng-click="updateCC()">Update your Credit Card</a>
     </div>
 
     <div class="col-sm-8">
@@ -23,9 +25,11 @@
             <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
             <h4>Oh snap! Failed to upgrade!</h4>
             <p>{{ paymentError }}</p>
-            <p>
-                <button type="button" class="btn btn-default" ng-click="subscribe()">Try Again</button>
-            </p>
+        </div>
+        <div class="alert alert-success fade in" ng-if="paymentMsg">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+            <h4>It's a success!</h4>
+            <p>{{ paymentMsg }}</p>
         </div>
         <div class="row">
             <div class="col-sm-6" ng-repeat="plan in plans[preferredCurrency]">
@@ -35,25 +39,24 @@
                             Best Value!</span></strong>
                     </div>
                     <div class="panel-body">
-                        <span class="price">{{ (plan.amount * quantity * couponPrecentOff).toFixed(2) }}</span>
+                        <span class="price">{{ (plan.amount * quantity * couponPrecentOff) }}</span>
                         <span class="currency">{{ plan.currency|uppercase }}</span>
                     </div>
                     <ul class="list-group">
                         <li class="list-group-item">x 1 User/Year:
                             <span class="amount"
-                                  ng-if="plan.interval == 'month'">{{ (plan.amount * couponPrecentOff * 12 * quantity).toFixed(2) }}</span>
+                                  ng-if="plan.interval == 'month'">{{ (plan.amount * couponPrecentOff * 12 * quantity) }}</span>
                             <span class="amount"
-                                  ng-if="plan.interval == 'year'">{{ (plan.amount * couponPrecentOff * quantity).toFixed(2) }}</span>
+                                  ng-if="plan.interval == 'year'">{{ (plan.amount * couponPrecentOff * quantity) }}</span>
                             <span ng-if="couponPrecentOffLabel">({{ couponPrecentOffLabel }} discount)</span>
-                            <span class="currency-sign" ng-bind-html-unsafe="plan.currency_sign"></span>
+                            <span class="currency-sign">{{ plan.currency|uppercase }}</span>
                         </li>
-                        <li class="list-group-item">Unlimited templates</li>
                         <li class="list-group-item">
                           <input type="number" class="quantity-input" id="quantity" ng-model="quantity" />
                           <label for="quantity">total users.</label>
                         </li>
                         <li class="list-group-item">
-                            <a class="btn btn-primary subscribe-button" href="" ng-click="subscribe(quantity)">Update</a>
+                            <a class="btn btn-primary subscribe-button" href="" ng-click="updateSubscription(plan, quantity)">Update Subscription</a>
                         </li>
                     </ul>
                 </div>
@@ -63,6 +66,12 @@
                     <input type="text" class="form-control" ng-model="discountCode" placeholder="Enter coupon code here"/>
                     <button class="btn btn-default" ng-click="addDiscountCode(discountCode)">Add discount code</button>
                 </div>
+            </div>
+            <br />
+            <div>
+                <p class="alert alert-info"><strong>Note:</strong> You'll get billed only for what you use.
+                    <br /><br />
+                    Simple example: If you begin with 2 users (10$/month) on 1st May, then on 15th May if you add a 3rd user then on 31st you get billed 12.5$.</p>
             </div>
         </div>
     </div>

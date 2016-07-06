@@ -1,19 +1,21 @@
-gApp.controller('SubscriptionsCtrl', function($scope, $rootScope, $routeParams, $q, SubscriptionService, AccountService) {
+gApp.controller('SubscriptionsCtrl', function ($scope, $rootScope, $routeParams, $q, SubscriptionService, AccountService) {
     $scope.activeTab = 'subscriptions';
 
-    AccountService.get().then(function(account){ $scope.account = account; });
+    AccountService.get().then(function (account) {
+        $scope.account = account;
+    });
 
     $scope.plans = {};
     $scope.subscriptions = [];
+    $scope.activeSubscription = null;
     $scope.stripeKey = "";
     $scope.preferredCurrency = "";
     $scope.quantity = 1;
     $scope.paymentError = "";
-    $scope.discountCode= "";
+    $scope.discountCode = "";
     $scope.couponPrecentOff = 1;
 
-
-    SubscriptionService.plans().then(function(data) {
+    SubscriptionService.plans().then(function (data) {
         $scope.plans = data.plans;
         $scope.stripeKey = data.stripe_key;
         $scope.preferredCurrency = data.preferred_currency;
@@ -22,94 +24,89 @@ gApp.controller('SubscriptionsCtrl', function($scope, $rootScope, $routeParams, 
 
         $scope.quantity = parseInt($routeParams.quantity, 10) || 1;
 
-        _.each($scope.plans[$scope.preferredCurrency], function(plan){
+        _.each($scope.plans[$scope.preferredCurrency], function (plan) {
             if (plan.sku === $routeParams.plan) {
                 $scope.selectedPlan = plan;
                 return false;
             }
         });
-
-        // to subscribe from the link use this as an example: http://localhost:5000/app#/subscriptions?action=upgrade&plan=yearly-usd-1&quantity=20&coupon=KINNEK-12
-        var subscribe = function() {
-            if (typeof StripeCheckout !== 'undefined') {
-                 if (typeof $routeParams.coupon !== 'undefined') {
-                    $scope.addDiscountCode($routeParams.coupon).then(function(){
-                        $scope.subscribe();
-                    });
-                 } else {
-                     $scope.subscribe();
-                 }
-            } else {
-                // if we don't have stripe loaded yet, then wait and try again
-                setTimeout(subscribe, 500);
-            }
-        };
-        if ($scope.selectedPlan) {
-            subscribe();
-        }
     });
 
-    $scope.reloadSubscriptions = function() {
-        SubscriptionService.subscriptions().then(function(data) {
+    $scope.reloadSubscriptions = function () {
+        SubscriptionService.subscriptions().then(function (data) {
             $scope.subscriptions = data;
             $scope.quantity = $scope.subscriptions[0].quantity;
+            for (var i = 0; i <= $scope.subscriptions.length; i++) {
+                if ($scope.subscriptions[i].active) {
+                    $scope.activeSubscription = $scope.subscriptions[i]
+                    break
+                }
+            }
         });
     };
-
     $scope.reloadSubscriptions();
 
-    $scope.subscribe = function(quantity) {
-        $scope.selectedPlan = this.plan || $scope.selectedPlan;
-        $scope.quantity = quantity || $scope.quantity;
+    // Get a new token from stripe and send it to the server
+    $scope.updateCC = function () {
+        $scope.paymentMsg = '';
+        $scope.paymentError = '';
+        $('.update-cc-btn').addClass('disabled');
 
         var handler = StripeCheckout.configure({
             key: $scope.stripeKey,
             image: '/static/img/icon128.png',
-            token: function(token) {
+            token: function (token) {
                 // Use the token to create the charge with server-side.
-                SubscriptionService.addSubscription($scope.selectedPlan.sku, $scope.quantity, $scope.discountCode, token, function() {
-                    // success
-                    $scope.paymentError = "";
-                    $scope.reloadSubscriptions();
-                }, function(res) {
-                    // failure with an error (if any)
-                    $scope.paymentError = res.data;
-                });
+                SubscriptionService.updateSubscription($scope.activeSubscription.id, {token: token}).then(
+                    function (res) {
+                        $('.update-cc-btn').removeClass('disabled');
+                        $scope.paymentMsg = res
+                        $scope.reloadSubscriptions();
+                    }, function (res) {
+                        $('.update-cc-btn').removeClass('disabled');
+                        $scope.paymentError = res;
+                    }
+                );
             }
         });
-
         handler.open({
             name: 'Gorgias',
-            description: $scope.quantity + " x " + $scope.selectedPlan.name + ' Subscription',
-            amount: parseInt($scope.selectedPlan.amount * 100 * $scope.quantity * $scope.couponPrecentOff, 10),
+            description: 'Update your Credit Card',
+            panelLabel: 'Update your Credit Card',
             email: $scope.email,
-            currency: $scope.selectedPlan.currency,
-            opened: function(){
-                $(".subscribe-button").button('loading');
-            },
-            closed: function(){
-                $(".subscribe-button").button('reset');
-            }
+            allowRememberMe: false
         });
     };
 
-    $scope.showDeleteAccountModal = function() {
-        $("#delete-account-modal").modal();
-    };
+    $scope.updateSubscription = function (plan, quantity) {
+        $('.subscribe-button').addClass('disabled');
+        $scope.paymentMsg = '';
+        $scope.paymentError = '';
 
+        SubscriptionService.updateSubscription($scope.activeSubscription.id, {
+            plan: plan,
+            quantity: quantity
+        }).then(function (res) {
+            $scope.paymentMsg = res;
+            $('.subscribe-button').removeClass('disabled');
+        }, function (res) {
+            $scope.paymentError = res;
+            $('.subscribe-button').removeClass('disabled');
+        });
+    };
 
     $scope.addDiscountCode = function (discountCode) {
         var deferred = $q.defer();
-        if (!discountCode){
+        if (!discountCode) {
             alert("Please enter discount code");
             return;
         }
 
         // just check that the coupon exists in Stripe
-        SubscriptionService.addCoupon(discountCode, function(coupon){
+        SubscriptionService.addCoupon(discountCode, function (coupon) {
             $scope.discountCode = discountCode;
-            if (coupon && coupon.percent_off && coupon.valid ) {
-                $scope.couponPrecentOffLabel = "-" +  coupon.percent_off + "%";
+            if (coupon && coupon.percent_off && coupon.valid) {
+                $scope.couponPrecentOffLabel = "-" + coupon.percent_off + "%";
                 $scope.couponPrecentOff = (100 - coupon.percent_off) / 100;
             }
             deferred.resolve();

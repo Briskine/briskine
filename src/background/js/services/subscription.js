@@ -1,34 +1,43 @@
-gApp.service('SubscriptionService', function($q, $resource) {
+gApp.service('SubscriptionService', function ($q, $resource) {
     var self = this;
-    var subResource = $resource(Settings.defaults.apiBaseURL + 'subscriptions');
+    var subResource = $resource(Settings.defaults.apiBaseURL + 'subscriptions/:subId',
+        {subId: "@id"},
+        {update: {method: 'PUT', isArray: false}}
+    );
     var couponResource = $resource(Settings.defaults.apiBaseURL + 'coupons');
     var planResource = $resource(Settings.defaults.apiBaseURL + 'plans/startup');
 
-    self.plans = function() {
+    self.plans = function () {
         var deferred = $q.defer();
-        var planData = planResource.get(function() {
+        var planData = planResource.get(function () {
             deferred.resolve(planData);
         });
         return deferred.promise;
     };
 
-    self.subscriptions = function() {
+    self.subscriptions = function () {
         var deferred = $q.defer();
-        var subscriptions = subResource.query(function() {
+        var subscriptions = subResource.query(function () {
             deferred.resolve(subscriptions);
         });
         return deferred.promise;
     };
 
-    self.addSubscription = function(sku, quantity, discountCode, token, success, failure) {
-        var subscription = new subResource();
-        subscription.sku = sku;
-        subscription.quantity = quantity;
-        subscription.token = token;
-        console.log(discountCode);
-        subscription.coupon = discountCode;
-        subscription.$save(success, failure);
+    // Update active subscription
+    self.updateSubscription = function (subId, params) {
+        var deferred = $q.defer();
+
+        subResource.get({subId: subId}, function (sub) {
+            sub = _.extend(sub, params)
+            sub.$update(function (res) {
+                deferred.resolve(res.msg);
+            }, function (res) {
+                deferred.reject(res.msg);
+            });
+        })
+        return deferred.promise;
     };
+
 
     self.addCoupon = function (code, success, failure) {
         var coupon = new couponResource();
@@ -38,8 +47,8 @@ gApp.service('SubscriptionService', function($q, $resource) {
 
     self.getActiveSubscription = function () {
         var deferred = $q.defer();
-        self.subscriptions().then(function(subscriptions){
-            _.each(subscriptions, function(sub){
+        self.subscriptions().then(function (subscriptions) {
+            _.each(subscriptions, function (sub) {
                 if (sub.active) {
                     deferred.resolve(sub);
                 }
