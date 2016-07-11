@@ -291,8 +291,8 @@ gApp.service('TemplateService', function ($q, $resource, SettingsService) {
     };
 
 
-// given a string with tags give a clean list
-// remove spaces, duplicates and so on
+    // given a string with tags give a clean list
+    // remove spaces, duplicates and so on
     self._clean_tags = function (tags) {
         var tArray = _.filter(tags.split(','), function (tag) {
             if (tag.trim() !== '') {
@@ -305,7 +305,7 @@ gApp.service('TemplateService', function ($q, $resource, SettingsService) {
         return tags;
     };
 
-// Copy one template object to another - used for the remote saving
+    // Copy one template object to another - used for the remote saving
     self._copy = function (source, target) {
         for (var k in source) {
             // ignore the no own property or id
@@ -321,7 +321,7 @@ gApp.service('TemplateService', function ($q, $resource, SettingsService) {
         return target;
     };
 
-// get template object given an id or null
+    // get template object given an id or null
     self.get = function (id) {
         var deferred = $q.defer();
         TemplateStorage.get(id, function (res) {
@@ -330,7 +330,7 @@ gApp.service('TemplateService', function ($q, $resource, SettingsService) {
         return deferred.promise;
     };
 
-// create and try to sync with the server
+    // create and try to sync with the server
     self.create = function (t, onlyLocal, isPrivate) {
         var deferred = $q.defer();
 
@@ -353,18 +353,19 @@ gApp.service('TemplateService', function ($q, $resource, SettingsService) {
         data[t.id] = t;
 
         TemplateStorage.set(data, function () {
-            amplitude.getInstance().logEvent("Created template", {
-                "with_subject": t.subject.length > 0,
-                "with_shortcut": t.shortcut.length > 0,
-                "with_tags": t.tags.length > 0,
-                "title_size": t.title.length,
-                "body_size": t.body.length,
-                "private": t.private
-            });
-
             if (onlyLocal) { // create only locally - don't do any remote operations
                 deferred.resolve();
                 return;
+            } else {
+                amplitude.getInstance().logEvent("Created template", {
+                    "with_subject": t.subject.length > 0,
+                    "with_shortcut": t.shortcut.length > 0,
+                    "with_tags": t.tags.length > 0,
+                    "title_size": t.title.length,
+                    "body_size": t.body.length,
+                    "private": t.private
+                });
+
             }
 
             SettingsService.get("isLoggedIn").then(function (isLoggedIn) {
@@ -407,17 +408,18 @@ gApp.service('TemplateService', function ($q, $resource, SettingsService) {
             if (onlyLocal) { // update only locally - don't do any remote operations
                 deferred.resolve();
                 return;
+            } else {
+                // Send some info about the creation of templates
+                amplitude.getInstance().logEvent("Updated template", {
+                    "with_subject": true ? t.subject : false,
+                    "with_shortcut": true ? t.shortcut : false,
+                    "with_tags": true ? t.tags : false,
+                    "title_size": t.title.length,
+                    "body_size": t.body.length
+                });
             }
-            // Send some info about the creation of templates
-            amplitude.getInstance().logEvent("Updated template", {
-                "with_subject": true ? t.subject : false,
-                "with_shortcut": true ? t.shortcut : false,
-                "with_tags": true ? t.tags : false,
-                "title_size": t.title.length,
-                "body_size": t.body.length
-            });
 
-            SettingsService.get('isLoggedIn').then(function(isLoggedIn){
+            SettingsService.get('isLoggedIn').then(function (isLoggedIn) {
                 if (!isLoggedIn) { // if it's not logged in
                     deferred.resolve();
                     return;
@@ -457,12 +459,11 @@ gApp.service('TemplateService', function ($q, $resource, SettingsService) {
         return deferred.promise;
     };
 
-// delete a template and try to sync
+    // delete a template and try to sync
     self.delete = function (t, onlyLocal) {
         var deferred = $q.defer();
         if (onlyLocal || !t.remote_id) {
             TemplateStorage.remove(t.id, function () {
-                amplitude.getInstance().logEvent("Deleted template");
                 deferred.resolve();
             });
         } else {
@@ -470,7 +471,9 @@ gApp.service('TemplateService', function ($q, $resource, SettingsService) {
             t.deleted = 1;
             data[t.id] = t;
             TemplateStorage.set(data, function () {
-                amplitude.getInstance().logEvent("Deleted template");
+                if (!onlyLocal) {
+                    amplitude.getInstance().logEvent("Deleted template");
+                }
                 self.qRes.get({quicktextId: t.remote_id}, function (remote) {
                     // make sure we have the remote id otherwise the delete will not find the right resource
                     remote.remote_id = remote.id;
@@ -480,7 +483,6 @@ gApp.service('TemplateService', function ($q, $resource, SettingsService) {
                         //
                         // NOTE: We delete locally to save space.
                         TemplateStorage.remove(t.id, function () {
-                            amplitude.getInstance().logEvent("Deleted template");
                             deferred.resolve();
                         });
                     });
@@ -490,8 +492,8 @@ gApp.service('TemplateService', function ($q, $resource, SettingsService) {
         return deferred.promise;
     };
 
-//TODO: Decide here at some point
-// delete all but don't delete from server
+    //TODO: Decide here at some point
+    // delete all but don't delete from server
     self.deleteAll = function () {
         var deferred = $q.defer();
         TemplateStorage.clear(function () {
@@ -501,7 +503,7 @@ gApp.service('TemplateService', function ($q, $resource, SettingsService) {
         return deferred.promise;
     };
 
-// get all tags from a template
+    // get all tags from a template
     self.tags = function (t) {
         var retTags = [];
         _.each(t.tags.split(","), function (tag) {
@@ -510,7 +512,7 @@ gApp.service('TemplateService', function ($q, $resource, SettingsService) {
         return retTags;
     };
 
-// get all tags from all templates
+    // get all tags from all templates
     self.allTags = function () {
         var deferred = $q.defer();
         self.quicktexts().then(function (quicktexts) {
