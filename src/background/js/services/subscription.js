@@ -32,7 +32,7 @@ gApp.service('SubscriptionService', function ($q, $resource) {
             sub.$update(function (res) {
                 deferred.resolve(res.msg);
             }, function (res) {
-                deferred.reject(res.msg);
+                deferred.reject(res.data.msg);
             });
         })
         return deferred.promise;

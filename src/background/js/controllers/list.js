@@ -351,8 +351,8 @@ gApp.controller('ListCtrl',
                 if (r === true) {
                     TemplateService.delete(quicktext).then(function () {
                         $scope.updateSelectedQuicktexts(quicktext, false);
-                        $scope.reloadTemplates();
                     });
+                    $scope.reloadTemplates();
                 }
             }
         };

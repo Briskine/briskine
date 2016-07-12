@@ -90,9 +90,26 @@
     </div>
 
     <div class="view-container">
-        <div id="check-login" class="alert alert-warning fade in hide">
-            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-            <strong>Great!</strong> Now if you are <u>signed in</u> refresh this page.
+        <div ng-if="currentSubscription && !currentSubscription.active" class="alert alert-warning">
+            <strong>Your current subscription is no longer active.</strong>
+            <p>This means that automatic syncing and backup of templates has been disabled for you and your team.</p>
+            <p>
+                <em>Note: without <a href="http://help.gorgias.io/en/latest/src/03-sync.html" target="_blank">template
+                    synchronisation</a> you risk losing all your templates
+                    (if you delete the extension or re-install Chrome).</em>
+            </p>
+            <p ng-if="isCustomer === true">
+            <ul>
+                <li>To re-activate your subscription click <a href="" ng-click="reactivateSubscription()">here</a>.</li>
+                <li>To hide this warning: <a href="" ng-click="logOut()">Log out</a>.</li>
+            </ul>
+            <br>
+            <p>If you think this is a mistake and your subscription should be active please contact us: <a
+                href="mailto:support@gorgias.io">support@gorgias.io</a></p>
+            </p>
+            <p ng-if="isCustomer === false">Please notify the account owner. To hide this warning simply <a href=""
+                                                                                                            ng-click="logOut()">Log
+                out</a>. </p>
         </div>
         <div class="container-animation" data-ng-view></div>
     </div>
@@ -117,5 +134,6 @@
 <div ng-include="'includes/login.html'"></div>
 <div ng-include="'includes/forgot.html'"></div>
 <div ng-include="'includes/signup.html'"></div>
-<script src="https://www-onepick-opensocial.googleusercontent.com/gadgets/js/rpc.js?c=1&amp;container=onepick" type="text/javascript"></script>
+<script src="https://www-onepick-opensocial.googleusercontent.com/gadgets/js/rpc.js?c=1&amp;container=onepick"
+        type="text/javascript"></script>
 </html>

@@ -15,7 +15,7 @@
         <li role="presentation" ng-if="account.is_staff" ng-class="activeTab == 'groups'?'active':''">
             <a href="#/account/groups" aria-controls="groups" role="tab" data-toggle="tab" data-target="#">Member Groups</a>
         </li>
-        <li role="presentation" ng-show="account.is_customer" ng-class="activeTab == 'subscriptions'?'active':''">
+        <li role="presentation" ng-show="account.is_customer && currentSubscription && currentSubscription.active" ng-class="activeTab == 'subscriptions'?'active':''">
             <a href="#/account/subscriptions" aria-controls="subscriptions" role="tab" data-target="#"
                data-toggle="tab">Subscriptions</a>
         </li>

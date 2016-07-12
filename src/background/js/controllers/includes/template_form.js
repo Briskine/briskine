@@ -218,7 +218,7 @@ gApp.controller('TemplateFormCtrl',
                 TemplateService.get($routeParams.id).then(function(quicktext){
                     self.selectedTemplate = angular.copy(quicktext);
 
-                    if ($scope.account && quicktext.nosync == 0) {
+                    if ($scope.account && quicktext.nosync == 0 && $rootScope.currentSubscription && $rootScope.currentSubscription.active) {
                         $q.all([$scope.reloadSharing([self.selectedTemplate]), $scope.initializeMemberSelectize([self.selectedTemplate])]).then(function() {
                             self.fillUpSelectizeField(self.selectedTemplate);
                             initForm();
@@ -297,6 +297,7 @@ gApp.controller('TemplateFormCtrl',
                             $scope.reloadTemplates();
                         }
                     });
+                    $scope.reloadTemplates();
                 } else {
                     TemplateService.create(self.selectedTemplate, !$scope.account, self.sharing_setting === 'private').then(function (t) {
                         if ($scope.account) {
@@ -305,6 +306,7 @@ gApp.controller('TemplateFormCtrl',
                             $scope.reloadTemplates();
                         }
                     });
+                    $scope.reloadTemplates();
                 }
 
                 // hide the modal

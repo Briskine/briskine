@@ -168,7 +168,7 @@
                         Share this template with your team. <a ng-click="templateForm.upgradeNow()">Upgrade now!</a>
                     </p>
 
-                    <div class="form-group" ng-show="account">
+                    <div class="form-group" ng-show="account && currentSubscription && currentSubscription.active">
                         <label for="qt-sharing">
                             Who has access :
                             <a href ng-click="templateForm.extended = true" style="font-weight: 400" ng-show="templateForm.sharing_setting == 'private'">only you</a>

@@ -51,15 +51,7 @@ gApp.controller('SidebarCtrl', function ($scope, $location, $http, $window,
     $scope.toggleFilterTag = FilterTagService.toggleFilterTag;
     $scope.emptyFilterTags = FilterTagService.emptyFilterTags;
 
-    // logout function
-    $scope.logOut = function () {
-        $http({
-            method: 'GET',
-            url: Settings.defaults.baseURL + 'logout'
-        }).then(function () {
-            SettingsService.set('isLoggedIn', false).then(location.reload(true));
-        });
-    };
+
 
     $scope.trackSettings = function(isLoggedIn) {
         amplitude.getInstance().logEvent("Opened Settings", {

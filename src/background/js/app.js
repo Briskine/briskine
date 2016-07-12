@@ -118,7 +118,7 @@ gApp.config(['$compileProvider', function ($compileProvider) {
 
 /* Global run
  */
-gApp.run(function ($rootScope, $location, $http, $timeout, ProfileService, SettingsService, TemplateService) {
+gApp.run(function ($rootScope, $location, $http, $timeout, ProfileService, SettingsService, TemplateService, SubscriptionService) {
     $rootScope.$on('$routeChangeStart', function () {
         $rootScope.path = $location.path();
     });
@@ -131,6 +131,8 @@ gApp.run(function ($rootScope, $location, $http, $timeout, ProfileService, Setti
     $rootScope.savedEmail = false;
     $rootScope.loginChecked = false;
     $rootScope.isLoggedIn = false;
+    $rootScope.isCustomer = null;
+    $rootScope.currentSubscription = null;
     $rootScope.baseURL = Settings.defaults.baseURL;
     $rootScope.apiBaseURL = Settings.defaults.apiBaseURL;
 
@@ -181,7 +183,7 @@ gApp.run(function ($rootScope, $location, $http, $timeout, ProfileService, Setti
         return '';
     };
 
-    $rootScope.trackSignup = function (source){
+    $rootScope.trackSignup = function (source) {
         amplitude.getInstance().logEvent("Opened Signup form", {
             'source': source
         });
@@ -213,6 +215,33 @@ gApp.run(function ($rootScope, $location, $http, $timeout, ProfileService, Setti
         browser = "Opera";
     }
 
+    // Get a new token from stripe and send it to the server
+    $rootScope.reactivateSubscription = function () {
+        SubscriptionService.plans().then(function (data) {
+            var handler = StripeCheckout.configure({
+                key: data.stripe_key,
+                image: '/static/img/icon128.png',
+                token: function (token) {
+                    // Use the token to create the charge with server-side.
+                    SubscriptionService.updateSubscription($rootScope.currentSubscription.id, {token: token}).then(
+                        function () {
+                             $rootScope.checkLoggedIn();
+                        }, function (res) {
+                            alert('Failed to create new subscription. ' + res)
+                        }
+                    );
+                }
+            });
+            handler.open({
+                name: 'Gorgias',
+                description: $rootScope.currentSubscription.quantity + ' x ' + $rootScope.currentSubscription.plan,
+                panelLabel: 'Activate your subscription',
+                email: data.email,
+                allowRememberMe: false
+            });
+        });
+    };
+
     $rootScope.checkLoggedIn = function () {
         SettingsService.get("apiBaseURL").then(function (apiBaseURL) {
             $http.get(apiBaseURL + 'login-info').success(function (data) {
@@ -231,6 +260,9 @@ gApp.run(function ($rootScope, $location, $http, $timeout, ProfileService, Setti
                         }
 
                         $http.get(apiBaseURL + "account").success(function (data) {
+                            $rootScope.currentSubscription = data.current_subscription;
+                            $rootScope.isCustomer = data.is_customer;
+
                             // identify people that are logged in to our website
                             amplitude.getInstance().setUserId(data.id);
 
@@ -238,13 +270,14 @@ gApp.run(function ($rootScope, $location, $http, $timeout, ProfileService, Setti
                                 "email": data.email,
                                 "created": data.created_datetime,
                                 "name": data.info.name,
-                                "sub_active": data.active_subscription.active || false,
-                                "sub_created": data.active_subscription.created_datetime,
-                                "sub_plan": data.active_subscription.plan,
-                                "sub_quantity": data.active_subscription.quantity,
+                                "sub_active": data.current_subscription.active || false,
+                                "sub_created": data.current_subscription.created_datetime,
+                                "sub_plan": data.current_subscription.plan,
+                                "sub_quantity": data.current_subscription.quantity,
                                 "is_customer": data.is_customer,
                                 "is_staff": data.is_staff
                             });
+
 
                             var identify = new amplitude.Identify().set('browser', browser).set('authenticated', true).set('user', data);
                             amplitude.getInstance().identify(identify);
@@ -263,6 +296,16 @@ gApp.run(function ($rootScope, $location, $http, $timeout, ProfileService, Setti
                 amplitude.getInstance().identify(identify);
                 SettingsService.set("isLoggedIn", false);
             });
+        });
+    };
+
+    // logout function
+    $rootScope.logOut = function () {
+        $http({
+            method: 'GET',
+            url: Settings.defaults.baseURL + 'logout'
+        }).then(function () {
+            SettingsService.set('isLoggedIn', false).then(location.reload(true));
         });
     };
 
