@@ -227,7 +227,7 @@ gApp.run(function ($rootScope, $location, $http, $timeout, ProfileService, Setti
                         function () {
                              $rootScope.checkLoggedIn();
                         }, function (res) {
-                            alert('Failed to create new subscription. ' + res)
+                            alert('Failed to create new subscription. ' + res);
                         }
                     );
                 }
