@@ -208,7 +208,7 @@ App.plugin('zendesk', (function () {
                 if (before.length) {
                     before.before(macroContainer);
                 } else {
-                    currentWorkspace.find('.comment_input .content .editor').after('<div class="clearfix">').after(macroContainer);
+                    currentWorkspace.find('.comment_input .content .editor:first').after('<div class="clearfix">').after(macroContainer);
                 }
 
                 chrome.runtime.sendMessage({
