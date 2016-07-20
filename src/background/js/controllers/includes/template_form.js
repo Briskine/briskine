@@ -106,7 +106,7 @@ gApp.controller('TemplateFormCtrl',
             var acl = $scope.shareData.acl;
             var members = $scope.shareData.members;
 
-            if (acl.length >= members.length + 1) {
+            if (acl.length >= members.length) {
                 self.sharing_setting = "everyone";
             } else if (acl.length > 1) {
                 self.sharing_setting = "specific";
