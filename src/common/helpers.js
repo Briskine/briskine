@@ -25,14 +25,12 @@ Handlebars.registerHelper("splitString", function (context, options) {
     if (context) {
         var ret = "";
 
-
         var tempArr = context.trim().split(options.hash["delimiter"]);
         for (var i = 0; i < tempArr.length; i++) {
             if (options.data) {
                 data = Handlebars.createFrame(options.data || {});
                 data.index = i;
             }
-
             if (typeof options.hash["index"] !== "undefined" && options.hash["index"] === i) {
                 return options.fn(tempArr[i], {data: data});
             } else {
@@ -41,6 +39,11 @@ Handlebars.registerHelper("splitString", function (context, options) {
         }
         return ret;
     }
+});
+
+// This is useful for template variables
+Handlebars.registerHelper('capitalize', function (text) {
+    return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase();
 });
 
 Handlebars.registerHelper("choice", function (args) {
