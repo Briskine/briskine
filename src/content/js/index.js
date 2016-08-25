@@ -15,6 +15,7 @@ var App = {
     settings: {
         suggestions_enabled: false,
         case_sensitive_search: false,
+        fuzzy_search: true,
 
         // Get template filtered out by shortcut
         getQuicktextsShortcut: function (text, callback) {
@@ -73,45 +74,62 @@ var App = {
                             templates.push(res[t]);
                         }
                     }
-
                     if (text) {
+                        var threshold = 0.6;
+                        if (!App.settings.fuzzy_search) {
+                            threshold = 0;
+                        }
                         var options = {
                             caseSensitive: App.settings.case_sensitive_search,
-                            includeScore: false,
                             shouldSort: true,
                             tokenize: false,
-                            threshold: 0.5,
+                            threshold: threshold,
                             location: 0,
-                            distance: 60,
+                            distance: 100,
                             maxPatternLength: 32,
-                            keys: ['shortcut', 'title', 'body']
+                            keys: [
+                                {
+                                    name: 'shortcut',
+                                    weight: 0.7
+                                },
+                                {
+                                    name: 'title',
+                                    weight: 0.7
+                                },
+                                {
+                                    name: 'body',
+                                    weight: 0.4
+                                }
+                            ]
                         };
 
                         var fuse = new Fuse(templates, options);
                         templates = fuse.search(text);
+                    } else {
+                        // Sort templates only if no search was used
+
+                        // sort by created_datetime desc
+                        templates.sort(function (a, b) {
+                            return new Date(b.created_datetime) - new Date(a.created_datetime);
+                        });
+
+                        // then sort by updated_datetime so the last one updated is first
+                        templates.sort(function (a, b) {
+                            return new Date(b.updated_datetime) - new Date(a.updated_datetime);
+                        });
+
+                        // sort by lastuse_datetime desc
+                        templates.sort(function (a, b) {
+                            if (!a.lastuse_datetime) {
+                                a.lastuse_datetime = new Date(0);
+                            }
+
+                            if (!b.lastuse_datetime) {
+                                b.lastuse_datetime = new Date(0);
+                            }
+                            return new Date(b.lastuse_datetime) - new Date(a.lastuse_datetime);
+                        });
                     }
-
-                    // sort by created_datetime desc
-                    templates.sort(function (a, b) {
-                        return new Date(b.created_datetime) - new Date(a.created_datetime);
-                    });
-
-                    // then sort by updated_datetime so the last one updated is first
-                    templates.sort(function (a, b) {
-                        return new Date(b.updated_datetime) - new Date(a.updated_datetime);
-                    });
-
-                    // sort by lastuse_datetime desc
-                    templates.sort(function (a, b) {
-                        if (!a.lastuse_datetime) {
-                            a.lastuse_datetime = new Date(0);
-                        }
-
-                        if (!b.lastuse_datetime) {
-                            b.lastuse_datetime = new Date(0);
-                        }
-                        return new Date(b.lastuse_datetime) - new Date(a.lastuse_datetime);
-                    });
 
                     if (limit && limit < templates.length) {
                         templates = templates.slice(0, limit);
@@ -240,6 +258,12 @@ App.init = function (settings, doc) {
     App.settings.editor_enabled = settings.editor.enabled;
     // Check if case sensitive search is enabled
     App.settings.case_sensitive_search = settings.qaBtn.caseSensitiveSearch;
+    // Check if fuzzy search is enabled
+    if (typeof settings.qaBtn.fuzzySearch === 'undefined') {
+        App.settings.fuzzy_search = true;
+    } else {
+        App.settings.fuzzy_search = settings.qaBtn.fuzzySearch;
+    }
 
     var blacklistPrivate = [
         'https://gorgias.io',

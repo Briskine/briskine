@@ -148,20 +148,9 @@ gApp.run(function ($rootScope, $location, $http, $timeout, ProfileService, Setti
                 saveEvents: false // don't store in localStorage the events - it slows down everything
             });
         }
-        // Make sure that we have all the default
-        var keys = Object.keys(settings);
-        var changed = false;
 
-        for (var key in Settings.defaults.settings) {
-            if (keys.indexOf(key) === -1) {
-                settings[key] = Settings.defaults.settings[key];
-                changed = true;
-            }
-        }
-
-        if (changed) {
-            SettingsService.set('settings', settings);
-        }
+        // Make sure that we have all the defaults
+        SettingsService.set('settings', _.defaults(settings, Settings.defaults.settings));
 
         // disable amplitude if stats are not enabled
         if (!settings.stats.enabled) {
@@ -225,7 +214,7 @@ gApp.run(function ($rootScope, $location, $http, $timeout, ProfileService, Setti
                     // Use the token to create the charge with server-side.
                     SubscriptionService.updateSubscription($rootScope.currentSubscription.id, {token: token}).then(
                         function () {
-                             $rootScope.checkLoggedIn();
+                            $rootScope.checkLoggedIn();
                         }, function (res) {
                             alert('Failed to create new subscription. ' + res);
                         }
