@@ -297,7 +297,7 @@ App.autocomplete.dialog = {
             try {
                 var doc = document.implementation.createHTMLDocument();
                 doc.documentElement.innerHTML = html;
-                return doc.documentElement.textContent||doc.documentElement.innerText;
+                return (doc.documentElement.textContent||doc.documentElement.innerText).replace(/>/, '').replace(/</, '');
             } catch(e) {
                 return "";
             }
