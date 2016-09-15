@@ -32,16 +32,6 @@
 </div>
 
 <div id="quicktext-table-container">
-    <div ng-show="showInstallHint">
-        <p class="alert alert-info alert-dismissable">
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close" ng-click="closeHint()">
-                <span aria-hidden="true">&times;</span>
-            </button>
-            <strong>You're all set!</strong><br/>
-            Now you can create more templates and start using them in Gmail™, Outlook™ or Linkedin™.
-        </p>
-    </div>
-
     <div class="list-group quicktexts-list" ng-show="filteredTemplates.length">
         <div class="list-group-item"
              ng-repeat="quicktext in filteredTemplates | limitTo:limitTemplates">
