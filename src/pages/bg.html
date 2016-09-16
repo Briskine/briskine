@@ -115,8 +115,8 @@
     </div>
 </div>
 
-<!-- Time-saved widget
-<div class="profile-stats alert alert-info alert-dismissible" ng-show="profile.savedWords > 1500">
+
+<div class="profile-stats alert alert-info alert-dismissible" ng-show="profile.savedWords > 1500 && showStats">
     <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span>
     </button>
     You saved <strong>{{profile.savedTime}}</strong> using Gorgias!<br>
@@ -129,9 +129,9 @@
         <span>Tweet about it</span>
     </a>
 </div>
--->
 
-<div class="profile-stats alert alert-info alert-dismissible" ng-show="profile.savedWords > 1500">
+
+<div class="profile-stats alert alert-info alert-dismissible" ng-show="profile.savedWords > 1500 && !showStats">
     <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span>
     </button>
     <strong>Are you in support?</strong>
