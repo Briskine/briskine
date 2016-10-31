@@ -16,7 +16,7 @@ App.plugin('zendesk', (function () {
                 'data': {
                     'domain': window.location.hostname
                 }
-            }, function(enabled){
+            }, function (enabled) {
                 callback(null, true);
 
                 if (enabled) {
@@ -102,14 +102,10 @@ App.plugin('zendesk', (function () {
 
     // add tooltip to the email link
     var loadEmail = function () {
-        var emailCheck = function() {
+        var emailCheck = function () {
             var emailLink = $('a.email');
             if (emailLink.length) {
-                emailLink.
-                    attr('title', "Copy email shortcut: CTRL+SHIFT+C").
-                    attr('data-toggle', "tooltip").
-                    attr('data-html', "true").
-                    attr('data-placement', "bottom");
+                emailLink.attr('title', "Copy email shortcut: CTRL+SHIFT+C").attr('data-toggle', "tooltip").attr('data-html', "true").attr('data-placement', "bottom");
                 clearInterval(emailInterval);
             }
         };
@@ -131,7 +127,7 @@ App.plugin('zendesk', (function () {
 
                 if (workspace.css('display') !== 'none') {
                     subject = workspace.find('input[name=subject]').val();
-                    if (!(subject && subject.length)){
+                    if (!(subject && subject.length)) {
                         return;
                     }
 
@@ -225,42 +221,38 @@ App.plugin('zendesk', (function () {
     };
 
     var getData = function (params, callback) {
-        $('.workspace').each(function (_, workspace) {
-            workspace = $(workspace);
+        // get top-most workspace
+        var workspace = $(params.element).parents('.workspace').last();
 
-            if (workspace.css('display') !== 'none') {
+        var agent_name = $('#face_box .name').text();
+        var agent_first_name = agent_name.split(' ')[0];
+        var agent_last_name = agent_name.split(' ')[1];
 
-                var agent_name = $('#face_box .name').text();
-                var agent_first_name = agent_name.split(' ')[0];
-                var agent_last_name = agent_name.split(' ')[1];
+        var name = workspace.find('span.sender').text().split('<')[0];
+        var first_name = name.split(' ')[0];
+        var last_name = name.split(' ')[1];
 
-                var name = workspace.find('span.sender').text().split('<')[0];
-                var first_name = name.split(' ')[0];
-                var last_name = name.split(' ')[1];
+        var vars = {
+            from: [{
+                'name': agent_name,
+                'first_name': agent_first_name,
+                'last_name': agent_last_name,
+                'email': ''
+            }],
+            to: [{
+                'name': name,
+                'first_name': first_name,
+                'last_name': last_name,
+                'email': workspace.find('span.sender .email').text()
+            }],
+            cc: [],
+            bcc: [],
+            subject: workspace.find('input[name=subject]').val()
+        };
 
-                var vars = {
-                    from: [{
-                        'name': agent_name,
-                        'first_name': agent_first_name,
-                        'last_name': agent_last_name,
-                        'email': ''
-                    }],
-                    to: [{
-                        'name': name,
-                        'first_name': first_name,
-                        'last_name': last_name,
-                        'email': workspace.find('span.sender .email').text()
-                    }],
-                    cc: [],
-                    bcc: [],
-                    subject: workspace.find('input[name=subject]').val()
-                };
-
-                if(callback) {
-                    return callback(null, vars);
-                }
-            }
-        });
+        if (callback) {
+            return callback(null, vars);
+        }
     };
 
     var setTitle = function (params, callback) {
