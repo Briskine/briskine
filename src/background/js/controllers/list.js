@@ -69,10 +69,11 @@ gApp.controller('ListCtrl',
 
         $scope.filteredTemplates = [];
         $scope.templates = [];
-        $scope.selectedQuicktexts = [];
-        $scope.filterTags = [];
+        $scope.filterTags = FilterTagService.filterTags;
+        $scope.properties = properties;
         $scope.limitTemplates = 42; // I know.. it's a cliche
         $scope.showInstallHint = false;
+        $scope.hasSelected = false;
 
         function loadAccount() {
             SettingsService.get("isLoggedIn").then(function (isLoggedIn) {
@@ -127,9 +128,6 @@ gApp.controller('ListCtrl',
             });
         };
 
-        // by default the load more button is disabled
-        $('.load-more').hide();
-
         $scope.reloadTemplates = function () {
             TemplateService.quicktexts().then(function (r) {
                 $scope.templates = r;
@@ -145,13 +143,11 @@ gApp.controller('ListCtrl',
             loadAccount();
         });
 
-        $scope.$watch('templates', function () {
-            if ($scope.templates && $scope.templates.length) {
-                // trigger filterQuicktexts to update filtered templates
-                filterQuicktexts();
-            }
-        });
-
+        var getSelectedQuickTexts = function () {
+            return $scope.filteredTemplates.filter(function(quickText) {
+                return quickText.selected
+            });
+        }
 
         /* Init modal and other dom manipulation
          * when the templates have loaded
@@ -245,7 +241,7 @@ gApp.controller('ListCtrl',
             $scope.showShareModalListener = function () {
                 var deferred = $q.defer();
 
-                $q.all([$scope.reloadSharing($scope.selectedQuicktexts),
+                $q.all([$scope.reloadSharing(getSelectedQuickTexts()),
                     $scope.initializeMemberSelectize()]).then(deferred.resolve);
                 return deferred.promise;
             };
@@ -350,7 +346,8 @@ gApp.controller('ListCtrl',
                 r = confirm("Are you sure you want to delete '" + quicktext.title + "' template?");
                 if (r === true) {
                     TemplateService.delete(quicktext).then(function () {
-                        $scope.updateSelectedQuicktexts(quicktext, false);
+                        $scope.reloadTemplates();
+                        $scope.checkHasSelected();
                     });
                     $scope.reloadTemplates();
                 }
@@ -359,104 +356,65 @@ gApp.controller('ListCtrl',
 
         // Delete a list of selected quicktexts.
         $scope.deleteQts = function () {
-            if ($scope.selectedQuicktexts.length > 0) {
-                if ($scope.selectedQuicktexts.length > 1) {
-                    r = confirm("Are you sure you want to delete " + $scope.selectedQuicktexts.length + " templates?");
+            if (getSelectedQuickTexts().length > 0) {
+                if (getSelectedQuickTexts().length > 1) {
+                    r = confirm("Are you sure you want to delete " + getSelectedQuickTexts().length + " templates?");
                 } else {
-                    r = confirm("Are you sure you want to delete '" + $scope.selectedQuicktexts[0].title + "' template?");
+                    r = confirm("Are you sure you want to delete '" + getSelectedQuickTexts()[0].title + "' template?");
                 }
 
                 if (r === true) {
-                    for (var qt in $scope.selectedQuicktexts) {
-                        TemplateService.delete($scope.selectedQuicktexts[qt]);
-                        $scope.templates.splice($scope.templates.indexOf($scope.selectedQuicktexts), 1);
+                    for (var qt in getSelectedQuickTexts()) {
+                        TemplateService.delete(getSelectedQuickTexts()[qt]);
+                        $scope.templates.splice($scope.templates.indexOf(getSelectedQuickTexts()), 1);
                     }
                     $scope.reloadTemplates();
-
-                    $scope.selectedQuicktexts = [];
-                    $scope.selectedAll = false;
+                    removeSelected();
                 }
             }
         };
 
-        $scope.toggleSelectAll = function (state) {
-            if (state != undefined) {
-                $scope.selectedAll = state;
-            }
-            if ($scope.templates.length > 0) {
+        // Check if any template is selected
+        $scope.checkHasSelected = function () {
+            $scope.hasSelected = $scope.filteredTemplates.findIndex(function(quickText) { return quickText.selected }) != -1;
+        }
+
+        // Uncheck all selected templates
+        removeSelected = function () {
+            _.each($scope.templates, function (qt) {
+                qt.selected = false;
+            });
+            $scope.hasSelected = false;
+        }
+
+        // Clear all checkboxes when input changes
+        $scope.clearSelectedTemplates = function () {
+            removeSelected();
+            $scope.selectedAll = false;
+            $scope.hasSelected = false;
+        }
+
+        // Check/Uncheck all checkboxes
+        $scope.toggleSelectAll = function () {
+            removeSelected();
+            if ($scope.selectedAll) {
                 _.each($scope.filteredTemplates, function (qt) {
-                    qt.selected = $scope.selectedAll;
+                    qt.selected = true;
                 });
-                $scope.selectedQuicktexts = $scope.selectedAll ? angular.copy($scope.filteredTemplates) : [];
-            } else {
-                $scope.selectedAll = false;
             }
-        };
-
-        var selectAllWatcher = function () {
-            if ($scope.templates.length > 0) {
-                $scope.selectedAll = $scope.selectedQuicktexts.length == $scope.filteredTemplates.length;
-            }
-        };
-
-        $scope.getSelectedQuicktexts = function () {
-            var qt_ids = [];
-            for (var qt in $scope.selectedQuicktexts) {
-                qt_ids.push($scope.selectedQuicktexts[qt].id);
-            }
-            return qt_ids;
-        };
-
-        $scope.updateSelectedQuicktexts = function (quicktext, checked) {
-            if (!checked) {
-                for (var qt in $scope.selectedQuicktexts) {
-                    if ($scope.selectedQuicktexts[qt].id == quicktext.id) {
-                        $scope.selectedQuicktexts.splice(qt, 1);
-                    }
-                }
-            } else {
-                $scope.selectedQuicktexts.push(quicktext);
-            }
-        };
-
-        // apply filters to the list of quicktexts
-        var filterQuicktexts = function () {
-            // apply the text search filter
-            $scope.filteredTemplates = $filter('filter')($scope.templates, $scope.searchText);
-            // apply the tag search filter
-            $scope.filteredTemplates = $filter('tagFilter')($scope.filteredTemplates, FilterTagService.filterTags);
-            // apply the sharing setting filter
-            $scope.filteredTemplates = $filter('sharingFilter')($scope.filteredTemplates, properties.list);
-
-            $scope.focusIndex = 0;
-
-            if ($scope.filteredTemplates.length < $scope.limitTemplates) {
-                $('.load-more').hide();
-                $scope.limitTemplates = 42;
-            } else {
-                $('.load-more').show();
-            }
+            $scope.checkHasSelected();
         };
 
         $scope.$on('toggledFilterTag', function () {
             tag = FilterTagService.filterTags[0];
-            $scope.selectedQuicktexts = [];
             $scope.selectedAll = false;
 
             if (tag != undefined) {
                 $scope.title = "<i class='fa fa-hashtag'/>" + tag + " templates";
-                filterQuicktexts();
             }
         });
 
         $scope.loadMore = function () {
             $scope.limitTemplates += 42;
-            if ($scope.limitTemplates > $scope.filteredTemplates.length) {
-                $(".load-more").hide();
-                $scope.limitTemplates = 42;
-            }
         };
-
-        $scope.$watch('searchText', filterQuicktexts);
-        $scope.$watch('selectedQuicktexts.length', selectAllWatcher);
     });
