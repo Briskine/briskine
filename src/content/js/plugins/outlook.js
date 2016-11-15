@@ -89,22 +89,29 @@ App.plugin('outlook', (function() {
 
     };
 
-    var setTitle = function(params, callback) {
+    var setField = function(params, callback) {
+        getData(params, function (_, vars) {
+            var parsedValue = Handlebars.compile(params.value)(PrepareVars(vars));
 
-        var response = {};
+            if (params.field === 'subject') {
+                var $subjectField = $('input[aria-labelledby="MailCompose.SubjectWellLabel"]', window.parent.document);
 
-        var $subjectField = $('input[name=fSubject]', window.parent.document);
-        $subjectField.val(params.quicktext.subject);
+                $subjectField.val(parsedValue);
+            }
 
-        if(callback) {
-            callback(null, response);
-        }
+            if (params.field === 'to') {
 
+            }
+
+            if(callback) {
+                callback(null, {});
+            }
+        });
     };
 
     var init = function(params, callback) {
 
-        var outlookUrl = '.mail.live.com/';
+        var outlookUrl = 'outlook.live.com/';
 
         var activateExtension = false;
 
@@ -125,7 +132,7 @@ App.plugin('outlook', (function() {
     return {
         init: init,
         getData: getData,
-        setTitle: setTitle
+        setField: setField
     }
 
 })());
