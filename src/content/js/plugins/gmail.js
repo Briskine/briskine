@@ -123,17 +123,27 @@ App.plugin('gmail', (function () {
 
     };
 
-    var setTitle = function (params, callback) {
+    var setField = function (params, callback) {
         getData(params, function (_, vars) {
-            var parsedSubject = Handlebars.compile(params.quicktext.subject)(PrepareVars(vars));
+            var parsedContent = Handlebars.compile(params.value)(PrepareVars(vars));
+            var $parent = $(params.element).closest('table.aoP')
 
-            var $subjectField = $(params.element).closest('table.aoP').find('input[name=subjectbox]');
-            $subjectField.val(parsedSubject);
+            if (params.field === 'subject') {
+                var $subjectField = $parent.find('input[name=subjectbox]');
+                $subjectField.val(parsedContent);
+            }
 
-            var response = {};
+            if (params.field === 'to') {
+                var $toField = $parent.find('textarea[name=to]');
+                $toField.val(parsedContent);
+
+                // a little jumpy,
+                // but the only to way to force showing the new value.
+                $parent.find('.aoD.hl').trigger('focus');
+            }
 
             if (callback) {
-                callback(null, response);
+                callback(null, {});
             }
         });
     };
@@ -291,7 +301,7 @@ App.plugin('gmail', (function () {
         init: init,
         getData: getData,
         setAttachment: setAttachmentNode,
-        setTitle: setTitle
+        setField: setField
     }
 
 })());

@@ -162,7 +162,7 @@ var App = {
 // the active plugin, based on the plugin.init response
 // blank at first
 App.activePlugin = {
-    setTitle: function (params, callback) {
+    setField: function (params, callback) {
         callback();
     },
     getData: function (params, callback) {
@@ -182,8 +182,7 @@ App.plugin = function (id, obj) {
     // check if plugin has all the required methods
     var requiredMethods = [
         'init',
-        'getData',
-        'setTitle'
+        'getData'
     ];
 
     // mix in the plugin

@@ -361,9 +361,22 @@ App.autocomplete.replaceWith = function (params) {
     // in the dialog otherwise, instead of the editor
     App.autocomplete.focusEditor(params.element, setText);
 
-    // set subject field
-    if (params.quicktext.subject) {
-        App.activePlugin.setTitle(params);
+    // set extra fields
+    var fields = [
+        'subject',
+        'to'
+    ];
+
+    if (typeof App.activePlugin.setField === 'function') {
+        fields.forEach(function (field) {
+            if (params.quicktext[field]) {
+                App.activePlugin.setField({
+                    element: params.element,
+                    field: field,
+                    value: params.quicktext[field]
+                });
+            }
+        });
     }
 
     // updates stats
