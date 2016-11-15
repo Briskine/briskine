@@ -162,9 +162,6 @@ var App = {
 // the active plugin, based on the plugin.init response
 // blank at first
 App.activePlugin = {
-    setField: function (params, callback) {
-        callback();
-    },
     getData: function (params, callback) {
         callback();
     },
