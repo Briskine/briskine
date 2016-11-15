@@ -12,7 +12,9 @@ gApp.controller('TemplateFormCtrl',
         // fields that show up under `show more fields`
         var extraFields = [
             'subject',
-            'to'
+            'to',
+            'cc',
+            'bcc'
         ];
 
         // used by extra fields button,
@@ -288,6 +290,13 @@ gApp.controller('TemplateFormCtrl',
                 }
             }
 
+            // delete extra fields with blank values,
+            // to not show them again on edit.
+            extraFields.forEach(function (field) {
+                if (typeof self.selectedTemplate[field] === 'string' && self.selectedTemplate[field].trim() === '') {
+                    delete self.selectedTemplate[field]
+                }
+            })
 
             TemplateService.quicktexts().then(function (templates) {
                 if (self.selectedTemplate.shortcut) {

@@ -180,3 +180,18 @@
         margin-top: 10px;
     }
 }
+
+/* flexible grid for extra fields in quicktext form
+ */
+.form-group-grid {
+    display: flex;
+}
+
+.form-group-grid .form-group {
+    flex: 1;
+}
+
+.form-group-grid .form-group:not(:last-child) {
+    margin-right: 15px;
+}
+
