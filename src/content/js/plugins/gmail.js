@@ -125,21 +125,36 @@ App.plugin('gmail', (function () {
 
     var setField = function (params, callback) {
         getData(params, function (_, vars) {
-            var parsedContent = Handlebars.compile(params.value)(PrepareVars(vars));
+            var parsedValue = Handlebars.compile(params.value)(PrepareVars(vars));
             var $parent = $(params.element).closest('table.aoP')
 
             if (params.field === 'subject') {
-                var $subjectField = $parent.find('input[name=subjectbox]');
-                $subjectField.val(parsedContent);
+                $parent.find('input[name=subjectbox]').val(parsedValue);
+            }
+
+            if ([ 'to', 'cc', 'bcc' ].indexOf(params.field) !== -1) {
+                // click the receipients row.
+                // a little jumpy,
+                // but the only to way to show the new value.
+                $parent.find('.aoD.hl').trigger('focus');
             }
 
             if (params.field === 'to') {
-                var $toField = $parent.find('textarea[name=to]');
-                $toField.val(parsedContent);
+                $parent.find('textarea[name=to]').val(parsedValue);
+            }
 
-                // a little jumpy,
-                // but the only to way to force showing the new value.
-                $parent.find('.aoD.hl').trigger('focus');
+            if (params.field === 'cc') {
+                // click the cc button
+                $parent.find('.aB.gQ.pE').trigger('click');
+
+                $parent.find('textarea[name=cc]').val(parsedValue);
+            }
+
+            if (params.field === 'bcc') {
+                // click the bcc button
+                $parent.find('.aB.gQ.pB').trigger('click');
+
+                $parent.find('textarea[name=bcc]').val(parsedValue);
             }
 
             if (callback) {

@@ -364,7 +364,9 @@ App.autocomplete.replaceWith = function (params) {
     // set extra fields
     var fields = [
         'subject',
-        'to'
+        'to',
+        'cc',
+        'bcc'
     ];
 
     if (typeof App.activePlugin.setField === 'function') {
