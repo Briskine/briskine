@@ -77,14 +77,6 @@ App.plugin('facebook', (function() {
 
     };
 
-    var setTitle = function(params, callback) {
-        // there is no title on Facebook
-        if(callback) {
-            callback(null, {});
-        }
-
-    };
-
     var init = function(params, callback) {
         var url = '.facebook.com/';
         var activateExtension = false;
@@ -104,8 +96,7 @@ App.plugin('facebook', (function() {
 
     return {
         init: init,
-        getData: getData,
-        setTitle: setTitle
+        getData: getData
     }
 
 })());

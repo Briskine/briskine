@@ -165,7 +165,7 @@ App.plugin('gmail', (function () {
         }
 
         if (callback) {
-            callback(null, {});
+            callback(null, params);
         }
     };
 
