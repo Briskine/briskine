@@ -123,45 +123,52 @@ App.plugin('gmail', (function () {
 
     };
 
-    var setField = function (params, callback) {
-        getData(params, function (_, vars) {
-            var parsedValue = Handlebars.compile(params.value)(PrepareVars(vars));
-            var $parent = $(params.element).closest('table.aoP')
+    var before = function (params, callback) {
+        var $parent = $(params.element).closest('table.aoP')
 
-            if (params.field === 'subject') {
-                $parent.find('input[name=subjectbox]').val(parsedValue);
-            }
+        if (params.quicktext.subject) {
+            var parsedSubject = Handlebars.compile(params.quicktext.subject)(PrepareVars(params.data));
+            $parent.find('input[name=subjectbox]').val(parsedSubject);
+        }
 
-            if ([ 'to', 'cc', 'bcc' ].indexOf(params.field) !== -1) {
-                // click the receipients row.
-                // a little jumpy,
-                // but the only to way to show the new value.
-                $parent.find('.aoD.hl').trigger('focus');
-            }
+        if (params.quicktext.to ||
+            params.quicktext.cc ||
+            params.quicktext.bcc
+        ) {
+            // click the receipients row.
+            // a little jumpy,
+            // but the only to way to show the new value.
+            $parent.find('.aoD.hl').trigger('focus');
+        }
 
-            if (params.field === 'to') {
-                $parent.find('textarea[name=to]').val(parsedValue);
-            }
+        if (params.quicktext.to) {
+            var parsedTo = Handlebars.compile(params.quicktext.to)(PrepareVars(params.data));
+            $parent.find('textarea[name=to]').val(parsedTo);
+        }
 
-            if (params.field === 'cc') {
-                // click the cc button
-                $parent.find('.aB.gQ.pE').trigger('click');
+        if (params.quicktext.cc) {
+            var parsedCc = Handlebars.compile(params.quicktext.cc)(PrepareVars(params.data));
 
-                $parent.find('textarea[name=cc]').val(parsedValue);
-            }
+            // click the cc button
+            $parent.find('.aB.gQ.pE').trigger('click');
 
-            if (params.field === 'bcc') {
-                // click the bcc button
-                $parent.find('.aB.gQ.pB').trigger('click');
+            $parent.find('textarea[name=cc]').val(parsedCc);
+        }
 
-                $parent.find('textarea[name=bcc]').val(parsedValue);
-            }
+        if (params.quicktext.bcc) {
+            var parsedBcc = Handlebars.compile(params.quicktext.bcc)(PrepareVars(params.data));
 
-            if (callback) {
-                callback(null, {});
-            }
-        });
+            // click the bcc button
+            $parent.find('.aB.gQ.pB').trigger('click');
+
+            $parent.find('textarea[name=bcc]').val(parsedBcc);
+        }
+
+        if (callback) {
+            callback(null, {});
+        }
     };
+
     //insert attachment node on gmail editor.
     var setAttachmentNode = function (attachment, range) {
         if (!attachment) {
@@ -316,7 +323,7 @@ App.plugin('gmail', (function () {
         init: init,
         getData: getData,
         setAttachment: setAttachmentNode,
-        setField: setField
+        before: before
     }
 
 })());
