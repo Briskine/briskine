@@ -107,6 +107,7 @@ App.plugin('outlook', (function() {
                 $extraFields.eq(0).val(parsedValue);
             }
 
+            // TODO does not work in Reply
             if (params.field === 'cc') {
                 // click the cc button
                 $btns.eq(0).trigger('click');

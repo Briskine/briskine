@@ -35,6 +35,18 @@ gApp.controller('TemplateFormCtrl',
             });
         };
 
+        // clean empty extra fields, for backwards compatibility.
+        // (eg. quicktexts saved with empty subject)
+        var cleanExtraFields = function (qt) {
+            extraFields.some(function (field) {
+                if (typeof qt[field] === 'string' && qt[field].trim() === '') {
+                    delete qt[field]
+                }
+            });
+
+            return qt
+        }
+
         self.showExtraFields = function () {
             // add blank content
             extraFields.forEach(function (field) {
@@ -204,8 +216,7 @@ gApp.controller('TemplateFormCtrl',
                         'title': '',
                         'tags': '',
                         'body': '',
-                        'attachments': [],
-                        'subject': ''
+                        'attachments': []
                     };
 
                     id = id ? id : $routeParams.id;
@@ -223,11 +234,13 @@ gApp.controller('TemplateFormCtrl',
                         }
 
                         // do we need to show the `show more fields` btn
-                        self.extraFields = checkHiddenExtraFields()
+                        self.extraFields = checkHiddenExtraFields();
                     } else if (id) {
                         // update template
                         TemplateService.get(id).then(function (r) {
-                            self.selectedTemplate = angular.copy(r);
+
+                            self.selectedTemplate = angular.copy(cleanExtraFields(r));
+
                             if (editor) {
                                 editor.setHTML(self.selectedTemplate.body);
                             }
@@ -235,7 +248,7 @@ gApp.controller('TemplateFormCtrl',
                                 $('#qt-tags')[0].selectize.addItem($.trim(tag));
                             });
 
-                            self.extraFields = checkHiddenExtraFields()
+                            self.extraFields = checkHiddenExtraFields();
                         });
                     }
                 });
