@@ -87,64 +87,40 @@ App.plugin('fastmail', (function() {
 
         if (params.quicktext.to) {
             var parsedTo = Handlebars.compile(params.quicktext.to)(PrepareVars(params.data));
-            var $toField = $('#v112-to-input', $parent)
+            var $toField = $('textarea[id$="to-input"]', $parent)
             $toField.val(parsedTo);
-//             $toField.trigger('keyup');
-//             $toField.trigger('blur');
 
-//             var e1 = $.Event('keydown', {
-//                 keyCode: 32 //space
-//             });
-//             var e2 = $.Event('keypress', {
-//                 keyCode: 32 //space
-//             });
-//             var e3 = $.Event('keyup', {
-//                 keyCode: 32 //space
-//             });
-//             $toField.focus()
-//             $toField.trigger(e1);
-//             $toField.trigger(e2);
-//             $toField.trigger(e3);
-
-//             $toField.trigger('change');
-
-//             $toField.trigger('focus');
-//             $toField.trigger('blur');
-//             $toField.trigger('keyup');
-//             $toField.trigger('keydown');
-//             $toField.trigger('keypress');
-//             $toField.trigger('change');
+            // jQuery's trigger does not work
+            $toField.get(0).dispatchEvent(new Event('input'));
         }
 
-//         if (params.quicktext.to ||
-//             params.quicktext.cc ||
-//             params.quicktext.bcc
-//         ) {
-//             // click the receipients row.
-//             // a little jumpy,
-//             // but the only to way to show the new value.
-//             $parent.find('.aoD.hl').trigger('focus');
-//         }
+        var $btns = $('.v-Compose-addCcBcc .u-subtleLink', $parent);
 
-//         var $btns = $('.v-Compose-addCcBcc u-subtleLink', $parent)
+        if (params.quicktext.cc) {
+            var parsedCc = Handlebars.compile(params.quicktext.cc)(PrepareVars(params.data));
 
-//         if (params.quicktext.cc) {
-//             var parsedCc = Handlebars.compile(params.quicktext.cc)(PrepareVars(params.data));
-//
-//             // click the cc button
-//             $parent.find('.aB.gQ.pE').trigger('click');
-//
-//             $parent.find('textarea[name=cc]').val(parsedCc);
-//         }
-//
-//         if (params.quicktext.bcc) {
-//             var parsedBcc = Handlebars.compile(params.quicktext.bcc)(PrepareVars(params.data));
-//
-//             // click the bcc button
-//             $parent.find('.aB.gQ.pB').trigger('click');
-//
-//             $parent.find('textarea[name=bcc]').val(parsedBcc);
-//         }
+            var $ccBtn = $btns.eq(0);
+            // dispatchEvent or trigger do not work
+            $ccBtn.get(0).click();
+
+            var $ccField = $('textarea[id$="cc-input"]', $parent);
+            $ccField.val(parsedCc);
+
+            $ccField.get(0).dispatchEvent(new Event('input'));
+        }
+
+        if (params.quicktext.bcc) {
+            var parsedBcc = Handlebars.compile(params.quicktext.bcc)(PrepareVars(params.data));
+
+            var $bccBtn = $btns.eq(1);
+            // dispatchEvent or trigger do not work
+            $bccBtn.get(0).click();
+
+            var $bccField = $('textarea[id$="bcc-input"]', $parent);
+            $bccField.val(parsedBcc);
+
+            $bccField.get(0).dispatchEvent(new Event('input'));
+        }
 
         if (callback) {
             callback(null, params);
