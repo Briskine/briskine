@@ -126,18 +126,6 @@ App.plugin('yahoo', (function() {
         }
     };
 
-    var setTitle = function(params, callback) {
-
-        var response = {};
-
-
-
-        if(callback) {
-            callback(null, response);
-        }
-
-    };
-
     var init = function(params, callback) {
 
         var yahooUrl = '.mail.yahoo.com/';
