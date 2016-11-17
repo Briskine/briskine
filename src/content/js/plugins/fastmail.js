@@ -77,8 +77,12 @@ App.plugin('fastmail', (function() {
 
     };
 
+    var isHidden = function (el) {
+        return (el.offsetParent === null)
+    }
+
     var before = function (params, callback) {
-        var $parent = $(params.element).closest('#compose')
+        var $parent = $(params.element).closest('.v-Compose')
 
         if (params.quicktext.subject) {
             var parsedSubject = Handlebars.compile(params.quicktext.subject)(PrepareVars(params.data));
@@ -99,11 +103,16 @@ App.plugin('fastmail', (function() {
         if (params.quicktext.cc) {
             var parsedCc = Handlebars.compile(params.quicktext.cc)(PrepareVars(params.data));
 
-            var $ccBtn = $btns.eq(0);
-            // dispatchEvent or trigger do not work
-            $ccBtn.get(0).click();
-
             var $ccField = $('textarea[id$="cc-input"]', $parent);
+
+            // only if the cc field is hidden,
+            // because the same button is used to show/hide the field.
+            if (isHidden($ccField.get(0))) {
+                var $ccBtn = $btns.eq(0);
+                // dispatchEvent or trigger do not work
+                $ccBtn.get(0).click();
+            }
+
             $ccField.val(parsedCc);
 
             $ccField.get(0).dispatchEvent(new Event('input'));
@@ -112,11 +121,15 @@ App.plugin('fastmail', (function() {
         if (params.quicktext.bcc) {
             var parsedBcc = Handlebars.compile(params.quicktext.bcc)(PrepareVars(params.data));
 
-            var $bccBtn = $btns.eq(1);
-            // dispatchEvent or trigger do not work
-            $bccBtn.get(0).click();
-
             var $bccField = $('textarea[id$="bcc-input"]', $parent);
+
+            // only if the bcc field is hidden
+            if (isHidden($bccField.get(0))) {
+                var $bccBtn = $btns.eq(1);
+                // dispatchEvent or trigger do not work
+                $bccBtn.get(0).click();
+            }
+
             $bccField.val(parsedBcc);
 
             $bccField.get(0).dispatchEvent(new Event('input'));
