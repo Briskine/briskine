@@ -89,48 +89,6 @@ App.plugin('outlook', (function() {
 
     };
 
-    var setField = function(params, callback) {
-        getData(params, function (_, vars) {
-            var $parent = $(params.element).closest('._mcp_61');
-            var parsedValue = Handlebars.compile(params.value)(PrepareVars(vars));
-
-            if (params.field === 'subject') {
-                var $subjectField = $('input[aria-labelledby="MailCompose.SubjectWellLabel"]', $parent);
-
-                $subjectField.val(parsedValue);
-            }
-
-            if ([ 'to', 'cc', 'bcc' ].indexOf(params.field) !== -1) {
-                // click expand button, for reply.
-                $('button._mcp_D2', $parent).trigger('click')
-            }
-
-            var $extraFields = $('._fp_C', $parent)
-            var $btns = $('._mcp_e1', $parent)
-
-            if (params.field === 'to') {
-                $extraFields.eq(0).val(parsedValue);
-            }
-
-            // TODO does not work in Reply
-            if (params.field === 'cc') {
-                // click the cc button
-                $btns.eq(0).trigger('click');
-                $extraFields.eq(1).val(parsedValue);
-            }
-
-            if (params.field === 'bcc') {
-                // click the bcc button
-                $btns.eq(1).trigger('click');
-                $extraFields.eq(2).val(parsedValue);
-            }
-
-            if(callback) {
-                callback(null, {});
-            }
-        });
-    };
-
     var before = function (params, callback) {
         // don't do anything if we don't have any extra fields
         if (!params.quicktext.subject &&
