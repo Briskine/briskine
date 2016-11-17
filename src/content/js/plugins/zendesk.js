@@ -255,14 +255,9 @@ App.plugin('zendesk', (function () {
         }
     };
 
-    var setTitle = function (params, callback) {
-
-    };
-
     return {
         init: init,
-        getData: getData,
-        setTitle: setTitle
+        getData: getData
     };
 
 })());
