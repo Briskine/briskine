@@ -69,17 +69,16 @@ App.plugin('uservoice', (function () {
 
     };
 
-    var setTitle = function (params, callback) {
-
-        var response = {};
-
-        var $subjectField = $('input[name=subjectbox]');
-        $subjectField.val(params.quicktext.subject);
-
-        if (callback) {
-            callback(null, response);
+    var before = function (params, callback) {
+        if (params.quicktext.subject) {
+            var parsedSubject = Handlebars.compile(params.quicktext.subject)(PrepareVars(params.data));
+            var $subjectField = $('input[name=subjectbox]');
+            $subjectField.val(parsedSubject);
         }
 
+        if (callback) {
+            callback(null, params);
+        }
     };
 
     var init = function (params, callback) {
@@ -122,7 +121,7 @@ App.plugin('uservoice', (function () {
     return {
         init: init,
         getData: getData,
-        setTitle: setTitle
+        before: before
     }
 
 })());
