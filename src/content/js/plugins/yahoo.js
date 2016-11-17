@@ -81,12 +81,56 @@ App.plugin('yahoo', (function() {
 
     };
 
+    var before = function (params, callback) {
+        var $parent = $(params.element).closest('div.compose')
+
+        if (params.quicktext.subject) {
+            var parsedSubject = Handlebars.compile(params.quicktext.subject)(PrepareVars(params.data));
+            var $subjectField = $('#subject-field', $parent);
+            $subjectField.val(parsedSubject);
+        }
+
+        if (params.quicktext.to) {
+            var parsedTo = Handlebars.compile(params.quicktext.to)(PrepareVars(params.data));
+            var $toField = $('#to-field', $parent);
+            $toField.val(parsedTo);
+
+            $toField.get(0).dispatchEvent(new Event('blur'));
+        }
+
+        if (params.quicktext.cc ||
+            params.quicktext.bcc) {
+            // click show cc/bcc button
+            var $btn = $('#cc_show_btn_in_to', $parent)
+            $btn.get(0).click()
+        }
+
+        if (params.quicktext.cc) {
+            var parsedCc = Handlebars.compile(params.quicktext.cc)(PrepareVars(params.data));
+            var $ccField = $('#cc-field', $parent);
+            $ccField.val(parsedCc);
+
+            $ccField.get(0).dispatchEvent(new Event('blur'));
+        }
+
+        if (params.quicktext.bcc) {
+            var parsedBcc = Handlebars.compile(params.quicktext.bcc)(PrepareVars(params.data));
+            var $bccField = $('#bcc-field', $parent);
+            $bccField.val(parsedBcc);
+
+            $bccField.get(0).dispatchEvent(new Event('blur'));
+        }
+
+        if (callback) {
+            callback(null, params);
+        }
+    };
+
     var setTitle = function(params, callback) {
 
         var response = {};
 
-        var $subjectField = $('#subject-field');
-        $subjectField.val(params.quicktext.subject);
+
 
         if(callback) {
             callback(null, response);
@@ -117,7 +161,7 @@ App.plugin('yahoo', (function() {
     return {
         init: init,
         getData: getData,
-        setTitle: setTitle
+        before: before
     }
 
 })());
