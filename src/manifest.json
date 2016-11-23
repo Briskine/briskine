@@ -45,6 +45,7 @@
         }
     ],
     "web_accessible_resources": [
+        "pages/bg.html",
         "pages/content.html",
         "pages/helpdesk/zendesk.js",
         "pages/helpdesk/zendesk.html",

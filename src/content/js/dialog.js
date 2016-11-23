@@ -122,6 +122,15 @@ App.autocomplete.dialog = {
             });
         });
 
+        // edit template from dialog
+        dialog.on('mousedown', '.qt-edit', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            var templateId = $(e.target).closest('.qt-item').data('id');
+            var templateUrl = chrome.extension.getURL('pages/bg.html' + '#/list?id=' + templateId + '&src=qa-dialog');
+            window.open(templateUrl, 'gorgias-options');
+        });
     },
     createQaBtn: function () {
         var container = $('body');
