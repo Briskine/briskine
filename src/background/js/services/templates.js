@@ -358,9 +358,9 @@ gApp.service('TemplateService', function ($q, $resource, SettingsService) {
                 return;
             } else {
                 amplitude.getInstance().logEvent("Created template", {
-                    "with_subject": t.subject.length > 0,
-                    "with_shortcut": t.shortcut.length > 0,
-                    "with_tags": t.tags.length > 0,
+                    "with_subject": !!t.subject,
+                    "with_shortcut": !!t.shortcut,
+                    "with_tags": !!t.tags,
                     "title_size": t.title.length,
                     "body_size": t.body.length,
                     "private": t.private
