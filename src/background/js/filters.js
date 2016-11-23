@@ -88,3 +88,9 @@ gApp.filter('gravatar', function () {
         return 'https://www.gravatar.com/avatar/' + cache[text] +  '?d=retro';
     };
 });
+
+gApp.filter('fuzzy', function () {
+    return function(list, text, options) {
+        return fuzzySearch(list, text, options);
+    };
+});

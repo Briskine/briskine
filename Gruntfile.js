@@ -38,6 +38,8 @@ module.exports = function (grunt) {
 
                 'bower_components/quill/dist/quill.min.js',
 
+                'bower_components/fuse.js/src/fuse.min.js',
+
                 // Should be first
                 'background/js/environment.js',
                 'background/js/utils/amplitude.js',
