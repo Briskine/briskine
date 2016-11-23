@@ -79,32 +79,13 @@ var App = {
                         if (!App.settings.fuzzy_search) {
                             threshold = 0;
                         }
+
                         var options = {
                             caseSensitive: App.settings.case_sensitive_search,
-                            shouldSort: true,
-                            tokenize: false,
-                            threshold: threshold,
-                            location: 0,
-                            distance: 100,
-                            maxPatternLength: 32,
-                            keys: [
-                                {
-                                    name: 'shortcut',
-                                    weight: 0.7
-                                },
-                                {
-                                    name: 'title',
-                                    weight: 0.7
-                                },
-                                {
-                                    name: 'body',
-                                    weight: 0.4
-                                }
-                            ]
+                            threshold: threshold
                         };
 
-                        var fuse = new Fuse(templates, options);
-                        templates = fuse.search(text);
+                        templates = fuzzySearch(templates, text, options);
                     } else {
                         // Sort templates only if no search was used
 

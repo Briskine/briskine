@@ -43,7 +43,7 @@
 
     <div class="list-group quicktexts-list" ng-show="templates.length">
         <div class="list-group-item"
-             ng-repeat="quicktext in templates | limitTo:limitTemplates | filter:searchText | tagFilter:filterTags | sharingFilter:properties.list as filteredTemplates">
+             ng-repeat="quicktext in templates | limitTo:limitTemplates | fuzzy:searchText | tagFilter:filterTags | sharingFilter:properties.list as filteredTemplates">
 
             <div class="checkbox-wrapper">
                 <input type="checkbox" ng-change="checkHasSelected()" ng-model="quicktext.selected">

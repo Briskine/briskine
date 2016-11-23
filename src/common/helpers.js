@@ -89,3 +89,39 @@ var getRandomIntInclusive = function (min, max) {
     max = Math.floor(max);
     return Math.floor(Math.random() * (max - min + 1)) + min;
 };
+
+// fuzzy search with fuse.js
+var fuzzySearch = function (list, text, opts) {
+    if (!text) {
+        return list
+    }
+
+    var defaultOptions = {
+        caseSensitive: false,
+        shouldSort: true,
+        tokenize: false,
+        threshold: 0.6,
+        location: 0,
+        distance: 100,
+        maxPatternLength: 32,
+        // search templates by default
+        keys: [
+            {
+                name: 'shortcut',
+                weight: 0.7
+            },
+            {
+                name: 'title',
+                weight: 0.7
+            },
+            {
+                name: 'body',
+                weight: 0.4
+            }
+        ]
+    };
+
+    var options = jQuery.extend(true, defaultOptions, opts);
+    var fuse = new Fuse(list, options);
+    return fuse.search(text);
+};
