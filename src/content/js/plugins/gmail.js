@@ -123,20 +123,52 @@ App.plugin('gmail', (function () {
 
     };
 
-    var setTitle = function (params, callback) {
-        getData(params, function (_, vars) {
-            var parsedSubject = Handlebars.compile(params.quicktext.subject)(PrepareVars(vars));
+    var before = function (params, callback) {
+        var $parent = $(params.element).closest('table.aoP')
 
-            var $subjectField = $(params.element).closest('table.aoP').find('input[name=subjectbox]');
-            $subjectField.val(parsedSubject);
+        if (params.quicktext.subject) {
+            var parsedSubject = Handlebars.compile(params.quicktext.subject)(PrepareVars(params.data));
+            $parent.find('input[name=subjectbox]').val(parsedSubject);
+        }
 
-            var response = {};
+        if (params.quicktext.to ||
+            params.quicktext.cc ||
+            params.quicktext.bcc
+        ) {
+            // click the receipients row.
+            // a little jumpy,
+            // but the only to way to show the new value.
+            $parent.find('.aoD.hl').trigger('focus');
+        }
 
-            if (callback) {
-                callback(null, response);
-            }
-        });
+        if (params.quicktext.to) {
+            var parsedTo = Handlebars.compile(params.quicktext.to)(PrepareVars(params.data));
+            $parent.find('textarea[name=to]').val(parsedTo);
+        }
+
+        if (params.quicktext.cc) {
+            var parsedCc = Handlebars.compile(params.quicktext.cc)(PrepareVars(params.data));
+
+            // click the cc button
+            $parent.find('.aB.gQ.pE').trigger('click');
+
+            $parent.find('textarea[name=cc]').val(parsedCc);
+        }
+
+        if (params.quicktext.bcc) {
+            var parsedBcc = Handlebars.compile(params.quicktext.bcc)(PrepareVars(params.data));
+
+            // click the bcc button
+            $parent.find('.aB.gQ.pB').trigger('click');
+
+            $parent.find('textarea[name=bcc]').val(parsedBcc);
+        }
+
+        if (callback) {
+            callback(null, params);
+        }
     };
+
     //insert attachment node on gmail editor.
     var setAttachmentNode = function (attachment, range) {
         if (!attachment) {
@@ -291,7 +323,7 @@ App.plugin('gmail', (function () {
         init: init,
         getData: getData,
         setAttachment: setAttachmentNode,
-        setTitle: setTitle
+        before: before
     }
 
 })());

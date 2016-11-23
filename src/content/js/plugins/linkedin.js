@@ -86,17 +86,15 @@ App.plugin('linkedin', (function() {
 
     };
 
-    var setTitle = function(params, callback) {
-
-        var response = {};
-
-        var $subjectField = $('#subject-msgForm', window.parent.document);
-        $subjectField.val(params.quicktext.subject);
-
-        if(callback) {
-            callback(null, response);
+    var before = function(params, callback) {
+        if(params.quicktext.subject) {
+            var $subjectField = $('#subject-msgForm', window.parent.document);
+            $subjectField.val(params.quicktext.subject);
         }
 
+        if(callback) {
+            callback(null, params);
+        }
     };
 
     var init = function(params, callback) {
@@ -122,7 +120,7 @@ App.plugin('linkedin', (function() {
     return {
         init: init,
         getData: getData,
-        setTitle: setTitle
+        before: before
     }
 
 })());

@@ -147,15 +147,10 @@ App.plugin('desk', (function () {
         return callback(null, vars)
     };
 
-    var setTitle = function () {
-
-    };
-
 
     return {
         init: init,
-        getData: getData,
-        setTitle: setTitle
+        getData: getData
     };
 
 })());

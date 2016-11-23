@@ -44,12 +44,6 @@
                         </div>
                     </div>
 
-                    <div class="form-group" data-toggle="tooltip" data-placement="bottom"
-                         title="The e-mail subject will be replaced with this field. Only when this template is used.">
-                        <label for="qt-subject">Subject <span class="text-muted">(Optional)</span></label>
-                        <input type="text" class="form-control" id="qt-subject" ng-model="templateForm.selectedTemplate.subject"
-                               placeholder=""/>
-                    </div>
                     <div class="form-group">
                         <label class="body-label">Template Content</label>
 
@@ -145,6 +139,40 @@
                             <i class='fa fa-paperclip'/><a target='_blank' class='attachment' href='{{attachment.url}}'>{{attachment.name}}</a><i class='fa fa-close' ng-click="templateForm.removeAttachment($index)"/>
                         </div>
                     </div>
+
+                    <div class="form-group" data-toggle="tooltip" data-placement="bottom"
+                         title="The e-mail subject will be replaced with this field. Only when this template is used." ng-show="templateForm.extraFieldContent(templateForm.selectedTemplate.subject)">
+                        <label for="qt-subject">Subject <span class="text-muted">(Optional)</span></label>
+                        <input type="text" class="form-control" id="qt-subject" ng-model="templateForm.selectedTemplate.subject"
+                               placeholder=""/>
+                    </div>
+
+                    <div class="form-group-grid">
+                        <div class="form-group" ng-show="templateForm.extraFieldContent(templateForm.selectedTemplate.to)">
+                            <label for="qt-to">To <span class="text-muted">(Optional)</span></label>
+                            <input type="text" class="form-control" id="qt-to" ng-model="templateForm.selectedTemplate.to"
+                                placeholder=""/>
+                        </div>
+
+                        <div class="form-group" ng-show="templateForm.extraFieldContent(templateForm.selectedTemplate.cc)">
+                            <label for="qt-cc">CC <span class="text-muted">(Optional)</span></label>
+                            <input type="text" class="form-control" id="qt-cc" ng-model="templateForm.selectedTemplate.cc"
+                                placeholder=""/>
+                        </div>
+
+                        <div class="form-group" ng-show="templateForm.extraFieldContent(templateForm.selectedTemplate.bcc)">
+                            <label for="qt-bcc">BCC <span class="text-muted">(Optional)</span></label>
+                            <input type="text" class="form-control" id="qt-bcc" ng-model="templateForm.selectedTemplate.bcc"
+                                placeholder=""/>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <button type="button" class="btn btn-link" ng-show="templateForm.extraFields" ng-click="templateForm.showExtraFields()">
+                            Show more fields
+                        </button>
+                    </div>
+
                     <div class="form-group">
                         <label for="qt-tags">
                             Tags

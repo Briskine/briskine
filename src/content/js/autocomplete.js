@@ -198,20 +198,15 @@ App.autocomplete.getCursorPosition = function (element) {
 
 App.autocomplete.replaceWith = function (params) {
 
-    var doc = params.element.ownerDocument;
-
     var word = App.autocomplete.cursorPosition.word;
     var replacement = '';
 
     App.autocomplete.justCompleted = true; // the idea is that we don't want any completion to popup after we just completed
 
-    var setText = function () {
+    var setText = function (vars) {
+        var doc = params.element.ownerDocument;
 
-        App.activePlugin.getData({
-            element: params.element
-        }, function (err, response) {
-
-            var parsedTemplate = Handlebars.compile(params.quicktext.body)(PrepareVars(response));
+        var parsedTemplate = Handlebars.compile(params.quicktext.body)(params.data);
 
             if (App.autocomplete.isContentEditable(params.element)) {
 
@@ -227,7 +222,7 @@ App.autocomplete.replaceWith = function (params) {
                 // the type of node
                 // https://developer.mozilla.org/en-US/docs/Web/API/range.setStart
                 var focusNode = params.focusNode;
-                if (focusNode === null) {
+                if (!document.body.contains(focusNode)) {
                     focusNode = selection.focusNode;
                 }
 
@@ -262,7 +257,7 @@ App.autocomplete.replaceWith = function (params) {
                 var qtNode = range.createContextualFragment(replacement);
                 var lastQtChild = qtNode.lastChild;
 
-                if (params.quicktext.attachments && params.quicktext.attachments.length > 0 && response && response.plugin === 'gmail') {
+                if (params.quicktext.attachments && params.quicktext.attachments.length > 0 && vars && vars.plugin === 'gmail') {
                     if (params.quicktext.attachments.length) //in case there was attachments in that quicktext that have been removed then..
                         params.quicktext.attachments.map(function (attachment, index) {
                             App.activePlugin.setAttachment(attachment, range);
@@ -348,23 +343,39 @@ App.autocomplete.replaceWith = function (params) {
                 $textarea[0].setSelectionRange(cursorOffset, cursorOffset);
 
             }
+    };
 
-        });
+    var insertQt = function (params) {
+        return function () {
+            setText(params.data);
 
+            if (typeof App.activePlugin.after === 'function') {
+                App.activePlugin.after(params);
+            }
+        };
     };
 
     App.autocomplete.dialog.close();
 
-    // we need the callback because the editor
-    // doesn't get the focus right-away.
-    // so window.getSelection() returns the search field
-    // in the dialog otherwise, instead of the editor
-    App.autocomplete.focusEditor(params.element, setText);
+    App.activePlugin.getData({
+        element: params.element
+    }, function (err, vars) {
+        // add parsed vars to params
+        params.data = PrepareVars(vars);
 
-    // set subject field
-    if (params.quicktext.subject) {
-        App.activePlugin.setTitle(params);
-    }
+        if (typeof App.activePlugin.before === 'function') {
+            App.activePlugin.before(params, function (err, params) {
+                // we need the callback because the editor
+                // doesn't get the focus right-away.
+                // so window.getSelection() returns the search field
+                // in the dialog otherwise, instead of the editor
+                App.autocomplete.focusEditor(params.element, insertQt(params));
+            });
+            return;
+        }
+
+        App.autocomplete.focusEditor(params.element, insertQt(params));
+    });
 
     // updates stats
     App.settings.stats('words', params.quicktext.body.split(' ').length, function () {

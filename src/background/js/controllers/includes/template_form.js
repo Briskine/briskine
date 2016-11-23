@@ -9,6 +9,55 @@ gApp.controller('TemplateFormCtrl',
         self.extended = false;
         self.showHTMLSource = false;
 
+        // fields that show up under `show more fields`
+        var extraFields = [
+            'subject',
+            'to',
+            'cc',
+            'bcc'
+        ];
+
+        // used by extra fields button,
+        // if any extra fields are hidden.
+        // shown by default.
+        self.extraFields = true;
+
+        // checks if a field has content,
+        // and should be visible.
+        self.extraFieldContent = function (field) {
+            return (typeof field === 'string')
+        };
+
+        // check if any extra fields are hidden
+        var checkHiddenExtraFields = function () {
+            return extraFields.some(function (field) {
+                return !self.extraFieldContent(self.selectedTemplate[field]);
+            });
+        };
+
+        // clean empty extra fields, for backwards compatibility.
+        // (eg. quicktexts saved with empty subject)
+        var cleanExtraFields = function (qt) {
+            extraFields.some(function (field) {
+                if (typeof qt[field] === 'string' && qt[field].trim() === '') {
+                    delete qt[field]
+                }
+            });
+
+            return qt
+        }
+
+        self.showExtraFields = function () {
+            // add blank content
+            extraFields.forEach(function (field) {
+                if (!self.extraFieldContent(self.selectedTemplate[field])) {
+                    self.selectedTemplate[field] = '';
+                }
+            });
+
+            self.extraFields = false;
+        };
+
         var loadEditor = function () {
             self.showHTMLSource = false;
             if (editor) { //already loaded
@@ -163,7 +212,6 @@ gApp.controller('TemplateFormCtrl',
                     var defaults = {
                         'id': '',
                         'remote_id': '',
-                        'subject': '',
                         'shortcut': '',
                         'title': '',
                         'tags': '',
@@ -184,16 +232,23 @@ gApp.controller('TemplateFormCtrl',
                                 $('#qt-tags')[0].selectize.addItem($.trim(FilterTagService.filterTags[0]));
                             }
                         }
+
+                        // do we need to show the `show more fields` btn
+                        self.extraFields = checkHiddenExtraFields();
                     } else if (id) {
                         // update template
                         TemplateService.get(id).then(function (r) {
-                            self.selectedTemplate = angular.copy(r);
+
+                            self.selectedTemplate = angular.copy(cleanExtraFields(r));
+
                             if (editor) {
                                 editor.setHTML(self.selectedTemplate.body);
                             }
                             $.each(self.selectedTemplate.tags.split(','), function (_, tag) {
                                 $('#qt-tags')[0].selectize.addItem($.trim(tag));
                             });
+
+                            self.extraFields = checkHiddenExtraFields();
                         });
                     }
                 });
@@ -248,6 +303,13 @@ gApp.controller('TemplateFormCtrl',
                 }
             }
 
+            // delete extra fields with blank values,
+            // to not show them again on edit.
+            extraFields.forEach(function (field) {
+                if (typeof self.selectedTemplate[field] === 'string' && self.selectedTemplate[field].trim() === '') {
+                    delete self.selectedTemplate[field]
+                }
+            })
 
             TemplateService.quicktexts().then(function (templates) {
                 if (self.selectedTemplate.shortcut) {

@@ -77,17 +77,67 @@ App.plugin('fastmail', (function() {
 
     };
 
-    var setTitle = function(params, callback) {
+    var isHidden = function (el) {
+        return (el.offsetParent === null)
+    }
 
-        var response = {};
+    var before = function (params, callback) {
+        var $parent = $(params.element).closest('.v-Compose')
 
-        var $subjectField = $('input[id$="subject-input"]');
-        $subjectField.val(params.quicktext.subject);
-
-        if(callback) {
-            callback(null, response);
+        if (params.quicktext.subject) {
+            var parsedSubject = Handlebars.compile(params.quicktext.subject)(PrepareVars(params.data));
+            $('input[id$="subject-input"]', $parent).val(parsedSubject);
         }
 
+        if (params.quicktext.to) {
+            var parsedTo = Handlebars.compile(params.quicktext.to)(PrepareVars(params.data));
+            var $toField = $('textarea[id$="to-input"]', $parent)
+            $toField.val(parsedTo);
+
+            // jQuery's trigger does not work
+            $toField.get(0).dispatchEvent(new Event('input'));
+        }
+
+        var $btns = $('.v-Compose-addCcBcc .u-subtleLink', $parent);
+
+        if (params.quicktext.cc) {
+            var parsedCc = Handlebars.compile(params.quicktext.cc)(PrepareVars(params.data));
+
+            var $ccField = $('textarea[id$="cc-input"]', $parent);
+
+            // only if the cc field is hidden,
+            // because the same button is used to show/hide the field.
+            if (isHidden($ccField.get(0))) {
+                var $ccBtn = $btns.eq(0);
+                // dispatchEvent or trigger do not work
+                $ccBtn.get(0).click();
+            }
+
+            $ccField.val(parsedCc);
+
+            $ccField.get(0).dispatchEvent(new Event('input'));
+        }
+
+        if (params.quicktext.bcc) {
+            var parsedBcc = Handlebars.compile(params.quicktext.bcc)(PrepareVars(params.data));
+
+            var $bccField = $('textarea[id$="bcc-input"]', $parent);
+
+            // only if the bcc field is hidden
+            if (isHidden($bccField.get(0))) {
+                var $bccBtn = $btns.eq(1);
+                // dispatchEvent or trigger do not work
+                $bccBtn.get(0).click();
+            }
+
+            $bccField.val(parsedBcc);
+
+            $bccField.get(0).dispatchEvent(new Event('input'));
+        }
+
+        if (callback) {
+            callback(null, params);
+        }
     };
 
     var init = function(params, callback) {
@@ -113,7 +163,7 @@ App.plugin('fastmail', (function() {
     return {
         init: init,
         getData: getData,
-        setTitle: setTitle
+        before: before
     }
 
 })());
