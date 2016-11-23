@@ -27,9 +27,9 @@ var gorgiasDemo = (function () {
             body: 'It was nice talking to you!'
         },*/
         {
-            shortcut: 'use',
+            shortcut: 'glad',
             title: 'Glad to use Gorgias',
-            body: "I'm glad to use Gorgias for the first time. Keyboard completion is great!"
+            body: "I'm glad to use Gorgias for the first time. Keyboard completion is great!<br /><br />"
         },
         {
             shortcut: 'kr',
@@ -633,7 +633,7 @@ var gorgiasDemo = (function () {
 
             }
 
-            if (params.quicktext.shortcut === 'use') {
+            if (params.quicktext.shortcut === 'glad') {
                 setTimeout(function () {
                     $('.gorgias-demo-hint>*').addClass('hidden');
                     $('.gorgias-demo-hint .search').removeClass('hidden').addClass('fadein');
