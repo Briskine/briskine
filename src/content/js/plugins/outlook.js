@@ -96,7 +96,7 @@ App.plugin('outlook', (function() {
             !params.quicktext.cc &&
             !params.quicktext.bcc
         ) {
-            return callback(null)
+            return callback(null, params)
         }
 
         // if we have any extra fields,

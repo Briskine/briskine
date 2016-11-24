@@ -8,6 +8,7 @@ if (chrome.runtime) {
         '*://mail.google.com/*',
         '*://*.mail.yahoo.com/*',
         '*://*.mail.live.com/*',
+        '*://outlook.live.com/*',
         '*://*.linkedin.com/*',
         '*://*.facebook.com/*',
         '*://*.fastmail.com/*',

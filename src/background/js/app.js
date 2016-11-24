@@ -6,6 +6,7 @@ Raven.config('https://af2f5e9fb2744c359c19d08c8319d9c5@app.getsentry.com/30379',
         /https:\/\/mail\.google\.com/,
         /https:\/\/.*mail\.yahoo\.com/,
         /https:\/\/.*mail\.live\.com/,
+        /https:\/\/.*outlook\.live\.com/,
         /https:\/\/.*linkedin\.com/,
         /https:\/\/.*fastmail\.com/,
         /chrome-extension:\/\/jcaagnkpclhhpghggjoemjjneoimjbid/, // chrome
