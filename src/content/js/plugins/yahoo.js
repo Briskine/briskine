@@ -87,7 +87,8 @@ App.plugin('yahoo', (function() {
         if (params.quicktext.subject) {
             var parsedSubject = Handlebars.compile(params.quicktext.subject)(PrepareVars(params.data));
             var $subjectField = $('#subject-field', $parent);
-            $subjectField.val(parsedSubject);
+            var newSubject = $subjectField.val() + parsedSubject;
+            $subjectField.val(newSubject);
         }
 
         if (params.quicktext.to) {

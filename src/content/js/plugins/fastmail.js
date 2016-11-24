@@ -86,7 +86,9 @@ App.plugin('fastmail', (function() {
 
         if (params.quicktext.subject) {
             var parsedSubject = Handlebars.compile(params.quicktext.subject)(PrepareVars(params.data));
-            $('input[id$="subject-input"]', $parent).val(parsedSubject);
+            var $subjectField = $('input[id$="subject-input"]', $parent);
+            var newSubject = $subjectField.val() + parsedSubject;
+            $subjectField.val(newSubject);
         }
 
         if (params.quicktext.to) {

@@ -88,8 +88,10 @@ App.plugin('linkedin', (function() {
 
     var before = function(params, callback) {
         if(params.quicktext.subject) {
+            var parsedSubject = Handlebars.compile(params.quicktext.subject)(PrepareVars(params.data));
             var $subjectField = $('#subject-msgForm', window.parent.document);
-            $subjectField.val(params.quicktext.subject);
+            var newSubject = $subjectField.val() + parsedSubject;
+            $subjectField.val(newSubject);
         }
 
         if(callback) {
