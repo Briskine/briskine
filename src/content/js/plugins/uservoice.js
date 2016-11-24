@@ -73,7 +73,8 @@ App.plugin('uservoice', (function () {
         if (params.quicktext.subject) {
             var parsedSubject = Handlebars.compile(params.quicktext.subject)(PrepareVars(params.data));
             var $subjectField = $('input[name=subjectbox]');
-            $subjectField.val(parsedSubject);
+            var newSubject = $subjectField.val() + parsedSubject;
+            $subjectField.val(newSubject);
         }
 
         if (callback) {
