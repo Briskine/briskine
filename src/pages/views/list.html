@@ -2,7 +2,8 @@
     <h1 ng-bind-html="title | safe"></h1>
 
     <div class="pull-right header-actions">
-        <input type="text" class="form-control" ng-model="searchText" placeholder="Search templates" tabindex="0" ng-change="clearSelectedTemplates()"
+        <input type="text" class="form-control" ng-model="searchText" placeholder="Search templates" tabindex="0"
+               ng-change="clearSelectedTemplates()"
                autofocus/>
     </div>
 </header>
@@ -10,7 +11,8 @@
 <div class="btn-toolbar">
     <div class="row no-margin">
         <a ng-href="#{{location}}?id=new" class="btn btn-primary">New template</a>
-        <div ng-show="account.info.name && currentSubscription && currentSubscription.active" class="btn-group btn-more pull-right">
+        <div ng-show="account.info.name && currentSubscription && currentSubscription.active"
+             class="btn-group btn-more pull-right">
             <a class="btn btn-default" href data-toggle="modal" data-target="#import-modal">Import</a>
             <a class="btn btn-default" href="{{baseUrl}}app/export/templates.csv" target="_blank"
                ng-if="filteredTemplates.length">Export</a>
@@ -18,7 +20,8 @@
         <button type="button" ng-if="hasSelected" ng-click="deleteQts()"
                 class="btn btn-error pull-right">Delete
         </button>
-        <a type="button" ng-if="hasSelected && account.info.name && currentSubscription && currentSubscription.active" ng-href="#{{location}}?action=share" class="btn btn-primary pull-right">Share
+        <a type="button" ng-if="hasSelected && account.info.name && currentSubscription && currentSubscription.active"
+           ng-href="#{{location}}?action=share" class="btn btn-primary pull-right">Share
         </a>
     </div>
     <div class="row no-margin checkbox-wrapper">
@@ -43,29 +46,29 @@
 
     <div class="list-group quicktexts-list" ng-show="templates.length">
         <div class="list-group-item"
-             ng-repeat="quicktext in templates | limitTo:limitTemplates | fuzzy:searchText | tagFilter:filterTags | sharingFilter:properties.list as filteredTemplates">
+             ng-repeat="template in templates | fuzzy:searchText:searchOptions | limitTo:limitTemplates | tagFilter:filterTags | sharingFilter:properties.list as filteredTemplates">
 
             <div class="checkbox-wrapper">
-                <input type="checkbox" ng-change="checkHasSelected()" ng-model="quicktext.selected">
+                <input type="checkbox" ng-change="checkHasSelected()" ng-model="template.selected">
             </div>
 
             <a class="list-group-item-link"
                tabindex="0"
-               ng-href="#{{location}}?id={{ ::quicktext.id }}">
+               ng-href="#{{location}}?id={{ ::template.id }}">
                 <div class="row">
                     <div class="col-xs-4">
                         <h4 class="list-group-item-heading">
-                            <span ng-bind-html="quicktext.title| truncate: 50 | newlines | safe"/>
-                            <i ng-show="quicktext.attachments.length" class='fa fa-paperclip'/>
+                            <span ng-bind-html="template.title| truncate: 50 | newlines | safe"/>
+                            <i ng-show="template.attachments.length" class='fa fa-paperclip'/>
                             <!--
-                            <i class='private-icon fa fa-lock' ng-if="quicktext.private && location.indexOf('private') === -1" title="This template is only visible by you" />
+                            <i class='private-icon fa fa-lock' ng-if="template.private && location.indexOf('private') === -1" title="This template is only visible by you" />
                             -->
                         </h4>
 
                         <p class="quicktext-shortcut"
                            title="Text shortcut: type this text and press TAB to insert your template"
-                           ng-show="quicktext.shortcut">
-                            <span>{{ quicktext.shortcut }}</span>
+                           ng-show="template.shortcut">
+                            <span>{{ template.shortcut }}</span>
                         </p>
                     </div>
 
@@ -73,12 +76,12 @@
                     <div class="col-xs-6">
 
                         <p class="list-group-item-text quicktext-detail">
-                            <span class="quicktext-template" title="{{::quicktext.body | stripHTML }}"
-                                  ng-bind-html="quicktext.body| stripHTML | truncate:100 | newlines | safe"></span>
+                            <span class="quicktext-template" title="{{::template.body | stripHTML }}"
+                                  ng-bind-html="template.body| stripHTML | truncate:100 | newlines | safe"></span>
                         </p>
 
-                        <p class="list-group-item-text quicktext-tags" ng-if="::quicktext.tags">
-                        <div class="label-wrapper" ng-repeat="tag in quicktext.tags.split(', ')">
+                        <p class="list-group-item-text quicktext-tags" ng-if="::template.tags">
+                        <div class="label-wrapper" ng-repeat="tag in template.tags.split(', ')">
                             <span class="tag" ng-if="tag"><i class="fa fa-hashtag icon"></i>{{::tag}} </span>
                         </div>
                         </p>
@@ -86,7 +89,7 @@
                 </div>
             </a>
             <div class="hover-actions">
-                <button type="button" class="btn btn-default btn-delete" ng-click="deleteQt(quicktext)" title="Delete">
+                <button type="button" class="btn btn-default btn-delete" ng-click="deleteQt(template)" title="Delete">
                     Delete
                 </button>
             </div>

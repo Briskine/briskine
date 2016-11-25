@@ -74,6 +74,7 @@ gApp.controller('ListCtrl',
         $scope.limitTemplates = 42; // I know.. it's a cliche
         $scope.showInstallHint = false;
         $scope.hasSelected = false;
+        $scope.searchOptions = {};
 
         function loadAccount() {
             SettingsService.get("isLoggedIn").then(function (isLoggedIn) {
@@ -110,6 +111,12 @@ gApp.controller('ListCtrl',
             if (!settings.shownInstallHint) {
                 $scope.showInstallHint = true;
             }
+
+            // Setup search
+            if (settings.qaBtn.fuzzySearch === false) {
+                $scope.searchOptions.threshold = 0
+            }
+            $scope.searchOptions.caseSensitive = !!settings.qaBtn.caseSensitiveSearch
         });
 
         $scope.closeHint = function () {
@@ -144,7 +151,7 @@ gApp.controller('ListCtrl',
         });
 
         var getSelectedQuickTexts = function () {
-            return $scope.filteredTemplates.filter(function(quickText) {
+            return $scope.filteredTemplates.filter(function (quickText) {
                 return quickText.selected
             });
         }
@@ -376,7 +383,9 @@ gApp.controller('ListCtrl',
 
         // Check if any template is selected
         $scope.checkHasSelected = function () {
-            $scope.hasSelected = $scope.filteredTemplates.findIndex(function(quickText) { return quickText.selected }) != -1;
+            $scope.hasSelected = $scope.filteredTemplates.findIndex(function (quickText) {
+                    return quickText.selected
+                }) != -1;
         }
 
         // Uncheck all selected templates
