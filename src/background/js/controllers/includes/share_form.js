@@ -19,20 +19,22 @@ gApp.controller('ShareFormCtrl',
             self.sharing_setting = 'specific';
         };
 
-        // Save a quicktext, perform some checks before
-        self.shareQt = function () {
-            if ($scope.shareData.emails.length == 0 && self.sharing_setting == 'private') {
-                self.revokeAllAccess($scope.selectedQuicktexts);
-            } else if ($scope.shareData.emails.length == 0 && self.sharing_setting == 'everyone') {
-                $scope.shareQuicktextsWithEveryone($scope.selectedQuicktexts, self.send_email);
-            } else if ($scope.shareData.emails.length > 0 && $scope.shareData.acl.length - 1 >= $scope.shareData.members.length) {
-                self.revokeAllAccess($scope.selectedQuicktexts);
-                $scope.shareQuicktexts($scope.selectedQuicktexts, self.send_email);
-            } else {
-                $scope.shareQuicktexts($scope.selectedQuicktexts, self.send_email);
-            }
+        self.switchPermission = function () {
+            var selectedQuicktexts = $scope.getSelectedQuickTexts();
 
-            $scope.selectedAll = false;
+            if ($scope.shareData.emails.length == 0 && self.sharing_setting == 'private') {
+                self.revokeAllAccess(selectedQuicktexts);
+            } else if ($scope.shareData.emails.length == 0 && self.sharing_setting == 'everyone') {
+                $scope.shareQuicktextsWithEveryone(selectedQuicktexts, self.send_email);
+            } else if ($scope.shareData.emails.length > 0 && $scope.shareData.acl.length - 1 >= $scope.shareData.members.length) {
+                self.revokeAllAccess(selectedQuicktexts);
+                $scope.shareQuicktexts(selectedQuicktexts, self.send_email);
+            } else {
+                $scope.shareQuicktexts(selectedQuicktexts, self.send_email);
+            }
+        };
+
+        self.closeShareModal = function () {
             $('#quicktext-share-modal').modal('hide');
         };
 
