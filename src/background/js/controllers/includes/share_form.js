@@ -19,7 +19,7 @@ gApp.controller('ShareFormCtrl',
             self.sharing_setting = 'specific';
         };
 
-        self.switchPermission = function () {
+        self.shareQt = function () {
             var selectedQuicktexts = $scope.getSelectedQuickTexts();
 
             if ($scope.shareData.emails.length == 0 && self.sharing_setting == 'private') {
@@ -32,9 +32,7 @@ gApp.controller('ShareFormCtrl',
             } else {
                 $scope.shareQuicktexts(selectedQuicktexts, self.send_email);
             }
-        };
 
-        self.closeShareModal = function () {
             $('#quicktext-share-modal').modal('hide');
         };
 
@@ -43,7 +41,7 @@ gApp.controller('ShareFormCtrl',
             if ($routeParams.action && $routeParams.action == 'share') {
                 $scope.shareData.emails = "";
                 $scope.showShareModalListener().then(function() {
-                    if ($scope.shareData.acl.length == $scope.shareData.members.length + 1) {
+                    if ($scope.shareData.members.length && $scope.shareData.acl.length === $scope.shareData.members.length + 1) {
                         self.sharing_setting = "everyone";
                     } else if ($scope.shareData.acl.length > 1) {
                         self.sharing_setting = "specific";

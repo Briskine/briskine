@@ -39,12 +39,11 @@
                                     <p ng-show="shareData.acl.length == 1"><b>Private</b></p>
                                     <p ng-show="shareData.acl.length > 1 && shareData.acl.length - 1 < shareData.members.length">
                                         <b>Only specific people</b></p>
-                                    <p ng-show="shareData.acl.length - 1 >= shareData.members.length"><b>Everyone</b>
+                                    <p ng-show="$scope.shareData.members.length && shareData.acl.length - 1 >= shareData.members.length"><b>Everyone</b>
                                     </p>
                                 </div>
                                 <div class="col-xs-6 margin-top-10">
-                                    <select class="form-control" id="qt-sharing" ng-model="shareForm.sharing_setting"
-                                            ng-change="shareForm.switchPermission()">
+                                    <select class="form-control" id="qt-sharing" ng-model="shareForm.sharing_setting">
                                         <option value="specific">Share only with specific people</option>
                                         <option value="everyone">Share with everyone</option>
                                         <option value="private">Private</option>
@@ -129,7 +128,7 @@
 
                 <div class="modal-footer">
 
-                    <button type="button" class="btn btn-default" ng-click="shareForm.closeShareModal()">Done</button>
+                    <button type="button" class="btn btn-default" ng-click="shareForm.shareQt()">Done</button>
                 </div>
 
             </form>
