@@ -49,6 +49,10 @@ gApp.controller('ShareFormCtrl',
                         self.sharing_setting = "private";
                     }
                     $('#quicktext-share-modal').modal('show');
+
+                    // sharing changes on form submit,
+                    // so we need another var to keep old state.
+                    self.current_sharing_setting = self.sharing_setting;
                 });
             }
         };
