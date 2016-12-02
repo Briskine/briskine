@@ -85,8 +85,6 @@ gApp.controller('ListCtrl',
 
                     if (($scope.account.info.share_all == "true" && (properties.list == "tag" || properties.list == "all"))
                         || properties.list == "shared") {
-                        // TODO info.share_all is set to True in the API,
-                        // for new accounts. Do we want to set it to false?
                         $scope.sharing_setting = "everyone";
                     } else {
                         $scope.sharing_setting = "private";
