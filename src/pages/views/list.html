@@ -49,7 +49,7 @@
              ng-repeat="template in templates | fuzzy:searchText:searchOptions | limitTo:limitTemplates | tagFilter:filterTags | sharingFilter:properties.list as filteredTemplates">
 
             <div class="checkbox-wrapper">
-                <input type="checkbox" ng-change="checkHasSelected()" ng-model="selectedQuickTexts[quicktext.id]">
+                <input type="checkbox" ng-change="checkHasSelected()" ng-model="selectedQuickTexts[template.id]">
             </div>
 
             <a class="list-group-item-link"

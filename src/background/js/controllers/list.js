@@ -394,7 +394,7 @@ gApp.controller('ListCtrl',
         }
 
         // Uncheck all selected templates
-        removeSelected = function () {
+        var removeSelected = function () {
             $scope.selectedQuickTexts = {};
             $scope.hasSelected = false;
         }
