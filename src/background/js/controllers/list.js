@@ -55,7 +55,6 @@ gApp.controller('ListCtrl',
                     break;
             }
         });
-
         // Store the ACL of all templates
         $scope.shareData = {
             sharing: {},
@@ -150,11 +149,19 @@ gApp.controller('ListCtrl',
             loadAccount();
         });
 
+        // need to use a separate map for the selected state,
+        // instead of quicktext.select,
+        // so sync doesn't uncheck templates on refresh.
+        $scope.selectedQuickTexts = {}
         var getSelectedQuickTexts = function () {
-            return $scope.filteredTemplates.filter(function (quickText) {
-                return quickText.selected
-            });
+            return $scope.filteredTemplates.filter(function (qt) {
+                return $scope.selectedQuickTexts[qt.id] === true
+            })
         }
+
+        // make getSelectedQuickTexts public,
+        // so we can use it in other places (eg. ShareFormCtrl)
+        $scope.getSelectedQuickTexts = getSelectedQuickTexts
 
         /* Init modal and other dom manipulation
          * when the templates have loaded
@@ -383,16 +390,12 @@ gApp.controller('ListCtrl',
 
         // Check if any template is selected
         $scope.checkHasSelected = function () {
-            $scope.hasSelected = $scope.filteredTemplates.findIndex(function (quickText) {
-                    return quickText.selected
-                }) != -1;
+            $scope.hasSelected = !!getSelectedQuickTexts().length;
         }
 
         // Uncheck all selected templates
-        removeSelected = function () {
-            _.each($scope.templates, function (qt) {
-                qt.selected = false;
-            });
+        var removeSelected = function () {
+            $scope.selectedQuickTexts = {};
             $scope.hasSelected = false;
         }
 
@@ -408,7 +411,7 @@ gApp.controller('ListCtrl',
             removeSelected();
             if ($scope.selectedAll) {
                 _.each($scope.filteredTemplates, function (qt) {
-                    qt.selected = true;
+                    $scope.selectedQuickTexts[qt.id] = true;
                 });
             }
             $scope.checkHasSelected();

@@ -19,20 +19,20 @@ gApp.controller('ShareFormCtrl',
             self.sharing_setting = 'specific';
         };
 
-        // Save a quicktext, perform some checks before
         self.shareQt = function () {
+            var selectedQuicktexts = $scope.getSelectedQuickTexts();
+
             if ($scope.shareData.emails.length == 0 && self.sharing_setting == 'private') {
-                self.revokeAllAccess($scope.selectedQuicktexts);
+                self.revokeAllAccess(selectedQuicktexts);
             } else if ($scope.shareData.emails.length == 0 && self.sharing_setting == 'everyone') {
-                $scope.shareQuicktextsWithEveryone($scope.selectedQuicktexts, self.send_email);
+                $scope.shareQuicktextsWithEveryone(selectedQuicktexts, self.send_email);
             } else if ($scope.shareData.emails.length > 0 && $scope.shareData.acl.length - 1 >= $scope.shareData.members.length) {
-                self.revokeAllAccess($scope.selectedQuicktexts);
-                $scope.shareQuicktexts($scope.selectedQuicktexts, self.send_email);
+                self.revokeAllAccess(selectedQuicktexts);
+                $scope.shareQuicktexts(selectedQuicktexts, self.send_email);
             } else {
-                $scope.shareQuicktexts($scope.selectedQuicktexts, self.send_email);
+                $scope.shareQuicktexts(selectedQuicktexts, self.send_email);
             }
 
-            $scope.selectedAll = false;
             $('#quicktext-share-modal').modal('hide');
         };
 
@@ -41,7 +41,7 @@ gApp.controller('ShareFormCtrl',
             if ($routeParams.action && $routeParams.action == 'share') {
                 $scope.shareData.emails = "";
                 $scope.showShareModalListener().then(function() {
-                    if ($scope.shareData.acl.length == $scope.shareData.members.length + 1) {
+                    if ($scope.shareData.members.length && $scope.shareData.acl.length === $scope.shareData.members.length + 1) {
                         self.sharing_setting = "everyone";
                     } else if ($scope.shareData.acl.length > 1) {
                         self.sharing_setting = "specific";
@@ -49,6 +49,10 @@ gApp.controller('ShareFormCtrl',
                         self.sharing_setting = "private";
                     }
                     $('#quicktext-share-modal').modal('show');
+
+                    // sharing changes on form submit,
+                    // so we need another var to keep old state.
+                    self.current_sharing_setting = self.sharing_setting;
                 });
             }
         };

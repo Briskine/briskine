@@ -36,15 +36,14 @@
                                 </div>
 
                                 <div class="col-xs-5 margin-top-10">
-                                    <p ng-show="shareData.acl.length == 1"><b>Private</b></p>
-                                    <p ng-show="shareData.acl.length > 1 && shareData.acl.length - 1 < shareData.members.length">
+                                    <p ng-show="shareForm.current_sharing_setting === 'private'"><b>Private</b></p>
+                                    <p ng-show="shareForm.current_sharing_setting === 'specific'">
                                         <b>Only specific people</b></p>
-                                    <p ng-show="shareData.acl.length - 1 >= shareData.members.length"><b>Everyone</b>
+                                    <p ng-show="shareForm.current_sharing_setting === 'everyone'"><b>Everyone</b>
                                     </p>
                                 </div>
                                 <div class="col-xs-6 margin-top-10">
-                                    <select class="form-control" id="qt-sharing" ng-model="shareForm.sharing_setting"
-                                            ng-change="shareForm.switchPermission()">
+                                    <select class="form-control" id="qt-sharing" ng-model="shareForm.sharing_setting">
                                         <option value="specific">Share only with specific people</option>
                                         <option value="everyone">Share with everyone</option>
                                         <option value="private">Private</option>
