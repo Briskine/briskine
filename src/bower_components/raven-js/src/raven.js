@@ -14,8 +14,12 @@ function now() {
     return +new Date();
 }
 
-var _window = typeof window !== 'undefined' ? window : undefined;
-var _document = _window && _window.document;
+// This is to be defensive in environments where window does not exist (see https://github.com/getsentry/raven-js/pull/785)
+var _window = typeof window !== 'undefined' ? window
+            : typeof global !== 'undefined' ? global
+            : typeof self !== 'undefined' ? self
+            : {};
+var _document = _window.document;
 
 // First, check for JSON support
 // If there is no JSON, we no-op the core features of Raven
@@ -74,7 +78,7 @@ Raven.prototype = {
     // webpack (using a build step causes webpack #1617). Grunt verifies that
     // this value matches package.json during build.
     //   See: https://github.com/getsentry/raven-js/issues/465
-    VERSION: '3.8.1',
+    VERSION: '3.9.1',
 
     debug: false,
 
@@ -102,7 +106,7 @@ Raven.prototype = {
         if (options) {
             each(options, function(key, value){
                 // tags and extra are special and need to be put into context
-                if (key === 'tags' || key === 'extra') {
+                if (key === 'tags' || key === 'extra' || key === 'user') {
                     self._globalContext[key] = value;
                 } else {
                     globalOptions[key] = value;
@@ -363,11 +367,13 @@ Raven.prototype = {
             return;
         }
 
+        options = options || {};
+
         var data = objectMerge({
             message: msg + ''  // Make sure it's actually a string
         }, options);
 
-        if (options && options.stacktrace) {
+        if (this._globalOptions.stacktrace || (options && options.stacktrace)) {
             var ex;
             // create a stack trace from this point; just trim
             // off extra frames so they don't include this function call (or
@@ -406,6 +412,16 @@ Raven.prototype = {
         var crumb = objectMerge({
             timestamp: now() / 1000
         }, obj);
+
+        if (isFunction(this._globalOptions.breadcrumbCallback)) {
+            var result = this._globalOptions.breadcrumbCallback(crumb);
+
+            if (isObject(result) && !isEmptyObject(result)) {
+                crumb = result;
+            } else if (result === false) {
+                return this;
+            }
+        }
 
         this._breadcrumbs.push(crumb);
         if (this._breadcrumbs.length > this._globalOptions.maxBreadcrumbs) {
@@ -518,6 +534,22 @@ Raven.prototype = {
     setDataCallback: function(callback) {
         var original = this._globalOptions.dataCallback;
         this._globalOptions.dataCallback = isFunction(callback)
+          ? function (data) { return callback(data, original); }
+          : callback;
+
+        return this;
+    },
+
+    /*
+     * Set the breadcrumbCallback option
+     *
+     * @param {function} callback The callback to run which allows filtering
+     *                            or mutating breadcrumbs
+     * @return {Raven}
+     */
+    setBreadcrumbCallback: function(callback) {
+        var original = this._globalOptions.breadcrumbCallback;
+        this._globalOptions.breadcrumbCallback = isFunction(callback)
           ? function (data) { return callback(data, original); }
           : callback;
 
@@ -734,7 +766,6 @@ Raven.prototype = {
         // TODO: if somehow user switches keypress target before
         //       debounce timeout is triggered, we will only capture
         //       a single breadcrumb from the FIRST target (acceptable?)
-
         return function (evt) {
             var target = evt.target,
                 tagName = target && target.tagName;
@@ -753,7 +784,7 @@ Raven.prototype = {
             }
             clearTimeout(timeout);
             self._keypressTimeout = setTimeout(function () {
-               self._keypressTimeout = null;
+                self._keypressTimeout = null;
             }, debounceDuration);
         };
     },
@@ -839,13 +870,26 @@ Raven.prototype = {
 
                         // More breadcrumb DOM capture ... done here and not in `_instrumentBreadcrumbs`
                         // so that we don't have more than one wrapper function
-                        var before;
+                        var before,
+                            clickHandler,
+                            keypressHandler;
+
                         if (autoBreadcrumbs && autoBreadcrumbs.dom && (global === 'EventTarget' || global === 'Node')) {
-                            if (evtName === 'click'){
-                                before = self._breadcrumbEventHandler(evtName);
-                            } else if (evtName === 'keypress') {
-                                before = self._keypressEventHandler();
-                            }
+                            // NOTE: generating multiple handlers per addEventListener invocation, should
+                            //       revisit and verify we can just use one (almost certainly)
+                            clickHandler = self._breadcrumbEventHandler('click');
+                            keypressHandler = self._keypressEventHandler();
+                            before = function (evt) {
+                                // need to intercept every DOM event in `before` argument, in case that
+                                // same wrapped method is re-used for different events (e.g. mousemove THEN click)
+                                // see #724
+                                if (!evt) return;
+
+                                if (evt.type === 'click')
+                                    return clickHandler(evt);
+                                else if (evt.type === 'keypress')
+                                    return keypressHandler(evt);
+                            };
                         }
                         return orig.call(this, evtName, self.wrap(fn, undefined, before), capture, secure);
                     };
@@ -1602,7 +1646,7 @@ function parseUrl(url) {
     };
 }
 function uuid4() {
-    var crypto = window.crypto || window.msCrypto;
+    var crypto = _window.crypto || _window.msCrypto;
 
     if (!isUndefined(crypto) && crypto.getRandomValues) {
         // Use window.crypto API if available

@@ -1,6 +1,6 @@
 {
   "name": "raven-js",
-  "version": "3.8.1",
+  "version": "3.9.1",
   "dependencies": {},
   "main": "dist/raven.js",
   "ignore": [
@@ -18,13 +18,13 @@
     "dist/sri.json"
   ],
   "homepage": "https://github.com/getsentry/raven-js",
-  "_release": "3.8.1",
+  "_release": "3.9.1",
   "_resolution": {
     "type": "version",
-    "tag": "3.8.1",
-    "commit": "10589677b8d1a43ee96a0f9ef24d4fd9a4375644"
+    "tag": "3.9.1",
+    "commit": "0b3c5ffe2bd6c8f8677b9711a161723154f9ef03"
   },
   "_source": "https://github.com/getsentry/raven-js.git",
-  "_target": "3.8.1",
+  "_target": "3.9.1",
   "_originalSource": "raven-js"
 }

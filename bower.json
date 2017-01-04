@@ -17,7 +17,7 @@
     "jquery": "2.1.4",
     "mousetrap": "https://github.com/xarg/mousetrap.git#master",
     "quill": "~0.20.1",
-    "raven-js": "3.8.1",
+    "raven-js": "3.9.1",
     "handlebars": "4.0.4",
     "font-awesome": "4.5.0",
     "underscore": "1.8.3",
