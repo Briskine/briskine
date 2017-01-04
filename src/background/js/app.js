@@ -1,9 +1,7 @@
-Raven.config('https://af2f5e9fb2744c359c19d08c8319d9c5@app.getsentry.com/30379', {
-    tags: {
-        version: chrome.runtime.getManifest().version
-    },
+ravenInit({
     whitelistUrls: [
         /https:\/\/mail\.google\.com/,
+        /https:\/\/inbox\.google\.com/,
         /https:\/\/.*mail\.yahoo\.com/,
         /https:\/\/.*mail\.live\.com/,
         /https:\/\/.*outlook\.live\.com/,
@@ -11,11 +9,8 @@ Raven.config('https://af2f5e9fb2744c359c19d08c8319d9c5@app.getsentry.com/30379',
         /https:\/\/.*fastmail\.com/,
         /chrome-extension:\/\/jcaagnkpclhhpghggjoemjjneoimjbid/, // chrome
         /chrome-extension:\/\/ammheiinddkagoaegldpipmmjfoggahh/ // opera
-    ],
-    linesOfContext: 11,
-    fetchContext: true,
-    collectWindowErrors: true
-}).install();
+    ]
+});
 
 var gApp = angular.module('gApp', [
     'ngRoute',

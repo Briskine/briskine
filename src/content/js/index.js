@@ -210,14 +210,7 @@ App.activatePlugins = function () {
     });
 };
 
-Raven.config('https://af2f5e9fb2744c359c19d08c8319d9c5@app.getsentry.com/30379', {
-    tags: {
-        version: chrome.runtime.getManifest().version
-    },
-    linesOfContext: 11,
-    fetchContext: true,
-    collectWindowErrors: true
-}).install();
+ravenInit();
 
 App.init = function (settings, doc) {
     var body = $(doc).find('body');
