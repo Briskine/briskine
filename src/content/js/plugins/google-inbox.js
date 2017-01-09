@@ -21,32 +21,51 @@ App.plugin('google-inbox', (function () {
     var getNodes = function (element) {
         var nodes = {}
 
+        // editor container classNames:
         // .n7 for message popup
         // .nG for inline reply
         // only one is rendered at a time.
-        nodes.container = jQuery(element).closest('.n7, .nG')
+        // default to popup.
+        nodes.container = jQuery(element).closest('.n7');
 
-        // TODO detect if in message popup or inline.
-        // currently only works message popup.
-        // TODO inline reply
-        // var $meta = nodes.container.prev('.kX')
+        // detect if in message popup or inline.
+        if (nodes.container.length) {
+            // popup.
+            // to, cc, bcc
+            var receivers = [
+                { type: 'to', className: '.Fv' },
+                { type: 'cc', className: '.fD' },
+                { type: 'bcc', className: '.fx' }
+            ];
 
-        // to, cc, bcc
-        var receivers = [
-            { type: 'to', className: '.Fv' },
-            { type: 'cc', className: '.fD' },
-            { type: 'bcc', className: '.fx' }
-        ];
+            receivers.forEach(function (receiver) {
+                var $fieldContainer = nodes.container.siblings(receiver.className);
+                // return the field container node,
+                // so we can get different child nodes for read-write.
+                nodes[receiver.type] = $fieldContainer;
+            });
 
-        receivers.forEach(function (receiver) {
-            var $fieldContainer = nodes.container.siblings(receiver.className);
-            // return the field container node,
-            // so we can get different child nodes for read-write.
-            nodes[receiver.type] = $fieldContainer;
-        });
+            // subject
+            nodes.subject = nodes.container.siblings('.iO').find('input');
+        } else {
+            // inline reply
+            nodes.container = jQuery(element).closest('.nG');
 
-        // subject
-        nodes.subject = nodes.container.siblings('.iO').find('input');
+            var $receivers = nodes.container.prev('.kX').find('[email]');
+
+            // in inline reply, all receivers are a single-level list.
+            // since we no way of knowing which is to/cc/bcc,
+            // we naively handle them by index.
+            ['to', 'cc', 'bcc'].forEach(function (type, index) {
+                if ($receivers.eq(index).length) {
+                    return nodes[type] = $receivers.eq(index)
+                }
+            });
+
+            // normalize the subject as an input
+            nodes.subject = jQuery(document.createElement('input'))
+            nodes.subject.val(nodes.container.closest('.aY').find('[role="heading"] .eo').text());
+        }
 
         return nodes
     };
@@ -72,14 +91,31 @@ App.plugin('google-inbox', (function () {
         // editor container
         var nodes = getNodes(params.element);
         ['to', 'cc', 'bcc'].forEach(function (receiver) {
-            // when a receiver is deleted, the node is still there but display:none.
-            var $field = nodes[receiver].find('[email]:visible').eq(0);
-            if (!$field.length) {
-                return;
+            if (!nodes[receiver]) {
+                return
+            }
+
+            var $field = nodes[receiver]
+            var name = ''
+
+            // inline sends the [email] node,
+            // popup sends the [email] node container.
+            if ($field.attr('email')) {
+                // inline.
+                name = $field.text()
+            } else {
+                // popup.
+                // when a receiver is deleted, the node is still there but display:none.
+                $field = $field.find('[email]:visible').eq(0);
+                if (!$field.length) {
+                    return;
+                }
+
+                name = $field.attr('aria-label')
             }
 
             vars[receiver] = {
-                name: $field.attr('aria-label'),
+                name: name,
                 email: $field.attr('email')
             }
 
@@ -95,7 +131,54 @@ App.plugin('google-inbox', (function () {
     };
 
     var before = function (params, callback) {
-        var nodes = getNodes(params.element)
+        var nodes = getNodes(params.element);
+
+        // TODO if inline and has to populate any fields
+        // open the popup.
+        if (nodes.container.hasClass('nG') && (
+            params.quicktext.to ||
+            params.quicktext.cc ||
+            params.quicktext.bcc ||
+            params.quicktext.subject
+        )) {
+            // TODO does not work because it tries to insert the qt in the inline reply,
+            // while the focus is moved to the popup.
+
+            // click the compose popup
+            nodes.container.closest('.bc').find('[jsaction*="quick_compose_popout_mole"]').trigger('click')
+        }
+
+        if (callback) {
+            callback(null, params);
+        }
+    }
+
+    var after = function (params, callback) {
+        var nodes = getNodes(params.element);
+
+        // TODO if inline and has to populate any fields
+        // open the popup.
+//         if (nodes.container.hasClass('nG') && (
+//             params.quicktext.to ||
+//             params.quicktext.cc ||
+//             params.quicktext.bcc ||
+//             params.quicktext.subject
+//         )) {
+// //             if (callback) {
+// //                 callback(null, params);
+// //             }
+//
+//             // click the compose popup
+//             nodes.container.closest('.bc').find('[jsaction*="quick_compose_popout_mole"]').trigger('click')
+//
+// //             // refresh nodes
+// //             setTimeout(function () {
+// //                 params.element = document.activeElement
+// //                 before(params)
+// //             }, 500);
+//
+// //             return
+//         }
 
         if (params.quicktext.subject) {
             var parsedSubject = Handlebars.compile(params.quicktext.subject)(PrepareVars(params.data));
@@ -160,6 +243,7 @@ App.plugin('google-inbox', (function () {
     return {
         init: init,
         getData: getData,
-        before: before
+        before: before,
+        after: after
     }
 })());
