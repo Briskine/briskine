@@ -40,9 +40,10 @@ App.plugin('google-inbox', (function () {
 
         receivers.forEach(function (receiver) {
             var $fieldContainer = nodes.container.siblings(receiver.className);
-            // when a receiver is deleted, the node is still there but display:none.
-            nodes[receiver.type] = $fieldContainer.find('[email]:visible').eq(0);
-        })
+            // return the field container node,
+            // so we can get different child nodes for read-write.
+            nodes[receiver.type] = $fieldContainer;
+        });
 
         // subject
         nodes.subject = nodes.container.siblings('.iO').find('input');
@@ -70,8 +71,9 @@ App.plugin('google-inbox', (function () {
 
         // editor container
         var nodes = getNodes(params.element);
-        [ 'to', 'cc', 'bcc' ].forEach(function (receiver) {
-            var $field = nodes[receiver]
+        ['to', 'cc', 'bcc'].forEach(function (receiver) {
+            // when a receiver is deleted, the node is still there but display:none.
+            var $field = nodes[receiver].find('[email]:visible').eq(0);
             if (!$field.length) {
                 return;
             }
@@ -101,11 +103,18 @@ App.plugin('google-inbox', (function () {
             nodes.subject.val(newSubject);
         }
 
+        // to, cc and bcc inputs need a blur event to save the values.
+        var blurEvent = new Event('blur');
+
         if (params.quicktext.to) {
+            // TODO in the future plugins should get params.quicktext.to already parsed.
+            // so we don't have to use Handlebars.compile and PrepareVars in plugins.
             var parsedTo = Handlebars.compile(params.quicktext.to)(PrepareVars(params.data));
-            // TODO send toContainer from nodes,
-            // to get input here, and [email] in getData.
-            nodes.to.val(parsedTo);
+            var $toField = nodes.to.find('input');
+            $toField.val(parsedTo);
+
+            // blur event to save the value
+            $toField.get(0).dispatchEvent(blurEvent);
         }
 
         if (params.quicktext.cc ||
@@ -114,10 +123,19 @@ App.plugin('google-inbox', (function () {
             // click the extra receivers buttons,
             // if fields are hidden.
             if (!nodes.cc.is(':visible')) {
-                // TODO does not work
-                nodes.container.find('.p2.IB').trigger('click')
+                nodes.to.find('[jsaction*="toggle_cc_bcc"]').trigger('click')
             }
         }
+
+        ['cc', 'bcc'].forEach(function (type) {
+            if (params.quicktext[type]) {
+                var parsed = Handlebars.compile(params.quicktext.cc)(PrepareVars(params.data));
+                var $field = nodes[type].find('input');
+                $field.val(parsed);
+
+                $field.get(0).dispatchEvent(blurEvent);
+            }
+        })
 
         if (callback) {
             callback(null, params);
