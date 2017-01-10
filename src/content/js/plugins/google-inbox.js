@@ -75,10 +75,10 @@ App.plugin('google-inbox', (function () {
     // get all required data from the dom
     var getData = function (params, callback) {
         var vars = {
-            from: {},
-            to: {},
-            cc: {},
-            bcc: {},
+            from: [],
+            to: [],
+            cc: [],
+            bcc: [],
             subject: ''
         }
 
@@ -86,9 +86,11 @@ App.plugin('google-inbox', (function () {
         var $accountContainer = jQuery('.gb_lb.gb_ga');
 
         // from
-        vars.from.name = $accountContainer.find('.gb_ub').text();
-        jQuery.extend(vars.from, splitFullName(vars.from.name));
-        vars.from.email = $accountContainer.find('.gb_vb').text();
+        var name = $accountContainer.find('.gb_ub').text()
+        vars.from.push(jQuery.extend({
+            name: name,
+            email: $accountContainer.find('.gb_vb').text()
+        }, splitFullName(name)));
 
         var nodes = getNodes(params.element);
         ['to', 'cc', 'bcc'].forEach(function (receiver) {
@@ -115,12 +117,10 @@ App.plugin('google-inbox', (function () {
                 name = $field.attr('aria-label')
             }
 
-            vars[receiver] = {
+            vars[receiver].push(jQuery.extend({
                 name: name,
                 email: $field.attr('email')
-            }
-
-            jQuery.extend(vars[receiver], splitFullName(vars[receiver].name))
+            }, splitFullName(name)));
         })
 
         // subject
