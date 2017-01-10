@@ -75,7 +75,7 @@ App.plugin('google-inbox', (function () {
     // get all required data from the dom
     var getData = function (params, callback) {
         var vars = {
-            from: [],
+            from: {},
             to: [],
             cc: [],
             bcc: [],
@@ -87,10 +87,10 @@ App.plugin('google-inbox', (function () {
 
         // from
         var name = $accountContainer.find('.gb_ub').text()
-        vars.from.push(jQuery.extend({
+        vars.from = jQuery.extend({
             name: name,
             email: $accountContainer.find('.gb_vb').text()
-        }, splitFullName(name)));
+        }, splitFullName(name));
 
         var nodes = getNodes(params.element);
         ['to', 'cc', 'bcc'].forEach(function (receiver) {
