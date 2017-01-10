@@ -90,7 +90,6 @@ App.plugin('google-inbox', (function () {
         jQuery.extend(vars.from, splitFullName(vars.from.name));
         vars.from.email = $accountContainer.find('.gb_vb').text();
 
-        // editor container
         var nodes = getNodes(params.element);
         ['to', 'cc', 'bcc'].forEach(function (receiver) {
             if (!nodes[receiver]) {
@@ -102,7 +101,7 @@ App.plugin('google-inbox', (function () {
 
             // inline sends the [email] node,
             // popup sends the [email] node container.
-            if ($field.attr('email')) {
+            if (nodes.mode === 'inline') {
                 // inline.
                 name = $field.text()
             } else {
@@ -147,8 +146,8 @@ App.plugin('google-inbox', (function () {
             // click the pop-out button
             nodes.container.closest('.bc').find('[jsaction*="quick_compose_popout_mole"]').trigger('click')
 
-            // the focus moves to the popup,
-            // so update the element and focusNode reference.
+            // focus moves to the popup,
+            // so update the element and focusNode refs.
             // sometimes the popup does not open fast enough,
             // and the activeElement is still in inline cursor,
             // so we need the timeout trick.
@@ -172,7 +171,7 @@ App.plugin('google-inbox', (function () {
         }
     }
 
-    // we can't use after() here,
+    // can't use after(),
     // because it messes with the focus.
     var fillFields = function (params) {
         var nodes = getNodes(params.element);
@@ -198,9 +197,7 @@ App.plugin('google-inbox', (function () {
             $toField.get(0).dispatchEvent(blurEvent);
         }
 
-        if (params.quicktext.cc ||
-            params.quicktext.bcc
-        ) {
+        if (params.quicktext.cc || params.quicktext.bcc) {
             // click the extra receivers buttons,
             // if fields are hidden.
             if (!nodes.cc.is(':visible')) {
