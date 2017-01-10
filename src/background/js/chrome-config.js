@@ -6,6 +6,7 @@ if (chrome.runtime) {
     // for tabs.query auto-reload
     var urlMatchPatterns = [
         '*://mail.google.com/*',
+        '*://inbox.google.com/*',
         '*://*.mail.yahoo.com/*',
         '*://*.mail.live.com/*',
         '*://outlook.live.com/*',
