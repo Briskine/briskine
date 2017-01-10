@@ -26,6 +26,7 @@ App.plugin('google-inbox', (function () {
         // .nG for inline reply
         // only one is rendered at a time.
         // default to popup.
+        nodes.mode = 'popup';
         nodes.container = jQuery(element).closest('.n7');
 
         // detect if in message popup or inline.
@@ -49,6 +50,7 @@ App.plugin('google-inbox', (function () {
             nodes.subject = nodes.container.siblings('.iO').find('input');
         } else {
             // inline reply
+            nodes.mode = 'inline';
             nodes.container = jQuery(element).closest('.nG');
 
             var $receivers = nodes.container.prev('.kX').find('[email]');
@@ -133,52 +135,47 @@ App.plugin('google-inbox', (function () {
     var before = function (params, callback) {
         var nodes = getNodes(params.element);
 
-        // TODO if inline and has to populate any fields
+        // if in inline-reply mode,
+        // and has to populate any fields (to/cc/bcc/subject),
         // open the popup.
-        if (nodes.container.hasClass('nG') && (
+        if (nodes.mode === 'inline' && (
             params.quicktext.to ||
             params.quicktext.cc ||
             params.quicktext.bcc ||
             params.quicktext.subject
         )) {
-            // TODO does not work because it tries to insert the qt in the inline reply,
-            // while the focus is moved to the popup.
-
-            // click the compose popup
+            // click the pop-out button
             nodes.container.closest('.bc').find('[jsaction*="quick_compose_popout_mole"]').trigger('click')
-        }
 
-        if (callback) {
-            callback(null, params);
+            // the focus moves to the popup,
+            // so update the element and focusNode reference.
+            // sometimes the popup does not open fast enough,
+            // and the activeElement is still in inline cursor,
+            // so we need the timeout trick.
+            setTimeout(function () {
+                params.element = document.activeElement;
+                var selection = document.getSelection();
+                params.focusNode = selection.focusNode;
+
+                fillFields(params);
+
+                callback(null, params)
+            })
+        } else {
+            fillFields(params);
+
+            // TODO make sure to always provide a callback in core,
+            // so we don't have to do these checks in plugins.
+            if (callback) {
+                callback(null, params);
+            }
         }
     }
 
-    var after = function (params, callback) {
+    // we can't use after() here,
+    // because it messes with the focus.
+    var fillFields = function (params) {
         var nodes = getNodes(params.element);
-
-        // TODO if inline and has to populate any fields
-        // open the popup.
-//         if (nodes.container.hasClass('nG') && (
-//             params.quicktext.to ||
-//             params.quicktext.cc ||
-//             params.quicktext.bcc ||
-//             params.quicktext.subject
-//         )) {
-// //             if (callback) {
-// //                 callback(null, params);
-// //             }
-//
-//             // click the compose popup
-//             nodes.container.closest('.bc').find('[jsaction*="quick_compose_popout_mole"]').trigger('click')
-//
-// //             // refresh nodes
-// //             setTimeout(function () {
-// //                 params.element = document.activeElement
-// //                 before(params)
-// //             }, 500);
-//
-// //             return
-//         }
 
         if (params.quicktext.subject) {
             var parsedSubject = Handlebars.compile(params.quicktext.subject)(PrepareVars(params.data));
@@ -190,7 +187,8 @@ App.plugin('google-inbox', (function () {
         var blurEvent = new Event('blur');
 
         if (params.quicktext.to) {
-            // TODO in the future plugins should get params.quicktext.to already parsed.
+            // TODO in the future,
+            // plugins should get params.quicktext.to already parsed.
             // so we don't have to use Handlebars.compile and PrepareVars in plugins.
             var parsedTo = Handlebars.compile(params.quicktext.to)(PrepareVars(params.data));
             var $toField = nodes.to.find('input');
@@ -218,11 +216,7 @@ App.plugin('google-inbox', (function () {
 
                 $field.get(0).dispatchEvent(blurEvent);
             }
-        })
-
-        if (callback) {
-            callback(null, params);
-        }
+        });
     };
 
     var init = function (params, callback) {
@@ -243,7 +237,6 @@ App.plugin('google-inbox', (function () {
     return {
         init: init,
         getData: getData,
-        before: before,
-        after: after
+        before: before
     }
 })());
