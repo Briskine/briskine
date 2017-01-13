@@ -128,9 +128,7 @@ App.plugin('gmail', (function () {
 
         if (params.quicktext.subject) {
             var parsedSubject = Handlebars.compile(params.quicktext.subject)(PrepareVars(params.data));
-            var $subjectField = $parent.find('input[name=subjectbox]');
-            var newSubject = $subjectField.val() + parsedSubject;
-            $subjectField.val(newSubject);
+            $parent.find('input[name=subjectbox]').val(parsedSubject);
         }
 
         if (params.quicktext.to ||
