@@ -44,10 +44,9 @@
         </p>
     </div>
 
-    <div class="list-group quicktexts-list" ng-show="templates.length">
+    <div class="list-group quicktexts-list" ng-show="filteredTemplates.length">
         <div class="list-group-item"
-             ng-repeat="template in templates | fuzzy:searchText:searchOptions | limitTo:limitTemplates | tagFilter:filterTags | sharingFilter:properties.list as filteredTemplates">
-
+             ng-repeat="template in filterTemplates() | limitTo:limitTemplates as filteredTemplates">
             <div class="checkbox-wrapper">
                 <input type="checkbox" ng-change="checkHasSelected()" ng-model="selectedQuickTexts[template.id]">
             </div>
@@ -95,7 +94,7 @@
             </div>
         </div>
     </div>
-    <div class="row load-more text-center" ng-show="templates.length > limitTemplates">
+    <div class="row load-more text-center" ng-show="filterTemplates().length > limitTemplates">
         <button ng-click="loadMore()" class="btn btn-default">Load more templates</button>
     </div>
 </div>
