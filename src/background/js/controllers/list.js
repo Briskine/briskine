@@ -429,4 +429,17 @@ gApp.controller('ListCtrl',
         $scope.loadMore = function () {
             $scope.limitTemplates += 42;
         };
+
+        $scope.filterTemplates = function () {
+            // fuzzy serach
+            var matchedTemplates = $filter('fuzzy')($scope.templates, $scope.searchText, $scope.searchOptions)
+
+            // tags
+            matchedTemplates = $filter('tagFilter')(matchedTemplates, $scope.filterTags)
+
+            // sharing filter
+            matchedTemplates = $filter('sharingFilter')(matchedTemplates, $scope.properties.list)
+
+            return matchedTemplates
+        };
     });
