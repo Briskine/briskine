@@ -34,16 +34,7 @@
 </div>
 
 <div id="quicktext-table-container">
-    <div ng-show="showInstallHint">
-        <p class="alert alert-info alert-dismissable">
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close" ng-click="closeHint()">
-                <span aria-hidden="true">&times;</span>
-            </button>
-            <strong>You're all set!</strong><br/>
-            Now you can create more templates and start using them in Gmail™, Outlook™ or Linkedin™.
-        </p>
-    </div>
-
+    <div ng-include="'includes/subscribe_hint.html'"></div>
     <div class="list-group quicktexts-list" ng-show="filteredTemplates.length">
         <div class="list-group-item"
              ng-repeat="template in filterTemplates() | limitTo:limitTemplates as filteredTemplates">
@@ -71,14 +62,11 @@
                         </p>
                     </div>
 
-
                     <div class="col-xs-6">
-
                         <p class="list-group-item-text quicktext-detail">
                             <span class="quicktext-template" title="{{::template.body | stripHTML }}"
                                   ng-bind-html="template.body| stripHTML | truncate:100 | newlines | safe"></span>
                         </p>
-
                         <p class="list-group-item-text quicktext-tags" ng-if="::template.tags">
                         <div class="label-wrapper" ng-repeat="tag in template.tags.split(', ')">
                             <span class="tag" ng-if="tag"><i class="fa fa-hashtag icon"></i>{{::tag}} </span>
@@ -99,6 +87,7 @@
     </div>
 </div>
 
+<div ng-include="'includes/post_install.html'" onload="showPostInstall()"></div>
 <div ng-include="'includes/form.html'"></div>
 <div ng-include="'views/includes/share_form.html'"></div>
 <div ng-include="'views/includes/import_form.html'"></div>

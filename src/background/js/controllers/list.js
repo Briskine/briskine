@@ -71,9 +71,10 @@ gApp.controller('ListCtrl',
         $scope.filterTags = FilterTagService.filterTags;
         $scope.properties = properties;
         $scope.limitTemplates = 42; // I know.. it's a cliche
-        $scope.showInstallHint = false;
+        $scope.showSubscribeHint = false;
         $scope.hasSelected = false;
         $scope.searchOptions = {};
+        $scope.gmailLink = 'https://mail.google.com/mail/?view=cm&fs=1&to=someone@example.com&su=I%20love%20Gorgias!&body=Hey!%0A%0ACheck%20out%20this%20awesome%20Chrome%20extension%20that%20I%20found%3A%0A%0Ahttps%3A%2F%2Fchrome.google.com%2Fwebstore%2Fdetail%2Fgorgias-templates-email-t%2Flmcngpkjkplipamgflhioabnhnopeabf%0A%0AIt%20helps%20me%20type%20much%20faster%20with%20templates%20on%20the%20web!'
 
         function loadAccount() {
             SettingsService.get("isLoggedIn").then(function (isLoggedIn) {
@@ -107,10 +108,6 @@ gApp.controller('ListCtrl',
             $scope.subjectEnabled = settings.fields.subject;
             $scope.tagsEnabled = settings.fields.tags;
 
-            if (!settings.shownInstallHint) {
-                $scope.showInstallHint = true;
-            }
-
             // Setup search
             if (settings.qaBtn.fuzzySearch === false) {
                 $scope.searchOptions.threshold = 0
@@ -118,13 +115,32 @@ gApp.controller('ListCtrl',
             $scope.searchOptions.caseSensitive = !!settings.qaBtn.caseSensitiveSearch
         });
 
-        $scope.closeHint = function () {
-            SettingsService.get('settings').then(function (settings) {
-                $scope.showInstallHint = false;
-
-                settings.shownInstallHint = true;
-                SettingsService.set('settings', settings);
+        $scope.showPostInstall = function () {
+            SettingsService.get('hints').then(function (hints) {
+                if (hints) {
+                    $scope.hints = hints;
+                    // show the post install modal only if we're not just after tutorial (there will be 2 modals open)
+                    if (hints.postInstall && $routeParams.id !== 'new' && $routeParams.src !== 'tutorial') {
+                        $('#post-install-modal').modal('show');
+                    }
+                    if (hints.subscribeHint && $scope.templates.length > 7) {
+                         SettingsService.get("isLoggedIn").then(function (isLoggedIn) {
+                             if (!isLoggedIn) {
+                                 $scope.showSubscribeHint = true;
+                             }
+                         });
+                    }
+                }
             });
+        };
+
+        $scope.closeHint = function (hintType) {
+            SettingsService.get('hints').then(function (hints) {
+                $scope.hints[hintType] = false;
+                hints[hintType] = false;
+                SettingsService.set('hints', hints);
+            });
+            return true;
         };
 
         $scope.toggleField = function (field, enabled) {

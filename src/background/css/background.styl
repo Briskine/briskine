@@ -35,6 +35,10 @@ $contentWidth = 800px;
 @import "sidebar.styl";
 @import "list.styl";
 
+[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+    display: none !important;
+}
+
 /* General
  */
 body {
@@ -84,7 +88,7 @@ header {
     }
     font-weight: normal !important;
     text-decoration: none !important;
-    //font-style: italic;
+//font-style: italic;
 
     &:focus, &:hover {
         text-decoration: none;
@@ -117,20 +121,22 @@ header {
 
 // Stats + please tweet about us button to the right side
 .profile-stats {
-    font-size: 1.2em;
+    font-size: 13px;
     text-align: center;
     color: $black !important;
-    width: 220px;
 
-    padding-right: 9px;
+    max-width: 200px;
+    min-height: 20px;
+
+    padding: 10px;
+    margin-bottom: 20px;
+    background-color: #f5f5f5;
+    border: 1px solid #e3e3e3;
+    border-radius: 4px;
+
     position: fixed;
     bottom: 20px;
-    right: 20px;
-
-    .close {
-        top: -9px;
-        right: 0;
-    }
+    right: 10px;
 
     .btn-twitter {
         text-align: center;
@@ -325,30 +331,58 @@ img.avatar {
         color: #979797;
     }
 }
+
 .editor-wrapper {
-  margin-bottom: 5px;
+    margin-bottom: 5px;
 }
+
 .google-drive-icon {
-  background-image: url('/icons/google-drive-icon.png');
-  background-position: center;
-  background-repeat: no-repeat;
+    background-image: url('/icons/google-drive-icon.png');
+    background-position: center;
+    background-repeat: no-repeat;
 }
+
 .attachments {
-   .fa {
-     margin: 0 3px;
-   }
-   .fa-close {
-     color: #15c;
-     cursor: pointer;
-   }
+    .fa {
+        margin: 0 3px;
+    }
+    .fa-close {
+        color: #15c;
+        cursor: pointer;
+    }
 }
+
 .dropdown-toggle {
-  padding: 0.25em 0.75em;
+    padding: 0.25em 0.75em;
 }
+
 //google-picker
 .picker-dialog-bg {
-  z-index: 1100 !important;
+    z-index: 1100 !important;
 }
+
 .picker-dialog {
-  z-index: 1101 !important;
+    z-index: 1101 !important;
+}
+
+.helpdesk-ad {
+    border: 1px solid #cae1ee;
+    background-color: #f5fafd;
+    padding: 10px;
+    border-radius: 4px;
+    position: fixed;
+    top: 18px;
+    right: 10px;
+    z-index: 1000;
+    max-width: 200px;
+    img {
+        padding-top: 20px;
+        padding-bottom: 20px;
+    }
+    p {
+        fon-size: 14px;
+    }
+    .close {
+        right: 0;
+    }
 }

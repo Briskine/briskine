@@ -14,8 +14,7 @@ if (chrome.runtime) {
         '*://*.facebook.com/*',
         '*://*.fastmail.com/*',
         '*://*.uservoice.com/*',
-        '*://*.zendesk.com/*',
-        '*://*.desk.com/*'
+        '*://*.zendesk.com/*'
     ];
 
     // Called when the url of a tab changes.
@@ -57,6 +56,13 @@ if (chrome.runtime) {
             angularInjector().get('SettingsService').reset();
         } else if (details.reason == "update") {
             amplitude.getInstance().logEvent("Updated Gorgias", {'version': details.previousVersion});
+
+            angularInjector().get('SettingsService').get('hints').then(function (hints) {
+                if (hints && hints.postInstall) {
+                    hints.postInstall = false;
+                    SettingsService.set('hints', hints);
+                }
+            });
         }
 
         // All affected tabs should be reloaded if the extension was installed

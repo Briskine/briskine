@@ -373,6 +373,12 @@ gApp.controller('TemplateFormCtrl',
 
                 // hide the modal
                 $('.modal').modal('hide');
+
+                SettingsService.get('hints').then(function (hints) {
+                    if (hints && hints.postInstall && $routeParams.id === 'new' && $routeParams.src === 'tutorial') {
+                        $('#post-install-modal').modal('show');
+                    }
+                });
             });
 
             $scope.selectedAll = false;

@@ -193,7 +193,7 @@
                     </div>
 
                     <p ng-show="templates.length > 5 && !account" class="premium-feature">
-                        Share this template with your team. <a ng-click="templateForm.upgradeNow()">Upgrade now!</a>
+                        Share this template with your team. <a href="" ng-click="templateForm.upgradeNow()">Subscribe now!</a>
                     </p>
 
                     <div class="form-group" ng-show="account && currentSubscription && currentSubscription.active">
@@ -225,9 +225,7 @@
                         <input type="text" class="form-control" id="template-qt-invite-people" ng-model="shareData.emails"
                                placeholder="Email addresses"/>
                     </div>
-
                 </div>
-
 
                 <div class="modal-footer">
                     <span ng-show="templateForm.selectedTemplate.id">

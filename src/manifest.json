@@ -1,7 +1,7 @@
 {
     "manifest_version": 2,
     "name": "__MSG_extName__",
-    "version": "5.5.3",
+    "version": "5.6.0",
     "description": "__MSG_extDesc__",
     "short_name": "Gorgias",
     "default_locale": "en",
@@ -46,11 +46,7 @@
     ],
     "web_accessible_resources": [
         "pages/bg.html",
-        "pages/content.html",
-        "pages/helpdesk/zendesk.js",
-        "pages/helpdesk/zendesk.html",
-        "pages/helpdesk/desk.js",
-        "pages/helpdesk/desk.html"
+        "pages/content.html"
     ],
     "browser_action": {
         "default_title": "Gorgias",

@@ -90,7 +90,6 @@ var Settings = {
         //apiBaseURL: "http://localhost:5000/api/1/",
 
         settings: { // settings for the settings view
-
             dialog: {
                 enabled: true,
                 shortcut: 'ctrl+space', // shortcut that triggers the complete dialog
@@ -119,7 +118,6 @@ var Settings = {
             editor: {
                 enabled: true // new editor - enable for new users
             },
-            migration_head: 0,
             sidebar: { // this sidebar to the right
                 enabled: true,
                 url: ""
@@ -135,6 +133,9 @@ var Settings = {
         syncedWords: 0,
         lastStatsSync: null,
         lastSync: null,
-        shownInstallHint: false
+        hints: {
+            postInstall: true,
+            subscribeHint: true
+        }
     }
 };

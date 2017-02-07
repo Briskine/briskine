@@ -1,13 +1,11 @@
+var VERSION = chrome.runtime.getManifest().version
 var DEFAULT_RAVEN_OPTIONS = {
     ignoreErrors: [
         'SecurityError'
     ],
-    tags: {
-        version: chrome.runtime.getManifest().version
-    },
+    release: VERSION,
     linesOfContext: 11,
-    fetchContext: true,
-    collectWindowErrors: true
+    fetchContext: true
 };
 
 function ravenInit(options) {
