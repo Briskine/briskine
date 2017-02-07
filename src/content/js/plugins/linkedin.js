@@ -28,15 +28,19 @@ App.plugin('linkedin', (function() {
     var getData = function(params, callback) {
 
         var vars = {
-            from: [],
+            from: {},
             to: [],
             subject: ''
         };
 
-        var $fromContainer= $('.account-toggle');
-        var fromName = $fromContainer.find('.nav-profile-photo').attr("alt");
-        var fromAddress = "";
-
+        var fromName = '';
+        var $fromContainer= $('.nav-item__profile-member-photo');
+        if ($fromContainer.length) {
+           fromName = $fromContainer.attr('alt');
+        }
+        if (!fromName) {
+            fromName = '';
+        }
         var from = {
             name: fromName,
             first_name: '',
@@ -45,13 +49,11 @@ App.plugin('linkedin', (function() {
         };
 
         var parsedName = parseName(fromName);
-
         from.first_name = parsedName.first_name;
         from.last_name = parsedName.last_name;
+        vars.from = from;
 
-        vars.from.push(from);
-
-        var $contact = $('.one-to-one h2.name');
+        var $contact = $('.msg-entity-lockup__entity-title');
         if ($contact.length) {
             parsedName = parseName($contact.text());
             var to = {
@@ -64,20 +66,6 @@ App.plugin('linkedin', (function() {
             to.first_name = parsedName.first_name;
             to.last_name = parsedName.last_name;
             vars.to.push(to);
-        } else {
-            $('.pillbox-list .pill-name').each(function(){
-                var parsedName = parseName($(this).text());
-                var to = {
-                    name: name,
-                    first_name: '',
-                    last_name: '',
-                    email: ''
-                };
-
-                to.first_name = parsedName.first_name;
-                to.last_name = parsedName.last_name;
-                vars.to.push(to);
-            });
         }
 
         if(callback) {
