@@ -1,15 +1,6 @@
 App.plugin('zendesk', (function () {
     var init = function (params, callback) {
-        if (window.location.hostname.indexOf('.zendesk.com') === -1) {
-            // return true as response if plugin should be activated
-            return callback(null, false);
-        }
-
-        Settings.get('settings', {}, function (settings) {
-            if (settings.suggestions && settings.suggestions.enabled === false) {
-                return callback(null, false);
-            }
-        });
+        return callback(null, window.location.hostname.indexOf('.zendesk.com') !== -1);
     };
 
     var getData = function (params, callback) {
