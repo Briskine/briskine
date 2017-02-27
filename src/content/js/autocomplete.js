@@ -231,9 +231,18 @@ App.autocomplete.replaceWith = function (params) {
                     if (focusNode.childNodes.length > 0) {
                         focusNode = focusNode.childNodes[selection.focusOffset]; // select a text node
                     } else {
-                        // create an empty text node and attach it before the node
+                        // create an empty text node
                         var tnode = doc.createTextNode('');
-                        focusNode.parentNode.insertBefore(tnode, focusNode);
+
+                        // if the focusNode is the same as the element
+                        if (focusNode === params.element) {
+                            // insert it in the node
+                            focusNode.appendChild(tnode);
+                        } else {
+                            // or attach it before the node
+                            focusNode.parentNode.insertBefore(tnode, focusNode);
+                        }
+
                         focusNode = tnode;
                     }
                 }

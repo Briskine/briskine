@@ -216,6 +216,17 @@ App.plugin('google-inbox', (function () {
         });
     };
 
+    var after = function (params, callback) {
+        // inserting a template while the placeholder text is still visible,
+        // needs a manual event trigger.
+        var inputEvent = new Event('input');
+        params.element.dispatchEvent(inputEvent);
+
+        if (callback) {
+            callback(null, params);
+        }
+    };
+
     var init = function (params, callback) {
         var ginboxUrl = '//inbox.google.com/';
 
@@ -234,6 +245,7 @@ App.plugin('google-inbox', (function () {
     return {
         init: init,
         getData: getData,
-        before: before
+        before: before,
+        after: after
     }
 })());
