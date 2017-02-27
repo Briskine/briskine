@@ -19,6 +19,10 @@ App.autocomplete.dialog = {
     RESULTS_LIMIT: 5, // only show 5 results at a time
     editor: null,
     qaBtn: null,
+    qaBtnWhitelist: [
+        'https://mail.google.com',
+        'https://inbox.google.com'
+    ],
     prevFocus: null,
     dialogSelector: ".qt-dropdown",
     contentSelector: ".qt-dropdown-content",
@@ -573,10 +577,6 @@ App.autocomplete.dialog = {
         if ($(elem).is('textarea, input[type=text], [contenteditable]')) {
             show = true;
         }
-        // only show for gmail now
-        if (window.location.origin !== "https://mail.google.com") {
-            show = false;
-        }
 
         // if the quick access button is focused/clicked
         if (elem.className.indexOf('gorgias-qa-btn') !== -1) {
@@ -604,6 +604,36 @@ App.autocomplete.dialog = {
         return show;
 
     },
+    setQaBtnPosition: function (textfield) {
+        var qaBtn = App.autocomplete.dialog.qaBtn.get(0);
+        var textfieldRect = textfield.getBoundingClientRect();
+        var metrics = {
+            top: textfieldRect.top,
+            left: textfieldRect.left
+        };
+        // padding from the top-right corner of the textfield
+        var padding = 10;
+
+        metrics.top += $(window).scrollTop();
+        metrics.left += $(window).scrollLeft();
+
+        metrics.top += padding;
+        metrics.left -= padding;
+
+        // move the quick access button to the right
+        // of the textfield
+        metrics.left += textfield.offsetWidth - qaBtn.offsetWidth;
+
+
+        // move the btn using transforms
+        // for performance
+        var transform = 'translate3d(' + metrics.left + 'px, ' + metrics.top + 'px, 0)';
+
+        qaBtn.style.transform = transform;
+        qaBtn.style.msTransform = transform;
+        qaBtn.style.mozTransform = transform;
+        qaBtn.style.webkitTransform = transform;
+    },
     showQaBtn: function (e) {
 
         var textfield = e.target;
@@ -613,9 +643,11 @@ App.autocomplete.dialog = {
             return false;
         }
 
-
         Settings.get('settings', {}, function (settings) {
-            if (settings.qaBtn && settings.qaBtn.enabled === false) {
+            if ((settings.qaBtn && settings.qaBtn.enabled === false) ||
+                // only show for whitelisted domains
+                App.autocomplete.dialog.qaBtnWhitelist.indexOf(window.location.origin) === -1
+            ) {
                 return;
             }
 
@@ -628,6 +660,7 @@ App.autocomplete.dialog = {
             // padding from the top-right corner of the textfield
             var padding = 10;
 
+            // positioning the quick-action button.
             // Gmail is custom made
             if (window.location.origin === "https://mail.google.com") {
                 var gmailHook = $(textfield).closest('td');
@@ -650,49 +683,20 @@ App.autocomplete.dialog = {
                     }
                     return;
                 }
-            }
+            } else {
+                // default positioning
+                App.autocomplete.dialog.setQaBtnPosition(textfield);
 
-
-            var setPosition = function () {
-                var metrics = JSON.parse(JSON.stringify(textfield.getBoundingClientRect()));
-
-                metrics.top += $(window).scrollTop();
-                metrics.left += $(window).scrollLeft();
-
-                metrics.top += padding;
-                metrics.left -= padding;
-
-                // move the quick access button to the right
-                // of the textfield
-                metrics.left += textfield.offsetWidth - qaBtn.offsetWidth;
-
-
-                // move the btn using transforms
-                // for performance
-                var transform = 'translate3d(' + metrics.left + 'px, ' + metrics.top + 'px, 0)';
-
-                qaBtn.style.transform = transform;
-                qaBtn.style.msTransform = transform;
-                qaBtn.style.mozTransform = transform;
-                qaBtn.style.webkitTransform = transform;
-
-                if (textfield.style.zIndex) {
-                    qaBtn.style.zIndex = textfield.style.zIndex + 1;
-                } else {
-                    qaBtn.style.zIndex = 1;
+                // recalculate the width
+                for (var i in App.autocomplete.dialog.qaPositionIntervals) {
+                    clearInterval(App.autocomplete.dialog.qaPositionIntervals[i]);
                 }
-            };
-            setPosition();
 
-            // recalculate the width
-            for (var i in App.autocomplete.dialog.qaPositionIntervals) {
-                clearInterval(App.autocomplete.dialog.qaPositionIntervals[i]);
+                var intervalID = setInterval(function () {
+                    App.autocomplete.dialog.setQaBtnPosition(textfield);
+                }, 1000);
+                App.autocomplete.dialog.qaPositionIntervals.push(intervalID);
             }
-
-            var intervalID = setInterval(function () {
-                setPosition();
-            }, 1000);
-            App.autocomplete.dialog.qaPositionIntervals.push(intervalID);
 
         });
     },
