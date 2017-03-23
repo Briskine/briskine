@@ -2,6 +2,7 @@ node_modules
 selenium
 chrome_profile
 *.log
+build
 
 # It is added in git but we don't have to track this file
 src/backgrount/js/environment.js
