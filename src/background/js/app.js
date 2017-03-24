@@ -133,7 +133,7 @@ gApp.run(function ($rootScope, $location, $http, $timeout, ProfileService, Setti
     $rootScope.apiBaseURL = Settings.defaults.apiBaseURL;
 
     $rootScope.trustedSignupURL = $rootScope.baseURL + "signup/startup-monthly-usd-1/is_iframe=yes";
-    $rootScope.showStats = getRandomIntInclusive(0, 1);
+    $rootScope.showStats = true;
 
     SettingsService.get('settings').then(function (settings) {
         if (ENV && ENV === 'production') {

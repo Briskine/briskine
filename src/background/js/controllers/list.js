@@ -2,7 +2,6 @@ gApp.controller('ListCtrl',
     function ($route, $q, $scope, $rootScope, $routeParams, $location, $timeout, $filter,
               AccountService, TemplateService, SettingsService, FilterTagService, QuicktextSharingService,
               MemberService) {
-
         var $formModal;
         var $shareModal;
 
@@ -124,11 +123,11 @@ gApp.controller('ListCtrl',
                         $('#post-install-modal').modal('show');
                     }
                     if (hints.subscribeHint && $scope.templates.length > 7) {
-                         SettingsService.get("isLoggedIn").then(function (isLoggedIn) {
-                             if (!isLoggedIn) {
-                                 $scope.showSubscribeHint = true;
-                             }
-                         });
+                        SettingsService.get("isLoggedIn").then(function (isLoggedIn) {
+                            if (!isLoggedIn) {
+                                $scope.showSubscribeHint = true;
+                            }
+                        });
                     }
                 }
             });
@@ -153,6 +152,7 @@ gApp.controller('ListCtrl',
         $scope.reloadTemplates = function () {
             TemplateService.quicktexts().then(function (r) {
                 $scope.templates = r;
+                $scope.filterTemplates();
                 $rootScope.$broadcast('reload')
             });
         };
@@ -407,20 +407,20 @@ gApp.controller('ListCtrl',
         // Check if any template is selected
         $scope.checkHasSelected = function () {
             $scope.hasSelected = !!getSelectedQuickTexts().length;
-        }
+        };
 
         // Uncheck all selected templates
         var removeSelected = function () {
             $scope.selectedQuickTexts = {};
             $scope.hasSelected = false;
-        }
+        };
 
         // Clear all checkboxes when input changes
         $scope.clearSelectedTemplates = function () {
             removeSelected();
             $scope.selectedAll = false;
             $scope.hasSelected = false;
-        }
+        };
 
         // Check/Uncheck all checkboxes
         $scope.toggleSelectAll = function () {
@@ -440,22 +440,23 @@ gApp.controller('ListCtrl',
             if (tag != undefined) {
                 $scope.title = "<i class='fa fa-hashtag'/>" + tag + " templates";
             }
+            $scope.filterTemplates();
         });
 
         $scope.loadMore = function () {
             $scope.limitTemplates += 42;
         };
 
-        $scope.filterTemplates = function () {
-            // fuzzy serach
-            var matchedTemplates = $filter('fuzzy')($scope.templates, $scope.searchText, $scope.searchOptions)
-
+        $scope.filterTemplates = _.throttle(function () {
             // tags
-            matchedTemplates = $filter('tagFilter')(matchedTemplates, $scope.filterTags)
+            var matchedTemplates = $filter('tagFilter')($scope.templates, $scope.filterTags);
 
             // sharing filter
-            matchedTemplates = $filter('sharingFilter')(matchedTemplates, $scope.properties.list)
+            matchedTemplates = $filter('sharingFilter')(matchedTemplates, $scope.properties.list);
 
-            return matchedTemplates
-        };
+            // fuzzy search
+            matchedTemplates = $filter('fuzzy')(matchedTemplates, $scope.searchText, $scope.searchOptions);
+
+            $scope.filteredTemplates = matchedTemplates;
+        }, 50);
     });

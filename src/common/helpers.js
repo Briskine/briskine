@@ -96,6 +96,21 @@ var fuzzySearch = function (list, text, opts) {
         return list
     }
 
+    if (opts.threshold === 0) {
+        return _.filter(list, function (i) {
+            if (i.shortcut && i.shortcut.indexOf(text) !== -1) {
+                return true;
+            }
+            if (i.title && i.title.indexOf(text) !== -1) {
+                return true;
+            }
+            if (i.body && i.body.indexOf(text) !== -1) {
+                return true;
+            }
+            return false;
+        });
+    }
+
     var defaultOptions = {
         caseSensitive: false,
         shouldSort: true,

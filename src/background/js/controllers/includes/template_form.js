@@ -276,11 +276,9 @@ gApp.controller('TemplateFormCtrl',
                     if ($scope.account && quicktext.nosync == 0 && $rootScope.currentSubscription && $rootScope.currentSubscription.active) {
                         $q.all([$scope.reloadSharing([self.selectedTemplate]), $scope.initializeMemberSelectize([self.selectedTemplate])]).then(function() {
                             self.fillUpSelectizeField(self.selectedTemplate);
-                            initForm();
                         });
-                    } else {
-                        initForm();
                     }
+                    initForm();
                 });
             }
         };

@@ -1,6 +1,10 @@
 // Truncate and end with ...
 gApp.filter('truncate', function () {
     return function (text, length, end) {
+        if (!text) {
+            return '';
+        }
+
         if (isNaN(length)) {
             length = 100;
         }
@@ -37,10 +41,25 @@ gApp.filter('stripHTML', function ($sce) {
             var doc = document.implementation.createHTMLDocument();
             var body = doc.createElement('div');
             body.innerHTML = html;
-            return body.textContent||body.innerText;
-        } catch(e) {
+            return body.textContent || body.innerText;
+        } catch (e) {
             return "";
         }
+    };
+});
+
+gApp.filter('gravatar', function () {
+    var cache = {};
+    return function (text, defaultText) {
+        if (!text) {
+            return '';
+        }
+
+        if (!cache[text]) {
+            defaultText = (defaultText) ? md5(defaultText.toString().toLowerCase()) : '';
+            cache[text] = (text) ? md5(text.toString().toLowerCase()) : defaultText;
+        }
+        return 'https://www.gravatar.com/avatar/' + cache[text] + '?d=retro';
     };
 });
 
@@ -61,36 +80,27 @@ gApp.filter('tagFilter', function (TemplateService) {
 // Filter templates by sharing setting
 gApp.filter('sharingFilter', function () {
     return function (templates, sharing_setting) {
-        if (sharing_setting != 'all' && sharing_setting != 'tag') {
-            var private = sharing_setting == 'private';
-            var nosync = private ? 1 : 0;
-            return _.filter(templates, function (t) {
-                if (private) { return t.private === private || t.nosync === nosync; }
-                return t.private === private;
-            });
-        } else {
+        if (sharing_setting === 'all' || sharing_setting === 'tag') {
             return templates;
         }
+
+        var privateSetting = sharing_setting === 'private';
+        return _.filter(templates, function (t) {
+            if (privateSetting) { // show only private templates
+                return t.private;
+            } else { // only shared templates
+                return !t.private;
+            }
+        });
     };
 });
 
-gApp.filter('gravatar', function () {
-    var cache = {};
-    return function(text, defaultText) {
-        if (!text) {
-            return '';
-        }
-
-        if (!cache[text]) {
-            defaultText = (defaultText) ? md5(defaultText.toString().toLowerCase()) : '';
-            cache[text] = (text) ? md5(text.toString().toLowerCase()) : defaultText;
-        }
-        return 'https://www.gravatar.com/avatar/' + cache[text] +  '?d=retro';
-    };
-});
 
 gApp.filter('fuzzy', function () {
-    return function(list, text, options) {
+    return function (list, text, options) {
+        if (!text) {
+            return list;
+        }
         return fuzzySearch(list, text, options);
     };
 });
