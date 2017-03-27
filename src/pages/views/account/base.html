@@ -4,18 +4,27 @@
 <div role="tabpanel">
     <ul class="nav nav-tabs" role="tablist">
         <li role="presentation" ng-class="activeTab == 'settings'?'active':''">
-            <a href="#/settings" aria-controls="settings" role="tab" data-toggle="tab" data-target="#">Extension Settings</a>
+            <a href="#/settings" aria-controls="settings" role="tab" data-toggle="tab" data-target="#">Extension
+                Settings</a>
         </li>
         <li role="presentation" ng-if="account" ng-class="activeTab == 'account'?'active':''">
             <a href="#/account" aria-controls="account" role="tab" data-toggle="tab" data-target="#">My Account</a>
         </li>
         <li role="presentation" ng-if="account" ng-class="activeTab == 'members'?'active':''">
-            <a href="#/account/members" aria-controls="members" role="tab" data-toggle="tab" data-target="#">Team Members</a>
+            <a href="#/account/members" aria-controls="members" role="tab" data-toggle="tab" data-target="#">Team
+                Members</a>
         </li>
         <li role="presentation" ng-if="account.is_staff" ng-class="activeTab == 'groups'?'active':''">
-            <a href="#/account/groups" aria-controls="groups" role="tab" data-toggle="tab" data-target="#">Member Groups</a>
+            <a href="#/account/groups" aria-controls="groups" role="tab" data-toggle="tab" data-target="#">Member
+                Groups</a>
         </li>
-        <li role="presentation" ng-show="account.is_customer && currentSubscription && currentSubscription.active" ng-class="activeTab == 'subscriptions'?'active':''">
+        <li role="presentation" ng-show="currentSubscription && currentSubscription.active"
+            ng-class="activeTab == 'stats'?'active':''">
+            <a href="#/account/stats" aria-controls="stats" role="tab" data-target="#"
+               data-toggle="tab">Statistics</a>
+        </li>
+        <li role="presentation" ng-show="account.is_customer && currentSubscription && currentSubscription.active"
+            ng-class="activeTab == 'subscriptions'?'active':''">
             <a href="#/account/subscriptions" aria-controls="subscriptions" role="tab" data-target="#"
                data-toggle="tab">Subscriptions</a>
         </li>
@@ -30,10 +39,16 @@
         <div role="tabpanel" class="tab-pane" ng-class="activeTab === 'members'?'active':''" id="members">
             <div class="tab-container" ng-include="'/pages/views/account/members.html'"></div>
         </div>
-        <div role="tabpanel" class="tab-pane" ng-if="account.is_staff" ng-class="activeTab === 'groups'?'active':''" id="groups">
+        <div role="tabpanel" class="tab-pane" ng-if="account.is_staff" ng-class="activeTab === 'groups'?'active':''"
+             id="groups">
             <div class="tab-container" ng-include="'/pages/views/account/groups.html'"></div>
         </div>
-        <div role="tabpanel" class="tab-pane" ng-if="account.is_customer" ng-class="activeTab == 'subscriptions'?'active':''" id="subscriptions">
+        <div role="tabpanel" class="tab-pane" ng-class="activeTab == 'stats'?'active':''"
+             id="stats">
+            <div class="tab-container" ng-include="'/pages/views/account/stats.html'"></div>
+        </div>
+        <div role="tabpanel" class="tab-pane" ng-if="account.is_customer"
+             ng-class="activeTab == 'subscriptions'?'active':''" id="subscriptions">
             <div class="tab-container" ng-include="'/pages/views/account/subscriptions.html'"></div>
         </div>
     </div>

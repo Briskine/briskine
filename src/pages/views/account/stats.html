@@ -1,0 +1,70 @@
+<div class="row">
+    <div class="ng-cloak" ng-show="!(templateStats.length || userStats.length)">
+        <div class="col-sm-12">
+            <h4>No stats yet :(</h4>
+            <p>Use the extension a bit to get some statistics here.</p>
+        </div>
+    </div>
+    <div class="col-sm-6">
+        <div>
+            <h3
+                data-toggle="tooltip"
+                data-placement="bottom"
+                data-original-title="For performance reasons only the top 100 templates are shown">
+                Template usage
+                <small style="display: inline"><span class="fa fa-question-circle"></span></small>
+            </h3>
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>Template title</th>
+                    <th
+                        data-toggle="tooltip"
+                        data-placement="bottom"
+                        data-original-title="The counts are approximate">
+                        Usage count
+                        <small style="display: inline"><span class="fa fa-question-circle"></span></small>
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="ts in templateStats">
+                    <td>{{ts.title}}</td>
+                    <td>{{ts.count}}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="col-sm-6">
+        <div ng-show="userStats.length">
+            <h3
+                data-toggle="tooltip"
+                data-placement="bottom"
+                data-original-title="For performance reasons only the top 100 users are shown">
+                Top users
+                <small style="display: inline"><span class="fa fa-question-circle"></span></small>
+            </h3>
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>User email</th>
+                    <th
+                        data-toggle="tooltip"
+                        data-placement="bottom"
+                        data-original-title="The counts are approximate">
+                        Template usage count
+                        <small style="display: inline"><span class="fa fa-question-circle"></span></small>
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="us in userStats">
+                    <td>{{us.email}}</td>
+                    <td>{{us.count}}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

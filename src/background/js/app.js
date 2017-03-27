@@ -84,6 +84,10 @@ gApp.config(function ($routeProvider, $compileProvider, $sceDelegateProvider) {
             controller: 'SubscriptionsCtrl',
             templateUrl: 'views/account/base.html'
         })
+        .when('/account/stats', {
+            controller: 'StatsCtrl',
+            templateUrl: 'views/account/base.html'
+        })
         .when('/installed', {
             templateUrl: 'views/installed.html',
             reloadOnSearch: false
