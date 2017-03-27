@@ -82,14 +82,27 @@ App.plugin('google-inbox', (function () {
             subject: ''
         }
 
-        // account information
-        var $accountContainer = jQuery('.gb_lb.gb_ga');
+        // title = Google Account: User Name (user@email.net)
+        var $signoutBtn = jQuery('[title^="Google Account: "]')
+        var btnTitle = $signoutBtn.attr('title')
+
+        var name = btnTitle.replace(/Google Account:|\r?\n|\r/g, '').trim();
+        var email = '';
+
+        var openBracket = name.lastIndexOf('(')
+        // in case of no brackets
+        if (openBracket === -1) {
+            openBracket = name.length
+        } else {
+            email = name.substr(openBracket).slice(1, -1);
+        }
+
+        name = name.substr(0, openBracket).trim();
 
         // from
-        var name = $accountContainer.find('.gb_ub').text()
         vars.from = jQuery.extend({
             name: name,
-            email: $accountContainer.find('.gb_vb').text()
+            email: email
         }, splitFullName(name));
 
         var nodes = getNodes(params.element);
