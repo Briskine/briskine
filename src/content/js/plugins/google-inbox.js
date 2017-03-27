@@ -207,7 +207,7 @@ App.plugin('google-inbox', (function () {
 
         ['cc', 'bcc'].forEach(function (type) {
             if (params.quicktext[type]) {
-                var parsed = Handlebars.compile(params.quicktext.cc)(PrepareVars(params.data));
+                var parsed = Handlebars.compile(params.quicktext[type])(PrepareVars(params.data));
                 var $field = nodes[type].find('input');
                 $field.val(parsed);
 
