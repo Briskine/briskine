@@ -82,14 +82,27 @@ App.plugin('google-inbox', (function () {
             subject: ''
         }
 
-        // account information
-        var $accountContainer = jQuery('.gb_lb.gb_ga');
+        // title = Google Account: User Name (user@email.net)
+        var $signoutBtn = jQuery('[title^="Google Account: "]')
+        var btnTitle = $signoutBtn.attr('title')
+
+        var name = btnTitle.replace(/Google Account:|\r?\n|\r/g, '').trim();
+        var email = '';
+
+        var openBracket = name.lastIndexOf('(')
+        // in case of no brackets
+        if (openBracket === -1) {
+            openBracket = name.length
+        } else {
+            email = name.substr(openBracket).slice(1, -1);
+        }
+
+        name = name.substr(0, openBracket).trim();
 
         // from
-        var name = $accountContainer.find('.gb_ub').text()
         vars.from = jQuery.extend({
             name: name,
-            email: $accountContainer.find('.gb_vb').text()
+            email: email
         }, splitFullName(name));
 
         var nodes = getNodes(params.element);
@@ -207,13 +220,24 @@ App.plugin('google-inbox', (function () {
 
         ['cc', 'bcc'].forEach(function (type) {
             if (params.quicktext[type]) {
-                var parsed = Handlebars.compile(params.quicktext.cc)(PrepareVars(params.data));
+                var parsed = Handlebars.compile(params.quicktext[type])(PrepareVars(params.data));
                 var $field = nodes[type].find('input');
                 $field.val(parsed);
 
                 $field.get(0).dispatchEvent(blurEvent);
             }
         });
+    };
+
+    var after = function (params, callback) {
+        // inserting a template while the placeholder text is still visible,
+        // needs a manual event trigger.
+        var inputEvent = new Event('input');
+        params.element.dispatchEvent(inputEvent);
+
+        if (callback) {
+            callback(null, params);
+        }
     };
 
     var init = function (params, callback) {
@@ -234,6 +258,7 @@ App.plugin('google-inbox', (function () {
     return {
         init: init,
         getData: getData,
-        before: before
+        before: before,
+        after: after
     }
 })());
