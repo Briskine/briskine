@@ -5,9 +5,9 @@ App.plugin('google-inbox', (function () {
     // split full name by last space.
     // TODO share this between plugins.
     var splitFullName = function (fullname) {
-        fullname = fullname || ''
+        fullname = fullname || '';
 
-        var lastSpaceIndex = fullname.lastIndexOf(' ')
+        var lastSpaceIndex = fullname.lastIndexOf(' ');
         if (lastSpaceIndex < 1) {
             lastSpaceIndex = fullname.length
         }
@@ -16,10 +16,10 @@ App.plugin('google-inbox', (function () {
             first_name: fullname.substr(0, lastSpaceIndex),
             last_name: fullname.substr(lastSpaceIndex + 1)
         }
-    }
+    };
 
     var getNodes = function (element) {
-        var nodes = {}
+        var nodes = {};
 
         // editor container classNames:
         // .n7 for message popup
@@ -34,16 +34,15 @@ App.plugin('google-inbox', (function () {
             // popup.
             // to, cc, bcc
             var receivers = [
-                { type: 'to', className: '.Fv' },
-                { type: 'cc', className: '.fD' },
-                { type: 'bcc', className: '.fx' }
+                {type: 'to', className: '.Fv'},
+                {type: 'cc', className: '.fD'},
+                {type: 'bcc', className: '.fx'}
             ];
 
             receivers.forEach(function (receiver) {
-                var $fieldContainer = nodes.container.siblings(receiver.className);
                 // return the field container node,
                 // so we can get different child nodes for read-write.
-                nodes[receiver.type] = $fieldContainer;
+                nodes[receiver.type] = nodes.container.siblings(receiver.className);
             });
 
             // subject
@@ -65,7 +64,7 @@ App.plugin('google-inbox', (function () {
             });
 
             // normalize the subject as an input
-            nodes.subject = jQuery(document.createElement('input'))
+            nodes.subject = jQuery(document.createElement('input'));
             nodes.subject.val(nodes.container.closest('.aY').find('[role="heading"] .eo').text());
         }
 
@@ -80,16 +79,21 @@ App.plugin('google-inbox', (function () {
             cc: [],
             bcc: [],
             subject: ''
-        }
+        };
 
         // title = Google Account: User Name (user@email.net)
-        var $signoutBtn = jQuery('[title^="Google Account: "]')
-        var btnTitle = $signoutBtn.attr('title')
+        var $signoutBtn = jQuery('.gb_eb');
+        var btnTitle = $signoutBtn.attr('title');
+        var name = '';
+        var sep = ':';
 
-        var name = btnTitle.replace(/Google Account:|\r?\n|\r/g, '').trim();
+        if (btnTitle.indexOf(sep) !== -1) {
+            var prefix = btnTitle.split(sep)[0] + sep;
+            name = btnTitle.replace(prefix, '').trim();
+        }
+
         var email = '';
-
-        var openBracket = name.lastIndexOf('(')
+        var openBracket = name.lastIndexOf('(');
         // in case of no brackets
         if (openBracket === -1) {
             openBracket = name.length
@@ -111,8 +115,8 @@ App.plugin('google-inbox', (function () {
                 return
             }
 
-            var $field = nodes[receiver]
-            var name = ''
+            var $field = nodes[receiver];
+            var name = '';
 
             // inline sends the [email] node,
             // popup sends the [email] node container.
@@ -134,7 +138,7 @@ App.plugin('google-inbox', (function () {
                 name: name,
                 email: $field.attr('email')
             }, splitFullName(name)));
-        })
+        });
 
         // subject
         vars.subject = nodes.subject.val();
@@ -151,13 +155,13 @@ App.plugin('google-inbox', (function () {
         // and has to populate any fields (to/cc/bcc/subject),
         // open the popup.
         if (nodes.mode === 'inline' && (
-            params.quicktext.to ||
-            params.quicktext.cc ||
-            params.quicktext.bcc ||
-            params.quicktext.subject
-        )) {
+                params.quicktext.to ||
+                params.quicktext.cc ||
+                params.quicktext.bcc ||
+                params.quicktext.subject
+            )) {
             // click the pop-out button
-            nodes.container.closest('.bc').find('[jsaction*="quick_compose_popout_mole"]').trigger('click')
+            nodes.container.closest('.bc').find('[jsaction*="quick_compose_popout_mole"]').trigger('click');
 
             // focus moves to the popup,
             // so update the element and focusNode refs.
@@ -182,7 +186,7 @@ App.plugin('google-inbox', (function () {
                 callback(null, params);
             }
         }
-    }
+    };
 
     // can't use after(),
     // because it messes with the focus.
