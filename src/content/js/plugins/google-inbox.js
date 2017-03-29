@@ -87,21 +87,24 @@ App.plugin('google-inbox', (function () {
         var name = '';
         var sep = ':';
 
-        if (btnTitle.indexOf(sep) !== -1) {
+        if (btnTitle && btnTitle.indexOf(sep) !== -1) {
             var prefix = btnTitle.split(sep)[0] + sep;
             name = btnTitle.replace(prefix, '').trim();
         }
 
         var email = '';
-        var openBracket = name.lastIndexOf('(');
-        // in case of no brackets
-        if (openBracket === -1) {
-            openBracket = name.length
-        } else {
-            email = name.substr(openBracket).slice(1, -1);
-        }
 
-        name = name.substr(0, openBracket).trim();
+        if (name) {
+            var openBracket = name.lastIndexOf('(');
+            // in case of no brackets
+            if (openBracket === -1) {
+                openBracket = name.length
+            } else {
+                email = name.substr(openBracket).slice(1, -1);
+            }
+
+            name = name.substr(0, openBracket).trim();
+        }
 
         // from
         vars.from = jQuery.extend({
