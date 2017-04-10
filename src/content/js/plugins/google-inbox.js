@@ -2,22 +2,6 @@
  */
 
 App.plugin('google-inbox', (function () {
-    // split full name by last space.
-    // TODO share this between plugins.
-    var splitFullName = function (fullname) {
-        fullname = fullname || '';
-
-        var lastSpaceIndex = fullname.lastIndexOf(' ');
-        if (lastSpaceIndex < 1) {
-            lastSpaceIndex = fullname.length
-        }
-
-        return {
-            first_name: fullname.substr(0, lastSpaceIndex),
-            last_name: fullname.substr(lastSpaceIndex + 1)
-        }
-    };
-
     var getNodes = function (element) {
         var nodes = {};
 
@@ -84,33 +68,9 @@ App.plugin('google-inbox', (function () {
         // title = Google Account: User Name (user@email.net)
         var $signoutBtn = jQuery('.gb_eb');
         var btnTitle = $signoutBtn.attr('title');
-        var name = '';
-        var sep = ':';
-
-        if (btnTitle && btnTitle.indexOf(sep) !== -1) {
-            var prefix = btnTitle.split(sep)[0] + sep;
-            name = btnTitle.replace(prefix, '').trim();
-        }
-
-        var email = '';
-
-        if (name) {
-            var openBracket = name.lastIndexOf('(');
-            // in case of no brackets
-            if (openBracket === -1) {
-                openBracket = name.length
-            } else {
-                email = name.substr(openBracket).slice(1, -1);
-            }
-
-            name = name.substr(0, openBracket).trim();
-        }
 
         // from
-        vars.from = jQuery.extend({
-            name: name,
-            email: email
-        }, splitFullName(name));
+        vars.from = App.utils.parseUserDetails(btnTitle);
 
         var nodes = getNodes(params.element);
         ['to', 'cc', 'bcc'].forEach(function (receiver) {
@@ -140,7 +100,7 @@ App.plugin('google-inbox', (function () {
             vars[receiver].push(jQuery.extend({
                 name: name,
                 email: $field.attr('email')
-            }, splitFullName(name)));
+            }, App.utils.splitFullName(name)));
         });
 
         // subject

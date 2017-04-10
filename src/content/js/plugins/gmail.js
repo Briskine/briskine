@@ -54,18 +54,9 @@ App.plugin('gmail', (function () {
             subject = '';
 
         if (isContentEditable(params.element)) {
-            var fullName = $('.gb_pb').text();
-            var firstName = $('.gb_P.gb_R').text();
-            var email = $('.gb_qb').text();
-
-            var fromData = {
-                name: fullName,
-                first_name: firstName,
-                last_name: fullName.replace(firstName + ' ', ''),
-                email: email
-            };
-
-            from.push(fromData);
+            var $signoutBtn = jQuery('a.gb_eb');
+            var btnTitle = $signoutBtn.attr('title');
+            from.push(App.utils.parseUserDetails(btnTitle));
 
             var $container = $(params.element).closest('table').parent().closest('table').parent().closest('table');
 
