@@ -63,6 +63,7 @@ module.exports = function (grunt) {
                 // order is important here
                 'content/js/patterns.js',
                 'content/js/index.js',
+                'content/js/utils.js',
                 'content/js/autocomplete.js',
                 'content/js/keyboard.js',
                 'content/js/dialog.js',
