@@ -20,6 +20,8 @@ var App = {
         // Get template filtered out by shortcut
         getQuicktextsShortcut: function (text, callback) {
             TemplateStorage.get(null, function (templates) {
+
+
                 for (var id in templates) {
                     var t = templates[id];
                     if (t.deleted === 0 && t.shortcut === text) {
@@ -33,10 +35,13 @@ var App = {
                                 "body_size": t.body.length
                             }
                         });
-                        callback([t]);
+
+                        callback(t);
                         return;
                     }
                 }
+
+                callback(null);
             });
         },
 

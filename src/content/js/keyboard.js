@@ -9,6 +9,7 @@ App.autocomplete.keyboard = {
         var doc = element.ownerDocument;
         var selection = doc.getSelection();
         var focusNode = selection.focusNode;
+
         // if it's not an editable element
         // don't trigger anything
         if(!App.autocomplete.isEditable(element)) {
@@ -30,21 +31,39 @@ App.autocomplete.keyboard = {
 
         if (word.text) {
 
-            // Find a matching Quicktext shortcut in the bg script
-            App.settings.getQuicktextsShortcut(word.text, function (quicktexts) {
+            var notemplateEvent = new CustomEvent('notemplate');
+            var getNextElement = function(event) {
+                console.log('foo');
+                var nextElement = document.activeElement;
+                element.focus();
 
-                if (quicktexts.length) {
+                var returnToElement = function() {
+                    console.log('bar');
+                    nextElement.focus();
+                    element.removeEventListener('notemplate', returnToElement);
+                };
+
+                element.addEventListener('notemplate', returnToElement);
+            };
+
+            element.addEventListener('blur', getNextElement);
+
+            // Find a matching Quicktext shortcut in the bg script
+            App.settings.getQuicktextsShortcut(word.text, function (quicktext) {
+
+                if (quicktext) {
                     // replace with the first quicktext found
                     App.autocomplete.replaceWith({
                         element: element,
-                        quicktext: quicktexts[0],
+                        quicktext: quicktext,
                         focusNode: focusNode
                     });
+                } else {
+                    element.removeEventListener('blur', getNextElement);
+                    element.dispatchEvent(notemplateEvent);
                 }
-
             });
 
         }
-
     }
 };
