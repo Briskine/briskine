@@ -33,10 +33,12 @@ var App = {
                                 "body_size": t.body.length
                             }
                         });
-                        callback([t]);
+                        callback(t);
                         return;
                     }
                 }
+
+                callback(null);
             });
         },
 
