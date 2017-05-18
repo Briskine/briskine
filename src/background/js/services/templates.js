@@ -122,7 +122,7 @@ gApp.service('TemplateService', function ($q, $resource, SettingsService) {
             TemplateStorage.get(null, function (localTemplates) {
                 for (var id in localTemplates) {
                     var t = localTemplates[id];
-                    if (t != null && t.remote_id) {
+                    if (t !== null && t.remote_id) {
                         localSeen.push(t.remote_id);
                     }
                 }
@@ -168,7 +168,7 @@ gApp.service('TemplateService', function ($q, $resource, SettingsService) {
                 _.each(deleteLocal, function (remoteId) {
                     TemplateStorage.get(null, function (localTemplates) {
                         _.each(localTemplates, function (localTemplate) {
-                            if (localTemplate.remote_id === remoteId) {
+                            if (localTemplate.remote_id && remoteId && localTemplate.remote_id === remoteId) {
                                 self.delete(localTemplate, true);
                             }
                         });
@@ -199,13 +199,12 @@ gApp.service('TemplateService', function ($q, $resource, SettingsService) {
             TemplateStorage.get(null, function (templates) {
                 for (var id in templates) {
                     var t = templates[id];
-                    if (t == null || t.nosync !== 0) {
+                    if (t === null || t.nosync !== 0) {
                         continue;
                     }
 
                     // no remote_id means that it's local only and we have to sync it with the remote sync service
                     if (!t.remote_id) {
-
                         // skipping deleted templates - there should not be any.. but ok.
                         if (t.deleted === 1) {
                             continue;

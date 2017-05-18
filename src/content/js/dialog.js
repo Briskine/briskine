@@ -132,7 +132,7 @@ App.autocomplete.dialog = {
             e.stopPropagation();
 
             var templateId = $(e.target).closest('.qt-item').data('id');
-            var templateUrl = chrome.extension.getURL('pages/bg.html' + '#/list?id=' + templateId + '&src=qa-dialog');
+            var templateUrl = chrome.extension.getURL('pages/options.html' + '#/list?id=' + templateId + '&src=qa-dialog');
             window.open(templateUrl, 'gorgias-options');
         });
     },

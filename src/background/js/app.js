@@ -144,7 +144,7 @@ gApp.run(function ($rootScope, $location, $http, $timeout, ProfileService, Setti
             amplitude.getInstance().init("e50d000bcba1aa363cd1f71642ed466a", {
                 saveEvents: false // don't store in localStorage the events - it slows down everything
             });
-        } else if (ENV && ENV == 'development') {
+        } else if (ENV && ENV === 'development') {
             amplitude.getInstance().init("a31babba9c8dedf2334c44d8acdad247", {
                 saveEvents: false // don't store in localStorage the events - it slows down everything
             });
@@ -303,10 +303,16 @@ gApp.run(function ($rootScope, $location, $http, $timeout, ProfileService, Setti
     $rootScope.lastSync = TemplateService.lastSync;
 
     $rootScope.SyncNow = function () {
+        var inList = $location.path().indexOf('/list') !== -1;
+        if (!inList) {
+            // only sync when in list
+            return
+        }
         SettingsService.get("isLoggedIn").then(function (isLoggedIn) {
             if (!isLoggedIn) {
-                return;
+                return
             }
+
             TemplateService.sync().then(function (lastSync) {
                 console.log("Synced: ", new Date().toUTCString());
                 var waitForLocal = function () {

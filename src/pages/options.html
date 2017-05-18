@@ -1,0 +1,143 @@
+<!doctype html>
+<html data-ng-app="gApp" ng-csp="">
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <title>Gorgias Options</title>
+    <script src="../background/js/background.js"></script>
+    <script src="https://checkout.stripe.com/checkout.js"></script>
+    <link href="../background/css/background.css" rel="stylesheet" type="text/css" media="screen" charset="utf-8">
+</head>
+<body key-trap>
+
+<div class="container">
+    <div class="sidebar-wrapper" ng-controller="SidebarCtrl">
+        <div class="sidebar-profile">
+            <div class="profile">
+                <div class="profile-body" ng-show="account" ng-cloak>
+                    <div class="profile-picture col-md-4 col-xs-4">
+                        <a href="https://gorgias.io/app#/account" target="_blank">
+                            <img class="avatar"
+                                 title="Setup your avatar on gravatar.com"
+                                 alt="gravatar"
+                                 ng-src="{{ account.email | gravatar }}">
+                        </a>
+                    </div>
+
+                    <div class="profile-details col-md-8 col-xs-8">
+                        <p>
+                            <strong ng-if="account.info.name">{{account.info.name}}</strong>
+                            <strong ng-if="!account.info.name">{{account.info.given_name}}
+                                {{account.info.family_name}}</strong>
+                        </p>
+                        <!--<p>{{ account.email }}</p>-->
+                        <p><a href ng-click="logOut()">Log out</a></p>
+                    </div>
+                </div>
+                <div class="anonymous" ng-show="!account">
+                    <a href data-toggle="modal" data-target="#signin-modal">Login</a> or <i
+                    class="fa fa-briefcase premium"></i>
+                    <a href data-toggle="modal" data-target="#signup-modal"
+                       ng-click="trackSignup('upgrade')">Subscribe</a>
+                    to <em>share</em> templates with your team.<br>
+                </div>
+            </div>
+            <div class="tools">
+                <a ng-href="#/settings" ng-click="emptyFilterTags();trackSettings(!!account)" class="settings-icon"
+                   title="Settings"><i class="fa fa-gear"></i></a>
+            </div>
+        </div>
+        <div class="sidebar-container">
+            <ul class="nav nav-pills nav-stacked">
+                <li class="title"><h4>Templates</h4></li>
+                <!-- templates -->
+                <li ng-click="emptyFilterTags()" class="template-tab"
+                    ng-class="{ 'active': (path === '/list' && filterTags[0] == undefined) }"><a href="#/list">All</a>
+                </li>
+                <li ng-show="account.info.name" ng-click="emptyFilterTags()" class="template-tab"
+                    ng-class="{ 'active': (path === '/list/shared') }"><a href="#/list/shared">Shared</a></li>
+                <li ng-show="account.info.name" ng-click="emptyFilterTags()" class="template-tab"
+                    ng-class="{ 'active': (path === '/list/private') }"><a href="#/list/private">Private</a></li>
+
+                <li ng-show="!account.info.name" class="template-tab" ng-click="trackSignup('shared')">
+                    <a href data-toggle="modal" data-target="#signup-modal">
+                        <span data-toggle="tooltip"
+                              data-placement="bottom"
+                              title="Upgrade to share templates with your team"><i class="fa fa-briefcase premium"></i> Shared</span></a>
+                </li>
+                <li ng-show="!account.info.name" class="template-tab" ng-click="trackSignup('private')">
+                    <a href data-toggle="modal" data-target="#signup-modal">
+                        <span data-toggle="tooltip"
+                              data-placement="bottom"
+                              title="Upgrade to share templates with your team"><i class="fa fa-briefcase premium"></i> Private</span></a>
+                </li>
+
+                <!-- tags -->
+                <li class="title" ng-show="tags.length"><h4>Tags</h4></li>
+                <li ng-repeat="t in tags" class="tags-wrapper"
+                    ng-class="{true: 'active', false: ''}[filterTags.indexOf(t.name) !== -1]">
+                    <a href class="tag"
+                       ng-click="toggleFilterTag(t.name)"
+                       title="Toggle this tag to filter the templates">
+                        <i class="fa fa-hashtag icon"></i> {{t.name}}<span ng-if="t.count > 1"> ({{t.count}})</span>
+                    </a>
+                </li>
+                <li class="support-link">
+                    <a href="https://chrome.google.com/webstore/detail/gorgias-email-templates-f/lmcngpkjkplipamgflhioabnhnopeabf/support"
+                       target="_blank">Support &amp; Feedback</a>
+                </li>
+            </ul>
+        </div>
+
+    </div>
+
+    <div class="view-container">
+        <div ng-if="currentSubscription && !currentSubscription.active" class="alert alert-warning" ng-cloak>
+            <strong>Your current subscription is no longer active.</strong>
+            <p>This means that automatic syncing and backup of templates has been disabled for you and your team.</p>
+            <p>
+                <em>Note: without <a href="http://help.gorgias.io/en/latest/src/extension/03-sync.html" target="_blank">template
+                    synchronisation</a> you risk losing all your templates
+                    (if you delete the extension or re-install Chrome).</em>
+            </p>
+            <p ng-if="isCustomer === true">
+            <ul>
+                <li>To re-activate your subscription click <a href="" ng-click="reactivateSubscription()">here</a>.</li>
+                <li>To hide this warning: <a href="" ng-click="logOut()">Log out</a>.</li>
+            </ul>
+            <br>
+            <p>If you think this is a mistake and your subscription should be active please contact us: <a
+                href="mailto:support@gorgias.io">support@gorgias.io</a></p>
+            </p>
+            <p ng-if="isCustomer === false">Please notify the account owner. To hide this warning simply <a href=""
+                                                                                                            ng-click="logOut()">Log
+                out</a>. </p>
+        </div>
+        <div class="container-animation" data-ng-view></div>
+    </div>
+</div>
+
+<div class="profile-stats" ng-cloak>
+    You saved <strong>{{profile.savedTime}}</strong> using Gorgias!<br><br>
+    <em ng-cloak ng-if="profile.savedWords < 1500 ">Big things have small beginnings &#128170;</em>
+    <em ng-cloak ng-if="profile.savedWords > 1500 && profile.savedWords < 2500">Or the equivalent of writing a short story &#128214;</em>
+    <em ng-cloak ng-if="profile.savedWords >= 2500 && profile.savedWords < 7500">Did you know mushrooms are one of the largest organisms in the world? &#127812;</em>
+    <em ng-cloak ng-if="profile.savedWords >= 7500">You're awesome. Just awesome. &#9996;</em>
+    <em ng-cloak ng-if="profile.savedWords >= 1500 ">
+        <a class="btn-twitter" target="_blank"
+           href="https://twitter.com/intent/tweet?hashtags=custserv&text=I%20saved%20{{profile.savedTime}}%20writing%20emails.%20Install%20%40gorgiasio%20and%20see%20how%20much%20time%20you%20can%20save!%20https%3A%2F%2Fgoo.gl%2FDoVLoQ">
+            <i class="fa fa-twitter"></i>
+            <span>Tweet about it</span>
+        </a>
+    </em>
+</div>
+
+<div ng-include="'includes/ads/helpdesk.html'"></div>
+<div ng-include="'includes/login.html'"></div>
+<div ng-include="'includes/forgot.html'"></div>
+<div ng-include="'includes/signup.html'"></div>
+
+<script src="https://apis.google.com/js/api.js"></script>
+<script src="https://www-onepick-opensocial.googleusercontent.com/gadgets/js/rpc.js?c=1&container=onepick"></script>
+
+</body>
+</html>

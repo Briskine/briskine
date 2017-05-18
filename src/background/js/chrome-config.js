@@ -42,7 +42,7 @@ if (chrome.runtime) {
     chrome.tabs.onUpdated.addListener(updatedTab);
 
     chrome.browserAction.onClicked.addListener(function () {
-        window.open(chrome.extension.getURL('/pages/bg.html') + '#/list', 'Options');
+        window.open(chrome.extension.getURL('/pages/options.html') + '#/list', 'Options');
     });
 
     if (typeof chrome.runtime.setUninstallURL === 'function') {
@@ -88,7 +88,7 @@ if (chrome.runtime) {
                 code: "var getHtmlSelection = function() { var selection = window.getSelection(); if (selection && selection.rangeCount > 0) { range = selection.getRangeAt(0); var clonedSelection = range.cloneContents(); var div = document.createElement('div'); div.appendChild(clonedSelection); return div.innerHTML; } else { return ''; } }; getHtmlSelection();"
             }, function (selection) {
                 var body = encodeURIComponent(selection[0]);
-                window.open(chrome.extension.getURL('/pages/bg.html') + '#/list?id=new&body=' + body, 'Options');
+                window.open(chrome.extension.getURL('/pages/options.html') + '#/list?id=new&body=' + body, 'Options');
             });
         });
 
@@ -116,10 +116,10 @@ if (chrome.runtime) {
             }
             // Open new template window
             if (request.request === 'new') {
-                window.open(chrome.extension.getURL('/pages/bg.html') + '#/list?id=new&src=qa-button', 'New Template');
+                window.open(chrome.extension.getURL('/pages/options.html') + '#/list?id=new&src=qa-button', 'New Template');
             }
             if (request.request === 'launchGorgias') {
-                window.open(chrome.extension.getURL('/pages/bg.html') + '#/list');
+                window.open(chrome.extension.getURL('/pages/options.html') + '#/list');
             }
             if (request.request === 'track') {
                 if (request.event === "Inserted template") {

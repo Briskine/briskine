@@ -38,8 +38,7 @@ gApp.controller('ListCtrl',
                     break;
                 case 'tag':
                     var tag = FilterTagService.filterTags[0];
-
-                    if (tag == undefined) {
+                    if (typeof tag === 'undefined') {
                         $location.path('/list');
                     }
 
@@ -386,17 +385,18 @@ gApp.controller('ListCtrl',
 
         // Delete a list of selected quicktexts.
         $scope.deleteQts = function () {
-            if (getSelectedQuickTexts().length > 0) {
-                if (getSelectedQuickTexts().length > 1) {
-                    r = confirm("Are you sure you want to delete " + getSelectedQuickTexts().length + " templates?");
+            var selectedTemplates = getSelectedQuickTexts();
+            if (selectedTemplates.length > 0) {
+                if (selectedTemplates.length > 1) {
+                    r = confirm("Are you sure you want to delete " + selectedTemplates.length + " templates?");
                 } else {
-                    r = confirm("Are you sure you want to delete '" + getSelectedQuickTexts()[0].title + "' template?");
+                    r = confirm("Are you sure you want to delete '" + selectedTemplates[0].title + "' template?");
                 }
 
                 if (r === true) {
-                    for (var qt in getSelectedQuickTexts()) {
-                        TemplateService.delete(getSelectedQuickTexts()[qt]);
-                        $scope.templates.splice($scope.templates.indexOf(getSelectedQuickTexts()), 1);
+                    for (var qt in selectedTemplates) {
+                        TemplateService.delete(selectedTemplates[qt]);
+                        $scope.templates.splice($scope.templates.indexOf(selectedTemplates), 1);
                     }
                     $scope.reloadTemplates();
                     removeSelected();
