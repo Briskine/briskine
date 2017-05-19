@@ -1,1 +1,1 @@
-var ENV = "development";
+var ENV = "production";
