@@ -306,11 +306,11 @@ gApp.run(function ($rootScope, $location, $http, $timeout, ProfileService, Setti
         var inList = $location.path().indexOf('/list') !== -1;
         if (!inList) {
             // only sync when in list
-            return
+            return;
         }
         SettingsService.get("isLoggedIn").then(function (isLoggedIn) {
             if (!isLoggedIn) {
-                return
+                return;
             }
 
             TemplateService.sync().then(function (lastSync) {
