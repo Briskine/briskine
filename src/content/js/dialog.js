@@ -30,8 +30,6 @@ App.autocomplete.dialog = {
     qaBtnSelector: '.gorgias-qa-btn',
     newTemplateSelector: ".g-new-template",
     qaPositionIntervals: [],
-    suggestedTemplates: [],
-    suggestionHidden: false,
 
     completion: function (e, params) {
         if (typeof params !== 'object') {
@@ -115,7 +113,6 @@ App.autocomplete.dialog = {
             }
 
             App.autocomplete.cursorPosition.word.text = $(this).val();
-            App.autocomplete.dialog.suggestionHidden = App.autocomplete.cursorPosition.word.text ? true : false;
 
             App.settings.getFiltered(App.autocomplete.cursorPosition.word.text, App.autocomplete.dialog.RESULTS_LIMIT, function (quicktexts) {
 
@@ -164,9 +161,6 @@ App.autocomplete.dialog = {
             // eg. gmail when you have multiple addresses configured,
             // and the from fields shows/hides on focus.
             showQaBtnTimer = setTimeout(function () {
-                // Start fetching suggestions
-                App.autocomplete.dialog.fetchSuggestions(e.target);
-
                 instance.showQaBtn(e);
             }, 350);
 
@@ -263,31 +257,6 @@ App.autocomplete.dialog = {
 
         App.autocomplete.quicktexts = params.quicktexts;
 
-        if (App.autocomplete.dialog.suggestedTemplates.length && !App.autocomplete.dialog.suggestionHidden) {
-
-            var found = false;
-            for (var i in App.autocomplete.quicktexts) {
-                var t = App.autocomplete.quicktexts[i];
-                for (var j in App.autocomplete.dialog.suggestedTemplates) {
-                    var s = App.autocomplete.dialog.suggestedTemplates[j];
-                    if (t.id === s.id) {
-                        App.autocomplete.quicktexts.splice(i, 1);
-                        // insert at the beginning
-                        App.autocomplete.quicktexts.splice(0, 1, s);
-                        found = true;
-                        break;
-                    }
-                }
-                if (found) {
-                    break;
-                } else {
-                    for (var k in App.autocomplete.dialog.suggestedTemplates) {
-                        App.autocomplete.quicktexts.splice(0, 1, App.autocomplete.dialog.suggestedTemplates[k]);
-                    }
-                }
-            }
-        }
-
         // clone the elements
         // so we can safely highlight the matched text
         // without breaking the generated handlebars markup
@@ -345,57 +314,6 @@ App.autocomplete.dialog = {
         // Set first element active
         App.autocomplete.dialog.selectItem(0);
 
-    },
-    fetchSuggestions: function (target) {
-        App.settings.isLoggedIn(function (isLoggedIn) {
-            App.autocomplete.dialog.suggestedTemplates = [];
-            $('.gorgias-qa-btn-badge').css('display', 'none');
-
-            if (!(isLoggedIn && App.settings.suggestions_enabled)) {
-                return;
-            }
-
-            // Awesome selectors right?
-            var body_text = $(target).closest('.nH .h7').find('.ii.gt:visible').text().trim();
-            if (body_text) {
-                chrome.runtime.sendMessage({
-                    'request': 'suggestion',
-                    'data': {
-                        'subject': $('.hP').text(),
-                        'to': '',
-                        'cc': '',
-                        'bcc': '',
-                        'from': '',
-                        'body': body_text
-                    }
-                }, function (templates) {
-                    if (!_.size(templates)) {
-                        return;
-                    }
-
-                    var template_id = _.keys(templates)[0];
-                    for (var remote_id in templates) {
-                        if (templates[remote_id] > templates[template_id]) {
-                            template_id = remote_id;
-                        }
-                    }
-
-                    TemplateStorage.get(null, function (storedTemplates) {
-                        for (var tid in storedTemplates) {
-                            var t = storedTemplates[tid];
-                            if (t.remote_id === template_id) {
-                                $('.gorgias-qa-btn-badge').css('display', 'block');
-
-                                t.score = templates[template_id];
-
-                                App.autocomplete.dialog.suggestedTemplates.push(t);
-                                break;
-                            }
-                        }
-                    });
-                });
-            }
-        });
     },
     show: function (params) {
         params = params || {};
@@ -522,8 +440,7 @@ App.autocomplete.dialog = {
                     "id": quicktext.id,
                     "source": "dialog",
                     "title_size": quicktext.title.length,
-                    "body_size": quicktext.body.length,
-                    "suggested": quicktext.score ? true : false
+                    "body_size": quicktext.body.length
                 }
             });
         }

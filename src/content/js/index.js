@@ -13,7 +13,6 @@ var App = {
     editor_enabled: true,
     autocomplete: {},
     settings: {
-        suggestions_enabled: false,
         case_sensitive_search: false,
         fuzzy_search: true,
 
@@ -223,7 +222,6 @@ App.init = function (settings, doc) {
 
     var currentUrl = window.location.href;
 
-    App.settings.suggestions_enabled = settings.suggestions.enabled;
     // Check if we should use editor markup
     App.settings.editor_enabled = settings.editor.enabled;
     // Check if case sensitive search is enabled

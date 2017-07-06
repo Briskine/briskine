@@ -121,9 +121,6 @@ var Settings = {
             sidebar: { // this sidebar to the right
                 enabled: true,
                 url: ""
-            },
-            suggestions: { // automatic suggestions from the server
-                enabled: true
             }
         },
         // refactor this into 'local' and 'remote'

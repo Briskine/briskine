@@ -127,21 +127,6 @@ if (chrome.runtime) {
                 }
                 amplitude.getInstance().logEvent(request.event, request.data);
             }
-            if (request.request === 'suggestion') {
-                injector.get('SuggestionService').suggest(request.data).then(function (res) {
-                    sendResponse(res);
-                });
-            }
-            if (request.request === 'suggestion-used') {
-                injector.get('SuggestionService').stats(request.data).then(function (res) {
-                    sendResponse(res);
-                });
-            }
-            if (request.request === 'suggestion-enabled') {
-                injector.get('SuggestionService').enabled(request.data).then(function (res) {
-                    sendResponse(res);
-                });
-            }
             return true;
         });
     }
