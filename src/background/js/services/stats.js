@@ -16,7 +16,6 @@ gApp.service('StatsService', function ($q, $resource, SettingsService) {
     }
 
     self.syncStatsTimer = null
-    self.statsRes = $resource(Settings.defaults.apiBaseURL + 'stats/')
 
     // should probably be called every few minutes or so
     self.sync = function () {
@@ -31,7 +30,7 @@ gApp.service('StatsService', function ($q, $resource, SettingsService) {
                         SettingsService.get('syncedWords').then(function (syncedWords) {
                             var newWords = words - syncedWords
                             if (newWords > 0) {
-                                var stats = new self.statsRes()
+                                var stats = new self.res()
                                 stats.words = newWords
                                 stats.$save(function () {
                                     SettingsService.set("syncedWords", words)
@@ -45,7 +44,7 @@ gApp.service('StatsService', function ($q, $resource, SettingsService) {
         })
 
         window.clearTimeout(self.syncStatsTimer)
-        self.syncStatsTimer = window.setTimeout(self.sync, 15 * 60 * 1000) // every 15minutes
+        self.syncStatsTimer = window.setTimeout(self.sync, 1000) // every 15minutes
     }
     self.sync()
 })

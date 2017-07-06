@@ -46,7 +46,7 @@ gApp.service('TemplateService', function ($q, $resource, SettingsService) {
             }
         });
 
-        self.statsRes = $resource(apiBaseURL + 'quicktexts/stats');
+        self.statsRes = $resource(apiBaseURL + 'templates/stats');
     });
 
     self.isLoggedin = false;
