@@ -54,7 +54,7 @@ App.plugin('gmail', (function () {
             subject = ''
 
         if (isContentEditable(params.element)) {
-            var fromString = jQuery('.gb_vb').text() + '<' + jQuery('.gb_wb').text() + '>'
+            var fromString = jQuery('.gb_tb').text() + '<' + jQuery('.gb_vb').text() + '>'
             from.push(parseString(fromString))
 
             var $container = $(params.element).closest('table').parent().closest('table').parent().closest('table')
