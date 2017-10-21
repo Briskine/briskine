@@ -1,6 +1,6 @@
 {
     "name": "gorgias",
-    "version": "5.6.18",
+    "version": "5.6.19",
     "description": "Gorgias grunt package",
     "main": "Gruntfile.js",
     "scripts": {
@@ -21,6 +21,10 @@
         {
             "name": "Martin Latrille",
             "email": "martin@gorgias.io"
+        },
+        {
+            "name": "Hadrien de Lamotte",
+            "email": "hadrien.lamotte@gmail.com"
         }
     ],
     "license": "MIT",
