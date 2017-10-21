@@ -15,6 +15,8 @@ var App = {
     settings: {
         case_sensitive_search: false,
         fuzzy_search: true,
+        is_sort_template_list: false,
+        is_sort_template_dialog_gmail: false,
 
         // Get template filtered out by shortcut
         getQuicktextsShortcut: function (text, callback) {
@@ -85,6 +87,12 @@ var App = {
                         };
 
                         templates = fuzzySearch(templates, text, options);
+
+                        // Apply template limit
+                        if (limit && limit < templates.length) {
+                            templates = templates.slice(0, limit);
+                        }
+                        callback(templates);
                     } else {
                         // Sort templates only if no search was used
 
@@ -98,23 +106,34 @@ var App = {
                             return new Date(b.updated_datetime) - new Date(a.updated_datetime);
                         });
 
-                        // sort by lastuse_datetime desc
-                        templates.sort(function (a, b) {
-                            if (!a.lastuse_datetime) {
-                                a.lastuse_datetime = new Date(0);
-                            }
+                        // Decide sorting policy
+                        Settings.get('settings', {}, function (settings) {
+                            if (settings.is_sort_template_dialog_gmail) {
+                              // Sort the filtered template alphabetically
+                              templates.sort(function (a, b) {
+                                  return a.title.localeCompare(b.title);
+                              });
+                            } else {
+                              // sort by lastuse_datetime desc
+                              templates.sort(function (a, b) {
+                                  if (!a.lastuse_datetime) {
+                                      a.lastuse_datetime = new Date(0);
+                                  }
 
-                            if (!b.lastuse_datetime) {
-                                b.lastuse_datetime = new Date(0);
-                            }
-                            return new Date(b.lastuse_datetime) - new Date(a.lastuse_datetime);
+                                  if (!b.lastuse_datetime) {
+                                      b.lastuse_datetime = new Date(0);
+                                  }
+                                  return new Date(b.lastuse_datetime) - new Date(a.lastuse_datetime);
+                              });
+                          }
+
+                          // Apply template limit
+                          if (limit && limit < templates.length) {
+                              templates = templates.slice(0, limit);
+                          }
+                          callback(templates);
                         });
                     }
-
-                    if (limit && limit < templates.length) {
-                        templates = templates.slice(0, limit);
-                    }
-                    callback(templates);
                 });
 
             }, debouncerTime);
