@@ -458,5 +458,12 @@ gApp.controller('ListCtrl',
             matchedTemplates = $filter('fuzzy')(matchedTemplates, $scope.searchText, $scope.searchOptions);
 
             $scope.filteredTemplates = matchedTemplates;
+
+            SettingsService.get('settings').then(function (settings) {
+                if (settings.is_sort_template_list) {
+                  // Sort the filtered templates in alphabetically order
+                  $scope.filteredTemplates = $filter('orderBy')($scope.filteredTemplates, 'title')
+                }
+            });
         }, 50);
     });
