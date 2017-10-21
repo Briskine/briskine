@@ -15,13 +15,11 @@ App.plugin('gmail', (function () {
         })
     }
 
-    var regExString = /"?([^ ]*)\s*(.*)"?\s*<([^>]+)>/
+    var regExString = /"?([^ ]*)\s*(.*)"?\s*[(<]([^>)]+)[>)]/
     var regExEmail = /([\w!.%+\-])+@([\w\-])+(?:\.[\w\-]+)+/
 
     var parseString = function (string) {
-        //XXX: Gmail changed the title to: Account  Firstname Lastname so we remove it
-        string = string.replace('Account ', '')
-        var match = regExString.exec(string),
+        var match = regExString.exec(string.trim()),
             data = {
                 name: '',
                 first_name: '',
@@ -54,7 +52,19 @@ App.plugin('gmail', (function () {
             subject = ''
 
         if (isContentEditable(params.element)) {
-            var fromString = jQuery('.gb_vb').text() + '<' + jQuery('.gb_xb').text() + '>'
+            var title = jQuery('.gb_b.gb_fb').attr('title')
+            var fromString = ''
+            if (typeof title === 'string') {
+                // the initial string is: Google Account: Gorgias Customer Support (support@gorgias.io)
+                var parts = title.trim().split(':')
+                if (parts.length && parts.length === 2) {
+                    fromString = parts[1]
+                }
+            } else {
+                // old format
+                fromString = jQuery('.gb_vb').text() + '<' + jQuery('.gb_xb').text() + '>'
+            }
+
             from.push(parseString(fromString))
 
             var $container = $(params.element).closest('table').parent().closest('table').parent().closest('table')
