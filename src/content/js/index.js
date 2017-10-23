@@ -117,14 +117,14 @@ var App = {
                                   }
                                   return new Date(b.lastuse_datetime) - new Date(a.lastuse_datetime);
                               });
-                          }
+                        }
 
-                          // Apply template limit
-                          if (limit && limit < templates.length) {
-                              templates = templates.slice(0, limit);
-                          }
-                          callback(templates);
-                  }
+                        // Apply template limit
+                        if (limit && limit < templates.length) {
+                            templates = templates.slice(0, limit);
+                        }
+                    }
+                    callback(templates);
                 });
 
             }, debouncerTime);
