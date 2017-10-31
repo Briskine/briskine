@@ -372,6 +372,10 @@ App.autocomplete.replaceWith = function (params) {
         }, setting);
         from = from || [];
 
+        if (!_.isArray(from)) {
+            from = [from];
+        }
+
         return from.map(function (f) {
             var user = _.extend({}, f);
             if (setting.firstName || setting.lastName) {
