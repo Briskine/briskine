@@ -394,7 +394,9 @@ App.autocomplete.replaceWith = function (params) {
         element: params.element
     }, function (err, vars) {
         App.settings.fetchSettings(function (settings) {
-            vars.from = replaceFrom(vars.from, settings.name);
+            if (vars) {
+                vars.from = replaceFrom(vars.from, settings.name);
+            }
 
             // add parsed vars to params
             params.data = PrepareVars(vars);
