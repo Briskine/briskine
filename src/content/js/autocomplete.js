@@ -364,26 +364,50 @@ App.autocomplete.replaceWith = function (params) {
         };
     };
 
+    // replace from with name saved in settings
+    var replaceFrom = function (from, setting) {
+        setting = _.extend({
+            firstName: '',
+            lastName: ''
+        }, setting);
+        from = from || [];
+
+        return from.map(function (f) {
+            var user = _.extend({}, f);
+            if (setting.firstName || setting.lastName) {
+                user.first_name = setting.firstName;
+                user.last_name = setting.lastName;
+                user.name = setting.firstName + ' ' + setting.lastName;
+            }
+
+            return user;
+        });
+    };
+
     App.autocomplete.dialog.close();
 
     App.activePlugin.getData({
         element: params.element
     }, function (err, vars) {
-        // add parsed vars to params
-        params.data = PrepareVars(vars);
+        App.settings.fetchSettings(function (settings) {
+            vars.from = replaceFrom(vars.from, settings.name);
 
-        if (typeof App.activePlugin.before === 'function') {
-            App.activePlugin.before(params, function (err, params) {
-                // we need the callback because the editor
-                // doesn't get the focus right-away.
-                // so window.getSelection() returns the search field
-                // in the dialog otherwise, instead of the editor
-                App.autocomplete.focusEditor(params.element, insertQt(params));
-            });
-            return;
-        }
+            // add parsed vars to params
+            params.data = PrepareVars(vars);
 
-        App.autocomplete.focusEditor(params.element, insertQt(params));
+            if (typeof App.activePlugin.before === 'function') {
+                App.activePlugin.before(params, function (err, params) {
+                    // we need the callback because the editor
+                    // doesn't get the focus right-away.
+                    // so window.getSelection() returns the search field
+                    // in the dialog otherwise, instead of the editor
+                    App.autocomplete.focusEditor(params.element, insertQt(params));
+                });
+                return;
+            }
+
+            App.autocomplete.focusEditor(params.element, insertQt(params));
+        });
     });
 
     // updates stats
