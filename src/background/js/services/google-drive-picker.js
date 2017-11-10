@@ -31,15 +31,16 @@ gApp.service('gDrivePickerService', function ($window) {
          */
         function createPicker() {
             if (pickerApiLoaded && oauthToken) {
-                var view = new google.picker.View(google.picker.ViewId.DOCS)
-                        // TODO only works for DocsView?
-//                     .setEnableTeamDrives(true)
+                var personalView = new google.picker.View(google.picker.ViewId.DOCS);
+                var teamDriveView = new google.picker.DocsView()
+                    .setEnableTeamDrives(true);
 
                 self.picker = new google.picker.PickerBuilder()
                     .setOAuthToken(oauthToken)
-                    .enableFeature('multiselectEnabled')
-                    .enableFeature('supportTeamDrives')
-                    .addView(view)
+                    .enableFeature(google.picker.Feature.MULTISELECT_ENABLED)
+                    .enableFeature(google.picker.Feature.SUPPORT_TEAM_DRIVES)
+                    .addView(personalView)
+                    .addView(teamDriveView)
                     .setCallback(self.pickerResponse)
                     .build();
 
