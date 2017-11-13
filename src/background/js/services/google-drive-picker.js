@@ -31,7 +31,19 @@ gApp.service('gDrivePickerService', function ($window) {
          */
         function createPicker() {
             if (pickerApiLoaded && oauthToken) {
-                self.picker = new google.picker.PickerBuilder().addView(google.picker.ViewId.DOCS).setOAuthToken(oauthToken).enableFeature('multiselectEnabled').setCallback(self.pickerResponse).build();
+                var personalView = new google.picker.View(google.picker.ViewId.DOCS);
+                var teamDriveView = new google.picker.DocsView()
+                    .setEnableTeamDrives(true);
+
+                self.picker = new google.picker.PickerBuilder()
+                    .setOAuthToken(oauthToken)
+                    .enableFeature(google.picker.Feature.MULTISELECT_ENABLED)
+                    .enableFeature(google.picker.Feature.SUPPORT_TEAM_DRIVES)
+                    .addView(personalView)
+                    .addView(teamDriveView)
+                    .setCallback(self.pickerResponse)
+                    .build();
+
                 self.picker.setVisible('true');
             }
         }
