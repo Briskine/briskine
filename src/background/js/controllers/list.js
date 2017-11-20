@@ -94,11 +94,6 @@ gApp.controller('ListCtrl',
 
         loadAccount();
 
-        $scope.$on('loggedIn', function () {
-            loadAccount();
-            $rootScope.SyncNow();
-        });
-
         // Hide Subject and Tags fields by default
         $scope.settings = {};
         SettingsService.get('settings').then(function (settings) {

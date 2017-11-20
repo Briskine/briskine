@@ -14,14 +14,7 @@ gApp.controller('LoginCtrl', function ($http, $route, $rootScope, TemplateServic
             url: Settings.defaults.apiBaseURL + 'signin',
             data: self.credentials
         }).then(function success(){
-            $rootScope.$broadcast('loggedIn');
-            $('#signin-modal').modal('hide');
-
-            SettingsService.set('isLoggedIn', true).then(
-                TemplateService.sync().then(function() {
-                    $rootScope.$broadcast("templates-sync");
-                })
-            );
+            SettingsService.set('isLoggedIn', true).then(window.location.reload(true));
         }, function error(response){
             if (response.data) {
                 self.error = response.data.error;
