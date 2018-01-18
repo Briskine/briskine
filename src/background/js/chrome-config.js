@@ -19,12 +19,12 @@ if (chrome.runtime) {
 
     // Called when the url of a tab changes.
     var updatedTab = function (tabId, changeInfo, tab) {
-
         // in development
         // also show for localhost
-        if (ENV && ENV === 'development') {
-            //urlMatchRegex.push(/^https?:\/\/localhost\/gmail/);
-            urlMatchPatterns.push("*/localhost/*");
+        var localhostPattern = "*://localhost/*";
+
+        if (ENV && ENV === 'development' && urlMatchPatterns.indexOf(localhostPattern) === -1) {
+            urlMatchPatterns.push(localhostPattern);
         }
         return false;
     };
@@ -60,7 +60,7 @@ if (chrome.runtime) {
             angularInjector().get('SettingsService').get('hints').then(function (hints) {
                 if (hints && hints.postInstall) {
                     hints.postInstall = false;
-                    SettingsService.set('hints', hints);
+                    angularInjector().get('SettingsService').set('hints', hints);
                 }
             });
         }
