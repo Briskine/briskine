@@ -97,6 +97,11 @@ var fuzzySearch = function (list, text, opts) {
     }
     
     if (opts.threshold === 0) {
+        if(text.startsWith('in:')) {
+            if (i.tags && i.tags.indexOf(text) !== -1) {
+                return true;
+            }
+        }
         return _.filter(list, function (i) {
             if (i.shortcut && i.shortcut.indexOf(text) !== -1) {
                 return true;
@@ -107,45 +112,65 @@ var fuzzySearch = function (list, text, opts) {
             if (i.body && i.body.indexOf(text) !== -1) {
                 return true;
             }
-            if (i.tags && i.tags.indexOf(text) !== -1) {
-                return true;
-            }
             return false;
         });
     }
 
-    var defaultOptions = {
-        caseSensitive: false,
-        shouldSort: true,
-        tokenize: false,
-        threshold: 0.6,
-        location: 0,
-        distance: 100,
-        maxPatternLength: 32,
-        // search templates by default
-        keys: [
-            {
-                name: 'shortcut',
-                weight: 0.7
-            },
-            {
-                name: 'title',
-                weight: 0.7
-            },
-            {
-                name: 'body',
-                weight: 0.4
-            },
-            {
-                name: 'tags',
-                weight: 0.4
-            }
-        ]
-    };
+    if(text.startsWith('in:')) {
+        var defaultOptions = {
+            caseSensitive: false,
+            shouldSort: true,
+            tokenize: false,
+            threshold: 0.6,
+            location: 0,
+            distance: 100,
+            maxPatternLength: 32,
+            // search templates by default
+            keys: [
+                {
+                    name: 'tags'
+                }
+            ]
+        };
+        var options = jQuery.extend(true, defaultOptions, opts);
+        var fuse = new Fuse(list, options);
 
-    var options = jQuery.extend(true, defaultOptions, opts);
-    var fuse = new Fuse(list, options);
-    return fuse.search(text);
+        var split = text.split('in:');
+        if(split.length>1) {
+            var tag = split[1];
+            return fuse.search(tag);
+        } else {
+            return list;
+        }
+    } else {
+        var defaultOptions = {
+            caseSensitive: false,
+            shouldSort: true,
+            tokenize: false,
+            threshold: 0.6,
+            location: 0,
+            distance: 100,
+            maxPatternLength: 32,
+            // search templates by default
+            keys: [
+                {
+                    name: 'shortcut',
+                    weight: 0.7
+                },
+                {
+                    name: 'title',
+                    weight: 0.7
+                },
+                {
+                    name: 'body',
+                    weight: 0.4
+                }
+            ]
+        };
+        var options = jQuery.extend(true, defaultOptions, opts);
+        var fuse = new Fuse(list, options);
+        return fuse.search(text);
+    }
 };
 
 function underscored(str) {
