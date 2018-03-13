@@ -95,7 +95,7 @@ var fuzzySearch = function (list, text, opts) {
     if (!text) {
         return list
     }
-
+    
     if (opts.threshold === 0) {
         return _.filter(list, function (i) {
             if (i.shortcut && i.shortcut.indexOf(text) !== -1) {
@@ -105,6 +105,9 @@ var fuzzySearch = function (list, text, opts) {
                 return true;
             }
             if (i.body && i.body.indexOf(text) !== -1) {
+                return true;
+            }
+            if (i.tags && i.tags.indexOf(text) !== -1) {
                 return true;
             }
             return false;
@@ -131,6 +134,10 @@ var fuzzySearch = function (list, text, opts) {
             },
             {
                 name: 'body',
+                weight: 0.4
+            },
+            {
+                name: 'tags',
                 weight: 0.4
             }
         ]
