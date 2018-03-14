@@ -98,7 +98,9 @@ var filterByTagSearchText = function(list, text, threshold) {
         var searchParts = tag.split(' ');
         if(searchParts.length>1) {
             tag = searchParts[0].trim();
-            searchStr = searchParts[1].trim();
+            for(var i=1; i<searchParts.length; i++)
+                searchStr += searchParts[i].trim()+' ';
+            searchStr = searchStr.trim();
         }
         return filter(list, tag, searchStr, threshold);
     } else {
@@ -106,6 +108,8 @@ var filterByTagSearchText = function(list, text, threshold) {
     }
 }
 var filter = function(list, tag, searchStr, threshold) {
+    tag = tag.toLowerCase();
+    searchStr = searchStr.toLowerCase();
     return list.filter(function(item){
         if(item.tags) {
             var tags = item.tags;
@@ -113,14 +117,17 @@ var filter = function(list, tag, searchStr, threshold) {
             
             var result = [];
             for(var element of tags) {
-                result.push(element.trim());
+                result.push(element.trim().toLowerCase());
             }
             item.tags = result;
+            var shortcut = item.shortcut.toLowerCase();
+            var title = item.title.toLowerCase();
+            var body = item.body.toLowerCase();
             if(threshold == 1) {
-                return (item.tags.indexOf(tag) != -1) && ((item.shortcut && item.shortcut.indexOf(searchStr) !== -1) || (item.title && item.title.indexOf(searchStr) !== -1) || (item.body && item.body.indexOf(searchStr) !== -1));
+                return (item.tags.indexOf(tag) != -1) && ((shortcut && shortcut.indexOf(searchStr) != -1) || (title && title.indexOf(searchStr) != -1) || (body && body.indexOf(searchStr) != -1));
             }
             else {
-                return (item.tags.indexOf(tag) != -1) && ((item.shortcut && (item.shortcut == searchStr)) || (item.title && (item.title == searchStr)) || (item.body && (item.body == searchStr)));
+                return (item.tags.indexOf(tag) != -1) && ((shortcut && (shortcut == searchStr)) || (title && (title == searchStr)) || (body && (body == searchStr)));
             }
         } else {
             return false;
