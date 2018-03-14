@@ -89,8 +89,9 @@ var getRandomIntInclusive = function (min, max) {
     max = Math.floor(max);
     return Math.floor(Math.random() * (max - min + 1)) + min;
 };
-
-var filterByTagSearchText = function(list, text, threshold) {
+// When user try search by tag - user started typing - "in: <tagname> <searchstr>"
+// extract tagname and searchstr from user input and do filter by Tag and SearchStr
+var filterByUserInput = function(list, text, threshold) {
     var split = text.split('in:');
     if(split.length>1) {
         var tag = split[1].trim();
@@ -99,22 +100,23 @@ var filterByTagSearchText = function(list, text, threshold) {
         if(searchParts.length>1) {
             tag = searchParts[0].trim();
             for(var i=1; i<searchParts.length; i++)
-                searchStr += searchParts[i].trim()+' ';
+                searchStr = `${searchStr}${searchParts[i].trim()} `;
             searchStr = searchStr.trim();
         }
-        return filter(list, tag, searchStr, threshold);
+        return filterByTagAndSearchStr(list, tag, searchStr, threshold);
     } else {
         return list;
     }
 }
-var filter = function(list, tag, searchStr, threshold) {
+// This would be called by filterByUserInput
+// Exactly do search by tag and searchstr
+var filterByTagAndSearchStr = function(list, tag, searchStr, threshold) {
     tag = tag.toLowerCase();
     searchStr = searchStr.toLowerCase();
     return list.filter(function(item){
         if(item.tags) {
             var tags = item.tags;
             tags = tags.split(',');
-            
             var result = [];
             for(var element of tags) {
                 result.push(element.trim().toLowerCase());
@@ -124,10 +126,16 @@ var filter = function(list, tag, searchStr, threshold) {
             var title = item.title.toLowerCase();
             var body = item.body.toLowerCase();
             if(threshold == 1) {
-                return (item.tags.indexOf(tag) != -1) && ((shortcut && shortcut.indexOf(searchStr) != -1) || (title && title.indexOf(searchStr) != -1) || (body && body.indexOf(searchStr) != -1));
+                return (item.tags.indexOf(tag) != -1) &&
+                    ((shortcut && shortcut.indexOf(searchStr) != -1) ||
+                        (title && title.indexOf(searchStr) != -1) ||
+                        (body && body.indexOf(searchStr) != -1));
             }
             else {
-                return (item.tags.indexOf(tag) != -1) && ((shortcut && (shortcut == searchStr)) || (title && (title == searchStr)) || (body && (body == searchStr)));
+                return (item.tags.indexOf(tag) != -1) &&
+                    ((shortcut && (shortcut == searchStr)) ||
+                        (title && (title == searchStr)) ||
+                        (body && (body == searchStr)));
             }
         } else {
             return false;
@@ -138,12 +146,12 @@ var filter = function(list, tag, searchStr, threshold) {
 // fuzzy search with fuse.js
 var fuzzySearch = function (list, text, opts) {
     if (!text) {
-        return list
+        return list;
     }
     
     if (opts.threshold === 0) {
         if(text.startsWith('in:')) {
-            return filterByTagSearchText(list, text, 0);
+            return filterByUserInput(list, text, 0);
         }
         return _.filter(list, function (i) {
             if (i.shortcut && i.shortcut.indexOf(text) !== -1) {
@@ -160,7 +168,7 @@ var fuzzySearch = function (list, text, opts) {
     }
 
     if(text.startsWith('in:')) {
-        return filterByTagSearchText(list, text, 1);
+        return filterByUserInput(list, text, 1);
     } else {
         var defaultOptions = {
             caseSensitive: false,
