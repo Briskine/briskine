@@ -107,19 +107,23 @@ var filterByTagSearchText = function(list, text, threshold) {
 }
 var filter = function(list, tag, searchStr, threshold) {
     return list.filter(function(item){
-        var tags = item.tags;
-        tags = tags.split(',');
-        
-        var result = [];
-        for(var element of tags) {
-            result.push(element.trim());
-        }
-        item.tags = result;
-        if(threshold == 1) {
-            return (item.tags.indexOf(tag) != -1) && ((item.shortcut && item.shortcut.indexOf(searchStr) !== -1) || (item.title && item.title.indexOf(searchStr) !== -1) || (item.body && item.body.indexOf(searchStr) !== -1));
-        }
-        else {
-            return (item.tags.indexOf(tag) != -1) && ((item.shortcut && (item.shortcut == searchStr)) || (item.title && (item.title == searchStr)) || (item.body && (item.body == searchStr)));
+        if(item.tags) {
+            var tags = item.tags;
+            tags = tags.split(',');
+            
+            var result = [];
+            for(var element of tags) {
+                result.push(element.trim());
+            }
+            item.tags = result;
+            if(threshold == 1) {
+                return (item.tags.indexOf(tag) != -1) && ((item.shortcut && item.shortcut.indexOf(searchStr) !== -1) || (item.title && item.title.indexOf(searchStr) !== -1) || (item.body && item.body.indexOf(searchStr) !== -1));
+            }
+            else {
+                return (item.tags.indexOf(tag) != -1) && ((item.shortcut && (item.shortcut == searchStr)) || (item.title && (item.title == searchStr)) || (item.body && (item.body == searchStr)));
+            }
+        } else {
+            return false;
         }
     });
 }
