@@ -37,6 +37,8 @@ module.exports = function (grunt) {
                 'bower_components/selectize/dist/js/selectize.min.js',
 
                 'bower_components/quill/dist/quill.min.js',
+                'bower_components/tinymce/tinymce.min.js',
+                'bower_components/tinymce/themes/modern/theme.min.js',                
 
                 'bower_components/fuse.js/src/fuse.min.js',
 
@@ -206,6 +208,24 @@ module.exports = function (grunt) {
                         dest: '<%= config.dist %>/background/fonts',
                         src: [
                             '*'
+                        ]
+                    },
+                    {
+                        expand: true,
+                        flatten: true,
+                        dot: true,
+                        cwd: '<%= config.app %>/bower_components/tinymce/skins/lightgray/fonts/',
+                        dest: '<%= config.dist %>/background/css/fonts',
+                        src: [
+                            '*'
+                        ]
+                    },
+                    {
+                        expand: true,
+                        cwd: '<%= config.app %>/bower_components/tinymce/',
+                        dest: '<%= config.dist %>/pages/bower_components/tinymce',
+                        src: [
+                            '**'
                         ]
                     },
                     {

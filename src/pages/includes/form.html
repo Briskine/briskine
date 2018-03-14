@@ -48,95 +48,54 @@
                         <label class="body-label">Template Content</label>
 
                         <div class="editor-wrapper">
-                            <div class="toolbar">
-                                <!-- This part of the toolbar only visible for richtext editor -->
-                                <span class="ql-format-group" ng-show="settings.editor.enabled">
-                                    <select title="Font size" class="ql-size">
-                                        <option value="10px">Small</option>
-                                        <option value="13px" selected="">Normal</option>
-                                        <option value="18px">Large</option>
-                                        <option value="32px">Huge</option>
-                                    </select>
-                                 </span>
-                                <span class="ql-format-group" ng-show="settings.editor.enabled">
-                                    <span title="Bold" class="ql-format-button ql-bold"></span>
-                                    <span class="ql-format-separator"></span>
-                                    <span title="Italic" class="ql-format-button ql-italic"></span>
-                                    <span class="ql-format-separator"></span>
-                                    <span title="Underline" class="ql-format-button ql-underline"></span>
-                                </span>
-                                <span class="ql-format-group" ng-show="settings.editor.enabled">
-                                    <span title="List" class="ql-format-button ql-list"></span>
-                                    <span class="ql-format-separator"></span>
-                                    <span title="Bullet" class="ql-format-button ql-bullet"></span>
-                                    <span class="ql-format-separator"></span>
-                                    <select title="Text Alignment" class="ql-align">
-                                        <option value="left" label="Left" selected=""></option>
-                                        <option value="center" label="Center"></option>
-                                        <option value="right" label="Right"></option>
-                                        <option value="justify" label="Justify"></option>
-                                    </select>
-                                </span>
-                                <span class="ql-format-group" ng-show="settings.editor.enabled">
-                                    <span title="Select the text you want to link"
-                                          class="ql-format-button ql-link"></span>
-                                    <span class="ql-format-separator"></span>
-                                    <span title="Insert image" class="ql-format-button ql-image"></span>
-                                    <span class="ql-format-separator"></span>
-                                    <span title="Show HTML source" class="ql-format-button fa fa-code"
-                                        ng-class="{'ql-active': templateForm.showHTMLSource}"
-                                        ng-click="templateForm.toggleHTMLSource()"></span>
-                                    <span class="ql-format-separator"></span>
-                                    <span title="file attachment" class="ql-format-button fa fa-paperclip"
-                                        ng-click="templateForm.onPickerClicked()"></span>
-                                </span>
-                                <span class="dropdown insert-var-container">
-                                    <button class="btn btn-default dropdown-toggle" data-toggle="dropdown"
-                                            tabindex="-1">
-                                        Insert Variable <span class="caret"></span></button>
-                                    <ul class="dropdown-menu">
-                                        <li><a ng-click="templateForm.insertVar('to.first_name')"
-                                               title="First name of the person in the 'To' field"><strong>To:</strong>
-                                            First Name</a></li>
-                                        <li><a ng-click="templateForm.insertVar('to.email')"
-                                               title="Email address of the person in the 'To' field"><strong>To:</strong>
-                                            Email</a></li>
-                                        <li><a ng-click="templateForm.insertVar('from.first_name')"
-                                               title="First name of the person in the 'From' field"><strong>From:</strong>
-                                            First Name</a></li>
-                                        <li><a ng-click="templateForm.insertVar('from.email')"
-                                               title="Email address of the person in the 'From' field"><strong>From:</strong>
-                                            Email</a></li>
-                                        <li><a ng-click="templateForm.insertVar('subject')"
-                                               title="The subject of the e-mail"><strong>Subject</strong></a>
-                                        </li>
-                                        <li><a ng-click="templateForm.insertVar('date \'+7\' \'days\' \'DD MMMM\'')"
-                                               title="Date in 1 week"><strong>Date:</strong> Next week</a>
-                                        </li>
-                                        <li><a ng-click="templateForm.insertVar('date \'-7\' \'days\' \'YYYY-MM-DD\'')"
-                                               title="Last week - iso format"><strong>Date:</strong> Last week</a>
-                                        </li>
-                                        <li><a ng-click="templateForm.insertVar('choice \'Hello, Hi, Hey\'')"
-                                               title="Randomly choose an option from a comma-separated list"><strong>Random choice</strong></a>
-                                        </li>
-                                        <li><a ng-click="templateForm.insertVar('domain to.email')"
-                                               title="Extract domain name from an email. Ex: contact@AWESOME-sweet-bakery.com -> Awesome Sweet Bakery"><strong>Extract domain</strong></a>
-                                        </li>
-                                        <li class="divider"></li>
-                                        <li><a class="text-muted small"
-                                               href="http://docs.gorgias.io/chrome-extension/templates#Template_Variables"
-                                               rel="external"
-                                               target="_blank">Learn more about template variables <i
-                                            class="fa fa-external-link"></i></a></li>
-                                    </ul>
-                                </span>
-                            </div>
                             <div class="editor"></div>
-                            <textarea ng-if="!settings.editor.enabled"
-                                      id="qt-body" class="form-control"
-                                      required="required"
-                                      placeholder="It was nice talking to you today..."
-                                      ng-model="templateForm.selectedTemplate.body"></textarea>
+                            <textarea   ng-if="settings.editor.enabled"
+                                        required="required" id="qt-body"
+                                        placeholder="It was nice talking to you today..."
+                                        ng-model="templateForm.selectedTemplate.body"
+                                        class="tinymce"></textarea>
+                            <div class="toolbar">
+                                    <span class="dropdown insert-var-container" id="dropdown_span">
+                                            <button class="btn btn-default dropdown-toggle" data-toggle="dropdown"
+                                                    tabindex="-1">
+                                                Insert Variable <span class="caret"></span></button>
+                                            <ul class="dropdown-menu">
+                                                <li><a ng-click="templateForm.insertVar('to.first_name')"
+                                                        title="First name of the person in the 'To' field"><strong>To:</strong>
+                                                    First Name</a></li>
+                                                <li><a ng-click="templateForm.insertVar('to.email')"
+                                                        title="Email address of the person in the 'To' field"><strong>To:</strong>
+                                                    Email</a></li>
+                                                <li><a ng-click="templateForm.insertVar('from.first_name')"
+                                                        title="First name of the person in the 'From' field"><strong>From:</strong>
+                                                    First Name</a></li>
+                                                <li><a ng-click="templateForm.insertVar('from.email')"
+                                                        title="Email address of the person in the 'From' field"><strong>From:</strong>
+                                                    Email</a></li>
+                                                <li><a ng-click="templateForm.insertVar('subject')"
+                                                        title="The subject of the e-mail"><strong>Subject</strong></a>
+                                                </li>
+                                                <li><a ng-click="templateForm.insertVar('date \'+7\' \'days\' \'DD MMMM\'')"
+                                                        title="Date in 1 week"><strong>Date:</strong> Next week</a>
+                                                </li>
+                                                <li><a ng-click="templateForm.insertVar('date \'-7\' \'days\' \'YYYY-MM-DD\'')"
+                                                        title="Last week - iso format"><strong>Date:</strong> Last week</a>
+                                                </li>
+                                                <li><a ng-click="templateForm.insertVar('choice \'Hello, Hi, Hey\'')"
+                                                        title="Randomly choose an option from a comma-separated list"><strong>Random choice</strong></a>
+                                                </li>
+                                                <li><a ng-click="templateForm.insertVar('domain to.email')"
+                                                        title="Extract domain name from an email. Ex: contact@AWESOME-sweet-bakery.com -> Awesome Sweet Bakery"><strong>Extract domain</strong></a>
+                                                </li>
+                                                <li class="divider"></li>
+                                                <li><a class="text-muted small"
+                                                        href="http://docs.gorgias.io/chrome-extension/templates#Template_Variables"
+                                                        rel="external"
+                                                        target="_blank">Learn more about template variables <i
+                                                    class="fa fa-external-link"></i></a></li>
+                                            </ul>
+                                        </span>
+                                </div>
                         </div>
                         <div ng-repeat='attachment in templateForm.selectedTemplate.attachments' class='attachments'>
                             <i class='fa fa-paperclip'/><a target='_blank' class='attachment' href='{{attachment.url}}'>{{attachment.name}}</a><i class='fa fa-close' ng-click="templateForm.removeAttachment($index)"/>
@@ -149,7 +108,6 @@
                         <input type="text" class="form-control" id="qt-subject" ng-model="templateForm.selectedTemplate.subject"
                                placeholder=""/>
                     </div>
-
                     <div class="form-group-grid">
                         <div class="form-group" ng-show="templateForm.extraFieldContent(templateForm.selectedTemplate.to)">
                             <label for="qt-to">To <span class="text-muted">(Optional)</span></label>

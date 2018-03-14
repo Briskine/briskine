@@ -60,34 +60,22 @@ gApp.controller('TemplateFormCtrl',
 
         var loadEditor = function () {
             self.showHTMLSource = false;
-            if (editor) { //already loaded
-                return;
-            }
-
+            
             SettingsService.get('settings').then(function (settings) {
                 if (settings.editor && settings.editor.enabled) {
-
-                    // Initialize editor
-                    editor = new Quill('.editor-wrapper .editor', {
-                        modules: {
-                            'toolbar': {container: '.editor-wrapper .toolbar'},
-                            'link-tooltip': true
-                        },
-                        theme: 'snow'
-                    });
-                    editor.addModule('image-tooltip', {
-                        template: '<input class="input" type="textbox" />' +
-                        '<div class="preview">' +
-                        '<span>Preview</span> </div> ' +
-                        '<a href="javascript:;" class="insert btn btn-primary">Insert</a>' +
-                        '<a href="javascript:;" class="cancel btn btn-default">Cancel</a>'
-                    });
-
-                    editor.on('text-change', function (delta, source) {
-                        self.selectedTemplate.body = editor.getHTML();
+                    
+                    tinymce.init({
+                        /* replace textarea having class .tinymce with tinymce editor */
+                        selector: "textarea.tinymce",
+                        menubar:false,
+                        height: 200,
+                        statusbar: false,
+                        theme: 'modern',
+                        plugins: 'print preview fullpage searchreplace autolink directionality visualblocks visualchars fullscreen image link media template codesample table charmap hr pagebreak nonbreaking anchor toc insertdatetime advlist lists textcolor wordcount imagetools contextmenu colorpicker textpattern',
+                        toolbar: 'formatselect | bold italic strikethrough forecolor backcolor | link | table | alignleft aligncenter alignright alignjustify  | numlist bullist outdent indent  | removeformat',
                     });
                 } else {
-                    editor = null;
+                    tinymce = null;
                 }
             });
         };
@@ -118,20 +106,17 @@ gApp.controller('TemplateFormCtrl',
         self.toggleHTMLSource = function () {
             self.showHTMLSource = !self.showHTMLSource;
             if (self.showHTMLSource) {
-                editor.setText(editor.getHTML());
+                tinymce.activeEditor.getContent({format : 'raw'});
             } else {
-                editor.setHTML(editor.getText());
+                tinymce.activeEditor.getContent({format : 'raw'});
             }
         };
 
         self.insertVar = function (variable) {
-            if (editor) {
-                editor.focus();
-                var range = editor.getSelection();
-                if (range) {
-                    editor.insertText(range.start, '{{' + variable + '}}');
-
-                }
+            
+            if (tinymce) {
+                tinymce.activeEditor.focus();
+                tinymce.activeEditor.execCommand('mceInsertContent', false, '{{' + variable + '}}');
             } else {
                 var body = $('#qt-body');
                 var start = body[0].selectionStart;
@@ -225,8 +210,8 @@ gApp.controller('TemplateFormCtrl',
                         // new template
                         self.selectedTemplate = angular.copy(defaults);
                         self.selectedTemplate.body = $routeParams.body || '';
-                        if (editor) {
-                            editor.setHTML(self.selectedTemplate.body);
+                        if (tinymce) {
+                            tinymce.activeEditor.dom.setHTML(tinyMCE.activeEditor.dom.select('p'), self.selectedTemplate.body);
 
                             if ($scope.location == '/list/tag') {
                                 $('#qt-tags')[0].selectize.addItem($.trim(FilterTagService.filterTags[0]));
@@ -241,8 +226,8 @@ gApp.controller('TemplateFormCtrl',
 
                             self.selectedTemplate = angular.copy(cleanExtraFields(r));
 
-                            if (editor) {
-                                editor.setHTML(self.selectedTemplate.body);
+                            if (tinymce) {
+                                tinymce.activeEditor.dom.setHTML(tinyMCE.activeEditor.dom.select('p'), self.selectedTemplate.body);
                             }
                             $.each(self.selectedTemplate.tags.split(','), function (_, tag) {
                                 $('#qt-tags')[0].selectize.addItem($.trim(tag));
@@ -297,9 +282,9 @@ gApp.controller('TemplateFormCtrl',
                 return false;
             }
 
-            if (editor) {
+            if (tinymce) {
                 if (self.showHTMLSource) {
-                    self.selectedTemplate.body = editor.getText();
+                    self.selectedTemplate.body = tinymce.getContent();
                 }
             }
 

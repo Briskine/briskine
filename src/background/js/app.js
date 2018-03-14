@@ -20,6 +20,10 @@ var gApp = angular.module('gApp', [
     'ngFileUpload'
 ]);
 
+gApp.config(function() {
+    tinyMCE.baseURL = 'bower_components/tinymce';
+});
+
 gApp.config(function ($routeProvider, $compileProvider, $sceDelegateProvider) {
     $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|chrome-extension):/);
     $sceDelegateProvider.resourceUrlWhitelist(['self', 'https://gorgias.io/**', 'http://localhost:*/**']);
