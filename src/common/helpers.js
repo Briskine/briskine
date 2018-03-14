@@ -90,6 +90,40 @@ var getRandomIntInclusive = function (min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 };
 
+var filterByTagSearchText = function(list, text, threshold) {
+    var split = text.split('in:');
+    if(split.length>1) {
+        var tag = split[1].trim();
+        var searchStr = '';
+        var searchParts = tag.split(' ');
+        if(searchParts.length>1) {
+            tag = searchParts[0].trim();
+            searchStr = searchParts[1].trim();
+        }
+        return filter(list, tag, searchStr, threshold);
+    } else {
+        return list;
+    }
+}
+var filter = function(list, tag, searchStr, threshold) {
+    return list.filter(function(item){
+        var tags = item.tags;
+        tags = tags.split(',');
+        
+        var result = [];
+        for(var element of tags) {
+            result.push(element.trim());
+        }
+        item.tags = result;
+        if(threshold == 1) {
+            return (item.tags.indexOf(tag) != -1) && ((item.shortcut && item.shortcut.indexOf(searchStr) !== -1) || (item.title && item.title.indexOf(searchStr) !== -1) || (item.body && item.body.indexOf(searchStr) !== -1));
+        }
+        else {
+            return (item.tags.indexOf(tag) != -1) && ((item.shortcut && (item.shortcut == searchStr)) || (item.title && (item.title == searchStr)) || (item.body && (item.body == searchStr)));
+        }
+    });
+}
+
 // fuzzy search with fuse.js
 var fuzzySearch = function (list, text, opts) {
     if (!text) {
@@ -98,9 +132,7 @@ var fuzzySearch = function (list, text, opts) {
     
     if (opts.threshold === 0) {
         if(text.startsWith('in:')) {
-            if (i.tags && i.tags.indexOf(text) !== -1) {
-                return true;
-            }
+            return filterByTagSearchText(list, text, 0);
         }
         return _.filter(list, function (i) {
             if (i.shortcut && i.shortcut.indexOf(text) !== -1) {
@@ -117,31 +149,7 @@ var fuzzySearch = function (list, text, opts) {
     }
 
     if(text.startsWith('in:')) {
-        var defaultOptions = {
-            caseSensitive: false,
-            shouldSort: true,
-            tokenize: false,
-            threshold: 0.6,
-            location: 0,
-            distance: 100,
-            maxPatternLength: 32,
-            // search templates by default
-            keys: [
-                {
-                    name: 'tags'
-                }
-            ]
-        };
-        var options = jQuery.extend(true, defaultOptions, opts);
-        var fuse = new Fuse(list, options);
-
-        var split = text.split('in:');
-        if(split.length>1) {
-            var tag = split[1];
-            return fuse.search(tag);
-        } else {
-            return list;
-        }
+        return filterByTagSearchText(list, text, 1);
     } else {
         var defaultOptions = {
             caseSensitive: false,
@@ -151,7 +159,6 @@ var fuzzySearch = function (list, text, opts) {
             location: 0,
             distance: 100,
             maxPatternLength: 32,
-            // search templates by default
             keys: [
                 {
                     name: 'shortcut',
