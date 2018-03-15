@@ -36,10 +36,10 @@ module.exports = function (grunt) {
                 'bower_components/sifter/sifter.min.js',
                 'bower_components/selectize/dist/js/selectize.min.js',
 
-                'bower_components/quill/dist/quill.min.js',
                 'bower_components/tinymce/tinymce.min.js',
-                'bower_components/tinymce/themes/modern/theme.min.js',                
-
+                'bower_components/tinymce/themes/modern/theme.min.js',
+                'bower_components/angular-ui-tinymce/src/tinymce.js',
+                
                 'bower_components/fuse.js/src/fuse.min.js',
 
                 // Should be first

@@ -1,207 +1,168 @@
 <div id="template-form-modal" ng-controller="TemplateFormCtrl as templateForm" class="modal quicktext-modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
      data-backdrop="static">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" data-whatever="hello" aria-hidden="true"
-                        aria-label="Close"></button>
-                <h4 class="modal-title">
-                    <span ng-show="templateForm.selectedTemplate.id">Edit template</span>
-                    <span ng-show="!templateForm.selectedTemplate.id">New template</span>
-                </h4>
+    <div class="modal-main">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" data-whatever="hello" aria-hidden="true"
+                            aria-label="Close"></button>
+                    <h4 class="modal-title">
+                        <span ng-show="templateForm.selectedTemplate.id">Edit template</span>
+                        <span ng-show="!templateForm.selectedTemplate.id">New template</span>
+                    </h4>
+                </div>
+                <form ng-submit="templateForm.saveQt()">
+                    <div class="modal-body">
+                        <input type="hidden" id="qt-id" ng-model="templateForm.selectedTemplate.id"/> <!-- local id -->
+                        <input type="hidden" id="qt-key" ng-model="templateForm.selectedTemplate.key"/> <!-- sync server id -->
+                        <div id="duplicate-alert-box" class="alert alert-info fade in hide">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                            <strong>Duplicated!</strong> Please edit this new template and hit <strong>Save
+                            template</strong>.
+                        </div>
+    
+                        <div class="row">
+                            <div class="col-xs-7">
+                                <div class="form-group" data-toggle="tooltip" data-placement="bottom">
+                                    <label for="qt-title">Template Name</label>
+                                    <input type="text" class="form-control" id="qt-title" ng-model="templateForm.selectedTemplate.title"
+                                           placeholder="Ex: Nice talking to you" autofocus required/>
+                                </div>
+                            </div>
+    
+                            <div class="col-xs-5">
+                                <div class="form-group" data-toggle="tooltip" data-placement="bottom"
+                                     title="Use this text shortcut to trigger the completion of the template using the TAB key. No spaces are allowed.">
+                                    <label for="qt-shortcut">
+                                        Text shortcut
+                                        <span class="text-muted">(Optional)</span>
+                                    </label>
+                                    <input type="text" class="form-control" id="qt-shortcut"
+                                           ng-model="templateForm.selectedTemplate.shortcut"
+                                           pattern="^[^\s]*$"
+                                           placeholder="nice"/>
+                                </div>
+                            </div>
+                        </div>
+    
+                        <div class="form-group form-template-content">
+                            <label class="body-label">Template Content</label>
+    
+                            <div class="editor-wrapper" ng-if="settings.editor.enabled">
+                                <textarea   class="tinymce"
+                                            id="qt-body"
+                                            placeholder="It was nice talking to you today..."
+                                            ng-model="templateForm.selectedTemplate.body"></textarea>
+                            </div>
+                            <div ng-repeat='attachment in templateForm.selectedTemplate.attachments' class='attachments'>
+                                <i class='fa fa-paperclip'/><a target='_blank' class='attachment' href='{{attachment.url}}'>{{attachment.name}}</a><i class='fa fa-close' ng-click="templateForm.removeAttachment($index)"/>
+                            </div>
+                        </div>
+    
+                        <div class="form-group" data-toggle="tooltip" data-placement="bottom"
+                             title="The e-mail subject will be replaced with this field. Only when this template is used." ng-show="templateForm.extraFieldContent(templateForm.selectedTemplate.subject)">
+                            <label for="qt-subject">Subject <span class="text-muted">(Optional)</span></label>
+                            <input type="text" class="form-control" id="qt-subject" ng-model="templateForm.selectedTemplate.subject"
+                                   placeholder=""/>
+                        </div>
+                        <div class="form-group-grid">
+                            <div class="form-group" ng-show="templateForm.extraFieldContent(templateForm.selectedTemplate.to)">
+                                <label for="qt-to">To <span class="text-muted">(Optional)</span></label>
+                                <input type="text" class="form-control" id="qt-to" ng-model="templateForm.selectedTemplate.to"
+                                    placeholder=""/>
+                            </div>
+    
+                            <div class="form-group" ng-show="templateForm.extraFieldContent(templateForm.selectedTemplate.cc)">
+                                <label for="qt-cc">CC <span class="text-muted">(Optional)</span></label>
+                                <input type="text" class="form-control" id="qt-cc" ng-model="templateForm.selectedTemplate.cc"
+                                    placeholder=""/>
+                            </div>
+    
+                            <div class="form-group" ng-show="templateForm.extraFieldContent(templateForm.selectedTemplate.bcc)">
+                                <label for="qt-bcc">BCC <span class="text-muted">(Optional)</span></label>
+                                <input type="text" class="form-control" id="qt-bcc" ng-model="templateForm.selectedTemplate.bcc"
+                                    placeholder=""/>
+                            </div>
+                        </div>
+    
+                        <div class="form-group">
+                            <button type="button" class="btn btn-link" ng-show="templateForm.extraFields" ng-click="templateForm.showExtraFields()">
+                                Show more fields
+                            </button>
+                        </div>
+    
+                        <div class="form-group">
+                            <label for="qt-tags">
+                                Tags
+                                <span class="text-muted">(Optional)</span>
+                            </label>
+    
+                            <div data-toggle="tooltip" data-placement="bottom"
+                                 title="Tags are useful to search and filter templates (when you have many).">
+                                <input
+                                    type="text"
+                                    class="form-control"
+                                    id="qt-tags"
+                                    size="50"
+                                    ng-model="templateForm.selectedTemplate.tags"
+                                    placeholder="Ex: en, sales, discounts"/>
+                            </div>
+    
+                        </div>
+                        <div class="form-group" ng-show="account && currentSubscription && currentSubscription.active">
+                            <label for="qt-sharing">
+                                Who has access :
+                                <a href ng-click="templateForm.extended = true" style="font-weight: 400" ng-show="templateForm.sharing_setting == 'private'">only you</a>
+                                <a href ng-click="templateForm.extended = true" style="font-weight: 400" ng-show="templateForm.sharing_setting == 'specific'">only specific people</a>
+                                <a href ng-click="templateForm.extended = true" style="font-weight: 400" ng-show="templateForm.sharing_setting == 'everyone'">everyone</a>
+                            </label>
+                            <div class="row" ng-show="templateForm.extended">
+                                <div class="col-xs-8">
+                                    <div data-toggle="tooltip" data-placement="left"
+                                         title="Sharing will allow both editing and re-sharing of your templates.">
+                                        <select class="form-control" id="qt-sharing" ng-model="templateForm.sharing_setting">
+                                            <option value="private">Private</option>
+                                            <option value="everyone">Share with everyone</option>
+                                            <option value="specific">Share with...</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-xs-4" style="margin-top: 6px">
+                                    <p>Notify people by email : <input type="checkbox" ng-model="templateForm.send_email" ng-true-value="'true'" ng-false-value="'false'"></p>
+                                </div>
+                            </div>
+                        </div>
+    
+                        <div class="form-group" ng-show="account && templateForm.extended && templateForm.sharing_setting == 'specific'">
+                            <label for="template-qt-invite-people">People:</label>
+                            <input type="text" class="form-control" id="template-qt-invite-people" ng-model="shareData.emails"
+                                   placeholder="Email addresses"/>
+                        </div>
+                    </div>
+    
+                    <div class="modal-footer">
+                        <div>
+                            <p ng-show="templates.length > 5 && !account" class="premium-feature">
+                                Share this template with your team. <a href="" ng-click="templateForm.upgradeNow()">Subscribe now!</a>
+                            </p>
+                        </div>
+                        <div class="footer-button">
+                            <span ng-show="templateForm.selectedTemplate.id">
+                                <button class="btn btn-default pull-left" ng-click="templateForm.duplicateQt()" tabindex="-1">Duplicate
+                                    template
+                                </button>
+                            </span>
+                            <div class="footer-space"></div>
+                            <div>
+                                <button class="btn btn-default" data-dismiss="modal" tabindex="-1">Cancel</button>
+                                <button class="btn btn-primary" id="submit-button" type="submit">Save template</button>
+                            </div>
+                        </div>
+                    </div>
+    
+                </form>
+    
             </div>
-            <form ng-submit="templateForm.saveQt()">
-                <div class="modal-body">
-                    <input type="hidden" id="qt-id" ng-model="templateForm.selectedTemplate.id"/> <!-- local id -->
-                    <input type="hidden" id="qt-key" ng-model="templateForm.selectedTemplate.key"/> <!-- sync server id -->
-                    <div id="duplicate-alert-box" class="alert alert-info fade in hide">
-                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-                        <strong>Duplicated!</strong> Please edit this new template and hit <strong>Save
-                        template</strong>.
-                    </div>
-
-                    <div class="row">
-                        <div class="col-xs-7">
-                            <div class="form-group" data-toggle="tooltip" data-placement="bottom">
-                                <label for="qt-title">Template Name</label>
-                                <input type="text" class="form-control" id="qt-title" ng-model="templateForm.selectedTemplate.title"
-                                       placeholder="Ex: Nice talking to you" autofocus required/>
-                            </div>
-                        </div>
-
-                        <div class="col-xs-5">
-                            <div class="form-group" data-toggle="tooltip" data-placement="bottom"
-                                 title="Use this text shortcut to trigger the completion of the template using the TAB key. No spaces are allowed.">
-                                <label for="qt-shortcut">
-                                    Text shortcut
-                                    <span class="text-muted">(Optional)</span>
-                                </label>
-                                <input type="text" class="form-control" id="qt-shortcut"
-                                       ng-model="templateForm.selectedTemplate.shortcut"
-                                       pattern="^[^\s]*$"
-                                       placeholder="nice"/>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="body-label">Template Content</label>
-
-                        <div class="editor-wrapper">
-                            <div class="editor"></div>
-                            <textarea   ng-if="settings.editor.enabled"
-                                        required="required" id="qt-body"
-                                        placeholder="It was nice talking to you today..."
-                                        ng-model="templateForm.selectedTemplate.body"
-                                        class="tinymce"></textarea>
-                            <div class="toolbar">
-                                    <span class="dropdown insert-var-container" id="dropdown_span">
-                                            <button class="btn btn-default dropdown-toggle" data-toggle="dropdown"
-                                                    tabindex="-1">
-                                                Insert Variable <span class="caret"></span></button>
-                                            <ul class="dropdown-menu">
-                                                <li><a ng-click="templateForm.insertVar('to.first_name')"
-                                                        title="First name of the person in the 'To' field"><strong>To:</strong>
-                                                    First Name</a></li>
-                                                <li><a ng-click="templateForm.insertVar('to.email')"
-                                                        title="Email address of the person in the 'To' field"><strong>To:</strong>
-                                                    Email</a></li>
-                                                <li><a ng-click="templateForm.insertVar('from.first_name')"
-                                                        title="First name of the person in the 'From' field"><strong>From:</strong>
-                                                    First Name</a></li>
-                                                <li><a ng-click="templateForm.insertVar('from.email')"
-                                                        title="Email address of the person in the 'From' field"><strong>From:</strong>
-                                                    Email</a></li>
-                                                <li><a ng-click="templateForm.insertVar('subject')"
-                                                        title="The subject of the e-mail"><strong>Subject</strong></a>
-                                                </li>
-                                                <li><a ng-click="templateForm.insertVar('date \'+7\' \'days\' \'DD MMMM\'')"
-                                                        title="Date in 1 week"><strong>Date:</strong> Next week</a>
-                                                </li>
-                                                <li><a ng-click="templateForm.insertVar('date \'-7\' \'days\' \'YYYY-MM-DD\'')"
-                                                        title="Last week - iso format"><strong>Date:</strong> Last week</a>
-                                                </li>
-                                                <li><a ng-click="templateForm.insertVar('choice \'Hello, Hi, Hey\'')"
-                                                        title="Randomly choose an option from a comma-separated list"><strong>Random choice</strong></a>
-                                                </li>
-                                                <li><a ng-click="templateForm.insertVar('domain to.email')"
-                                                        title="Extract domain name from an email. Ex: contact@AWESOME-sweet-bakery.com -> Awesome Sweet Bakery"><strong>Extract domain</strong></a>
-                                                </li>
-                                                <li class="divider"></li>
-                                                <li><a class="text-muted small"
-                                                        href="http://docs.gorgias.io/chrome-extension/templates#Template_Variables"
-                                                        rel="external"
-                                                        target="_blank">Learn more about template variables <i
-                                                    class="fa fa-external-link"></i></a></li>
-                                            </ul>
-                                        </span>
-                                </div>
-                        </div>
-                        <div ng-repeat='attachment in templateForm.selectedTemplate.attachments' class='attachments'>
-                            <i class='fa fa-paperclip'/><a target='_blank' class='attachment' href='{{attachment.url}}'>{{attachment.name}}</a><i class='fa fa-close' ng-click="templateForm.removeAttachment($index)"/>
-                        </div>
-                    </div>
-
-                    <div class="form-group" data-toggle="tooltip" data-placement="bottom"
-                         title="The e-mail subject will be replaced with this field. Only when this template is used." ng-show="templateForm.extraFieldContent(templateForm.selectedTemplate.subject)">
-                        <label for="qt-subject">Subject <span class="text-muted">(Optional)</span></label>
-                        <input type="text" class="form-control" id="qt-subject" ng-model="templateForm.selectedTemplate.subject"
-                               placeholder=""/>
-                    </div>
-                    <div class="form-group-grid">
-                        <div class="form-group" ng-show="templateForm.extraFieldContent(templateForm.selectedTemplate.to)">
-                            <label for="qt-to">To <span class="text-muted">(Optional)</span></label>
-                            <input type="text" class="form-control" id="qt-to" ng-model="templateForm.selectedTemplate.to"
-                                placeholder=""/>
-                        </div>
-
-                        <div class="form-group" ng-show="templateForm.extraFieldContent(templateForm.selectedTemplate.cc)">
-                            <label for="qt-cc">CC <span class="text-muted">(Optional)</span></label>
-                            <input type="text" class="form-control" id="qt-cc" ng-model="templateForm.selectedTemplate.cc"
-                                placeholder=""/>
-                        </div>
-
-                        <div class="form-group" ng-show="templateForm.extraFieldContent(templateForm.selectedTemplate.bcc)">
-                            <label for="qt-bcc">BCC <span class="text-muted">(Optional)</span></label>
-                            <input type="text" class="form-control" id="qt-bcc" ng-model="templateForm.selectedTemplate.bcc"
-                                placeholder=""/>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <button type="button" class="btn btn-link" ng-show="templateForm.extraFields" ng-click="templateForm.showExtraFields()">
-                            Show more fields
-                        </button>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="qt-tags">
-                            Tags
-                            <span class="text-muted">(Optional)</span>
-                        </label>
-
-                        <div data-toggle="tooltip" data-placement="left"
-                             title="Tags are useful to search and filter templates (when you have many).">
-                            <input
-                                type="text"
-                                class="form-control"
-                                id="qt-tags"
-                                size="50"
-                                ng-model="templateForm.selectedTemplate.tags"
-                                placeholder="Ex: en, sales, discounts"/>
-                        </div>
-
-                    </div>
-
-                    <p ng-show="templates.length > 5 && !account" class="premium-feature">
-                        Share this template with your team. <a href="" ng-click="templateForm.upgradeNow()">Subscribe now!</a>
-                    </p>
-
-                    <div class="form-group" ng-show="account && currentSubscription && currentSubscription.active">
-                        <label for="qt-sharing">
-                            Who has access :
-                            <a href ng-click="templateForm.extended = true" style="font-weight: 400" ng-show="templateForm.sharing_setting == 'private'">only you</a>
-                            <a href ng-click="templateForm.extended = true" style="font-weight: 400" ng-show="templateForm.sharing_setting == 'specific'">only specific people</a>
-                            <a href ng-click="templateForm.extended = true" style="font-weight: 400" ng-show="templateForm.sharing_setting == 'everyone'">everyone</a>
-                        </label>
-                        <div class="row" ng-show="templateForm.extended">
-                            <div class="col-xs-8">
-                                <div data-toggle="tooltip" data-placement="left"
-                                     title="Sharing will allow both editing and re-sharing of your templates.">
-                                    <select class="form-control" id="qt-sharing" ng-model="templateForm.sharing_setting">
-                                        <option value="private">Private</option>
-                                        <option value="everyone">Share with everyone</option>
-                                        <option value="specific">Share with...</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-xs-4" style="margin-top: 6px">
-                                <p>Notify people by email : <input type="checkbox" ng-model="templateForm.send_email" ng-true-value="'true'" ng-false-value="'false'"></p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="form-group" ng-show="account && templateForm.extended && templateForm.sharing_setting == 'specific'">
-                        <label for="template-qt-invite-people">People:</label>
-                        <input type="text" class="form-control" id="template-qt-invite-people" ng-model="shareData.emails"
-                               placeholder="Email addresses"/>
-                    </div>
-                </div>
-
-                <div class="modal-footer">
-                    <span ng-show="templateForm.selectedTemplate.id">
-                        <button class="btn btn-default pull-left" ng-click="templateForm.duplicateQt()" tabindex="-1">Duplicate
-                            template
-                        </button>
-                    </span>
-
-                    <button class="btn btn-default" data-dismiss="modal" tabindex="-1">Cancel</button>
-                    <button class="btn btn-primary" id="submit-button" type="submit">Save template</button>
-
-                </div>
-
-            </form>
-
         </div>
     </div>
 </div>

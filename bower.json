@@ -16,7 +16,6 @@
     "bootstrap": "3.3.5",
     "jquery": "2.1.4",
     "mousetrap": "https://github.com/xarg/mousetrap.git#master",
-    "quill": "~0.20.1",
     "raven-js": "3.9.1",
     "handlebars": "4.0.4",
     "font-awesome": "4.5.0",
@@ -26,6 +25,7 @@
     "checklist-model": "~0.9.0",
     "ng-file-upload": "~11.0.2",
     "js-md5": "md5#~0.3.0",
+    "angular-ui-tinymce": "^0.0.19",
     "tinymce": "tinymce-dist#^4.7.9",
     "fuse.js": "fuse#~2.2.0"
   }

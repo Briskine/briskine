@@ -60,7 +60,6 @@ gApp.controller('TemplateFormCtrl',
 
         var loadEditor = function () {
             self.showHTMLSource = false;
-            
             SettingsService.get('settings').then(function (settings) {
                 if (settings.editor && settings.editor.enabled) {
                     
@@ -68,13 +67,34 @@ gApp.controller('TemplateFormCtrl',
                         /* replace textarea having class .tinymce with tinymce editor */
                         selector: "textarea.tinymce",
                         menubar:false,
-                        height: 200,
+                        height: '150',
                         statusbar: false,
                         theme: 'modern',
                         plugins: 'print preview fullpage searchreplace autolink directionality visualblocks visualchars fullscreen image link media template codesample table charmap hr pagebreak nonbreaking anchor toc insertdatetime advlist lists textcolor wordcount imagetools contextmenu colorpicker textpattern',
-                        toolbar: 'formatselect | bold italic strikethrough forecolor backcolor | link | table | alignleft aligncenter alignright alignjustify  | numlist bullist outdent indent  | removeformat',
+                        toolbar: 'formatselect | bold italic strikethrough forecolor backcolor | link | table | alignleft aligncenter alignright alignjustify  | numlist bullist outdent indent  | removeformat | insertVariable',
+                        setup: function(editor) {
+                            editor.addButton('insertVariable', {
+                                type: 'menubutton',
+                                text: 'Insert Variable',
+                                icon: false,
+                                menu: [
+                                    { text: 'To: First Name', onclick: function() {self.insertVar('to.first_name');}},
+                                    { text: 'To: Email', onclick: function() {self.insertVar('to.email');}},
+                                    { text: 'From: First Name', onclick: function() {self.insertVar('from.first_name');}},
+                                    { text: 'From: Email', onclick: function() {self.insertVar('from.email');}},
+                                    { text: 'Subject', onclick: function() {self.insertVar('subject');}},
+                                    { text: 'Date: Next week', onclick: function() {self.insertVar('date \'+7\' \'days\' \'DD MMMM\'');}},
+                                    { text: 'Date: Last week', onclick: function() {self.insertVar('date \'-7\' \'days\' \'YYYY-MM-DD\'');}},
+                                    { text: 'Random choice', onclick: function() {self.insertVar('choice \'Hello, Hi, Hey\'');}},
+                                    { text: 'Extract domain', onclick: function() {self.insertVar('domain to.email');}},
+                                    { text: 'Learn more about template variables', onclick: function() {window.open("http://docs.gorgias.io/chrome-extension/templates#Template_Variables");}},
+                                ]
+                            });
+                    
+                        }
                     });
                 } else {
+                    tinymce.activeEditor.setContent('');
                     tinymce = null;
                 }
             });
@@ -106,9 +126,9 @@ gApp.controller('TemplateFormCtrl',
         self.toggleHTMLSource = function () {
             self.showHTMLSource = !self.showHTMLSource;
             if (self.showHTMLSource) {
-                tinymce.activeEditor.getContent({format : 'raw'});
+                tinymce.activeEditor.getContent({format : 'html'});
             } else {
-                tinymce.activeEditor.getContent({format : 'raw'});
+                tinymce.activeEditor.getContent({format : 'text'});
             }
         };
 
@@ -212,7 +232,6 @@ gApp.controller('TemplateFormCtrl',
                         self.selectedTemplate.body = $routeParams.body || '';
                         if (tinymce) {
                             tinymce.activeEditor.dom.setHTML(tinyMCE.activeEditor.dom.select('p'), self.selectedTemplate.body);
-
                             if ($scope.location == '/list/tag') {
                                 $('#qt-tags')[0].selectize.addItem($.trim(FilterTagService.filterTags[0]));
                             }
@@ -225,7 +244,6 @@ gApp.controller('TemplateFormCtrl',
                         TemplateService.get(id).then(function (r) {
 
                             self.selectedTemplate = angular.copy(cleanExtraFields(r));
-
                             if (tinymce) {
                                 tinymce.activeEditor.dom.setHTML(tinyMCE.activeEditor.dom.select('p'), self.selectedTemplate.body);
                             }
@@ -276,16 +294,16 @@ gApp.controller('TemplateFormCtrl',
                 alert("Please enter a title");
                 return false;
             }
-
-            if (!self.selectedTemplate.body) {
+            self.selectedTemplate.body = ''
+            if (tinymce) {
+                self.selectedTemplate.body = tinymce.activeEditor.getContent({format : 'html'});
+            }
+            var editorContent = tinymce.activeEditor.getContent();
+            editorContent = editorContent.replace(/<(.|\n)*?>/g, '');
+            if (editorContent.trim() == '')
+            {
                 alert("Please enter a body");
                 return false;
-            }
-
-            if (tinymce) {
-                if (self.showHTMLSource) {
-                    self.selectedTemplate.body = tinymce.getContent();
-                }
             }
 
             // delete extra fields with blank values,
@@ -355,7 +373,10 @@ gApp.controller('TemplateFormCtrl',
                     });
                     $scope.reloadTemplates();
                 }
-
+                
+                tinymce.activeEditor.setContent('');
+                tinymce = null;
+                
                 // hide the modal
                 $('.modal').modal('hide');
 

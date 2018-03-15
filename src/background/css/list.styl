@@ -149,21 +149,78 @@
 
 /* new/edit modal
 */
+.modal.in .modal-dialog {
+    width: auto !important
+}
 .quicktext-modal {
-    .modal-footer .btn + .btn {
-        margin-bottom: 0.25em;
-        margin-left: 5px;
-    }
-    .configure-fields {
-        padding-top: 2px;
-        margin-right: 8px;
-        .dropdown-menu {
-            padding: 8px;
+    .modal-main {
+        display: flex;
+        justify-content center;
+        width: 100vw;
+        height: 100vh;
+
+        .modal-footer {
+
+            .premium-feature {
+                text-align: left;
+            }
+
+            .footer-button {
+                display: flex;
+                justify-content: space-between;
+            }
         }
-    }
-    .modal-title {
-        font-weight: bold;
-        font-size: 1.8em;
+        .modal-content {
+            min-width: 500px;
+            min-height: 616px;
+            resize: both;
+            overflow: auto;
+            display: flex;
+            flex-direction: column;
+
+            .ng-pristine {
+                flex: 1;
+                display: flex;
+                flex-direction: column;
+
+                .modal-body {
+                    flex: 1;
+                    display: flex;
+                    flex-direction: column;
+
+                    .form-template-content {
+                        flex: 1;
+                        display: flex;
+                        flex-direction: column;
+
+                        .editor-wrapper {
+                            flex: 1;
+                            display: flex;
+                            flex-direction: column;
+
+                            .mce-container {
+                                flex: 1    
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        .modal-footer .btn + .btn {
+            margin-bottom: 0.25em;
+            margin-left: 5px;
+        }
+        .configure-fields {
+            padding-top: 2px;
+            margin-right: 8px;
+            .dropdown-menu {
+                padding: 8px;
+            }
+        }
+        .modal-title {
+            font-weight: bold;
+            font-size: 1.8em;
+        }
     }
 }
 
