@@ -150,7 +150,7 @@
 /* new/edit modal
 */
 .modal.in .modal-dialog {
-    width: auto !important
+    width: 610px;
 }
 .quicktext-modal {
     .modal-main {
@@ -159,67 +159,94 @@
         width: 100vw;
         height: 100vh;
 
-        .modal-footer {
+        .modal-dialog {
 
-            .premium-feature {
-                text-align: left;
+            .modal-footer {
+
+                .premium-feature {
+                    text-align: left;
+                }
+
+                .footer-button {
+                    display: flex;
+                    justify-content: space-between;
+                }
             }
-
-            .footer-button {
-                display: flex;
-                justify-content: space-between;
-            }
-        }
-        .modal-content {
-            min-width: 500px;
-            min-height: 616px;
-            resize: both;
-            overflow: auto;
-            display: flex;
-            flex-direction: column;
-
-            .ng-pristine {
-                flex: 1;
+            .modal-content {
                 display: flex;
                 flex-direction: column;
-
-                .modal-body {
+                min-height: 650px;
+                .ng-pristine {
                     flex: 1;
                     display: flex;
                     flex-direction: column;
 
-                    .form-template-content {
+                    .modal-body {
                         flex: 1;
                         display: flex;
                         flex-direction: column;
 
-                        .editor-wrapper {
+                        #tinymce {
+                            padding-bottom: 0!important;
+                        }
+
+                        .form-template-content {
                             flex: 1;
                             display: flex;
                             flex-direction: column;
 
-                            .mce-container {
-                                flex: 1    
+                            .editor-wrapper {
+                                flex: 1;
+                                display: flex;
+                                flex-direction: column;
+
+                                .mce-tinymce {
+                                    flex: 1;
+                                    display: flex;
+                                    flex-direction: column;
+                                    
+                                    .mce-container-body {
+                                        flex: 1;
+                                        display: flex;
+                                        flex-direction: column;
+
+                                        .mce-toolbar-grp .mce-container-body {
+                                            display: block;
+                                        }
+
+                                        .mce-edit-area {
+                                            flex: 1;
+                                            display: flex;
+                                            flex-direction: column;
+
+                                            #qt-body_ifr {
+                                                flex: 1;
+                                            }
+                                        }
+
+                                    }
+                                }
                             }
                         }
                     }
                 }
             }
-        }
-        .modal-footer .btn + .btn {
-            margin-bottom: 0.25em;
-            margin-left: 5px;
-        }
-        .configure-fields {
-            padding-top: 2px;
-            margin-right: 8px;
-            .dropdown-menu {
-                padding: 8px;
+            .modal-footer .btn + .btn {
+                margin-bottom: 0.25em;
+                margin-left: 5px;
             }
-        }
-        .modal-title {
-            font-weight: bold;
-            font-size: 1.8em;
+            .configure-fields {
+                padding-top: 2px;
+                margin-right: 8px;
+                .dropdown-menu {
+                    padding: 8px;
+                }
+            }
+            .modal-title {
+                font-weight: bold;
+                font-size: 1.8em;
+            }
+
         }
     }
 }

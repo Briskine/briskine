@@ -59,6 +59,10 @@ gApp.controller('TemplateFormCtrl',
         };
 
         var loadEditor = function () {
+            if (tinymce.activeEditor){
+                tinymce.activeEditor.setContent('');
+            }
+
             self.showHTMLSource = false;
             SettingsService.get('settings').then(function (settings) {
                 if (settings.editor && settings.editor.enabled) {
@@ -67,10 +71,12 @@ gApp.controller('TemplateFormCtrl',
                         /* replace textarea having class .tinymce with tinymce editor */
                         selector: "textarea.tinymce",
                         menubar:false,
-                        height: '150',
                         statusbar: false,
+                        autoresize_bottom_margin : 0,
+                        autoresize_min_height: 190,
+                        autoresize_on_init: true,
                         theme: 'modern',
-                        plugins: 'print preview fullpage searchreplace autolink directionality visualblocks visualchars fullscreen image link media template codesample table charmap hr pagebreak nonbreaking anchor toc insertdatetime advlist lists textcolor wordcount imagetools contextmenu colorpicker textpattern',
+                        plugins: 'autoresize print preview fullpage searchreplace autolink directionality visualblocks visualchars fullscreen image link media template codesample table charmap hr pagebreak nonbreaking anchor toc insertdatetime advlist lists textcolor wordcount imagetools contextmenu colorpicker textpattern',
                         toolbar: 'formatselect | bold italic strikethrough forecolor backcolor | link | table | alignleft aligncenter alignright alignjustify  | numlist bullist outdent indent  | removeformat | insertVariable',
                         setup: function(editor) {
                             editor.addButton('insertVariable', {
@@ -95,7 +101,6 @@ gApp.controller('TemplateFormCtrl',
                     });
                 } else {
                     tinymce.activeEditor.setContent('');
-                    tinymce = null;
                 }
             });
         };
@@ -134,7 +139,7 @@ gApp.controller('TemplateFormCtrl',
 
         self.insertVar = function (variable) {
             
-            if (tinymce) {
+            if (tinymce.activeEditor) {
                 tinymce.activeEditor.focus();
                 tinymce.activeEditor.execCommand('mceInsertContent', false, '{{' + variable + '}}');
             } else {
@@ -210,6 +215,7 @@ gApp.controller('TemplateFormCtrl',
                         options: tagOptions,
                         render: {
                             item: function (item, escape) {
+                                console.log('XXXX');
                                 return '<span class="tag item"><i class="fa fa-hashtag"></i>' + escape(item.text) + '</span>';
                             }
                         }
@@ -230,8 +236,9 @@ gApp.controller('TemplateFormCtrl',
                         // new template
                         self.selectedTemplate = angular.copy(defaults);
                         self.selectedTemplate.body = $routeParams.body || '';
-                        if (tinymce) {
-                            tinymce.activeEditor.dom.setHTML(tinyMCE.activeEditor.dom.select('p'), self.selectedTemplate.body);
+                        if (tinymce.activeEditor) {
+                            setTimeout(function(){ tinymce.activeEditor.setContent(''); }, 100);
+                            
                             if ($scope.location == '/list/tag') {
                                 $('#qt-tags')[0].selectize.addItem($.trim(FilterTagService.filterTags[0]));
                             }
@@ -244,8 +251,9 @@ gApp.controller('TemplateFormCtrl',
                         TemplateService.get(id).then(function (r) {
 
                             self.selectedTemplate = angular.copy(cleanExtraFields(r));
-                            if (tinymce) {
-                                tinymce.activeEditor.dom.setHTML(tinyMCE.activeEditor.dom.select('p'), self.selectedTemplate.body);
+                            if (tinymce.activeEditor) {
+                                setTimeout(function(){ tinymce.activeEditor.setContent(self.selectedTemplate.body); }, 100);
+                                
                             }
                             $.each(self.selectedTemplate.tags.split(','), function (_, tag) {
                                 $('#qt-tags')[0].selectize.addItem($.trim(tag));
@@ -295,7 +303,7 @@ gApp.controller('TemplateFormCtrl',
                 return false;
             }
             self.selectedTemplate.body = ''
-            if (tinymce) {
+            if (tinymce.activeEditor) {
                 self.selectedTemplate.body = tinymce.activeEditor.getContent({format : 'html'});
             }
             var editorContent = tinymce.activeEditor.getContent();
@@ -375,7 +383,6 @@ gApp.controller('TemplateFormCtrl',
                 }
                 
                 tinymce.activeEditor.setContent('');
-                tinymce = null;
                 
                 // hide the modal
                 $('.modal').modal('hide');
