@@ -59,14 +59,14 @@ gApp.controller('TemplateFormCtrl',
         };
 
         var loadEditor = function () {
+
             if (tinymce.activeEditor){
-                tinymce.activeEditor.setContent('');
+                tinymce.activeEditor.remove();
             }
 
             self.showHTMLSource = false;
             SettingsService.get('settings').then(function (settings) {
                 if (settings.editor && settings.editor.enabled) {
-                    
                     tinymce.init({
                         /* replace textarea having class .tinymce with tinymce editor */
                         selector: "textarea.tinymce",
@@ -100,7 +100,14 @@ gApp.controller('TemplateFormCtrl',
                         }
                     });
                 } else {
-                    tinymce.activeEditor.setContent('');
+                    jQuery.each(jQuery('textarea[data-autoresize]'), function() {
+                        var offset = this.offsetHeight - this.clientHeight;
+                    
+                        var resizeTextarea = function(el) {
+                            jQuery(el).css('height', 'auto').css('height', el.scrollHeight + offset + 10);
+                        };
+                        jQuery(this).on('keyup input', function() { resizeTextarea(this); }).removeAttr('data-autoresize');
+                    });
                 }
             });
         };
@@ -215,7 +222,6 @@ gApp.controller('TemplateFormCtrl',
                         options: tagOptions,
                         render: {
                             item: function (item, escape) {
-                                console.log('XXXX');
                                 return '<span class="tag item"><i class="fa fa-hashtag"></i>' + escape(item.text) + '</span>';
                             }
                         }
@@ -302,11 +308,11 @@ gApp.controller('TemplateFormCtrl',
                 alert("Please enter a title");
                 return false;
             }
-            self.selectedTemplate.body = ''
+            console.log('selected...', self.selectedTemplate.body)
             if (tinymce.activeEditor) {
                 self.selectedTemplate.body = tinymce.activeEditor.getContent({format : 'html'});
             }
-            var editorContent = tinymce.activeEditor.getContent();
+            var editorContent = self.selectedTemplate.body;
             editorContent = editorContent.replace(/<(.|\n)*?>/g, '');
             if (editorContent.trim() == '')
             {
@@ -381,8 +387,6 @@ gApp.controller('TemplateFormCtrl',
                     });
                     $scope.reloadTemplates();
                 }
-                
-                tinymce.activeEditor.setContent('');
                 
                 // hide the modal
                 $('.modal').modal('hide');

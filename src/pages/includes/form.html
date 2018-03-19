@@ -47,10 +47,16 @@
     
                         <div class="form-group form-template-content">
                             <label class="body-label">Template Content</label>
-    
-                            <div class="editor-wrapper" ng-if="settings.editor.enabled">
-                                <textarea   class="tinymce"
+                            <div class="editor-wrapper">
+                                <textarea   ng-if="settings.editor.enabled"
+                                            class="tinymce"
                                             id="qt-body"
+                                            placeholder="It was nice talking to you today..."
+                                            ng-model="templateForm.selectedTemplate.body"></textarea>
+                                <textarea   ng-if="!settings.editor.enabled"
+                                            class="qt-body-no-html"
+                                            data-autoresize
+                                            id="qt-body-no-html"
                                             placeholder="It was nice talking to you today..."
                                             ng-model="templateForm.selectedTemplate.body"></textarea>
                             </div>
