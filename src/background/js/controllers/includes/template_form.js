@@ -72,12 +72,15 @@ gApp.controller('TemplateFormCtrl',
                         selector: "textarea.tinymce",
                         menubar:false,
                         statusbar: false,
+                        image_title: true,
+                        automatic_uploads: true,
+                        file_picker_types: 'image',
                         autoresize_bottom_margin : 0,
                         autoresize_min_height: 190,
                         autoresize_on_init: true,
                         theme: 'modern',
                         plugins: 'autoresize print preview fullpage searchreplace autolink directionality visualblocks visualchars fullscreen image link media template codesample table charmap hr pagebreak nonbreaking anchor toc insertdatetime advlist lists textcolor wordcount imagetools contextmenu colorpicker textpattern',
-                        toolbar: 'formatselect | bold italic strikethrough forecolor backcolor | link | table | alignleft aligncenter alignright alignjustify  | numlist bullist outdent indent  | removeformat | insertVariable',
+                        toolbar: 'formatselect | bold italic strikethrough forecolor backcolor | link | image | table | alignleft aligncenter alignright alignjustify  | numlist bullist outdent indent  | removeformat | insertVariable',
                         setup: function(editor) {
                             editor.addButton('insertVariable', {
                                 type: 'menubutton',
@@ -97,6 +100,35 @@ gApp.controller('TemplateFormCtrl',
                                 ]
                             });
                     
+                        },
+                        file_picker_callback: function(cb, value, meta) {
+                            var input = document.createElement('input');
+                            input.setAttribute('type', 'file');
+                            input.setAttribute('accept', 'image/*');
+                            input.onchange = function() {
+                              var file = this.files[0];
+                              var reader = new FileReader();
+                              reader.onload = function () {
+                                // Note: Now we need to register the blob in TinyMCEs image blob
+                                // registry. In the next release this part hopefully won't be
+                                // necessary, as we are looking to handle it internally.
+                                var id = 'blobid' + (new Date()).getTime();
+                                var blobCache =  tinymce.activeEditor.editorUpload.blobCache;
+                                var base64 = reader.result.split(',')[1];
+                                var blobInfo = blobCache.create(id, file, base64);
+                                blobCache.add(blobInfo);
+                        
+                                // call the callback and populate the Title field with the file name
+                                cb(blobInfo.blobUri(), { title: file.name });
+                              };
+                              reader.readAsDataURL(file);
+                            };
+                            input.click();
+                          }
+                    });
+                    $(document).on('focusin', function(e) {
+                        if ($(e.target).closest(".mce-window").length) {
+                            e.stopImmediatePropagation();
                         }
                     });
                 } else {
