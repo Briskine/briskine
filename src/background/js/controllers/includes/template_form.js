@@ -80,8 +80,8 @@ gApp.controller('TemplateFormCtrl',
                         autoresize_on_init: true,
                         forced_root_block : 'div',
                         theme: 'modern',
-                        plugins: 'autoresize print preview fullpage searchreplace autolink directionality visualblocks visualchars fullscreen image link media template codesample table charmap hr pagebreak nonbreaking anchor toc insertdatetime advlist lists textcolor wordcount imagetools contextmenu colorpicker textpattern',
-                        toolbar: 'formatselect | bold italic strikethrough forecolor backcolor | link | image | table | alignleft aligncenter alignright alignjustify  | numlist bullist outdent indent  | removeformat | insertVariable',
+                        plugins: 'autoresize print preview fullpage searchreplace autolink directionality visualblocks visualchars fullscreen image link media template code table charmap hr pagebreak nonbreaking anchor toc insertdatetime advlist lists textcolor wordcount imagetools contextmenu colorpicker textpattern',
+                        toolbar: 'formatselect | bold italic underline | forecolor backcolor | link image | table | alignleft aligncenter alignright alignjustify  | numlist bullist outdent indent  | removeformat code | insertVariable',
                         setup: function(editor) {
                             editor.addButton('insertVariable', {
                                 type: 'menubutton',
@@ -100,7 +100,7 @@ gApp.controller('TemplateFormCtrl',
                                     { text: 'Learn more about template variables', onclick: function() {window.open("http://docs.gorgias.io/chrome-extension/templates#Template_Variables");}},
                                 ]
                             });
-                    
+
                         },
                         file_picker_callback: function(cb, value, meta) {
                             var input = document.createElement('input');
@@ -118,7 +118,7 @@ gApp.controller('TemplateFormCtrl',
                                 var base64 = reader.result.split(',')[1];
                                 var blobInfo = blobCache.create(id, file, base64);
                                 blobCache.add(blobInfo);
-                        
+
                                 // call the callback and populate the Title field with the file name
                                 cb(blobInfo.blobUri(), { title: file.name });
                               };
@@ -135,7 +135,7 @@ gApp.controller('TemplateFormCtrl',
                 } else {
                     jQuery.each(jQuery('textarea[data-autoresize]'), function() {
                         var offset = this.offsetHeight - this.clientHeight;
-                    
+
                         var resizeTextarea = function(el) {
                             jQuery(el).css('height', 'auto').css('height', el.scrollHeight + offset + 10);
                         };
@@ -178,7 +178,7 @@ gApp.controller('TemplateFormCtrl',
         };
 
         self.insertVar = function (variable) {
-            
+
             if (tinymce.activeEditor) {
                 tinymce.activeEditor.focus();
                 tinymce.activeEditor.execCommand('mceInsertContent', false, '{{' + variable + '}}');
@@ -277,7 +277,7 @@ gApp.controller('TemplateFormCtrl',
                         self.selectedTemplate.body = $routeParams.body || '';
                         if (tinymce.activeEditor) {
                             setTimeout(function(){ tinymce.activeEditor.setContent(''); }, 100);
-                            
+
                             if ($scope.location == '/list/tag') {
                                 $('#qt-tags')[0].selectize.addItem($.trim(FilterTagService.filterTags[0]));
                             }
@@ -292,7 +292,7 @@ gApp.controller('TemplateFormCtrl',
                             self.selectedTemplate = angular.copy(cleanExtraFields(r));
                             if (tinymce.activeEditor) {
                                 setTimeout(function(){ tinymce.activeEditor.setContent(self.selectedTemplate.body); }, 100);
-                                
+
                             }
                             $.each(self.selectedTemplate.tags.split(','), function (_, tag) {
                                 $('#qt-tags')[0].selectize.addItem($.trim(tag));
@@ -420,7 +420,7 @@ gApp.controller('TemplateFormCtrl',
                     });
                     $scope.reloadTemplates();
                 }
-                
+
                 // hide the modal
                 $('.modal').modal('hide');
 
