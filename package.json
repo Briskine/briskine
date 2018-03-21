@@ -1,46 +1,73 @@
 {
-    "name": "gorgias",
-    "version": "5.8.8",
-    "description": "Gorgias grunt package",
-    "main": "Gruntfile.js",
-    "scripts": {
-        "install": "./node_modules/.bin/webdriver-manager update",
-        "test": "grunt test"
+  "name": "gorgias",
+  "version": "5.8.8",
+  "description": "Gorgias grunt package",
+  "main": "Gruntfile.js",
+  "scripts": {
+    "install": "./node_modules/.bin/webdriver-manager update",
+    "test": "grunt test",
+    "postinstall": "node -e \"try { require('fs').symlinkSync(require('path').resolve('node_modules/@bower_components'), 'src/bower_components', 'junction') } catch (e) { }\""
+  },
+  "repository": "https://github.com/gorgias/gorgias-chrome/",
+  "author": "Alexandru Plugaru <alex@gorgias.io>",
+  "contributors": [
+    {
+      "name": "Ionut Colceriu",
+      "email": "contact@ghinda.net"
     },
-    "repository": "https://github.com/gorgias/gorgias-chrome/",
-    "author": "Alexandru Plugaru <alex@gorgias.io>",
-    "contributors": [
-        {
-            "name": "Ionut Colceriu",
-            "email": "contact@ghinda.net"
-        },
-        {
-            "name": "Alex Bumbu",
-            "email": "bmbalex@gmail.com"
-        },
-        {
-            "name": "Martin Latrille",
-            "email": "martin@gorgias.io"
-        },
-        {
-            "name": "Hadrien de Lamotte",
-            "email": "hadrien.lamotte@gmail.com"
-        }
-    ],
-    "license": "MIT",
-    "devDependencies": {
-        "grunt": "~0.4.5",
-        "grunt-contrib-clean": "^0.6.0",
-        "grunt-contrib-compress": "~0.12.0",
-        "grunt-contrib-concat": "~0.5.0",
-        "grunt-contrib-copy": "~0.7",
-        "grunt-contrib-jshint": "~0.12.0",
-        "grunt-contrib-stylus": "~0.20.0",
-        "grunt-contrib-watch": "~0.6.1",
-        "grunt-crx": "~1.0.3",
-        "grunt-protractor-runner": "^1.1.x",
-        "matchdep": "~0.3.0",
-        "protractor": "^1.4.x"
+    {
+      "name": "Alex Bumbu",
+      "email": "bmbalex@gmail.com"
     },
-    "dependencies": {}
+    {
+      "name": "Martin Latrille",
+      "email": "martin@gorgias.io"
+    },
+    {
+      "name": "Hadrien de Lamotte",
+      "email": "hadrien.lamotte@gmail.com"
+    }
+  ],
+  "license": "MIT",
+  "devDependencies": {
+    "grunt": "~0.4.5",
+    "grunt-contrib-clean": "^0.6.0",
+    "grunt-contrib-compress": "~0.12.0",
+    "grunt-contrib-concat": "~0.5.0",
+    "grunt-contrib-copy": "~0.7",
+    "grunt-contrib-jshint": "~0.12.0",
+    "grunt-contrib-stylus": "~0.20.0",
+    "grunt-contrib-watch": "~0.6.1",
+    "grunt-crx": "~1.0.3",
+    "grunt-protractor-runner": "^1.1.x",
+    "matchdep": "~0.3.0",
+    "protractor": "^1.4.x"
+  },
+  "dependencies": {
+    "angular": "angular/bower-angular#1.4.7",
+    "angular-moment": "urish/angular-moment#~0.6.2",
+    "angular-resource": "angular/bower-angular-resource#1.4.7",
+    "angular-route": "angular/bower-angular-route#1.4.7",
+    "angular-ui-tinymce": "angular-ui/ui-tinymce#^0.0.19",
+    "bootstrap": "twbs/bootstrap#3.3.5",
+    "checklist-model": "vitalets/checklist-model#~0.9.0",
+    "font-awesome": "FortAwesome/Font-Awesome#4.5.0",
+    "fuse.js": "krisk/Fuse#~2.2.0",
+    "handlebars": "4.0.4",
+    "jquery": "jquery/jquery-dist#2.1.4",
+    "js-md5": "emn178/js-md5#~0.3.0",
+    "microplugin": "brianreavis/microplugin.js#0.0.x",
+    "moment": "moment/moment#>=2.0.0 <2.6.0",
+    "mousetrap": "xarg/mousetrap#master",
+    "ng-file-upload": "danialfarid/angular-file-upload-bower#~11.0.2",
+    "raven-js": "getsentry/raven-js#3.9.1",
+    "selectize": "selectize/selectize.js#~0.12.1",
+    "sifter": "brianreavis/sifter.js#0.5.x",
+    "tinymce": "tinymce/tinymce-dist#^4.7.9",
+    "underscore": "jashkenas/underscore#1.8.3",
+    "underscore.string": "epeli/underscore.string#3.2.2"
+  },
+  "engines": {
+    "yarn": ">= 1.0.0"
+  }
 }

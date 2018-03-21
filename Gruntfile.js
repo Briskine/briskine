@@ -13,34 +13,34 @@ module.exports = function (grunt) {
     var dependencies = {
         background: {
             js: [
-                'bower_components/raven-js/dist/raven.min.js',
-                'bower_components/jquery/dist/jquery.min.js',
-                'bower_components/bootstrap/dist/js/bootstrap.min.js',
-                'bower_components/underscore/underscore-min.js',
-                'bower_components/underscore.string/dist/underscore.string.min.js',
-                'bower_components/js-md5/build/md5.min.js',
-                'bower_components/handlebars/handlebars.min.js',
-                'bower_components/moment/min/moment.min.js',
-                'bower_components/mousetrap/mousetrap.min.js',
-                'bower_components/mousetrap/plugins/record/mousetrap-record.min.js',
+                '../node_modules/raven-js/dist/raven.min.js',
+                '../node_modules/jquery/dist/jquery.min.js',
+                '../node_modules/bootstrap/dist/js/bootstrap.min.js',
+                '../node_modules/underscore/underscore-min.js',
+                '../node_modules/underscore.string/dist/underscore.string.min.js',
+                '../node_modules/js-md5/build/md5.min.js',
+                '../node_modules/handlebars/dist/handlebars.js',
+                '../node_modules/moment/min/moment.min.js',
+                '../node_modules/mousetrap/mousetrap.min.js',
+                '../node_modules/mousetrap/plugins/record/mousetrap-record.min.js',
 
-                'bower_components/angular/angular.min.js',
-                'bower_components/angular-route/angular-route.min.js',
-                'bower_components/angular-resource/angular-resource.min.js',
-                'bower_components/angular-moment/angular-moment.min.js',
+                '../node_modules/angular/angular.min.js',
+                '../node_modules/angular-route/angular-route.min.js',
+                '../node_modules/angular-resource/angular-resource.min.js',
+                '../node_modules/angular-moment/angular-moment.min.js',
 
-                'bower_components/checklist-model/checklist-model.js',
-                'bower_components/ng-file-upload/ng-file-upload-all.min.js',
+                '../node_modules/checklist-model/checklist-model.js',
+                '../node_modules/ng-file-upload/ng-file-upload-all.min.js',
 
-                'bower_components/microplugin/src/microplugin.js',
-                'bower_components/sifter/sifter.min.js',
-                'bower_components/selectize/dist/js/selectize.min.js',
+                '../node_modules/microplugin/src/microplugin.js',
+                '../node_modules/sifter/sifter.min.js',
+                '../node_modules/selectize/dist/js/selectize.min.js',
 
-                'bower_components/tinymce/tinymce.min.js',
-                'bower_components/tinymce/themes/modern/theme.min.js',
-                'bower_components/angular-ui-tinymce/src/tinymce.js',
+                '../node_modules/tinymce/tinymce.min.js',
+                '../node_modules/tinymce/themes/modern/theme.min.js',
+                '../node_modules/angular-ui-tinymce/src/tinymce.js',
                 
-                'bower_components/fuse.js/src/fuse.min.js',
+                '../node_modules/fuse.js/src/fuse.min.js',
 
                 // Should be first
                 'background/js/environment.js',
@@ -51,14 +51,14 @@ module.exports = function (grunt) {
         },
         content: {
             js: [
-                'bower_components/raven-js/dist/raven.min.js',
-                'bower_components/jquery/dist/jquery.min.js',
-                'bower_components/underscore/underscore-min.js',
-                'bower_components/handlebars/handlebars.min.js',
-                'bower_components/moment/min/moment.min.js',
-                'bower_components/mousetrap/mousetrap.js',
-                'bower_components/mousetrap/plugins/global-bind/mousetrap-global-bind.js',
-                'bower_components/fuse.js/src/fuse.min.js',
+                '../node_modules/raven-js/dist/raven.min.js',
+                '../node_modules/jquery/dist/jquery.min.js',
+                '../node_modules/underscore/underscore-min.js',
+                '../node_modules/handlebars/dist/handlebars.min.js',
+                '../node_modules/moment/min/moment.min.js',
+                '../node_modules/mousetrap/mousetrap.js',
+                '../node_modules/mousetrap/plugins/global-bind/mousetrap-global-bind.js',
+                '../node_modules/fuse.js/src/fuse.min.js',
 
                 'common/*.js',
 
@@ -204,7 +204,7 @@ module.exports = function (grunt) {
                         expand: true,
                         flatten: true,
                         dot: true,
-                        cwd: '<%= config.app %>/bower_components/font-awesome/fonts/',
+                        cwd: '<%= config.app %>/../node_modules/font-awesome/fonts/',
                         dest: '<%= config.dist %>/background/fonts',
                         src: [
                             '*'
@@ -214,7 +214,7 @@ module.exports = function (grunt) {
                         expand: true,
                         flatten: true,
                         dot: true,
-                        cwd: '<%= config.app %>/bower_components/tinymce/skins/lightgray/fonts/',
+                        cwd: '<%= config.app %>/../node_modules/tinymce/skins/lightgray/fonts/',
                         dest: '<%= config.dist %>/background/css/fonts',
                         src: [
                             '*'
@@ -222,8 +222,8 @@ module.exports = function (grunt) {
                     },
                     {
                         expand: true,
-                        cwd: '<%= config.app %>/bower_components/tinymce/',
-                        dest: '<%= config.dist %>/pages/bower_components/tinymce',
+                        cwd: '<%= config.app %>/../node_modules/tinymce/',
+                        dest: '<%= config.dist %>/pages/tinymce',
                         src: [
                             '**'
                         ]
