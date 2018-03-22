@@ -72,16 +72,13 @@ gApp.controller('TemplateFormCtrl',
                         selector: "textarea.tinymce",
                         menubar:false,
                         statusbar: false,
-                        image_title: true,
-                        automatic_uploads: true,
-                        file_picker_types: 'image',
                         autoresize_bottom_margin : 0,
                         autoresize_min_height: 190,
                         autoresize_on_init: true,
                         forced_root_block : 'div',
                         theme: 'modern',
-                        plugins: 'autoresize print preview fullpage searchreplace autolink directionality visualblocks visualchars fullscreen image link media template codesample table charmap hr pagebreak nonbreaking anchor toc insertdatetime advlist lists textcolor wordcount imagetools contextmenu colorpicker textpattern',
-                        toolbar: 'formatselect | bold italic strikethrough forecolor backcolor | link | image | table | alignleft aligncenter alignright alignjustify  | numlist bullist outdent indent  | removeformat | insertVariable',
+                        plugins: 'autoresize autolink image link media table advlist lists textcolor imagetools contextmenu',
+                        toolbar: 'formatselect | bold italic underline | forecolor backcolor | link image | table | alignleft aligncenter alignright alignjustify  | numlist bullist outdent indent  | removeformat code | insertVariable',
                         setup: function(editor) {
                             editor.addButton('insertVariable', {
                                 type: 'menubutton',
@@ -100,32 +97,8 @@ gApp.controller('TemplateFormCtrl',
                                     { text: 'Learn more about template variables', onclick: function() {window.open("http://docs.gorgias.io/chrome-extension/templates#Template_Variables");}},
                                 ]
                             });
-                    
-                        },
-                        file_picker_callback: function(cb, value, meta) {
-                            var input = document.createElement('input');
-                            input.setAttribute('type', 'file');
-                            input.setAttribute('accept', 'image/*');
-                            input.onchange = function() {
-                              var file = this.files[0];
-                              var reader = new FileReader();
-                              reader.onload = function () {
-                                // Note: Now we need to register the blob in TinyMCEs image blob
-                                // registry. In the next release this part hopefully won't be
-                                // necessary, as we are looking to handle it internally.
-                                var id = 'blobid' + (new Date()).getTime();
-                                var blobCache =  tinymce.activeEditor.editorUpload.blobCache;
-                                var base64 = reader.result.split(',')[1];
-                                var blobInfo = blobCache.create(id, file, base64);
-                                blobCache.add(blobInfo);
-                        
-                                // call the callback and populate the Title field with the file name
-                                cb(blobInfo.blobUri(), { title: file.name });
-                              };
-                              reader.readAsDataURL(file);
-                            };
-                            input.click();
-                          }
+
+                        }
                     });
                     $(document).on('focusin', function(e) {
                         if ($(e.target).closest(".mce-window").length) {
@@ -135,7 +108,7 @@ gApp.controller('TemplateFormCtrl',
                 } else {
                     jQuery.each(jQuery('textarea[data-autoresize]'), function() {
                         var offset = this.offsetHeight - this.clientHeight;
-                    
+
                         var resizeTextarea = function(el) {
                             jQuery(el).css('height', 'auto').css('height', el.scrollHeight + offset + 10);
                         };
@@ -178,7 +151,7 @@ gApp.controller('TemplateFormCtrl',
         };
 
         self.insertVar = function (variable) {
-            
+
             if (tinymce.activeEditor) {
                 tinymce.activeEditor.focus();
                 tinymce.activeEditor.execCommand('mceInsertContent', false, '{{' + variable + '}}');
@@ -277,7 +250,7 @@ gApp.controller('TemplateFormCtrl',
                         self.selectedTemplate.body = $routeParams.body || '';
                         if (tinymce.activeEditor) {
                             setTimeout(function(){ tinymce.activeEditor.setContent(''); }, 100);
-                            
+
                             if ($scope.location == '/list/tag') {
                                 $('#qt-tags')[0].selectize.addItem($.trim(FilterTagService.filterTags[0]));
                             }
@@ -292,7 +265,7 @@ gApp.controller('TemplateFormCtrl',
                             self.selectedTemplate = angular.copy(cleanExtraFields(r));
                             if (tinymce.activeEditor) {
                                 setTimeout(function(){ tinymce.activeEditor.setContent(self.selectedTemplate.body); }, 100);
-                                
+
                             }
                             $.each(self.selectedTemplate.tags.split(','), function (_, tag) {
                                 $('#qt-tags')[0].selectize.addItem($.trim(tag));
@@ -341,7 +314,6 @@ gApp.controller('TemplateFormCtrl',
                 alert("Please enter a title");
                 return false;
             }
-            console.log('selected...', self.selectedTemplate.body)
             if (tinymce.activeEditor) {
                 self.selectedTemplate.body = tinymce.activeEditor.getContent({format : 'html'});
             }
@@ -420,7 +392,7 @@ gApp.controller('TemplateFormCtrl',
                     });
                     $scope.reloadTemplates();
                 }
-                
+
                 // hide the modal
                 $('.modal').modal('hide');
 

@@ -39,6 +39,17 @@ module.exports = function (grunt) {
                 'bower_components/tinymce/tinymce.min.js',
                 'bower_components/tinymce/themes/modern/theme.min.js',
                 'bower_components/angular-ui-tinymce/src/tinymce.js',
+                'bower_components/tinymce/plugins/autoresize/plugin.js',
+                'bower_components/tinymce/plugins/autolink/plugin.js',
+                'bower_components/tinymce/plugins/image/plugin.js',
+                'bower_components/tinymce/plugins/link/plugin.js',
+                'bower_components/tinymce/plugins/media/plugin.js',
+                'bower_components/tinymce/plugins/table/plugin.js',
+                'bower_components/tinymce/plugins/advlist/plugin.js',
+                'bower_components/tinymce/plugins/lists/plugin.js',
+                'bower_components/tinymce/plugins/textcolor/plugin.js',
+                'bower_components/tinymce/plugins/imagetools/plugin.js',
+                'bower_components/tinymce/plugins/contextmenu/plugin.js',
                 
                 'bower_components/fuse.js/src/fuse.min.js',
 
@@ -212,18 +223,8 @@ module.exports = function (grunt) {
                     },
                     {
                         expand: true,
-                        flatten: true,
-                        dot: true,
-                        cwd: '<%= config.app %>/bower_components/tinymce/skins/lightgray/fonts/',
-                        dest: '<%= config.dist %>/background/css/fonts',
-                        src: [
-                            '*'
-                        ]
-                    },
-                    {
-                        expand: true,
-                        cwd: '<%= config.app %>/bower_components/tinymce/',
-                        dest: '<%= config.dist %>/pages/bower_components/tinymce',
+                        cwd: '<%= config.app %>/bower_components/tinymce/skins/lightgray/',
+                        dest: '<%= config.dist %>/pages/bower_components/tinymce/skins/lightgray',
                         src: [
                             '**'
                         ]
