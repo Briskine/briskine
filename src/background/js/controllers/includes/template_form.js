@@ -77,7 +77,7 @@ gApp.controller('TemplateFormCtrl',
                         autoresize_on_init: true,
                         forced_root_block : 'div',
                         theme: 'modern',
-                        plugins: 'autoresize print preview fullpage searchreplace autolink directionality visualblocks visualchars fullscreen image link media template code table charmap hr pagebreak nonbreaking anchor toc insertdatetime advlist lists textcolor contextmenu colorpicker textpattern',
+                        plugins: 'autoresize autolink image link media table advlist lists textcolor imagetools contextmenu',
                         toolbar: 'formatselect | bold italic underline | forecolor backcolor | link image | table | alignleft aligncenter alignright alignjustify  | numlist bullist outdent indent  | removeformat code | insertVariable',
                         setup: function(editor) {
                             editor.addButton('insertVariable', {
@@ -314,7 +314,6 @@ gApp.controller('TemplateFormCtrl',
                 alert("Please enter a title");
                 return false;
             }
-            console.log('selected...', self.selectedTemplate.body)
             if (tinymce.activeEditor) {
                 self.selectedTemplate.body = tinymce.activeEditor.getContent({format : 'html'});
             }
