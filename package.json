@@ -1,6 +1,6 @@
 {
     "name": "gorgias",
-    "version": "5.8.8",
+    "version": "6.0.0",
     "description": "Gorgias grunt package",
     "main": "Gruntfile.js",
     "scripts": {
