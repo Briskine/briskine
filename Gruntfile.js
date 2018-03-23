@@ -49,6 +49,7 @@ module.exports = function (grunt) {
                 'bower_components/tinymce/plugins/lists/plugin.js',
                 'bower_components/tinymce/plugins/textcolor/plugin.js',
                 'bower_components/tinymce/plugins/contextmenu/plugin.js',
+                'bower_components/tinymce/plugins/code/plugin.js',
 
                 'bower_components/fuse.js/src/fuse.min.js',
 
