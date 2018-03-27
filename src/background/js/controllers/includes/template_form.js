@@ -248,8 +248,9 @@ gApp.controller('TemplateFormCtrl',
                         // new template
                         self.selectedTemplate = angular.copy(defaults);
                         self.selectedTemplate.body = $routeParams.body || '';
+                        console.log('NEW TEMPLATE:', self.selectedTemplate.body);
                         if (tinymce.activeEditor) {
-                            setTimeout(function(){ tinymce.activeEditor.setContent(''); }, 100);
+                            setTimeout(function(){ tinymce.activeEditor.setContent(self.selectedTemplate.body); }, 100);
 
                             if ($scope.location == '/list/tag') {
                                 $('#qt-tags')[0].selectize.addItem($.trim(FilterTagService.filterTags[0]));
