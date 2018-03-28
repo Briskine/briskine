@@ -38,7 +38,7 @@
                 "content/js/content.js"
             ],
             "css": [
-                "content/css/content.css"
+                "background/css/background.css"
             ],
             "run_at": "document_end",
             "all_frames": true

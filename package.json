@@ -2,10 +2,11 @@
     "name": "gorgias",
     "version": "6.0.2",
     "description": "Gorgias grunt package",
-    "main": "Gruntfile.js",
+    "main": "index.js",
     "scripts": {
-        "install": "./node_modules/.bin/webdriver-manager update",
-        "test": "grunt test"
+        "test": "grunt test",
+        "start": "webpack-dev-server --env development",
+        "build": "webpack --env production"
     },
     "repository": "https://github.com/gorgias/gorgias-chrome/",
     "author": "Alexandru Plugaru <alex@gorgias.io>",
@@ -29,6 +30,12 @@
     ],
     "license": "MIT",
     "devDependencies": {
+        "clean-webpack-plugin": "^0.1.19",
+        "copy-webpack-plugin": "^4.5.1",
+        "css-loader": "^0.28.11",
+        "crx-webpack-plugin": "^0.1.5",
+        "extract-text-webpack-plugin": "^4.0.0-beta.0",
+        "file-loader": "^1.1.11",
         "grunt": "~0.4.5",
         "grunt-contrib-clean": "^0.6.0",
         "grunt-contrib-compress": "~0.12.0",
@@ -39,8 +46,49 @@
         "grunt-contrib-watch": "~0.6.1",
         "grunt-crx": "~1.0.3",
         "grunt-protractor-runner": "^1.1.x",
+        "html-loader": "^0.5.5",
+        "html-webpack-plugin": "^3.1.0",
+        "jshint-loader": "^0.8.4",
         "matchdep": "~0.3.0",
-        "protractor": "^1.4.x"
+        "protractor": "^1.4.x",
+        "style-loader": "^0.20.3",
+        "stylus": "^0.54.5",
+        "stylus-loader": "^3.0.2",
+        "url-loader": "^1.0.1",
+        "webpack": "^4.2.0",
+        "webpack-cli": "^2.0.13",
+        "webpack-concat-plugin": "3.0.0-beta.0",
+        "webpack-dev-server": "^3.1.1",
+        "webpack-merge": "^4.1.2",
+        "write-file-webpack-plugin": "^4.2.0",
+        "zip-webpack-plugin": "^3.0.0"
     },
-    "dependencies": {}
+    "dependencies": {
+        "angular": "angular/bower-angular#1.4.7",
+        "angular-moment": "urish/angular-moment#~0.6.2",
+        "angular-resource": "angular/bower-angular-resource#1.4.7",
+        "angular-route": "angular/bower-angular-route#1.4.7",
+        "angular-ui-tinymce": "angular-ui/ui-tinymce#^0.0.19",
+        "bootstrap": "twbs/bootstrap#3.3.5",
+        "checklist-model": "vitalets/checklist-model#~0.9.0",
+        "font-awesome": "FortAwesome/Font-Awesome#4.5.0",
+        "fuse.js": "krisk/Fuse#~2.2.0",
+        "handlebars": "4.0.4",
+        "jquery": "jquery/jquery-dist#2.1.4",
+        "js-md5": "emn178/js-md5#~0.3.0",
+        "microplugin": "brianreavis/microplugin.js#0.0.x",
+        "moment": "moment/moment#>=2.0.0 <2.6.0",
+        "mousetrap": "xarg/mousetrap#master",
+        "ng-file-upload": "danialfarid/angular-file-upload-bower#~11.0.2",
+        "npm": "^5.8.0",
+        "raven-js": "getsentry/raven-js#3.9.1",
+        "selectize": "selectize/selectize.js#~0.12.1",
+        "sifter": "brianreavis/sifter.js#0.5.x",
+        "tinymce": "tinymce/tinymce-dist#^4.7.9",
+        "underscore": "jashkenas/underscore#1.8.3",
+        "underscore.string": "epeli/underscore.string#3.2.2"
+    },
+    "engines": {
+        "yarn": ">= 1.0.0"
+    }
 }
