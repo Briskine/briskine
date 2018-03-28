@@ -21,7 +21,7 @@ var gApp = angular.module('gApp', [
 ]);
 
 gApp.config(function() {
-    tinyMCE.baseURL = 'bower_components/tinymce';
+    tinyMCE.baseURL = 'tinymce';
 });
 
 gApp.config(function ($routeProvider, $compileProvider, $sceDelegateProvider) {
