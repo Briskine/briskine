@@ -57,7 +57,6 @@ var manifest = require("./src/manifest.json");
                 'tinymce/plugins/lists/plugin.js',
                 'tinymce/plugins/textcolor/plugin.js',
                 'tinymce/plugins/imagetools/plugin.js',
-                'tinymce/plugins/contextmenu/plugin.js',
                 'tinymce/plugins/code/plugin.js',
 
                 'fuse.js/src/fuse.min.js',
@@ -186,7 +185,7 @@ const productionConfig = merge([
     build.setPath({
         output: __dirname + "/ext"
     }),
-    
+
     build.archive({
         path: __dirname + "/build",
         filename: package.name + '-' + manifest.version,
