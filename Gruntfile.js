@@ -49,7 +49,6 @@ module.exports = function (grunt) {
                 '../node_modules/tinymce/plugins/lists/plugin.js',
                 '../node_modules/tinymce/plugins/textcolor/plugin.js',
                 '../node_modules/tinymce/plugins/imagetools/plugin.js',
-                '../node_modules/tinymce/plugins/contextmenu/plugin.js',
                 '../node_modules/tinymce/plugins/code/plugin.js',
 
                 '../node_modules/fuse.js/src/fuse.min.js',
