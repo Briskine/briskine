@@ -194,7 +194,7 @@ const productionConfig = merge([
 ]);
 module.exports = mode => {
     if ( mode === "production" ){
-        return merge(commonConfig, productionConfig, build.generateManifestProduction({}), { mode });
+        return merge(commonConfig, build.generateManifestProduction({}), productionConfig,  { mode });
     }
 
     return merge(commonConfig, developmentConfig, dev.generateManifest({}), { mode });
