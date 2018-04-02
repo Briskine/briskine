@@ -1,20 +1,22 @@
-var webpack = require("webpack"),
-    path = require("path"),
-    stylus = require("stylus")
-    fileSystem = require("fs"),
-    jshint = require("jshint-loader")
-    CleanWebpackPlugin = require("clean-webpack-plugin"),
-    CopyWebpackPlugin = require("copy-webpack-plugin"),
-    HtmlWebpackPlugin = require("html-webpack-plugin"),
-    WriteFilePlugin = require("write-file-webpack-plugin"),
-    ConcatPlugin = require('webpack-concat-plugin'),
-    ExtractTextPlugin = require('extract-text-webpack-plugin'),
-    merge = require("webpack-merge"),
-    dev = require("./config/webpack.dev"),
-    build = require("./config/webpack.build"),
-    test = require("./config/webpack.test"),
-    package = require("./package.json"),
-    manifest = require("./src/manifest.json"),
+var webpack = require("webpack");
+var path = require("path");
+var stylus = require("stylus");
+var fileSystem = require("fs");
+var jshint = require("jshint-loader");
+var CleanWebpackPlugin = require("clean-webpack-plugin");
+var CopyWebpackPlugin = require("copy-webpack-plugin");
+var HtmlWebpackPlugin = require("html-webpack-plugin");
+var WriteFilePlugin = require("write-file-webpack-plugin");
+var ConcatPlugin = require('webpack-concat-plugin');
+var ExtractTextPlugin = require('extract-text-webpack-plugin');
+var extractBackgroundStyle = new ExtractTextPlugin('background/css/background.css');
+var extractContentStyle = new ExtractTextPlugin('content/css/content.css');
+var merge = require("webpack-merge");
+var dev = require("./config/webpack.dev");
+var build = require("./config/webpack.build");
+var test = require("./config/webpack.test");
+var package = require("./package.json");
+var manifest = require("./src/manifest.json");
 
     dependencies = {
         background: {
@@ -105,7 +107,19 @@ const commonConfig = merge([
             rules: [
                 {
                     test: /\.(css|styl)$/i,
-                    use: ExtractTextPlugin.extract({
+                    include: [
+                        path.resolve(__dirname, 'src/background')
+                    ],
+                    use: extractBackgroundStyle.extract({
+                        use: ['css-loader', 'stylus-loader']
+                    })
+                },
+                {
+                    test: /\.(css|styl)$/i,
+                    include: [
+                        path.resolve(__dirname, 'src/content')
+                    ],
+                    use: extractContentStyle.extract({
                         use: ['css-loader', 'stylus-loader']
                     })
                 },
@@ -153,11 +167,8 @@ const commonConfig = merge([
                     }
                 }
             ),
-            new ExtractTextPlugin({
-                // `allChunks` is needed to extract from extracted chunks as well.
-                allChunks: true,
-                filename: "background/css/background.css",
-            }),
+            extractBackgroundStyle,
+            extractContentStyle,
             new WriteFilePlugin(),
         ],
     },
