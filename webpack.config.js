@@ -1,3 +1,5 @@
+"use strict";
+
 var webpack = require("webpack");
 var path = require("path");
 var stylus = require("stylus");
@@ -15,10 +17,10 @@ var merge = require("webpack-merge");
 var dev = require("./config/webpack.dev");
 var build = require("./config/webpack.build");
 var test = require("./config/webpack.test");
-var package = require("./package.json");
+var myPackage = require("./package.json");
 var manifest = require("./src/manifest.json");
 
-    dependencies = {
+const dependencies = {
         background: {
             js: [
                 'raven-js/dist/raven.min.js',
@@ -187,7 +189,7 @@ const productionConfig = merge([
     }),
     build.archive({
         path: __dirname + "/build",
-        filename: package.name + '-' + manifest.version,
+        filename: myPackage.name + '-' + manifest.version,
     }),
 ]);
 module.exports = mode => {

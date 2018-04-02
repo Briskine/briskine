@@ -1,4 +1,6 @@
 
+"use strict";
+
 var CopyWebpackPlugin = require("copy-webpack-plugin");
 
 exports.devServer = ({ host, port } = {}) => ({

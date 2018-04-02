@@ -1,6 +1,7 @@
+"use strict";
 
-var ZipPlugin = require('zip-webpack-plugin'),
-    CopyWebpackPlugin = require("copy-webpack-plugin");
+var ZipPlugin = require('zip-webpack-plugin');
+var CopyWebpackPlugin = require("copy-webpack-plugin");
 
 exports.setPath = ({ output }) => {
     return {
