@@ -15,15 +15,14 @@ Sites supported
 Developing extension
 --------------------
 
-Development is done using Grunt. So first you need to install [Node.js](http://nodejs.org/) and [Grunt](http://gruntjs.com/).
-Then, run `npm install` to install all dependencies.
+Development is done using Grunt. So first you need to install [Yarn](https://yarnpkg.com) and [Grunt](http://gruntjs.com/) (Grunt is being used for only test in current version).
+Then, run `yarn install` to install all dependencies.
 
 There are available following commands:
 
-* `grunt` or `grunt dev` or `grunt d` - Development mode. Creates development manifest, watches for styl files and recompiles them automatically.
-* `grunt production` or `grunt p` - Build extension.
+* `yarn start` - Development mode. Creates development manifest, watches for styl files and recompiles them automatically.
+* `yarn build` - Build extension and compress extension.
 * `grunt test` or `grunt t` - Run tests.
-* `grunt build` or `grunt b` - Build and compress extension.
 
 Known issues
 ------------
@@ -168,7 +167,7 @@ Testing
 Before running the tests, run:
 
 ```
-npm install
+yarn install
 ```
 
 Then key your Chrome private `.pem` keyfile and copy it as `key.pem` in the repository root.

@@ -77,7 +77,7 @@ gApp.controller('TemplateFormCtrl',
                         autoresize_on_init: true,
                         forced_root_block : 'div',
                         theme: 'modern',
-                        plugins: 'autoresize autolink image link media table advlist lists textcolor contextmenu code',
+                        plugins: 'autoresize autolink image link media table advlist lists textcolor code',
                         toolbar: 'formatselect | bold italic underline | forecolor backcolor | link image | table | alignleft aligncenter alignright alignjustify  | numlist bullist outdent indent  | removeformat code | insertVariable',
                         setup: function(editor) {
                             editor.addButton('insertVariable', {
