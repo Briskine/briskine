@@ -273,10 +273,9 @@ module.exports = function (grunt) {
         crx: {
             extension: {
                 src: '<%= config.dist %>/**',
-                dest: '<%= config.dist %>',
+                dest: '<%= config.dist %>/gorgias-chrome.crx',
                 options: {
-                    privateKey: 'ext.pem',
-                    filename: 'gorgias-chrome.crx',
+                    privateKey: 'ext.pem'
                 }
             }
         },
@@ -286,7 +285,10 @@ module.exports = function (grunt) {
             },
             background: {
                 options: {
-                    configFile: 'tests/protractor.background.conf.js'
+                    configFile: 'tests/protractor.background.conf.js',
+                    args: {
+                        seleniumAddress: 'http://localhost:4444/wd/hub'
+                    }
                 }
             },
             backgroundRemote: {
@@ -300,7 +302,10 @@ module.exports = function (grunt) {
             },
             content: {
                 options: {
-                    configFile: 'tests/protractor.content.conf.js'
+                    configFile: 'tests/protractor.content.conf.js',
+                    args: {
+                        seleniumAddress: 'http://localhost:4444/wd/hub'
+                    }
                 }
             },
             contentRemote: {

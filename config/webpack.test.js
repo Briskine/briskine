@@ -4,9 +4,9 @@ exports.generateCrx = ({}) => {
     
     const plugin = new Crx({
         keyFile: '../ext.pem',
-        contentPath: 'build',
+        contentPath: '../ext',
         outputPath: '../ext',
-        name: 'gorgias-chrome.crx'
+        name: 'gorgias-chrome'
     });
 
     return {

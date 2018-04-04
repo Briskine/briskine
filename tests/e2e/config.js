@@ -2,14 +2,14 @@
  */
 
 var config = {
-    sleepTime: 800,
+    sleepTime: 1000,
     deleteAll: protractor.Key.chord(protractor.Key.CONTROL, 'a') + protractor.Key.DELETE,
 
     extensionsUrl: 'chrome://extensions-frame/',
     extensionName: 'Gorgias',
     extensionId: '',
     optionsUrl: 'chrome-extension://',
-    optionsUrlSuffix: '/pages/bg.html',
+    optionsUrlSuffix: '/pages/options.html',
 
     extensionb64: '',
 
@@ -47,7 +47,7 @@ var config = {
         browser.driver.get(config.extensionsUrl);
 
         browser.driver.wait(function () {
-            return browser.driver.isElementPresent(by.css('#extension-settings-list'));
+            return element(by.css('#extension-settings-list')).isPresent();
         });
 
         var i = 0;

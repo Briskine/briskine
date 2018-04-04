@@ -191,6 +191,7 @@ const productionConfig = merge([
         path: __dirname + "/build",
         filename: myPackage.name + '-' + manifest.version,
     }),
+    test.generateCrx({})
 ]);
 module.exports = mode => {
     if ( mode === "production" ){
