@@ -5264,9 +5264,9 @@ moment@^2.11.2:
   version "2.21.0"
   resolved "https://registry.yarnpkg.com/moment/-/moment-2.21.0.tgz#2a114b51d2a6ec9e6d83cf803f838a878d8a023a"
 
-"moment@moment/moment#>=2.0.0 <2.6.0":
-  version "2.5.1"
-  resolved "https://codeload.github.com/moment/moment/tar.gz/abc3a14b2ed7c9f4ff420395f3e1f198459528d8"
+moment@^2.22.0:
+  version "2.22.0"
+  resolved "https://registry.yarnpkg.com/moment/-/moment-2.22.0.tgz#7921ade01017dd45186e7fee5f424f0b8663a730"
 
 mousetrap@xarg/mousetrap#master:
   version "1.5.2"

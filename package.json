@@ -77,7 +77,7 @@
         "jquery": "jquery/jquery-dist#2.1.4",
         "js-md5": "emn178/js-md5#~0.3.0",
         "microplugin": "brianreavis/microplugin.js#0.0.x",
-        "moment": "moment/moment#>=2.0.0 <2.6.0",
+        "moment": "^2.22.0",
         "mousetrap": "xarg/mousetrap#master",
         "ng-file-upload": "danialfarid/angular-file-upload-bower#~11.0.2",
         "npm": "^5.8.0",
