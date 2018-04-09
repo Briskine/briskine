@@ -464,36 +464,6 @@ gApp.controller('ListCtrl',
         }, 50);
 
         $scope.exportTemplates = function () {
-            download();
-        };
-        
-        function exportCSVFile (items, fileTitle) {
-            var headers = Object.keys(items[0]);
-            var csv = items.map(function(row){
-                return headers.map(function(fieldName){
-                    return JSON.stringify(row[fieldName]);
-                }).join(',');
-            });
-
-            // add header column
-            csv.unshift(headers.join(','));
-            csv = csv.join('\r\n');
-
-            var exportedFilenmae = fileTitle + '.csv' || 'export.csv';
-            var blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-            var link = document.createElement("a");
-            if (link.download !== undefined) {
-                var url = URL.createObjectURL(blob);
-                link.setAttribute("href", url);
-                link.setAttribute("download", exportedFilenmae);
-                link.style.visibility = 'hidden';
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-            }
-        }
-
-        function download () {
             var itemsNotFormatted = $scope.filteredTemplates;
             var itemsFormatted = [];
 
@@ -504,11 +474,14 @@ gApp.controller('ListCtrl',
                     title: item.title,
                     shortcut: item.shortcut,
                     subject: item.subject,
-                    tags: item.tags.replace(/,/g, '\,'),
+                    tags: item.tags,
                     body: item.body
                 });
             });
 
-            exportCSVFile(itemsFormatted, fileTitle);
-        }
+            var exporter = Export.create({
+                filename: fileTitle
+            });
+            exporter.downloadCsv(itemsFormatted);
+        };
     });
