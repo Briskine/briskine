@@ -4,7 +4,6 @@ gApp.controller('ListCtrl',
               MemberService) {
         var $formModal;
         var $shareModal;
-        var fileTitle = 'gorgias-templates';
 
         var properties = $route.current.locals.properties;
 
@@ -464,11 +463,13 @@ gApp.controller('ListCtrl',
         }, 50);
 
         $scope.exportTemplates = function () {
+            var now = new Date();
+            var filename = 'gorgias-templates-' + now.toISOString() + '.csv' ;
             var itemsNotFormatted = $scope.filteredTemplates;
             var itemsFormatted = [];
 
             // format the data
-            itemsNotFormatted.forEach((item) => {
+            itemsNotFormatted.forEach(function(item){
                 itemsFormatted.push({
                     id: item.remote_id,
                     title: item.title,
@@ -480,7 +481,7 @@ gApp.controller('ListCtrl',
             });
 
             var exporter = Export.create({
-                filename: fileTitle
+                filename: filename
             });
             exporter.downloadCsv(itemsFormatted);
         };
