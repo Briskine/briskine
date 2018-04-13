@@ -461,4 +461,28 @@ gApp.controller('ListCtrl',
                 }
             });
         }, 50);
+
+        $scope.exportTemplates = function () {
+            var now = new Date();
+            var filename = 'gorgias-templates-' + now.toISOString() + '.csv' ;
+            var itemsNotFormatted = $scope.filteredTemplates;
+            var itemsFormatted = [];
+
+            // format the data
+            itemsNotFormatted.forEach(function(item){
+                itemsFormatted.push({
+                    id: item.remote_id,
+                    title: item.title,
+                    shortcut: item.shortcut,
+                    subject: item.subject,
+                    tags: item.tags,
+                    body: item.body
+                });
+            });
+
+            var exporter = Export.create({
+                filename: filename
+            });
+            exporter.downloadCsv(itemsFormatted);
+        };
     });

@@ -2151,6 +2151,10 @@ csv-parse@^2.0.0:
   version "2.0.4"
   resolved "https://registry.yarnpkg.com/csv-parse/-/csv-parse-2.0.4.tgz#5b469596766ee07f2cbd71aced7ae76b3c73c901"
 
+csvexport@^1.0.5:
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/csvexport/-/csvexport-1.0.5.tgz#14897196f6b42d93b083b0c7ae1f77ee8bdb7cb2"
+
 ctype@0.5.3:
   version "0.5.3"
   resolved "https://registry.yarnpkg.com/ctype/-/ctype-0.5.3.tgz#82c18c2461f74114ef16c135224ad0b9144ca12f"

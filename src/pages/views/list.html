@@ -11,11 +11,15 @@
 <div class="btn-toolbar">
     <div class="row no-margin">
         <a ng-href="#{{location}}?id=new" class="btn btn-primary">New template</a>
+        <div ng-show="!account.info.name && !currentSubscription && !currentSubscription.active" class="btn-group btn-more pull-right">
+            <a class="btn btn-default" ng-click="exportTemplates()" ng-if="filteredTemplates.length">Export</a>
+        </div>
+        <div ng-show="account.info.name && currentSubscription && currentSubscription.active" class="btn-group btn-more pull-right">
+            <a class="btn btn-default" href="{{baseUrl}}app/export/templates.csv" target="_blank" ng-if="filteredTemplates.length">Export</a>
+        </div>
         <div ng-show="account.info.name && currentSubscription && currentSubscription.active"
              class="btn-group btn-more pull-right">
             <a class="btn btn-default" href data-toggle="modal" data-target="#import-modal">Import</a>
-            <a class="btn btn-default" href="{{baseUrl}}app/export/templates.csv" target="_blank"
-               ng-if="filteredTemplates.length">Export</a>
         </div>
         <button type="button" ng-if="hasSelected" ng-click="deleteQts()"
                 class="btn btn-error pull-right">Delete
