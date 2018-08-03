@@ -465,7 +465,7 @@ gApp.controller('ListCtrl',
         $scope.exportTemplates = function () {
             var now = new Date();
             var filename = 'gorgias-templates-' + now.toISOString() + '.csv' ;
-            var itemsNotFormatted = $scope.filteredTemplates;
+            var itemsNotFormatted = $scope.templates;
             var itemsFormatted = [];
 
             // format the data

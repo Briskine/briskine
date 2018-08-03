@@ -175,16 +175,16 @@ input[type='password'],
 /* Table
  */
 .table {
-  & > tbody > tr > td, & > tbody > tr > th {
-    border-top: none;
-  }
+    & > tbody > tr > td, & > tbody > tr > th {
+        border-top: none;
+    }
 }
 
 /* Tabs
  */
 
 .tab-container {
-  padding: 15px 6px 0 6px;
+    padding: 15px 6px 0 6px;
 }
 
 .nav-tabs {
@@ -366,9 +366,23 @@ input[type='password'],
     font-size: 100%;
 }
 
-.label-primary{
+.label-primary {
     background-color: $color1;
 }
+
 .label-primary[href]:hover, .label-primary[href]:focus {
     background-color: darken($color1, 10%);
+}
+
+/* Boders */
+.border {
+    border: 1px solid #dee2e6 !important;
+}
+
+.border-danger {
+    border-color: #dc3545 !important;
+}
+
+.border-rounded {
+    border-radius: .25rem !important;
 }

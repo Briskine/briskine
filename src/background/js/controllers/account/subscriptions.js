@@ -113,4 +113,13 @@ gApp.controller('SubscriptionsCtrl', function ($scope, $rootScope, $routeParams,
         });
         return deferred.promise;
     };
+
+    $scope.cancelSubscription = function() {
+        cancelConfirm = window.confirm('Are you sure you want to cancel and delete all your template backups?')
+        if (cancelConfirm === true) {
+            SubscriptionService.cancelSubscription().then(function(){
+                $rootScope.logOut()
+            });
+        }
+    };
 });
