@@ -26,7 +26,7 @@ gApp.config(function() {
 
 gApp.config(function ($routeProvider, $compileProvider, $sceDelegateProvider) {
     $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|chrome-extension):/);
-    $sceDelegateProvider.resourceUrlWhitelist(['self', 'https://gorgias.io/**', 'http://localhost:*/**']);
+    $sceDelegateProvider.resourceUrlWhitelist(['self', 'https://chrome.gorgias.io/**', 'http://localhost:*/**']);
     $routeProvider
         .when('/list', {
             controller: 'ListCtrl',

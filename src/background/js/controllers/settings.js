@@ -77,7 +77,7 @@ gApp.controller('SettingsCtrl', function ($scope, $rootScope, $timeout,  Account
         var r = confirm("Are you sure you want to delete all templates?\n\nNote: they will NOT be deleted from the sync server if it's setup.");
         if (r === true) {
             TemplateService.deleteAll().then(function(){
-                alert("All templates have been deleted. You can still get them back if you are registered gorgias.io");
+                alert("All templates have been deleted from your computer.");
             });
         }
     };

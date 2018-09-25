@@ -3,12 +3,7 @@
 <div class="container installed-container gorgias-wizard-show--{{ ctrl.step }}" ng-controller="InstallCtrl as ctrl">
 
     <div class="header">
-        <!--
-        <a href="https://gorgias.io/#login" class="btn btn-lg btn-primary pull-right">Sign In</a>
-        -->
-        <a ng-href="https://gorgias.io" class="brand" target="_blank">
-            <img src="../icons/white-logo.png" alt="Gorgias"/>
-        </a>
+        <img src="../icons/white-logo.png" alt="Gorgias"/>
     </div>
 
     <div class="gdemo-dropdown">
@@ -166,20 +161,6 @@
             Continue adding your own templates
             <i class="fa fa-angle-right"></i>
         </a>
-
-        <br/><br/>
-        <br/><br/>
-
-        <div>
-            <h4>Want to share your templates with your team?</h4>
-
-            <div>
-                <a class="btn btn-primary btn-lg btn-wizard-next" href="https://gorgias.io">
-                    Register on gorgias.io
-                    <i class="fa fa-angle-right"></i>
-                </a>
-            </div>
-        </div>
     </div>
     <div class="wizard-step-status" ng-if="ctrl.stepNumber > 0">
         Step
