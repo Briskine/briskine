@@ -70,6 +70,7 @@ gApp.controller('TemplateFormCtrl',
                     tinymce.init({
                         /* replace textarea having class .tinymce with tinymce editor */
                         selector: "textarea.tinymce",
+                        entity_encoding: "raw",
                         menubar:false,
                         statusbar: false,
                         autoresize_bottom_margin : 0,
