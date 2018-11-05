@@ -24,7 +24,7 @@ App.plugin('fastmail', (function() {
             };
 
         if (match && match.length >= 4) {
-            data.first_name = match[1].replace('"', '').trim();
+            data.first_name = App.utils.getCapsonBegin(match[1].replace('"', '').trim())
             data.last_name = match[2].replace('"', '').trim();
             data.name = data.first_name + (data.first_name && data.last_name ? ' ' : '') + data.last_name;
             data.email = match[3];

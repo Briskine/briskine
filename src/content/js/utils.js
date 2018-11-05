@@ -13,8 +13,8 @@ App.utils = (function() {
         }
 
         return {
-            first_name: fullname.substr(0, lastSpaceIndex),
-            last_name: fullname.substr(lastSpaceIndex + 1)
+            first_name: getCapsonBegin(fullname.substr(0, lastSpaceIndex)),
+            last_name: getCapsonBegin(fullname.substr(lastSpaceIndex + 1))
         };
     };
 

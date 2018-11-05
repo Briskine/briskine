@@ -31,7 +31,7 @@ App.plugin(
                 };
 
             if (match && match.length >= 4) {
-                data.first_name = getCapsonBegin(
+                data.first_name = App.utils.getCapsonBegin(
                     match[1].replace('"', "").trim()
                 );
                 data.last_name = match[2].replace('"', "").trim();
@@ -50,11 +50,7 @@ App.plugin(
 
             return data;
         };
-        //Capitalize first char of a string
-        var getCapsonBegin = function(s) {
-            if (typeof s !== "string") return ""; //Check whether params is a string, and returns empty on non-string
-            return s.charAt(0).toUpperCase() + s.slice(1);
-        };
+
         // get all required data from the dom
         var getData = function(params, callback) {
             var from = [],
