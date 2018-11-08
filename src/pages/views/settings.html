@@ -150,33 +150,6 @@
     </div>
     <br/>
 
-    <h4>Experimental <i class="fa fa-flask" title="Experimental features"></i></h4>
-
-    <p class="help-block">Gmail™ specific settings</p>
-
-    <div class="checkbox">
-        <label>
-            <input type="checkbox" id="sidebar-enabled" ng-model="settings.sidebar.enabled" ng-change="updateSettings()"/>
-            Enable Gmail™ Custom Sidebar
-        </label>
-    </div>
-    <div class="form-group" ng-show="settings.sidebar.enabled">
-        <label for="sidebar-url" data-toggle="tooltip" data-placement="bottom"
-               data-original-title="You can use custom variables such as {&#8203;{to.0.email}} or {&#8203;{to.0.name}}. For best experience the width of the page should be less than 220px.">
-            Sidebar URL
-            <span class="fa fa-question-circle"></span>
-        </label>
-        <br/>
-
-        <p class="help-block">You can display info about your customers in Gmail™ from your CRM by setting the URL
-            below. </p>
-        <input type="text" id="sidebar-url" ng-model="settings.sidebar.url" size="50"
-               placeholder="http://your-crm.com/search={&#8203;{to.0.email}}"/>
-        <button class="btn btn-default" ng-click="updateSettings()">Set URL</button>
-    </div>
-
-    <br/>
-
 
     <h4>Sorting <i class="fa fa-sort-amount-asc" title="Sorting features"></i></h4>
     <p class="help-block">Sorting settings</p>
