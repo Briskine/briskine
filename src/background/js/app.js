@@ -200,7 +200,7 @@ gApp.run(function ($rootScope, $location, $http, $timeout, ProfileService, Setti
         $http.post(url, {'scope': scope}).success(function (res) {
             window.location = res.location;
         }).error(function () {
-            alert("Error! We're unable to authorize : " + provider + ". Please try again or contact support@gorgias.io");
+            alert("Error! We're unable to authorize : " + provider + ". Please try again or contact chrome@gorgias.io");
         });
     };
 

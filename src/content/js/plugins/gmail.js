@@ -55,7 +55,7 @@ App.plugin('gmail', (function () {
             var title = jQuery('.gb_b.gb_fb').attr('title')
             var fromString = ''
             if (typeof title === 'string') {
-                // the initial string is: Google Account: Gorgias Customer Support (support@gorgias.io)
+                // the initial string is: Google Account: Gorgias Chrome Customer Support (chrome@gorgias.io)
                 var parts = title.trim().split(':')
                 if (parts.length && parts.length === 2) {
                     fromString = parts[1]
