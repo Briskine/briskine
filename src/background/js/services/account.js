@@ -175,20 +175,3 @@ gApp.service('GroupService', function ($q, $resource) {
         return deferred.promise;
     };
 });
-
-gApp.service('GroupAppsService', function ($q, $resource) {
-    var self = this;
-    var groupResource = $resource(Settings.defaults.apiBaseURL + 'groups/apps');
-
-    self.import = function (appsGroups, sendNotification) {
-        var deferred = $q.defer();
-        var groups = new groupResource();
-        groups.apps_groups = appsGroups;
-        groups.send_notification = sendNotification;
-        groups.$save(function () {
-            deferred.resolve(groups);
-        });
-        return deferred.promise;
-    };
-
-});

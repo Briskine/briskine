@@ -1,13 +1,11 @@
-gApp.controller('GroupsCtrl', function ($scope, $rootScope, $timeout, MemberService, GroupService, GroupAppsService, AccountService) {
+gApp.controller('GroupsCtrl', function ($scope, $rootScope, $timeout, MemberService, GroupService, AccountService) {
     $scope.activeTab = 'groups';
 
     AccountService.get().then(function(data){ $scope.account = AccountService.user; });
 
     $scope.members = [];
-    $scope.appsUsers = [];
 
     $scope.groups = [];
-    $scope.appsGroups = [];
     $scope.newUsers = [];
 
     var defaultGroup = {
@@ -27,10 +25,6 @@ gApp.controller('GroupsCtrl', function ($scope, $rootScope, $timeout, MemberServ
         $('#add-groups-modal').modal();
     };
 
-    $scope.showGroupAppsModal = function () {
-        $('#add-groups-apps-modal').modal();
-    };
-
     $scope.refresh = function () {
         MemberService.members().then(function (data) {
             $scope.members = data.members;
@@ -40,8 +34,6 @@ gApp.controller('GroupsCtrl', function ($scope, $rootScope, $timeout, MemberServ
             }
 
             $scope.groups = data.groups;
-            $scope.appsGroups = data.apps_groups;
-            $scope.appsUsers = data.apps_users;
 
             $scope.selectedGroup.members = angular.copy($scope.members);
         });
@@ -50,16 +42,6 @@ gApp.controller('GroupsCtrl', function ($scope, $rootScope, $timeout, MemberServ
 
     $scope.saveGroup = function () {
         GroupService.update($scope.selectedGroup).then(function () {
-            $scope.formErrors = null;
-            $('.modal').modal('hide');
-            $scope.refresh();
-        }, function (errors) {
-            $scope.formErrors = errors;
-        });
-    };
-
-    $scope.saveGroupsApps = function () {
-        GroupAppsService.import($scope.appsGroups, $scope.sendNotification).then(function () {
             $scope.formErrors = null;
             $('.modal').modal('hide');
             $scope.refresh();

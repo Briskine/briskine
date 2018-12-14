@@ -2,8 +2,6 @@ gApp.controller('MembersCtrl', function ($scope, $rootScope, $timeout, AccountSe
     $scope.activeTab = 'members';
 
     $scope.users = [];
-    $scope.appsUsers = [];
-
     $scope.newUsers = [];
 
     $scope.sendNotification = true;
@@ -14,16 +12,10 @@ gApp.controller('MembersCtrl', function ($scope, $rootScope, $timeout, AccountSe
         $('#add-members-modal').modal();
     };
 
-    $scope.showMemberAppsModal = function () {
-        $('#add-members-apps-modal').modal();
-    };
-
-
     $scope.refresh = function () {
         var getData = function () {
             MemberService.members().then(function (data) {
                 $scope.users = _.sortBy(data.members, 'active').reverse();
-                $scope.appsUsers = data.apps_users;
                 $scope.newUsers = [];
 
                 $scope.licensesUsed = _.filter(data.members, function (m) {
@@ -63,22 +55,6 @@ gApp.controller('MembersCtrl', function ($scope, $rootScope, $timeout, AccountSe
             if (!(u.name && u.email)) {
                 return;
             }
-            u.sendNotification = $scope.sendNotification;
-
-            MemberService.update(u).then(function () {
-                $scope.formErrors = null;
-                $('.modal').modal('hide');
-                $scope.refresh();
-            }, function (errors) {
-                $scope.formErrors = errors;
-            });
-        });
-
-        _.each($scope.appsUsers, function (u) {
-            if (!(u.active && u.name && u.email)) {
-                return;
-            }
-            u.id = null;
             u.sendNotification = $scope.sendNotification;
 
             MemberService.update(u).then(function () {

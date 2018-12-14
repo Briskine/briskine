@@ -13,12 +13,6 @@
     <button class="btn btn-primary" ng-if="account.is_customer" ng-click="showGroupModal()">
         <i class="fa fa-user-plus"></i> Add member group
     </button>
-
-    <button class="btn btn-default"
-            ng-if="account.is_customer"
-            ng-click="account.connections.google.apps.enabled?showGroupAppsModal():connectSocial('google', 'apps')">
-        <i class="fa fa-google"></i> Import Groups from Google Apps
-    </button>
 </div>
 
 <div ng-if="formErrors" class="alert alert-danger updated-account-message">
@@ -61,14 +55,9 @@
     <div ng-show="(!searchText && !groups.length)">
         You don't have any member groups <i class="fa fa-frown-o"></i><br/>
         <span ng-if="account.is_customer">
-            Go ahead <a href="" ng-click="showGroupModal()"><i class="fa fa-user-plus"></i> add</a> or
-            <a href=""
-               ng-click="account.connections.google.apps.enabled?showGroupAppsModal():connectSocial('google', 'apps')">
-                <i class="fa fa-google"></i> import
-            </a> some!
+            Go ahead <a href="" ng-click="showGroupModal()"><i class="fa fa-user-plus"></i> add</a> some!
         </span>
     </div>
 </div>
 
 <div ng-include="'/pages/views/account/includes/add_groups.html'"></div>
-<div ng-include="'/pages/views/account/includes/add_groups_apps.html'"></div>

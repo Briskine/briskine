@@ -23,10 +23,6 @@
             class="fa fa-user-plus"></i>
         Add team members
     </button>
-    <button class="btn btn-default" ng-if="account.is_customer"
-            ng-click="account.connections.google.apps.enabled?showMemberAppsModal():connectSocial('google', 'apps')">
-        <i class="fa fa-google"></i> Import Users from Google Apps
-    </button>
 </div>
 
 <div ng-if="formErrors" class="alert alert-danger updated-account-message">
@@ -96,14 +92,9 @@
     <div ng-show="(!searchText && !users.length)">
         You don't have any team members <i class="fa fa-frown-o"></i> <br/>
         <span class="">
-            Go ahead <a href="" ng-click="showMemberModal()"><i class="fa fa-user-plus"></i> add</a> or
-            <a href=""
-               ng-click="account.connections.google.apps.enabled?showMemberAppsModal():connectSocial('google', 'apps')">
-                <i class="fa fa-google"></i> import
-            </a> some!
+            Go ahead <a href="" ng-click="showMemberModal()"><i class="fa fa-user-plus"></i> add some.</a>!
         </span>
     </div>
 </div>
 
 <div ng-include="'/pages/views/account/includes/add_members.html'"></div>
-<div ng-include="'/pages/views/account/includes/add_members_apps.html'"></div>

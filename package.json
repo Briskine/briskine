@@ -55,7 +55,7 @@
         "stylus": "^0.54.5",
         "stylus-loader": "^3.0.2",
         "url-loader": "^1.0.1",
-        "webpack": "^4.2.0",
+        "webpack": "^4.27.1",
         "webpack-cli": "^2.0.13",
         "webpack-concat-plugin": "3.0.0-beta.0",
         "webpack-dev-server": "^3.1.1",

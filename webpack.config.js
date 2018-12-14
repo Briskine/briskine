@@ -95,7 +95,6 @@ const dependencies = {
                 './src/content/js/autocomplete.js',
                 './src/content/js/keyboard.js',
                 './src/content/js/dialog.js',
-                './src/content/js/sidebar.js',
                 './src/content/js/events.js',
 
                 './src/content/js/plugins/*.js'
