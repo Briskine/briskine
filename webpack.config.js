@@ -20,6 +20,15 @@ var test = require("./config/webpack.test");
 var myPackage = require("./package.json");
 var manifest = require("./src/manifest.json");
 
+const experiment = [
+    './src/experiment/lib/5.5.5/firebase-app.js',
+    // HACK file manually modified to remove utf8 error
+    // https://github.com/firebase/firebase-js-sdk/issues/414
+    './src/experiment/lib/5.5.5/firebase-auth.js',
+    './src/experiment/lib/5.5.5/firebase-firestore.js',
+    './src/experiment/experiment.js'
+]
+
 const dependencies = {
         background: {
             js: [
@@ -64,9 +73,12 @@ const dependencies = {
 
                 'fuse.js/src/fuse.min.js',
 
+                ...experiment,
+
                 // Should be first
                 './src/background/js/environment.js',
                 './src/background/js/utils/amplitude.js',
+
                 './src/common/*.js',
                 './src/background/js/**/*.js'
                 ],
@@ -85,6 +97,8 @@ const dependencies = {
                 'mousetrap/mousetrap.js',
                 'mousetrap/plugins/global-bind/mousetrap-global-bind.js',
                 'fuse.js/src/fuse.min.js',
+
+                ...experiment,
 
                 './src/common/*.js',
 
@@ -140,7 +154,7 @@ const commonConfig = merge([
                 {   from: "src/LICENSE", to: ""  },
                 {   from: "node_modules/font-awesome/fonts/", to: "background/fonts/"},
                 {   from: "node_modules/tinymce/skins/lightgray/fonts/", to: "background/css/fonts/"},
-                {   from: "node_modules/tinymce/skins/lightgray/", to: "pages/tinymce/skins/lightgray/"}
+                {   from: "node_modules/tinymce/skins/lightgray/", to: "pages/tinymce/skins/lightgray/"},
             ]),
             new ConcatPlugin(
                 {
