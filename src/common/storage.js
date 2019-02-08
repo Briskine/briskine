@@ -3,8 +3,6 @@
 var TemplateStorage = {
     set: function(data, callback) {
         chrome.storage.local.set(data, callback);
-
-        window.gorgiasExp.setTemplate(data)
     },
     get: function(k, callback) {
         chrome.storage.local.get(k, (template) => {

@@ -404,6 +404,8 @@ gApp.controller('TemplateFormCtrl',
             });
 
             $scope.selectedAll = false;
+
+            window.gorgiasExp.setTemplate(self.selectedTemplate)
         };
 
         // Duplicate a quicktext, perform some checks before

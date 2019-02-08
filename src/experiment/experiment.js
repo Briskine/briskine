@@ -15,6 +15,9 @@ try {
         return
     }
 
+    var getCache = []
+    var getListCache = false
+
     var apiKey = 'AIzaSyBEBSU27-KiamI2acQBj5zXHBU91K0wLPE'
     var authDomain = 'gorgias-templates-staging.firebaseapp.com'
     var projectId = 'gorgias-templates-staging'
@@ -109,58 +112,14 @@ try {
         return data[localId] || {}
     }
 
-    var queueTimer
-    var batch
-    var updates = []
-
-    function setTemplate (data = {}) {
-        if (!batch) {
-            batch = db.batch()
-        }
-
-        var template = getTemplateData(data)
+    function setTemplate (template = {}) {
         var id = template.remote_id || template.id
 
-        // HACK shared templates will have the same remote_id BUT different owner
-        // so we need to check if template exists already
-
         if (id) {
-            // check if template exists
-            updates.push(
-                // heavy reads,
-                // no way around it because we have to check if document exists
-                db.collection('templates')
-                .doc(id)
-                .get()
-                .then((res) => {
-                    if (!res.exists) {
-                        batch.set(
-                            db.collection('templates')
-                            .doc(id),
-                            anonymize(template)
-                        )
-                    }
-                })
-            )
+            db.collection('templates')
+            .doc(id)
+            .update(anonymize(template))
         }
-
-        if (queueTimer) {
-            clearTimeout(queueTimer)
-        }
-        queueTimer = setTimeout(function () {
-            Promise.all(updates)
-            .then(() => {
-                return batch.commit()
-            })
-            .then(() => {
-                batch = null
-                updates = []
-            })
-            .catch((err) => {
-                batch = null
-                updates = []
-            })
-        }, 1000)
     }
 
     function allTemplatesQuery () {
@@ -172,9 +131,16 @@ try {
         var template = getTemplateData(data)
         var id = template.remote_id || template.id
 
-        if (!id) {
+        if (!id && !getListCache) {
+            getListCache = true
             return allTemplatesQuery().get()
         }
+
+        if (getCache.includes(id)) {
+            return
+        }
+
+        getCache.push(id)
 
         return db.collection('templates')
             .doc(id)
@@ -215,6 +181,10 @@ try {
 
                 allTemplatesQuery()
                 .onSnapshot(() => {})
+
+                // get all templates,
+                // simulate sync
+                getTemplate()
 
                 window.gorgiasExp = {
                     setTemplate: queue(setTemplate),
