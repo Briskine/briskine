@@ -471,12 +471,15 @@ gApp.controller('ListCtrl',
             // format the data
             itemsNotFormatted.forEach(function(item){
                 itemsFormatted.push({
-                    id: item.remote_id,
-                    title: item.title,
-                    shortcut: item.shortcut,
-                    subject: item.subject,
-                    tags: item.tags,
-                    body: item.body
+                    id: item.remote_id || '',
+                    title: item.title || '',
+                    shortcut: item.shortcut || '',
+                    subject: item.subject || '',
+                    tags: item.tags || '',
+                    cc: item.cc || '',
+                    bcc: item.bcc || '',
+                    to: item.to || '',
+                    body: item.body || '',
                 });
             });
 
