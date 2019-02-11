@@ -105,10 +105,25 @@ App.plugin('linkedin', (function() {
 
     };
 
+    var after = function (params, callback) {
+        // needs a manual input event,
+        // to update the ember.js editor.
+        var inputEvent = new Event('input', {
+            bubbles: true,
+            cancelable: false
+        });
+        params.element.dispatchEvent(inputEvent);
+
+        if (callback) {
+            callback(null, params);
+        }
+    };
+
     return {
         init: init,
         getData: getData,
-        before: before
+        before: before,
+        after: after
     }
 
 })());
