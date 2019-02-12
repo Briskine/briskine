@@ -21,11 +21,11 @@ var myPackage = require("./package.json");
 var manifest = require("./src/manifest.json");
 
 const experiment = [
-    './src/experiment/lib/5.5.5/firebase-app.js',
+    './src/experiment/lib/5.8.0/firebase-app.js',
     // HACK file manually modified to remove utf8 error
     // https://github.com/firebase/firebase-js-sdk/issues/414
-    './src/experiment/lib/5.5.5/firebase-auth.js',
-    './src/experiment/lib/5.5.5/firebase-firestore.js',
+    './src/experiment/lib/5.8.0/firebase-auth.js',
+    './src/experiment/lib/5.8.0/firebase-firestore.js',
     './src/experiment/experiment.js'
 ]
 
