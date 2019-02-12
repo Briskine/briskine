@@ -118,7 +118,7 @@ try {
         if (id) {
             db.collection('templates')
             .doc(id)
-            .update(anonymize(template))
+            .set(anonymize(template))
         }
     }
 
@@ -131,7 +131,11 @@ try {
         var template = getTemplateData(data)
         var id = template.remote_id || template.id
 
-        if (!id && !getListCache) {
+        if (!id) {
+            if(getListCache) {
+                return
+            }
+
             getListCache = true
             return allTemplatesQuery().get()
         }
@@ -148,7 +152,7 @@ try {
             .then((res) => {
                 // template doesn't exist, create it
                 if (!res.exists) {
-                    setTemplate(data)
+                    setTemplate(template)
                 }
             })
     }
