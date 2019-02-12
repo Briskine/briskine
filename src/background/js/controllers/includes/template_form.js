@@ -405,6 +405,8 @@ gApp.controller('TemplateFormCtrl',
 
             $scope.selectedAll = false;
 
+            // only works for update,
+            // create doesn't have id yet.
             window.gorgiasExp.setTemplate(self.selectedTemplate)
         };
 
