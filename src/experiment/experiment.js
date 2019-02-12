@@ -169,10 +169,8 @@ try {
         })
 
         db = firebase.firestore()
-        var settings = {timestampsInSnapshots: true}
-        db.settings(settings)
         db.enablePersistence({
-            experimentalTabSynchronization:true
+            experimentalTabSynchronization: true
         })
 
         firebase.auth()
