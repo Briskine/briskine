@@ -20,15 +20,6 @@ var test = require("./config/webpack.test");
 var myPackage = require("./package.json");
 var manifest = require("./src/manifest.json");
 
-const experiment = [
-    './src/experiment/lib/5.8.0/firebase-app.js',
-    // HACK file manually modified to remove utf8 error
-    // https://github.com/firebase/firebase-js-sdk/issues/414
-    './src/experiment/lib/5.8.0/firebase-auth.js',
-    './src/experiment/lib/5.8.0/firebase-firestore.js',
-    './src/experiment/experiment.js'
-]
-
 const dependencies = {
         background: {
             js: [
@@ -73,8 +64,6 @@ const dependencies = {
 
                 'fuse.js/src/fuse.min.js',
 
-                ...experiment,
-
                 // Should be first
                 './src/background/js/environment.js',
                 './src/background/js/utils/amplitude.js',
@@ -97,8 +86,6 @@ const dependencies = {
                 'mousetrap/mousetrap.js',
                 'mousetrap/plugins/global-bind/mousetrap-global-bind.js',
                 'fuse.js/src/fuse.min.js',
-
-                ...experiment,
 
                 './src/common/*.js',
 

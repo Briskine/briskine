@@ -5,10 +5,7 @@ var TemplateStorage = {
         chrome.storage.local.set(data, callback);
     },
     get: function(k, callback) {
-        chrome.storage.local.get(k, (template) => {
-            callback(template)
-            window.gorgiasExp.getTemplate(template)
-        });
+        chrome.storage.local.get(k, callback);
     },
     remove: function(k, callback) {
         chrome.storage.local.remove(k, callback);
