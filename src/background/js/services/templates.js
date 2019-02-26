@@ -383,8 +383,6 @@ gApp.service('TemplateService', function ($q, $resource, SettingsService) {
                     t.sync_datetime = new Date().toISOString();
                     TemplateStorage.set(data, function () {
                         deferred.resolve(t.id);
-
-                        window.gorgiasExp.setTemplate(t)
                     });
                 });
             });
@@ -485,8 +483,6 @@ gApp.service('TemplateService', function ($q, $resource, SettingsService) {
                         // NOTE: We delete locally to save space.
                         TemplateStorage.remove(t.id, function () {
                             deferred.resolve();
-
-                            window.gorgiasExp.setTemplate(t)
                         });
                     });
                 });
