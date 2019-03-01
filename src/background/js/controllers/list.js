@@ -62,8 +62,6 @@ gApp.controller('ListCtrl',
             acl: []
         };
 
-        $scope.baseUrl = Settings.defaults.baseURL;
-
         $scope.filteredTemplates = [];
         $scope.templates = [];
         $scope.filterTags = FilterTagService.filterTags;

@@ -24,30 +24,27 @@ gApp.service('FilterTagService', function ($rootScope) {
 });
 
 // Template operations
-gApp.service('TemplateService', function ($q, $resource, SettingsService) {
+gApp.service('TemplateService', function ($q, $resource, $rootScope, SettingsService) {
     var self = this;
 
-    SettingsService.get('apiBaseURL').then(function (apiBaseURL) {
-
-        self.qRes = $resource(apiBaseURL + 'quicktexts/:quicktextId', {
-            quicktextId: '@remote_id'
-        }, {
-            query: {
-                method: "GET",
-                isArray: true,
-                timeout: 20 * 1000
-            },
-            update: {
-                method: "PUT"
-            },
-            delete: {
-                method: "DELETE",
-                isArray: false
-            }
-        });
-
-        self.statsRes = $resource(apiBaseURL + 'templates/stats');
+    self.qRes = $resource($rootScope.apiBaseURL + 'quicktexts/:quicktextId', {
+        quicktextId: '@remote_id'
+    }, {
+        query: {
+            method: "GET",
+            isArray: true,
+            timeout: 20 * 1000
+        },
+        update: {
+            method: "PUT"
+        },
+        delete: {
+            method: "DELETE",
+            isArray: false
+        }
     });
+
+    self.statsRes = $resource($rootScope.apiBaseURL + 'templates/stats');
 
     self.isLoggedin = false;
     SettingsService.get("isLoggedIn").then(function (isLoggedIn) {

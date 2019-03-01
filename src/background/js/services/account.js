@@ -1,7 +1,7 @@
-gApp.service('AccountService', function ($q, $resource) {
+gApp.service('AccountService', function ($q, $resource, $rootScope) {
     var self = this;
 
-    var accResource = $resource(Settings.defaults.apiBaseURL + 'account', {}, {
+    var accResource = $resource($rootScope.apiBaseURL + 'account', {}, {
       update: {
           method: "PUT"
       },
@@ -36,9 +36,9 @@ gApp.service('AccountService', function ($q, $resource) {
     };
 });
 
-gApp.service('MemberService', function ($q, $resource) {
+gApp.service('MemberService', function ($q, $resource, $rootScope) {
     var self = this;
-    var memberResource = $resource(Settings.defaults.apiBaseURL + 'members/:memberId', {memberId: "@id"}, {
+    var memberResource = $resource($rootScope.apiBaseURL + 'members/:memberId', {memberId: "@id"}, {
         update: {
             method: "PUT"
         },
@@ -106,9 +106,9 @@ gApp.service('MemberService', function ($q, $resource) {
     };
 });
 
-gApp.service('GroupService', function ($q, $resource) {
+gApp.service('GroupService', function ($q, $resource, $rootScope) {
     var self = this;
-    var groupResource = $resource(Settings.defaults.apiBaseURL + 'groups/:groupId', {groupId: "@id"}, {
+    var groupResource = $resource($rootScope.apiBaseURL + 'groups/:groupId', {groupId: "@id"}, {
         update: {
             method: "PUT"
         },

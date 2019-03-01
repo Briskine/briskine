@@ -11,7 +11,7 @@ gApp.controller('LoginCtrl', function ($http, $route, $rootScope, TemplateServic
     self.signin = function() {
         $http({
             method: 'POST',
-            url: Settings.defaults.apiBaseURL + 'signin',
+            url: $rootScope.apiBaseURL + 'signin',
             data: self.credentials
         }).then(function success(){
             SettingsService.set('isLoggedIn', true).then(window.location.reload(true));

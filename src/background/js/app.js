@@ -122,6 +122,11 @@ gApp.config(['$compileProvider', function ($compileProvider) {
 
 /* Global run
  */
+gApp.run(function ($rootScope) {
+    $rootScope.baseURL = Settings.defaults.baseURL;
+    $rootScope.apiBaseURL = Settings.defaults.apiBaseURL;
+});
+
 gApp.run(function ($rootScope, $location, $http, $timeout, ProfileService, SettingsService, TemplateService, SubscriptionService) {
     $rootScope.$on('$routeChangeStart', function () {
         $rootScope.path = $location.path();
@@ -137,8 +142,6 @@ gApp.run(function ($rootScope, $location, $http, $timeout, ProfileService, Setti
     $rootScope.isLoggedIn = false;
     $rootScope.isCustomer = null;
     $rootScope.currentSubscription = null;
-    $rootScope.baseURL = Settings.defaults.baseURL;
-    $rootScope.apiBaseURL = Settings.defaults.apiBaseURL;
 
     $rootScope.trustedSignupURL = $rootScope.baseURL + "signup/startup-monthly-usd-1/is_iframe=yes";
     $rootScope.showStats = true;
@@ -237,59 +240,57 @@ gApp.run(function ($rootScope, $location, $http, $timeout, ProfileService, Setti
     };
 
     $rootScope.checkLoggedIn = function () {
-        SettingsService.get("apiBaseURL").then(function (apiBaseURL) {
-            $http.get(apiBaseURL + 'login-info').success(function (data) {
-                $rootScope.loginChecked = true;
+        $http.get($rootScope.apiBaseURL + 'login-info').success(function (data) {
+            $rootScope.loginChecked = true;
+            if (data.is_loggedin) {
+                $rootScope.isLoggedIn = true;
+            }
+
+            SettingsService.set("isLoggedIn", data.is_loggedin).then(function () {
                 if (data.is_loggedin) {
-                    $rootScope.isLoggedIn = true;
-                }
-
-                SettingsService.set("isLoggedIn", data.is_loggedin).then(function () {
-                    if (data.is_loggedin) {
-                        if (!data.editor.enabled) { // disable editor if disabled server side
-                            SettingsService.get("settings").then(function (settings) {
-                                settings.editor = data.editor;
-                                SettingsService.set("settings", settings);
-                            });
-                        }
-
-                        $http.get(apiBaseURL + "account").success(function (data) {
-                            $rootScope.currentSubscription = data.current_subscription;
-                            $rootScope.isCustomer = data.is_customer;
-
-                            // identify people that are logged in to our website
-                            amplitude.getInstance().setUserId(data.id);
-
-                            amplitude.getInstance().setUserProperties({
-                                "email": data.email,
-                                "created": data.created_datetime,
-                                "name": data.info.name,
-                                "sub_active": data.current_subscription.active || false,
-                                "sub_created": data.current_subscription.created_datetime,
-                                "sub_plan": data.current_subscription.plan,
-                                "sub_quantity": data.current_subscription.quantity,
-                                "is_customer": data.is_customer,
-                                "is_staff": data.is_staff
-                            });
-
-
-                            var identify = new amplitude.Identify().set('browser', browser).set('authenticated', true).set('user', data);
-                            amplitude.getInstance().identify(identify);
-
+                    if (!data.editor.enabled) { // disable editor if disabled server side
+                        SettingsService.get("settings").then(function (settings) {
+                            settings.editor = data.editor;
+                            SettingsService.set("settings", settings);
                         });
-                        // Once logged in start syncing
-                        $rootScope.SyncNow();
-                    } else {
-                        var identify = new amplitude.Identify().set('browser', browser).set('authenticated', false).set('user', {'email': $rootScope.userEmail});
-                        amplitude.getInstance().identify(identify);
-                        SettingsService.set("isLoggedIn", false);
                     }
-                });
-            }).error(function () {
-                var identify = new amplitude.Identify().set('$browser', browser).set('authenticated', false).set('user', {'email': $rootScope.userEmail});
-                amplitude.getInstance().identify(identify);
-                SettingsService.set("isLoggedIn", false);
+
+                    $http.get($rootScope.apiBaseURL + "account").success(function (data) {
+                        $rootScope.currentSubscription = data.current_subscription;
+                        $rootScope.isCustomer = data.is_customer;
+
+                        // identify people that are logged in to our website
+                        amplitude.getInstance().setUserId(data.id);
+
+                        amplitude.getInstance().setUserProperties({
+                            "email": data.email,
+                            "created": data.created_datetime,
+                            "name": data.info.name,
+                            "sub_active": data.current_subscription.active || false,
+                            "sub_created": data.current_subscription.created_datetime,
+                            "sub_plan": data.current_subscription.plan,
+                            "sub_quantity": data.current_subscription.quantity,
+                            "is_customer": data.is_customer,
+                            "is_staff": data.is_staff
+                        });
+
+
+                        var identify = new amplitude.Identify().set('browser', browser).set('authenticated', true).set('user', data);
+                        amplitude.getInstance().identify(identify);
+
+                    });
+                    // Once logged in start syncing
+                    $rootScope.SyncNow();
+                } else {
+                    var identify = new amplitude.Identify().set('browser', browser).set('authenticated', false).set('user', {'email': $rootScope.userEmail});
+                    amplitude.getInstance().identify(identify);
+                    SettingsService.set("isLoggedIn", false);
+                }
             });
+        }).error(function () {
+            var identify = new amplitude.Identify().set('$browser', browser).set('authenticated', false).set('user', {'email': $rootScope.userEmail});
+            amplitude.getInstance().identify(identify);
+            SettingsService.set("isLoggedIn", false);
         });
     };
 
@@ -297,7 +298,7 @@ gApp.run(function ($rootScope, $location, $http, $timeout, ProfileService, Setti
     $rootScope.logOut = function () {
         $http({
             method: 'GET',
-            url: Settings.defaults.baseURL + 'logout'
+            url: $rootScope.baseURL + 'logout'
         }).then(function () {
             SettingsService.set('isLoggedIn', false).then(location.reload(true));
         });

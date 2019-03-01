@@ -10,7 +10,7 @@ gApp.controller('ForgotCtrl', function ($http, $route, $rootScope) {
     self.submit = function () {
         $http({
             method: 'POST',
-            url: Settings.defaults.apiBaseURL + 'forgot',
+            url: $rootScope.apiBaseURL + 'forgot',
             data: self.credentials
         }).then(function success() {
             $('#forgot-modal').modal('hide');

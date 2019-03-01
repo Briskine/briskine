@@ -1,11 +1,11 @@
-gApp.service('SubscriptionService', function ($q, $resource) {
+gApp.service('SubscriptionService', function ($q, $resource, $rootScope) {
     var self = this
-    var subResource = $resource(Settings.defaults.apiBaseURL + 'subscriptions/:subId',
+    var subResource = $resource($rootScope.apiBaseURL + 'subscriptions/:subId',
         {subId: "@id"},
         {update: {method: 'PUT', isArray: false}}
     )
-    var couponResource = $resource(Settings.defaults.apiBaseURL + 'coupons')
-    var planResource = $resource(Settings.defaults.apiBaseURL + 'plans/startup')
+    var couponResource = $resource($rootScope.apiBaseURL + 'coupons')
+    var planResource = $resource($rootScope.apiBaseURL + 'plans/startup')
 
     self.plans = function () {
         var deferred = $q.defer()
