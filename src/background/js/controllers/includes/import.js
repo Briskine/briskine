@@ -10,7 +10,7 @@ gApp.controller('ImportCtrl', function ($scope, $rootScope, $timeout, Upload) {
 
         //var file = $files[0];
         Upload.upload({
-            url: Settings.defaults.apiBaseURL + 'quicktexts/import',
+            url: $rootScope.apiBaseURL + 'quicktexts/import',
             file: file
         }).progress(function (evt) {
             //TODO: try to find a way to make this work in the future

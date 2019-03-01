@@ -1,7 +1,7 @@
-gApp.service('QuicktextSharingService', function($q, $resource) {
+gApp.service('QuicktextSharingService', function($q, $resource, $rootScope) {
     var self = this;
 
-    self.res = $resource(Settings.defaults.apiBaseURL + 'share', {}, {
+    self.res = $resource($rootScope.apiBaseURL + 'share', {}, {
         post: {
             method: "POST"
         },

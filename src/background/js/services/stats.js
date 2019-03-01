@@ -1,7 +1,7 @@
-gApp.service('StatsService', function ($q, $resource, SettingsService) {
+gApp.service('StatsService', function ($q, $resource, $rootScope, SettingsService) {
     var self = this
 
-    self.res = $resource(Settings.defaults.apiBaseURL + 'templates/stats', {}, {
+    self.res = $resource($rootScope.apiBaseURL + 'templates/stats', {}, {
         get: {
             method: "GET"
         }

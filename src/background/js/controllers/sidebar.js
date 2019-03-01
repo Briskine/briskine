@@ -2,7 +2,6 @@ gApp.controller('SidebarCtrl', function ($scope, $location, $http, $window,
                                          AccountService, SettingsService, TemplateService, FilterTagService) {
     $scope.profile = {};
     $scope.filterTags = [];
-    $scope.baseURL = Settings.defaults.baseURL;
 
     $window.addEventListener('message', function (e) {
         if (e.data == "gorgias-signedup-reload") {

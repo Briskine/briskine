@@ -146,7 +146,7 @@ const commonConfig = merge([
             new ConcatPlugin(
                 {
                     uglify: false,
-                    sourceMap: false,
+                    sourceMap: true,
                     name: 'background',
                     outputPath: 'background/js',
                     fileName: '[name].js',
@@ -159,7 +159,7 @@ const commonConfig = merge([
             new ConcatPlugin(
                 {
                     uglify: false,
-                    sourceMap: false,
+                    sourceMap: true,
                     name: 'content',
                     outputPath: 'content/js',
                     fileName: '[name].js',
