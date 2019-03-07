@@ -1,5 +1,5 @@
 (function () {
-    var extensionMetaUrl = 'https://gorgias.github.io/templates-website/extension.json';
+    var extensionMetaUrl = 'https://templates.gorgias.io/extension.json';
     var manifest = chrome.runtime.getManifest();
 
     // https://github.com/substack/semver-compare
