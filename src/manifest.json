@@ -1,7 +1,7 @@
 {
     "manifest_version": 2,
     "name": "__MSG_extName__",
-    "version": "6.0.19",
+    "version": "6.0.20",
     "description": "__MSG_extDesc__",
     "short_name": "Gorgias",
     "default_locale": "en",
@@ -23,10 +23,10 @@
         "storage"
     ],
     "oauth2": {
-    "client_id": "255032857317-4ftb4k2p4t6dbikeo7nb9b5jmoit6lih.apps.googleusercontent.com",
-    "scopes": [
-      "https://www.googleapis.com/auth/drive"
-      ]
+        "client_id": "635874931075-3v91ir4l5vpdtf7i0asuk4q7ohr5auoc.apps.googleusercontent.com",
+        "scopes": [
+            "https://www.googleapis.com/auth/drive"
+        ]
     },
     "content_scripts": [
         {
