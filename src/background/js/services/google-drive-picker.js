@@ -9,6 +9,11 @@ gApp.service('gDrivePickerService', function ($window) {
         chrome.identity.getAuthToken({
             'interactive': true
         }, function (token) {
+            if (chrome.runtime.lastError) {
+                alert(chrome.runtime.lastError.message);
+                return
+            }
+
             oauthToken = token;
             createPicker();
         });

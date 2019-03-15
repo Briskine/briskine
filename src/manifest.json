@@ -23,10 +23,10 @@
         "storage"
     ],
     "oauth2": {
-    "client_id": "255032857317-4ftb4k2p4t6dbikeo7nb9b5jmoit6lih.apps.googleusercontent.com",
-    "scopes": [
-      "https://www.googleapis.com/auth/drive"
-      ]
+        "client_id": "635874931075-3v91ir4l5vpdtf7i0asuk4q7ohr5auoc.apps.googleusercontent.com",
+        "scopes": [
+            "https://www.googleapis.com/auth/drive"
+        ]
     },
     "content_scripts": [
         {
