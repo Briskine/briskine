@@ -66,11 +66,16 @@ App.plugin('outlook', (function() {
 
     var waitForElement = function (selector) {
         return new Promise((resolve, reject) => {
+            var $element = document.querySelector(selector);
+            if ($element) {
+                return resolve($element);
+            }
+
             var selectorObserver = new MutationObserver(function (records, observer) {
-                var $suggestion = document.querySelector(selector);
-                if ($suggestion) {
+                $element = document.querySelector(selector);
+                if ($element) {
                     observer.disconnect();
-                    resolve($suggestion);
+                    resolve($element);
                 }
             });
             selectorObserver.observe(document.body, {
@@ -104,6 +109,28 @@ App.plugin('outlook', (function() {
                 });
             })
         );
+    };
+
+    var elementContains = function ($element, value) {
+        return ($element.innerText || '').includes(value);
+    };
+
+    var updateSection = function ($container, $button, containerSelector, value, $editor) {
+        if ($container) {
+            if (elementContains($container, value)) {
+                // email already added
+                return;
+            }
+
+            var $input = getContactField($container);
+            updateContactField($input, value, $editor);
+        } else {
+            // click CC/BCC button
+            $button.click();
+            waitForElement(containerSelector).then(($container) => {
+                updateSection($container, $button, containerSelector, value, $editor);
+            });
+        }
     };
 
     // get all required data from the dom
@@ -168,54 +195,55 @@ App.plugin('outlook', (function() {
         }
 
         var $subject = getSubjectField();
-        var parsedSubject = Handlebars.compile(params.quicktext.subject)(PrepareVars(params.data));
-        $subject.value = parsedSubject;
-        $subject.dispatchEvent(new Event('input', {bubbles: true}));
+        if (params.quicktext.subject && $subject) {
+            var parsedSubject = Handlebars.compile(params.quicktext.subject)(PrepareVars(params.data));
+            $subject.value = parsedSubject;
+            $subject.dispatchEvent(new Event('input', {bubbles: true}));
+        }
 
         var $containers = getContainers();
 
         var $to = $containers[1];
-        if (params.quicktext.to && $to) {
-            var $toInput = getContactField($to);
+        if (params.quicktext.to) {
             var parsedTo = Handlebars.compile(params.quicktext.to)(PrepareVars(params.data));
-            updateContactField($toInput, parsedTo, params.element);
+            if ($to && !elementContains($to, parsedTo)) {
+                var $toInput = getContactField($to);
+                updateContactField($toInput, parsedTo, params.element);
+            }
         }
 
         var $cc = $containers[2];
         if (params.quicktext.cc) {
             var parsedCc = Handlebars.compile(params.quicktext.cc)(PrepareVars(params.data));
-            if ($cc) {
-                var $ccInput = getContactField($cc);
-                updateContactField($ccInput, parsedCc, params.element);
-            } else {
-                // click CC button
-                $containers[0].querySelector('button:first-of-type').click();
-                waitForElement(`${getContainerSelector()}:nth-of-type(3)`).then(($container) => {
-                    var $ccInput = getContactField($container);
-                    updateContactField($ccInput, parsedCc, params.element);
-                });
-            }
+            updateSection(
+                $cc,
+                $containers[0].querySelector('.ms-Button-label:first-of-type'),
+                `${getContainerSelector()}:nth-of-type(3)`,
+                parsedCc,
+                params.element
+            );
         }
 
         var $bcc = $containers[3];
         if (params.quicktext.bcc) {
             var parsedBcc = Handlebars.compile(params.quicktext.bcc)(PrepareVars(params.data));
-            if ($bcc) {
-                var $bccInput = getContactField($bcc);
-                updateContactField($bccInput, parsedBcc, params.element);
-            } else {
-                // click BCC button
-                $containers[0].querySelector('button:last-of-type').click();
-                waitForElement(`${getContainerSelector()}:nth-of-type(4)`).then(($container) => {
-                    var $bccInput = getContactField($container);
-                    updateContactField($bccInput, parsedBcc, params.element);
-                });
-            }
+            updateSection(
+                $bcc,
+                $containers[0].querySelector('.ms-Button-label:last-of-type'),
+                `${getContainerSelector()}:nth-of-type(4)`,
+                parsedBcc,
+                params.element
+            );
         }
 
-        if(callback) {
-            callback(null, params);
-        }
+        // refresh editor reference
+        waitForElement('[contenteditable]').then(($container) => {
+            params.element = $container;
+
+            if(callback) {
+                callback(null, params);
+            }
+        });
     };
 
     var init = function(params, callback) {
