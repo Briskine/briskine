@@ -2,7 +2,6 @@
  */
 
 App.plugin('outlook', (function() {
-
     var parseName = function(name) {
         name = name.trim();
 
@@ -21,12 +20,121 @@ App.plugin('outlook', (function() {
         return {
             first_name: first_name,
             last_name: last_name
+        };
+    };
+
+    var getFieldData = function(field, $container) {
+        var $buttons = $container.querySelectorAll('[class*="wellItemText-"]') || [];
+        $buttons.forEach(function ($button) {
+            var fullName = $button.innerText || '';
+            field.push(
+                Object.assign({
+                    name: fullName,
+                    first_name: '',
+                    last_name: '',
+                    // BUG we can't get email
+                    email: ''
+                }, parseName(fullName))
+            );
+        });
+    };
+
+    var getContainerSelector = function () {
+        return '._1snD8ht9jkLT9zDWn6Ef-6';
+    };
+
+    var getContainers = function () {
+        return document.querySelectorAll(getContainerSelector()) || [];
+    };
+
+    var getSuggestionSelector = function () {
+        // "use this address" not in contact list
+        var headerSelector = `.ms-Suggestions-headerContainer [class*="useAddressContainer-"]`;
+        // contact list suggestion
+        var listSelector = `.ms-Suggestions-container [role="listitem"]`;
+
+        return `${headerSelector}, ${listSelector}`;
+    };
+
+    var getSubjectField = function () {
+        return document.querySelector('._1lMDXhNZeGHitcMyCa9TJp input[type=text]');
+    };
+
+    var getContactField = function ($container) {
+        return $container.querySelector('[role="combobox"]');
+    };
+
+    var waitForElement = function (selector) {
+        return new Promise((resolve, reject) => {
+            var $element = document.querySelector(selector);
+            if ($element) {
+                return resolve($element);
+            }
+
+            var selectorObserver = new MutationObserver(function (records, observer) {
+                $element = document.querySelector(selector);
+                if ($element) {
+                    observer.disconnect();
+                    resolve($element);
+                }
+            });
+            selectorObserver.observe(document.body, {
+                childList: true,
+                subtree: true
+            });
+        });
+    };
+
+    var fieldUpdateQueue = [];
+    var updateContactField = function ($field, value, $editor) {
+        // wait for previous contact field update
+        fieldUpdateQueue.push(
+            Promise.all(fieldUpdateQueue).then(() => {
+                $field.value = value;
+                $field.dispatchEvent(new Event('input', {bubbles: true}));
+
+                return waitForElement(getSuggestionSelector()).then(function ($element) {
+                    // BUG only works once per field
+                    $field.dispatchEvent(
+                        new KeyboardEvent('keydown', {
+                            keyCode: 13,
+                            which: 13,
+                            bubbles: true
+                        })
+                    );
+
+                    // restore focus
+                    $editor.focus();
+                    return;
+                });
+            })
+        );
+    };
+
+    var elementContains = function ($element, value) {
+        return ($element.innerText || '').includes(value);
+    };
+
+    var updateSection = function ($container, $button, containerSelector, value, $editor) {
+        if ($container) {
+            if (elementContains($container, value)) {
+                // email already added
+                return;
+            }
+
+            var $input = getContactField($container);
+            updateContactField($input, value, $editor);
+        } else {
+            // click CC/BCC button
+            $button.click();
+            waitForElement(containerSelector).then(($container) => {
+                updateSection($container, $button, containerSelector, value, $editor);
+            });
         }
     };
 
     // get all required data from the dom
     var getData = function(params, callback) {
-
         var vars = {
             from: [],
             to: [],
@@ -35,58 +143,45 @@ App.plugin('outlook', (function() {
             subject: ''
         };
 
-        var $fromContainer= $('.FromContainer', window.parent.document);
-        var fromName = $fromContainer.find('.Name').text();
-        var fromAddress = $fromContainer.find('.Address').text();
+        var $containers = getContainers();
+        var $from = $containers[0];
+        if ($from) {
+            var $fromButton = $from.querySelector('[role=button]');
+            if ($fromButton) {
+                var fromEmail = $fromButton.innerText || '';
+                var nameAriaLabel = $fromButton.getAttribute('aria-label');
+                // BUG only works for two word names
+                var fromName = nameAriaLabel.split(' ').slice(-2).join(' ');
 
-        var from = {
-           name: fromName,
-           first_name: '',
-           last_name: '',
-           email: fromAddress
-        };
+                vars.from.push(
+                    Object.assign({
+                        name: fromName,
+                        first_name: '',
+                        last_name: '',
+                        email: fromEmail
+                    }, parseName(fromName))
+                );
+            }
+        }
 
-        // in case we didn't get the name from .fromContainer
-        // try to get it from the top right
-        if(!fromName || !fromName.trim()) {
-            fromName = $('#c_meun', window.parent.document).text();
-        };
+        var $to = $containers[1];
+        if ($to) {
+            getFieldData(vars.to, $to);
+        }
 
-        var parsedName = parseName(fromName);
+        var $cc = $containers[2];
+        if ($cc) {
+            getFieldData(vars.cc, $cc);
+        }
 
-        from.first_name = parsedName.first_name;
-        from.last_name = parsedName.last_name;
-
-        vars.from.push(from);
-
-        var $toContacts = $('#toCP .cp_Contact', window.parent.document);
-        var $contact;
-        var email;
-
-        $toContacts.each(function() {
-            $contact = $(this).find('a:first');
-            email = $contact.next('.hideText').text();
-
-            var name = $contact.text();
-            var parsedName = parseName(name);
-            var to = {
-                name: name,
-                first_name: '',
-                last_name: '',
-                email: email.replace(/["<>;]/gi,'')
-            };
-
-            to.first_name = parsedName.first_name;
-            to.last_name = parsedName.last_name;
-
-            vars.to.push(to);
-
-        });
+        var $bcc = $containers[3];
+        if ($bcc) {
+            getFieldData(vars.bcc, $bcc);
+        }
 
         if(callback) {
             callback(null, vars);
         }
-
     };
 
     var before = function (params, callback) {
@@ -96,61 +191,62 @@ App.plugin('outlook', (function() {
             !params.quicktext.cc &&
             !params.quicktext.bcc
         ) {
-            return callback(null, params)
+            return callback(null, params);
         }
 
-        // if we have any extra fields,
-        // click expand button, for reply.
-        var $parent = $(params.element).closest('._mcp_61');
-        $('button._mcp_D2', $parent).trigger('click');
+        var $subject = getSubjectField();
+        if (params.quicktext.subject && $subject) {
+            var parsedSubject = Handlebars.compile(params.quicktext.subject)(PrepareVars(params.data));
+            $subject.value = parsedSubject;
+            $subject.dispatchEvent(new Event('input', {bubbles: true}));
+        }
 
-        // needs a sec to re-render the compose dom.
-        setTimeout(function () {
-            // after clicking the expand button,
-            // the dom is recreated,
-            // so we need to refresh the parent.
-            var $parent = $('._mcp_61');
+        var $containers = getContainers();
 
-            if (params.quicktext.subject) {
-                var parsedSubject = Handlebars.compile(params.quicktext.subject)(PrepareVars(params.data));
-                var $subjectField = $('input[aria-labelledby="MailCompose.SubjectWellLabel"]', $parent);
-                $subjectField.val(parsedSubject);
+        var $to = $containers[1];
+        if (params.quicktext.to) {
+            var parsedTo = Handlebars.compile(params.quicktext.to)(PrepareVars(params.data));
+            if ($to && !elementContains($to, parsedTo)) {
+                var $toInput = getContactField($to);
+                updateContactField($toInput, parsedTo, params.element);
             }
+        }
 
-            var parsedValue = 'parsed value';
+        var $cc = $containers[2];
+        if (params.quicktext.cc) {
+            var parsedCc = Handlebars.compile(params.quicktext.cc)(PrepareVars(params.data));
+            updateSection(
+                $cc,
+                $containers[0].querySelector('.ms-Button-label:first-of-type'),
+                `${getContainerSelector()}:nth-of-type(3)`,
+                parsedCc,
+                params.element
+            );
+        }
 
-            var $extraFields = $('._fp_C', $parent)
-            var $btns = $('._mcp_e1', $parent)
+        var $bcc = $containers[3];
+        if (params.quicktext.bcc) {
+            var parsedBcc = Handlebars.compile(params.quicktext.bcc)(PrepareVars(params.data));
+            updateSection(
+                $bcc,
+                $containers[0].querySelector('.ms-Button-label:last-of-type'),
+                `${getContainerSelector()}:nth-of-type(4)`,
+                parsedBcc,
+                params.element
+            );
+        }
 
-            if (params.quicktext.to) {
-                var parsedTo = Handlebars.compile(params.quicktext.to)(PrepareVars(params.data));
-                $extraFields.eq(0).val(parsedTo);
-            }
-
-            if (params.quicktext.cc) {
-                var parsedCc = Handlebars.compile(params.quicktext.cc)(PrepareVars(params.data));
-                $btns.eq(0).trigger('click');
-                $extraFields.eq(1).val(parsedCc);
-            }
-
-            if (params.quicktext.to) {
-                var parsedBcc = Handlebars.compile(params.quicktext.bcc)(PrepareVars(params.data));
-                $btns.eq(1).trigger('click');
-                $extraFields.eq(2).val(parsedBcc);
-            }
-
-            // refresh the editor element.
-            // outlook re-creates it.
-            params.element = $('.ConsumerCED', $parent).get(0)
+        // refresh editor reference
+        waitForElement('[contenteditable]').then(($container) => {
+            params.element = $container;
 
             if(callback) {
                 callback(null, params);
             }
-        }, 500);
+        });
     };
 
     var init = function(params, callback) {
-
         var outlookUrl = 'outlook.live.com/';
 
         var activateExtension = false;
@@ -166,13 +262,11 @@ App.plugin('outlook', (function() {
             // second is the response
             callback(null, activateExtension);
         }
-
     };
 
     return {
         init: init,
         getData: getData,
         before: before
-    }
-
+    };
 })());
