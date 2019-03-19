@@ -20,7 +20,7 @@ App.plugin('outlook', (function() {
         return {
             first_name: first_name,
             last_name: last_name
-        }
+        };
     };
 
     var getFieldData = function(field, $container) {
@@ -40,22 +40,24 @@ App.plugin('outlook', (function() {
     };
 
     var getContainerSelector = function () {
-        return '._1snD8ht9jkLT9zDWn6Ef-6'
+        return '._1snD8ht9jkLT9zDWn6Ef-6';
     };
 
     var getContainers = function () {
-        return document.querySelectorAll(getContainerSelector()) || []
+        return document.querySelectorAll(getContainerSelector()) || [];
     };
 
-    var getSuggestion = function () {
-        // contact suggestion autocomplete
-        var itemSelector = '[role="listitem"]'
+    var getSuggestionSelector = function () {
         // "use this address" not in contact list
-        var headerSelector = `.ms-Suggestions-headerContainer ${itemSelector}`
+        var headerSelector = `.ms-Suggestions-headerContainer [class*="useAddressContainer-"]`;
         // contact list suggestion
-        var listSelector = `.ms-Suggestions-container ${itemSelector}`
+        var listSelector = `.ms-Suggestions-container [role="listitem"]`;
 
-        return `${headerSelector}, ${listSelector}`
+        return `${headerSelector}, ${listSelector}`;
+    };
+
+    var getSubjectField = function () {
+        return document.querySelector('._1lMDXhNZeGHitcMyCa9TJp input[type=text]');
     };
 
     var getContactField = function ($container) {
@@ -70,39 +72,38 @@ App.plugin('outlook', (function() {
                     observer.disconnect();
                     resolve($suggestion);
                 }
-            })
+            });
             selectorObserver.observe(document.body, {
                 childList: true,
                 subtree: true
-            })
-        })
+            });
+        });
     };
 
-    var contactFieldUpdateQueue = [];
-
+    var fieldUpdateQueue = [];
     var updateContactField = function ($field, value, $editor) {
-        // TODO wait until suggestions is gone
-        console.log('queue length', contactFieldUpdateQueue.length);
-        // TODO not working when CC field is visible, needs a delay
-        Promise.all(contactFieldUpdateQueue).then(() => {
-            $field.value = value;
-            $field.dispatchEvent(new Event('input', {bubbles: true}));
+        // wait for previous contact field update
+        fieldUpdateQueue.push(
+            Promise.all(fieldUpdateQueue).then(() => {
+                $field.value = value;
+                $field.dispatchEvent(new Event('input', {bubbles: true}));
 
-            var updateQueue = waitForElement(getSuggestion()).then(function () {
-                $field.dispatchEvent(
-                    new KeyboardEvent('keydown', {
-                        keyCode: 13,
-                        which: 13,
-                        bubbles: true
-                    })
-                )
+                return waitForElement(getSuggestionSelector()).then(function ($element) {
+                    // BUG only works once per field
+                    $field.dispatchEvent(
+                        new KeyboardEvent('keydown', {
+                            keyCode: 13,
+                            which: 13,
+                            bubbles: true
+                        })
+                    );
 
-                // restore focus
-                $editor.focus()
+                    // restore focus
+                    $editor.focus();
+                    return;
+                });
             })
-
-            contactFieldUpdateQueue.push(updateQueue);
-        });
+        );
     };
 
     // get all required data from the dom
@@ -118,10 +119,10 @@ App.plugin('outlook', (function() {
         var $containers = getContainers();
         var $from = $containers[0];
         if ($from) {
-            var $fromButton = $from.querySelector('[role=button]')
+            var $fromButton = $from.querySelector('[role=button]');
             if ($fromButton) {
-                var fromEmail = $fromButton.innerText || ''
-                var nameAriaLabel = $fromButton.getAttribute('aria-label')
+                var fromEmail = $fromButton.innerText || '';
+                var nameAriaLabel = $fromButton.getAttribute('aria-label');
                 // BUG only works for two word names
                 var fromName = nameAriaLabel.split(' ').slice(-2).join(' ');
 
@@ -132,23 +133,23 @@ App.plugin('outlook', (function() {
                         last_name: '',
                         email: fromEmail
                     }, parseName(fromName))
-                )
+                );
             }
         }
 
-        var $to = $containers[1]
+        var $to = $containers[1];
         if ($to) {
-            getFieldData(vars.to, $to)
+            getFieldData(vars.to, $to);
         }
 
-        var $cc = $containers[2]
+        var $cc = $containers[2];
         if ($cc) {
-            getFieldData(vars.cc, $cc)
+            getFieldData(vars.cc, $cc);
         }
 
-        var $bcc = $containers[3]
+        var $bcc = $containers[3];
         if ($bcc) {
-            getFieldData(vars.bcc, $bcc)
+            getFieldData(vars.bcc, $bcc);
         }
 
         if(callback) {
@@ -163,90 +164,54 @@ App.plugin('outlook', (function() {
             !params.quicktext.cc &&
             !params.quicktext.bcc
         ) {
-            return callback(null, params)
+            return callback(null, params);
         }
 
-        // TODO subject
+        var $subject = getSubjectField();
+        var parsedSubject = Handlebars.compile(params.quicktext.subject)(PrepareVars(params.data));
+        $subject.value = parsedSubject;
+        $subject.dispatchEvent(new Event('input', {bubbles: true}));
 
         var $containers = getContainers();
 
-        var $to = $containers[1]
+        var $to = $containers[1];
         if (params.quicktext.to && $to) {
-            var $input = getContactField($to);
+            var $toInput = getContactField($to);
             var parsedTo = Handlebars.compile(params.quicktext.to)(PrepareVars(params.data));
-            updateContactField($input, parsedTo, params.element);
+            updateContactField($toInput, parsedTo, params.element);
         }
 
         var $cc = $containers[2];
         if (params.quicktext.cc) {
             var parsedCc = Handlebars.compile(params.quicktext.cc)(PrepareVars(params.data));
             if ($cc) {
-                var $input = getContactField($cc);
-                // TODO this starts at the same time as $to updateContactField
-                updateContactField($input, parsedCc, params.element);
+                var $ccInput = getContactField($cc);
+                updateContactField($ccInput, parsedCc, params.element);
             } else {
                 // click CC button
                 $containers[0].querySelector('button:first-of-type').click();
                 waitForElement(`${getContainerSelector()}:nth-of-type(3)`).then(($container) => {
-                    var $input = getContactField($container);
-                    updateContactField($input, parsedCc, params.element);
+                    var $ccInput = getContactField($container);
+                    updateContactField($ccInput, parsedCc, params.element);
                 });
             }
         }
 
-        // TODO bcc
-
-
-//             setTimeout(() => {
-//                 console.log('try to blur')
-//             }, 3000)
-
-//             var parsedBcc = Handlebars.compile(params.quicktext.bcc)(PrepareVars(params.data));
-//             $btns.eq(1).trigger('click');
-//             $extraFields.eq(2).val(parsedBcc);
-//         }
-
-        // if we have any extra fields,
-        // click expand button, for reply.
-//         var $parent = $(params.element).closest('._mcp_61');
-//         $('button._mcp_D2', $parent).trigger('click');
-
-        // needs a sec to re-render the compose dom.
-//         setTimeout(function () {
-//             // after clicking the expand button,
-//             // the dom is recreated,
-//             // so we need to refresh the parent.
-//             var $parent = $('._mcp_61');
-//
-//             if (params.quicktext.subject) {
-//                 var parsedSubject = Handlebars.compile(params.quicktext.subject)(PrepareVars(params.data));
-//                 var $subjectField = $('input[aria-labelledby="MailCompose.SubjectWellLabel"]', $parent);
-//                 $subjectField.val(parsedSubject);
-//             }
-//
-//             var parsedValue = 'parsed value';
-//
-//             var $extraFields = $('._fp_C', $parent)
-//             var $btns = $('._mcp_e1', $parent)
-//
-//             if (params.quicktext.to) {
-//                 var parsedTo = Handlebars.compile(params.quicktext.to)(PrepareVars(params.data));
-//                 $extraFields.eq(0).val(parsedTo);
-//             }
-//
-//             if (params.quicktext.cc) {
-//                 var parsedCc = Handlebars.compile(params.quicktext.cc)(PrepareVars(params.data));
-//                 $btns.eq(0).trigger('click');
-//                 $extraFields.eq(1).val(parsedCc);
-//             }
-//
-//
-//
-//             // refresh the editor element.
-//             // outlook re-creates it.
-//             params.element = $('.ConsumerCED', $parent).get(0)
-//         }, 500);
-
+        var $bcc = $containers[3];
+        if (params.quicktext.bcc) {
+            var parsedBcc = Handlebars.compile(params.quicktext.bcc)(PrepareVars(params.data));
+            if ($bcc) {
+                var $bccInput = getContactField($bcc);
+                updateContactField($bccInput, parsedBcc, params.element);
+            } else {
+                // click BCC button
+                $containers[0].querySelector('button:last-of-type').click();
+                waitForElement(`${getContainerSelector()}:nth-of-type(4)`).then(($container) => {
+                    var $bccInput = getContactField($container);
+                    updateContactField($bccInput, parsedBcc, params.element);
+                });
+            }
+        }
 
         if(callback) {
             callback(null, params);
@@ -254,7 +219,6 @@ App.plugin('outlook', (function() {
     };
 
     var init = function(params, callback) {
-
         var outlookUrl = 'outlook.live.com/';
 
         var activateExtension = false;
@@ -270,13 +234,11 @@ App.plugin('outlook', (function() {
             // second is the response
             callback(null, activateExtension);
         }
-
     };
 
     return {
         init: init,
         getData: getData,
         before: before
-    }
-
+    };
 })());
