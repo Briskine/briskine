@@ -247,19 +247,17 @@ App.plugin('outlook', (function() {
     };
 
     var init = function(params, callback) {
-        var outlookUrl = 'outlook.live.com/';
-
         var activateExtension = false;
-
-        // trigger the extension based on url
-        if(window.location.href.indexOf(outlookUrl) !== -1) {
+        var outlookScript = '/owa.mail.js';
+        // trigger on loaded script,
+        // to support custom domains.
+        if (Array.from(document.scripts).some((script) => {
+            return (script.src || '').includes(outlookScript);
+        })) {
             activateExtension = true;
         }
 
-        // return true as response if plugin should be activated
         if(callback) {
-            // first param is the error
-            // second is the response
             callback(null, activateExtension);
         }
     };
