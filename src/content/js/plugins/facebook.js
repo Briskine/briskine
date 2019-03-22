@@ -2,7 +2,6 @@
  */
 
 App.plugin('facebook', (function() {
-
     var parseName = function(name) {
         name = name.trim();
 
@@ -18,12 +17,11 @@ App.plugin('facebook', (function() {
         return {
             first_name: first_name,
             last_name: last_name
-        }
+        };
     };
 
     // get all required data from the dom
     var getData = function(params, callback) {
-
         var vars = {
             from: [],
             to: []
@@ -77,6 +75,23 @@ App.plugin('facebook', (function() {
 
     };
 
+    var before = function (params, callback) {
+        // prevents removing all ranges from contenteditable,
+        // after inserting template.
+        // fixes empty editor flash on dispatchEvent.
+        params.ignoreExistingRanges = true;
+        callback(null, params);
+    };
+
+    var after = function (params) {
+        var inputEvent = new Event('input', {
+            bubbles: true
+        });
+        if (params.element) {
+            params.element.dispatchEvent(inputEvent);
+        }
+    };
+
     var init = function(params, callback) {
         var url = '.facebook.com/';
         var activateExtension = false;
@@ -96,7 +111,8 @@ App.plugin('facebook', (function() {
 
     return {
         init: init,
-        getData: getData
-    }
-
+        getData: getData,
+        after: after,
+        before: before
+    };
 })());

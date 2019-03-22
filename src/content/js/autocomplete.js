@@ -278,7 +278,12 @@ App.autocomplete.replaceWith = function (params) {
                 var caretRange = doc.createRange();
                 caretRange.setStartAfter(lastQtChild);
                 caretRange.collapse(true);
-                selection.removeAllRanges();
+                // facebook/draft.js causes a dom re-render
+                // when removing ranges.
+                // looks like a no-content flash of the editor.
+                if (!params.ignoreExistingRanges) {
+                    selection.removeAllRanges();
+                }
                 selection.addRange(caretRange);
 
                 window.postMessage({
