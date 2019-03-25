@@ -12,6 +12,7 @@ if (chrome.runtime) {
         '*://outlook.live.com/*',
         '*://*.linkedin.com/*',
         '*://*.facebook.com/*',
+        '*://*.messenger.com/*',
         '*://*.fastmail.com/*',
         '*://*.uservoice.com/*',
         '*://*.zendesk.com/*'

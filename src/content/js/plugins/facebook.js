@@ -20,59 +20,87 @@ App.plugin('facebook', (function() {
         };
     };
 
+    var fromDetails = null;
+    var getFromDetails = function () {
+        if (!fromDetails) {
+            var objectMatch = new RegExp('{"USER_ID":.+?}');
+            var plainUserObject = '';
+            // get full name from inline script
+            Array.from(document.scripts).some((script) => {
+                var match = (script.textContent || '').match(objectMatch);
+                if (!script.src && match) {
+                    plainUserObject = match[0] || '';
+                    return true;
+                }
+            });
+
+            var fromName = '';
+            try {
+                var parsedUserObject = JSON.parse(plainUserObject);
+                fromName = parsedUserObject.NAME || '';
+            } catch(err) {}
+
+            fromDetails = [
+                Object.assign({
+                    name: fromName,
+                    first_name: '',
+                    last_name: '',
+                    email: ''
+                }, parseName(fromName))
+            ];
+        }
+
+        return fromDetails;
+    };
+
+    var getToDetails = function () {
+        var singleToContainer = '._1jt6';
+        // single recipient.
+        // link on messenger.com,
+        // hovercard on facebook.com.
+        var $to = document.querySelector(`
+            ${singleToContainer} a[href*="//www.facebook.com/"],
+            ${singleToContainer} a[data-hovercard]
+        `);
+        if ($to) {
+            var singleToName = ($to.innerText || '').trim();
+            return [
+                Object.assign({
+                    name: singleToName,
+                    first_name: '',
+                    last_name: '',
+                    email: ''
+                }, parseName(singleToName))
+            ];
+        }
+
+        // group
+        var $recipients = document.querySelectorAll('._364g');
+        if ($recipients.length) {
+            return Array.from($recipients).map(($person) => {
+                var toName = ($person.innerText || '').trim();
+                return Object.assign({
+                    name: toName,
+                    first_name: '',
+                    last_name: '',
+                    email: ''
+                }, parseName(toName));
+            });
+        }
+
+        return {};
+    };
+
     // get all required data from the dom
     var getData = function(params, callback) {
         var vars = {
-            from: [],
-            to: []
+            from: getFromDetails(),
+            to: getToDetails()
         };
-
-        var fromName = $('a[title="Profile"]').text();
-        var from = {
-            name: fromName,
-            first_name: fromName,
-            last_name: '',
-            email: ""
-        };
-        vars.from.push(from);
-
-        var contacts = $('input[name="text_participants[]"]');
-        if (contacts.length) {
-            contacts.each(function(i, contact){
-                var parsedName = parseName($(contact).val());
-                var to = {
-                    name: name,
-                    first_name: '',
-                    last_name: '',
-                    email: ''
-                };
-
-                to.first_name = parsedName.first_name;
-                to.last_name = parsedName.last_name;
-                vars.to.push(to);
-            });
-        } else {
-            var contact = $('.focusedTab .titlebarText');
-            if (contact.length) {
-                var parsedName = parseName(contact.text());
-                var to = {
-                    name: name,
-                    first_name: '',
-                    last_name: '',
-                    email: ''
-                };
-
-                to.first_name = parsedName.first_name;
-                to.last_name = parsedName.last_name;
-                vars.to.push(to);
-            }
-
-        }
 
         if(callback) {
             callback(null, vars);
         }
-
     };
 
     var before = function (params, callback) {
@@ -93,11 +121,15 @@ App.plugin('facebook', (function() {
     };
 
     var init = function(params, callback) {
-        var url = '.facebook.com/';
+        var facebookUrl = '.facebook.com/';
+        var messengerUrl = '.messenger.com/';
         var activateExtension = false;
 
         // trigger the extension based on url
-        if(window.location.href.indexOf(url) !== -1) {
+        if (
+            window.location.href.indexOf(facebookUrl) !== -1 ||
+            window.location.href.indexOf(messengerUrl) !== -1
+        ) {
             activateExtension = true;
         }
 
