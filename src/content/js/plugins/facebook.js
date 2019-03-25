@@ -20,9 +20,9 @@ App.plugin('facebook', (function() {
         };
     };
 
-    var fromDetails = null;
+    var fromDetails = [];
     var getFromDetails = function () {
-        if (!fromDetails) {
+        if (!fromDetails.length) {
             var objectMatch = new RegExp('{"USER_ID":.+?}');
             var plainUserObject = '';
             // get full name from inline script
@@ -88,7 +88,7 @@ App.plugin('facebook', (function() {
             });
         }
 
-        return {};
+        return [];
     };
 
     // get all required data from the dom
