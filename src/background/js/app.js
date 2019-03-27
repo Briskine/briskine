@@ -123,8 +123,8 @@ gApp.config(['$compileProvider', function ($compileProvider) {
 /* Global run
  */
 gApp.run(function ($rootScope) {
-    $rootScope.baseURL = Settings.defaults.baseURL;
-    $rootScope.apiBaseURL = Settings.defaults.apiBaseURL;
+    $rootScope.baseURL = Config.baseURL;
+    $rootScope.apiBaseURL = Config.apiBaseURL;
 });
 
 gApp.run(function ($rootScope, $location, $http, $timeout, ProfileService, SettingsService, TemplateService, SubscriptionService) {

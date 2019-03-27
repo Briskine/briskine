@@ -69,6 +69,10 @@ const dependencies = {
                 './src/background/js/utils/amplitude.js',
 
                 './src/common/*.js',
+
+                './src/store/plugin-api.js',
+                './src/store/store.js',
+
                 './src/background/js/**/*.js'
                 ],
                 css: [
@@ -88,6 +92,8 @@ const dependencies = {
                 'fuse.js/src/fuse.min.js',
 
                 './src/common/*.js',
+
+                './src/store/store-content.js',
 
                 // order is important here
                 './src/content/js/patterns.js',

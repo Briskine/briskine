@@ -176,8 +176,8 @@ module.exports = function (grunt) {
             ],
             options: {
                 multistr: true,
-                sub: true
-                //ignores: "src/content/js/gmailr.js"
+                sub: true,
+                esversion: 6
             }
         },
         concat: {

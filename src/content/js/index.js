@@ -145,12 +145,17 @@ var App = {
             );
         },
         fetchSettings: function(callback, doc, disablePlugins) {
-            Settings.get("settings", "", function(settings) {
+
+            store.getSettings({
+                key: 'settings'
+            }).then((settings) => {
                 callback(settings, doc, disablePlugins);
             });
         },
         isLoggedIn: function(callback) {
-            Settings.get("isLoggedIn", "", function(isLoggedIn) {
+            store.getSettings({
+                key: 'isLoggedIn'
+            }, function(isLoggedIn) {
                 callback(isLoggedIn);
             });
         }
