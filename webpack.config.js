@@ -91,6 +91,7 @@ const dependencies = {
                 'mousetrap/plugins/global-bind/mousetrap-global-bind.js',
                 'fuse.js/src/fuse.min.js',
 
+                './src/background/js/environment.js',
                 './src/common/*.js',
 
                 './src/store/store-content.js',
