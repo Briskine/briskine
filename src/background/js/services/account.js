@@ -1,19 +1,10 @@
 gApp.service('AccountService', function ($q, $resource, $rootScope) {
     var self = this;
 
-    var accResource = $resource($rootScope.apiBaseURL + 'account', {}, {
-      update: {
-          method: "PUT"
-      },
-      delete: {
-          method: "DELETE"
-      }
-    });
-
     self.get = function () {
         var deferred = $q.defer();
 
-        accResource.get(function (user) {
+        store.getAccount().then((user) => {
             self.user = user;
             deferred.resolve(user);
         });
@@ -23,13 +14,12 @@ gApp.service('AccountService', function ($q, $resource, $rootScope) {
 
     self.update = function (data) {
         var deferred = $q.defer();
-        var user = new accResource();
-        user.email = data.email;
-        user.name = data.info.name;
-        user.password = data.password;
-        user.share_all = data.info.share_all;
-
-        user.$update(function () {
+        store.setAccount({
+            email: data.email,
+            name: data.info.name,
+            password: data.password,
+            share_all: data.info.share_all
+        }).then(() => {
             deferred.resolve();
         });
         return deferred.promise;

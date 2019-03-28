@@ -230,7 +230,8 @@ gApp.run(function ($rootScope, $location, $http, $timeout, ProfileService, Setti
     };
 
     $rootScope.checkLoggedIn = function () {
-        $http.get($rootScope.apiBaseURL + 'login-info').success(function (data) {
+        store.getLoginInfo()
+        .then(function (data) {
             $rootScope.loginChecked = true;
             if (data.is_loggedin) {
                 $rootScope.isLoggedIn = true;
@@ -277,7 +278,7 @@ gApp.run(function ($rootScope, $location, $http, $timeout, ProfileService, Setti
                     SettingsService.set("isLoggedIn", false);
                 }
             });
-        }).error(function () {
+        }).catch(function () {
             var identify = new amplitude.Identify().set('$browser', browser).set('authenticated', false).set('user', {'email': $rootScope.userEmail});
             amplitude.getInstance().identify(identify);
             SettingsService.set("isLoggedIn", false);

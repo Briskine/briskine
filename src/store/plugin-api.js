@@ -1,5 +1,7 @@
 // TODO current adapter
 var _GORGIAS_API_PLUGIN = function () {
+    var apiBaseURL = Config.apiBaseURL;
+
     // Settings
     var _localStorageSettings = {
         get: function(key, def, callback) {
@@ -32,9 +34,8 @@ var _GORGIAS_API_PLUGIN = function () {
         get: function(key, def, callback) {
             chrome.storage.sync.get(key, function(data) {
                 if (
-                    chrome.runtime.lastError
-                    || _.isEmpty(data)
-                    || _.isEmpty(data[key])
+                    chrome.runtime.lastError ||
+                    _.isEmpty(data)
                 ) {
                     if (!def) {
                         return callback(Settings.defaults[key]);
@@ -49,6 +50,14 @@ var _GORGIAS_API_PLUGIN = function () {
         set: function(key, value, callback) {
             var data = {};
             data[key] = value;
+
+            // remove value/reset default
+            if (typeof value === 'undefined') {
+                chrome.storage.sync.remove(key, function() {
+                    return callback(data);
+                });
+                return;
+            }
 
             chrome.storage.sync.set(data, function() {
                 chrome.storage.sync.get(key, function(data) {
@@ -121,19 +130,43 @@ var _GORGIAS_API_PLUGIN = function () {
 
     var getSettings = function (params) {
         return new Promise((resolve, reject) => {
-            Settings.get(params.key, params.def, resolve)
-        })
-    }
+            Settings.get(params.key, params.def, resolve);
+        });
+    };
 
     var setSettings = function (params) {
         return new Promise((resolve, reject) => {
-            Settings.set(params.key, params.val, resolve)
-        })
-    }
+            Settings.set(params.key, params.val, resolve);
+        });
+    };
+
+    var getAccount = function (params) {
+        return fetch(`${apiBaseURL}account`)
+            .then((res) => res.json());
+    };
+
+    var setAccount = function (params) {
+        return fetch(`${apiBaseURL}account`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(params)
+        }).then((res) => res.json());
+    };
+
+    var getLoginInfo = function (params) {
+        return fetch(`${apiBaseURL}login-info`)
+            .then((res) => res.json());
+    };
 
     return {
         getSettings: getSettings,
-        setSettings: setSettings
-    }
+        setSettings: setSettings,
+
+        getLoginInfo: getLoginInfo,
+        getAccount: getAccount,
+        setAccount: setAccount,
+    };
 }();
 

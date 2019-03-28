@@ -22,8 +22,7 @@ gApp.service('SettingsService', function ($q) {
     self.reset = function () {
         var deferred = $q.defer();
         store.setSettings({
-            key: 'settings',
-            val: {}
+            key: 'settings'
         }).then(deferred.resolve);
         return deferred.promise;
     };
