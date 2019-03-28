@@ -246,7 +246,7 @@ gApp.run(function ($rootScope, $location, $http, $timeout, ProfileService, Setti
                         });
                     }
 
-                    $http.get($rootScope.apiBaseURL + "account").success(function (data) {
+                    store.getAccount().then(function (data) {
                         $rootScope.currentSubscription = data.current_subscription;
                         $rootScope.isCustomer = data.is_customer;
 

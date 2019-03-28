@@ -140,7 +140,7 @@ var _GORGIAS_API_PLUGIN = function () {
         });
     };
 
-    var getAccount = function (params) {
+    var getAccount = function () {
         return fetch(`${apiBaseURL}account`)
             .then((res) => res.json());
     };
@@ -155,9 +155,36 @@ var _GORGIAS_API_PLUGIN = function () {
         }).then((res) => res.json());
     };
 
-    var getLoginInfo = function (params) {
+    var getLoginInfo = function () {
         return fetch(`${apiBaseURL}login-info`)
             .then((res) => res.json());
+    };
+
+    var getMember = function (params = {}) {
+        var membersApiUrl = `${apiBaseURL}members`
+        if (params.memberId) {
+            membersApiUrl += `/${params.memberId}`
+        }
+
+        return fetch(membersApiUrl)
+            .then((res) => res.json());
+    };
+
+    var setMember = function (params = {}) {
+        var membersApiUrl = `${apiBaseURL}members`
+        var membersApiMethod = 'POST'
+        if (params.id) {
+            membersApiMethod = 'PUT'
+            membersApiUrl += `/${params.id}`
+        }
+
+        return fetch(membersApiUrl, {
+            method: membersApiMethod,
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(params)
+        }).then((res) => res.json());
     };
 
     return {
@@ -167,6 +194,9 @@ var _GORGIAS_API_PLUGIN = function () {
         getLoginInfo: getLoginInfo,
         getAccount: getAccount,
         setAccount: setAccount,
+
+        getMember: getMember,
+        setMember: setMember
     };
 }();
 
