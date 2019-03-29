@@ -65,6 +65,8 @@ gApp.service('MemberService', function ($q, $resource, $rootScope) {
     };
 });
 
+// TODO remove group functionality
+// it's only enabled for staff
 gApp.service('GroupService', function ($q, $resource, $rootScope) {
     var self = this;
     var groupResource = $resource($rootScope.apiBaseURL + 'groups/:groupId', {groupId: "@id"}, {

@@ -270,8 +270,6 @@ gApp.run(function ($rootScope, $location, $http, $timeout, ProfileService, Setti
                         amplitude.getInstance().identify(identify);
 
                     });
-                    // Once logged in start syncing
-                    $rootScope.SyncNow();
                 } else {
                     var identify = new amplitude.Identify().set('browser', browser).set('authenticated', false).set('user', {'email': $rootScope.userEmail});
                     amplitude.getInstance().identify(identify);
@@ -294,38 +292,6 @@ gApp.run(function ($rootScope, $location, $http, $timeout, ProfileService, Setti
             SettingsService.set('isLoggedIn', false).then(location.reload(true));
         });
     };
-
-    // last sync date
-    $rootScope.lastSync = TemplateService.lastSync;
-
-    $rootScope.SyncNow = function () {
-        var inList = $location.path().indexOf('/list') !== -1;
-        if (!inList) {
-            // only sync when in list
-            return;
-        }
-        SettingsService.get("isLoggedIn").then(function (isLoggedIn) {
-            if (!isLoggedIn) {
-                return;
-            }
-
-            TemplateService.sync().then(function (lastSync) {
-                console.log("Synced: ", new Date().toUTCString());
-                var waitForLocal = function () {
-                    $rootScope.$broadcast("templates-sync");
-                    $rootScope.lastSync = lastSync;
-                    TemplateService.syncLocal();
-                };
-                // wait a bit before doing the local sync
-                setTimeout(waitForLocal, 1000);
-            });
-        });
-    };
-
-    // Setup recurring syncing interval
-    var syncInterval = 30 * 1000;
-
-    window.setInterval($rootScope.SyncNow, syncInterval);
 
     // init dom plugins
     var initDom = function () {
