@@ -54,7 +54,6 @@ gApp.service('TemplateService', function ($q, $resource, $rootScope, SettingsSer
     self.quicktexts = function (limit) {
         var deferred = $q.defer();
         // get all keys
-//         TemplateStorage.get(null, function (res) {
         store.getTemplate().then(function (res) {
             var templates = [];
             for (var id in res) {
@@ -97,7 +96,6 @@ gApp.service('TemplateService', function ($q, $resource, $rootScope, SettingsSer
     // get template object given an id or null
     self.get = function (id) {
         var deferred = $q.defer();
-//         TemplateStorage.get(id, function (res) {
         store.getTemplate(id).then(function (res) {
             deferred.resolve(res[id]);
         });
@@ -140,7 +138,7 @@ gApp.service('TemplateService', function ($q, $resource, $rootScope, SettingsSer
     // delete all but don't delete from server
     self.deleteAll = function () {
         var deferred = $q.defer();
-        TemplateStorage.clear(function () {
+        store.clearLocalTemplates().then(() => {
             amplitude.getInstance().logEvent("Deleted all templates");
             deferred.resolve();
         });
@@ -190,9 +188,11 @@ gApp.service('TemplateService', function ($q, $resource, $rootScope, SettingsSer
             template.use_count++;
             template.lastuse_datetime = new Date().toISOString();
             data[template.id] = template;
-            TemplateStorage.set(data, function () {
-                deferred.resolve();
-            });
+            store.updateTemplate({
+                template: data,
+                synced: true,
+                onlyLocal: true
+            }).then(deferred.resolve);
         });
         return deferred.promise;
     };

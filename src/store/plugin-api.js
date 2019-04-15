@@ -394,6 +394,12 @@ var _GORGIAS_API_PLUGIN = function () {
         });
     };
 
+    var clearLocalTemplates = function () {
+        return new Promise((resolve, reject) => {
+            TemplateStorage.clear(resolve);
+        })
+    };
+
     // given a string with tags give a clean list
     // remove spaces, duplicates and so on
     var _clean_tags = function (tags) {
@@ -688,6 +694,7 @@ var _GORGIAS_API_PLUGIN = function () {
         updateTemplate: updateTemplate,
         createTemplate: createTemplate,
         deleteTemplate: deleteTemplate,
+        clearLocalTemplates: clearLocalTemplates
     };
 }();
 
