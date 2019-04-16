@@ -717,6 +717,24 @@ var _GORGIAS_API_PLUGIN = function () {
         .then((res) => res.json());
     };
 
+    var getStats = function () {
+        return fetch(`${apiBaseURL}templates/stats`)
+            .then(handleErrors)
+            .then((res) => res.json());
+    };
+
+    var updateStats = function (params = {}) {
+        return fetch(`${apiBaseURL}templates/stats`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(params)
+        })
+        .then(handleErrors)
+        .then((res) => res.json());
+    };
+
     return {
         getSettings: getSettings,
         setSettings: setSettings,
@@ -735,7 +753,10 @@ var _GORGIAS_API_PLUGIN = function () {
         clearLocalTemplates: clearLocalTemplates,
 
         getSharing: getSharing,
-        updateSharing: updateSharing
+        updateSharing: updateSharing,
+
+        getStats: getStats,
+        updateStats: updateStats
     };
 }();
 

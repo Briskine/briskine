@@ -1,4 +1,4 @@
-gApp.service('AccountService', function ($q, $resource, $rootScope) {
+gApp.service('AccountService', function ($q, $rootScope) {
     var self = this;
 
     self.get = function () {
@@ -26,7 +26,7 @@ gApp.service('AccountService', function ($q, $resource, $rootScope) {
     };
 });
 
-gApp.service('MemberService', function ($q, $resource, $rootScope) {
+gApp.service('MemberService', function ($q, $rootScope) {
     var self = this;
 
     self.members = function () {

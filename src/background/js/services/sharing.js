@@ -1,4 +1,4 @@
-gApp.service('QuicktextSharingService', function($q, $resource, $rootScope) {
+gApp.service('QuicktextSharingService', function($q, $rootScope) {
     var self = this;
 
     // get quicktext's ACL given an id or null
