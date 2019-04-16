@@ -155,8 +155,16 @@ var _GORGIAS_API_PLUGIN = function () {
         });
     };
 
+    var handleErrors = function (response) {
+        if (!response.ok) {
+            throw Error(response.statusText);
+        }
+        return response;
+    };
+
     var getAccount = function () {
         return fetch(`${apiBaseURL}account`)
+            .then(handleErrors)
             .then((res) => res.json());
     };
 
@@ -167,11 +175,14 @@ var _GORGIAS_API_PLUGIN = function () {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(params)
-        }).then((res) => res.json());
+        })
+        .then(handleErrors)
+        .then((res) => res.json());
     };
 
     var getLoginInfo = function () {
         return fetch(`${apiBaseURL}login-info`)
+            .then(handleErrors)
             .then((res) => res.json());
     };
 
@@ -182,6 +193,7 @@ var _GORGIAS_API_PLUGIN = function () {
         }
 
         return fetch(membersApiUrl)
+            .then(handleErrors)
             .then((res) => res.json());
     };
 
@@ -199,7 +211,9 @@ var _GORGIAS_API_PLUGIN = function () {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(params)
-        }).then((res) => res.json());
+        })
+        .then(handleErrors)
+        .then((res) => res.json());
     };
 
     var getTemplate = function (id) {
@@ -215,6 +229,7 @@ var _GORGIAS_API_PLUGIN = function () {
         }
 
         return fetch(quicktextsApiUrl)
+            .then(handleErrors)
             .then((res) => res.json());
     };
 
@@ -650,7 +665,6 @@ var _GORGIAS_API_PLUGIN = function () {
 //             return;
 //         }
 
-        // TODO move this to plugin
         return getSettings({
             key: 'isLoggedIn'
         }).then(function (isLoggedIn) {
@@ -679,6 +693,30 @@ var _GORGIAS_API_PLUGIN = function () {
     window.setInterval(SyncNow, syncInterval);
     SyncNow();
 
+    var getSharing = function (params = {}) {
+        return fetch(`${apiBaseURL}share`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(params)
+        })
+        .then(handleErrors)
+        .then((res) => res.json());
+    };
+
+    var updateSharing = function (params = {}) {
+        return fetch(`${apiBaseURL}share`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(params)
+        })
+        .then(handleErrors)
+        .then((res) => res.json());
+    };
+
     return {
         getSettings: getSettings,
         setSettings: setSettings,
@@ -694,7 +732,10 @@ var _GORGIAS_API_PLUGIN = function () {
         updateTemplate: updateTemplate,
         createTemplate: createTemplate,
         deleteTemplate: deleteTemplate,
-        clearLocalTemplates: clearLocalTemplates
+        clearLocalTemplates: clearLocalTemplates,
+
+        getSharing: getSharing,
+        updateSharing: updateSharing
     };
 }();
 

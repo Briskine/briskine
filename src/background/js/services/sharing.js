@@ -1,41 +1,22 @@
 gApp.service('QuicktextSharingService', function($q, $resource, $rootScope) {
     var self = this;
 
-    self.res = $resource($rootScope.apiBaseURL + 'share', {}, {
-        post: {
-            method: "POST"
-        },
-        update: {
-            method: "PUT"
-        },
-        revoke: {
-            method: "DELETE"
-        }
-    });
-
     // get quicktext's ACL given an id or null
     self.get = function(id) {
         var deferred = $q.defer();
-
-        var sharing = new self.res();
-        sharing.quicktext_ids = [id];
-
-        sharing.$post(function(acl) {
-            deferred.resolve(acl);
-        });
-
+        store.getSharing({
+            quicktext_ids: [id]
+        }).then(deferred.resolve);
         return deferred.promise;
     };
 
     self.list = function(qtList) {
         var deferred = $q.defer();
-        var acls = new self.res();
-
-        acls.quicktext_ids = _.map(qtList, function(qt){
-            return qt.remote_id;
-        });
-
-        acls.$post(function(result){
+        store.getSharing({
+            quicktext_ids: _.map(qtList, function(qt) {
+                return qt.remote_id;
+            })
+        }).then((result) => {
             deferred.resolve(result.acl);
         });
         return deferred.promise;
@@ -61,11 +42,11 @@ gApp.service('QuicktextSharingService', function($q, $resource, $rootScope) {
             data.quicktexts[q.remote_id].permission = permission;
         });
 
-        var acls = new self.res();
-        acls.acl = data;
-        acls.action = 'create';
-        acls.send_email = send_email;
-        acls.$update(function(res){
+        store.updateSharing({
+            acl: data,
+            action: 'create',
+            send_email: send_email
+        }).then((res) => {
             amplitude.getInstance().logEvent('Shared Quicktext');
             deferred.resolve(res);
         });
@@ -75,15 +56,15 @@ gApp.service('QuicktextSharingService', function($q, $resource, $rootScope) {
     // delete sharing for a list of quicktexts for a given target user
     self.delete = function(qtList, userId) {
         var deferred = $q.defer();
-        var acls = new self.res();
-        acls.acl = {
-            quicktext_ids: _.map(qtList, function(qt){
-                return qt.remote_id;
-            }),
-            user_id: userId
-        };
-        acls.action = 'delete';
-        acls.$update(function(){
+        store.updateSharing({
+            action: 'delete',
+            acl: {
+                quicktext_ids: _.map(qtList, function(qt){
+                    return qt.remote_id;
+                }),
+                user_id: userId
+            }
+        }).then(() => {
             amplitude.getInstance().logEvent('Deleted Quicktext Sharing');
             deferred.resolve();
         });
