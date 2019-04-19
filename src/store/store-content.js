@@ -13,7 +13,8 @@ var store = function () {
 
     var methods = [
         'getSettings',
-        'setSettings'
+        'setSettings',
+        'getTemplate'
     ];
     var contentStore = {};
     methods.forEach((method) => {
