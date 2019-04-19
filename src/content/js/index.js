@@ -20,8 +20,6 @@ var App = {
         // Get template filtered out by shortcut
         getQuicktextsShortcut: function(text, callback) {
             store.getTemplate().then((templates) => {
-                console.log(templates)
-
                 for (var id in templates) {
                     var t = templates[id];
                     if (t.deleted === 0 && t.shortcut === text) {
@@ -140,7 +138,7 @@ var App = {
         },
         stats: function(key, val, callback) {
             chrome.runtime.sendMessage(
-                { request: "stats", key: key, val: val },
+                { request: 'stats', key: key, val: val },
                 function(response) {
                     callback(response);
                 }

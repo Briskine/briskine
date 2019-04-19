@@ -97,34 +97,31 @@ if (chrome.runtime) {
         }
     });
 
-
-    if (!chrome.runtime.onMessage.hasListeners()) {
-        chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
-            var injector = angularInjector();
-            var settingsService = injector.get('SettingsService');
-            if (request.request === 'stats') {
-                if (request.key === 'words') {
-                    var words = parseInt(request.val, 10);
-                    settingsService.get("words").then(function (oldWords) {
-                        settingsService.set("words", oldWords + words);
-                    });
-                }
-                sendResponse(true);
+    chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
+        var injector = angularInjector();
+        var settingsService = injector.get('SettingsService');
+        if (request.request === 'stats') {
+            if (request.key === 'words') {
+                var words = parseInt(request.val, 10);
+                settingsService.get("words").then(function (oldWords) {
+                    settingsService.set("words", oldWords + words);
+                });
             }
-            // Open new template window
-            if (request.request === 'new') {
-                window.open(chrome.extension.getURL('/pages/options.html') + '#/list?id=new&src=qa-button', 'New Template');
+            sendResponse(true);
+        }
+        // Open new template window
+        if (request.request === 'new') {
+            window.open(chrome.extension.getURL('/pages/options.html') + '#/list?id=new&src=qa-button', 'New Template');
+        }
+        if (request.request === 'launchGorgias') {
+            window.open(chrome.extension.getURL('/pages/options.html') + '#/list');
+        }
+        if (request.request === 'track') {
+            if (request.event === "Inserted template") {
+                injector.get('TemplateService').used(request.data.id);
             }
-            if (request.request === 'launchGorgias') {
-                window.open(chrome.extension.getURL('/pages/options.html') + '#/list');
-            }
-            if (request.request === 'track') {
-                if (request.event === "Inserted template") {
-                    injector.get('TemplateService').used(request.data.id);
-                }
-                amplitude.getInstance().logEvent(request.event, request.data);
-            }
-            return true;
-        });
-    }
+            amplitude.getInstance().logEvent(request.event, request.data);
+        }
+        return true;
+    });
 }
