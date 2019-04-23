@@ -767,6 +767,12 @@ var _GORGIAS_API_PLUGIN = function () {
         .then((res) => res.json());
     };
 
+    var getPlans = function (params = {}) {
+        return fetch(`${apiBaseURL}plans/startup`)
+            .then(handleErrors)
+            .then((res) => res.json());
+    };
+
     return {
         getSettings: getSettings,
         setSettings: setSettings,
@@ -790,6 +796,7 @@ var _GORGIAS_API_PLUGIN = function () {
         getStats: getStats,
         updateStats: updateStats,
 
+        getPlans: getPlans,
         getSubscription: getSubscription,
         updateSubscription: updateSubscription,
         cancelSubscription: cancelSubscription

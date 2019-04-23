@@ -95,25 +95,6 @@ gApp.controller('SubscriptionsCtrl', function ($scope, $rootScope, $routeParams,
         });
     };
 
-    $scope.addDiscountCode = function (discountCode) {
-        var deferred = $q.defer();
-        if (!discountCode) {
-            alert("Please enter discount code");
-            return;
-        }
-
-        // just check that the coupon exists in Stripe
-        SubscriptionService.addCoupon(discountCode, function (coupon) {
-            $scope.discountCode = discountCode;
-            if (coupon && coupon.percent_off && coupon.valid) {
-                $scope.couponPrecentOffLabel = "-" + coupon.percent_off + "%";
-                $scope.couponPrecentOff = (100 - coupon.percent_off) / 100;
-            }
-            deferred.resolve();
-        });
-        return deferred.promise;
-    };
-
     $scope.cancelSubscription = function() {
         cancelConfirm = window.confirm('Are you sure you want to cancel and delete all your template backups?')
         if (cancelConfirm === true) {

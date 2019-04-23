@@ -1,13 +1,9 @@
-gApp.service('SubscriptionService', function ($q, $resource, $rootScope) {
+gApp.service('SubscriptionService', function ($q, $rootScope) {
     var self = this
-    var couponResource = $resource($rootScope.apiBaseURL + 'coupons')
-    var planResource = $resource($rootScope.apiBaseURL + 'plans/startup')
 
     self.plans = function () {
         var deferred = $q.defer()
-        var planData = planResource.get(function () {
-            deferred.resolve(planData)
-        });
+        store.getPlans().then(deferred.resolve);
         return deferred.promise;
     }
 
@@ -29,13 +25,6 @@ gApp.service('SubscriptionService', function ($q, $resource, $rootScope) {
             });
         });
         return deferred.promise;
-    }
-
-
-    self.addCoupon = function (code, success, failure) {
-        var coupon = new couponResource()
-        coupon.code = code
-        coupon.$save(success, failure)
     }
 
     self.getActiveSubscription = function () {
