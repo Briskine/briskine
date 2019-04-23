@@ -689,6 +689,7 @@ var _GORGIAS_API_PLUGIN = function () {
     };
 
     // Setup recurring syncing interval
+    // TODO only sync on templates page
     var syncInterval = 30 * 1000;
     window.setInterval(SyncNow, syncInterval);
     SyncNow();
@@ -735,6 +736,37 @@ var _GORGIAS_API_PLUGIN = function () {
         .then((res) => res.json());
     };
 
+    var getSubscription = function (params = {}) {
+        var subscriptionsApiUrl = `${apiBaseURL}subscriptions`
+        if (params.subId) {
+            subscriptionsApiUrl += `/${params.subId}`
+        }
+
+        return fetch(subscriptionsApiUrl)
+            .then(handleErrors)
+            .then((res) => res.json());
+    };
+
+    var updateSubscription = function (params = {}) {
+        return fetch(`${apiBaseURL}subscriptions/${params.id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(params)
+        })
+        .then(handleErrors)
+        .then((res) => res.json());
+    };
+
+    var cancelSubscription = function (params = {}) {
+        return fetch(`${apiBaseURL}subscriptions`, {
+            method: 'DELETE'
+        })
+        .then(handleErrors)
+        .then((res) => res.json());
+    };
+
     return {
         getSettings: getSettings,
         setSettings: setSettings,
@@ -756,7 +788,11 @@ var _GORGIAS_API_PLUGIN = function () {
         updateSharing: updateSharing,
 
         getStats: getStats,
-        updateStats: updateStats
+        updateStats: updateStats,
+
+        getSubscription: getSubscription,
+        updateSubscription: updateSubscription,
+        cancelSubscription: cancelSubscription
     };
 }();
 

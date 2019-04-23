@@ -1,9 +1,5 @@
 gApp.service('SubscriptionService', function ($q, $resource, $rootScope) {
     var self = this
-    var subResource = $resource($rootScope.apiBaseURL + 'subscriptions/:subId',
-        {subId: "@id"},
-        {update: {method: 'PUT', isArray: false}}
-    )
     var couponResource = $resource($rootScope.apiBaseURL + 'coupons')
     var planResource = $resource($rootScope.apiBaseURL + 'plans/startup')
 
@@ -11,31 +7,28 @@ gApp.service('SubscriptionService', function ($q, $resource, $rootScope) {
         var deferred = $q.defer()
         var planData = planResource.get(function () {
             deferred.resolve(planData)
-        })
-        return deferred.promise
+        });
+        return deferred.promise;
     }
 
     self.subscriptions = function () {
-        var deferred = $q.defer()
-        var subscriptions = subResource.query(function () {
-            deferred.resolve(subscriptions)
-        })
-        return deferred.promise
+        var deferred = $q.defer();
+        store.getSubscription().then(deferred.resolve);
+        return deferred.promise;
     }
 
     // Update active subscription
     self.updateSubscription = function (subId, params) {
         var deferred = $q.defer()
-
-        subResource.get({subId: subId}, function (sub) {
+        store.getSubscription({subId: subId}).then(function (sub) {
             sub = _.extend(sub, params)
-            sub.$update(function (res) {
-                deferred.resolve(res.msg)
-            }, function (res) {
-                deferred.reject(res.data.msg)
-            })
-        })
-        return deferred.promise
+            store.updateSubscription(sub).then((res) => {
+                deferred.resolve(res.msg);
+            }).catch((res) => {
+                deferred.reject(res.msg);
+            });
+        });
+        return deferred.promise;
     }
 
 
@@ -61,15 +54,9 @@ gApp.service('SubscriptionService', function ($q, $resource, $rootScope) {
     // cancel subscription
     self.cancelSubscription = function () {
         var deferred = $q.defer()
-
-        subResource.delete(function (sub) {
-            sub.$delete(function () {
-                deferred.resolve()
-            }, function () {
-                deferred.reject()
-            })
-        })
-
+        store.cancelSubscription()
+            .then(deferred.resolve)
+            .catch(deferred.reject);
         return deferred.promise
     }
 })
