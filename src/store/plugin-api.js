@@ -1,4 +1,4 @@
-// TODO current adapter
+// chrome.gorgias.io API plugin
 var _GORGIAS_API_PLUGIN = function () {
     var apiBaseURL = Config.apiBaseURL;
 
@@ -272,33 +272,25 @@ var _GORGIAS_API_PLUGIN = function () {
                     }
 
                     if (!t.remote_id) {
-                        var remote = new self.qRes();
-                        remote = self._copy(t, remote);
-                        // TODO post on remote
-                        remote.$save(function (res) {
+                        var remote = _copy(t, {});
+                        return createTemplate({template: remote}).then((res) => {
                             t.remote_id = res.id;
                             t.sync_datetime = new Date().toISOString();
 
                             var data = {};
                             data[t.id] = t;
-                            TemplateStorage.set(data, function () {
-                                resolve();                            });
+                            TemplateStorage.set(data, resolve);
                         });
-                        resolve();
                     } else {
-                        queryTemplates({
+                        return queryTemplates({
                             quicktextId: t.remote_id
                         }).then(function (remote) {
-//                         self.qRes.get({quicktextId: t.remote_id}, function (remote) {
-                            remote = self._copy(t, remote);
-                            // TODO put on remote
-                            remote.$update(function () {
+                            remote = _copy(t, remote);
+                            return updateTemplate({template: remote}).then(() => {
                                 t.sync_datetime = new Date().toISOString();
                                 var data = {};
                                 data[t.id] = t;
-                                TemplateStorage.set(data, function () {
-                                    resolve();
-                                });
+                                TemplateStorage.set(data, resolve);
                             });
                         });
                     }
@@ -343,10 +335,8 @@ var _GORGIAS_API_PLUGIN = function () {
                         "body_size": t.body.length,
                         "private": t.private
                     });
-
                 }
 
-//                 SettingsService.get("isLoggedIn").then(function (isLoggedIn) {
                 getSettings({
                     key: 'isLoggedIn'
                 }).then(function (isLoggedIn) {
@@ -354,14 +344,10 @@ var _GORGIAS_API_PLUGIN = function () {
                         return resolve();
                     }
 
-//                     var remote = new self.qRes();
-                    var remote = {};
-//                     remote = self._copy(t, remote);
-                    remote = _copy(t, remote);
+                    var remote = _copy(t, {});
                     // make sure we don't have a remote_id (it's a new template sow there should not be any remote_id)
                     remote.remote_id = '';
-                    // TODO create on remote
-                    remote.$save(function (remote) {
+                    createTemplate({template: remote}).then((remote) => {
                         // once it's saved server side, store the remote_id in the database
                         t.remote_id = remote.id;
                         t.sync_datetime = new Date().toISOString();
@@ -391,17 +377,15 @@ var _GORGIAS_API_PLUGIN = function () {
                     if (!onlyLocal) {
                         amplitude.getInstance().logEvent("Deleted template");
                     }
-                    self.qRes.get({quicktextId: t.remote_id}, function (remote) {
+                    createTemplate({quicktextId: t.remote_id}).then(function (remote) {
                         // make sure we have the remote id otherwise the delete will not find the right resource
                         remote.remote_id = remote.id;
-                        remote.$delete(function () {
+                        deleteTemplate({template: remote}).then(() => {
                             // Do a local "DELETE" only if deleted remotely.
                             // If remote operation fails, try again when syncing.
                             //
                             // NOTE: We delete locally to save space.
-                            TemplateStorage.remove(t.id, function () {
-                                resolve();
-                            });
+                            TemplateStorage.remove(t.id, resolve);
                         });
                     });
                 });
@@ -455,17 +439,13 @@ var _GORGIAS_API_PLUGIN = function () {
      */
     var lastSync = null;
     var syncRemote = function () {
-//         var deferred = $q.defer();
-
         // Get the new or updated templates from the remote server
-//         self.qRes.query(
         return queryTemplates().then(function (remoteTemplates) {
             var now = new Date().toISOString();
 
             var localSeen = [];
             var remoteSeen = [];
 
-//             TemplateStorage.get(null, function (localTemplates) {
             store.getTemplate().then(function (localTemplates) {
                 for (var id in localTemplates) {
                     var t = localTemplates[id];
@@ -509,7 +489,8 @@ var _GORGIAS_API_PLUGIN = function () {
                         localTemplate.sync_datetime = now;
 
                         createTemplate({
-                            template: localTemplate, onlyLocal: true
+                            template: localTemplate,
+                            onlyLocal: true
                         });
                     }
                 });
@@ -529,12 +510,9 @@ var _GORGIAS_API_PLUGIN = function () {
                     });
                 });
                 lastSync = new Date();
-//                 deferred.resolve(lastSync);
                 return lastSync
             });
         });
-
-//         return deferred.promise;
     };
 
     /**
@@ -545,154 +523,126 @@ var _GORGIAS_API_PLUGIN = function () {
      *
      */
     var syncLocal = function () {
-//         SettingsService.get("isLoggedIn").then(function (isLoggedIn) {
-//             if (!isLoggedIn) {
-//                 return;
-//             }
+        // Handling all local templates
+        return store.getTemplate().then(function (templates) {
+            for (var id in templates) {
+                var t = templates[id];
+                if (t === null || t.nosync !== 0) {
+                    continue;
+                }
 
-            // Handling all local templates
-//             TemplateStorage.get(null, function (templates) {
-            return store.getTemplate().then(function (templates) {
-                for (var id in templates) {
-                    var t = templates[id];
-                    if (t === null || t.nosync !== 0) {
+                // no remote_id means that it's local only and we have to sync it with the remote sync service
+                if (!t.remote_id) {
+                    // skipping deleted templates - there should not be any.. but ok.
+                    if (t.deleted === 1) {
                         continue;
                     }
 
-                    // no remote_id means that it's local only and we have to sync it with the remote sync service
-                    if (!t.remote_id) {
-                        // skipping deleted templates - there should not be any.. but ok.
-                        if (t.deleted === 1) {
-                            continue;
-                        }
+                    var tRemote = _copy(angular.copy(t), {});
 
-                        var tRemote = new self.qRes();
-                        tRemote = _copy(angular.copy(t), tRemote);
+                    // create new template on the server
+                    var save = function (ut) {
+                        // we're in a for loop so we need this closure here because the `t` var will be overridden
+                        // before the remote request is finished
+                        return function (res) {
+                            ut.remote_id = res.id;
+                            ut.sync_datetime = new Date().toISOString();
 
-                        // create new template on the server
-                        var save = function (ut) {
-                            // we're in a for loop so we need this closure here because the `t` var will be overridden
-                            // before the remote request is finished
-                            return function (res) {
-                                ut.remote_id = res.id;
-                                ut.sync_datetime = new Date().toISOString();
-
-                                var data = {};
-                                data[ut.id] = ut;
-//                                 self.update(ut, true);
-                                updateTemplate({
-                                    template: ut,
-                                    onlyLocal: true
-                                });
-                            };
+                            var data = {};
+                            data[ut.id] = ut;
+                            updateTemplate({
+                                template: ut,
+                                onlyLocal: true
+                            });
                         };
-                        tRemote.$save(save(angular.copy(t)));
-                    } else { // was synced at some point
-                        // if it's deleted locally, delete it remotely and then delete it completely
-                        if (t.deleted === 1) {
-                            var deleted = function (ut) {
-                                return function (remote) {
-                                    remote.remote_id = ut.remote_id;
-                                    remote.$delete(function () {
-                                        TemplateStorage.remove(ut.id);
-                                    });
-                                }
-                            };
-                            self.qRes.get({quicktextId: t.remote_id}, deleted(angular.copy(t)));
-                        } else if (t.updated_datetime) { // only if we have an updated_datetime
-                            if (!t.sync_datetime || new Date(t.sync_datetime) < new Date(t.updated_datetime)) {
-                                var update = function (ut) {
-                                    // we're in a for loop so we need this closure here because the `t` var will be overridden
-                                    // before the remote request is finished
-                                    return function (remote) {
-                                        remote = _copy(ut, remote);
-                                        remote.$update(function () {
-                                            ut.sync_datetime = new Date().toISOString();
-                                            var data = {};
-                                            data[ut.id] = ut;
-                                            TemplateStorage.set(data);
-                                        });
-                                    };
-                                };
-                                // template was updated locally, not synced yet
-//                                 self.qRes.get({quicktextId: t.remote_id}, update(angular.copy(t)));
-                                queryTemplates({
-                                    quicktextId: t.remote_id
+                    };
+                    createTemplate({
+                        template: tRemote
+                    }).then(save(angular.copy(t)));
+                } else { // was synced at some point
+                    // if it's deleted locally, delete it remotely and then delete it completely
+                    if (t.deleted === 1) {
+                        var deleted = function (ut) {
+                            return function (remote) {
+                                remote.remote_id = ut.remote_id;
+                                deleteTemplate({
+                                    template: remote
                                 }).then(() => {
-                                    update(Object.assign({}, t))
+                                    TemplateStorage.remove(ut.id);
                                 });
                             }
-                        }
-
-                        // send stats to server if we templates used
-                        if (t.use_count) { // if we have a use_count, then we can update the stats on the server.
-                            var stat = new self.statsRes();
-                            stat.quicktext_id = t.remote_id;
-                            stat.key = 'use_count';
-                            stat.value = t.use_count;
-
-                            // we need this closure to make sure we don't duplicate the same template
-                            var save = function (ut) {
-                                return function () {
-                                    ut.use_count = 0;
-                                    var data = {};
-                                    data[ut.id] = ut;
-                                    TemplateStorage.set(data, function () {
+                        };
+                        queryTemplates({
+                            quicktextId: t.remote_id
+                        }).then(deleted(angular.copy(t)));
+                    } else if (t.updated_datetime) { // only if we have an updated_datetime
+                        if (!t.sync_datetime || new Date(t.sync_datetime) < new Date(t.updated_datetime)) {
+                            var update = function (ut) {
+                                // we're in a for loop so we need this closure here because the `t` var will be overridden
+                                // before the remote request is finished
+                                return function (remote) {
+                                    remote = _copy(ut, remote);
+                                    updateTemplate({
+                                        template: remote
+                                    }).then(() => {
+                                        ut.sync_datetime = new Date().toISOString();
+                                        var data = {};
+                                        data[ut.id] = ut;
+                                        TemplateStorage.set(data);
                                     });
-                                }
+                                };
                             };
-                            stat.$save(save(angular.copy(t)));
+                            // template was updated locally, not synced yet
+                            queryTemplates({
+                                quicktextId: t.remote_id
+                            }).then(update(Object.assign({}, t)));
                         }
                     }
+
+                    // send stats to server if we templates used
+                    if (t.use_count) { // if we have a use_count, then we can update the stats on the server.
+                        // we need this closure to make sure we don't duplicate the same template
+                        var save = function (ut) {
+                            return function () {
+                                ut.use_count = 0;
+                                var data = {};
+                                data[ut.id] = ut;
+                                TemplateStorage.set(data, function () {});
+                            }
+                        };
+
+                        updateStats({
+                            quicktext_id: t.remote_id,
+                            key: 'use_count',
+                            value: t.use_count
+                        }).then(save(angular.copy(t)))
+                    }
                 }
+            }
 
-                lastSync = new Date();
-                return lastSync;
-
-//                 self.lastSync = new Date();
-//                 if (callback) {
-//                     callback(self.lastSync);
-//                 }
-            });
-
-//         });
+            lastSync = new Date();
+            return lastSync;
+        });
     };
 
-    var SyncNow = function () {
-//         var inList = $location.path().indexOf('/list') !== -1;
-//         if (!inList) {
-//             // only sync when in list
-//             return;
-//         }
+    var syncNow = function () {
+        var hash = window.location.hash;
+        var inList = hash.indexOf('/list') !== -1;
+        if (!inList) {
+            // only sync when in list
+            return Promise.reject();
+        }
 
         return getSettings({
             key: 'isLoggedIn'
         }).then(function (isLoggedIn) {
             // bail if not logged-in
             if (!isLoggedIn) {
-                return;
+                return Promise.reject();
             }
-
-            // TODO different change event from plugin
-            syncRemote().then(function (lastSync) {
-                console.log('Synced: ', new Date().toUTCString());
-                var waitForLocal = function () {
-                    // TODO change event to app
-//                     $rootScope.$broadcast("templates-sync");
-//                     TemplateService.syncLocal();
-                    syncLocal();
-                };
-                // wait a bit before doing the local sync
-                setTimeout(waitForLocal, 1000);
-            });
+            return syncRemote()
         });
     };
-
-    // Setup recurring syncing interval
-    // TODO only sync on templates page
-    var syncInterval = 30 * 1000;
-    window.setInterval(SyncNow, syncInterval);
-    SyncNow();
 
     var getSharing = function (params = {}) {
         return fetch(`${apiBaseURL}share`, {
@@ -799,7 +749,10 @@ var _GORGIAS_API_PLUGIN = function () {
         getPlans: getPlans,
         getSubscription: getSubscription,
         updateSubscription: updateSubscription,
-        cancelSubscription: cancelSubscription
+        cancelSubscription: cancelSubscription,
+
+        syncNow: syncNow,
+        syncLocal: syncLocal
     };
 }();
 
