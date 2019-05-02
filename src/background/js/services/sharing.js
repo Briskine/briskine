@@ -10,10 +10,10 @@ gApp.service('QuicktextSharingService', function($q, $rootScope) {
         return deferred.promise;
     };
 
-    self.list = function(qtList) {
+    self.list = function(qtList = []) {
         var deferred = $q.defer();
         store.getSharing({
-            quicktext_ids: _.map(qtList, function(qt) {
+            quicktext_ids: qtList.filter((qt) => !!qt.remote_id).map(function(qt) {
                 return qt.remote_id;
             })
         }).then((result) => {

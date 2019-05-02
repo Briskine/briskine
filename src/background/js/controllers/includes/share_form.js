@@ -11,7 +11,7 @@ gApp.controller('ShareFormCtrl',
                     $scope.revokeAccess(quicktexts, acl.target_user_id);
                 }
             });
-            $rootScope.SyncNow();
+            store.syncNow();
         };
 
         self.revokeAccess = function(quicktexts, target_user_id) {

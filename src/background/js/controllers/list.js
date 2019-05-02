@@ -210,7 +210,7 @@ gApp.controller('ListCtrl',
                     $scope.shareData.emails = "";
                     $scope.shareModalSelectizeField[0].selectize.clear();
                     $scope.templateModalSelectizeField[0].selectize.clear();
-                    $rootScope.SyncNow();
+                    store.syncNow();
                 });
             };
 

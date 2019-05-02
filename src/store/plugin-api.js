@@ -233,6 +233,17 @@ var _GORGIAS_API_PLUGIN = function () {
             .then((res) => res.json());
     };
 
+    var updateRemoteTemplate = function (remote = {}) {
+        return fetch(`${apiBaseURL}quicktexts/${remote.remote_id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(remote)
+        })
+        .then(handleErrors)
+    };
+
     var updateTemplate = function (params = {}) {
         var t = params.template;
         var synced = params.synced;
@@ -273,7 +284,7 @@ var _GORGIAS_API_PLUGIN = function () {
 
                     if (!t.remote_id) {
                         var remote = _copy(t, {});
-                        return createTemplate({template: remote}).then((res) => {
+                        return createRemoteTemplate(remote).then((res) => {
                             t.remote_id = res.id;
                             t.sync_datetime = new Date().toISOString();
 
@@ -286,17 +297,29 @@ var _GORGIAS_API_PLUGIN = function () {
                             quicktextId: t.remote_id
                         }).then(function (remote) {
                             remote = _copy(t, remote);
-                            return updateTemplate({template: remote}).then(() => {
-                                t.sync_datetime = new Date().toISOString();
-                                var data = {};
-                                data[t.id] = t;
-                                TemplateStorage.set(data, resolve);
-                            });
+                            return updateRemoteTemplate(remote)
+                                .then(() => {
+                                    t.sync_datetime = new Date().toISOString();
+                                    var data = {};
+                                    data[t.id] = t;
+                                    TemplateStorage.set(data, resolve);
+                                });
                         });
                     }
                 });
             });
         });
+    };
+
+    var createRemoteTemplate = function (remote = {}) {
+        return fetch(`${apiBaseURL}quicktexts`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(remote)
+        })
+        .then(handleErrors)
     };
 
     var createTemplate = function (params = {}) {
@@ -347,7 +370,9 @@ var _GORGIAS_API_PLUGIN = function () {
                     var remote = _copy(t, {});
                     // make sure we don't have a remote_id (it's a new template sow there should not be any remote_id)
                     remote.remote_id = '';
-                    createTemplate({template: remote}).then((remote) => {
+                    createRemoteTemplate(remote)
+                    .then((res) => {
+                        var remote = res.json();
                         // once it's saved server side, store the remote_id in the database
                         t.remote_id = remote.id;
                         t.sync_datetime = new Date().toISOString();
@@ -358,6 +383,17 @@ var _GORGIAS_API_PLUGIN = function () {
                 });
             });
         });
+    };
+
+    var deleteRemoteTemplate = function (remote) {
+        return fetch(`${apiBaseURL}quicktexts/${remote.remote_id}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(remote)
+        })
+        .then(handleErrors)
     };
 
     var deleteTemplate = function (params = {}) {
@@ -377,10 +413,13 @@ var _GORGIAS_API_PLUGIN = function () {
                     if (!onlyLocal) {
                         amplitude.getInstance().logEvent("Deleted template");
                     }
-                    createTemplate({quicktextId: t.remote_id}).then(function (remote) {
+                    queryTemplates({
+                        quicktextId: t.remote_id
+                    }).then(function (remote) {
                         // make sure we have the remote id otherwise the delete will not find the right resource
                         remote.remote_id = remote.id;
-                        deleteTemplate({template: remote}).then(() => {
+                        deleteRemoteTemplate(remote)
+                        .then(() => {
                             // Do a local "DELETE" only if deleted remotely.
                             // If remote operation fails, try again when syncing.
                             //
@@ -446,13 +485,15 @@ var _GORGIAS_API_PLUGIN = function () {
             var localSeen = [];
             var remoteSeen = [];
 
-            store.getTemplate().then(function (localTemplates) {
+            return store.getTemplate().then(function (localTemplates) {
                 for (var id in localTemplates) {
                     var t = localTemplates[id];
                     if (t !== null && t.remote_id) {
                         localSeen.push(t.remote_id);
                     }
                 }
+
+                var operations = [];
 
                 _.each(remoteTemplates, function (remoteTemplate) {
                     var localTemplate;
@@ -470,11 +511,13 @@ var _GORGIAS_API_PLUGIN = function () {
                             localTemplate.remote_id = remoteTemplate.id;
                             // use the remote created_datetime as reference
                             localTemplate.created_datetime = remoteTemplate.created_datetime;
-                            updateTemplate({
-                                template: localTemplate,
-                                onlyLocal: true,
-                                sycned: true
-                            });
+                            operations.push(
+                                updateTemplate({
+                                    template: localTemplate,
+                                    onlyLocal: true,
+                                    sycned: true
+                                })
+                            );
 
                             updated = true;
                             break;
@@ -487,11 +530,12 @@ var _GORGIAS_API_PLUGIN = function () {
                         localTemplate = _copy(lastVersion, {});
                         localTemplate.remote_id = remoteTemplate.id;
                         localTemplate.sync_datetime = now;
-
-                        createTemplate({
-                            template: localTemplate,
-                            onlyLocal: true
-                        });
+                        operations.push(
+                            createTemplate({
+                                template: localTemplate,
+                                onlyLocal: true
+                            })
+                        );
                     }
                 });
 
@@ -501,16 +545,18 @@ var _GORGIAS_API_PLUGIN = function () {
                     TemplateStorage.get(null, function (localTemplates) {
                         _.each(localTemplates, function (localTemplate) {
                             if (localTemplate.remote_id && remoteId && localTemplate.remote_id === remoteId) {
-                                deleteTemplate({
-                                    template: localTemplate,
-                                    onlyLocal: true
-                                });
+                                operations.push(
+                                    deleteTemplate({
+                                        template: localTemplate,
+                                        onlyLocal: true
+                                    })
+                                );
                             }
                         });
                     });
                 });
                 lastSync = new Date();
-                return lastSync
+                return Promise.all(operations);
             });
         });
     };
@@ -556,22 +602,20 @@ var _GORGIAS_API_PLUGIN = function () {
                             });
                         };
                     };
-                    createTemplate({
-                        template: tRemote
-                    }).then(save(angular.copy(t)));
+
+                    createRemoteTemplate(tRemote).then(save(angular.copy(t)));
                 } else { // was synced at some point
                     // if it's deleted locally, delete it remotely and then delete it completely
                     if (t.deleted === 1) {
                         var deleted = function (ut) {
                             return function (remote) {
                                 remote.remote_id = ut.remote_id;
-                                deleteTemplate({
-                                    template: remote
-                                }).then(() => {
+                                deleteRemoteTemplate(remote).then(() => {
                                     TemplateStorage.remove(ut.id);
                                 });
                             }
                         };
+
                         queryTemplates({
                             quicktextId: t.remote_id
                         }).then(deleted(angular.copy(t)));
@@ -582,9 +626,7 @@ var _GORGIAS_API_PLUGIN = function () {
                                 // before the remote request is finished
                                 return function (remote) {
                                     remote = _copy(ut, remote);
-                                    updateTemplate({
-                                        template: remote
-                                    }).then(() => {
+                                    updateRemoteTemplate(remote).then(() => {
                                         ut.sync_datetime = new Date().toISOString();
                                         var data = {};
                                         data[ut.id] = ut;
@@ -625,12 +667,14 @@ var _GORGIAS_API_PLUGIN = function () {
         });
     };
 
+    // TODO sync has issues:
+    // - local templates are sometimes duplicated
     var syncNow = function () {
         var hash = window.location.hash;
         var inList = hash.indexOf('/list') !== -1;
         if (!inList) {
             // only sync when in list
-            return Promise.reject();
+            return Promise.resolve();
         }
 
         return getSettings({
@@ -638,13 +682,28 @@ var _GORGIAS_API_PLUGIN = function () {
         }).then(function (isLoggedIn) {
             // bail if not logged-in
             if (!isLoggedIn) {
-                return Promise.reject();
+                return Promise.resolve();
             }
-            return syncRemote()
+
+            syncRemote();
+
+            console.log('Synced: ', new Date().toUTCString());
+            var waitForLocal = function () {
+                trigger('templates-sync');
+                store.syncLocal();
+            };
+            // wait a bit before doing the local sync
+            setTimeout(waitForLocal, 1000);
+
+            return
         });
     };
 
     var getSharing = function (params = {}) {
+        if (!params.quicktext_ids || !params.quicktext_ids.length) {
+            return Promise.resolve([]);
+        }
+
         return fetch(`${apiBaseURL}share`, {
             method: 'POST',
             headers: {
@@ -656,6 +715,7 @@ var _GORGIAS_API_PLUGIN = function () {
         .then((res) => res.json());
     };
 
+    // TODO when creating template tries to set sharing on template without remote_id
     var updateSharing = function (params = {}) {
         return fetch(`${apiBaseURL}share`, {
             method: 'PUT',
@@ -723,6 +783,22 @@ var _GORGIAS_API_PLUGIN = function () {
             .then((res) => res.json());
     };
 
+    var events = [];
+    var on = function (name, callback) {
+        events.push({
+            name: name,
+            callback: callback
+        });
+    };
+
+    var trigger = function (name) {
+        events.filter((event) => event.name === name).forEach((event) => {
+            if (typeof event.callback === 'function') {
+                event.callback()
+            }
+        })
+    };
+
     return {
         getSettings: getSettings,
         setSettings: setSettings,
@@ -752,7 +828,9 @@ var _GORGIAS_API_PLUGIN = function () {
         cancelSubscription: cancelSubscription,
 
         syncNow: syncNow,
-        syncLocal: syncLocal
+        syncLocal: syncLocal,
+
+        on: on
     };
 }();
 

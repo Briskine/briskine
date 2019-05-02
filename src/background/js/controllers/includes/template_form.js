@@ -446,7 +446,7 @@ gApp.controller('TemplateFormCtrl',
                     $scope.revokeAccess(quicktexts, acl.target_user_id);
                 }
             });
-            $rootScope.SyncNow();
+            store.syncNow();
         };
 
         self.upgradeNow = function() {

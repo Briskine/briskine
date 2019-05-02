@@ -315,20 +315,12 @@ gApp.run(function ($rootScope, $location, $http, $timeout, ProfileService, Setti
     if (store.syncNow) {
         // Setup recurring syncing interval
         var syncInterval = 30 * 1000;
-        var sync = () => {
-            return store.syncNow().then(function (lastSync) {
-                console.log('Synced: ', new Date().toUTCString());
-                var waitForLocal = function () {
-                    $rootScope.$broadcast("templates-sync");
-                    store.syncLocal();
-                };
-                // wait a bit before doing the local sync
-                setTimeout(waitForLocal, 1000);
-            }).catch(() => {});
-        };
+        window.setInterval(store.syncNow, syncInterval);
+        store.syncNow();
 
-        window.setInterval(sync, syncInterval);
-        sync();
+        store.on('templates-sync', function () {
+            $rootScope.$broadcast("templates-sync");
+        });
     }
 
     $rootScope.$on('$viewContentLoaded', initDom);
