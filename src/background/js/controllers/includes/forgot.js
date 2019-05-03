@@ -1,4 +1,4 @@
-gApp.controller('ForgotCtrl', function ($http, $route, $rootScope) {
+gApp.controller('ForgotCtrl', function ($timeout, $route, $rootScope) {
     var self = this;
 
     self.credentials = {
@@ -8,19 +8,19 @@ gApp.controller('ForgotCtrl', function ($http, $route, $rootScope) {
     self.error = null;
 
     self.submit = function () {
-        $http({
-            method: 'POST',
-            url: $rootScope.apiBaseURL + 'forgot',
-            data: self.credentials
-        }).then(function success() {
+        store.forgot(self.credentials)
+        .then(function success() {
             $('#forgot-modal').modal('hide');
-        }, function error(response) {
-            if (response.data) {
-                self.error = response.data.error;
-            } else {
-                self.error = 'Could not connect to password recovery server. Please try again.'
-            }
-            $('#forgot-error').alert();
+        })
+        .catch(function error(response) {
+            $timeout(() => {
+                if (response) {
+                    self.error = response.error;
+                } else {
+                    self.error = 'Could not connect to password recovery server. Please try again.'
+                }
+                $('#forgot-error').alert();
+            })
         });
     };
 });

@@ -9,6 +9,7 @@ gApp.controller('ImportCtrl', function ($scope, $rootScope, $timeout, Upload) {
         $('#file-upload-progress .progress-note').removeClass('hide');
 
         //var file = $files[0];
+        // TODO move to new store
         Upload.upload({
             url: $rootScope.apiBaseURL + 'quicktexts/import',
             file: file

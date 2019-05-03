@@ -1,6 +1,7 @@
 // chrome.gorgias.io API plugin
 var _GORGIAS_API_PLUGIN = function () {
     var apiBaseURL = Config.apiBaseURL;
+    var baseURL = Config.baseURL;
 
     var TemplateStorage = {
         set: function(data, callback) {
@@ -157,7 +158,9 @@ var _GORGIAS_API_PLUGIN = function () {
 
     var handleErrors = function (response) {
         if (!response.ok) {
-            throw Error(response.statusText);
+            return response.clone().json().then((res) => {
+                return Promise.reject(res);
+            });
         }
         return response;
     };
@@ -782,6 +785,40 @@ var _GORGIAS_API_PLUGIN = function () {
             .then((res) => res.json());
     };
 
+    var signin = function (params = {}) {
+        return fetch(`${apiBaseURL}signin`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(params)
+        })
+        .then(handleErrors)
+        .then((res) => res.json());
+    };
+
+    var logout = function (params = {}) {
+        return fetch(`${baseURL}logout`)
+            .then(handleErrors)
+            .then((res) => res.json());
+    };
+
+    var forgot = function (params = {}) {
+        return fetch(`${apiBaseURL}forgot`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(params)
+        })
+        .then(handleErrors)
+        .then((res) => res.json());
+    };
+
+    var subscribe = function (params = {}) {
+        // TODO open subscribe iframe popup
+    };
+
     var events = [];
     var on = function (name, callback) {
         events.push({
@@ -828,6 +865,11 @@ var _GORGIAS_API_PLUGIN = function () {
 
         syncNow: syncNow,
         syncLocal: syncLocal,
+
+        signin: signin,
+        logout: logout,
+        forgot: forgot,
+        subscribe: subscribe,
 
         on: on
     };

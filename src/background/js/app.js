@@ -188,6 +188,7 @@ gApp.run(function ($rootScope, $location, $http, $timeout, ProfileService, Setti
         $rootScope.profile.savedWordsNice = ProfileService.reduceNumbers(words);
     });
 
+    // TODO remove, unused
     $rootScope.connectSocial = function (provider, scope) {
         var url = $rootScope.baseURL + 'authorize/' + provider;
         $http.post(url, {'scope': scope}).success(function (res) {
@@ -285,10 +286,8 @@ gApp.run(function ($rootScope, $location, $http, $timeout, ProfileService, Setti
 
     // logout function
     $rootScope.logOut = function () {
-        $http({
-            method: 'GET',
-            url: $rootScope.baseURL + 'logout'
-        }).then(function () {
+        store.logout()
+        .then(function () {
             SettingsService.set('isLoggedIn', false).then(location.reload(true));
         });
     };
