@@ -261,7 +261,7 @@ var _GORGIAS_API_PLUGIN = function () {
         return new Promise((resolve, reject) => {
             TemplateStorage.set(data, function () {
                 if (onlyLocal) { // update only locally - don't do any remote operations
-                    resolve();
+                    resolve(t);
                     return;
                 } else {
                     // Send some info about the creation of templates
@@ -278,7 +278,7 @@ var _GORGIAS_API_PLUGIN = function () {
                     key: 'isLoggedIn'
                 }).then(function (isLoggedIn) {
                     if (!isLoggedIn) { // if it's not logged in
-                        resolve();
+                        resolve(t);
                         return;
                     }
 
@@ -290,7 +290,7 @@ var _GORGIAS_API_PLUGIN = function () {
 
                             var data = {};
                             data[t.id] = t;
-                            TemplateStorage.set(data, resolve);
+                            TemplateStorage.set(data, () => resolve(t));
                         });
                     } else {
                         return queryTemplates({
@@ -302,7 +302,7 @@ var _GORGIAS_API_PLUGIN = function () {
                                     t.sync_datetime = new Date().toISOString();
                                     var data = {};
                                     data[t.id] = t;
-                                    TemplateStorage.set(data, resolve);
+                                    TemplateStorage.set(data, () => resolve(t));
                                 });
                         });
                     }
@@ -322,6 +322,7 @@ var _GORGIAS_API_PLUGIN = function () {
         .then(handleErrors)
     };
 
+    // WARNING we sometimes rely on mutating params.template in controllers
     var createTemplate = function (params = {}) {
         var t = params.template;
         var onlyLocal = params.onlyLocal;
@@ -371,13 +372,14 @@ var _GORGIAS_API_PLUGIN = function () {
                     // make sure we don't have a remote_id (it's a new template sow there should not be any remote_id)
                     remote.remote_id = '';
                     createRemoteTemplate(remote)
-                    .then((res) => {
-                        var remote = res.json();
+                    .then((res) => res.json())
+                    .then((remote) => {
                         // once it's saved server side, store the remote_id in the database
                         t.remote_id = remote.id;
                         t.sync_datetime = new Date().toISOString();
+                        // WARNING we rely on mutating t, to update in data[id]=t
                         TemplateStorage.set(data, function () {
-                            resolve(t.id);
+                            resolve(t);
                         });
                     });
                 });
@@ -667,8 +669,6 @@ var _GORGIAS_API_PLUGIN = function () {
         });
     };
 
-    // TODO sync has issues:
-    // - local templates are sometimes duplicated
     var syncNow = function () {
         var hash = window.location.hash;
         var inList = hash.indexOf('/list') !== -1;
@@ -715,7 +715,6 @@ var _GORGIAS_API_PLUGIN = function () {
         .then((res) => res.json());
     };
 
-    // TODO when creating template tries to set sharing on template without remote_id
     var updateSharing = function (params = {}) {
         return fetch(`${apiBaseURL}share`, {
             method: 'PUT',

@@ -21,7 +21,6 @@ gApp.controller('ShareFormCtrl',
 
         self.shareQt = function () {
             var selectedQuicktexts = $scope.getSelectedQuickTexts();
-
             if ($scope.shareData.emails.length == 0 && self.sharing_setting == 'private') {
                 self.revokeAllAccess(selectedQuicktexts);
             } else if ($scope.shareData.emails.length == 0 && self.sharing_setting == 'everyone') {
