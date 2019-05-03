@@ -127,7 +127,7 @@ gApp.run(function ($rootScope) {
     $rootScope.apiBaseURL = Config.apiBaseURL;
 });
 
-gApp.run(function ($rootScope, $location, $http, $timeout, ProfileService, SettingsService, TemplateService, SubscriptionService) {
+gApp.run(function ($rootScope, $location, $timeout, ProfileService, SettingsService, TemplateService, SubscriptionService) {
     $rootScope.$on('$routeChangeStart', function () {
         $rootScope.path = $location.path();
     });
@@ -187,16 +187,6 @@ gApp.run(function ($rootScope, $location, $http, $timeout, ProfileService, Setti
         $rootScope.profile.savedWords = words;
         $rootScope.profile.savedWordsNice = ProfileService.reduceNumbers(words);
     });
-
-    // TODO remove, unused
-    $rootScope.connectSocial = function (provider, scope) {
-        var url = $rootScope.baseURL + 'authorize/' + provider;
-        $http.post(url, {'scope': scope}).success(function (res) {
-            window.location = res.location;
-        }).error(function () {
-            alert("Error! We're unable to authorize : " + provider + ". Please try again or contact chrome@gorgias.io");
-        });
-    };
 
     var browser = "Chrome";
     if (Boolean(navigator.userAgent.match(/OPR\/(\d+)/))) {
