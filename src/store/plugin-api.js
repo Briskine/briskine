@@ -816,7 +816,13 @@ var _GORGIAS_API_PLUGIN = function () {
     };
 
     var subscribe = function (params = {}) {
-        // TODO open subscribe iframe popup
+        // TODO subscribe submit
+    };
+
+    var openSubscribePopup = function (params = {}) {
+        $('#api-signup-modal').modal({
+            show: true
+        });
     };
 
     var events = [];
@@ -870,6 +876,7 @@ var _GORGIAS_API_PLUGIN = function () {
         logout: logout,
         forgot: forgot,
         subscribe: subscribe,
+        openSubscribePopup: openSubscribePopup,
 
         on: on
     };

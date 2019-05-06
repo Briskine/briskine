@@ -71,4 +71,8 @@ gApp.controller('SidebarCtrl', function ($scope, $location, $window,
         loadTags();
         loadAccount();
     });
+
+    $scope.openSubscribe = function () {
+        store.openSubscribePopup();
+    };
 });

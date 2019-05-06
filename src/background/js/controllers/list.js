@@ -490,4 +490,8 @@ gApp.controller('ListCtrl',
         $scope.getTags = function (template) {
             return TemplateService.tags(template);
         };
+
+        $scope.openSubscribe = function () {
+            store.openSubscribePopup();
+        };
     });
