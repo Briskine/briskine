@@ -71,6 +71,7 @@ const dependencies = {
                 './src/common/*.js',
 
                 './src/store/plugin-api.js',
+                './src/store/plugin-firestore.js',
                 './src/store/store.js',
 
                 './src/background/js/**/*.js'

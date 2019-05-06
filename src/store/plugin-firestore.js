@@ -1,40 +1,92 @@
 // Firestore plugin
 var _FIRESTORE_PLUGIN = function () {
-    var getSettings = () => {};
-    var setSettings = () => {};
+    function mock () {
+        return Promise.resolve();
+    };
 
+    var defaultSettings = {
+        settings: {
+            // settings for the settings view
+            dialog: {
+                enabled: true,
+                shortcut: "ctrl+space", // shortcut that triggers the complete dialog
+                auto: false, //trigger automatically while typing - should be disabled cause it's annoying sometimes
+                delay: 1000, // if we want to trigger it automatically
+                limit: 100 // how many templates are shown in the dialog
+            },
+            qaBtn: {
+                enabled: true,
+                shownPostInstall: false,
+                caseSensitiveSearch: false,
+                fuzzySearch: true
+            },
+            keyboard: {
+                enabled: true,
+                shortcut: "tab"
+            },
+            stats: {
+                enabled: true // send anonymous statistics
+            },
+            blacklist: [],
+            fields: {
+                tags: false,
+                subject: true
+            },
+            editor: {
+                enabled: true // new editor - enable for new users
+            }
+        },
+        // refactor this into 'local' and 'remote'
+        isLoggedIn: false,
+        syncEnabled: false,
+        words: 0,
+        syncedWords: 0,
+        lastStatsSync: null,
+        lastSync: null,
+        hints: {
+            postInstall: true,
+            subscribeHint: true
+        }
+    };
+
+    var getSettings = (params = {}) => {
+        return Promise.resolve(defaultSettings[params.key]);
+    };
+    var setSettings = (params = {}) => {
+        return Promise.resolve(defaultSettings[params.key]);
+    };
+
+    // TODO check if user is logged-in
     var getLoginInfo = () => {
-        // TODO check if user is logged-in
+        return Promise.reject();
     };
-    var getAccount = () => {
-        // TODO get account details
-    };
-    var setAccount = () => {
-        // TODO update account details
-    };
+    // TODO get account details
+    var getAccount = mock;
+    // TODO update account details
+    var setAccount = mock;
 
-    var getMember = () => {};
-    var setMember = () => {};
+    var getMember = mock;
+    var setMember = mock;
 
-    var getTemplate = () => {};
-    var updateTemplate = () => {};
-    var createTemplate = () => {};
-    var deleteTemplate = () => {};
-    var clearLocalTemplates = () => {};
+    var getTemplate = mock;
+    var updateTemplate = mock;
+    var createTemplate = mock;
+    var deleteTemplate = mock;
+    var clearLocalTemplates = mock;
 
-    var getSharing = () => {};
-    var updateSharing = () => {};
+    var getSharing = mock;
+    var updateSharing = mock;
 
-    var getStats = () => {};
-    var updateStats = () => {};
+    var getStats = mock;
+    var updateStats = mock;
 
-    var getPlans = () => {};
-    var getSubscription = () => {};
-    var updateSubscription = () => {};
-    var cancelSubscription = () => {};
+    var getPlans = mock;
+    var getSubscription = mock;
+    var updateSubscription = mock;
+    var cancelSubscription = mock;
 
-    var syncNow = () => {};
-    var syncLocal = () => {};
+    var syncNow = mock;
+    var syncLocal = mock;
 
     var signin = () => {
         // TODO
@@ -48,7 +100,14 @@ var _FIRESTORE_PLUGIN = function () {
     };
     var forgot = () => {};
     var subscribe = () => {
-        // TODO re-create subscribe popup in angular app
+        // TODO subscribe submit
+    };
+
+    var openSubscribePopup = function (params = {}) {
+        // TODO open firestore subscribe popup
+        $('#firestore-signup-modal').modal({
+            show: true
+        });
     };
 
     var events = [];
@@ -101,6 +160,7 @@ var _FIRESTORE_PLUGIN = function () {
         signin: signin,
         forgot: forgot,
         subscribe: subscribe,
+        openSubscribePopup: openSubscribePopup,
 
         on: on
     };

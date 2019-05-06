@@ -1,5 +1,6 @@
 var store = function () {
-    var plugin = _GORGIAS_API_PLUGIN;
+//     var plugin = _GORGIAS_API_PLUGIN;
+    var plugin = _FIRESTORE_PLUGIN;
 
     // respond to content
     chrome.runtime.onMessage.addListener((req, sender, sendResponse) => {
