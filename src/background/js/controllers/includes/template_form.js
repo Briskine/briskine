@@ -267,7 +267,10 @@ gApp.controller('TemplateFormCtrl',
                                 setTimeout(function(){ tinymce.activeEditor.setContent(self.selectedTemplate.body); }, 100);
 
                             }
-                            $.each(self.selectedTemplate.tags.split(','), function (_, tag) {
+
+                            // get tags from template service, to be cleaned-up.
+                            var tags = TemplateService.tags(self.selectedTemplate);
+                            $.each(tags, function (_, tag) {
                                 $('#qt-tags')[0].selectize.addItem($.trim(tag));
                             });
 

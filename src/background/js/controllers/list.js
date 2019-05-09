@@ -486,4 +486,8 @@ gApp.controller('ListCtrl',
             });
             exporter.downloadCsv(itemsFormatted);
         };
+
+        $scope.getTags = function (template) {
+            return TemplateService.tags(template);
+        };
     });
