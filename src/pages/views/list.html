@@ -72,7 +72,7 @@
                                   ng-bind-html="template.body| stripHTML | truncate:100 | newlines | safe"></span>
                         </p>
                         <p class="list-group-item-text quicktext-tags" ng-if="template.tags">
-                        <div class="label-wrapper" ng-repeat="tag in template.tags.split(', ')">
+                        <div class="label-wrapper" ng-repeat="tag in getTags(template)">
                             <span class="tag" ng-if="tag">
                                 <strong ng-if="filterTags.indexOf(tag) !== -1"><i class="fa fa-hashtag icon"></i>{{tag}} </strong>
                                 <span ng-if="filterTags.indexOf(tag) === -1"><i class="fa fa-hashtag icon"></i>{{tag}} </span>
