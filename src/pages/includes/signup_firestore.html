@@ -1,4 +1,4 @@
-<div class="modal fade" id="firestore-signup-modal" tabindex="-1" role="dialog" data-aria-hidden="true">
+<div class="modal fade" id="firestore-signup-modal" tabindex="-1" role="dialog" data-aria-hidden="true"  ng-controller="SignupFirestore as signup">
     <div class="modal-dialog" style="width:1000px">
         <div class="modal-content" style="width: 100%; margin-bottom: 50px; padding-bottom: 50px;">
             <div class="modal-header">
@@ -59,63 +59,6 @@
 
                         <span class="help-block">You can use this service alone, but it&#39;s designed to be used with a team.</span>
                     </div>
-
-                    <!--
-                    <div class="row reminder">
-                        <div class="seal seal-gold col-md-5">&nbsp;</div>
-                        <div class="info col-md-7">
-                            <p>You have a <b>60-day money back guarantee</b>! Don't like our product? No worries.
-                                Contact us within 60 days and we'll refund you. We'll also stay friends!</p>
-                        </div>
-                    </div>
-                    -->
-                </div>
-
-
-                <div class="well cc-info">
-                    <div class="cc-errors alert alert-danger hide" role="alert"></div>
-                    <div class="card-wrapper"></div>
-                    <div class="form-group row">
-                        <div class="col-md-6">
-                            <label for="cc-number">Card number</label>
-                            <input type="text"
-                                   id="cc-number"
-                                   class="form-control input-lg"
-                                   data-stripe="number"
-                                   autocompletetype="cc-number"
-                                   placeholder="Card Number"
-                                   required="required">
-                        </div>
-                        <div class="col-md-6">
-                            <label for="cc-number">Name on card</label>
-                            <input type="text"
-                                   id="cc-name"
-                                   class="form-control input-lg"
-                                   data-stripe="name"
-                                   autocompletetype="cc-name"
-                                   placeholder="Full Name"
-                                   required="required">
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <div class="cvc col-md-6">
-                            <label for="cvc">CVC</label>
-                            <input type="text" id="cc-cvc" data-stripe="cvc"
-                                   class="form-control input-lg"
-                                   autocomplete="off"
-                                   placeholder="CVC"
-                                   autocompletetype="cc-csc"/>
-                        </div>
-                        <div class="expiration col-md-6">
-                            <label for="cc-exp">Expiration</label>
-                            <input type="text" id="cc-exp" data-stripe="expiry"
-                                   class="form-control input-lg"
-                                   autocomplete="off"
-                                   placeholder="MM/YY"
-                                   autocompletetype="cc-exp"/>
-                        </div>
-                    </div>
-
 
                     <div class="row text-center">
                         <button type="submit" class="btn btn-primary">

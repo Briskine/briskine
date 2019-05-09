@@ -1,5 +1,18 @@
 // Firestore plugin
 var _FIRESTORE_PLUGIN = function () {
+    // Your web app's Firebase configuration
+    var firebaseConfig = {
+        apiKey: "AIzaSyArp0AWkIjYn0nEFgfUFvtQ3ZS9GoqLwdI",
+        authDomain: "gorgias-templates-staging.firebaseapp.com",
+        databaseURL: "https://gorgias-templates-staging.firebaseio.com",
+        projectId: "gorgias-templates-staging",
+        storageBucket: "gorgias-templates-staging.appspot.com",
+        messagingSenderId: "637457793167",
+        appId: "1:637457793167:web:05dd21469e22d274"
+    };
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+
     function mock () {
         return Promise.resolve();
     };

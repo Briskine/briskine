@@ -5,8 +5,9 @@
     "main": "index.js",
     "scripts": {
         "test": "grunt test",
-        "start": "webpack-dev-server --env development",
-        "build": "webpack --env production"
+        "start": "yarn firebase && webpack-dev-server --env development",
+        "build": "webpack --env production",
+        "firebase": "webpack --config ./config/webpack.firebase.js"
     },
     "repository": "https://github.com/gorgias/gorgias-chrome/",
     "author": "Alexandru Plugaru <alex@gorgias.io>",
@@ -64,6 +65,9 @@
         "zip-webpack-plugin": "^3.0.0"
     },
     "dependencies": {
+        "@firebase/app": "^0.4.0",
+        "@firebase/auth": "^0.11.1",
+        "@firebase/firestore": "^1.3.0",
         "angular": "angular/bower-angular#1.4.7",
         "angular-moment": "urish/angular-moment#~0.6.2",
         "angular-resource": "angular/bower-angular-resource#1.4.7",
