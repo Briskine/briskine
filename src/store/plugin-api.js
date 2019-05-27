@@ -815,8 +815,6 @@ var _GORGIAS_API_PLUGIN = function () {
         .then((res) => res.json());
     };
 
-    var subscribe = function (params = {}) {};
-
     var openSubscribePopup = function (params = {}) {
         $('#api-signup-modal').modal({
             show: true
@@ -873,7 +871,6 @@ var _GORGIAS_API_PLUGIN = function () {
         signin: signin,
         logout: logout,
         forgot: forgot,
-        subscribe: subscribe,
         openSubscribePopup: openSubscribePopup,
 
         on: on

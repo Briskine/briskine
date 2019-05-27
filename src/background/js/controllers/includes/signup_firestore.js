@@ -1,6 +1,5 @@
-gApp.controller('SignupFirestore', function ($scope) {
-    // TODO make monthly/yearly switch work
-    // TODO team members slider
-    // TODO signup button
-
+gApp.controller('SignupFirestore', function ($timeout) {
+    this.iframeUrl = function () {
+        return Config.firebaseSignupUrl;
+    };
 });

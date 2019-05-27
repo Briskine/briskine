@@ -1,6 +1,7 @@
 // Firestore plugin
 var _FIRESTORE_PLUGIN = function () {
-    // Your web app's Firebase configuration
+    // firebase config
+    // TODO staging data
     var firebaseConfig = {
         apiKey: "AIzaSyArp0AWkIjYn0nEFgfUFvtQ3ZS9GoqLwdI",
         authDomain: "gorgias-templates-staging.firebaseapp.com",
@@ -10,71 +11,57 @@ var _FIRESTORE_PLUGIN = function () {
         messagingSenderId: "637457793167",
         appId: "1:637457793167:web:05dd21469e22d274"
     };
-    // Initialize Firebase
     firebase.initializeApp(firebaseConfig);
 
     function mock () {
         return Promise.resolve();
     };
 
-    var defaultSettings = {
-        settings: {
-            // settings for the settings view
-            dialog: {
-                enabled: true,
-                shortcut: "ctrl+space", // shortcut that triggers the complete dialog
-                auto: false, //trigger automatically while typing - should be disabled cause it's annoying sometimes
-                delay: 1000, // if we want to trigger it automatically
-                limit: 100 // how many templates are shown in the dialog
-            },
-            qaBtn: {
-                enabled: true,
-                shownPostInstall: false,
-                caseSensitiveSearch: false,
-                fuzzySearch: true
-            },
-            keyboard: {
-                enabled: true,
-                shortcut: "tab"
-            },
-            stats: {
-                enabled: true // send anonymous statistics
-            },
-            blacklist: [],
-            fields: {
-                tags: false,
-                subject: true
-            },
-            editor: {
-                enabled: true // new editor - enable for new users
-            }
-        },
-        // refactor this into 'local' and 'remote'
-        isLoggedIn: false,
-        syncEnabled: false,
-        words: 0,
-        syncedWords: 0,
-        lastStatsSync: null,
-        lastSync: null,
-        hints: {
-            postInstall: true,
-            subscribeHint: true
-        }
+    function fsDate (date) {
+        if (!date) {
+            return firebase.firestore.Timestamp.now();
+        };
+
+        return firebase.firestore.Timestamp.fromDate(date);
     };
 
-    var getSettings = (params = {}) => {
-        return Promise.resolve(defaultSettings[params.key]);
-    };
-    var setSettings = (params = {}) => {
-        return Promise.resolve(defaultSettings[params.key]);
+    // uuidv4
+    function uuid() {
+        return `${1e7}-${1e3}-${4e3}-${8e3}-${1e11}`.replace(/[018]/g, c =>
+            (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
+        );
     };
 
-    // TODO check if user is logged-in
-    var getLoginInfo = () => {
-        return Promise.reject();
+    // TODO borrow settings from old api plugin
+    var getSettings = _GORGIAS_API_PLUGIN.getSettings;
+    var setSettings = _GORGIAS_API_PLUGIN.setSettings;
+
+    var globalUserKey = 'firebaseUser';
+    function getSignedInUser () {
+        return new Promise((resolve, reject) => {
+            chrome.storage.local.get(globalUserKey, (res) => {
+                const user = res[globalUserKey] || {};
+                if (Object.keys(user).length) {
+                    return resolve(user);
+                }
+
+                return reject();
+            });
+        });
     };
-    // TODO get account details
-    var getAccount = mock;
+
+    function setSignedInUser (user) {
+        return new Promise((resolve, reject) => {
+            var globalUser = {}
+            globalUser[globalUserKey] = user;
+            chrome.storage.local.set(globalUser, () => {
+                resolve();
+            });
+        });
+    };
+
+    var getLoginInfo = getSignedInUser;
+    var getAccount = getSignedInUser;
     // TODO update account details
     var setAccount = mock;
 
@@ -83,7 +70,77 @@ var _FIRESTORE_PLUGIN = function () {
 
     var getTemplate = mock;
     var updateTemplate = mock;
-    var createTemplate = mock;
+    var createTemplate = (params = {}) => {
+//         {
+//             "template": {
+//                 "id": "",
+//                 "remote_id": "",
+//                 "shortcut": "test",
+//                 "title": "test",
+//                 "tags": "",
+//                 "body": "<div>test</div>",
+//                 "attachments": []
+//             },
+//             "onlyLocal": true,
+//             "isPrivate": true
+//         }
+
+        return getSignedInUser().then((user) => {
+            console.log(user);
+
+            var now = fsDate(new Date());
+
+            // TODO if logged-in, create in firestore
+            // TODO else in storage
+            // sync on first initialize and delete from storage
+
+            // TODO check if all tags exist in the customer
+            // TODO if not, create them first
+            // TODO then replace with ids
+            var tags = (params.template.tags || '').split(',').map((tag) => {
+                return (tag || '').trim();
+            });
+
+            var sharing = 'none';
+            var shared_with = [];
+            // TODO get sharing=everyone from controller.
+            if (!params.isPrivate) {
+                sharing = 'custom';
+                // TODO get from params.template
+                shared_with = [];
+            };
+
+            var template = {
+                body: params.template.body,
+                title: params.template.title,
+                attachments: params.template.attachments,
+                cc: params.template.cc || '',
+                bcc: params.template.bcc || '',
+                to: params.template.to || '',
+                owner: '',
+                customer: '',
+                created_datetime: now,
+                modified_datetime: now,
+                deleted_datetime: null,
+                shared_with: shared_with,
+                sharing: sharing,
+                tags: [],
+                version: 1
+            };
+
+            console.log('params', params);
+            console.log('template', template);
+
+            return
+        })
+        .catch(() => {
+            // TODO not logged-in
+            return
+        })
+        .then(() => {
+            return Promise.reject();
+        });
+    };
     var deleteTemplate = mock;
     var clearLocalTemplates = mock;
 
@@ -101,7 +158,7 @@ var _FIRESTORE_PLUGIN = function () {
     var syncNow = mock;
     var syncLocal = mock;
 
-    var signin = () => {
+    var signin = (params = {}) => {
         // TODO
         // - use firestore plugin first
         // - try to log user in
@@ -110,14 +167,43 @@ var _FIRESTORE_PLUGIN = function () {
         // - set userMetadata.passwordUpdated = true
         // - if userMetadata.migrated = true account, keep using firestore
         // - if not, switch to old-api plugin
+
+        return firebase.auth()
+            .signInWithEmailAndPassword(params.email, params.password)
+            .then((res) => {
+                return setSignedInUser({
+                    email: res.user.email,
+                    // backwards compatibility
+                    info: {
+                        name: res.user.displayName,
+                        // TODO get from firestore
+                        share_all: true
+                    },
+                    created_datetime: new Date(res.user.metadata.creationTime),
+                    editor: {
+                        enabled: true
+                    },
+                    // TODO get from firestore
+                    is_loggedin: true,
+                    current_subscription: '',
+                    is_customer: true,
+                    created_datetime: '',
+                    current_subscription: {
+                        active: true,
+                        created_datetime: '',
+                        plan: '',
+                        quantity: 1
+                    },
+                    is_staff: false
+                });
+            });
     };
     var forgot = () => {};
-    var subscribe = () => {
-        // TODO subscribe submit
+    var logout = () => {
+        return setSignedInUser({});
     };
 
     var openSubscribePopup = function (params = {}) {
-        // TODO open firestore subscribe popup
         $('#firestore-signup-modal').modal({
             show: true
         });
@@ -171,8 +257,8 @@ var _FIRESTORE_PLUGIN = function () {
         syncLocal: syncLocal,
 
         signin: signin,
+        logout: logout,
         forgot: forgot,
-        subscribe: subscribe,
         openSubscribePopup: openSubscribePopup,
 
         on: on

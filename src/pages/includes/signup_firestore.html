@@ -5,78 +5,9 @@
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
             </div>
             <div class="modal-body">
-
-        <div class="page-header text-center">
-            <h1>
-                Signup for Startup Monthly
-            </h1>
-            <h3>
-                Get <strong>20%</strong> discount with a
-                <a href="/signup/startup-yearly-usd-1/is_iframe=yes">yearly subscription</a>
-            </h3>
-        </div>
-
-        <div class="row signup-form">
-            <form id="signup-form"
-                  action=""
-                  method="POST">
-
-                    <div style="display:none;"><input id="csrf_token" name="csrf_token" type="hidden" value="1557152794.33##2ac602f1e2792e020fbadb575491abbc95e5533c"><input id="stripe_token" name="stripe_token" type="hidden" value=""><input id="country" name="country" type="hidden" value=""><input id="ip_address" name="ip_address" type="hidden" value=""></div>
-
-                <div class="well account-info">
-                    <div class="form-group">
-                        <label for="name" class="control-label">
-                            Full Name
-
-
-                        </label>
-                        <input class="form-control focus" id="name" name="name" placeholder="Ada Lovelace" required="" type="text" value="">
-                    </div>
-
-                    <div class="form-group">
-                        <label for="email" class="control-label">
-                            E-mail
-                        </label>
-                        <input class="form-control" id="email" name="email" placeholder="email@company.com" required="" type="email" value="">
-                    </div>
-
-                    <div class="form-group">
-                        <label for="password" class="control-label">
-                            Password
-
-
-                        </label>
-                        <input class="form-control" id="password" name="password" placeholder="minimum 6 characters" required="" type="password" value="">
-                    </div>
-
-                    <div class="form-group">
-                        <label for="quantity" class="control-label">
-                            Team Members
-
-                            (<span class='slider-value'></span>)
-                        </label>
-                        <input class="form-control slider" id="quantity" name="quantity" type="text" value="2">
-
-                        <span class="help-block">You can use this service alone, but it&#39;s designed to be used with a team.</span>
-                    </div>
-
-                    <div class="row text-center">
-                        <button type="submit" class="btn btn-primary">
-                            Sign up now:
-
-                            <span id="total-amount">10</span>
-                            $
-                            per month
-                        </button>
-                    </div>
-
-                    <div class="text-center">Prices don't include VAT</div>
-                </div>
-            </form>
-        </div>
-
-            <script src="https://js.stripe.com/v3/"></script>
-
+                <iframe
+                    ng-src="{{signup.iframeUrl()}}"
+                    style="width: 100%; border: none; height: 1164px"></iframe>
             </div>
         </div>
     </div>
