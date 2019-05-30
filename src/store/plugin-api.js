@@ -219,6 +219,7 @@ var _GORGIAS_API_PLUGIN = function () {
         .then((res) => res.json());
     };
 
+    // TODO switch to params = {}
     var getTemplate = function (id) {
         return new Promise((resolve, reject) => {
             TemplateStorage.get(id, resolve);

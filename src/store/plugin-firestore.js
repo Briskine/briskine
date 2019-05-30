@@ -76,8 +76,8 @@ var _FIRESTORE_PLUGIN = function () {
     };
     var setMember = mock;
 
-    var tagsCollection = db.collection('tags')
-    var templatesCollection = db.collection('templates')
+    var tagsCollection = db.collection('tags');
+    var templatesCollection = db.collection('templates');
 
     function getTags () {
         return getSignedInUser().then((user) => {
@@ -137,7 +137,6 @@ var _FIRESTORE_PLUGIN = function () {
     };
 
     function parseTemplate (params = {}) {
-        var id = uuid();
         var now = fsDate(new Date());
 
         var sharing = 'none';
@@ -150,7 +149,6 @@ var _FIRESTORE_PLUGIN = function () {
         };
 
         var template = {
-            id: id,
             body: params.template.body,
             title: params.template.title,
             attachments: params.template.attachments,
@@ -188,7 +186,82 @@ var _FIRESTORE_PLUGIN = function () {
             });
     };
 
-    var getTemplate = mock;
+    // TODO switch to params
+    var getTemplate = (id) => {
+//         {
+//             "id": {
+//                 "attachments": "",
+//                 "bcc": "",
+//                 "body": "<div>Hello {{to.first_name}},</div><div><br></div><div><br></div><div>Happy 2017! I hope things went well for you during the holiday season!&nbsp;</div><div><br></div><div>I'm checking in as discussed, would you like to do a brief call sometimes next week?</div>",
+//                 "cc": "",
+//                 "created_datetime": "2017-01-08T20:06:40.143922",
+//                 "deleted": 0,
+//                 "id": "0aa3e13a-74ec-4017-9975-4dfcc14f608a",
+//                 "lastuse_datetime": "",
+//                 "nosync": 0,
+//                 "private": false,
+//                 "remote_id": "858d86ff-b5f8-4f3c-ac91-8f7b6bab293a",
+//                 "shortcut": "ch",
+//                 "subject": "Checking-in",
+//                 "sync_datetime": "2019-05-30T14:52:51.845Z",
+//                 "tags": "",
+//                 "title": "Checking-in",
+//                 "to": "",
+//                 "updated_datetime": "2019-05-30T14:53:20.845Z",
+//                 "use_count": 0
+//             }
+//         }
+
+
+        if (id) {
+            // TODO return single template
+            return
+        }
+
+        return getSignedInUser()
+            .then((user) => {
+                // TODO return all templates
+                return templatesCollection
+                    .where('customer', '==', user.customer)
+                    .get()
+                    .then((templatesQuery) => {
+                        return getTags().then((tagsQuery) => {
+                            // backward compatibility
+                            var templates = {};
+                            templatesQuery.docs.forEach((template) => {
+                                // replace tag ids with titles
+                                var templateData = template.data();
+
+                                var tags = templateData.tags.map((tagId) => {
+                                    var foundTag = tagsQuery.docs.find((tag) => {
+                                        return tag.id === tagId
+                                    })
+                                    return foundTag.data().title;
+                                }).join(', ');
+
+                                templates[template.id] = Object.assign(
+                                    templateData,
+                                    {
+                                        id: template.id,
+                                        // TODO check deleted_datetime
+                                        deleted: 0,
+                                        tags: tags,
+                                        // TODO check sharing
+                                        private: true
+                                    },
+                                )
+                            });
+
+                            return templates
+                        });
+                    });
+            })
+            .catch((err) => {
+                // TODO not signed-in
+                // return from cache
+                console.log('err', err);
+            })
+    };
     var updateTemplate = mock;
     var createTemplate = (params = {}) => {
 //         {
@@ -207,13 +280,21 @@ var _FIRESTORE_PLUGIN = function () {
 
         return parseTemplate(params)
             .then((template) => {
-                console.log(template);
+                // TODO create firestore template
+                var id = uuid();
+                var ref = templatesCollection.doc(id);
+
+                return ref.set(template)
             })
-            .catch(() => {
-                // TODO not logged-in
+            .then((res) => {
+                console.log('created', res);
+            })
+            .catch((err) => {
+                console.log('error', err);
+                // TODO error, not logged-in
                 // create offline template
                 return
-            })
+            });
     };
     var deleteTemplate = mock;
     var clearLocalTemplates = mock;
