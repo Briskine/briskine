@@ -13,6 +13,10 @@ var _FIRESTORE_PLUGIN = function () {
     };
     firebase.initializeApp(firebaseConfig);
 
+    var db = firebase.firestore();
+
+    // TODO sync on first initialize and delete from storage
+
     function mock () {
         return Promise.resolve();
     };
@@ -65,8 +69,124 @@ var _FIRESTORE_PLUGIN = function () {
     // TODO update account details
     var setAccount = mock;
 
-    var getMember = mock;
+    var getMembers = (params = {}) => {
+        return Promise.resolve({
+            members: []
+        });
+    };
     var setMember = mock;
+
+    var tagsCollection = db.collection('tags')
+    var templatesCollection = db.collection('templates')
+
+    function getTags () {
+        return getSignedInUser().then((user) => {
+            return tagsCollection.where('customer', '==', user.customer).get()
+        });
+    };
+
+    function createTags (tags = []) {
+        return getSignedInUser().then((user) => {
+            var batch = db.batch()
+
+            var newTags = tags.map((tag) => {
+                var tagId = uuid();
+                var tagRef = tagsCollection.doc(tagId);
+                var newTag = {
+                    customer: user.customer,
+                    title: tag,
+                    version: 1
+                };
+                batch.set(tagRef, newTag);
+
+                return Object.assign({id: tagId}, newTag);
+            })
+
+            return batch.commit().then(() => newTags);
+        });
+    }
+
+    // replace tags titles with ids
+    function replaceTags (templateTags) {
+        return getTags().then((existingTagsQuery) => {
+            var existingTags = existingTagsQuery.docs.map((tag) => {
+                return Object.assign({id: tag.id}, tag.data());
+            });
+
+            // tags to be created
+            var newTags = templateTags.filter((tag) => {
+                return !(existingTags.some((existing) => {
+                    return existing.title === tag
+                }))
+            });
+
+            return createTags(newTags).then((createdTags) => {
+                // merge existing tags with created tags
+                var updatedTags = existingTags.concat(createdTags);
+
+                // map template tag titles to ids
+                return templateTags.map((tag) => {
+                    return (
+                        updatedTags.find((existingTag) => {
+                            return existingTag.title === tag
+                        }) || {}
+                    ).id;
+                });
+             });
+        });
+    };
+
+    function parseTemplate (params = {}) {
+        var id = uuid();
+        var now = fsDate(new Date());
+
+        var sharing = 'none';
+        var shared_with = [];
+        // TODO get sharing=everyone from controller/user?
+        if (!params.isPrivate) {
+            sharing = 'custom';
+            // TODO get from params.template
+            shared_with = [];
+        };
+
+        var template = {
+            id: id,
+            body: params.template.body,
+            title: params.template.title,
+            attachments: params.template.attachments,
+            cc: params.template.cc || '',
+            bcc: params.template.bcc || '',
+            to: params.template.to || '',
+            created_datetime: now,
+            modified_datetime: now,
+            deleted_datetime: null,
+            shared_with: shared_with,
+            sharing: sharing,
+            tags: [],
+            owner: null,
+            customer: null,
+            version: 1
+        };
+
+        // clean-up template tags
+        var templateTags = (params.template.tags || '').split(',').map((tag) => {
+            return (tag || '').trim();
+        });
+
+        return getSignedInUser()
+            .then((user) => {
+                template = Object.assign(template, {
+                    owner: user.id,
+                    customer: user.customer
+                });
+
+                return replaceTags(templateTags)
+            }).then((tags) => {
+                return Object.assign(template, {
+                    tags: tags
+                });
+            });
+    };
 
     var getTemplate = mock;
     var updateTemplate = mock;
@@ -85,61 +205,15 @@ var _FIRESTORE_PLUGIN = function () {
 //             "isPrivate": true
 //         }
 
-        return getSignedInUser().then((user) => {
-            console.log(user);
-
-            var now = fsDate(new Date());
-
-            // TODO if logged-in, create in firestore
-            // TODO else in storage
-            // sync on first initialize and delete from storage
-
-            // TODO check if all tags exist in the customer
-            // TODO if not, create them first
-            // TODO then replace with ids
-            var tags = (params.template.tags || '').split(',').map((tag) => {
-                return (tag || '').trim();
-            });
-
-            var sharing = 'none';
-            var shared_with = [];
-            // TODO get sharing=everyone from controller.
-            if (!params.isPrivate) {
-                sharing = 'custom';
-                // TODO get from params.template
-                shared_with = [];
-            };
-
-            var template = {
-                body: params.template.body,
-                title: params.template.title,
-                attachments: params.template.attachments,
-                cc: params.template.cc || '',
-                bcc: params.template.bcc || '',
-                to: params.template.to || '',
-                owner: '',
-                customer: '',
-                created_datetime: now,
-                modified_datetime: now,
-                deleted_datetime: null,
-                shared_with: shared_with,
-                sharing: sharing,
-                tags: [],
-                version: 1
-            };
-
-            console.log('params', params);
-            console.log('template', template);
-
-            return
-        })
-        .catch(() => {
-            // TODO not logged-in
-            return
-        })
-        .then(() => {
-            return Promise.reject();
-        });
+        return parseTemplate(params)
+            .then((template) => {
+                console.log(template);
+            })
+            .catch(() => {
+                // TODO not logged-in
+                // create offline template
+                return
+            })
     };
     var deleteTemplate = mock;
     var clearLocalTemplates = mock;
@@ -171,36 +245,53 @@ var _FIRESTORE_PLUGIN = function () {
         return firebase.auth()
             .signInWithEmailAndPassword(params.email, params.password)
             .then((res) => {
-                return setSignedInUser({
-                    email: res.user.email,
-                    // backwards compatibility
-                    info: {
-                        name: res.user.displayName,
+                var userId = res.user.uid;
+                var customersRef = db.collection('customers');
+
+                return customersRef.where('members', 'array-contains', userId).get().then((customers) => {
+                    // get first customer
+                    if (customers.docs.length) {
+                        return customers.docs[0];
+                    }
+
+                    // should always have at least one customer
+                    return Promise.reject()
+                }).then((customer) => {
+                    return setSignedInUser({
+                        id: userId,
+                        customer: customer.id,
+                        email: res.user.email,
+                        // backwards compatibility
+                        info: {
+                            name: res.user.displayName,
+                            // TODO get from firestore
+                            share_all: true
+                        },
+                        created_datetime: new Date(res.user.metadata.creationTime),
+                        editor: {
+                            enabled: true
+                        },
                         // TODO get from firestore
-                        share_all: true
-                    },
-                    created_datetime: new Date(res.user.metadata.creationTime),
-                    editor: {
-                        enabled: true
-                    },
-                    // TODO get from firestore
-                    is_loggedin: true,
-                    current_subscription: '',
-                    is_customer: true,
-                    created_datetime: '',
-                    current_subscription: {
-                        active: true,
+                        is_loggedin: true,
+                        current_subscription: '',
+                        is_customer: true,
                         created_datetime: '',
-                        plan: '',
-                        quantity: 1
-                    },
-                    is_staff: false
+                        current_subscription: {
+                            active: true,
+                            created_datetime: '',
+                            plan: '',
+                            quantity: 1
+                        },
+                        is_staff: false
+                    });
                 });
             });
     };
     var forgot = () => {};
     var logout = () => {
-        return setSignedInUser({});
+        return firebase.auth().signOut().then(() => {
+            return setSignedInUser({});
+        });
     };
 
     var openSubscribePopup = function (params = {}) {
@@ -233,7 +324,7 @@ var _FIRESTORE_PLUGIN = function () {
         getAccount: getAccount,
         setAccount: setAccount,
 
-        getMember: getMember,
+        getMembers: getMembers,
         setMember: setMember,
 
         getTemplate: getTemplate,

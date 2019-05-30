@@ -31,7 +31,7 @@ gApp.service('MemberService', function ($q, $rootScope) {
 
     self.members = function () {
         var deferred = $q.defer();
-        store.getMember().then(deferred.resolve);
+        store.getMembers().then(deferred.resolve);
         return deferred.promise;
     };
 

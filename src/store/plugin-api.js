@@ -189,7 +189,7 @@ var _GORGIAS_API_PLUGIN = function () {
             .then((res) => res.json());
     };
 
-    var getMember = function (params = {}) {
+    var getMembers = function (params = {}) {
         var membersApiUrl = `${apiBaseURL}members`
         if (params.memberId) {
             membersApiUrl += `/${params.memberId}`
@@ -845,7 +845,7 @@ var _GORGIAS_API_PLUGIN = function () {
         getAccount: getAccount,
         setAccount: setAccount,
 
-        getMember: getMember,
+        getMembers: getMembers,
         setMember: setMember,
 
         getTemplate: getTemplate,
