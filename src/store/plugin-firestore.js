@@ -29,6 +29,10 @@ var _FIRESTORE_PLUGIN = function () {
         return firebase.firestore.Timestamp.fromDate(date);
     };
 
+    function now () {
+        return fsDate(new Date());
+    };
+
     // uuidv4
     function uuid() {
         return `${1e7}-${1e3}-${4e3}-${8e3}-${1e11}`.replace(/[018]/g, c =>
@@ -104,7 +108,13 @@ var _FIRESTORE_PLUGIN = function () {
 
             return batch.commit().then(() => newTags);
         });
-    }
+    };
+
+    function tagsToArray (tagsString = '') {
+        return (tagsString || '').split(',').map((tag) => {
+            return (tag || '').trim();
+        });
+    };
 
     // replace tags titles with ids
     function tagsToIds (templateTags) {
@@ -149,8 +159,6 @@ var _FIRESTORE_PLUGIN = function () {
     };
 
     function parseTemplate (params = {}) {
-        var now = fsDate(new Date());
-
         var sharing = 'none';
         var shared_with = [];
         // TODO get sharing=everyone from controller/user?
@@ -160,15 +168,19 @@ var _FIRESTORE_PLUGIN = function () {
             shared_with = [];
         };
 
+        var templateDate = now();
+
         var template = {
-            body: params.template.body,
             title: params.template.title,
-            attachments: params.template.attachments,
+            body: params.template.body,
+            shortcut: params.template.shortcut || '',
+            subject: params.template.subject || '',
             cc: params.template.cc || '',
             bcc: params.template.bcc || '',
             to: params.template.to || '',
-            created_datetime: now,
-            modified_datetime: now,
+            attachments: params.template.attachments,
+            created_datetime: templateDate,
+            modified_datetime: templateDate,
             deleted_datetime: null,
             shared_with: shared_with,
             sharing: sharing,
@@ -179,9 +191,7 @@ var _FIRESTORE_PLUGIN = function () {
         };
 
         // clean-up template tags
-        var templateTags = (params.template.tags || '').split(',').map((tag) => {
-            return (tag || '').trim();
-        });
+        var templateTags = tagsToArray(params.template.tags);
 
         return getSignedInUser()
             .then((user) => {
@@ -203,6 +213,7 @@ var _FIRESTORE_PLUGIN = function () {
         return templatesCollection
             .where('customer', '==', user.customer)
             .where('owner', '==', user.id)
+            .where('deleted_datetime', '==', null)
             .get()
     };
 
@@ -211,6 +222,7 @@ var _FIRESTORE_PLUGIN = function () {
         return templatesCollection
             .where('customer', '==', user.customer)
             .where('shared_with', 'array-contains', user.id)
+            .where('deleted_datetime', '==', null)
             .get()
     };
 
@@ -219,11 +231,11 @@ var _FIRESTORE_PLUGIN = function () {
         return templatesCollection
             .where('customer', '==', user.customer)
             .where('sharing', '==', 'everyone')
+            .where('deleted_datetime', '==', null)
             .get()
     };
 
-    // TODO switch to params
-    var getTemplate = (id) => {
+    var getTemplate = (params = {}) => {
 //         {
 //             "id": {
 //                 "attachments": "",
@@ -250,8 +262,8 @@ var _FIRESTORE_PLUGIN = function () {
 
 
         // return single template
-        if (id) {
-            return templatesCollection.doc(id).get().then((res) => {
+        if (params.id) {
+            return templatesCollection.doc(params.id).get().then((res) => {
                 var templateData = res.data();
 
                 return idsToTags(templateData.tags).then((tags) => {
@@ -297,7 +309,6 @@ var _FIRESTORE_PLUGIN = function () {
                                     templateData,
                                     {
                                         id: template.id,
-                                        // TODO check deleted_datetime
                                         deleted: 0,
                                         tags: tags.join(', '),
                                         // TODO check sharing
@@ -319,7 +330,46 @@ var _FIRESTORE_PLUGIN = function () {
                 console.log('err', err);
             });
     };
-    var updateTemplate = mock;
+
+    var updateTemplate = (params = {}) => {
+//         attachments: []
+//         body: "<div>&nbsp;</div>"
+//         created_datetime: t {seconds: 1559227395, nanoseconds: 68000000}
+//         customer: "IDJ03YipjOV3touEgrbX"
+//         deleted_datetime: null
+//         id: "500727c5-2c0d-4800-9f08-f6be3fdab248"
+//         modified_datetime: t {seconds: 1559227395, nanoseconds: 68000000}
+//         owner: "25v9Fag7OyfWQFvbFHimPAn5TuL2"
+//         shared_with: []
+//         sharing: "none"
+//         tags: "test"
+//         title: "t"
+//         version: 1
+
+        var updatedDate = now();
+        var updatedTemplate = {
+            modified_datetime: updatedDate,
+            title: params.template.title || '',
+            body: params.template.body || '',
+            shortcut: params.template.shortcut || '',
+            subject: params.template.subject || '',
+            to: params.template.to || '',
+            cc: params.template.cc || '',
+            bcc: params.template.bcc || '',
+            attachments: params.template.attachments || []
+        };
+
+        var templateTags = tagsToArray(params.template.tags);
+        return tagsToIds(templateTags).then((tags) => {
+            updatedTemplate.tags = tags;
+            // TODO handle sharing
+
+            var ref = templatesCollection.doc(params.template.id);
+            // TODO update list after update
+            return ref.update(updatedTemplate)
+        });
+    };
+
     var createTemplate = (params = {}) => {
 //         {
 //             "template": {
@@ -337,14 +387,13 @@ var _FIRESTORE_PLUGIN = function () {
 
         return parseTemplate(params)
             .then((template) => {
-                // TODO create firestore template
                 var id = uuid();
                 var ref = templatesCollection.doc(id);
-
-                return ref.set(template)
+                return ref.set(template);
             })
-            .then((res) => {
-                console.log('created', res);
+            .then(() => {
+                // TODO update template list after creation
+                console.log('created');
             })
             .catch((err) => {
                 console.log('error', err);
@@ -353,7 +402,15 @@ var _FIRESTORE_PLUGIN = function () {
                 return
             });
     };
-    var deleteTemplate = mock;
+
+    var deleteTemplate = (params = {}) => {
+        var templateId = params.template.id;
+        var deletedDate = now();
+        var ref = templatesCollection.doc(templateId);
+        return ref.update({
+            deleted_datetime: deletedDate
+        });
+    };
     var clearLocalTemplates = mock;
 
     var getSharing = mock;

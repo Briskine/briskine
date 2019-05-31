@@ -76,7 +76,7 @@ gApp.service('TemplateService', function ($q, $rootScope, SettingsService) {
     // get template object given an id or null
     self.get = function (id) {
         var deferred = $q.defer();
-        store.getTemplate(id).then(function (res) {
+        store.getTemplate({id: id}).then(function (res) {
             deferred.resolve(res[id]);
         });
         return deferred.promise;
