@@ -107,7 +107,7 @@ var _FIRESTORE_PLUGIN = function () {
     }
 
     // replace tags titles with ids
-    function replaceTags (templateTags) {
+    function tagsToIds (templateTags) {
         return getTags().then((existingTagsQuery) => {
             var existingTags = existingTagsQuery.docs.map((tag) => {
                 return Object.assign({id: tag.id}, tag.data());
@@ -133,6 +133,18 @@ var _FIRESTORE_PLUGIN = function () {
                     ).id;
                 });
              });
+        });
+    };
+
+    function idsToTags (tagIds) {
+        return getTags().then((existingTagsQuery) => {
+            return tagIds.map((tagId) => {
+                var foundTag = existingTagsQuery.docs.find((tag) => {
+                    return tagId === tag.id
+                });
+
+                return foundTag.data().title;
+            });
         });
     };
 
@@ -178,12 +190,36 @@ var _FIRESTORE_PLUGIN = function () {
                     customer: user.customer
                 });
 
-                return replaceTags(templateTags)
+                return tagsToIds(templateTags)
             }).then((tags) => {
                 return Object.assign(template, {
                     tags: tags
                 });
             });
+    };
+
+    // my templates
+    var getTemplatesOwned = (user) => {
+        return templatesCollection
+            .where('customer', '==', user.customer)
+            .where('owner', '==', user.id)
+            .get()
+    };
+
+    // templates shared with me
+    var getTemplatesShared = (user) => {
+        return templatesCollection
+            .where('customer', '==', user.customer)
+            .where('shared_with', 'array-contains', user.id)
+            .get()
+    };
+
+    // templates shared with everyone
+    var getTemplatesForEveryone = (user) => {
+        return templatesCollection
+            .where('customer', '==', user.customer)
+            .where('sharing', '==', 'everyone')
+            .get()
     };
 
     // TODO switch to params
@@ -213,54 +249,75 @@ var _FIRESTORE_PLUGIN = function () {
 //         }
 
 
+        // return single template
         if (id) {
-            // TODO return single template
-            return
+            return templatesCollection.doc(id).get().then((res) => {
+                var templateData = res.data();
+
+                return idsToTags(templateData.tags).then((tags) => {
+                    var template = Object.assign({},
+                        templateData,
+                        {
+                            id: res.id,
+                            tags: tags.join(', ')
+                        }
+                    );
+
+                    // backwards compatibility
+                    var list = [];
+                    list[template.id] = template;
+
+                    return list;
+                });
+            });
         }
 
         return getSignedInUser()
             .then((user) => {
-                // TODO return all templates
-                return templatesCollection
-                    .where('customer', '==', user.customer)
-                    .get()
-                    .then((templatesQuery) => {
-                        return getTags().then((tagsQuery) => {
-                            // backward compatibility
-                            var templates = {};
-                            templatesQuery.docs.forEach((template) => {
-                                // replace tag ids with titles
-                                var templateData = template.data();
+                var allTemplates = [];
+                return Promise.all([
+                    getTemplatesOwned(user),
+                    getTemplatesShared(user),
+                    getTemplatesForEveryone(user)
+                ]).then((res) => {
+                    // concat all templates
+                    res.forEach((query) => {
+                        allTemplates = allTemplates.concat(query.docs);
+                    });
 
-                                var tags = templateData.tags.map((tagId) => {
-                                    var foundTag = tagsQuery.docs.find((tag) => {
-                                        return tag.id === tagId
-                                    })
-                                    return foundTag.data().title;
-                                }).join(', ');
+                    // backward compatibility
+                    // and template de-duplication (owned and sharing=everyone)
+                    var templates = {};
+                    return Promise.all(
+                        allTemplates.map((template) => {
+                            var templateData = template.data();
 
+                            return idsToTags(templateData.tags).then((tags) => {
                                 templates[template.id] = Object.assign(
                                     templateData,
                                     {
                                         id: template.id,
                                         // TODO check deleted_datetime
                                         deleted: 0,
-                                        tags: tags,
+                                        tags: tags.join(', '),
                                         // TODO check sharing
                                         private: true
                                     },
-                                )
-                            });
+                                );
 
-                            return templates
-                        });
+                                return
+                            });
+                        })
+                    ).then(() => {
+                        return templates
                     });
+                });
             })
             .catch((err) => {
                 // TODO not signed-in
                 // return from cache
                 console.log('err', err);
-            })
+            });
     };
     var updateTemplate = mock;
     var createTemplate = (params = {}) => {
