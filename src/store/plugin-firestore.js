@@ -16,6 +16,7 @@ var _FIRESTORE_PLUGIN = function () {
     var db = firebase.firestore();
 
     // TODO sync on first initialize and delete from storage
+    // IF singed-in
 
     function mock () {
         return Promise.resolve();
@@ -73,15 +74,70 @@ var _FIRESTORE_PLUGIN = function () {
     // TODO update account details
     var setAccount = mock;
 
-    var getMembers = (params = {}) => {
-        return Promise.resolve({
-            members: []
+    var usersCollection = db.collection('users');
+    var customersCollection = db.collection('customers');
+    var templatesCollection = db.collection('templates');
+    var tagsCollection = db.collection('tags');
+
+    function idsToUsers (userIds = []) {
+        return Promise.all(
+            userIds.map((id) => {
+                return usersCollection.doc(id).get().then((userQuery) => {
+                    var userData = userQuery.data();
+                    return Object.assign({
+                        // backwards compatibility
+                        active: true,
+                        id: userQuery.id,
+                        email: userData.email,
+                        name: userData.full_name
+                    }, userData);
+                })
+            })
+        )
+    };
+
+
+    var getMembers = (params = {exclude: null}) => {
+//         members: []
+//             active: true
+//             email: "alex@gorgias.io"
+//             id: ""
+//             is_customer: true
+//             name: "Alex Plugaru"
+//             user_id: 1
+
+        console.log('getMembers', params);
+
+        return getSignedInUser().then((user) => {
+            return customersCollection.doc(user.customer).get().then((customer) => {
+                var members = customer.data().members;
+                var exclude = params.exclude;
+                // by default exclude ourselves.
+                // null is default, otherwise []
+                if (exclude === null) {
+                    exclude = [user.id];
+                }
+
+                // exclude users
+                members = members.filter((memberId) => {
+                    return !exclude.includes(memberId)
+                });
+
+                return idsToUsers(members);
+            });
+        }).then((members) => {
+            return {
+                members: members
+            }
         });
     };
-    var setMember = mock;
 
-    var tagsCollection = db.collection('tags');
-    var templatesCollection = db.collection('templates');
+    // TODO team members page
+    var setMember = (params = {}) => {
+        console.log('setMember', params);
+
+        return Promise.reject();
+    };
 
     function getTags () {
         return getSignedInUser().then((user) => {
@@ -271,7 +327,10 @@ var _FIRESTORE_PLUGIN = function () {
                         templateData,
                         {
                             id: res.id,
-                            tags: tags.join(', ')
+                            tags: tags.join(', '),
+                            // backwards compatibility
+                            remote_id: res.id,
+                            nosync: 0
                         }
                     );
 
@@ -312,7 +371,10 @@ var _FIRESTORE_PLUGIN = function () {
                                         deleted: 0,
                                         tags: tags.join(', '),
                                         // TODO check sharing
-                                        private: true
+                                        private: true,
+                                        // backwards compatibility
+                                        remote_id: res.id,
+                                        nosync: 0
                                     },
                                 );
 
@@ -366,7 +428,11 @@ var _FIRESTORE_PLUGIN = function () {
 
             var ref = templatesCollection.doc(params.template.id);
             // TODO update list after update
-            return ref.update(updatedTemplate)
+            return ref.update(updatedTemplate).then(() => {
+                return Object.assign({}, updatedTemplate, {
+                    remote_id: params.template.id
+                });
+            });
         });
     };
 
@@ -413,8 +479,145 @@ var _FIRESTORE_PLUGIN = function () {
     };
     var clearLocalTemplates = mock;
 
-    var getSharing = mock;
-    var updateSharing = mock;
+    var getSharing = (params = {}) => {
+//         "acl": [
+//             {
+//             "email": "romain@gorgias.io",
+//             "quicktext_id": "07aa73cb-2ed0-4b4a-8ee0-30c91f53e501",
+//             "given_name": "Romain",
+//             "family_name": "Lapeyre",
+//             "created_datetime": "2019-04-08T20:36:25.842155",
+//             "user_id": 84,
+//             "permission": "owner",
+//             "id": "",
+//             "target_user_id": 84,
+//             "$$hashKey": "object:379"
+//             }
+//         ]
+
+        if (!params.quicktext_ids || !params.quicktext_ids.length) {
+            return Promise.resolve([]);
+        }
+
+        console.log('getSharing', params);
+
+        var members = [];
+
+        return getMembers({exclude: []}).then((res) => {
+            members = res.members;
+            return members
+        }).then(() => {
+            return Promise.all(
+                params.quicktext_ids.map((id) => {
+                    return templatesCollection.doc(id).get()
+                })
+            )
+        }).then((templates) => {
+            var acl = [];
+
+            return Promise.all(
+                templates.map((template) => {
+                    var templateData = template.data();
+                    if (templateData.sharing === 'everyone') {
+                        return members;
+                    };
+
+                    // TODO if custom shared_with ids to users
+                    if (templateData.sharing === 'custom') {
+                        // get from cached members, avoid extra requests
+                        return templateData.shared_with.map((userId) => {
+                            return members.find((member) => member.id === userId);
+                        });
+                    };
+
+                    // private
+                    return [];
+                })
+            ).then((sharing) => {
+                console.log('sharing', sharing);
+
+                sharing.forEach((templateSharing) => {
+                    templateSharing.forEach((sharedUser) => {
+                        // de-duplicate
+                        var existing = acl.find((user) => {
+                            return user.id !== sharedUser
+                        });
+
+                        if (!existing) {
+                            acl.push(sharedUser);
+                        };
+                    });
+                });
+
+                console.log('acl', acl)
+
+                // TODO how do we handle multiple selected quicktexts with different sharing settings?
+                // TODO merge users in acl, don't duplicate
+
+                // backwards compatibility
+                return {
+                    acl: acl
+                }
+            });
+        });
+    };
+
+    function hasAll (listOne, listTwo) {
+        return listTwo.every((val) => {
+            return listOne.includes(val);
+        });
+    };
+
+    var updateSharing = (params = {acl: {}, send_email: 'false'}) => {
+        console.log('updateSharing', params);
+
+        var templateIds = Object.keys(params.acl.quicktexts);
+        var members = [];
+
+        return getMembers({exclude: []}).then((res) => {
+            members = res.members;
+
+            return Promise.all(
+                templateIds.map((id) => {
+                    return templatesCollection.doc(id).get()
+                })
+            )
+        }).then((templates) => {
+            // TODO emails don't contain user or template owner?
+            // TODO exclude template owner, not ourselves
+            return Promise.all(
+                templates.map((template) => {
+                    // TODO check if everyone
+                    var templateData = template.data();
+                    var owner = templateData.owner;
+                    var emails = (params.acl.quicktexts[template.id].emails || '').split(',');
+                    var sharing = 'none';
+                    var shared_with = [];
+                    // exclude template owner
+                    var everyMember = members.filter((m) => m.id !== templateData.owner).map((m) => m.email);
+                    var everyone = hasAll(everyMember, emails);
+
+                    console.log(everyone);
+
+                    if (everyone) {
+                        sharing = 'everyone';
+                    } else if (emails.length) {
+                        sharing = 'custom';
+                        // TODO emails to ids, from member
+                        shared_with = [];
+                    }
+
+                    // TODO how do we handle private?
+
+                    // TODO update template
+                    return templatesCollection.doc(template.id).update({
+                        sharing: sharing,
+                        shared_with: shared_with
+                    });
+                })
+            )
+        });
+    };
 
     var getStats = mock;
     var updateStats = mock;

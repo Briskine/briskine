@@ -2,6 +2,7 @@ gApp.service('QuicktextSharingService', function($q, $rootScope) {
     var self = this;
 
     // get quicktext's ACL given an id or null
+    // TODO DEPRECATE this is not used anywhere?
     self.get = function(id) {
         var deferred = $q.defer();
         store.getSharing({
