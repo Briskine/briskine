@@ -536,23 +536,24 @@ var _FIRESTORE_PLUGIN = function () {
             ).then((sharing) => {
                 console.log('sharing', sharing);
 
+                // merge users in acl, for multiple selected templates
                 sharing.forEach((templateSharing) => {
                     templateSharing.forEach((sharedUser) => {
                         // de-duplicate
                         var existing = acl.find((user) => {
-                            return user.id !== sharedUser
+                            return user.id === sharedUser.id
                         });
 
                         if (!existing) {
-                            acl.push(sharedUser);
+                            acl.push(Object.assign({
+                                // backwards compatibility
+                                target_user_id: sharedUser.id
+                            }, sharedUser));
                         };
                     });
                 });
 
-                console.log('acl', acl)
-
-                // TODO how do we handle multiple selected quicktexts with different sharing settings?
-                // TODO merge users in acl, don't duplicate
+                console.log('acl', acl);
 
                 // backwards compatibility
                 return {
@@ -568,12 +569,49 @@ var _FIRESTORE_PLUGIN = function () {
         });
     };
 
-    var updateSharing = (params = {acl: {}, send_email: 'false'}) => {
+    function sequence (tasks) {
+        return tasks.reduce((promiseChain, currentTask) => {
+            return promiseChain.then(chainResults =>
+                currentTask.then(currentResult =>
+                    [...chainResults, currentResult]
+                )
+            );
+        }, Promise.resolve([]))
+    };
+
+    var updateSharing = (params = {action: 'create', acl: {}, send_email: 'false'}) => {
         console.log('updateSharing', params);
 
+        if (params.action === 'delete') {
+            // TODO don't allow turn template private if you are not the owner
+            // delete sends one request for each user, with params.acl.user_id
+            // TODO we need to batch these requests and make a single request per template
+
+            // TODO this causes a race condition, need sequential promise order
+            return sequence(
+                // params.acl.quicktext_ids is array of ids
+                params.acl.quicktext_ids.map((id) => {
+                    return templatesCollection.doc(id).get().then((template) => {
+                        var templateData = template.data();
+                        var sharing = 'custom';
+                        var shared_with = templateData.shared_with.filter((userId) => {
+                            return userId !== params.acl.user_id
+                        });
+
+                        console.log('shared_with', shared_with);
+
+                        return templatesCollection.doc(id).update({
+                            sharing: sharing,
+                            shared_with: shared_with
+                        });
+                    });
+                })
+            );
+        }
+
+        // params.acl.quicktexts is map
         var templateIds = Object.keys(params.acl.quicktexts);
         var members = [];
-
         return getMembers({exclude: []}).then((res) => {
             members = res.members;
 
@@ -583,33 +621,30 @@ var _FIRESTORE_PLUGIN = function () {
                 })
             )
         }).then((templates) => {
-            // TODO emails don't contain user or template owner?
-            // TODO exclude template owner, not ourselves
             return Promise.all(
                 templates.map((template) => {
-                    // TODO check if everyone
                     var templateData = template.data();
                     var owner = templateData.owner;
                     var emails = (params.acl.quicktexts[template.id].emails || '').split(',');
                     var sharing = 'none';
                     var shared_with = [];
                     // exclude template owner
-                    var everyMember = members.filter((m) => m.id !== templateData.owner).map((m) => m.email);
-                    var everyone = hasAll(everyMember, emails);
-
-                    console.log(everyone);
+                    var possibleMembers = members.filter((m) => m.id !== templateData.owner);
+                    var everyMember = possibleMembers.map((m) => m.email);
+                    var everyone = hasAll(emails, everyMember);
 
                     if (everyone) {
                         sharing = 'everyone';
+                        // backwards compatibility
+                        shared_with = possibleMembers.map((member) => member.id);
                     } else if (emails.length) {
                         sharing = 'custom';
                         // TODO emails to ids, from member
                         shared_with = [];
                     }
 
-                    // TODO how do we handle private?
+                    // TODO handle send_email param
 
-                    // TODO update template
                     return templatesCollection.doc(template.id).update({
                         sharing: sharing,
                         shared_with: shared_with
