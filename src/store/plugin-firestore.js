@@ -709,13 +709,50 @@ var _FIRESTORE_PLUGIN = function () {
         // - if userMetadata.migrated = true account, keep using firestore
         // - if not, switch to old-api plugin
 
+        var user = {};
+
         return firebase.auth()
             .signInWithEmailAndPassword(params.email, params.password)
             .then((res) => {
                 var userId = res.user.uid;
-                var customersRef = db.collection('customers');
+                user = {
+                    id: userId,
+                    created_datetime: new Date(res.user.metadata.creationTime)
+                };
 
-                return customersRef.where('members', 'array-contains', userId).get().then((customers) => {
+                return usersCollection.doc(userId).get();
+            }).then((userDoc) => {
+                var userData = userDoc.data();
+                user = Object.assign(user, {
+                    email: userData.email,
+                    // backwards compatibility
+                    info: {
+                        // TODO get from firestore, not firebase
+                        name: userData.full_name,
+                        share_all: true
+                    },
+                    editor: {
+                        enabled: true
+                    },
+                    // TODO get from firestore
+                    is_loggedin: true,
+                    current_subscription: '',
+                    is_customer: true,
+                    created_datetime: '',
+                    current_subscription: {
+                        active: true,
+                        created_datetime: '',
+                        plan: '',
+                        quantity: 1
+                    },
+                    is_staff: false
+                });
+
+                return user
+            }).then((user) => {
+                // add customer to user
+                var customersRef = db.collection('customers');
+                return customersRef.where('members', 'array-contains', user.id).get().then((customers) => {
                     // get first customer
                     if (customers.docs.length) {
                         return customers.docs[0];
@@ -724,33 +761,10 @@ var _FIRESTORE_PLUGIN = function () {
                     // should always have at least one customer
                     return Promise.reject()
                 }).then((customer) => {
-                    return setSignedInUser({
-                        id: userId,
-                        customer: customer.id,
-                        email: res.user.email,
-                        // backwards compatibility
-                        info: {
-                            name: res.user.displayName,
-                            // TODO get from firestore
-                            share_all: true
-                        },
-                        created_datetime: new Date(res.user.metadata.creationTime),
-                        editor: {
-                            enabled: true
-                        },
-                        // TODO get from firestore
-                        is_loggedin: true,
-                        current_subscription: '',
-                        is_customer: true,
-                        created_datetime: '',
-                        current_subscription: {
-                            active: true,
-                            created_datetime: '',
-                            plan: '',
-                            quantity: 1
-                        },
-                        is_staff: false
-                    });
+                    user = Object.assign({
+                        customer: customer.id
+                    }, user);
+                    return setSignedInUser(user);
                 });
             });
     };
