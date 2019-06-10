@@ -569,14 +569,51 @@ var _FIRESTORE_PLUGIN = function () {
         });
     };
 
-    function sequence (tasks) {
-        return tasks.reduce((promiseChain, currentTask) => {
-            return promiseChain.then(chainResults =>
-                currentTask.then(currentResult =>
-                    [...chainResults, currentResult]
-                )
-            );
-        }, Promise.resolve([]))
+    var batchDeleteSharing = null;
+    var timerDeleteSharing = null;
+    var listDeleteSharing = [];
+
+    // batch delete sharing (remove one user from shared_with)
+    function deleteSharing (params = {}) {
+        if (!batchDeleteSharing) {
+            batchDeleteSharing = db.batch();
+        }
+
+        if (timerDeleteSharing) {
+            clearTimeout(timerDeleteSharing);
+        }
+
+        // keep a list of updated templates
+        if (!listDeleteSharing.includes(params.id)) {
+            listDeleteSharing.push(params.id);
+        }
+
+        timerDeleteSharing = setTimeout(() => {
+            batchDeleteSharing.commit().then(() => {
+                // set sharing=none to templates with shared_with = []
+                listDeleteSharing.forEach((id) => {
+                    // set sharing to none if share_with empty
+                    var ref = templatesCollection.doc(id);
+                    ref.get().then((template) => {
+                        var templateData = template.data();
+                        if (templateData.shared_with.length === 0) {
+                            ref.update({
+                                sharing: 'none'
+                            });
+                        }
+                    });
+                });
+
+                batchDeleteSharing = null;
+                listDeleteSharing = [];
+            });
+        }, 1000);
+
+        var templateRef = templatesCollection.doc(params.id);
+        batchDeleteSharing.update(templateRef, {
+            sharing: 'custom',
+            shared_with: firebase.firestore.FieldValue.arrayRemove(params.user_id)
+        });
     };
 
     var updateSharing = (params = {action: 'create', acl: {}, send_email: 'false'}) => {
@@ -585,28 +622,15 @@ var _FIRESTORE_PLUGIN = function () {
         if (params.action === 'delete') {
             // TODO don't allow turn template private if you are not the owner
             // delete sends one request for each user, with params.acl.user_id
-            // TODO we need to batch these requests and make a single request per template
+            // batch delete requests
+            params.acl.quicktext_ids.forEach((id) => {
+                deleteSharing({
+                    id: id,
+                    user_id: params.acl.user_id
+                });
+            });
 
-            // TODO this causes a race condition, need sequential promise order
-            return sequence(
-                // params.acl.quicktext_ids is array of ids
-                params.acl.quicktext_ids.map((id) => {
-                    return templatesCollection.doc(id).get().then((template) => {
-                        var templateData = template.data();
-                        var sharing = 'custom';
-                        var shared_with = templateData.shared_with.filter((userId) => {
-                            return userId !== params.acl.user_id
-                        });
-
-                        console.log('shared_with', shared_with);
-
-                        return templatesCollection.doc(id).update({
-                            sharing: sharing,
-                            shared_with: shared_with
-                        });
-                    });
-                })
-            );
+            return Promise.resolve();
         }
 
         // params.acl.quicktexts is map
