@@ -97,7 +97,9 @@ var _FIRESTORE_PLUGIN = function () {
     };
 
 
-    var getMembers = (params = {}) => {
+    // BUG getMembers without exclude template owner works for sharing
+    // but still returns current user for selectize field
+    var getMembers = (params = {exclude: null}) => {
 //         members: []
 //             active: true
 //             email: "alex@gorgias.io"
@@ -106,11 +108,21 @@ var _FIRESTORE_PLUGIN = function () {
 //             name: "Alex Plugaru"
 //             user_id: 1
 
-        console.log('getMembers', params);
-
         return getSignedInUser().then((user) => {
             return customersCollection.doc(user.customer).get().then((customer) => {
                 var members = customer.data().members;
+                var exclude = params.exclude;
+                // by default exclude ourselves.
+                // null is default, otherwise []
+                if (exclude === null) {
+                    exclude = [user.id];
+                }
+
+                // exclude users
+                members = members.filter((memberId) => {
+                    return !exclude.includes(memberId)
+                });
+
                 return idsToUsers(members);
             });
         }).then((members) => {
@@ -439,15 +451,25 @@ var _FIRESTORE_PLUGIN = function () {
 //             "isPrivate": true
 //         }
 
+        var newTemplate = {};
+
         return parseTemplate(params)
             .then((template) => {
                 var id = uuid();
+                newTemplate = Object.assign({
+                    // backwards compatibility
+                    id: id,
+                    remote_id: id
+                }, template);
                 var ref = templatesCollection.doc(id);
                 return ref.set(template);
             })
             .then(() => {
-                // TODO update template list after creation
-                console.log('created');
+                // backwards compatibility
+                // update template list after creation
+                trigger('templates-sync');
+
+                return newTemplate
             })
             .catch((err) => {
                 console.log('error', err);
@@ -487,11 +509,9 @@ var _FIRESTORE_PLUGIN = function () {
             return Promise.resolve([]);
         }
 
-        console.log('getSharing', params);
-
         var members = [];
 
-        return getMembers().then((res) => {
+        return getMembers({exclude: []}).then((res) => {
             members = res.members;
             return members
         }).then(() => {
@@ -505,7 +525,7 @@ var _FIRESTORE_PLUGIN = function () {
             // add template owners to acl
             var acl = templates.map((template) => {
                 return {
-                    target_user_id: template.owner
+                    target_user_id: template.data().owner
                 }
             });
 
@@ -544,8 +564,6 @@ var _FIRESTORE_PLUGIN = function () {
                         };
                     });
                 });
-
-                console.log('acl', acl);
 
                 // backwards compatibility
                 return {
@@ -609,8 +627,6 @@ var _FIRESTORE_PLUGIN = function () {
     };
 
     var updateSharing = (params = {action: 'create', acl: {}, send_email: 'false'}) => {
-        console.log('updateSharing', params);
-
         if (params.action === 'delete') {
             // TODO don't allow turn template private if you are not the owner
             // delete sends one request for each user, with params.acl.user_id
@@ -628,7 +644,7 @@ var _FIRESTORE_PLUGIN = function () {
         // params.acl.quicktexts is map
         var templateIds = Object.keys(params.acl.quicktexts);
         var members = [];
-        return getMembers().then((res) => {
+        return getMembers({exclude: []}).then((res) => {
             members = res.members;
 
             return Promise.all(

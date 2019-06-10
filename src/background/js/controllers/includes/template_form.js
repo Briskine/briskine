@@ -178,7 +178,8 @@ gApp.controller('TemplateFormCtrl',
             var acl = $scope.shareData.acl;
             var members = $scope.shareData.members;
 
-            if (acl.length >= members.length) {
+            // members does not include current user
+            if (acl.length >= members.length + 1) {
                 self.sharing_setting = "everyone";
             } else if (acl.length > 1) {
                 self.sharing_setting = "specific";
@@ -189,6 +190,7 @@ gApp.controller('TemplateFormCtrl',
             var selectize = $scope.templateModalSelectizeField[0].selectize;
             selectize.clear();
 
+            // ADDS VALUES, NOT OPTIONS
             acl.forEach(function (acl){
                 if (acl.target_user_id != $scope.account.id) {
                     selectize.addItem(acl.email);

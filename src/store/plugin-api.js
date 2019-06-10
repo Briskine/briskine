@@ -707,8 +707,6 @@ var _GORGIAS_API_PLUGIN = function () {
             return Promise.resolve([]);
         }
 
-        console.log(params);
-
         return fetch(`${apiBaseURL}share`, {
             method: 'POST',
             headers: {
@@ -718,15 +716,9 @@ var _GORGIAS_API_PLUGIN = function () {
         })
         .then(handleErrors)
         .then((res) => res.json())
-        .then((res) => {
-            console.log(res)
-            return res
-        });
     };
 
     var updateSharing = function (params = {}) {
-        console.log('updateSharing', params);
-
         return fetch(`${apiBaseURL}share`, {
             method: 'PUT',
             headers: {
