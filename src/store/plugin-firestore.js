@@ -97,7 +97,7 @@ var _FIRESTORE_PLUGIN = function () {
     };
 
 
-    var getMembers = (params = {exclude: null}) => {
+    var getMembers = (params = {}) => {
 //         members: []
 //             active: true
 //             email: "alex@gorgias.io"
@@ -111,18 +111,6 @@ var _FIRESTORE_PLUGIN = function () {
         return getSignedInUser().then((user) => {
             return customersCollection.doc(user.customer).get().then((customer) => {
                 var members = customer.data().members;
-                var exclude = params.exclude;
-                // by default exclude ourselves.
-                // null is default, otherwise []
-                if (exclude === null) {
-                    exclude = [user.id];
-                }
-
-                // exclude users
-                members = members.filter((memberId) => {
-                    return !exclude.includes(memberId)
-                });
-
                 return idsToUsers(members);
             });
         }).then((members) => {
@@ -503,7 +491,7 @@ var _FIRESTORE_PLUGIN = function () {
 
         var members = [];
 
-        return getMembers({exclude: []}).then((res) => {
+        return getMembers().then((res) => {
             members = res.members;
             return members
         }).then(() => {
@@ -513,7 +501,13 @@ var _FIRESTORE_PLUGIN = function () {
                 })
             )
         }).then((templates) => {
-            var acl = [];
+            // backwards compatibility
+            // add template owners to acl
+            var acl = templates.map((template) => {
+                return {
+                    target_user_id: template.owner
+                }
+            });
 
             return Promise.all(
                 templates.map((template) => {
@@ -522,7 +516,7 @@ var _FIRESTORE_PLUGIN = function () {
                         return members;
                     };
 
-                    // TODO if custom shared_with ids to users
+                    // if custom shared_with ids to users
                     if (templateData.sharing === 'custom') {
                         // get from cached members, avoid extra requests
                         return templateData.shared_with.map((userId) => {
@@ -534,8 +528,6 @@ var _FIRESTORE_PLUGIN = function () {
                     return [];
                 })
             ).then((sharing) => {
-                console.log('sharing', sharing);
-
                 // merge users in acl, for multiple selected templates
                 sharing.forEach((templateSharing) => {
                     templateSharing.forEach((sharedUser) => {
@@ -636,7 +628,7 @@ var _FIRESTORE_PLUGIN = function () {
         // params.acl.quicktexts is map
         var templateIds = Object.keys(params.acl.quicktexts);
         var members = [];
-        return getMembers({exclude: []}).then((res) => {
+        return getMembers().then((res) => {
             members = res.members;
 
             return Promise.all(
@@ -663,8 +655,10 @@ var _FIRESTORE_PLUGIN = function () {
                         shared_with = possibleMembers.map((member) => member.id);
                     } else if (emails.length) {
                         sharing = 'custom';
-                        // TODO emails to ids, from member
-                        shared_with = [];
+                        // emails to ids
+                        shared_with = possibleMembers.filter((member) => {
+                            return emails.includes(member.email)
+                        }).map((member) => member.id);
                     }
 
                     // TODO handle send_email param
