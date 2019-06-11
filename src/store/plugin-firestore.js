@@ -706,6 +706,13 @@ var _FIRESTORE_PLUGIN = function () {
     var syncNow = mock;
     var syncLocal = mock;
 
+    // backwards compatibility
+    function signinError (err) {
+        throw {
+            error: err.message || 'There was an issue signing you in. Please try again later.'
+        };
+    };
+
     var signin = (params = {}) => {
         var user = {};
 
@@ -751,12 +758,17 @@ var _FIRESTORE_PLUGIN = function () {
 
                 return setSignedInUser(user);
             }).catch((err) => {
-                throw {
-                    error: err.message || 'There was an issue signing you in. Please try again later.'
-                }
+                return signinError(err);
             });
     };
-    var forgot = () => {};
+
+    var forgot = (params = {}) => {
+        return firebase.auth().sendPasswordResetEmail(params.email)
+            .catch((err) => {
+                return signinError(err);
+            });
+    };
+
     var logout = () => {
         return firebase.auth().signOut().then(() => {
             return setSignedInUser({});
