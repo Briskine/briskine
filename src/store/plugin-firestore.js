@@ -67,7 +67,7 @@ var _FIRESTORE_PLUGIN = function () {
 
     function setSignedInUser (user) {
         return new Promise((resolve, reject) => {
-            var globalUser = {}
+            var globalUser = {};
             globalUser[globalUserKey] = user;
             chrome.storage.local.set(globalUser, () => {
                 resolve();
@@ -75,11 +75,63 @@ var _FIRESTORE_PLUGIN = function () {
         });
     };
 
+    // auth change
+    firebase.auth().onAuthStateChanged((firebaseUser) => {
+        if (!firebaseUser) {
+            return setSignedInUser({});
+        }
+
+        return updateCurrentUser(firebaseUser);
+    });
+
     var getLoginInfo = getSignedInUser;
     var getAccount = getSignedInUser;
-    // TODO update account details
+
+    // update account details
     var setAccount = (params = {}) => {
-        console.log('setAccount', params);
+        var currentUser = firebase.auth().currentUser;
+        var userRef = usersCollection.doc(currentUser.uid);
+        var updates = [];
+
+        if (currentUser.email !== params.email) {
+            updates.push(
+                currentUser.updateEmail(params.email).then(() => {
+                    // only if auth update successful
+                    // update email in users collection
+                    return userRef.update({email: params.email})
+                })
+            );
+        }
+
+        if (currentUser.displayName !== params.name) {
+            updates.push(
+                currentUser.updateProfile({
+                    displayName: params.name
+                }).then(() => {
+                    // only if auth update successful
+                    // update name in users collection
+                    return userRef.update({full_name: params.name})
+                })
+            );
+        }
+
+        return Promise.all(updates).then(() => {
+            // update details in cached user
+            return updateCurrentUser(firebase.auth().currentUser);
+        }).then(() => {
+            // update password last, it invalidates the session
+            if (params.password) {
+                return currentUser.updatePassword(params.password).then(() => {
+                    // automatically sign-in with new credentials
+                    return signin({
+                        email: params.email,
+                        password: params.password
+                    });
+                });
+            }
+
+            return
+        });
     };
 
     var usersCollection = db.collection('users');
@@ -713,50 +765,55 @@ var _FIRESTORE_PLUGIN = function () {
         };
     };
 
+    function updateCurrentUser (firebaseUser) {
+        var userId = firebaseUser.uid;
+        var user = {
+            id: userId,
+            email: firebaseUser.email,
+            created_datetime: new Date(firebaseUser.metadata.creationTime)
+        };
+
+        // get data from users collection
+        return usersCollection.doc(userId).get().then((userDoc) => {
+            // get data from users collection
+            var userData = userDoc.data();
+            user = Object.assign(user, {
+                // only support one customer for now
+                customer: userData.customers[0],
+                // backwards compatibility
+                info: {
+                    name: userData.full_name,
+                    // TODO get from firestore
+                    share_all: true
+                },
+                editor: {
+                    enabled: true
+                },
+                // TODO get from firestore
+                is_loggedin: true,
+                current_subscription: '',
+                is_customer: true,
+                created_datetime: '',
+                current_subscription: {
+                    active: true,
+                    created_datetime: '',
+                    plan: '',
+                    quantity: 1
+                },
+                is_staff: false
+            });
+
+            return setSignedInUser(user);
+        });
+    }
+
     var signin = (params = {}) => {
         var user = {};
 
         return firebase.auth()
             .signInWithEmailAndPassword(params.email, params.password)
-            .then((res) => {
-                var userId = res.user.uid;
-                user = {
-                    id: userId,
-                    created_datetime: new Date(res.user.metadata.creationTime)
-                };
-
-                return usersCollection.doc(userId).get();
-            }).then((userDoc) => {
-                // get data from users collection
-                var userData = userDoc.data();
-                user = Object.assign(user, {
-                    // only support one customer for now
-                    customer: userData.customers[0],
-                    email: userData.email,
-                    // backwards compatibility
-                    info: {
-                        name: userData.full_name,
-                        // TODO get from firestore
-                        share_all: true
-                    },
-                    editor: {
-                        enabled: true
-                    },
-                    // TODO get from firestore
-                    is_loggedin: true,
-                    current_subscription: '',
-                    is_customer: true,
-                    created_datetime: '',
-                    current_subscription: {
-                        active: true,
-                        created_datetime: '',
-                        plan: '',
-                        quantity: 1
-                    },
-                    is_staff: false
-                });
-
-                return setSignedInUser(user);
+            .then((authRes) => {
+                return updateCurrentUser(authRes.user);
             }).catch((err) => {
                 return signinError(err);
             });
