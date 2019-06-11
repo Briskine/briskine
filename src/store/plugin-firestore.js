@@ -16,7 +16,7 @@ var _FIRESTORE_PLUGIN = function () {
     var db = firebase.firestore();
 
     // TODO sync on first initialize and delete from storage
-    // IF singed-in
+    // IF signed-in
 
     function mock () {
         return Promise.resolve();
@@ -39,6 +39,12 @@ var _FIRESTORE_PLUGIN = function () {
         return `${1e7}-${1e3}-${4e3}-${8e3}-${1e11}`.replace(/[018]/g, c =>
             (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
         );
+    };
+
+    // backwards compatibility
+    // update template list
+    function refreshTemplates () {
+        trigger('templates-sync');
     };
 
     // TODO borrow settings from old api plugin
@@ -96,9 +102,6 @@ var _FIRESTORE_PLUGIN = function () {
         )
     };
 
-
-    // BUG getMembers without exclude template owner works for sharing
-    // but still returns current user for selectize field
     var getMembers = (params = {exclude: null}) => {
 //         members: []
 //             active: true
@@ -169,10 +172,10 @@ var _FIRESTORE_PLUGIN = function () {
     function tagsToArray (tagsString = '') {
         return (tagsString || '').split(',').map((tag) => {
             return (tag || '').trim();
-        });
+        }).filter((tag) => !!tag);
     };
 
-    // replace tags titles with ids
+    // replace tag titles with ids
     function tagsToIds (templateTags) {
         return getTags().then((existingTagsQuery) => {
             var existingTags = existingTagsQuery.docs.map((tag) => {
@@ -209,21 +212,20 @@ var _FIRESTORE_PLUGIN = function () {
                     return tagId === tag.id
                 });
 
+                if (!foundTag) {
+                    return '';
+                }
+
                 return foundTag.data().title;
             });
         });
     };
 
     function parseTemplate (params = {}) {
+        // private by default
+        // sharing later set by updateSharing
         var sharing = 'none';
         var shared_with = [];
-        // TODO get sharing=everyone from controller/user?
-        if (!params.isPrivate) {
-            sharing = 'custom';
-            // TODO get from params.template
-            shared_with = [];
-        };
-
         var templateDate = now();
 
         var template = {
@@ -393,6 +395,8 @@ var _FIRESTORE_PLUGIN = function () {
             });
     };
 
+    // update template details
+    // sharing is updated later by updateSharing
     var updateTemplate = (params = {}) => {
 //         attachments: []
 //         body: "<div>&nbsp;</div>"
@@ -424,12 +428,12 @@ var _FIRESTORE_PLUGIN = function () {
         var templateTags = tagsToArray(params.template.tags);
         return tagsToIds(templateTags).then((tags) => {
             updatedTemplate.tags = tags;
-            // TODO handle sharing
-
             var ref = templatesCollection.doc(params.template.id);
-            // TODO update list after update
             return ref.update(updatedTemplate).then(() => {
-                return Object.assign({}, updatedTemplate, {
+                // backwards compatibility
+                refreshTemplates();
+
+                return Object.assign(updatedTemplate, {
                     remote_id: params.template.id
                 });
             });
@@ -467,7 +471,7 @@ var _FIRESTORE_PLUGIN = function () {
             .then(() => {
                 // backwards compatibility
                 // update template list after creation
-                trigger('templates-sync');
+                refreshTemplates();
 
                 return newTemplate
             })
@@ -487,6 +491,8 @@ var _FIRESTORE_PLUGIN = function () {
             deleted_datetime: deletedDate
         });
     };
+
+    // TODO delete offline templates
     var clearLocalTemplates = mock;
 
     var getSharing = (params = {}) => {
@@ -582,7 +588,6 @@ var _FIRESTORE_PLUGIN = function () {
     var batchDeleteSharing = null;
     var timerDeleteSharing = null;
     var listDeleteSharing = [];
-
     // batch delete sharing (remove one user from shared_with)
     function deleteSharing (params = {}) {
         if (!batchDeleteSharing) {
