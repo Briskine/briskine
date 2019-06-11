@@ -78,7 +78,9 @@ var _FIRESTORE_PLUGIN = function () {
     var getLoginInfo = getSignedInUser;
     var getAccount = getSignedInUser;
     // TODO update account details
-    var setAccount = mock;
+    var setAccount = (params = {}) => {
+        console.log('setAccount', params);
+    };
 
     var usersCollection = db.collection('users');
     var customersCollection = db.collection('customers');
@@ -705,15 +707,6 @@ var _FIRESTORE_PLUGIN = function () {
     var syncLocal = mock;
 
     var signin = (params = {}) => {
-        // TODO
-        // - use firestore plugin first
-        // - try to log user in
-        // - if not successful, try to log-in with old api
-        // - if old api successful, set password on firestore account (cloud function, check old-api cookie)
-        // - set userMetadata.passwordUpdated = true
-        // - if userMetadata.migrated = true account, keep using firestore
-        // - if not, switch to old-api plugin
-
         var user = {};
 
         return firebase.auth()
@@ -727,13 +720,16 @@ var _FIRESTORE_PLUGIN = function () {
 
                 return usersCollection.doc(userId).get();
             }).then((userDoc) => {
+                // get data from users collection
                 var userData = userDoc.data();
                 user = Object.assign(user, {
+                    // only support one customer for now
+                    customer: userData.customers[0],
                     email: userData.email,
                     // backwards compatibility
                     info: {
-                        // TODO get from firestore, not firebase
                         name: userData.full_name,
+                        // TODO get from firestore
                         share_all: true
                     },
                     editor: {
@@ -753,24 +749,11 @@ var _FIRESTORE_PLUGIN = function () {
                     is_staff: false
                 });
 
-                return user
-            }).then((user) => {
-                // add customer to user
-                var customersRef = db.collection('customers');
-                return customersRef.where('members', 'array-contains', user.id).get().then((customers) => {
-                    // get first customer
-                    if (customers.docs.length) {
-                        return customers.docs[0];
-                    }
-
-                    // should always have at least one customer
-                    return Promise.reject()
-                }).then((customer) => {
-                    user = Object.assign({
-                        customer: customer.id
-                    }, user);
-                    return setSignedInUser(user);
-                });
+                return setSignedInUser(user);
+            }).catch((err) => {
+                throw {
+                    error: err.message || 'There was an issue signing you in. Please try again later.'
+                }
             });
     };
     var forgot = () => {};
