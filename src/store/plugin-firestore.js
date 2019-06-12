@@ -750,8 +750,52 @@ var _FIRESTORE_PLUGIN = function () {
     var getStats = mock;
     var updateStats = mock;
 
-    var getPlans = mock;
-    var getSubscription = mock;
+    var getPlans = (params = {}) => {
+        var response = {};
+        var preferred_currency = 'usd';
+
+        return getSignedInUser().then((user) => {
+            response = {
+                email: user.email,
+                plans: Config.plans,
+                stripe_key: Config.stripeApiKey
+            };
+
+            return customersCollection.doc(user.customer).get()
+        }).then((customer) => {
+            if (customer.preferred_currency) {
+                preferred_currency = customer.preferred_currency;
+            };
+
+            return Object.assign({
+                preferred_currency: preferred_currency
+            }, response);
+        });
+    };
+
+    var getSubscription = (params = {}) => {
+        return getSignedInUser().then((user) => {
+            var customerRef = customersCollection.doc(user.customer);
+
+            return customerRef.get()
+        }).then((customer) => {
+            var subscriptionData = customer.data().subscription;
+            var active = true;
+
+            if (subscriptionData.canceled_datetime) {
+                active = false;
+            }
+
+            // backwards compatibility
+            return [
+                Object.assign(subscriptionData, {
+                    active: active,
+                    start_datetime: subscriptionData.start_datetime.toDate()
+                })
+            ];
+        });
+    };
+
     var updateSubscription = mock;
     var cancelSubscription = mock;
 
@@ -789,10 +833,8 @@ var _FIRESTORE_PLUGIN = function () {
                 editor: {
                     enabled: true
                 },
-                // TODO get from firestore
                 is_loggedin: true,
                 current_subscription: '',
-                is_customer: true,
                 created_datetime: '',
                 current_subscription: {
                     active: true,
@@ -802,6 +844,18 @@ var _FIRESTORE_PLUGIN = function () {
                 },
                 is_staff: false
             });
+
+            return customersCollection.doc(user.customer).get()
+        }).then((customer) => {
+            var customerData = customer.data();
+            var isCustomer = false;
+            if (customerData.owner === user.id) {
+                isCustomer = true;
+            }
+
+            user = Object.assign({
+                is_customer: isCustomer
+            }, user);
 
             return setSignedInUser(user);
         });
