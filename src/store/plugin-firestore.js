@@ -41,6 +41,16 @@ var _FIRESTORE_PLUGIN = function () {
         );
     };
 
+    // handle fetch errors
+    var handleErrors = function (response) {
+        if (!response.ok) {
+            return response.clone().json().then((res) => {
+                return Promise.reject(res);
+            });
+        }
+        return response;
+    };
+
     // backwards compatibility
     // update template list
     function refreshTemplates () {
@@ -862,10 +872,18 @@ var _FIRESTORE_PLUGIN = function () {
     }
 
     var signin = (params = {}) => {
-        var user = {};
-
-        return firebase.auth()
-            .signInWithEmailAndPassword(params.email, params.password)
+        // migrate user password from old api
+        return fetch(`${Config.functionsUrl}/signinMigrate`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(params)
+            })
+            .then(handleErrors)
+            .then(() => {
+                return firebase.auth().signInWithEmailAndPassword(params.email, params.password)
+            })
             .then((authRes) => {
                 return updateCurrentUser(authRes.user);
             }).catch((err) => {
