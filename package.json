@@ -6,6 +6,7 @@
     "scripts": {
         "test": "grunt test",
         "start": "yarn firebase && webpack-dev-server --env development",
+        "staging": "(export NODE_ENV=staging && yarn start)",
         "build": "webpack --env production",
         "firebase": "webpack --config ./config/webpack.firebase.js"
     },

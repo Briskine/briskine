@@ -21,8 +21,10 @@ gApp.controller('SubscriptionsCtrl', function ($scope, $rootScope, $routeParams,
         $scope.preferredCurrency = data.preferred_currency;
         $scope.email = data.email;
 
-
-        $scope.quantity = parseInt($routeParams.quantity, 10) || 1;
+        // get quantity from url
+        if ($routeParams.quantity) {
+            $scope.quantity = parseInt($routeParams.quantity, 10) || 1;
+        }
 
         _.each($scope.plans[$scope.preferredCurrency], function (plan) {
             if (plan.sku === $routeParams.plan) {

@@ -64,6 +64,7 @@ const dependencies = {
 
                 'fuse.js/src/fuse.min.js',
 
+                './firebase/config-firebase.js',
                 './firebase/firebase.umd.js',
 
                 // Should be first

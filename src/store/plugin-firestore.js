@@ -1,18 +1,7 @@
 // Firestore plugin
 var _FIRESTORE_PLUGIN = function () {
-    // firebase config
-    // TODO staging data
-    var firebaseConfig = {
-        apiKey: "AIzaSyArp0AWkIjYn0nEFgfUFvtQ3ZS9GoqLwdI",
-        authDomain: "gorgias-templates-staging.firebaseapp.com",
-        databaseURL: "https://gorgias-templates-staging.firebaseio.com",
-        projectId: "gorgias-templates-staging",
-        storageBucket: "gorgias-templates-staging.appspot.com",
-        messagingSenderId: "637457793167",
-        appId: "1:637457793167:web:05dd21469e22d274"
-    };
-    firebase.initializeApp(firebaseConfig);
-
+    // firebase
+    firebase.initializeApp(Config.firebase);
     var db = firebase.firestore();
 
     // TODO sync on first initialize and delete from storage
@@ -84,6 +73,17 @@ var _FIRESTORE_PLUGIN = function () {
             });
         });
     };
+
+    // firebase.auth().currentUser is not a promise
+    // https://github.com/firebase/firebase-js-sdk/issues/462
+    function getCurrentUser () {
+        return new Promise((resolve, reject) => {
+            var unsubscribe = firebase.auth().onAuthStateChanged((user) => {
+                unsubscribe()
+                resolve(user)
+            }, reject)
+        })
+    }
 
     // auth change
     firebase.auth().onAuthStateChanged((firebaseUser) => {
@@ -761,25 +761,25 @@ var _FIRESTORE_PLUGIN = function () {
     var updateStats = mock;
 
     var getPlans = (params = {}) => {
-        var response = {};
-        var preferred_currency = 'usd';
-
+        var customer = null
         return getSignedInUser().then((user) => {
-            response = {
-                email: user.email,
-                plans: Config.plans,
-                stripe_key: Config.stripeApiKey
-            };
-
-            return customersCollection.doc(user.customer).get()
-        }).then((customer) => {
-            if (customer.preferred_currency) {
-                preferred_currency = customer.preferred_currency;
-            };
-
-            return Object.assign({
-                preferred_currency: preferred_currency
-            }, response);
+            customer = user.customer
+            return getCurrentUser()
+        }).then((currentUser) => {
+            return currentUser.getIdToken(true)
+        }).then((idToken) => {
+            return fetch(`${Config.functionsUrl}/plans`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        customer: customer,
+                        token: idToken
+                    })
+                })
+                .then(handleErrors)
+                .then((res) => res.json());
         });
     };
 

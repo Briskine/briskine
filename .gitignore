@@ -18,5 +18,5 @@ ext/
 *.crx
 *.nex
 
-# firebase build
+# firebase build and config
 firebase/**
