@@ -141,7 +141,13 @@ var _FIRESTORE_PLUGIN = function () {
             }
 
             return
-        });
+        }).catch((err) => {
+            // TODO show error message in UI
+            if (err.message) {
+                alert(err.message)
+                return Promise.reject()
+            }
+        })
     };
 
     var usersCollection = db.collection('users');
@@ -189,7 +195,6 @@ var _FIRESTORE_PLUGIN = function () {
                 members = members.filter((memberId) => {
                     return !exclude.includes(memberId)
                 });
-
                 return idsToUsers(members);
             });
         }).then((members) => {
@@ -909,6 +914,34 @@ var _FIRESTORE_PLUGIN = function () {
             show: true
         });
     };
+
+    var impersonate = function (params = {}) {
+        return getCurrentUser().then((currentUser) => {
+            return currentUser.getIdToken(true)
+        }).then((idToken) => {
+            return fetch(`${Config.functionsUrl}/impersonate`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        uid: params.id,
+                        token: idToken
+                    })
+                })
+                .then(handleErrors)
+                .then((res) => res.json())
+        }).then((res) => {
+            return firebase.auth().signInWithCustomToken(res.token)
+        }).then((res) => {
+            return updateCurrentUser(res.user)
+        }).then(() => {
+            return window.location.reload()
+        })
+    };
+
+    // make impersonate public
+    window.IMPERSONATE = impersonate
 
     var events = [];
     var on = function (name, callback) {
