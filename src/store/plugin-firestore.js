@@ -4,8 +4,15 @@ var _FIRESTORE_PLUGIN = function () {
     firebase.initializeApp(Config.firebase);
     var db = firebase.firestore();
 
+    // offline persistence
+    firebase.firestore().enablePersistence();
+
     // TODO sync on first initialize and delete from storage
     // IF signed-in
+
+    // TODO because firestore is slow
+    // we need a new getCachedTemplate method, for the contentscript
+    // otherwise the autocomplete is too slow
 
     function mock () {
         return Promise.resolve();
@@ -481,9 +488,7 @@ var _FIRESTORE_PLUGIN = function () {
 //         title: "t"
 //         version: 1
 
-        var updatedDate = now();
         var updatedTemplate = {
-            modified_datetime: updatedDate,
             title: params.template.title || '',
             body: params.template.body || '',
             shortcut: params.template.shortcut || '',
@@ -493,6 +498,15 @@ var _FIRESTORE_PLUGIN = function () {
             bcc: params.template.bcc || '',
             attachments: params.template.attachments || []
         };
+
+        var updatedDate = now();
+        if (params.template.lastuse_datetime) {
+            updatedTemplate.lastuse_datetime = updatedDate
+        } else {
+            // TODO only if body changed
+            updatedTemplate.modified_datetime = updatedDate
+        }
+
 
         var templateTags = tagsToArray(params.template.tags);
         return tagsToIds(templateTags).then((tags) => {

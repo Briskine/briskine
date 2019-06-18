@@ -161,15 +161,13 @@ gApp.service('TemplateService', function ($q, $rootScope, SettingsService) {
     self.used = function (id, onlyLocal) {
         var deferred = $q.defer();
         self.get(id).then(function (template) {
-            var data = {};
             if (typeof template.use_count === 'undefined') {
                 template.use_count = 0;
             }
             template.use_count++;
             template.lastuse_datetime = new Date().toISOString();
-            data[template.id] = template;
             store.updateTemplate({
-                template: data,
+                template: template,
                 synced: true,
                 onlyLocal: true
             }).then(deferred.resolve);

@@ -69,6 +69,7 @@ const dependencies = {
 
                 // Should be first
                 './src/background/js/environment.js',
+                './src/background/js/config.js',
                 './src/background/js/utils/amplitude.js',
 
                 './src/common/*.js',

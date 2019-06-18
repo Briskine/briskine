@@ -20,4 +20,4 @@ if (ENV === 'production') {
         websiteUrl: 'https://templates.gorgias.io',
         functionsUrl: ''
     });
-};
+}
