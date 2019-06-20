@@ -5,7 +5,9 @@ var _FIRESTORE_PLUGIN = function () {
     var db = firebase.firestore();
 
     // offline persistence
-    firebase.firestore().enablePersistence();
+    firebase.firestore().enablePersistence({
+        synchronizeTabs: true
+    });
 
     // TODO sync on first initialize and delete from storage
     // IF signed-in
@@ -1011,5 +1013,5 @@ var _FIRESTORE_PLUGIN = function () {
 
         on: on
     };
-}();
+};
 
