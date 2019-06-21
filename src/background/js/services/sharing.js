@@ -1,16 +1,6 @@
 gApp.service('QuicktextSharingService', function($q, $rootScope) {
     var self = this;
 
-    // get quicktext's ACL given an id or null
-    // TODO DEPRECATE this is not used anywhere?
-    self.get = function(id) {
-        var deferred = $q.defer();
-        store.getSharing({
-            quicktext_ids: [id]
-        }).then(deferred.resolve);
-        return deferred.promise;
-    };
-
     self.list = function(qtList = []) {
         var deferred = $q.defer();
         store.getSharing({
