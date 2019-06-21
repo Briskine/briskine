@@ -169,7 +169,9 @@ gApp.service('TemplateService', function ($q, $rootScope, SettingsService) {
             store.updateTemplate({
                 template: template,
                 synced: true,
-                onlyLocal: true
+                onlyLocal: true,
+                // only used by firestore plugin
+                stats: true
             }).then(deferred.resolve);
         });
         return deferred.promise;

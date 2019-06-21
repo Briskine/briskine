@@ -12,32 +12,28 @@ var _FIRESTORE_PLUGIN = function () {
     // TODO sync on first initialize and delete from storage
     // IF signed-in
 
-    // TODO because firestore is slow
-    // we need a new getCachedTemplate method, for the contentscript
-    // otherwise the autocomplete is too slow
-
     function mock () {
         return Promise.resolve();
-    };
+    }
 
     function fsDate (date) {
         if (!date) {
             return firebase.firestore.Timestamp.now();
-        };
+        }
 
         return firebase.firestore.Timestamp.fromDate(date);
-    };
+    }
 
     function now () {
         return fsDate(new Date());
-    };
+    }
 
     // uuidv4
     function uuid() {
         return `${1e7}-${1e3}-${4e3}-${8e3}-${1e11}`.replace(/[018]/g, c =>
             (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
         );
-    };
+    }
 
     // handle fetch errors
     var handleErrors = function (response) {
@@ -52,8 +48,12 @@ var _FIRESTORE_PLUGIN = function () {
     // backwards compatibility
     // update template list
     function refreshTemplates () {
+        // invalidate cache
+        invalidateTemplateCache();
+
+        // backwards compatibility
         trigger('templates-sync');
-    };
+    }
 
     // TODO borrow settings from old api plugin
     var getSettings = _GORGIAS_API_PLUGIN.getSettings;
@@ -71,7 +71,7 @@ var _FIRESTORE_PLUGIN = function () {
                 return reject();
             });
         });
-    };
+    }
 
     function setSignedInUser (user) {
         return new Promise((resolve, reject) => {
@@ -81,17 +81,17 @@ var _FIRESTORE_PLUGIN = function () {
                 resolve();
             });
         });
-    };
+    }
 
     // firebase.auth().currentUser is not a promise
     // https://github.com/firebase/firebase-js-sdk/issues/462
     function getCurrentUser () {
         return new Promise((resolve, reject) => {
             var unsubscribe = firebase.auth().onAuthStateChanged((user) => {
-                unsubscribe()
-                resolve(user)
-            }, reject)
-        })
+                unsubscribe();
+                resolve(user);
+            }, reject);
+        });
     }
 
     // auth change
@@ -117,7 +117,7 @@ var _FIRESTORE_PLUGIN = function () {
                 currentUser.updateEmail(params.email).then(() => {
                     // only if auth update successful
                     // update email in users collection
-                    return userRef.update({email: params.email})
+                    return userRef.update({email: params.email});
                 })
             );
         }
@@ -129,7 +129,7 @@ var _FIRESTORE_PLUGIN = function () {
                 }).then(() => {
                     // only if auth update successful
                     // update name in users collection
-                    return userRef.update({full_name: params.name})
+                    return userRef.update({full_name: params.name});
                 })
             );
         }
@@ -149,14 +149,14 @@ var _FIRESTORE_PLUGIN = function () {
                 });
             }
 
-            return
+            return;
         }).catch((err) => {
             // TODO show error message in UI
             if (err.message) {
-                alert(err.message)
-                return Promise.reject()
+                alert(err.message);
+                return Promise.reject();
             }
-        })
+        });
     };
 
     var usersCollection = db.collection('users');
@@ -176,10 +176,10 @@ var _FIRESTORE_PLUGIN = function () {
                         email: userData.email,
                         name: userData.full_name
                     }, userData);
-                })
+                });
             })
-        )
-    };
+        );
+    }
 
     var getMembers = (params = {exclude: null}) => {
 //         members: []
@@ -202,14 +202,14 @@ var _FIRESTORE_PLUGIN = function () {
 
                 // exclude users
                 members = members.filter((memberId) => {
-                    return !exclude.includes(memberId)
+                    return !exclude.includes(memberId);
                 });
                 return idsToUsers(members);
             });
         }).then((members) => {
             return {
                 members: members
-            }
+            };
         });
     };
 
@@ -222,13 +222,13 @@ var _FIRESTORE_PLUGIN = function () {
 
     function getTags () {
         return getSignedInUser().then((user) => {
-            return tagsCollection.where('customer', '==', user.customer).get()
+            return tagsCollection.where('customer', '==', user.customer).get();
         });
-    };
+    }
 
     function createTags (tags = []) {
         return getSignedInUser().then((user) => {
-            var batch = db.batch()
+            var batch = db.batch();
 
             var newTags = tags.map((tag) => {
                 var tagId = uuid();
@@ -241,17 +241,17 @@ var _FIRESTORE_PLUGIN = function () {
                 batch.set(tagRef, newTag);
 
                 return Object.assign({id: tagId}, newTag);
-            })
+            });
 
             return batch.commit().then(() => newTags);
         });
-    };
+    }
 
     function tagsToArray (tagsString = '') {
         return (tagsString || '').split(',').map((tag) => {
             return (tag || '').trim();
         }).filter((tag) => !!tag);
-    };
+    }
 
     // replace tag titles with ids
     function tagsToIds (templateTags) {
@@ -263,8 +263,8 @@ var _FIRESTORE_PLUGIN = function () {
             // tags to be created
             var newTags = templateTags.filter((tag) => {
                 return !(existingTags.some((existing) => {
-                    return existing.title === tag
-                }))
+                    return existing.title === tag;
+                }));
             });
 
             return createTags(newTags).then((createdTags) => {
@@ -275,19 +275,19 @@ var _FIRESTORE_PLUGIN = function () {
                 return templateTags.map((tag) => {
                     return (
                         updatedTags.find((existingTag) => {
-                            return existingTag.title === tag
+                            return existingTag.title === tag;
                         }) || {}
                     ).id;
                 });
              });
         });
-    };
+    }
 
     function idsToTags (tagIds) {
         return getTags().then((existingTagsQuery) => {
             return tagIds.map((tagId) => {
                 var foundTag = existingTagsQuery.docs.find((tag) => {
-                    return tagId === tag.id
+                    return tagId === tag.id;
                 });
 
                 if (!foundTag) {
@@ -297,7 +297,7 @@ var _FIRESTORE_PLUGIN = function () {
                 return foundTag.data().title;
             });
         });
-    };
+    }
 
     function parseTemplate (params = {}) {
         // private by default
@@ -323,6 +323,9 @@ var _FIRESTORE_PLUGIN = function () {
             tags: [],
             owner: null,
             customer: null,
+            // stats
+            lastuse_datetime: null,
+            use_count: 0,
             version: 1
         };
 
@@ -336,40 +339,82 @@ var _FIRESTORE_PLUGIN = function () {
                     customer: user.customer
                 });
 
-                return tagsToIds(templateTags)
+                return tagsToIds(templateTags);
             }).then((tags) => {
                 return Object.assign(template, {
                     tags: tags
                 });
             });
-    };
+    }
 
-    // my templates
-    var getTemplatesOwned = (user) => {
+    function templatesOwnedQuery (user) {
         return templatesCollection
             .where('customer', '==', user.customer)
             .where('owner', '==', user.id)
-            .where('deleted_datetime', '==', null)
-            .get()
-    };
+            .where('deleted_datetime', '==', null);
+    }
 
-    // templates shared with me
-    var getTemplatesShared = (user) => {
+    // my templates
+    function getTemplatesOwned (user) {
+        return templatesOwnedQuery(user)
+            .get();
+    }
+
+    function templatesSharedQuery (user) {
         return templatesCollection
             .where('customer', '==', user.customer)
             .where('shared_with', 'array-contains', user.id)
-            .where('deleted_datetime', '==', null)
-            .get()
-    };
+            .where('deleted_datetime', '==', null);
+    }
 
-    // templates shared with everyone
-    var getTemplatesForEveryone = (user) => {
+    // templates shared with me
+    function getTemplatesShared (user) {
+        return templatesSharedQuery(user)
+            .get();
+    }
+
+    function templatesEveryoneQuery (user) {
         return templatesCollection
             .where('customer', '==', user.customer)
             .where('sharing', '==', 'everyone')
-            .where('deleted_datetime', '==', null)
-            .get()
-    };
+            .where('deleted_datetime', '==', null);
+    }
+
+    // templates shared with everyone
+    function getTemplatesForEveryone (user) {
+        return templatesEveryoneQuery(user)
+            .get();
+    }
+
+    // TODO template cache
+    // - add individual template to cache (with deduplication)
+    // - add multiple templates to cache (deduplicate - maybe set on format {id: {}}
+    // - invalidate all cache on update
+    var templateCache = {};
+    function addTemplatesToCache (templates = {}) {
+        Object.keys(templates).forEach((templateId) => {
+            templateCache[templateId] = templates[templateId];
+        });
+    }
+
+    function getTemplatesFromCache (templateId) {
+        if (templateId && templateCache[templateId]) {
+            var list = {};
+            list[templateId] = templateCache[templateId];
+            return Promise.resolve(list);
+        }
+
+        if (Object.keys(templateCache).length) {
+            return Promise.resolve(templateCache);
+        }
+
+        return Promise.reject();
+    }
+
+    function invalidateTemplateCache () {
+        templateCache = {};
+    }
+
 
     var getTemplate = (params = {}) => {
 //         {
@@ -396,80 +441,92 @@ var _FIRESTORE_PLUGIN = function () {
 //             }
 //         }
 
-
         // return single template
         if (params.id) {
-            return templatesCollection.doc(params.id).get().then((res) => {
-                var templateData = res.data();
+            return getTemplatesFromCache(params.id)
+                .catch(() => {
+                    // template not in cache
+                    return templatesCollection.doc(params.id).get().then((res) => {
+                        var templateData = res.data();
 
-                return idsToTags(templateData.tags).then((tags) => {
-                    var template = Object.assign({},
-                        templateData,
-                        {
-                            id: res.id,
-                            tags: tags.join(', '),
+                        return idsToTags(templateData.tags).then((tags) => {
+                            var template = Object.assign({},
+                                templateData,
+                                {
+                                    id: res.id,
+                                    tags: tags.join(', '),
+                                    // backwards compatibility
+                                    remote_id: res.id,
+                                    nosync: 0
+                                }
+                            );
+
                             // backwards compatibility
-                            remote_id: res.id,
-                            nosync: 0
-                        }
-                    );
+                            var list = [];
+                            list[template.id] = template;
 
-                    // backwards compatibility
-                    var list = [];
-                    list[template.id] = template;
+                            addTemplatesToCache(list);
 
-                    return list;
+                            return list;
+                        });
+                    }).catch((err) => {
+                        console.log('not logged in');
+                    });
                 });
-            });
         }
 
-        return getSignedInUser()
-            .then((user) => {
-                var allTemplates = [];
-                return Promise.all([
-                    getTemplatesOwned(user),
-                    getTemplatesShared(user),
-                    getTemplatesForEveryone(user)
-                ]).then((res) => {
-                    // concat all templates
-                    res.forEach((query) => {
-                        allTemplates = allTemplates.concat(query.docs);
+        return getTemplatesFromCache()
+            .catch(() => {
+                // templates not cached
+                return getSignedInUser().then((user) => {
+                    var allTemplates = [];
+                    return Promise.all([
+                        getTemplatesOwned(user),
+                        getTemplatesShared(user),
+                        getTemplatesForEveryone(user)
+                    ]).then((res) => {
+                        // concat all templates
+                        res.forEach((query) => {
+                            allTemplates = allTemplates.concat(query.docs);
+                        });
+
+                        // backward compatibility
+                        // and template de-duplication (owned and sharing=everyone)
+                        var templates = {};
+                        return Promise.all(
+                            allTemplates.map((template) => {
+                                var templateData = template.data();
+
+                                return idsToTags(templateData.tags).then((tags) => {
+                                    templates[template.id] = Object.assign(
+                                        templateData,
+                                        {
+                                            id: template.id,
+                                            deleted: 0,
+                                            tags: tags.join(', '),
+                                            // TODO check sharing
+                                            private: true,
+                                            // backwards compatibility
+                                            remote_id: template.id,
+                                            nosync: 0
+                                        }
+                                    );
+
+                                    return;
+                                });
+                            })
+                        ).then(() => {
+                            addTemplatesToCache(templates);
+
+                            return templates;
+                        });
                     });
-
-                    // backward compatibility
-                    // and template de-duplication (owned and sharing=everyone)
-                    var templates = {};
-                    return Promise.all(
-                        allTemplates.map((template) => {
-                            var templateData = template.data();
-
-                            return idsToTags(templateData.tags).then((tags) => {
-                                templates[template.id] = Object.assign(
-                                    templateData,
-                                    {
-                                        id: template.id,
-                                        deleted: 0,
-                                        tags: tags.join(', '),
-                                        // TODO check sharing
-                                        private: true,
-                                        // backwards compatibility
-                                        remote_id: res.id,
-                                        nosync: 0
-                                    },
-                                );
-
-                                return
-                            });
-                        })
-                    ).then(() => {
-                        return templates
-                    });
+                })
+                .catch((err) => {
+                    // TODO not signed-in
+                    // return from cache
+                    console.log('err', err);
                 });
-            })
-            .catch((err) => {
-                // TODO not signed-in
-                // return from cache
-                console.log('err', err);
             });
     };
 
@@ -490,34 +547,35 @@ var _FIRESTORE_PLUGIN = function () {
 //         title: "t"
 //         version: 1
 
-        var updatedTemplate = {
-            title: params.template.title || '',
-            body: params.template.body || '',
-            shortcut: params.template.shortcut || '',
-            subject: params.template.subject || '',
-            to: params.template.to || '',
-            cc: params.template.cc || '',
-            bcc: params.template.bcc || '',
-            attachments: params.template.attachments || []
-        };
-
         var updatedDate = now();
-        if (params.template.lastuse_datetime) {
-            updatedTemplate.lastuse_datetime = updatedDate
-        } else {
-            // TODO only if body changed
-            updatedTemplate.modified_datetime = updatedDate
+        var updatedTemplate = {};
+        var docRef = templatesCollection.doc(params.template.id);
+
+        if (params.stats) {
+            // only update stats
+            updatedTemplate.lastuse_datetime = updatedDate;
+            updatedTemplate.use_count = params.template.use_count || 0;
+
+            return docRef.update(updatedTemplate);
         }
 
+        var stringProps = ['title', 'body', 'shortcut', 'subject', 'to', 'cc', 'bcc'];
+        stringProps.forEach((prop) => {
+            if (params.template.hasOwnProperty(prop)) {
+                updatedTemplate[prop] = params.template[prop] || '';
+            }
+        });
+
+        if (params.template.hasOwnProperty('attachments')) {
+            updatedTemplate.attachments = params.template.attachments || [];
+        }
+
+        updatedTemplate.modified_datetime = updatedDate;
 
         var templateTags = tagsToArray(params.template.tags);
         return tagsToIds(templateTags).then((tags) => {
             updatedTemplate.tags = tags;
-            var ref = templatesCollection.doc(params.template.id);
-            return ref.update(updatedTemplate).then(() => {
-                // backwards compatibility
-                refreshTemplates();
-
+            return docRef.update(updatedTemplate).then(() => {
                 return Object.assign(updatedTemplate, {
                     remote_id: params.template.id
                 });
@@ -540,6 +598,7 @@ var _FIRESTORE_PLUGIN = function () {
 //             "isPrivate": true
 //         }
 
+
         var newTemplate = {};
 
         return parseTemplate(params)
@@ -554,17 +613,13 @@ var _FIRESTORE_PLUGIN = function () {
                 return ref.set(template);
             })
             .then(() => {
-                // backwards compatibility
-                // update template list after creation
-                refreshTemplates();
-
-                return newTemplate
+                return newTemplate;
             })
             .catch((err) => {
                 console.log('error', err);
                 // TODO error, not logged-in
                 // create offline template
-                return
+                return;
             });
     };
 
@@ -572,6 +627,7 @@ var _FIRESTORE_PLUGIN = function () {
         var templateId = params.template.id;
         var deletedDate = now();
         var ref = templatesCollection.doc(templateId);
+
         return ref.update({
             deleted_datetime: deletedDate
         });
@@ -604,20 +660,20 @@ var _FIRESTORE_PLUGIN = function () {
 
         return getMembers({exclude: []}).then((res) => {
             members = res.members;
-            return members
+            return members;
         }).then(() => {
             return Promise.all(
                 params.quicktext_ids.map((id) => {
-                    return templatesCollection.doc(id).get()
+                    return templatesCollection.doc(id).get();
                 })
-            )
+            );
         }).then((templates) => {
             // backwards compatibility
             // add template owners to acl
             var acl = templates.map((template) => {
                 return {
                     target_user_id: template.data().owner
-                }
+                };
             });
 
             return Promise.all(
@@ -625,7 +681,7 @@ var _FIRESTORE_PLUGIN = function () {
                     var templateData = template.data();
                     if (templateData.sharing === 'everyone') {
                         return members;
-                    };
+                    }
 
                     // if custom shared_with ids to users
                     if (templateData.sharing === 'custom') {
@@ -633,7 +689,7 @@ var _FIRESTORE_PLUGIN = function () {
                         return templateData.shared_with.map((userId) => {
                             return members.find((member) => member.id === userId);
                         });
-                    };
+                    }
 
                     // private
                     return [];
@@ -644,7 +700,7 @@ var _FIRESTORE_PLUGIN = function () {
                     templateSharing.forEach((sharedUser) => {
                         // de-duplicate
                         var existing = acl.find((user) => {
-                            return user.id === sharedUser.id
+                            return user.id === sharedUser.id;
                         });
 
                         if (!existing) {
@@ -652,14 +708,14 @@ var _FIRESTORE_PLUGIN = function () {
                                 // backwards compatibility
                                 target_user_id: sharedUser.id
                             }, sharedUser));
-                        };
+                        }
                     });
                 });
 
                 // backwards compatibility
                 return {
                     acl: acl
-                }
+                };
             });
         });
     };
@@ -668,7 +724,7 @@ var _FIRESTORE_PLUGIN = function () {
         return listTwo.every((val) => {
             return listOne.includes(val);
         });
-    };
+    }
 
     var batchDeleteSharing = null;
     var timerDeleteSharing = null;
@@ -714,7 +770,7 @@ var _FIRESTORE_PLUGIN = function () {
             sharing: 'custom',
             shared_with: firebase.firestore.FieldValue.arrayRemove(params.user_id)
         });
-    };
+    }
 
     var updateSharing = (params = {action: 'create', acl: {}, send_email: 'false'}) => {
         if (params.action === 'delete') {
@@ -739,9 +795,9 @@ var _FIRESTORE_PLUGIN = function () {
 
             return Promise.all(
                 templateIds.map((id) => {
-                    return templatesCollection.doc(id).get()
+                    return templatesCollection.doc(id).get();
                 })
-            )
+            );
         }).then((templates) => {
             return Promise.all(
                 templates.map((template) => {
@@ -763,7 +819,7 @@ var _FIRESTORE_PLUGIN = function () {
                         sharing = 'custom';
                         // emails to ids
                         shared_with = possibleMembers.filter((member) => {
-                            return emails.includes(member.email)
+                            return emails.includes(member.email);
                         }).map((member) => member.id);
                     }
 
@@ -774,7 +830,7 @@ var _FIRESTORE_PLUGIN = function () {
                         shared_with: shared_with
                     });
                 })
-            )
+            );
         });
     };
 
@@ -782,12 +838,12 @@ var _FIRESTORE_PLUGIN = function () {
     var updateStats = mock;
 
     var getPlans = (params = {}) => {
-        var customer = null
+        var customer = null;
         return getSignedInUser().then((user) => {
-            customer = user.customer
-            return getCurrentUser()
+            customer = user.customer;
+            return getCurrentUser();
         }).then((currentUser) => {
-            return currentUser.getIdToken(true)
+            return currentUser.getIdToken(true);
         }).then((idToken) => {
             return fetch(`${Config.functionsUrl}/plans`, {
                     method: 'POST',
@@ -808,7 +864,7 @@ var _FIRESTORE_PLUGIN = function () {
         return getSignedInUser().then((user) => {
             var customerRef = customersCollection.doc(user.customer);
 
-            return customerRef.get()
+            return customerRef.get();
         }).then((customer) => {
             var subscriptionData = customer.data().subscription;
             var active = true;
@@ -838,7 +894,7 @@ var _FIRESTORE_PLUGIN = function () {
         throw {
             error: err.message || 'There was an issue signing you in. Please try again later.'
         };
-    };
+    }
 
     function updateCurrentUser (firebaseUser) {
         var userId = firebaseUser.uid;
@@ -865,7 +921,6 @@ var _FIRESTORE_PLUGIN = function () {
                     enabled: true
                 },
                 is_loggedin: true,
-                current_subscription: '',
                 created_datetime: '',
                 current_subscription: {
                     active: true,
@@ -876,7 +931,7 @@ var _FIRESTORE_PLUGIN = function () {
                 is_staff: false
             });
 
-            return customersCollection.doc(user.customer).get()
+            return customersCollection.doc(user.customer).get();
         }).then((customer) => {
             var customerData = customer.data();
             var isCustomer = false;
@@ -903,7 +958,7 @@ var _FIRESTORE_PLUGIN = function () {
             })
             .then(handleErrors)
             .then(() => {
-                return firebase.auth().signInWithEmailAndPassword(params.email, params.password)
+                return firebase.auth().signInWithEmailAndPassword(params.email, params.password);
             })
             .then((authRes) => {
                 return updateCurrentUser(authRes.user);
@@ -933,7 +988,7 @@ var _FIRESTORE_PLUGIN = function () {
 
     var impersonate = function (params = {}) {
         return getCurrentUser().then((currentUser) => {
-            return currentUser.getIdToken(true)
+            return currentUser.getIdToken(true);
         }).then((idToken) => {
             return fetch(`${Config.functionsUrl}/impersonate`, {
                     method: 'POST',
@@ -946,18 +1001,18 @@ var _FIRESTORE_PLUGIN = function () {
                     })
                 })
                 .then(handleErrors)
-                .then((res) => res.json())
+                .then((res) => res.json());
         }).then((res) => {
-            return firebase.auth().signInWithCustomToken(res.token)
+            return firebase.auth().signInWithCustomToken(res.token);
         }).then((res) => {
-            return updateCurrentUser(res.user)
+            return updateCurrentUser(res.user);
         }).then(() => {
-            return window.location.reload()
-        })
+            return window.location.reload();
+        });
     };
 
     // make impersonate public
-    window.IMPERSONATE = impersonate
+    window.IMPERSONATE = impersonate;
 
     var events = [];
     var on = function (name, callback) {
@@ -970,10 +1025,20 @@ var _FIRESTORE_PLUGIN = function () {
     var trigger = function (name) {
         events.filter((event) => event.name === name).forEach((event) => {
             if (typeof event.callback === 'function') {
-                event.callback()
+                event.callback();
             }
-        })
+        });
     };
+
+    // populate template cache on load
+    getSignedInUser().then((user) => {
+        // refresh templates on changes
+        templatesOwnedQuery(user).onSnapshot(refreshTemplates);
+        templatesSharedQuery(user).onSnapshot(refreshTemplates);
+        templatesEveryoneQuery(user).onSnapshot(refreshTemplates);
+
+        getTemplate();
+    });
 
     return {
         getSettings: getSettings,
