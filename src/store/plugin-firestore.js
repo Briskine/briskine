@@ -9,9 +9,6 @@ var _FIRESTORE_PLUGIN = function () {
         synchronizeTabs: true
     });
 
-    // TODO sync on first initialize and delete from storage
-    // IF signed-in
-
     function mock () {
         return Promise.resolve();
     }
@@ -55,9 +52,139 @@ var _FIRESTORE_PLUGIN = function () {
         trigger('templates-sync');
     }
 
-    // TODO borrow settings from old api plugin
+    // local data (when logged-out)
+    var localDataKey = 'firestoreLocalData';
+    function getLocalData (params = {}) {
+        return new Promise((resolve, reject) => {
+            chrome.storage.local.get(localDataKey, (res) => {
+                var localData = Object.assign({
+                    tags: {},
+                    templates: {}
+                }, res[localDataKey]);
+
+                var result = [];
+
+                if (params.raw) {
+                    // return raw data
+                    result = localData;
+                } else if (params.templateId) {
+                    // return one template
+                    result = localData.templates[params.templateId];
+                } else {
+                    // return all tags or templates
+                    ['tags', 'templates'].some((key) => {
+                        if (params[key]) {
+                            // return all items as array
+                            result = Object.keys(localData[key]).map((id) => {
+                                return localData[key][id];
+                            }).filter((item) => {
+                                // don't return deleted data
+                                return !item.deleted_datetime;
+                            });
+
+                            return true;
+                        }
+                    });
+                }
+
+                resolve(result);
+            });
+        });
+    }
+
+    function updateLocalData (params = {}) {
+        return new Promise((resolve, reject) => {
+            var templates = {};
+            getLocalData({raw: true}).then((res) => {
+                // merge defaults with stored data
+                var localData = Object.assign({
+                    templates: {},
+                    tags: {}
+                }, res);
+
+                ['tags', 'templates'].forEach((key) => {
+                    if (params[key]) {
+                        params[key].forEach((item) => {
+                            // merge existing data
+                            localData[key][item.id] = Object.assign({}, localData[key][item.id], item);
+                        });
+                    }
+                });
+
+                var localDataContainer = {};
+                localDataContainer[localDataKey] = localData;
+                chrome.storage.local.set(localDataContainer, () => {
+                    // refresh template list
+                    refreshTemplates();
+
+                    resolve();
+                });
+            });
+        });
+    }
+
+    function syncLocalData () {
+        var user = {};
+        return getSignedInUser()
+            .then((res) => {
+                user = res;
+                return Promise.all([
+                    getLocalData({tags: true}),
+                    getLocalData({templates: true})
+                ]);
+            })
+            .then((res) => {
+                var batch = db.batch();
+                var tags = res[0];
+                var templates = res[1];
+
+                tags.forEach((tag) => {
+                    var ref = tagsCollection.doc(tag.id);
+                    delete tag.id;
+                    tag.customer = user.customer;
+                    batch.set(ref, tag);
+                });
+
+                templates.forEach((template) => {
+                    var ref = templatesCollection.doc(template.id);
+                    delete template.id;
+                    template.owner = user.id;
+                    template.customer = user.customer;
+                    // convert dates
+                    [
+                        'created_datetime',
+                        'deleted_datetime',
+                        'modified_datetime',
+                        'lastuse_datetime'
+                    ].forEach((prop) => {
+                        if (template[prop]) {
+                            template[prop] = new firebase.firestore.Timestamp(
+                                template[prop].seconds,
+                                template[prop].nanoseconds
+                            );
+                        }
+                    });
+                    batch.set(ref, template);
+                });
+
+                return batch.commit();
+            })
+            .then(() => {
+                // clear local data
+                return clearLocalTemplates();
+            });
+    }
+
+    // TODO sync legacy templates from old api plugin
+
+    // HACK borrow settings from old api plugin
     var getSettings = _GORGIAS_API_PLUGIN.getSettings;
     var setSettings = _GORGIAS_API_PLUGIN.setSettings;
+
+    var LOGGED_OUT_ERR = 'logged-out';
+    function isLoggedOut (err) {
+        return err === LOGGED_OUT_ERR;
+    }
 
     var globalUserKey = 'firebaseUser';
     function getSignedInUser () {
@@ -68,7 +195,7 @@ var _FIRESTORE_PLUGIN = function () {
                     return resolve(user);
                 }
 
-                return reject();
+                return reject(LOGGED_OUT_ERR);
             });
         });
     }
@@ -221,30 +348,66 @@ var _FIRESTORE_PLUGIN = function () {
     };
 
     function getTags () {
-        return getSignedInUser().then((user) => {
-            return tagsCollection.where('customer', '==', user.customer).get();
-        });
+        return getSignedInUser()
+            .then((user) => {
+                return tagsCollection.where('customer', '==', user.customer).get();
+            })
+            .then((snapshot) => {
+                return snapshot.docs.map((tag) => {
+                    return Object.assign({id: tag.id}, tag.data());
+                });
+            })
+            .catch((err) => {
+                if (isLoggedOut(err)) {
+                    // logged-out
+                    return getLocalData({tags: true});
+                }
+
+                throw err;
+            });
     }
 
     function createTags (tags = []) {
-        return getSignedInUser().then((user) => {
-            var batch = db.batch();
+        if (!tags.length) {
+            return Promise.resolve([]);
+        }
 
-            var newTags = tags.map((tag) => {
-                var tagId = uuid();
-                var tagRef = tagsCollection.doc(tagId);
-                var newTag = {
-                    customer: user.customer,
-                    title: tag,
-                    version: 1
-                };
-                batch.set(tagRef, newTag);
-
-                return Object.assign({id: tagId}, newTag);
-            });
-
-            return batch.commit().then(() => newTags);
+        var newTags = tags.map((tag) => {
+            var newTag = {
+                title: tag,
+                version: 1
+            };
+            return Object.assign({
+                id: uuid()
+            }, newTag);
         });
+
+        return getSignedInUser()
+            .then((user) => {
+                var batch = db.batch();
+                newTags.forEach((tag) => {
+                    var ref = tagsCollection.doc(tag.id);
+                    var tagData = {
+                        customer: user.customer,
+                        title: tag.title,
+                        version: tag.version
+                    };
+                    batch.set(ref, tagData);
+                });
+
+                return batch.commit();
+            })
+            .catch((err) => {
+                if (isLoggedOut(err)) {
+                    // logged-out
+                    return updateLocalData({
+                        tags: newTags
+                    });
+                }
+
+                throw err;
+            })
+            .then(() => newTags);
     }
 
     function tagsToArray (tagsString = '') {
@@ -255,17 +418,15 @@ var _FIRESTORE_PLUGIN = function () {
 
     // replace tag titles with ids
     function tagsToIds (templateTags) {
-        return getTags().then((existingTagsQuery) => {
-            var existingTags = existingTagsQuery.docs.map((tag) => {
-                return Object.assign({id: tag.id}, tag.data());
-            });
-
+        return getTags().then((existingTags) => {
             // tags to be created
             var newTags = templateTags.filter((tag) => {
                 return !(existingTags.some((existing) => {
                     return existing.title === tag;
                 }));
             });
+
+
 
             return createTags(newTags).then((createdTags) => {
                 // merge existing tags with created tags
@@ -284,9 +445,9 @@ var _FIRESTORE_PLUGIN = function () {
     }
 
     function idsToTags (tagIds) {
-        return getTags().then((existingTagsQuery) => {
+        return getTags().then((existingTags) => {
             return tagIds.map((tagId) => {
-                var foundTag = existingTagsQuery.docs.find((tag) => {
+                var foundTag = existingTags.find((tag) => {
                     return tagId === tag.id;
                 });
 
@@ -294,7 +455,7 @@ var _FIRESTORE_PLUGIN = function () {
                     return '';
                 }
 
-                return foundTag.data().title;
+                return foundTag.title;
             });
         });
     }
@@ -307,14 +468,14 @@ var _FIRESTORE_PLUGIN = function () {
         var templateDate = now();
 
         var template = {
-            title: params.template.title,
-            body: params.template.body,
+            title: params.template.title || null,
+            body: params.template.body || null,
             shortcut: params.template.shortcut || '',
             subject: params.template.subject || '',
             cc: params.template.cc || '',
             bcc: params.template.bcc || '',
             to: params.template.to || '',
-            attachments: params.template.attachments,
+            attachments: params.template.attachments || [],
             created_datetime: templateDate,
             modified_datetime: templateDate,
             deleted_datetime: null,
@@ -330,7 +491,7 @@ var _FIRESTORE_PLUGIN = function () {
         };
 
         // clean-up template tags
-        var templateTags = tagsToArray(params.template.tags);
+        var templateTags = tagsToArray(params.template.tags || '');
 
         return getSignedInUser()
             .then((user) => {
@@ -338,7 +499,15 @@ var _FIRESTORE_PLUGIN = function () {
                     owner: user.id,
                     customer: user.customer
                 });
+                return;
+            }).catch((err) => {
+                if (isLoggedOut(err)) {
+                    // logged-out
+                    return;
+                }
 
+                throw err;
+            }).then(() => {
                 return tagsToIds(templateTags);
             }).then((tags) => {
                 return Object.assign(template, {
@@ -386,10 +555,7 @@ var _FIRESTORE_PLUGIN = function () {
             .get();
     }
 
-    // TODO template cache
-    // - add individual template to cache (with deduplication)
-    // - add multiple templates to cache (deduplicate - maybe set on format {id: {}}
-    // - invalidate all cache on update
+    // template in-memory cache
     var templateCache = {};
     function addTemplatesToCache (templates = {}) {
         Object.keys(templates).forEach((templateId) => {
@@ -414,7 +580,6 @@ var _FIRESTORE_PLUGIN = function () {
     function invalidateTemplateCache () {
         templateCache = {};
     }
-
 
     var getTemplate = (params = {}) => {
 //         {
@@ -443,20 +608,36 @@ var _FIRESTORE_PLUGIN = function () {
 
         // return single template
         if (params.id) {
+            var templateData = {};
             return getTemplatesFromCache(params.id)
                 .catch(() => {
                     // template not in cache
-                    return templatesCollection.doc(params.id).get().then((res) => {
-                        var templateData = res.data();
+                    return templatesCollection.doc(params.id).get()
+                        .then((res) => {
+                            return res.data();
+                        })
+                        .catch((err) => {
+                            if (isLoggedOut(err)) {
+                                // logged-out
+                                return getLocalData({
+                                    templateId: params.id
+                                });
+                            }
 
-                        return idsToTags(templateData.tags).then((tags) => {
+                            throw err;
+                        })
+                        .then((res) => {
+                            templateData = res;
+                            return idsToTags(templateData.tags);
+                        })
+                        .then((tags) => {
                             var template = Object.assign({},
                                 templateData,
                                 {
-                                    id: res.id,
+                                    id: params.id,
                                     tags: tags.join(', '),
                                     // backwards compatibility
-                                    remote_id: res.id,
+                                    remote_id: params.id,
                                     nosync: 0
                                 }
                             );
@@ -469,39 +650,51 @@ var _FIRESTORE_PLUGIN = function () {
 
                             return list;
                         });
-                    }).catch((err) => {
-                        console.log('not logged in');
-                    });
                 });
         }
 
         return getTemplatesFromCache()
             .catch(() => {
                 // templates not cached
-                return getSignedInUser().then((user) => {
-                    var allTemplates = [];
-                    return Promise.all([
-                        getTemplatesOwned(user),
-                        getTemplatesShared(user),
-                        getTemplatesForEveryone(user)
-                    ]).then((res) => {
-                        // concat all templates
-                        res.forEach((query) => {
-                            allTemplates = allTemplates.concat(query.docs);
-                        });
+                return getSignedInUser()
+                    .then((user) => {
+                        return Promise.all([
+                            getTemplatesOwned(user),
+                            getTemplatesShared(user),
+                            getTemplatesForEveryone(user)
+                        ]).then((res) => {
+                            var mergedTemplates = [];
+                            // concat all templates
+                            res.forEach((query) => {
+                                mergedTemplates = mergedTemplates.concat(query.docs);
+                            });
 
+                            // merge data and id
+                            return mergedTemplates.map((template) => {
+                                return Object.assign({
+                                    id: template.id
+                                }, template.data());
+                            });
+                        });
+                    })
+                    .catch((err) => {
+                        if (isLoggedOut(err)) {
+                            // logged-out
+                            return getLocalData({templates: true});
+                        }
+
+                        throw err;
+                    })
+                    .then((allTemplates) => {
                         // backward compatibility
                         // and template de-duplication (owned and sharing=everyone)
                         var templates = {};
                         return Promise.all(
                             allTemplates.map((template) => {
-                                var templateData = template.data();
-
-                                return idsToTags(templateData.tags).then((tags) => {
+                                return idsToTags(template.tags).then((tags) => {
                                     templates[template.id] = Object.assign(
-                                        templateData,
+                                        template,
                                         {
-                                            id: template.id,
                                             deleted: 0,
                                             tags: tags.join(', '),
                                             // TODO check sharing
@@ -521,12 +714,6 @@ var _FIRESTORE_PLUGIN = function () {
                             return templates;
                         });
                     });
-                })
-                .catch((err) => {
-                    // TODO not signed-in
-                    // return from cache
-                    console.log('err', err);
-                });
             });
     };
 
@@ -549,38 +736,61 @@ var _FIRESTORE_PLUGIN = function () {
 
         var updatedDate = now();
         var updatedTemplate = {};
-        var docRef = templatesCollection.doc(params.template.id);
 
         if (params.stats) {
             // only update stats
             updatedTemplate.lastuse_datetime = updatedDate;
             updatedTemplate.use_count = params.template.use_count || 0;
+        } else {
+            var stringProps = ['title', 'body', 'shortcut', 'subject', 'to', 'cc', 'bcc'];
+            stringProps.forEach((prop) => {
+                if (params.template.hasOwnProperty(prop)) {
+                    updatedTemplate[prop] = params.template[prop] || '';
+                }
+            });
 
-            return docRef.update(updatedTemplate);
-        }
-
-        var stringProps = ['title', 'body', 'shortcut', 'subject', 'to', 'cc', 'bcc'];
-        stringProps.forEach((prop) => {
-            if (params.template.hasOwnProperty(prop)) {
-                updatedTemplate[prop] = params.template[prop] || '';
+            if (params.template.hasOwnProperty('attachments')) {
+                updatedTemplate.attachments = params.template.attachments || [];
             }
-        });
 
-        if (params.template.hasOwnProperty('attachments')) {
-            updatedTemplate.attachments = params.template.attachments || [];
+            updatedTemplate.modified_datetime = updatedDate;
         }
-
-        updatedTemplate.modified_datetime = updatedDate;
 
         var templateTags = tagsToArray(params.template.tags);
-        return tagsToIds(templateTags).then((tags) => {
-            updatedTemplate.tags = tags;
-            return docRef.update(updatedTemplate).then(() => {
-                return Object.assign(updatedTemplate, {
-                    remote_id: params.template.id
-                });
+        return tagsToIds(templateTags)
+            .then((tags) => {
+                updatedTemplate.tags = tags;
+                return getSignedInUser();
+            })
+            .then(() => {
+                var docRef = templatesCollection.doc(params.template.id);
+                return docRef.update(updatedTemplate);
+            })
+            .catch((err) => {
+                if (isLoggedOut(err)) {
+                    // logged-out
+                    return updateLocalData({
+                        templates: [
+                            Object.assign(
+                                {
+                                    id: params.template.id
+                                },
+                                updatedTemplate
+                            )
+                        ]
+                    });
+                }
+
+                throw err;
+            })
+            .then(() => {
+                return Object.assign(
+                    {
+                        remote_id: params.template.id
+                    },
+                    updatedTemplate
+                );
             });
-        });
     };
 
     var createTemplate = (params = {}) => {
@@ -600,41 +810,78 @@ var _FIRESTORE_PLUGIN = function () {
 
 
         var newTemplate = {};
+        var id = uuid();
 
         return parseTemplate(params)
             .then((template) => {
-                var id = uuid();
-                newTemplate = Object.assign({
+                newTemplate = template;
+                return getSignedInUser();
+            })
+            .then(() => {
+                return templatesCollection.doc(id).set(newTemplate);
+            })
+            .catch((err) => {
+                if (isLoggedOut(err)) {
+                    // logged-out
+                    return updateLocalData({
+                        templates: [
+                            Object.assign(
+                                {
+                                    id: id
+                                },
+                                newTemplate
+                            )
+                        ]
+                    });
+                }
+
+                throw err;
+            })
+            .then(() => {
+                return Object.assign({
                     // backwards compatibility
                     id: id,
                     remote_id: id
-                }, template);
-                var ref = templatesCollection.doc(id);
-                return ref.set(template);
-            })
-            .then(() => {
-                return newTemplate;
-            })
-            .catch((err) => {
-                console.log('error', err);
-                // TODO error, not logged-in
-                // create offline template
-                return;
+                }, newTemplate);
             });
     };
 
     var deleteTemplate = (params = {}) => {
-        var templateId = params.template.id;
         var deletedDate = now();
-        var ref = templatesCollection.doc(templateId);
+        var ref = templatesCollection.doc(params.template.id);
 
-        return ref.update({
-            deleted_datetime: deletedDate
-        });
+        return getSignedInUser()
+            .then(() => {
+                return ref.update({
+                    deleted_datetime: deletedDate
+                });
+            })
+            .catch((err) => {
+                if (isLoggedOut(err)) {
+                    // logged-out
+                    return updateLocalData({
+                        templates: [{
+                            id: params.template.id,
+                            deleted_datetime: deletedDate
+                        }]
+                    });
+                }
+
+                throw err;
+            });
     };
 
-    // TODO delete offline templates
-    var clearLocalTemplates = mock;
+    // delete logged-out data
+    var clearLocalTemplates = (params = {}) => {
+        return new Promise((resolve, reject) => {
+            var localDataContainer = {};
+            localDataContainer[localDataKey] = {};
+            chrome.storage.local.set(localDataContainer, () => {
+                refreshTemplates();
+                resolve();
+            });
+        });
+    };
 
     var getSharing = (params = {}) => {
 //         "acl": [
@@ -904,47 +1151,58 @@ var _FIRESTORE_PLUGIN = function () {
             created_datetime: new Date(firebaseUser.metadata.creationTime)
         };
 
-        // get data from users collection
-        return usersCollection.doc(userId).get().then((userDoc) => {
-            // get data from users collection
-            var userData = userDoc.data();
-            user = Object.assign(user, {
-                // only support one customer for now
-                customer: userData.customers[0],
-                // backwards compatibility
-                info: {
-                    name: userData.full_name,
-                    // TODO get from firestore
-                    share_all: true
-                },
-                editor: {
-                    enabled: true
-                },
-                is_loggedin: true,
-                created_datetime: '',
-                current_subscription: {
-                    active: true,
-                    created_datetime: '',
-                    plan: '',
-                    quantity: 1
-                },
-                is_staff: false
-            });
-
-            return customersCollection.doc(user.customer).get();
-        }).then((customer) => {
-            var customerData = customer.data();
-            var isCustomer = false;
-            if (customerData.owner === user.id) {
-                isCustomer = true;
-            }
-
-            user = Object.assign({
-                is_customer: isCustomer
-            }, user);
-
-            return setSignedInUser(user);
+        // HACK firestore throws an insufficient permissions error
+        // if we trigger immediately after signInWithEmailAndPassword()
+        var delay = new Promise((resolve, reject) => {
+            setTimeout(resolve, 500);
         });
+
+        return delay
+            .then(() => {
+                // get data from users collection
+                return usersCollection.doc(userId).get();
+            })
+            .then((userDoc) => {
+                // get data from users collection
+                var userData = userDoc.data();
+                user = Object.assign(user, {
+                    // only support one customer for now
+                    customer: userData.customers[0],
+                    // backwards compatibility
+                    info: {
+                        name: userData.full_name,
+                        // TODO get from firestore
+                        share_all: true
+                    },
+                    editor: {
+                        enabled: true
+                    },
+                    is_loggedin: true,
+                    created_datetime: '',
+                    current_subscription: {
+                        active: true,
+                        created_datetime: '',
+                        plan: '',
+                        quantity: 1
+                    },
+                    is_staff: false
+                });
+
+                return customersCollection.doc(user.customer).get();
+            })
+            .then((customer) => {
+                var customerData = customer.data();
+                var isCustomer = false;
+                if (customerData.owner === user.id) {
+                    isCustomer = true;
+                }
+
+                user = Object.assign({
+                    is_customer: isCustomer
+                }, user);
+
+                return setSignedInUser(user);
+            });
     }
 
     var signin = (params = {}) => {
@@ -1037,7 +1295,18 @@ var _FIRESTORE_PLUGIN = function () {
         templatesSharedQuery(user).onSnapshot(refreshTemplates);
         templatesEveryoneQuery(user).onSnapshot(refreshTemplates);
 
+        // populate in-memory template cache
         getTemplate();
+
+        // sync local templates
+        syncLocalData();
+    }).catch((err) => {
+        if (isLoggedOut(err)) {
+            // logged-out
+            return;
+        }
+
+        throw err;
     });
 
     return {
