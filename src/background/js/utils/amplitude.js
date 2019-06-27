@@ -59,4 +59,11 @@
     e.amplitude = n;
 })(window, document);
 
-amplitude.getInstance().init("a31babba9c8dedf2334c44d8acdad247");
+var amplitudeKey = '1294f53908a5dbc50b8e14f25c272c81';
+if (ENV && ENV === 'production') {
+    amplitudeKey = '2ed48634e41364b798b6f11df0cbe59a';
+}
+
+amplitude.getInstance().init(amplitudeKey, {
+    saveEvents: false // don't store in localStorage the events - it slows down everything
+});
