@@ -147,16 +147,6 @@ gApp.run(function ($rootScope, $location, $http, $timeout, ProfileService, Setti
     $rootScope.showStats = true;
 
     SettingsService.get('settings').then(function (settings) {
-        if (ENV && ENV === 'production') {
-            amplitude.getInstance().init("e50d000bcba1aa363cd1f71642ed466a", {
-                saveEvents: false // don't store in localStorage the events - it slows down everything
-            });
-        } else if (ENV && ENV === 'development') {
-            amplitude.getInstance().init("a31babba9c8dedf2334c44d8acdad247", {
-                saveEvents: false // don't store in localStorage the events - it slows down everything
-            });
-        }
-
         // Make sure that we have all the defaults
         SettingsService.set('settings', _.defaults(settings, Settings.defaults.settings));
 
