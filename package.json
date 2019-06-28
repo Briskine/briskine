@@ -74,7 +74,7 @@
         "csvexport": "^1.0.5",
         "font-awesome": "FortAwesome/Font-Awesome#4.5.0",
         "fuse.js": "krisk/Fuse#~2.2.0",
-        "handlebars": "4.0.4",
+        "handlebars": "^4.0.14",
         "jquery": "jquery/jquery-dist#2.1.4",
         "js-md5": "emn178/js-md5#~0.3.0",
         "microplugin": "brianreavis/microplugin.js#0.0.x",
