@@ -342,8 +342,6 @@ var _FIRESTORE_PLUGIN = function () {
 
     // TODO team members page
     var setMember = (params = {}) => {
-        console.log('setMember', params);
-
         return Promise.reject();
     };
 
@@ -1206,18 +1204,7 @@ var _FIRESTORE_PLUGIN = function () {
     }
 
     var signin = (params = {}) => {
-        // migrate user password from old api
-        return fetch(`${Config.functionsUrl}/signinMigrate`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(params)
-            })
-            .then(handleErrors)
-            .then(() => {
-                return firebase.auth().signInWithEmailAndPassword(params.email, params.password);
-            })
+        return firebase.auth().signInWithEmailAndPassword(params.email, params.password)
             .then((authRes) => {
                 return updateCurrentUser(authRes.user);
             }).catch((err) => {
@@ -1347,5 +1334,5 @@ var _FIRESTORE_PLUGIN = function () {
 
         on: on
     };
-};
+}();
 

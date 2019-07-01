@@ -4,18 +4,15 @@ var store = function () {
     var firestoreSettingKey = 'firestoreEnabled';
     var firestoreEnabled = (window.localStorage.getItem(firestoreSettingKey) === 'true') || false;
     // enable api plugin by default
-    // firestore plugin is temporarily dependent on the api plugin
     var plugin = _GORGIAS_API_PLUGIN;
 
     if (firestoreEnabled) {
-        // only initialize plugin if firestore is enabled
-        plugin = _FIRESTORE_PLUGIN();
+        plugin = _FIRESTORE_PLUGIN;
     }
 
     // firestore toggle
-    window.TOGGLE_FIRESTORE = function () {
-        firestoreEnabled = !firestoreEnabled
-        window.localStorage.setItem(firestoreSettingKey, firestoreEnabled);
+    window.TOGGLE_FIRESTORE = function (enabled = false) {
+        window.localStorage.setItem(firestoreSettingKey, enabled);
         window.location.reload();
     };
 
@@ -35,6 +32,19 @@ var store = function () {
 
         return true;
     });
+
+    // debug store calls
+    var debugPlugin = {};
+    Object.keys(plugin).forEach((key) => {
+        debugPlugin[key] = function (params = {}) {
+            console.log(key, params);
+            return plugin[key].call(null, params);
+        };
+    });
+
+    if (ENV !== 'production') {
+        return debugPlugin
+    }
 
     return plugin;
 }();

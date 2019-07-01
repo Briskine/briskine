@@ -147,9 +147,6 @@ gApp.run(function ($rootScope, $location, $timeout, ProfileService, SettingsServ
     $rootScope.showStats = true;
 
     SettingsService.get('settings').then(function (settings) {
-        // Make sure that we have all the defaults
-        SettingsService.set('settings', _.defaults(settings, Settings.defaults.settings));
-
         // disable amplitude if stats are not enabled
         if (!settings.stats.enabled) {
             amplitude.getInstance().setOptOut(true);

@@ -786,7 +786,7 @@ var _GORGIAS_API_PLUGIN = function () {
     };
 
     var signin = function (params = {}) {
-        return fetch(`${apiBaseURL}signin`, {
+        return fetch(`${Config.functionsUrl}/firebaseSignin`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -794,7 +794,15 @@ var _GORGIAS_API_PLUGIN = function () {
             body: JSON.stringify(params)
         })
         .then(handleErrors)
-        .then((res) => res.json());
+        .then((res) => res.json())
+        .then((res) => {
+            if (res.firebase) {
+                window.TOGGLE_FIRESTORE(true);
+                return _FIRESTORE_PLUGIN.signin(params)
+            }
+
+            return res
+        });
     };
 
     var logout = function (params = {}) {
