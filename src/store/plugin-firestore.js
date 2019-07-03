@@ -237,53 +237,51 @@ var _FIRESTORE_PLUGIN = function () {
     var setAccount = (params = {}) => {
         var currentUser = firebase.auth().currentUser;
         var userRef = usersCollection.doc(currentUser.uid);
-        var updates = [];
 
-        if (currentUser.email !== params.email) {
-            updates.push(
-                currentUser.updateEmail(params.email).then(() => {
-                    // only if auth update successful
-                    // update email in users collection
-                    return userRef.update({email: params.email});
-                })
-            );
-        }
+        return userRef.get().then((user) => {
+            var userData = user.data();
+            var updates = [];
 
-        if (currentUser.displayName !== params.name) {
-            updates.push(
-                currentUser.updateProfile({
-                    displayName: params.name
-                }).then(() => {
-                    // only if auth update successful
-                    // update name in users collection
-                    return userRef.update({full_name: params.name});
-                })
-            );
-        }
+            if (currentUser.email !== params.email) {
+                updates.push(
+                    currentUser.updateEmail(params.email).then(() => {
+                        // only if auth update successful
+                        // update email in users collection
+                        return userRef.update({email: params.email});
+                    })
+                );
+            }
 
-        return Promise.all(updates).then(() => {
-            // update details in cached user
-            return updateCurrentUser(firebase.auth().currentUser);
-        }).then(() => {
-            // update password last, it invalidates the session
-            if (params.password) {
-                return currentUser.updatePassword(params.password).then(() => {
-                    // automatically sign-in with new credentials
-                    return signin({
-                        email: params.email,
-                        password: params.password
+            if (userData.full_name !== params.name) {
+                updates.push(
+                    userRef.update({full_name: params.name})
+                );
+            }
+
+            return Promise.all(updates).then(() => {
+                // update details in cached user
+                return updateCurrentUser(firebase.auth().currentUser);
+            }).then(() => {
+                // update password last, it invalidates the session
+                if (params.password) {
+                    return currentUser.updatePassword(params.password).then(() => {
+                        // automatically sign-in with new credentials
+                        return signin({
+                            email: params.email,
+                            password: params.password
+                        });
                     });
-                });
-            }
+                }
 
-            return;
-        }).catch((err) => {
-            // TODO show error message in UI
-            if (err.message) {
-                alert(err.message);
-                return Promise.reject();
-            }
-        });
+                return;
+            }).catch((err) => {
+                // TODO show error message in UI
+                if (err.message) {
+                    alert(err.message);
+                    return Promise.reject();
+                }
+            });
+        })
     };
 
     var usersCollection = db.collection('users');
@@ -309,14 +307,6 @@ var _FIRESTORE_PLUGIN = function () {
     }
 
     var getMembers = (params = {exclude: null}) => {
-//         members: []
-//             active: true
-//             email: "alex@gorgias.io"
-//             id: ""
-//             is_customer: true
-//             name: "Alex Plugaru"
-//             user_id: 1
-
         return getSignedInUser().then((user) => {
             return customersCollection.doc(user.customer).get().then((customer) => {
                 var members = customer.data().members;
@@ -579,31 +569,15 @@ var _FIRESTORE_PLUGIN = function () {
         templateCache = {};
     }
 
-    var getTemplate = (params = {}) => {
-//         {
-//             "id": {
-//                 "attachments": "",
-//                 "bcc": "",
-//                 "body": "<div>Hello {{to.first_name}},</div><div><br></div><div><br></div><div>Happy 2017! I hope things went well for you during the holiday season!&nbsp;</div><div><br></div><div>I'm checking in as discussed, would you like to do a brief call sometimes next week?</div>",
-//                 "cc": "",
-//                 "created_datetime": "2017-01-08T20:06:40.143922",
-//                 "deleted": 0,
-//                 "id": "0aa3e13a-74ec-4017-9975-4dfcc14f608a",
-//                 "lastuse_datetime": "",
-//                 "nosync": 0,
-//                 "private": false,
-//                 "remote_id": "858d86ff-b5f8-4f3c-ac91-8f7b6bab293a",
-//                 "shortcut": "ch",
-//                 "subject": "Checking-in",
-//                 "sync_datetime": "2019-05-30T14:52:51.845Z",
-//                 "tags": "",
-//                 "title": "Checking-in",
-//                 "to": "",
-//                 "updated_datetime": "2019-05-30T14:53:20.845Z",
-//                 "use_count": 0
-//             }
-//         }
+    function isPrivate (template = {}) {
+        return (template.sharing === 'none');
+    }
 
+    function isDeleted (template = {}) {
+        return !!template.deleted_datetime ? 1 : 0;
+    }
+
+    var getTemplate = (params = {}) => {
         // return single template
         if (params.id) {
             var templateData = {};
@@ -635,6 +609,8 @@ var _FIRESTORE_PLUGIN = function () {
                                     id: params.id,
                                     tags: tags.join(', '),
                                     // backwards compatibility
+                                    deleted: isDeleted(template),
+                                    private: isPrivate(template),
                                     remote_id: params.id,
                                     nosync: 0
                                 }
@@ -693,11 +669,10 @@ var _FIRESTORE_PLUGIN = function () {
                                     templates[template.id] = Object.assign(
                                         template,
                                         {
-                                            deleted: 0,
                                             tags: tags.join(', '),
-                                            // TODO check sharing
-                                            private: true,
                                             // backwards compatibility
+                                            deleted: isDeleted(template),
+                                            private: isPrivate(template),
                                             remote_id: template.id,
                                             nosync: 0
                                         }
@@ -718,20 +693,6 @@ var _FIRESTORE_PLUGIN = function () {
     // update template details
     // sharing is updated later by updateSharing
     var updateTemplate = (params = {}) => {
-//         attachments: []
-//         body: "<div>&nbsp;</div>"
-//         created_datetime: t {seconds: 1559227395, nanoseconds: 68000000}
-//         customer: "IDJ03YipjOV3touEgrbX"
-//         deleted_datetime: null
-//         id: "500727c5-2c0d-4800-9f08-f6be3fdab248"
-//         modified_datetime: t {seconds: 1559227395, nanoseconds: 68000000}
-//         owner: "25v9Fag7OyfWQFvbFHimPAn5TuL2"
-//         shared_with: []
-//         sharing: "none"
-//         tags: "test"
-//         title: "t"
-//         version: 1
-
         var updatedDate = now();
         var updatedTemplate = {};
 
@@ -792,21 +753,6 @@ var _FIRESTORE_PLUGIN = function () {
     };
 
     var createTemplate = (params = {}) => {
-//         {
-//             "template": {
-//                 "id": "",
-//                 "remote_id": "",
-//                 "shortcut": "test",
-//                 "title": "test",
-//                 "tags": "",
-//                 "body": "<div>test</div>",
-//                 "attachments": []
-//             },
-//             "onlyLocal": true,
-//             "isPrivate": true
-//         }
-
-
         var newTemplate = {};
         var id = uuid();
 
@@ -882,21 +828,6 @@ var _FIRESTORE_PLUGIN = function () {
     };
 
     var getSharing = (params = {}) => {
-//         "acl": [
-//             {
-//             "email": "romain@gorgias.io",
-//             "quicktext_id": "07aa73cb-2ed0-4b4a-8ee0-30c91f53e501",
-//             "given_name": "Romain",
-//             "family_name": "Lapeyre",
-//             "created_datetime": "2019-04-08T20:36:25.842155",
-//             "user_id": 84,
-//             "permission": "owner",
-//             "id": "",
-//             "target_user_id": 84,
-//             "$$hashKey": "object:379"
-//             }
-//         ]
-
         if (!params.quicktext_ids || !params.quicktext_ids.length) {
             return Promise.resolve([]);
         }
@@ -1169,8 +1100,7 @@ var _FIRESTORE_PLUGIN = function () {
                     // backwards compatibility
                     info: {
                         name: userData.full_name,
-                        // TODO get from firestore
-                        share_all: true
+                        share_all: userData.shared_all || false
                     },
                     editor: {
                         enabled: true

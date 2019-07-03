@@ -13,9 +13,7 @@ var store = function () {
     // firestore toggle
     window.TOGGLE_FIRESTORE = function (enabled = false) {
         window.localStorage.setItem(firestoreSettingKey, enabled);
-        window.location.reload();
     };
-
 
     // respond to content
     chrome.runtime.onMessage.addListener((req, sender, sendResponse) => {
