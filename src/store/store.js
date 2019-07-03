@@ -12,8 +12,12 @@ var store = function () {
 
     // firestore toggle
     window.TOGGLE_FIRESTORE = function (enabled = false) {
-        window.localStorage.setItem(firestoreSettingKey, enabled);
+        window.localStorage.setItem(firestoreSettingKey, `${enabled}`);
     };
+
+    window.FIRESTORE_ENABLED = function () {
+        return firestoreEnabled
+    }
 
     // respond to content
     chrome.runtime.onMessage.addListener((req, sender, sendResponse) => {
@@ -34,7 +38,7 @@ var store = function () {
     // debug store calls
     var debugPlugin = {};
     Object.keys(plugin).forEach((key) => {
-        debugPlugin[key] = function (params = {}) {
+        debugPlugin[key] = function (params) {
             console.log(key, params);
             return plugin[key].call(null, params);
         };
