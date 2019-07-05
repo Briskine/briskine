@@ -231,6 +231,7 @@ var _FIRESTORE_PLUGIN = function () {
                             return;
                         }
 
+                        // TODO bug with setting sharing=none on migrating old existing templates
                         return parseTemplate({
                             template: template
                         }).then((res) => {
@@ -1026,7 +1027,6 @@ var _FIRESTORE_PLUGIN = function () {
         });
     }
 
-    // TODO permissions bug when updating same template twice
     var updateSharing = (params = {action: 'create', acl: {}, send_email: 'false'}) => {
         if (params.action === 'delete') {
             // TODO don't allow turn template private if you are not the owner

@@ -18,5 +18,8 @@ ext/
 *.crx
 *.nex
 
-# firebase build and config
-firebase/**
+# firebase umd build
+firebase/firebase.umd.js
+
+# firebase config
+firebase/config-firebase.js
