@@ -4,11 +4,6 @@ var _FIRESTORE_PLUGIN = function () {
     firebase.initializeApp(Config.firebase);
     var db = firebase.firestore();
 
-    // offline persistence
-    firebase.firestore().enablePersistence({
-        synchronizeTabs: true
-    });
-
     function mock () {
         return Promise.resolve();
     }
@@ -92,38 +87,45 @@ var _FIRESTORE_PLUGIN = function () {
         });
     }
 
+    var batchLocalDataUpdate = Promise.resolve()
     function updateLocalData (params = {}) {
-        return new Promise((resolve, reject) => {
-            var templates = {};
-            getLocalData({raw: true}).then((res) => {
-                // merge defaults with stored data
-                var localData = Object.assign({
-                    templates: {},
-                    tags: {}
-                }, res);
+        // batch update, to avoid overwriting data on parallel calls
+        batchLocalDataUpdate = batchLocalDataUpdate.then(() => {
+            return new Promise((resolve, reject) => {
+                var templates = {};
+                getLocalData({raw: true}).then((res) => {
+                    // merge defaults with stored data
+                    var localData = Object.assign({
+                        templates: {},
+                        tags: {}
+                    }, res);
 
-                ['tags', 'templates'].forEach((key) => {
-                    if (params[key]) {
-                        params[key].forEach((item) => {
-                            // merge existing data
-                            localData[key][item.id] = Object.assign({}, localData[key][item.id], item);
-                        });
-                    }
-                });
+                    ['tags', 'templates'].forEach((key) => {
+                        if (params[key]) {
+                            params[key].forEach((item) => {
+                                // merge existing data
+                                localData[key][item.id] = Object.assign({}, localData[key][item.id], item);
+                            });
+                        }
+                    });
 
-                var localDataContainer = {};
-                localDataContainer[localDataKey] = localData;
-                chrome.storage.local.set(localDataContainer, () => {
-                    // refresh template list
-                    refreshTemplates();
+                    var localDataContainer = {};
+                    localDataContainer[localDataKey] = localData;
+                    chrome.storage.local.set(localDataContainer, () => {
+                        // refresh template list
+                        refreshTemplates();
 
-                    resolve();
+                        resolve();
+                    });
                 });
             });
         });
+
+        return batchLocalDataUpdate;
     }
 
     function syncLocalData () {
+        var batch = db.batch();
         var user = {};
         return getSignedInUser()
             .then((res) => {
@@ -134,7 +136,6 @@ var _FIRESTORE_PLUGIN = function () {
                 ]);
             })
             .then((res) => {
-                var batch = db.batch();
                 var tags = res[0];
                 var templates = res[1];
 
@@ -145,28 +146,54 @@ var _FIRESTORE_PLUGIN = function () {
                     batch.set(ref, tag);
                 });
 
-                templates.forEach((template) => {
-                    var ref = templatesCollection.doc(template.id);
-                    delete template.id;
-                    template.owner = user.id;
-                    template.customer = user.customer;
-                    // convert dates
-                    [
-                        'created_datetime',
-                        'deleted_datetime',
-                        'modified_datetime',
-                        'lastuse_datetime'
-                    ].forEach((prop) => {
-                        if (template[prop]) {
-                            template[prop] = new firebase.firestore.Timestamp(
-                                template[prop].seconds,
-                                template[prop].nanoseconds
-                            );
-                        }
-                    });
-                    batch.set(ref, template);
-                });
+                return Promise.all(
+                    templates.map((template) => {
+                        var ref = templatesCollection.doc(template.id);
+                        var update = false;
 
+                        return ref.get()
+                            .then((res) => {
+                                // template exists, check modified_datetime
+                                var data = res.data();
+                                if (
+                                    data.modified_datetime
+                                    && new Date(template.modified_datetime) > data.modified_datetime.toDate()
+                                ) {
+                                    update = true;
+                                }
+                            })
+                            .catch((err) => {
+                                // template doesn't exist
+                                update = true;
+                            })
+                            .then(() => {
+                                if (update) {
+                                    delete template.id;
+                                    template.owner = user.id;
+                                    template.customer = user.customer;
+                                    // convert dates
+                                    [
+                                        'created_datetime',
+                                        'deleted_datetime',
+                                        'modified_datetime',
+                                        'lastuse_datetime'
+                                    ].forEach((prop) => {
+                                        if (template[prop]) {
+                                            template[prop] = new firebase.firestore.Timestamp(
+                                                template[prop].seconds,
+                                                template[prop].nanoseconds
+                                            );
+                                        }
+                                    });
+                                    batch.set(ref, template);
+                                }
+
+                                return
+                            })
+                    })
+                )
+            })
+            .then(() => {
                 return batch.commit();
             })
             .then(() => {
@@ -175,7 +202,58 @@ var _FIRESTORE_PLUGIN = function () {
             });
     }
 
-    // TODO sync legacy templates from old api plugin
+    // migrate legacy local (logged-out) templates to new local format.
+    // check if storage item is legacy template
+    function isLegacyTemplate (key = '', template = {}) {
+        return (
+            // key is uuid
+            key.length === 36 && key.split('-').length === 5
+            // template has body
+            && template.body
+            // template has id
+            && template.id
+        )
+    }
+
+    function migrateLegacyLocalData () {
+        var legacyIds = [];
+        return new Promise((resolve, reject) => {
+            chrome.storage.local.get(null, resolve)
+        }).then((storage) => {
+            return Promise.all(
+                Object.keys(storage || {}).map((key) => {
+                    var template = storage[key];
+                    if (isLegacyTemplate(key, template)) {
+                        var localId = template.id
+                        var remoteId = template.remote_id || localId
+                        // don't sync default templates
+                        if (template.nosync === 1) {
+                            return
+                        }
+
+                        return parseTemplate({
+                            template: template
+                        }).then((res) => {
+                            legacyIds.push(localId);
+
+                            // update local data
+                            return updateLocalData({
+                                templates: [
+                                    Object.assign({id: remoteId}, res)
+                                ]
+                            });
+                        });
+                    }
+
+                    return
+                })
+            )
+        }).then(() => {
+            // delete legacy data
+            chrome.storage.local.remove(legacyIds)
+            return
+        })
+    }
 
     // HACK borrow settings from old api plugin
     var getSettings = _GORGIAS_API_PLUGIN.getSettings;
@@ -414,8 +492,6 @@ var _FIRESTORE_PLUGIN = function () {
                 }));
             });
 
-
-
             return createTags(newTags).then((createdTags) => {
                 // merge existing tags with created tags
                 var updatedTags = existingTags.concat(createdTags);
@@ -454,6 +530,10 @@ var _FIRESTORE_PLUGIN = function () {
         var sharing = 'none';
         var shared_with = [];
         var templateDate = now();
+        var createdDatetime = params.template.created_datetime ? new Date(params.template.created_datetime) : null;
+        var modifiedDatetime = params.template.modified_datetime ? new Date(params.template.modified_datetime) : null;
+        var deletedDatetime = params.template.deleted_datetime ? new Date(params.template.deleted_datetime) : null;
+        var lastuseDatetime = params.template.lastuse_datetime ? new Date(params.template.lastuse_datetime) : null;
 
         var template = {
             title: params.template.title || null,
@@ -464,16 +544,16 @@ var _FIRESTORE_PLUGIN = function () {
             bcc: params.template.bcc || '',
             to: params.template.to || '',
             attachments: params.template.attachments || [],
-            created_datetime: templateDate,
-            modified_datetime: templateDate,
-            deleted_datetime: null,
+            created_datetime: fsDate(createdDatetime),
+            modified_datetime: fsDate(modifiedDatetime),
+            deleted_datetime: deletedDatetime ? fsDate(deletedDatetime) : null,
             shared_with: shared_with,
             sharing: sharing,
             tags: [],
             owner: null,
             customer: null,
             // stats
-            lastuse_datetime: null,
+            lastuse_datetime: lastuseDatetime ? fsDate(lastuseDatetime) : null,
             use_count: 0,
             version: 1
         };
@@ -583,10 +663,11 @@ var _FIRESTORE_PLUGIN = function () {
             var templateData = {};
             return getTemplatesFromCache(params.id)
                 .catch(() => {
-                    // template not in cache
-                    return templatesCollection.doc(params.id).get()
-                        .then((res) => {
-                            return res.data();
+                    return getSignedInUser()
+                        .then(() => {
+                            // template not in cache
+                            return templatesCollection.doc(params.id).get()
+                                .then((res) => res.data());
                         })
                         .catch((err) => {
                             if (isLoggedOut(err)) {
@@ -619,9 +700,6 @@ var _FIRESTORE_PLUGIN = function () {
                             // backwards compatibility
                             var list = [];
                             list[template.id] = template;
-
-                            addTemplatesToCache(list);
-
                             return list;
                         });
                 });
@@ -948,6 +1026,7 @@ var _FIRESTORE_PLUGIN = function () {
         });
     }
 
+    // TODO permissions bug when updating same template twice
     var updateSharing = (params = {action: 'create', acl: {}, send_email: 'false'}) => {
         if (params.action === 'delete') {
             // TODO don't allow turn template private if you are not the owner
@@ -1100,7 +1179,7 @@ var _FIRESTORE_PLUGIN = function () {
                     // backwards compatibility
                     info: {
                         name: userData.full_name,
-                        share_all: userData.shared_all || false
+                        share_all: userData.share_all || false
                     },
                     editor: {
                         enabled: true
@@ -1205,26 +1284,31 @@ var _FIRESTORE_PLUGIN = function () {
         });
     };
 
-    // populate template cache on load
-    getSignedInUser().then((user) => {
-        // refresh templates on changes
-        templatesOwnedQuery(user).onSnapshot(refreshTemplates);
-        templatesSharedQuery(user).onSnapshot(refreshTemplates);
-        templatesEveryoneQuery(user).onSnapshot(refreshTemplates);
+    var startup = function () {
+        migrateLegacyLocalData().then(() => {
+            return getSignedInUser()
+                .then((user) => {
+                    // refresh templates on changes
+                    templatesOwnedQuery(user).onSnapshot(refreshTemplates);
+                    templatesSharedQuery(user).onSnapshot(refreshTemplates);
+                    templatesEveryoneQuery(user).onSnapshot(refreshTemplates);
 
-        // populate in-memory template cache
-        getTemplate();
+                    // populate in-memory template cache
+                    getTemplate();
 
-        // sync local templates
-        syncLocalData();
-    }).catch((err) => {
-        if (isLoggedOut(err)) {
-            // logged-out
-            return;
-        }
+                    // sync local templates
+                    syncLocalData();
+                })
+                .catch((err) => {
+                    if (isLoggedOut(err)) {
+                        // logged-out
+                        return;
+                    }
 
-        throw err;
-    });
+                    throw err;
+                });
+        });
+    };
 
     return {
         getSettings: getSettings,
@@ -1262,7 +1346,9 @@ var _FIRESTORE_PLUGIN = function () {
         forgot: forgot,
         openSubscribePopup: openSubscribePopup,
 
-        on: on
+        on: on,
+
+        startup: startup
     };
 }();
 

@@ -8,6 +8,8 @@ var store = function () {
 
     if (firestoreEnabled) {
         plugin = _FIRESTORE_PLUGIN;
+        // migrate legacy data
+        _FIRESTORE_PLUGIN.startup();
     }
 
     // firestore toggle
