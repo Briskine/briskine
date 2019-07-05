@@ -190,22 +190,22 @@ var _GORGIAS_API_PLUGIN = function () {
     };
 
     var getMembers = function (params = {}) {
-        var membersApiUrl = `${apiBaseURL}members`
+        var membersApiUrl = `${apiBaseURL}members`;
         if (params.memberId) {
-            membersApiUrl += `/${params.memberId}`
+            membersApiUrl += `/${params.memberId}`;
         }
 
         return fetch(membersApiUrl)
             .then(handleErrors)
-            .then((res) => res.json())
+            .then((res) => res.json());
     };
 
     var setMember = function (params = {}) {
-        var membersApiUrl = `${apiBaseURL}members`
-        var membersApiMethod = 'POST'
+        var membersApiUrl = `${apiBaseURL}members`;
+        var membersApiMethod = 'POST';
         if (params.id) {
-            membersApiMethod = 'PUT'
-            membersApiUrl += `/${params.id}`
+            membersApiMethod = 'PUT';
+            membersApiUrl += `/${params.id}`;
         }
 
         return fetch(membersApiUrl, {
@@ -226,9 +226,9 @@ var _GORGIAS_API_PLUGIN = function () {
     };
 
     var queryTemplates = function (params = {}) {
-        var quicktextsApiUrl = `${apiBaseURL}quicktexts`
+        var quicktextsApiUrl = `${apiBaseURL}quicktexts`;
         if (params.quicktextId) {
-            quicktextsApiUrl += `/${params.quicktextId}`
+            quicktextsApiUrl += `/${params.quicktextId}`;
         }
 
         return fetch(quicktextsApiUrl)
@@ -244,7 +244,7 @@ var _GORGIAS_API_PLUGIN = function () {
             },
             body: JSON.stringify(remote)
         })
-        .then(handleErrors)
+        .then(handleErrors);
     };
 
     var updateTemplate = function (params = {}) {
@@ -322,7 +322,7 @@ var _GORGIAS_API_PLUGIN = function () {
             },
             body: JSON.stringify(remote)
         })
-        .then(handleErrors)
+        .then(handleErrors);
     };
 
     // WARNING we sometimes rely on mutating params.template in controllers
@@ -398,7 +398,7 @@ var _GORGIAS_API_PLUGIN = function () {
             },
             body: JSON.stringify(remote)
         })
-        .then(handleErrors)
+        .then(handleErrors);
     };
 
     var deleteTemplate = function (params = {}) {
@@ -440,7 +440,7 @@ var _GORGIAS_API_PLUGIN = function () {
     var clearLocalTemplates = function () {
         return new Promise((resolve, reject) => {
             TemplateStorage.clear(resolve);
-        })
+        });
     };
 
     // given a string with tags give a clean list
@@ -618,7 +618,7 @@ var _GORGIAS_API_PLUGIN = function () {
                                 deleteRemoteTemplate(remote).then(() => {
                                     TemplateStorage.remove(ut.id);
                                 });
-                            }
+                            };
                         };
 
                         queryTemplates({
@@ -649,20 +649,20 @@ var _GORGIAS_API_PLUGIN = function () {
                     // send stats to server if we templates used
                     if (t.use_count) { // if we have a use_count, then we can update the stats on the server.
                         // we need this closure to make sure we don't duplicate the same template
-                        var save = function (ut) {
+                        var saveCount = function (ut) {
                             return function () {
                                 ut.use_count = 0;
                                 var data = {};
                                 data[ut.id] = ut;
                                 TemplateStorage.set(data, function () {});
-                            }
+                            };
                         };
 
                         updateStats({
                             quicktext_id: t.remote_id,
                             key: 'use_count',
                             value: t.use_count
-                        }).then(save(angular.copy(t)))
+                        }).then(saveCount(angular.copy(t)));
                     }
                 }
             }
@@ -698,7 +698,7 @@ var _GORGIAS_API_PLUGIN = function () {
             // wait a bit before doing the local sync
             setTimeout(waitForLocal, 1000);
 
-            return
+            return;
         });
     };
 
@@ -715,7 +715,7 @@ var _GORGIAS_API_PLUGIN = function () {
             body: JSON.stringify(params)
         })
         .then(handleErrors)
-        .then((res) => res.json())
+        .then((res) => res.json());
     };
 
     var updateSharing = function (params = {}) {
@@ -749,9 +749,9 @@ var _GORGIAS_API_PLUGIN = function () {
     };
 
     var getSubscription = function (params = {}) {
-        var subscriptionsApiUrl = `${apiBaseURL}subscriptions`
+        var subscriptionsApiUrl = `${apiBaseURL}subscriptions`;
         if (params.subId) {
-            subscriptionsApiUrl += `/${params.subId}`
+            subscriptionsApiUrl += `/${params.subId}`;
         }
 
         return fetch(subscriptionsApiUrl)
@@ -798,10 +798,10 @@ var _GORGIAS_API_PLUGIN = function () {
         .then((res) => {
             if (res.firebase) {
                 window.TOGGLE_FIRESTORE(true);
-                return _FIRESTORE_PLUGIN.signin(params)
+                return _FIRESTORE_PLUGIN.signin(params);
             }
 
-            return res
+            return res;
         });
     };
 
@@ -840,9 +840,9 @@ var _GORGIAS_API_PLUGIN = function () {
     var trigger = function (name) {
         events.filter((event) => event.name === name).forEach((event) => {
             if (typeof event.callback === 'function') {
-                event.callback()
+                event.callback();
             }
-        })
+        });
     };
 
     return {

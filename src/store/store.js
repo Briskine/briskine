@@ -18,8 +18,8 @@ var store = function () {
     };
 
     window.FIRESTORE_ENABLED = function () {
-        return firestoreEnabled
-    }
+        return firestoreEnabled;
+    };
 
     // respond to content
     chrome.runtime.onMessage.addListener((req, sender, sendResponse) => {
@@ -47,7 +47,7 @@ var store = function () {
     });
 
     if (ENV !== 'production') {
-        return debugPlugin
+        return debugPlugin;
     }
 
     return plugin;

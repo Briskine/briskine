@@ -6,9 +6,9 @@ var store = function () {
                 chrome.runtime.sendMessage({
                     type: type,
                     data: params
-                }, resolve)
-            }).catch((err) => console.error(err))
-        }
+                }, resolve);
+            }).catch((err) => console.error(err));
+        };
     }
 
     var methods = [
@@ -18,7 +18,7 @@ var store = function () {
     ];
     var contentStore = {};
     methods.forEach((method) => {
-        contentStore[method] = createRequest(method)
+        contentStore[method] = createRequest(method);
     });
-    return contentStore
+    return contentStore;
 }();

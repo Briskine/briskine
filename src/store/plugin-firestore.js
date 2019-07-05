@@ -87,7 +87,7 @@ var _FIRESTORE_PLUGIN = function () {
         });
     }
 
-    var batchLocalDataUpdate = Promise.resolve()
+    var batchLocalDataUpdate = Promise.resolve();
     function updateLocalData (params = {}) {
         // batch update, to avoid overwriting data on parallel calls
         batchLocalDataUpdate = batchLocalDataUpdate.then(() => {
@@ -156,8 +156,8 @@ var _FIRESTORE_PLUGIN = function () {
                                 // template exists, check modified_datetime
                                 var data = res.data();
                                 if (
-                                    data.modified_datetime
-                                    && new Date(template.modified_datetime) > data.modified_datetime.toDate()
+                                    data.modified_datetime &&
+                                    new Date(template.modified_datetime) > data.modified_datetime.toDate()
                                 ) {
                                     update = true;
                                 }
@@ -188,10 +188,10 @@ var _FIRESTORE_PLUGIN = function () {
                                     batch.set(ref, template);
                                 }
 
-                                return
-                            })
+                                return;
+                            });
                     })
-                )
+                );
             })
             .then(() => {
                 return batch.commit();
@@ -207,28 +207,28 @@ var _FIRESTORE_PLUGIN = function () {
     function isLegacyTemplate (key = '', template = {}) {
         return (
             // key is uuid
-            key.length === 36 && key.split('-').length === 5
+            key.length === 36 && key.split('-').length === 5 &&
             // template has body
-            && template.body
+            template.body &&
             // template has id
-            && template.id
-        )
+            template.id
+        );
     }
 
     function migrateLegacyLocalData () {
         var legacyIds = [];
         return new Promise((resolve, reject) => {
-            chrome.storage.local.get(null, resolve)
+            chrome.storage.local.get(null, resolve);
         }).then((storage) => {
             return Promise.all(
                 Object.keys(storage || {}).map((key) => {
                     var template = storage[key];
                     if (isLegacyTemplate(key, template)) {
-                        var localId = template.id
-                        var remoteId = template.remote_id || localId
+                        var localId = template.id;
+                        var remoteId = template.remote_id || localId;
                         // don't sync default templates
                         if (template.nosync === 1) {
-                            return
+                            return;
                         }
 
                         return parseTemplate({
@@ -245,14 +245,14 @@ var _FIRESTORE_PLUGIN = function () {
                         });
                     }
 
-                    return
+                    return;
                 })
-            )
+            );
         }).then(() => {
             // delete legacy data
-            chrome.storage.local.remove(legacyIds)
-            return
-        })
+            chrome.storage.local.remove(legacyIds);
+            return;
+        });
     }
 
     // HACK borrow settings from old api plugin
@@ -359,7 +359,7 @@ var _FIRESTORE_PLUGIN = function () {
                     return Promise.reject();
                 }
             });
-        })
+        });
     };
 
     var usersCollection = db.collection('users');
