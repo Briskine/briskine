@@ -155,11 +155,22 @@ var _FIRESTORE_PLUGIN = function () {
                             .then((res) => {
                                 // template exists, check modified_datetime
                                 var data = res.data();
+                                var modified_datetime = new firebase.firestore.Timestamp(
+                                    template['modified_datetime'].seconds,
+                                    template['modified_datetime'].nanoseconds
+                                );
                                 if (
                                     data.modified_datetime &&
-                                    new Date(template.modified_datetime) > data.modified_datetime.toDate()
+                                    modified_datetime.toDate() > data.modified_datetime.toDate()
                                 ) {
                                     update = true;
+
+                                    // sharing is set to none on new templates.
+                                    // prevent making existing templates private.
+                                    template = Object.assign(template, {
+                                        sharing: data.sharing,
+                                        shared_with: data.shared_with
+                                    })
                                 }
                             })
                             .catch((err) => {
@@ -185,7 +196,8 @@ var _FIRESTORE_PLUGIN = function () {
                                             );
                                         }
                                     });
-                                    batch.set(ref, template);
+
+                                    batch.set(ref, template, {merge: true});
                                 }
 
                                 return;
@@ -231,7 +243,6 @@ var _FIRESTORE_PLUGIN = function () {
                             return;
                         }
 
-                        // TODO bug with setting sharing=none on migrating old existing templates
                         return parseTemplate({
                             template: template
                         }).then((res) => {
