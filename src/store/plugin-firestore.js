@@ -156,8 +156,8 @@ var _FIRESTORE_PLUGIN = function () {
                                 // template exists, check modified_datetime
                                 var data = res.data();
                                 var modified_datetime = new firebase.firestore.Timestamp(
-                                    template['modified_datetime'].seconds,
-                                    template['modified_datetime'].nanoseconds
+                                    template.modified_datetime.seconds,
+                                    template.modified_datetime.nanoseconds
                                 );
                                 if (
                                     data.modified_datetime &&
@@ -170,7 +170,7 @@ var _FIRESTORE_PLUGIN = function () {
                                     template = Object.assign(template, {
                                         sharing: data.sharing,
                                         shared_with: data.shared_with
-                                    })
+                                    });
                                 }
                             })
                             .catch((err) => {
@@ -1157,6 +1157,12 @@ var _FIRESTORE_PLUGIN = function () {
 
     // backwards compatibility
     function signinError (err) {
+        if (err && err.code === 'auth/too-many-requests') {
+            // recaptcha verifier is not supported in chrome extensions
+            // only http/https
+            err.message = 'Too many unsuccessful login attempts. Please try again later. ';
+        }
+
         throw {
             error: err.message || 'There was an issue signing you in. Please try again later.'
         };

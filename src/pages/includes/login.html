@@ -18,7 +18,7 @@
                         <div id="signin-error" class="alert alert-danger" role="alert" ng-show="login.error != null">
                             <p><b>{{ login.error }}</b></p>
                         </div>
-                        <form novalidate>
+                        <form novalidate ng-submit="login.signin()">
                             <div class="form-group">
                                 <label for="signin-email">Email</label>
                                 <input type="email" class="form-control" id="signin-email" placeholder="Your email"
@@ -31,7 +31,9 @@
                             </div>
                             <div class="text-right">
                                 <a class="recover-password" href ng-click="login.forgot()">Forgot password?</a>&nbsp;&nbsp;
-                                <button type="submit" class="btn btn-default" ng-click="login.signin()">Login</button>
+                                <button type="submit" ng-class="['btn btn-default', {'btn-loading': login.loading}]">
+                                    Login
+                                </button>
                             </div>
                         </form>
                     </div>

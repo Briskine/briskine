@@ -1,5 +1,6 @@
 gApp.controller('LoginCtrl', function ($timeout, $route, $rootScope, TemplateService, SettingsService) {
     var self = this;
+    self.loading = false;
 
     self.credentials = {
         email: '',
@@ -9,9 +10,12 @@ gApp.controller('LoginCtrl', function ($timeout, $route, $rootScope, TemplateSer
     self.error = null;
 
     self.signin = function() {
+        self.loading = true;
+
         store.signin(self.credentials)
             .then(function success(){
                 SettingsService.set('isLoggedIn', true).then(window.location.reload(true));
+                return;
             })
             .catch(function error(response) {
                 $timeout(() => {
@@ -22,6 +26,10 @@ gApp.controller('LoginCtrl', function ($timeout, $route, $rootScope, TemplateSer
                     }
                     $('#signin-error').alert();
                 });
+                return;
+            })
+            .then(() => {
+                self.loading = false;
             });
     };
 
