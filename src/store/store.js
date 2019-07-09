@@ -40,9 +40,9 @@ var store = function () {
     // debug store calls
     var debugPlugin = {};
     Object.keys(plugin).forEach((key) => {
-        debugPlugin[key] = function (params) {
-            console.log(key, params);
-            return plugin[key].call(null, params);
+        debugPlugin[key] = function () {
+            console.log(key, arguments[0]);
+            return plugin[key].apply(null, arguments);
         };
     });
 

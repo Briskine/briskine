@@ -298,16 +298,14 @@ gApp.run(function ($rootScope, $location, $timeout, ProfileService, SettingsServ
 
     $rootScope.checkLoggedIn();
 
-    if (store.syncNow) {
-        // Setup recurring syncing interval
-        var syncInterval = 30 * 1000;
-        window.setInterval(store.syncNow, syncInterval);
-        store.syncNow();
+    // Setup recurring syncing interval
+    var syncInterval = 30 * 1000;
+    window.setInterval(store.syncNow, syncInterval);
+    store.syncNow();
 
-        store.on('templates-sync', function () {
-            $rootScope.$broadcast("templates-sync");
-        });
-    }
+    store.on('templates-sync', function () {
+        $rootScope.$broadcast("templates-sync");
+    });
 
     $rootScope.$on('$viewContentLoaded', initDom);
     $rootScope.$on('$includeContentLoaded', initDom);

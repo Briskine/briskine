@@ -1040,17 +1040,32 @@ var _FIRESTORE_PLUGIN = function () {
 
     var updateSharing = (params = {action: 'create', acl: {}, send_email: 'false'}) => {
         if (params.action === 'delete') {
-            // TODO don't allow turn template private if you are not the owner
-            // delete sends one request for each user, with params.acl.user_id
-            // batch delete requests
-            params.acl.quicktext_ids.forEach((id) => {
-                deleteSharing({
-                    id: id,
-                    user_id: params.acl.user_id
-                });
-            });
+            return getSignedInUser()
+                .then((user) => {
+                    return Promise.all(
+                        // delete sends one request for each user, with params.acl.user_id
+                        // batch delete requests
+                        params.acl.quicktext_ids.map((id) => {
+                            return getTemplate({id: id}).then((res) => {
+                                var template = res[id];
+                                // don't remove yourself from shared_with,
+                                // if you're not the template owner.
+                                // it will make the template disappear.
+                                if (
+                                    template.owner === user.id ||
+                                    params.acl.user_id !== user.id
+                                ) {
+                                    deleteSharing({
+                                        id: id,
+                                        user_id: params.acl.user_id
+                                    });
+                                }
 
-            return Promise.resolve();
+                                return;
+                            });
+                        })
+                    );
+                });
         }
 
         // params.acl.quicktexts is map
