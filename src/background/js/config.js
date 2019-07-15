@@ -18,7 +18,7 @@ if (ENV === 'production') {
         baseURL: 'https://chrome.gorgias.io/',
         apiBaseURL: 'https://chrome.gorgias.io/api/1/',
         websiteUrl: 'https://templates.gorgias.io',
-        functionsUrl: '',
+        functionsUrl: 'https://us-central1-gorgias-templates-production.cloudfunctions.net',
         firebase: _firebaseConfigProduction
     });
 }
