@@ -9,9 +9,6 @@ src/background/js/environment.js
 
 # Editor
 .idea
-.kateproject
-.kateproject.d
-*.kate-swp
 
 # chrome extension
 tmp/
@@ -20,3 +17,9 @@ ext/
 *.pub
 *.crx
 *.nex
+
+# firebase umd build
+firebase/firebase.umd.js
+
+# firebase config
+firebase/config-firebase.js

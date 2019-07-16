@@ -1,4 +1,4 @@
-gApp.controller('SidebarCtrl', function ($scope, $location, $http, $window,
+gApp.controller('SidebarCtrl', function ($scope, $location, $window,
                                          AccountService, SettingsService, TemplateService, FilterTagService) {
     $scope.profile = {};
     $scope.filterTags = [];
@@ -71,4 +71,8 @@ gApp.controller('SidebarCtrl', function ($scope, $location, $http, $window,
         loadTags();
         loadAccount();
     });
+
+    $scope.openSubscribe = function () {
+        store.openSubscribePopup();
+    };
 });

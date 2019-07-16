@@ -210,7 +210,7 @@ gApp.controller('ListCtrl',
                     $scope.shareData.emails = "";
                     $scope.shareModalSelectizeField[0].selectize.clear();
                     $scope.templateModalSelectizeField[0].selectize.clear();
-                    $rootScope.SyncNow();
+                    store.syncNow();
                 });
             };
 
@@ -489,5 +489,9 @@ gApp.controller('ListCtrl',
 
         $scope.getTags = function (template) {
             return TemplateService.tags(template);
+        };
+
+        $scope.openSubscribe = function () {
+            store.openSubscribePopup();
         };
     });

@@ -1,5 +1,6 @@
-gApp.controller('LoginCtrl', function ($http, $route, $rootScope, TemplateService, SettingsService) {
+gApp.controller('LoginCtrl', function ($timeout, $route, $rootScope, TemplateService, SettingsService) {
     var self = this;
+    self.loading = false;
 
     self.credentials = {
         email: '',
@@ -9,20 +10,27 @@ gApp.controller('LoginCtrl', function ($http, $route, $rootScope, TemplateServic
     self.error = null;
 
     self.signin = function() {
-        $http({
-            method: 'POST',
-            url: $rootScope.apiBaseURL + 'signin',
-            data: self.credentials
-        }).then(function success(){
-            SettingsService.set('isLoggedIn', true).then(window.location.reload(true));
-        }, function error(response){
-            if (response.data) {
-                self.error = response.data.error;
-            } else {
-                self.error = 'Could not connect to login server. Please try again.'
-            }
-            $('#signin-error').alert();
-        });
+        self.loading = true;
+
+        store.signin(self.credentials)
+            .then(function success(){
+                SettingsService.set('isLoggedIn', true).then(window.location.reload(true));
+                return;
+            })
+            .catch(function error(response) {
+                $timeout(() => {
+                    if (response) {
+                        self.error = response.error;
+                    } else {
+                        self.error = 'Could not connect to login server. Please try again.'
+                    }
+                    $('#signin-error').alert();
+                });
+                return;
+            })
+            .then(() => {
+                self.loading = false;
+            });
     };
 
     self.forgot= function() {

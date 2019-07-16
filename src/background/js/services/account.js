@@ -1,19 +1,10 @@
-gApp.service('AccountService', function ($q, $resource, $rootScope) {
+gApp.service('AccountService', function ($q, $rootScope) {
     var self = this;
-
-    var accResource = $resource($rootScope.apiBaseURL + 'account', {}, {
-      update: {
-          method: "PUT"
-      },
-      delete: {
-          method: "DELETE"
-      }
-    });
 
     self.get = function () {
         var deferred = $q.defer();
 
-        accResource.get(function (user) {
+        store.getAccount().then((user) => {
             self.user = user;
             deferred.resolve(user);
         });
@@ -23,89 +14,59 @@ gApp.service('AccountService', function ($q, $resource, $rootScope) {
 
     self.update = function (data) {
         var deferred = $q.defer();
-        var user = new accResource();
-        user.email = data.email;
-        user.name = data.info.name;
-        user.password = data.password;
-        user.share_all = data.info.share_all;
-
-        user.$update(function () {
+        store.setAccount({
+            email: data.email,
+            name: data.info.name,
+            password: data.password,
+            share_all: data.info.share_all
+        }).then(() => {
             deferred.resolve();
         });
         return deferred.promise;
     };
 });
 
-gApp.service('MemberService', function ($q, $resource, $rootScope) {
+gApp.service('MemberService', function ($q, $rootScope) {
     var self = this;
-    var memberResource = $resource($rootScope.apiBaseURL + 'members/:memberId', {memberId: "@id"}, {
-        update: {
-            method: "PUT"
-        },
-        delete: {
-            method: "DELETE"
-        }
-    });
 
     self.members = function () {
         var deferred = $q.defer();
-        var members = memberResource.get(function () {
-            deferred.resolve(members);
-        });
+        store.getMembers().then(deferred.resolve);
         return deferred.promise;
     };
 
     self.toggle = function (user) {
         var deferred = $q.defer();
-        memberResource.get({memberId: user.id}, function (member) {
-            member.active = !member.active;
-            member.$update(function () {
-                deferred.resolve();
-            });
-        });
+        store.setMember({
+            id: user.id,
+            active: !user.active,
+            email: user.email,
+            is_customer: user.is_customer,
+            name: user.name,
+            user_id: user.user_id
+        }).then(deferred.resolve);
         return deferred.promise;
     };
 
     self.update = function (data) {
         var deferred = $q.defer();
+        var member = {
+            id: data.id,
+            name: data.name,
+            email: data.email,
+            send_notification: data.sendNotification
+        };
 
-        if (data.id) {
-            memberResource.get({memberId: data.id}, function (member) {
-                member.name = data.name;
-                member.email = data.email;
-                member.send_notification = data.sendNotification;
-                member.$update(function () {
-                    deferred.resolve();
-                }, function (error) {
-                    deferred.reject(error.data);
-                });
-            });
-        } else {
-            var member = new memberResource();
-            member.name = data.name;
-            member.email = data.email;
-            member.send_notification = data.sendNotification;
-            member.$save(function () {
-                deferred.resolve();
-            }, function (error) {
-                deferred.reject(error.data);
-            });
-        }
+        store.setMember(member)
+            .then(deferred.resolve)
+            .catch(deferred.reject);
 
-        return deferred.promise;
-    };
-
-    self.delete = function (data) {
-        var deferred = $q.defer();
-        var member = memberResource.get({memberId: data.id}, function () {
-            member.$delete(function () {
-                deferred.resolve();
-            });
-        });
         return deferred.promise;
     };
 });
 
+// TODO remove group functionality
+// it's only enabled for staff
 gApp.service('GroupService', function ($q, $resource, $rootScope) {
     var self = this;
     var groupResource = $resource($rootScope.apiBaseURL + 'groups/:groupId', {groupId: "@id"}, {

@@ -1,7 +1,6 @@
 gApp.controller('SettingsCtrl', function ($scope, $rootScope, $timeout,  AccountService, TemplateService, SettingsService) {
     $scope.activeTab = "settings";
 
-
     AccountService.get().then(function(data){
         $scope.account = data;
     });
@@ -87,5 +86,11 @@ gApp.controller('SettingsCtrl', function ($scope, $rootScope, $timeout,  Account
         if (r === true) {
             SettingsService.reset();
         }
+    };
+
+    $scope.firestoreEnabled = window.FIRESTORE_ENABLED();
+    $scope.disableFirestore = () => {
+        window.TOGGLE_FIRESTORE(false);
+        window.location.reload();
     };
 });

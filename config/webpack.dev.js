@@ -20,9 +20,13 @@ exports.setPath = ({ output }) => {
     };
 };
 exports.generateManifest = ({}) => {
+    var env = 'development';
+    if (process.env.NODE_ENV) {
+        env = process.env.NODE_ENV
+    }
     
     var fs = require('fs');
-    fs.writeFile('src/background/js/environment.js','var ENV = "development";',function(err){
+    fs.writeFile('src/background/js/environment.js', `var ENV = "${env}";`,function(err){
         if(err) throw err;
     })
 

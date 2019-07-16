@@ -26,7 +26,12 @@ gApp.config(function() {
 
 gApp.config(function ($routeProvider, $compileProvider, $sceDelegateProvider) {
     $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|chrome-extension):/);
-    $sceDelegateProvider.resourceUrlWhitelist(['self', 'https://chrome.gorgias.io/**', 'http://localhost:*/**']);
+    $sceDelegateProvider.resourceUrlWhitelist([
+        'self',
+        'https://chrome.gorgias.io/**',
+        'https://templates.gorgias.io/**',
+        'http://localhost:*/**'
+    ]);
     $routeProvider
         .when('/list', {
             controller: 'ListCtrl',
@@ -123,11 +128,11 @@ gApp.config(['$compileProvider', function ($compileProvider) {
 /* Global run
  */
 gApp.run(function ($rootScope) {
-    $rootScope.baseURL = Settings.defaults.baseURL;
-    $rootScope.apiBaseURL = Settings.defaults.apiBaseURL;
+    $rootScope.baseURL = Config.baseURL;
+    $rootScope.apiBaseURL = Config.apiBaseURL;
 });
 
-gApp.run(function ($rootScope, $location, $http, $timeout, ProfileService, SettingsService, TemplateService, SubscriptionService) {
+gApp.run(function ($rootScope, $location, $timeout, ProfileService, SettingsService, TemplateService, SubscriptionService) {
     $rootScope.$on('$routeChangeStart', function () {
         $rootScope.path = $location.path();
     });
@@ -147,9 +152,6 @@ gApp.run(function ($rootScope, $location, $http, $timeout, ProfileService, Setti
     $rootScope.showStats = true;
 
     SettingsService.get('settings').then(function (settings) {
-        // Make sure that we have all the defaults
-        SettingsService.set('settings', _.defaults(settings, Settings.defaults.settings));
-
         // disable amplitude if stats are not enabled
         if (!settings.stats.enabled) {
             amplitude.getInstance().setOptOut(true);
@@ -188,15 +190,6 @@ gApp.run(function ($rootScope, $location, $http, $timeout, ProfileService, Setti
         $rootScope.profile.savedWordsNice = ProfileService.reduceNumbers(words);
     });
 
-    $rootScope.connectSocial = function (provider, scope) {
-        var url = $rootScope.baseURL + 'authorize/' + provider;
-        $http.post(url, {'scope': scope}).success(function (res) {
-            window.location = res.location;
-        }).error(function () {
-            alert("Error! We're unable to authorize : " + provider + ". Please try again or contact chrome@gorgias.io");
-        });
-    };
-
     var browser = "Chrome";
     if (Boolean(navigator.userAgent.match(/OPR\/(\d+)/))) {
         browser = "Opera";
@@ -230,7 +223,8 @@ gApp.run(function ($rootScope, $location, $http, $timeout, ProfileService, Setti
     };
 
     $rootScope.checkLoggedIn = function () {
-        $http.get($rootScope.apiBaseURL + 'login-info').success(function (data) {
+        store.getLoginInfo()
+        .then(function (data) {
             $rootScope.loginChecked = true;
             if (data.is_loggedin) {
                 $rootScope.isLoggedIn = true;
@@ -245,7 +239,7 @@ gApp.run(function ($rootScope, $location, $http, $timeout, ProfileService, Setti
                         });
                     }
 
-                    $http.get($rootScope.apiBaseURL + "account").success(function (data) {
+                    store.getAccount().then(function (data) {
                         $rootScope.currentSubscription = data.current_subscription;
                         $rootScope.isCustomer = data.is_customer;
 
@@ -269,15 +263,13 @@ gApp.run(function ($rootScope, $location, $http, $timeout, ProfileService, Setti
                         amplitude.getInstance().identify(identify);
 
                     });
-                    // Once logged in start syncing
-                    $rootScope.SyncNow();
                 } else {
                     var identify = new amplitude.Identify().set('browser', browser).set('authenticated', false).set('user', {'email': $rootScope.userEmail});
                     amplitude.getInstance().identify(identify);
                     SettingsService.set("isLoggedIn", false);
                 }
             });
-        }).error(function () {
+        }).catch(function () {
             var identify = new amplitude.Identify().set('$browser', browser).set('authenticated', false).set('user', {'email': $rootScope.userEmail});
             amplitude.getInstance().identify(identify);
             SettingsService.set("isLoggedIn", false);
@@ -286,45 +278,11 @@ gApp.run(function ($rootScope, $location, $http, $timeout, ProfileService, Setti
 
     // logout function
     $rootScope.logOut = function () {
-        $http({
-            method: 'GET',
-            url: $rootScope.baseURL + 'logout'
-        }).then(function () {
+        store.logout()
+        .then(function () {
             SettingsService.set('isLoggedIn', false).then(location.reload(true));
         });
     };
-
-    // last sync date
-    $rootScope.lastSync = TemplateService.lastSync;
-
-    $rootScope.SyncNow = function () {
-        var inList = $location.path().indexOf('/list') !== -1;
-        if (!inList) {
-            // only sync when in list
-            return;
-        }
-        SettingsService.get("isLoggedIn").then(function (isLoggedIn) {
-            if (!isLoggedIn) {
-                return;
-            }
-
-            TemplateService.sync().then(function (lastSync) {
-                console.log("Synced: ", new Date().toUTCString());
-                var waitForLocal = function () {
-                    $rootScope.$broadcast("templates-sync");
-                    $rootScope.lastSync = lastSync;
-                    TemplateService.syncLocal();
-                };
-                // wait a bit before doing the local sync
-                setTimeout(waitForLocal, 1000);
-            });
-        });
-    };
-
-    // Setup recurring syncing interval
-    var syncInterval = 30 * 1000;
-
-    window.setInterval($rootScope.SyncNow, syncInterval);
 
     // init dom plugins
     var initDom = function () {
@@ -344,6 +302,15 @@ gApp.run(function ($rootScope, $location, $http, $timeout, ProfileService, Setti
     };
 
     $rootScope.checkLoggedIn();
+
+    // Setup recurring syncing interval
+    var syncInterval = 30 * 1000;
+    window.setInterval(store.syncNow, syncInterval);
+    store.syncNow();
+
+    store.on('templates-sync', function () {
+        $rootScope.$broadcast("templates-sync");
+    });
 
     $rootScope.$on('$viewContentLoaded', initDom);
     $rootScope.$on('$includeContentLoaded', initDom);

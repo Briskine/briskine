@@ -178,7 +178,8 @@ gApp.controller('TemplateFormCtrl',
             var acl = $scope.shareData.acl;
             var members = $scope.shareData.members;
 
-            if (acl.length >= members.length) {
+            // members does not include current user
+            if (acl.length >= members.length + 1) {
                 self.sharing_setting = "everyone";
             } else if (acl.length > 1) {
                 self.sharing_setting = "specific";
@@ -189,6 +190,7 @@ gApp.controller('TemplateFormCtrl',
             var selectize = $scope.templateModalSelectizeField[0].selectize;
             selectize.clear();
 
+            // ADDS VALUES, NOT OPTIONS
             acl.forEach(function (acl){
                 if (acl.target_user_id != $scope.account.id) {
                     selectize.addItem(acl.email);
@@ -347,7 +349,7 @@ gApp.controller('TemplateFormCtrl',
                     }
                 }
 
-                var post_update = function () {
+                var post_update = function (selectedTemplate) {
                     if (self.sharing_setting == 'specific') {
                         var old_emails = [];
 
@@ -364,31 +366,31 @@ gApp.controller('TemplateFormCtrl',
 
                         old_emails.forEach(function (acl) {
                             if (new_emails.indexOf(acl.email) == -1 && $scope.account.email != acl.email) {
-                                $scope.revokeAccess([self.selectedTemplate], acl.target_user_id)
+                                $scope.revokeAccess([selectedTemplate], acl.target_user_id)
                             }
                         });
 
-                        $scope.shareQuicktexts([self.selectedTemplate], self.send_email);
+                        $scope.shareQuicktexts([selectedTemplate], self.send_email);
                     } else if (self.sharing_setting == 'private') {
-                        self.revokeAllAccess([self.selectedTemplate]);
+                        self.revokeAllAccess([selectedTemplate]);
                     } else if (self.sharing_setting == 'everyone') {
-                        $scope.shareQuicktextsWithEveryone([self.selectedTemplate], self.send_email);
+                        $scope.shareQuicktextsWithEveryone([selectedTemplate], self.send_email);
                     }
                 };
 
                 if (self.selectedTemplate.id) {
-                    TemplateService.update(self.selectedTemplate, !$scope.account).then(function () {
+                    TemplateService.update(self.selectedTemplate, !$scope.account).then(function (template) {
                         if ($scope.account) {
-                            post_update();
+                            post_update(template);
                         } else {
                             $scope.reloadTemplates();
                         }
                     });
                     $scope.reloadTemplates();
                 } else {
-                    TemplateService.create(self.selectedTemplate, !$scope.account, self.sharing_setting === 'private').then(function (t) {
+                    TemplateService.create(self.selectedTemplate, !$scope.account, self.sharing_setting === 'private').then(function (template) {
                         if ($scope.account) {
-                            post_update();
+                            post_update(template);
                         } else {
                             $scope.reloadTemplates();
                         }
@@ -431,8 +433,8 @@ gApp.controller('TemplateFormCtrl',
                 $('#duplicate-alert-box').addClass('hide');
             });
 
-            TemplateService.create(newQt).then(function (id) {
-                if (typeof id !== 'undefined') {
+            TemplateService.create(newQt).then(function (template) {
+                if (template && typeof template.id !== 'undefined') {
                     $('#duplicate-alert-box').removeClass('hide');
                     //$scope.reloadTemplates();
                     //setTimeout(self.showForm(id), 500);
@@ -446,14 +448,14 @@ gApp.controller('TemplateFormCtrl',
                     $scope.revokeAccess(quicktexts, acl.target_user_id);
                 }
             });
-            $rootScope.SyncNow();
+            store.syncNow();
         };
 
         self.upgradeNow = function() {
             $rootScope.trackSignup('templateForm');
             $('#template-form-modal').modal('hide');
             $timeout(function() {
-                $('#signup-modal').modal('show')
+                store.openSubscribePopup();
             }, 500);
         };
 

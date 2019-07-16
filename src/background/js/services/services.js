@@ -2,34 +2,36 @@
 
 // Settings
 gApp.service('SettingsService', function ($q) {
-    var self = this
+    var self = this;
     self.get = function (key, def) {
-        var deferred = $q.defer()
-        Settings.get(key, def, function (data) {
-            deferred.resolve(data)
-        })
-        return deferred.promise
-    }
+        var deferred = $q.defer();
+        store.getSettings({
+            key: key,
+            def: def
+        }).then(deferred.resolve);
+        return deferred.promise;
+    };
     self.set = function (key, val) {
-        var deferred = $q.defer()
-        Settings.set(key, val, function () {
-            deferred.resolve()
-        })
-        return deferred.promise
-    }
+        var deferred = $q.defer();
+        store.setSettings({
+            key: key,
+            val: val
+        }).then(deferred.resolve);
+        return deferred.promise;
+    };
     self.reset = function () {
-        for (var k in Settings.defaults) {
-            Settings.set(k, Settings.defaults[k], function () {
-                // nothing to do here
-            })
-        }
-    }
-    return self
+        var deferred = $q.defer();
+        store.setSettings({
+            key: 'settings'
+        }).then(deferred.resolve);
+        return deferred.promise;
+    };
+    return self;
 })
 
 // User Profile - check if the user is logged in. Get it's info
 gApp.service('ProfileService', function ($q, SettingsService) {
-    var self = this
+    var self = this;
 
     self.reduceNumbers = function (n) {
         /* Write nice numbers. Ex: 1000 -> 1k */

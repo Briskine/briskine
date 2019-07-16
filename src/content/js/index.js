@@ -19,7 +19,7 @@ var App = {
 
         // Get template filtered out by shortcut
         getQuicktextsShortcut: function(text, callback) {
-            TemplateStorage.get(null, function(templates) {
+            store.getTemplate().then((templates) => {
                 for (var id in templates) {
                     var t = templates[id];
                     if (t.deleted === 0 && t.shortcut === text) {
@@ -65,7 +65,7 @@ var App = {
 
             App.data.debouncer[debouncerId] = setTimeout(function() {
                 // search even the empty strings. It's not a problem because the dialog is now triggered by a user shortcut
-                TemplateStorage.get(null, function(res) {
+                store.getTemplate().then((res) => {
                     var templates = [];
                     for (var t in res) {
                         if (!res[t].deleted) {
@@ -138,19 +138,23 @@ var App = {
         },
         stats: function(key, val, callback) {
             chrome.runtime.sendMessage(
-                { request: "stats", key: key, val: val },
+                { request: 'stats', key: key, val: val },
                 function(response) {
                     callback(response);
                 }
             );
         },
         fetchSettings: function(callback, doc, disablePlugins) {
-            Settings.get("settings", "", function(settings) {
+            store.getSettings({
+                key: 'settings'
+            }).then((settings) => {
                 callback(settings, doc, disablePlugins);
             });
         },
         isLoggedIn: function(callback) {
-            Settings.get("isLoggedIn", "", function(isLoggedIn) {
+            store.getSettings({
+                key: 'isLoggedIn'
+            }, function(isLoggedIn) {
                 callback(isLoggedIn);
             });
         }

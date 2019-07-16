@@ -77,14 +77,6 @@ gApp.controller('MembersCtrl', function ($scope, $rootScope, $timeout, AccountSe
         });
     };
 
-    $scope.deleteMember = function () {
-        if (confirm("Are you sure you want to delete this member from your team?")) {
-            MemberService.delete(this.member).then(function () {
-                $scope.refresh();
-            });
-        }
-    };
-
     $scope.edit = function () {
         $(".edit-" + this.u.id).removeClass('hidden').siblings().addClass('hidden');
     };

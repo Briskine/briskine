@@ -8,7 +8,9 @@
         <p>The templates you created are on your computer <strong>only</strong>! If you <strong>re-install Chrome</strong> or your
             <strong>operating system</strong> you will lose your templates.</p>
         <p>We created a backup & team sharing service so you never lose your templates.
-            <a href data-toggle="modal" data-target="#signup-modal" ng-click="trackSignup('subscribeHint')">Subscribe now!</a>
+            <a href ng-click="trackSignup('subscribeHint'); openSubscribe();">
+                Subscribe now!
+            </a>
         </p>
         <br />
         <p><strong>Note:</strong> If you already have an account, make sure you are <a href="" data-toggle="modal" data-target="#signin-modal">logged in</a>.</p>

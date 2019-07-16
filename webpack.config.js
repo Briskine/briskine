@@ -64,11 +64,20 @@ const dependencies = {
 
                 'fuse.js/src/fuse.min.js',
 
+                './firebase/config-firebase.js',
+                './firebase/firebase.umd.js',
+
                 // Should be first
                 './src/background/js/environment.js',
+                './src/background/js/config.js',
                 './src/background/js/utils/amplitude.js',
 
                 './src/common/*.js',
+
+                './src/store/plugin-api.js',
+                './src/store/plugin-firestore.js',
+                './src/store/store.js',
+
                 './src/background/js/**/*.js'
                 ],
                 css: [
@@ -87,7 +96,10 @@ const dependencies = {
                 'mousetrap/plugins/global-bind/mousetrap-global-bind.js',
                 'fuse.js/src/fuse.min.js',
 
+                './src/background/js/environment.js',
                 './src/common/*.js',
+
+                './src/store/store-content.js',
 
                 // order is important here
                 './src/content/js/patterns.js',

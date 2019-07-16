@@ -21,8 +21,10 @@ gApp.controller('SubscriptionsCtrl', function ($scope, $rootScope, $routeParams,
         $scope.preferredCurrency = data.preferred_currency;
         $scope.email = data.email;
 
-
-        $scope.quantity = parseInt($routeParams.quantity, 10) || 1;
+        // get quantity from url
+        if ($routeParams.quantity) {
+            $scope.quantity = parseInt($routeParams.quantity, 10) || 1;
+        }
 
         _.each($scope.plans[$scope.preferredCurrency], function (plan) {
             if (plan.sku === $routeParams.plan) {
@@ -93,25 +95,6 @@ gApp.controller('SubscriptionsCtrl', function ($scope, $rootScope, $routeParams,
             $scope.paymentError = res;
             $('.subscribe-button').removeClass('disabled');
         });
-    };
-
-    $scope.addDiscountCode = function (discountCode) {
-        var deferred = $q.defer();
-        if (!discountCode) {
-            alert("Please enter discount code");
-            return;
-        }
-
-        // just check that the coupon exists in Stripe
-        SubscriptionService.addCoupon(discountCode, function (coupon) {
-            $scope.discountCode = discountCode;
-            if (coupon && coupon.percent_off && coupon.valid) {
-                $scope.couponPrecentOffLabel = "-" + coupon.percent_off + "%";
-                $scope.couponPrecentOff = (100 - coupon.percent_off) / 100;
-            }
-            deferred.resolve();
-        });
-        return deferred.promise;
     };
 
     $scope.cancelSubscription = function() {

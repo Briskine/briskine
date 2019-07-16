@@ -560,7 +560,9 @@ App.autocomplete.dialog = {
             return false;
         }
 
-        Settings.get('settings', {}, function (settings) {
+        store.getSettings({
+            key: 'settings'
+        }).then((settings) => {
             if ((settings.qaBtn && settings.qaBtn.enabled === false) ||
                 // only show for whitelisted domains
                 App.autocomplete.dialog.qaBtnWhitelist.indexOf(window.location.origin) === -1
@@ -595,7 +597,10 @@ App.autocomplete.dialog = {
                         if (!settings.qaBtn.shownPostInstall) {
                             $(qaBtn).trigger('mouseup');
                             settings.qaBtn.shownPostInstall = true;
-                            Settings.set('settings', settings, function(){});
+                            store.setSettings({
+                                key: 'settings',
+                                val: settings
+                            });
                         }
                     }
                     return;

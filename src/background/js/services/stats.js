@@ -1,17 +1,8 @@
-gApp.service('StatsService', function ($q, $resource, $rootScope, SettingsService) {
+gApp.service('StatsService', function ($q, $rootScope, SettingsService) {
     var self = this
-
-    self.res = $resource($rootScope.apiBaseURL + 'templates/stats', {}, {
-        get: {
-            method: "GET"
-        }
-    })
-
     self.get = function (options) {
         var deferred = $q.defer()
-        self.res.get(function (res) {
-            deferred.resolve(res)
-        })
+        store.getStats().then(deferred.resolve);
         return deferred.promise
     }
 
@@ -24,15 +15,22 @@ gApp.service('StatsService', function ($q, $resource, $rootScope, SettingsServic
                 return
             }
             // only log stats for logged in users
-            SettingsService.get("sendStatsEnabled").then(function (sendStatsEnabled) {
+            SettingsService.get("settings").then(function (settings) {
+                var sendStatsEnabled = false
+                if (settings &&
+                    settings.stats &&
+                    settings.stats.enabled) {
+                    sendStatsEnabled = true;
+                };
+
                 if (sendStatsEnabled) { // do this only if user allowed sending anonymous statistics
                     SettingsService.get("words").then(function (words) {
                         SettingsService.get('syncedWords').then(function (syncedWords) {
                             var newWords = words - syncedWords
                             if (newWords > 0) {
-                                var stats = new self.res()
-                                stats.words = newWords
-                                stats.$save(function () {
+                                store.updateStats({
+                                    words: newWords
+                                }).then(() => {
                                     SettingsService.set("syncedWords", words)
                                     SettingsService.set("lastStatsSync", new Date())
                                 })
@@ -44,7 +42,9 @@ gApp.service('StatsService', function ($q, $resource, $rootScope, SettingsServic
         })
 
         window.clearTimeout(self.syncStatsTimer)
-        self.syncStatsTimer = window.setTimeout(self.sync, 1000) // every 15minutes
+        // 15 mins
+        var syncTime = 1000 * 60 * 15;
+        self.syncStatsTimer = window.setTimeout(self.sync, syncTime)
     }
     self.sync()
 })
