@@ -801,14 +801,20 @@ var _GORGIAS_API_PLUGIN = function () {
                 return _FIRESTORE_PLUGIN.signin(params);
             }
 
-            return res;
+            // get session cookie from api domain
+            return fetch(`${apiBaseURL}signin`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(params)
+                })
+                .then((res) => res.json());
         });
     };
 
     var logout = function (params = {}) {
-        return fetch(`${baseURL}logout`)
-            .then(handleErrors)
-            .then((res) => res.json());
+        return fetch(`${baseURL}logout`);
     };
 
     var forgot = function (params = {}) {
