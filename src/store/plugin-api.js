@@ -3,12 +3,32 @@ var _GORGIAS_API_PLUGIN = function () {
     var apiBaseURL = Config.apiBaseURL;
     var baseURL = Config.baseURL;
 
+    function isLegacyTemplate (key = '', template = {}) {
+        return (
+            // key is uuid
+            key.length === 36 && key.split('-').length === 5 &&
+            // template has body
+            template.body &&
+            // template has id
+            template.id
+        );
+    }
+
     var TemplateStorage = {
         set: function(data, callback) {
             chrome.storage.local.set(data, callback);
         },
         get: function(k, callback) {
-            chrome.storage.local.get(k, callback);
+            chrome.storage.local.get(k, (data) => {
+                // return only templates from storage
+                var filteredData = {};
+                Object.keys(data).forEach((key) => {
+                    if (isLegacyTemplate(key, data[key])) {
+                        filteredData[key] = data[key];
+                    }
+                });
+                callback(filteredData);
+            });
         },
         remove: function(k, callback) {
             chrome.storage.local.remove(k, callback);
