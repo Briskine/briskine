@@ -66,9 +66,9 @@
         "zip-webpack-plugin": "^3.0.0"
     },
     "dependencies": {
-        "@firebase/app": "^0.4.0",
-        "@firebase/auth": "^0.11.1",
-        "@firebase/firestore": "^1.3.0",
+        "@firebase/app": "^0.4.11",
+        "@firebase/auth": "^0.11.5",
+        "@firebase/firestore": "^1.4.5",
         "angular": "angular/bower-angular#1.4.7",
         "angular-moment": "urish/angular-moment#~0.6.2",
         "angular-resource": "angular/bower-angular-resource#1.4.7",
