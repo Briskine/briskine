@@ -70,7 +70,7 @@ gApp.controller('ListCtrl',
         $scope.showSubscribeHint = false;
         $scope.hasSelected = false;
         $scope.searchOptions = {};
-        $scope.gmailLink = 'https://mail.google.com/mail/?view=cm&fs=1&to=someone@example.com&su=I%20love%20Gorgias!&body=Hey!%0A%0ACheck%20out%20this%20awesome%20Chrome%20extension%20that%20I%20found%3A%0A%0Ahttps%3A%2F%2Fchrome.google.com%2Fwebstore%2Fdetail%2Fgorgias-templates-email-t%2Flmcngpkjkplipamgflhioabnhnopeabf%0A%0AIt%20helps%20me%20type%20much%20faster%20with%20templates%20on%20the%20web!'
+        $scope.gmailLink = 'https://mail.google.com/mail/?view=cm&fs=1&to=someone@example.com&su=I%20love%20Gorgias!&body=Hey!%0A%0ACheck%20out%20this%20awesome%20Chrome%20extension%20that%20I%20found%3A%0A%0Ahttps%3A%2F%2Fchrome.google.com%2Fwebstore%2Fdetail%2Fgorgias-templates-email-t%2Flmcngpkjkplipamgflhioabnhnopeabf%0A%0AIt%20helps%20me%20type%20much%20faster%20with%20templates%20on%20the%20web!';
 
         function loadAccount() {
             SettingsService.get("isLoggedIn").then(function (isLoggedIn) {
@@ -460,15 +460,54 @@ gApp.controller('ListCtrl',
             });
         }, 50);
 
+        function downloadString(text, fileType, fileName) {
+            var blob = new Blob([text], { type: fileType });
+
+            var a = document.createElement('a');
+            a.download = fileName;
+            a.href = URL.createObjectURL(blob);
+            a.dataset.downloadurl = [fileType, a.download, a.href].join(':');
+            a.style.display = 'none';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            setTimeout(function() { URL.revokeObjectURL(a.href); }, 1500);
+        };
+
+        function generateCsv (arr = []) {
+            // header
+            if (!arr.length) {
+                return
+            }
+
+            var lines = [];
+            var columns = Object.keys(arr[0]);
+            lines.push(columns.join(','));
+
+            arr.forEach((item) => {
+                var row = [];
+                columns.forEach((key) => {
+                    var content = (item[key] || '').replace(/"/g, '""');
+                    if (content) {
+                        content = `"${content}"`
+                    }
+                    row.push(content)
+                });
+
+                lines.push(row.join(','));
+            });
+
+            return lines.join('\r\n');
+        };
+
         $scope.exportTemplates = function () {
             var now = new Date();
             var filename = 'gorgias-templates-' + now.toISOString() + '.csv' ;
-            var itemsNotFormatted = $scope.templates;
-            var itemsFormatted = [];
+            var templates = $scope.templates || [];
 
             // format the data
-            itemsNotFormatted.forEach(function(item){
-                itemsFormatted.push({
+            var exportTemplates = templates.map((item) => {
+                return {
                     id: item.remote_id || '',
                     title: item.title || '',
                     shortcut: item.shortcut || '',
@@ -478,13 +517,11 @@ gApp.controller('ListCtrl',
                     bcc: item.bcc || '',
                     to: item.to || '',
                     body: item.body || '',
-                });
+                }
             });
 
-            var exporter = Export.create({
-                filename: filename
-            });
-            exporter.downloadCsv(itemsFormatted);
+            var csv = generateCsv(exportTemplates);
+            return downloadString(csv, 'text/csv', filename);
         };
 
         $scope.getTags = function (template) {
