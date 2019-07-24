@@ -362,6 +362,8 @@ img.avatar {
     z-index: 1101 !important;
 }
 
+/* TODO remove helpdesk ad
+ */
 .helpdesk-ad {
     border: 1px solid #cae1ee;
     background-color: #f5fafd;
@@ -382,4 +384,24 @@ img.avatar {
     .close {
         right: 0;
     }
+}
+
+/* indefinite loading indicator
+ */
+.progress-indefinite {
+    position: relative;
+    overflow: hidden;
+}
+
+.progress-indefinite .progress-bar {
+    position: absolute;
+    left: -100%;
+    width: 100%;
+    animation: move-indefinite 1.2s ease-in-out infinite;
+}
+
+@keyframes move-indefinite {
+    0% {left: -100%}
+    50% {left: 0}
+    100% {left: 100%}
 }

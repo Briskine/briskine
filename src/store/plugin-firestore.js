@@ -1300,6 +1300,10 @@ var _FIRESTORE_PLUGIN = function () {
     // make impersonate public
     window.IMPERSONATE = impersonate;
 
+    // TODO import templates functionality
+    var importTemplates = (params = {}) => {
+    };
+
     var events = [];
     var on = function (name, callback) {
         events.push({
@@ -1377,6 +1381,7 @@ var _FIRESTORE_PLUGIN = function () {
         logout: logout,
         forgot: forgot,
         openSubscribePopup: openSubscribePopup,
+        importTemplates: importTemplates,
 
         on: on,
 

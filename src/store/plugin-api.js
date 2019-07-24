@@ -855,6 +855,17 @@ var _GORGIAS_API_PLUGIN = function () {
         });
     };
 
+    var importTemplates = function (params = {}) {
+        var formData = new FormData();
+        formData.append('file', params.file);
+        return fetch(`${apiBaseURL}quicktexts/import`, {
+            method: 'POST',
+            body: formData
+        })
+        .then(handleErrors)
+        .then((res) => res.json());
+    };
+
     var events = [];
     var on = function (name, callback) {
         events.push({
@@ -906,6 +917,7 @@ var _GORGIAS_API_PLUGIN = function () {
         logout: logout,
         forgot: forgot,
         openSubscribePopup: openSubscribePopup,
+        importTemplates: importTemplates,
 
         on: on
     };
