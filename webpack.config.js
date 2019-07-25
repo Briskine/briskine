@@ -75,7 +75,7 @@ const dependencies = {
 
                 './src/store/plugin-api.js',
                 './src/store/plugin-firestore.js',
-                './src/store/store.js',
+                './src/store/store-background.js',
 
                 './src/background/js/**/*.js'
                 ],
