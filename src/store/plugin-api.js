@@ -806,7 +806,7 @@ var _GORGIAS_API_PLUGIN = function () {
     };
 
     var signin = function (params = {}) {
-        return fetch(`${Config.functionsUrl}/firebaseSignin`, {
+        return fetch(`${Config.functionsUrl}/signin`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
