@@ -41,7 +41,6 @@ const dependencies = {
 
                 'checklist-model/checklist-model.js',
                 'ng-file-upload/ng-file-upload-all.min.js',
-                'csvexport/dist/Export.min.js',
 
                 'microplugin/src/microplugin.js',
                 'sifter/sifter.min.js',
@@ -76,7 +75,7 @@ const dependencies = {
 
                 './src/store/plugin-api.js',
                 './src/store/plugin-firestore.js',
-                './src/store/store.js',
+                './src/store/store-background.js',
 
                 './src/background/js/**/*.js'
                 ],

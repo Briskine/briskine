@@ -806,7 +806,7 @@ var _GORGIAS_API_PLUGIN = function () {
     };
 
     var signin = function (params = {}) {
-        return fetch(`${Config.functionsUrl}/firebaseSignin`, {
+        return fetch(`${Config.functionsUrl}/signin`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -853,6 +853,17 @@ var _GORGIAS_API_PLUGIN = function () {
         $('#api-signup-modal').modal({
             show: true
         });
+    };
+
+    var importTemplates = function (params = {}) {
+        var formData = new FormData();
+        formData.append('file', params.file);
+        return fetch(`${apiBaseURL}quicktexts/import`, {
+            method: 'POST',
+            body: formData
+        })
+        .then(handleErrors)
+        .then((res) => res.json());
     };
 
     var events = [];
@@ -906,6 +917,7 @@ var _GORGIAS_API_PLUGIN = function () {
         logout: logout,
         forgot: forgot,
         openSubscribePopup: openSubscribePopup,
+        importTemplates: importTemplates,
 
         on: on
     };

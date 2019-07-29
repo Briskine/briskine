@@ -26,16 +26,17 @@
                             </ul>
 
                     </div>
-                    <div id="file-upload-progress" class="progress active progress-striped hide">
-                        <div class="progress-bar progress-bar-info " role="progressbar" aria-valuenow="0"
-                             aria-valuemin="0" aria-valuemax="100" style="min-width: 2%; width: 0%">
+                    <div id="file-upload-progress" class="progress progress-indefinite" ng-show="import.uploading">
+                        <div class="progress-bar progress-bar-info" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+                            <span class="sr-only">Uploading...</span>
                         </div>
-                        <div class="progress-note hide alert alert-info">
-                            <strong>Note:</strong> Depending on the number of templates, the import process might take a few minutes.
-                            <br/>
-                            <br/>
-                            This dialog will close automatically when the import is finished.
-                        </div>
+                    </div>
+
+                    <div class="alert alert-info" ng-show="import.uploading">
+                        <strong>Note:</strong> Depending on the number of templates, the import process might take a few minutes.
+                        <br/>
+                        <br/>
+                        This dialog will close automatically when the import is finished.
                     </div>
                 </form>
             </div>
