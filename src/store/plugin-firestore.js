@@ -1071,48 +1071,61 @@ var _FIRESTORE_PLUGIN = function () {
         // params.acl.quicktexts is map
         var templateIds = Object.keys(params.acl.quicktexts);
         var members = [];
-        return getMembers({exclude: []}).then((res) => {
-            members = res.members;
+        var user = {};
+        return getSignedInUser()
+            .then((res) => {
+                user = res;
+                return getMembers({exclude: []})
+            })
+            .then((res) => {
+                members = res.members;
 
-            return Promise.all(
-                templateIds.map((id) => {
-                    return templatesCollection.doc(id).get();
-                })
-            );
-        }).then((templates) => {
-            return Promise.all(
-                templates.map((template) => {
-                    var templateData = template.data();
-                    var owner = templateData.owner;
-                    var emails = (params.acl.quicktexts[template.id].emails || '').split(',');
-                    var sharing = 'none';
-                    var shared_with = [];
-                    // exclude template owner
-                    var possibleMembers = members.filter((m) => m.id !== templateData.owner);
-                    var everyMember = possibleMembers.map((m) => m.email);
-                    var everyone = hasAll(emails, everyMember);
+                return Promise.all(
+                    templateIds.map((id) => {
+                        return templatesCollection.doc(id).get();
+                    })
+                );
+            }).then((templates) => {
+                return Promise.all(
+                    templates.map((template) => {
+                        var templateData = template.data();
+                        var owner = templateData.owner;
+                        var emails = (params.acl.quicktexts[template.id].emails || '').split(',');
+                        var sharing = 'none';
+                        var shared_with = [];
+                        var memberEmails = members.map((member) => member.email);
+                        // backwards-compatibility.
+                        // emails will never include current signed-in user,
+                        // but will include current template owner.
+                        // template should be shared with me, if not owned by me.
+                        var everyone = hasAll(emails.concat([user.email]), memberEmails);
 
-                    if (everyone) {
-                        sharing = 'everyone';
-                        // backwards compatibility
-                        shared_with = possibleMembers.map((member) => member.id);
-                    } else if (emails.length) {
-                        sharing = 'custom';
-                        // emails to ids
-                        shared_with = possibleMembers.filter((member) => {
-                            return emails.includes(member.email);
-                        }).map((member) => member.id);
-                    }
+                        if (everyone) {
+                            sharing = 'everyone';
+                            // backwards compatibility
+                            shared_with = members.map((member) => member.id);
+                        } else if (emails.length) {
+                            sharing = 'custom';
+                            // emails to ids
+                            shared_with = members.filter((member) => {
+                                return emails.includes(member.email);
+                            }).map((member) => member.id);
+                        }
 
-                    // TODO handle send_email param
+                        // don't share with template owner
+                        shared_with = shared_with.filter((memberId) => {
+                            return memberId !== owner
+                        })
 
-                    return templatesCollection.doc(template.id).update({
-                        sharing: sharing,
-                        shared_with: shared_with
-                    });
-                })
-            );
-        });
+                        // TODO handle send_email param
+
+                        return templatesCollection.doc(template.id).update({
+                            sharing: sharing,
+                            shared_with: shared_with
+                        });
+                    })
+                );
+            });
     };
 
     var getStats = mock;
