@@ -1070,6 +1070,7 @@ var _FIRESTORE_PLUGIN = function () {
 
         // params.acl.quicktexts is map
         var templateIds = Object.keys(params.acl.quicktexts);
+        var notifiedUsers = {};
         var members = [];
         var user = {};
         return getSignedInUser()
@@ -1117,7 +1118,14 @@ var _FIRESTORE_PLUGIN = function () {
                             return memberId !== owner
                         })
 
-                        // TODO handle send_email param
+                        // set notified users
+                        members.filter((member) => {
+                            // exclude template owner
+                            if(emails.includes(member.email) && member.id !== owner) {
+                                // map for deduplication
+                                notifiedUsers[member.id] = member
+                            }
+                        });
 
                         return templatesCollection.doc(template.id).update({
                             sharing: sharing,
@@ -1125,8 +1133,43 @@ var _FIRESTORE_PLUGIN = function () {
                         });
                     })
                 );
-            });
+            }).then(() => {
+                // send_email is string
+                if (params.send_email === 'true') {
+                    var users = Object.keys(notifiedUsers).map((id) => notifiedUsers[id])
+                    shareNotification({
+                        users: users,
+                        templates: templateIds,
+                        message: params.acl.message
+                    })
+                }
+
+                return;
+            })
     };
+
+    function shareNotification (params = {}) {
+        return getCurrentUser()
+            .then((currentUser) => {
+                return currentUser.getIdToken(true)
+            })
+            .then((idToken) => {
+                return fetch(`${Config.functionsUrl}/share`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        token: idToken,
+                        users: params.users,
+                        templates: params.templates,
+                        message: params.message
+                    })
+                })
+                .then(handleErrors)
+                .then((res) => res.json());
+            })
+    }
 
     var getStats = mock;
     var updateStats = mock;
