@@ -1328,6 +1328,16 @@ var _FIRESTORE_PLUGIN = function () {
         });
     };
 
+    function signinWithToken (token = '') {
+        return firebase.auth().signInWithCustomToken(token)
+            .then((res) => {
+                return updateCurrentUser(res.user);
+            })
+            .then(() => {
+                return window.location.reload();
+            });
+    };
+
     var impersonate = function (params = {}) {
         return getCurrentUser().then((currentUser) => {
             return currentUser.getIdToken(true);
@@ -1345,11 +1355,7 @@ var _FIRESTORE_PLUGIN = function () {
                 .then(handleErrors)
                 .then((res) => res.json());
         }).then((res) => {
-            return firebase.auth().signInWithCustomToken(res.token);
-        }).then((res) => {
-            return updateCurrentUser(res.user);
-        }).then(() => {
-            return window.location.reload();
+            return signinWithToken(res.token);
         });
     };
 
@@ -1401,6 +1407,18 @@ var _FIRESTORE_PLUGIN = function () {
                 });
         });
     };
+
+    // subscribe automatic sign-in
+    window.addEventListener('message', function (e) {
+        var data = {}
+        try {
+            data = JSON.parse(e.data)
+        } catch (err) {}
+
+        if (data.type === 'templates-subscribe-success') {
+            signinWithToken(data.token);
+        }
+    });
 
     return {
         getSettings: getSettings,
