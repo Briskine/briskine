@@ -830,6 +830,15 @@ var _GORGIAS_API_PLUGIN = function () {
                     body: JSON.stringify(params)
                 })
                 .then((res) => res.json());
+        })
+        .catch((err) => {
+            if (!err.error) {
+                throw {
+                    error: err
+                }
+            }
+
+            throw err
         });
     };
 
