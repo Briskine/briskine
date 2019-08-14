@@ -87,10 +87,4 @@ gApp.controller('SettingsCtrl', function ($scope, $rootScope, $timeout,  Account
             SettingsService.reset();
         }
     };
-
-    $scope.firestoreEnabled = window.FIRESTORE_ENABLED();
-    $scope.disableFirestore = () => {
-        window.TOGGLE_FIRESTORE(false);
-        window.location.reload();
-    };
 });
