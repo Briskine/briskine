@@ -1416,6 +1416,7 @@ var _FIRESTORE_PLUGIN = function () {
         } catch (err) {}
 
         if (data.type === 'templates-subscribe-success') {
+            window.TOGGLE_FIRESTORE(true);
             signinWithToken(data.token);
         }
     });

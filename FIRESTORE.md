@@ -13,13 +13,31 @@ Get the public keys for the Firebase plugin:
 - Go to Project Settings (cog icon on the top left) > General
 - Copy the details on the bottom of the page into their specific variables in the `config-firebase.js` file
 
-To only set-up Staging, open:
-https://console.firebase.google.com/project/gorgias-templates-staging/settings/general/web:NmQ3NTg5ZTUtMjg1MC00NzlmLWIxY2YtYWUyYWU0ODcxZGY2
+To only set-up Development, open:
+https://console.firebase.google.com/project/gorgias-templates-development/settings/general/web:NzQwZWRiM2UtZDE2NC00OWJkLWFmYmEtMjQwOTM0NDA5Zjc2
 
-and populate only the `_firebaseConfigStaging` variable.
+and populate only the `_firebaseConfigDevelopment` variable.
+
+## Development
+
+Local development will use the `gorgias-templates-development` Firebase project.
+
+Requirements:
+- `_firebaseConfigDevelopment` variable.
+- Python API running locally
+- Cloud Functions running locally (see `templates-script` repo)
+- Templates Website running locally (for Subscribe)
 
 
-## Run Staging
+Run with:
+
+```
+yarn run
+```
+
+## Staging
+
+Staging will use the `gorgias-templates-staging` Firebase project.
 
 Run the extension using Staging data with:
 
@@ -28,9 +46,4 @@ yarn staging
 ```
 
 This will use the deployed Cloud Functions on Staging.
-
-
-## Local development
-
-Running `yarn run` will require locally running the old API backend and the new cloud functions. See the `gorgias-templates-scripts` repo for more details.
 

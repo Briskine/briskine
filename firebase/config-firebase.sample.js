@@ -1,4 +1,4 @@
-var _firebaseConfigStaging = {
+var _firebaseConfigDevelopment = {
     apiKey: '',
     authDomain: '',
     databaseURL: '',
@@ -8,4 +8,5 @@ var _firebaseConfigStaging = {
     appId: ''
 };
 
+var _firebaseConfigStaging = {};
 var _firebaseConfigProduction = {};

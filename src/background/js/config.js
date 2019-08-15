@@ -2,14 +2,15 @@ var Config = {
     baseURL: 'http://localhost:5555/',
     apiBaseURL: 'http://localhost:5555/api/1/',
     websiteUrl: 'http://localhost:4000',
-    functionsUrl: 'http://localhost:5000/gorgias-templates-staging/us-central1/api/1',
-    firebase: _firebaseConfigStaging
+    functionsUrl: 'http://localhost:5000/gorgias-templates-development/us-central1/api/1',
+    firebase: _firebaseConfigDevelopment
 };
 
 // firebase staging
 if (ENV === 'staging') {
     Config = Object.assign(Config, {
-        functionsUrl: 'https://us-central1-gorgias-templates-staging.cloudfunctions.net/api/1'
+        functionsUrl: 'https://us-central1-gorgias-templates-staging.cloudfunctions.net/api/1',
+        firebase: _firebaseConfigStaging
     });
 }
 
