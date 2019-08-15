@@ -9,6 +9,8 @@ var Config = {
 // firebase staging
 if (ENV === 'staging') {
     Config = Object.assign(Config, {
+        baseURL: 'https://chrome.gorgias.io/',
+        apiBaseURL: 'https://chrome.gorgias.io/api/1/',
         functionsUrl: 'https://us-central1-gorgias-templates-staging.cloudfunctions.net/api/1',
         firebase: _firebaseConfigStaging
     });
