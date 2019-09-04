@@ -415,14 +415,44 @@ var _FIRESTORE_PLUGIN = function () {
             });
         }).then((members) => {
             return {
-                members: members
+                members: members.map((member) => {
+                    return Object.assign({
+                        active: true
+                    }, member);
+                })
             };
         });
     };
 
-    // TODO team members page
+    // update customer members
     var setMember = (params = {}) => {
-        return Promise.reject();
+        var customer = null;
+        return getSignedInUser()
+            .then((user) => {
+                customer = user.customer;
+                return getCurrentUser()
+            })
+            .then((currentUser) => {
+                return currentUser.getIdToken(true);
+            })
+            .then((idToken) => {
+                return fetch(`${Config.functionsUrl}/member`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        token: idToken,
+                        id: params.id,
+                        active: params.active,
+                        email: params.email,
+                        name: params.name,
+                        customer: customer
+                    })
+                })
+                .then(handleErrors)
+                .then((res) => res.json());
+            });
     };
 
     function getTags () {

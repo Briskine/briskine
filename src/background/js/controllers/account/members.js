@@ -4,6 +4,23 @@ gApp.controller('MembersCtrl', function ($scope, $rootScope, $timeout, AccountSe
     $scope.users = [];
     $scope.newUsers = [];
 
+    $scope.userInviteLoading = false;
+    $scope.userLoading = null;
+    $scope.userEdit = null;
+
+    function setUserState (status, id) {
+        $scope[status] = id || null;
+    };
+
+    function setUserLoading (id) {
+        return setUserState('userLoading', id)
+    }
+
+    function setUserEdit (id) {
+        return setUserState('userEdit', id)
+    };
+
+    // TODO remove sendNotification, we always send notifications in firestore.
     $scope.sendNotification = true;
     $scope.activeSubscription = null;
     $scope.licensesUsed = 1;
@@ -51,44 +68,54 @@ gApp.controller('MembersCtrl', function ($scope, $rootScope, $timeout, AccountSe
       .then($scope.refresh);
 
     $scope.saveMembers = function () {
-        _.each($scope.newUsers, function (u) {
+        $scope.userInviteLoading = true;
+        Promise.all($scope.newUsers.map((u) => {
             if (!(u.name && u.email)) {
                 return;
             }
             u.sendNotification = $scope.sendNotification;
 
-            MemberService.update(u).then(function () {
-                $scope.formErrors = null;
-                $('.modal').modal('hide');
-                $scope.refresh();
+            return MemberService.update(u).then(function () {
+                return;
             }, function (errors) {
                 $scope.formErrors = errors;
+                return;
             });
+        })).then(() => {
+            $scope.userInviteLoading = false;
+            $scope.formErrors = null;
+            $('.modal').modal('hide');
+            $scope.refresh();
         });
     };
 
     $scope.toggleMember = function () {
         var user = this.u;
+        setUserLoading(user.id);
         MemberService.toggle(user).then(function () {
             $scope.formErrors = null;
             $scope.refresh();
         }, function (errors) {
             $scope.formErrors = errors;
+        }).then(() => {
+            setUserLoading();
         });
     };
 
-    $scope.edit = function () {
-        $(".edit-" + this.u.id).removeClass('hidden').siblings().addClass('hidden');
+    $scope.edit = function (id) {
+        setUserEdit(id);
     };
 
     $scope.saveMember = function () {
         var member = this.u;
-
+        setUserLoading(member.id);
         MemberService.update(member).then(function () {
             $scope.formErrors = null;
-            $(".edit-" + member.id).addClass('hidden').siblings().removeClass('hidden');
+            setUserEdit();
         }, function (errors) {
             $scope.formErrors = errors;
+        }).then(() => {
+            setUserLoading();
         });
     };
 });

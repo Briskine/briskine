@@ -41,7 +41,11 @@
                         Send login instructions by email
                     </label>
                     <a class="btn btn-default" data-dismiss="modal">Cancel</a>
-                    <button type="submit" class="btn btn-primary" ng-show="newUsers.length">Add Team Members</button>
+                    <button type="submit" class="btn btn-primary" ng-show="newUsers.length" ng-class="{
+                        'btn-loading': userInviteLoading
+                    }">
+                        Add Team Members
+                    </button>
                 </div>
             </form>
         </div>
