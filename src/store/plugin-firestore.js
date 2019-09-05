@@ -415,14 +415,44 @@ var _FIRESTORE_PLUGIN = function () {
             });
         }).then((members) => {
             return {
-                members: members
+                members: members.map((member) => {
+                    return Object.assign({
+                        active: true
+                    }, member);
+                })
             };
         });
     };
 
-    // TODO team members page
+    // update customer members
     var setMember = (params = {}) => {
-        return Promise.reject();
+        var customer = null;
+        return getSignedInUser()
+            .then((user) => {
+                customer = user.customer;
+                return getCurrentUser()
+            })
+            .then((currentUser) => {
+                return currentUser.getIdToken(true);
+            })
+            .then((idToken) => {
+                return fetch(`${Config.functionsUrl}/member`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        token: idToken,
+                        id: params.id,
+                        active: params.active,
+                        email: params.email,
+                        name: params.name,
+                        customer: customer
+                    })
+                })
+                .then(handleErrors)
+                .then((res) => res.json());
+            });
     };
 
     function getTags () {
@@ -1328,6 +1358,16 @@ var _FIRESTORE_PLUGIN = function () {
         });
     };
 
+    function signinWithToken (token = '') {
+        return firebase.auth().signInWithCustomToken(token)
+            .then((res) => {
+                return updateCurrentUser(res.user);
+            })
+            .then(() => {
+                return window.location.reload();
+            });
+    };
+
     var impersonate = function (params = {}) {
         return getCurrentUser().then((currentUser) => {
             return currentUser.getIdToken(true);
@@ -1345,11 +1385,7 @@ var _FIRESTORE_PLUGIN = function () {
                 .then(handleErrors)
                 .then((res) => res.json());
         }).then((res) => {
-            return firebase.auth().signInWithCustomToken(res.token);
-        }).then((res) => {
-            return updateCurrentUser(res.user);
-        }).then(() => {
-            return window.location.reload();
+            return signinWithToken(res.token);
         });
     };
 
@@ -1401,6 +1437,19 @@ var _FIRESTORE_PLUGIN = function () {
                 });
         });
     };
+
+    // subscribe automatic sign-in
+    window.addEventListener('message', function (e) {
+        var data = {}
+        try {
+            data = JSON.parse(e.data)
+        } catch (err) {}
+
+        if (data.type === 'templates-subscribe-success') {
+            window.TOGGLE_FIRESTORE(true);
+            signinWithToken(data.token);
+        }
+    });
 
     return {
         getSettings: getSettings,

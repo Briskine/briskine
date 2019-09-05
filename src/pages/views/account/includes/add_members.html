@@ -1,7 +1,7 @@
 <div class="modal fade" id="add-members-modal" tabindex="-1" role="dialog" data-aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-            <form role="form" class="form-horizontal" name="member-form0" action="" ng-submit="saveMembers()">
+            <form role="form" class="form-horizontal" ng-submit="saveMembers()">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
                     <h4 class="modal-title">Add team members</h4>
@@ -41,7 +41,11 @@
                         Send login instructions by email
                     </label>
                     <a class="btn btn-default" data-dismiss="modal">Cancel</a>
-                    <button type="submit" class="btn btn-primary" ng-show="newUsers.length">Add Team Members</button>
+                    <button type="submit" class="btn btn-primary" ng-show="newUsers.length" ng-class="{
+                        'btn-loading': userInviteLoading
+                    }">
+                        Add Team Members
+                    </button>
                 </div>
             </form>
         </div>
