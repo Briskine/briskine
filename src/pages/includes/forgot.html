@@ -21,7 +21,9 @@
                             </div>
                             <p class="help-block">You'll receive an e-mail with the recovery instructions.</p>
                             <div class="text-right">
-                                <button type="submit" class="btn btn-default" ng-click="forgot.submit()">
+                                <button type="submit" class="btn btn-default" ng-class="{
+                                    'btn-loading': forgot.loading
+                                }" ng-click="forgot.submit()">
                                     Recover your password
                                 </button>
                             </div>

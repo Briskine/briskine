@@ -430,7 +430,7 @@ var _FIRESTORE_PLUGIN = function () {
         return getSignedInUser()
             .then((user) => {
                 customer = user.customer;
-                return getCurrentUser()
+                return getCurrentUser();
             })
             .then((currentUser) => {
                 return currentUser.getIdToken(true);
@@ -1366,7 +1366,7 @@ var _FIRESTORE_PLUGIN = function () {
             .then(() => {
                 return window.location.reload();
             });
-    };
+    }
 
     var impersonate = function (params = {}) {
         return getCurrentUser().then((currentUser) => {
@@ -1440,9 +1440,9 @@ var _FIRESTORE_PLUGIN = function () {
 
     // subscribe automatic sign-in
     window.addEventListener('message', function (e) {
-        var data = {}
+        var data = {};
         try {
-            data = JSON.parse(e.data)
+            data = JSON.parse(e.data);
         } catch (err) {}
 
         if (data.type === 'templates-subscribe-success') {
