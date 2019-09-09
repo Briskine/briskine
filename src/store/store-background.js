@@ -4,10 +4,10 @@ var store = function () {
     var firestoreSettingKey = 'firestoreEnabled';
     var firestoreEnabled = (window.localStorage.getItem(firestoreSettingKey) === 'true') || false;
     // enable api plugin by default
-    var plugin = _GORGIAS_API_PLUGIN;
+    var plugin = Object.assign({}, _GORGIAS_API_PLUGIN);
 
     if (firestoreEnabled) {
-        plugin = _FIRESTORE_PLUGIN;
+        plugin = Object.assign({}, _FIRESTORE_PLUGIN);
         // migrate legacy data
         _FIRESTORE_PLUGIN.startup();
     }
@@ -36,6 +36,71 @@ var store = function () {
 
         return true;
     });
+
+    // handle fetch errors
+    var handleErrors = function (response) {
+        if (!response.ok) {
+            return response.clone().json().then((res) => {
+                return Promise.reject(res);
+            });
+        }
+        return response;
+    };
+
+    var signin = function (params = {}) {
+        return fetch(`${Config.functionsUrl}/signin`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(params)
+        })
+        .then(handleErrors)
+        .then((res) => res.json())
+        .then((res) => {
+            if (res.firebase) {
+                TOGGLE_FIRESTORE(true);
+                return _FIRESTORE_PLUGIN.signin(params);
+            }
+
+            TOGGLE_FIRESTORE(false);
+            return _GORGIAS_API_PLUGIN.signin(params);
+        })
+        .catch((err) => {
+            if (!err.error) {
+                throw {
+                    error: err
+                };
+            }
+
+            throw err;
+        });
+    };
+
+    var forgot = (params = {}) => {
+        return fetch(`${Config.functionsUrl}/reset`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(params)
+        })
+        .then(handleErrors)
+        .then((res) => res.json())
+        .then((res) => {
+            if (res.firebase) {
+                TOGGLE_FIRESTORE(true);
+                return _FIRESTORE_PLUGIN.forgot(params);
+            }
+
+            TOGGLE_FIRESTORE(false);
+            return _GORGIAS_API_PLUGIN.forgot(params);
+        });
+    };
+
+    // general signin and forgot methods for both plugins
+    plugin.signin = signin;
+    plugin.forgot = forgot;
 
     // debug store calls
     var debugPlugin = {};
