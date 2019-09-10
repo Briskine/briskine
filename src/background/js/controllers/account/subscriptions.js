@@ -54,30 +54,28 @@ gApp.controller('SubscriptionsCtrl', function ($scope, $rootScope, $routeParams,
         $scope.paymentError = '';
         $('.update-cc-btn').addClass('disabled');
 
-        var handler = StripeCheckout.configure({
-            key: $scope.stripeKey,
-            image: '/static/img/icon128.png',
-            token: function (token) {
-                // Use the token to create the charge with server-side.
-                SubscriptionService.updateSubscription($scope.activeSubscription.id, {token: token}).then(
-                    function (res) {
-                        $('.update-cc-btn').removeClass('disabled');
-                        $scope.paymentMsg = res
-                        $scope.reloadSubscriptions();
-                    }, function (res) {
-                        $('.update-cc-btn').removeClass('disabled');
-                        $scope.paymentError = res;
-                    }
-                );
+        // TODO must wait for plans to load
+        store.updateCreditCard({
+            stripeKey: $scope.stripeKey,
+            email: $scope.email
+        }).then((token) => {
+            // token only returned by old api plugin
+            if (!token) {
+                return
             }
-        });
-        handler.open({
-            name: 'Gorgias',
-            description: 'Update your Credit Card',
-            panelLabel: 'Update your Credit Card',
-            email: $scope.email,
-            allowRememberMe: false
-        });
+
+            // Use the token to create the charge with server-side.
+            SubscriptionService.updateSubscription($scope.activeSubscription.id, {token: token}).then(
+                function (res) {
+                    $('.update-cc-btn').removeClass('disabled');
+                    $scope.paymentMsg = res
+                    $scope.reloadSubscriptions();
+                }, function (res) {
+                    $('.update-cc-btn').removeClass('disabled');
+                    $scope.paymentError = res;
+                }
+            );
+        })
     };
 
     $scope.updateSubscription = function (plan, quantity) {

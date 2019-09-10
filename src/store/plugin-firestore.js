@@ -1250,8 +1250,49 @@ var _FIRESTORE_PLUGIN = function () {
         });
     };
 
-    var updateSubscription = mock;
+    var updateSubscription = (params = {}) => {
+        // TODO update subscription type and quantity
+        return;
+    };
     var cancelSubscription = mock;
+
+    var updateCreditCard = (params = {}) => {
+        // setup stripe checkout session
+        let user = null;
+        return getSignedInUser().then((res) => {
+            user = res;
+            return getCurrentUser();
+        }).then((currentUser) => {
+            return currentUser.getIdToken(true);
+        }).then((idToken) => {
+            return fetch(`${Config.functionsUrl}/stripe/update`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        token: idToken,
+                        email: user.email,
+                        customer: user.customer
+                    })
+                })
+                .then(handleErrors)
+                .then((res) => res.json())
+                .then((res) => {
+                    var stripe = Stripe(params.stripeKey);
+                    stripe.redirectToCheckout({
+                        sessionId: res.id
+                    }).then(function (result) {
+                        if (result && result.error && result.error.message) {
+                            alert(result.error.message);
+                            return;
+                        }
+                    });
+
+                    return null;
+                });
+        });
+    };
 
     var syncNow = mock;
     var syncLocal = mock;
@@ -1478,6 +1519,7 @@ var _FIRESTORE_PLUGIN = function () {
         getSubscription: getSubscription,
         updateSubscription: updateSubscription,
         cancelSubscription: cancelSubscription,
+        updateCreditCard: updateCreditCard,
 
         syncNow: syncNow,
         syncLocal: syncLocal,

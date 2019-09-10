@@ -799,6 +799,25 @@ var _GORGIAS_API_PLUGIN = function () {
         .then((res) => res.json());
     };
 
+    // open credit card form
+    var updateCreditCard = function (params = {}) {
+        return new Promise((resolve, reject) => {
+            var handler = StripeCheckout.configure({
+                key: params.stripeKey,
+                token: function (token) {
+                    resolve(token);
+                }
+            });
+            handler.open({
+                name: 'Gorgias',
+                description: 'Update your Credit Card',
+                panelLabel: 'Update your Credit Card',
+                email: params.email,
+                allowRememberMe: false
+            });
+        });
+    };
+
     var getPlans = function (params = {}) {
         return fetch(`${apiBaseURL}plans/startup`)
             .then(handleErrors)
@@ -893,6 +912,7 @@ var _GORGIAS_API_PLUGIN = function () {
         getSubscription: getSubscription,
         updateSubscription: updateSubscription,
         cancelSubscription: cancelSubscription,
+        updateCreditCard: updateCreditCard,
 
         syncNow: syncNow,
         syncLocal: syncLocal,
