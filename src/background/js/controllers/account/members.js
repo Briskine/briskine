@@ -1,4 +1,4 @@
-gApp.controller('MembersCtrl', function ($scope, $rootScope, $timeout, AccountService, MemberService, SubscriptionService) {
+gApp.controller('MembersCtrl', function ($scope, $rootScope, $timeout, $location, AccountService, MemberService, SubscriptionService) {
     $scope.activeTab = 'members';
 
     $scope.users = [];
@@ -117,5 +117,11 @@ gApp.controller('MembersCtrl', function ($scope, $rootScope, $timeout, AccountSe
         }).then(() => {
             setUserLoading();
         });
+    };
+
+    $scope.upgrade = function () {
+        // force-open subscriptions page
+        window.location.href = '#/account/subscriptions';
+        window.location.reload();
     };
 });

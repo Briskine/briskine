@@ -282,7 +282,9 @@ gApp.run(function ($rootScope, $location, $timeout, ProfileService, SettingsServ
         store.logout()
         .then(function () {
             SettingsService.set('isLoggedIn', false).then(() => {
-                window.location.href = '/pages/options.html';
+                // force home redirect
+                window.location.href = '#/';
+                window.location.reload(true);
             });
         });
     };
