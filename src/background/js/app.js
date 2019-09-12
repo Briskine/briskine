@@ -195,30 +195,31 @@ gApp.run(function ($rootScope, $location, $timeout, ProfileService, SettingsServ
         browser = "Opera";
     }
 
+    $rootScope.loadingSubscription = false;
+
     // Get a new token from stripe and send it to the server
     $rootScope.reactivateSubscription = function () {
-        SubscriptionService.plans().then(function (data) {
-            var handler = StripeCheckout.configure({
-                key: data.stripe_key,
-                image: '/static/img/icon128.png',
-                token: function (token) {
-                    // Use the token to create the charge with server-side.
-                    SubscriptionService.updateSubscription($rootScope.currentSubscription.id, {token: token}).then(
-                        function () {
-                            $rootScope.checkLoggedIn();
-                        }, function (res) {
-                            alert('Failed to create new subscription. ' + res);
-                        }
-                    );
+        $rootScope.loadingSubscription = true;
+        store.reactivateSubscription({
+            subscription: $rootScope.currentSubscription
+        }).then((token) => {
+            // token returned only by old api
+            if (!token) {
+                return;
+            }
+
+            // Use the token to create the charge with server-side.
+            SubscriptionService.updateSubscription($rootScope.currentSubscription.id, {token: token}).then(
+                function () {
+                    $rootScope.checkLoggedIn();
+                }, function (res) {
+                    alert('Failed to create new subscription. ' + res);
                 }
-            });
-            handler.open({
-                name: 'Gorgias',
-                description: $rootScope.currentSubscription.quantity + ' x ' + $rootScope.currentSubscription.plan,
-                panelLabel: 'Activate your subscription',
-                email: data.email,
-                allowRememberMe: false
-            });
+            );
+
+            return;
+        }).then(() => {
+            $rootScope.loadingSubscription = false;
         });
     };
 
@@ -280,7 +281,9 @@ gApp.run(function ($rootScope, $location, $timeout, ProfileService, SettingsServ
     $rootScope.logOut = function () {
         store.logout()
         .then(function () {
-            SettingsService.set('isLoggedIn', false).then(location.reload(true));
+            SettingsService.set('isLoggedIn', false).then(() => {
+                window.location.href = '/pages/options.html';
+            });
         });
     };
 

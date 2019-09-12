@@ -89,7 +89,9 @@
     </div>
 
     <div class="view-container">
-        <div ng-if="currentSubscription && !currentSubscription.active" class="alert alert-warning" ng-cloak>
+        <div ng-if="currentSubscription && !currentSubscription.active" class="alert alert-warning" ng-class="{
+            'btn-loading': loadingSubscription
+        }" ng-cloak>
             <strong>Your current subscription is no longer active.</strong>
             <p>This means that automatic syncing and backup of templates has been disabled for you and your team.</p>
             <p>

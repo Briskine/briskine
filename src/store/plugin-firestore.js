@@ -426,28 +426,19 @@ var _FIRESTORE_PLUGIN = function () {
 
     // update customer members
     var setMember = (params = {}) => {
-        var customer = null;
-        return getSignedInUser()
-            .then((user) => {
-                customer = user.customer;
-                return getCurrentUser();
-            })
-            .then((currentUser) => {
-                return currentUser.getIdToken(true);
-            })
-            .then((idToken) => {
+        return getUserToken().then((res) => {
                 return fetch(`${Config.functionsUrl}/member`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
-                        token: idToken,
+                        token: res.token,
                         id: params.id,
                         active: params.active,
                         email: params.email,
                         name: params.name,
-                        customer: customer
+                        customer: res.user.customer
                     })
                 })
                 .then(handleErrors)
@@ -1179,18 +1170,14 @@ var _FIRESTORE_PLUGIN = function () {
     };
 
     function shareNotification (params = {}) {
-        return getCurrentUser()
-            .then((currentUser) => {
-                return currentUser.getIdToken(true);
-            })
-            .then((idToken) => {
+        return getUserToken().then((res) => {
                 return fetch(`${Config.functionsUrl}/share`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
-                        token: idToken,
+                        token: res.token,
                         users: params.users,
                         templates: params.templates,
                         message: params.message
@@ -1205,21 +1192,15 @@ var _FIRESTORE_PLUGIN = function () {
     var updateStats = mock;
 
     var getPlans = (params = {}) => {
-        var customer = null;
-        return getSignedInUser().then((user) => {
-            customer = user.customer;
-            return getCurrentUser();
-        }).then((currentUser) => {
-            return currentUser.getIdToken(true);
-        }).then((idToken) => {
+        return getUserToken().then((res) => {
             return fetch(`${Config.functionsUrl}/plans`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
-                        customer: customer,
-                        token: idToken
+                        customer: res.user.customer,
+                        token: res.token
                     })
                 })
                 .then(handleErrors)
@@ -1240,40 +1221,107 @@ var _FIRESTORE_PLUGIN = function () {
                 active = false;
             }
 
-            // backwards compatibility
-            return [
-                Object.assign(subscriptionData, {
-                    active: active,
-                    start_datetime: subscriptionData.start_datetime.toDate()
-                })
-            ];
+            return getPlans().then((res) => {
+                // backwards compatibility
+                var preferred_currency = 'usd';
+                var plan = res.plans[preferred_currency].find((p) => p.sku === subscriptionData.plan);
+                return [
+                    Object.assign(subscriptionData, {
+                        active: active,
+                        plan: plan,
+                        start_datetime: subscriptionData.start_datetime.toDate()
+                    })
+                ];
+            });
         });
     };
 
-    var updateSubscription = (params = {}) => {
-        // TODO update subscription type and quantity
-        return;
-    };
-    var cancelSubscription = mock;
-
-    var updateCreditCard = (params = {}) => {
-        // setup stripe checkout session
-        let user = null;
-        return getSignedInUser().then((res) => {
-            user = res;
-            return getCurrentUser();
-        }).then((currentUser) => {
+    // return user and token
+    function getUserToken () {
+        return getCurrentUser().then((currentUser) => {
             return currentUser.getIdToken(true);
-        }).then((idToken) => {
-            return fetch(`${Config.functionsUrl}/stripe/update`, {
-                    method: 'POST',
+        }).then((token) => {
+            return getSignedInUser().then((user) => {
+                return {
+                    user: user,
+                    token: token
+                };
+            });
+        });
+    }
+
+    // update subscription plan and quantity
+    var updateSubscription = (params = {}) => {
+        return getUserToken().then((res) => {
+            return fetch(`${Config.functionsUrl}/subscription`, {
+                    method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
-                        token: idToken,
-                        email: user.email,
-                        customer: user.customer
+                        token: res.token,
+                        customer: res.user.customer,
+                        quantity: params.quantity,
+                        plan: params.plan
+                    })
+                })
+                .then(handleErrors)
+                .then((res) => res.json())
+                .then(() => {
+                    // backwards compatibility
+                    return {
+                        msg: 'Successfully updated subscription.'
+                    };
+                })
+                .catch((err) => {
+                    // backwards compatibility
+                    return Promise.reject({
+                        msg: err.message
+                    });
+                });
+        });
+    };
+    var cancelSubscription = (params = {}) => {
+        return getUserToken().then((res) => {
+            return fetch(`${Config.functionsUrl}/subscription`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        token: res.token,
+                        customer: res.user.customer
+                    })
+                })
+                .then(handleErrors)
+                .then((res) => res.json())
+                .then(() => {
+                    // backwards compatibility
+                    return {
+                        msg: 'Successfully canceled subscription.'
+                    };
+                })
+                .catch((err) => {
+                    // backwards compatibility
+                    return Promise.reject({
+                        msg: err.message
+                    });
+                });
+        });
+    };
+
+    var updateCreditCard = (params = {}) => {
+        // setup stripe checkout session
+        return getUserToken().then((res) => {
+            return fetch(`${Config.functionsUrl}/subscription/payment`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        token: res.token,
+                        email: res.user.email,
+                        customer: res.user.customer
                     })
                 })
                 .then(handleErrors)
@@ -1290,6 +1338,41 @@ var _FIRESTORE_PLUGIN = function () {
                     });
 
                     return null;
+                });
+        });
+    };
+
+    var reactivateSubscription = (params = {}) => {
+        return getUserToken().then((res) => {
+            return fetch(`${Config.functionsUrl}/subscription/reactivate`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        token: res.token,
+                        customer: res.user.customer,
+                        subscription: params.subscription
+                    })
+                })
+                .then(handleErrors)
+                .then((res) => res.json())
+                .then(() => {
+                    // update subscription status
+                    return getCurrentUser().then((currentUser) => {
+                        return updateCurrentUser(currentUser);
+                    });
+                })
+                .then(() => {
+                    // backwards compatibility
+                    window.location.reload();
+                    return null;
+                })
+                .catch((err) => {
+                    // backwards compatibility
+                    return Promise.reject({
+                        msg: err.message
+                    });
                 });
         });
     };
@@ -1346,7 +1429,7 @@ var _FIRESTORE_PLUGIN = function () {
                     is_loggedin: true,
                     created_datetime: '',
                     current_subscription: {
-                        active: true,
+                        active: false,
                         created_datetime: '',
                         plan: '',
                         quantity: 1
@@ -1366,6 +1449,16 @@ var _FIRESTORE_PLUGIN = function () {
                 user = Object.assign({
                     is_customer: isCustomer
                 }, user);
+
+                // subscription data
+                user.current_subscription = Object.assign(user.current_subscription, {
+                    plan: customerData.subscription.plan,
+                    quantity: customerData.subscription.quantity
+                });
+
+                if (!customerData.subscription.canceled_datetime) {
+                    user.current_subscription.active = true;
+                }
 
                 return setSignedInUser(user);
             });
@@ -1410,9 +1503,7 @@ var _FIRESTORE_PLUGIN = function () {
     }
 
     var impersonate = function (params = {}) {
-        return getCurrentUser().then((currentUser) => {
-            return currentUser.getIdToken(true);
-        }).then((idToken) => {
+        return getUserToken().then((res) => {
             return fetch(`${Config.functionsUrl}/impersonate`, {
                     method: 'POST',
                     headers: {
@@ -1420,7 +1511,7 @@ var _FIRESTORE_PLUGIN = function () {
                     },
                     body: JSON.stringify({
                         uid: params.id,
-                        token: idToken
+                        token: res.token
                     })
                 })
                 .then(handleErrors)
@@ -1520,6 +1611,7 @@ var _FIRESTORE_PLUGIN = function () {
         updateSubscription: updateSubscription,
         cancelSubscription: cancelSubscription,
         updateCreditCard: updateCreditCard,
+        reactivateSubscription: reactivateSubscription,
 
         syncNow: syncNow,
         syncLocal: syncLocal,

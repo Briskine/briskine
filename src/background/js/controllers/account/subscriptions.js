@@ -15,6 +15,8 @@ gApp.controller('SubscriptionsCtrl', function ($scope, $rootScope, $routeParams,
     $scope.discountCode = "";
     $scope.couponPrecentOff = 1;
 
+    $scope.loadingCancel = false;
+
     SubscriptionService.plans().then(function (data) {
         $scope.plans = data.plans;
         $scope.stripeKey = data.stripe_key;
@@ -96,11 +98,12 @@ gApp.controller('SubscriptionsCtrl', function ($scope, $rootScope, $routeParams,
     };
 
     $scope.cancelSubscription = function() {
+        $scope.loadingCancel = true;
         cancelConfirm = window.confirm('Are you sure you want to cancel and delete all your template backups?')
         if (cancelConfirm === true) {
             SubscriptionService.cancelSubscription().then(function(){
                 $rootScope.logOut()
-            });
+            }).catch((err) => alert(err.msg));
         }
     };
 });

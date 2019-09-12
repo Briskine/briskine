@@ -818,6 +818,27 @@ var _GORGIAS_API_PLUGIN = function () {
         });
     };
 
+    var reactivateSubscription = function (params = {}) {
+        return getPlans().then((data) => {
+            return new Promise((resolve, reject) => {
+                var handler = StripeCheckout.configure({
+                    key: data.stripe_key,
+                    token: function (token) {
+                        resolve(token);
+                    }
+                });
+
+                handler.open({
+                    name: 'Gorgias',
+                    description: params.subscription.quantity + ' x ' + params.subscription.plan,
+                    panelLabel: 'Activate your subscription',
+                    email: data.email,
+                    allowRememberMe: false
+                });
+            });
+        });
+    };
+
     var getPlans = function (params = {}) {
         return fetch(`${apiBaseURL}plans/startup`)
             .then(handleErrors)
@@ -913,6 +934,7 @@ var _GORGIAS_API_PLUGIN = function () {
         updateSubscription: updateSubscription,
         cancelSubscription: cancelSubscription,
         updateCreditCard: updateCreditCard,
+        reactivateSubscription: reactivateSubscription,
 
         syncNow: syncNow,
         syncLocal: syncLocal,
