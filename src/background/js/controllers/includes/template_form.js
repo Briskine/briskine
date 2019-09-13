@@ -455,7 +455,7 @@ gApp.controller('TemplateFormCtrl',
             $rootScope.trackSignup('templateForm');
             $('#template-form-modal').modal('hide');
             $timeout(function() {
-                store.openSubscribePopup();
+                $rootScope.openSubscribe();
             }, 500);
         };
 

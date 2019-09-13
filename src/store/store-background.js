@@ -48,7 +48,7 @@ var store = function () {
     };
 
     var signin = function (params = {}) {
-        return fetch(`${Config.functionsUrl}/signin`, {
+        return fetch(`${Config.functionsUrl}/api/1/signin`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -78,7 +78,7 @@ var store = function () {
     };
 
     var forgot = (params = {}) => {
-        return fetch(`${Config.functionsUrl}/reset`, {
+        return fetch(`${Config.functionsUrl}/api/1/reset`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -98,9 +98,34 @@ var store = function () {
         });
     };
 
+    function subscribeIframeLoaded (e) {
+        var iframe = e.target;
+        var loadingClass = 'btn-loading';
+        var loaderSelector = `.${loadingClass}`;
+        var loader = iframe.closest(loaderSelector);
+        loader.classList.remove(loadingClass);
+
+        iframe.removeEventListener('load', subscribeIframeLoaded);
+    };
+
+    var openSubscribePopup = (params = {}) => {
+        var subscribeUrl = `${Config.functionsUrl}/subscribe/`
+        var $modal = $('#firestore-signup-modal');
+        var iframe = $modal.find('iframe').get(0);
+        $modal.modal({
+            show: true
+        });
+
+        if (iframe.src !== subscribeUrl) {
+            iframe.addEventListener('load', subscribeIframeLoaded);
+            iframe.src = subscribeUrl;
+        }
+    };
+
     // general signin and forgot methods for both plugins
     plugin.signin = signin;
     plugin.forgot = forgot;
+    plugin.openSubscribePopup = openSubscribePopup;
 
     // debug store calls
     var debugPlugin = {};

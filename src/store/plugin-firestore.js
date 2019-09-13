@@ -427,7 +427,7 @@ var _FIRESTORE_PLUGIN = function () {
     // update customer members
     var setMember = (params = {}) => {
         return getUserToken().then((res) => {
-                return fetch(`${Config.functionsUrl}/member`, {
+                return fetch(`${Config.functionsUrl}/api/1/member`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -1171,7 +1171,7 @@ var _FIRESTORE_PLUGIN = function () {
 
     function shareNotification (params = {}) {
         return getUserToken().then((res) => {
-                return fetch(`${Config.functionsUrl}/share`, {
+                return fetch(`${Config.functionsUrl}/api/1/share`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -1193,7 +1193,7 @@ var _FIRESTORE_PLUGIN = function () {
 
     var getPlans = (params = {}) => {
         return getUserToken().then((res) => {
-            return fetch(`${Config.functionsUrl}/plans`, {
+            return fetch(`${Config.functionsUrl}/api/1/plans`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -1253,7 +1253,7 @@ var _FIRESTORE_PLUGIN = function () {
     // update subscription plan and quantity
     var updateSubscription = (params = {}) => {
         return getUserToken().then((res) => {
-            return fetch(`${Config.functionsUrl}/subscription`, {
+            return fetch(`${Config.functionsUrl}/api/1/subscription`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json'
@@ -1283,7 +1283,7 @@ var _FIRESTORE_PLUGIN = function () {
     };
     var cancelSubscription = (params = {}) => {
         return getUserToken().then((res) => {
-            return fetch(`${Config.functionsUrl}/subscription`, {
+            return fetch(`${Config.functionsUrl}/api/1/subscription`, {
                     method: 'DELETE',
                     headers: {
                         'Content-Type': 'application/json'
@@ -1313,7 +1313,7 @@ var _FIRESTORE_PLUGIN = function () {
     var updateCreditCard = (params = {}) => {
         // setup stripe checkout session
         return getUserToken().then((res) => {
-            return fetch(`${Config.functionsUrl}/subscription/payment`, {
+            return fetch(`${Config.functionsUrl}/api/1/subscription/payment`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json'
@@ -1344,7 +1344,7 @@ var _FIRESTORE_PLUGIN = function () {
 
     var reactivateSubscription = (params = {}) => {
         return getUserToken().then((res) => {
-            return fetch(`${Config.functionsUrl}/subscription/reactivate`, {
+            return fetch(`${Config.functionsUrl}/api/1/subscription/reactivate`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -1486,12 +1486,6 @@ var _FIRESTORE_PLUGIN = function () {
         });
     };
 
-    var openSubscribePopup = function (params = {}) {
-        $('#firestore-signup-modal').modal({
-            show: true
-        });
-    };
-
     function signinWithToken (token = '') {
         return firebase.auth().signInWithCustomToken(token)
             .then((res) => {
@@ -1504,7 +1498,7 @@ var _FIRESTORE_PLUGIN = function () {
 
     var impersonate = function (params = {}) {
         return getUserToken().then((res) => {
-            return fetch(`${Config.functionsUrl}/impersonate`, {
+            return fetch(`${Config.functionsUrl}/api/1/impersonate`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -1619,7 +1613,6 @@ var _FIRESTORE_PLUGIN = function () {
         signin: signin,
         logout: logout,
         forgot: forgot,
-        openSubscribePopup: openSubscribePopup,
         importTemplates: importTemplates,
 
         on: on,

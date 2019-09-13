@@ -320,4 +320,8 @@ gApp.run(function ($rootScope, $location, $timeout, ProfileService, SettingsServ
     $rootScope.$on('$viewContentLoaded', initDom);
     $rootScope.$on('$includeContentLoaded', initDom);
 
+    $rootScope.openSubscribe = () => {
+        store.openSubscribePopup();
+    };
+
 });

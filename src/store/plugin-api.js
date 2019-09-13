@@ -873,12 +873,6 @@ var _GORGIAS_API_PLUGIN = function () {
         .then((res) => res.json());
     };
 
-    var openSubscribePopup = function (params = {}) {
-        $('#api-signup-modal').modal({
-            show: true
-        });
-    };
-
     var importTemplates = function (params = {}) {
         var formData = new FormData();
         formData.append('file', params.file);
@@ -942,7 +936,6 @@ var _GORGIAS_API_PLUGIN = function () {
         signin: signin,
         logout: logout,
         forgot: forgot,
-        openSubscribePopup: openSubscribePopup,
         importTemplates: importTemplates,
 
         on: on
