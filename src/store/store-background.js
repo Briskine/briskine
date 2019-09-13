@@ -106,10 +106,10 @@ var store = function () {
         loader.classList.remove(loadingClass);
 
         iframe.removeEventListener('load', subscribeIframeLoaded);
-    };
+    }
 
     var openSubscribePopup = (params = {}) => {
-        var subscribeUrl = `${Config.functionsUrl}/subscribe/`
+        var subscribeUrl = `${Config.functionsUrl}/subscribe/`;
         var $modal = $('#firestore-signup-modal');
         var iframe = $modal.find('iframe').get(0);
         $modal.modal({

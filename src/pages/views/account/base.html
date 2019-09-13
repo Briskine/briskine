@@ -18,7 +18,7 @@
             <a href="#/account/groups" aria-controls="groups" role="tab" data-toggle="tab" data-target="#">Member
                 Groups</a>
         </li>
-        <li role="presentation" ng-show="currentSubscription && currentSubscription.active"
+        <li role="presentation" ng-show="currentSubscription && currentSubscription.active && !firestoreEnabled"
             ng-class="activeTab == 'stats'?'active':''">
             <a href="#/account/stats" aria-controls="stats" role="tab" data-target="#"
                data-toggle="tab">Statistics</a>

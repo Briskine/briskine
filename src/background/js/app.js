@@ -324,4 +324,5 @@ gApp.run(function ($rootScope, $location, $timeout, ProfileService, SettingsServ
         store.openSubscribePopup();
     };
 
+    $rootScope.firestoreEnabled = window.FIRESTORE_ENABLED();
 });

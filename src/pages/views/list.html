@@ -16,7 +16,14 @@
         </div>
         <div ng-show="account.info.name && currentSubscription && currentSubscription.active"
              class="btn-group btn-more pull-right">
-            <a class="btn btn-default" href data-toggle="modal" data-target="#import-modal">Import</a>
+            <a
+                href
+                class="btn btn-default"
+                data-toggle="modal"
+                data-target="#import-modal"
+                ng-show="!firestoreEnabled">
+                Import
+            </a>
         </div>
         <button type="button" ng-if="hasSelected" ng-click="deleteQts()"
                 class="btn btn-error pull-right">Delete
