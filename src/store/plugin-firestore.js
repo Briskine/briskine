@@ -44,7 +44,7 @@ var _FIRESTORE_PLUGIN = function () {
         invalidateTemplateCache();
 
         // backwards compatibility
-        trigger('templates-sync');
+        store.trigger('templates-sync');
     }
 
     // local data (when logged-out)
@@ -314,10 +314,33 @@ var _FIRESTORE_PLUGIN = function () {
     // auth change
     firebase.auth().onAuthStateChanged((firebaseUser) => {
         if (!firebaseUser) {
+            invalidateTemplateCache();
             return setSignedInUser({});
         }
 
-        return updateCurrentUser(firebaseUser);
+        return updateCurrentUser(firebaseUser).then(() => {
+            return getSignedInUser()
+                .then((user) => {
+                    // refresh templates on changes
+                    templatesOwnedQuery(user).onSnapshot(refreshTemplates);
+                    templatesSharedQuery(user).onSnapshot(refreshTemplates);
+                    templatesEveryoneQuery(user).onSnapshot(refreshTemplates);
+
+                    // populate in-memory template cache
+                    getTemplate();
+
+                    // sync local templates
+                    syncLocalData();
+                })
+                .catch((err) => {
+                    if (isLoggedOut(err)) {
+                        // logged-out
+                        return;
+                    }
+
+                    throw err;
+                });
+        });
     });
 
     var getLoginInfo = getSignedInUser;
@@ -983,6 +1006,8 @@ var _FIRESTORE_PLUGIN = function () {
                 })
             ).then((sharing) => {
                 // merge users in acl, for multiple selected templates
+                // BUG throws error when user was removed from customer,
+                // but still in template.shared_with
                 sharing.forEach((templateSharing) => {
                     templateSharing.forEach((sharedUser) => {
                         // de-duplicate
@@ -1522,46 +1547,8 @@ var _FIRESTORE_PLUGIN = function () {
     var importTemplates = (params = {}) => {
     };
 
-    var events = [];
-    var on = function (name, callback) {
-        events.push({
-            name: name,
-            callback: callback
-        });
-    };
-
-    var trigger = function (name) {
-        events.filter((event) => event.name === name).forEach((event) => {
-            if (typeof event.callback === 'function') {
-                event.callback();
-            }
-        });
-    };
-
-    var startup = function () {
-        migrateLegacyLocalData().then(() => {
-            return getSignedInUser()
-                .then((user) => {
-                    // refresh templates on changes
-                    templatesOwnedQuery(user).onSnapshot(refreshTemplates);
-                    templatesSharedQuery(user).onSnapshot(refreshTemplates);
-                    templatesEveryoneQuery(user).onSnapshot(refreshTemplates);
-
-                    // populate in-memory template cache
-                    getTemplate();
-
-                    // sync local templates
-                    syncLocalData();
-                })
-                .catch((err) => {
-                    if (isLoggedOut(err)) {
-                        // logged-out
-                        return;
-                    }
-
-                    throw err;
-                });
-        });
+    var migrate = function () {
+        return migrateLegacyLocalData();
     };
 
     // subscribe automatic sign-in
@@ -1615,9 +1602,7 @@ var _FIRESTORE_PLUGIN = function () {
         forgot: forgot,
         importTemplates: importTemplates,
 
-        on: on,
-
-        startup: startup
+        migrate: migrate
     };
 }();
 

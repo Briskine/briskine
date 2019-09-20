@@ -1,41 +1,22 @@
-var store = function () {
+(function () {
     // can't use browser.storage
     // we need a synchronous api
     var firestoreSettingKey = 'firestoreEnabled';
-    var firestoreEnabled = (window.localStorage.getItem(firestoreSettingKey) === 'true') || false;
-    // enable api plugin by default
-    var plugin = Object.assign({}, _GORGIAS_API_PLUGIN);
-
-    if (firestoreEnabled) {
-        plugin = Object.assign({}, _FIRESTORE_PLUGIN);
-        // migrate legacy data
-        _FIRESTORE_PLUGIN.startup();
+    function firestoreEnabled () {
+        return (window.localStorage.getItem(firestoreSettingKey) === 'true') || false;
     }
 
     // firestore toggle
     window.TOGGLE_FIRESTORE = function (enabled = false) {
         window.localStorage.setItem(firestoreSettingKey, `${enabled}`);
+
+        // switch plugin
+        window.store = getStore();
     };
 
     window.FIRESTORE_ENABLED = function () {
-        return firestoreEnabled;
+        return firestoreEnabled();
     };
-
-    // respond to content
-    chrome.runtime.onMessage.addListener((req, sender, sendResponse) => {
-        if (
-            req.type &&
-            typeof plugin[req.type] === 'function'
-        ) {
-            plugin[req.type](req.data).then((data) => {
-                if (typeof data !== 'undefined') {
-                    sendResponse(data);
-                }
-            }).catch((err) => console.err(err));
-        }
-
-        return true;
-    });
 
     // handle fetch errors
     var handleErrors = function (response) {
@@ -122,23 +103,60 @@ var store = function () {
         }
     };
 
-    // general signin and forgot methods for both plugins
-    plugin.signin = signin;
-    plugin.forgot = forgot;
-    plugin.openSubscribePopup = openSubscribePopup;
+    var trigger = function (name) {
+        // send trigger message to client store
+        return new Promise((resolve, reject) => {
+            chrome.runtime.sendMessage({
+                type: 'trigger',
+                data: {
+                    name: name
+                }
+            }, resolve);
+        });
+    };
 
-    // debug store calls
-    var debugPlugin = {};
-    Object.keys(plugin).forEach((key) => {
-        debugPlugin[key] = function () {
-            console.log(key, arguments[0]);
-            return plugin[key].apply(null, arguments);
-        };
-    });
+    function getStore () {
+        // enable api plugin by default
+        var plugin = Object.assign({}, _GORGIAS_API_PLUGIN);
 
-    if (ENV !== 'production') {
-        return debugPlugin;
+        if (firestoreEnabled()) {
+            plugin = Object.assign({}, _FIRESTORE_PLUGIN);
+
+            // migrate legacy data
+            plugin.migrate();
+        }
+
+        // general signin and forgot methods for both plugins
+        plugin.signin = signin;
+        plugin.forgot = forgot;
+        plugin.openSubscribePopup = openSubscribePopup;
+
+        // HACK mock on() because the angular app is bundled in the background script
+        plugin.on = (name) => {};
+        plugin.trigger = trigger;
+
+        return plugin
     }
 
-    return plugin;
-}();
+    // global store
+    window.store = getStore();
+
+    // respond to content and options
+    chrome.runtime.onMessage.addListener((req, sender, sendResponse) => {
+        if (
+            req.type &&
+            typeof window.store[req.type] === 'function'
+        ) {
+            // debug store calls
+            if (ENV !== 'production') {
+                console.log(req.type, req.data);
+            }
+
+            window.store[req.type](req.data).then((data = {}) => {
+                sendResponse(data);
+            }).catch((err) => console.error(err));
+        }
+
+        return true;
+    });
+}());

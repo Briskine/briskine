@@ -1,4 +1,6 @@
 // Register Chrome runtime protocols and context menus
+// TODO remove angularInjector dependency
+// to run this in the background script without bundling the entire angular app
 if (chrome.runtime) {
 
     // TODO somehow get this values from the plugins

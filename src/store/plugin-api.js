@@ -712,7 +712,7 @@ var _GORGIAS_API_PLUGIN = function () {
 
             console.log('Synced: ', new Date().toUTCString());
             var waitForLocal = function () {
-                trigger('templates-sync');
+                store.trigger('templates-sync');
                 store.syncLocal();
             };
             // wait a bit before doing the local sync
@@ -884,22 +884,6 @@ var _GORGIAS_API_PLUGIN = function () {
         .then((res) => res.json());
     };
 
-    var events = [];
-    var on = function (name, callback) {
-        events.push({
-            name: name,
-            callback: callback
-        });
-    };
-
-    var trigger = function (name) {
-        events.filter((event) => event.name === name).forEach((event) => {
-            if (typeof event.callback === 'function') {
-                event.callback();
-            }
-        });
-    };
-
     return {
         getSettings: getSettings,
         setSettings: setSettings,
@@ -936,9 +920,7 @@ var _GORGIAS_API_PLUGIN = function () {
         signin: signin,
         logout: logout,
         forgot: forgot,
-        importTemplates: importTemplates,
-
-        on: on
+        importTemplates: importTemplates
     };
 }();
 
