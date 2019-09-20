@@ -1017,6 +1017,11 @@ var _FIRESTORE_PLUGIN = function () {
                         // get from cached members, avoid extra requests
                         return templateData.shared_with.map((userId) => {
                             return members.find((member) => member.id === userId);
+                        }).filter((userId) => {
+                            // remove undefined values.
+                            // fixes issues with templates shared_with
+                            // members removed from customer.
+                            return userId;
                         });
                     }
 
@@ -1025,8 +1030,6 @@ var _FIRESTORE_PLUGIN = function () {
                 })
             ).then((sharing) => {
                 // merge users in acl, for multiple selected templates
-                // BUG throws error when user was removed from customer,
-                // but still in template.shared_with
                 sharing.forEach((templateSharing) => {
                     templateSharing.forEach((sharedUser) => {
                         // de-duplicate
