@@ -23,9 +23,14 @@
                     type: type,
                     data: params
                 }, (data) => {
-                    resolve(data);
+                    // handle errors
+                    if (data.storeError) {
+                        return reject(data.storeError);
+                    }
+
+                    return resolve(data);
                 });
-            }).catch((err) => console.error(err));
+            });
         };
     }
 
