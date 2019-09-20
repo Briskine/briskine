@@ -154,7 +154,10 @@
 
             window.store[req.type](req.data).then((data = {}) => {
                 sendResponse(data);
-            }).catch((err) => console.error(err));
+            }).catch((err) => {
+                // TODO we can't catch errors on client
+                console.error(err)
+            });
         }
 
         return true;

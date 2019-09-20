@@ -311,10 +311,23 @@ var _FIRESTORE_PLUGIN = function () {
         });
     }
 
+    var refreshUnsubscribers = [];
+    function subscribeRefreshSnapshot (unsubscriber) {
+        refreshUnsubscribers.push(unsubscriber);
+    }
+
+    function unsubscribeRefreshSnapshot () {
+        refreshUnsubscribers.forEach((unsubscriber) => {
+            unsubscriber();
+        });
+    }
+
     // auth change
     firebase.auth().onAuthStateChanged((firebaseUser) => {
         if (!firebaseUser) {
             invalidateTemplateCache();
+            unsubscribeRefreshSnapshot();
+
             return setSignedInUser({});
         }
 
@@ -322,9 +335,15 @@ var _FIRESTORE_PLUGIN = function () {
             return getSignedInUser()
                 .then((user) => {
                     // refresh templates on changes
-                    templatesOwnedQuery(user).onSnapshot(refreshTemplates);
-                    templatesSharedQuery(user).onSnapshot(refreshTemplates);
-                    templatesEveryoneQuery(user).onSnapshot(refreshTemplates);
+                    subscribeRefreshSnapshot(
+                        templatesOwnedQuery(user).onSnapshot(refreshTemplates)
+                    );
+                    subscribeRefreshSnapshot(
+                        templatesSharedQuery(user).onSnapshot(refreshTemplates)
+                    );
+                    subscribeRefreshSnapshot(
+                        templatesEveryoneQuery(user).onSnapshot(refreshTemplates)
+                    );
 
                     // populate in-memory template cache
                     getTemplate();
