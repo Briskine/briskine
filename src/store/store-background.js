@@ -135,11 +135,23 @@
         plugin.on = (name) => {};
         plugin.trigger = trigger;
 
-        return plugin
+        return plugin;
     }
 
     // global store
     window.store = getStore();
+
+    function debug (data = [], method = 'log') {
+        if (ENV === 'production') {
+            return;
+        }
+
+        console.group(data.shift());
+        data.forEach((item) => {
+            console[method](item);
+        });
+        console.groupEnd();
+    }
 
     // respond to content and options
     chrome.runtime.onMessage.addListener((req, sender, sendResponse) => {
@@ -147,19 +159,19 @@
             req.type &&
             typeof window.store[req.type] === 'function'
         ) {
-            // debug store calls
-            if (ENV !== 'production') {
-                console.log(req.type, req.data);
-            }
-
             window.store[req.type](req.data).then((data = {}) => {
                 sendResponse(data);
+
+                // debug store calls
+                debug([req.type, req.data, data]);
             }).catch((err) => {
                 // catch errors on client
                 var storeError = {
                     storeError: err
                 };
                 sendResponse(storeError);
+
+                debug([req.type, req.data, err], 'error');
             });
         }
 
