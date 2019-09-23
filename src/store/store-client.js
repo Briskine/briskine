@@ -5,10 +5,10 @@
         backgroundPage = chrome.extension.getBackgroundPage();
 
         window.FIRESTORE_ENABLED = backgroundPage.FIRESTORE_ENABLED.bind(backgroundPage);
-        window.TOGGLE_FIRESTORE = () => {
+        window.TOGGLE_FIRESTORE = (enabled) => {
+            // clear pub-sub events
             clearEvents();
-
-            backgroundPage.TOGGLE_FIRESTORE.apply(backgroundPage);
+            backgroundPage.TOGGLE_FIRESTORE.call(backgroundPage, enabled);
         };
         window.IMPERSONATE = backgroundPage.IMPERSONATE.bind(backgroundPage);
     } catch (err) {}

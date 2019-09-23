@@ -228,7 +228,6 @@ var _FIRESTORE_PLUGIN = function () {
     }
 
     function migrateLegacyLocalData () {
-        var legacyIds = [];
         return new Promise((resolve, reject) => {
             chrome.storage.local.get(null, resolve);
         }).then((storage) => {
@@ -238,16 +237,10 @@ var _FIRESTORE_PLUGIN = function () {
                     if (isLegacyTemplate(key, template)) {
                         var localId = template.id;
                         var remoteId = template.remote_id || localId;
-                        // don't sync default templates
-                        if (template.nosync === 1) {
-                            return;
-                        }
 
                         return parseTemplate({
                             template: template
                         }).then((res) => {
-                            legacyIds.push(localId);
-
                             // update local data
                             return updateLocalData({
                                 templates: [
@@ -260,10 +253,6 @@ var _FIRESTORE_PLUGIN = function () {
                     return;
                 })
             );
-        }).then(() => {
-            // delete legacy data
-            chrome.storage.local.remove(legacyIds);
-            return;
         });
     }
 
