@@ -320,8 +320,32 @@ gApp.run(function ($rootScope, $location, $timeout, ProfileService, SettingsServ
     $rootScope.$on('$viewContentLoaded', initDom);
     $rootScope.$on('$includeContentLoaded', initDom);
 
+    function subscribeIframeLoaded (e) {
+        var iframe = e.target;
+        var loadingClass = 'btn-loading';
+        var loaderSelector = `.${loadingClass}`;
+        var loader = iframe.closest(loaderSelector);
+        loader.classList.remove(loadingClass);
+
+        iframe.removeEventListener('load', subscribeIframeLoaded);
+    }
+
+    function openSubscribePopup () {
+        var subscribeUrl = `${Config.functionsUrl}/subscribe/`;
+        var $modal = $('#firestore-signup-modal');
+        var iframe = $modal.find('iframe').get(0);
+        $modal.modal({
+            show: true
+        });
+
+        if (iframe.src !== subscribeUrl) {
+            iframe.addEventListener('load', subscribeIframeLoaded);
+            iframe.src = subscribeUrl;
+        }
+    }
+
     $rootScope.openSubscribe = () => {
-        store.openSubscribePopup();
+        openSubscribePopup();
     };
 
     $rootScope.firestoreEnabled = window.FIRESTORE_ENABLED();

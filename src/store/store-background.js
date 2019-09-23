@@ -79,30 +79,6 @@
         });
     };
 
-    function subscribeIframeLoaded (e) {
-        var iframe = e.target;
-        var loadingClass = 'btn-loading';
-        var loaderSelector = `.${loadingClass}`;
-        var loader = iframe.closest(loaderSelector);
-        loader.classList.remove(loadingClass);
-
-        iframe.removeEventListener('load', subscribeIframeLoaded);
-    }
-
-    var openSubscribePopup = (params = {}) => {
-        var subscribeUrl = `${Config.functionsUrl}/subscribe/`;
-        var $modal = $('#firestore-signup-modal');
-        var iframe = $modal.find('iframe').get(0);
-        $modal.modal({
-            show: true
-        });
-
-        if (iframe.src !== subscribeUrl) {
-            iframe.addEventListener('load', subscribeIframeLoaded);
-            iframe.src = subscribeUrl;
-        }
-    };
-
     var trigger = function (name) {
         // send trigger message to client store
         return new Promise((resolve, reject) => {
@@ -129,7 +105,6 @@
         // general signin and forgot methods for both plugins
         plugin.signin = signin;
         plugin.forgot = forgot;
-        plugin.openSubscribePopup = openSubscribePopup;
 
         // HACK mock on() because the angular app is bundled in the background script
         plugin.on = (name) => {};
