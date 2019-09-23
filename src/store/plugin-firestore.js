@@ -1363,17 +1363,9 @@ var _FIRESTORE_PLUGIN = function () {
                 .then(handleErrors)
                 .then((res) => res.json())
                 .then((res) => {
-                    var stripe = Stripe(params.stripeKey);
-                    stripe.redirectToCheckout({
-                        sessionId: res.id
-                    }).then(function (result) {
-                        if (result && result.error && result.error.message) {
-                            alert(result.error.message);
-                            return;
-                        }
-                    });
-
-                    return null;
+                    return Object.assign({
+                        firebase: true
+                    }, res);
                 });
         });
     };

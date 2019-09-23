@@ -801,20 +801,8 @@ var _GORGIAS_API_PLUGIN = function () {
 
     // open credit card form
     var updateCreditCard = function (params = {}) {
-        return new Promise((resolve, reject) => {
-            var handler = StripeCheckout.configure({
-                key: params.stripeKey,
-                token: function (token) {
-                    resolve(token);
-                }
-            });
-            handler.open({
-                name: 'Gorgias',
-                description: 'Update your Credit Card',
-                panelLabel: 'Update your Credit Card',
-                email: params.email,
-                allowRememberMe: false
-            });
+        return Promise.resolve({
+            firebase: false
         });
     };
 

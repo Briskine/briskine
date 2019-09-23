@@ -50,33 +50,65 @@ gApp.controller('SubscriptionsCtrl', function ($scope, $rootScope, $routeParams,
     };
     $scope.reloadSubscriptions();
 
+    function updateLegacyCreditCard (params = {}) {
+        return new Promise((resolve, reject) => {
+            var handler = StripeCheckout.configure({
+                key: params.stripeKey,
+                token: function (token) {
+                    resolve(token);
+                }
+            });
+            handler.open({
+                name: 'Gorgias',
+                description: 'Update your Credit Card',
+                panelLabel: 'Update your Credit Card',
+                email: params.email,
+                allowRememberMe: false
+            });
+        });
+    }
+
+    function updateFirebaseCreditCard (params = {}) {
+        var stripe = Stripe(params.stripeKey);
+        stripe.redirectToCheckout({
+            sessionId: params.id
+        }).then(function (result) {
+            if (result && result.error && result.error.message) {
+                alert(result.error.message);
+                return;
+            }
+        });
+    }
+
     // Get a new token from stripe and send it to the server
     $scope.updateCC = function () {
         $scope.paymentMsg = '';
         $scope.paymentError = '';
         $('.update-cc-btn').addClass('disabled');
 
-        // TODO must wait for plans to load
-        store.updateCreditCard({
+        // BUG must wait for plans to load
+        var ccParams = {
             stripeKey: $scope.stripeKey,
             email: $scope.email
-        }).then((token) => {
-            // token only returned by old api plugin
-            if (!token) {
-                return
+        };
+        store.updateCreditCard(ccParams).then((res) => {
+            if (res.firebase) {
+                return updateFirebaseCreditCard(Object.assign(res, ccParams));
+            } else {
+                return updateLegacyCreditCard(ccParams).then((token) => {
+                    // Use the token to create the charge with server-side.
+                    SubscriptionService.updateSubscription($scope.activeSubscription.id, {token: token}).then(
+                        function (res) {
+                            $('.update-cc-btn').removeClass('disabled');
+                            $scope.paymentMsg = res
+                            $scope.reloadSubscriptions();
+                        }, function (res) {
+                            $('.update-cc-btn').removeClass('disabled');
+                            $scope.paymentError = res;
+                        }
+                    );
+                });
             }
-
-            // Use the token to create the charge with server-side.
-            SubscriptionService.updateSubscription($scope.activeSubscription.id, {token: token}).then(
-                function (res) {
-                    $('.update-cc-btn').removeClass('disabled');
-                    $scope.paymentMsg = res
-                    $scope.reloadSubscriptions();
-                }, function (res) {
-                    $('.update-cc-btn').removeClass('disabled');
-                    $scope.paymentError = res;
-                }
-            );
         })
     };
 
