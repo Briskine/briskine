@@ -3,14 +3,6 @@
     try {
         // getBackgroundPage() throws error in content script
         backgroundPage = chrome.extension.getBackgroundPage();
-
-        window.FIRESTORE_ENABLED = backgroundPage.FIRESTORE_ENABLED.bind(backgroundPage);
-        window.TOGGLE_FIRESTORE = (enabled) => {
-            // clear pub-sub events
-            clearEvents();
-            backgroundPage.TOGGLE_FIRESTORE.call(backgroundPage, enabled);
-        };
-        window.IMPERSONATE = backgroundPage.IMPERSONATE.bind(backgroundPage);
     } catch (err) {}
 
     var backgroundScript = (window === backgroundPage);
@@ -81,10 +73,6 @@
         });
     };
 
-    var clearEvents = function () {
-        events = [];
-    };
-
     var trigger = function (name) {
         events.filter((event) => event.name === name).forEach((event) => {
             if (typeof event.callback === 'function') {
@@ -117,5 +105,38 @@
 
             return optionsStore;
         }();
+
+        // options page
+        if (backgroundPage) {
+            window.FIRESTORE_ENABLED = backgroundPage.FIRESTORE_ENABLED.bind(backgroundPage);
+            window.TOGGLE_FIRESTORE = (enabled) => {
+                backgroundPage.TOGGLE_FIRESTORE.call(backgroundPage, enabled);
+            };
+            window.IMPERSONATE = (params) => {
+                backgroundPage.IMPERSONATE.call(backgroundPage, params).then(() => {
+                    // reload options
+                    window.location.reload();
+                });
+            };
+            window.SIGNIN_WITH_TOKEN = (token) => {
+                backgroundPage.SIGNIN_WITH_TOKEN.call(backgroundPage, token).then(() => {
+                    // reload options
+                    window.location.reload();
+                });
+            };
+
+            // subscribe automatic sign-in
+            window.addEventListener('message', function (e) {
+                var data = {};
+                try {
+                    data = JSON.parse(e.data);
+                } catch (err) {}
+
+                if (data.type === 'templates-subscribe-success') {
+                    window.TOGGLE_FIRESTORE(true);
+                    window.SIGNIN_WITH_TOKEN(data.token);
+                }
+            });
+        }
     }
 }());

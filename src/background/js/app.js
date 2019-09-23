@@ -205,6 +205,7 @@ gApp.run(function ($rootScope, $location, $timeout, ProfileService, SettingsServ
         }).then((token) => {
             // token returned only by old api
             if (!token) {
+                window.location.reload();
                 return;
             }
 
@@ -212,6 +213,7 @@ gApp.run(function ($rootScope, $location, $timeout, ProfileService, SettingsServ
             SubscriptionService.updateSubscription($rootScope.currentSubscription.id, {token: token}).then(
                 function () {
                     $rootScope.checkLoggedIn();
+
                 }, function (res) {
                     alert('Failed to create new subscription. ' + res);
                 }

@@ -1400,8 +1400,6 @@ var _FIRESTORE_PLUGIN = function () {
                     });
                 })
                 .then(() => {
-                    // backwards compatibility
-                    window.location.reload();
                     return null;
                 })
                 .catch((err) => {
@@ -1526,11 +1524,10 @@ var _FIRESTORE_PLUGIN = function () {
         return firebase.auth().signInWithCustomToken(token)
             .then((res) => {
                 return updateCurrentUser(res.user);
-            })
-            .then(() => {
-                return window.location.reload();
             });
     }
+
+    window.SIGNIN_WITH_TOKEN = signinWithToken;
 
     var impersonate = function (params = {}) {
         return getUserToken().then((res) => {
@@ -1561,19 +1558,6 @@ var _FIRESTORE_PLUGIN = function () {
     var migrate = function () {
         return migrateLegacyLocalData();
     };
-
-    // subscribe automatic sign-in
-    window.addEventListener('message', function (e) {
-        var data = {};
-        try {
-            data = JSON.parse(e.data);
-        } catch (err) {}
-
-        if (data.type === 'templates-subscribe-success') {
-            window.TOGGLE_FIRESTORE(true);
-            signinWithToken(data.token);
-        }
-    });
 
     return {
         getSettings: getSettings,
