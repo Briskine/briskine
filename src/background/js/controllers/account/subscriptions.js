@@ -136,9 +136,14 @@ gApp.controller('SubscriptionsCtrl', function ($scope, $rootScope, $routeParams,
         $scope.loadingCancel = true;
         cancelConfirm = window.confirm('Are you sure you want to cancel and delete all your template backups?')
         if (cancelConfirm === true) {
-            SubscriptionService.cancelSubscription().then(function(){
-                $rootScope.logOut()
-            }).catch((err) => alert(err.msg));
+            SubscriptionService.cancelSubscription().then(function () {
+                $rootScope.logOut();
+            }).catch((err) => {
+                $scope.loadingCancel = false;
+                alert(err.msg);
+            });
+        } else {
+            $scope.loadingCancel = false;
         }
     };
 });
