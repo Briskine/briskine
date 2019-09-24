@@ -693,13 +693,6 @@ var _GORGIAS_API_PLUGIN = function () {
     };
 
     var syncNow = function () {
-        var hash = window.location.hash;
-        var inList = hash.indexOf('/list') !== -1;
-        if (!inList) {
-            // only sync when in list
-            return Promise.resolve();
-        }
-
         return getSettings({
             key: 'isLoggedIn'
         }).then(function (isLoggedIn) {
