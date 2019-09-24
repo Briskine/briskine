@@ -237,6 +237,10 @@ var _FIRESTORE_PLUGIN = function () {
                     if (isLegacyTemplate(key, template)) {
                         var localId = template.id;
                         var remoteId = template.remote_id || localId;
+                        // don't sync default templates
+                        if (template.nosync === 1) {
+                            return;
+                        }
 
                         return parseTemplate({
                             template: template

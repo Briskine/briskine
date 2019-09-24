@@ -95,7 +95,7 @@
                     );
                 }
 
-                return resolve(res)
+                return resolve(res);
             });
         });
     };
