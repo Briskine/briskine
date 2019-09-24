@@ -16,7 +16,7 @@
                     data: params
                 }, (data) => {
                     // handle errors
-                    if (data.storeError) {
+                    if (data && data.storeError) {
                         return reject(data.storeError);
                     }
 

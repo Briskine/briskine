@@ -1261,13 +1261,15 @@ var _FIRESTORE_PLUGIN = function () {
                 // backwards compatibility
                 var preferred_currency = 'usd';
                 var plan = res.plans[preferred_currency].find((p) => p.sku === subscriptionData.plan);
-                return [
-                    Object.assign(subscriptionData, {
-                        active: active,
-                        plan: plan,
-                        start_datetime: subscriptionData.start_datetime.toDate()
-                    })
-                ];
+                var subscription = Object.assign(subscriptionData, {
+                    active: active,
+                    plan: plan,
+                    start_datetime: subscriptionData.start_datetime.toDate()
+                });
+                if (params.subId) {
+                    return subscription;
+                }
+                return [subscription];
             });
         });
     };
@@ -1392,7 +1394,9 @@ var _FIRESTORE_PLUGIN = function () {
                     });
                 })
                 .then(() => {
-                    return null;
+                    return {
+                        firebase: true
+                    };
                 })
                 .catch((err) => {
                     // backwards compatibility

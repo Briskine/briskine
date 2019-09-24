@@ -197,29 +197,54 @@ gApp.run(function ($rootScope, $location, $timeout, ProfileService, SettingsServ
 
     $rootScope.loadingSubscription = false;
 
+    function reactivateLegacySubscription (params = {}) {
+        return store.getPlans().then((data) => {
+            return new Promise((resolve, reject) => {
+                var handler = StripeCheckout.configure({
+                    key: data.stripe_key,
+                    token: function (token) {
+                        resolve(token);
+                    }
+                });
+
+                handler.open({
+                    name: 'Gorgias',
+                    description: params.subscription.quantity + ' x ' + params.subscription.plan,
+                    panelLabel: 'Activate your subscription',
+                    email: data.email,
+                    allowRememberMe: false
+                });
+            });
+        });
+    }
+
     // Get a new token from stripe and send it to the server
     $rootScope.reactivateSubscription = function () {
         $rootScope.loadingSubscription = true;
-        store.reactivateSubscription({
+        var reactivateParams = {
             subscription: $rootScope.currentSubscription
-        }).then((token) => {
-            // token returned only by old api
-            if (!token) {
+        };
+        store.reactivateSubscription(reactivateParams).then((res = {}) => {
+            if (res.firebase) {
                 window.location.reload();
                 return;
             }
 
-            // Use the token to create the charge with server-side.
-            SubscriptionService.updateSubscription($rootScope.currentSubscription.id, {token: token}).then(
-                function () {
-                    $rootScope.checkLoggedIn();
+            return reactivateLegacySubscription(reactivateParams).then((token) => {
+                // Use the token to create the charge with server-side.
+                SubscriptionService.updateSubscription($rootScope.currentSubscription.id, {
+                    token: token
+                }).then(
+                    function () {
+                        $rootScope.checkLoggedIn();
 
-                }, function (res) {
-                    alert('Failed to create new subscription. ' + res);
-                }
-            );
+                    }, function (res) {
+                        alert('Failed to create new subscription. ' + res);
+                    }
+                );
 
-            return;
+                return;
+            });
         }).then(() => {
             $rootScope.loadingSubscription = false;
         });

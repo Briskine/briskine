@@ -42,8 +42,8 @@ gApp.controller('SubscriptionsCtrl', function ($scope, $rootScope, $routeParams,
             $scope.quantity = $scope.subscriptions[0].quantity;
             for (var i = 0; i <= $scope.subscriptions.length; i++) {
                 if ($scope.subscriptions[i].active) {
-                    $scope.activeSubscription = $scope.subscriptions[i]
-                    break
+                    $scope.activeSubscription = $scope.subscriptions[i];
+                    break;
                 }
             }
         });
@@ -94,21 +94,21 @@ gApp.controller('SubscriptionsCtrl', function ($scope, $rootScope, $routeParams,
         store.updateCreditCard(ccParams).then((res) => {
             if (res.firebase) {
                 return updateFirebaseCreditCard(Object.assign(res, ccParams));
-            } else {
-                return updateLegacyCreditCard(ccParams).then((token) => {
-                    // Use the token to create the charge with server-side.
-                    SubscriptionService.updateSubscription($scope.activeSubscription.id, {token: token}).then(
-                        function (res) {
-                            $('.update-cc-btn').removeClass('disabled');
-                            $scope.paymentMsg = res
-                            $scope.reloadSubscriptions();
-                        }, function (res) {
-                            $('.update-cc-btn').removeClass('disabled');
-                            $scope.paymentError = res;
-                        }
-                    );
-                });
             }
+
+            return updateLegacyCreditCard(ccParams).then((token) => {
+                // Use the token to create the charge with server-side.
+                SubscriptionService.updateSubscription($scope.activeSubscription.id, {token: token}).then(
+                    function (res) {
+                        $('.update-cc-btn').removeClass('disabled');
+                        $scope.paymentMsg = res
+                        $scope.reloadSubscriptions();
+                    }, function (res) {
+                        $('.update-cc-btn').removeClass('disabled');
+                        $scope.paymentError = res;
+                    }
+                );
+            });
         })
     };
 
@@ -117,7 +117,10 @@ gApp.controller('SubscriptionsCtrl', function ($scope, $rootScope, $routeParams,
         $scope.paymentMsg = '';
         $scope.paymentError = '';
 
-        SubscriptionService.updateSubscription($scope.activeSubscription.id, {
+        // backwards-compatibility
+        // we don't have subscription ids in firestore
+        var subId = $scope.activeSubscription.id || Date.now();
+        SubscriptionService.updateSubscription(subId, {
             plan: plan,
             quantity: quantity
         }).then(function (res) {

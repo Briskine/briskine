@@ -10,15 +10,15 @@ gApp.controller('MembersCtrl', function ($scope, $rootScope, $timeout, $location
 
     function setUserState (status, id) {
         $scope[status] = id || null;
-    };
+    }
 
     function setUserLoading (id) {
-        return setUserState('userLoading', id)
+        return setUserState('userLoading', id);
     }
 
     function setUserEdit (id) {
-        return setUserState('userEdit', id)
-    };
+        return setUserState('userEdit', id);
+    }
 
     // TODO remove sendNotification, we always send notifications in firestore.
     $scope.sendNotification = true;

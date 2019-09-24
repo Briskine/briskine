@@ -17,8 +17,8 @@ gApp.service('SubscriptionService', function ($q, $rootScope) {
     self.updateSubscription = function (subId, params) {
         var deferred = $q.defer()
         store.getSubscription({subId: subId}).then(function (sub) {
-            sub = _.extend(sub, params)
-            store.updateSubscription(sub).then((res) => {
+            var updateParams = Object.assign({}, sub, params);
+            store.updateSubscription(updateParams).then((res) => {
                 deferred.resolve(res.msg);
             }).catch((res) => {
                 deferred.reject(res.msg);
@@ -42,7 +42,7 @@ gApp.service('SubscriptionService', function ($q, $rootScope) {
 
     // cancel subscription
     self.cancelSubscription = function () {
-        var deferred = $q.defer()
+        var deferred = $q.defer();
         store.cancelSubscription()
             .then(deferred.resolve)
             .catch(deferred.reject);
