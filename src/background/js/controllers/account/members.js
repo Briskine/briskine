@@ -1,4 +1,4 @@
-gApp.controller('MembersCtrl', function ($scope, $rootScope, $timeout, AccountService, MemberService, SubscriptionService) {
+gApp.controller('MembersCtrl', function ($scope, $rootScope, $timeout, $location, AccountService, MemberService, SubscriptionService) {
     $scope.activeTab = 'members';
 
     $scope.users = [];
@@ -10,15 +10,15 @@ gApp.controller('MembersCtrl', function ($scope, $rootScope, $timeout, AccountSe
 
     function setUserState (status, id) {
         $scope[status] = id || null;
-    };
+    }
 
     function setUserLoading (id) {
-        return setUserState('userLoading', id)
+        return setUserState('userLoading', id);
     }
 
     function setUserEdit (id) {
-        return setUserState('userEdit', id)
-    };
+        return setUserState('userEdit', id);
+    }
 
     // TODO remove sendNotification, we always send notifications in firestore.
     $scope.sendNotification = true;
@@ -117,5 +117,11 @@ gApp.controller('MembersCtrl', function ($scope, $rootScope, $timeout, AccountSe
         }).then(() => {
             setUserLoading();
         });
+    };
+
+    $scope.upgrade = function () {
+        // force-open subscriptions page
+        window.location.href = '#/account/subscriptions';
+        window.location.reload();
     };
 });

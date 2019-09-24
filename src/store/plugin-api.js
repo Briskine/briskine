@@ -712,7 +712,7 @@ var _GORGIAS_API_PLUGIN = function () {
 
             console.log('Synced: ', new Date().toUTCString());
             var waitForLocal = function () {
-                trigger('templates-sync');
+                store.trigger('templates-sync');
                 store.syncLocal();
             };
             // wait a bit before doing the local sync
@@ -799,6 +799,19 @@ var _GORGIAS_API_PLUGIN = function () {
         .then((res) => res.json());
     };
 
+    // open credit card form
+    var updateCreditCard = function (params = {}) {
+        return Promise.resolve({
+            firebase: false
+        });
+    };
+
+    var reactivateSubscription = function (params = {}) {
+        return Promise.resolve({
+            firebase: false
+        });
+    };
+
     var getPlans = function (params = {}) {
         return fetch(`${apiBaseURL}plans/startup`)
             .then(handleErrors)
@@ -833,12 +846,6 @@ var _GORGIAS_API_PLUGIN = function () {
         .then((res) => res.json());
     };
 
-    var openSubscribePopup = function (params = {}) {
-        $('#api-signup-modal').modal({
-            show: true
-        });
-    };
-
     var importTemplates = function (params = {}) {
         var formData = new FormData();
         formData.append('file', params.file);
@@ -848,22 +855,6 @@ var _GORGIAS_API_PLUGIN = function () {
         })
         .then(handleErrors)
         .then((res) => res.json());
-    };
-
-    var events = [];
-    var on = function (name, callback) {
-        events.push({
-            name: name,
-            callback: callback
-        });
-    };
-
-    var trigger = function (name) {
-        events.filter((event) => event.name === name).forEach((event) => {
-            if (typeof event.callback === 'function') {
-                event.callback();
-            }
-        });
     };
 
     return {
@@ -893,6 +884,8 @@ var _GORGIAS_API_PLUGIN = function () {
         getSubscription: getSubscription,
         updateSubscription: updateSubscription,
         cancelSubscription: cancelSubscription,
+        updateCreditCard: updateCreditCard,
+        reactivateSubscription: reactivateSubscription,
 
         syncNow: syncNow,
         syncLocal: syncLocal,
@@ -900,10 +893,7 @@ var _GORGIAS_API_PLUGIN = function () {
         signin: signin,
         logout: logout,
         forgot: forgot,
-        openSubscribePopup: openSubscribePopup,
-        importTemplates: importTemplates,
-
-        on: on
+        importTemplates: importTemplates
     };
 }();
 

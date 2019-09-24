@@ -1,4 +1,6 @@
 // Register Chrome runtime protocols and context menus
+// TODO remove angularInjector dependency
+// to run this in the background script without bundling the entire angular app
 if (chrome.runtime) {
 
     // TODO somehow get this values from the plugins
@@ -31,12 +33,7 @@ if (chrome.runtime) {
     };
 
     var angularInjector = function () {
-        var injector = angular.element('html').injector();
-        if (!injector) {
-            angular.bootstrap('html', ['gApp']);
-            return angular.element('html').injector();
-        }
-        return injector;
+        return angular.element('html').injector();
     };
 
     // Listen for any changes to the URL of any tab.
@@ -48,16 +45,17 @@ if (chrome.runtime) {
 
     // Called after installation: https://developer.chrome.com/extensions/runtime.html#event-onInstalled
     chrome.runtime.onInstalled.addListener(function (details) {
+        var injector = angularInjector();
         if (details.reason == "install") {
             amplitude.getInstance().logEvent("Installed Gorgias");
-            angularInjector().get('SettingsService').reset();
+            injector.get('SettingsService').reset();
         } else if (details.reason == "update") {
             amplitude.getInstance().logEvent("Updated Gorgias", {'version': details.previousVersion});
 
-            angularInjector().get('SettingsService').get('hints').then(function (hints) {
+            injector.get('SettingsService').get('hints').then(function (hints) {
                 if (hints && hints.postInstall) {
                     hints.postInstall = false;
-                    angularInjector().get('SettingsService').set('hints', hints);
+                    injector.get('SettingsService').set('hints', hints);
                 }
             });
         }
@@ -93,12 +91,17 @@ if (chrome.runtime) {
             chrome.tabs.create({url: "pages/frameless.html#/installed"});
         } else if (details.reason == "update") {
             // perform the necessary migrations
-            angularInjector().get('MigrationService').migrate();
+            injector.get('MigrationService').migrate();
         }
     });
 
     chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
         var injector = angularInjector();
+        if (!injector) {
+            // angular app not loaded yet
+            return;
+        }
+
         var settingsService = injector.get('SettingsService');
         if (request.request === 'stats') {
             if (request.key === 'words') {

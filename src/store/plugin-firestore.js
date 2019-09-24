@@ -44,7 +44,7 @@ var _FIRESTORE_PLUGIN = function () {
         invalidateTemplateCache();
 
         // backwards compatibility
-        trigger('templates-sync');
+        store.trigger('templates-sync');
     }
 
     // local data (when logged-out)
@@ -228,7 +228,6 @@ var _FIRESTORE_PLUGIN = function () {
     }
 
     function migrateLegacyLocalData () {
-        var legacyIds = [];
         return new Promise((resolve, reject) => {
             chrome.storage.local.get(null, resolve);
         }).then((storage) => {
@@ -246,8 +245,6 @@ var _FIRESTORE_PLUGIN = function () {
                         return parseTemplate({
                             template: template
                         }).then((res) => {
-                            legacyIds.push(localId);
-
                             // update local data
                             return updateLocalData({
                                 templates: [
@@ -260,10 +257,6 @@ var _FIRESTORE_PLUGIN = function () {
                     return;
                 })
             );
-        }).then(() => {
-            // delete legacy data
-            chrome.storage.local.remove(legacyIds);
-            return;
         });
     }
 
@@ -311,13 +304,55 @@ var _FIRESTORE_PLUGIN = function () {
         });
     }
 
+    var refreshUnsubscribers = [];
+    function subscribeRefreshSnapshot (unsubscriber) {
+        refreshUnsubscribers.push(unsubscriber);
+    }
+
+    function unsubscribeRefreshSnapshot () {
+        refreshUnsubscribers.forEach((unsubscriber) => {
+            unsubscriber();
+        });
+    }
+
     // auth change
     firebase.auth().onAuthStateChanged((firebaseUser) => {
         if (!firebaseUser) {
+            invalidateTemplateCache();
+            unsubscribeRefreshSnapshot();
+
             return setSignedInUser({});
         }
 
-        return updateCurrentUser(firebaseUser);
+        return updateCurrentUser(firebaseUser).then(() => {
+            return getSignedInUser()
+                .then((user) => {
+                    // refresh templates on changes
+                    subscribeRefreshSnapshot(
+                        templatesOwnedQuery(user).onSnapshot(refreshTemplates)
+                    );
+                    subscribeRefreshSnapshot(
+                        templatesSharedQuery(user).onSnapshot(refreshTemplates)
+                    );
+                    subscribeRefreshSnapshot(
+                        templatesEveryoneQuery(user).onSnapshot(refreshTemplates)
+                    );
+
+                    // populate in-memory template cache
+                    getTemplate();
+
+                    // sync local templates
+                    syncLocalData();
+                })
+                .catch((err) => {
+                    if (isLoggedOut(err)) {
+                        // logged-out
+                        return;
+                    }
+
+                    throw err;
+                });
+        });
     });
 
     var getLoginInfo = getSignedInUser;
@@ -426,28 +461,19 @@ var _FIRESTORE_PLUGIN = function () {
 
     // update customer members
     var setMember = (params = {}) => {
-        var customer = null;
-        return getSignedInUser()
-            .then((user) => {
-                customer = user.customer;
-                return getCurrentUser();
-            })
-            .then((currentUser) => {
-                return currentUser.getIdToken(true);
-            })
-            .then((idToken) => {
-                return fetch(`${Config.functionsUrl}/member`, {
+        return getUserToken().then((res) => {
+                return fetch(`${Config.functionsUrl}/api/1/member`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
-                        token: idToken,
+                        token: res.token,
                         id: params.id,
                         active: params.active,
                         email: params.email,
                         name: params.name,
-                        customer: customer
+                        customer: res.user.customer
                     })
                 })
                 .then(handleErrors)
@@ -984,6 +1010,11 @@ var _FIRESTORE_PLUGIN = function () {
                         // get from cached members, avoid extra requests
                         return templateData.shared_with.map((userId) => {
                             return members.find((member) => member.id === userId);
+                        }).filter((userId) => {
+                            // remove undefined values.
+                            // fixes issues with templates shared_with
+                            // members removed from customer.
+                            return userId;
                         });
                     }
 
@@ -1179,18 +1210,14 @@ var _FIRESTORE_PLUGIN = function () {
     };
 
     function shareNotification (params = {}) {
-        return getCurrentUser()
-            .then((currentUser) => {
-                return currentUser.getIdToken(true);
-            })
-            .then((idToken) => {
-                return fetch(`${Config.functionsUrl}/share`, {
+        return getUserToken().then((res) => {
+                return fetch(`${Config.functionsUrl}/api/1/share`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
-                        token: idToken,
+                        token: res.token,
                         users: params.users,
                         templates: params.templates,
                         message: params.message
@@ -1205,21 +1232,15 @@ var _FIRESTORE_PLUGIN = function () {
     var updateStats = mock;
 
     var getPlans = (params = {}) => {
-        var customer = null;
-        return getSignedInUser().then((user) => {
-            customer = user.customer;
-            return getCurrentUser();
-        }).then((currentUser) => {
-            return currentUser.getIdToken(true);
-        }).then((idToken) => {
-            return fetch(`${Config.functionsUrl}/plans`, {
+        return getUserToken().then((res) => {
+            return fetch(`${Config.functionsUrl}/api/1/plans`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
-                        customer: customer,
-                        token: idToken
+                        customer: res.user.customer,
+                        token: res.token
                     })
                 })
                 .then(handleErrors)
@@ -1240,18 +1261,155 @@ var _FIRESTORE_PLUGIN = function () {
                 active = false;
             }
 
-            // backwards compatibility
-            return [
-                Object.assign(subscriptionData, {
+            return getPlans().then((res) => {
+                // backwards compatibility
+                var preferred_currency = 'usd';
+                var plan = res.plans[preferred_currency].find((p) => p.sku === subscriptionData.plan);
+                var subscription = Object.assign(subscriptionData, {
                     active: active,
+                    plan: plan,
                     start_datetime: subscriptionData.start_datetime.toDate()
-                })
-            ];
+                });
+                if (params.subId) {
+                    return subscription;
+                }
+                return [subscription];
+            });
         });
     };
 
-    var updateSubscription = mock;
-    var cancelSubscription = mock;
+    // return user and token
+    function getUserToken () {
+        return getCurrentUser().then((currentUser) => {
+            return currentUser.getIdToken(true);
+        }).then((token) => {
+            return getSignedInUser().then((user) => {
+                return {
+                    user: user,
+                    token: token
+                };
+            });
+        });
+    }
+
+    // update subscription plan and quantity
+    var updateSubscription = (params = {}) => {
+        return getUserToken().then((res) => {
+            return fetch(`${Config.functionsUrl}/api/1/subscription`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        token: res.token,
+                        customer: res.user.customer,
+                        quantity: params.quantity,
+                        plan: params.plan
+                    })
+                })
+                .then(handleErrors)
+                .then((res) => res.json())
+                .then(() => {
+                    // backwards compatibility
+                    return {
+                        msg: 'Successfully updated subscription.'
+                    };
+                })
+                .catch((err) => {
+                    // backwards compatibility
+                    return Promise.reject({
+                        msg: err.message
+                    });
+                });
+        });
+    };
+    var cancelSubscription = (params = {}) => {
+        return getUserToken().then((res) => {
+            return fetch(`${Config.functionsUrl}/api/1/subscription`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        token: res.token,
+                        customer: res.user.customer
+                    })
+                })
+                .then(handleErrors)
+                .then((res) => res.json())
+                .then(() => {
+                    // backwards compatibility
+                    return {
+                        msg: 'Successfully canceled subscription.'
+                    };
+                })
+                .catch((err) => {
+                    // backwards compatibility
+                    return Promise.reject({
+                        msg: err.message
+                    });
+                });
+        });
+    };
+
+    var updateCreditCard = (params = {}) => {
+        // setup stripe checkout session
+        return getUserToken().then((res) => {
+            return fetch(`${Config.functionsUrl}/api/1/subscription/payment`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        token: res.token,
+                        email: res.user.email,
+                        customer: res.user.customer
+                    })
+                })
+                .then(handleErrors)
+                .then((res) => res.json())
+                .then((res) => {
+                    return Object.assign({
+                        firebase: true
+                    }, res);
+                });
+        });
+    };
+
+    var reactivateSubscription = (params = {}) => {
+        return getUserToken().then((res) => {
+            return fetch(`${Config.functionsUrl}/api/1/subscription/reactivate`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        token: res.token,
+                        customer: res.user.customer,
+                        subscription: params.subscription
+                    })
+                })
+                .then(handleErrors)
+                .then((res) => res.json())
+                .then(() => {
+                    // update subscription status
+                    return getCurrentUser().then((currentUser) => {
+                        return updateCurrentUser(currentUser);
+                    });
+                })
+                .then(() => {
+                    return {
+                        firebase: true
+                    };
+                })
+                .catch((err) => {
+                    // backwards compatibility
+                    return Promise.reject({
+                        msg: err.message
+                    });
+                });
+        });
+    };
 
     var syncNow = mock;
     var syncLocal = mock;
@@ -1305,7 +1463,7 @@ var _FIRESTORE_PLUGIN = function () {
                     is_loggedin: true,
                     created_datetime: '',
                     current_subscription: {
-                        active: true,
+                        active: false,
                         created_datetime: '',
                         plan: '',
                         quantity: 1
@@ -1325,6 +1483,16 @@ var _FIRESTORE_PLUGIN = function () {
                 user = Object.assign({
                     is_customer: isCustomer
                 }, user);
+
+                // subscription data
+                user.current_subscription = Object.assign(user.current_subscription, {
+                    plan: customerData.subscription.plan,
+                    quantity: customerData.subscription.quantity
+                });
+
+                if (!customerData.subscription.canceled_datetime) {
+                    user.current_subscription.active = true;
+                }
 
                 return setSignedInUser(user);
             });
@@ -1352,34 +1520,25 @@ var _FIRESTORE_PLUGIN = function () {
         });
     };
 
-    var openSubscribePopup = function (params = {}) {
-        $('#firestore-signup-modal').modal({
-            show: true
-        });
-    };
-
     function signinWithToken (token = '') {
         return firebase.auth().signInWithCustomToken(token)
             .then((res) => {
                 return updateCurrentUser(res.user);
-            })
-            .then(() => {
-                return window.location.reload();
             });
     }
 
+    window.SIGNIN_WITH_TOKEN = signinWithToken;
+
     var impersonate = function (params = {}) {
-        return getCurrentUser().then((currentUser) => {
-            return currentUser.getIdToken(true);
-        }).then((idToken) => {
-            return fetch(`${Config.functionsUrl}/impersonate`, {
+        return getUserToken().then((res) => {
+            return fetch(`${Config.functionsUrl}/api/1/impersonate`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
                         uid: params.id,
-                        token: idToken
+                        token: res.token
                     })
                 })
                 .then(handleErrors)
@@ -1396,60 +1555,9 @@ var _FIRESTORE_PLUGIN = function () {
     var importTemplates = (params = {}) => {
     };
 
-    var events = [];
-    var on = function (name, callback) {
-        events.push({
-            name: name,
-            callback: callback
-        });
+    var migrate = function () {
+        return migrateLegacyLocalData();
     };
-
-    var trigger = function (name) {
-        events.filter((event) => event.name === name).forEach((event) => {
-            if (typeof event.callback === 'function') {
-                event.callback();
-            }
-        });
-    };
-
-    var startup = function () {
-        migrateLegacyLocalData().then(() => {
-            return getSignedInUser()
-                .then((user) => {
-                    // refresh templates on changes
-                    templatesOwnedQuery(user).onSnapshot(refreshTemplates);
-                    templatesSharedQuery(user).onSnapshot(refreshTemplates);
-                    templatesEveryoneQuery(user).onSnapshot(refreshTemplates);
-
-                    // populate in-memory template cache
-                    getTemplate();
-
-                    // sync local templates
-                    syncLocalData();
-                })
-                .catch((err) => {
-                    if (isLoggedOut(err)) {
-                        // logged-out
-                        return;
-                    }
-
-                    throw err;
-                });
-        });
-    };
-
-    // subscribe automatic sign-in
-    window.addEventListener('message', function (e) {
-        var data = {};
-        try {
-            data = JSON.parse(e.data);
-        } catch (err) {}
-
-        if (data.type === 'templates-subscribe-success') {
-            window.TOGGLE_FIRESTORE(true);
-            signinWithToken(data.token);
-        }
-    });
 
     return {
         getSettings: getSettings,
@@ -1478,6 +1586,8 @@ var _FIRESTORE_PLUGIN = function () {
         getSubscription: getSubscription,
         updateSubscription: updateSubscription,
         cancelSubscription: cancelSubscription,
+        updateCreditCard: updateCreditCard,
+        reactivateSubscription: reactivateSubscription,
 
         syncNow: syncNow,
         syncLocal: syncLocal,
@@ -1485,12 +1595,9 @@ var _FIRESTORE_PLUGIN = function () {
         signin: signin,
         logout: logout,
         forgot: forgot,
-        openSubscribePopup: openSubscribePopup,
         importTemplates: importTemplates,
 
-        on: on,
-
-        startup: startup
+        migrate: migrate
     };
 }();
 

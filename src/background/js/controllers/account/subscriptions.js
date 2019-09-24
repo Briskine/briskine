@@ -15,6 +15,8 @@ gApp.controller('SubscriptionsCtrl', function ($scope, $rootScope, $routeParams,
     $scope.discountCode = "";
     $scope.couponPrecentOff = 1;
 
+    $scope.loadingCancel = false;
+
     SubscriptionService.plans().then(function (data) {
         $scope.plans = data.plans;
         $scope.stripeKey = data.stripe_key;
@@ -40,13 +42,43 @@ gApp.controller('SubscriptionsCtrl', function ($scope, $rootScope, $routeParams,
             $scope.quantity = $scope.subscriptions[0].quantity;
             for (var i = 0; i <= $scope.subscriptions.length; i++) {
                 if ($scope.subscriptions[i].active) {
-                    $scope.activeSubscription = $scope.subscriptions[i]
-                    break
+                    $scope.activeSubscription = $scope.subscriptions[i];
+                    break;
                 }
             }
         });
     };
     $scope.reloadSubscriptions();
+
+    function updateLegacyCreditCard (params = {}) {
+        return new Promise((resolve, reject) => {
+            var handler = StripeCheckout.configure({
+                key: params.stripeKey,
+                token: function (token) {
+                    resolve(token);
+                }
+            });
+            handler.open({
+                name: 'Gorgias',
+                description: 'Update your Credit Card',
+                panelLabel: 'Update your Credit Card',
+                email: params.email,
+                allowRememberMe: false
+            });
+        });
+    }
+
+    function updateFirebaseCreditCard (params = {}) {
+        var stripe = Stripe(params.stripeKey);
+        stripe.redirectToCheckout({
+            sessionId: params.id
+        }).then(function (result) {
+            if (result && result.error && result.error.message) {
+                alert(result.error.message);
+                return;
+            }
+        });
+    }
 
     // Get a new token from stripe and send it to the server
     $scope.updateCC = function () {
@@ -54,10 +86,17 @@ gApp.controller('SubscriptionsCtrl', function ($scope, $rootScope, $routeParams,
         $scope.paymentError = '';
         $('.update-cc-btn').addClass('disabled');
 
-        var handler = StripeCheckout.configure({
-            key: $scope.stripeKey,
-            image: '/static/img/icon128.png',
-            token: function (token) {
+        // BUG must wait for plans to load
+        var ccParams = {
+            stripeKey: $scope.stripeKey,
+            email: $scope.email
+        };
+        store.updateCreditCard(ccParams).then((res) => {
+            if (res.firebase) {
+                return updateFirebaseCreditCard(Object.assign(res, ccParams));
+            }
+
+            return updateLegacyCreditCard(ccParams).then((token) => {
                 // Use the token to create the charge with server-side.
                 SubscriptionService.updateSubscription($scope.activeSubscription.id, {token: token}).then(
                     function (res) {
@@ -69,15 +108,8 @@ gApp.controller('SubscriptionsCtrl', function ($scope, $rootScope, $routeParams,
                         $scope.paymentError = res;
                     }
                 );
-            }
-        });
-        handler.open({
-            name: 'Gorgias',
-            description: 'Update your Credit Card',
-            panelLabel: 'Update your Credit Card',
-            email: $scope.email,
-            allowRememberMe: false
-        });
+            });
+        })
     };
 
     $scope.updateSubscription = function (plan, quantity) {
@@ -85,7 +117,10 @@ gApp.controller('SubscriptionsCtrl', function ($scope, $rootScope, $routeParams,
         $scope.paymentMsg = '';
         $scope.paymentError = '';
 
-        SubscriptionService.updateSubscription($scope.activeSubscription.id, {
+        // backwards-compatibility
+        // we don't have subscription ids in firestore
+        var subId = $scope.activeSubscription.id || Date.now();
+        SubscriptionService.updateSubscription(subId, {
             plan: plan,
             quantity: quantity
         }).then(function (res) {
@@ -98,11 +133,17 @@ gApp.controller('SubscriptionsCtrl', function ($scope, $rootScope, $routeParams,
     };
 
     $scope.cancelSubscription = function() {
+        $scope.loadingCancel = true;
         cancelConfirm = window.confirm('Are you sure you want to cancel and delete all your template backups?')
         if (cancelConfirm === true) {
-            SubscriptionService.cancelSubscription().then(function(){
-                $rootScope.logOut()
+            SubscriptionService.cancelSubscription().then(function () {
+                $rootScope.logOut();
+            }).catch((err) => {
+                $scope.loadingCancel = false;
+                alert(err.msg);
             });
+        } else {
+            $scope.loadingCancel = false;
         }
     };
 });

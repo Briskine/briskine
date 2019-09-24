@@ -195,30 +195,58 @@ gApp.run(function ($rootScope, $location, $timeout, ProfileService, SettingsServ
         browser = "Opera";
     }
 
+    $rootScope.loadingSubscription = false;
+
+    function reactivateLegacySubscription (params = {}) {
+        return store.getPlans().then((data) => {
+            return new Promise((resolve, reject) => {
+                var handler = StripeCheckout.configure({
+                    key: data.stripe_key,
+                    token: function (token) {
+                        resolve(token);
+                    }
+                });
+
+                handler.open({
+                    name: 'Gorgias',
+                    description: params.subscription.quantity + ' x ' + params.subscription.plan,
+                    panelLabel: 'Activate your subscription',
+                    email: data.email,
+                    allowRememberMe: false
+                });
+            });
+        });
+    }
+
     // Get a new token from stripe and send it to the server
     $rootScope.reactivateSubscription = function () {
-        SubscriptionService.plans().then(function (data) {
-            var handler = StripeCheckout.configure({
-                key: data.stripe_key,
-                image: '/static/img/icon128.png',
-                token: function (token) {
-                    // Use the token to create the charge with server-side.
-                    SubscriptionService.updateSubscription($rootScope.currentSubscription.id, {token: token}).then(
-                        function () {
-                            $rootScope.checkLoggedIn();
-                        }, function (res) {
-                            alert('Failed to create new subscription. ' + res);
-                        }
-                    );
-                }
+        $rootScope.loadingSubscription = true;
+        var reactivateParams = {
+            subscription: $rootScope.currentSubscription
+        };
+        store.reactivateSubscription(reactivateParams).then((res = {}) => {
+            if (res.firebase) {
+                window.location.reload();
+                return;
+            }
+
+            return reactivateLegacySubscription(reactivateParams).then((token) => {
+                // Use the token to create the charge with server-side.
+                SubscriptionService.updateSubscription($rootScope.currentSubscription.id, {
+                    token: token
+                }).then(
+                    function () {
+                        $rootScope.checkLoggedIn();
+
+                    }, function (res) {
+                        alert('Failed to create new subscription. ' + res);
+                    }
+                );
+
+                return;
             });
-            handler.open({
-                name: 'Gorgias',
-                description: $rootScope.currentSubscription.quantity + ' x ' + $rootScope.currentSubscription.plan,
-                panelLabel: 'Activate your subscription',
-                email: data.email,
-                allowRememberMe: false
-            });
+        }).then(() => {
+            $rootScope.loadingSubscription = false;
         });
     };
 
@@ -280,7 +308,11 @@ gApp.run(function ($rootScope, $location, $timeout, ProfileService, SettingsServ
     $rootScope.logOut = function () {
         store.logout()
         .then(function () {
-            SettingsService.set('isLoggedIn', false).then(location.reload(true));
+            SettingsService.set('isLoggedIn', false).then(() => {
+                // force home redirect
+                window.location.href = '#/';
+                window.location.reload(true);
+            });
         });
     };
 
@@ -315,4 +347,33 @@ gApp.run(function ($rootScope, $location, $timeout, ProfileService, SettingsServ
     $rootScope.$on('$viewContentLoaded', initDom);
     $rootScope.$on('$includeContentLoaded', initDom);
 
+    function subscribeIframeLoaded (e) {
+        var iframe = e.target;
+        var loadingClass = 'btn-loading';
+        var loaderSelector = `.${loadingClass}`;
+        var loader = iframe.closest(loaderSelector);
+        loader.classList.remove(loadingClass);
+
+        iframe.removeEventListener('load', subscribeIframeLoaded);
+    }
+
+    function openSubscribePopup () {
+        var subscribeUrl = `${Config.functionsUrl}/subscribe/`;
+        var $modal = $('#firestore-signup-modal');
+        var iframe = $modal.find('iframe').get(0);
+        $modal.modal({
+            show: true
+        });
+
+        if (iframe.src !== subscribeUrl) {
+            iframe.addEventListener('load', subscribeIframeLoaded);
+            iframe.src = subscribeUrl;
+        }
+    }
+
+    $rootScope.openSubscribe = () => {
+        openSubscribePopup();
+    };
+
+    $rootScope.firestoreEnabled = window.FIRESTORE_ENABLED();
 });

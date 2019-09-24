@@ -73,9 +73,7 @@ const dependencies = {
 
                 './src/common/*.js',
 
-                './src/store/plugin-api.js',
-                './src/store/plugin-firestore.js',
-                './src/store/store-background.js',
+                './src/store/store-client.js',
 
                 './src/background/js/**/*.js'
                 ],
@@ -84,6 +82,16 @@ const dependencies = {
                     'tinymce/skins/lightgray/content.min.css'
                 ]
             },
+        store: {
+            js: [
+                './src/background/js/environment.js',
+                './src/background/js/config.js',
+
+                './src/store/plugin-api.js',
+                './src/store/plugin-firestore.js',
+                './src/store/store-background.js'
+            ]
+        },
         content: {
             js: [
                 'raven-js/dist/raven.min.js',
@@ -98,7 +106,7 @@ const dependencies = {
                 './src/background/js/environment.js',
                 './src/common/*.js',
 
-                './src/store/store-content.js',
+                './src/store/store-client.js',
 
                 // order is important here
                 './src/content/js/patterns.js',
@@ -175,6 +183,19 @@ const commonConfig = merge([
                     outputPath: 'content/js',
                     fileName: '[name].js',
                     filesToConcat: dependencies.content.js,
+                    attributes: {
+                        async: true
+                    }
+                }
+            ),
+            new ConcatPlugin(
+                {
+                    uglify: false,
+                    sourceMap: true,
+                    name: 'store',
+                    outputPath: 'store/js',
+                    fileName: '[name].js',
+                    filesToConcat: dependencies.store.js,
                     attributes: {
                         async: true
                     }

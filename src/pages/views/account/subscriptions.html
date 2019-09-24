@@ -1,4 +1,3 @@
-<script src="https://checkout.stripe.com/checkout.js"></script>
 <div class="row" ng-if="account.is_customer">
     <div class="col-sm-4">
         <div class="subscriptions">
@@ -43,7 +42,11 @@
                 We encourage you to backup your templates before you cancel by exporting <a href="#/list">here</a>.
             </p>
             <br>
-            <button class="btn btn-default" ng-click="cancelSubscription()">I understand. Cancel subscription.</button>
+            <button class="btn btn-default" ng-class="{
+                'btn-loading': loadingCancel
+            }" ng-click="cancelSubscription()">
+                I understand. Cancel subscription.
+            </button>
         </div>
     </div>
 
@@ -79,7 +82,7 @@
                             <span class="currency-sign">{{ plan.currency|uppercase }}</span>
                         </li>
                         <li class="list-group-item">
-                            <input type="number" class="quantity-input" id="quantity" ng-model="quantity"/>
+                            <input type="number" class="quantity-input" id="quantity" ng-model="quantity" min="1"/>
                             <label for="quantity">total users.</label>
                         </li>
                         <li class="list-group-item">

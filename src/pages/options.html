@@ -5,6 +5,7 @@
     <title>Gorgias Options</title>
     <script src="../background/js/background.js"></script>
     <script src="https://checkout.stripe.com/checkout.js"></script>
+    <script src="https://js.stripe.com/v3/"></script>
     <link href="../background/css/background.css" rel="stylesheet" type="text/css" media="screen" charset="utf-8">
 </head>
 <body key-trap>
@@ -88,7 +89,9 @@
     </div>
 
     <div class="view-container">
-        <div ng-if="currentSubscription && !currentSubscription.active" class="alert alert-warning" ng-cloak>
+        <div ng-if="currentSubscription && !currentSubscription.active" class="alert alert-warning" ng-class="{
+            'btn-loading': loadingSubscription
+        }" ng-cloak>
             <strong>Your current subscription is no longer active.</strong>
             <p>This means that automatic syncing and backup of templates has been disabled for you and your team.</p>
             <p>
@@ -130,7 +133,6 @@
 
 <div ng-include="'includes/login.html'"></div>
 <div ng-include="'includes/forgot.html'"></div>
-<div ng-include="'includes/signup.html'"></div>
 <div ng-include="'includes/signup_firestore.html'"></div>
 
 <script src="https://apis.google.com/js/api.js"></script>
