@@ -87,7 +87,16 @@
                 data: {
                     name: name
                 }
-            }, resolve);
+            }, (res) => {
+                if (chrome.runtime.lastError) {
+                    return debug(
+                        ['chrome.runtime.lastError', chrome.runtime.lastError.message],
+                        'warn'
+                    );
+                }
+
+                return resolve(res)
+            });
         });
     };
 
@@ -146,7 +155,7 @@
                 };
                 sendResponse(storeError);
 
-                debug([req.type, req.data, err], 'error');
+                debug([req.type, req.data, err], 'warn');
             });
         }
 
