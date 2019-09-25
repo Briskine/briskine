@@ -11,20 +11,10 @@
                         <label for="import-input">Import</label><br/>
                         <input type="file" id="import-input" ngf-select="import.onFileSelect($file)" ngf-drop class="drop-box">
                         <br/>
-                            <h5>Supported formats:</h5>
-                            <ul>
-                                <li>
-                                    .csv files you export from Gorgias itself
-                                </li>
-                                <li>
-                                    <a href="https://smilesoftware.com/TextExpander/index.html" target="_blank">TextExpander</a>
-                                    .textexpander files
-                                </li>
-                                <li>
-                                    <a href="https://addons.mozilla.org/en-us/thunderbird/addon/quicktext/" target="_blank">Quicktext for Thunderbird</a> .xml files
-                                </li>
-                            </ul>
 
+                        <p>
+                            Select a <code>.csv</code> file that you previously exported from Gorgias Templates.
+                        </p>
                     </div>
                     <div id="file-upload-progress" class="progress progress-indefinite" ng-show="import.uploading">
                         <div class="progress-bar progress-bar-info" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">

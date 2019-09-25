@@ -1551,8 +1551,10 @@ var _FIRESTORE_PLUGIN = function () {
     // make impersonate public
     window.IMPERSONATE = impersonate;
 
-    // TODO import templates functionality
     var importTemplates = (params = {}) => {
+        return Promise.resolve({
+            firebase: true
+        });
     };
 
     var migrate = function () {

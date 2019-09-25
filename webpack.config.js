@@ -63,6 +63,8 @@ const dependencies = {
 
                 'fuse.js/src/fuse.min.js',
 
+                'papaparse/papaparse.min.js',
+
                 './firebase/config-firebase.js',
                 './firebase/firebase.umd.js',
 
