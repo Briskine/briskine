@@ -840,14 +840,11 @@ var _GORGIAS_API_PLUGIN = function () {
     };
 
     var importTemplates = function (params = {}) {
-        var formData = new FormData();
-        formData.append('file', params.file);
-        return fetch(`${apiBaseURL}quicktexts/import`, {
-            method: 'POST',
-            body: formData
-        })
-        .then(handleErrors)
-        .then((res) => res.json());
+        // need to handle upload on the client.
+        // can't send file object through message.
+        return Promise.resolve({
+            firebase: false
+        });
     };
 
     return {

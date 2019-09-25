@@ -86,6 +86,7 @@
         "mousetrap": "xarg/mousetrap#master",
         "ng-file-upload": "danialfarid/angular-file-upload-bower#~11.0.2",
         "npm": "^5.8.0",
+        "papaparse": "^5.1.0",
         "raven-js": "getsentry/raven-js#3.9.1",
         "selectize": "selectize/selectize.js#~0.12.1",
         "sifter": "brianreavis/sifter.js#0.5.x",
