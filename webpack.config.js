@@ -21,6 +21,8 @@ var myPackage = require("./package.json");
 var manifest = require("./src/manifest.json");
 
 const dependencies = {
+        // TODO rename bundles
+        // options page
         background: {
             js: [
                 'raven-js/dist/raven.min.js',
@@ -65,11 +67,9 @@ const dependencies = {
 
                 'papaparse/papaparse.min.js',
 
-                './firebase/config-firebase.js',
-                './firebase/firebase.umd.js',
-
                 // Should be first
                 './src/background/js/environment.js',
+                './firebase/config-firebase.js',
                 './src/background/js/config.js',
                 './src/background/js/utils/amplitude.js',
 
@@ -84,14 +84,23 @@ const dependencies = {
                     'tinymce/skins/lightgray/content.min.css'
                 ]
             },
+        // background script
         store: {
             js: [
+                'underscore/underscore-min.js',
+                'underscore.string/dist/underscore.string.min.js',
+
                 './src/background/js/environment.js',
+                './firebase/config-firebase.js',
+                './firebase/firebase.umd.js',
                 './src/background/js/config.js',
+                './src/background/js/utils/amplitude.js',
 
                 './src/store/plugin-api.js',
                 './src/store/plugin-firestore.js',
-                './src/store/store-background.js'
+                './src/store/store-background.js',
+
+                './src/store/chrome-config.js'
             ]
         },
         content: {

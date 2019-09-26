@@ -1,7 +1,5 @@
 // Register Chrome runtime protocols and context menus
-// TODO remove angularInjector dependency
-// to run this in the background script without bundling the entire angular app
-if (chrome.runtime) {
+if (chrome.extension) {
 
     // TODO somehow get this values from the plugins
 
@@ -32,10 +30,6 @@ if (chrome.runtime) {
         return false;
     };
 
-    var angularInjector = function () {
-        return angular.element('html').injector();
-    };
-
     // Listen for any changes to the URL of any tab.
     chrome.tabs.onUpdated.addListener(updatedTab);
 
@@ -43,19 +37,54 @@ if (chrome.runtime) {
         window.open(chrome.extension.getURL('/pages/options.html') + '#/list', 'Options');
     });
 
+    function resetSettings () {
+        return store.setSettings({
+            key: 'settings'
+        });
+    }
+
+    function migrate () {
+        chrome.storage.sync.get('settings', (settings) => {
+            // if there are no settings, just reset the settings
+            if (!(Object.getOwnPropertyNames(settings).length && settings.hasOwnProperty('settings'))) {
+                resetSettings();
+
+                window.setTimeout(function() {
+                    store.getSettings({
+                        key: 'settings'
+                    }).then(function (settings) {
+
+                        // disable editor for older versions that never enabled it
+                        // TODO BUG sometimes editor gets disabled for current users
+                        settings.editor.enabled = false;
+                        store.setSettings({
+                            key: 'settings',
+                            val: settings
+                        });
+                    });
+                }, 3000);
+            }
+        });
+    };
+
     // Called after installation: https://developer.chrome.com/extensions/runtime.html#event-onInstalled
     chrome.runtime.onInstalled.addListener(function (details) {
-        var injector = angularInjector();
         if (details.reason == "install") {
             amplitude.getInstance().logEvent("Installed Gorgias");
-            injector.get('SettingsService').reset();
+            // reset settings
+            resetSettings();
         } else if (details.reason == "update") {
             amplitude.getInstance().logEvent("Updated Gorgias", {'version': details.previousVersion});
 
-            injector.get('SettingsService').get('hints').then(function (hints) {
+            store.getSettings({
+                key: 'hints'
+            }).then((hints) => {
                 if (hints && hints.postInstall) {
                     hints.postInstall = false;
-                    injector.get('SettingsService').set('hints', hints);
+                    store.setSettings({
+                        key: 'hints',
+                        val: hints
+                    });
                 }
             });
         }
@@ -91,23 +120,43 @@ if (chrome.runtime) {
             chrome.tabs.create({url: "pages/frameless.html#/installed"});
         } else if (details.reason == "update") {
             // perform the necessary migrations
-            injector.get('MigrationService').migrate();
+            migrate();
         }
     });
 
-    chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
-        var injector = angularInjector();
-        if (!injector) {
-            // angular app not loaded yet
-            return;
-        }
+    function updateTemplateStats (id) {
+        return store.getTemplate({
+            id: id
+        }).then((res) => {
+            var template = res[id];
+            if (typeof template.use_count === 'undefined') {
+                template.use_count = 0;
+            }
 
-        var settingsService = injector.get('SettingsService');
+            template.use_count++;
+            template.lastuse_datetime = new Date().toISOString();
+
+            return store.updateTemplate({
+                template: template,
+                synced: true,
+                onlyLocal: true,
+                // only used by firestore plugin
+                stats: true
+            });
+        });
+    }
+
+    chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
         if (request.request === 'stats') {
             if (request.key === 'words') {
                 var words = parseInt(request.val, 10);
-                settingsService.get("words").then(function (oldWords) {
-                    settingsService.set("words", oldWords + words);
+                store.getSettings({
+                    key: 'words'
+                }).then(function (oldWords) {
+                    store.setSettings({
+                        key: 'words',
+                        val: oldWords + words
+                    });
                 });
             }
             sendResponse(true);
@@ -121,7 +170,7 @@ if (chrome.runtime) {
         }
         if (request.request === 'track') {
             if (request.event === "Inserted template") {
-                injector.get('TemplateService').used(request.data.id);
+                updateTemplateStats(request.data.id);
             }
             amplitude.getInstance().logEvent(request.event, request.data);
         }

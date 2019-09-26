@@ -115,8 +115,6 @@
         plugin.signin = signin;
         plugin.forgot = forgot;
 
-        // HACK mock on() because the angular app is bundled in the background script
-        plugin.on = (name) => {};
         plugin.trigger = trigger;
 
         return plugin;
