@@ -336,7 +336,7 @@ gApp.run(function ($rootScope, $location, $timeout, ProfileService, SettingsServ
     $rootScope.checkLoggedIn();
 
     // Setup recurring syncing interval
-    var syncInterval = 30 * 1000;
+    var syncInterval = 100 * 1000;
     window.setInterval(store.syncNow, syncInterval);
     store.syncNow();
 
