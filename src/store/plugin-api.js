@@ -749,17 +749,22 @@ var _GORGIAS_API_PLUGIN = function () {
             .then((res) => res.json());
     };
 
+    // HACK temporarily disable the update stats method
     var updateStats = function (params = {}) {
-        return fetch(`${apiBaseURL}templates/stats`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(params)
-        })
-        .then(handleErrors)
-        .then((res) => res.json());
+        return Promise.resolve();
     };
+
+//     var updateStats = function (params = {}) {
+//         return fetch(`${apiBaseURL}templates/stats`, {
+//             method: 'POST',
+//             headers: {
+//                 'Content-Type': 'application/json'
+//             },
+//             body: JSON.stringify(params)
+//         })
+//         .then(handleErrors)
+//         .then((res) => res.json());
+//     };
 
     var getSubscription = function (params = {}) {
         var subscriptionsApiUrl = `${apiBaseURL}subscriptions`;
