@@ -1,12 +1,18 @@
-gApp.service('AccountService', function ($q, $rootScope) {
+gApp.service('AccountService', function ($q, $rootScope, SettingsService) {
     var self = this;
 
     self.get = function () {
         var deferred = $q.defer();
 
-        store.getAccount().then((user) => {
-            self.user = user;
-            deferred.resolve(user);
+        SettingsService.get('isLoggedIn').then(function (isLoggedIn) {
+            if (!isLoggedIn) {
+                return deferred.reject();
+            }
+
+            store.getAccount().then((user) => {
+                self.user = user;
+                deferred.resolve(user);
+            });
         });
 
         return deferred.promise;
