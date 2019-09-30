@@ -295,7 +295,13 @@ App.init = function(settings, doc) {
             App.autocomplete.keyboard.completion
         );
     }
-    if (settings.dialog.enabled) {
+
+    var isContentEditable = (window.document.body.contentEditable === 'true');
+    if (
+        settings.dialog.enabled &&
+        // don't create the dialog inside editor iframes (eg. tinymce iframe)
+        !isContentEditable
+    ) {
         if (settings.qaBtn.enabled) {
             App.autocomplete.dialog.createQaBtn();
         }
