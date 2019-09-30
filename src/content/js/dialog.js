@@ -134,6 +134,11 @@ App.autocomplete.dialog = {
         });
     },
     createQaBtn: function () {
+        // only on whitelisted domains
+        if (!App.autocomplete.dialog.qaBtnWhitelist.includes(window.location.origin)) {
+            return;
+        }
+
         var container = $('body');
 
         var instance = this;
@@ -563,10 +568,7 @@ App.autocomplete.dialog = {
         store.getSettings({
             key: 'settings'
         }).then((settings) => {
-            if ((settings.qaBtn && settings.qaBtn.enabled === false) ||
-                // only show for whitelisted domains
-                App.autocomplete.dialog.qaBtnWhitelist.indexOf(window.location.origin) === -1
-            ) {
+            if (settings.qaBtn && settings.qaBtn.enabled === false) {
                 return;
             }
 

@@ -438,18 +438,28 @@ var _GORGIAS_API_PLUGIN = function () {
                     if (!onlyLocal) {
                         amplitude.getInstance().logEvent("Deleted template");
                     }
-                    queryTemplates({
-                        quicktextId: t.remote_id
-                    }).then(function (remote) {
-                        // make sure we have the remote id otherwise the delete will not find the right resource
-                        remote.remote_id = remote.id;
-                        deleteRemoteTemplate(remote)
-                        .then(() => {
-                            // Do a local "DELETE" only if deleted remotely.
-                            // If remote operation fails, try again when syncing.
-                            //
-                            // NOTE: We delete locally to save space.
-                            TemplateStorage.remove(t.id, resolve);
+
+                    return getSettings({
+                        key: 'isLoggedIn'
+                    }).then(function (isLoggedIn) {
+                        // bail if not logged-in
+                        if (!isLoggedIn) {
+                            return resolve();
+                        }
+
+                        queryTemplates({
+                            quicktextId: t.remote_id
+                        }).then(function (remote) {
+                            // make sure we have the remote id otherwise the delete will not find the right resource
+                            remote.remote_id = remote.id;
+                            deleteRemoteTemplate(remote)
+                            .then(() => {
+                                // Do a local "DELETE" only if deleted remotely.
+                                // If remote operation fails, try again when syncing.
+                                //
+                                // NOTE: We delete locally to save space.
+                                TemplateStorage.remove(t.id, resolve);
+                            });
                         });
                     });
                 });
