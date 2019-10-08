@@ -20,6 +20,37 @@ var _FIRESTORE_PLUGIN = function () {
         return fsDate(new Date());
     }
 
+    // convert firestore timestamps to dates
+    function convertToNativeDates (obj = {}) {
+        var parsed = Object.assign({}, obj);
+        Object.keys(parsed).forEach((prop) => {
+            if (parsed[prop] && typeof parsed[prop].toDate === 'function') {
+                parsed[prop] = parsed[prop].toDate();
+            }
+        });
+
+        return parsed;
+    }
+
+    // backwards compatible template for the angular app
+    function compatibleTemplate(template = {}, tags = []) {
+        var cleanTemplate = Object.assign(
+            {},
+            template,
+            {
+                // backwards compatibility
+                tags: tags.join(', '),
+                deleted: isDeleted(template),
+                private: isPrivate(template),
+                remote_id: template.id,
+                nosync: 0
+            }
+        );
+
+        // convert dates
+        return convertToNativeDates(cleanTemplate);
+    }
+
     // uuidv4
     function uuid() {
         return `${1e7}-${1e3}-${4e3}-${8e3}-${1e11}`.replace(/[018]/g, c =>
@@ -752,18 +783,9 @@ var _FIRESTORE_PLUGIN = function () {
                             return idsToTags(templateData.tags);
                         })
                         .then((tags) => {
-                            var template = Object.assign({},
-                                templateData,
-                                {
-                                    id: params.id,
-                                    tags: tags.join(', '),
-                                    // backwards compatibility
-                                    deleted: isDeleted(template),
-                                    private: isPrivate(template),
-                                    remote_id: params.id,
-                                    nosync: 0
-                                }
-                            );
+                            var template = compatibleTemplate(Object.assign({
+                                id: params.id
+                            }, templateData), tags);
 
                             // backwards compatibility
                             var list = [];
@@ -812,17 +834,7 @@ var _FIRESTORE_PLUGIN = function () {
                         return Promise.all(
                             allTemplates.map((template) => {
                                 return idsToTags(template.tags).then((tags) => {
-                                    templates[template.id] = Object.assign(
-                                        template,
-                                        {
-                                            tags: tags.join(', '),
-                                            // backwards compatibility
-                                            deleted: isDeleted(template),
-                                            private: isPrivate(template),
-                                            remote_id: template.id,
-                                            nosync: 0
-                                        }
-                                    );
+                                    templates[template.id] = compatibleTemplate(template, tags);
 
                                     return;
                                 });
