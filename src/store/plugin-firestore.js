@@ -281,6 +281,8 @@ var _FIRESTORE_PLUGIN = function () {
                                 templates: [
                                     Object.assign({id: remoteId}, res)
                                 ]
+                            }).then(() => {
+                                return localId;
                             });
                         });
                     }
@@ -288,6 +290,11 @@ var _FIRESTORE_PLUGIN = function () {
                     return;
                 })
             );
+        }).then((ids = []) => {
+            const migratedTemplates = ids.filter((id) => !!id);
+            // delete legacy data
+            chrome.storage.local.remove(migratedTemplates);
+            return;
         });
     }
 
