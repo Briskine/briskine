@@ -2,7 +2,12 @@
 var _FIRESTORE_PLUGIN = function () {
     // firebase
     firebase.initializeApp(Config.firebase);
+
     var db = firebase.firestore();
+
+    db.enablePersistence().catch((err) => {
+        console.log('Firestore Persistance Error', err);
+    });
 
     function mock () {
         return Promise.resolve();
