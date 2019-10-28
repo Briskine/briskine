@@ -10,8 +10,7 @@
     window.TOGGLE_FIRESTORE = function (enabled = false) {
         window.localStorage.setItem(firestoreSettingKey, `${enabled}`);
 
-        // switch plugin
-        window.store = getStore();
+        refreshStore();
     };
 
     window.FIRESTORE_ENABLED = function () {
@@ -121,7 +120,10 @@
     }
 
     // global store
-    window.store = getStore();
+    function refreshStore () {
+        window.store = getStore();
+    }
+    refreshStore();
 
     function debug (data = [], method = 'log') {
         if (ENV === 'production') {

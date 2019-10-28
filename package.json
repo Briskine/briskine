@@ -1,6 +1,6 @@
 {
     "name": "gorgias",
-    "version": "6.3.7",
+    "version": "6.3.8",
     "description": "Gorgias grunt package",
     "main": "index.js",
     "scripts": {
@@ -66,9 +66,9 @@
         "zip-webpack-plugin": "^3.0.0"
     },
     "dependencies": {
-        "@firebase/app": "^0.4.11",
-        "@firebase/auth": "^0.11.5",
-        "@firebase/firestore": "^1.4.5",
+        "@firebase/app": "^0.4.21",
+        "@firebase/auth": "^0.12.3",
+        "@firebase/firestore": "^1.6.3",
         "angular": "angular/bower-angular#1.4.7",
         "angular-moment": "urish/angular-moment#~0.6.2",
         "angular-resource": "angular/bower-angular-resource#1.4.7",
