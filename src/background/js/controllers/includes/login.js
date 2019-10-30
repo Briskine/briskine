@@ -19,10 +19,10 @@ gApp.controller('LoginCtrl', function ($timeout, $route, $rootScope, TemplateSer
             })
             .catch(function error(response) {
                 $timeout(() => {
-                    if (response) {
+                    if (response && response.error) {
                         self.error = response.error;
                     } else {
-                        self.error = 'Could not connect to login server. Please try again.'
+                        self.error = 'Could not connect to login server. Please try disabling your firewall or antivirus software and try again.';
                     }
                     $('#signin-error').alert();
                 });
@@ -37,7 +37,7 @@ gApp.controller('LoginCtrl', function ($timeout, $route, $rootScope, TemplateSer
         $('#signin-modal').modal('hide');
         setTimeout(function(){
             $('#forgot-modal').modal();
-        }, 300)
+        }, 300);
 
     };
 });

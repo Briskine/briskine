@@ -43,30 +43,6 @@ if (chrome.extension) {
         });
     }
 
-    function migrate () {
-        chrome.storage.sync.get('settings', (settings) => {
-            // if there are no settings, just reset the settings
-            if (!(Object.getOwnPropertyNames(settings).length && settings.hasOwnProperty('settings'))) {
-                resetSettings();
-
-                window.setTimeout(function() {
-                    store.getSettings({
-                        key: 'settings'
-                    }).then(function (settings) {
-
-                        // disable editor for older versions that never enabled it
-                        // TODO BUG sometimes editor gets disabled for current users
-                        settings.editor.enabled = false;
-                        store.setSettings({
-                            key: 'settings',
-                            val: settings
-                        });
-                    });
-                }, 3000);
-            }
-        });
-    };
-
     // Called after installation: https://developer.chrome.com/extensions/runtime.html#event-onInstalled
     chrome.runtime.onInstalled.addListener(function (details) {
         if (details.reason == "install") {
@@ -118,9 +94,6 @@ if (chrome.extension) {
 
         if (details.reason == "install") {
             chrome.tabs.create({url: "pages/frameless.html#/installed"});
-        } else if (details.reason == "update") {
-            // perform the necessary migrations
-            migrate();
         }
     });
 
