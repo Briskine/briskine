@@ -45,15 +45,6 @@
 
             TOGGLE_FIRESTORE(false);
             return _GORGIAS_API_PLUGIN.signin(params);
-        })
-        .catch((err) => {
-            if (!err.error) {
-                throw {
-                    error: err
-                };
-            }
-
-            throw err;
         });
     };
 

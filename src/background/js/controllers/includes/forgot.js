@@ -21,10 +21,10 @@ gApp.controller('ForgotCtrl', function ($timeout, $route, $rootScope) {
                 if (response && response.error) {
                     self.error = response.error;
                 } else {
-                    self.error = 'Could not connect to password recovery server. Please try again.'
+                    self.error = 'Could not connect to password recovery server. Please try disabling your firewall or antivirus software and try again.';
                 }
                 $('#forgot-error').alert();
-            })
+            });
             return;
         })
         .then(() => {
