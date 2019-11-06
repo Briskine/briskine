@@ -2,17 +2,17 @@
 # yarn lockfile v1
 
 
-"@firebase/app-types@0.4.6":
-  version "0.4.6"
-  resolved "https://registry.yarnpkg.com/@firebase/app-types/-/app-types-0.4.6.tgz#8d7ab012f75421e8826e20047778290254abeb31"
-  integrity sha512-LLh4vnuyhmYfT00fByo8rR4NAjQH7Yj63gUpT18DRYPVvwbVmrCbzOHJw3rQnfJPpbSkMXfnEY/pzbohvj8DuA==
+"@firebase/app-types@0.4.7":
+  version "0.4.7"
+  resolved "https://registry.yarnpkg.com/@firebase/app-types/-/app-types-0.4.7.tgz#792a0f117185e42ec5a247f6bedc94a921711110"
+  integrity sha512-4LnhDYsUhgxMBnCfQtWvrmMy9XxeZo059HiRbpt3ufdpUcZZOBDOouQdjkODwHLhcnNrB7LeyiqYpS2jrLT8Mw==
 
-"@firebase/app@^0.4.21":
-  version "0.4.21"
-  resolved "https://registry.yarnpkg.com/@firebase/app/-/app-0.4.21.tgz#c7680d80b8426ae5b0f6caaa99868797ebdff644"
-  integrity sha512-AAZJKnIrWdZrRIv03+TXw8vRxCJkMA3a25FDBtT3TI5MWGrsdTFeNOQmX+N3HAjY+8RFB4Hzg/j0fbeVDoUPmg==
+"@firebase/app@^0.4.22":
+  version "0.4.22"
+  resolved "https://registry.yarnpkg.com/@firebase/app/-/app-0.4.22.tgz#0d5b73ffa279f0866b7e5c14bbd5078e68bcb593"
+  integrity sha512-XHf2vpX8JtYc181Za+X3S4dTEVzdFu17N9DfngsnO+2U4QcrUARFtClBOzCXjbyiJVPt5A8QjYJV49Wi3sqyig==
   dependencies:
-    "@firebase/app-types" "0.4.6"
+    "@firebase/app-types" "0.4.7"
     "@firebase/logger" "0.1.28"
     "@firebase/util" "0.2.31"
     dom-storage "2.1.0"
@@ -36,10 +36,10 @@
   resolved "https://registry.yarnpkg.com/@firebase/firestore-types/-/firestore-types-1.6.2.tgz#3e65d18ee552384504fb85ba691df7bec0721e97"
   integrity sha512-GsBlAqNft1pwEWNKnQWwwqzLoyfUSC3bSb1e7yxu5+NKaJO+uUD48KrZUTDu94pgPLkJslj8SLkl9FVjNJa8Xw==
 
-"@firebase/firestore@^1.6.3":
-  version "1.6.3"
-  resolved "https://registry.yarnpkg.com/@firebase/firestore/-/firestore-1.6.3.tgz#bf37fcf57fc21e8f475fd8228803f4e4e10dd8c1"
-  integrity sha512-JvAo2tVqPBF32+wdquYkwg/bkoAGeGlxfTg2WwS+uf8OVSrxlk6tWjZqQeYmHJ3BAaRoddDzsefbHaYUOXoCvQ==
+"@firebase/firestore@^1.6.4":
+  version "1.6.4"
+  resolved "https://registry.yarnpkg.com/@firebase/firestore/-/firestore-1.6.4.tgz#0f7664c5bcc1af0326cc56541aac7d4d23d7e9fb"
+  integrity sha512-qASkdJgA6oryJAE6H+LewXLxLW6XYl7qIylQW/vJAAZZed5N4+h89qdE3PXGHA61lEe+kdYidskvn9rJQGINgw==
   dependencies:
     "@firebase/firestore-types" "1.6.2"
     "@firebase/logger" "0.1.28"
