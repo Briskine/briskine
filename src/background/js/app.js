@@ -218,16 +218,28 @@ gApp.run(function ($rootScope, $location, $timeout, ProfileService, SettingsServ
         });
     }
 
+    $rootScope.updateFirebaseCreditCard = function (params = {}) {
+        var stripe = Stripe(params.stripeKey);
+        stripe.redirectToCheckout({
+            sessionId: params.id
+        }).then(function (result) {
+            if (result && result.error && result.error.message) {
+                alert(result.error.message);
+                return;
+            }
+        });
+    };
+
     // Get a new token from stripe and send it to the server
     $rootScope.reactivateSubscription = function () {
         $rootScope.loadingSubscription = true;
         var reactivateParams = {
             subscription: $rootScope.currentSubscription
         };
+
         store.reactivateSubscription(reactivateParams).then((res = {}) => {
             if (res.firebase) {
-                window.location.reload();
-                return;
+                return $rootScope.updateFirebaseCreditCard(res);
             }
 
             return reactivateLegacySubscription(reactivateParams).then((token) => {

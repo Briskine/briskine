@@ -94,7 +94,7 @@ gApp.controller('TemplateFormCtrl',
                                     { text: 'Date: Last week', onclick: function() {self.insertVar('date \'-7\' \'days\' \'YYYY-MM-DD\'');}},
                                     { text: 'Random choice', onclick: function() {self.insertVar('choice \'Hello, Hi, Hey\'');}},
                                     { text: 'Extract domain', onclick: function() {self.insertVar('domain to.email');}},
-                                    { text: 'Learn more about template variables', onclick: function() {window.open("http://docs.gorgias.io/chrome-extension/templates#Template_Variables");}},
+                                    { text: 'Learn more about template variables', onclick: function() {window.open("https://templates-help.gorgias.io/templates/templates#template_variables");}},
                                 ]
                             });
 

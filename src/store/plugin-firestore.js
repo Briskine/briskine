@@ -347,13 +347,13 @@ var _FIRESTORE_PLUGIN = function () {
         });
     }
 
-    var refreshUnsubscribers = [];
-    function subscribeRefreshSnapshot (unsubscriber) {
-        refreshUnsubscribers.push(unsubscriber);
+    var snapshotListeners = [];
+    function subscribeSnapshots (listeners = []) {
+        snapshotListeners = snapshotListeners.concat(listeners);
     }
 
-    function unsubscribeRefreshSnapshot () {
-        refreshUnsubscribers.forEach((unsubscriber) => {
+    function unsubscribeSnapshots () {
+        snapshotListeners.forEach((unsubscriber) => {
             unsubscriber();
         });
     }
@@ -362,7 +362,7 @@ var _FIRESTORE_PLUGIN = function () {
     firebase.auth().onAuthStateChanged((firebaseUser) => {
         if (!firebaseUser) {
             invalidateTemplateCache();
-            unsubscribeRefreshSnapshot();
+            unsubscribeSnapshots();
 
             return setSignedInUser({});
         }
@@ -371,15 +371,15 @@ var _FIRESTORE_PLUGIN = function () {
             return getSignedInUser()
                 .then((user) => {
                     // refresh templates on changes
-                    subscribeRefreshSnapshot(
-                        templatesOwnedQuery(user).onSnapshot(refreshTemplates)
-                    );
-                    subscribeRefreshSnapshot(
-                        templatesSharedQuery(user).onSnapshot(refreshTemplates)
-                    );
-                    subscribeRefreshSnapshot(
-                        templatesEveryoneQuery(user).onSnapshot(refreshTemplates)
-                    );
+                    subscribeSnapshots([
+                        templatesOwnedQuery(user).onSnapshot(refreshTemplates),
+                        templatesSharedQuery(user).onSnapshot(refreshTemplates),
+                        templatesEveryoneQuery(user).onSnapshot(refreshTemplates),
+                        // customer changes (eg. subscription updated)
+                        customersCollection.doc(user.customer).onSnapshot(() => {
+                            updateCurrentUser(firebaseUser);
+                        })
+                    ]);
 
                     // populate in-memory template cache
                     getTemplate();
@@ -1376,7 +1376,7 @@ var _FIRESTORE_PLUGIN = function () {
         });
     };
 
-    var updateCreditCard = (params = {}) => {
+    var updateCreditCard = () => {
         // setup stripe checkout session
         return getUserToken().then((res) => {
             return fetch(`${Config.functionsUrl}/api/1/subscription/payment`, {
@@ -1400,38 +1400,14 @@ var _FIRESTORE_PLUGIN = function () {
         });
     };
 
-    var reactivateSubscription = (params = {}) => {
-        return getUserToken().then((res) => {
-            return fetch(`${Config.functionsUrl}/api/1/subscription/reactivate`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        token: res.token,
-                        customer: res.user.customer,
-                        subscription: params.subscription
-                    })
-                })
-                .then(handleErrors)
-                .then((res) => res.json())
-                .then(() => {
-                    // update subscription status
-                    return getCurrentUser().then((currentUser) => {
-                        return updateCurrentUser(currentUser);
-                    });
-                })
-                .then(() => {
-                    return {
-                        firebase: true
-                    };
-                })
-                .catch((err) => {
-                    // backwards compatibility
-                    return Promise.reject({
-                        msg: err.message
-                    });
+    var reactivateSubscription = () => {
+        return getPlans().then((plans) => {
+            return updateCreditCard().then((res) => {
+                return Object.assign(res, {
+                    stripeKey: plans.stripe_key,
+                    firebase: true
                 });
+            });
         });
     };
 
