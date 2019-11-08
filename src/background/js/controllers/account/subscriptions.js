@@ -68,18 +68,6 @@ gApp.controller('SubscriptionsCtrl', function ($scope, $rootScope, $routeParams,
         });
     }
 
-    function updateFirebaseCreditCard (params = {}) {
-        var stripe = Stripe(params.stripeKey);
-        stripe.redirectToCheckout({
-            sessionId: params.id
-        }).then(function (result) {
-            if (result && result.error && result.error.message) {
-                alert(result.error.message);
-                return;
-            }
-        });
-    }
-
     // Get a new token from stripe and send it to the server
     $scope.updateCC = function () {
         $scope.paymentMsg = '';
@@ -93,7 +81,7 @@ gApp.controller('SubscriptionsCtrl', function ($scope, $rootScope, $routeParams,
         };
         store.updateCreditCard(ccParams).then((res) => {
             if (res.firebase) {
-                return updateFirebaseCreditCard(Object.assign(res, ccParams));
+                return $rootScope.updateFirebaseCreditCard(Object.assign(res, ccParams));
             }
 
             return updateLegacyCreditCard(ccParams).then((token) => {
@@ -101,7 +89,7 @@ gApp.controller('SubscriptionsCtrl', function ($scope, $rootScope, $routeParams,
                 SubscriptionService.updateSubscription($scope.activeSubscription.id, {token: token}).then(
                     function (res) {
                         $('.update-cc-btn').removeClass('disabled');
-                        $scope.paymentMsg = res
+                        $scope.paymentMsg = res;
                         $scope.reloadSubscriptions();
                     }, function (res) {
                         $('.update-cc-btn').removeClass('disabled');
@@ -109,7 +97,7 @@ gApp.controller('SubscriptionsCtrl', function ($scope, $rootScope, $routeParams,
                     }
                 );
             });
-        })
+        });
     };
 
     $scope.updateSubscription = function (plan, quantity) {
@@ -134,7 +122,7 @@ gApp.controller('SubscriptionsCtrl', function ($scope, $rootScope, $routeParams,
 
     $scope.cancelSubscription = function() {
         $scope.loadingCancel = true;
-        cancelConfirm = window.confirm('Are you sure you want to cancel and delete all your template backups?')
+        cancelConfirm = window.confirm('Are you sure you want to cancel and delete all your template backups?');
         if (cancelConfirm === true) {
             SubscriptionService.cancelSubscription().then(function () {
                 $rootScope.logOut();
