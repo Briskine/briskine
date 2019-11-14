@@ -1377,26 +1377,13 @@ var _FIRESTORE_PLUGIN = function () {
     };
 
     var updateCreditCard = () => {
-        // setup stripe checkout session
         return getUserToken().then((res) => {
-            return fetch(`${Config.functionsUrl}/api/1/subscription/payment`, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        token: res.token,
-                        email: res.user.email,
-                        customer: res.user.customer
-                    })
-                })
-                .then(handleErrors)
-                .then((res) => res.json())
-                .then((res) => {
-                    return Object.assign({
-                        firebase: true
-                    }, res);
-                });
+            return {
+                firebase: true,
+                token: res.token,
+                customer: res.user.customer,
+                redirect: `${Config.functionsUrl}/subscribe/payment/update`
+            };
         });
     };
 
