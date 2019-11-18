@@ -1392,6 +1392,7 @@ var _FIRESTORE_PLUGIN = function () {
             return updateCreditCard().then((res) => {
                 return Object.assign(res, {
                     stripeKey: plans.stripe_key,
+                    reactivate: true,
                     firebase: true
                 });
             });
