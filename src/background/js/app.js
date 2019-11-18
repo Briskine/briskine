@@ -219,15 +219,14 @@ gApp.run(function ($rootScope, $location, $timeout, ProfileService, SettingsServ
     }
 
     $rootScope.updateFirebaseCreditCard = function (params = {}) {
-        var stripe = Stripe(params.stripeKey);
-        stripe.redirectToCheckout({
-            sessionId: params.id
-        }).then(function (result) {
-            if (result && result.error && result.error.message) {
-                alert(result.error.message);
-                return;
-            }
-        });
+        var updateUrl = `${params.redirect}?token=${params.token}&customer=${params.customer}`;
+        if (params.reactivate === true) {
+            updateUrl = `${updateUrl}&reactivate`;
+        }
+
+        // stripe checkout must redirect from https.
+        // open stripe checkout on api rendered page.
+        window.location.href = updateUrl;
     };
 
     // Get a new token from stripe and send it to the server

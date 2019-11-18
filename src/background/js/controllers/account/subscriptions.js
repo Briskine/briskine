@@ -74,7 +74,7 @@ gApp.controller('SubscriptionsCtrl', function ($scope, $rootScope, $routeParams,
         $scope.paymentError = '';
         $('.update-cc-btn').addClass('disabled');
 
-        // BUG must wait for plans to load
+        // BUG on old-api, must wait for plans to load
         var ccParams = {
             stripeKey: $scope.stripeKey,
             email: $scope.email
