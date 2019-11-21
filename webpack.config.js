@@ -4,7 +4,6 @@ var webpack = require("webpack");
 var path = require("path");
 var stylus = require("stylus");
 var fileSystem = require("fs");
-var jshint = require("jshint-loader");
 var CleanWebpackPlugin = require("clean-webpack-plugin");
 var CopyWebpackPlugin = require("copy-webpack-plugin");
 var HtmlWebpackPlugin = require("html-webpack-plugin");
