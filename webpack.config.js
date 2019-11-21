@@ -24,7 +24,6 @@ const dependencies = {
         // options page
         background: {
             js: [
-                'raven-js/dist/raven.min.js',
                 'jquery/dist/jquery.min.js',
                 'bootstrap/dist/js/bootstrap.min.js',
                 'underscore/underscore-min.js',
@@ -104,7 +103,6 @@ const dependencies = {
         },
         content: {
             js: [
-                'raven-js/dist/raven.min.js',
                 'jquery/dist/jquery.min.js',
                 'underscore/underscore-min.js',
                 'handlebars/dist/handlebars.min.js',

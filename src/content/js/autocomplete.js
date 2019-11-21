@@ -116,7 +116,6 @@ App.autocomplete.getCursorPosition = function (element) {
         var focusOffset = selection.focusOffset;
 
         if (!ranges.length) {
-            Raven.captureMessage("A selection without any ranges!");
             return;
         }
         // remove any previous ranges

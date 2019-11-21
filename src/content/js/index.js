@@ -224,8 +224,6 @@ App.activatePlugins = function() {
     });
 };
 
-ravenInit();
-
 App.init = function(settings, doc) {
     var body = $(doc).find("body");
 
