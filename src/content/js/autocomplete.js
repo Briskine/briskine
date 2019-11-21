@@ -215,9 +215,6 @@ App.autocomplete.replaceWith = function (params) {
 
                 replacement = parsedTemplate;
 
-                if (!App.settings.editor_enabled) {
-                    replacement = replacement.replace(/\n/g, ' <br />\n');
-                }
                 // setStart/setEnd work differently based on
                 // the type of node
                 // https://developer.mozilla.org/en-US/docs/Web/API/range.setStart
