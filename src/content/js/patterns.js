@@ -4,7 +4,7 @@
  */
 
 // Observer pattern
-var PubSub = {
+module.exports = {
     observers: [],
     subscribe: function (topic, observer) {
         if (!this.observers[topic]) {

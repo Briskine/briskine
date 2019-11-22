@@ -1,11 +1,21 @@
-(function () {
+(function (root, factory) {
+    if ( typeof define === 'function' && define.amd ) {
+        define([], function () {
+            return factory(root);
+        });
+    } else if ( typeof exports === 'object' ) {
+        module.exports = factory(root);
+    } else {
+        root.store = factory(root);
+    }
+})(typeof global !== 'undefined' ? global : typeof window !== 'undefined' ? window : this, function (window) {
+    'use strict';
+
     var backgroundPage = null;
     try {
         // getBackgroundPage() throws error in content script
         backgroundPage = chrome.extension.getBackgroundPage();
     } catch (err) {}
-
-    var backgroundScript = (window === backgroundPage);
 
     function createRequest (type) {
         return (params) => {
@@ -81,62 +91,59 @@
         });
     };
 
-    // TODO remove check after removing angularInjector dependency from chrome-config
-    // don't run in background page
-    if (!backgroundScript) {
-        window.store = function () {
-            // handle trigger from background
-            chrome.runtime.onMessage.addListener((req, sender, sendResponse) => {
-                if (
-                    req.type &&
-                    req.type === 'trigger'
-                ) {
-                    trigger(req.data.name);
-                }
+    // options page
+    if (backgroundPage) {
+        window.FIRESTORE_ENABLED = backgroundPage.FIRESTORE_ENABLED.bind(backgroundPage);
+        window.TOGGLE_FIRESTORE = (enabled) => {
+            backgroundPage.TOGGLE_FIRESTORE.call(backgroundPage, enabled);
+        };
+        window.IMPERSONATE = (params) => {
+            backgroundPage.IMPERSONATE.call(backgroundPage, params).then(() => {
+                // reload options
+                window.location.reload();
             });
-
-            var optionsStore = {};
-            methods.forEach((method) => {
-                optionsStore[method] = createRequest(method);
+        };
+        window.SIGNIN_WITH_TOKEN = (token) => {
+            backgroundPage.SIGNIN_WITH_TOKEN.call(backgroundPage, token).then(() => {
+                // reload options
+                window.location.reload();
             });
+        };
 
-            optionsStore.on = on;
-            optionsStore.trigger = trigger;
+        // subscribe automatic sign-in
+        window.addEventListener('message', function (e) {
+            var data = {};
+            try {
+                data = JSON.parse(e.data);
+            } catch (err) {}
 
-            return optionsStore;
-        }();
-
-        // options page
-        if (backgroundPage) {
-            window.FIRESTORE_ENABLED = backgroundPage.FIRESTORE_ENABLED.bind(backgroundPage);
-            window.TOGGLE_FIRESTORE = (enabled) => {
-                backgroundPage.TOGGLE_FIRESTORE.call(backgroundPage, enabled);
-            };
-            window.IMPERSONATE = (params) => {
-                backgroundPage.IMPERSONATE.call(backgroundPage, params).then(() => {
-                    // reload options
-                    window.location.reload();
-                });
-            };
-            window.SIGNIN_WITH_TOKEN = (token) => {
-                backgroundPage.SIGNIN_WITH_TOKEN.call(backgroundPage, token).then(() => {
-                    // reload options
-                    window.location.reload();
-                });
-            };
-
-            // subscribe automatic sign-in
-            window.addEventListener('message', function (e) {
-                var data = {};
-                try {
-                    data = JSON.parse(e.data);
-                } catch (err) {}
-
-                if (data.type === 'templates-subscribe-success') {
-                    window.TOGGLE_FIRESTORE(true);
-                    window.SIGNIN_WITH_TOKEN(data.token);
-                }
-            });
-        }
+            if (data.type === 'templates-subscribe-success') {
+                window.TOGGLE_FIRESTORE(true);
+                window.SIGNIN_WITH_TOKEN(data.token);
+            }
+        });
     }
-}());
+
+    return function () {
+        // handle trigger from background
+        chrome.runtime.onMessage.addListener((req, sender, sendResponse) => {
+            if (
+                req.type &&
+                req.type === 'trigger'
+            ) {
+                trigger(req.data.name);
+            }
+        });
+
+        var optionsStore = {};
+        methods.forEach((method) => {
+            optionsStore[method] = createRequest(method);
+        });
+
+        optionsStore.on = on;
+        optionsStore.trigger = trigger;
+
+        return optionsStore;
+    }();
+});
+

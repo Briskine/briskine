@@ -2,7 +2,7 @@
  * Keyboard completion code.
  */
 
-App.autocomplete.keyboard = {
+module.exports = {
     completion: function (e) {
 
         var element = e.target;

@@ -2,10 +2,16 @@
  * Generic methods for autocompletion
  */
 
-var KEY_TAB = 9,
-    KEY_UP = 38,
-    KEY_DOWN = 40,
-    KEY_ENTER = 13;
+var $ = require('jquery');
+var Handlebars = require('handlebars');
+var _ = require('underscore');
+
+var dialog = require('./dialog');
+
+window.KEY_TAB = 9;
+window.KEY_UP = 38;
+window.KEY_DOWN = 40;
+window.KEY_ENTER = 13;
 
 App.autocomplete.quicktexts = [];
 App.autocomplete.cursorPosition = null;
@@ -389,7 +395,7 @@ App.autocomplete.replaceWith = function (params) {
         });
     };
 
-    App.autocomplete.dialog.close();
+    dialog.close();
 
     App.activePlugin.getData({
         element: params.element

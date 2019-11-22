@@ -2,6 +2,7 @@
  * Utils
  */
 
+// TODO deprecate after removing google-inbox plugin
 App.utils = (function() {
     // split full name by last space.
     var splitFullName = function (fullname) {

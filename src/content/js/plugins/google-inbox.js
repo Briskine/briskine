@@ -1,4 +1,5 @@
 /* Google Inbox plugin
+ * TODO deprecate google-inbox plugin
  */
 
 App.plugin('google-inbox', (function () {

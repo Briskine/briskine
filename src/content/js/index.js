@@ -3,6 +3,23 @@
  All declarations are done here
  */
 
+var css = require('../css/content.styl');
+var $ = require('jquery');
+var Handlebars = require('handlebars');
+// creates global window.Mousetrap
+require('mousetrap');
+require('mousetrap/plugins/global-bind/mousetrap-global-bind');
+
+var store = require('../../store/store-client');
+var keyboard = require('./keyboard');
+var dialog = require('./dialog');
+var contentHelpers = require('./content-helpers');
+
+// TODO common/helpers requires global jquery and fuse.js
+window.$ = $;
+window.Fuse = require('fuse.js');
+var commonHelpers = require('../../common/helpers');
+
 var App = {
     data: {
         searchCache: {},
@@ -290,7 +307,7 @@ App.init = function(settings, doc) {
     if (settings.keyboard.enabled) {
         Mousetrap.bindGlobal(
             settings.keyboard.shortcut,
-            App.autocomplete.keyboard.completion
+            keyboard.completion
         );
     }
 
@@ -301,23 +318,27 @@ App.init = function(settings, doc) {
         !isContentEditable
     ) {
         if (settings.qaBtn.enabled) {
-            App.autocomplete.dialog.createQaBtn();
+            dialog.createQaBtn();
         }
         if (settings.dialog.limit) {
-            App.autocomplete.dialog.RESULTS_LIMIT = settings.dialog.limit;
+            dialog.RESULTS_LIMIT = settings.dialog.limit;
         }
         Mousetrap.bindGlobal(
             settings.dialog.shortcut,
-            App.autocomplete.dialog.completion
+            dialog.completion
         );
 
         // create dialog once and then reuse the same element
-        App.autocomplete.dialog.create();
-        App.autocomplete.dialog.bindKeyboardEvents(doc);
+        dialog.create();
+        dialog.bindKeyboardEvents(doc);
     }
 
     App.activatePlugins();
 };
+
+window.App = App;
+
+var autocomplete = require('./autocomplete');
 
 $(function() {
     if (document.contentType !== "text/html") {
