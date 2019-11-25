@@ -6,31 +6,32 @@ var $ = require('jquery');
 var Handlebars = require('handlebars');
 var _ = require('underscore');
 
-var dialog = require('./dialog');
 
 window.KEY_TAB = 9;
 window.KEY_UP = 38;
 window.KEY_DOWN = 40;
 window.KEY_ENTER = 13;
 
-App.autocomplete.quicktexts = [];
-App.autocomplete.cursorPosition = null;
+var autocomplete = {};
 
-App.autocomplete.isEditable = function (element) {
+autocomplete.quicktexts = [];
+autocomplete.cursorPosition = null;
+
+autocomplete.isEditable = function (element) {
 
     var isTextfield = (element.tagName.toLowerCase() === 'input');
     var isTextarea = (element.tagName.toLowerCase() === 'textarea');
-    var isContenteditable = App.autocomplete.isContentEditable(element);
+    var isContenteditable = autocomplete.isContentEditable(element);
 
     return (isTextfield || isTextarea || isContenteditable);
 
 };
 
-App.autocomplete.isContentEditable = function (element) {
+autocomplete.isContentEditable = function (element) {
     return element && element.hasAttribute('contenteditable');
 };
 
-App.autocomplete.getSelectedWord = function (params) {
+autocomplete.getSelectedWord = function (params) {
     var doc = params.element.ownerDocument;
 
     var word = {
@@ -42,7 +43,7 @@ App.autocomplete.getSelectedWord = function (params) {
     var beforeSelection = "";
     var selection = doc.getSelection();
 
-    if (App.autocomplete.isContentEditable(params.element)) {
+    if (autocomplete.isContentEditable(params.element)) {
         switch (selection.focusNode.nodeType) {
             // In most cases, the focusNode property refers to a Text Node.
             case (document.TEXT_NODE): // for text nodes it's easy. Just take the text and find the closest word
@@ -57,7 +58,7 @@ App.autocomplete.getSelectedWord = function (params) {
                 break;
         }
     } else {
-        beforeSelection = $(params.element).val().substr(0, App.autocomplete.cursorPosition.end);
+        beforeSelection = $(params.element).val().substr(0, autocomplete.cursorPosition.end);
     }
 
     // Replace all &nbsp; with normal spaces
@@ -69,7 +70,7 @@ App.autocomplete.getSelectedWord = function (params) {
     return word;
 };
 
-App.autocomplete.getCursorPosition = function (element) {
+autocomplete.getCursorPosition = function (element) {
     var doc = element.ownerDocument;
 
     if (!element) {
@@ -105,7 +106,7 @@ App.autocomplete.getCursorPosition = function (element) {
         }
     };
 
-    if (App.autocomplete.isContentEditable(position.element)) {
+    if (autocomplete.isContentEditable(position.element)) {
         // Working with editable div
         // Insert a virtual cursor, find its position
         // http://stackoverflow.com/questions/16580841/insert-text-at-caret-in-contenteditable-div
@@ -167,8 +168,8 @@ App.autocomplete.getCursorPosition = function (element) {
             $sourcePosition = $source.offset();
 
         // copy all styles
-        for (var i in App.autocomplete.mirrorStyles) {
-            var style = App.autocomplete.mirrorStyles[i];
+        for (var i in autocomplete.mirrorStyles) {
+            var style = autocomplete.mirrorStyles[i];
             $mirror.css(style, $source.css(style));
         }
 
@@ -201,19 +202,19 @@ App.autocomplete.getCursorPosition = function (element) {
     return position;
 };
 
-App.autocomplete.replaceWith = function (params) {
+autocomplete.replaceWith = function (params) {
 
-    var word = App.autocomplete.cursorPosition.word;
+    var word = autocomplete.cursorPosition.word;
     var replacement = '';
 
-    App.autocomplete.justCompleted = true; // the idea is that we don't want any completion to popup after we just completed
+    autocomplete.justCompleted = true; // the idea is that we don't want any completion to popup after we just completed
 
     var setText = function (vars) {
         var doc = params.element.ownerDocument;
 
         var parsedTemplate = Handlebars.compile(params.quicktext.body)(params.data);
 
-            if (App.autocomplete.isContentEditable(params.element)) {
+            if (autocomplete.isContentEditable(params.element)) {
 
                 var selection = doc.getSelection();
                 var range = doc.createRange();
@@ -395,8 +396,6 @@ App.autocomplete.replaceWith = function (params) {
         });
     };
 
-    dialog.close();
-
     App.activePlugin.getData({
         element: params.element
     }, function (err, vars) {
@@ -414,12 +413,12 @@ App.autocomplete.replaceWith = function (params) {
                     // doesn't get the focus right-away.
                     // so window.getSelection() returns the search field
                     // in the dialog otherwise, instead of the editor
-                    App.autocomplete.focusEditor(params.element, insertQt(params));
+                    autocomplete.focusEditor(params.element, insertQt(params));
                 });
                 return;
             }
 
-            App.autocomplete.focusEditor(params.element, insertQt(params));
+            autocomplete.focusEditor(params.element, insertQt(params));
         });
     });
 
@@ -428,7 +427,7 @@ App.autocomplete.replaceWith = function (params) {
     });
 };
 
-App.autocomplete.focusEditor = function (element, callback) {
+autocomplete.focusEditor = function (element, callback) {
 
     // return focus to the editor
 
@@ -447,7 +446,7 @@ App.autocomplete.focusEditor = function (element, callback) {
 };
 
 // Mirror styles are used for creating a mirror element in order to track the cursor in a textarea
-App.autocomplete.mirrorStyles = [
+autocomplete.mirrorStyles = [
     // Box Styles.
     'box-sizing', 'height', 'width', 'padding', 'padding-bottom', 'padding-left', 'padding-right', 'padding-top', 'border-width',
     // Font stuff.
@@ -457,3 +456,5 @@ App.autocomplete.mirrorStyles = [
     // The direction.
     'direction'
 ];
+
+module.exports = autocomplete;

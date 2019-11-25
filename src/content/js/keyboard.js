@@ -2,6 +2,8 @@
  * Keyboard completion code.
  */
 
+var autocomplete = require('./autocomplete');
+
 module.exports = {
     completion: function (e) {
 
@@ -11,7 +13,7 @@ module.exports = {
         var focusNode = selection.focusNode;
         // if it's not an editable element
         // don't trigger anything
-        if(!App.autocomplete.isEditable(element)) {
+        if(!autocomplete.isEditable(element)) {
             return true;
         }
 
@@ -21,12 +23,12 @@ module.exports = {
         }
 
         // First get the cursor position
-        App.autocomplete.cursorPosition = App.autocomplete.getCursorPosition(element);
+        autocomplete.cursorPosition = autocomplete.getCursorPosition(element);
         // Then get the word at the positon
-        var word = App.autocomplete.getSelectedWord({
+        var word = autocomplete.getSelectedWord({
             element: element
         });
-        App.autocomplete.cursorPosition.word = word;
+        autocomplete.cursorPosition.word = word;
 
         if (word.text) {
 
@@ -35,7 +37,7 @@ module.exports = {
 
                 if (quicktexts.length) {
                     // replace with the first quicktext found
-                    App.autocomplete.replaceWith({
+                    autocomplete.replaceWith({
                         element: element,
                         quicktext: quicktexts[0],
                         focusNode: focusNode

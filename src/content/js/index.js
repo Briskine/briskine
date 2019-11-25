@@ -29,7 +29,6 @@ var App = {
         lastFilterRun: 0
     },
     editor_enabled: true,
-    autocomplete: {},
     settings: {
         case_sensitive_search: false,
         fuzzy_search: true,
@@ -342,9 +341,6 @@ App.init = function(settings, doc) {
 };
 
 window.App = App;
-
-// HACK move to top
-var autocomplete = require('./autocomplete');
 
 $(function() {
     if (document.contentType !== "text/html") {

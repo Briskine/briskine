@@ -8,6 +8,7 @@ var _ = require('underscore');
 
 var PubSub = require('./patterns');
 var store = require('../../store/store-client');
+var autocomplete = require('./autocomplete');
 
 PubSub.subscribe('focus', function (action, element) {
     if (action === 'off') {
@@ -57,20 +58,20 @@ var dialog = {
 
         // if it's not an editable element
         // don't trigger anything
-        if (!App.autocomplete.isEditable(element)) {
+        if (!autocomplete.isEditable(element)) {
             return false;
         }
 
-        App.autocomplete.cursorPosition = App.autocomplete.getCursorPosition(element);
-        App.autocomplete.cursorPosition.word = App.autocomplete.getSelectedWord({
+        autocomplete.cursorPosition = autocomplete.getCursorPosition(element);
+        autocomplete.cursorPosition.word = autocomplete.getSelectedWord({
             element: element
         });
 
         // fetch templates from storage to populate the dialog
         App.settings.getFiltered("", dialog.RESULTS_LIMIT, function (quicktexts) {
-            App.autocomplete.quicktexts = quicktexts;
+            autocomplete.quicktexts = quicktexts;
 
-            params.quicktexts = App.autocomplete.quicktexts;
+            params.quicktexts = autocomplete.quicktexts;
 
             dialog.populate(params);
 
@@ -118,13 +119,13 @@ var dialog = {
                 return;
             }
 
-            App.autocomplete.cursorPosition.word.text = $(this).val();
+            autocomplete.cursorPosition.word.text = $(this).val();
 
-            App.settings.getFiltered(App.autocomplete.cursorPosition.word.text, dialog.RESULTS_LIMIT, function (quicktexts) {
+            App.settings.getFiltered(autocomplete.cursorPosition.word.text, dialog.RESULTS_LIMIT, function (quicktexts) {
 
-                App.autocomplete.quicktexts = quicktexts;
+                autocomplete.quicktexts = quicktexts;
                 dialog.populate({
-                    quicktexts: App.autocomplete.quicktexts
+                    quicktexts: autocomplete.quicktexts
                 });
             });
         });
@@ -242,7 +243,7 @@ var dialog = {
         Mousetrap.bindGlobal('escape', function (e) {
             if (dialog.isActive) {
                 dialog.close();
-                App.autocomplete.focusEditor(dialog.editor);
+                autocomplete.focusEditor(dialog.editor);
 
                 // restore the previous caret position
                 // since we didn't select any quicktext
@@ -258,7 +259,7 @@ var dialog = {
             if (dialog.isActive) {
                 dialog.selectActive();
                 dialog.close();
-                App.autocomplete.focusEditor(dialog.editor);
+                autocomplete.focusEditor(dialog.editor);
             }
         });
 
@@ -266,18 +267,18 @@ var dialog = {
     populate: function (params) {
         params = params || {};
 
-        App.autocomplete.quicktexts = params.quicktexts;
+        autocomplete.quicktexts = params.quicktexts;
 
         // clone the elements
         // so we can safely highlight the matched text
         // without breaking the generated handlebars markup
-        var clonedElements = $.extend(true, [], App.autocomplete.quicktexts);
+        var clonedElements = $.extend(true, [], autocomplete.quicktexts);
 
         // highlight found string in element title, body and shortcut
         var word_text = '';
         var text = '';
-        if (App.autocomplete.cursorPosition && App.autocomplete.cursorPosition.word) {
-            word_text = App.autocomplete.cursorPosition.word.text;
+        if (autocomplete.cursorPosition && autocomplete.cursorPosition.word) {
+            word_text = autocomplete.cursorPosition.word.text;
             text = word_text.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
         }
         var searchRe = new RegExp(text, 'gi');
@@ -392,7 +393,7 @@ var dialog = {
 
             // cursorPosition doesn't need scrollTop/Left
             // because it uses the absolute page offset positions
-            metrics = App.autocomplete.cursorPosition.absolute;
+            metrics = autocomplete.cursorPosition.absolute;
 
         }
 
@@ -432,17 +433,19 @@ var dialog = {
         }
     },
     selectActive: function () {
-        if (dialog.isActive && !this.isEmpty && App.autocomplete.quicktexts.length) {
+        if (dialog.isActive && !this.isEmpty && autocomplete.quicktexts.length) {
             var activeItemId = $(this.contentSelector).find('.active').data('id');
-            var quicktext = App.autocomplete.quicktexts.filter(function (quicktext) {
+            var quicktext = autocomplete.quicktexts.filter(function (quicktext) {
                 return quicktext.id === activeItemId;
             })[0];
 
-            App.autocomplete.replaceWith({
+            autocomplete.replaceWith({
                 element: dialog.editor,
                 quicktext: quicktext,
                 focusNode: dialog.focusNode
             });
+
+            dialog.close();
 
             chrome.runtime.sendMessage({
                 'request': 'track',
