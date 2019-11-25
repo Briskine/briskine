@@ -14,6 +14,8 @@ var store = require('../../store/store-client');
 var keyboard = require('./keyboard');
 var dialog = require('./dialog');
 var contentHelpers = require('./content-helpers');
+var PubSub = require('./patterns');
+var events = require('./events');
 
 // TODO common/helpers requires global jquery and fuse.js
 window.$ = $;
@@ -299,9 +301,12 @@ App.init = function(settings, doc) {
         chrome.runtime.sendMessage({ request: "launchGorgias" });
     });
 
-    doc.addEventListener("blur", App.onBlur, true);
-    doc.addEventListener("focus", App.onFocus, true);
-    doc.addEventListener("scroll", App.onScroll, true);
+    doc.addEventListener("blur", (e) => {
+        PubSub.publish('blur', e);
+    }, true);
+    doc.addEventListener("scroll", (e) => {
+        PubSub.publish('scroll', e);
+    }, true);
 
     // use custom keyboard shortcuts
     if (settings.keyboard.enabled) {
@@ -338,6 +343,7 @@ App.init = function(settings, doc) {
 
 window.App = App;
 
+// HACK move to top
 var autocomplete = require('./autocomplete');
 
 $(function() {
