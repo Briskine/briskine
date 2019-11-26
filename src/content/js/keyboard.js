@@ -2,9 +2,9 @@
  * Keyboard completion code.
  */
 
-var autocomplete = require('./autocomplete');
+import autocomplete from './autocomplete';
 
-module.exports = {
+export default {
     completion: function (e) {
 
         var element = e.target;

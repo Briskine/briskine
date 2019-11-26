@@ -2,13 +2,13 @@
  * Autocomplete dialog code.
  */
 
-var $ = require('jquery');
-var Handlebars = require('handlebars');
-var _ = require('underscore');
+import $ from 'jquery';
+import Handlebars from 'handlebars';
+import _ from 'underscore';
 
-var PubSub = require('./patterns');
-var store = require('../../store/store-client');
-var autocomplete = require('./autocomplete');
+import PubSub from './patterns';
+import store from '../../store/store-client';
+import autocomplete from './autocomplete';
 
 PubSub.subscribe('focus', function (action, element) {
     if (action === 'off') {
@@ -657,4 +657,4 @@ $.get(contentUrl, function (data) {
     }
 }, "html");
 
-module.exports = dialog;
+export default dialog;

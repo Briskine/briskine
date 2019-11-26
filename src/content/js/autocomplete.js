@@ -2,9 +2,9 @@
  * Generic methods for autocompletion
  */
 
-var $ = require('jquery');
-var Handlebars = require('handlebars');
-var _ = require('underscore');
+import $ from 'jquery';
+import Handlebars from 'handlebars';
+import _ from 'underscore';
 
 
 window.KEY_TAB = 9;
@@ -457,4 +457,4 @@ autocomplete.mirrorStyles = [
     'direction'
 ];
 
-module.exports = autocomplete;
+export default autocomplete;

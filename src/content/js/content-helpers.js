@@ -1,5 +1,5 @@
-var Handlebars = require('handlebars');
-var moment = require('moment');
+import Handlebars from 'handlebars';
+import moment from 'moment';
 
 //  format a date using Moment.js
 //  http://momentjs.com/

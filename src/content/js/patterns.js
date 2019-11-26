@@ -4,7 +4,7 @@
  */
 
 // Observer pattern
-module.exports = {
+export default {
     observers: [],
     subscribe: function (topic, observer) {
         if (!this.observers[topic]) {

@@ -3,24 +3,26 @@
  All declarations are done here
  */
 
-var css = require('../css/content.styl');
-var $ = require('jquery');
-var Handlebars = require('handlebars');
+import '../css/content.styl';
+import $ from 'jquery';
+import Handlebars from 'handlebars';
+import Fuse from 'fuse.js';
 // creates global window.Mousetrap
-require('mousetrap');
-require('mousetrap/plugins/global-bind/mousetrap-global-bind');
+import 'mousetrap';
+import 'mousetrap/plugins/global-bind/mousetrap-global-bind';
 
-var store = require('../../store/store-client');
-var keyboard = require('./keyboard');
-var dialog = require('./dialog');
-var contentHelpers = require('./content-helpers');
-var PubSub = require('./patterns');
-var events = require('./events');
+import './content-helpers';
+import './events';
+import '../../common/helpers';
+
+import store from '../../store/store-client';
+import keyboard from './keyboard';
+import dialog from './dialog';
+import PubSub from './patterns';
 
 // TODO common/helpers requires global jquery and fuse.js
 window.$ = $;
-window.Fuse = require('fuse.js');
-var commonHelpers = require('../../common/helpers');
+window.Fuse = Fuse;
 
 var App = {
     data: {
@@ -29,6 +31,7 @@ var App = {
         lastFilterRun: 0
     },
     editor_enabled: true,
+    // TODO move settings to module
     settings: {
         case_sensitive_search: false,
         fuzzy_search: true,

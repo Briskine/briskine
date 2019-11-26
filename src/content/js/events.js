@@ -2,8 +2,8 @@
  PubSub events
  */
 
-var PubSub = require('./patterns');
-var dialog = require('./dialog');
+import PubSub from './patterns';
+import dialog from './dialog';
 
 PubSub.subscribe('focus', function (action, element) {
     if ($(element).hasClass('qt-dropdown-search')) {
