@@ -1,5 +1,6 @@
 import Handlebars from 'handlebars';
 import moment from 'moment';
+import _ from 'underscore';
 
 //  format a date using Moment.js
 //  http://momentjs.com/
@@ -54,38 +55,6 @@ Handlebars.registerHelper("choice", function (args) {
     args = _.map(args.split(','), _.trim);
     return args[Math.floor(Math.random() * args.length)];
 });
-
-window.PrepareVars = function (vars) {
-    if (!vars) {
-        return vars;
-    }
-
-    var prep = function (data) {
-        // convert array to object
-        data = _.extend({}, data);
-        var flat = data[0];
-        for (var i in flat) {
-            if (flat.hasOwnProperty(i)) {
-                data[i] = flat[i];
-            }
-        }
-        return data;
-    };
-
-    if (vars.to && vars.to.length) {
-        vars.to = prep(vars.to);
-    }
-    if (vars.from && vars.from.length) {
-        vars.from = prep(vars.from);
-    }
-    if (vars.cc && vars.cc.length) {
-        vars.cc = prep(vars.cc);
-    }
-    if (vars.bcc && vars.bcc.length) {
-        vars.bcc = prep(vars.bcc);
-    }
-    return vars;
-};
 
 function underscored(str) {
     return str.replace(/([a-z\d])([A-Z]+)/g, '$1_$2').replace(/[-\s]+/g, '_').toLowerCase().trim();

@@ -6,6 +6,8 @@ import $ from 'jquery';
 import Handlebars from 'handlebars';
 import _ from 'underscore';
 
+import {register, run as runPlugins} from './plugin';
+import gmailPlugin from './plugins/gmail';
 
 window.KEY_TAB = 9;
 window.KEY_UP = 38;
@@ -203,247 +205,38 @@ autocomplete.getCursorPosition = function (element) {
 };
 
 autocomplete.replaceWith = function (params) {
-
     var word = autocomplete.cursorPosition.word;
-    var replacement = '';
 
-    autocomplete.justCompleted = true; // the idea is that we don't want any completion to popup after we just completed
-
-    var setText = function (vars) {
-        var doc = params.element.ownerDocument;
-
-        var parsedTemplate = Handlebars.compile(params.quicktext.body)(params.data);
-
-            if (autocomplete.isContentEditable(params.element)) {
-
-                var selection = doc.getSelection();
-                var range = doc.createRange();
-
-                replacement = parsedTemplate;
-
-                // setStart/setEnd work differently based on
-                // the type of node
-                // https://developer.mozilla.org/en-US/docs/Web/API/range.setStart
-                var focusNode = params.focusNode;
-                if (!document.body.contains(focusNode)) {
-                    focusNode = selection.focusNode;
-                }
-
-                // we need to have a text node in the end
-                while (focusNode.nodeType === document.ELEMENT_NODE) {
-                    if (focusNode.childNodes.length > 0) {
-                        focusNode = focusNode.childNodes[selection.focusOffset]; // select a text node
-                    } else {
-                        // create an empty text node
-                        var tnode = doc.createTextNode('');
-
-                        // if the focusNode is the same as the element
-                        if (focusNode === params.element) {
-                            // insert it in the node
-                            focusNode.appendChild(tnode);
-                        } else {
-                            // or attach it before the node
-                            focusNode.parentNode.insertBefore(tnode, focusNode);
-                        }
-
-                        focusNode = tnode;
-                    }
-                }
-
-                // clear whitespace in the focused textnode
-                if (focusNode.nodeValue) {
-                    focusNode.nodeValue = focusNode.nodeValue.trim();
-                }
-
-                // if the current word matches the shortcut then remove it otherwise skip it (ex: from dialog)
-                if (word.text === params.quicktext.shortcut) {
-                    range.setStart(focusNode, word.start);
-                    range.setEnd(focusNode, word.end);
-                    range.deleteContents();
-                } else {
-                    range.setStart(focusNode, word.end);
-                    range.setEnd(focusNode, word.end);
-                }
-
-
-                var qtNode = range.createContextualFragment(replacement);
-                var lastQtChild = qtNode.lastChild;
-
-                if (params.quicktext.attachments && params.quicktext.attachments.length > 0 && vars && vars.plugin === 'gmail') {
-                    if (params.quicktext.attachments.length) //in case there was attachments in that quicktext that have been removed then..
-                        params.quicktext.attachments.map(function (attachment, index) {
-                            App.activePlugin.setAttachment(attachment, range);
-                        });
-                }
-
-                range.insertNode(qtNode);
-
-                var caretRange = doc.createRange();
-                caretRange.setStartAfter(lastQtChild);
-                caretRange.collapse(true);
-                // facebook/draft.js causes a dom re-render
-                // when removing ranges.
-                // looks like a no-content flash of the editor.
-                if (!params.ignoreExistingRanges) {
-                    selection.removeAllRanges();
-                }
-                selection.addRange(caretRange);
-
-                window.postMessage({
-                    source: 'gorgias-extension',
-                    payload: {
-                        event: 'template-inserted'
-                    }
-                }, '*');
-
-            } else {
-                var $textarea = $(params.element),
-                    value = $textarea.val();
-
-                // if the editor is enabled, we need to convert html into text
-                if (App.settings.editor_enabled) {
-                    // we want to display the text momentarily before inserting it into the textarea
-                    // this is needed to give the correct spaces
-                    var temp = $('<div id="gorgias-temp-placeholder">').html(parsedTemplate);
-
-                    // find and replace links with plaintext
-                    temp.find('a').each(function () {
-                        var e = $(this);
-                        var href = e.attr('href');
-                        var text = $.trim(e.text());
-                        var replacement = "";
-
-                        if (!text.length) {
-                            e.replaceWith("<span>" + href + "</span>");
-                        } else if (href.length) {
-                            e.replaceWith("<span>" + text + " ( " + href + " )</span>");
-                        } else {
-                            // remove it completly if there is no url
-                            e.remove();
-                        }
-
-                    });
-
-                    temp.find('img').each(function () {
-                        var e = $(this);
-                        e.replaceWith("<span>" + e.attr('src') + "</span>");
-                    });
-
-                    $('body').append(temp);
-                    parsedTemplate = $('#gorgias-temp-placeholder')[0].innerText;
-                    $('#gorgias-temp-placeholder').remove();
-                }
-
-                var valueNew = '';
-                var cursorOffset = word.end + parsedTemplate.length;
-
-                // if the current word matches the shortcut then remove it
-                // otherwise skip it (ex: from dialog)
-                if (word.text === params.quicktext.shortcut) {
-
-                    valueNew = value.substr(0, word.start) + parsedTemplate + value.substr(word.end);
-
-                    // decrease the cursor offset with the removed text length
-                    cursorOffset -= word.end - word.start;
-
-                } else {
-
-                    // don't delete anything in the textarea
-                    // just add the qt
-                    valueNew = value.substr(0, word.end) + parsedTemplate + value.substr(word.end);
-
-                }
-
-                $textarea.val(valueNew);
-
-                // set focus at the end of the added qt
-                $textarea[0].setSelectionRange(cursorOffset, cursorOffset);
-
-            }
-    };
-
-    var insertQt = function (params) {
-        return function () {
-            setText(params.data);
-
-            if (typeof App.activePlugin.after === 'function') {
-                App.activePlugin.after(params);
-            }
-        };
-    };
-
-    // replace from with name saved in settings
-    var replaceFrom = function (from, setting) {
-        setting = _.extend({
-            firstName: '',
-            lastName: ''
-        }, setting);
-        from = from || [];
-
-        if (!_.isArray(from)) {
-            from = [from];
+    runPlugins(Object.assign(
+        {},
+        params,
+        {
+            word: word,
         }
-
-        return from.map(function (f) {
-            var user = _.extend({}, f);
-            if (setting.firstName || setting.lastName) {
-                user.first_name = setting.firstName;
-                user.last_name = setting.lastName;
-                user.name = setting.firstName + ' ' + setting.lastName;
-            }
-
-            return user;
-        });
-    };
-
-    App.activePlugin.getData({
-        element: params.element
-    }, function (err, vars) {
-        App.settings.fetchSettings(function (settings) {
-            if (vars) {
-                vars.from = replaceFrom(vars.from, settings.name);
-            }
-
-            // add parsed vars to params
-            params.data = PrepareVars(vars);
-
-            if (typeof App.activePlugin.before === 'function') {
-                App.activePlugin.before(params, function (err, params) {
-                    // we need the callback because the editor
-                    // doesn't get the focus right-away.
-                    // so window.getSelection() returns the search field
-                    // in the dialog otherwise, instead of the editor
-                    autocomplete.focusEditor(params.element, insertQt(params));
-                });
-                return;
-            }
-
-            autocomplete.focusEditor(params.element, insertQt(params));
-        });
-    });
+    ))
 
     // updates stats
-    App.settings.stats('words', params.quicktext.body.split(' ').length, function () {
-    });
+    App.settings.stats('words', params.quicktext.body.split(' ').length, () => {});
 };
 
-autocomplete.focusEditor = function (element, callback) {
-
-    // return focus to the editor
-
-    // gmail auto-focuses the to field
-    // so we need the delay
-    setTimeout(function () {
-        if (element) {
-            element.focus();
-        }
-
-        if (callback) {
-            callback();
-        }
-    }, 50);
-
-};
+// TODO check if we still need the timeout focus
+// autocomplete.focusEditor = function (element, callback) {
+//
+//     // return focus to the editor
+//
+//     // gmail auto-focuses the to field
+//     // so we need the delay
+//     setTimeout(function () {
+//         if (element) {
+//             element.focus();
+//         }
+//
+//         if (callback) {
+//             callback();
+//         }
+//     }, 50);
+//
+// };
 
 // Mirror styles are used for creating a mirror element in order to track the cursor in a textarea
 autocomplete.mirrorStyles = [
@@ -456,5 +249,9 @@ autocomplete.mirrorStyles = [
     // The direction.
     'direction'
 ];
+
+
+// TODO create general plugin, when no plugin matches
+register(gmailPlugin);
 
 export default autocomplete;

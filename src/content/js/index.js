@@ -182,69 +182,6 @@ var App = {
     }
 };
 
-// the active plugin, based on the plugin.init response
-// blank at first
-App.activePlugin = {
-    getData: function(params, callback) {
-        callback();
-    },
-    init: function(params, callback) {
-        callback();
-    }
-};
-
-// complete list of plugins
-App.plugins = {};
-
-// main plugin creation method, used by plugins
-App.plugin = function(id, obj) {
-    // check if plugin has all the required methods
-    var requiredMethods = ["init", "getData"];
-
-    // mix in the plugin
-    requiredMethods.forEach(function(prop) {
-        if (!obj.hasOwnProperty(prop)) {
-            throw new Error(
-                "Invalid plugin *" + id + "*! Missing method: " + prop
-            );
-        }
-    });
-
-    App.plugins[id] = obj;
-};
-
-// run the init method on all adapters
-App.activatePlugins = function() {
-    var allPlugins = Object.keys(App.plugins);
-    var pluginResponse = {};
-
-    // check if all plugins were loaded
-    var checkPluginsLoaded = function() {
-        var pluginResponseArray = Object.keys(pluginResponse);
-
-        if (pluginResponseArray.length === allPlugins.length) {
-            // all plugins loaded
-            pluginResponseArray.some(function(pluginName) {
-                // find the first plugin that returned true
-                // and set it as the active one
-                if (pluginResponse[pluginName] === true) {
-                    App.activePlugin = App.plugins[pluginName];
-                    return true;
-                }
-                return false;
-            });
-        }
-    };
-
-    // trigger the init function on all plugins
-    allPlugins.forEach(function(pluginName) {
-        App.plugins[pluginName].init({}, function(err, response) {
-            pluginResponse[pluginName] = response;
-            checkPluginsLoaded();
-        });
-    });
-};
-
 App.init = function(settings, doc) {
     var body = $(doc).find("body");
 
@@ -339,8 +276,6 @@ App.init = function(settings, doc) {
         dialog.create();
         dialog.bindKeyboardEvents(doc);
     }
-
-    App.activatePlugins();
 };
 
 window.App = App;
