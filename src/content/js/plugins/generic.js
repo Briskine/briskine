@@ -5,6 +5,7 @@
 import {insertText, parseTemplate} from '../utils';
 
 export default (params = {}) => {
+    console.log('generic')
     var parsedTemplate = parseTemplate(params.quicktext.body, {});
 
     // BUG sometimes contenteditable doesn't prevent focus switch,

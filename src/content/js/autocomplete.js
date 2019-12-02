@@ -9,6 +9,7 @@ import _ from 'underscore';
 import {register, run as runPlugins} from './plugin';
 import gmailPlugin from './plugins/gmail';
 import facebookPlugin from './plugins/facebook';
+import fastmailPlugin from './plugins/fastmail';
 import draftPlugin from './plugins/draft';
 import genericPlugin from './plugins/generic';
 
@@ -256,6 +257,7 @@ autocomplete.mirrorStyles = [
 
 register(gmailPlugin);
 register(facebookPlugin);
+register(fastmailPlugin);
 register(draftPlugin);
 register(genericPlugin);
 
