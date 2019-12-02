@@ -7,38 +7,38 @@ import {insertText, parseTemplate, isContentEditable} from '../utils';
 
 function parseList (list) {
     return list.filter(function (a) {
-        return a
+        return a;
     }).map(function (a) {
-        return parseString(a)
-    })
+        return parseString(a);
+    });
 }
 
-var regExString = /"?([^ ]*)\s*(.*)"?\s*[(<]([^>)]+)[>)]/
-var regExEmail = /([\w!.%+\-])+@([\w\-])+(?:\.[\w\-]+)+/
+var regExString = /"?([^ ]*)\s*(.*)"?\s*[(<]([^>)]+)[>)]/;
+var regExEmail = /([\w!.%+\-])+@([\w\-])+(?:\.[\w\-]+)+/;
 
 function parseString (string) {
-    var match = regExString.exec(string.trim()),
-        data = {
-            name: '',
-            first_name: '',
-            last_name: '',
-            email: ''
-        }
+    var match = regExString.exec(string.trim());
+    var data = {
+        name: '',
+        first_name: '',
+        last_name: '',
+        email: ''
+    };
 
     if (match && match.length >= 4) {
-        data.first_name = match[1].replace('"', '').trim()
-        data.last_name = match[2].replace('"', '').trim()
-        data.name = data.first_name + (data.first_name && data.last_name ? ' ' : '') + data.last_name
-        data.email = match[3]
+        data.first_name = match[1].replace('"', '').trim();
+        data.last_name = match[2].replace('"', '').trim();
+        data.name = data.first_name + (data.first_name && data.last_name ? ' ' : '') + data.last_name;
+        data.email = match[3];
     } else {
         // try to match the email
-        match = regExEmail.exec(string)
+        match = regExEmail.exec(string);
         if (match) {
-            data.email = match[0]
+            data.email = match[0];
         }
     }
 
-    return data
+    return data;
 }
 
 // get all required data from the dom
@@ -50,57 +50,55 @@ function getData (params) {
         subject = '';
 
     if (isContentEditable(params.element)) {
-        var title = $('.gb_b.gb_fb').attr('title')
-        var fromString = ''
+        var title = $('.gb_b.gb_fb').attr('title');
+        var fromString = '';
         if (typeof title === 'string') {
             // the initial string is: Google Account: Gorgias Chrome Customer Support (chrome@gorgias.io)
-            var parts = title.trim().split(':')
+            var parts = title.trim().split(':');
             if (parts.length && parts.length === 2) {
-                fromString = parts[1]
+                fromString = parts[1];
             }
         } else {
             // old format
-            fromString = $('.gb_vb').text() + '<' + $('.gb_xb').text() + '>'
+            fromString = $('.gb_vb').text() + '<' + $('.gb_xb').text() + '>';
         }
 
-        from.push(parseString(fromString))
+        from.push(parseString(fromString));
 
-        var $container = $(params.element).closest('table').parent().closest('table').parent().closest('table')
+        var $container = $(params.element).closest('table').parent().closest('table').parent().closest('table');
 
         to = $container.find('input[name=to]').toArray().map(function (a) {
-            return a.value
-        })
+            return a.value;
+        });
         cc = $container.find('input[name=cc]').toArray().map(function (a) {
-            return a.value
-        })
+            return a.value;
+        });
         bcc = $container.find('input[name=bcc]').toArray().map(function (a) {
-            return a.value
-        })
-        subject = $container.find('input[name=subjectbox]').val().replace(/^Re: /, "")
-
+            return a.value;
+        });
+        subject = $container.find('input[name=subjectbox]').val().replace(/^Re: /, "");
     } else {
-
-        from.push($('#guser').find('b').text())
-        var toEl = $('#to')
+        from.push($('#guser').find('b').text());
+        var toEl = $('#to');
 
         // Full options window
         if (toEl.length) {
-            to = toEl.val().split(',')
-            cc = $('#cc').val().split(',')
-            bcc = $('#bcc').val().split(',')
-            subject = $('input[name=subject]').val()
+            to = toEl.val().split(',');
+            cc = $('#cc').val().split(',');
+            bcc = $('#bcc').val().split(',');
+            subject = $('input[name=subject]').val();
         } else { // Reply window
-            subject = $('h2 b').text()
-            var replyToAll = $('#replyall')
+            subject = $('h2 b').text();
+            var replyToAll = $('#replyall');
             // It there are multiple reply to options
             if (replyToAll.length) {
                 to = $('input[name=' + replyToAll.attr('name') + ']:checked').closest('tr').find('label')
                 // retrieve text but child nodes
-                    .clone().children().remove().end().text().trim().split(',')
+                    .clone().children().remove().end().text().trim().split(',');
             } else {
                 to = $(params.element).closest('table').find('td').first().find('td').first()
                 // retrieve text but child nodes
-                    .clone().children().remove().end().text().trim().split(',')
+                    .clone().children().remove().end().text().trim().split(',');
             }
         }
 
@@ -113,15 +111,15 @@ function getData (params) {
         bcc: parseList(bcc),
         subject: subject,
         plugin: 'gmail'//maybe there is another way to get the active plugin..
-    }
+    };
 }
 
 function before (params) {
-    var $parent = $(params.element).closest('table.aoP')
+    var $parent = $(params.element).closest('table.aoP');
 
     if (params.quicktext.subject) {
-        var parsedSubject = parseTemplate(params.quicktext.subject, params.data)
-        $parent.find('input[name=subjectbox]').val(parsedSubject)
+        var parsedSubject = parseTemplate(params.quicktext.subject, params.data);
+        $parent.find('input[name=subjectbox]').val(parsedSubject);
     }
 
     if (params.quicktext.to ||
@@ -131,41 +129,42 @@ function before (params) {
         // click the receipients row.
         // a little jumpy,
         // but the only to way to show the new value.
-        $parent.find('.aoD.hl').trigger('focus')
+        $parent.find('.aoD.hl').trigger('focus');
     }
 
     if (params.quicktext.to) {
-        var parsedTo = parseTemplate(params.quicktext.to, params.data)
-        $parent.find('textarea[name=to]').val(parsedTo)
+        var parsedTo = parseTemplate(params.quicktext.to, params.data);
+        $parent.find('textarea[name=to]').val(parsedTo);
     }
 
     if (params.quicktext.cc) {
-        var parsedCc = parseTemplate(params.quicktext.cc, params.data)
+        var parsedCc = parseTemplate(params.quicktext.cc, params.data);
 
         // click the cc button
-        $parent.find('.aB.gQ.pE').trigger('click')
+        $parent.find('.aB.gQ.pE').trigger('click');
 
-        $parent.find('textarea[name=cc]').val(parsedCc)
+        $parent.find('textarea[name=cc]').val(parsedCc);
     }
 
     if (params.quicktext.bcc) {
-        var parsedBcc = parseTemplate(params.quicktext.bcc, params.data)
+        var parsedBcc = parseTemplate(params.quicktext.bcc, params.data);
 
         // click the bcc button
-        $parent.find('.aB.gQ.pB').trigger('click')
+        $parent.find('.aB.gQ.pB').trigger('click');
 
-        $parent.find('textarea[name=bcc]').val(parsedBcc)
+        $parent.find('textarea[name=bcc]').val(parsedBcc);
     }
 }
 
 // insert attachment node on gmail editor
-var setAttachmentNode = function (attachment, range) {
+var setAttachmentNode = function (attachment) {
     if (!attachment) {
-        return
+        return;
     }
+    var range = window.getSelection().getRangeAt(0);
 
     function concatIconString(number, type) {
-        return "https://ssl.gstatic.com/docs/doclist/images/icon_" + number + "_" + type + "_list.png"
+        return "https://ssl.gstatic.com/docs/doclist/images/icon_" + number + "_" + type + "_list.png";
     }
 
     var driveIcons = {
@@ -177,24 +176,25 @@ var setAttachmentNode = function (attachment, range) {
         word: concatIconString('10', 'word'),
         text: concatIconString('10', 'text'),
         generic: concatIconString('10', 'generic')
-    }
+    };
 
     function getDriveIcon(attachment) {
-        var attachmentIcon
+        var attachmentIcon;
         switch (attachment.name.split('.').pop()) {
             case 'jpg':
+            case 'jpeg':
             case 'png':
             case 'gif':
             case 'svg':
-                attachmentIcon = driveIcons.image
-                break
+                attachmentIcon = driveIcons.image;
+                break;
             case 'doc':
             case 'docx':
-                attachmentIcon = driveIcons.word
-                break
+                attachmentIcon = driveIcons.word;
+                break;
             case 'pdf':
-                attachmentIcon = driveIcons.pdf
-                break
+                attachmentIcon = driveIcons.pdf;
+                break;
             case 'tar':
             case 'zip':
             case 'rar':
@@ -202,8 +202,8 @@ var setAttachmentNode = function (attachment, range) {
             case 'uca':
             case 'dmg':
             case 'iso':
-                attachmentIcon = driveIcons.archive
-                break
+                attachmentIcon = driveIcons.archive;
+                break;
             case 'riff':
             case 'wav':
             case 'bwf':
@@ -217,8 +217,8 @@ var setAttachmentNode = function (attachment, range) {
             case 'aac':
             case 'mp4':
             case 'm4a':
-                attachmentIcon = driveIcons.audio
-                break
+                attachmentIcon = driveIcons.audio;
+                break;
             case 'webm':
             case 'flv':
             case 'f4v':
@@ -240,56 +240,57 @@ var setAttachmentNode = function (attachment, range) {
             case 'svi':
             case '3gp':
             case 'roq':
-                attachmentIcon = driveIcons.video
-                break
+                attachmentIcon = driveIcons.video;
+                break;
             case 'js':
             case 'txt':
             case 'css':
             case 'html':
             case 'json':
-                attachmentIcon = driveIcons.text
-                break
+                attachmentIcon = driveIcons.text;
+                break;
             default:
-                attachmentIcon = driveIcons.generic
+                attachmentIcon = driveIcons.generic;
         }
-        return attachmentIcon
+        return attachmentIcon;
     }
 
-    var icon = getDriveIcon(attachment)
+    var icon = getDriveIcon(attachment);
 
-    var attachmentString = '&#8203;<div contenteditable="false" class="gmail_chip" style="width: 396px; height: 18px; max-height: 18px; padding: 5px; color: rgb(34, 34, 34); font-family: arial; font-style: normal; font-weight: bold; font-size: 13px; cursor: default; border: 1px solid rgb(221, 221, 221); line-height: 1; background-color: rgb(245, 245, 245);"><img src="//ssl.gstatic.com/ui/v1/icons/common/x_8px.png" style="opacity: 0.55; cursor: pointer; float: right; position: relative; top: -1px; display: none;"><a href=' + attachment.url + ' target="_blank" style=" display:inline-block; max-width: 366px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; text-decoration: none; cursor: pointer; padding: 1px 0; border: none; " aria-label=' + attachment.name + '><img style="vertical-align: bottom; border: none;" src=' + icon + '>&nbsp;<span dir="ltr" style="color: rgb(17, 85, 204); text-decoration: none; vertical-align: bottom;">' + attachment.name + '</span></a></div>&#8203;'
+    var attachmentString = '&#8203;<div contenteditable="false" class="gmail_chip" style="width: 396px; height: 18px; max-height: 18px; padding: 5px; color: rgb(34, 34, 34); font-family: arial; font-style: normal; font-weight: bold; font-size: 13px; cursor: default; border: 1px solid rgb(221, 221, 221); line-height: 1; background-color: rgb(245, 245, 245);"><img src="//ssl.gstatic.com/ui/v1/icons/common/x_8px.png" style="opacity: 0.55; cursor: pointer; float: right; position: relative; top: -1px; display: none;"><a href=' + attachment.url + ' target="_blank" style=" display:inline-block; max-width: 366px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; text-decoration: none; cursor: pointer; padding: 1px 0; border: none; " aria-label=' + attachment.name + '><img style="vertical-align: bottom; border: none;" src=' + icon + '>&nbsp;<span dir="ltr" style="color: rgb(17, 85, 204); text-decoration: none; vertical-align: bottom;">' + attachment.name + '</span></a></div>&#8203;';
 
     function addEventToAttachment(node) {
-
-        var closeImage = node.querySelector('img')
-        var link = node.querySelector('a')
-        var spanLink = link.querySelector('span')
+        var closeImage = node.querySelector('img');
+        var link = node.querySelector('a');
+        var spanLink = link.querySelector('span');
 
         node.onmouseenter = function () {
-            this.style.border = "1px solid rgb(204, 204, 204)"
-            closeImage.style.display = 'block'
-            spanLink.style.textDecoration = 'underline'
-        }
+            this.style.border = "1px solid rgb(204, 204, 204)";
+            closeImage.style.display = 'block';
+            spanLink.style.textDecoration = 'underline';
+        };
         node.onmouseleave = function () {
-            this.style.border = "1px solid rgb(221, 221, 221)"
-            closeImage.style.display = 'none'
-            spanLink.style.textDecoration = 'none'
-        }
+            this.style.border = "1px solid rgb(221, 221, 221)";
+            closeImage.style.display = 'none';
+            spanLink.style.textDecoration = 'none';
+        };
         link.onclick = function () {
-            window.open(link.href, '_blank')
-        }
+            window.open(link.href, '_blank');
+        };
         closeImage.onclick = function (e) {
-            e.stopPropagation()
-            range.commonAncestorContainer.removeChild(node)
-        }
+            e.stopPropagation();
+            range.commonAncestorContainer.removeChild(node);
+        };
     }
 
-    var attachmentNode = range.createContextualFragment(attachmentString)
-    addEventToAttachment(attachmentNode.firstElementChild)
-    range.insertNode(attachmentNode)
-}
+    var attachmentNode = range.createContextualFragment(attachmentString);
+    addEventToAttachment(attachmentNode.firstElementChild);
+    range.insertNode(attachmentNode);
 
-var activeCache = null
+    range.collapse();
+};
+
+var activeCache = null;
 function isActive () {
     if (activeCache !== null) {
         return activeCache;
@@ -307,8 +308,6 @@ function isActive () {
 }
 
 export default (params = {}) => {
-    console.log('gmail', params)
-
     if (!isActive()) {
         return false;
     }
@@ -318,12 +317,10 @@ export default (params = {}) => {
 
     before(params);
 
-    insertText({
-        text: parsedTemplate,
-        ...params
-    });
+    insertText(Object.assign({
+        text: parsedTemplate
+    }, params));
 
-    // TODO test attachments
     // add attachments
     if (
         isContentEditable(params.element) &&
@@ -331,9 +328,9 @@ export default (params = {}) => {
         params.quicktext.attachments.length
     ) {
         params.quicktext.attachments.map(function (attachment, index) {
-            setAttachmentNode(attachment, range);
+            setAttachmentNode(attachment);
         });
     }
 
     return true;
-}
+};
