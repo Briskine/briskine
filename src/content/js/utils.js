@@ -110,6 +110,7 @@ export function insertText (params = {}) {
         var caretRange = doc.createRange();
         caretRange.setStartAfter(lastQtChild);
         caretRange.collapse(true);
+        // TODO move to facebook plugin
         // facebook/draft.js causes a dom re-render
         // when removing ranges.
         // looks like a no-content flash of the editor.

@@ -8,6 +8,7 @@ import _ from 'underscore';
 
 import {register, run as runPlugins} from './plugin';
 import gmailPlugin from './plugins/gmail';
+import genericPlugin from './plugins/generic';
 
 window.KEY_TAB = 9;
 window.KEY_UP = 38;
@@ -253,5 +254,6 @@ autocomplete.mirrorStyles = [
 
 // TODO create general plugin, when no plugin matches
 register(gmailPlugin);
+register(genericPlugin);
 
 export default autocomplete;
