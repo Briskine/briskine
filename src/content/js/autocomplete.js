@@ -225,25 +225,6 @@ autocomplete.replaceWith = function (params) {
     App.settings.stats('words', params.quicktext.body.split(' ').length, () => {});
 };
 
-// TODO check if we still need the timeout focus
-// autocomplete.focusEditor = function (element, callback) {
-//
-//     // return focus to the editor
-//
-//     // gmail auto-focuses the to field
-//     // so we need the delay
-//     setTimeout(function () {
-//         if (element) {
-//             element.focus();
-//         }
-//
-//         if (callback) {
-//             callback();
-//         }
-//     }, 50);
-//
-// };
-
 // Mirror styles are used for creating a mirror element in order to track the cursor in a textarea
 autocomplete.mirrorStyles = [
     // Box Styles.

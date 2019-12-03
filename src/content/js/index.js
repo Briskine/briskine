@@ -275,6 +275,10 @@ App.init = function(settings, doc) {
         dialog.create();
         dialog.bindKeyboardEvents(doc);
     }
+
+    // temporary settings cache,
+    // used by utils.parseTemplate
+    App.settings.cache = Object.assign({}, settings);
 };
 
 window.App = App;

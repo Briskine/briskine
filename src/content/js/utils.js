@@ -210,11 +210,8 @@ function replaceFrom (from, setting) {
 }
 
 export function parseTemplate (template = '', data = {}) {
-    // TODO replace vars.from with settings.name
-//     App.settings.fetchSettings(function (settings) {
-//         if (vars) {
-//             vars.from = replaceFrom(vars.from, settings.name);
-//         }
+    // get "from" name from settings
+    data.from = replaceFrom(data.from || {}, App.settings.cache.name);
 
     return Handlebars.compile(template)(PrepareVars(data));
 }
