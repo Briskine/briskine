@@ -205,7 +205,7 @@ var dialog = {
 
         var showQaTooltip;
         // Show tooltip
-        instance.qaBtn.on('mouseenter', function (e) {
+        instance.qaBtn.on('mouseenter', function () {
             if (showQaTooltip) {
                 clearTimeout(showQaTooltip);
             }
@@ -222,7 +222,7 @@ var dialog = {
         });
 
         // Hide tooltip
-        instance.qaBtn.on('mouseleave', function (e) {
+        instance.qaBtn.on('mouseleave', function () {
             clearTimeout(showQaTooltip);
             instance.qaTooltip.hide();
         });
@@ -230,17 +230,17 @@ var dialog = {
 
     },
     bindKeyboardEvents: function (doc) {
-        Mousetrap.bindGlobal('up', function (e) {
+        Mousetrap.bindGlobal('up', function () {
             if (dialog.isActive) {
                 dialog.changeSelection('prev');
             }
         });
-        Mousetrap.bindGlobal('down', function (e) {
+        Mousetrap.bindGlobal('down', function () {
             if (dialog.isActive) {
                 dialog.changeSelection('next');
             }
         });
-        Mousetrap.bindGlobal('escape', function (e) {
+        Mousetrap.bindGlobal('escape', function () {
             if (dialog.isActive) {
                 dialog.close();
                 autocomplete.focusEditor(dialog.editor);
@@ -255,7 +255,7 @@ var dialog = {
                 selection.addRange(caretRange);
             }
         });
-        Mousetrap.bindGlobal('enter', function (e) {
+        Mousetrap.bindGlobal('enter', function () {
             if (dialog.isActive) {
                 dialog.selectActive();
                 dialog.close();
@@ -473,18 +473,9 @@ var dialog = {
         $element.get(0).scrollIntoView();
     },
     // remove dropdown and cleanup
-    close: function (callback) {
-
+    close: function () {
         if (!dialog.isActive) {
-
             return;
-
-            /*
-             if(callback) {
-             return callback();
-             }
-             */
-
         }
 
         $(this.dialogSelector).removeClass('qt-dropdown-show');

@@ -5,7 +5,6 @@
 
 import '../css/content.styl';
 import $ from 'jquery';
-import Handlebars from 'handlebars';
 import Fuse from 'fuse.js';
 // creates global window.Mousetrap
 import 'mousetrap';

@@ -327,7 +327,7 @@ export default (params = {}) => {
         params.quicktext.attachments &&
         params.quicktext.attachments.length
     ) {
-        params.quicktext.attachments.map(function (attachment, index) {
+        params.quicktext.attachments.map(function (attachment) {
             setAttachmentNode(attachment);
         });
     }

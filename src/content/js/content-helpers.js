@@ -70,7 +70,7 @@ function humanize(str) {
     return titleize(underscored(str).replace(/_id$/, '').replace(/_/g, ' '));
 }
 
-Handlebars.registerHelper('domain', function (text, options) {
+Handlebars.registerHelper('domain', function (text) {
     if (!text || typeof text !== 'string') {
         return text;
     }

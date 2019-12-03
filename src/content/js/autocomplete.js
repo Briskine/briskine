@@ -11,6 +11,7 @@ import fastmailPlugin from './plugins/fastmail';
 import linkedinPlugin from './plugins/linkedin';
 import outlookPlugin from './plugins/outlook';
 import yahooPlugin from './plugins/yahoo';
+import zendeskPlugin from './plugins/zendesk';
 import draftPlugin from './plugins/draft';
 import genericPlugin from './plugins/generic';
 
@@ -262,6 +263,7 @@ register(fastmailPlugin);
 register(linkedinPlugin);
 register(outlookPlugin);
 register(yahooPlugin);
+register(zendeskPlugin);
 register(draftPlugin);
 register(genericPlugin);
 
