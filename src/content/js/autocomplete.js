@@ -3,13 +3,12 @@
  */
 
 import $ from 'jquery';
-import Handlebars from 'handlebars';
-import _ from 'underscore';
 
 import {register, run as runPlugins} from './plugin';
 import gmailPlugin from './plugins/gmail';
 import facebookPlugin from './plugins/facebook';
 import fastmailPlugin from './plugins/fastmail';
+import linkedinPlugin from './plugins/linkedin';
 import draftPlugin from './plugins/draft';
 import genericPlugin from './plugins/generic';
 
@@ -217,7 +216,7 @@ autocomplete.replaceWith = function (params) {
         {
             word: word,
         }
-    ))
+    ));
 
     // updates stats
     App.settings.stats('words', params.quicktext.body.split(' ').length, () => {});
@@ -258,6 +257,7 @@ autocomplete.mirrorStyles = [
 register(gmailPlugin);
 register(facebookPlugin);
 register(fastmailPlugin);
+register(linkedinPlugin);
 register(draftPlugin);
 register(genericPlugin);
 

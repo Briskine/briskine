@@ -39,7 +39,7 @@ function PrepareVars (vars) {
         vars.bcc = prep(vars.bcc);
     }
     return vars;
-};
+}
 
 export function insertText (params = {}) {
     // the editor doesn't get the focus right-away.
@@ -48,7 +48,6 @@ export function insertText (params = {}) {
     params.element.focus();
 
     var doc = params.element.ownerDocument;
-    // HACK
     var parsedTemplate = params.text;
     var word = params.word;
 
@@ -110,6 +109,7 @@ export function insertText (params = {}) {
         var caretRange = doc.createRange();
         caretRange.setStartAfter(lastQtChild);
         caretRange.collapse(true);
+        selection.removeAllRanges();
         selection.addRange(caretRange);
 
         window.postMessage({
@@ -186,7 +186,7 @@ export function insertText (params = {}) {
 }
 
 // replace from with name saved in settings
-var replaceFrom = function (from, setting) {
+function replaceFrom (from, setting) {
     setting = _.extend({
         firstName: '',
         lastName: ''
@@ -207,7 +207,7 @@ var replaceFrom = function (from, setting) {
 
         return user;
     });
-};
+}
 
 export function parseTemplate (template = '', data = {}) {
     // TODO replace vars.from with settings.name
@@ -281,7 +281,7 @@ export function splitFullName (fullname) {
         first_name: fullname.substr(0, lastSpaceIndex),
         last_name: fullname.substr(lastSpaceIndex + 1)
     };
-};
+}
 
 // extracts name and email from google sign-out title string.
 // title = Google Account: User Name (user@email.net)
@@ -311,5 +311,5 @@ export function parseUserDetails (title) {
     }
 
     return jQuery.extend(details, splitFullName(details.name));
-};
+}
 
