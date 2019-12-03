@@ -9,6 +9,7 @@ import gmailPlugin from './plugins/gmail';
 import facebookPlugin from './plugins/facebook';
 import fastmailPlugin from './plugins/fastmail';
 import linkedinPlugin from './plugins/linkedin';
+import outlookPlugin from './plugins/outlook';
 import draftPlugin from './plugins/draft';
 import genericPlugin from './plugins/generic';
 
@@ -258,6 +259,7 @@ register(gmailPlugin);
 register(facebookPlugin);
 register(fastmailPlugin);
 register(linkedinPlugin);
+register(outlookPlugin);
 register(draftPlugin);
 register(genericPlugin);
 
