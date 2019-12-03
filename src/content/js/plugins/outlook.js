@@ -67,7 +67,7 @@ function getContactField ($container) {
 }
 
 function waitForElement (selector) {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
         var $element = document.querySelector(selector);
         if ($element) {
             return resolve($element);
@@ -95,7 +95,7 @@ function updateContactField ($field, value, $editor) {
             $field.value = value;
             $field.dispatchEvent(new Event('input', {bubbles: true}));
 
-            return waitForElement(getSuggestionSelector()).then(function ($element) {
+            return waitForElement(getSuggestionSelector()).then(function () {
                 // BUG only works once per field
                 $field.dispatchEvent(
                     new KeyboardEvent('keydown', {
@@ -136,7 +136,7 @@ function updateSection ($container, $button, containerSelector, value, $editor) 
 }
 
 // get all required data from the dom
-function getData (params) {
+function getData () {
     var vars = {
         from: [],
         to: [],
@@ -240,9 +240,9 @@ function before (params) {
     return waitForElement('[contenteditable]').then(($container) => {
         return Object.assign(params, {
             element: $container
-        })
+        });
     });
-};
+}
 
 var activeCache = null;
 function isActive () {

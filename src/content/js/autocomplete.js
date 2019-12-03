@@ -10,6 +10,7 @@ import facebookPlugin from './plugins/facebook';
 import fastmailPlugin from './plugins/fastmail';
 import linkedinPlugin from './plugins/linkedin';
 import outlookPlugin from './plugins/outlook';
+import yahooPlugin from './plugins/yahoo';
 import draftPlugin from './plugins/draft';
 import genericPlugin from './plugins/generic';
 
@@ -260,6 +261,7 @@ register(facebookPlugin);
 register(fastmailPlugin);
 register(linkedinPlugin);
 register(outlookPlugin);
+register(yahooPlugin);
 register(draftPlugin);
 register(genericPlugin);
 
