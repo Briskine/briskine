@@ -4,12 +4,12 @@ var webpack = require("webpack");
 var path = require("path");
 var stylus = require("stylus");
 var fileSystem = require("fs");
-var jshint = require("jshint-loader");
 var CleanWebpackPlugin = require("clean-webpack-plugin");
 var CopyWebpackPlugin = require("copy-webpack-plugin");
 var HtmlWebpackPlugin = require("html-webpack-plugin");
 var WriteFilePlugin = require("write-file-webpack-plugin");
 var ConcatPlugin = require('webpack-concat-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
 var extractBackgroundStyle = new ExtractTextPlugin('background/css/background.css');
 var extractContentStyle = new ExtractTextPlugin('content/css/content.css');
@@ -25,7 +25,6 @@ const dependencies = {
         // options page
         background: {
             js: [
-                'raven-js/dist/raven.min.js',
                 'jquery/dist/jquery.min.js',
                 'bootstrap/dist/js/bootstrap.min.js',
                 'underscore/underscore-min.js',
@@ -102,34 +101,6 @@ const dependencies = {
 
                 './src/store/chrome-config.js'
             ]
-        },
-        content: {
-            js: [
-                'raven-js/dist/raven.min.js',
-                'jquery/dist/jquery.min.js',
-                'underscore/underscore-min.js',
-                'handlebars/dist/handlebars.min.js',
-                'moment/min/moment.min.js',
-                'mousetrap/mousetrap.js',
-                'mousetrap/plugins/global-bind/mousetrap-global-bind.js',
-                'fuse.js/src/fuse.min.js',
-
-                './src/background/js/environment.js',
-                './src/common/*.js',
-
-                './src/store/store-client.js',
-
-                // order is important here
-                './src/content/js/patterns.js',
-                './src/content/js/index.js',
-                './src/content/js/utils.js',
-                './src/content/js/autocomplete.js',
-                './src/content/js/keyboard.js',
-                './src/content/js/dialog.js',
-                './src/content/js/events.js',
-
-                './src/content/js/plugins/*.js'
-            ]
         }
     };
 
@@ -143,15 +114,6 @@ const commonConfig = merge([
                         path.resolve(__dirname, 'src/background')
                     ],
                     use: extractBackgroundStyle.extract({
-                        use: ['css-loader', 'stylus-loader']
-                    })
-                },
-                {
-                    test: /\.(css|styl)$/i,
-                    include: [
-                        path.resolve(__dirname, 'src/content')
-                    ],
-                    use: extractContentStyle.extract({
                         use: ['css-loader', 'stylus-loader']
                     })
                 },
@@ -190,19 +152,6 @@ const commonConfig = merge([
                 {
                     uglify: false,
                     sourceMap: true,
-                    name: 'content',
-                    outputPath: 'content/js',
-                    fileName: '[name].js',
-                    filesToConcat: dependencies.content.js,
-                    attributes: {
-                        async: true
-                    }
-                }
-            ),
-            new ConcatPlugin(
-                {
-                    uglify: false,
-                    sourceMap: true,
                     name: 'store',
                     outputPath: 'store/js',
                     fileName: '[name].js',
@@ -213,11 +162,45 @@ const commonConfig = merge([
                 }
             ),
             extractBackgroundStyle,
-            extractContentStyle,
+            // TODO use devServer.writeToDisk instead
             new WriteFilePlugin(),
         ],
     },
 ]);
+
+const contentConfig = {
+    entry: {
+        content: './src/content/js/index.js'
+    },
+    output: {
+        path: __dirname + '/ext/content',
+        filename: 'js/[name].js'
+    },
+    plugins: [
+        new MiniCssExtractPlugin({
+            filename: 'css/[name].css'
+        })
+    ],
+    module: {
+        rules: [
+            {
+                test: /\.(css|styl)$/i,
+                use: [
+                    {
+                        loader: MiniCssExtractPlugin.loader
+                    },
+                    'css-loader',
+                    'stylus-loader'
+                ],
+            },
+        ]
+    },
+    devServer: {
+        inline: false,
+        writeToDisk: true
+    }
+};
+
 const developmentConfig = merge([
     dev.devServer({
         host: process.env.HOST,
@@ -238,7 +221,13 @@ const productionConfig = merge([
 ]);
 module.exports = mode => {
     if ( mode === "production" ){
-        return merge(commonConfig, build.generateManifestProduction({}), productionConfig,  { mode });
+        return [
+            contentConfig,
+            merge(commonConfig, build.generateManifestProduction({}), productionConfig,  { mode })
+        ]
     }
-    return merge(commonConfig, developmentConfig, dev.generateManifest({}), { mode });
+    return [
+        contentConfig,
+        merge(commonConfig, developmentConfig, dev.generateManifest({}), { mode }),
+    ];
 };

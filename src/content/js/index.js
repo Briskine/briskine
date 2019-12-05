@@ -3,6 +3,26 @@
  All declarations are done here
  */
 
+import '../css/content.styl';
+import $ from 'jquery';
+import Fuse from 'fuse.js';
+// creates global window.Mousetrap
+import 'mousetrap';
+import 'mousetrap/plugins/global-bind/mousetrap-global-bind';
+
+import './content-helpers';
+import './events';
+import '../../common/helpers';
+
+import store from '../../store/store-client';
+import keyboard from './keyboard';
+import dialog from './dialog';
+import PubSub from './patterns';
+
+// TODO common/helpers requires global jquery and fuse.js
+window.$ = $;
+window.Fuse = Fuse;
+
 var App = {
     data: {
         searchCache: {},
@@ -10,7 +30,7 @@ var App = {
         lastFilterRun: 0
     },
     editor_enabled: true,
-    autocomplete: {},
+    // TODO move settings to module
     settings: {
         case_sensitive_search: false,
         fuzzy_search: true,
@@ -161,71 +181,6 @@ var App = {
     }
 };
 
-// the active plugin, based on the plugin.init response
-// blank at first
-App.activePlugin = {
-    getData: function(params, callback) {
-        callback();
-    },
-    init: function(params, callback) {
-        callback();
-    }
-};
-
-// complete list of plugins
-App.plugins = {};
-
-// main plugin creation method, used by plugins
-App.plugin = function(id, obj) {
-    // check if plugin has all the required methods
-    var requiredMethods = ["init", "getData"];
-
-    // mix in the plugin
-    requiredMethods.forEach(function(prop) {
-        if (!obj.hasOwnProperty(prop)) {
-            throw new Error(
-                "Invalid plugin *" + id + "*! Missing method: " + prop
-            );
-        }
-    });
-
-    App.plugins[id] = obj;
-};
-
-// run the init method on all adapters
-App.activatePlugins = function() {
-    var allPlugins = Object.keys(App.plugins);
-    var pluginResponse = {};
-
-    // check if all plugins were loaded
-    var checkPluginsLoaded = function() {
-        var pluginResponseArray = Object.keys(pluginResponse);
-
-        if (pluginResponseArray.length === allPlugins.length) {
-            // all plugins loaded
-            pluginResponseArray.some(function(pluginName) {
-                // find the first plugin that returned true
-                // and set it as the active one
-                if (pluginResponse[pluginName] === true) {
-                    App.activePlugin = App.plugins[pluginName];
-                    return true;
-                }
-                return false;
-            });
-        }
-    };
-
-    // trigger the init function on all plugins
-    allPlugins.forEach(function(pluginName) {
-        App.plugins[pluginName].init({}, function(err, response) {
-            pluginResponse[pluginName] = response;
-            checkPluginsLoaded();
-        });
-    });
-};
-
-ravenInit();
-
 App.init = function(settings, doc) {
     var body = $(doc).find("body");
 
@@ -284,15 +239,18 @@ App.init = function(settings, doc) {
         chrome.runtime.sendMessage({ request: "launchGorgias" });
     });
 
-    doc.addEventListener("blur", App.onBlur, true);
-    doc.addEventListener("focus", App.onFocus, true);
-    doc.addEventListener("scroll", App.onScroll, true);
+    doc.addEventListener("blur", (e) => {
+        PubSub.publish('blur', e);
+    }, true);
+    doc.addEventListener("scroll", (e) => {
+        PubSub.publish('scroll', e);
+    }, true);
 
     // use custom keyboard shortcuts
     if (settings.keyboard.enabled) {
         Mousetrap.bindGlobal(
             settings.keyboard.shortcut,
-            App.autocomplete.keyboard.completion
+            keyboard.completion
         );
     }
 
@@ -303,23 +261,27 @@ App.init = function(settings, doc) {
         !isContentEditable
     ) {
         if (settings.qaBtn.enabled) {
-            App.autocomplete.dialog.createQaBtn();
+            dialog.createQaBtn();
         }
         if (settings.dialog.limit) {
-            App.autocomplete.dialog.RESULTS_LIMIT = settings.dialog.limit;
+            dialog.RESULTS_LIMIT = settings.dialog.limit;
         }
         Mousetrap.bindGlobal(
             settings.dialog.shortcut,
-            App.autocomplete.dialog.completion
+            dialog.completion
         );
 
         // create dialog once and then reuse the same element
-        App.autocomplete.dialog.create();
-        App.autocomplete.dialog.bindKeyboardEvents(doc);
+        dialog.create();
+        dialog.bindKeyboardEvents(doc);
     }
 
-    App.activatePlugins();
+    // temporary settings cache,
+    // used by utils.parseTemplate
+    App.settings.cache = Object.assign({}, settings);
 };
+
+window.App = App;
 
 $(function() {
     if (document.contentType !== "text/html") {

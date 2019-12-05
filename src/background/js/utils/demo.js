@@ -141,7 +141,6 @@ var gorgiasDemo = (function () {
         var ranges = getRanges(selection);
 
         if (!ranges.length) {
-            Raven.captureMessage('A selection without any ranges!');
             return;
         }
         // remove any previous ranges

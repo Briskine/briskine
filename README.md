@@ -12,17 +12,18 @@ Sites supported
 * Linkedin
 
 
-Developing extension
---------------------
+Development
+-----------
 
-Development is done using Grunt. So first you need to install [Yarn](https://yarnpkg.com) and [Grunt](http://gruntjs.com/) (Grunt is being used for only test in current version).
-Then, run `yarn install` to install all dependencies.
+* Install [Node.js](https://nodejs.org/en/) and [npm](https://www.npmjs.com/).
+* Install [Yarn](https://yarnpkg.com).
+* Run `yarn install` to install all dependencies.
 
-There are available following commands:
+The following commands are available:
 
-* `yarn start` - Development mode. Creates development manifest, watches for styl files and recompiles them automatically.
+* `yarn start` - Development mode. Creates development manifest, watches files and recompiles them automatically.
 * `yarn build` - Build extension and compress extension.
-* `grunt test` or `grunt t` - Run tests.
+* `yarn test` - Run tests.
 
 Known issues
 ------------
@@ -92,121 +93,4 @@ Second To:
 - Last name {{to.1.last_name}}
 - Email {{to.1.email}}
 {{/if}}
-```
-
-Building plugins
-----------------
-
-You can build plugins using the `App.plugin('PLUGIN_NAME', {})` method.
-
-Check out the `src/content/plugins/*.js` files for examples on how a plugin show look.
-
-Each plugin must expose the following methods:
-
-* `init`
-* `getData`
-
-All plugin methods should take two arguments: `params` and `callback`.
-
-The `params` argument is an object which can contain other objects or properties that you can use in the method.
-
-The `callback` argument should be a function called at the end of the method, after all async functionality.
-
-The `callback` function uses `Node.js`-style arguments. The first one is an error object returned in case of errors, otherwise return `null`. The second argument is the actual method response.
-
-### Plugin methods
-
-#### init
-
-The `init` method should respond with a boolean value, `false` by default, and `true` if the plugin should be activated.
-
-#### getData
-
-The `getData` method receives the following `params` object:
-
-```
-params: {
-    element: DOM_ELEMENT
-}
-```
-
-The `params.element` object is a reference to the DOM element on which the autocomplete was triggered. It can be a `contenteditable` element, or a form element.
-
-The response of the `getData` method should look like:
-
-```
-{
-    from: [],
-    to: [],
-    cc: [],
-    bcc: [],
-    subject: ''
-}
-```
-
-Each array should contain objects that look like:
-
-```
-{
-    name: '',
-    first_name: '',
-    last_name: '',
-    email: ''
-}
-```
-
-#### setTitle
-
-```
-// TODO
-```
-
-Testing
--------
-
-Before running the tests, run:
-
-```
-yarn install
-```
-
-Then key your Chrome private `.pem` keyfile and copy it as `key.pem` in the repository root.
-
-Set the `QUICKTEXT_GMAIL_USERNAME` and `QUICKTEXT_GMAIL_PASSWORD` ENV variables, for logging-in into Gmail.
-
-```
-export QUICKTEXT_GMAIL_USERNAME=abc
-export QUICKTEXT_GMAIL_PASSWORD=def
-```
-
-Then, to run all the tests:
-
-```
-grunt test
-```
-
-or only for the contentscript:
-
-```
-grunt test:content
-```
-
-or only for the background script:
-
-```
-grunt test:background
-```
-
-Running the tests will recompile the app for production and test that.
-
-If you want to run the tests locally (not on Sauce Labs) without recompiling the app, run:
-
-```
-grunt protractor:background
-```
-
-or
-
-```
-grunt protractor:content
 ```

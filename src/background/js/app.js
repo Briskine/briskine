@@ -1,17 +1,3 @@
-ravenInit({
-    whitelistUrls: [
-        /https:\/\/mail\.google\.com/,
-        /https:\/\/inbox\.google\.com/,
-        /https:\/\/.*mail\.yahoo\.com/,
-        /https:\/\/.*mail\.live\.com/,
-        /https:\/\/.*outlook\.live\.com/,
-        /https:\/\/.*linkedin\.com/,
-        /https:\/\/.*fastmail\.com/,
-        /chrome-extension:\/\/jcaagnkpclhhpghggjoemjjneoimjbid/, // chrome
-        /chrome-extension:\/\/ammheiinddkagoaegldpipmmjfoggahh/ // opera
-    ]
-});
-
 var gApp = angular.module('gApp', [
     'ngRoute',
     'ngResource',
@@ -109,9 +95,6 @@ gApp.config(function ($routeProvider, $compileProvider, $sceDelegateProvider) {
 gApp.config(["$provide", function ($provide) {
     $provide.decorator("$exceptionHandler", ["$delegate", "$window", function ($delegate, $window) {
         return function (exception, cause) {
-            if (ENV === 'production') {
-                Raven.captureException(exception);
-            }
             // (Optional) Pass the error through to the delegate formats it for the console
             $delegate(exception, cause);
         };

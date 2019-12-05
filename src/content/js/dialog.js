@@ -2,18 +2,29 @@
  * Autocomplete dialog code.
  */
 
+import $ from 'jquery';
+import Handlebars from 'handlebars';
+import _ from 'underscore';
+
+import PubSub from './patterns';
+import store from '../../store/store-client';
+import autocomplete from './autocomplete';
+
+var KEY_UP = 38;
+var KEY_DOWN = 40;
+var KEY_ENTER = 13;
 
 PubSub.subscribe('focus', function (action, element) {
     if (action === 'off') {
         if (element === null) {
-            App.autocomplete.dialog.close();
-        } else if ($(element).attr('class') !== $(App.autocomplete.dialog.searchSelector).attr('class')) {
-            App.autocomplete.dialog.close();
+            dialog.close();
+        } else if ($(element).attr('class') !== $(dialog.searchSelector).attr('class')) {
+            dialog.close();
         }
     }
 });
 
-App.autocomplete.dialog = {
+var dialog = {
     isActive: false,
     isEmpty: true,
     RESULTS_LIMIT: 5, // only show 5 results at a time
@@ -51,22 +62,22 @@ App.autocomplete.dialog = {
 
         // if it's not an editable element
         // don't trigger anything
-        if (!App.autocomplete.isEditable(element)) {
+        if (!autocomplete.isEditable(element)) {
             return false;
         }
 
-        App.autocomplete.cursorPosition = App.autocomplete.getCursorPosition(element);
-        App.autocomplete.cursorPosition.word = App.autocomplete.getSelectedWord({
+        autocomplete.cursorPosition = autocomplete.getCursorPosition(element);
+        autocomplete.cursorPosition.word = autocomplete.getSelectedWord({
             element: element
         });
 
         // fetch templates from storage to populate the dialog
-        App.settings.getFiltered("", App.autocomplete.dialog.RESULTS_LIMIT, function (quicktexts) {
-            App.autocomplete.quicktexts = quicktexts;
+        App.settings.getFiltered("", dialog.RESULTS_LIMIT, function (quicktexts) {
+            autocomplete.quicktexts = quicktexts;
 
-            params.quicktexts = App.autocomplete.quicktexts;
+            params.quicktexts = autocomplete.quicktexts;
 
-            App.autocomplete.dialog.populate(params);
+            dialog.populate(params);
 
             chrome.runtime.sendMessage({
                 'request': 'track',
@@ -83,48 +94,52 @@ App.autocomplete.dialog = {
         var container = $('body');
 
         // Add loading dropdown
-        var dialog = $(this.template);
-        container.append(dialog);
+        var $dialog = $(this.template);
+        container.append($dialog);
 
         //Gmail HACK: set z-index to auto to a parent, otherwise the autocomplete
         //      dropdown will not be displayed with the correct stacking
-        dialog.parents('.qz').css('z-index', 'auto');
+        $dialog.parents('.qz').css('z-index', 'auto');
 
         // Handle mouse hover and click
-        dialog.on('mouseover mousedown', '.qt-item', function (e) {
+        $dialog.on('mouseover mousedown', '.qt-item', function (e) {
             e.preventDefault();
             e.stopPropagation();
 
-            App.autocomplete.dialog.selectItem($(this).index('.qt-item'));
+            dialog.selectItem($(this).index('.qt-item'));
             if (e.type === 'mousedown') {
-                App.autocomplete.dialog.selectActive();
-                //App.autocomplete.dialog.close();
+                dialog.selectActive();
+                //dialog.close();
             }
         });
 
-        $(App.autocomplete.dialog.newTemplateSelector).on('mousedown', function () {
+        $(dialog.newTemplateSelector).on('mousedown', function () {
             chrome.runtime.sendMessage({'request': 'new'});
         });
 
-        dialog.on('keyup', this.searchSelector, function (e) {
+        $dialog.on('keyup', this.searchSelector, function (e) {
             // ignore modifier keys because they manipulate
             if (_.contains([KEY_ENTER, KEY_UP, KEY_DOWN], e.keyCode)) {
                 return;
             }
 
-            App.autocomplete.cursorPosition.word.text = $(this).val();
+            autocomplete.cursorPosition.word.text = $(this).val();
 
-            App.settings.getFiltered(App.autocomplete.cursorPosition.word.text, App.autocomplete.dialog.RESULTS_LIMIT, function (quicktexts) {
+            App.settings.getFiltered(autocomplete.cursorPosition.word.text, dialog.RESULTS_LIMIT, function (quicktexts) {
+                // don't update if dialog was closed before getting new templates
+                if (!dialog.isActive) {
+                    return;
+                }
 
-                App.autocomplete.quicktexts = quicktexts;
-                App.autocomplete.dialog.populate({
-                    quicktexts: App.autocomplete.quicktexts
+                autocomplete.quicktexts = quicktexts;
+                dialog.populate({
+                    quicktexts: autocomplete.quicktexts
                 });
             });
         });
 
         // edit template from dialog
-        dialog.on('mousedown', '.qt-edit', function (e) {
+        $dialog.on('mousedown', '.qt-edit', function (e) {
             e.preventDefault();
             e.stopPropagation();
 
@@ -135,7 +150,7 @@ App.autocomplete.dialog = {
     },
     createQaBtn: function () {
         // only on whitelisted domains
-        if (!App.autocomplete.dialog.qaBtnWhitelist.includes(window.location.origin)) {
+        if (!dialog.qaBtnWhitelist.includes(window.location.origin)) {
             return;
         }
 
@@ -182,13 +197,13 @@ App.autocomplete.dialog = {
 
             // return the focus to the element focused
             // before clicking the qa button
-            App.autocomplete.dialog.prevFocus.focus();
+            dialog.prevFocus.focus();
 
             // position the dialog under the qa button.
             // since the focus node is now the button
             // we have to pass the previous focus (the text node).
-            App.autocomplete.dialog.completion(e, {
-                focusNode: App.autocomplete.dialog.prevFocus,
+            dialog.completion(e, {
+                focusNode: dialog.prevFocus,
                 dialogPositionNode: e.target,
                 source: 'button'
             });
@@ -198,7 +213,7 @@ App.autocomplete.dialog = {
 
         var showQaTooltip;
         // Show tooltip
-        instance.qaBtn.on('mouseenter', function (e) {
+        instance.qaBtn.on('mouseenter', function () {
             if (showQaTooltip) {
                 clearTimeout(showQaTooltip);
             }
@@ -215,7 +230,7 @@ App.autocomplete.dialog = {
         });
 
         // Hide tooltip
-        instance.qaBtn.on('mouseleave', function (e) {
+        instance.qaBtn.on('mouseleave', function () {
             clearTimeout(showQaTooltip);
             instance.qaTooltip.hide();
         });
@@ -223,36 +238,37 @@ App.autocomplete.dialog = {
 
     },
     bindKeyboardEvents: function (doc) {
-        Mousetrap.bindGlobal('up', function (e) {
-            if (App.autocomplete.dialog.isActive) {
-                App.autocomplete.dialog.changeSelection('prev');
+        Mousetrap.bindGlobal('up', function () {
+            if (dialog.isActive) {
+                dialog.changeSelection('prev');
             }
         });
-        Mousetrap.bindGlobal('down', function (e) {
-            if (App.autocomplete.dialog.isActive) {
-                App.autocomplete.dialog.changeSelection('next');
+        Mousetrap.bindGlobal('down', function () {
+            if (dialog.isActive) {
+                dialog.changeSelection('next');
             }
         });
         Mousetrap.bindGlobal('escape', function (e) {
-            if (App.autocomplete.dialog.isActive) {
-                App.autocomplete.dialog.close();
-                App.autocomplete.focusEditor(App.autocomplete.dialog.editor);
+            if (dialog.isActive) {
+                // prevent focus moving to To field in Gmail
+                e.stopPropagation();
 
+                dialog.close();
+                dialog.editor.focus();
                 // restore the previous caret position
                 // since we didn't select any quicktext
                 var selection = doc.getSelection();
                 var caretRange = doc.createRange();
-                caretRange.setStartAfter(App.autocomplete.dialog.focusNode);
+                caretRange.setStartAfter(dialog.focusNode);
                 caretRange.collapse(true);
                 selection.removeAllRanges();
                 selection.addRange(caretRange);
             }
         });
-        Mousetrap.bindGlobal('enter', function (e) {
-            if (App.autocomplete.dialog.isActive) {
-                App.autocomplete.dialog.selectActive();
-                App.autocomplete.dialog.close();
-                App.autocomplete.focusEditor(App.autocomplete.dialog.editor);
+        Mousetrap.bindGlobal('enter', function () {
+            if (dialog.isActive) {
+                dialog.selectActive();
+                dialog.close();
             }
         });
 
@@ -260,18 +276,18 @@ App.autocomplete.dialog = {
     populate: function (params) {
         params = params || {};
 
-        App.autocomplete.quicktexts = params.quicktexts;
+        autocomplete.quicktexts = params.quicktexts;
 
         // clone the elements
         // so we can safely highlight the matched text
         // without breaking the generated handlebars markup
-        var clonedElements = jQuery.extend(true, [], App.autocomplete.quicktexts);
+        var clonedElements = $.extend(true, [], autocomplete.quicktexts);
 
         // highlight found string in element title, body and shortcut
         var word_text = '';
         var text = '';
-        if (App.autocomplete.cursorPosition && App.autocomplete.cursorPosition.word) {
-            word_text = App.autocomplete.cursorPosition.word.text;
+        if (autocomplete.cursorPosition && autocomplete.cursorPosition.word) {
+            word_text = autocomplete.cursorPosition.word.text;
             text = word_text.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
         }
         var searchRe = new RegExp(text, 'gi');
@@ -304,20 +320,20 @@ App.autocomplete.dialog = {
             }
         });
 
-        var content = Handlebars.compile(App.autocomplete.dialog.liTemplate)({
+        var content = Handlebars.compile(dialog.liTemplate)({
             elements: clonedElements
         });
 
         $(this.contentSelector).html(content);
 
-        if (!App.autocomplete.dialog.isActive) {
-            App.autocomplete.dialog.show(params);
+        if (!dialog.isActive) {
+            dialog.show(params);
         }
 
-        App.autocomplete.dialog.isEmpty = false;
+        dialog.isEmpty = false;
 
         // Set first element active
-        App.autocomplete.dialog.selectItem(0);
+        dialog.selectItem(0);
 
     },
     show: function (params) {
@@ -325,27 +341,27 @@ App.autocomplete.dialog = {
 
         // get current focused element - the editor
         var doc = params.element.ownerDocument;
-        App.autocomplete.dialog.editor = doc.activeElement;
+        dialog.editor = doc.activeElement;
 
         var selection = doc.getSelection();
         var focusNode = selection.focusNode;
-        App.autocomplete.dialog.focusNode = focusNode;
+        dialog.focusNode = focusNode;
 
-        App.autocomplete.dialog.isActive = true;
-        App.autocomplete.dialog.isEmpty = true;
+        dialog.isActive = true;
+        dialog.isEmpty = true;
 
         $(this.dialogSelector).addClass('qt-dropdown-show');
 
-        $(App.autocomplete.dialog.contentSelector).scrollTop();
+        $(dialog.contentSelector).scrollTop();
 
-        App.autocomplete.dialog.setDialogPosition(params.dialogPositionNode);
+        dialog.setDialogPosition(params.dialogPositionNode);
 
         // focus the input focus after setting the position
         // because it messes with the window scroll focused
-        $(App.autocomplete.dialog.searchSelector).focus();
+        $(dialog.searchSelector).focus();
     },
     setDialogPosition: function (positionNode) {
-        if (!App.autocomplete.dialog.isActive) {
+        if (!dialog.isActive) {
             return;
         }
 
@@ -357,7 +373,7 @@ App.autocomplete.dialog = {
 
         $('body').removeClass('qt-dropdown-show-top');
 
-        var $dialog = $(App.autocomplete.dialog.dialogSelector);
+        var $dialog = $(dialog.dialogSelector);
 
         var dialogMetrics = $dialog.get(0).getBoundingClientRect();
 
@@ -386,7 +402,7 @@ App.autocomplete.dialog = {
 
             // cursorPosition doesn't need scrollTop/Left
             // because it uses the absolute page offset positions
-            metrics = App.autocomplete.cursorPosition.absolute;
+            metrics = autocomplete.cursorPosition.absolute;
 
         }
 
@@ -416,7 +432,7 @@ App.autocomplete.dialog = {
 
     },
     selectItem: function (index) {
-        if (App.autocomplete.dialog.isActive && !App.autocomplete.dialog.isEmpty) {
+        if (dialog.isActive && !dialog.isEmpty) {
             var content = $(this.contentSelector);
             var $element = content.children('.qt-item').eq(index);
 
@@ -426,17 +442,19 @@ App.autocomplete.dialog = {
         }
     },
     selectActive: function () {
-        if (App.autocomplete.dialog.isActive && !this.isEmpty && App.autocomplete.quicktexts.length) {
+        if (dialog.isActive && !this.isEmpty && autocomplete.quicktexts.length) {
             var activeItemId = $(this.contentSelector).find('.active').data('id');
-            var quicktext = App.autocomplete.quicktexts.filter(function (quicktext) {
+            var quicktext = autocomplete.quicktexts.filter(function (quicktext) {
                 return quicktext.id === activeItemId;
             })[0];
 
-            App.autocomplete.replaceWith({
-                element: App.autocomplete.dialog.editor,
+            autocomplete.replaceWith({
+                element: dialog.editor,
                 quicktext: quicktext,
-                focusNode: App.autocomplete.dialog.focusNode
+                focusNode: dialog.focusNode
             });
+
+            dialog.close();
 
             chrome.runtime.sendMessage({
                 'request': 'track',
@@ -457,25 +475,16 @@ App.autocomplete.dialog = {
             index_active = content.find('.active').index('.qt-item'),
             index_new = Math.max(0, Math.min(elements_count - 1, index_active + index_diff));
 
-        App.autocomplete.dialog.selectItem(index_new);
+        dialog.selectItem(index_new);
 
         // scroll the active element into view
         var $element = content.children('.qt-item').eq(index_new);
         $element.get(0).scrollIntoView();
     },
     // remove dropdown and cleanup
-    close: function (callback) {
-
-        if (!App.autocomplete.dialog.isActive) {
-
+    close: function () {
+        if (!dialog.isActive) {
             return;
-
-            /*
-             if(callback) {
-             return callback();
-             }
-             */
-
         }
 
         $(this.dialogSelector).removeClass('qt-dropdown-show');
@@ -483,11 +492,11 @@ App.autocomplete.dialog = {
         $('body').removeClass('qa-btn-dropdown-show');
         $(this.searchSelector).val('');
 
-        App.autocomplete.dialog.isActive = false;
-        App.autocomplete.dialog.isEmpty = null;
+        dialog.isActive = false;
+        dialog.isEmpty = null;
 
-        App.autocomplete.dialog.quicktexts = [];
-        App.autocomplete.dialog.cursorPosition = null;
+        dialog.quicktexts = [];
+        dialog.cursorPosition = null;
 
     },
     showQaForElement: function (elem) {
@@ -527,7 +536,7 @@ App.autocomplete.dialog = {
 
     },
     setQaBtnPosition: function (textfield) {
-        var qaBtn = App.autocomplete.dialog.qaBtn.get(0);
+        var qaBtn = dialog.qaBtn.get(0);
         var textfieldRect = textfield.getBoundingClientRect();
         var metrics = {
             top: textfieldRect.top,
@@ -561,7 +570,7 @@ App.autocomplete.dialog = {
         var textfield = e.target;
 
         // only show it for valid elements
-        if (!App.autocomplete.dialog.showQaForElement(textfield)) {
+        if (!dialog.showQaForElement(textfield)) {
             return false;
         }
 
@@ -574,9 +583,9 @@ App.autocomplete.dialog = {
 
             $('body').addClass('gorgias-show-qa-btn');
 
-            App.autocomplete.dialog.prevFocus = textfield;
+            dialog.prevFocus = textfield;
 
-            var qaBtn = App.autocomplete.dialog.qaBtn.get(0);
+            var qaBtn = dialog.qaBtn.get(0);
 
             // padding from the top-right corner of the textfield
             var padding = 10;
@@ -609,17 +618,17 @@ App.autocomplete.dialog = {
                 }
             } else {
                 // default positioning
-                App.autocomplete.dialog.setQaBtnPosition(textfield);
+                dialog.setQaBtnPosition(textfield);
 
                 // recalculate the width
-                for (var i in App.autocomplete.dialog.qaPositionIntervals) {
-                    clearInterval(App.autocomplete.dialog.qaPositionIntervals[i]);
+                for (var i in dialog.qaPositionIntervals) {
+                    clearInterval(dialog.qaPositionIntervals[i]);
                 }
 
                 var intervalID = setInterval(function () {
-                    App.autocomplete.dialog.setQaBtnPosition(textfield);
+                    dialog.setQaBtnPosition(textfield);
                 }, 1000);
-                App.autocomplete.dialog.qaPositionIntervals.push(intervalID);
+                dialog.qaPositionIntervals.push(intervalID);
             }
 
         });
@@ -633,10 +642,10 @@ App.autocomplete.dialog = {
 var contentUrl = chrome.extension.getURL("pages/content.html");
 $.get(contentUrl, function (data) {
     var vars = [
-        'App.autocomplete.dialog.qaBtnTemplate',
-        'App.autocomplete.dialog.qaBtnTooltip',
-        'App.autocomplete.dialog.template',
-        'App.autocomplete.dialog.liTemplate'
+        'dialog.qaBtnTemplate',
+        'dialog.qaBtnTooltip',
+        'dialog.template',
+        'dialog.liTemplate'
     ];
 
     for (var i in vars) {
@@ -644,7 +653,8 @@ $.get(contentUrl, function (data) {
         var start = data.indexOf(v);
         var end = data.lastIndexOf(v);
         // todo(@xarg): sorry the barbarian splitting, could have been done much better.
-        App.autocomplete.dialog[v.split('.').slice(-1)] = data.slice(start + v.length + 3, end - 4);
+        dialog[v.split('.').slice(-1)] = data.slice(start + v.length + 3, end - 4);
     }
 }, "html");
 
+export default dialog;

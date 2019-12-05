@@ -1,7 +1,6 @@
-"use strict";
-
-var ZipPlugin = require('zip-webpack-plugin');
-var CopyWebpackPlugin = require("copy-webpack-plugin");
+var path = require('path');
+var CopyWebpackPlugin = require('copy-webpack-plugin');
+const FileManagerPlugin = require('filemanager-webpack-plugin');
 
 exports.setPath = ({ output }) => {
     return {
@@ -10,10 +9,16 @@ exports.setPath = ({ output }) => {
         },
     };
 };
-exports.archive = ({ path, filename }) => {
-    const plugin = new ZipPlugin({
-        path: path,
-        filename: filename,
+exports.archive = ({ path: buildPath, filename }) => {
+    const plugin = new FileManagerPlugin({
+        onEnd: {
+            archive: [
+                {
+                    source: path.resolve(__dirname, '../ext'),
+                    destination: `${buildPath}/${filename}.zip`
+                },
+            ]
+        }
     });
     return {
         plugins: [plugin],

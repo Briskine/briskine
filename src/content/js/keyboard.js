@@ -2,7 +2,9 @@
  * Keyboard completion code.
  */
 
-App.autocomplete.keyboard = {
+import autocomplete from './autocomplete';
+
+export default {
     completion: function (e) {
 
         var element = e.target;
@@ -11,7 +13,7 @@ App.autocomplete.keyboard = {
         var focusNode = selection.focusNode;
         // if it's not an editable element
         // don't trigger anything
-        if(!App.autocomplete.isEditable(element)) {
+        if(!autocomplete.isEditable(element)) {
             return true;
         }
 
@@ -21,12 +23,12 @@ App.autocomplete.keyboard = {
         }
 
         // First get the cursor position
-        App.autocomplete.cursorPosition = App.autocomplete.getCursorPosition(element);
+        autocomplete.cursorPosition = autocomplete.getCursorPosition(element);
         // Then get the word at the positon
-        var word = App.autocomplete.getSelectedWord({
+        var word = autocomplete.getSelectedWord({
             element: element
         });
-        App.autocomplete.cursorPosition.word = word;
+        autocomplete.cursorPosition.word = word;
 
         if (word.text) {
 
@@ -35,7 +37,7 @@ App.autocomplete.keyboard = {
 
                 if (quicktexts.length) {
                     // replace with the first quicktext found
-                    App.autocomplete.replaceWith({
+                    autocomplete.replaceWith({
                         element: element,
                         quicktext: quicktexts[0],
                         focusNode: focusNode
