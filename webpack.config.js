@@ -162,6 +162,7 @@ const commonConfig = merge([
                 }
             ),
             extractBackgroundStyle,
+            // TODO use devServer.writeToDisk instead
             new WriteFilePlugin(),
         ],
     },
