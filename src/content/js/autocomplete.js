@@ -15,11 +15,6 @@ import zendeskPlugin from './plugins/zendesk';
 import draftPlugin from './plugins/draft';
 import genericPlugin from './plugins/generic';
 
-window.KEY_TAB = 9;
-window.KEY_UP = 38;
-window.KEY_DOWN = 40;
-window.KEY_ENTER = 13;
-
 var autocomplete = {};
 
 autocomplete.quicktexts = [];
@@ -60,7 +55,10 @@ autocomplete.getSelectedWord = function (params) {
             // However, in some cases it may refer to an Element Node
             case (document.ELEMENT_NODE):
                 // In that case, the focusOffset property returns the index in the childNodes collection of the focus node where the selection ends.
-                if (selection.focusNode.childNodes.length) {
+                if (
+                    // focusOffset is larger than childNodes length when editor is empty
+                    selection.focusNode.childNodes[selection.focusOffset]
+                ) {
                     beforeSelection = selection.focusNode.childNodes[selection.focusOffset].textContent;
                 }
                 break;

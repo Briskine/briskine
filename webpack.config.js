@@ -101,34 +101,7 @@ const dependencies = {
 
                 './src/store/chrome-config.js'
             ]
-        },
-//         content: {
-//             js: [
-//                 'jquery/dist/jquery.min.js',
-//                 'underscore/underscore-min.js',
-//                 'handlebars/dist/handlebars.min.js',
-//                 'moment/min/moment.min.js',
-//                 'mousetrap/mousetrap.js',
-//                 'mousetrap/plugins/global-bind/mousetrap-global-bind.js',
-//                 'fuse.js/src/fuse.min.js',
-
-//                 './src/background/js/environment.js',
-//                 './src/common/*.js',
-
-//                 './src/store/store-client.js',
-
-                // order is important here
-//                 './src/content/js/patterns.js',
-//                 './src/content/js/index.js',
-//                 './src/content/js/utils.js',
-//                 './src/content/js/autocomplete.js',
-//                 './src/content/js/keyboard.js',
-//                 './src/content/js/dialog.js',
-//                 './src/content/js/events.js',
-//
-//                 './src/content/js/plugins/*.js'
-//             ]
-//         }
+        }
     };
 
 const commonConfig = merge([
@@ -247,7 +220,10 @@ const productionConfig = merge([
 ]);
 module.exports = mode => {
     if ( mode === "production" ){
-        return merge(commonConfig, build.generateManifestProduction({}), productionConfig,  { mode });
+        return [
+            contentConfig,
+            merge(commonConfig, build.generateManifestProduction({}), productionConfig,  { mode })
+        ]
     }
     return [
         contentConfig,

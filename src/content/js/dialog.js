@@ -10,6 +10,10 @@ import PubSub from './patterns';
 import store from '../../store/store-client';
 import autocomplete from './autocomplete';
 
+var KEY_UP = 38;
+var KEY_DOWN = 40;
+var KEY_ENTER = 13;
+
 PubSub.subscribe('focus', function (action, element) {
     if (action === 'off') {
         if (element === null) {
@@ -122,6 +126,10 @@ var dialog = {
             autocomplete.cursorPosition.word.text = $(this).val();
 
             App.settings.getFiltered(autocomplete.cursorPosition.word.text, dialog.RESULTS_LIMIT, function (quicktexts) {
+                // don't update if dialog was closed before getting new templates
+                if (!dialog.isActive) {
+                    return;
+                }
 
                 autocomplete.quicktexts = quicktexts;
                 dialog.populate({
@@ -240,11 +248,13 @@ var dialog = {
                 dialog.changeSelection('next');
             }
         });
-        Mousetrap.bindGlobal('escape', function () {
+        Mousetrap.bindGlobal('escape', function (e) {
             if (dialog.isActive) {
-                dialog.close();
-                autocomplete.focusEditor(dialog.editor);
+                // prevent focus moving to To field in Gmail
+                e.stopPropagation();
 
+                dialog.close();
+                dialog.editor.focus();
                 // restore the previous caret position
                 // since we didn't select any quicktext
                 var selection = doc.getSelection();
@@ -259,7 +269,6 @@ var dialog = {
             if (dialog.isActive) {
                 dialog.selectActive();
                 dialog.close();
-                autocomplete.focusEditor(dialog.editor);
             }
         });
 
