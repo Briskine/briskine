@@ -80,26 +80,7 @@ const dependencies = {
                     'tinymce/skins/lightgray/skin.min.css',
                     'tinymce/skins/lightgray/content.min.css'
                 ]
-            },
-        // background script
-//         store: {
-//             js: [
-//                 'underscore/underscore-min.js',
-//                 'underscore.string/dist/underscore.string.min.js',
-//
-//                 './src/background/js/environment.js',
-//                 './firebase/config-firebase.js',
-//                 './firebase/firebase.umd.js',
-//                 './src/background/js/config.js',
-//                 './src/background/js/utils/amplitude.js',
-//
-//                 './src/store/plugin-api.js',
-//                 './src/store/plugin-firestore.js',
-//                 './src/store/store-background.js',
-//
-//                 './src/store/chrome-config.js'
-//             ]
-//         }
+            }
     };
 
 const commonConfig = merge([

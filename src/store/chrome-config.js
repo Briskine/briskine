@@ -1,9 +1,35 @@
 import '../background/js/utils/amplitude';
 
+function resetSettings () {
+    return store.setSettings({
+        key: 'settings'
+    });
+}
+
+function updateTemplateStats (id) {
+    return store.getTemplate({
+        id: id
+    }).then((res) => {
+        var template = res[id];
+        if (typeof template.use_count === 'undefined') {
+            template.use_count = 0;
+        }
+
+        template.use_count++;
+        template.lastuse_datetime = new Date().toISOString();
+
+        return store.updateTemplate({
+            template: template,
+            synced: true,
+            onlyLocal: true,
+            // only used by firestore plugin
+            stats: true
+        });
+    });
+}
+
 // Register Chrome runtime protocols and context menus
 if (chrome.extension) {
-
-    // TODO somehow get this values from the plugins
 
     // for tabs.query auto-reload
     var urlMatchPatterns = [
@@ -21,7 +47,7 @@ if (chrome.extension) {
     ];
 
     // Called when the url of a tab changes.
-    var updatedTab = function (tabId, changeInfo, tab) {
+    var updatedTab = function () {
         // in development
         // also show for localhost
         var localhostPattern = "*://localhost/*";
@@ -38,12 +64,6 @@ if (chrome.extension) {
     chrome.browserAction.onClicked.addListener(function () {
         window.open(chrome.extension.getURL('/pages/options.html') + '#/list', 'Options');
     });
-
-    function resetSettings () {
-        return store.setSettings({
-            key: 'settings'
-        });
-    }
 
     // Called after installation: https://developer.chrome.com/extensions/runtime.html#event-onInstalled
     chrome.runtime.onInstalled.addListener(function (details) {
@@ -98,28 +118,6 @@ if (chrome.extension) {
             chrome.tabs.create({url: "pages/frameless.html#/installed"});
         }
     });
-
-    function updateTemplateStats (id) {
-        return store.getTemplate({
-            id: id
-        }).then((res) => {
-            var template = res[id];
-            if (typeof template.use_count === 'undefined') {
-                template.use_count = 0;
-            }
-
-            template.use_count++;
-            template.lastuse_datetime = new Date().toISOString();
-
-            return store.updateTemplate({
-                template: template,
-                synced: true,
-                onlyLocal: true,
-                // only used by firestore plugin
-                stats: true
-            });
-        });
-    }
 
     chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
         if (request.request === 'stats') {

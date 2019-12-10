@@ -75,7 +75,7 @@ var forgot = (params = {}) => {
 
 var trigger = function (name) {
     // send trigger message to client store
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
         chrome.runtime.sendMessage({
             type: 'trigger',
             data: {

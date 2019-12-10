@@ -122,7 +122,7 @@
 
     return function () {
         // handle trigger from background
-        chrome.runtime.onMessage.addListener((req, sender, sendResponse) => {
+        chrome.runtime.onMessage.addListener((req) => {
             if (
                 req.type &&
                 req.type === 'trigger'
