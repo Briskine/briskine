@@ -14,7 +14,6 @@ var extractBackgroundStyle = new ExtractTextPlugin('background/css/background.cs
 var merge = require("webpack-merge");
 var dev = require("./config/webpack.dev");
 var build = require("./config/webpack.build");
-var test = require("./config/webpack.test");
 var myPackage = require("./package.json");
 var manifest = require("./src/manifest.json");
 
