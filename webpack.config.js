@@ -7,7 +7,6 @@ var fileSystem = require("fs");
 var CleanWebpackPlugin = require("clean-webpack-plugin");
 var CopyWebpackPlugin = require("copy-webpack-plugin");
 var HtmlWebpackPlugin = require("html-webpack-plugin");
-var WriteFilePlugin = require("write-file-webpack-plugin");
 var ConcatPlugin = require('webpack-concat-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
@@ -127,11 +126,13 @@ const commonConfig = merge([
                     }
                 }
             ),
-            extractBackgroundStyle,
-            // TODO use devServer.writeToDisk instead
-            new WriteFilePlugin(),
+            extractBackgroundStyle
         ],
-    },
+        devServer: {
+            inline: false,
+            writeToDisk: true
+        }
+    }
 ]);
 
 const contentConfig = {
