@@ -1,4 +1,8 @@
 // chrome.gorgias.io API plugin
+import _ from 'underscore';
+
+import Config from '../background/js/config';
+
 var _GORGIAS_API_PLUGIN = function () {
     var apiBaseURL = Config.apiBaseURL;
     var baseURL = Config.baseURL;
@@ -902,3 +906,4 @@ var _GORGIAS_API_PLUGIN = function () {
     };
 }();
 
+export default _GORGIAS_API_PLUGIN;

@@ -1,3 +1,5 @@
+import '../background/js/utils/amplitude';
+
 // Register Chrome runtime protocols and context menus
 if (chrome.extension) {
 

@@ -12,7 +12,6 @@ var ConcatPlugin = require('webpack-concat-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
 var extractBackgroundStyle = new ExtractTextPlugin('background/css/background.css');
-var extractContentStyle = new ExtractTextPlugin('content/css/content.css');
 var merge = require("webpack-merge");
 var dev = require("./config/webpack.dev");
 var build = require("./config/webpack.build");
@@ -68,7 +67,6 @@ const dependencies = {
 
                 // Should be first
                 './src/background/js/environment.js',
-                './firebase/config-firebase.js',
                 './src/background/js/config.js',
                 './src/background/js/utils/amplitude.js',
 
@@ -84,24 +82,24 @@ const dependencies = {
                 ]
             },
         // background script
-        store: {
-            js: [
-                'underscore/underscore-min.js',
-                'underscore.string/dist/underscore.string.min.js',
-
-                './src/background/js/environment.js',
-                './firebase/config-firebase.js',
-                './firebase/firebase.umd.js',
-                './src/background/js/config.js',
-                './src/background/js/utils/amplitude.js',
-
-                './src/store/plugin-api.js',
-                './src/store/plugin-firestore.js',
-                './src/store/store-background.js',
-
-                './src/store/chrome-config.js'
-            ]
-        }
+//         store: {
+//             js: [
+//                 'underscore/underscore-min.js',
+//                 'underscore.string/dist/underscore.string.min.js',
+//
+//                 './src/background/js/environment.js',
+//                 './firebase/config-firebase.js',
+//                 './firebase/firebase.umd.js',
+//                 './src/background/js/config.js',
+//                 './src/background/js/utils/amplitude.js',
+//
+//                 './src/store/plugin-api.js',
+//                 './src/store/plugin-firestore.js',
+//                 './src/store/store-background.js',
+//
+//                 './src/store/chrome-config.js'
+//             ]
+//         }
     };
 
 const commonConfig = merge([
@@ -148,19 +146,6 @@ const commonConfig = merge([
                     }
                 }
             ),
-            new ConcatPlugin(
-                {
-                    uglify: false,
-                    sourceMap: true,
-                    name: 'store',
-                    outputPath: 'store/js',
-                    fileName: '[name].js',
-                    filesToConcat: dependencies.store.js,
-                    attributes: {
-                        async: true
-                    }
-                }
-            ),
             extractBackgroundStyle,
             // TODO use devServer.writeToDisk instead
             new WriteFilePlugin(),
@@ -201,6 +186,28 @@ const contentConfig = {
     }
 };
 
+const storeConfig = (ENV) => {
+    return {
+        entry: {
+            content: './src/store/store-background.js'
+        },
+        plugins: [
+            new webpack.DefinePlugin({
+                ENV: JSON.stringify(ENV),
+            })
+        ],
+        output: {
+            path: __dirname + '/ext/store',
+            filename: 'js/store.js'
+        },
+        devServer: {
+            inline: false,
+            writeToDisk: true
+        },
+        devtool: 'source-map'
+    }
+};
+
 const developmentConfig = merge([
     dev.devServer({
         host: process.env.HOST,
@@ -220,13 +227,15 @@ const productionConfig = merge([
     }),
 ]);
 module.exports = mode => {
-    if ( mode === "production" ){
+    if (mode === "production") {
         return [
+            storeConfig(mode),
             contentConfig,
             merge(commonConfig, build.generateManifestProduction({}), productionConfig,  { mode })
         ]
     }
     return [
+        storeConfig(mode),
         contentConfig,
         merge(commonConfig, developmentConfig, dev.generateManifest({}), { mode }),
     ];

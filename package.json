@@ -5,10 +5,9 @@
     "main": "index.js",
     "scripts": {
         "test": "yarn run lint",
-        "start": "yarn firebase && webpack-dev-server --env development",
+        "start": "webpack-dev-server --env development",
         "staging": "(export NODE_ENV=staging && yarn start)",
         "build": "webpack --env production",
-        "firebase": "webpack --config ./config/webpack.firebase.js",
         "lint": "jshint src/"
     },
     "repository": "https://github.com/gorgias/gorgias-chrome/",

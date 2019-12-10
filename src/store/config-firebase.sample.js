@@ -1,4 +1,5 @@
-var _firebaseConfigDevelopment = {
+const config = {}
+config.development = {
     apiKey: '',
     authDomain: '',
     databaseURL: '',
@@ -8,5 +9,7 @@ var _firebaseConfigDevelopment = {
     appId: ''
 };
 
-var _firebaseConfigStaging = {};
-var _firebaseConfigProduction = {};
+config.staging = {};
+config.production = {};
+
+export default config[ENV];

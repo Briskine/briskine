@@ -1,7 +1,16 @@
+import firebase from '@firebase/app';
+import '@firebase/auth';
+import '@firebase/firestore';
+
+import Config from '../background/js/config';
+import firebaseConfig from './config-firebase';
+
+import _GORGIAS_API_PLUGIN from './plugin-api';
+
 // Firestore plugin
 var _FIRESTORE_PLUGIN = function () {
     // firebase
-    firebase.initializeApp(Config.firebase);
+    firebase.initializeApp(firebaseConfig);
 
     var db = firebase.firestore();
 
@@ -1591,3 +1600,4 @@ var _FIRESTORE_PLUGIN = function () {
     };
 }();
 
+export default _FIRESTORE_PLUGIN;
