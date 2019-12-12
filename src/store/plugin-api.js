@@ -6,6 +6,10 @@ import Config from '../background/js/config';
 var apiBaseURL = Config.apiBaseURL;
 var baseURL = Config.baseURL;
 
+function _deepClone (obj = {}) {
+    return JSON.parse(JSON.stringify(obj));
+}
+
 function isLegacyTemplate (key = '', template = {}) {
     return (
         // key is uuid
@@ -622,7 +626,7 @@ var syncLocal = function () {
                     continue;
                 }
 
-                var tRemote = _copy(angular.copy(t), {});
+                var tRemote = _copy(_deepClone(t), {});
 
                 // create new template on the server
                 var save = function (ut) {
@@ -641,7 +645,7 @@ var syncLocal = function () {
                     };
                 };
 
-                createRemoteTemplate(tRemote).then(save(angular.copy(t)));
+                createRemoteTemplate(tRemote).then(save(_deepClone(t)));
             } else { // was synced at some point
                 // if it's deleted locally, delete it remotely and then delete it completely
                 if (t.deleted === 1) {
@@ -656,7 +660,7 @@ var syncLocal = function () {
 
                     queryTemplates({
                         quicktextId: t.remote_id
-                    }).then(deleted(angular.copy(t)));
+                    }).then(deleted(_deepClone(t)));
                 } else if (t.updated_datetime) { // only if we have an updated_datetime
                     if (!t.sync_datetime || new Date(t.sync_datetime) < new Date(t.updated_datetime)) {
                         var update = function (ut) {
@@ -695,7 +699,7 @@ var syncLocal = function () {
                         quicktext_id: t.remote_id,
                         key: 'use_count',
                         value: t.use_count
-                    }).then(saveCount(angular.copy(t)));
+                    }).then(saveCount(_deepClone(t)));
                 }
             }
         }
