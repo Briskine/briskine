@@ -1,27 +1,36 @@
-var Config = {
-    baseURL: 'http://localhost:5555/',
-    apiBaseURL: 'http://localhost:5555/api/1/',
-    websiteUrl: 'http://localhost:4000',
-    functionsUrl: 'http://localhost:5000/gorgias-templates-development/us-central1',
-    firebase: _firebaseConfigDevelopment
-};
+(function (root, factory) {
+    if (typeof exports === 'object') {
+        module.exports = factory(root);
+    } else {
+        root.Config = factory(root);
+    }
+})(typeof global !== 'undefined' ? global : typeof window !== 'undefined' ? window : this, function (window) {
+    'use strict';
 
-// firebase staging
-if (ENV === 'staging') {
-    Config = Object.assign(Config, {
-        baseURL: 'https://chrome.gorgias.io/',
-        apiBaseURL: 'https://chrome.gorgias.io/api/1/',
-        functionsUrl: 'https://us-central1-gorgias-templates-staging.cloudfunctions.net',
-        firebase: _firebaseConfigStaging
-    });
-}
+    var Config = {
+        baseURL: 'http://localhost:5555/',
+        apiBaseURL: 'http://localhost:5555/api/1/',
+        websiteUrl: 'http://localhost:4000',
+        functionsUrl: 'http://localhost:5000/gorgias-templates-development/us-central1'
+    };
 
-if (ENV === 'production') {
-    Config = Object.assign(Config, {
-        baseURL: 'https://chrome.gorgias.io/',
-        apiBaseURL: 'https://chrome.gorgias.io/api/1/',
-        websiteUrl: 'https://templates.gorgias.io',
-        functionsUrl: 'https://us-central1-gorgias-templates-production.cloudfunctions.net',
-        firebase: _firebaseConfigProduction
-    });
-}
+    // firebase staging
+    if (ENV === 'staging') {
+        Config = Object.assign(Config, {
+            baseURL: 'https://chrome.gorgias.io/',
+            apiBaseURL: 'https://chrome.gorgias.io/api/1/',
+            functionsUrl: 'https://us-central1-gorgias-templates-staging.cloudfunctions.net'
+        });
+    }
+
+    if (ENV === 'production') {
+        Config = Object.assign(Config, {
+            baseURL: 'https://chrome.gorgias.io/',
+            apiBaseURL: 'https://chrome.gorgias.io/api/1/',
+            websiteUrl: 'https://templates.gorgias.io',
+            functionsUrl: 'https://us-central1-gorgias-templates-production.cloudfunctions.net'
+        });
+    }
+
+    return Config;
+});

@@ -1,9 +1,5 @@
 (function (root, factory) {
-    if ( typeof define === 'function' && define.amd ) {
-        define([], function () {
-            return factory(root);
-        });
-    } else if ( typeof exports === 'object' ) {
+    if (typeof exports === 'object') {
         module.exports = factory(root);
     } else {
         root.store = factory(root);
@@ -126,7 +122,7 @@
 
     return function () {
         // handle trigger from background
-        chrome.runtime.onMessage.addListener((req, sender, sendResponse) => {
+        chrome.runtime.onMessage.addListener((req) => {
             if (
                 req.type &&
                 req.type === 'trigger'
