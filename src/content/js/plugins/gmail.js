@@ -111,14 +111,14 @@ function getData (params) {
         bcc: parseList(bcc),
         subject: subject,
         plugin: 'gmail'//maybe there is another way to get the active plugin..
-    };
+   };
 }
 
-function before (params) {
+function before (params, data) {
     var $parent = $(params.element).closest('table.aoP');
 
     if (params.quicktext.subject) {
-        var parsedSubject = parseTemplate(params.quicktext.subject, params.data);
+        var parsedSubject = parseTemplate(params.quicktext.subject, data);
         $parent.find('input[name=subjectbox]').val(parsedSubject);
     }
 
@@ -133,12 +133,12 @@ function before (params) {
     }
 
     if (params.quicktext.to) {
-        var parsedTo = parseTemplate(params.quicktext.to, params.data);
+        var parsedTo = parseTemplate(params.quicktext.to, data);
         $parent.find('textarea[name=to]').val(parsedTo);
     }
 
     if (params.quicktext.cc) {
-        var parsedCc = parseTemplate(params.quicktext.cc, params.data);
+        var parsedCc = parseTemplate(params.quicktext.cc, data);
 
         // click the cc button
         $parent.find('.aB.gQ.pE').trigger('click');
@@ -147,7 +147,7 @@ function before (params) {
     }
 
     if (params.quicktext.bcc) {
-        var parsedBcc = parseTemplate(params.quicktext.bcc, params.data);
+        var parsedBcc = parseTemplate(params.quicktext.bcc, data);
 
         // click the bcc button
         $parent.find('.aB.gQ.pB').trigger('click');
@@ -315,7 +315,7 @@ export default (params = {}) => {
     var data = getData(params);
     var parsedTemplate = parseTemplate(params.quicktext.body, data);
 
-    before(params);
+    before(params, data);
 
     insertText(Object.assign({
         text: parsedTemplate

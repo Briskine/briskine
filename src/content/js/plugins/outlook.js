@@ -184,7 +184,7 @@ function getData () {
     return vars;
 }
 
-function before (params) {
+function before (params, data) {
     // don't do anything if we don't have any extra fields
     if (!params.quicktext.subject &&
         !params.quicktext.to &&
@@ -196,7 +196,7 @@ function before (params) {
 
     var $subject = getSubjectField();
     if (params.quicktext.subject && $subject) {
-        var parsedSubject = parseTemplate(params.quicktext.subject, params.data);
+        var parsedSubject = parseTemplate(params.quicktext.subject, data);
         $subject.value = parsedSubject;
         $subject.dispatchEvent(new Event('input', {bubbles: true}));
     }
@@ -205,7 +205,7 @@ function before (params) {
 
     var $to = $containers[1];
     if (params.quicktext.to) {
-        var parsedTo = parseTemplate(params.quicktext.to, params.data);
+        var parsedTo = parseTemplate(params.quicktext.to, data);
         if ($to && !elementContains($to, parsedTo)) {
             var $toInput = getContactField($to);
             updateContactField($toInput, parsedTo, params.element);
@@ -214,7 +214,7 @@ function before (params) {
 
     var $cc = $containers[2];
     if (params.quicktext.cc) {
-        var parsedCc = parseTemplate(params.quicktext.cc, params.data);
+        var parsedCc = parseTemplate(params.quicktext.cc, data);
         updateSection(
             $cc,
             $containers[0].querySelector('.ms-Button-label:first-of-type'),
@@ -226,7 +226,7 @@ function before (params) {
 
     var $bcc = $containers[3];
     if (params.quicktext.bcc) {
-        var parsedBcc = parseTemplate(params.quicktext.bcc, params.data);
+        var parsedBcc = parseTemplate(params.quicktext.bcc, data);
         updateSection(
             $bcc,
             $containers[0].querySelector('.ms-Button-label:last-of-type'),
@@ -271,7 +271,7 @@ export default (params = {}) => {
     var data = getData(params);
     var parsedTemplate = parseTemplate(params.quicktext.body, data);
 
-    return before(params).then((newParams) => {
+    return before(params, data).then((newParams) => {
         insertText(Object.assign({
             text: parsedTemplate
         }, newParams));
