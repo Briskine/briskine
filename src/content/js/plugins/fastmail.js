@@ -76,16 +76,16 @@ function isHidden (el) {
     return (el.offsetParent === null);
 }
 
-function before (params) {
+function before (params, data) {
     var $parent = $(params.element).closest('.v-Compose');
 
     if (params.quicktext.subject) {
-        var parsedSubject = parseTemplate(params.quicktext.subject, params.data);
+        var parsedSubject = parseTemplate(params.quicktext.subject, data);
         $('input[id$="subject-input"]', $parent).val(parsedSubject);
     }
 
     if (params.quicktext.to) {
-        var parsedTo = parseTemplate(params.quicktext.to, params.data);
+        var parsedTo = parseTemplate(params.quicktext.to, data);
         var $toField = $('textarea[id$="to-input"]', $parent);
         $toField.val(parsedTo);
 
@@ -96,7 +96,7 @@ function before (params) {
     var $btns = $('.v-Compose-addCcBcc .u-subtleLink', $parent);
 
     if (params.quicktext.cc) {
-        var parsedCc = parseTemplate(params.quicktext.cc, params.data);
+        var parsedCc = parseTemplate(params.quicktext.cc, data);
 
         var $ccField = $('textarea[id$="cc-input"]', $parent);
 
@@ -114,7 +114,7 @@ function before (params) {
     }
 
     if (params.quicktext.bcc) {
-        var parsedBcc = parseTemplate(params.quicktext.bcc, params.data);
+        var parsedBcc = parseTemplate(params.quicktext.bcc, data);
 
         var $bccField = $('textarea[id$="bcc-input"]', $parent);
 
@@ -156,7 +156,7 @@ export default (params = {}) => {
     var data = getData(params);
     var parsedTemplate = parseTemplate(params.quicktext.body, data);
 
-    before(params);
+    before(params, data);
 
     insertText(Object.assign({
         text: parsedTemplate

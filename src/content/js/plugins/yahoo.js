@@ -78,11 +78,11 @@ function getData (params) {
     return vars;
 }
 
-function before (params) {
+function before (params, data) {
     var $parent = $(params.element).closest('[data-test-id="compose"]');
 
     if (params.quicktext.subject) {
-        var parsedSubject = parseTemplate(params.quicktext.subject, params.data);
+        var parsedSubject = parseTemplate(params.quicktext.subject, data);
         var $subjectField = $('[data-test-id="compose-subject"]', $parent);
         $subjectField.val(parsedSubject);
         $subjectField.get(0).dispatchEvent(new Event('input', {bubbles: true}));
@@ -90,7 +90,7 @@ function before (params) {
 
     // BUG to/cc/bcc fields stopped working
 //     if (params.quicktext.to) {
-//         var parsedTo = parseTemplate(params.quicktext.to, params.data);
+//         var parsedTo = parseTemplate(params.quicktext.to, data);
 //         var $toField = $('[data-test-id="compose-header-field-to"]', $parent);
 //         $toField.val(parsedTo);
 //
@@ -105,7 +105,7 @@ function before (params) {
 //     }
 //
 //     if (params.quicktext.cc) {
-//         var parsedCc = parseTemplate(params.quicktext.cc, params.data);
+//         var parsedCc = parseTemplate(params.quicktext.cc, data);
 //         var $ccField = $('[data-test-id="compose-header-field-cc"]', $parent);
 //         $ccField.val(parsedCc);
 //
@@ -113,7 +113,7 @@ function before (params) {
 //     }
 //
 //     if (params.quicktext.bcc) {
-//         var parsedBcc = parseTemplate(params.quicktext.bcc, params.data);
+//         var parsedBcc = parseTemplate(params.quicktext.bcc, data);
 //         var $bccField = $('[data-test-id="compose-header-field-bcc"]', $parent);
 //         $bccField.val(parsedBcc);
 //
@@ -147,7 +147,7 @@ export default (params = {}) => {
     var data = getData(params);
     var parsedTemplate = parseTemplate(params.quicktext.body, data);
 
-    before(params);
+    before(params, data);
 
     insertText(Object.assign({
         text: parsedTemplate
