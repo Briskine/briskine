@@ -183,6 +183,8 @@ export function insertText (params = {}) {
         $textarea[0].setSelectionRange(cursorOffset, cursorOffset);
 
     }
+
+    document.activeElement.dispatchEvent(new Event('input', {bubbles: true}));
 }
 
 // replace from with name saved in settings

@@ -185,7 +185,7 @@ const storeConfig = (ENV) => {
             inline: false,
             writeToDisk: true
         },
-        devtool: 'source-map'
+        devtool: 'cheap-source-map'
     }
 };
 
