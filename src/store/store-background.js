@@ -53,7 +53,7 @@ var signin = function (params = {}) {
 };
 
 var forgot = (params = {}) => {
-    return fetch(`${Config.functionsUrl}/api/1/reset`, {
+    return fetch(`${Config.functionsUrl}/api/1/status`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'

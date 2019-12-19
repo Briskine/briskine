@@ -93,7 +93,7 @@ gApp.config(function ($routeProvider, $compileProvider, $sceDelegateProvider) {
 });
 
 gApp.config(["$provide", function ($provide) {
-    $provide.decorator("$exceptionHandler", ["$delegate", "$window", function ($delegate, $window) {
+    $provide.decorator("$exceptionHandler", ["$delegate", "$window", function ($delegate) {
         return function (exception, cause) {
             // (Optional) Pass the error through to the delegate formats it for the console
             $delegate(exception, cause);
@@ -182,7 +182,7 @@ gApp.run(function ($rootScope, $location, $timeout, ProfileService, SettingsServ
 
     function reactivateLegacySubscription (params = {}) {
         return store.getPlans().then((data) => {
-            return new Promise((resolve, reject) => {
+            return new Promise((resolve) => {
                 var handler = StripeCheckout.configure({
                     key: data.stripe_key,
                     token: function (token) {
@@ -247,6 +247,11 @@ gApp.run(function ($rootScope, $location, $timeout, ProfileService, SettingsServ
     $rootScope.checkLoggedIn = function () {
         store.getLoginInfo()
         .then(function (data) {
+            // force log-out on users migrated to firestore
+            if (data.logout) {
+                return $rootScope.logOut();
+            }
+
             $rootScope.loginChecked = true;
             if (data.is_loggedin) {
                 $rootScope.isLoggedIn = true;
