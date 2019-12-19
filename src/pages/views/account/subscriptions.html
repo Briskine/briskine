@@ -18,12 +18,21 @@
         <p class="small">Only you, as the account owner, can upgrade, downgrade or change the billing information for
             the account.</p>
         <br>
-        <p>If your card expired, or you want to switch to another card:</p>
-        <a class="btn update-cc-btn" href="" ng-click="updateCC()">Update your Credit Card</a>
+
+        <div ng-if="bonusPlan">
+            <p>
+                Please contact <a href="mailto:chrome@gorgias.io">chrome@gorgias.io</a> for any changes or information about your subscription.
+            </p>
+        </div>
+
+        <div ng-if="!bonusPlan">
+            <p>If your card expired, or you want to switch to another card:</p>
+            <a class="btn update-cc-btn" href="" ng-click="updateCC()">Update your Credit Card</a>
+        </div>
 
         <br>
         <br>
-        <div class="alert border border-danger border-rounded">
+        <div class="alert border border-danger border-rounded" ng-if="!bonusPlan">
             <h4>Danger zone</h4>
             <p>
                 If you are not satisfied with Gorgias Templates for Chrome you can cancel your subscription below.
@@ -50,7 +59,7 @@
         </div>
     </div>
 
-    <div class="col-sm-8">
+    <div class="col-sm-8" ng-if="!bonusPlan">
         <div class="alert alert-danger fade in" ng-if="paymentError">
             <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
             <h4>Oh snap! Failed to upgrade!</h4>
