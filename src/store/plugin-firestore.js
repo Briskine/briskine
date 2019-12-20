@@ -1295,6 +1295,12 @@ var getSubscription = (params = {}) => {
             // backwards compatibility
             var preferred_currency = 'usd';
             var plan = res.plans[preferred_currency].find((p) => p.sku === subscriptionData.plan);
+            // bonus plan support
+            if (!plan) {
+                plan = {
+                    name: subscriptionData.plan
+                }
+            }
             var subscription = Object.assign(subscriptionData, {
                 active: active,
                 plan: plan,

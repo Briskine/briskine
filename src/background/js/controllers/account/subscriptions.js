@@ -15,6 +15,8 @@ gApp.controller('SubscriptionsCtrl', function ($scope, $rootScope, $routeParams,
     $scope.discountCode = "";
     $scope.couponPrecentOff = 1;
 
+    $scope.bonusPlan = false;
+
     $scope.loadingCancel = false;
 
     SubscriptionService.plans().then(function (data) {
@@ -43,6 +45,12 @@ gApp.controller('SubscriptionsCtrl', function ($scope, $rootScope, $routeParams,
             for (var i = 0; i <= $scope.subscriptions.length; i++) {
                 if ($scope.subscriptions[i].active) {
                     $scope.activeSubscription = $scope.subscriptions[i];
+                    if (
+                        $scope.activeSubscription.plan &&
+                        $scope.activeSubscription.plan.name === 'bonus'
+                    ) {
+                        $scope.bonusPlan = true;
+                    }
                     break;
                 }
             }
