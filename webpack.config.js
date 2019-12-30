@@ -167,14 +167,15 @@ const contentConfig = {
     }
 };
 
-const storeConfig = (ENV) => {
+const storeConfig = (mode) => {
+    const env = process.env.NODE_ENV || mode
     return {
         entry: {
             content: './src/store/store-background.js'
         },
         plugins: [
             new webpack.DefinePlugin({
-                ENV: JSON.stringify(ENV),
+                ENV: JSON.stringify(env),
             })
         ],
         output: {

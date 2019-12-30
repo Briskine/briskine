@@ -213,7 +213,38 @@ var setAccount = function (params) {
 var getLoginInfo = function () {
     return fetch(`${apiBaseURL}login-info`)
         .then(handleErrors)
-        .then((res) => res.json());
+        .then((res) => res.json())
+        .then((loginInfoRes) => {
+            if (loginInfoRes.is_loggedin) {
+                // get email from account
+                return getAccount()
+                    .then((res) => {
+                        return fetch(`${Config.functionsUrl}/api/1/status`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                email: res.email
+                            })
+                        })
+                        .then(handleErrors)
+                        .then((res) => res.json())
+                        .then((res) => {
+                            if (res.firebase) {
+                                // migrated to firebase
+                                return {
+                                    logout: true
+                                };
+                            }
+
+                            return loginInfoRes;
+                        });
+                    });
+            }
+
+            return loginInfoRes;
+        });
 };
 
 var getMembers = function (params = {}) {
