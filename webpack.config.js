@@ -164,7 +164,8 @@ const contentConfig = {
     devServer: {
         inline: false,
         writeToDisk: true
-    }
+    },
+    devtool: 'eval'
 };
 
 const storeConfig = (mode) => {
