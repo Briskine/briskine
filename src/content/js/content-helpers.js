@@ -28,13 +28,11 @@ Handlebars.registerHelper('or', function (first, second) {
 Handlebars.registerHelper("splitString", function (context, options) {
     if (context) {
         var ret = "";
-        var data = Handlebars.createFrame({});
 
         var tempArr = context.trim().split(options.hash.delimiter);
         for (var i = 0; i < tempArr.length; i++) {
+            var data = Handlebars.createFrame(options.data || {});
             if (options.data) {
-                // update data
-                data = Handlebars.createFrame(options.data);
                 data.index = i;
             }
             if (typeof options.hash.index !== "undefined" && options.hash.index === i) {
