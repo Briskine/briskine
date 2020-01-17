@@ -1117,8 +1117,15 @@ function deleteSharing (params = {}) {
                 });
             });
 
+            return;
+        }).catch((err) => {
+            // catch errors, to always clean-up the queue
+            return;
+        }).then(() => {
+            // clean-up
             batchDeleteSharing = null;
             listDeleteSharing = [];
+            return;
         });
     }, 1000);
 
@@ -1299,7 +1306,7 @@ var getSubscription = (params = {}) => {
             if (!plan) {
                 plan = {
                     name: subscriptionData.plan
-                }
+                };
             }
             var subscription = Object.assign(subscriptionData, {
                 active: active,
