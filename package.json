@@ -51,9 +51,10 @@
         "webpack-merge": "^4.1.2"
     },
     "dependencies": {
-        "@firebase/app": "^0.4.22",
-        "@firebase/auth": "^0.13.2",
-        "@firebase/firestore": "^1.8.1",
+        "@firebase/app": "^0.5.1",
+        "@firebase/auth": "^0.13.3",
+        "@firebase/firestore": "^1.9.2",
+        "@firebase/storage": "^0.3.23",
         "angular": "angular/bower-angular#1.4.7",
         "angular-moment": "urish/angular-moment#~0.6.2",
         "angular-resource": "angular/bower-angular-resource#1.4.7",

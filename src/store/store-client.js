@@ -62,6 +62,9 @@
         'updateCreditCard',
         'reactivateSubscription',
 
+        'addAttachments',
+        'removeAttachments',
+
         'syncNow',
         'syncLocal',
 

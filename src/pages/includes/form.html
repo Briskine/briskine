@@ -63,17 +63,22 @@
                                           placeholder="It was nice talking to you today..."
                                           ng-model="templateForm.selectedTemplate.body"></textarea>
                             </div>
-                            <p >
-                                <a href="javascript:void()" ng-click="templateForm.onPickerClicked()" title="Add attachments from Google Drive">
-                                    <i class='fa fa-paperclip' style="cursor: pointer"/>
-                                    Add attachments
+                            <div ng-show="templateForm.isLoggedIn">
+                                <div class="attachment-selector">
+                                    <label for="attachment-selector">
+                                        <i class="fa fa-paperclip" />
+                                        Add attachments
+                                    </label>
+                                    <input id="attachment-selector" type="file" multiple fileread file-selected="templateForm.fileSelected(files)">
+                                </div>
+                            </div>
+                            <div ng-repeat="attachment in templateForm.selectedTemplate.attachments track by attachment.url"
+                                 class="attachments">
+                                <a target="_blank" class="attachment"
+                                   href="{{attachment.url}}">
+                                    {{attachment.name}}
                                 </a>
-                            </p>
-                            <div ng-repeat='attachment in templateForm.selectedTemplate.attachments'
-                                 class='attachments'>
-                                <a target='_blank' class='attachment'
-                                   href='{{attachment.url}}'>{{attachment.name}}</a><i class='fa fa-close'
-                                                                                       ng-click="templateForm.removeAttachment($index)"/>
+                                <i class="fa fa-close"                                                                             ng-click="templateForm.removeAttachment(attachment)" />
                             </div>
                         </div>
 
