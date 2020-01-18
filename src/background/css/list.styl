@@ -206,7 +206,7 @@
                                     flex: 1;
                                     display: flex;
                                     flex-direction: column;
-                                    
+
                                     .mce-container-body {
                                         flex: 1;
                                         display: flex;
@@ -282,3 +282,31 @@
 .template-share-notify input {
     display: inline !important;
 }
+
+/* attachments
+ */
+.attachment-selector {
+    position: relative;
+    display: inline-block;
+}
+
+.attachment-selector input {
+    position: absolute;
+    opacity: 0;
+    top: 0;
+}
+
+.attachment-selector label {
+    position: relative;
+    z-index: 1;
+    padding: .4em 0;
+
+    color: #15c;
+    font-weight: normal;
+    cursor: pointer;
+}
+
+.attachment-selector label:hover {
+    text-decoration: underline;
+}
+

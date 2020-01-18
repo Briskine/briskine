@@ -900,6 +900,10 @@ var importTemplates = function () {
     });
 };
 
+var noop = function () {
+    return Promise.reject();
+};
+
 export default {
     getSettings: getSettings,
     setSettings: setSettings,
@@ -936,5 +940,8 @@ export default {
     signin: signin,
     logout: logout,
     forgot: forgot,
-    importTemplates: importTemplates
+    importTemplates: importTemplates,
+
+    addAttachments: noop,
+    removeAttachments: noop
 };

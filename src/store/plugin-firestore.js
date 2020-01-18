@@ -2,6 +2,7 @@
 import firebase from '@firebase/app';
 import '@firebase/auth';
 import '@firebase/firestore';
+import '@firebase/storage';
 
 import Config from '../background/js/config';
 import firebaseConfig from './config-firebase';
@@ -12,6 +13,7 @@ import _GORGIAS_API_PLUGIN from './plugin-api';
 firebase.initializeApp(firebaseConfig);
 
 var db = firebase.firestore();
+var storageRef = firebase.storage().ref();
 
 db.enablePersistence().catch((err) => {
     console.log('Firestore Persistance Error', err);
@@ -1568,6 +1570,71 @@ var migrate = function () {
     return migrateLegacyLocalData();
 };
 
+var addAttachments = function (params = {}) {
+    var attachments = storageRef.child('attachments');
+    var userId = 0;
+
+    return getSignedInUser()
+        .then((user) => {
+            userId = user.id;
+            return;
+        })
+        .then(() => {
+            return Promise.all(
+                params.files.filter((f) => {
+                    if (f.size > 1 * 1024 * 1024) {
+                        alert(`Couldn't attach ${f.name}. The file is larger than 1MB.`);
+                        return false;
+                    }
+                    return true;
+                }).map((f) => {
+                    return fetch(f.url)
+                        .then((res) => res.blob())
+                        .then((blob) => {
+                            var extension = f.name.split('.').pop();
+                            var name = `${uuid()}.${extension}`;
+                            var metadata = {
+                                public_name: f.name,
+                                user_id: userId
+                            };
+
+                            var ref = attachments.child(name);
+                            return ref.put(blob, {
+                                customMetadata: metadata
+                            }).then(() => {
+                                // revoke object url
+                                URL.revokeObjectURL(f);
+                                return ref.getDownloadURL();
+                            }).then((url) => {
+                                return {
+                                    url: url,
+                                    name: metadata.public_name
+                                };
+                            });
+                        });
+                })
+            );
+        });
+};
+
+function getAttachmentFileName (url) {
+    var parsedUrl = new URL(url);
+    return decodeURIComponent(parsedUrl.pathname).split('/attachments/').pop();
+}
+
+var removeAttachments = function (params = {}) {
+    var attachments = storageRef.child('attachments');
+    return Promise.all(
+        params.attachments.map((a) => {
+            // get ref to file based on full url
+            // firebase-js-sdk does not support getReferenceFromUrl()
+            var filename = getAttachmentFileName(a.url);
+            var ref = attachments.child(filename);
+            return ref.delete();
+        })
+    );
+};
+
 export default {
     getSettings: getSettings,
     setSettings: setSettings,
@@ -1597,6 +1664,9 @@ export default {
     cancelSubscription: cancelSubscription,
     updateCreditCard: updateCreditCard,
     reactivateSubscription: reactivateSubscription,
+
+    addAttachments: addAttachments,
+    removeAttachments: removeAttachments,
 
     syncNow: syncNow,
     syncLocal: syncLocal,

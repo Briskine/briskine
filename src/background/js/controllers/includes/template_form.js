@@ -1,13 +1,13 @@
 gApp.controller('TemplateFormCtrl',
     function ($route, $q, $scope, $rootScope, $routeParams, $location, $window, $timeout, $filter,
-              AccountService, TemplateService, SettingsService, FilterTagService, gDrivePickerService) {
+              AccountService, TemplateService, SettingsService, FilterTagService) {
 
-        var editor;
         var self = this;
         self.sharing_setting = "private";
         self.send_email = 'false';
         self.extended = false;
         self.showHTMLSource = false;
+        self.isLoggedIn = $rootScope.isLoggedIn;
 
         // fields that show up under `show more fields`
         var extraFields = [
@@ -25,7 +25,7 @@ gApp.controller('TemplateFormCtrl',
         // checks if a field has content,
         // and should be visible.
         self.extraFieldContent = function (field) {
-            return (typeof field === 'string')
+            return (typeof field === 'string');
         };
 
         // check if any extra fields are hidden
@@ -40,12 +40,12 @@ gApp.controller('TemplateFormCtrl',
         var cleanExtraFields = function (qt) {
             extraFields.some(function (field) {
                 if (typeof qt[field] === 'string' && qt[field].trim() === '') {
-                    delete qt[field]
+                    delete qt[field];
                 }
             });
 
-            return qt
-        }
+            return qt;
+        };
 
         self.showExtraFields = function () {
             // add blank content
@@ -117,29 +117,6 @@ gApp.controller('TemplateFormCtrl',
                 }
             });
         };
-
-        //**********************upload parts*****************
-
-        gDrivePickerService.pickerResponse = function (data) {
-          if (data.action === google.picker.Action.PICKED) {
-            var attachments = data.docs.map(function(doc) {
-              return {
-                name: doc.name,
-                size: doc.sizeBytes,
-                url: doc.url
-              };
-            });
-            self.selectedTemplate.attachments = self.selectedTemplate.attachments ? self.selectedTemplate.attachments.concat(attachments) : attachments;
-            $rootScope.$broadcast('reload');
-          }
-        }
-        self.removeAttachment = function(index) {
-           self.selectedTemplate.attachments.splice(index, 1);
-           $rootScope.$broadcast('reload');
-        }
-        self.onPickerClicked = gDrivePickerService.onPickerClicked;
-
-        //******************end of upload part****************
 
         self.toggleHTMLSource = function () {
             self.showHTMLSource = !self.showHTMLSource;
@@ -334,9 +311,9 @@ gApp.controller('TemplateFormCtrl',
             // to not show them again on edit.
             extraFields.forEach(function (field) {
                 if (typeof self.selectedTemplate[field] === 'string' && self.selectedTemplate[field].trim() === '') {
-                    delete self.selectedTemplate[field]
+                    delete self.selectedTemplate[field];
                 }
-            })
+            });
 
             TemplateService.quicktexts().then(function (templates) {
                 if (self.selectedTemplate.shortcut) {
@@ -366,7 +343,7 @@ gApp.controller('TemplateFormCtrl',
 
                         old_emails.forEach(function (acl) {
                             if (new_emails.indexOf(acl.email) == -1 && $scope.account.email != acl.email) {
-                                $scope.revokeAccess([selectedTemplate], acl.target_user_id)
+                                $scope.revokeAccess([selectedTemplate], acl.target_user_id);
                             }
                         });
 
@@ -409,6 +386,9 @@ gApp.controller('TemplateFormCtrl',
             });
 
             $scope.selectedAll = false;
+
+            // remove pending attachments
+            manageAttachments();
         };
 
         // Duplicate a quicktext, perform some checks before
@@ -470,4 +450,43 @@ gApp.controller('TemplateFormCtrl',
 
         $scope.$on('$routeUpdate', checkRoute);
         checkRoute();
+
+        // attachments
+        var attachmentsQueue = [];
+        $scope.$on('$routeUpdate', () => {
+            // cleanup queue on template close
+            attachmentsQueue = [];
+        });
+
+        self.fileSelected = (files) => {
+            return store.addAttachments({
+                files: files
+            }).then((res) => {
+                // update template
+                self.selectedTemplate.attachments = (self.selectedTemplate.attachments || []).concat(res);
+                $rootScope.$broadcast('reload');
+            });
+        };
+
+        self.removeAttachment = function (attachment) {
+            self.selectedTemplate.attachments = self.selectedTemplate.attachments.filter((a) => {
+                return a.url !== attachment.url;
+            });
+            $rootScope.$broadcast('reload');
+
+            // schedule removal
+            attachmentsQueue = attachmentsQueue.concat(
+                Object.assign({
+                    action: 'remove'
+                }, attachment)
+            );
+        };
+
+        // remove attachments
+        var manageAttachments = function () {
+            var removals = attachmentsQueue.filter((a) => a.action === 'remove');
+            return store.removeAttachments({
+                attachments: removals
+            });
+        };
     });
