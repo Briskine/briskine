@@ -14,10 +14,6 @@
             <a href="#/account/members" aria-controls="members" role="tab" data-toggle="tab" data-target="#">Team
                 Members</a>
         </li>
-        <li role="presentation" ng-if="account.is_staff" ng-class="activeTab == 'groups'?'active':''">
-            <a href="#/account/groups" aria-controls="groups" role="tab" data-toggle="tab" data-target="#">Member
-                Groups</a>
-        </li>
         <li role="presentation" ng-show="currentSubscription && currentSubscription.active && !firestoreEnabled"
             ng-class="activeTab == 'stats'?'active':''">
             <a href="#/account/stats" aria-controls="stats" role="tab" data-target="#"
@@ -38,10 +34,6 @@
         </div>
         <div role="tabpanel" class="tab-pane" ng-class="activeTab === 'members'?'active':''" id="members">
             <div class="tab-container" ng-include="'/pages/views/account/members.html'"></div>
-        </div>
-        <div role="tabpanel" class="tab-pane" ng-if="account.is_staff" ng-class="activeTab === 'groups'?'active':''"
-             id="groups">
-            <div class="tab-container" ng-include="'/pages/views/account/groups.html'"></div>
         </div>
         <div role="tabpanel" class="tab-pane" ng-class="activeTab == 'stats'?'active':''"
              id="stats">

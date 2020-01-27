@@ -71,10 +71,6 @@ gApp.config(function ($routeProvider, $compileProvider, $sceDelegateProvider) {
             controller: 'MembersCtrl',
             templateUrl: 'views/account/base.html'
         })
-        .when('/account/groups', {
-            controller: 'GroupsCtrl',
-            templateUrl: 'views/account/base.html'
-        })
         .when('/account/subscriptions', {
             controller: 'SubscriptionsCtrl',
             templateUrl: 'views/account/base.html'
