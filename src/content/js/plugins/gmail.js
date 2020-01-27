@@ -50,7 +50,7 @@ function getData (params) {
         subject = '';
 
     if (isContentEditable(params.element)) {
-        var title = $('.gb_b.gb_fb').attr('title');
+        var title = $('[data-eqid]').attr('aria-label');
         var fromString = '';
         if (typeof title === 'string') {
             // the initial string is: Google Account: Gorgias Chrome Customer Support (chrome@gorgias.io)
