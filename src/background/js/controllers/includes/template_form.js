@@ -1,5 +1,4 @@
-gApp.controller('TemplateFormCtrl',
-    function ($route, $q, $scope, $rootScope, $routeParams, $location, $window, $timeout, $filter,
+export default function TemplateFormCtrl ($route, $q, $scope, $rootScope, $routeParams, $location, $window, $timeout, $filter,
               AccountService, TemplateService, SettingsService, FilterTagService) {
 
         var self = this;
@@ -489,4 +488,4 @@ gApp.controller('TemplateFormCtrl',
                 attachments: removals
             });
         };
-    });
+    }

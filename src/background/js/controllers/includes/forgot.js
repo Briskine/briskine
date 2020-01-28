@@ -1,4 +1,4 @@
-gApp.controller('ForgotCtrl', function ($timeout, $route, $rootScope) {
+export default function ForgotCtrl ($timeout, $route, $rootScope) {
     var self = this;
     self.loading = false;
 
@@ -31,4 +31,4 @@ gApp.controller('ForgotCtrl', function ($timeout, $route, $rootScope) {
             self.loading = false;
         });
     };
-});
+}

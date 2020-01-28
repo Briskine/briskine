@@ -1,6 +1,6 @@
-/*jshint multistr: true */
+import store from '../../../store/store-client';
 
-gApp.service('FilterTagService', function ($rootScope) {
+export function FilterTagService ($rootScope) {
     var filterTags = [];
 
     function toggleFilterTag(tag) {
@@ -21,10 +21,10 @@ gApp.service('FilterTagService', function ($rootScope) {
         emptyFilterTags: emptyFilterTags,
         filterTags: filterTags
     };
-});
+}
 
 // Template operations
-gApp.service('TemplateService', function ($q, $rootScope, SettingsService) {
+export function TemplateService ($q, $rootScope, SettingsService) {
     var self = this;
     self.isLoggedin = false;
     SettingsService.get("isLoggedIn").then(function (isLoggedIn) {
@@ -176,6 +176,4 @@ gApp.service('TemplateService', function ($q, $rootScope, SettingsService) {
         });
         return deferred.promise;
     };
-
-
-});
+}

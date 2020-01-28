@@ -1,16 +1,89 @@
+import angular from 'angular';
+import ngRoute from 'angular-route';
+import ngResource from 'angular-resource';
+import angularMoment from 'angular-moment';
+import ngFileUpload from 'ng-file-upload';
+import $ from 'jquery';
+import 'bootstrap';
+import 'selectize';
+// import 'bootstrap/dist/css/bootstrap.css';
+
+import 'tinymce';
+import 'tinymce/themes/modern';
+import 'tinymce/plugins/autoresize';
+import 'tinymce/plugins/autolink';
+import 'tinymce/plugins/image';
+import 'tinymce/plugins/link';
+import 'tinymce/plugins/media';
+import 'tinymce/plugins/table';
+import 'tinymce/plugins/advlist';
+import 'tinymce/plugins/lists';
+import 'tinymce/plugins/textcolor';
+import 'tinymce/plugins/code';
+
+import './utils/amplitude';
+
+// TODO deprecate, unused
+// import checklistModel from 'checklist-model';
+
+import Config from './config';
+import {ProfileService, SettingsService} from './services/services';
+import {FilterTagService, TemplateService} from './services/templates';
+import {AccountService, MemberService} from './services/account';
+import SubscriptionService from './services/subscription';
+import QuicktextSharingService from './services/sharing';
+import {gravatar, safe, fuzzy, tagFilter, sharingFilter} from './filters';
+import SidebarCtrl from './controllers/sidebar';
+import LoginCtrl from './controllers/includes/login';
+import ForgotCtrl from './controllers/includes/forgot';
+import ImportCtrl from './controllers/includes/import';
+import ListCtrl from './controllers/list';
+import TemplateFormCtrl from './controllers/includes/template_form';
+import ShareFormCtrl from './controllers/includes/share_form';
+
+import store from '../../store/store-client';
+
 var gApp = angular.module('gApp', [
-    'ngRoute',
-    'ngResource',
-    'angularMoment',
-    'checklist-model',
-    'ngFileUpload'
+    ngRoute,
+    ngResource,
+    angularMoment,
+    ngFileUpload,
+//     checklistModel,
 ]);
+
+gApp.config(function ($routeProvider, $compileProvider, $sceDelegateProvider, $locationProvider) {
+    $locationProvider.hashPrefix('');
+    $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|chrome-extension):/);
+});
+
+gApp
+.service('FilterTagService', FilterTagService)
+.service('TemplateService', TemplateService)
+.service('ProfileService', ProfileService)
+.service('SettingsService', SettingsService)
+.service('SubscriptionService', SubscriptionService)
+.service('AccountService', AccountService)
+.service('MemberService', MemberService)
+.service('QuicktextSharingService', QuicktextSharingService)
+.filter('gravatar', gravatar)
+.filter('safe', safe)
+.filter('fuzzy', fuzzy)
+.filter('tagFilter', tagFilter)
+.filter('sharingFilter', sharingFilter)
+.controller('SidebarCtrl', SidebarCtrl)
+.controller('LoginCtrl', LoginCtrl)
+.controller('ForgotCtrl', ForgotCtrl)
+.controller('ListCtrl', ListCtrl)
+.controller('TemplateFormCtrl', TemplateFormCtrl)
+.controller('ShareFormCtrl', ShareFormCtrl)
+.controller('ImportCtrl', ImportCtrl);
 
 gApp.config(function() {
     tinyMCE.baseURL = 'tinymce';
 });
 
-gApp.config(function ($routeProvider, $compileProvider, $sceDelegateProvider) {
+gApp.config(function ($routeProvider, $compileProvider, $sceDelegateProvider, $locationProvider) {
+    $locationProvider.hashPrefix('');
     $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|chrome-extension):/);
     $sceDelegateProvider.resourceUrlWhitelist([
         'self',
@@ -110,6 +183,7 @@ gApp.run(function ($rootScope) {
     $rootScope.baseURL = Config.baseURL;
     $rootScope.apiBaseURL = Config.apiBaseURL;
 });
+
 
 gApp.run(function ($rootScope, $location, $timeout, ProfileService, SettingsService, TemplateService, SubscriptionService) {
     $rootScope.$on('$routeChangeStart', function () {

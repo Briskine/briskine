@@ -112,20 +112,20 @@ const commonConfig = merge([
                 {   from: "node_modules/tinymce/skins/lightgray/fonts/", to: "background/css/fonts/"},
                 {   from: "node_modules/tinymce/skins/lightgray/", to: "pages/tinymce/skins/lightgray/"},
             ]),
-            new ConcatPlugin(
-                {
-                    uglify: false,
-                    sourceMap: true,
-                    name: 'background',
-                    outputPath: 'background/js',
-                    fileName: '[name].js',
-                    filesToConcat: dependencies.background.js,
-                    attributes: {
-                        async: true
-                    }
-                }
-            ),
-            extractBackgroundStyle
+//             new ConcatPlugin(
+//                 {
+//                     uglify: false,
+//                     sourceMap: true,
+//                     name: 'background',
+//                     outputPath: 'background/js',
+//                     fileName: '[name].js',
+//                     filesToConcat: dependencies.background.js,
+//                     attributes: {
+//                         async: true
+//                     }
+//                 }
+//             ),
+//             extractBackgroundStyle
         ],
         devServer: {
             inline: false,
@@ -133,6 +133,49 @@ const commonConfig = merge([
         }
     }
 ]);
+
+const optionsConfig = function (mode) {
+    const env = process.env.NODE_ENV || mode
+    return {
+        entry: {
+            background: './src/background/js/app.js'
+        },
+        output: {
+            path: __dirname + '/ext/background',
+            filename: 'js/[name].js'
+        },
+        plugins: [
+            new MiniCssExtractPlugin({
+                filename: 'css/[name].css'
+            }),
+            new webpack.DefinePlugin({
+                ENV: JSON.stringify(env),
+            }),
+            new webpack.ProvidePlugin({
+                jQuery: 'jquery',
+                $: 'jquery',
+                _: 'underscore'
+            }),
+        ],
+        module: {
+            rules: [
+                {
+                    test: /\.(css|styl)$/i,
+                    use: [
+                        MiniCssExtractPlugin.loader,
+                        'css-loader',
+                        'stylus-loader'
+                    ],
+                },
+            ]
+        },
+        devServer: {
+            inline: false,
+            writeToDisk: true
+        },
+        devtool: 'cheap-source-map'
+    }
+};
 
 const contentConfig = {
     entry: {
@@ -218,8 +261,9 @@ module.exports = mode => {
         ]
     }
     return [
-        storeConfig(mode),
-        contentConfig,
+//         storeConfig(mode),
+//         contentConfig,
         merge(commonConfig, developmentConfig, dev.generateManifest({}), { mode }),
+        optionsConfig(mode),
     ];
 };

@@ -1,4 +1,4 @@
-gApp.controller('ImportCtrl', function ($scope, $rootScope, $timeout) {
+export default function ImportCtrl ($scope, $rootScope, $timeout) {
     var self = this;
     self.uploading = false;
 
@@ -97,4 +97,4 @@ gApp.controller('ImportCtrl', function ($scope, $rootScope, $timeout) {
                 }, 3000);
             });
     };
-});
+}

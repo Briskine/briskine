@@ -1,4 +1,4 @@
-gApp.controller('SidebarCtrl', function ($scope, $location, $window,
+export default function SidebarCtrl ($scope, $location, $window,
                                          AccountService, SettingsService, TemplateService, FilterTagService) {
     $scope.profile = {};
     $scope.filterTags = [];
@@ -71,4 +71,4 @@ gApp.controller('SidebarCtrl', function ($scope, $location, $window,
         loadTags();
         loadAccount();
     });
-});
+}

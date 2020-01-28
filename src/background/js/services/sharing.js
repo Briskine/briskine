@@ -1,4 +1,4 @@
-gApp.service('QuicktextSharingService', function($q, $rootScope) {
+export default function QuicktextSharingService ($q, $rootScope) {
     var self = this;
 
     self.list = function(qtList = []) {
@@ -62,4 +62,4 @@ gApp.service('QuicktextSharingService', function($q, $rootScope) {
         return deferred.promise;
     };
 
-});
+}

@@ -1,7 +1,7 @@
-/*jshint multistr: true */
+import store from '../../../store/store-client';
 
 // Settings
-gApp.service('SettingsService', function ($q) {
+export function SettingsService ($q) {
     var self = this;
     self.get = function (key, def) {
         var deferred = $q.defer();
@@ -27,10 +27,10 @@ gApp.service('SettingsService', function ($q) {
         return deferred.promise;
     };
     return self;
-})
+}
 
 // User Profile - check if the user is logged in. Get it's info
-gApp.service('ProfileService', function ($q, SettingsService) {
+export function ProfileService ($q, SettingsService) {
     var self = this;
 
     self.reduceNumbers = function (n) {
@@ -88,6 +88,4 @@ gApp.service('ProfileService', function ($q, SettingsService) {
         })
         return deferred.promise
     }
-
-    return self
-})
+}

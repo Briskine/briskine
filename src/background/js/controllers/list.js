@@ -1,5 +1,4 @@
-gApp.controller('ListCtrl',
-    function ($route, $q, $scope, $rootScope, $routeParams, $location, $timeout, $filter,
+export default function ListCtrl ($route, $q, $scope, $rootScope, $routeParams, $location, $timeout, $filter,
               AccountService, TemplateService, SettingsService, FilterTagService, QuicktextSharingService,
               MemberService) {
         var $formModal;
@@ -427,7 +426,7 @@ gApp.controller('ListCtrl',
         };
 
         $scope.$on('toggledFilterTag', function () {
-            tag = FilterTagService.filterTags[0];
+            var tag = FilterTagService.filterTags[0];
             $scope.selectedAll = false;
 
             if (tag != undefined) {
@@ -527,4 +526,4 @@ gApp.controller('ListCtrl',
         $scope.getTags = function (template) {
             return TemplateService.tags(template);
         };
-    });
+    }

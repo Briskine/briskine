@@ -1,4 +1,4 @@
-gApp.service('SubscriptionService', function ($q, $rootScope) {
+export default function ($q, $rootScope) {
     var self = this
 
     self.plans = function () {
@@ -48,5 +48,5 @@ gApp.service('SubscriptionService', function ($q, $rootScope) {
             .catch(deferred.reject);
         return deferred.promise
     }
-})
+}
 

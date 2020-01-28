@@ -1,4 +1,4 @@
-gApp.controller('LoginCtrl', function ($timeout, $route, $rootScope, TemplateService, SettingsService) {
+export default function LoginCtrl ($timeout, $route, $rootScope, TemplateService, SettingsService) {
     var self = this;
     self.loading = false;
 
@@ -40,4 +40,4 @@ gApp.controller('LoginCtrl', function ($timeout, $route, $rootScope, TemplateSer
         }, 300);
 
     };
-});
+}

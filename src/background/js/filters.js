@@ -1,5 +1,5 @@
 // Truncate and end with ...
-gApp.filter('truncate', function () {
+export function truncate () {
     return function (text, length, end) {
         if (!text) {
             return '';
@@ -19,23 +19,23 @@ gApp.filter('truncate', function () {
             return String(text).substring(0, length - end.length) + end;
         }
     };
-});
+}
 
 // replace \n by <br />
-gApp.filter('newlines', function () {
+export function newlines () {
     return function (text) {
         return text.replace("\n", "<br />");
     };
-});
+}
 
 // tell angular that an output is safe
-gApp.filter('safe', function ($sce) {
+export function safe ($sce) {
     return function (val) {
         return $sce.trustAsHtml(val);
     };
-});
+}
 
-gApp.filter('stripHTML', function ($sce) {
+export function stripHTML ($sce) {
     return function (html) {
         try {
             var doc = document.implementation.createHTMLDocument();
@@ -46,9 +46,9 @@ gApp.filter('stripHTML', function ($sce) {
             return "";
         }
     };
-});
+}
 
-gApp.filter('gravatar', function () {
+export function gravatar () {
     var cache = {};
     return function (text, defaultText) {
         if (!text) {
@@ -61,10 +61,10 @@ gApp.filter('gravatar', function () {
         }
         return 'https://www.gravatar.com/avatar/' + cache[text] + '?d=retro';
     };
-});
+}
 
 // Filter templates by tags
-gApp.filter('tagFilter', function (TemplateService) {
+export function tagFilter (TemplateService) {
     return function (templates, filterTags) {
         if (filterTags && filterTags.length) {
             return _.filter(templates, function (t) {
@@ -75,10 +75,10 @@ gApp.filter('tagFilter', function (TemplateService) {
             return templates;
         }
     };
-});
+}
 
 // Filter templates by sharing setting
-gApp.filter('sharingFilter', function () {
+export function sharingFilter () {
     return function (templates, sharing_setting) {
         if (sharing_setting === 'all' || sharing_setting === 'tag') {
             return templates;
@@ -93,14 +93,13 @@ gApp.filter('sharingFilter', function () {
             }
         });
     };
-});
+}
 
-
-gApp.filter('fuzzy', function () {
+export function fuzzy () {
     return function (list, text, options) {
         if (!text) {
             return list;
         }
         return fuzzySearch(list, text, options);
     };
-});
+}

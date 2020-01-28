@@ -1,4 +1,4 @@
-gApp.service('AccountService', function ($q, $rootScope, SettingsService) {
+export function AccountService ($q, $rootScope, SettingsService) {
     var self = this;
 
     self.get = function () {
@@ -30,9 +30,9 @@ gApp.service('AccountService', function ($q, $rootScope, SettingsService) {
         });
         return deferred.promise;
     };
-});
+}
 
-gApp.service('MemberService', function ($q, $rootScope) {
+export function MemberService ($q, $rootScope) {
     var self = this;
 
     self.members = function () {
@@ -69,4 +69,4 @@ gApp.service('MemberService', function ($q, $rootScope) {
 
         return deferred.promise;
     };
-});
+}
