@@ -70,7 +70,7 @@ export function tagFilter (TemplateService) {
     return function (templates, filterTags) {
         if (filterTags && filterTags.length) {
             return _.filter(templates, function (t) {
-                tags = TemplateService.tags(t);
+                var tags = TemplateService.tags(t);
                 return _.intersection(filterTags, tags).length === filterTags.length;
             });
         } else {
