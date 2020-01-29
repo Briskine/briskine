@@ -7,7 +7,7 @@ import 'bootstrap';
 import 'selectize';
 // creates global Mousetrap
 import 'mousetrap';
-import 'mousetrap/plugins/record/mousetrap-record',
+import 'mousetrap/plugins/record/mousetrap-record';
 
 import 'tinymce';
 import 'tinymce/themes/modern';

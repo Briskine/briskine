@@ -68,7 +68,6 @@
         "moment": "^2.22.0",
         "mousetrap": "xarg/mousetrap#master",
         "ng-file-upload": "^12.2.13",
-        "npm": "^5.8.0",
         "papaparse": "^5.1.0",
         "selectize": "selectize/selectize.js#~0.12.1",
         "tinymce": "tinymce/tinymce-dist#^4.7.9",
