@@ -144,8 +144,9 @@ $padding = 8px;
 
 .gdemo-dropdown {
     display: none;
-    position: fixed;
+    position: absolute;
     z-index: 9999999;
+    width: 260px;
 
     overflow: hidden;
     margin: 0;
@@ -423,7 +424,11 @@ $padding = 8px;
     height: 184px;
     width: 148px;
     position: absolute;
-    display: block;
-    bottom: -150px;
+    display: none;
+    bottom: -170px;
     left: 252px;
+}
+
+.gdemo-step-new .g-template-arrow {
+    display: block;
 }
