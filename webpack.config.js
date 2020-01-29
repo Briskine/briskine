@@ -35,14 +35,14 @@ const dependencies = {
                 'angular/angular.min.js',
                 'angular-route/angular-route.min.js',
                 'angular-resource/angular-resource.min.js',
-                'angular-moment/angular-moment.min.js',
+//                 'angular-moment/angular-moment.min.js',
 
 //                 'checklist-model/checklist-model.js',
-                'ng-file-upload/ng-file-upload-all.min.js',
+//                 'ng-file-upload/ng-file-upload-all.min.js',
 
 //                 'microplugin/src/microplugin.js',
 //                 'sifter/sifter.min.js',
-                'selectize/dist/js/selectize.min.js',
+//                 'selectize/dist/js/selectize.min.js',
 
 //                 'tinymce/tinymce.min.js',
 //                 'tinymce/themes/modern/theme.min.js',

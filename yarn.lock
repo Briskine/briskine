@@ -442,10 +442,6 @@ angular-moment@^1.3.0:
   dependencies:
     moment ">=2.8.0 <3.0.0"
 
-angular-resource@angular/bower-angular-resource#1.4.7:
-  version "1.4.7"
-  resolved "https://codeload.github.com/angular/bower-angular-resource/tar.gz/c97a21f0e610d48045863da9518d8c13b2c1ed9d"
-
 angular-route@angular/bower-angular-route#1.4.7:
   version "1.4.7"
   resolved "https://codeload.github.com/angular/bower-angular-route/tar.gz/f6f9c6760d15a993776afd5d2fafb456ee1e09d9"

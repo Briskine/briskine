@@ -1,6 +1,5 @@
 import angular from 'angular';
 import ngRoute from 'angular-route';
-import ngResource from 'angular-resource';
 import angularMoment from 'angular-moment';
 import ngFileUpload from 'ng-file-upload';
 import $ from 'jquery';
@@ -47,7 +46,6 @@ import store from '../../store/store-client';
 
 var gApp = angular.module('gApp', [
     ngRoute,
-    ngResource,
     angularMoment,
     ngFileUpload,
 ]);
