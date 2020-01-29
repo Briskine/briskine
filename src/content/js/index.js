@@ -12,7 +12,7 @@ import 'mousetrap/plugins/global-bind/mousetrap-global-bind';
 
 import './content-helpers';
 import './events';
-import '../../common/helpers';
+import {fuzzySearch} from '../../common/helpers';
 
 import store from '../../store/store-client';
 import keyboard from './keyboard';

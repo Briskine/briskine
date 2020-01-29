@@ -1,8 +1,10 @@
-gApp.controller('SettingsCtrl', function ($scope, $rootScope, $timeout,  AccountService, TemplateService, SettingsService) {
+export default function SettingsCtrl ($scope, $rootScope, $timeout, AccountService, TemplateService, SettingsService) {
     $scope.activeTab = "settings";
 
     AccountService.get().then(function(data){
         $scope.account = data;
+    }).catch(() => {
+        // not logged-in
     });
 
     $scope.showWarning = false;
@@ -87,4 +89,4 @@ gApp.controller('SettingsCtrl', function ($scope, $rootScope, $timeout,  Account
             SettingsService.reset();
         }
     };
-});
+}

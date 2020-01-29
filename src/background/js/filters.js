@@ -1,3 +1,5 @@
+import {fuzzySearch} from '../../common/helpers';
+
 // Truncate and end with ...
 export function truncate () {
     return function (text, length, end) {
