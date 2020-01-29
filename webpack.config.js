@@ -137,6 +137,7 @@ const commonConfig = merge([
 const optionsConfig = function (mode) {
     const env = process.env.NODE_ENV || mode
     return {
+        mode: 'development',
         entry: {
             background: './src/background/js/app.js'
         },
@@ -166,6 +167,10 @@ const optionsConfig = function (mode) {
                         'css-loader',
                         'stylus-loader'
                     ],
+                },
+                {
+                    test: /\.(png|woff|woff2|eot|ttf|svg)$/,
+                    loader: 'url-loader?name=icons/[name].[ext]limit=100000',
                 },
             ]
         },
@@ -261,9 +266,9 @@ module.exports = mode => {
         ]
     }
     return [
-//         storeConfig(mode),
-//         contentConfig,
-        merge(commonConfig, developmentConfig, dev.generateManifest({}), { mode }),
+        storeConfig(mode),
+        contentConfig,
         optionsConfig(mode),
+        merge(commonConfig, developmentConfig, dev.generateManifest({}), { mode }),
     ];
 };

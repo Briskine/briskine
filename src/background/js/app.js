@@ -2,7 +2,7 @@ import angular from 'angular';
 import ngRoute from 'angular-route';
 import ngResource from 'angular-resource';
 import angularMoment from 'angular-moment';
-import ngFileUpload from 'ng-file-upload';
+// import ngFileUpload from 'ng-file-upload';
 import $ from 'jquery';
 import 'bootstrap';
 import 'selectize';
@@ -26,6 +26,8 @@ import './utils/amplitude';
 // TODO deprecate, unused
 // import checklistModel from 'checklist-model';
 
+import '../css/background.styl';
+
 import Config from './config';
 import {ProfileService, SettingsService} from './services/services';
 import {FilterTagService, TemplateService} from './services/templates';
@@ -47,36 +49,10 @@ var gApp = angular.module('gApp', [
     ngRoute,
     ngResource,
     angularMoment,
-    ngFileUpload,
+//     ngFileUpload,
 //     checklistModel,
 ]);
 
-gApp.config(function ($routeProvider, $compileProvider, $sceDelegateProvider, $locationProvider) {
-    $locationProvider.hashPrefix('');
-    $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|chrome-extension):/);
-});
-
-gApp
-.service('FilterTagService', FilterTagService)
-.service('TemplateService', TemplateService)
-.service('ProfileService', ProfileService)
-.service('SettingsService', SettingsService)
-.service('SubscriptionService', SubscriptionService)
-.service('AccountService', AccountService)
-.service('MemberService', MemberService)
-.service('QuicktextSharingService', QuicktextSharingService)
-.filter('gravatar', gravatar)
-.filter('safe', safe)
-.filter('fuzzy', fuzzy)
-.filter('tagFilter', tagFilter)
-.filter('sharingFilter', sharingFilter)
-.controller('SidebarCtrl', SidebarCtrl)
-.controller('LoginCtrl', LoginCtrl)
-.controller('ForgotCtrl', ForgotCtrl)
-.controller('ListCtrl', ListCtrl)
-.controller('TemplateFormCtrl', TemplateFormCtrl)
-.controller('ShareFormCtrl', ShareFormCtrl)
-.controller('ImportCtrl', ImportCtrl);
 
 gApp.config(function() {
     tinyMCE.baseURL = 'tinymce';
@@ -179,6 +155,28 @@ gApp.config(['$compileProvider', function ($compileProvider) {
 
 /* Global run
  */
+gApp
+.service('FilterTagService', FilterTagService)
+.service('TemplateService', TemplateService)
+.service('ProfileService', ProfileService)
+.service('SettingsService', SettingsService)
+.service('SubscriptionService', SubscriptionService)
+.service('AccountService', AccountService)
+.service('MemberService', MemberService)
+.service('QuicktextSharingService', QuicktextSharingService)
+.filter('gravatar', gravatar)
+.filter('safe', safe)
+.filter('fuzzy', fuzzy)
+.filter('tagFilter', tagFilter)
+.filter('sharingFilter', sharingFilter)
+.controller('SidebarCtrl', SidebarCtrl)
+.controller('LoginCtrl', LoginCtrl)
+.controller('ForgotCtrl', ForgotCtrl)
+.controller('ListCtrl', ListCtrl)
+.controller('TemplateFormCtrl', TemplateFormCtrl)
+.controller('ShareFormCtrl', ShareFormCtrl)
+.controller('ImportCtrl', ImportCtrl);
+
 gApp.run(function ($rootScope) {
     $rootScope.baseURL = Config.baseURL;
     $rootScope.apiBaseURL = Config.apiBaseURL;

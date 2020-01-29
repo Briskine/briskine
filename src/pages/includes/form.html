@@ -66,7 +66,7 @@
                             <div ng-show="templateForm.isLoggedIn">
                                 <div class="attachment-selector">
                                     <label for="attachment-selector">
-                                        <i class="fa fa-paperclip" />
+                                        <i class="fa fa-paperclip"></i>
                                         Add attachments
                                     </label>
                                     <input id="attachment-selector" type="file" multiple fileread file-selected="templateForm.fileSelected(files)">
@@ -78,7 +78,7 @@
                                    href="{{attachment.url}}">
                                     {{attachment.name}}
                                 </a>
-                                <i class="fa fa-close"                                                                             ng-click="templateForm.removeAttachment(attachment)" />
+                                <i class="fa fa-close"                                                                             ng-click="templateForm.removeAttachment(attachment)"></i>
                             </div>
                         </div>
 
