@@ -6956,16 +6956,6 @@ sifter@^0.5.1:
     humanize "^0.0.9"
     optimist "^0.6.1"
 
-sifter@brianreavis/sifter.js#0.5.x:
-  version "0.5.3"
-  resolved "https://codeload.github.com/brianreavis/sifter.js/tar.gz/2a9c84ec5ac63ceaa4516205e013113626d36a2d"
-  dependencies:
-    async "^2.6.0"
-    cardinal "^1.0.0"
-    csv-parse "^2.0.0"
-    humanize "^0.0.9"
-    optimist "^0.6.1"
-
 signal-exit@^3.0.0, signal-exit@^3.0.2:
   version "3.0.2"
   resolved "https://registry.yarnpkg.com/signal-exit/-/signal-exit-3.0.2.tgz#b5fdc08f1287ea1178628e415e25132b73646c6d"

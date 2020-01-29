@@ -72,7 +72,6 @@
         "npm": "^5.8.0",
         "papaparse": "^5.1.0",
         "selectize": "selectize/selectize.js#~0.12.1",
-        "sifter": "brianreavis/sifter.js#0.5.x",
         "tinymce": "tinymce/tinymce-dist#^4.7.9",
         "underscore": "jashkenas/underscore#1.8.3",
         "underscore.string": "epeli/underscore.string#3.2.2"

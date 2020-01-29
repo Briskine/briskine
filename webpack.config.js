@@ -40,8 +40,8 @@ const dependencies = {
 //                 'checklist-model/checklist-model.js',
                 'ng-file-upload/ng-file-upload-all.min.js',
 
-                'microplugin/src/microplugin.js',
-                'sifter/sifter.min.js',
+//                 'microplugin/src/microplugin.js',
+//                 'sifter/sifter.min.js',
                 'selectize/dist/js/selectize.min.js',
 
 //                 'tinymce/tinymce.min.js',
