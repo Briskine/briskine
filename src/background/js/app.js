@@ -34,6 +34,7 @@ import {FilterTagService, TemplateService} from './services/templates';
 import {AccountService, MemberService} from './services/account';
 import SubscriptionService from './services/subscription';
 import QuicktextSharingService from './services/sharing';
+import InstallService from './services/install-templates';
 import {gravatar, safe, fuzzy, tagFilter, sharingFilter, newlines, truncate, stripHTML} from './filters';
 import SidebarCtrl from './controllers/sidebar';
 import LoginCtrl from './controllers/includes/login';
@@ -43,6 +44,7 @@ import ListCtrl from './controllers/list';
 import SettingsCtrl from './controllers/settings';
 import TemplateFormCtrl from './controllers/includes/template_form';
 import ShareFormCtrl from './controllers/includes/share_form';
+import InstallCtrl from './controllers/install';
 
 import store from '../../store/store-client';
 
@@ -63,6 +65,7 @@ gApp
 .service('AccountService', AccountService)
 .service('MemberService', MemberService)
 .service('QuicktextSharingService', QuicktextSharingService)
+.service('InstallService', InstallService)
 .filter('gravatar', gravatar)
 .filter('safe', safe)
 .filter('fuzzy', fuzzy)
@@ -78,7 +81,8 @@ gApp
 .controller('TemplateFormCtrl', TemplateFormCtrl)
 .controller('ShareFormCtrl', ShareFormCtrl)
 .controller('ImportCtrl', ImportCtrl)
-.controller('SettingsCtrl', SettingsCtrl);
+.controller('SettingsCtrl', SettingsCtrl)
+.controller('InstallCtrl', InstallCtrl);
 
 gApp.config(function() {
     tinyMCE.baseURL = 'tinymce';
