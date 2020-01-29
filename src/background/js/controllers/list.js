@@ -364,7 +364,7 @@ export default function ListCtrl ($route, $q, $scope, $rootScope, $routeParams, 
         // then it should imedially go to the service and delete on the server
         $scope.deleteQt = function (quicktext) {
             if (quicktext) {
-                r = confirm("Are you sure you want to delete '" + quicktext.title + "' template?");
+                var r = confirm("Are you sure you want to delete '" + quicktext.title + "' template?");
                 if (r === true) {
                     TemplateService.delete(quicktext).then(function () {
                         $scope.reloadTemplates();
