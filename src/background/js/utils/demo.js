@@ -379,14 +379,6 @@ var dialogPopulate = function (params) {
         '</li>');
     });
 
-    /*
-        var content = Handlebars.compile(dialogLiTemplate)({
-        elements: clonedElements
-        });
-
-        $(contentSelector).html(content);
-        */
-
     // Set first element active
     dialogSelectItem(0);
 

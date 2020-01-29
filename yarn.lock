@@ -7680,10 +7680,6 @@ umask@^1.1.0, umask@~1.1.0:
   resolved "https://registry.yarnpkg.com/umask/-/umask-1.1.0.tgz#f29cebf01df517912bb58ff9c4e50fde8e33320d"
   integrity sha1-8pzr8B31F5ErtY/5xOUP3o4zMg0=
 
-underscore.string@epeli/underscore.string#3.2.2:
-  version "3.2.2"
-  resolved "https://codeload.github.com/epeli/underscore.string/tar.gz/527cb1c9042cdf2a27c3ec8c9913a7397050ec63"
-
 underscore@jashkenas/underscore#1.8.3:
   version "1.8.3"
   resolved "https://codeload.github.com/jashkenas/underscore/tar.gz/e4743ab712b8ab42ad4ccb48b155034d02394e4d"

@@ -5,6 +5,9 @@ import ngFileUpload from 'ng-file-upload';
 import $ from 'jquery';
 import 'bootstrap';
 import 'selectize';
+// creates global Mousetrap
+import 'mousetrap';
+import 'mousetrap/plugins/record/mousetrap-record',
 
 import 'tinymce';
 import 'tinymce/themes/modern';
