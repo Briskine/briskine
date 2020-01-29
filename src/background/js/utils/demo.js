@@ -394,9 +394,11 @@ var gorgiasDemo = (function () {
 
     };
 
+    var stepNewActiveClass = 'gdemo-step-new';
     var dialogSelector = '.gdemo-dropdown';
     var contentSelector = '.gdemo-dropdown-content';
     var searchSelector = '.gdemo-dropdown-search';
+    var newTemplateTimer = null;
 
     var dialogChangeSelection = function (direction) {
         var index_diff = direction === 'prev' ? -1 : 1,
@@ -495,10 +497,11 @@ var gorgiasDemo = (function () {
                 shortcut: quicktext.shortcut
             });
 
-            setTimeout(function(){
+            newTemplateTimer = setTimeout(function() {
+                // HACK hijack angular
                 $('.gorgias-demo-hint>*').addClass('hidden');
                 $('.gorgias-demo-hint .new-template').removeClass('hidden').addClass('fadein');
-                $('.g-template-arrow').removeClass('hidden');
+                document.body.classList.add(stepNewActiveClass);
             }, 1000);
         }
     };
@@ -549,10 +552,13 @@ var gorgiasDemo = (function () {
     };
 
     var dialogHide = function (e) {
-
         $(dialogSelector).removeClass('gdemo-dropdown-show');
         $(searchSelector).val('');
 
+        document.body.classList.remove(stepNewActiveClass);
+        if (newTemplateTimer) {
+            clearTimeout(newTemplateTimer);
+        }
     };
 
     var isElementInViewport = function (el) {
