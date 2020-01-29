@@ -37,7 +37,7 @@ const dependencies = {
                 'angular-resource/angular-resource.min.js',
                 'angular-moment/angular-moment.min.js',
 
-                'checklist-model/checklist-model.js',
+//                 'checklist-model/checklist-model.js',
                 'ng-file-upload/ng-file-upload-all.min.js',
 
                 'microplugin/src/microplugin.js',

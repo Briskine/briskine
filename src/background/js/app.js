@@ -2,7 +2,7 @@ import angular from 'angular';
 import ngRoute from 'angular-route';
 import ngResource from 'angular-resource';
 import angularMoment from 'angular-moment';
-// import ngFileUpload from 'ng-file-upload';
+import ngFileUpload from 'ng-file-upload';
 import $ from 'jquery';
 import 'bootstrap';
 import 'selectize';
@@ -21,9 +21,6 @@ import 'tinymce/plugins/textcolor';
 import 'tinymce/plugins/code';
 
 import './utils/amplitude';
-
-// TODO deprecate, unused
-// import checklistModel from 'checklist-model';
 
 import '../css/background.styl';
 
@@ -51,8 +48,7 @@ var gApp = angular.module('gApp', [
     ngRoute,
     ngResource,
     angularMoment,
-//     ngFileUpload,
-//     checklistModel,
+    ngFileUpload,
 ]);
 
 gApp
