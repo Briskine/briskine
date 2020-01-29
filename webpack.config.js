@@ -59,20 +59,22 @@ const dependencies = {
 //                 'tinymce/plugins/imagetools/plugin.js',
 //                 'tinymce/plugins/code/plugin.js',
 
-                'fuse.js/src/fuse.min.js',
+//                 'fuse.js/src/fuse.min.js',
 
-                'papaparse/papaparse.min.js',
+//                 'papaparse/papaparse.min.js',
 
                 // Should be first
+                // TODO deprecate environment.js from webpack generate
                 './src/background/js/environment.js',
-                './src/background/js/config.js',
-                './src/background/js/utils/amplitude.js',
 
-                './src/common/*.js',
+//                 './src/background/js/config.js',
+//                 './src/background/js/utils/amplitude.js',
 
-                './src/store/store-client.js',
+//                 './src/common/*.js',
 
-                './src/background/js/**/*.js'
+//                 './src/store/store-client.js',
+
+//                 './src/background/js/**/*.js'
                 ],
                 css: [
                     'tinymce/skins/lightgray/skin.min.css',

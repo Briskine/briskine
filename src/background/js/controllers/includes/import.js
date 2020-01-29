@@ -1,3 +1,5 @@
+import Papa from 'papaparse';
+
 export default function ImportCtrl ($scope, $rootScope, $timeout) {
     var self = this;
     self.uploading = false;

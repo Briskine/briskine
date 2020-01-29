@@ -65,7 +65,6 @@
         "handlebars": "^4.5.3",
         "jquery": "jquery/jquery-dist#2.1.4",
         "js-md5": "emn178/js-md5#~0.3.0",
-        "microplugin": "brianreavis/microplugin.js#0.0.x",
         "mini-css-extract-plugin": "^0.8.0",
         "moment": "^2.22.0",
         "mousetrap": "xarg/mousetrap#master",

@@ -4594,7 +4594,7 @@ micromatch@^3.0.4, micromatch@^3.1.10, micromatch@^3.1.4:
     snapdragon "^0.8.1"
     to-regex "^3.0.2"
 
-microplugin@0.0.3, microplugin@brianreavis/microplugin.js#0.0.x:
+microplugin@0.0.3:
   version "0.0.3"
   resolved "https://codeload.github.com/brianreavis/microplugin.js/tar.gz/d8671e6cc769938648f8735610534427cdeeaf67"
 
