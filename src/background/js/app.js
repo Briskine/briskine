@@ -6,7 +6,6 @@ import angularMoment from 'angular-moment';
 import $ from 'jquery';
 import 'bootstrap';
 import 'selectize';
-// import 'bootstrap/dist/css/bootstrap.css';
 
 import 'tinymce';
 import 'tinymce/themes/modern';

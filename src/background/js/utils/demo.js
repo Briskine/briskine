@@ -191,7 +191,7 @@ var getSelectedWord = function (params) {
             // However, in some cases it may refer to an Element Node
             case (document.ELEMENT_NODE):
                 // In that case, the focusOffset property returns the index in the childNodes collection of the focus node where the selection ends.
-                beforeNode = focusNode.childNodes[selection.focusOffset];
+                var beforeNode = focusNode.childNodes[selection.focusOffset];
                 if (beforeNode) {
                     beforeSelection = beforeNode.textContent;
                 }
