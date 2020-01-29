@@ -18,6 +18,7 @@ import 'tinymce/plugins/table';
 import 'tinymce/plugins/advlist';
 import 'tinymce/plugins/lists';
 import 'tinymce/plugins/textcolor';
+import 'tinymce/plugins/imagetools';
 import 'tinymce/plugins/code';
 
 import './utils/amplitude';
