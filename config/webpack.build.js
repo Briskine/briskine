@@ -1,5 +1,5 @@
-var path = require('path');
-var CopyWebpackPlugin = require('copy-webpack-plugin');
+const path = require('path');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 const FileManagerPlugin = require('filemanager-webpack-plugin');
 
 exports.setPath = ({ output }) => {
@@ -25,12 +25,6 @@ exports.archive = ({ path: buildPath, filename }) => {
     };
 };
 exports.generateManifestProduction = ({}) => {
-
-    var fs = require('fs');
-    fs.writeFile('src/background/js/environment.js','var ENV = "production";',function(err){
-        if(err) throw err;
-    })
-
     var manifestProduction = require("../src/manifest.json")
     delete manifestProduction.key;
     const plugin = new CopyWebpackPlugin([

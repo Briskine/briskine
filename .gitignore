@@ -4,9 +4,6 @@ chrome_profile
 *.log
 build
 
-# It is added in git but we don't have to track this file
-src/background/js/environment.js
-
 # Editor
 .idea
 
