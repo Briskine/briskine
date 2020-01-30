@@ -1,4 +1,6 @@
-gApp.controller('SubscriptionsCtrl', function ($scope, $rootScope, $routeParams, $q, SubscriptionService, AccountService) {
+import store from '../../../../store/store-client';
+
+export default function SubscriptionsCtrl ($scope, $rootScope, $routeParams, $q, SubscriptionService, AccountService) {
     $scope.activeTab = 'subscriptions';
 
     AccountService.get().then(function (account) {
@@ -59,7 +61,7 @@ gApp.controller('SubscriptionsCtrl', function ($scope, $rootScope, $routeParams,
     $scope.reloadSubscriptions();
 
     function updateLegacyCreditCard (params = {}) {
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve) => {
             var handler = StripeCheckout.configure({
                 key: params.stripeKey,
                 token: function (token) {
@@ -142,4 +144,4 @@ gApp.controller('SubscriptionsCtrl', function ($scope, $rootScope, $routeParams,
             $scope.loadingCancel = false;
         }
     };
-});
+}
