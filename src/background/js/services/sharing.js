@@ -1,4 +1,6 @@
-export default function QuicktextSharingService ($q, $rootScope) {
+import store from '../../../store/store-client';
+
+export default function QuicktextSharingService ($q) {
     var self = this;
 
     self.list = function(qtList = []) {

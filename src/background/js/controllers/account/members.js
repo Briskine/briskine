@@ -1,4 +1,4 @@
-gApp.controller('MembersCtrl', function ($scope, $rootScope, $timeout, $location, AccountService, MemberService, SubscriptionService) {
+export default function MembersCtrl ($scope, $rootScope, $timeout, $location, AccountService, MemberService, SubscriptionService) {
     $scope.activeTab = 'members';
 
     $scope.users = [];
@@ -124,4 +124,4 @@ gApp.controller('MembersCtrl', function ($scope, $rootScope, $timeout, $location
         window.location.href = '#/account/subscriptions';
         window.location.reload();
     };
-});
+}

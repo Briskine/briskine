@@ -1,3 +1,5 @@
+import store from '../../../../store/store-client';
+
 export default function LoginCtrl ($timeout, $route, $rootScope, TemplateService, SettingsService) {
     var self = this;
     self.loading = false;

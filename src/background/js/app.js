@@ -44,6 +44,8 @@ import SettingsCtrl from './controllers/settings';
 import TemplateFormCtrl from './controllers/includes/template_form';
 import ShareFormCtrl from './controllers/includes/share_form';
 import InstallCtrl from './controllers/install';
+import AccountCtrl from './controllers/account/account';
+import MembersCtrl from './controllers/account/members';
 
 import store from '../../store/store-client';
 
@@ -79,7 +81,9 @@ gApp
 .controller('ShareFormCtrl', ShareFormCtrl)
 .controller('ImportCtrl', ImportCtrl)
 .controller('SettingsCtrl', SettingsCtrl)
-.controller('InstallCtrl', InstallCtrl);
+.controller('InstallCtrl', InstallCtrl)
+.controller('AccountCtrl', AccountCtrl)
+.controller('MembersCtrl', MembersCtrl);
 
 gApp.config(function() {
     tinyMCE.baseURL = 'tinymce';

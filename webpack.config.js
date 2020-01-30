@@ -77,31 +77,14 @@ const dependencies = {
 //                 './src/background/js/**/*.js'
                 ],
                 css: [
-                    'tinymce/skins/lightgray/skin.min.css',
-                    'tinymce/skins/lightgray/content.min.css'
+//                     'tinymce/skins/lightgray/skin.min.css',
+//                     'tinymce/skins/lightgray/content.min.css'
                 ]
             }
     };
 
 const commonConfig = merge([
     {
-        module: {
-            rules: [
-                {
-                    test: /\.(css|styl)$/i,
-                    include: [
-                        path.resolve(__dirname, 'src/background')
-                    ],
-                    use: extractBackgroundStyle.extract({
-                        use: ['css-loader', 'stylus-loader']
-                    })
-                },
-                {
-                    test: /\.(png|woff|woff2|eot|ttf|svg)$/,
-                    loader: 'url-loader?name=icons/[name].[ext]limit=100000',
-                },
-            ]
-        },
         plugins: [
             // clean the build folder
             new CleanWebpackPlugin(["ext"]),
@@ -114,20 +97,6 @@ const commonConfig = merge([
                 {   from: "node_modules/tinymce/skins/lightgray/fonts/", to: "background/css/fonts/"},
                 {   from: "node_modules/tinymce/skins/lightgray/", to: "pages/tinymce/skins/lightgray/"},
             ]),
-//             new ConcatPlugin(
-//                 {
-//                     uglify: false,
-//                     sourceMap: true,
-//                     name: 'background',
-//                     outputPath: 'background/js',
-//                     fileName: '[name].js',
-//                     filesToConcat: dependencies.background.js,
-//                     attributes: {
-//                         async: true
-//                     }
-//                 }
-//             ),
-//             extractBackgroundStyle
         ],
         devServer: {
             inline: false,

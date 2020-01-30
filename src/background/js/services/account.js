@@ -1,4 +1,6 @@
-export function AccountService ($q, $rootScope, SettingsService) {
+import store from '../../../store/store-client';
+
+export function AccountService ($q, SettingsService) {
     var self = this;
 
     self.get = function () {
@@ -32,7 +34,7 @@ export function AccountService ($q, $rootScope, SettingsService) {
     };
 }
 
-export function MemberService ($q, $rootScope) {
+export function MemberService ($q) {
     var self = this;
 
     self.members = function () {
