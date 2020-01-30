@@ -132,7 +132,7 @@ export default function SubscriptionsCtrl ($scope, $rootScope, $routeParams, $q,
 
     $scope.cancelSubscription = function() {
         $scope.loadingCancel = true;
-        cancelConfirm = window.confirm('Are you sure you want to cancel and delete all your template backups?');
+        var cancelConfirm = window.confirm('Are you sure you want to cancel and delete all your template backups?');
         if (cancelConfirm === true) {
             SubscriptionService.cancelSubscription().then(function () {
                 $rootScope.logOut();
