@@ -1,6 +1,7 @@
 import store from '../../../store/store-client';
 
 export function AccountService ($q, SettingsService) {
+    'ngInject';
     var self = this;
 
     self.get = function () {
@@ -35,6 +36,7 @@ export function AccountService ($q, SettingsService) {
 }
 
 export function MemberService ($q) {
+    'ngInject';
     var self = this;
 
     self.members = function () {

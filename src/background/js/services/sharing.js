@@ -1,6 +1,7 @@
 import store from '../../../store/store-client';
 
 export default function QuicktextSharingService ($q) {
+    'ngInject';
     var self = this;
 
     self.list = function(qtList = []) {

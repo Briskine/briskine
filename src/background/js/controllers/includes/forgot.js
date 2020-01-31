@@ -1,4 +1,5 @@
 export default function ForgotCtrl ($timeout, $route, $rootScope) {
+    'ngInject';
     var self = this;
     self.loading = false;
 

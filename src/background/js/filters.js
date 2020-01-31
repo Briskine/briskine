@@ -33,12 +33,14 @@ export function newlines () {
 
 // tell angular that an output is safe
 export function safe ($sce) {
+    'ngInject';
     return function (val) {
         return $sce.trustAsHtml(val);
     };
 }
 
 export function stripHTML ($sce) {
+    'ngInject';
     return function (html) {
         try {
             var doc = document.implementation.createHTMLDocument();
@@ -68,6 +70,7 @@ export function gravatar () {
 
 // Filter templates by tags
 export function tagFilter (TemplateService) {
+    'ngInject';
     return function (templates, filterTags) {
         if (filterTags && filterTags.length) {
             return _.filter(templates, function (t) {

@@ -1,5 +1,6 @@
 export default function SidebarCtrl ($scope, $location, $window,
                                          AccountService, SettingsService, TemplateService, FilterTagService) {
+    'ngInject';
     $scope.profile = {};
     $scope.filterTags = [];
 

@@ -1,6 +1,7 @@
 import store from '../../../store/store-client';
 
 export function FilterTagService ($rootScope) {
+    'ngInject';
     var filterTags = [];
 
     function toggleFilterTag(tag) {
@@ -25,6 +26,7 @@ export function FilterTagService ($rootScope) {
 
 // Template operations
 export function TemplateService ($q, $rootScope, SettingsService) {
+    'ngInject';
     var self = this;
     self.isLoggedin = false;
     SettingsService.get("isLoggedIn").then(function (isLoggedIn) {

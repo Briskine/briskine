@@ -1,6 +1,5 @@
-export default function ListCtrl ($route, $q, $scope, $rootScope, $routeParams, $location, $timeout, $filter,
-              AccountService, TemplateService, SettingsService, FilterTagService, QuicktextSharingService,
-              MemberService) {
+export default function ListCtrl ($route, $q, $scope, $rootScope, $routeParams, $location, $timeout, $filter, AccountService, TemplateService, SettingsService, FilterTagService, QuicktextSharingService, MemberService) {
+        'ngInject';
         var $formModal;
         var $shareModal;
 

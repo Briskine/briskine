@@ -1,4 +1,5 @@
 export default function SettingsCtrl ($scope, $rootScope, $timeout, AccountService, TemplateService, SettingsService) {
+    'ngInject';
     $scope.activeTab = "settings";
 
     AccountService.get().then(function(data){

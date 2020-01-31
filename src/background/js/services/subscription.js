@@ -1,6 +1,7 @@
 import store from '../../../store/store-client';
 
 export default function SubscriptionService ($q) {
+    'ngInject';
     var self = this;
 
     self.plans = function () {

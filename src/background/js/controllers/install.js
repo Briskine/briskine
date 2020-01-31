@@ -1,6 +1,7 @@
 import {init as gorgiasDemoInit} from '../utils/demo';
 
 export default function InstallCtrl ($scope, $rootScope, $routeParams, InstallService, TemplateService, SettingsService) {
+    'ngInject';
 
     var ctrl = this;
 

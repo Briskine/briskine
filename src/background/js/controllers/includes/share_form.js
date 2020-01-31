@@ -1,4 +1,5 @@
 export default function ShareFormCtrl ($route, $q, $scope, $rootScope, $routeParams) {
+        'ngInject';
 
         var self = this;
         self.sharing_setting = 'specific';

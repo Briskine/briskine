@@ -2,6 +2,7 @@ import store from '../../../../store/store-client';
 
 export default function TemplateFormCtrl ($route, $q, $scope, $rootScope, $routeParams, $location, $window, $timeout, $filter,
               AccountService, TemplateService, SettingsService, FilterTagService) {
+        'ngInject';
 
         var self = this;
         self.sharing_setting = "private";

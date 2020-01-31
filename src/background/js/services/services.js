@@ -2,6 +2,7 @@ import store from '../../../store/store-client';
 
 // Settings
 export function SettingsService ($q) {
+    'ngInject';
     var self = this;
     self.get = function (key, def) {
         var deferred = $q.defer();
@@ -31,6 +32,7 @@ export function SettingsService ($q) {
 
 // User Profile - check if the user is logged in. Get it's info
 export function ProfileService ($q, SettingsService) {
+    'ngInject';
     var self = this;
 
     self.reduceNumbers = function (n) {

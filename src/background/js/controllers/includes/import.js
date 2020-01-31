@@ -1,6 +1,7 @@
 import Papa from 'papaparse';
 
 export default function ImportCtrl ($scope, $rootScope, $timeout) {
+    'ngInject';
     var self = this;
     self.uploading = false;
 
