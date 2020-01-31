@@ -38,56 +38,56 @@ export function ProfileService ($q, SettingsService) {
     self.reduceNumbers = function (n) {
         /* Write nice numbers. Ex: 1000 -> 1k */
         if (!n) {
-            return "0"
+            return "0";
         }
         if (n < 1000) {
-            return n
+            return n;
         }
 
-        var mag, p
+        var mag, p;
         if (n < Math.pow(10, 6)) {
-            mag = "k"
-            p = Math.pow(10, 3)
+            mag = "k";
+            p = Math.pow(10, 3);
         } else if (n < Math.pow(10, 8)) {
-            p = Math.pow(10, 6)
-            mag = "M"
+            p = Math.pow(10, 6);
+            mag = "M";
         } else if (n < Math.pow(10, 11)) {
-            p = Math.pow(10, 8)
-            mag = "G"
+            p = Math.pow(10, 8);
+            mag = "G";
         } else if (n < Math.pow(10, 14)) {
-            p = Math.pow(10, 11)
-            mag = "T"
+            p = Math.pow(10, 11);
+            mag = "T";
         }
-        return (Math.floor((n / p) * p) / p).toFixed(2) + mag
-    }
+        return (Math.floor((n / p) * p) / p).toFixed(2) + mag;
+    };
 
     self.words = function () {
-        return SettingsService.get("words", 0)
-    }
+        return SettingsService.get("words", 0);
+    };
 
-    self.savedWords = self.reduceNumbers(self.words)
+    self.savedWords = self.reduceNumbers(self.words);
 
     self.niceTime = function (minutes) {
         if (!minutes) {
-            return "0min"
+            return "0min";
         }
         if (minutes < 60) {
-            return minutes + "min"
+            return minutes + "min";
         }
         // 23h and 23m
         if (minutes < 60 * 24) {
-            return Math.floor(minutes / 60) + "h and " + minutes % 60 + "min"
+            return Math.floor(minutes / 60) + "h and " + minutes % 60 + "min";
         } else {
-            return Math.floor(minutes / (60 * 24)) + "d, " + Math.floor(minutes % (60 * 24) / 60) + "h and " + minutes % (60 * 24) % 60 + "min"
+            return Math.floor(minutes / (60 * 24)) + "d, " + Math.floor(minutes % (60 * 24) / 60) + "h and " + minutes % (60 * 24) % 60 + "min";
         }
-    }
+    };
     // average WPM: http://en.wikipedia.org/wiki/Words_per_minute
-    self.avgWPM = 25
+    self.avgWPM = 25;
     self.savedTime = function () {
-        var deferred = $q.defer()
+        var deferred = $q.defer();
         self.words().then(function (words) {
-            deferred.resolve(self.niceTime(Math.round(words / self.avgWPM)))
-        })
-        return deferred.promise
-    }
+            deferred.resolve(self.niceTime(Math.round(words / self.avgWPM)));
+        });
+        return deferred.promise;
+    };
 }

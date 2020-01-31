@@ -102,7 +102,7 @@ export function TemplateService ($q, $rootScope, SettingsService) {
             template: t,
             onlyLocal: onlyLocal,
             synced: synced
-        }).then(deferred.resolve)
+        }).then(deferred.resolve);
         return deferred.promise;
     };
 
@@ -160,7 +160,7 @@ export function TemplateService ($q, $rootScope, SettingsService) {
     };
 
     // Update lastuse_datetime
-    self.used = function (id, onlyLocal) {
+    self.used = function (id) {
         var deferred = $q.defer();
         self.get(id).then(function (template) {
             if (typeof template.use_count === 'undefined') {

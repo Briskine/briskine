@@ -78,8 +78,10 @@ export default function ListCtrl ($route, $q, $scope, $rootScope, $routeParams, 
                 AccountService.get().then(function (account) {
                     $scope.account = account;
 
-                    if (($scope.account.info.share_all == "true" && (properties.list == "tag" || properties.list == "all"))
-                        || properties.list == "shared") {
+                    if (
+                        ($scope.account.info.share_all == "true" && (properties.list == "tag" || properties.list == "all")) ||
+                        properties.list == "shared"
+                    ) {
                         $scope.sharing_setting = "everyone";
                     } else {
                         $scope.sharing_setting = "private";
@@ -99,9 +101,9 @@ export default function ListCtrl ($route, $q, $scope, $rootScope, $routeParams, 
 
             // Setup search
             if (settings.qaBtn.fuzzySearch === false) {
-                $scope.searchOptions.threshold = 0
+                $scope.searchOptions.threshold = 0;
             }
-            $scope.searchOptions.caseSensitive = !!settings.qaBtn.caseSensitiveSearch
+            $scope.searchOptions.caseSensitive = !!settings.qaBtn.caseSensitiveSearch;
         });
 
         $scope.showPostInstall = function () {
@@ -143,7 +145,7 @@ export default function ListCtrl ($route, $q, $scope, $rootScope, $routeParams, 
             TemplateService.quicktexts().then(function (r) {
                 $scope.templates = r;
                 $scope.filterTemplates();
-                $rootScope.$broadcast('reload')
+                $rootScope.$broadcast('reload');
             });
         };
 
@@ -158,16 +160,16 @@ export default function ListCtrl ($route, $q, $scope, $rootScope, $routeParams, 
         // need to use a separate map for the selected state,
         // instead of quicktext.select,
         // so sync doesn't uncheck templates on refresh.
-        $scope.selectedQuickTexts = {}
+        $scope.selectedQuickTexts = {};
         var getSelectedQuickTexts = function () {
             return $scope.filteredTemplates.filter(function (qt) {
-                return $scope.selectedQuickTexts[qt.id] === true
-            })
-        }
+                return $scope.selectedQuickTexts[qt.id] === true;
+            });
+        };
 
         // make getSelectedQuickTexts public,
         // so we can use it in other places (eg. ShareFormCtrl)
-        $scope.getSelectedQuickTexts = getSelectedQuickTexts
+        $scope.getSelectedQuickTexts = getSelectedQuickTexts;
 
         /* Init modal and other dom manipulation
          * when the templates have loaded
@@ -453,7 +455,7 @@ export default function ListCtrl ($route, $q, $scope, $rootScope, $routeParams, 
             SettingsService.get('settings').then(function (settings) {
                 if (settings.is_sort_template_list) {
                   // Sort the filtered templates in alphabetically order
-                  $scope.filteredTemplates = $filter('orderBy')($scope.filteredTemplates, 'title')
+                  $scope.filteredTemplates = $filter('orderBy')($scope.filteredTemplates, 'title');
                 }
             });
         }, 50);
@@ -470,12 +472,12 @@ export default function ListCtrl ($route, $q, $scope, $rootScope, $routeParams, 
             a.click();
             document.body.removeChild(a);
             setTimeout(function() { URL.revokeObjectURL(a.href); }, 1500);
-        };
+        }
 
         function generateCsv (arr = []) {
             // header
             if (!arr.length) {
-                return
+                return;
             }
 
             var lines = [];
@@ -487,16 +489,16 @@ export default function ListCtrl ($route, $q, $scope, $rootScope, $routeParams, 
                 columns.forEach((key) => {
                     var content = (item[key] || '').replace(/"/g, '""');
                     if (content) {
-                        content = `"${content}"`
+                        content = `"${content}"`;
                     }
-                    row.push(content)
+                    row.push(content);
                 });
 
                 lines.push(row.join(','));
             });
 
             return lines.join('\r\n');
-        };
+        }
 
         $scope.exportTemplates = function () {
             var now = new Date();
@@ -515,7 +517,7 @@ export default function ListCtrl ($route, $q, $scope, $rootScope, $routeParams, 
                     bcc: item.bcc || '',
                     to: item.to || '',
                     body: item.body || '',
-                }
+                };
             });
 
             var csv = generateCsv(exportTemplates);

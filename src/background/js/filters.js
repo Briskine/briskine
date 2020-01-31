@@ -39,8 +39,7 @@ export function safe ($sce) {
     };
 }
 
-export function stripHTML ($sce) {
-    'ngInject';
+export function stripHTML () {
     return function (html) {
         try {
             var doc = document.implementation.createHTMLDocument();

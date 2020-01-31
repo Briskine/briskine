@@ -34,6 +34,7 @@ import {AccountService, MemberService} from './services/account';
 import SubscriptionService from './services/subscription';
 import QuicktextSharingService from './services/sharing';
 import InstallService from './services/install-templates';
+import StatsService from './services/stats';
 import {gravatar, safe, fuzzy, tagFilter, sharingFilter, newlines, truncate, stripHTML} from './filters';
 import SidebarCtrl from './controllers/sidebar';
 import LoginCtrl from './controllers/includes/login';
@@ -47,6 +48,7 @@ import InstallCtrl from './controllers/install';
 import AccountCtrl from './controllers/account/account';
 import MembersCtrl from './controllers/account/members';
 import SubscriptionsCtrl from './controllers/account/subscriptions';
+import StatsCtrl from './controllers/account/stats';
 
 import store from '../../store/store-client';
 
@@ -66,6 +68,7 @@ gApp
 .service('MemberService', MemberService)
 .service('QuicktextSharingService', QuicktextSharingService)
 .service('InstallService', InstallService)
+.service('StatsService', StatsService)
 .filter('gravatar', gravatar)
 .filter('safe', safe)
 .filter('fuzzy', fuzzy)
@@ -85,7 +88,8 @@ gApp
 .controller('InstallCtrl', InstallCtrl)
 .controller('AccountCtrl', AccountCtrl)
 .controller('MembersCtrl', MembersCtrl)
-.controller('SubscriptionsCtrl', SubscriptionsCtrl);
+.controller('SubscriptionsCtrl', SubscriptionsCtrl)
+.controller('StatsCtrl', StatsCtrl);
 
 gApp.config(function() {
     tinyMCE.baseURL = 'tinymce';

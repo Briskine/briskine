@@ -1,4 +1,4 @@
-export default function ForgotCtrl ($timeout, $route, $rootScope) {
+export default function ForgotCtrl ($timeout) {
     'ngInject';
     var self = this;
     self.loading = false;

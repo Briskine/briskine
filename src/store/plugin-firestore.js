@@ -1120,7 +1120,7 @@ function deleteSharing (params = {}) {
             });
 
             return;
-        }).catch((err) => {
+        }).catch(() => {
             // catch errors, to always clean-up the queue
             return;
         }).then(() => {

@@ -6,7 +6,6 @@ var KEY_TAB = 9;
 var KEY_UP = 38;
 var KEY_DOWN = 40;
 var KEY_ENTER = 13;
-var KEY_SPACE = 32;
 var KEY_ESC = 27;
 
 var $editor;
@@ -90,87 +89,6 @@ var filterQuicktexts = function (word) {
 };
 
 
-var getCursorPosition = function (e, params) {
-
-    params = params || {};
-
-    var position = {
-        element: e && e.target ? e.target : null,
-        offset: 0,
-        absolute: {
-            left: 0,
-            top: 0
-        },
-        word: null
-    };
-
-    var getRanges = function (sel) {
-        if (sel.rangeCount) {
-            var ranges = [];
-            for (var i = 0; i < sel.rangeCount; i++) {
-                ranges.push(sel.getRangeAt(i));
-            }
-            return ranges;
-        }
-        return [];
-    };
-
-    var restoreRanges = function (sel, ranges) {
-        for (var i in ranges) {
-            sel.addRange(ranges[i]);
-        }
-    };
-
-    // Working with editable div
-    // Insert a virtual cursor, find its position
-    // http://stackoverflow.com/questions/16580841/insert-text-at-caret-in-contenteditable-div
-
-    var selection = window.getSelection();
-    // get the element that we are focused + plus the offset
-    // Read more about this here: https://developer.mozilla.org/en-US/docs/Web/API/Selection.focusNode
-    position.element = params.focusNode || selection.focusNode;
-    position.offset = selection.focusOffset;
-
-    if (typeof params.focusOffset !== 'undefined') {
-        position.offset = params.focusOffset;
-    }
-
-    // First we get all ranges (most likely just 1 range)
-    var ranges = getRanges(selection);
-
-    if (!ranges.length) {
-        return;
-    }
-    // remove any previous ranges
-    selection.removeAllRanges();
-
-    // Added a new range to place the caret at the focus point of the cursor
-    var range = new Range();
-    var caretText = '<span id="gdemo-caret"></span>';
-    range.setStart(position.element, position.offset);
-    range.setEnd(position.element, position.offset);
-    range.insertNode(range.createContextualFragment(caretText));
-    selection.addRange(range);
-    selection.removeAllRanges();
-
-    // finally we restore all the ranges that we had before
-    restoreRanges(selection, ranges);
-
-    // Virtual caret
-    var $caret = $('#gdemo-caret');
-
-    if ($caret.length) {
-        position.absolute = $caret.offset();
-        position.absolute.width = $caret.width();
-        position.absolute.height = $caret.height();
-
-        // Remove virtual caret
-        $caret.remove();
-    }
-
-    return position;
-};
-
 var getSelectedWord = function (params) {
     var word = {
         start: 0,
@@ -253,7 +171,7 @@ var replaceWith = function (params) {
 
     getData({
         element: params.element
-    }, function (err, response) {
+    }, function () {
 
         var parsedTemplate = params.quicktext.body;
 
@@ -402,9 +320,6 @@ var dialogChangeSelection = function (direction) {
 
 var dialogCreate = function () {
 
-    // Create only once in the root of the document
-    var container = $('body');
-
     // Add loading dropdown
     var dialog = $(dialogSelector);
 
@@ -511,10 +426,6 @@ var dialogShow = function (e, params) {
         $editor.innerHTML = ' ';
     }
 
-    var element = e.target;
-
-    var cursorPosition = getCursorPosition(e, params);
-
     dialogPopulate({
         word: {text: ''}
     });
@@ -541,7 +452,7 @@ var dialogShow = function (e, params) {
 
 };
 
-var dialogHide = function (e) {
+var dialogHide = function () {
 
     $(dialogSelector).removeClass('gdemo-dropdown-show');
     $(searchSelector).val('');
@@ -662,4 +573,4 @@ export function init () {
     });
     */
 
-};
+}

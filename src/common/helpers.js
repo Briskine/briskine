@@ -3,7 +3,7 @@ import Fuse from 'fuse.js';
 // fuzzy search with fuse.js
 export function fuzzySearch (list, text, opts) {
     if (!text) {
-        return list
+        return list;
     }
 
     if (opts.threshold === 0) {
