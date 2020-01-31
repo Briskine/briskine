@@ -23,7 +23,6 @@ The following commands are available:
 
 * `yarn start` - Development mode. Creates development manifest, watches files and recompiles them automatically.
 * `yarn build` - Build extension and compress extension.
-* `yarn test` - Run tests.
 
 Known issues
 ------------
