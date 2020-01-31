@@ -59,7 +59,7 @@
         "font-awesome": "^4.5.0",
         "fuse.js": "^3.4.6",
         "handlebars": "^4.5.3",
-        "jquery": "^2.1.4",
+        "jquery": "^3.4.1",
         "js-md5": "^0.7.3",
         "moment": "^2.22.0",
         "mousetrap": "xarg/mousetrap#master",
