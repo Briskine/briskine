@@ -71,8 +71,6 @@ const commonConfig = function (env) {
                 { from: 'src/pages/', to: 'pages/' },
                 { from: 'src/icons/', to: 'icons/' },
                 { from: 'src/LICENSE', to: '' },
-                { from: 'node_modules/font-awesome/fonts/', to: 'background/fonts/' },
-                { from: 'node_modules/tinymce/skins/lightgray/fonts/', to: 'background/css/fonts/' },
                 { from: 'node_modules/tinymce/skins/lightgray/', to: 'pages/tinymce/skins/lightgray/' },
             ])
         ],
