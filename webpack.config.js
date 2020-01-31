@@ -9,6 +9,10 @@ const packageFile = require('./package.json');
 const manifestFile = require('./src/manifest.json');
 const devManifestKey = 'MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA4fz+r4Bt92pF09QQkdrVrJRt/OYUWTg6mBHGyp0u6suCPaPFJ1mysOAphZIAhCPw4O/lsQ8AlLkHgFzpb5z7IjmrU3FB1dJXGifXDY6ybZi/CcZUY0g30Do+bowHKNHRnkYIl625jaQwvrKm9ZYseIPIbCOtDHSBoD579tbP+aYLxZV+aVBmvD7O2HayVzMgL8xc+imk2gRzmu0zVjgQ+WqlGApTsEtucsVUVrNTf6Txl9nDCN9ztRJwLH7VASKctHeHMwmK1uDZgkokdO5FjHYEp6VB7c4Pe/Af1l0/Dct9HgK8aFXtsmIZa7zWPrgAihBqKVaWMk4iJTmmXfNZxQIDAQAB';
 let devtool = 'cheap-module-source-map';
+const devServer = {
+    inline: false,
+    writeToDisk: true
+};
 
 const devPath = path.resolve('ext');
 const productionPath = path.resolve('build');
@@ -74,10 +78,7 @@ const commonConfig = function (env) {
                 { from: 'node_modules/tinymce/skins/lightgray/', to: 'pages/tinymce/skins/lightgray/' },
             ])
         ],
-        devServer: {
-            inline: false,
-            writeToDisk: true
-        }
+        devServer: devServer
     };
 };
 
@@ -129,10 +130,7 @@ const optionsConfig = function (env) {
                 }
             ]
         },
-        devServer: {
-            inline: false,
-            writeToDisk: true
-        },
+        devServer: devServer,
         devtool: devtool
     };
 };
@@ -165,10 +163,7 @@ const contentConfig = () => {
                 },
             ]
         },
-        devServer: {
-            inline: false,
-            writeToDisk: true
-        },
+        devServer: devServer,
         devtool: devtool
     };
 };
@@ -187,10 +182,7 @@ const storeConfig = (env) => {
             path: path.resolve(devPath, 'store'),
             filename: 'js/store.js'
         },
-        devServer: {
-            inline: false,
-            writeToDisk: true
-        },
+        devServer: devServer,
         devtool: devtool
     };
 };
