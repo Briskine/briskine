@@ -1,3 +1,5 @@
+import store from '../../../store/store-client';
+
 export default function ListCtrl ($route, $q, $scope, $rootScope, $routeParams, $location, $timeout, $filter, AccountService, TemplateService, SettingsService, FilterTagService, QuicktextSharingService, MemberService) {
         'ngInject';
         var $formModal;
