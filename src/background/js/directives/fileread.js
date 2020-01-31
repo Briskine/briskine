@@ -1,4 +1,4 @@
-gApp.directive('fileread', function () {
+export default function fileread () {
     return {
         scope: {
             fileSelected: '&'
@@ -20,4 +20,4 @@ gApp.directive('fileread', function () {
             });
         }
     };
-});
+}

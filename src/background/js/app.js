@@ -49,6 +49,7 @@ import AccountCtrl from './controllers/account/account';
 import MembersCtrl from './controllers/account/members';
 import SubscriptionsCtrl from './controllers/account/subscriptions';
 import StatsCtrl from './controllers/account/stats';
+import fileread from './directives/fileread';
 
 import store from '../../store/store-client';
 
@@ -89,7 +90,8 @@ gApp
 .controller('AccountCtrl', AccountCtrl)
 .controller('MembersCtrl', MembersCtrl)
 .controller('SubscriptionsCtrl', SubscriptionsCtrl)
-.controller('StatsCtrl', StatsCtrl);
+.controller('StatsCtrl', StatsCtrl)
+.controller('fileread', fileread);
 
 gApp.config(function() {
     tinyMCE.baseURL = 'tinymce';
