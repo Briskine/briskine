@@ -1,6 +1,6 @@
 const webpack = require('webpack');
 const path = require('path');
-const CleanWebpackPlugin = require('clean-webpack-plugin');
+const {CleanWebpackPlugin} = require('clean-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const FileManagerPlugin = require('filemanager-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
@@ -68,7 +68,7 @@ const commonConfig = function (env) {
         },
         plugins: [
             // clean the build folder
-            new CleanWebpackPlugin(['ext']),
+            new CleanWebpackPlugin(),
             generateManifest(env),
             new CopyWebpackPlugin([
                 { from: 'src/_locales/', to: '_locales/' },
