@@ -1,6 +1,7 @@
 import store from '../../../../store/store-client';
 
 export default function SubscriptionsCtrl ($scope, $rootScope, $routeParams, $q, SubscriptionService, AccountService) {
+    'ngInject';
     $scope.activeTab = 'subscriptions';
 
     AccountService.get().then(function (account) {
