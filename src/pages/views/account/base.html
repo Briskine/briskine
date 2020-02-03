@@ -4,25 +4,31 @@
 <div role="tabpanel">
     <ul class="nav nav-tabs" role="tablist">
         <li role="presentation" ng-class="activeTab == 'settings'?'active':''">
-            <a href="#/settings" aria-controls="settings" role="tab" data-toggle="tab" data-target="#">Extension
-                Settings</a>
+            <a href="#/settings" aria-controls="settings" role="tab">
+                Extension Settings
+            </a>
         </li>
         <li role="presentation" ng-if="account" ng-class="activeTab == 'account'?'active':''">
-            <a href="#/account" aria-controls="account" role="tab" data-toggle="tab" data-target="#">My Account</a>
+            <a href="#/account" aria-controls="account" role="tab">
+                My Account
+            </a>
         </li>
         <li role="presentation" ng-if="account" ng-class="activeTab == 'members'?'active':''">
-            <a href="#/account/members" aria-controls="members" role="tab" data-toggle="tab" data-target="#">Team
-                Members</a>
+            <a href="#/account/members" aria-controls="members" role="tab">
+                Team Members
+            </a>
         </li>
         <li role="presentation" ng-show="currentSubscription && currentSubscription.active && !firestoreEnabled"
             ng-class="activeTab == 'stats'?'active':''">
-            <a href="#/account/stats" aria-controls="stats" role="tab" data-target="#"
-               data-toggle="tab">Statistics</a>
+            <a href="#/account/stats" aria-controls="stats" role="tab">
+                Statistics
+            </a>
         </li>
         <li role="presentation" ng-show="account.is_customer && currentSubscription && currentSubscription.active"
             ng-class="activeTab == 'subscriptions'?'active':''">
-            <a href="#/account/subscriptions" aria-controls="subscriptions" role="tab" data-target="#"
-               data-toggle="tab">Subscriptions</a>
+            <a href="#/account/subscriptions" aria-controls="subscriptions" role="tab">
+                Subscriptions
+            </a>
         </li>
     </ul>
     <div class="tab-content">

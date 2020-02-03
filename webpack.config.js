@@ -32,7 +32,7 @@ function generateManifest (env) {
         {
             from: './src/manifest.json',
             transform: function () {
-                // generates the manifest file using the package.json informations
+                // generates the manifest file using the package.json information
                 return Buffer.from(JSON.stringify(updatedManifestFile));
             }
         }
@@ -68,7 +68,9 @@ const commonConfig = function (env) {
         },
         plugins: [
             // clean the build folder
-            new CleanWebpackPlugin(),
+            new CleanWebpackPlugin({
+                cleanStaleWebpackAssets: false
+            }),
             generateManifest(env),
             new CopyWebpackPlugin([
                 { from: 'src/_locales/', to: '_locales/' },
