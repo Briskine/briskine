@@ -1,3 +1,4 @@
+/* globals ENV */
 var Config = {
     baseURL: 'http://localhost:5555/',
     apiBaseURL: 'http://localhost:5555/api/1/',

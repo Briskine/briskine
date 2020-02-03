@@ -1,4 +1,10 @@
 {
-  "esversion": 6,
-  "unused": true
+    "esversion": 6,
+    "unused": true,
+    "undef": true,
+    "browser": true,
+    "module": true,
+    "globals": {
+        "chrome": true
+    }
 }

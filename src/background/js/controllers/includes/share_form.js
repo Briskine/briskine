@@ -1,3 +1,7 @@
+import $ from 'jquery';
+
+import store from '../../../../store/store-client';
+
 export default function ShareFormCtrl ($route, $q, $scope, $rootScope, $routeParams) {
         'ngInject';
 

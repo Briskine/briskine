@@ -1,4 +1,6 @@
-import '../background/js/utils/amplitude';
+/* globals ENV */
+import amplitude from '../background/js/utils/amplitude';
+const store = window.store;
 
 function resetSettings () {
     return store.setSettings({

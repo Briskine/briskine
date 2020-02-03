@@ -2,6 +2,9 @@
  * demo
  */
 
+import $ from 'jquery';
+import amplitude from './amplitude';
+
 var KEY_TAB = 9;
 var KEY_UP = 38;
 var KEY_DOWN = 40;
@@ -268,7 +271,7 @@ var dialogPopulate = function (params) {
     // clone the elements
     // so we can safely highlight the matched text
     // without breaking the generated handlebars markup
-    var clonedElements = jQuery.extend(true, [], quicktexts);
+    var clonedElements = $.extend(true, [], quicktexts);
 
     // highlight found string in element title, body and shortcut
     var searchRe = new RegExp(params.word.text, 'gi');
@@ -466,7 +469,7 @@ var dialogHide = function () {
 var isElementInViewport = function (el) {
 
     //special bonus for those using jQuery
-    if (typeof jQuery === "function" && el instanceof jQuery) {
+    if (typeof $ === "function" && el instanceof $) {
         el = el[0];
     }
 

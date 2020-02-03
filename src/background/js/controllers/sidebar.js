@@ -1,3 +1,5 @@
+import amplitude from '../utils/amplitude';
+
 export default function SidebarCtrl ($scope, $location, $window,
                                          AccountService, SettingsService, TemplateService, FilterTagService) {
     'ngInject';

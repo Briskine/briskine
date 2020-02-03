@@ -1,4 +1,6 @@
+import $ from 'jquery';
 import Fuse from 'fuse.js';
+import _ from 'underscore';
 
 // fuzzy search with fuse.js
 export function fuzzySearch (list, text, opts) {

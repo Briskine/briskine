@@ -1,5 +1,7 @@
-import {fuzzySearch} from '../../common/helpers';
+import _ from 'underscore';
 import md5 from 'js-md5';
+
+import {fuzzySearch} from '../../common/helpers';
 
 // Truncate and end with ...
 export function truncate () {

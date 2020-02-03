@@ -1,3 +1,7 @@
+/* globals StripeCheckout, alert */
+import $ from 'jquery';
+import _ from 'underscore';
+
 import store from '../../../../store/store-client';
 
 export default function SubscriptionsCtrl ($scope, $rootScope, $routeParams, $q, SubscriptionService, AccountService) {

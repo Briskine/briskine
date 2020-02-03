@@ -5,6 +5,7 @@
 import $ from 'jquery';
 import Handlebars from 'handlebars';
 import _ from 'underscore';
+import Mousetrap from 'mousetrap';
 
 import PubSub from './patterns';
 import store from '../../store/store-client';
@@ -72,7 +73,7 @@ var dialog = {
         });
 
         // fetch templates from storage to populate the dialog
-        App.settings.getFiltered("", dialog.RESULTS_LIMIT, function (quicktexts) {
+        window.App.settings.getFiltered("", dialog.RESULTS_LIMIT, function (quicktexts) {
             autocomplete.quicktexts = quicktexts;
 
             params.quicktexts = autocomplete.quicktexts;
@@ -125,7 +126,7 @@ var dialog = {
 
             autocomplete.cursorPosition.word.text = $(this).val();
 
-            App.settings.getFiltered(autocomplete.cursorPosition.word.text, dialog.RESULTS_LIMIT, function (quicktexts) {
+            window.App.settings.getFiltered(autocomplete.cursorPosition.word.text, dialog.RESULTS_LIMIT, function (quicktexts) {
                 // don't update if dialog was closed before getting new templates
                 if (!dialog.isActive) {
                     return;

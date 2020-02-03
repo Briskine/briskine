@@ -1,3 +1,5 @@
+import $ from 'jquery';
+
 export default function AccountCtrl ($scope, $rootScope, $timeout, AccountService) {
     'ngInject';
     $scope.activeTab = 'account';

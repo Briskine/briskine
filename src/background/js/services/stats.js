@@ -1,3 +1,5 @@
+import store from '../../../store/store-client';
+
 export default function StatsService ($q, $rootScope, SettingsService) {
     'ngInject';
     var self = this;

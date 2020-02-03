@@ -1,3 +1,4 @@
+/* globals ENV */
 const config = {};
 config.development = {
     apiKey: '',

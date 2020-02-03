@@ -1,3 +1,4 @@
+/* globals ENV, console */
 import _FIRESTORE_PLUGIN from './plugin-firestore';
 import _GORGIAS_API_PLUGIN from './plugin-api';
 import Config from '../background/js/config';
@@ -43,11 +44,11 @@ var signin = function (params = {}) {
     .then((res) => res.json())
     .then((res) => {
         if (res.firebase) {
-            TOGGLE_FIRESTORE(true);
+            window.TOGGLE_FIRESTORE(true);
             return _FIRESTORE_PLUGIN.signin(params);
         }
 
-        TOGGLE_FIRESTORE(false);
+        window.TOGGLE_FIRESTORE(false);
         return _GORGIAS_API_PLUGIN.signin(params);
     });
 };
@@ -64,11 +65,11 @@ var forgot = (params = {}) => {
     .then((res) => res.json())
     .then((res) => {
         if (res.firebase) {
-            TOGGLE_FIRESTORE(true);
+            window.TOGGLE_FIRESTORE(true);
             return _FIRESTORE_PLUGIN.forgot(params);
         }
 
-        TOGGLE_FIRESTORE(false);
+        window.TOGGLE_FIRESTORE(false);
         return _GORGIAS_API_PLUGIN.forgot(params);
     });
 };

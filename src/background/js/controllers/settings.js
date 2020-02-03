@@ -1,3 +1,9 @@
+/* globals alert, confirm */
+import $ from 'jquery';
+import Mousetrap from 'mousetrap';
+
+import amplitude from '../utils/amplitude';
+
 export default function SettingsCtrl ($scope, $rootScope, $timeout, AccountService, TemplateService, SettingsService) {
     'ngInject';
     $scope.activeTab = "settings";

@@ -1,3 +1,5 @@
+import _ from 'underscore';
+
 import store from '../../../store/store-client';
 
 export default function SubscriptionService ($q) {

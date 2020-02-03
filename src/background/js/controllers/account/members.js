@@ -1,3 +1,6 @@
+import $ from 'jquery';
+import _ from 'underscore';
+
 export default function MembersCtrl ($scope, $rootScope, $timeout, $location, AccountService, MemberService, SubscriptionService) {
     'ngInject';
     $scope.activeTab = 'members';

@@ -1,3 +1,7 @@
+/* globals alert, confirm */
+import $ from 'jquery';
+import _ from 'underscore';
+
 import store from '../../../store/store-client';
 
 export default function ListCtrl ($route, $q, $scope, $rootScope, $routeParams, $location, $timeout, $filter, AccountService, TemplateService, SettingsService, FilterTagService, QuicktextSharingService, MemberService) {
@@ -382,6 +386,7 @@ export default function ListCtrl ($route, $q, $scope, $rootScope, $routeParams, 
         $scope.deleteQts = function () {
             var selectedTemplates = getSelectedQuickTexts();
             if (selectedTemplates.length > 0) {
+                var r = null;
                 if (selectedTemplates.length > 1) {
                     r = confirm("Are you sure you want to delete " + selectedTemplates.length + " templates?");
                 } else {

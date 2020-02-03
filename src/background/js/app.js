@@ -1,3 +1,4 @@
+/* globals StripeCheckout, ENV, alert */
 import angular from 'angular';
 import ngRoute from 'angular-route';
 import angularMoment from 'angular-moment';
@@ -9,7 +10,7 @@ import 'selectize';
 import 'mousetrap';
 import 'mousetrap/plugins/record/mousetrap-record';
 
-import 'tinymce';
+import tinyMCE from 'tinymce';
 import 'tinymce/themes/modern';
 import 'tinymce/plugins/autoresize';
 import 'tinymce/plugins/autolink';
@@ -23,7 +24,7 @@ import 'tinymce/plugins/textcolor';
 import 'tinymce/plugins/imagetools';
 import 'tinymce/plugins/code';
 
-import './utils/amplitude';
+import amplitude from './utils/amplitude';
 
 import '../css/background.styl';
 

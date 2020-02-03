@@ -1,3 +1,9 @@
+/* globals alert */
+import angular from 'angular';
+import $ from 'jquery';
+import jQuery from 'jquery';
+import tinymce from 'tinymce';
+
 import store from '../../../../store/store-client';
 
 export default function TemplateFormCtrl ($route, $q, $scope, $rootScope, $routeParams, $location, $window, $timeout, $filter,

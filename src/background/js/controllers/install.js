@@ -1,4 +1,5 @@
 import {init as gorgiasDemoInit} from '../utils/demo';
+import amplitude from '../utils/amplitude';
 
 export default function InstallCtrl ($scope, $rootScope, $routeParams, InstallService, TemplateService) {
     'ngInject';

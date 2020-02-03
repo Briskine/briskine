@@ -1,4 +1,7 @@
+import _ from 'underscore';
+
 import store from '../../../store/store-client';
+import amplitude from '../utils/amplitude';
 
 export default function QuicktextSharingService ($q) {
     'ngInject';

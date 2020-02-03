@@ -1,3 +1,4 @@
+/* globals ENV, amplitude */
 (function(e,t){var n = e.amplitude || {_q: [], _iq: {}};
     var r = t.createElement("script");
     r.type = "text/javascript";
@@ -67,3 +68,5 @@ if (ENV && ENV === 'production') {
 amplitude.getInstance().init(amplitudeKey, {
     saveEvents: false // don't store in localStorage the events - it slows down everything
 });
+
+export default amplitude;
