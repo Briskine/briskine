@@ -1,16 +1,105 @@
+/* globals StripeCheckout, ENV, alert */
+import angular from 'angular';
+import ngRoute from 'angular-route';
+import angularMoment from 'angular-moment';
+import ngFileUpload from 'ng-file-upload';
+import $ from 'jquery';
+import 'bootstrap';
+import 'selectize';
+// creates global Mousetrap
+import 'mousetrap';
+import 'mousetrap/plugins/record/mousetrap-record';
+
+import tinyMCE from 'tinymce';
+import 'tinymce/themes/modern';
+import 'tinymce/plugins/autoresize';
+import 'tinymce/plugins/autolink';
+import 'tinymce/plugins/image';
+import 'tinymce/plugins/link';
+import 'tinymce/plugins/media';
+import 'tinymce/plugins/table';
+import 'tinymce/plugins/advlist';
+import 'tinymce/plugins/lists';
+import 'tinymce/plugins/textcolor';
+import 'tinymce/plugins/imagetools';
+import 'tinymce/plugins/code';
+
+import amplitude from './utils/amplitude';
+
+import '../css/background.styl';
+
+import Config from './config';
+import {ProfileService, SettingsService} from './services/services';
+import {FilterTagService, TemplateService} from './services/templates';
+import {AccountService, MemberService} from './services/account';
+import SubscriptionService from './services/subscription';
+import QuicktextSharingService from './services/sharing';
+import InstallService from './services/install-templates';
+import StatsService from './services/stats';
+import {gravatar, safe, fuzzy, tagFilter, sharingFilter, newlines, truncate, stripHTML} from './filters';
+import SidebarCtrl from './controllers/sidebar';
+import LoginCtrl from './controllers/includes/login';
+import ForgotCtrl from './controllers/includes/forgot';
+import ImportCtrl from './controllers/includes/import';
+import ListCtrl from './controllers/list';
+import SettingsCtrl from './controllers/settings';
+import TemplateFormCtrl from './controllers/includes/template_form';
+import ShareFormCtrl from './controllers/includes/share_form';
+import InstallCtrl from './controllers/install';
+import AccountCtrl from './controllers/account/account';
+import MembersCtrl from './controllers/account/members';
+import SubscriptionsCtrl from './controllers/account/subscriptions';
+import StatsCtrl from './controllers/account/stats';
+import fileread from './directives/fileread';
+
+import store from '../../store/store-client';
+
 var gApp = angular.module('gApp', [
-    'ngRoute',
-    'ngResource',
-    'angularMoment',
-    'checklist-model',
-    'ngFileUpload'
+    ngRoute,
+    angularMoment,
+    ngFileUpload,
 ]);
+
+gApp
+.service('FilterTagService', FilterTagService)
+.service('TemplateService', TemplateService)
+.service('ProfileService', ProfileService)
+.service('SettingsService', SettingsService)
+.service('SubscriptionService', SubscriptionService)
+.service('AccountService', AccountService)
+.service('MemberService', MemberService)
+.service('QuicktextSharingService', QuicktextSharingService)
+.service('InstallService', InstallService)
+.service('StatsService', StatsService)
+.filter('gravatar', gravatar)
+.filter('safe', safe)
+.filter('fuzzy', fuzzy)
+.filter('tagFilter', tagFilter)
+.filter('sharingFilter', sharingFilter)
+.filter('newlines', newlines)
+.filter('truncate', truncate)
+.filter('stripHTML', stripHTML)
+.controller('SidebarCtrl', SidebarCtrl)
+.controller('LoginCtrl', LoginCtrl)
+.controller('ForgotCtrl', ForgotCtrl)
+.controller('ListCtrl', ListCtrl)
+.controller('TemplateFormCtrl', TemplateFormCtrl)
+.controller('ShareFormCtrl', ShareFormCtrl)
+.controller('ImportCtrl', ImportCtrl)
+.controller('SettingsCtrl', SettingsCtrl)
+.controller('InstallCtrl', InstallCtrl)
+.controller('AccountCtrl', AccountCtrl)
+.controller('MembersCtrl', MembersCtrl)
+.controller('SubscriptionsCtrl', SubscriptionsCtrl)
+.controller('StatsCtrl', StatsCtrl)
+.controller('fileread', fileread);
 
 gApp.config(function() {
     tinyMCE.baseURL = 'tinymce';
 });
 
-gApp.config(function ($routeProvider, $compileProvider, $sceDelegateProvider) {
+gApp.config(function ($routeProvider, $compileProvider, $sceDelegateProvider, $locationProvider) {
+    $locationProvider.hashPrefix('');
     $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|chrome-extension):/);
     $sceDelegateProvider.resourceUrlWhitelist([
         'self',
@@ -71,10 +160,6 @@ gApp.config(function ($routeProvider, $compileProvider, $sceDelegateProvider) {
             controller: 'MembersCtrl',
             templateUrl: 'views/account/base.html'
         })
-        .when('/account/groups', {
-            controller: 'GroupsCtrl',
-            templateUrl: 'views/account/base.html'
-        })
         .when('/account/subscriptions', {
             controller: 'SubscriptionsCtrl',
             templateUrl: 'views/account/base.html'
@@ -114,6 +199,7 @@ gApp.run(function ($rootScope) {
     $rootScope.baseURL = Config.baseURL;
     $rootScope.apiBaseURL = Config.apiBaseURL;
 });
+
 
 gApp.run(function ($rootScope, $location, $timeout, ProfileService, SettingsService, TemplateService, SubscriptionService) {
     $rootScope.$on('$routeChangeStart', function () {

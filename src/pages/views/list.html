@@ -33,7 +33,7 @@
     </div>
     <div class="row no-margin checkbox-wrapper">
         <label>
-            <input type="checkbox" ng-click="toggleSelectAll()" ng-model="selectedAll"/>
+            <input type="checkbox" ng-change="toggleSelectAll()" ng-model="selectedAll"/>
             <span ng-show="!selectedAll">Select all</span>
             <span ng-show="selectedAll">Selected <strong>{{filteredTemplates.length}}</strong> templates</span>
         </label>
@@ -56,7 +56,7 @@
                     <div class="col-xs-4">
                         <h4 class="list-group-item-heading">
                             <span ng-bind-html="template.title | truncate: 50 | newlines | safe"/>
-                            <i ng-show="template.attachments.length" class='fa fa-paperclip'/>
+                            <i ng-show="template.attachments.length" class="fa fa-paperclip"></i>
                             <!--
                             <i class='private-icon fa fa-lock' ng-if="template.private && location.indexOf('private') === -1" title="This template is only visible by you" />
                             -->

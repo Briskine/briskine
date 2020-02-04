@@ -1,5 +1,9 @@
-gApp.controller('ShareFormCtrl',
-    function ($route, $q, $scope, $rootScope, $routeParams) {
+import $ from 'jquery';
+
+import store from '../../../../store/store-client';
+
+export default function ShareFormCtrl ($route, $q, $scope, $rootScope, $routeParams) {
+        'ngInject';
 
         var self = this;
         self.sharing_setting = 'specific';
@@ -57,4 +61,4 @@ gApp.controller('ShareFormCtrl',
         };
 
         $scope.$on('$routeUpdate', checkRoute);
-    });
+    }

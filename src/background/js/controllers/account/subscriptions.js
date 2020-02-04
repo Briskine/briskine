@@ -1,4 +1,11 @@
-gApp.controller('SubscriptionsCtrl', function ($scope, $rootScope, $routeParams, $q, SubscriptionService, AccountService) {
+/* globals StripeCheckout, alert */
+import $ from 'jquery';
+import _ from 'underscore';
+
+import store from '../../../../store/store-client';
+
+export default function SubscriptionsCtrl ($scope, $rootScope, $routeParams, $q, SubscriptionService, AccountService) {
+    'ngInject';
     $scope.activeTab = 'subscriptions';
 
     AccountService.get().then(function (account) {
@@ -59,7 +66,7 @@ gApp.controller('SubscriptionsCtrl', function ($scope, $rootScope, $routeParams,
     $scope.reloadSubscriptions();
 
     function updateLegacyCreditCard (params = {}) {
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve) => {
             var handler = StripeCheckout.configure({
                 key: params.stripeKey,
                 token: function (token) {
@@ -130,7 +137,7 @@ gApp.controller('SubscriptionsCtrl', function ($scope, $rootScope, $routeParams,
 
     $scope.cancelSubscription = function() {
         $scope.loadingCancel = true;
-        cancelConfirm = window.confirm('Are you sure you want to cancel and delete all your template backups?');
+        var cancelConfirm = window.confirm('Are you sure you want to cancel and delete all your template backups?');
         if (cancelConfirm === true) {
             SubscriptionService.cancelSubscription().then(function () {
                 $rootScope.logOut();
@@ -142,4 +149,4 @@ gApp.controller('SubscriptionsCtrl', function ($scope, $rootScope, $routeParams,
             $scope.loadingCancel = false;
         }
     };
-});
+}

@@ -1,7 +1,11 @@
+import $ from 'jquery';
+import Fuse from 'fuse.js';
+import _ from 'underscore';
+
 // fuzzy search with fuse.js
-window.fuzzySearch = function (list, text, opts) {
+export function fuzzySearch (list, text, opts) {
     if (!text) {
-        return list
+        return list;
     }
 
     if (opts.threshold === 0) {
@@ -47,4 +51,4 @@ window.fuzzySearch = function (list, text, opts) {
     var options = $.extend(true, defaultOptions, opts);
     var fuse = new Fuse(list, options);
     return fuse.search(text);
-};
+}

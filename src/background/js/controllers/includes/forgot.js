@@ -1,4 +1,9 @@
-gApp.controller('ForgotCtrl', function ($timeout, $route, $rootScope) {
+import $ from 'jquery';
+
+import store from '../../../../store/store-client';
+
+export default function ForgotCtrl ($timeout) {
+    'ngInject';
     var self = this;
     self.loading = false;
 
@@ -31,4 +36,4 @@ gApp.controller('ForgotCtrl', function ($timeout, $route, $rootScope) {
             self.loading = false;
         });
     };
-});
+}

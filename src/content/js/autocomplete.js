@@ -220,7 +220,7 @@ autocomplete.replaceWith = function (params) {
     ));
 
     // updates stats
-    App.settings.stats('words', params.quicktext.body.split(' ').length, () => {});
+    window.App.settings.stats('words', params.quicktext.body.split(' ').length, () => {});
 };
 
 // Mirror styles are used for creating a mirror element in order to track the cursor in a textarea

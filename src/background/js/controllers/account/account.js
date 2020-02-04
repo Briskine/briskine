@@ -1,4 +1,7 @@
-gApp.controller('AccountCtrl', function ($scope, $rootScope, $timeout, AccountService) {
+import $ from 'jquery';
+
+export default function AccountCtrl ($scope, $rootScope, $timeout, AccountService) {
+    'ngInject';
     $scope.activeTab = 'account';
 
     AccountService.get().then(function(data){ $scope.account = data; });
@@ -8,4 +11,4 @@ gApp.controller('AccountCtrl', function ($scope, $rootScope, $timeout, AccountSe
             $(".updated-account-message").removeClass("hide");
         });
     };
-});
+}

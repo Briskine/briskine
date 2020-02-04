@@ -1,6 +1,7 @@
 // chrome.gorgias.io API plugin
 import _ from 'underscore';
 
+import amplitude from '../background/js/utils/amplitude';
 import Config from '../background/js/config';
 
 var apiBaseURL = Config.apiBaseURL;
@@ -558,7 +559,7 @@ var syncRemote = function () {
         var localSeen = [];
         var remoteSeen = [];
 
-        return store.getTemplate().then(function (localTemplates) {
+        return getTemplate().then(function (localTemplates) {
             for (var id in localTemplates) {
                 var t = localTemplates[id];
                 if (t !== null && t.remote_id) {
@@ -643,7 +644,7 @@ var syncRemote = function () {
     */
 var syncLocal = function () {
     // Handling all local templates
-    return store.getTemplate().then(function (templates) {
+    return getTemplate().then(function (templates) {
         for (var id in templates) {
             var t = templates[id];
             if (t === null || t.nosync !== 0) {
@@ -753,8 +754,8 @@ var syncNow = function () {
 
         console.log('Synced: ', new Date().toUTCString());
         var waitForLocal = function () {
-            store.trigger('templates-sync');
-            store.syncLocal();
+            window.store.trigger('templates-sync');
+            syncLocal();
         };
         // wait a bit before doing the local sync
         setTimeout(waitForLocal, 1000);

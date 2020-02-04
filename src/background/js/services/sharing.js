@@ -1,4 +1,10 @@
-gApp.service('QuicktextSharingService', function($q, $rootScope) {
+import _ from 'underscore';
+
+import store from '../../../store/store-client';
+import amplitude from '../utils/amplitude';
+
+export default function QuicktextSharingService ($q) {
+    'ngInject';
     var self = this;
 
     self.list = function(qtList = []) {
@@ -62,4 +68,4 @@ gApp.service('QuicktextSharingService', function($q, $rootScope) {
         return deferred.promise;
     };
 
-});
+}

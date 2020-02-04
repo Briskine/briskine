@@ -1,7 +1,11 @@
-gApp.controller('ListCtrl',
-    function ($route, $q, $scope, $rootScope, $routeParams, $location, $timeout, $filter,
-              AccountService, TemplateService, SettingsService, FilterTagService, QuicktextSharingService,
-              MemberService) {
+/* globals alert, confirm */
+import $ from 'jquery';
+import _ from 'underscore';
+
+import store from '../../../store/store-client';
+
+export default function ListCtrl ($route, $q, $scope, $rootScope, $routeParams, $location, $timeout, $filter, AccountService, TemplateService, SettingsService, FilterTagService, QuicktextSharingService, MemberService) {
+        'ngInject';
         var $formModal;
         var $shareModal;
 
@@ -80,8 +84,10 @@ gApp.controller('ListCtrl',
                 AccountService.get().then(function (account) {
                     $scope.account = account;
 
-                    if (($scope.account.info.share_all == "true" && (properties.list == "tag" || properties.list == "all"))
-                        || properties.list == "shared") {
+                    if (
+                        ($scope.account.info.share_all == "true" && (properties.list == "tag" || properties.list == "all")) ||
+                        properties.list == "shared"
+                    ) {
                         $scope.sharing_setting = "everyone";
                     } else {
                         $scope.sharing_setting = "private";
@@ -101,9 +107,9 @@ gApp.controller('ListCtrl',
 
             // Setup search
             if (settings.qaBtn.fuzzySearch === false) {
-                $scope.searchOptions.threshold = 0
+                $scope.searchOptions.threshold = 0;
             }
-            $scope.searchOptions.caseSensitive = !!settings.qaBtn.caseSensitiveSearch
+            $scope.searchOptions.caseSensitive = !!settings.qaBtn.caseSensitiveSearch;
         });
 
         $scope.showPostInstall = function () {
@@ -145,7 +151,7 @@ gApp.controller('ListCtrl',
             TemplateService.quicktexts().then(function (r) {
                 $scope.templates = r;
                 $scope.filterTemplates();
-                $rootScope.$broadcast('reload')
+                $rootScope.$broadcast('reload');
             });
         };
 
@@ -160,16 +166,16 @@ gApp.controller('ListCtrl',
         // need to use a separate map for the selected state,
         // instead of quicktext.select,
         // so sync doesn't uncheck templates on refresh.
-        $scope.selectedQuickTexts = {}
+        $scope.selectedQuickTexts = {};
         var getSelectedQuickTexts = function () {
             return $scope.filteredTemplates.filter(function (qt) {
-                return $scope.selectedQuickTexts[qt.id] === true
-            })
-        }
+                return $scope.selectedQuickTexts[qt.id] === true;
+            });
+        };
 
         // make getSelectedQuickTexts public,
         // so we can use it in other places (eg. ShareFormCtrl)
-        $scope.getSelectedQuickTexts = getSelectedQuickTexts
+        $scope.getSelectedQuickTexts = getSelectedQuickTexts;
 
         /* Init modal and other dom manipulation
          * when the templates have loaded
@@ -365,7 +371,7 @@ gApp.controller('ListCtrl',
         // then it should imedially go to the service and delete on the server
         $scope.deleteQt = function (quicktext) {
             if (quicktext) {
-                r = confirm("Are you sure you want to delete '" + quicktext.title + "' template?");
+                var r = confirm("Are you sure you want to delete '" + quicktext.title + "' template?");
                 if (r === true) {
                     TemplateService.delete(quicktext).then(function () {
                         $scope.reloadTemplates();
@@ -380,6 +386,7 @@ gApp.controller('ListCtrl',
         $scope.deleteQts = function () {
             var selectedTemplates = getSelectedQuickTexts();
             if (selectedTemplates.length > 0) {
+                var r = null;
                 if (selectedTemplates.length > 1) {
                     r = confirm("Are you sure you want to delete " + selectedTemplates.length + " templates?");
                 } else {
@@ -427,7 +434,7 @@ gApp.controller('ListCtrl',
         };
 
         $scope.$on('toggledFilterTag', function () {
-            tag = FilterTagService.filterTags[0];
+            var tag = FilterTagService.filterTags[0];
             $scope.selectedAll = false;
 
             if (tag != undefined) {
@@ -455,7 +462,7 @@ gApp.controller('ListCtrl',
             SettingsService.get('settings').then(function (settings) {
                 if (settings.is_sort_template_list) {
                   // Sort the filtered templates in alphabetically order
-                  $scope.filteredTemplates = $filter('orderBy')($scope.filteredTemplates, 'title')
+                  $scope.filteredTemplates = $filter('orderBy')($scope.filteredTemplates, 'title');
                 }
             });
         }, 50);
@@ -472,12 +479,12 @@ gApp.controller('ListCtrl',
             a.click();
             document.body.removeChild(a);
             setTimeout(function() { URL.revokeObjectURL(a.href); }, 1500);
-        };
+        }
 
         function generateCsv (arr = []) {
             // header
             if (!arr.length) {
-                return
+                return;
             }
 
             var lines = [];
@@ -489,16 +496,16 @@ gApp.controller('ListCtrl',
                 columns.forEach((key) => {
                     var content = (item[key] || '').replace(/"/g, '""');
                     if (content) {
-                        content = `"${content}"`
+                        content = `"${content}"`;
                     }
-                    row.push(content)
+                    row.push(content);
                 });
 
                 lines.push(row.join(','));
             });
 
             return lines.join('\r\n');
-        };
+        }
 
         $scope.exportTemplates = function () {
             var now = new Date();
@@ -517,7 +524,7 @@ gApp.controller('ListCtrl',
                     bcc: item.bcc || '',
                     to: item.to || '',
                     body: item.body || '',
-                }
+                };
             });
 
             var csv = generateCsv(exportTemplates);
@@ -527,4 +534,4 @@ gApp.controller('ListCtrl',
         $scope.getTags = function (template) {
             return TemplateService.tags(template);
         };
-    });
+    }

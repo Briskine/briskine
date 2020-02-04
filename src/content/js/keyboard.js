@@ -33,7 +33,7 @@ export default {
         if (word.text) {
 
             // Find a matching Quicktext shortcut in the bg script
-            App.settings.getQuicktextsShortcut(word.text, function (quicktexts) {
+            window.App.settings.getQuicktextsShortcut(word.text, function (quicktexts) {
 
                 if (quicktexts.length) {
                     // replace with the first quicktext found

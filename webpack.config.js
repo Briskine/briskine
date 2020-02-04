@@ -1,175 +1,176 @@
-"use strict";
-
-var webpack = require("webpack");
-var path = require("path");
-var stylus = require("stylus");
-var fileSystem = require("fs");
-var CleanWebpackPlugin = require("clean-webpack-plugin");
-var CopyWebpackPlugin = require("copy-webpack-plugin");
-var HtmlWebpackPlugin = require("html-webpack-plugin");
-var ConcatPlugin = require('webpack-concat-plugin');
+const webpack = require('webpack');
+const path = require('path');
+const {CleanWebpackPlugin} = require('clean-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
+const FileManagerPlugin = require('filemanager-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-var ExtractTextPlugin = require('extract-text-webpack-plugin');
-var extractBackgroundStyle = new ExtractTextPlugin('background/css/background.css');
-var merge = require("webpack-merge");
-var dev = require("./config/webpack.dev");
-var build = require("./config/webpack.build");
-var myPackage = require("./package.json");
-var manifest = require("./src/manifest.json");
 
-const dependencies = {
-        // TODO rename bundles
-        // options page
-        background: {
-            js: [
-                'jquery/dist/jquery.min.js',
-                'bootstrap/dist/js/bootstrap.min.js',
-                'underscore/underscore-min.js',
-                'underscore.string/dist/underscore.string.min.js',
-                'js-md5/build/md5.min.js',
-                'handlebars/dist/handlebars.js',
-                'moment/min/moment.min.js',
-                'mousetrap/mousetrap.min.js',
-                'mousetrap/plugins/record/mousetrap-record.min.js',
+const packageFile = require('./package.json');
+const manifestFile = require('./src/manifest.json');
+const devManifestKey = 'MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA4fz+r4Bt92pF09QQkdrVrJRt/OYUWTg6mBHGyp0u6suCPaPFJ1mysOAphZIAhCPw4O/lsQ8AlLkHgFzpb5z7IjmrU3FB1dJXGifXDY6ybZi/CcZUY0g30Do+bowHKNHRnkYIl625jaQwvrKm9ZYseIPIbCOtDHSBoD579tbP+aYLxZV+aVBmvD7O2HayVzMgL8xc+imk2gRzmu0zVjgQ+WqlGApTsEtucsVUVrNTf6Txl9nDCN9ztRJwLH7VASKctHeHMwmK1uDZgkokdO5FjHYEp6VB7c4Pe/Af1l0/Dct9HgK8aFXtsmIZa7zWPrgAihBqKVaWMk4iJTmmXfNZxQIDAQAB';
+let devtool = 'cheap-module-source-map';
+const devServer = {
+    inline: false,
+    writeToDisk: true
+};
 
-                'angular/angular.min.js',
-                'angular-route/angular-route.min.js',
-                'angular-resource/angular-resource.min.js',
-                'angular-moment/angular-moment.min.js',
+const devPath = path.resolve('ext');
+const productionPath = path.resolve('build');
 
-                'checklist-model/checklist-model.js',
-                'ng-file-upload/ng-file-upload-all.min.js',
+function generateManifest (env) {
+    let updatedManifestFile = Object.assign({}, manifestFile);
+    if (env === 'production') {
+        delete updatedManifestFile.key;
+    } else {
+        updatedManifestFile.key = devManifestKey;
+        // Load content script on localhost
+        updatedManifestFile.content_scripts[0].matches.push('http://localhost/gmail/*');
+        updatedManifestFile.content_scripts[0].matches.push('https://localhost/gmail/*');
+    }
 
-                'microplugin/src/microplugin.js',
-                'sifter/sifter.min.js',
-                'selectize/dist/js/selectize.min.js',
-
-                'tinymce/tinymce.min.js',
-                'tinymce/themes/modern/theme.min.js',
-                'angular-ui-tinymce/src/tinymce.js',
-                'tinymce/plugins/autoresize/plugin.js',
-                'tinymce/plugins/autolink/plugin.js',
-                'tinymce/plugins/image/plugin.js',
-                'tinymce/plugins/link/plugin.js',
-                'tinymce/plugins/media/plugin.js',
-                'tinymce/plugins/table/plugin.js',
-                'tinymce/plugins/advlist/plugin.js',
-                'tinymce/plugins/lists/plugin.js',
-                'tinymce/plugins/textcolor/plugin.js',
-                'tinymce/plugins/imagetools/plugin.js',
-                'tinymce/plugins/code/plugin.js',
-
-                'fuse.js/src/fuse.min.js',
-
-                'papaparse/papaparse.min.js',
-
-                // Should be first
-                './src/background/js/environment.js',
-                './src/background/js/config.js',
-                './src/background/js/utils/amplitude.js',
-
-                './src/common/*.js',
-
-                './src/store/store-client.js',
-
-                './src/background/js/**/*.js'
-                ],
-                css: [
-                    'tinymce/skins/lightgray/skin.min.css',
-                    'tinymce/skins/lightgray/content.min.css'
-                ]
+    return new CopyWebpackPlugin([
+        {
+            from: './src/manifest.json',
+            transform: function () {
+                // generates the manifest file using the package.json information
+                return Buffer.from(JSON.stringify(updatedManifestFile));
             }
-    };
+        }
+    ]);
+}
 
-const commonConfig = merge([
-    {
+function createPackage () {
+    const filename = `${packageFile.name}-${manifestFile.version}`;
+    return {
+        name: 'package',
+        output: {
+            path: devPath
+        },
+        plugins: [
+            new FileManagerPlugin({
+                onEnd: {
+                    archive: [
+                        {
+                            source: devPath,
+                            destination: `${productionPath}/${filename}.zip`
+                        },
+                    ]
+                }
+            })
+        ]
+    };
+}
+
+const commonConfig = function (env) {
+    return {
+        output: {
+            path: devPath
+        },
+        plugins: [
+            // clean the build folder
+            new CleanWebpackPlugin({
+                cleanStaleWebpackAssets: false
+            }),
+            generateManifest(env),
+            new CopyWebpackPlugin([
+                { from: 'src/_locales/', to: '_locales/' },
+                { from: 'src/pages/', to: 'pages/' },
+                { from: 'src/icons/', to: 'icons/' },
+                { from: 'src/LICENSE', to: '' },
+                { from: 'node_modules/tinymce/skins/lightgray/', to: 'pages/tinymce/skins/lightgray/' },
+            ])
+        ],
+        devServer: devServer
+    };
+};
+
+const optionsConfig = function (env) {
+    return {
+        entry: {
+            background: './src/background/js/app.js'
+        },
+        output: {
+            path: path.resolve(devPath, 'background'),
+            filename: 'js/[name].js'
+        },
+        plugins: [
+            new MiniCssExtractPlugin({
+                filename: 'css/[name].css'
+            }),
+            new webpack.DefinePlugin({
+                ENV: JSON.stringify(env),
+            }),
+            new webpack.ProvidePlugin({
+                jQuery: 'jquery',
+                $: 'jquery',
+                _: 'underscore'
+            }),
+        ],
         module: {
             rules: [
                 {
                     test: /\.(css|styl)$/i,
-                    include: [
-                        path.resolve(__dirname, 'src/background')
+                    use: [
+                        MiniCssExtractPlugin.loader,
+                        'css-loader',
+                        'stylus-loader'
                     ],
-                    use: extractBackgroundStyle.extract({
-                        use: ['css-loader', 'stylus-loader']
-                    })
                 },
                 {
                     test: /\.(png|woff|woff2|eot|ttf|svg)$/,
                     loader: 'url-loader?name=icons/[name].[ext]limit=100000',
                 },
-            ]
-        },
-        plugins: [
-            // clean the build folder
-            new CleanWebpackPlugin(["ext"]),
-            new CopyWebpackPlugin([
-                {   from: "src/_locales/", to: "_locales/"  },
-                {   from: "src/pages/", to: "pages/"  },
-                {   from: "src/icons/", to: "icons/"  },
-                {   from: "src/LICENSE", to: ""  },
-                {   from: "node_modules/font-awesome/fonts/", to: "background/fonts/"},
-                {   from: "node_modules/tinymce/skins/lightgray/fonts/", to: "background/css/fonts/"},
-                {   from: "node_modules/tinymce/skins/lightgray/", to: "pages/tinymce/skins/lightgray/"},
-            ]),
-            new ConcatPlugin(
                 {
-                    uglify: false,
-                    sourceMap: true,
-                    name: 'background',
-                    outputPath: 'background/js',
-                    fileName: '[name].js',
-                    filesToConcat: dependencies.background.js,
-                    attributes: {
-                        async: true
+                    test: /\.js$/,
+                    exclude: /node_modules/,
+                    use: {
+                        loader: 'babel-loader',
+                        options: {
+                            plugins: ['babel-plugin-angularjs-annotate']
+                        }
                     }
                 }
-            ),
-            extractBackgroundStyle
-        ],
-        devServer: {
-            inline: false,
-            writeToDisk: true
-        }
-    }
-]);
-
-const contentConfig = {
-    entry: {
-        content: './src/content/js/index.js'
-    },
-    output: {
-        path: __dirname + '/ext/content',
-        filename: 'js/[name].js'
-    },
-    plugins: [
-        new MiniCssExtractPlugin({
-            filename: 'css/[name].css'
-        })
-    ],
-    module: {
-        rules: [
-            {
-                test: /\.(css|styl)$/i,
-                use: [
-                    {
-                        loader: MiniCssExtractPlugin.loader
-                    },
-                    'css-loader',
-                    'stylus-loader'
-                ],
-            },
-        ]
-    },
-    devServer: {
-        inline: false,
-        writeToDisk: true
-    },
-    devtool: 'eval'
+            ]
+        },
+        devServer: devServer,
+        devtool: devtool
+    };
 };
 
-const storeConfig = (mode) => {
-    const env = process.env.NODE_ENV || mode
+const contentConfig = () => {
+    return {
+        entry: {
+            content: './src/content/js/index.js'
+        },
+        output: {
+            path: path.resolve(devPath, 'content'),
+            filename: 'js/[name].js'
+        },
+        plugins: [
+            new MiniCssExtractPlugin({
+                filename: 'css/[name].css'
+            })
+        ],
+        module: {
+            rules: [
+                {
+                    test: /\.(css|styl)$/i,
+                    use: [
+                        {
+                            loader: MiniCssExtractPlugin.loader
+                        },
+                        'css-loader',
+                        'stylus-loader'
+                    ],
+                },
+            ]
+        },
+        devServer: devServer,
+        devtool: devtool
+    };
+};
+
+const storeConfig = (env) => {
     return {
         entry: {
             content: './src/store/store-background.js'
@@ -180,46 +181,30 @@ const storeConfig = (mode) => {
             })
         ],
         output: {
-            path: __dirname + '/ext/store',
+            path: path.resolve(devPath, 'store'),
             filename: 'js/store.js'
         },
-        devServer: {
-            inline: false,
-            writeToDisk: true
-        },
-        devtool: 'cheap-source-map'
-    }
+        devServer: devServer,
+        devtool: devtool
+    };
 };
 
-const developmentConfig = merge([
-    dev.devServer({
-        host: process.env.HOST,
-        port: process.env.PORT,
-    }),
-    dev.setPath({
-        output: __dirname + "/ext"
-    }),
-]);
-const productionConfig = merge([
-    build.setPath({
-        output: __dirname + "/ext"
-    }),
-    build.archive({
-        path: __dirname + "/build",
-        filename: myPackage.name + '-' + manifest.version,
-    }),
-]);
 module.exports = mode => {
-    if (mode === "production") {
+    const env = process.env.NODE_ENV || mode;
+    if (env === 'production') {
+        devtool = 'source-map';
         return [
-            storeConfig(mode),
-            contentConfig,
-            merge(commonConfig, build.generateManifestProduction({}), productionConfig,  { mode })
-        ]
+            commonConfig(env),
+            storeConfig(env),
+            contentConfig(),
+            optionsConfig(env),
+            createPackage(),
+        ];
     }
     return [
-        storeConfig(mode),
-        contentConfig,
-        merge(commonConfig, developmentConfig, dev.generateManifest({}), { mode }),
+        commonConfig(env),
+        storeConfig(env),
+        contentConfig(),
+        optionsConfig(env),
     ];
 };

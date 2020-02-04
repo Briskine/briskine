@@ -1,6 +1,10 @@
-/*jshint multistr: true */
+import _ from 'underscore';
 
-gApp.service('FilterTagService', function ($rootScope) {
+import store from '../../../store/store-client';
+import amplitude from '../utils/amplitude';
+
+export function FilterTagService ($rootScope) {
+    'ngInject';
     var filterTags = [];
 
     function toggleFilterTag(tag) {
@@ -21,10 +25,11 @@ gApp.service('FilterTagService', function ($rootScope) {
         emptyFilterTags: emptyFilterTags,
         filterTags: filterTags
     };
-});
+}
 
 // Template operations
-gApp.service('TemplateService', function ($q, $rootScope, SettingsService) {
+export function TemplateService ($q, $rootScope, SettingsService) {
+    'ngInject';
     var self = this;
     self.isLoggedin = false;
     SettingsService.get("isLoggedIn").then(function (isLoggedIn) {
@@ -100,7 +105,7 @@ gApp.service('TemplateService', function ($q, $rootScope, SettingsService) {
             template: t,
             onlyLocal: onlyLocal,
             synced: synced
-        }).then(deferred.resolve)
+        }).then(deferred.resolve);
         return deferred.promise;
     };
 
@@ -158,7 +163,7 @@ gApp.service('TemplateService', function ($q, $rootScope, SettingsService) {
     };
 
     // Update lastuse_datetime
-    self.used = function (id, onlyLocal) {
+    self.used = function (id) {
         var deferred = $q.defer();
         self.get(id).then(function (template) {
             if (typeof template.use_count === 'undefined') {
@@ -176,6 +181,4 @@ gApp.service('TemplateService', function ($q, $rootScope, SettingsService) {
         });
         return deferred.promise;
     };
-
-
-});
+}

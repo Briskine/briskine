@@ -1,4 +1,8 @@
-gApp.controller('MembersCtrl', function ($scope, $rootScope, $timeout, $location, AccountService, MemberService, SubscriptionService) {
+import $ from 'jquery';
+import _ from 'underscore';
+
+export default function MembersCtrl ($scope, $rootScope, $timeout, $location, AccountService, MemberService, SubscriptionService) {
+    'ngInject';
     $scope.activeTab = 'members';
 
     $scope.users = [];
@@ -124,4 +128,4 @@ gApp.controller('MembersCtrl', function ($scope, $rootScope, $timeout, $location
         window.location.href = '#/account/subscriptions';
         window.location.reload();
     };
-});
+}

@@ -1,8 +1,17 @@
-gApp.controller('SettingsCtrl', function ($scope, $rootScope, $timeout,  AccountService, TemplateService, SettingsService) {
+/* globals alert, confirm */
+import $ from 'jquery';
+import Mousetrap from 'mousetrap';
+
+import amplitude from '../utils/amplitude';
+
+export default function SettingsCtrl ($scope, $rootScope, $timeout, AccountService, TemplateService, SettingsService) {
+    'ngInject';
     $scope.activeTab = "settings";
 
     AccountService.get().then(function(data){
         $scope.account = data;
+    }).catch(() => {
+        // not logged-in
     });
 
     $scope.showWarning = false;
@@ -87,4 +96,4 @@ gApp.controller('SettingsCtrl', function ($scope, $rootScope, $timeout,  Account
             SettingsService.reset();
         }
     };
-});
+}

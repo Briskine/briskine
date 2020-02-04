@@ -1,4 +1,7 @@
-gApp.service('AccountService', function ($q, $rootScope, SettingsService) {
+import store from '../../../store/store-client';
+
+export function AccountService ($q, SettingsService) {
+    'ngInject';
     var self = this;
 
     self.get = function () {
@@ -30,9 +33,10 @@ gApp.service('AccountService', function ($q, $rootScope, SettingsService) {
         });
         return deferred.promise;
     };
-});
+}
 
-gApp.service('MemberService', function ($q, $rootScope) {
+export function MemberService ($q) {
+    'ngInject';
     var self = this;
 
     self.members = function () {
@@ -69,76 +73,4 @@ gApp.service('MemberService', function ($q, $rootScope) {
 
         return deferred.promise;
     };
-});
-
-// TODO remove group functionality
-// it's only enabled for staff
-gApp.service('GroupService', function ($q, $resource, $rootScope) {
-    var self = this;
-    var groupResource = $resource($rootScope.apiBaseURL + 'groups/:groupId', {groupId: "@id"}, {
-        update: {
-            method: "PUT"
-        },
-        delete: {
-            method: "DELETE"
-        }
-    });
-
-    self.groups = function () {
-        var deferred = $q.defer();
-        var groups = groupResource.get(function () {
-            deferred.resolve(groups);
-        });
-        return deferred.promise;
-    };
-
-    self.toggle = function (user) {
-        var deferred = $q.defer();
-        memberResource.get({memberId: user.id}, function (member) {
-            member.active = !member.active;
-            member.$update(function () {
-                deferred.resolve();
-            });
-        });
-        return deferred.promise;
-    };
-
-    self.update = function (data) {
-        var deferred = $q.defer();
-
-        if (data.id) {
-            groupResource.get({groupId: data.id}, function (group) {
-                group.name = data.name;
-                group.desc = data.desc;
-                group.users = data.members;
-                group.$update(function () {
-                    deferred.resolve();
-                }, function (error) {
-                    deferred.reject(error.data);
-                });
-            });
-        } else {
-            var group = new groupResource();
-            group.name = data.name;
-            group.desc = data.desc;
-            group.users = data.members;
-            group.$save(function () {
-                deferred.resolve();
-            }, function (error) {
-                deferred.reject(error.data);
-            });
-        }
-
-        return deferred.promise;
-    };
-
-    self.delete = function (data) {
-        var deferred = $q.defer();
-        var group = groupResource.get({groupId: data.id}, function () {
-            group.$delete(function () {
-                deferred.resolve();
-            });
-        });
-        return deferred.promise;
-    };
-});
+}

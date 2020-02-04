@@ -1,13 +1,14 @@
-import '../background/js/utils/amplitude';
+/* globals ENV */
+import amplitude from '../background/js/utils/amplitude';
 
 function resetSettings () {
-    return store.setSettings({
+    return window.store.setSettings({
         key: 'settings'
     });
 }
 
 function updateTemplateStats (id) {
-    return store.getTemplate({
+    return window.store.getTemplate({
         id: id
     }).then((res) => {
         var template = res[id];
@@ -18,7 +19,7 @@ function updateTemplateStats (id) {
         template.use_count++;
         template.lastuse_datetime = new Date().toISOString();
 
-        return store.updateTemplate({
+        return window.store.updateTemplate({
             template: template,
             synced: true,
             onlyLocal: true,
@@ -73,13 +74,12 @@ if (chrome.extension) {
             resetSettings();
         } else if (details.reason == "update") {
             amplitude.getInstance().logEvent("Updated Gorgias", {'version': details.previousVersion});
-
-            store.getSettings({
+            window.store.getSettings({
                 key: 'hints'
             }).then((hints) => {
                 if (hints && hints.postInstall) {
                     hints.postInstall = false;
-                    store.setSettings({
+                    window.store.setSettings({
                         key: 'hints',
                         val: hints
                     });
@@ -123,10 +123,10 @@ if (chrome.extension) {
         if (request.request === 'stats') {
             if (request.key === 'words') {
                 var words = parseInt(request.val, 10);
-                store.getSettings({
+                window.store.getSettings({
                     key: 'words'
                 }).then(function (oldWords) {
-                    store.setSettings({
+                    window.store.setSettings({
                         key: 'words',
                         val: oldWords + words
                     });

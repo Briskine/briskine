@@ -1,4 +1,8 @@
-gApp.controller('InstallCtrl', function ($scope, $rootScope, $routeParams, InstallService, TemplateService, SettingsService) {
+import {init as gorgiasDemoInit} from '../utils/demo';
+import amplitude from '../utils/amplitude';
+
+export default function InstallCtrl ($scope, $rootScope, $routeParams, InstallService, TemplateService) {
+    'ngInject';
 
     var ctrl = this;
 
@@ -120,14 +124,11 @@ gApp.controller('InstallCtrl', function ($scope, $rootScope, $routeParams, Insta
         });
 
         if (ctrl.step === 'demo' && !ctrl.demoPlayed) {
-            gorgiasDemo.init();
+            gorgiasDemoInit();
             ctrl.demoPlayed = true;
         } else if (ctrl.step === 'try') {
             installTemplates();
-        } else {
-            gorgiasDemo.stopAnimation();
         }
-
     };
 
 
@@ -135,4 +136,4 @@ gApp.controller('InstallCtrl', function ($scope, $rootScope, $routeParams, Insta
 
     checkStep();
 
-});
+}

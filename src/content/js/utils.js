@@ -2,6 +2,7 @@
  * Utils
  */
 
+import $ from 'jquery';
 import Handlebars from 'handlebars';
 import _ from 'underscore';
 
@@ -124,7 +125,7 @@ export function insertText (params = {}) {
             value = $textarea.val();
 
         // if the editor is enabled, we need to convert html into text
-        if (App.settings.editor_enabled) {
+        if (window.App.settings.editor_enabled) {
             // we want to display the text momentarily before inserting it into the textarea
             // this is needed to give the correct spaces
             var temp = $('<div id="gorgias-temp-placeholder">').html(parsedTemplate);
@@ -213,7 +214,7 @@ function replaceFrom (from, setting) {
 
 export function parseTemplate (template = '', data = {}) {
     // get "from" name from settings
-    data.from = replaceFrom(data.from || {}, App.settings.cache.name);
+    data.from = replaceFrom(data.from || {}, window.App.settings.cache.name);
 
     return Handlebars.compile(template)(PrepareVars(data));
 }
@@ -309,6 +310,6 @@ export function parseUserDetails (title) {
         details.name = details.name.substr(0, openBracket).trim();
     }
 
-    return jQuery.extend(details, splitFullName(details.name));
+    return $.extend(details, splitFullName(details.name));
 }
 

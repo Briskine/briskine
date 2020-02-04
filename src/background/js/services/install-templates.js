@@ -1,4 +1,4 @@
-gApp.service('InstallService', function () {
+export default function InstallService () {
 
     // available languages
     this.languages = [
@@ -712,4 +712,4 @@ gApp.service('InstallService', function () {
             ]
         }
     ];
-});
+}

@@ -1,6 +1,8 @@
 /* Linkedin plugin
  */
 
+import $ from 'jquery';
+
 import {parseTemplate, insertText} from '../utils';
 
 function parseName (name) {

@@ -1,5 +1,8 @@
-gApp.controller('SidebarCtrl', function ($scope, $location, $window,
+import amplitude from '../utils/amplitude';
+
+export default function SidebarCtrl ($scope, $location, $window,
                                          AccountService, SettingsService, TemplateService, FilterTagService) {
+    'ngInject';
     $scope.profile = {};
     $scope.filterTags = [];
 
@@ -71,4 +74,4 @@ gApp.controller('SidebarCtrl', function ($scope, $location, $window,
         loadTags();
         loadAccount();
     });
-});
+}

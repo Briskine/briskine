@@ -1,4 +1,9 @@
-gApp.controller('LoginCtrl', function ($timeout, $route, $rootScope, TemplateService, SettingsService) {
+import $ from 'jquery';
+
+import store from '../../../../store/store-client';
+
+export default function LoginCtrl ($timeout, $route, $rootScope, TemplateService, SettingsService) {
+    'ngInject';
     var self = this;
     self.loading = false;
 
@@ -40,4 +45,4 @@ gApp.controller('LoginCtrl', function ($timeout, $route, $rootScope, TemplateSer
         }, 300);
 
     };
-});
+}

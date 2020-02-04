@@ -1,4 +1,12 @@
-gApp.controller('ImportCtrl', function ($scope, $rootScope, $timeout) {
+import $ from 'jquery';
+import Papa from 'papaparse';
+
+import store from '../../../../store/store-client';
+import amplitude from '../../utils/amplitude';
+import Config from '../../config';
+
+export default function ImportCtrl ($scope, $rootScope, $timeout) {
+    'ngInject';
     var self = this;
     self.uploading = false;
 
@@ -97,4 +105,4 @@ gApp.controller('ImportCtrl', function ($scope, $rootScope, $timeout) {
                 }, 3000);
             });
     };
-});
+}

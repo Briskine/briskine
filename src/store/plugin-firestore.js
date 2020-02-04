@@ -1,3 +1,4 @@
+/* globals alert, console */
 // Firestore plugin
 import firebase from '@firebase/app';
 import '@firebase/auth';
@@ -69,7 +70,7 @@ function compatibleTemplate(template = {}, tags = []) {
 // uuidv4
 function uuid() {
     return `${1e7}-${1e3}-${4e3}-${8e3}-${1e11}`.replace(/[018]/g, c =>
-        (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
+        (c ^ window.crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
     );
 }
 
@@ -88,9 +89,8 @@ var handleErrors = function (response) {
 function refreshTemplates () {
     // invalidate cache
     invalidateTemplateCache();
-
     // backwards compatibility
-    store.trigger('templates-sync');
+    window.store.trigger('templates-sync');
 }
 
 // local data (when logged-out)
@@ -1120,7 +1120,7 @@ function deleteSharing (params = {}) {
             });
 
             return;
-        }).catch((err) => {
+        }).catch(() => {
             // catch errors, to always clean-up the queue
             return;
         }).then(() => {

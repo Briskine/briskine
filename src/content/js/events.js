@@ -2,6 +2,8 @@
  PubSub events
  */
 
+import $ from 'jquery';
+
 import PubSub from './patterns';
 import dialog from './dialog';
 

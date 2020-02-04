@@ -5,23 +5,18 @@
 
 import '../css/content.styl';
 import $ from 'jquery';
-import Fuse from 'fuse.js';
 // creates global window.Mousetrap
-import 'mousetrap';
+import Mousetrap from 'mousetrap';
 import 'mousetrap/plugins/global-bind/mousetrap-global-bind';
 
 import './content-helpers';
 import './events';
-import '../../common/helpers';
+import {fuzzySearch} from '../../common/helpers';
 
 import store from '../../store/store-client';
 import keyboard from './keyboard';
 import dialog from './dialog';
 import PubSub from './patterns';
-
-// TODO common/helpers requires global jquery and fuse.js
-window.$ = $;
-window.Fuse = Fuse;
 
 var App = {
     data: {

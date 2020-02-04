@@ -1,6 +1,8 @@
 /* Fastmail plugin
  */
 
+import $ from 'jquery';
+
 import {parseTemplate, insertText} from '../utils';
 
 var parseList = function (list) {
