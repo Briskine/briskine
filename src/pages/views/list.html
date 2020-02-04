@@ -33,7 +33,7 @@
     </div>
     <div class="row no-margin checkbox-wrapper">
         <label>
-            <input type="checkbox" ng-click="toggleSelectAll()" ng-model="selectedAll"/>
+            <input type="checkbox" ng-change="toggleSelectAll()" ng-model="selectedAll"/>
             <span ng-show="!selectedAll">Select all</span>
             <span ng-show="selectedAll">Selected <strong>{{filteredTemplates.length}}</strong> templates</span>
         </label>
