@@ -353,6 +353,11 @@ export default function ListCtrl ($route, $q, $scope, $rootScope, $routeParams, 
                             }
                             alert('Invalid email address.');
                             return false;
+                        },
+                        onChange: function (emails) {
+                            $timeout(() => {
+                                $scope.shareData.emails = emails;
+                            });
                         }
                     };
 
