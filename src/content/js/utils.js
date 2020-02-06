@@ -53,7 +53,6 @@ export function insertText (params = {}) {
     var word = params.word;
 
     if (isContentEditable(params.element)) {
-
         var selection = doc.getSelection();
         var range = doc.createRange();
 
@@ -65,10 +64,24 @@ export function insertText (params = {}) {
             focusNode = selection.focusNode;
         }
 
+        // Loom Chrome extension causes the focusNode to always be an element
+        // on certain websites.
         // we need to have a text node in the end
         while (focusNode.nodeType === document.ELEMENT_NODE) {
             if (focusNode.childNodes.length > 0) {
-                focusNode = focusNode.childNodes[selection.focusOffset]; // select a text node
+                // when focusNode can have child nodes,
+                // focusOffset is the index in the childNodes collection
+                // of the focus node where the selection ends.
+                var focusOffset = selection.focusOffset;
+                // *but* if the focus point is placed after the anchor point,
+                // (when we insert templates with the shortcut, not from the dialog),
+                // the focus point is the first position after (not part of the selection),
+                // therefore focusOffset can be equal to the length of focusNode childNodes.
+                if (selection.focusOffset === focusNode.childNodes.length) {
+                    focusOffset = selection.focusOffset - 1;
+                }
+                // select a text node
+                focusNode = focusNode.childNodes[focusOffset];
             } else {
                 // create an empty text node
                 var tnode = doc.createTextNode('');
