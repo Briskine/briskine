@@ -726,12 +726,6 @@ var syncLocal = function () {
                             TemplateStorage.set(data, function () {});
                         };
                     };
-
-                    updateStats({
-                        quicktext_id: t.remote_id,
-                        key: 'use_count',
-                        value: t.use_count
-                    }).then(saveCount(_deepClone(t)));
                 }
             }
         }
@@ -797,23 +791,6 @@ var getStats = function () {
         .then(handleErrors)
         .then((res) => res.json());
 };
-
-// HACK temporarily disable the update stats method
-var updateStats = function () {
-    return Promise.resolve();
-};
-
-//     var updateStats = function (params = {}) {
-//         return fetch(`${apiBaseURL}templates/stats`, {
-//             method: 'POST',
-//             headers: {
-//                 'Content-Type': 'application/json'
-//             },
-//             body: JSON.stringify(params)
-//         })
-//         .then(handleErrors)
-//         .then((res) => res.json());
-//     };
 
 var getSubscription = function (params = {}) {
     var subscriptionsApiUrl = `${apiBaseURL}subscriptions`;
@@ -926,7 +903,6 @@ export default {
     updateSharing: updateSharing,
 
     getStats: getStats,
-    updateStats: updateStats,
 
     getPlans: getPlans,
     getSubscription: getSubscription,

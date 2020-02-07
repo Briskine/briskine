@@ -31,12 +31,8 @@ export default function StatsService ($q, $rootScope, SettingsService) {
                         SettingsService.get('syncedWords').then(function (syncedWords) {
                             var newWords = words - syncedWords;
                             if (newWords > 0) {
-                                store.updateStats({
-                                    words: newWords
-                                }).then(() => {
-                                    SettingsService.set("syncedWords", words);
-                                    SettingsService.set("lastStatsSync", new Date());
-                                });
+                                SettingsService.set("syncedWords", words);
+                                SettingsService.set("lastStatsSync", new Date());
                             }
                         });
                     });

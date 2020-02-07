@@ -874,24 +874,18 @@ var updateTemplate = (params = {}) => {
     var updatedDate = now();
     var updatedTemplate = {};
 
-    if (params.stats) {
-        // only update stats
-        updatedTemplate.lastuse_datetime = updatedDate;
-        updatedTemplate.use_count = params.template.use_count || 0;
-    } else {
-        var stringProps = ['title', 'body', 'shortcut', 'subject', 'to', 'cc', 'bcc'];
-        stringProps.forEach((prop) => {
-            if (params.template.hasOwnProperty(prop)) {
-                updatedTemplate[prop] = params.template[prop] || '';
-            }
-        });
-
-        if (params.template.hasOwnProperty('attachments')) {
-            updatedTemplate.attachments = params.template.attachments || [];
+    var stringProps = ['title', 'body', 'shortcut', 'subject', 'to', 'cc', 'bcc'];
+    stringProps.forEach((prop) => {
+        if (params.template.hasOwnProperty(prop)) {
+            updatedTemplate[prop] = params.template[prop] || '';
         }
+    });
 
-        updatedTemplate.modified_datetime = updatedDate;
+    if (params.template.hasOwnProperty('attachments')) {
+        updatedTemplate.attachments = params.template.attachments || [];
     }
+
+    updatedTemplate.modified_datetime = updatedDate;
 
     var templateTags = tagsToArray(params.template.tags);
     return tagsToIds(templateTags)
@@ -1268,7 +1262,6 @@ function shareNotification (params = {}) {
 }
 
 var getStats = mock;
-var updateStats = mock;
 
 var getPlans = () => {
     return getUserToken().then((res) => {
@@ -1656,7 +1649,6 @@ export default {
     updateSharing: updateSharing,
 
     getStats: getStats,
-    updateStats: updateStats,
 
     getPlans: getPlans,
     getSubscription: getSubscription,

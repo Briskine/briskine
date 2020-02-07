@@ -7,28 +7,6 @@ function resetSettings () {
     });
 }
 
-function updateTemplateStats (id) {
-    return window.store.getTemplate({
-        id: id
-    }).then((res) => {
-        var template = res[id];
-        if (typeof template.use_count === 'undefined') {
-            template.use_count = 0;
-        }
-
-        template.use_count++;
-        template.lastuse_datetime = new Date().toISOString();
-
-        return window.store.updateTemplate({
-            template: template,
-            synced: true,
-            onlyLocal: true,
-            // only used by firestore plugin
-            stats: true
-        });
-    });
-}
-
 // Register Chrome runtime protocols and context menus
 if (chrome.extension) {
 
@@ -142,9 +120,6 @@ if (chrome.extension) {
             window.open(chrome.extension.getURL('/pages/options.html') + '#/list');
         }
         if (request.request === 'track') {
-            if (request.event === "Inserted template") {
-                updateTemplateStats(request.data.id);
-            }
             amplitude.getInstance().logEvent(request.event, request.data);
         }
         return true;
