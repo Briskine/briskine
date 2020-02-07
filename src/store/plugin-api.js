@@ -1,3 +1,4 @@
+/* globals console */
 // chrome.gorgias.io API plugin
 import _ from 'underscore';
 
@@ -714,25 +715,6 @@ var syncLocal = function () {
                         }).then(update(Object.assign({}, t)));
                     }
                 }
-
-                // send stats to server if we templates used
-                if (t.use_count) { // if we have a use_count, then we can update the stats on the server.
-                    // we need this closure to make sure we don't duplicate the same template
-                    var saveCount = function (ut) {
-                        return function () {
-                            ut.use_count = 0;
-                            var data = {};
-                            data[ut.id] = ut;
-                            TemplateStorage.set(data, function () {});
-                        };
-                    };
-
-                    updateStats({
-                        quicktext_id: t.remote_id,
-                        key: 'use_count',
-                        value: t.use_count
-                    }).then(saveCount(_deepClone(t)));
-                }
             }
         }
 
@@ -797,23 +779,6 @@ var getStats = function () {
         .then(handleErrors)
         .then((res) => res.json());
 };
-
-// HACK temporarily disable the update stats method
-var updateStats = function () {
-    return Promise.resolve();
-};
-
-//     var updateStats = function (params = {}) {
-//         return fetch(`${apiBaseURL}templates/stats`, {
-//             method: 'POST',
-//             headers: {
-//                 'Content-Type': 'application/json'
-//             },
-//             body: JSON.stringify(params)
-//         })
-//         .then(handleErrors)
-//         .then((res) => res.json());
-//     };
 
 var getSubscription = function (params = {}) {
     var subscriptionsApiUrl = `${apiBaseURL}subscriptions`;
@@ -926,7 +891,6 @@ export default {
     updateSharing: updateSharing,
 
     getStats: getStats,
-    updateStats: updateStats,
 
     getPlans: getPlans,
     getSubscription: getSubscription,
