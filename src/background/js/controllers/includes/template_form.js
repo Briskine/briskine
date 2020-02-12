@@ -267,7 +267,13 @@ export default function TemplateFormCtrl ($route, $q, $scope, $rootScope, $route
                 });
 
                 self.extended = false;
-                $('#template-form-modal').modal('show');
+                var $templateFormModal = $('#template-form-modal');
+                // HACK changes to jQuery.show in 3.x conflict with Bootstrap 3.x Modal.
+                // these prevent setting display: block on the modal sometimes
+                // when trying to open the modal from the url directly
+                // (eg. when clicking New Template in the Templates Dialog).
+                $templateFormModal.css('display', 'block');
+                $templateFormModal.modal('show');
             };
 
             if (id == "new") {
