@@ -118,7 +118,14 @@ const optionsConfig = function (env) {
                 },
                 {
                     test: /\.(png|woff|woff2|eot|ttf|svg)$/,
-                    loader: 'url-loader?name=icons/[name].[ext]limit=100000',
+                    use: {
+                        loader: 'url-loader',
+                        options: {
+                            limit: 8192,
+                            outputPath: '../assets',
+                            publicPath: '/assets',
+                        }
+                    }
                 },
                 {
                     test: /\.js$/,
@@ -192,7 +199,7 @@ const storeConfig = (env) => {
 module.exports = mode => {
     const env = process.env.NODE_ENV || mode;
     if (env === 'production') {
-        devtool = 'source-map';
+        devtool = 'none';
         return [
             commonConfig(env),
             storeConfig(env),
