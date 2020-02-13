@@ -472,13 +472,34 @@ export default function TemplateFormCtrl ($route, $q, $scope, $rootScope, $route
             attachmentsQueue = [];
         });
 
+        self.attachmentStatus = {
+            status: 'idle',
+            message: ''
+        };
+
         self.fileSelected = (files) => {
+            self.attachmentStatus = {
+                status: 'uploading'
+            };
+
             return store.addAttachments({
                 files: files
             }).then((res) => {
                 // update template
                 self.selectedTemplate.attachments = (self.selectedTemplate.attachments || []).concat(res);
+
+                self.attachmentStatus = {
+                    status: 'idle'
+                };
+
                 $rootScope.$broadcast('reload');
+            }).catch((err = {}) => {
+                $timeout(() => {
+                    self.attachmentStatus = {
+                        status: 'error',
+                        message: err.message || err
+                    };
+                });
             });
         };
 

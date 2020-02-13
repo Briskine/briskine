@@ -1603,6 +1603,15 @@ var addAttachments = function (params = {}) {
                         });
                 })
             );
+        }).catch((err = {}) => {
+            // normalize error message
+            var normalizedError = err;
+            if (err.message_) {
+                normalizedError = {
+                    message: err.message_
+                };
+            };
+            return Promise.reject(normalizedError);
         });
 };
 

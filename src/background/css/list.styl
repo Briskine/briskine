@@ -288,6 +288,27 @@
 .attachment-selector {
     position: relative;
     display: inline-block;
+    margin-top: .6em;
+
+    color: #15c;
+}
+
+.attachment-status-uploading {
+    color: #888;
+    pointer-events: none;
+}
+
+.attachment-status-uploading .attachment-icon-idle,
+.attachment-selector .attachment-icon-uploading {
+    display: none;
+}
+
+.attachment-status-uploading .attachment-icon-uploading {
+    display: inline-block;
+}
+
+.attachment-selector .fa {
+    font-size: 1.2em;
 }
 
 .attachment-selector input {
@@ -301,12 +322,11 @@
     z-index: 1;
     padding: .4em 0;
 
-    color: #15c;
     font-weight: normal;
     cursor: pointer;
 }
 
-.attachment-selector label:hover {
+.attachment-selector label:hover span {
     text-decoration: underline;
 }
 

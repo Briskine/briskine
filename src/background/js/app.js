@@ -92,7 +92,7 @@ gApp
 .controller('MembersCtrl', MembersCtrl)
 .controller('SubscriptionsCtrl', SubscriptionsCtrl)
 .controller('StatsCtrl', StatsCtrl)
-.controller('fileread', fileread);
+.directive('fileread', fileread);
 
 gApp.config(function() {
     tinyMCE.baseURL = 'tinymce';
