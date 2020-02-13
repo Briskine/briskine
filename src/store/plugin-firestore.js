@@ -16,10 +16,6 @@ firebase.initializeApp(firebaseConfig);
 var db = firebase.firestore();
 var storageRef = firebase.storage().ref();
 
-db.enablePersistence().catch((err) => {
-    console.log('Firestore Persistance Error', err);
-});
-
 function mock () {
     return Promise.resolve();
 }
