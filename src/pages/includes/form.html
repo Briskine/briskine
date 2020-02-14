@@ -63,15 +63,6 @@
                                           placeholder="It was nice talking to you today..."
                                           ng-model="templateForm.selectedTemplate.body"></textarea>
                             </div>
-                            <div ng-show="templateForm.isLoggedIn">
-                                <div class="attachment-selector">
-                                    <label for="attachment-selector">
-                                        <i class="fa fa-paperclip"></i>
-                                        Add attachments
-                                    </label>
-                                    <input id="attachment-selector" type="file" multiple fileread file-selected="templateForm.fileSelected(files)">
-                                </div>
-                            </div>
                             <div ng-repeat="attachment in templateForm.selectedTemplate.attachments track by attachment.url"
                                  class="attachments">
                                 <a target="_blank" class="attachment"
@@ -79,6 +70,23 @@
                                     {{attachment.name}}
                                 </a>
                                 <i class="fa fa-close"                                                                             ng-click="templateForm.removeAttachment(attachment)"></i>
+                            </div>
+                            <div ng-show="templateForm.isLoggedIn">
+                                <div class="attachment-selector attachment-status-{{templateForm.attachmentStatus.status}}">
+                                    <label for="attachment-selector">
+                                        <i class="fa fa-paperclip attachment-icon-idle"></i>
+                                        <i class="fa fa-circle-o-notch fa-spin attachment-icon-uploading"></i>
+
+                                        <span>
+                                            Add attachments
+                                        </span>
+                                    </label>
+                                    <input id="attachment-selector" type="file" multiple fileread file-selected="templateForm.fileSelected(files)" ng-disabled="templateForm.attachmentStatus.status === 'uploading'">
+                                </div>
+
+                                <div class="alert alert-danger" role="alert" ng-show="templateForm.attachmentStatus.status === 'error'">
+                                    {{templateForm.attachmentStatus.message}}
+                                </div>
                             </div>
                         </div>
 

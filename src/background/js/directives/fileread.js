@@ -1,4 +1,6 @@
-export default function fileread () {
+export default function fileread ($timeout) {
+    'ngInject';
+
     return {
         scope: {
             fileSelected: '&'
@@ -12,8 +14,11 @@ export default function fileread () {
                         url: URL.createObjectURL(f)
                     };
                 });
-                scope.fileSelected({
-                    files: files
+
+                $timeout(() => {
+                    scope.fileSelected({
+                        files: files
+                    });
                 });
 
                 e.target.value = '';

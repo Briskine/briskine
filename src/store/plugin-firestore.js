@@ -1,4 +1,4 @@
-/* globals alert, console */
+/* globals alert */
 // Firestore plugin
 import firebase from '@firebase/app';
 import '@firebase/auth';
@@ -804,7 +804,7 @@ var getTemplate = (params = {}) => {
                         }, templateData), tags);
 
                         // backwards compatibility
-                        var list = [];
+                        var list = {};
                         list[template.id] = template;
                         return list;
                     });
@@ -1603,6 +1603,15 @@ var addAttachments = function (params = {}) {
                         });
                 })
             );
+        }).catch((err = {}) => {
+            // normalize error message
+            var normalizedError = err;
+            if (err.message_) {
+                normalizedError = {
+                    message: err.message_
+                };
+            }
+            return Promise.reject(normalizedError);
         });
 };
 
