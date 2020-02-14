@@ -81,7 +81,7 @@
                                             Add attachments
                                         </span>
                                     </label>
-                                    <input id="attachment-selector" type="file" multiple fileread file-selected="templateForm.fileSelected(files)">
+                                    <input id="attachment-selector" type="file" multiple fileread file-selected="templateForm.fileSelected(files)" ng-disabled="templateForm.attachmentStatus.status === 'uploading'">
                                 </div>
 
                                 <div class="alert alert-danger" role="alert" ng-show="templateForm.attachmentStatus.status === 'error'">

@@ -293,11 +293,6 @@
     color: #15c;
 }
 
-.attachment-status-uploading {
-    color: #888;
-    pointer-events: none;
-}
-
 .attachment-status-uploading .attachment-icon-idle,
 .attachment-selector .attachment-icon-uploading {
     display: none;
@@ -330,3 +325,11 @@
     text-decoration: underline;
 }
 
+.attachment-status-uploading label:hover span {
+    text-decoration: none;
+}
+
+.attachment-status-uploading label {
+    cursor: wait;
+    color: #888;
+}
