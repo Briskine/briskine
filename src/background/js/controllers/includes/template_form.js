@@ -217,7 +217,13 @@ export default function TemplateFormCtrl ($route, $q, $scope, $rootScope, $route
                             item: function (item, escape) {
                                 return '<span class="tag item"><i class="fa fa-hashtag"></i>' + escape(item.text) + '</span>';
                             }
+                        },
+                        onChange: function (tags) {
+                            $timeout(() => {
+                                self.selectedTemplate.tags = tags;
+                            });
                         }
+
                     });
                     var defaults = {
                         'id': '',
