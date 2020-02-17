@@ -46,7 +46,7 @@ export default function ListCtrl ($route, $q, $scope, $rootScope, $routeParams, 
                         $location.path('/list');
                     }
 
-                    $scope.title = "<i class='fa fa-hashtag'/>" + FilterTagService.filterTags[0] + " templates";
+                    $scope.title = "<i class='fa fa-hashtag'></i>" + FilterTagService.filterTags[0] + " templates";
                     $scope.location = "/list/tag";
                     $scope.sharing_setting = "private";
                     break;
@@ -443,7 +443,7 @@ export default function ListCtrl ($route, $q, $scope, $rootScope, $routeParams, 
             $scope.selectedAll = false;
 
             if (tag != undefined) {
-                $scope.title = "<i class='fa fa-hashtag'/>" + tag + " templates";
+                $scope.title = "<i class='fa fa-hashtag'></i>" + tag + " templates";
             }
             $scope.filterTemplates();
         });
