@@ -1571,8 +1571,8 @@ var addAttachments = function (params = {}) {
         .then(() => {
             return Promise.all(
                 params.files.filter((f) => {
-                    if (f.size > 1 * 1024 * 1024) {
-                        alert(`Couldn't attach ${f.name}. The file is larger than 1MB.`);
+                    if (f.size > 3 * 1024 * 1024) {
+                        alert(`Couldn't attach ${f.name}. The file is larger than 3MB.`);
                         return false;
                     }
                     return true;
