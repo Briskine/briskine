@@ -43,13 +43,18 @@ var signin = function (params = {}) {
     .then(handleErrors)
     .then((res) => res.json())
     .then((res) => {
-        if (res.firebase) {
-            window.TOGGLE_FIRESTORE(true);
-            return _FIRESTORE_PLUGIN.signin(params);
+        window.TOGGLE_FIRESTORE(true);
+
+        if (res.reset) {
+            _FIRESTORE_PLUGIN.forgot(params);
+
+            var error = `Please reset your password. \n\nWe sent you a password reset email because you haven't logged-in for a long time.`;
+            return Promise.reject({
+               error: error
+            });
         }
 
-        window.TOGGLE_FIRESTORE(false);
-        return _GORGIAS_API_PLUGIN.signin(params);
+        return _FIRESTORE_PLUGIN.signin(params);
     });
 };
 
