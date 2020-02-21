@@ -41,22 +41,47 @@ function getFieldData (field, $container) {
     });
 }
 
-// class name used on from/to/cc/bcc containers
-function getContainerSelector () {
-    return '.UxdI1cWZuq357tzhT6-9R';
-}
-
+// selector for to/cc/bcc containers
 function getContainers () {
-    return document.querySelectorAll(getContainerSelector()) || [];
+    return document.querySelectorAll('._31eKqae41uP_KBAvjXjCLQ');
 }
 
-function getSuggestionSelector () {
+// BUG {{from}} variables only work when the from container is visible
+function getFromContainer () {
+    return document.querySelector('._3nCIhXkTCoPTdxfXdyv8H4');
+}
+
+function getToContainer () {
+    return getContainers()[0];
+}
+
+function getCcContainer () {
+    return getContainers()[1];
+}
+
+function getBccContainer () {
+    return getContainers()[2];
+}
+
+function getFieldButtonSelector () {
+    return '._3EwC192cFNVVRKmlCqOY0a';
+}
+
+function getCcButton () {
+    return document.querySelector(`${getFieldButtonSelector()}:first-of-type`);
+}
+
+function getBccButton () {
+    return document.querySelector(`${getFieldButtonSelector()}:last-of-type`);
+}
+
+function getSuggestionContainer () {
     // "use this address" not in contact list
     var headerSelector = `.ms-Suggestions-headerContainer [class*="useAddressContainer-"]`;
     // contact list suggestion
     var listSelector = `.ms-Suggestions-container [role="listitem"]`;
 
-    return `${headerSelector}, ${listSelector}`;
+    return document.querySelector(`${headerSelector}, ${listSelector}`);
 }
 
 function getSubjectField () {
@@ -67,15 +92,15 @@ function getContactField ($container) {
     return $container.querySelector('[role="combobox"]');
 }
 
-function waitForElement (selector) {
+function waitForElement (getNode) {
     return new Promise((resolve) => {
-        var $element = document.querySelector(selector);
+        var $element = getNode();
         if ($element) {
             return resolve($element);
         }
 
         var selectorObserver = new MutationObserver(function (records, observer) {
-            $element = document.querySelector(selector);
+            $element = getNode();
             if ($element) {
                 observer.disconnect();
                 resolve($element);
@@ -96,7 +121,7 @@ function updateContactField ($field, value, $editor) {
             $field.value = value;
             $field.dispatchEvent(new Event('input', {bubbles: true}));
 
-            return waitForElement(getSuggestionSelector()).then(function () {
+            return waitForElement(getSuggestionContainer).then(function () {
                 // BUG only works once per field
                 $field.dispatchEvent(
                     new KeyboardEvent('keydown', {
@@ -118,7 +143,7 @@ function elementContains ($element, value) {
     return ($element.innerText || '').includes(value);
 }
 
-function updateSection ($container, $button, containerSelector, value, $editor) {
+function updateSection ($container, $button, getNode, value, $editor) {
     if ($container) {
         if (elementContains($container, value)) {
             // email already added
@@ -130,8 +155,8 @@ function updateSection ($container, $button, containerSelector, value, $editor) 
     } else {
         // click CC/BCC button
         $button.click();
-        waitForElement(containerSelector).then(($container) => {
-            updateSection($container, $button, containerSelector, value, $editor);
+        waitForElement(getNode).then(($container) => {
+            updateSection($container, $button, getNode, value, $editor);
         });
     }
 }
@@ -146,8 +171,7 @@ function getData () {
         subject: ''
     };
 
-    var $containers = getContainers();
-    var $from = $containers[0];
+   var $from = getFromContainer();
     if ($from) {
         var $fromButton = $from.querySelector('[role=button]');
         if ($fromButton) {
@@ -167,17 +191,17 @@ function getData () {
         }
     }
 
-    var $to = $containers[1];
+    var $to = getToContainer();
     if ($to) {
         getFieldData(vars.to, $to);
     }
 
-    var $cc = $containers[2];
+    var $cc = getCcContainer();
     if ($cc) {
         getFieldData(vars.cc, $cc);
     }
 
-    var $bcc = $containers[3];
+    var $bcc = getBccContainer();
     if ($bcc) {
         getFieldData(vars.bcc, $bcc);
     }
@@ -202,9 +226,7 @@ function before (params, data) {
         $subject.dispatchEvent(new Event('input', {bubbles: true}));
     }
 
-    var $containers = getContainers();
-
-    var $to = $containers[1];
+    var $to = getToContainer();
     if (params.quicktext.to) {
         var parsedTo = parseTemplate(params.quicktext.to, data);
         if ($to && !elementContains($to, parsedTo)) {
@@ -213,36 +235,39 @@ function before (params, data) {
         }
     }
 
-    var $cc = $containers[2];
+    var $cc = getCcContainer();
     if (params.quicktext.cc) {
         var parsedCc = parseTemplate(params.quicktext.cc, data);
+        var $ccButton = getCcButton();
         updateSection(
             $cc,
-            $containers[0].querySelector('.ms-Button-label:first-of-type'),
-            `${getContainerSelector()}:nth-of-type(3)`,
+            $ccButton,
+            getCcContainer,
             parsedCc,
             params.element
         );
     }
 
-    var $bcc = $containers[3];
+    var $bcc = getBccContainer();
     if (params.quicktext.bcc) {
         var parsedBcc = parseTemplate(params.quicktext.bcc, data);
+        var $bccButton = getBccButton();
         updateSection(
             $bcc,
-            $containers[0].querySelector('.ms-Button-label:last-of-type'),
-            `${getContainerSelector()}:nth-of-type(4)`,
+            $bccButton,
+            getBccContainer,
             parsedBcc,
             params.element
         );
     }
 
     // refresh editor reference
-    return waitForElement('[contenteditable]').then(($container) => {
-        return Object.assign(params, {
-            element: $container
+    return waitForElement(() => document.querySelector('[contenteditable]'))
+        .then(($container) => {
+            return Object.assign(params, {
+                element: $container
+            });
         });
-    });
 }
 
 var activeCache = null;
