@@ -59,24 +59,8 @@ var signin = function (params = {}) {
 };
 
 var forgot = (params = {}) => {
-    return fetch(`${Config.functionsUrl}/api/1/status`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(params)
-    })
-    .then(handleErrors)
-    .then((res) => res.json())
-    .then((res) => {
-        if (res.firebase) {
-            window.TOGGLE_FIRESTORE(true);
-            return _FIRESTORE_PLUGIN.forgot(params);
-        }
-
-        window.TOGGLE_FIRESTORE(false);
-        return _GORGIAS_API_PLUGIN.forgot(params);
-    });
+    window.TOGGLE_FIRESTORE(true);
+    return _FIRESTORE_PLUGIN.forgot(params);
 };
 
 var trigger = function (name) {
