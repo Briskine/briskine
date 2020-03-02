@@ -327,14 +327,6 @@ export default function TemplateFormCtrl ($route, $q, $scope, $rootScope, $route
                 return false;
             }
 
-            // delete extra fields with blank values,
-            // to not show them again on edit.
-            extraFields.forEach(function (field) {
-                if (typeof self.selectedTemplate[field] === 'string' && self.selectedTemplate[field].trim() === '') {
-                    delete self.selectedTemplate[field];
-                }
-            });
-
             TemplateService.quicktexts().then(function (templates) {
                 if (self.selectedTemplate.shortcut) {
                     for (var i in templates) {
