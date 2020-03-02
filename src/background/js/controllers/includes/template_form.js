@@ -223,8 +223,8 @@ export default function TemplateFormCtrl ($route, $q, $scope, $rootScope, $route
                                 self.selectedTemplate.tags = tags;
                             });
                         }
-
                     });
+
                     var defaults = {
                         'id': '',
                         'remote_id': '',
@@ -283,7 +283,7 @@ export default function TemplateFormCtrl ($route, $q, $scope, $rootScope, $route
             };
 
             if (id == "new") {
-                self.selectedTemplate = null;
+                self.selectedTemplate = {};
 
                 if ($scope.account) {
                     $scope.initializeMemberSelectize([self.selectedTemplate]).then(function () {
