@@ -14,6 +14,7 @@ import yahooPlugin from './plugins/yahoo';
 import zendeskPlugin from './plugins/zendesk';
 import draftPlugin from './plugins/draft';
 import prosemirrorPlugin from './plugins/prosemirror';
+import crmPlugin from './plugins/crm';
 import genericPlugin from './plugins/generic';
 
 var autocomplete = {};
@@ -246,6 +247,7 @@ register(yahooPlugin);
 register(zendeskPlugin);
 register(draftPlugin);
 register(prosemirrorPlugin);
+register(crmPlugin);
 register(genericPlugin);
 
 export default autocomplete;
