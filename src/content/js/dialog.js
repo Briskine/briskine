@@ -10,6 +10,7 @@ import Mousetrap from 'mousetrap';
 import PubSub from './patterns';
 import store from '../../store/store-client';
 import autocomplete from './autocomplete';
+import {isQuickButtonEnabled} from './utils';
 
 var KEY_UP = 38;
 var KEY_DOWN = 40;
@@ -31,10 +32,6 @@ var dialog = {
     RESULTS_LIMIT: 5, // only show 5 results at a time
     editor: null,
     qaBtn: null,
-    qaBtnWhitelist: [
-        'https://mail.google.com',
-        'https://inbox.google.com'
-    ],
     prevFocus: null,
     dialogSelector: ".qt-dropdown",
     contentSelector: ".qt-dropdown-content",
@@ -149,12 +146,23 @@ var dialog = {
             window.open(templateUrl, 'gorgias-options');
         });
     },
-    createQaBtn: function () {
-        // only on whitelisted domains
-        if (!dialog.qaBtnWhitelist.includes(window.location.origin)) {
-            return;
+    setupQuickButton: function () {
+        if (isQuickButtonEnabled()) {
+            return dialog.createQaBtn();
         }
 
+        const domObserver = new MutationObserver((records, observer) => {
+            if (isQuickButtonEnabled()) {
+                observer.disconnect();
+
+                dialog.createQaBtn();
+            }
+        });
+        domObserver.observe(document.body, {
+            attributes: true
+        });
+    },
+    createQaBtn: function () {
         var container = $('body');
 
         var instance = this;

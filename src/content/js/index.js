@@ -256,7 +256,7 @@ App.init = function(settings, doc) {
         !isContentEditable
     ) {
         if (settings.qaBtn.enabled) {
-            dialog.createQaBtn();
+            dialog.setupQuickButton();
         }
         if (settings.dialog.limit) {
             dialog.RESULTS_LIMIT = settings.dialog.limit;

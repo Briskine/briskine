@@ -326,3 +326,10 @@ export function parseUserDetails (title) {
     return $.extend(details, splitFullName(details.name));
 }
 
+export function enableQuickButton () {
+    document.body.dataset.gorgiasButton = 'true';
+}
+
+export function isQuickButtonEnabled () {
+    return !!document.body.dataset.gorgiasButton;
+}

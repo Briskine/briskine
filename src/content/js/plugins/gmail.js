@@ -3,7 +3,7 @@
 
 import $ from 'jquery';
 
-import {insertText, parseTemplate, isContentEditable} from '../utils';
+import {insertText, parseTemplate, isContentEditable, enableQuickButton} from '../utils';
 
 function parseList (list) {
     return list.filter(function (a) {
@@ -306,6 +306,16 @@ function isActive () {
 
     return activeCache;
 }
+
+function setup () {
+    if (!isActive()) {
+        return false;
+    }
+
+    enableQuickButton();
+}
+
+setup();
 
 export default (params = {}) => {
     if (!isActive()) {
