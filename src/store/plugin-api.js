@@ -662,7 +662,7 @@ var syncLocal = function () {
                 var tRemote = _copy(_deepClone(t), {});
 
                 // create new template on the server
-                var save = function (ut) {
+                var save = function (ut) { // jshint ignore:line
                     // we're in a for loop so we need this closure here because the `t` var will be overridden
                     // before the remote request is finished
                     return function (res) {
@@ -682,7 +682,7 @@ var syncLocal = function () {
             } else { // was synced at some point
                 // if it's deleted locally, delete it remotely and then delete it completely
                 if (t.deleted === 1) {
-                    var deleted = function (ut) {
+                    var deleted = function (ut) { // jshint ignore:line
                         return function (remote) {
                             remote.remote_id = ut.remote_id;
                             deleteRemoteTemplate(remote).then(() => {
@@ -696,7 +696,7 @@ var syncLocal = function () {
                     }).then(deleted(_deepClone(t)));
                 } else if (t.updated_datetime) { // only if we have an updated_datetime
                     if (!t.sync_datetime || new Date(t.sync_datetime) < new Date(t.updated_datetime)) {
-                        var update = function (ut) {
+                        var update = function (ut) { // jshint ignore:line
                             // we're in a for loop so we need this closure here because the `t` var will be overridden
                             // before the remote request is finished
                             return function (remote) {
