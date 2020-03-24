@@ -1,6 +1,6 @@
 {
     "name": "gorgias",
-    "version": "6.7.2",
+    "version": "6.7.3",
     "description": "Write everything faster.",
     "main": "index.js",
     "scripts": {
@@ -38,19 +38,19 @@
         "clean-webpack-plugin": "^3.0.0",
         "copy-webpack-plugin": "^5.1.1",
         "css-loader": "^3.4.2",
-        "file-loader": "^5.0.2",
+        "file-loader": "^6.0.0",
         "filemanager-webpack-plugin": "^2.0.5",
         "mini-css-extract-plugin": "^0.9.0",
         "stylus": "^0.54.5",
         "stylus-loader": "^3.0.2",
-        "url-loader": "^3.0.0",
+        "url-loader": "^4.0.0",
         "webpack": "^4.41.5",
         "webpack-cli": "^3.3.10",
         "webpack-dev-server": "^3.10.1"
     },
     "dependencies": {
-        "@firebase/app": "^0.5.1",
-        "@firebase/auth": "^0.13.3",
+        "@firebase/app": "^0.6.0",
+        "@firebase/auth": "^0.14.0",
         "@firebase/firestore": "^1.9.2",
         "@firebase/storage": "^0.3.23",
         "angular": "^1.7.9",

@@ -35,15 +35,15 @@ export function fuzzySearch (list, text, opts) {
         keys: [
             {
                 name: 'shortcut',
-                weight: 0.7
+                weight: 0.4
             },
             {
                 name: 'title',
-                weight: 0.7
+                weight: 0.4
             },
             {
                 name: 'body',
-                weight: 0.4
+                weight: 0.2
             }
         ]
     };
