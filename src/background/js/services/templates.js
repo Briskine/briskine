@@ -163,6 +163,7 @@ export function TemplateService ($q, $rootScope, SettingsService) {
     };
 
     // Update lastuse_datetime
+    // TODO deprecate
     self.used = function (id) {
         var deferred = $q.defer();
         self.get(id).then(function (template) {

@@ -867,7 +867,7 @@ var importTemplates = function () {
 };
 
 var noop = function () {
-    return Promise.reject();
+    return Promise.resolve();
 };
 
 export default {
@@ -908,5 +908,7 @@ export default {
     importTemplates: importTemplates,
 
     addAttachments: noop,
-    removeAttachments: noop
+    removeAttachments: noop,
+
+    migrate: noop
 };

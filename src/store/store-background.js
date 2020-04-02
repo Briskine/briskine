@@ -84,22 +84,47 @@ var trigger = function (name) {
     });
 };
 
+const lastuseCache = {};
+var updateTemplateStats = function (id) {
+    lastuseCache[id] = {
+        lastuse_datetime: new Date().toISOString()
+    };
+};
+
+// extend getTemplate to include lastuse_datetime
+var getTemplate = function (plugin) {
+    return function (params = {}) {
+        return plugin.getTemplate(params)
+            .then((templates) => {
+                const list = {};
+                Object.keys(templates).forEach((id) => {
+                    list[id] = Object.assign({}, templates[id], lastuseCache[id]);
+                });
+                return list;
+            });
+    };
+};
+
 function getStore () {
     // enable api plugin by default
-    var plugin = Object.assign({}, _GORGIAS_API_PLUGIN);
-
+    var activePlugin = _GORGIAS_API_PLUGIN;
     if (firestoreEnabled()) {
-        plugin = Object.assign({}, _FIRESTORE_PLUGIN);
-
-        // migrate legacy data
-        plugin.migrate();
+        activePlugin = _FIRESTORE_PLUGIN;
     }
+
+    var plugin = Object.assign({}, activePlugin);
+    // migrate legacy data
+    activePlugin.migrate();
 
     // general signin and forgot methods for both plugins
     plugin.signin = signin;
     plugin.forgot = forgot;
 
     plugin.trigger = trigger;
+
+    // lastuse_datetime support
+    plugin.getTemplate = getTemplate(activePlugin);
+    plugin.updateTemplateStats = updateTemplateStats;
 
     return plugin;
 }
