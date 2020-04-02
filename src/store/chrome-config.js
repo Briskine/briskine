@@ -120,6 +120,9 @@ if (chrome.extension) {
             window.open(chrome.extension.getURL('/pages/options.html') + '#/list');
         }
         if (request.request === 'track') {
+            if (request.event === 'Inserted template') {
+                window.store.updateTemplateStats(request.data.id);
+            }
             amplitude.getInstance().logEvent(request.event, request.data);
         }
         return true;

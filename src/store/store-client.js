@@ -44,6 +44,7 @@ var methods = [
     'updateSharing',
 
     'getStats',
+    'updateTemplateStats',
 
     'getPlans',
     'getSubscription',
