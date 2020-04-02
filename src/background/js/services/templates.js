@@ -161,25 +161,4 @@ export function TemplateService ($q, $rootScope, SettingsService) {
         });
         return deferred.promise;
     };
-
-    // Update lastuse_datetime
-    // TODO deprecate
-    self.used = function (id) {
-        var deferred = $q.defer();
-        self.get(id).then(function (template) {
-            if (typeof template.use_count === 'undefined') {
-                template.use_count = 0;
-            }
-            template.use_count++;
-            template.lastuse_datetime = new Date().toISOString();
-            store.updateTemplate({
-                template: template,
-                synced: true,
-                onlyLocal: true,
-                // only used by firestore plugin
-                stats: true
-            }).then(deferred.resolve);
-        });
-        return deferred.promise;
-    };
 }
