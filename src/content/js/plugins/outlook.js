@@ -85,7 +85,7 @@ function getSuggestionContainer () {
 }
 
 function getSubjectField () {
-    return document.querySelector('input[id^="subjectLine"]');
+    return document.querySelector('.ms-TextField-field[maxlength="255"]');
 }
 
 function getContactField ($container) {
