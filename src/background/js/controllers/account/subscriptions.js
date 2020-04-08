@@ -68,17 +68,11 @@ export default function SubscriptionsCtrl ($scope, $rootScope, $routeParams, $q,
             }
         });
     };
+
     $scope.reloadSubscriptions();
 
-    // Get a new token from stripe and send it to the server
     $scope.updatePayment = function () {
-        var ccParams = {
-            stripeKey: $scope.stripeKey,
-            email: $scope.email
-        };
-        store.updateCreditCard(ccParams).then((res) => {
-            return $rootScope.updateFirebaseCreditCard(Object.assign(res, ccParams));
-        });
+        return store.updateCreditCard();
     };
 
     $scope.updateSubscription = function (plan, quantity) {

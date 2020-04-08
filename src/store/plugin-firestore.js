@@ -1415,27 +1415,18 @@ var cancelSubscription = () => {
     });
 };
 
-var updateCreditCard = () => {
-    return getUserToken().then((res) => {
-        return {
-            firebase: true,
-            token: res.token,
-            customer: res.user.customer,
-            redirect: `${Config.functionsUrl}/subscribe/payment/update`
-        };
-    });
-};
+var updateCreditCard = (params = {}) => {
+    return getUserToken()
+        .then((res) => {
+            const url = new URL(`${Config.functionsUrl}/subscribe/payment/update`);
+            url.searchParams.append('customer', res.user.customer);
+            url.searchParams.append('token', res.token);
+            if (params.reactivate) {
+                url.searchParams.append('reactivate', true);
+            }
 
-var reactivateSubscription = () => {
-    return getPlans().then((plans) => {
-        return updateCreditCard().then((res) => {
-            return Object.assign(res, {
-                stripeKey: plans.stripe_key,
-                reactivate: true,
-                firebase: true
-            });
+            window.open(url);
         });
-    });
 };
 
 var syncNow = mock;
@@ -1689,7 +1680,6 @@ export default {
     updateSubscription: updateSubscription,
     cancelSubscription: cancelSubscription,
     updateCreditCard: updateCreditCard,
-    reactivateSubscription: reactivateSubscription,
 
     addAttachments: addAttachments,
     removeAttachments: removeAttachments,

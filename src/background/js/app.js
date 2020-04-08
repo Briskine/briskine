@@ -268,32 +268,13 @@ gApp.run(function ($rootScope, $location, $timeout, ProfileService, SettingsServ
 
     $rootScope.loadingSubscription = false;
 
-    // TODO change how update payment works
-    $rootScope.updateFirebaseCreditCard = function (params = {}) {
-        var updateUrl = `${params.redirect}?token=${params.token}&customer=${params.customer}`;
-        if (params.reactivate === true) {
-            updateUrl = `${updateUrl}&reactivate`;
-        }
-
-        // stripe checkout must redirect from https.
-        // open stripe checkout on api rendered page.
-        window.location.href = updateUrl;
-    };
-
-    // Get a new token from stripe and send it to the server
     $rootScope.reactivateSubscription = function () {
         $rootScope.loadingSubscription = true;
-        var reactivateParams = {
-            subscription: $rootScope.currentSubscription
-        };
-
-        store.reactivateSubscription(reactivateParams).then((res = {}) => {
-            if (res.firebase) {
-                return $rootScope.updateFirebaseCreditCard(res);
-            }
-        }).then(() => {
-            $rootScope.loadingSubscription = false;
-        });
+        return store.updateCreditCard({
+                reactive: true
+            }).then(() => {
+                $rootScope.loadingSubscription = false;
+            });
     };
 
     $rootScope.checkLoggedIn = function () {
