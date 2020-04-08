@@ -20,6 +20,8 @@ export default {
     controller: function SubscriptionActiveController () {
         const ctrl = this;
 
+        ctrl.loading = false;
+
         ctrl.isPremium = function (plan = '') {
             return ['monthly', 'yearly'].includes(plan);
         };
@@ -64,10 +66,13 @@ export default {
         };
 
         ctrl.switchSubscription = function () {
-            // TODO loader
+            ctrl.loading = true;
             return ctrl.updateSubscription({
-                plan: ctrl.getAlternate(ctrl.subscription.plan)
-            });
+                    plan: ctrl.getAlternate(ctrl.subscription.plan)
+                })
+                .then(() => {
+                    ctrl.loading = false;
+                });
         };
     },
     template: `
@@ -97,9 +102,13 @@ export default {
                                 discount.
                             </li>
                             <li ng-show="$ctrl.isPremium($ctrl.subscription.plan)">
+                                If your card expired, or you want to switch to another card:
                                 <button type="button" class="btn btn-link" ng-click="$ctrl.updatePayment()">
                                     Update your Credit Card
                                 </button>
+                            </li>
+                            <li>
+                                Only you, as the account owner, can upgrade, downgrade or change the billing information for the account.
                             </li>
                         </ul>
                     </div>
@@ -115,6 +124,9 @@ export default {
                                 type="button"
                                 class="btn btn-primary"
                                 ng-click="$ctrl.switchSubscription()"
+                                ng-class="{
+                                    'btn-loading': $ctrl.loading
+                                }"
                             >
                                 Switch to {{$ctrl.getAlternate($ctrl.subscription.plan, true)}}
                                 <strong>

@@ -93,9 +93,11 @@ export default function SubscriptionsCtrl ($scope, $rootScope, $routeParams, $q,
                 $scope.paymentMsg = res;
 
                 $scope.reloadSubscriptions();
+                return;
             })
             .catch((err) => {
                 $scope.paymentError = err;
+                return;
             });
     };
 
