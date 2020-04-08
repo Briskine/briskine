@@ -1,4 +1,4 @@
-/* globals StripeCheckout, ENV, alert */
+/* globals ENV */
 import angular from 'angular';
 import ngRoute from 'angular-route';
 import angularMoment from 'angular-moment';
@@ -203,7 +203,7 @@ gApp.run(function ($rootScope) {
 });
 
 
-gApp.run(function ($rootScope, $location, $timeout, ProfileService, SettingsService, TemplateService, SubscriptionService) {
+gApp.run(function ($rootScope, $location, $timeout, ProfileService, SettingsService) {
     $rootScope.$on('$routeChangeStart', function () {
         $rootScope.path = $location.path();
     });
@@ -268,27 +268,6 @@ gApp.run(function ($rootScope, $location, $timeout, ProfileService, SettingsServ
 
     $rootScope.loadingSubscription = false;
 
-    function reactivateLegacySubscription (params = {}) {
-        return store.getPlans().then((data) => {
-            return new Promise((resolve) => {
-                var handler = StripeCheckout.configure({
-                    key: data.stripe_key,
-                    token: function (token) {
-                        resolve(token);
-                    }
-                });
-
-                handler.open({
-                    name: 'Gorgias',
-                    description: params.subscription.quantity + ' x ' + params.subscription.plan,
-                    panelLabel: 'Activate your subscription',
-                    email: data.email,
-                    allowRememberMe: false
-                });
-            });
-        });
-    }
-
     $rootScope.updateFirebaseCreditCard = function (params = {}) {
         var updateUrl = `${params.redirect}?token=${params.token}&customer=${params.customer}`;
         if (params.reactivate === true) {
@@ -311,22 +290,6 @@ gApp.run(function ($rootScope, $location, $timeout, ProfileService, SettingsServ
             if (res.firebase) {
                 return $rootScope.updateFirebaseCreditCard(res);
             }
-
-            return reactivateLegacySubscription(reactivateParams).then((token) => {
-                // Use the token to create the charge with server-side.
-                SubscriptionService.updateSubscription($rootScope.currentSubscription.id, {
-                    token: token
-                }).then(
-                    function () {
-                        $rootScope.checkLoggedIn();
-
-                    }, function (res) {
-                        alert('Failed to create new subscription. ' + res);
-                    }
-                );
-
-                return;
-            });
         }).then(() => {
             $rootScope.loadingSubscription = false;
         });

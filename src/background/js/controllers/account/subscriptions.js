@@ -1,4 +1,4 @@
-/* globals StripeCheckout, alert */
+/* globals alert */
 import $ from 'jquery';
 import _ from 'underscore';
 
@@ -90,53 +90,14 @@ export default function SubscriptionsCtrl ($scope, $rootScope, $routeParams, $q,
     };
     $scope.reloadSubscriptions();
 
-    function updateLegacyCreditCard (params = {}) {
-        return new Promise((resolve) => {
-            var handler = StripeCheckout.configure({
-                key: params.stripeKey,
-                token: function (token) {
-                    resolve(token);
-                }
-            });
-            handler.open({
-                name: 'Gorgias',
-                description: 'Update your Credit Card',
-                panelLabel: 'Update your Credit Card',
-                email: params.email,
-                allowRememberMe: false
-            });
-        });
-    }
-
     // Get a new token from stripe and send it to the server
     $scope.updateCC = function () {
-        $scope.paymentMsg = '';
-        $scope.paymentError = '';
-        $('.update-cc-btn').addClass('disabled');
-
-        // BUG on old-api, must wait for plans to load
         var ccParams = {
             stripeKey: $scope.stripeKey,
             email: $scope.email
         };
         store.updateCreditCard(ccParams).then((res) => {
-            if (res.firebase) {
-                return $rootScope.updateFirebaseCreditCard(Object.assign(res, ccParams));
-            }
-
-            return updateLegacyCreditCard(ccParams).then((token) => {
-                // Use the token to create the charge with server-side.
-                SubscriptionService.updateSubscription($scope.activeSubscription.id, {token: token}).then(
-                    function (res) {
-                        $('.update-cc-btn').removeClass('disabled');
-                        $scope.paymentMsg = res;
-                        $scope.reloadSubscriptions();
-                    }, function (res) {
-                        $('.update-cc-btn').removeClass('disabled');
-                        $scope.paymentError = res;
-                    }
-                );
-            });
+            return $rootScope.updateFirebaseCreditCard(Object.assign(res, ccParams));
         });
     };
 
