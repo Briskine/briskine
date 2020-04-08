@@ -1,6 +1,10 @@
 <div class="row" ng-if="account.is_customer">
     <div class="col-md-12">
-        <subscription-active subscription="activeSubscription"></subscription-active>
+        <subscription-active
+            subscription="activeSubscription"
+            calculate-price="calculatePrice(amount, quantity, percentOff)"
+            >
+        </subscription-active>
     </div>
 
 

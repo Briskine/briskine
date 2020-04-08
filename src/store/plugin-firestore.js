@@ -71,14 +71,64 @@ function uuid() {
 }
 
 // handle fetch errors
-var handleErrors = function (response) {
+function handleErrors (response) {
     if (!response.ok) {
         return response.clone().json().then((res) => {
             return Promise.reject(res);
         });
     }
     return response;
-};
+}
+
+// TODO fetch wrapper with support for authorization, query params and error handling
+function request (url, params = {}) {
+    const defaults = {
+        authorization: false,
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: {}
+    };
+
+    // deep-merge work-around
+    const paramsCopy = JSON.parse(JSON.stringify(params));
+    const data = Object.assign({}, defaults, paramsCopy);
+    data.method = data.method.toUpperCase();
+
+    // querystring support
+    const fullUrl = new URL(url);
+    if (data.method === 'GET') {
+        Object.keys(data.body).forEach((key) => {
+            fullUrl.searchParams.append(key, data.body[key]);
+        });
+
+        delete data.body;
+    } else {
+        // stringify body for non-get requests
+        data.body = JSON.stringify(data.body);
+    }
+
+    // auth support
+    let auth = Promise.resolve();
+    if (data.authorization) {
+        auth = getUserToken();
+    }
+
+    return auth.then((res) => {
+            if (res) {
+                data.headers.Authorization = `Bearer ${res.token}`;
+            }
+
+            return fetch(fullUrl, {
+                    method: data.method,
+                    headers: data.headers,
+                    body: data.body
+                })
+                .then(handleErrors)
+                .then((res) => res.json());
+        });
+}
 
 // backwards compatibility
 // update template list
@@ -1276,40 +1326,22 @@ var getPlans = () => {
     });
 };
 
-var getSubscription = (params = {}) => {
-    return getSignedInUser().then((user) => {
-        var customerRef = customersCollection.doc(user.customer);
-
-        return customerRef.get();
-    }).then((customer) => {
-        var subscriptionData = customer.data().subscription;
-        var active = true;
-
-        if (subscriptionData.canceled_datetime) {
-            active = false;
-        }
-
-        return getPlans().then((res) => {
-            // backwards compatibility
-            var preferred_currency = 'usd';
-            var plan = res.plans[preferred_currency].find((p) => p.sku === subscriptionData.plan);
-            // bonus plan support
-            if (!plan) {
-                plan = {
-                    name: subscriptionData.plan
-                };
-            }
-            var subscription = Object.assign(subscriptionData, {
-                active: active,
-                plan: plan,
-                start_datetime: subscriptionData.start_datetime.toDate()
+var getSubscription = () => {
+    return getSignedInUser()
+        .then((user) => {
+            return request(`${Config.functionsUrl}/api/1/subscription`, {
+                authorization: true,
+                body: {
+                    customer: user.customer
+                }
             });
-            if (params.subId) {
-                return subscription;
-            }
-            return [subscription];
+        })
+        .then((res) => {
+            // TODO do we still need active?
+            return Object.assign({
+                active: !!res.canceled_datetime
+            }, res);
         });
-    });
 };
 
 // return user and token

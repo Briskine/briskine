@@ -14,7 +14,14 @@ export default function SubscriptionsCtrl ($scope, $rootScope, $routeParams, $q,
 
     $scope.plans = {};
     $scope.subscriptions = [];
-    $scope.activeSubscription = null;
+    $scope.activeSubscription = {
+        price: 0,
+        users: 1,
+        plan: '',
+        percent_off: 0,
+        start_datetime: null,
+        canceled_datetime: null
+    };
     $scope.stripeKey = "";
     $scope.preferredCurrency = "";
     $scope.quantity = 1;
@@ -25,6 +32,15 @@ export default function SubscriptionsCtrl ($scope, $rootScope, $routeParams, $q,
     $scope.bonusPlan = false;
 
     $scope.loadingCancel = false;
+
+    $scope.calculatePrice = (amount = 0, quantity = 1, percentOff = 0) => {
+        let total = amount * quantity;
+        if (percentOff) {
+            total = total * percentOff / 100;
+        }
+
+        return total / 10;
+    };
 
     SubscriptionService.plans().then(function (data) {
         $scope.plans = data.plans;
@@ -47,20 +63,29 @@ export default function SubscriptionsCtrl ($scope, $rootScope, $routeParams, $q,
 
     $scope.reloadSubscriptions = function () {
         SubscriptionService.subscriptions().then(function (data) {
-            $scope.subscriptions = data;
-            $scope.quantity = $scope.subscriptions[0].quantity;
-            for (var i = 0; i <= $scope.subscriptions.length; i++) {
-                if ($scope.subscriptions[i].active) {
-                    $scope.activeSubscription = $scope.subscriptions[i];
-                    if (
-                        $scope.activeSubscription.plan &&
-                        $scope.activeSubscription.plan.name === 'bonus'
-                    ) {
-                        $scope.bonusPlan = true;
-                    }
-                    break;
-                }
+            $scope.activeSubscription = data;
+            if (
+                $scope.activeSubscription.plan === 'bonus'
+            ) {
+                $scope.bonusPlan = true;
             }
+
+            // TODO check objects if used
+//             $scope.subscriptions = data;
+//             TODO check where used
+//             $scope.quantity = $scope.subscriptions[0].quantity;
+//             for (var i = 0; i <= $scope.subscriptions.length; i++) {
+//                 if ($scope.subscriptions[i].active) {
+//                     $scope.activeSubscription = $scope.subscriptions[i];
+//                     if (
+//                         $scope.activeSubscription.plan &&
+//                         $scope.activeSubscription.plan.name === 'bonus'
+//                     ) {
+//                         $scope.bonusPlan = true;
+//                     }
+//                     break;
+//                 }
+//             }
         });
     };
     $scope.reloadSubscriptions();
