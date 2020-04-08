@@ -14,7 +14,8 @@ export default {
     bindings: {
         subscription: '<',
         calculatePrice: '&',
-        updatePayment: '&'
+        updatePayment: '&',
+        updateSubscription: '&'
     },
     controller: function SubscriptionActiveController () {
         const ctrl = this;
@@ -61,6 +62,13 @@ export default {
 
             return `$${price}/${getPeriod(plan)}`;
         };
+
+        ctrl.switchSubscription = function () {
+            // TODO loader
+            return ctrl.updateSubscription({
+                plan: ctrl.getAlternate(ctrl.subscription.plan)
+            });
+        };
     },
     template: `
         <div class="panel panel-info">
@@ -99,11 +107,15 @@ export default {
                         <div>
                             Current price:
                             <strong>
-                                {{$ctrl.getPrice()}}
+                                {{$ctrl.getPrice($ctrl.subscription.plan)}}
                             </strong>
                         </div>
                         <div ng-show="$ctrl.isPremium($ctrl.subscription.plan)">
-                            <button type="button" class="btn btn-primary">
+                            <button
+                                type="button"
+                                class="btn btn-primary"
+                                ng-click="$ctrl.switchSubscription()"
+                            >
                                 Switch to {{$ctrl.getAlternate($ctrl.subscription.plan, true)}}
                                 <strong>
                                     {{$ctrl.getPrice($ctrl.getAlternate($ctrl.subscription.plan))}}

@@ -1,5 +1,4 @@
 /* globals alert */
-import $ from 'jquery';
 import _ from 'underscore';
 
 import store from '../../../../store/store-client';
@@ -83,23 +82,21 @@ export default function SubscriptionsCtrl ($scope, $rootScope, $routeParams, $q,
     };
 
     $scope.updateSubscription = function (plan, quantity) {
-        $('.subscribe-button').addClass('disabled');
         $scope.paymentMsg = '';
         $scope.paymentError = '';
 
-        // backwards-compatibility
-        // we don't have subscription ids in firestore
-        var subId = $scope.activeSubscription.id || Date.now();
-        SubscriptionService.updateSubscription(subId, {
-            plan: plan,
-            quantity: quantity
-        }).then(function (res) {
-            $scope.paymentMsg = res;
-            $('.subscribe-button').removeClass('disabled');
-        }, function (res) {
-            $scope.paymentError = res;
-            $('.subscribe-button').removeClass('disabled');
-        });
+        return store.updateSubscription({
+                plan: plan,
+                quantity: quantity
+            })
+            .then((res) => {
+                $scope.paymentMsg = res;
+
+                $scope.reloadSubscriptions();
+            })
+            .catch((err) => {
+                $scope.paymentError = err;
+            });
     };
 
     $scope.cancelSubscription = function() {

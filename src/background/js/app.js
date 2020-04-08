@@ -268,6 +268,7 @@ gApp.run(function ($rootScope, $location, $timeout, ProfileService, SettingsServ
 
     $rootScope.loadingSubscription = false;
 
+    // TODO change how update payment works
     $rootScope.updateFirebaseCreditCard = function (params = {}) {
         var updateUrl = `${params.redirect}?token=${params.token}&customer=${params.customer}`;
         if (params.reactivate === true) {

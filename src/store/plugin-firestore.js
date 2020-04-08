@@ -1360,35 +1360,32 @@ function getUserToken () {
 
 // update subscription plan and quantity
 var updateSubscription = (params = {}) => {
-    return getUserToken().then((res) => {
-        return fetch(`${Config.functionsUrl}/api/1/subscription`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    token: res.token,
-                    customer: res.user.customer,
-                    quantity: params.quantity,
-                    plan: params.plan
-                })
-            })
-            .then(handleErrors)
-            .then((res) => res.json())
-            .then(() => {
-                // backwards compatibility
-                return {
-                    msg: 'Successfully updated subscription.'
-                };
-            })
-            .catch((err) => {
-                // backwards compatibility
-                return Promise.reject({
-                    msg: err.message
+    return getSignedInUser()
+        .then((user) => {
+            return request(`${Config.functionsUrl}/api/1/subscription`, {
+                    authorization: true,
+                    method: 'PUT',
+                    body: {
+                        customer: user.customer,
+                        quantity: params.quantity,
+                        plan: params.plan
+                    }
                 });
+        })
+        .then(() => {
+            // backwards compatibility
+            return {
+                msg: 'Successfully updated subscription.'
+            };
+        })
+        .catch((err) => {
+            // backwards compatibility
+            return Promise.reject({
+                msg: err.message
             });
-    });
+        });
 };
+
 var cancelSubscription = () => {
     return getUserToken().then((res) => {
         return fetch(`${Config.functionsUrl}/api/1/subscription`, {
