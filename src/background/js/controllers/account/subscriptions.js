@@ -64,34 +64,15 @@ export default function SubscriptionsCtrl ($scope, $rootScope, $routeParams, $q,
     $scope.reloadSubscriptions = function () {
         SubscriptionService.subscriptions().then(function (data) {
             $scope.activeSubscription = data;
-            if (
-                $scope.activeSubscription.plan === 'bonus'
-            ) {
+            if ($scope.activeSubscription.plan === 'bonus') {
                 $scope.bonusPlan = true;
             }
-
-            // TODO check objects if used
-//             $scope.subscriptions = data;
-//             TODO check where used
-//             $scope.quantity = $scope.subscriptions[0].quantity;
-//             for (var i = 0; i <= $scope.subscriptions.length; i++) {
-//                 if ($scope.subscriptions[i].active) {
-//                     $scope.activeSubscription = $scope.subscriptions[i];
-//                     if (
-//                         $scope.activeSubscription.plan &&
-//                         $scope.activeSubscription.plan.name === 'bonus'
-//                     ) {
-//                         $scope.bonusPlan = true;
-//                     }
-//                     break;
-//                 }
-//             }
         });
     };
     $scope.reloadSubscriptions();
 
     // Get a new token from stripe and send it to the server
-    $scope.updateCC = function () {
+    $scope.updatePayment = function () {
         var ccParams = {
             stripeKey: $scope.stripeKey,
             email: $scope.email

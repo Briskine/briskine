@@ -13,7 +13,8 @@ function getPeriod (plan = '') {
 export default {
     bindings: {
         subscription: '<',
-        calculatePrice: '&'
+        calculatePrice: '&',
+        updatePayment: '&'
     },
     controller: function SubscriptionActiveController () {
         const ctrl = this;
@@ -87,10 +88,10 @@ export default {
                                 </strong>
                                 discount.
                             </li>
-                            <li>
-                                <a href="#">
+                            <li ng-show="$ctrl.isPremium($ctrl.subscription.plan)">
+                                <button type="button" class="btn btn-link" ng-click="$ctrl.updatePayment()">
                                     Update your Credit Card
-                                </a>
+                                </button>
                             </li>
                         </ul>
                     </div>
@@ -101,7 +102,7 @@ export default {
                                 {{$ctrl.getPrice()}}
                             </strong>
                         </div>
-                        <div ng-show="$ctrl">
+                        <div ng-show="$ctrl.isPremium($ctrl.subscription.plan)">
                             <button type="button" class="btn btn-primary">
                                 Switch to {{$ctrl.getAlternate($ctrl.subscription.plan, true)}}
                                 <strong>
