@@ -1,5 +1,16 @@
 <div class="row" ng-if="account.is_customer">
     <div class="col-md-12">
+        <div class="alert alert-danger fade in" ng-if="paymentError">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+            <h4>Oh snap! Failed to upgrade!</h4>
+            <p>{{ paymentError }}</p>
+        </div>
+        <div class="alert alert-success fade in" ng-if="paymentMsg">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+            <h4>It's a success!</h4>
+            <p>{{ paymentMsg }}</p>
+        </div>
+
         <div ng-if="bonusPlan">
             <p>
                 Please contact <a href="mailto:chrome@gorgias.io">chrome@gorgias.io</a> for any changes or information about your subscription.
@@ -45,16 +56,6 @@
     </div>
 
     <div class="col-sm-8" ng-if="!bonusPlan">
-        <div class="alert alert-danger fade in" ng-if="paymentError">
-            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-            <h4>Oh snap! Failed to upgrade!</h4>
-            <p>{{ paymentError }}</p>
-        </div>
-        <div class="alert alert-success fade in" ng-if="paymentMsg">
-            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-            <h4>It's a success!</h4>
-            <p>{{ paymentMsg }}</p>
-        </div>
         <div class="row">
             <div class="col-sm-6" ng-repeat="plan in plans[preferredCurrency]">
                 <div class="panel panel-default text-center">

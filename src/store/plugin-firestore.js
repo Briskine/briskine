@@ -1394,16 +1394,10 @@ var updateSubscription = (params = {}) => {
                 });
         })
         .then(() => {
-            // backwards compatibility
-            return {
-                msg: 'Successfully updated subscription.'
-            };
+            return 'Successfully updated subscription.';
         })
         .catch((err) => {
-            // backwards compatibility
-            return Promise.reject({
-                msg: err.message
-            });
+            return Promise.reject(err.message);
         });
 };
 
