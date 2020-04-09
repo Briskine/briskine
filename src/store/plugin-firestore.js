@@ -96,6 +96,27 @@ function request (url, params = {}) {
     const data = Object.assign({}, defaults, paramsCopy);
     data.method = data.method.toUpperCase();
 
+    // TODO
+    if (params.form === true) {
+        const $form = document.createElement('form');
+        $form.setAttribute('method', params.method);
+        $form.setAttribute('action', url);
+        $form.setAttribute('target', '_blank');
+
+        Object.keys(params.body).forEach((key) => {
+            const $input = document.createElement('input');
+            $input.type = 'hidden';
+            $input.name = key;
+            $input.value = params.body[key];
+            $form.appendChild($input);
+        });
+
+        document.body.appendChild($form);
+        $form.submit();
+
+        return;
+    }
+
     // querystring support
     const fullUrl = new URL(url);
     if (data.method === 'GET') {
@@ -1415,17 +1436,18 @@ var cancelSubscription = () => {
     });
 };
 
-var updateCreditCard = (params = {}) => {
+var updateCreditCard = () => {
     return getUserToken()
         .then((res) => {
-            const url = new URL(`${Config.functionsUrl}/subscribe/payment/update`);
-            url.searchParams.append('customer', res.user.customer);
-            url.searchParams.append('token', res.token);
-            if (params.reactivate) {
-                url.searchParams.append('reactivate', true);
-            }
-
-            window.open(url);
+            return request(`${Config.functionsUrl}/api/1/subscription`, {
+                form: true,
+                method: 'POST',
+                body: {
+                    token: res.token,
+                    customer: res.user.customer,
+                    payment_update: true
+                }
+            });
         });
 };
 
