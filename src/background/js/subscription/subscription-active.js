@@ -58,7 +58,7 @@ export default {
 
             const price = ctrl.calculatePrice({
                 amount: amount,
-                quantity: ctrl.subscription.quantity,
+                quantity: ctrl.subscription.users,
                 percentOff: ctrl.subscription.percent_off
             });
 

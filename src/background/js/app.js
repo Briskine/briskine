@@ -52,6 +52,7 @@ import SubscriptionsCtrl from './controllers/account/subscriptions';
 import StatsCtrl from './controllers/account/stats';
 import fileread from './directives/fileread';
 import subscriptionActive from './subscription/subscription-active';
+import subscriptionUsers from './subscription/subscription-users';
 
 import store from '../../store/store-client';
 
@@ -94,7 +95,8 @@ gApp
 .controller('SubscriptionsCtrl', SubscriptionsCtrl)
 .controller('StatsCtrl', StatsCtrl)
 .directive('fileread', fileread)
-.component('subscriptionActive', subscriptionActive);
+.component('subscriptionActive', subscriptionActive)
+.component('subscriptionUsers', subscriptionUsers);
 
 gApp.config(function() {
     tinyMCE.baseURL = 'tinymce';

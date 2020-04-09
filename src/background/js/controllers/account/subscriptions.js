@@ -1,12 +1,11 @@
 /* globals alert */
-import _ from 'underscore';
-
 import store from '../../../../store/store-client';
 
 export default function SubscriptionsCtrl ($scope, $rootScope, $routeParams, $q, SubscriptionService, AccountService) {
     'ngInject';
     $scope.activeTab = 'subscriptions';
 
+    // TODO why do we need account?
     AccountService.get().then(function (account) {
         $scope.account = account;
     });
@@ -23,7 +22,7 @@ export default function SubscriptionsCtrl ($scope, $rootScope, $routeParams, $q,
     };
     $scope.stripeKey = "";
     $scope.preferredCurrency = "";
-    $scope.quantity = 1;
+//     $scope.quantity = 1;
     $scope.paymentError = "";
     $scope.discountCode = "";
     $scope.couponPrecentOff = 1;
@@ -35,30 +34,30 @@ export default function SubscriptionsCtrl ($scope, $rootScope, $routeParams, $q,
     $scope.calculatePrice = (amount = 0, quantity = 1, percentOff = 0) => {
         let total = amount * quantity;
         if (percentOff) {
-            total = total * percentOff / 100;
+            total = total - (total * percentOff / 100);
         }
 
         return total / 10;
     };
 
-    SubscriptionService.plans().then(function (data) {
-        $scope.plans = data.plans;
-        $scope.stripeKey = data.stripe_key;
-        $scope.preferredCurrency = data.preferred_currency;
-        $scope.email = data.email;
-
-        // get quantity from url
-        if ($routeParams.quantity) {
-            $scope.quantity = parseInt($routeParams.quantity, 10) || 1;
-        }
-
-        _.each($scope.plans[$scope.preferredCurrency], function (plan) {
-            if (plan.sku === $routeParams.plan) {
-                $scope.selectedPlan = plan;
-                return false;
-            }
-        });
-    });
+//     SubscriptionService.plans().then(function (data) {
+//         $scope.plans = data.plans;
+//         $scope.stripeKey = data.stripe_key;
+//         $scope.preferredCurrency = data.preferred_currency;
+//         $scope.email = data.email;
+//
+//         get quantity from url
+//         if ($routeParams.quantity) {
+//             $scope.quantity = parseInt($routeParams.quantity, 10) || 1;
+//         }
+//
+//         _.each($scope.plans[$scope.preferredCurrency], function (plan) {
+//             if (plan.sku === $routeParams.plan) {
+//                 $scope.selectedPlan = plan;
+//                 return false;
+//             }
+//         });
+//     });
 
     $scope.reloadSubscriptions = function () {
         SubscriptionService.subscriptions().then(function (data) {
