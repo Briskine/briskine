@@ -1,4 +1,4 @@
-<div class="row" ng-if="account.is_customer">
+<div class="row">
     <div class="col-md-12">
         <div class="alert alert-danger fade in" ng-if="paymentError">
             <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
@@ -11,14 +11,9 @@
             <p>{{ paymentMsg }}</p>
         </div>
 
-        <div ng-if="bonusPlan">
-            <p>
-                Please contact <a href="mailto:chrome@gorgias.io">chrome@gorgias.io</a> for any changes or information about your subscription.
-            </p>
-        </div>
-
         <subscription-active
             subscription="activeSubscription"
+            get-interval="getInterval(plan)"
             calculate-price="calculatePrice(amount, quantity, percentOff)"
             update-payment="updatePayment()"
             update-subscription="updateSubscription(plan, quantity)"
@@ -27,6 +22,7 @@
 
         <subscription-users
             subscription="activeSubscription"
+            get-interval="getInterval(plan)"
             calculate-price="calculatePrice(amount, quantity, percentOff)"
             update-subscription="updateSubscription(plan, quantity)"
             >
@@ -95,19 +91,6 @@
                 </div>
             </div>
         </div>
-        <div class="row">
-            <p class="alert">
-                <strong>Note:</strong> You'll get billed only for what you use.
-                <br/><br/>
-                Simple example: If you begin with 2 users (10$/month) on 1st May, then on 15th May if you add a 3rd
-                user then on 31st you get billed 12.5$.
-            </p>
-        </div>
     </div>
 </div>
 
-<div class="row" ng-if="!account.is_customer">
-    <br/>
-    <p>Only the account owner, can upgrade, downgrade or change the billing information.</p>
-    <p>Please contact <a href="mailto:chrome@gorgias.io">chrome@gorgias.io</a> for more information.</p>
-</div>

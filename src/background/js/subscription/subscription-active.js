@@ -2,17 +2,10 @@ function capitalize (str = '') {
     return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
-
-function getPeriod (plan = '') {
-    if (plan.includes('yearly')) {
-        return 'Year';
-    }
-    return 'Month';
-}
-
 export default {
     bindings: {
         subscription: '<',
+        getInterval: '&',
         calculatePrice: '&',
         updatePayment: '&',
         updateSubscription: '&'
@@ -62,7 +55,7 @@ export default {
                 percentOff: ctrl.subscription.percent_off
             });
 
-            return `$${price}/${getPeriod(plan)}`;
+            return `$${price}/${ctrl.getInterval({plan: plan})}`;
         };
 
         ctrl.switchSubscription = function () {
@@ -108,7 +101,14 @@ export default {
                                 </button>
                             </li>
                             <li>
-                                Only you, as the account owner, can upgrade, downgrade or change the billing information for the account.
+                                Only the account owner can upgrade, downgrade or change the billing information for the account.
+                            </li>
+                            <li>
+                                Contact
+                                <a href="mailto:chrome@gorgias.com">
+                                    chrome@gorgias.com
+                                </a>
+                                for any details about your subscription.
                             </li>
                         </ul>
                     </div>

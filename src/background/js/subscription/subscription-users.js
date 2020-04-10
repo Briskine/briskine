@@ -1,14 +1,8 @@
 
-function getPeriod (plan = '') {
-    if (plan.includes('yearly')) {
-        return 'Year';
-    }
-    return 'Month';
-}
-
 export default {
     bindings: {
         subscription: '<',
+        getInterval: '&',
         calculatePrice: '&',
         updateSubscription: '&'
     },
@@ -29,7 +23,7 @@ export default {
                 percentOff: ctrl.subscription.percent_off
             });
 
-            return `$${price}/${getPeriod(ctrl.subscription.plan)}`;
+            return `$${price}/${ctrl.getInterval({plan: ctrl.subscription.plan})}`;
         };
 
         ctrl.updateSubscriptionUsers = function (users = 1) {

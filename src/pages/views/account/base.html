@@ -45,8 +45,13 @@
              id="stats">
             <div class="tab-container" ng-include="'/pages/views/account/stats.html'"></div>
         </div>
-        <div role="tabpanel" class="tab-pane" ng-if="account.is_customer"
-             ng-class="activeTab == 'subscriptions'?'active':''" id="subscriptions">
+        <div
+            role="tabpanel"
+            class="tab-pane"
+            ng-if="account.is_customer && activeTab === 'subscriptions'"
+            ng-class="activeTab == 'subscriptions' ? 'active' : ''"
+            id="subscriptions"
+        >
             <div class="tab-container" ng-include="'/pages/views/account/subscriptions.html'"></div>
         </div>
     </div>

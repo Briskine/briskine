@@ -7,19 +7,23 @@ export default function SubscriptionsCtrl ($scope, $rootScope, $routeParams, $q,
 
     // TODO why do we need account?
     AccountService.get().then(function (account) {
+        // TODO used in template
         $scope.account = account;
     });
 
     $scope.plans = {};
     $scope.subscriptions = [];
+
     $scope.activeSubscription = {
         price: 0,
         users: 1,
+        members: 1,
         plan: '',
         percent_off: 0,
         start_datetime: null,
         canceled_datetime: null
     };
+
     $scope.stripeKey = "";
     $scope.preferredCurrency = "";
 //     $scope.quantity = 1;
@@ -30,6 +34,13 @@ export default function SubscriptionsCtrl ($scope, $rootScope, $routeParams, $q,
     $scope.bonusPlan = false;
 
     $scope.loadingCancel = false;
+
+    $scope.getInterval = function (plan = '') {
+        if (plan.includes('yearly')) {
+            return 'Year';
+        }
+        return 'Month';
+    };
 
     $scope.calculatePrice = (amount = 0, quantity = 1, percentOff = 0) => {
         let total = amount * quantity;
