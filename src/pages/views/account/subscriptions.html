@@ -27,35 +27,12 @@
             update-subscription="updateSubscription(plan, quantity)"
             >
         </subscription-users>
-    </div>
 
-
-    <div class="col-sm-4">
-        <div class="alert border border-danger border-rounded" ng-if="!bonusPlan">
-            <h4>Danger zone</h4>
-            <p>
-                If you are not satisfied with Gorgias Templates for Chrome you can cancel your subscription below.
-            </p>
-            <br>
-            <p>
-                <strong>Warning:</strong> If you cancel we will <strong>permanently delete</strong> all backups of your
-                templates and those of your team members from our servers.
-            </p>
-            <p>
-                Templates on your computer and your team members will be stored on your computers only!
-                If you delete the extension after you unsubscribe you will lose your templates.
-            </p>
-            <br>
-            <p>
-                We encourage you to backup your templates before you cancel by exporting <a href="#/list">here</a>.
-            </p>
-            <br>
-            <button class="btn btn-default" ng-class="{
-                'btn-loading': loadingCancel
-            }" ng-click="cancelSubscription()">
-                I understand. Cancel subscription.
-            </button>
-        </div>
+        <subscription-cancel
+            subscription="activeSubscription"
+            cancel-subscription="cancelSubscription()"
+            >
+        </subscription-cancel>
     </div>
 
     <div class="col-sm-8" ng-if="!bonusPlan">

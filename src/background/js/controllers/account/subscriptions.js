@@ -1,4 +1,3 @@
-/* globals alert */
 import store from '../../../../store/store-client';
 
 export default function SubscriptionsCtrl ($scope, $rootScope, $routeParams, $q, SubscriptionService, AccountService) {
@@ -106,17 +105,13 @@ export default function SubscriptionsCtrl ($scope, $rootScope, $routeParams, $q,
     };
 
     $scope.cancelSubscription = function() {
-        $scope.loadingCancel = true;
         var cancelConfirm = window.confirm('Are you sure you want to cancel and delete all your template backups?');
         if (cancelConfirm === true) {
-            SubscriptionService.cancelSubscription().then(function () {
-                $rootScope.logOut();
-            }).catch((err) => {
-                $scope.loadingCancel = false;
-                alert(err.msg);
-            });
-        } else {
-            $scope.loadingCancel = false;
+            return SubscriptionService.cancelSubscription();
         }
+
+        const deferred = $q.defer();
+        deferred.resolve();
+        return deferred.promise;
     };
 }
