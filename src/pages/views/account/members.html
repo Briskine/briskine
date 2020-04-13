@@ -6,10 +6,10 @@
                 data-placement="top"
                 data-html="true"
                 data-trigger="focus"
-                ng-class="licensesUsed >= activeSubscription.quantity - 1 ? 'label-warning' : 'label-success'"
+                ng-class="licensesUsed >= activeSubscription.users - 1 ? 'label-warning' : 'label-success'"
                 data-title="Number of licenses used"
                 data-content="You can add more licenses on <a href='#/account/subscriptions'>Subscriptions</a> page.">
-            {{ licensesUsed }}/{{ activeSubscription.quantity }}
+            {{ licensesUsed }}/{{ activeSubscription.users }}
         </button>
         licenses.
     </span>

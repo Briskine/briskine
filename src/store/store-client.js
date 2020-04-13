@@ -46,7 +46,6 @@ var methods = [
     'getStats',
     'updateTemplateStats',
 
-    'getPlans',
     'getSubscription',
     'updateSubscription',
     'cancelSubscription',

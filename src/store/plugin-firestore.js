@@ -1331,23 +1331,6 @@ function shareNotification (params = {}) {
 
 var getStats = mock;
 
-var getPlans = () => {
-    return getUserToken().then((res) => {
-        return fetch(`${Config.functionsUrl}/api/1/plans`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    customer: res.user.customer,
-                    token: res.token
-                })
-            })
-            .then(handleErrors)
-            .then((res) => res.json());
-    });
-};
-
 var getSubscription = () => {
     return getSignedInUser()
         .then((user) => {
@@ -1708,7 +1691,6 @@ export default {
 
     getStats: getStats,
 
-    getPlans: getPlans,
     getSubscription: getSubscription,
     updateSubscription: updateSubscription,
     cancelSubscription: cancelSubscription,

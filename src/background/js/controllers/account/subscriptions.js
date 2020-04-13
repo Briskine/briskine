@@ -10,9 +10,6 @@ export default function SubscriptionsCtrl ($scope, $rootScope, $routeParams, $q,
         $scope.account = account;
     });
 
-    $scope.plans = {};
-    $scope.subscriptions = [];
-
     $scope.activeSubscription = {
         price: 0,
         users: 1,
@@ -23,12 +20,7 @@ export default function SubscriptionsCtrl ($scope, $rootScope, $routeParams, $q,
         canceled_datetime: null
     };
 
-    $scope.stripeKey = "";
-    $scope.preferredCurrency = "";
-//     $scope.quantity = 1;
-    $scope.paymentError = "";
-    $scope.discountCode = "";
-    $scope.couponPrecentOff = 1;
+    $scope.paymentError = '';
 
     $scope.bonusPlan = false;
 
@@ -50,27 +42,8 @@ export default function SubscriptionsCtrl ($scope, $rootScope, $routeParams, $q,
         return total / 10;
     };
 
-//     SubscriptionService.plans().then(function (data) {
-//         $scope.plans = data.plans;
-//         $scope.stripeKey = data.stripe_key;
-//         $scope.preferredCurrency = data.preferred_currency;
-//         $scope.email = data.email;
-//
-//         get quantity from url
-//         if ($routeParams.quantity) {
-//             $scope.quantity = parseInt($routeParams.quantity, 10) || 1;
-//         }
-//
-//         _.each($scope.plans[$scope.preferredCurrency], function (plan) {
-//             if (plan.sku === $routeParams.plan) {
-//                 $scope.selectedPlan = plan;
-//                 return false;
-//             }
-//         });
-//     });
-
     $scope.reloadSubscriptions = function () {
-        return SubscriptionService.subscriptions().then(function (data) {
+        return SubscriptionService.getSubscription().then(function (data) {
             $scope.activeSubscription = data;
             if ($scope.activeSubscription.plan === 'bonus') {
                 $scope.bonusPlan = true;

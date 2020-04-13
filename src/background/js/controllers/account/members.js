@@ -44,7 +44,7 @@ export default function MembersCtrl ($scope, $rootScope, $timeout, $location, Ac
                 }).length + 1;
 
                 if ($scope.activeSubscription != null) {
-                  for (var i = 0; i <= $scope.activeSubscription.quantity - $scope.licensesUsed - 1; i++) {
+                  for (var i = 0; i <= $scope.activeSubscription.users - $scope.licensesUsed - 1; i++) {
                       $scope.newUsers.push({
                           'name': '',
                           'email': ''
@@ -56,7 +56,7 @@ export default function MembersCtrl ($scope, $rootScope, $timeout, $location, Ac
 
         if ($scope.account.is_customer) {
             // check the active subscription first
-            SubscriptionService.getActiveSubscription().then(function (sub) {
+            SubscriptionService.getSubscription().then(function (sub) {
                 $scope.activeSubscription = sub;
                 $scope.users = [];
                 getData();
