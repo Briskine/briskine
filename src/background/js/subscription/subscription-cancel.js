@@ -1,19 +1,14 @@
-/* globals alert */
 export default {
     bindings: {
         subscription: '<',
         cancelSubscription: '&'
     },
-    controller: function SubscriptionUsersController () {
+    controller: function SubscriptionCancelController () {
         const ctrl = this;
 
         ctrl.cancel = function () {
             ctrl.loading = true;
             return ctrl.cancelSubscription()
-                .catch((err) => {
-                    alert(err);
-                    return;
-                })
                 .then(() => {
                     ctrl.loading = false;
                 });
@@ -42,6 +37,6 @@ export default {
                     I understand. Cancel subscription.
                 </button>
             </p>
-    </div>
+        </div>
     `
 };

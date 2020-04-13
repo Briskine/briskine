@@ -50,10 +50,10 @@ export default {
                                 <strong>
                                     {{$ctrl.subscription.users}}
                                 </strong>
-                                user{{$ctrl.subscription.users > 1 ? 's' : ''}} on your team.
+                                user seat{{$ctrl.subscription.users > 1 ? 's' : ''}} on your team.
                             </li>
                             <li>
-                                Add or remove users from your team using the form here.
+                                Add or remove user seats from your team using the form here.
                             </li>
                             <li>
                                 You'll get billed only for what you use.

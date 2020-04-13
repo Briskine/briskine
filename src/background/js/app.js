@@ -54,6 +54,7 @@ import fileread from './directives/fileread';
 import subscriptionActive from './subscription/subscription-active';
 import subscriptionUsers from './subscription/subscription-users';
 import subscriptionCancel from './subscription/subscription-cancel';
+import subscriptionPremium from './subscription/subscription-premium';
 
 import store from '../../store/store-client';
 
@@ -98,7 +99,8 @@ gApp
 .directive('fileread', fileread)
 .component('subscriptionActive', subscriptionActive)
 .component('subscriptionUsers', subscriptionUsers)
-.component('subscriptionCancel', subscriptionCancel);
+.component('subscriptionCancel', subscriptionCancel)
+.component('subscriptionPremium', subscriptionPremium);
 
 gApp.config(function() {
     tinyMCE.baseURL = 'tinymce';

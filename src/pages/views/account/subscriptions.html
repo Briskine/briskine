@@ -11,6 +11,14 @@
             <p>{{ paymentMsg }}</p>
         </div>
 
+        <subscription-premium
+            subscription="activeSubscription"
+            calculate-price="calculatePrice(amount, quantity, percentOff)"
+            get-interval="getInterval(plan)"
+            create-subscription="createSubscription(plan, quantity)"
+            >
+        </subscription-premium>
+
         <subscription-active
             subscription="activeSubscription"
             get-interval="getInterval(plan)"

@@ -51,6 +51,7 @@ var methods = [
     'updateSubscription',
     'cancelSubscription',
     'updateCreditCard',
+    'createSubscription',
 
     'addAttachments',
     'removeAttachments',

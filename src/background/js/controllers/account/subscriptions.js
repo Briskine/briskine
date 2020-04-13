@@ -70,7 +70,7 @@ export default function SubscriptionsCtrl ($scope, $rootScope, $routeParams, $q,
 //     });
 
     $scope.reloadSubscriptions = function () {
-        SubscriptionService.subscriptions().then(function (data) {
+        return SubscriptionService.subscriptions().then(function (data) {
             $scope.activeSubscription = data;
             if ($scope.activeSubscription.plan === 'bonus') {
                 $scope.bonusPlan = true;
@@ -80,6 +80,10 @@ export default function SubscriptionsCtrl ($scope, $rootScope, $routeParams, $q,
 
     $scope.reloadSubscriptions();
 
+    store.on('subscribe-success', () => {
+        $scope.reloadSubscriptions();
+    });
+
     $scope.updatePayment = function () {
         return store.updateCreditCard();
     };
@@ -88,7 +92,7 @@ export default function SubscriptionsCtrl ($scope, $rootScope, $routeParams, $q,
         $scope.paymentMsg = '';
         $scope.paymentError = '';
 
-        return store.updateSubscription({
+        return SubscriptionService.updateSubscription({
                 plan: plan,
                 quantity: quantity
             })
@@ -104,10 +108,27 @@ export default function SubscriptionsCtrl ($scope, $rootScope, $routeParams, $q,
             });
     };
 
+    $scope.createSubscription = function (plan, quantity) {
+        return store.createSubscription({
+                plan: plan,
+                quantity: quantity
+            });
+    };
+
     $scope.cancelSubscription = function() {
         var cancelConfirm = window.confirm('Are you sure you want to cancel and delete all your template backups?');
         if (cancelConfirm === true) {
-            return SubscriptionService.cancelSubscription();
+            return SubscriptionService.cancelSubscription()
+                .then((res) => {
+                    $scope.paymentMsg = res;
+
+                    $scope.reloadSubscriptions();
+                    return;
+                })
+                .catch((err) => {
+                    $scope.paymentError = err;
+                    return;
+                });
         }
 
         const deferred = $q.defer();

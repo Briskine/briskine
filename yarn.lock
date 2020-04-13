@@ -1567,6 +1567,11 @@ css-parse@~2.0.0:
   dependencies:
     css "^2.0.0"
 
+css-toggle-switch@^4.1.0:
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/css-toggle-switch/-/css-toggle-switch-4.1.0.tgz#b4ba42856194bc0bdea610ab37c8d38d44d21d4f"
+  integrity sha512-XdA6fyaQqlBqTmFa6NX58tLPJj4SgDLAxV4Ec73GHQYRTYUTZoEyYHYxWGacLNTP8sTiVycKcAMBrPBKaiIZ9g==
+
 css@^2.0.0:
   version "2.2.4"
   resolved "https://registry.yarnpkg.com/css/-/css-2.2.4.tgz#c646755c73971f2bba6a601e2cf2fd71b1298929"
@@ -3664,7 +3669,7 @@ node-libs-browser@^2.2.1:
     util "^0.11.0"
     vm-browserify "^1.0.1"
 
-node-pre-gyp@*, node-pre-gyp@^0.14.0:
+node-pre-gyp@^0.14.0:
   version "0.14.0"
   resolved "https://registry.yarnpkg.com/node-pre-gyp/-/node-pre-gyp-0.14.0.tgz#9a0596533b877289bcad4e143982ca3d904ddc83"
   integrity sha512-+CvDC7ZttU/sSt9rFjix/P05iS43qHCOOGzcr3Ry99bXG7VX953+vFyEuph/tfqoYu8dttBkE86JSKBO2OzcxA==

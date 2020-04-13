@@ -80,7 +80,8 @@ function handleErrors (response) {
     return response;
 }
 
-// TODO fetch wrapper with support for authorization, query params and error handling
+// fetch wrapper
+// support authorization header, form submit, query params, error handling
 function request (url, params = {}) {
     const defaults = {
         authorization: false,
@@ -96,7 +97,7 @@ function request (url, params = {}) {
     const data = Object.assign({}, defaults, paramsCopy);
     data.method = data.method.toUpperCase();
 
-    // TODO
+    // form post support
     if (params.form === true) {
         const $form = document.createElement('form');
         $form.setAttribute('method', params.method);
@@ -1416,16 +1417,10 @@ var cancelSubscription = () => {
             .then(handleErrors)
             .then((res) => res.json())
             .then(() => {
-                // backwards compatibility
-                return {
-                    msg: 'Successfully canceled subscription.'
-                };
+                return 'Successfully canceled subscription.';
             })
             .catch((err) => {
-                // backwards compatibility
-                return Promise.reject({
-                    msg: err.message
-                });
+                return Promise.reject(err.message);
             });
     });
 };
@@ -1440,6 +1435,22 @@ var updateCreditCard = () => {
                     token: res.token,
                     customer: res.user.customer,
                     payment_update: true
+                }
+            });
+        });
+};
+
+var createSubscription = (params = {}) => {
+    return getUserToken()
+        .then((res) => {
+            return request(`${Config.functionsUrl}/api/1/subscription`, {
+                form: true,
+                method: 'POST',
+                body: {
+                    token: res.token,
+                    customer: res.user.customer,
+                    quantity: params.quantity,
+                    plan: params.plan
                 }
             });
         });
@@ -1669,6 +1680,12 @@ var removeAttachments = function (params = {}) {
     );
 };
 
+window.addEventListener('message', function (event) {
+    if (event.data.type === 'gorgias_message' && event.data.message === 'subscribe_success') {
+        window.store.trigger('subscribe-success');
+    }
+});
+
 export default {
     getSettings: getSettings,
     setSettings: setSettings,
@@ -1696,6 +1713,7 @@ export default {
     updateSubscription: updateSubscription,
     cancelSubscription: cancelSubscription,
     updateCreditCard: updateCreditCard,
+    createSubscription: createSubscription,
 
     addAttachments: addAttachments,
     removeAttachments: removeAttachments,
