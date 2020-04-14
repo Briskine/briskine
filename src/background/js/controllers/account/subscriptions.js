@@ -53,10 +53,6 @@ export default function SubscriptionsCtrl ($scope, $rootScope, $routeParams, $q,
 
     $scope.reloadSubscriptions();
 
-    store.on('subscribe-success', () => {
-        $scope.reloadSubscriptions();
-    });
-
     $scope.updatePayment = function () {
         return store.updateCreditCard();
     };

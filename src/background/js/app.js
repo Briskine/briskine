@@ -382,6 +382,10 @@ gApp.run(function ($rootScope, $location, $timeout, ProfileService, SettingsServ
         $rootScope.$broadcast("templates-sync");
     });
 
+    store.on('subscribe-success', () => {
+        window.location.reload();
+    });
+
     $rootScope.$on('$viewContentLoaded', initDom);
     $rootScope.$on('$includeContentLoaded', initDom);
 
