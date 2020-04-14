@@ -56,7 +56,7 @@ export default {
                                 Add or remove user seats from your team using the form here.
                             </li>
                             <li>
-                                You'll get billed only for what you use.
+                                You'll only get billed for what you use.
                                 <div class="text-muted">
                                     Example:
                                     If you begin with 2 users (10$/month) on May 1st then add a 3rd user on May 15, on May 31 you'll get billed 12.5$.
@@ -64,26 +64,30 @@ export default {
                             </li>
                         </ul>
                     </div>
-                    <form class="col-md-4 form-inline" ng-submit="$ctrl.updateSubscriptionUsers($ctrl.users)">
+                    <form class="col-md-4 form-horizontal" ng-submit="$ctrl.updateSubscriptionUsers($ctrl.users)">
                         <div class="form-group">
-                            <label for="users">
+                            <label for="users" class="control-label col-xs-6">
                                 Total users:
                             </label>
-                            <input type="number" min="{{$ctrl.subscription.members}}" class="form-control" id="users" ng-model="$ctrl.users">
+                            <div class="col-xs-6">
+                                <input type="number" min="{{$ctrl.subscription.members}}" class="form-control" id="users" ng-model="$ctrl.users">
+                            </div>
                         </div>
-                        <div>
-                            <button
-                                type="submit"
-                                class="btn btn-primary"
-                                ng-class="{
-                                    'btn-loading': $ctrl.loading
-                                }"
-                            >
-                                Update Total Users
-                                <strong>
-                                    {{$ctrl.getPrice($ctrl.users)}}
-                                </strong>
-                            </button>
+                        <div class="form-group text-right">
+                            <div class="col-xs-12">
+                                <button
+                                    type="submit"
+                                    class="btn btn-primary"
+                                    ng-class="{
+                                        'btn-loading': $ctrl.loading
+                                    }"
+                                >
+                                    Update Total Users
+                                    <strong>
+                                        {{$ctrl.getPrice($ctrl.users)}}
+                                    </strong>
+                                </button>
+                            </div>
                         </div>
                     </form>
                 </div>

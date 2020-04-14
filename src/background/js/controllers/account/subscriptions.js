@@ -39,7 +39,8 @@ export default function SubscriptionsCtrl ($scope, $rootScope, $routeParams, $q,
             total = total - (total * percentOff / 100);
         }
 
-        return total / 10;
+        // stripe amount is in cents
+        return total / 100;
     };
 
     $scope.reloadSubscriptions = function () {

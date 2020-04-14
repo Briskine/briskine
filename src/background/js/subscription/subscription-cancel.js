@@ -19,13 +19,19 @@ export default {
             <h4>Danger zone</h4>
 
             <p>
-                If you are not satisfied with Gorgias Templates you can cancel your subscription below.
+                If you are not satisfied with Gorgias Templates you can cancel your Premium subscription below.
             </p>
             <p>
                 <strong>
                     Warning:
                 </strong>
-                If you cancel we will <strong>permanently delete</strong> all backups of your templates and those of your team members from our servers.
+                You will switch to the
+                <strong>
+                    Free
+                </strong>
+                plan.
+                The rest of your team will not be able to access the templates anymore.
+                Your account will also have the limits of the Free plan.
             </p>
             <p>
                 We encourage you to backup your templates before you cancel by exporting them <a href="#/list">here</a>.

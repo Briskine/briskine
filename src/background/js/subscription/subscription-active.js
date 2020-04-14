@@ -84,7 +84,7 @@ export default {
                                 </strong>
                                 subscription started on
                                 <strong>
-                                    {{$ctrl.subscription.start_datetime | date:'dd MMMM yyyy' }}
+                                    {{$ctrl.subscription.start_datetime | date:'dd MMMM yyyy' }}.
                                 </strong>
                             </li>
                             <li ng-show="$ctrl.subscription.percent_off">
@@ -112,13 +112,13 @@ export default {
                             </li>
                         </ul>
                     </div>
-                    <div class="col-md-4">
-                        <div>
+                    <div class="col-md-4 text-right">
+                        <p class="form-group">
                             Current price:
                             <strong>
                                 {{$ctrl.getPrice($ctrl.subscription.plan)}}
                             </strong>
-                        </div>
+                        </p>
                         <div ng-show="$ctrl.isPremium($ctrl.subscription.plan)">
                             <button
                                 type="button"

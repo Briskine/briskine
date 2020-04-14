@@ -8,7 +8,7 @@ export default {
     controller: function SubscriptionPremiumController () {
         const ctrl = this;
 
-        const basePrice = 50;
+        const basePrice = 500;
         const priceList = {
             monthly: basePrice,
             yearly: basePrice * 10
@@ -38,13 +38,13 @@ export default {
         };
     },
     template: `
-        <div class="alert alert-info">
-            <h4>
+        <div class="subscription-premium alert alert-info">
+            <h2>
                 Subscribe to Premium
-            </h4>
+            </h2>
 
             <div class="row">
-                <div class="col-sm-7">
+                <div class="col-sm-6">
                     <p>
                         Work together with your team on the Premium plan.
                     </p>
@@ -63,10 +63,10 @@ export default {
                         </li>
                     </ul>
                 </div>
-                <div class="col-sm-5" ng-submit="$ctrl.create()">
-                    <form class="">
-                        <div class="form-group row">
-                            <label for="quantity" class="col-xs-6 text-right">
+                <div class="col-sm-6" ng-submit="$ctrl.create()">
+                    <form class="form-horizontal">
+                        <div class="form-group">
+                            <label for="quantity" class="col-xs-6 control-label text-right">
                                 Team members:
                             </label>
                             <div class="col-xs-6">
@@ -76,11 +76,11 @@ export default {
 
                         <div class="form-group row">
                             <fieldset>
-                                <label class="col-xs-6 text-right">
+                                <label class="col-xs-6 control-label text-right">
                                     Billing:
                                 </label>
                                 <div class="col-xs-6">
-                                    <div class="switch-toggle alert alert-light">
+                                    <div class="switch-toggle switch-default">
                                         <input id="monthly" name="billing" type="radio" value="monthly" ng-model="$ctrl.plan">
                                         <label for="monthly">
                                             Monthly
@@ -91,13 +91,13 @@ export default {
                                             Yearly
                                         </label>
 
-                                        <a class="btn btn-primary"></a>
+                                        <a></a>
                                     </div>
                                 </div>
                             </fieldset>
                         </div>
 
-                        <div class="text-center">
+                        <div class="text-right">
                             <button
                                 class="btn btn-default btn-lg"
                                 type="submit"
