@@ -24,8 +24,13 @@
                 Statistics
             </a>
         </li>
-        <li role="presentation" ng-show="account.is_customer && currentSubscription && currentSubscription.active"
-            ng-class="activeTab == 'subscriptions'?'active':''">
+        <li
+            role="presentation"
+            ng-if="account"
+            ng-class="{
+                'active': activeTab === 'subscriptions'
+            }"
+            >
             <a href="#/account/subscriptions" aria-controls="subscriptions" role="tab">
                 Subscriptions
             </a>
@@ -47,10 +52,12 @@
         </div>
         <div
             role="tabpanel"
-            class="tab-pane"
-            ng-if="account.is_customer && activeTab === 'subscriptions'"
-            ng-class="activeTab == 'subscriptions' ? 'active' : ''"
             id="subscriptions"
+            class="tab-pane"
+            ng-if="activeTab === 'subscriptions'"
+            ng-class="{
+                'active': activeTab === 'subscriptions'
+            }"
         >
             <div class="tab-container" ng-include="'/pages/views/account/subscriptions.html'"></div>
         </div>

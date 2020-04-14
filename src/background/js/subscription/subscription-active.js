@@ -8,19 +8,17 @@ export default {
         getInterval: '&',
         calculatePrice: '&',
         updatePayment: '&',
-        updateSubscription: '&'
+        updateSubscription: '&',
+        isPremium: '&',
+        isOwner: '&'
     },
     controller: function SubscriptionActiveController () {
         const ctrl = this;
 
         ctrl.loading = false;
 
-        ctrl.isPremium = function (plan = '') {
-            return ['monthly', 'yearly'].includes(plan);
-        };
-
         ctrl.displayName = function () {
-            if (ctrl.isPremium(ctrl.subscription.plan)) {
+            if (ctrl.isPremium()) {
                 return `Premium ${capitalize(ctrl.subscription.plan)}`;
             }
 
@@ -94,7 +92,7 @@ export default {
                                 </strong>
                                 discount.
                             </li>
-                            <li ng-show="$ctrl.isPremium($ctrl.subscription.plan)">
+                            <li ng-show="$ctrl.isPremium() && $ctrl.isOwner()">
                                 If your card expired, or you want to switch to another card:
                                 <button type="button" class="btn btn-link" ng-click="$ctrl.updatePayment()">
                                     Update your Credit Card
@@ -112,14 +110,14 @@ export default {
                             </li>
                         </ul>
                     </div>
-                    <div class="col-md-4 text-right">
+                    <div class="col-md-4 text-right" ng-if="$ctrl.isOwner()">
                         <p class="form-group">
                             Current price:
                             <strong>
                                 {{$ctrl.getPrice($ctrl.subscription.plan)}}
                             </strong>
                         </p>
-                        <div ng-show="$ctrl.isPremium($ctrl.subscription.plan)">
+                        <div ng-show="$ctrl.isPremium()">
                             <button
                                 type="button"
                                 class="btn btn-primary"

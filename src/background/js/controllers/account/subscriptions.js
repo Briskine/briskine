@@ -4,9 +4,8 @@ export default function SubscriptionsCtrl ($scope, $rootScope, $routeParams, $q,
     'ngInject';
     $scope.activeTab = 'subscriptions';
 
-    // TODO why do we need account?
     AccountService.get().then(function (account) {
-        // TODO used in template
+        // required for backwards compatibility with older tab container template
         $scope.account = account;
     });
 
@@ -104,5 +103,25 @@ export default function SubscriptionsCtrl ($scope, $rootScope, $routeParams, $q,
         const deferred = $q.defer();
         deferred.resolve();
         return deferred.promise;
+    };
+
+    $scope.isPremium = function () {
+        return ['monthly', 'yearly'].includes($scope.activeSubscription.plan);
+    };
+
+    $scope.isFree = function () {
+        return (
+            $scope.activeSubscription.plan === 'free' ||
+            // support reactivating old subscriptions
+            $scope.activeSubscription.canceled_datetime
+        );
+    };
+
+    $scope.isOwner = function () {
+        return $scope.activeSubscription.owner === true;
+    };
+
+    $scope.isCanceled = function () {
+        return $scope.activeSubscription.canceled_datetime;
     };
 }

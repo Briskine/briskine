@@ -11,11 +11,26 @@
             <p>{{ paymentMsg }}</p>
         </div>
 
+        <div
+            class="alert alert-warning"
+            ng-if="isCanceled()"
+        >
+            Your
+            <strong>
+                Premium
+            </strong>
+            subscription was canceled on
+            <strong>
+                {{activeSubscription.canceled_datetime | date: 'dd MMMM yyyy' }}.
+            </strong>
+        </div>
+
         <subscription-premium
             subscription="activeSubscription"
             calculate-price="calculatePrice(amount, quantity, percentOff)"
             get-interval="getInterval(plan)"
             create-subscription="createSubscription(plan, quantity)"
+            ng-if="isFree()"
             >
         </subscription-premium>
 
@@ -25,6 +40,8 @@
             calculate-price="calculatePrice(amount, quantity, percentOff)"
             update-payment="updatePayment()"
             update-subscription="updateSubscription(plan, quantity)"
+            is-premium="isPremium()"
+            is-owner="isOwner()"
             >
         </subscription-active>
 
@@ -33,49 +50,16 @@
             get-interval="getInterval(plan)"
             calculate-price="calculatePrice(amount, quantity, percentOff)"
             update-subscription="updateSubscription(plan, quantity)"
+            ng-if="isPremium()"
             >
         </subscription-users>
 
         <subscription-cancel
             subscription="activeSubscription"
             cancel-subscription="cancelSubscription()"
+            ng-if="isPremium()"
             >
         </subscription-cancel>
-    </div>
-
-    <div class="col-sm-8" ng-if="!bonusPlan">
-        <div class="row">
-            <div class="col-sm-6" ng-repeat="plan in plans[preferredCurrency]">
-                <div class="panel panel-default text-center">
-                    <div class="panel-heading">
-                        <strong>{{ plan.name }} <span class="label label-success" ng-if="plan.interval == 'year'">
-                            Best Value!</span></strong>
-                    </div>
-                    <div class="panel-body">
-                        <span class="price">{{ (plan.amount * quantity * couponPrecentOff) }}</span>
-                        <span class="currency">{{ plan.currency|uppercase }}</span>
-                    </div>
-                    <ul class="list-group">
-                        <li class="list-group-item">x 1 User/Year:
-                            <span class="amount"
-                                  ng-if="plan.interval == 'month'">{{ (plan.amount * couponPrecentOff * 12 * quantity) }}</span>
-                            <span class="amount"
-                                  ng-if="plan.interval == 'year'">{{ (plan.amount * couponPrecentOff * quantity) }}</span>
-                            <span ng-if="couponPrecentOffLabel">({{ couponPrecentOffLabel }} discount)</span>
-                            <span class="currency-sign">{{ plan.currency|uppercase }}</span>
-                        </li>
-                        <li class="list-group-item">
-                            <input type="number" class="quantity-input" id="quantity" ng-model="quantity" min="1"/>
-                            <label for="quantity">total users.</label>
-                        </li>
-                        <li class="list-group-item">
-                            <a class="btn btn-primary subscribe-button" href=""
-                               ng-click="updateSubscription(plan, quantity)">Update Subscription</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </div>
     </div>
 </div>
 
