@@ -11,19 +11,11 @@
             <p>{{ paymentMsg }}</p>
         </div>
 
-        <div
-            class="alert alert-warning"
+        <subscription-canceled-notice
+            subscription="activeSubscription"
             ng-if="isCanceled()"
-        >
-            Your
-            <strong>
-                Premium
-            </strong>
-            subscription was canceled on
-            <strong>
-                {{activeSubscription.canceled_datetime | date: 'dd MMMM yyyy' }}.
-            </strong>
-        </div>
+            >
+        </subscription-canceled-notice>
 
         <subscription-premium
             subscription="activeSubscription"
