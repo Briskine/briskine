@@ -34,8 +34,6 @@ export default function MembersCtrl ($scope, $rootScope, $timeout, $location, Ac
         return setUserState('userEdit', id);
     }
 
-    // TODO remove sendNotification, we always send notifications in firestore.
-    $scope.sendNotification = true;
     $scope.licensesUsed = 1;
 
     $scope.showMemberModal = function () {
@@ -82,7 +80,6 @@ export default function MembersCtrl ($scope, $rootScope, $timeout, $location, Ac
             if (!(u.name && u.email)) {
                 return;
             }
-            u.sendNotification = $scope.sendNotification;
 
             return MemberService.update(u).then(function () {
                 return;

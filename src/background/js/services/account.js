@@ -63,8 +63,7 @@ export function MemberService ($q) {
         var member = {
             id: data.id,
             name: data.name,
-            email: data.email,
-            send_notification: data.sendNotification
+            email: data.email
         };
 
         store.setMember(member)
