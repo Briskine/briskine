@@ -40,6 +40,10 @@ export default function MembersCtrl ($scope, $rootScope, $timeout, $location, Ac
         $('#add-members-modal').modal();
     };
 
+    $scope.hideMemberModal = function () {
+        $('#add-members-modal').modal('hide');
+    };
+
     $scope.refresh = function () {
         var getData = function () {
             MemberService.members().then(function (data) {
@@ -123,12 +127,6 @@ export default function MembersCtrl ($scope, $rootScope, $timeout, $location, Ac
         }).then(() => {
             setUserLoading();
         });
-    };
-
-    $scope.upgrade = function () {
-        // force-open subscriptions page
-        window.location.href = '#/account/subscriptions';
-        window.location.reload();
     };
 
     $scope.isCanceled = function () {
