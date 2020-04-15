@@ -276,15 +276,6 @@ gApp.run(function ($rootScope, $location, $timeout, ProfileService, SettingsServ
 
     $rootScope.loadingSubscription = false;
 
-    $rootScope.reactivateSubscription = function () {
-        $rootScope.loadingSubscription = true;
-        return store.updateCreditCard({
-                reactive: true
-            }).then(() => {
-                $rootScope.loadingSubscription = false;
-            });
-    };
-
     $rootScope.checkLoggedIn = function () {
         store.getLoginInfo()
         .then(function (data) {

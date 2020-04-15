@@ -818,12 +818,6 @@ var updateCreditCard = function () {
     });
 };
 
-var reactivateSubscription = function () {
-    return Promise.resolve({
-        firebase: false
-    });
-};
-
 var getPlans = function () {
     return fetch(`${apiBaseURL}plans/startup`)
         .then(handleErrors)
@@ -897,7 +891,6 @@ export default {
     updateSubscription: updateSubscription,
     cancelSubscription: cancelSubscription,
     updateCreditCard: updateCreditCard,
-    reactivateSubscription: reactivateSubscription,
 
     syncNow: syncNow,
     syncLocal: syncLocal,
