@@ -87,29 +87,6 @@
     </div>
 
     <div class="view-container">
-        <div ng-if="currentSubscription && !currentSubscription.active" class="alert alert-warning" ng-class="{
-            'btn-loading': loadingSubscription
-        }" ng-cloak>
-            <strong>Your current subscription is no longer active.</strong>
-            <p>This means that automatic syncing and backup of templates has been disabled for you and your team.</p>
-            <p>
-                <em>Note: without <a href="https://templates-help.gorgias.io/templates/template-synchronization" target="_blank">template
-                    synchronisation</a> you risk losing all your templates
-                    (if you delete the extension or re-install Chrome).</em>
-            </p>
-            <p ng-if="isCustomer === true">
-            <ul>
-                <li>To re-activate your subscription click <a href="" ng-click="reactivateSubscription()">here</a>.</li>
-                <li>To hide this warning: <a href="" ng-click="logOut()">Log out</a>.</li>
-            </ul>
-            <br>
-            <p>If you think this is a mistake and your subscription should be active please contact us: <a
-                href="mailto:chrome@gorgias.io">chrome@gorgias.io</a></p>
-            </p>
-            <p ng-if="isCustomer === false">Please notify the account owner. To hide this warning simply <a href=""
-                                                                                                            ng-click="logOut()">Log
-                out</a>. </p>
-        </div>
         <div class="container-animation" data-ng-view></div>
     </div>
 </div>

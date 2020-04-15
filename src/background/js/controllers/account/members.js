@@ -5,6 +5,16 @@ export default function MembersCtrl ($scope, $rootScope, $timeout, $location, Ac
     'ngInject';
     $scope.activeTab = 'members';
 
+    $scope.activeSubscription = {
+        price: 0,
+        users: 1,
+        members: 1,
+        plan: '',
+        percent_off: 0,
+        start_datetime: null,
+        canceled_datetime: null
+    };
+
     $scope.users = [];
     $scope.newUsers = [];
 
@@ -26,7 +36,6 @@ export default function MembersCtrl ($scope, $rootScope, $timeout, $location, Ac
 
     // TODO remove sendNotification, we always send notifications in firestore.
     $scope.sendNotification = true;
-    $scope.activeSubscription = null;
     $scope.licensesUsed = 1;
 
     $scope.showMemberModal = function () {
@@ -54,16 +63,12 @@ export default function MembersCtrl ($scope, $rootScope, $timeout, $location, Ac
             });
         };
 
-        if ($scope.account.is_customer) {
-            // check the active subscription first
-            SubscriptionService.getSubscription().then(function (sub) {
-                $scope.activeSubscription = sub;
-                $scope.users = [];
-                getData();
-            });
-        } else {
+        // check the active subscription first
+        SubscriptionService.getSubscription().then(function (sub) {
+            $scope.activeSubscription = sub;
+            $scope.users = [];
             getData();
-        }
+        });
     };
 
     // setup account
@@ -127,5 +132,9 @@ export default function MembersCtrl ($scope, $rootScope, $timeout, $location, Ac
         // force-open subscriptions page
         window.location.href = '#/account/subscriptions';
         window.location.reload();
+    };
+
+    $scope.isCanceled = function () {
+        return SubscriptionService.isCanceled($scope.activeSubscription);
     };
 }

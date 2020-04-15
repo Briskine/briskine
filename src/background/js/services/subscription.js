@@ -25,5 +25,9 @@ export default function SubscriptionService ($q) {
             .catch(deferred.reject);
         return deferred.promise;
     };
+
+    self.isCanceled = function (subscription) {
+        return subscription.canceled_datetime;
+    };
 }
 

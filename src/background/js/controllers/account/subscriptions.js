@@ -122,6 +122,6 @@ export default function SubscriptionsCtrl ($scope, $rootScope, $routeParams, $q,
     };
 
     $scope.isCanceled = function () {
-        return $scope.activeSubscription.canceled_datetime;
+        return SubscriptionService.isCanceled($scope.activeSubscription);
     };
 }

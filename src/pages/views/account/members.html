@@ -1,3 +1,9 @@
+<subscription-canceled-notice
+    subscription="activeSubscription"
+    ng-if="isCanceled()"
+>
+</subscription-canceled-notice>
+
 <p>You are signed in as <strong>{{ account.email }}</strong><span ng-if="account.is_customer">, the <strong>Account
     Owner</strong>.
         You are using
@@ -99,7 +105,7 @@
     <div ng-show="(!searchText && !users.length)">
         You don't have any team members <i class="fa fa-frown-o"></i> <br/>
         <span class="">
-            Go ahead <a href="" ng-click="showMemberModal()"><i class="fa fa-user-plus"></i> add some.</a>!
+            Go ahead <a href="" ng-click="showMemberModal()"><i class="fa fa-user-plus"></i> add some</a>!
         </span>
     </div>
 </div>
