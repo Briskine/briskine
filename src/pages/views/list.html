@@ -10,12 +10,16 @@
 
 <div class="btn-toolbar">
     <div class="row no-margin">
-        <a ng-href="#{{location}}?id=new" class="btn btn-primary">New template</a>
+        <a ng-href="#{{location}}?id=new" class="btn btn-primary">
+            New template
+        </a>
         <div class="btn-group btn-more pull-right">
             <a class="btn btn-default" ng-click="exportTemplates()" ng-if="filteredTemplates.length">Export</a>
         </div>
-        <div ng-show="account.info.name && currentSubscription && currentSubscription.active"
-             class="btn-group btn-more pull-right">
+        <div
+            ng-show="account.info.name && currentSubscription && currentSubscription.active"
+            class="btn-group btn-more pull-right"
+            >
             <a
                 href
                 class="btn btn-default"
@@ -41,7 +45,14 @@
 </div>
 
 <div id="quicktext-table-container">
-    <div ng-include="'includes/subscribe_hint.html'"></div>
+    <subscription-hint
+        free-limit="freeLimit"
+        reached-free-limit="reachedFreeLimit()"
+        show-auth-warning="showAuthWarning()"
+    >
+    </subscription-hint>
+
+
     <div class="list-group quicktexts-list" ng-show="filteredTemplates.length">
         <div class="list-group-item"
              ng-repeat="template in filteredTemplates|limitTo:limitTemplates track by template.id">

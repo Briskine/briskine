@@ -190,6 +190,11 @@
                     </div>
 
                     <div class="modal-footer">
+                        <subscription-hint
+                            free-limit="freeLimit"
+                            reached-free-limit="templateForm.showFreeWarning()"
+                        >
+                        </subscription-hint>
                         <div>
                             <p ng-show="templates.length > 5 && !account" class="premium-feature">
                                 Share this template with your team. <a href="" ng-click="templateForm.upgradeNow()">Subscribe
@@ -198,15 +203,28 @@
                         </div>
                         <div class="footer-button">
                             <span ng-show="templateForm.selectedTemplate.id">
-                                <button class="btn btn-default pull-left" ng-click="templateForm.duplicateQt()"
-                                        tabindex="-1">Duplicate
-                                    template
+                                <button
+                                    class="btn btn-default pull-left"
+                                    tabindex="-1"
+                                    ng-click="templateForm.duplicateQt()"
+                                    ng-if="!reachedFreeLimit()"
+                                >
+                                    Duplicate template
                                 </button>
                             </span>
                             <div class="footer-space"></div>
                             <div>
                                 <button class="btn btn-default" data-dismiss="modal" tabindex="-1">Cancel</button>
-                                <button class="btn btn-primary" id="submit-button" type="submit">Save template</button>
+                                <button
+                                    id="submit-button"
+                                    type="submit"
+                                    ng-class="['btn btn-primary', {
+                                        'disabled': templateForm.showFreeWarning()
+                                    }]"
+                                    ng-disabled="templateForm.showFreeWarning()"
+                                    >
+                                    Save template
+                                </button>
                             </div>
                         </div>
                     </div>

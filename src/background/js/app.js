@@ -56,6 +56,7 @@ import subscriptionUsers from './subscription/subscription-users';
 import subscriptionCancel from './subscription/subscription-cancel';
 import subscriptionPremium from './subscription/subscription-premium';
 import subscriptionCanceledNotice from './subscription/subscription-canceled-notice';
+import subscriptionHint from './subscription/subscription-hint';
 
 import store from '../../store/store-client';
 
@@ -102,7 +103,8 @@ gApp
 .component('subscriptionUsers', subscriptionUsers)
 .component('subscriptionCancel', subscriptionCancel)
 .component('subscriptionPremium', subscriptionPremium)
-.component('subscriptionCanceledNotice', subscriptionCanceledNotice);
+.component('subscriptionCanceledNotice', subscriptionCanceledNotice)
+.component('subscriptionHint', subscriptionHint);
 
 gApp.config(function() {
     tinyMCE.baseURL = 'tinymce';

@@ -444,6 +444,7 @@ export default function TemplateFormCtrl ($route, $q, $scope, $rootScope, $route
         };
 
         self.upgradeNow = function() {
+            // TODO open pricing page
             $rootScope.trackSignup('templateForm');
             $('#template-form-modal').modal('hide');
             $timeout(function() {
@@ -521,5 +522,12 @@ export default function TemplateFormCtrl ($route, $q, $scope, $rootScope, $route
             return store.removeAttachments({
                 attachments: removals
             });
+        };
+
+        self.showFreeWarning = function () {
+            return (
+                $scope.reachedFreeLimit() &&
+                $routeParams.id === 'new'
+            );
         };
     }
