@@ -1,5 +1,7 @@
 import amplitude from '../utils/amplitude';
 
+import Config from '../config';
+
 export default function SidebarCtrl ($scope, $location, $window,
                                          AccountService, SettingsService, TemplateService, FilterTagService) {
     'ngInject';
@@ -79,11 +81,17 @@ export default function SidebarCtrl ($scope, $location, $window,
         loadAccount();
     });
 
+    $scope.isAuthenticated = function () {
+        return $scope.account.info.name;
+    };
+
     $scope.isFree = function () {
         return (
-            !$scope.account.info.name ||
+            !$scope.isAuthenticated() ||
             $scope.account.current_subscription.plan === 'free' ||
             $scope.account.current_subscription.active === false
         );
     };
+
+    $scope.signupUrl = `${Config.websiteUrl}/signup`;
 }

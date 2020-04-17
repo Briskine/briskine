@@ -116,8 +116,8 @@ gApp.config(function ($routeProvider, $compileProvider, $sceDelegateProvider, $l
     $sceDelegateProvider.resourceUrlWhitelist([
         'self',
         'https://chrome.gorgias.io/**',
-        'https://templates.gorgias.io/**',
-        'http://localhost:*/**'
+        'http://localhost:*/**',
+        `${Config.websiteUrl}/**`
     ]);
     $routeProvider
         .when('/list', {

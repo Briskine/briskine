@@ -50,9 +50,6 @@
         background: #fff;
         padding: 21px 8px 0 16px;
 
-        .anonymous {
-            font-size: 14px;
-        }
         .anonymous,
         .profile-body {
             margin-bottom: emCalc(28);
@@ -109,15 +106,24 @@
     }
 }
 
-.support-link {
-    text-align: center;
-    margin: 0 auto !important;
-    margin-top: 24px !important;
-    padding: 3px;
-    width: 200px;
-    border: 1px solid $grey1 !important;
-    border-radius: 5px;
+.anonymous {
+    font-size: 14px;
 }
 
+.anonymous .btn .fa {
+    opacity: .9;
+}
 
+.anonymous .btn:hover span {
+    text-decoration: underline;
+}
 
+.anonymous .btn:hover {
+    text-decoration: none;
+}
+
+.anonymous .text-login-info {
+    padding-left: 1.6em;
+
+    font-size: .9em;
+}

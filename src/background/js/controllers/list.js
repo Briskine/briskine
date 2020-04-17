@@ -539,10 +539,18 @@ export default function ListCtrl ($route, $q, $scope, $rootScope, $routeParams, 
         let cachedPlan = '';
         SettingsService.get('isLoggedIn').then((loggedIn) => {
             cachedLoggedIn = loggedIn;
+
+            if (loggedIn) {
+                AccountService.get()
+                    .then((account) => {
+                        cachedPlan = account.current_subscription.plan;
+                    })
+                    .catch(() => {
+                        // logged-out
+                    });
+            }
+
             return;
-        });
-        AccountService.get().then((account) => {
-            cachedPlan = account.current_subscription.plan;
         });
 
         $scope.isAuthenticated = function () {
