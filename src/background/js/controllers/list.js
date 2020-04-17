@@ -532,6 +532,7 @@ export default function ListCtrl ($route, $q, $scope, $rootScope, $routeParams, 
             return TemplateService.tags(template);
         };
 
+        // free account warnings
         $scope.freeLimit = 30;
         const warningLimit = 7;
         let cachedLoggedIn = false;

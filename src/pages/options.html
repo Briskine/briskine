@@ -53,18 +53,35 @@
                 <li ng-click="emptyFilterTags()" class="template-tab"
                     ng-class="{ 'active': (path === '/list' && filterTags[0] == undefined) }"><a href="#/list">All</a>
                 </li>
-                <li ng-show="account.info.name" ng-click="emptyFilterTags()" class="template-tab"
-                    ng-class="{ 'active': (path === '/list/shared') }"><a href="#/list/shared">Shared</a></li>
-                <li ng-show="account.info.name" ng-click="emptyFilterTags()" class="template-tab"
-                    ng-class="{ 'active': (path === '/list/private') }"><a href="#/list/private">Private</a></li>
 
-                <li ng-show="!account.info.name" class="template-tab" ng-click="trackSignup('shared')">
+                <li class="template-tab"
+                    ng-show="!isFree()"
+                    ng-click="emptyFilterTags()"
+                    ng-class="{ 'active': (path === '/list/shared') }"
+                >
+                    <a href="#/list/shared">Shared</a>
+                </li>
+                <li class="template-tab"
+                    ng-show="!isFree()"
+                    ng-click="emptyFilterTags()"
+                    ng-class="{ 'active': (path === '/list/private') }"
+                >
+                    <a href="#/list/private">Private</a>
+                </li>
+
+                <li class="template-tab"
+                    ng-show="isFree()"
+                    ng-click="trackSignup('shared')"
+                >
                     <a href ng-click="openSubscribe()">
                         <span data-toggle="tooltip"
                               data-placement="bottom"
                               title="Upgrade to share templates with your team"><i class="fa fa-briefcase premium"></i> Shared</span></a>
                 </li>
-                <li ng-show="!account.info.name" class="template-tab" ng-click="trackSignup('private')">
+                <li class="template-tab"
+                    ng-show="isFree()"
+                    ng-click="trackSignup('private')"
+                >
                     <a href ng-click="openSubscribe()">
                         <span data-toggle="tooltip"
                               data-placement="bottom"
@@ -108,7 +125,6 @@
 
 <div ng-include="'includes/login.html'"></div>
 <div ng-include="'includes/forgot.html'"></div>
-<div ng-include="'includes/signup_firestore.html'"></div>
 
 </body>
 </html>

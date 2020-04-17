@@ -229,7 +229,6 @@ gApp.run(function ($rootScope, $location, $timeout, ProfileService, SettingsServ
     $rootScope.isCustomer = null;
     $rootScope.currentSubscription = null;
 
-    $rootScope.trustedSignupURL = $rootScope.baseURL + "signup/startup-monthly-usd-1/is_iframe=yes";
     $rootScope.showStats = true;
 
     SettingsService.get('settings').then(function (settings) {
@@ -243,15 +242,6 @@ gApp.run(function ($rootScope, $location, $timeout, ProfileService, SettingsServ
             $rootScope.savedEmail = true;
         }
     });
-
-    $rootScope.signupURL = function () {
-        // only provide an URL if the user is not authenticated
-        // this will prevent the iframe from loading for authenticated users
-        if ($rootScope.loginChecked && !$rootScope.isLoggedIn) {
-            return $rootScope.trustedSignupURL;
-        }
-        return '';
-    };
 
     $rootScope.trackSignup = function (source) {
         amplitude.getInstance().logEvent("Opened Signup form", {
@@ -384,32 +374,17 @@ gApp.run(function ($rootScope, $location, $timeout, ProfileService, SettingsServ
     $rootScope.$on('$viewContentLoaded', initDom);
     $rootScope.$on('$includeContentLoaded', initDom);
 
-    function subscribeIframeLoaded (e) {
-        var iframe = e.target;
-        var loadingClass = 'btn-loading';
-        var loaderSelector = `.${loadingClass}`;
-        var loader = iframe.closest(loaderSelector);
-        loader.classList.remove(loadingClass);
-
-        iframe.removeEventListener('load', subscribeIframeLoaded);
-    }
-
-    function openSubscribePopup () {
-        var subscribeUrl = `${Config.functionsUrl}/subscribe/`;
-        var $modal = $('#firestore-signup-modal');
-        var iframe = $modal.find('iframe').get(0);
-        $modal.modal({
-            show: true
-        });
-
-        if (iframe.src !== subscribeUrl) {
-            iframe.addEventListener('load', subscribeIframeLoaded);
-            iframe.src = subscribeUrl;
-        }
-    }
-
     $rootScope.openSubscribe = () => {
-        openSubscribePopup();
+        SettingsService.get('isLoggedIn').then((loggedIn) => {
+            if (loggedIn) {
+                // if authenticated, go to subscriptions
+                $location.path('/account/subscriptions');
+                return;
+            }
+
+            // if not, open pricing
+            window.open(`${Config.websiteUrl}/pricing`);
+        });
     };
 
     $rootScope.firestoreEnabled = window.FIRESTORE_ENABLED();

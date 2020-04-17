@@ -5,6 +5,10 @@ export default function SidebarCtrl ($scope, $location, $window,
     'ngInject';
     $scope.profile = {};
     $scope.filterTags = [];
+    $scope.account = {
+        info: {},
+        current_subscription: {}
+    };
 
     $window.addEventListener('message', function (e) {
         if (e.data == "gorgias-signedup-reload") {
@@ -74,4 +78,12 @@ export default function SidebarCtrl ($scope, $location, $window,
         loadTags();
         loadAccount();
     });
+
+    $scope.isFree = function () {
+        return (
+            !$scope.account.info.name ||
+            $scope.account.current_subscription.plan === 'free' ||
+            $scope.account.current_subscription.active === false
+        );
+    };
 }
