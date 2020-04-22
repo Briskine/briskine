@@ -1,3 +1,5 @@
+import Config from '../config';
+
 export default {
     bindings: {
         freeLimit: '<',
@@ -6,6 +8,8 @@ export default {
     },
     controller: function SubscriptionHint () {
         const ctrl = this;
+
+        ctrl.signupUrl = `${Config.websiteUrl}/signup`;
 
         ctrl.showHint = function () {
             return ctrl.reachedFreeLimit() || ctrl.showAuthWarning();
@@ -16,17 +20,23 @@ export default {
             class="alert alert-warning"
             ng-if="$ctrl.showHint()"
         >
-            <div ng-if="$ctrl.authWarning()">
+            <div ng-if="$ctrl.showAuthWarning()">
                 <p>
                     Please
-                    <a href="#">log in</a>
+                    <a
+                        href
+                        data-toggle="modal"
+                        data-target="#signin-modal"
+                    >
+                        log in
+                    </a>
                     or
-                    <a href="#">create a free account</a>
+                    <a href="{{$ctrl.signupUrl}}" target="_blank">create a free account</a>
                     to avoid losing your templates.
                 </p>
 
                 <p>
-                    Your templates are only saved on your computer now. If you re-install Chrome you will lose your templates.
+                    Your templates are only saved on your computer right now. If you re-install Chrome you will lose your templates.
                 </p>
             </div>
 
