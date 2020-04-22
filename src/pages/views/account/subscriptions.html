@@ -22,7 +22,7 @@
             calculate-price="calculatePrice(amount, quantity, percentOff)"
             get-interval="getInterval(plan)"
             create-subscription="createSubscription(plan, quantity)"
-            ng-if="isFree()"
+            ng-if="isFree() && isOwner()"
             >
         </subscription-premium>
 
