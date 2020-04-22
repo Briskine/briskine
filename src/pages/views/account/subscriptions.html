@@ -42,14 +42,14 @@
             get-interval="getInterval(plan)"
             calculate-price="calculatePrice(amount, quantity, percentOff)"
             update-subscription="updateSubscription(plan, quantity)"
-            ng-if="isPremium()"
+            ng-if="isPremium() && isOwner()"
             >
         </subscription-users>
 
         <subscription-cancel
             subscription="activeSubscription"
             cancel-subscription="cancelSubscription()"
-            ng-if="isPremium()"
+            ng-if="isPremium() && isOwner()"
             >
         </subscription-cancel>
     </div>
