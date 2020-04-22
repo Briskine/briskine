@@ -40,7 +40,7 @@ export default {
     template: `
         <div class="subscription-premium alert alert-info">
             <h2>
-                Subscribe to Premium
+                Upgrade to Premium
             </h2>
 
             <div class="row">
