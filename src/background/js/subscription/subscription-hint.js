@@ -1,3 +1,5 @@
+import $ from 'jquery';
+
 import Config from '../config';
 
 export default {
@@ -13,6 +15,13 @@ export default {
 
         ctrl.showHint = function () {
             return ctrl.reachedFreeLimit() || ctrl.showAuthWarning();
+        };
+
+        ctrl.closeModals = function () {
+            // HACK
+            // if we redirect from the new template dialog,
+            // close all modals.
+            $('.modal').modal('hide');
         };
     },
     template: `
@@ -53,7 +62,12 @@ export default {
                     plan.
                 </p>
                 <p>
-                    <a href="#/account/subscriptions">Upgrade to the Premium plan</a>
+                    <a
+                        href="#/account/subscriptions"
+                        ng-click="$ctrl.closeModals()"
+                    >
+                        Upgrade to the Premium plan
+                    </a>
                     to get unlimited templates and team collaboration features.
                 </p>
             </div>
