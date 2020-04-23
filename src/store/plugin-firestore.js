@@ -1342,7 +1342,6 @@ var getSubscription = () => {
             });
         })
         .then((res) => {
-            // TODO do we still need active?
             return Object.assign({
                 active: !!res.canceled_datetime
             }, res);
