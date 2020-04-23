@@ -1,7 +1,3 @@
-/* globals StripeCheckout, alert */
-import $ from 'jquery';
-import _ from 'underscore';
-
 import store from '../../../../store/store-client';
 
 export default function SubscriptionsCtrl ($scope, $rootScope, $routeParams, $q, SubscriptionService, AccountService) {
@@ -9,144 +5,123 @@ export default function SubscriptionsCtrl ($scope, $rootScope, $routeParams, $q,
     $scope.activeTab = 'subscriptions';
 
     AccountService.get().then(function (account) {
+        // required for backwards compatibility with older tab container template
         $scope.account = account;
     });
 
-    $scope.plans = {};
-    $scope.subscriptions = [];
-    $scope.activeSubscription = null;
-    $scope.stripeKey = "";
-    $scope.preferredCurrency = "";
-    $scope.quantity = 1;
-    $scope.paymentError = "";
-    $scope.discountCode = "";
-    $scope.couponPrecentOff = 1;
+    $scope.activeSubscription = {
+        price: 0,
+        users: 1,
+        members: 1,
+        plan: '',
+        percent_off: 0,
+        start_datetime: null,
+        canceled_datetime: null
+    };
+
+    $scope.paymentError = '';
 
     $scope.bonusPlan = false;
 
     $scope.loadingCancel = false;
 
-    SubscriptionService.plans().then(function (data) {
-        $scope.plans = data.plans;
-        $scope.stripeKey = data.stripe_key;
-        $scope.preferredCurrency = data.preferred_currency;
-        $scope.email = data.email;
+    $scope.getInterval = function (plan = '') {
+        if (plan.includes('yearly')) {
+            return 'Year';
+        }
+        return 'Month';
+    };
 
-        // get quantity from url
-        if ($routeParams.quantity) {
-            $scope.quantity = parseInt($routeParams.quantity, 10) || 1;
+    $scope.calculatePrice = (amount = 0, quantity = 1, percentOff = 0) => {
+        let total = amount * quantity;
+        if (percentOff) {
+            total = total - (total * percentOff / 100);
         }
 
-        _.each($scope.plans[$scope.preferredCurrency], function (plan) {
-            if (plan.sku === $routeParams.plan) {
-                $scope.selectedPlan = plan;
-                return false;
-            }
-        });
-    });
+        // stripe amount is in cents
+        return total / 100;
+    };
 
     $scope.reloadSubscriptions = function () {
-        SubscriptionService.subscriptions().then(function (data) {
-            $scope.subscriptions = data;
-            $scope.quantity = $scope.subscriptions[0].quantity;
-            for (var i = 0; i <= $scope.subscriptions.length; i++) {
-                if ($scope.subscriptions[i].active) {
-                    $scope.activeSubscription = $scope.subscriptions[i];
-                    if (
-                        $scope.activeSubscription.plan &&
-                        $scope.activeSubscription.plan.name === 'bonus'
-                    ) {
-                        $scope.bonusPlan = true;
-                    }
-                    break;
-                }
+        return SubscriptionService.getSubscription().then(function (data) {
+            $scope.activeSubscription = data;
+            if ($scope.activeSubscription.plan === 'bonus') {
+                $scope.bonusPlan = true;
             }
         });
     };
+
     $scope.reloadSubscriptions();
 
-    function updateLegacyCreditCard (params = {}) {
-        return new Promise((resolve) => {
-            var handler = StripeCheckout.configure({
-                key: params.stripeKey,
-                token: function (token) {
-                    resolve(token);
-                }
-            });
-            handler.open({
-                name: 'Gorgias',
-                description: 'Update your Credit Card',
-                panelLabel: 'Update your Credit Card',
-                email: params.email,
-                allowRememberMe: false
-            });
-        });
-    }
-
-    // Get a new token from stripe and send it to the server
-    $scope.updateCC = function () {
-        $scope.paymentMsg = '';
-        $scope.paymentError = '';
-        $('.update-cc-btn').addClass('disabled');
-
-        // BUG on old-api, must wait for plans to load
-        var ccParams = {
-            stripeKey: $scope.stripeKey,
-            email: $scope.email
-        };
-        store.updateCreditCard(ccParams).then((res) => {
-            if (res.firebase) {
-                return $rootScope.updateFirebaseCreditCard(Object.assign(res, ccParams));
-            }
-
-            return updateLegacyCreditCard(ccParams).then((token) => {
-                // Use the token to create the charge with server-side.
-                SubscriptionService.updateSubscription($scope.activeSubscription.id, {token: token}).then(
-                    function (res) {
-                        $('.update-cc-btn').removeClass('disabled');
-                        $scope.paymentMsg = res;
-                        $scope.reloadSubscriptions();
-                    }, function (res) {
-                        $('.update-cc-btn').removeClass('disabled');
-                        $scope.paymentError = res;
-                    }
-                );
-            });
-        });
+    $scope.updatePayment = function () {
+        return store.updateCreditCard();
     };
 
     $scope.updateSubscription = function (plan, quantity) {
-        $('.subscribe-button').addClass('disabled');
         $scope.paymentMsg = '';
         $scope.paymentError = '';
 
-        // backwards-compatibility
-        // we don't have subscription ids in firestore
-        var subId = $scope.activeSubscription.id || Date.now();
-        SubscriptionService.updateSubscription(subId, {
-            plan: plan,
-            quantity: quantity
-        }).then(function (res) {
-            $scope.paymentMsg = res;
-            $('.subscribe-button').removeClass('disabled');
-        }, function (res) {
-            $scope.paymentError = res;
-            $('.subscribe-button').removeClass('disabled');
-        });
+        return SubscriptionService.updateSubscription({
+                plan: plan,
+                quantity: quantity
+            })
+            .then((res) => {
+                $scope.paymentMsg = res;
+
+                $scope.reloadSubscriptions();
+                return;
+            })
+            .catch((err) => {
+                $scope.paymentError = err;
+                return;
+            });
+    };
+
+    $scope.createSubscription = function (plan, quantity) {
+        return store.createSubscription({
+                plan: plan,
+                quantity: quantity
+            });
     };
 
     $scope.cancelSubscription = function() {
-        $scope.loadingCancel = true;
         var cancelConfirm = window.confirm('Are you sure you want to cancel and delete all your template backups?');
         if (cancelConfirm === true) {
-            SubscriptionService.cancelSubscription().then(function () {
-                $rootScope.logOut();
-            }).catch((err) => {
-                $scope.loadingCancel = false;
-                alert(err.msg);
-            });
-        } else {
-            $scope.loadingCancel = false;
+            return SubscriptionService.cancelSubscription()
+                .then((res) => {
+                    $scope.paymentMsg = res;
+
+                    $scope.reloadSubscriptions();
+                    return;
+                })
+                .catch((err) => {
+                    $scope.paymentError = err;
+                    return;
+                });
         }
+
+        const deferred = $q.defer();
+        deferred.resolve();
+        return deferred.promise;
+    };
+
+    $scope.isPremium = function () {
+        return ['monthly', 'yearly'].includes($scope.activeSubscription.plan);
+    };
+
+    $scope.isFree = function () {
+        return (
+            $scope.activeSubscription.plan === 'free' ||
+            // support reactivating old subscriptions
+            $scope.activeSubscription.canceled_datetime
+        );
+    };
+
+    $scope.isOwner = function () {
+        return $scope.activeSubscription.owner === true;
+    };
+
+    $scope.isCanceled = function () {
+        return SubscriptionService.isCanceled($scope.activeSubscription);
     };
 }

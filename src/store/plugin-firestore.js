@@ -71,14 +71,86 @@ function uuid() {
 }
 
 // handle fetch errors
-var handleErrors = function (response) {
+function handleErrors (response) {
     if (!response.ok) {
         return response.clone().json().then((res) => {
             return Promise.reject(res);
         });
     }
     return response;
-};
+}
+
+// fetch wrapper
+// support authorization header, form submit, query params, error handling
+function request (url, params = {}) {
+    const defaults = {
+        authorization: false,
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: {}
+    };
+
+    // deep-merge work-around
+    const paramsCopy = JSON.parse(JSON.stringify(params));
+    const data = Object.assign({}, defaults, paramsCopy);
+    data.method = data.method.toUpperCase();
+
+    // form post support
+    if (params.form === true) {
+        const $form = document.createElement('form');
+        $form.setAttribute('method', params.method);
+        $form.setAttribute('action', url);
+        $form.setAttribute('target', '_blank');
+
+        Object.keys(params.body).forEach((key) => {
+            const $input = document.createElement('input');
+            $input.type = 'hidden';
+            $input.name = key;
+            $input.value = params.body[key];
+            $form.appendChild($input);
+        });
+
+        document.body.appendChild($form);
+        $form.submit();
+
+        return;
+    }
+
+    // querystring support
+    const fullUrl = new URL(url);
+    if (data.method === 'GET') {
+        Object.keys(data.body).forEach((key) => {
+            fullUrl.searchParams.append(key, data.body[key]);
+        });
+
+        delete data.body;
+    } else {
+        // stringify body for non-get requests
+        data.body = JSON.stringify(data.body);
+    }
+
+    // auth support
+    let auth = Promise.resolve();
+    if (data.authorization) {
+        auth = getUserToken();
+    }
+
+    return auth.then((res) => {
+            if (res) {
+                data.headers.Authorization = `Bearer ${res.token}`;
+            }
+
+            return fetch(fullUrl, {
+                    method: data.method,
+                    headers: data.headers,
+                    body: data.body
+                })
+                .then(handleErrors)
+                .then((res) => res.json());
+        });
+}
 
 // backwards compatibility
 // update template list
@@ -1259,57 +1331,21 @@ function shareNotification (params = {}) {
 
 var getStats = mock;
 
-var getPlans = () => {
-    return getUserToken().then((res) => {
-        return fetch(`${Config.functionsUrl}/api/1/plans`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    customer: res.user.customer,
-                    token: res.token
-                })
-            })
-            .then(handleErrors)
-            .then((res) => res.json());
-    });
-};
-
-var getSubscription = (params = {}) => {
-    return getSignedInUser().then((user) => {
-        var customerRef = customersCollection.doc(user.customer);
-
-        return customerRef.get();
-    }).then((customer) => {
-        var subscriptionData = customer.data().subscription;
-        var active = true;
-
-        if (subscriptionData.canceled_datetime) {
-            active = false;
-        }
-
-        return getPlans().then((res) => {
-            // backwards compatibility
-            var preferred_currency = 'usd';
-            var plan = res.plans[preferred_currency].find((p) => p.sku === subscriptionData.plan);
-            // bonus plan support
-            if (!plan) {
-                plan = {
-                    name: subscriptionData.plan
-                };
-            }
-            var subscription = Object.assign(subscriptionData, {
-                active: active,
-                plan: plan,
-                start_datetime: subscriptionData.start_datetime.toDate()
+var getSubscription = () => {
+    return getSignedInUser()
+        .then((user) => {
+            return request(`${Config.functionsUrl}/api/1/subscription`, {
+                authorization: true,
+                body: {
+                    customer: user.customer
+                }
             });
-            if (params.subId) {
-                return subscription;
-            }
-            return [subscription];
+        })
+        .then((res) => {
+            return Object.assign({
+                active: !!res.canceled_datetime
+            }, res);
         });
-    });
 };
 
 // return user and token
@@ -1328,35 +1364,26 @@ function getUserToken () {
 
 // update subscription plan and quantity
 var updateSubscription = (params = {}) => {
-    return getUserToken().then((res) => {
-        return fetch(`${Config.functionsUrl}/api/1/subscription`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    token: res.token,
-                    customer: res.user.customer,
-                    quantity: params.quantity,
-                    plan: params.plan
-                })
-            })
-            .then(handleErrors)
-            .then((res) => res.json())
-            .then(() => {
-                // backwards compatibility
-                return {
-                    msg: 'Successfully updated subscription.'
-                };
-            })
-            .catch((err) => {
-                // backwards compatibility
-                return Promise.reject({
-                    msg: err.message
+    return getSignedInUser()
+        .then((user) => {
+            return request(`${Config.functionsUrl}/api/1/subscription`, {
+                    authorization: true,
+                    method: 'PUT',
+                    body: {
+                        customer: user.customer,
+                        quantity: params.quantity,
+                        plan: params.plan
+                    }
                 });
-            });
-    });
+        })
+        .then(() => {
+            return 'Successfully updated subscription.';
+        })
+        .catch((err) => {
+            return Promise.reject(err.message);
+        });
 };
+
 var cancelSubscription = () => {
     return getUserToken().then((res) => {
         return fetch(`${Config.functionsUrl}/api/1/subscription`, {
@@ -1372,41 +1399,43 @@ var cancelSubscription = () => {
             .then(handleErrors)
             .then((res) => res.json())
             .then(() => {
-                // backwards compatibility
-                return {
-                    msg: 'Successfully canceled subscription.'
-                };
+                return 'Successfully canceled subscription.';
             })
             .catch((err) => {
-                // backwards compatibility
-                return Promise.reject({
-                    msg: err.message
-                });
+                return Promise.reject(err.message);
             });
     });
 };
 
 var updateCreditCard = () => {
-    return getUserToken().then((res) => {
-        return {
-            firebase: true,
-            token: res.token,
-            customer: res.user.customer,
-            redirect: `${Config.functionsUrl}/subscribe/payment/update`
-        };
-    });
-};
-
-var reactivateSubscription = () => {
-    return getPlans().then((plans) => {
-        return updateCreditCard().then((res) => {
-            return Object.assign(res, {
-                stripeKey: plans.stripe_key,
-                reactivate: true,
-                firebase: true
+    return getUserToken()
+        .then((res) => {
+            return request(`${Config.functionsUrl}/api/1/subscription`, {
+                form: true,
+                method: 'POST',
+                body: {
+                    token: res.token,
+                    customer: res.user.customer,
+                    payment_update: true
+                }
             });
         });
-    });
+};
+
+var createSubscription = (params = {}) => {
+    return getUserToken()
+        .then((res) => {
+            return request(`${Config.functionsUrl}/api/1/subscription`, {
+                form: true,
+                method: 'POST',
+                body: {
+                    token: res.token,
+                    customer: res.user.customer,
+                    quantity: params.quantity,
+                    plan: params.plan
+                }
+            });
+        });
 };
 
 var syncNow = mock;
@@ -1633,6 +1662,13 @@ var removeAttachments = function (params = {}) {
     );
 };
 
+window.addEventListener('message', function (event) {
+    if (event.data.type === 'gorgias_message' && event.data.message === 'subscribe_success') {
+        updateCurrentUser(firebase.auth().currentUser);
+        window.store.trigger('subscribe-success');
+    }
+});
+
 export default {
     getSettings: getSettings,
     setSettings: setSettings,
@@ -1655,12 +1691,11 @@ export default {
 
     getStats: getStats,
 
-    getPlans: getPlans,
     getSubscription: getSubscription,
     updateSubscription: updateSubscription,
     cancelSubscription: cancelSubscription,
     updateCreditCard: updateCreditCard,
-    reactivateSubscription: reactivateSubscription,
+    createSubscription: createSubscription,
 
     addAttachments: addAttachments,
     removeAttachments: removeAttachments,

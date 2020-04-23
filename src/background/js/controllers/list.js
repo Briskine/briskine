@@ -71,7 +71,6 @@ export default function ListCtrl ($route, $q, $scope, $rootScope, $routeParams, 
         $scope.filterTags = FilterTagService.filterTags;
         $scope.properties = properties;
         $scope.limitTemplates = 42; // I know.. it's a cliche
-        $scope.showSubscribeHint = false;
         $scope.hasSelected = false;
         $scope.searchOptions = {};
         $scope.gmailLink = 'https://mail.google.com/mail/?view=cm&fs=1&to=someone@example.com&su=I%20love%20Gorgias!&body=Hey!%0A%0ACheck%20out%20this%20awesome%20Chrome%20extension%20that%20I%20found%3A%0A%0Ahttps%3A%2F%2Fchrome.google.com%2Fwebstore%2Fdetail%2Fgorgias-templates-email-t%2Flmcngpkjkplipamgflhioabnhnopeabf%0A%0AIt%20helps%20me%20type%20much%20faster%20with%20templates%20on%20the%20web!';
@@ -119,13 +118,6 @@ export default function ListCtrl ($route, $q, $scope, $rootScope, $routeParams, 
                     // show the post install modal only if we're not just after tutorial (there will be 2 modals open)
                     if (hints.postInstall && $routeParams.id !== 'new' && $routeParams.src !== 'tutorial') {
                         $('#post-install-modal').modal('show');
-                    }
-                    if (hints.subscribeHint && $scope.templates.length > 7) {
-                        SettingsService.get("isLoggedIn").then(function (isLoggedIn) {
-                            if (!isLoggedIn) {
-                                $scope.showSubscribeHint = true;
-                            }
-                        });
                     }
                 }
             });
@@ -538,5 +530,49 @@ export default function ListCtrl ($route, $q, $scope, $rootScope, $routeParams, 
 
         $scope.getTags = function (template) {
             return TemplateService.tags(template);
+        };
+
+        // free account warnings
+        $scope.freeLimit = 30;
+        const warningLimit = 7;
+        let cachedLoggedIn = false;
+        let cachedPlan = '';
+        SettingsService.get('isLoggedIn').then((loggedIn) => {
+            cachedLoggedIn = loggedIn;
+
+            if (loggedIn) {
+                AccountService.get()
+                    .then((account) => {
+                        cachedPlan = account.current_subscription.plan;
+                    })
+                    .catch(() => {
+                        // logged-out
+                    });
+            }
+
+            return;
+        });
+
+        $scope.isAuthenticated = function () {
+            return cachedLoggedIn;
+        };
+
+        $scope.isFree = function () {
+            return cachedPlan === 'free';
+        };
+
+        $scope.showAuthWarning = function () {
+            return (
+                !$scope.isAuthenticated() &&
+                $scope.templates.length >= warningLimit
+            );
+        };
+
+        $scope.reachedFreeLimit = function () {
+            return (
+                $scope.isAuthenticated() &&
+                $scope.isFree() &&
+                $scope.templates.length >= $scope.freeLimit
+            );
         };
     }

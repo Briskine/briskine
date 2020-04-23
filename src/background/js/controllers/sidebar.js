@@ -1,10 +1,16 @@
 import amplitude from '../utils/amplitude';
 
+import Config from '../config';
+
 export default function SidebarCtrl ($scope, $location, $window,
                                          AccountService, SettingsService, TemplateService, FilterTagService) {
     'ngInject';
     $scope.profile = {};
     $scope.filterTags = [];
+    $scope.account = {
+        info: {},
+        current_subscription: {}
+    };
 
     $window.addEventListener('message', function (e) {
         if (e.data == "gorgias-signedup-reload") {
@@ -74,4 +80,18 @@ export default function SidebarCtrl ($scope, $location, $window,
         loadTags();
         loadAccount();
     });
+
+    $scope.isAuthenticated = function () {
+        return $scope.account.info.name;
+    };
+
+    $scope.isFree = function () {
+        return (
+            !$scope.isAuthenticated() ||
+            $scope.account.current_subscription.plan === 'free' ||
+            $scope.account.current_subscription.active === false
+        );
+    };
+
+    $scope.signupUrl = `${Config.websiteUrl}/signup`;
 }

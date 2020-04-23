@@ -445,10 +445,7 @@ export default function TemplateFormCtrl ($route, $q, $scope, $rootScope, $route
 
         self.upgradeNow = function() {
             $rootScope.trackSignup('templateForm');
-            $('#template-form-modal').modal('hide');
-            $timeout(function() {
-                $rootScope.openSubscribe();
-            }, 500);
+            $rootScope.openSubscribe();
         };
 
         /* Check search params to see if adding or editing items */
@@ -521,5 +518,12 @@ export default function TemplateFormCtrl ($route, $q, $scope, $rootScope, $route
             return store.removeAttachments({
                 attachments: removals
             });
+        };
+
+        self.showFreeWarning = function () {
+            return (
+                $scope.reachedFreeLimit() &&
+                $routeParams.id === 'new'
+            );
         };
     }

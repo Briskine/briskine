@@ -5,6 +5,16 @@ export default function MembersCtrl ($scope, $rootScope, $timeout, $location, Ac
     'ngInject';
     $scope.activeTab = 'members';
 
+    $scope.activeSubscription = {
+        price: 0,
+        users: 1,
+        members: 1,
+        plan: '',
+        percent_off: 0,
+        start_datetime: null,
+        canceled_datetime: null
+    };
+
     $scope.users = [];
     $scope.newUsers = [];
 
@@ -24,13 +34,14 @@ export default function MembersCtrl ($scope, $rootScope, $timeout, $location, Ac
         return setUserState('userEdit', id);
     }
 
-    // TODO remove sendNotification, we always send notifications in firestore.
-    $scope.sendNotification = true;
-    $scope.activeSubscription = null;
     $scope.licensesUsed = 1;
 
     $scope.showMemberModal = function () {
         $('#add-members-modal').modal();
+    };
+
+    $scope.hideMemberModal = function () {
+        $('#add-members-modal').modal('hide');
     };
 
     $scope.refresh = function () {
@@ -44,7 +55,7 @@ export default function MembersCtrl ($scope, $rootScope, $timeout, $location, Ac
                 }).length + 1;
 
                 if ($scope.activeSubscription != null) {
-                  for (var i = 0; i <= $scope.activeSubscription.quantity - $scope.licensesUsed - 1; i++) {
+                  for (var i = 0; i <= $scope.activeSubscription.users - $scope.licensesUsed - 1; i++) {
                       $scope.newUsers.push({
                           'name': '',
                           'email': ''
@@ -54,16 +65,12 @@ export default function MembersCtrl ($scope, $rootScope, $timeout, $location, Ac
             });
         };
 
-        if ($scope.account.is_customer) {
-            // check the active subscription first
-            SubscriptionService.getActiveSubscription().then(function (sub) {
-                $scope.activeSubscription = sub;
-                $scope.users = [];
-                getData();
-            });
-        } else {
+        // check the active subscription first
+        SubscriptionService.getSubscription().then(function (sub) {
+            $scope.activeSubscription = sub;
+            $scope.users = [];
             getData();
-        }
+        });
     };
 
     // setup account
@@ -77,7 +84,6 @@ export default function MembersCtrl ($scope, $rootScope, $timeout, $location, Ac
             if (!(u.name && u.email)) {
                 return;
             }
-            u.sendNotification = $scope.sendNotification;
 
             return MemberService.update(u).then(function () {
                 return;
@@ -123,9 +129,7 @@ export default function MembersCtrl ($scope, $rootScope, $timeout, $location, Ac
         });
     };
 
-    $scope.upgrade = function () {
-        // force-open subscriptions page
-        window.location.href = '#/account/subscriptions';
-        window.location.reload();
+    $scope.isCanceled = function () {
+        return SubscriptionService.isCanceled($scope.activeSubscription);
     };
 }

@@ -4,8 +4,6 @@
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
     <title>Gorgias Options</title>
     <script src="../background/js/background.js"></script>
-    <script src="https://checkout.stripe.com/checkout.js"></script>
-    <script src="https://js.stripe.com/v3/"></script>
     <link href="../background/css/background.css" rel="stylesheet" type="text/css" media="screen" charset="utf-8">
 </head>
 <body key-trap>
@@ -14,7 +12,7 @@
     <div class="sidebar-wrapper" ng-controller="SidebarCtrl">
         <div class="sidebar-profile">
             <div class="profile">
-                <div class="profile-body" ng-show="account" ng-cloak>
+                <div class="profile-body" ng-show="isAuthenticated()" ng-cloak>
                     <div class="profile-picture col-md-4 col-xs-4">
                         <a href="https://gravatar.com" target="_blank">
                             <img class="avatar"
@@ -34,13 +32,34 @@
                         <p><a href ng-click="logOut()">Log out</a></p>
                     </div>
                 </div>
-                <div class="anonymous" ng-show="!account">
-                    <a href data-toggle="modal" data-target="#signin-modal">Login</a> or <i
-                    class="fa fa-briefcase premium"></i>
-                    <a href ng-click="trackSignup('upgrade'); openSubscribe();">
-                        Subscribe
-                    </a>
-                    to <em>share</em> templates with your team.<br>
+                <div class="anonymous" ng-show="!isAuthenticated()">
+                    <div>
+                        <a href
+                            data-toggle="modal"
+                            data-target="#signin-modal"
+                            class="btn btn-link"
+                        >
+                            <i class="fa fa-sign-in"></i>
+                            <span>
+                                Login
+                            </span>
+                        </a>
+                        or
+                    </div>
+                    <div>
+                        <a href="{{signupUrl}}"
+                            target="_blank"
+                            class="btn btn-link"
+                        >
+                            <i class="fa fa-user-circle"></i>
+                            <span>
+                                Create a free account
+                            </span>
+                        </a>
+                    </div>
+                    <div class="text-login-info text-muted">
+                        to <em>sync</em> your templates.
+                    </div>
                 </div>
             </div>
             <div class="tools">
@@ -55,18 +74,35 @@
                 <li ng-click="emptyFilterTags()" class="template-tab"
                     ng-class="{ 'active': (path === '/list' && filterTags[0] == undefined) }"><a href="#/list">All</a>
                 </li>
-                <li ng-show="account.info.name" ng-click="emptyFilterTags()" class="template-tab"
-                    ng-class="{ 'active': (path === '/list/shared') }"><a href="#/list/shared">Shared</a></li>
-                <li ng-show="account.info.name" ng-click="emptyFilterTags()" class="template-tab"
-                    ng-class="{ 'active': (path === '/list/private') }"><a href="#/list/private">Private</a></li>
 
-                <li ng-show="!account.info.name" class="template-tab" ng-click="trackSignup('shared')">
+                <li class="template-tab"
+                    ng-show="!isFree()"
+                    ng-click="emptyFilterTags()"
+                    ng-class="{ 'active': (path === '/list/shared') }"
+                >
+                    <a href="#/list/shared">Shared</a>
+                </li>
+                <li class="template-tab"
+                    ng-show="!isFree()"
+                    ng-click="emptyFilterTags()"
+                    ng-class="{ 'active': (path === '/list/private') }"
+                >
+                    <a href="#/list/private">Private</a>
+                </li>
+
+                <li class="template-tab"
+                    ng-show="isFree()"
+                    ng-click="trackSignup('shared')"
+                >
                     <a href ng-click="openSubscribe()">
                         <span data-toggle="tooltip"
                               data-placement="bottom"
                               title="Upgrade to share templates with your team"><i class="fa fa-briefcase premium"></i> Shared</span></a>
                 </li>
-                <li ng-show="!account.info.name" class="template-tab" ng-click="trackSignup('private')">
+                <li class="template-tab"
+                    ng-show="isFree()"
+                    ng-click="trackSignup('private')"
+                >
                     <a href ng-click="openSubscribe()">
                         <span data-toggle="tooltip"
                               data-placement="bottom"
@@ -89,29 +125,6 @@
     </div>
 
     <div class="view-container">
-        <div ng-if="currentSubscription && !currentSubscription.active" class="alert alert-warning" ng-class="{
-            'btn-loading': loadingSubscription
-        }" ng-cloak>
-            <strong>Your current subscription is no longer active.</strong>
-            <p>This means that automatic syncing and backup of templates has been disabled for you and your team.</p>
-            <p>
-                <em>Note: without <a href="https://templates-help.gorgias.io/templates/template-synchronization" target="_blank">template
-                    synchronisation</a> you risk losing all your templates
-                    (if you delete the extension or re-install Chrome).</em>
-            </p>
-            <p ng-if="isCustomer === true">
-            <ul>
-                <li>To re-activate your subscription click <a href="" ng-click="reactivateSubscription()">here</a>.</li>
-                <li>To hide this warning: <a href="" ng-click="logOut()">Log out</a>.</li>
-            </ul>
-            <br>
-            <p>If you think this is a mistake and your subscription should be active please contact us: <a
-                href="mailto:chrome@gorgias.io">chrome@gorgias.io</a></p>
-            </p>
-            <p ng-if="isCustomer === false">Please notify the account owner. To hide this warning simply <a href=""
-                                                                                                            ng-click="logOut()">Log
-                out</a>. </p>
-        </div>
         <div class="container-animation" data-ng-view></div>
     </div>
 </div>
@@ -133,7 +146,6 @@
 
 <div ng-include="'includes/login.html'"></div>
 <div ng-include="'includes/forgot.html'"></div>
-<div ng-include="'includes/signup_firestore.html'"></div>
 
 </body>
 </html>

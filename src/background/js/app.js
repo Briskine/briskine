@@ -1,4 +1,4 @@
-/* globals StripeCheckout, ENV, alert */
+/* globals ENV */
 import angular from 'angular';
 import ngRoute from 'angular-route';
 import angularMoment from 'angular-moment';
@@ -51,6 +51,12 @@ import MembersCtrl from './controllers/account/members';
 import SubscriptionsCtrl from './controllers/account/subscriptions';
 import StatsCtrl from './controllers/account/stats';
 import fileread from './directives/fileread';
+import subscriptionActive from './subscription/subscription-active';
+import subscriptionUsers from './subscription/subscription-users';
+import subscriptionCancel from './subscription/subscription-cancel';
+import subscriptionPremium from './subscription/subscription-premium';
+import subscriptionCanceledNotice from './subscription/subscription-canceled-notice';
+import subscriptionHint from './subscription/subscription-hint';
 
 import store from '../../store/store-client';
 
@@ -92,7 +98,13 @@ gApp
 .controller('MembersCtrl', MembersCtrl)
 .controller('SubscriptionsCtrl', SubscriptionsCtrl)
 .controller('StatsCtrl', StatsCtrl)
-.directive('fileread', fileread);
+.directive('fileread', fileread)
+.component('subscriptionActive', subscriptionActive)
+.component('subscriptionUsers', subscriptionUsers)
+.component('subscriptionCancel', subscriptionCancel)
+.component('subscriptionPremium', subscriptionPremium)
+.component('subscriptionCanceledNotice', subscriptionCanceledNotice)
+.component('subscriptionHint', subscriptionHint);
 
 gApp.config(function() {
     tinyMCE.baseURL = 'tinymce';
@@ -104,8 +116,8 @@ gApp.config(function ($routeProvider, $compileProvider, $sceDelegateProvider, $l
     $sceDelegateProvider.resourceUrlWhitelist([
         'self',
         'https://chrome.gorgias.io/**',
-        'https://templates.gorgias.io/**',
-        'http://localhost:*/**'
+        'http://localhost:*/**',
+        `${Config.websiteUrl}/**`
     ]);
     $routeProvider
         .when('/list', {
@@ -201,7 +213,7 @@ gApp.run(function ($rootScope) {
 });
 
 
-gApp.run(function ($rootScope, $location, $timeout, ProfileService, SettingsService, TemplateService, SubscriptionService) {
+gApp.run(function ($rootScope, $location, $timeout, ProfileService, SettingsService) {
     $rootScope.$on('$routeChangeStart', function () {
         $rootScope.path = $location.path();
     });
@@ -217,7 +229,6 @@ gApp.run(function ($rootScope, $location, $timeout, ProfileService, SettingsServ
     $rootScope.isCustomer = null;
     $rootScope.currentSubscription = null;
 
-    $rootScope.trustedSignupURL = $rootScope.baseURL + "signup/startup-monthly-usd-1/is_iframe=yes";
     $rootScope.showStats = true;
 
     SettingsService.get('settings').then(function (settings) {
@@ -231,15 +242,6 @@ gApp.run(function ($rootScope, $location, $timeout, ProfileService, SettingsServ
             $rootScope.savedEmail = true;
         }
     });
-
-    $rootScope.signupURL = function () {
-        // only provide an URL if the user is not authenticated
-        // this will prevent the iframe from loading for authenticated users
-        if ($rootScope.loginChecked && !$rootScope.isLoggedIn) {
-            return $rootScope.trustedSignupURL;
-        }
-        return '';
-    };
 
     $rootScope.trackSignup = function (source) {
         amplitude.getInstance().logEvent("Opened Signup form", {
@@ -265,70 +267,6 @@ gApp.run(function ($rootScope, $location, $timeout, ProfileService, SettingsServ
     }
 
     $rootScope.loadingSubscription = false;
-
-    function reactivateLegacySubscription (params = {}) {
-        return store.getPlans().then((data) => {
-            return new Promise((resolve) => {
-                var handler = StripeCheckout.configure({
-                    key: data.stripe_key,
-                    token: function (token) {
-                        resolve(token);
-                    }
-                });
-
-                handler.open({
-                    name: 'Gorgias',
-                    description: params.subscription.quantity + ' x ' + params.subscription.plan,
-                    panelLabel: 'Activate your subscription',
-                    email: data.email,
-                    allowRememberMe: false
-                });
-            });
-        });
-    }
-
-    $rootScope.updateFirebaseCreditCard = function (params = {}) {
-        var updateUrl = `${params.redirect}?token=${params.token}&customer=${params.customer}`;
-        if (params.reactivate === true) {
-            updateUrl = `${updateUrl}&reactivate`;
-        }
-
-        // stripe checkout must redirect from https.
-        // open stripe checkout on api rendered page.
-        window.location.href = updateUrl;
-    };
-
-    // Get a new token from stripe and send it to the server
-    $rootScope.reactivateSubscription = function () {
-        $rootScope.loadingSubscription = true;
-        var reactivateParams = {
-            subscription: $rootScope.currentSubscription
-        };
-
-        store.reactivateSubscription(reactivateParams).then((res = {}) => {
-            if (res.firebase) {
-                return $rootScope.updateFirebaseCreditCard(res);
-            }
-
-            return reactivateLegacySubscription(reactivateParams).then((token) => {
-                // Use the token to create the charge with server-side.
-                SubscriptionService.updateSubscription($rootScope.currentSubscription.id, {
-                    token: token
-                }).then(
-                    function () {
-                        $rootScope.checkLoggedIn();
-
-                    }, function (res) {
-                        alert('Failed to create new subscription. ' + res);
-                    }
-                );
-
-                return;
-            });
-        }).then(() => {
-            $rootScope.loadingSubscription = false;
-        });
-    };
 
     $rootScope.checkLoggedIn = function () {
         store.getLoginInfo()
@@ -429,35 +367,24 @@ gApp.run(function ($rootScope, $location, $timeout, ProfileService, SettingsServ
         $rootScope.$broadcast("templates-sync");
     });
 
+    store.on('subscribe-success', () => {
+        window.location.reload();
+    });
+
     $rootScope.$on('$viewContentLoaded', initDom);
     $rootScope.$on('$includeContentLoaded', initDom);
 
-    function subscribeIframeLoaded (e) {
-        var iframe = e.target;
-        var loadingClass = 'btn-loading';
-        var loaderSelector = `.${loadingClass}`;
-        var loader = iframe.closest(loaderSelector);
-        loader.classList.remove(loadingClass);
-
-        iframe.removeEventListener('load', subscribeIframeLoaded);
-    }
-
-    function openSubscribePopup () {
-        var subscribeUrl = `${Config.functionsUrl}/subscribe/`;
-        var $modal = $('#firestore-signup-modal');
-        var iframe = $modal.find('iframe').get(0);
-        $modal.modal({
-            show: true
-        });
-
-        if (iframe.src !== subscribeUrl) {
-            iframe.addEventListener('load', subscribeIframeLoaded);
-            iframe.src = subscribeUrl;
-        }
-    }
-
     $rootScope.openSubscribe = () => {
-        openSubscribePopup();
+        SettingsService.get('isLoggedIn').then((loggedIn) => {
+            if (loggedIn) {
+                // if authenticated, go to subscriptions
+                $location.path('/account/subscriptions');
+                return;
+            }
+
+            // if not, open pricing
+            window.open(`${Config.websiteUrl}/pricing`);
+        });
     };
 
     $rootScope.firestoreEnabled = window.FIRESTORE_ENABLED();

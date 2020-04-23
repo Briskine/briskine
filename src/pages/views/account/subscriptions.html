@@ -1,65 +1,5 @@
-<div class="row" ng-if="account.is_customer">
-    <div class="col-sm-4">
-        <div class="subscriptions">
-            <p class="subscription">
-                Your <em ng-if="activeSubscription.active">current</em> <strong>{{ activeSubscription.plan.name
-                }}</strong> subscription
-                <span ng-if="activeSubscription.active === null">will start on</span>
-                <span ng-if="activeSubscription.active !== null">started on</span>
-                <strong>{{ activeSubscription.start_datetime | date:'dd MMMM yyyy' }}</strong><span
-                ng-if="activeSubscription.active === false">
-                 and ended on <strong>{{ activeSubscription.end_datetime | date:'dd MMMM yyyy' }}</strong></span><span
-                ng-if="activeSubscription.quantity">
-                 with <strong>{{ activeSubscription.quantity }}</strong> member<span
-                ng-if="activeSubscription.quantity > 1">s</span></span>.
-            </p>
-        </div>
-
-        <p class="small">Only you, as the account owner, can upgrade, downgrade or change the billing information for
-            the account.</p>
-        <br>
-
-        <div ng-if="bonusPlan">
-            <p>
-                Please contact <a href="mailto:chrome@gorgias.io">chrome@gorgias.io</a> for any changes or information about your subscription.
-            </p>
-        </div>
-
-        <div ng-if="!bonusPlan">
-            <p>If your card expired, or you want to switch to another card:</p>
-            <a class="btn update-cc-btn" href="" ng-click="updateCC()">Update your Credit Card</a>
-        </div>
-
-        <br>
-        <br>
-        <div class="alert border border-danger border-rounded" ng-if="!bonusPlan">
-            <h4>Danger zone</h4>
-            <p>
-                If you are not satisfied with Gorgias Templates for Chrome you can cancel your subscription below.
-            </p>
-            <br>
-            <p>
-                <strong>Warning:</strong> If you cancel we will <strong>permanently delete</strong> all backups of your
-                templates and those of your team members from our servers.
-            </p>
-            <p>
-                Templates on your computer and your team members will be stored on your computers only!
-                If you delete the extension after you unsubscribe you will lose your templates.
-            </p>
-            <br>
-            <p>
-                We encourage you to backup your templates before you cancel by exporting <a href="#/list">here</a>.
-            </p>
-            <br>
-            <button class="btn btn-default" ng-class="{
-                'btn-loading': loadingCancel
-            }" ng-click="cancelSubscription()">
-                I understand. Cancel subscription.
-            </button>
-        </div>
-    </div>
-
-    <div class="col-sm-8" ng-if="!bonusPlan">
+<div class="row">
+    <div class="col-md-12">
         <div class="alert alert-danger fade in" ng-if="paymentError">
             <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
             <h4>Oh snap! Failed to upgrade!</h4>
@@ -70,51 +10,48 @@
             <h4>It's a success!</h4>
             <p>{{ paymentMsg }}</p>
         </div>
-        <div class="row">
-            <div class="col-sm-6" ng-repeat="plan in plans[preferredCurrency]">
-                <div class="panel panel-default text-center">
-                    <div class="panel-heading">
-                        <strong>{{ plan.name }} <span class="label label-success" ng-if="plan.interval == 'year'">
-                            Best Value!</span></strong>
-                    </div>
-                    <div class="panel-body">
-                        <span class="price">{{ (plan.amount * quantity * couponPrecentOff) }}</span>
-                        <span class="currency">{{ plan.currency|uppercase }}</span>
-                    </div>
-                    <ul class="list-group">
-                        <li class="list-group-item">x 1 User/Year:
-                            <span class="amount"
-                                  ng-if="plan.interval == 'month'">{{ (plan.amount * couponPrecentOff * 12 * quantity) }}</span>
-                            <span class="amount"
-                                  ng-if="plan.interval == 'year'">{{ (plan.amount * couponPrecentOff * quantity) }}</span>
-                            <span ng-if="couponPrecentOffLabel">({{ couponPrecentOffLabel }} discount)</span>
-                            <span class="currency-sign">{{ plan.currency|uppercase }}</span>
-                        </li>
-                        <li class="list-group-item">
-                            <input type="number" class="quantity-input" id="quantity" ng-model="quantity" min="1"/>
-                            <label for="quantity">total users.</label>
-                        </li>
-                        <li class="list-group-item">
-                            <a class="btn btn-primary subscribe-button" href=""
-                               ng-click="updateSubscription(plan, quantity)">Update Subscription</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <p class="alert">
-                <strong>Note:</strong> You'll get billed only for what you use.
-                <br/><br/>
-                Simple example: If you begin with 2 users (10$/month) on 1st May, then on 15th May if you add a 3rd
-                user then on 31st you get billed 12.5$.
-            </p>
-        </div>
+
+        <subscription-canceled-notice
+            subscription="activeSubscription"
+            ng-if="isCanceled()"
+            >
+        </subscription-canceled-notice>
+
+        <subscription-premium
+            subscription="activeSubscription"
+            calculate-price="calculatePrice(amount, quantity, percentOff)"
+            get-interval="getInterval(plan)"
+            create-subscription="createSubscription(plan, quantity)"
+            ng-if="isFree() && isOwner()"
+            >
+        </subscription-premium>
+
+        <subscription-active
+            subscription="activeSubscription"
+            get-interval="getInterval(plan)"
+            calculate-price="calculatePrice(amount, quantity, percentOff)"
+            update-payment="updatePayment()"
+            update-subscription="updateSubscription(plan, quantity)"
+            is-premium="isPremium()"
+            is-owner="isOwner()"
+            >
+        </subscription-active>
+
+        <subscription-users
+            subscription="activeSubscription"
+            get-interval="getInterval(plan)"
+            calculate-price="calculatePrice(amount, quantity, percentOff)"
+            update-subscription="updateSubscription(plan, quantity)"
+            ng-if="isPremium() && isOwner()"
+            >
+        </subscription-users>
+
+        <subscription-cancel
+            subscription="activeSubscription"
+            cancel-subscription="cancelSubscription()"
+            ng-if="isPremium() && isOwner()"
+            >
+        </subscription-cancel>
     </div>
 </div>
 
-<div class="row" ng-if="!account.is_customer">
-    <br/>
-    <p>Only the account owner, can upgrade, downgrade or change the billing information.</p>
-    <p>Please contact <a href="mailto:chrome@gorgias.io">chrome@gorgias.io</a> for more information.</p>
-</div>
