@@ -444,12 +444,8 @@ export default function TemplateFormCtrl ($route, $q, $scope, $rootScope, $route
         };
 
         self.upgradeNow = function() {
-            // TODO open pricing page
             $rootScope.trackSignup('templateForm');
-            $('#template-form-modal').modal('hide');
-            $timeout(function() {
-                $rootScope.openSubscribe();
-            }, 500);
+            $rootScope.openSubscribe();
         };
 
         /* Check search params to see if adding or editing items */
