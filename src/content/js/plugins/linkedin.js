@@ -4,6 +4,8 @@
 import $ from 'jquery';
 
 import {parseTemplate, insertText} from '../utils';
+import {isQuill} from '../utils/editors';
+import {insertPlainText} from '../utils/plain-text';
 
 function parseName (name) {
     name = name.trim();
@@ -106,9 +108,20 @@ export default (params = {}) => {
 
     before(params);
 
-    insertText(Object.assign({
+    const parsedParams = Object.assign({
         text: parsedTemplate
-    }, params));
+    }, params);
+
+    // Quill is used for posts and comments
+    if (isQuill(params.element)) {
+        // BUG
+        // focus is set to the start of the post,
+        // instead of end of template
+        insertPlainText(parsedParams);
+        return true;
+    }
+
+    insertText(parsedParams);
 
     return true;
 };
