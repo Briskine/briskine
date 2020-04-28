@@ -6,27 +6,7 @@ import $ from 'jquery';
 import {parseTemplate, insertText} from '../utils';
 import {isQuill} from '../utils/editors';
 import {insertPlainText} from '../utils/plain-text';
-
-function parseName (name) {
-    name = name.trim();
-
-    var first_name = '';
-    var last_name = '';
-
-    var firstSpace = name.indexOf(' ');
-
-    if(firstSpace === -1) {
-        firstSpace = name.length;
-    }
-
-    first_name = name.substring(0, firstSpace);
-    last_name = name.substring(firstSpace + 1, name.length);
-
-    return {
-        first_name: first_name,
-        last_name: last_name
-    };
-}
+import {parseFullName} from '../utils/parse-text';
 
 // get all required data from the dom
 function getData () {
@@ -51,14 +31,14 @@ function getData () {
         email: ""
     };
 
-    var parsedName = parseName(fromName);
+    var parsedName = parseFullName(fromName);
     from.first_name = parsedName.first_name;
     from.last_name = parsedName.last_name;
     vars.from = from;
 
     var $contact = $('.msg-entity-lockup__entity-title');
     if ($contact.length) {
-        parsedName = parseName($contact.text());
+        parsedName = parseFullName($contact.text());
         var to = {
             name: name,
             first_name: '',
