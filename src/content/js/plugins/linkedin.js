@@ -115,9 +115,21 @@ export default (params = {}) => {
     // Quill is used for posts and comments
     if (isQuill(params.element)) {
         // BUG
-        // focus is set to the start of the post,
-        // instead of end of template
-        insertPlainText(parsedParams);
+        // inserting a template with newlines causes the focus
+        // to be set at the start of the editor.
+        // we need to remove all newlines before inserting the template.
+        const newlineChar = ' ';
+        const strippedTemplate = parsedTemplate.replace(/\n/g, newlineChar);
+        insertPlainText(
+            Object.assign(
+                {},
+                parsedParams,
+                {
+                    text: strippedTemplate,
+                    newline: newlineChar
+                }
+            )
+        );
         return true;
     }
 
