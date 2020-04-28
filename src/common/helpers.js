@@ -24,14 +24,6 @@ export function fuzzySearch (list, text, opts) {
     }
 
     var defaultOptions = {
-        caseSensitive: false,
-        shouldSort: true,
-        tokenize: false,
-        threshold: 0.6,
-        location: 0,
-        distance: 100,
-        maxPatternLength: 32,
-        // search templates by default
         keys: [
             {
                 name: 'shortcut',
@@ -50,5 +42,7 @@ export function fuzzySearch (list, text, opts) {
 
     var options = $.extend(true, defaultOptions, opts);
     var fuse = new Fuse(list, options);
-    return fuse.search(text);
+    return fuse.search(text).map((result) => {
+        return result.item;
+    });
 }
