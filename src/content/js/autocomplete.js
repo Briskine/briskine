@@ -14,6 +14,7 @@ import yahooPlugin from './plugins/yahoo';
 import zendeskPlugin from './plugins/zendesk';
 import draftPlugin from './plugins/draft';
 import prosemirrorPlugin from './plugins/prosemirror';
+import quillPlugin from './plugins/quill';
 import crmPlugin from './plugins/crm';
 import genericPlugin from './plugins/generic';
 
@@ -247,6 +248,7 @@ register(yahooPlugin);
 register(zendeskPlugin);
 register(draftPlugin);
 register(prosemirrorPlugin);
+register(quillPlugin);
 register(crmPlugin);
 register(genericPlugin);
 

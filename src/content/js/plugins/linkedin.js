@@ -4,27 +4,9 @@
 import $ from 'jquery';
 
 import {parseTemplate, insertText} from '../utils';
-
-function parseName (name) {
-    name = name.trim();
-
-    var first_name = '';
-    var last_name = '';
-
-    var firstSpace = name.indexOf(' ');
-
-    if(firstSpace === -1) {
-        firstSpace = name.length;
-    }
-
-    first_name = name.substring(0, firstSpace);
-    last_name = name.substring(firstSpace + 1, name.length);
-
-    return {
-        first_name: first_name,
-        last_name: last_name
-    };
-}
+import {isQuill} from '../utils/editors';
+import {insertPlainText} from '../utils/plain-text';
+import {parseFullName} from '../utils/parse-text';
 
 // get all required data from the dom
 function getData () {
@@ -49,14 +31,14 @@ function getData () {
         email: ""
     };
 
-    var parsedName = parseName(fromName);
+    var parsedName = parseFullName(fromName);
     from.first_name = parsedName.first_name;
     from.last_name = parsedName.last_name;
     vars.from = from;
 
     var $contact = $('.msg-entity-lockup__entity-title');
     if ($contact.length) {
-        parsedName = parseName($contact.text());
+        parsedName = parseFullName($contact.text());
         var to = {
             name: name,
             first_name: '',
@@ -106,9 +88,32 @@ export default (params = {}) => {
 
     before(params);
 
-    insertText(Object.assign({
+    const parsedParams = Object.assign({
         text: parsedTemplate
-    }, params));
+    }, params);
+
+    // Quill is used for posts and comments
+    if (isQuill(params.element)) {
+        // BUG
+        // inserting a template with newlines causes the focus
+        // to be set at the start of the editor.
+        // we need to remove all newlines before inserting the template.
+        const newlineChar = ' ';
+        const strippedTemplate = parsedTemplate.replace(/\n/g, newlineChar);
+        insertPlainText(
+            Object.assign(
+                {},
+                parsedParams,
+                {
+                    text: strippedTemplate,
+                    newline: newlineChar
+                }
+            )
+        );
+        return true;
+    }
+
+    insertText(parsedParams);
 
     return true;
 };

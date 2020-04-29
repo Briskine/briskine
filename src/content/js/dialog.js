@@ -38,7 +38,6 @@ var dialog = {
     searchSelector: ".qt-dropdown-search",
     qaBtnSelector: '.gorgias-qa-btn',
     newTemplateSelector: ".g-new-template",
-    qaPositionIntervals: [],
 
     completion: function (e, params) {
         if (typeof params !== 'object') {
@@ -88,8 +87,10 @@ var dialog = {
 
     },
     create: function () {
-        // Create only once in the root of the document
-        var container = $('body');
+        // create only once in the root of the document.
+        // render outside body,
+        // to avoid issues with body content being completely replaced.
+        var container = $(document.documentElement);
 
         // Add loading dropdown
         var $dialog = $(this.template);
@@ -509,7 +510,6 @@ var dialog = {
 
     },
     showQaForElement: function (elem) {
-
         var show = false;
 
         // if the element is not a textarea
@@ -531,48 +531,14 @@ var dialog = {
         // check if the element is big enough
         // to only show the qa button for large textfields
         if (show === true) {
-
             var metrics = elem.getBoundingClientRect();
-
-            // only show for elements
-            if (metrics.width < 100 || metrics.height < 80) {
+            if (metrics.width < 100 || metrics.height < 30) {
                 show = false;
             }
-
         }
 
         return show;
 
-    },
-    setQaBtnPosition: function (textfield) {
-        var qaBtn = dialog.qaBtn.get(0);
-        var textfieldRect = textfield.getBoundingClientRect();
-        var metrics = {
-            top: textfieldRect.top,
-            left: textfieldRect.left
-        };
-        // padding from the top-right corner of the textfield
-        var padding = 10;
-
-        metrics.top += $(window).scrollTop();
-        metrics.left += $(window).scrollLeft();
-
-        metrics.top += padding;
-        metrics.left -= padding;
-
-        // move the quick access button to the right
-        // of the textfield
-        metrics.left += textfield.offsetWidth - qaBtn.offsetWidth;
-
-
-        // move the btn using transforms
-        // for performance
-        var transform = 'translate3d(' + metrics.left + 'px, ' + metrics.top + 'px, 0)';
-
-        qaBtn.style.transform = transform;
-        qaBtn.style.msTransform = transform;
-        qaBtn.style.mozTransform = transform;
-        qaBtn.style.webkitTransform = transform;
     },
     showQaBtn: function (e) {
 
@@ -601,6 +567,7 @@ var dialog = {
 
             // positioning the quick-action button.
             // Gmail is custom made
+            // TODO use the general positioning method for Gmail
             if (window.location.origin === "https://mail.google.com") {
                 var gmailHook = $(textfield).closest('td');
                 if (gmailHook.length) {
@@ -626,26 +593,40 @@ var dialog = {
                     return;
                 }
             } else {
-                // default positioning
-                dialog.setQaBtnPosition(textfield);
-
-                // recalculate the width
-                for (var i in dialog.qaPositionIntervals) {
-                    clearInterval(dialog.qaPositionIntervals[i]);
-                }
-
-                var intervalID = setInterval(function () {
-                    dialog.setQaBtnPosition(textfield);
-                }, 1000);
-                dialog.qaPositionIntervals.push(intervalID);
+                activeTextfield = textfield;
+                setQaBtnPosition();
+                window.addEventListener('scroll', setQaBtnPosition, true);
             }
 
         });
     },
     hideQaBtn: function () {
-        $('body').removeClass('gorgias-show-qa-btn');
+        activeTextfield = null;
+        window.removeEventListener('scroll', setQaBtnPosition, true);
+        document.body.classList.remove('gorgias-show-qa-btn');
     }
 };
+
+let activeTextfield = null;
+
+function setQaBtnPosition () {
+    if (!activeTextfield) {
+        return;
+    }
+    var qaBtn = dialog.qaBtn.get(0);
+    // padding from the top-right corner of the textfield
+    const padding = 5;
+
+    window.requestAnimationFrame(() => {
+        const textfieldRect = activeTextfield.getBoundingClientRect();
+        // top-right corner of the textfield
+        const top = textfieldRect.top + window.scrollY + padding;
+        const left = textfieldRect.right - window.scrollX - qaBtn.offsetWidth - padding * 2;
+
+        qaBtn.style.top = `${top}px`;
+        qaBtn.style.left = `${left}px`;
+    });
+}
 
 // fetch template content from the extension
 var contentUrl = chrome.extension.getURL("pages/content.html");
