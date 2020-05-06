@@ -39,14 +39,14 @@
         "copy-webpack-plugin": "^5.1.1",
         "css-loader": "^3.4.2",
         "file-loader": "^6.0.0",
-        "filemanager-webpack-plugin": "^2.0.5",
         "mini-css-extract-plugin": "^0.9.0",
         "stylus": "^0.54.5",
         "stylus-loader": "^3.0.2",
         "url-loader": "^4.0.0",
         "webpack": "^4.41.5",
         "webpack-cli": "^3.3.10",
-        "webpack-dev-server": "^3.10.1"
+        "webpack-dev-server": "^3.10.1",
+        "zip-a-folder": "^0.0.12"
     },
     "dependencies": {
         "@firebase/app": "^0.6.0",
