@@ -440,7 +440,6 @@ export default function TemplateFormCtrl ($route, $q, $scope, $rootScope, $route
                     $scope.revokeAccess(quicktexts, acl.target_user_id);
                 }
             });
-            store.syncNow();
         };
 
         self.upgradeNow = function() {

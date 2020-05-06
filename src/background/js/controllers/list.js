@@ -2,8 +2,6 @@
 import $ from 'jquery';
 import _ from 'underscore';
 
-import store from '../../../store/store-client';
-
 export default function ListCtrl ($route, $q, $scope, $rootScope, $routeParams, $location, $timeout, $filter, AccountService, TemplateService, SettingsService, FilterTagService, QuicktextSharingService, MemberService) {
         'ngInject';
         var $formModal;
@@ -208,7 +206,6 @@ export default function ListCtrl ($route, $q, $scope, $rootScope, $routeParams, 
                     $scope.shareData.emails = "";
                     $scope.shareModalSelectizeField[0].selectize.clear();
                     $scope.templateModalSelectizeField[0].selectize.clear();
-                    store.syncNow();
                 });
             };
 

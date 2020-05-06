@@ -358,9 +358,7 @@ gApp.run(function ($rootScope, $location, $timeout, ProfileService, SettingsServ
 
     $rootScope.checkLoggedIn();
 
-    // Setup recurring syncing interval
-    var syncInterval = 100 * 1000;
-    window.setInterval(store.syncNow, syncInterval);
+    // sync local data
     store.syncNow();
 
     store.on('templates-sync', function () {
