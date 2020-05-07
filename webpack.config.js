@@ -1,8 +1,8 @@
 const webpack = require('webpack');
 const path = require('path');
+const {zip} = require('zip-a-folder');
 const {CleanWebpackPlugin} = require('clean-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
-const FileManagerPlugin = require('filemanager-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 const packageFile = require('./package.json');
@@ -39,27 +39,36 @@ function generateManifest (env) {
     ]);
 }
 
+class ZipPlugin {
+    constructor(options) {
+        this.options = options;
+    }
+
+    apply(compiler) {
+        compiler.hooks.done.tap('ZipPlugin', async (stats) => {
+            const output = stats.compilation.options.output;
+            const zipPath = path.join(output.path, output.filename);
+            await zip(this.options.folder, zipPath);
+        });
+    }
+}
+
 function createPackage () {
-    const filename = `${packageFile.name}-${manifestFile.version}`;
+    const filename = `${packageFile.name}-${manifestFile.version}.zip`;
     return {
         name: 'package',
         output: {
-            path: devPath
+            path: productionPath,
+            filename: filename
         },
         plugins: [
-            new FileManagerPlugin({
-                onEnd: {
-                    archive: [
-                        {
-                            source: devPath,
-                            destination: `${productionPath}/${filename}.zip`
-                        },
-                    ]
-                }
+            new ZipPlugin({
+                folder: devPath
             })
         ]
     };
 }
+
 
 const commonConfig = function (env) {
     return {

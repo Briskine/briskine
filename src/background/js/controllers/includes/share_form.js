@@ -1,7 +1,5 @@
 import $ from 'jquery';
 
-import store from '../../../../store/store-client';
-
 export default function ShareFormCtrl ($route, $q, $scope, $rootScope, $routeParams) {
         'ngInject';
 
@@ -15,7 +13,6 @@ export default function ShareFormCtrl ($route, $q, $scope, $rootScope, $routePar
                     $scope.revokeAccess(quicktexts, acl.target_user_id);
                 }
             });
-            store.syncNow();
         };
 
         self.revokeAccess = function(quicktexts, target_user_id) {

@@ -56,7 +56,6 @@ var methods = [
     'removeAttachments',
 
     'syncNow',
-    'syncLocal',
 
     'signin',
     'logout',

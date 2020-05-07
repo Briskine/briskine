@@ -324,6 +324,14 @@ function syncLocalData () {
         .then(() => {
             // clear local data
             return clearLocalTemplates();
+        })
+        .catch((err) => {
+            if (isLoggedOut(err)) {
+                // logged-out
+                return;
+            }
+
+            throw err;
         });
 }
 
@@ -350,10 +358,6 @@ function migrateLegacyLocalData () {
                 if (isLegacyTemplate(key, template)) {
                     var localId = template.id;
                     var remoteId = template.remote_id || localId;
-                    // don't sync default templates
-                    if (template.nosync === 1) {
-                        return;
-                    }
 
                     return parseTemplate({
                         template: template
@@ -460,9 +464,6 @@ firebase.auth().onAuthStateChanged((firebaseUser) => {
 
                 // populate in-memory template cache
                 getTemplate();
-
-                // sync local templates
-                syncLocalData();
             })
             .catch((err) => {
                 if (isLoggedOut(err)) {
@@ -1438,9 +1439,6 @@ var createSubscription = (params = {}) => {
         });
 };
 
-var syncNow = mock;
-var syncLocal = mock;
-
 // backwards compatibility
 function signinError (err) {
     if (err && err.code === 'auth/too-many-requests') {
@@ -1584,8 +1582,14 @@ var importTemplates = () => {
     });
 };
 
-var migrate = function () {
-    return migrateLegacyLocalData();
+// sync local data when starting the app
+var syncNow = function () {
+    // migrate legacy templates from chrome storage
+    return migrateLegacyLocalData()
+        .then(() => {
+            // sync local templates
+            return syncLocalData();
+        });
 };
 
 var addAttachments = function (params = {}) {
@@ -1701,12 +1705,9 @@ export default {
     removeAttachments: removeAttachments,
 
     syncNow: syncNow,
-    syncLocal: syncLocal,
 
     signin: signin,
     logout: logout,
     forgot: forgot,
-    importTemplates: importTemplates,
-
-    migrate: migrate
+    importTemplates: importTemplates
 };

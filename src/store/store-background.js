@@ -113,8 +113,6 @@ function getStore () {
     }
 
     var plugin = Object.assign({}, activePlugin);
-    // migrate legacy data
-    activePlugin.migrate();
 
     // general signin and forgot methods for both plugins
     plugin.signin = signin;
