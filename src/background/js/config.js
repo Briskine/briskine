@@ -3,7 +3,8 @@ var Config = {
     baseURL: 'http://localhost:5555/',
     apiBaseURL: 'http://localhost:5555/api/1/',
     websiteUrl: 'http://localhost:4000',
-    functionsUrl: 'http://localhost:5000'
+    functionsUrl: 'http://localhost:5000',
+    helpUrl: 'https://help.gorgiastemplates.com'
 };
 
 // firebase staging
