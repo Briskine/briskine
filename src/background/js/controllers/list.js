@@ -532,7 +532,7 @@ export default function ListCtrl ($route, $q, $scope, $rootScope, $routeParams, 
         // free account warnings
         $scope.freeLimit = 30;
         const warningLimit = 7;
-        let cachedLoggedIn = false;
+        let cachedLoggedIn = null;
         let cachedPlan = '';
         SettingsService.get('isLoggedIn').then((loggedIn) => {
             cachedLoggedIn = loggedIn;
@@ -555,12 +555,16 @@ export default function ListCtrl ($route, $q, $scope, $rootScope, $routeParams, 
         };
 
         $scope.isFree = function () {
-            // anonymous users are free
-            if (!$scope.isAuthenticated()) {
-                return true;
+            // authentication wasn't checked yet
+            if (cachedLoggedIn === null) {
+                return false;
             }
 
-            return cachedPlan === 'free';
+            return (
+                // anonymous users are free
+                !$scope.isAuthenticated() ||
+                cachedPlan === 'free'
+            );
         };
 
         $scope.showAuthWarning = function () {
