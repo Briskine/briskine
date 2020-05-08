@@ -555,19 +555,24 @@ export default function ListCtrl ($route, $q, $scope, $rootScope, $routeParams, 
         };
 
         $scope.isFree = function () {
+            // anonymous users are free
+            if (!$scope.isAuthenticated()) {
+                return true;
+            }
+
             return cachedPlan === 'free';
         };
 
         $scope.showAuthWarning = function () {
             return (
                 !$scope.isAuthenticated() &&
-                $scope.templates.length >= warningLimit
+                $scope.templates.length >= warningLimit &&
+                $scope.templates.length < $scope.freeLimit
             );
         };
 
         $scope.reachedFreeLimit = function () {
             return (
-                $scope.isAuthenticated() &&
                 $scope.isFree() &&
                 $scope.templates.length >= $scope.freeLimit
             );

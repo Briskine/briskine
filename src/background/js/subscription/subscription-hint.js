@@ -6,7 +6,8 @@ export default {
     bindings: {
         freeLimit: '<',
         showAuthWarning: '&',
-        reachedFreeLimit: '&'
+        reachedFreeLimit: '&',
+        openUpgrade: '&'
     },
     controller: function SubscriptionHint () {
         const ctrl = this;
@@ -17,11 +18,13 @@ export default {
             return ctrl.reachedFreeLimit() || ctrl.showAuthWarning();
         };
 
-        ctrl.closeModals = function () {
+        ctrl.upgrade = function () {
             // HACK
             // if we redirect from the new template dialog,
             // close all modals.
             $('.modal').modal('hide');
+
+            ctrl.openUpgrade();
         };
     },
     template: `
@@ -63,23 +66,14 @@ export default {
                 </p>
                 <p>
                     <a
-                        href="#/account/subscriptions"
-                        ng-click="$ctrl.closeModals()"
+                        href
+                        ng-click="$ctrl.upgrade()"
                     >
                         Upgrade to the Premium plan
                     </a>
                     to get unlimited templates and team collaboration features.
                 </p>
             </div>
-
-
-            <p ng-if="$ctrl.upgrade">
-                Your team has temporarily lost access to their templates.
-                <a href="#/account/subscriptions">
-                    Reactivate your Premium subscription
-                </a>
-                to restore access for your team.
-            </p>
         </div>
     `
 };
