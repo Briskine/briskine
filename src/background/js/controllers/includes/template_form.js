@@ -4,6 +4,7 @@ import $ from 'jquery';
 import jQuery from 'jquery';
 import tinymce from 'tinymce';
 
+import Config from '../../config';
 import store from '../../../../store/store-client';
 
 export default function TemplateFormCtrl ($route, $q, $scope, $rootScope, $routeParams, $location, $window, $timeout, $filter,
@@ -102,7 +103,9 @@ export default function TemplateFormCtrl ($route, $q, $scope, $rootScope, $route
                                     { text: 'Date: Last week', onclick: function() {self.insertVar('date \'-7\' \'days\' \'YYYY-MM-DD\'');}},
                                     { text: 'Random choice', onclick: function() {self.insertVar('choice \'Hello, Hi, Hey\'');}},
                                     { text: 'Extract domain', onclick: function() {self.insertVar('domain to.email');}},
-                                    { text: 'Learn more about template variables', onclick: function() {window.open("https://templates-help.gorgias.io/templates/templates#template_variables");}},
+                                    { text: 'Learn more about template variables', onclick: function() {
+                                        window.open(`${Config.helpUrl}/templates/templates#template_variables`);
+                                    }},
                                 ]
                             });
 
