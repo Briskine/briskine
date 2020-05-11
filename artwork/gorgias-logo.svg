@@ -1,6 +1,4 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!-- Created with Inkscape (http://www.inkscape.org/) -->
-
 <svg
    xmlns:dc="http://purl.org/dc/elements/1.1/"
    xmlns:cc="http://creativecommons.org/ns#"
@@ -9,84 +7,89 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="180"
-   height="180"
-   id="svg2"
-   version="1.1"
-   inkscape:version="0.48.5 r10040"
+   inkscape:export-ydpi="16.610001"
+   inkscape:export-xdpi="16.610001"
+   inkscape:export-filename="./icon-32-dark.png"
    sodipodi:docname="gorgias-logo.svg"
-   inkscape:export-filename="/media/Mokush/Dev/quicktext-chrome/artwork/quicktext-tile-small.png"
-   inkscape:export-xdpi="90"
-   inkscape:export-ydpi="90">
+   inkscape:version="1.0 (4035a4fb49, 2020-05-01)"
+   version="1.1"
+   id="svg2"
+   height="185"
+   width="185">
   <defs
      id="defs4">
     <linearGradient
        id="linearGradient3787">
       <stop
-         style="stop-color:#16a085;stop-opacity:1;"
+         id="stop3789"
          offset="0"
-         id="stop3789" />
+         style="stop-color:#16a085;stop-opacity:1;" />
       <stop
-         style="stop-color:#19b899;stop-opacity:1;"
+         id="stop3791"
          offset="1"
-         id="stop3791" />
+         style="stop-color:#19b899;stop-opacity:1;" />
     </linearGradient>
     <linearGradient
        id="linearGradient3890">
       <stop
-         style="stop-color:#067b82;stop-opacity:1;"
+         id="stop3892"
          offset="0"
-         id="stop3892" />
+         style="stop-color:#067b82;stop-opacity:1;" />
       <stop
-         style="stop-color:#067b82;stop-opacity:0;"
+         id="stop3894"
          offset="1"
-         id="stop3894" />
+         style="stop-color:#067b82;stop-opacity:0;" />
     </linearGradient>
     <linearGradient
        id="linearGradient3764">
       <stop
-         style="stop-color:#0f2729;stop-opacity:1;"
+         id="stop3766"
          offset="0"
-         id="stop3766" />
+         style="stop-color:#0f2729;stop-opacity:1;" />
       <stop
-         id="stop3772"
+         style="stop-color:#020606;stop-opacity:1;"
          offset="1"
-         style="stop-color:#020606;stop-opacity:1;" />
+         id="stop3772" />
     </linearGradient>
   </defs>
   <sodipodi:namedview
-     id="base"
-     pagecolor="#374548"
-     bordercolor="#666666"
-     borderopacity="1.0"
-     inkscape:pageopacity="0"
-     inkscape:pageshadow="2"
-     inkscape:zoom="2.8"
-     inkscape:cx="110.68435"
-     inkscape:cy="145.81626"
-     inkscape:document-units="px"
-     inkscape:current-layer="layer1"
-     showgrid="false"
-     inkscape:window-width="934"
-     inkscape:window-height="1053"
-     inkscape:window-x="40"
-     inkscape:window-y="0"
-     inkscape:window-maximized="0"
-     showguides="true"
+     lock-margins="true"
+     inkscape:pagecheckerboard="false"
+     inkscape:document-rotation="0"
+     fit-margin-bottom="10"
+     fit-margin-right="10"
+     fit-margin-left="10"
+     fit-margin-top="10"
      inkscape:guide-bbox="true"
-     fit-margin-top="0"
-     fit-margin-left="0"
-     fit-margin-right="0"
-     fit-margin-bottom="0">
+     showguides="true"
+     inkscape:window-maximized="1"
+     inkscape:window-y="0"
+     inkscape:window-x="36"
+     inkscape:window-height="1051"
+     inkscape:window-width="1884"
+     showgrid="true"
+     inkscape:current-layer="layer1"
+     inkscape:document-units="px"
+     inkscape:cy="68.110554"
+     inkscape:cx="87.210416"
+     inkscape:zoom="1.6464457"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0"
+     borderopacity="1.0"
+     bordercolor="#666666"
+     pagecolor="#ffffff"
+     id="base">
     <inkscape:grid
-       type="xygrid"
-       id="grid3012"
-       empspacing="5"
-       visible="true"
-       enabled="true"
+       spacingy="1"
+       spacingx="1"
+       originy="-90.000024"
+       originx="-69.03718"
        snapvisiblegridlinesonly="true"
-       originx="-72.069752px"
-       originy="-90.29441px" />
+       enabled="true"
+       visible="true"
+       empspacing="5"
+       id="grid3012"
+       type="xygrid" />
   </sodipodi:namedview>
   <metadata
      id="metadata7">
@@ -101,28 +104,27 @@
     </rdf:RDF>
   </metadata>
   <g
-     inkscape:label="Layer 1"
-     inkscape:groupmode="layer"
+     transform="translate(-132.61755,-527.32513)"
      id="layer1"
-     transform="translate(-135.65011,-527.61952)">
+     inkscape:groupmode="layer"
+     inkscape:label="Layer 1">
     <text
-       sodipodi:linespacing="125%"
-       id="text3800"
-       y="657.91223"
-       x="173.58035"
-       style="font-size:45.87678146px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Open Sans"
-       xml:space="preserve"><tspan
-         style="font-size:165.15640259px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;fill:#000000;font-family:Open Sans;-inkscape-font-specification:Open Sans"
-         y="657.91223"
-         x="173.58035"
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:15.2486px;line-height:0%;font-family:sans-serif;-inkscape-font-specification:'Open Sans';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1.27071"
+       x="158.13969"
+       y="651.76941"
+       id="text3800"><tspan
+         sodipodi:role="line"
          id="tspan3802"
-         sodipodi:role="line">g</tspan></text>
+         x="158.13969"
+         y="651.76941"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:209.865px;line-height:1.25;font-family:'Open Sans';-inkscape-font-specification:'Open Sans';fill:#000000;stroke-width:1.27071">g</tspan></text>
     <rect
-       y="537.91394"
-       x="267.13278"
-       height="160"
-       width="2.9779992"
+       style="fill:#000000;fill-opacity:1;stroke:none;stroke-width:1.86089"
        id="rect3804"
-       style="fill:#000000;fill-opacity:1;stroke:none" />
+       width="10.000013"
+       height="164.99997"
+       x="278.09894"
+       y="537.32513" />
   </g>
 </svg>
