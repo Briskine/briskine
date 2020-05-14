@@ -103,10 +103,10 @@ export function sharingFilter () {
 }
 
 export function fuzzy () {
-    return function (list, text, options) {
+    return function (list, text) {
         if (!text) {
             return list;
         }
-        return fuzzySearch(list, text, options);
+        return fuzzySearch(list, text);
     };
 }

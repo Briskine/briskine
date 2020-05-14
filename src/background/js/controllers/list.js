@@ -70,7 +70,6 @@ export default function ListCtrl ($route, $q, $scope, $rootScope, $routeParams, 
         $scope.properties = properties;
         $scope.limitTemplates = 42; // I know.. it's a cliche
         $scope.hasSelected = false;
-        $scope.searchOptions = {};
         $scope.gmailLink = 'https://mail.google.com/mail/?view=cm&fs=1&to=someone@example.com&su=I%20love%20Gorgias!&body=Hey!%0A%0ACheck%20out%20this%20awesome%20Chrome%20extension%20that%20I%20found%3A%0A%0Ahttps%3A%2F%2Fchrome.google.com%2Fwebstore%2Fdetail%2Fgorgias-templates-email-t%2Flmcngpkjkplipamgflhioabnhnopeabf%0A%0AIt%20helps%20me%20type%20much%20faster%20with%20templates%20on%20the%20web!';
 
         function loadAccount() {
@@ -101,12 +100,6 @@ export default function ListCtrl ($route, $q, $scope, $rootScope, $routeParams, 
             $scope.settings = settings;
             $scope.subjectEnabled = settings.fields.subject;
             $scope.tagsEnabled = settings.fields.tags;
-
-            // Setup search
-            if (settings.qaBtn.fuzzySearch === false) {
-                $scope.searchOptions.threshold = 0;
-            }
-            $scope.searchOptions.caseSensitive = !!settings.qaBtn.caseSensitiveSearch;
         });
 
         $scope.showPostInstall = function () {
@@ -449,7 +442,7 @@ export default function ListCtrl ($route, $q, $scope, $rootScope, $routeParams, 
             matchedTemplates = $filter('sharingFilter')(matchedTemplates, $scope.properties.list);
 
             // fuzzy search
-            matchedTemplates = $filter('fuzzy')(matchedTemplates, $scope.searchText, $scope.searchOptions);
+            matchedTemplates = $filter('fuzzy')(matchedTemplates, $scope.searchText);
 
             $scope.filteredTemplates = matchedTemplates;
 

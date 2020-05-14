@@ -27,8 +27,6 @@ var App = {
     editor_enabled: true,
     // TODO move settings to module
     settings: {
-        case_sensitive_search: false,
-        fuzzy_search: true,
         is_sort_template_list: false,
         is_sort_template_dialog_gmail: false,
 
@@ -88,17 +86,7 @@ var App = {
                         }
                     }
                     if (text) {
-                        var threshold = 0.6;
-                        if (!App.settings.fuzzy_search) {
-                            threshold = 0;
-                        }
-
-                        var options = {
-                            caseSensitive: App.settings.case_sensitive_search,
-                            threshold: threshold
-                        };
-
-                        templates = fuzzySearch(templates, text, options);
+                        templates = fuzzySearch(templates, text);
                     } else {
                         // Sort templates only if no search was used
 
@@ -189,14 +177,6 @@ App.init = function(settings, doc) {
 
     // Check if we should use editor markup
     App.settings.editor_enabled = settings.editor.enabled;
-    // Check if case sensitive search is enabled
-    App.settings.case_sensitive_search = settings.qaBtn.caseSensitiveSearch;
-    // Check if fuzzy search is enabled
-    if (typeof settings.qaBtn.fuzzySearch === "undefined") {
-        App.settings.fuzzy_search = true;
-    } else {
-        App.settings.fuzzy_search = settings.qaBtn.fuzzySearch;
-    }
 
     App.settings.is_sort_template_list = settings.is_sort_template_list;
     App.settings.is_sort_template_dialog_gmail =
