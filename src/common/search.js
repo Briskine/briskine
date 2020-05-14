@@ -45,20 +45,28 @@ function parseSearchString (searchString = '') {
             const field = fieldAlias(fieldTokens[0]);
             let value = fieldTokens[1];
 
-            // value is after space
-            if (!value) {
-               value = tokens[i + 1];
-               // skip value
-               i++;
+            // value could be after space.
+            // if value is not after space,
+            // or next value is advanced search operator,
+            // we add current token to the search string later.
+            const nextValue = tokens[i + 1];
+            if (!value && nextValue && !nextValue.includes(':')) {
+                value = nextValue;
+                // skip value token
+                i++;
             }
 
-            filters.push({
-                field: field,
-                value: value
-            });
-        } else {
-            fuzzyTokens.push(token);
+            if (value) {
+                filters.push({
+                    field: field,
+                    value: value
+                });
+
+                continue;
+            }
         }
+
+        fuzzyTokens.push(token);
     }
 
     const text = fuzzyTokens.join(' ');
