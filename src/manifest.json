@@ -1,14 +1,14 @@
 {
     "manifest_version": 2,
     "name": "__MSG_extName__",
-    "version": "6.8.3",
+    "version": "6.8.4",
     "description": "__MSG_extDesc__",
     "short_name": "Gorgias",
     "default_locale": "en",
     "icons": {
-        "16": "icons/icon16.png",
-        "48": "icons/icon48.png",
-        "128": "icons/icon128.png"
+        "16": "icons/icon-16.png",
+        "48": "icons/icon-48.png",
+        "128": "icons/icon-128.png"
     },
     "background": {
         "page": "pages/bg.html"
@@ -43,10 +43,10 @@
         "pages/content.html"
     ],
     "browser_action": {
-        "default_title": "Gorgias",
+        "default_title": "Gorgias Templates",
         "default_icon": {
-            "19": "icons/icon19.png",
-            "38": "icons/icon38.png"
+            "16": "icons/icon-16.png",
+            "32": "icons/icon-32.png"
         }
     },
     "content_security_policy": "script-src 'self' https://d24n15hnbwhuhn.cloudfront.net; object-src 'self'; frame-ancestors 'none'"

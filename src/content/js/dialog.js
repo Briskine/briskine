@@ -307,13 +307,8 @@ var dialog = {
         };
 
         var stripHtml = function (html) {
-            try {
-                var doc = document.implementation.createHTMLDocument();
-                doc.documentElement.innerHTML = html;
-                return (doc.documentElement.textContent||doc.documentElement.innerText).replace(/>/, '').replace(/</, '');
-            } catch(e) {
-                return "";
-            }
+            const doc = new DOMParser().parseFromString(html, 'text/html');
+            return doc.body.textContent || '';
         };
 
         clonedElements.forEach(function (elem) {

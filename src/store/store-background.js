@@ -2,7 +2,8 @@
 import _FIRESTORE_PLUGIN from './plugin-firestore';
 import _GORGIAS_API_PLUGIN from './plugin-api';
 import Config from '../background/js/config';
-import './chrome-config.js';
+import './chrome-config';
+import './browseraction-icon';
 
 // can't use browser.storage
 // we need a synchronous api
