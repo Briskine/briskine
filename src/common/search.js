@@ -1,6 +1,4 @@
-import $ from 'jquery';
 import Fuse from 'fuse.js';
-import _ from 'underscore';
 
 function lowerCase (string = '') {
     return string.toLowerCase();
@@ -77,8 +75,7 @@ function parseSearchString (searchString = '') {
     };
 }
 
-// TODO remove options
-export default function search (list = [], text = '', opts = {}) {
+export default function search (list = [], text = '') {
     const advancedSearch = parseSearchString(text);
     let filteredList = list.slice();
 
@@ -92,24 +89,7 @@ export default function search (list = [], text = '', opts = {}) {
         return filteredList;
     }
 
-    // TODO check how we can remove this threshold
-    // TODO threshold disables fuzzy search, let's remove it
-    if (opts.threshold === 0) {
-        return _.filter(list, function (i) {
-            if (i.shortcut && i.shortcut.indexOf(text) !== -1) {
-                return true;
-            }
-            if (i.title && i.title.indexOf(text) !== -1) {
-                return true;
-            }
-            if (i.body && i.body.indexOf(text) !== -1) {
-                return true;
-            }
-            return false;
-        });
-    }
-
-    const defaultOptions = {
+    const options = {
         keys: [
             {
                 name: 'shortcut',
@@ -126,8 +106,6 @@ export default function search (list = [], text = '', opts = {}) {
         ]
     };
 
-    // TODO remove jquery
-    var options = $.extend(true, defaultOptions, opts);
     var fuse = new Fuse(filteredList, options);
     return fuse.search(advancedSearch.text).map((result) => {
         return result.item;
