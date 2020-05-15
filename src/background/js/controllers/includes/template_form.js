@@ -446,7 +446,6 @@ export default function TemplateFormCtrl ($route, $q, $scope, $rootScope, $route
         };
 
         self.upgradeNow = function() {
-            $rootScope.trackSignup('templateForm');
             $rootScope.openSubscribe();
         };
 

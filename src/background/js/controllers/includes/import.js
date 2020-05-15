@@ -2,7 +2,6 @@ import $ from 'jquery';
 import Papa from 'papaparse';
 
 import store from '../../../../store/store-client';
-import amplitude from '../../utils/amplitude';
 import Config from '../../config';
 
 export default function ImportCtrl ($scope, $rootScope, $timeout) {
@@ -83,8 +82,6 @@ export default function ImportCtrl ($scope, $rootScope, $timeout) {
         if (!file) {
             return;
         }
-
-        amplitude.getInstance().logEvent("Imported template");
 
         self.uploading = true;
         var importParams = {

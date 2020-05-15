@@ -2,8 +2,6 @@
 import $ from 'jquery';
 import Mousetrap from 'mousetrap';
 
-import amplitude from '../utils/amplitude';
-
 export default function SettingsCtrl ($scope, $rootScope, $timeout, AccountService, TemplateService, SettingsService) {
     'ngInject';
     $scope.activeTab = "settings";
@@ -21,15 +19,6 @@ export default function SettingsCtrl ($scope, $rootScope, $timeout, AccountServi
     });
 
     $scope.updateSettings = function(){
-        // check if we have to disable stats
-        if (!$scope.settings.stats.enabled) {
-            amplitude.setOptOut(true);
-        } else {
-            if(amplitude) {
-                //enable events
-                amplitude.setOptOut(false);
-            }
-        }
         SettingsService.set('settings', $scope.settings).then(function(){
             $scope.showWarning = true;
         });

@@ -49,5 +49,5 @@
             "32": "icons/icon-32.png"
         }
     },
-    "content_security_policy": "script-src 'self' https://d24n15hnbwhuhn.cloudfront.net; object-src 'self'; frame-ancestors 'none'"
+    "content_security_policy": "script-src 'self'; object-src 'self'; frame-ancestors 'none'"
 }

@@ -64,7 +64,7 @@
                 </div>
             </div>
             <div class="tools">
-                <a href="#/settings" ng-click="emptyFilterTags();trackSettings(!!account)" class="settings-icon"
+                <a href="#/settings" ng-click="emptyFilterTags()" class="settings-icon"
                    title="Settings"><i class="fa fa-gear"></i></a>
             </div>
         </div>
@@ -93,7 +93,6 @@
 
                 <li class="template-tab"
                     ng-show="isFree()"
-                    ng-click="trackSignup('shared')"
                 >
                     <a href ng-click="openSubscribe()">
                         <span data-toggle="tooltip"
@@ -102,7 +101,6 @@
                 </li>
                 <li class="template-tab"
                     ng-show="isFree()"
-                    ng-click="trackSignup('private')"
                 >
                     <a href ng-click="openSubscribe()">
                         <span data-toggle="tooltip"

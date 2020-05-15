@@ -24,8 +24,6 @@ import 'tinymce/plugins/textcolor';
 import 'tinymce/plugins/imagetools';
 import 'tinymce/plugins/code';
 
-import amplitude from './utils/amplitude';
-
 import '../css/background.styl';
 
 import Config from './config';
@@ -232,22 +230,11 @@ gApp.run(function ($rootScope, $location, $timeout, ProfileService, SettingsServ
     $rootScope.showStats = true;
 
     SettingsService.get('settings').then(function (settings) {
-        // disable amplitude if stats are not enabled
-        if (!settings.stats.enabled) {
-            amplitude.getInstance().setOptOut(true);
-        }
-
         if (settings.userEmail) {
             $rootScope.userEmail = settings.userEmail;
             $rootScope.savedEmail = true;
         }
     });
-
-    $rootScope.trackSignup = function (source) {
-        amplitude.getInstance().logEvent("Opened Signup form", {
-            'source': source
-        });
-    };
 
     $rootScope.profileService = ProfileService;
     $rootScope.profile = {};
@@ -293,36 +280,12 @@ gApp.run(function ($rootScope, $location, $timeout, ProfileService, SettingsServ
                     store.getAccount().then(function (data) {
                         $rootScope.currentSubscription = data.current_subscription;
                         $rootScope.isCustomer = data.is_customer;
-
-                        // identify people that are logged in to our website
-                        amplitude.getInstance().setUserId(data.id);
-
-                        amplitude.getInstance().setUserProperties({
-                            "email": data.email,
-                            "created": data.created_datetime,
-                            "name": data.info.name,
-                            "sub_active": data.current_subscription.active || false,
-                            "sub_created": data.current_subscription.created_datetime,
-                            "sub_plan": data.current_subscription.plan,
-                            "sub_quantity": data.current_subscription.quantity,
-                            "is_customer": data.is_customer,
-                            "is_staff": data.is_staff
-                        });
-
-
-                        var identify = new amplitude.Identify().set('browser', browser).set('authenticated', true).set('user', data);
-                        amplitude.getInstance().identify(identify);
-
                     });
                 } else {
-                    var identify = new amplitude.Identify().set('browser', browser).set('authenticated', false).set('user', {'email': $rootScope.userEmail});
-                    amplitude.getInstance().identify(identify);
                     SettingsService.set("isLoggedIn", false);
                 }
             });
         }).catch(function () {
-            var identify = new amplitude.Identify().set('$browser', browser).set('authenticated', false).set('user', {'email': $rootScope.userEmail});
-            amplitude.getInstance().identify(identify);
             SettingsService.set("isLoggedIn", false);
         });
     };

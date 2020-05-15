@@ -2,7 +2,6 @@
 // chrome.gorgias.io API plugin
 import _ from 'underscore';
 
-import amplitude from '../background/js/utils/amplitude';
 import Config from '../background/js/config';
 
 var apiBaseURL = Config.apiBaseURL;
@@ -326,15 +325,6 @@ var updateTemplate = function (params = {}) {
             if (onlyLocal) { // update only locally - don't do any remote operations
                 resolve(t);
                 return;
-            } else {
-                // Send some info about the creation of templates
-                amplitude.getInstance().logEvent("Updated template", {
-                    "with_subject": true ? t.subject : false,
-                    "with_shortcut": true ? t.shortcut : false,
-                    "with_tags": true ? t.tags : false,
-                    "title_size": t.title.length,
-                    "body_size": t.body.length
-                });
             }
 
             getSettings({
@@ -413,15 +403,6 @@ var createTemplate = function (params = {}) {
         TemplateStorage.set(data, function () {
             if (onlyLocal) { // create only locally - don't do any remote operations
                 return resolve();
-            } else {
-                amplitude.getInstance().logEvent("Created template", {
-                    "with_subject": !!t.subject,
-                    "with_shortcut": !!t.shortcut,
-                    "with_tags": !!t.tags,
-                    "title_size": t.title.length,
-                    "body_size": t.body.length,
-                    "private": t.private
-                });
             }
 
             getSettings({
@@ -475,10 +456,6 @@ var deleteTemplate = function (params = {}) {
             t.deleted = 1;
             data[t.id] = t;
             TemplateStorage.set(data, function () {
-                if (!onlyLocal) {
-                    amplitude.getInstance().logEvent("Deleted template");
-                }
-
                 return getSettings({
                     key: 'isLoggedIn'
                 }).then(function (isLoggedIn) {

@@ -1,7 +1,6 @@
 import _ from 'underscore';
 
 import store from '../../../store/store-client';
-import amplitude from '../utils/amplitude';
 
 export function FilterTagService ($rootScope) {
     'ngInject';
@@ -124,7 +123,6 @@ export function TemplateService ($q, $rootScope, SettingsService) {
     self.deleteAll = function () {
         var deferred = $q.defer();
         store.clearLocalTemplates().then(() => {
-            amplitude.getInstance().logEvent("Deleted all templates");
             deferred.resolve();
         });
         return deferred.promise;

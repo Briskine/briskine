@@ -3,7 +3,6 @@
  */
 
 import $ from 'jquery';
-import amplitude from './amplitude';
 
 var KEY_TAB = 9;
 var KEY_UP = 38;
@@ -401,10 +400,6 @@ var dialogSelectActive = function () {
         $($editor).append(quicktext.body);
         $('body').trigger('dialog-used', params);
 
-        amplitude.getInstance().logEvent("Tutorial Dialog Insert", {
-            shortcut: quicktext.shortcut
-        });
-
         newTemplateTimer = setTimeout(function(){
             // HACK hijack angular
             $('.gorgias-demo-hint>*').addClass('hidden');
@@ -529,10 +524,6 @@ export function init () {
     }
 
     $('body').on('template-inserted', function (e, params) {
-        amplitude.getInstance().logEvent("Tutorial Shortcut", {
-            shortcut: params.quicktext.shortcut
-        });
-
         if (params.quicktext.shortcut === 'h') {
             $('.gorgias-editor-container .h').addClass('blink');
 
@@ -553,27 +544,10 @@ export function init () {
     });
 
     $('.gorgias-qa-btn').on('click', function(e){
-        amplitude.getInstance().logEvent("Tutorial Button");
         dialogShow(e);
         setTimeout(function () {
             $('.gorgias-demo-hint>*').addClass('hidden');
             $('.gorgias-demo-hint .select').removeClass('hidden').addClass('fadein');
         }, 1000);
     });
-
-    // Removes 1st step and adds 2nd step
-    /*
-    $('body').on('dialog-used', function (e, params) {
-        amplitude.getInstance().logEvent("Tutorial Dialog", {
-            shortcut: params.quicktext.shortcut
-        });
-
-        $('.gorgias-demo-hint .space').addClass('hidden');
-        $('.gorgias-demo-first-step-h2').addClass('hidden');
-
-        $('.browser-action').removeClass('hidden');
-        $('.gorgias-demo-last-step-h2').removeClass('hidden');
-    });
-    */
-
 }

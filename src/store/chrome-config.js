@@ -1,6 +1,4 @@
 /* globals ENV */
-import amplitude from '../background/js/utils/amplitude';
-
 function resetSettings () {
     return window.store.setSettings({
         key: 'settings'
@@ -47,11 +45,9 @@ if (chrome.extension) {
     // Called after installation: https://developer.chrome.com/extensions/runtime.html#event-onInstalled
     chrome.runtime.onInstalled.addListener(function (details) {
         if (details.reason == "install") {
-            amplitude.getInstance().logEvent("Installed Gorgias");
             // reset settings
             resetSettings();
         } else if (details.reason == "update") {
-            amplitude.getInstance().logEvent("Updated Gorgias", {'version': details.previousVersion});
             window.store.getSettings({
                 key: 'hints'
             }).then((hints) => {
@@ -123,7 +119,6 @@ if (chrome.extension) {
             if (request.event === 'Inserted template') {
                 window.store.updateTemplateStats(request.data.id);
             }
-            amplitude.getInstance().logEvent(request.event, request.data);
         }
         return true;
     });
