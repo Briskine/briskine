@@ -205,12 +205,6 @@ gApp.config(['$compileProvider', function ($compileProvider) {
 
 /* Global run
  */
-gApp.run(function ($rootScope) {
-    $rootScope.baseURL = Config.baseURL;
-    $rootScope.apiBaseURL = Config.apiBaseURL;
-});
-
-
 gApp.run(function ($rootScope, $location, $timeout, ProfileService, SettingsService) {
     $rootScope.$on('$routeChangeStart', function () {
         $rootScope.path = $location.path();
