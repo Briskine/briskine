@@ -1,15 +1,5 @@
-/* globals console */
 // chrome.gorgias.io API plugin
 import _ from 'underscore';
-
-import Config from '../background/js/config';
-
-var apiBaseURL = Config.apiBaseURL;
-var baseURL = Config.baseURL;
-
-function _deepClone (obj = {}) {
-    return JSON.parse(JSON.stringify(obj));
-}
 
 function isLegacyTemplate (key = '', template = {}) {
     return (
@@ -184,126 +174,14 @@ var setSettings = function (params) {
     });
 };
 
-var handleErrors = function (response) {
-    if (!response.ok) {
-        return response.clone().json().then((res) => {
-            return Promise.reject(res);
-        });
-    }
-    return response;
-};
-
-var getAccount = function () {
-    return fetch(`${apiBaseURL}account`)
-        .then(handleErrors)
-        .then((res) => res.json());
-};
-
-var setAccount = function (params) {
-    return fetch(`${apiBaseURL}account`, {
-        method: 'PUT',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(params)
-    })
-    .then(handleErrors)
-    .then((res) => res.json());
-};
-
 var getLoginInfo = function () {
-    return fetch(`${apiBaseURL}login-info`)
-        .then(handleErrors)
-        .then((res) => res.json())
-        .then((loginInfoRes) => {
-            if (loginInfoRes.is_loggedin) {
-                // get email from account
-                return getAccount()
-                    .then((res) => {
-                        return fetch(`${Config.functionsUrl}/api/1/status`, {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json'
-                            },
-                            body: JSON.stringify({
-                                email: res.email
-                            })
-                        })
-                        .then(handleErrors)
-                        .then((res) => res.json())
-                        .then((res) => {
-                            if (res.firebase) {
-                                // migrated to firebase
-                                return {
-                                    logout: true
-                                };
-                            }
-
-                            return loginInfoRes;
-                        });
-                    });
-            }
-
-            return loginInfoRes;
-        });
-};
-
-var getMembers = function (params = {}) {
-    var membersApiUrl = `${apiBaseURL}members`;
-    if (params.memberId) {
-        membersApiUrl += `/${params.memberId}`;
-    }
-
-    return fetch(membersApiUrl)
-        .then(handleErrors)
-        .then((res) => res.json());
-};
-
-var setMember = function (params = {}) {
-    var membersApiUrl = `${apiBaseURL}members`;
-    var membersApiMethod = 'POST';
-    if (params.id) {
-        membersApiMethod = 'PUT';
-        membersApiUrl += `/${params.id}`;
-    }
-
-    return fetch(membersApiUrl, {
-        method: membersApiMethod,
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(params)
-    })
-    .then(handleErrors)
-    .then((res) => res.json());
+    return Promise.reject();
 };
 
 var getTemplate = function (params = {}) {
     return new Promise((resolve) => {
         TemplateStorage.get(params.id, resolve);
     });
-};
-
-var queryTemplates = function (params = {}) {
-    var quicktextsApiUrl = `${apiBaseURL}quicktexts`;
-    if (params.quicktextId) {
-        quicktextsApiUrl += `/${params.quicktextId}`;
-    }
-
-    return fetch(quicktextsApiUrl)
-        .then(handleErrors)
-        .then((res) => res.json());
-};
-
-var updateRemoteTemplate = function (remote = {}) {
-    return fetch(`${apiBaseURL}quicktexts/${remote.remote_id}`, {
-        method: 'PUT',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(remote)
-    })
-    .then(handleErrors);
 };
 
 var updateTemplate = function (params = {}) {
@@ -334,45 +212,9 @@ var updateTemplate = function (params = {}) {
                     resolve(t);
                     return;
                 }
-
-                if (!t.remote_id) {
-                    var remote = _copy(t, {});
-                    return createRemoteTemplate(remote).then((res) => {
-                        t.remote_id = res.id;
-                        t.sync_datetime = new Date().toISOString();
-
-                        var data = {};
-                        data[t.id] = t;
-                        TemplateStorage.set(data, () => resolve(t));
-                    });
-                } else {
-                    return queryTemplates({
-                        quicktextId: t.remote_id
-                    }).then(function (remote) {
-                        remote = _copy(t, remote);
-                        return updateRemoteTemplate(remote)
-                            .then(() => {
-                                t.sync_datetime = new Date().toISOString();
-                                var data = {};
-                                data[t.id] = t;
-                                TemplateStorage.set(data, () => resolve(t));
-                            });
-                    });
-                }
             });
         });
     });
-};
-
-var createRemoteTemplate = function (remote = {}) {
-    return fetch(`${apiBaseURL}quicktexts`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(remote)
-    })
-    .then(handleErrors);
 };
 
 // WARNING we sometimes rely on mutating params.template in controllers
@@ -411,35 +253,9 @@ var createTemplate = function (params = {}) {
                 if (!isLoggedIn) {
                     return resolve();
                 }
-
-                var remote = _copy(t, {});
-                // make sure we don't have a remote_id (it's a new template sow there should not be any remote_id)
-                remote.remote_id = '';
-                createRemoteTemplate(remote)
-                .then((res) => res.json())
-                .then((remote) => {
-                    // once it's saved server side, store the remote_id in the database
-                    t.remote_id = remote.id;
-                    t.sync_datetime = new Date().toISOString();
-                    // WARNING we rely on mutating t, to update in data[id]=t
-                    TemplateStorage.set(data, function () {
-                        resolve(t);
-                    });
-                });
             });
         });
     });
-};
-
-var deleteRemoteTemplate = function (remote) {
-    return fetch(`${apiBaseURL}quicktexts/${remote.remote_id}`, {
-        method: 'DELETE',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(remote)
-    })
-    .then(handleErrors);
 };
 
 var deleteTemplate = function (params = {}) {
@@ -463,21 +279,6 @@ var deleteTemplate = function (params = {}) {
                     if (!isLoggedIn) {
                         return resolve();
                     }
-
-                    queryTemplates({
-                        quicktextId: t.remote_id
-                    }).then(function (remote) {
-                        // make sure we have the remote id otherwise the delete will not find the right resource
-                        remote.remote_id = remote.id;
-                        deleteRemoteTemplate(remote)
-                        .then(() => {
-                            // Do a local "DELETE" only if deleted remotely.
-                            // If remote operation fails, try again when syncing.
-                            //
-                            // NOTE: We delete locally to save space.
-                            TemplateStorage.remove(t.id, resolve);
-                        });
-                    });
                 });
             });
         }
@@ -504,340 +305,7 @@ var _clean_tags = function (tags) {
     return tags;
 };
 
-// Copy one template object to another - used for the remote saving
-var _copy = function (source, target) {
-    for (var k in source) {
-        // ignore the no own property or id
-        if (k === 'id' && !source.hasOwnProperty(k)) {
-            continue;
-        }
-        if (k === 'tags') {
-            target[k] = _clean_tags(source[k]);
-        } else {
-            target[k] = source[k];
-        }
-    }
-    return target;
-};
-
-/* Sync: remote -> local
-    - assume that there was no connectivity and now we have it
-    Remote templates (after local sync):
-
-    * Created (no similar remote_id found locally) - update sync_date
-    * Updated (found remote_id - update) - update sync_date
-    * Deleted (present locally, but not present in remote templates)
-    */
-var lastSync = null;
-var syncRemote = function () {
-    // Get the new or updated templates from the remote server
-    return queryTemplates().then(function (remoteTemplates) {
-        var now = new Date().toISOString();
-
-        var localSeen = [];
-        var remoteSeen = [];
-
-        return getTemplate().then(function (localTemplates) {
-            for (var id in localTemplates) {
-                var t = localTemplates[id];
-                if (t !== null && t.remote_id) {
-                    localSeen.push(t.remote_id);
-                }
-            }
-
-            var operations = [];
-
-            _.each(remoteTemplates, function (remoteTemplate) {
-                var localTemplate;
-                var lastVersion = remoteTemplate.versions[0];
-
-                remoteSeen.push(remoteTemplate.id);
-
-                var updated = false;
-                for (var id in localTemplates) {
-                    localTemplate = localTemplates[id];
-
-                    if (localTemplate.remote_id === remoteTemplate.id) {
-                        lastVersion.private = remoteTemplate.private;
-                        localTemplate = _copy(lastVersion, localTemplate);
-                        localTemplate.remote_id = remoteTemplate.id;
-                        // use the remote created_datetime as reference
-                        localTemplate.created_datetime = remoteTemplate.created_datetime;
-                        operations.push(
-                            updateTemplate({
-                                template: localTemplate,
-                                onlyLocal: true,
-                                sycned: true
-                            })
-                        );
-
-                        updated = true;
-                        break;
-                    }
-                }
-
-                // If we haven't seen a local template, create it
-                // I wish there was for..else in JS
-                if (!updated) {
-                    localTemplate = _copy(lastVersion, {});
-                    localTemplate.remote_id = remoteTemplate.id;
-                    localTemplate.sync_datetime = now;
-                    operations.push(
-                        createTemplate({
-                            template: localTemplate,
-                            onlyLocal: true
-                        })
-                    );
-                }
-            });
-
-            // delete local templates that have a remote_id, but are not present through the API request
-            var deleteLocal = _.difference(localSeen, remoteSeen);
-            _.each(deleteLocal, function (remoteId) {
-                TemplateStorage.get(null, function (localTemplates) {
-                    _.each(localTemplates, function (localTemplate) {
-                        if (localTemplate.remote_id && remoteId && localTemplate.remote_id === remoteId) {
-                            operations.push(
-                                deleteTemplate({
-                                    template: localTemplate,
-                                    onlyLocal: true
-                                })
-                            );
-                        }
-                    });
-                });
-            });
-            lastSync = new Date();
-            return Promise.all(operations);
-        });
-    });
-};
-
-/**
-    * Local templates: local -> remote
-    * Created (doesn't have a 'remote_id' set)
-    * Deleted (deleted=1 in the db) - delete remotely and then completely in the db
-    * Updated (sync_datetime is null or lower than the updated_date)
-    *
-    */
-var syncLocal = function () {
-    // Handling all local templates
-    return getTemplate().then(function (templates) {
-        for (var id in templates) {
-            var t = templates[id];
-            if (t === null || t.nosync !== 0) {
-                continue;
-            }
-
-            // no remote_id means that it's local only and we have to sync it with the remote sync service
-            if (!t.remote_id) {
-                // skipping deleted templates - there should not be any.. but ok.
-                if (t.deleted === 1) {
-                    continue;
-                }
-
-                var tRemote = _copy(_deepClone(t), {});
-
-                // create new template on the server
-                var save = function (ut) { // jshint ignore:line
-                    // we're in a for loop so we need this closure here because the `t` var will be overridden
-                    // before the remote request is finished
-                    return function (res) {
-                        ut.remote_id = res.id;
-                        ut.sync_datetime = new Date().toISOString();
-
-                        var data = {};
-                        data[ut.id] = ut;
-                        updateTemplate({
-                            template: ut,
-                            onlyLocal: true
-                        });
-                    };
-                };
-
-                createRemoteTemplate(tRemote).then(save(_deepClone(t)));
-            } else { // was synced at some point
-                // if it's deleted locally, delete it remotely and then delete it completely
-                if (t.deleted === 1) {
-                    var deleted = function (ut) { // jshint ignore:line
-                        return function (remote) {
-                            remote.remote_id = ut.remote_id;
-                            deleteRemoteTemplate(remote).then(() => {
-                                TemplateStorage.remove(ut.id);
-                            });
-                        };
-                    };
-
-                    queryTemplates({
-                        quicktextId: t.remote_id
-                    }).then(deleted(_deepClone(t)));
-                } else if (t.updated_datetime) { // only if we have an updated_datetime
-                    if (!t.sync_datetime || new Date(t.sync_datetime) < new Date(t.updated_datetime)) {
-                        var update = function (ut) { // jshint ignore:line
-                            // we're in a for loop so we need this closure here because the `t` var will be overridden
-                            // before the remote request is finished
-                            return function (remote) {
-                                remote = _copy(ut, remote);
-                                updateRemoteTemplate(remote).then(() => {
-                                    ut.sync_datetime = new Date().toISOString();
-                                    var data = {};
-                                    data[ut.id] = ut;
-                                    TemplateStorage.set(data);
-                                });
-                            };
-                        };
-                        // template was updated locally, not synced yet
-                        queryTemplates({
-                            quicktextId: t.remote_id
-                        }).then(update(Object.assign({}, t)));
-                    }
-                }
-            }
-        }
-
-        lastSync = new Date();
-        return lastSync;
-    });
-};
-
 var syncNow = function () {
-    return getSettings({
-        key: 'isLoggedIn'
-    }).then(function (isLoggedIn) {
-        // bail if not logged-in
-        if (!isLoggedIn) {
-            return Promise.resolve();
-        }
-
-        syncRemote();
-
-        console.log('Synced: ', new Date().toUTCString());
-        var waitForLocal = function () {
-            window.store.trigger('templates-sync');
-            syncLocal();
-        };
-        // wait a bit before doing the local sync
-        setTimeout(waitForLocal, 1000);
-
-        return;
-    });
-};
-
-var getSharing = function (params = {}) {
-    if (!params.quicktext_ids || !params.quicktext_ids.length) {
-        return Promise.resolve([]);
-    }
-
-    return fetch(`${apiBaseURL}share`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(params)
-    })
-    .then(handleErrors)
-    .then((res) => res.json());
-};
-
-var updateSharing = function (params = {}) {
-    return fetch(`${apiBaseURL}share`, {
-        method: 'PUT',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(params)
-    })
-    .then(handleErrors)
-    .then((res) => res.json());
-};
-
-var getStats = function () {
-    return fetch(`${apiBaseURL}templates/stats`)
-        .then(handleErrors)
-        .then((res) => res.json());
-};
-
-var getSubscription = function (params = {}) {
-    var subscriptionsApiUrl = `${apiBaseURL}subscriptions`;
-    if (params.subId) {
-        subscriptionsApiUrl += `/${params.subId}`;
-    }
-
-    return fetch(subscriptionsApiUrl)
-        .then(handleErrors)
-        .then((res) => res.json());
-};
-
-var updateSubscription = function (params = {}) {
-    return fetch(`${apiBaseURL}subscriptions/${params.id}`, {
-        method: 'PUT',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(params)
-    })
-    .then(handleErrors)
-    .then((res) => res.json());
-};
-
-var cancelSubscription = function () {
-    return fetch(`${apiBaseURL}subscriptions`, {
-        method: 'DELETE'
-    })
-    .then(handleErrors)
-    .then((res) => res.json());
-};
-
-// open credit card form
-var updateCreditCard = function () {
-    return Promise.resolve({
-        firebase: false
-    });
-};
-
-var getPlans = function () {
-    return fetch(`${apiBaseURL}plans/startup`)
-        .then(handleErrors)
-        .then((res) => res.json());
-};
-
-var signin = function (params = {}) {
-    return fetch(`${apiBaseURL}signin`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(params)
-        })
-        .then(handleErrors)
-        .then((res) => res.json());
-};
-
-var logout = function () {
-    return fetch(`${baseURL}logout`);
-};
-
-var forgot = function (params = {}) {
-    return fetch(`${apiBaseURL}forgot`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(params)
-    })
-    .then(handleErrors)
-    .then((res) => res.json());
-};
-
-var importTemplates = function () {
-    // need to handle upload on the client.
-    // can't send file object through message.
-    return Promise.resolve({
-        firebase: false
-    });
-};
-
-var noop = function () {
     return Promise.resolve();
 };
 
@@ -846,11 +314,6 @@ export default {
     setSettings: setSettings,
 
     getLoginInfo: getLoginInfo,
-    getAccount: getAccount,
-    setAccount: setAccount,
-
-    getMembers: getMembers,
-    setMember: setMember,
 
     getTemplate: getTemplate,
     updateTemplate: updateTemplate,
@@ -858,27 +321,5 @@ export default {
     deleteTemplate: deleteTemplate,
     clearLocalTemplates: clearLocalTemplates,
 
-    getSharing: getSharing,
-    updateSharing: updateSharing,
-
-    getStats: getStats,
-
-    getPlans: getPlans,
-    getSubscription: getSubscription,
-    updateSubscription: updateSubscription,
-    cancelSubscription: cancelSubscription,
-    updateCreditCard: updateCreditCard,
-
-    syncNow: syncNow,
-    syncLocal: syncLocal,
-
-    signin: signin,
-    logout: logout,
-    forgot: forgot,
-    importTemplates: importTemplates,
-
-    addAttachments: noop,
-    removeAttachments: noop,
-
-    migrate: noop
+    syncNow: syncNow
 };
