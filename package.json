@@ -59,7 +59,7 @@
         "bootstrap": "^3.3.5",
         "css-toggle-switch": "^4.1.0",
         "font-awesome": "^4.5.0",
-        "fuse.js": "^5.2.3",
+        "fuse.js": "^6.0.0",
         "handlebars": "^4.5.3",
         "jquery": "^3.5.1",
         "js-md5": "^0.7.3",

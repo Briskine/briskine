@@ -90,6 +90,7 @@ export default function search (list = [], text = '') {
     }
 
     const options = {
+        useExtendedSearch: true,
         keys: [
             {
                 name: 'shortcut',
