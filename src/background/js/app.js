@@ -113,7 +113,6 @@ gApp.config(function ($routeProvider, $compileProvider, $sceDelegateProvider, $l
     $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|chrome-extension):/);
     $sceDelegateProvider.resourceUrlWhitelist([
         'self',
-        'https://chrome.gorgias.io/**',
         'http://localhost:*/**',
         `${Config.websiteUrl}/**`
     ]);
