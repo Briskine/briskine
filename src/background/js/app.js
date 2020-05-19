@@ -36,6 +36,7 @@ import InstallService from './services/install-templates';
 import StatsService from './services/stats';
 import {gravatar, safe, fuzzy, tagFilter, sharingFilter, newlines, truncate, stripHTML} from './filters';
 import SidebarCtrl from './controllers/sidebar';
+// TODO remove login and forgot controllers
 import LoginCtrl from './controllers/includes/login';
 import ForgotCtrl from './controllers/includes/forgot';
 import ImportCtrl from './controllers/includes/import';
@@ -55,6 +56,8 @@ import subscriptionCancel from './subscription/subscription-cancel';
 import subscriptionPremium from './subscription/subscription-premium';
 import subscriptionCanceledNotice from './subscription/subscription-canceled-notice';
 import subscriptionHint from './subscription/subscription-hint';
+import login from './login/login';
+import forgot from './login/forgot';
 
 import store from '../../store/store-client';
 
@@ -102,13 +105,17 @@ gApp
 .component('subscriptionCancel', subscriptionCancel)
 .component('subscriptionPremium', subscriptionPremium)
 .component('subscriptionCanceledNotice', subscriptionCanceledNotice)
-.component('subscriptionHint', subscriptionHint);
+.component('subscriptionHint', subscriptionHint)
+.component('login', login)
+.component('forgot', forgot);
 
 gApp.config(function() {
     tinyMCE.baseURL = 'tinymce';
 });
 
 gApp.config(function ($routeProvider, $compileProvider, $sceDelegateProvider, $locationProvider) {
+    'ngInject';
+
     $locationProvider.hashPrefix('');
     $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|chrome-extension):/);
     $sceDelegateProvider.resourceUrlWhitelist([
@@ -173,6 +180,7 @@ gApp.config(function ($routeProvider, $compileProvider, $sceDelegateProvider, $l
             controller: 'SubscriptionsCtrl',
             templateUrl: 'views/account/base.html'
         })
+        // TODO remove stats functionality
         .when('/account/stats', {
             controller: 'StatsCtrl',
             templateUrl: 'views/account/base.html'
@@ -205,7 +213,7 @@ gApp.config(['$compileProvider', function ($compileProvider) {
 /* Global run
  */
 gApp.run(function ($rootScope, $location, $timeout, ProfileService, SettingsService) {
-    $rootScope.$on('$routeChangeStart', function () {
+    $rootScope.$on('$routeChangeStart', () => {
         $rootScope.path = $location.path();
     });
 
@@ -256,7 +264,6 @@ gApp.run(function ($rootScope, $location, $timeout, ProfileService, SettingsServ
                 return $rootScope.logOut();
             }
 
-            $rootScope.loginChecked = true;
             if (data.is_loggedin) {
                 $rootScope.isLoggedIn = true;
             }
@@ -280,6 +287,9 @@ gApp.run(function ($rootScope, $location, $timeout, ProfileService, SettingsServ
             });
         }).catch(function () {
             SettingsService.set("isLoggedIn", false);
+            return;
+        }).then(() => {
+            $rootScope.loginChecked = true;
         });
     };
 

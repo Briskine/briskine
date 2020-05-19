@@ -9,7 +9,9 @@
 </head>
 <body key-trap>
 
-<div class="container">
+<login ng-if="!isLoggedIn && loginChecked"></login>
+
+<div class="container" ng-if="isLoggedIn">
     <div class="sidebar-wrapper" ng-controller="SidebarCtrl">
         <div class="sidebar-profile">
             <div class="profile">
