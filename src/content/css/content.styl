@@ -359,3 +359,32 @@ $padding = 8px;
     width: 220px;
     border: 0;
 }
+
+/* Login notice
+ */
+.qt-info {
+    display: none;
+    padding: 8px;
+    background-color: rgba(217,237,247,0.2);
+    border-bottom: 1px solid #bce8f1;
+
+    color: #31708f;
+}
+
+.qt-info a {
+    display: inline-block;
+    padding: .2em;
+
+    color: #1155cc;
+    font-weight: bold;
+    text-decoration: underline;
+}
+
+.qt-info a:hover,
+.qt-info a:active {
+    text-decoration: none;
+}
+
+.qt-logged-out .qt-info {
+    display: block;
+}
