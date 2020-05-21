@@ -38,9 +38,6 @@ import InstallService from './services/install-templates';
 import StatsService from './services/stats';
 import {gravatar, safe, fuzzy, tagFilter, sharingFilter, newlines, truncate, stripHTML} from './filters';
 import SidebarCtrl from './controllers/sidebar';
-// TODO remove login and forgot controllers
-import LoginCtrl from './controllers/includes/login';
-import ForgotCtrl from './controllers/includes/forgot';
 import ImportCtrl from './controllers/includes/import';
 import ListCtrl from './controllers/list';
 import SettingsCtrl from './controllers/settings';
@@ -89,8 +86,6 @@ gApp
 .filter('truncate', truncate)
 .filter('stripHTML', stripHTML)
 .controller('SidebarCtrl', SidebarCtrl)
-.controller('LoginCtrl', LoginCtrl)
-.controller('ForgotCtrl', ForgotCtrl)
 .controller('ListCtrl', ListCtrl)
 .controller('TemplateFormCtrl', TemplateFormCtrl)
 .controller('ShareFormCtrl', ShareFormCtrl)
