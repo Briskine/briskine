@@ -28,6 +28,7 @@ export default {
             }
 
             ctrl.loading = true;
+            ctrl.error = null;
             store.signin(ctrl.credentials)
                 .then(function success(){
                     SettingsService.set('isLoggedIn', true).then(window.location.reload(true));
@@ -70,7 +71,7 @@ export default {
                                     Sign in
                                 </h1>
 
-                                <div id="signin-error" class="alert alert-danger" role="alert" ng-show="$ctrl.error != null">
+                                <div class="alert alert-danger" role="alert" ng-show="$ctrl.error != null">
                                     <p>{{ $ctrl.error }}</p>
                                 </div>
                                 <form ng-submit="$ctrl.signin()">

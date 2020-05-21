@@ -14,7 +14,13 @@ export default {
             email: ''
         };
 
-        ctrl.error = null;
+        const getStatus = (message = '', type = 'info') => {
+            return {
+                type: type,
+                message: message
+            };
+        };
+        ctrl.status = getStatus();
 
         ctrl.submit = function () {
             if (ctrl.loading) {
@@ -22,20 +28,23 @@ export default {
             }
 
             ctrl.loading = true;
+            ctrl.error = null;
+            ctrl.status = getStatus();
 
             store.forgot(ctrl.credentials)
-                .then(function success() {
-                    ctrl.error = null;
+                .then(() => {
+                    ctrl.status = getStatus('Check your email for instructions on how to change your password.', 'success');
                     return;
                 })
-                .catch(function error(response) {
+                .catch((response) => {
                     $timeout(() => {
                         if (response && response.error) {
-                            ctrl.error = response.error;
+                            ctrl.status = getStatus(response.error, 'danger');
                         } else {
-                            ctrl.error = 'Could not connect to password recovery server. Please try disabling your firewall or antivirus software and try again.';
+                            ctrl.status = getStatus('Could not connect to password recovery server. Please try disabling your firewall or antivirus software and try again.', 'danger');
                         }
                     });
+
                     return;
                 })
                 .then(() => {
@@ -58,8 +67,8 @@ export default {
                 We'll send you instructions for changing your password.
             </p>
 
-            <div id="error" class="alert alert-danger" role="alert" ng-show="$ctrl.error != null">
-                <p>{{ $ctrl.error }}</p>
+            <div class="alert alert-{{$ctrl.status.type}}" role="alert" ng-show="$ctrl.status.message">
+                <p>{{ $ctrl.status.message }}</p>
             </div>
             <form ng-submit="$ctrl.submit()">
                 <div class="form-group">
