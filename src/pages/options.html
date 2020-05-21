@@ -9,9 +9,13 @@
 </head>
 <body key-trap>
 
-<login ng-if="!isLoggedIn && loginChecked"></login>
+<login
+    ng-if="isLoggedIn === false"
+    export-templates="exportTemplates()"
+    >
+</login>
 
-<div class="container" ng-if="isLoggedIn">
+<div class="container" ng-if="isLoggedIn === true">
     <div class="sidebar-wrapper" ng-controller="SidebarCtrl">
         <div class="sidebar-profile">
             <div class="profile">

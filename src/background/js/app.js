@@ -24,6 +24,8 @@ import 'tinymce/plugins/textcolor';
 import 'tinymce/plugins/imagetools';
 import 'tinymce/plugins/code';
 
+import exportTemplates from './utils/export-templates';
+
 import '../css/background.styl';
 
 import Config from './config';
@@ -212,7 +214,9 @@ gApp.config(['$compileProvider', function ($compileProvider) {
 
 /* Global run
  */
-gApp.run(function ($rootScope, $location, $timeout, ProfileService, SettingsService) {
+gApp.run(function ($rootScope, $location, $timeout, ProfileService, SettingsService, TemplateService) {
+    'ngInject';
+
     $rootScope.$on('$routeChangeStart', () => {
         $rootScope.path = $location.path();
     });
@@ -223,8 +227,7 @@ gApp.run(function ($rootScope, $location, $timeout, ProfileService, SettingsServ
 
     $rootScope.userEmail = '';
     $rootScope.savedEmail = false;
-    $rootScope.loginChecked = false;
-    $rootScope.isLoggedIn = false;
+    $rootScope.isLoggedIn = null;
     $rootScope.isCustomer = null;
     $rootScope.currentSubscription = null;
 
@@ -286,10 +289,9 @@ gApp.run(function ($rootScope, $location, $timeout, ProfileService, SettingsServ
                 }
             });
         }).catch(function () {
+            $rootScope.isLoggedIn = false;
             SettingsService.set("isLoggedIn", false);
             return;
-        }).then(() => {
-            $rootScope.loginChecked = true;
         });
     };
 
@@ -352,4 +354,10 @@ gApp.run(function ($rootScope, $location, $timeout, ProfileService, SettingsServ
     };
 
     $rootScope.firestoreEnabled = window.FIRESTORE_ENABLED();
+
+    $rootScope.exportTemplates = function () {
+        TemplateService.quicktexts().then(function (templates) {
+            exportTemplates(templates);
+        });
+    };
 });

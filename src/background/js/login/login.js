@@ -4,6 +4,7 @@ import Config from '../config';
 
 export default {
     bindings: {
+        exportTemplates: '&'
     },
     controller: function LoginController (SettingsService, $timeout) {
         'ngInject';
@@ -132,7 +133,11 @@ export default {
                                     </p>
                                     <p>
                                         You can
-                                        <button type="button" class="btn btn-link">
+                                        <button
+                                            type="button"
+                                            class="btn btn-link"
+                                            ng-click="$ctrl.exportTemplates()"
+                                            >
                                             <strong>
                                                 export your templates
                                             </strong>
