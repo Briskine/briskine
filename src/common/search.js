@@ -30,7 +30,7 @@ function filterOperation (filter = {}, item = {}) {
     return operations.generic(filter, item);
 }
 
-function parseSearchString (searchString = '') {
+export function parseSearchString (searchString = '') {
     const tokens = searchString.toLowerCase().split(' ');
     const filters = [];
     const fuzzyTokens = [];
@@ -65,6 +65,74 @@ function parseSearchString (searchString = '') {
         }
 
         fuzzyTokens.push(token);
+    }
+
+    const text = fuzzyTokens.join(' ');
+
+    return {
+        filters: filters,
+        text: text
+    };
+}
+
+export function parseSearchStringNg (searchString = '') {
+    const filters = [];
+    const fuzzyTokens = [];
+
+    let value = '';
+    let filter = {};
+    for (let i = 0; i < searchString.length; i++) {
+        const token = searchString[i];
+        if (token === ':') {
+            // value so far was field
+            filter.field = fieldAlias(value);
+            value = '';
+
+            continue;
+        } else if (token === ' ') {
+            // when not in double-quote string
+            if (value && !value.startsWith('"')) {
+                if (filter.field) {
+                    filters.push(Object.assign({
+                        value: value.trim()
+                    }, filter));
+                    filter = {};
+                } else {
+                    fuzzyTokens.push(value.trim());
+                }
+
+                value = '';
+                continue;
+            }
+        } else if (token === '"') {
+            // double quote strings for filter values.
+            // if we have a filter in progress
+            if (filter.field) {
+                // if we have a value, we reached the the ending quote
+                if (value) {
+                    filters.push(Object.assign({
+                        // remove first quote character
+                        value: value.substring(1)
+                    }, filter));
+                    filter = {};
+                    value = '';
+
+                    continue;
+                }
+            }
+        }
+
+        value += token;
+    }
+
+    // handle leftover value when end of string reached
+    if (value) {
+        if (filter.field) {
+            filter.value = value.trim();
+            filters.push(filter);
+        } else {
+            fuzzyTokens.push(value.trim());
+        }
     }
 
     const text = fuzzyTokens.join(' ');
