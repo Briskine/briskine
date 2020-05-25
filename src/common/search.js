@@ -31,51 +31,6 @@ function filterOperation (filter = {}, item = {}) {
 }
 
 export function parseSearchString (searchString = '') {
-    const tokens = searchString.toLowerCase().split(' ');
-    const filters = [];
-    const fuzzyTokens = [];
-
-    for (let i = 0; i < tokens.length; i++) {
-        const token = tokens[i];
-        const fieldTokens = token.split(':');
-
-        if (fieldTokens.length > 1) {
-            const field = fieldAlias(fieldTokens[0]);
-            let value = fieldTokens[1];
-
-            // value could be after space.
-            // if value is not after space,
-            // or next value is advanced search operator,
-            // we add current token to the search string later.
-            const nextValue = tokens[i + 1];
-            if (!value && nextValue && !nextValue.includes(':')) {
-                value = nextValue;
-                // skip value token
-                i++;
-            }
-
-            if (value) {
-                filters.push({
-                    field: field,
-                    value: value
-                });
-
-                continue;
-            }
-        }
-
-        fuzzyTokens.push(token);
-    }
-
-    const text = fuzzyTokens.join(' ');
-
-    return {
-        filters: filters,
-        text: text
-    };
-}
-
-export function parseSearchStringNg (searchString = '') {
     const filters = [];
     const fuzzyTokens = [];
 
