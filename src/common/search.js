@@ -14,11 +14,11 @@ function fieldAlias (field = '') {
 
 const operations = {
     tag: function (filter, item) {
-        const tags = (item.tags || '').replace(/ /g, '').split(',');
-        return tags.includes(filter.value);
+        const tags = (item.tags || '').split(',').map((t) => lowerCase(t.trim()));
+        return tags.includes(lowerCase(filter.value));
     },
     generic: function (filter, item) {
-        return lowerCase(item[filter.field]) === filter.value;
+        return lowerCase(item[filter.field]) === lowerCase(filter.value);
     }
 };
 
