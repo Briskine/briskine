@@ -28,15 +28,17 @@ function generateManifest (env) {
         updatedManifestFile.content_scripts[0].matches.push('https://localhost/gmail/*');
     }
 
-    return new CopyWebpackPlugin([
-        {
-            from: './src/manifest.json',
-            transform: function () {
-                // generates the manifest file using the package.json information
-                return Buffer.from(JSON.stringify(updatedManifestFile));
+    return new CopyWebpackPlugin({
+        patterns: [
+            {
+                from: './src/manifest.json',
+                transform: function () {
+                    // generates the manifest file using the package.json information
+                    return Buffer.from(JSON.stringify(updatedManifestFile));
+                }
             }
-        }
-    ]);
+        ]
+    });
 }
 
 class ZipPlugin {
@@ -81,13 +83,15 @@ const commonConfig = function (env) {
                 cleanStaleWebpackAssets: false
             }),
             generateManifest(env),
-            new CopyWebpackPlugin([
-                { from: 'src/_locales/', to: '_locales/' },
-                { from: 'src/pages/', to: 'pages/' },
-                { from: 'src/icons/', to: 'icons/' },
-                { from: 'src/LICENSE', to: '' },
-                { from: 'node_modules/tinymce/skins/lightgray/', to: 'pages/tinymce/skins/lightgray/' },
-            ])
+            new CopyWebpackPlugin({
+                patterns: [
+                    { from: 'src/_locales/', to: '_locales/' },
+                    { from: 'src/pages/', to: 'pages/' },
+                    { from: 'src/icons/', to: 'icons/' },
+                    { from: 'src/LICENSE', to: '' },
+                    { from: 'node_modules/tinymce/skins/lightgray/', to: 'pages/tinymce/skins/lightgray/' },
+                ]
+            })
         ],
         devServer: devServer
     };
