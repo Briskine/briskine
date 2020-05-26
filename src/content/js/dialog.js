@@ -11,6 +11,7 @@ import PubSub from './patterns';
 import store from '../../store/store-client';
 import autocomplete from './autocomplete';
 import {isQuickButtonEnabled} from './utils';
+import enableDialogSearchAttr from './dialog-search-attr';
 
 var KEY_UP = 38;
 var KEY_DOWN = 40;
@@ -641,5 +642,7 @@ $.get(contentUrl, function (data) {
         dialog[v.split('.').slice(-1)] = data.slice(start + v.length + 3, end - 4);
     }
 }, "html");
+
+enableDialogSearchAttr();
 
 export default dialog;
