@@ -67,22 +67,6 @@
         <span class="fa fa-question-circle" data-toggle="tooltip" data-placement="bottom"
               data-original-title="The Quick Access button is placed in the right corner of input fields"></span>
     </div>
-    <div class="checkbox" ng-show="settings.dialog.enabled">
-        <label for="caseSensitive">
-            <input type="checkbox" id="caseSensitive" ng-model="settings.qaBtn.caseSensitiveSearch" ng-change="updateSettings()"/>
-            Enable Case Sensitive Search
-        </label>
-        <span class="fa fa-question-circle" data-toggle="tooltip" data-placement="bottom"
-              data-original-title="Enable case sensitive search in the search dialog"></span>
-    </div>
-    <div class="checkbox" ng-show="settings.dialog.enabled">
-        <label for="fuzzySearch">
-            <input type="checkbox" id="fuzzySearch" ng-model="settings.qaBtn.fuzzySearch" ng-change="updateSettings()"/>
-            Enable Fuzzy Search
-        </label>
-        <span class="fa fa-question-circle" data-toggle="tooltip" data-placement="bottom"
-              data-original-title="Enable fuzzy search in the search dialog"></span>
-    </div>
     <div class="form-group" ng-show="settings.dialog.enabled">
         <label for="dialog-shortcut" data-toggle="tooltip" data-placement="bottom"
                data-original-title="Setup keyboard shortcut that triggers the auto-complete dialog">
@@ -168,17 +152,6 @@
 
     <br/>
 
-
-    <h4>Other</h4>
-
-    <div class="checkbox">
-        <label for="sendStats" data-toggle="tooltip" data-placement="bottom"
-               data-original-title="Help improve Gorgias by sending anonymous statistics.">
-            <input type="checkbox" id="sendStats" ng-model="settings.stats.enabled" ng-change="updateSettings()"/>
-            Send usage statistics
-            <span class="fa fa-question-circle"></span>
-        </label>
-    </div>
     <div class="form-group">
         <a href="" class="btn btn-default" ng-click="resetSettings()">Reset Settings</a>
         <a href="" class="btn btn-default" ng-click="deleteAll()">Delete all templates</a>

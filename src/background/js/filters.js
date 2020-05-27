@@ -1,7 +1,7 @@
 import _ from 'underscore';
 import md5 from 'js-md5';
 
-import {fuzzySearch} from '../../common/helpers';
+import fuzzySearch from '../../common/search';
 
 // Truncate and end with ...
 export function truncate () {
@@ -103,10 +103,10 @@ export function sharingFilter () {
 }
 
 export function fuzzy () {
-    return function (list, text, options) {
+    return function (list, text) {
         if (!text) {
             return list;
         }
-        return fuzzySearch(list, text, options);
+        return fuzzySearch(list, text);
     };
 }

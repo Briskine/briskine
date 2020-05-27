@@ -2,34 +2,11 @@ import $ from 'jquery';
 import Papa from 'papaparse';
 
 import store from '../../../../store/store-client';
-import amplitude from '../../utils/amplitude';
-import Config from '../../config';
 
 export default function ImportCtrl ($scope, $rootScope, $timeout) {
     'ngInject';
     var self = this;
     self.uploading = false;
-
-    // legacy api import
-    var handleErrors = function (response) {
-        if (!response.ok) {
-            return response.clone().json().then((res) => {
-                return Promise.reject(res);
-            });
-        }
-        return response;
-    };
-
-    function legacyImport (params = {}) {
-        var formData = new FormData();
-        formData.append('file', params.file);
-        return fetch(`${Config.apiBaseURL}quicktexts/import`, {
-            method: 'POST',
-            body: formData
-        })
-        .then(handleErrors)
-        .then((res) => res.json());
-    }
 
     // firebase import
     function firebaseImport (params = {}) {
@@ -84,8 +61,6 @@ export default function ImportCtrl ($scope, $rootScope, $timeout) {
             return;
         }
 
-        amplitude.getInstance().logEvent("Imported template");
-
         self.uploading = true;
         var importParams = {
             file: file
@@ -96,7 +71,7 @@ export default function ImportCtrl ($scope, $rootScope, $timeout) {
                     return firebaseImport(importParams);
                 }
 
-                return legacyImport(importParams);
+                return;
             }).then(() => {
                 $timeout(function() {
                     $rootScope.$broadcast('templates-sync');

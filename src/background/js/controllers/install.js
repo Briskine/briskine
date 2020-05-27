@@ -1,5 +1,4 @@
 import {init as gorgiasDemoInit} from '../utils/demo';
-import amplitude from '../utils/amplitude';
 
 export default function InstallCtrl ($scope, $rootScope, $routeParams, InstallService, TemplateService) {
     'ngInject';
@@ -56,32 +55,16 @@ export default function InstallCtrl ($scope, $rootScope, $routeParams, InstallSe
         return res[0];
     };
 
-    ctrl.toggleLanguage = function (lang) {
-        amplitude.getInstance().logEvent("Wizard Language", {
-            iso: lang.iso,
-            enabled: lang.enabled
-        });
-    };
-
     // when a category is toggled, enable or disable all the templates inside it
     ctrl.toggleCategory = function (category) {
         for (var i in category.templates) {
             for (var j in category.templates[i]) {
                 category.templates[i][j].enabled = category.enabled;
-                amplitude.getInstance().logEvent("Wizard Template", {
-                    title: category.templates[i][j].title,
-                    enabled: category.enabled
-                });
             }
         }
     };
 
     ctrl.toggleTemplate = function (template) {
-        amplitude.getInstance().logEvent("Wizard Template", {
-            title: template[0].title,
-            enabled: template[0].enabled
-        });
-
         var langs = ctrl.enabledLanguages();
         for (var j in template) {
             var t = template[j];
@@ -117,11 +100,6 @@ export default function InstallCtrl ($scope, $rootScope, $routeParams, InstallSe
         ctrl.step = $routeParams.step || 'demo';
 
         ctrl.stepNumber = ctrl.steps.indexOf(ctrl.step);
-
-        // Send some info about the creation of templates
-        amplitude.getInstance().logEvent("Wizard Step", {
-            step: ctrl.step
-        });
 
         if (ctrl.step === 'demo' && !ctrl.demoPlayed) {
             gorgiasDemoInit();

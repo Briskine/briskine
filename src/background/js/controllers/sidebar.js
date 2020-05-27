@@ -1,5 +1,3 @@
-import amplitude from '../utils/amplitude';
-
 import Config from '../config';
 
 export default function SidebarCtrl ($scope, $location, $window,
@@ -58,14 +56,6 @@ export default function SidebarCtrl ($scope, $location, $window,
 
     $scope.toggleFilterTag = FilterTagService.toggleFilterTag;
     $scope.emptyFilterTags = FilterTagService.emptyFilterTags;
-
-
-
-    $scope.trackSettings = function(isLoggedIn) {
-        amplitude.getInstance().logEvent("Opened Settings", {
-            'isLoggedIn': isLoggedIn
-        });
-    };
 
     // event listeners
     $scope.$on('toggledFilterTag', function () {

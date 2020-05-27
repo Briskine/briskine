@@ -1,7 +1,6 @@
 import _ from 'underscore';
 
 import store from '../../../store/store-client';
-import amplitude from '../utils/amplitude';
 
 export default function QuicktextSharingService ($q) {
     'ngInject';
@@ -44,7 +43,6 @@ export default function QuicktextSharingService ($q) {
             action: 'create',
             send_email: send_email
         }).then((res) => {
-            amplitude.getInstance().logEvent('Shared Quicktext');
             deferred.resolve(res);
         });
         return deferred.promise;
@@ -62,7 +60,6 @@ export default function QuicktextSharingService ($q) {
                 user_id: userId
             }
         }).then(() => {
-            amplitude.getInstance().logEvent('Deleted Quicktext Sharing');
             deferred.resolve();
         });
         return deferred.promise;
