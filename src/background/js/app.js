@@ -35,7 +35,6 @@ import {AccountService, MemberService} from './services/account';
 import SubscriptionService from './services/subscription';
 import QuicktextSharingService from './services/sharing';
 import InstallService from './services/install-templates';
-import StatsService from './services/stats';
 import {gravatar, safe, fuzzy, tagFilter, sharingFilter, newlines, truncate, stripHTML} from './filters';
 import SidebarCtrl from './controllers/sidebar';
 import ImportCtrl from './controllers/includes/import';
@@ -47,7 +46,6 @@ import InstallCtrl from './controllers/install';
 import AccountCtrl from './controllers/account/account';
 import MembersCtrl from './controllers/account/members';
 import SubscriptionsCtrl from './controllers/account/subscriptions';
-import StatsCtrl from './controllers/account/stats';
 import fileread from './directives/fileread';
 import subscriptionActive from './subscription/subscription-active';
 import subscriptionUsers from './subscription/subscription-users';
@@ -76,7 +74,6 @@ gApp
 .service('MemberService', MemberService)
 .service('QuicktextSharingService', QuicktextSharingService)
 .service('InstallService', InstallService)
-.service('StatsService', StatsService)
 .filter('gravatar', gravatar)
 .filter('safe', safe)
 .filter('fuzzy', fuzzy)
@@ -95,7 +92,6 @@ gApp
 .controller('AccountCtrl', AccountCtrl)
 .controller('MembersCtrl', MembersCtrl)
 .controller('SubscriptionsCtrl', SubscriptionsCtrl)
-.controller('StatsCtrl', StatsCtrl)
 .directive('fileread', fileread)
 .component('subscriptionActive', subscriptionActive)
 .component('subscriptionUsers', subscriptionUsers)
@@ -175,11 +171,6 @@ gApp.config(function ($routeProvider, $compileProvider, $sceDelegateProvider, $l
         })
         .when('/account/subscriptions', {
             controller: 'SubscriptionsCtrl',
-            templateUrl: 'views/account/base.html'
-        })
-        // TODO remove stats functionality
-        .when('/account/stats', {
-            controller: 'StatsCtrl',
             templateUrl: 'views/account/base.html'
         })
         .when('/installed', {
