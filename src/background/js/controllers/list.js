@@ -458,50 +458,16 @@ export default function ListCtrl ($route, $q, $scope, $rootScope, $routeParams, 
             return TemplateService.tags(template);
         };
 
-        // free account warnings
+        // free account warning
         $scope.freeLimit = 30;
-        const warningLimit = 7;
-        let cachedLoggedIn = null;
         let cachedPlan = '';
-        SettingsService.get('isLoggedIn').then((loggedIn) => {
-            cachedLoggedIn = loggedIn;
-
-            if (loggedIn) {
-                AccountService.get()
-                    .then((account) => {
-                        cachedPlan = account.current_subscription.plan;
-                    })
-                    .catch(() => {
-                        // logged-out
-                    });
-            }
-
-            return;
-        });
-
-        $scope.isAuthenticated = function () {
-            return cachedLoggedIn;
-        };
+        AccountService.get()
+            .then((account) => {
+                cachedPlan = account.current_subscription.plan;
+            });
 
         $scope.isFree = function () {
-            // authentication wasn't checked yet
-            if (cachedLoggedIn === null) {
-                return false;
-            }
-
-            return (
-                // anonymous users are free
-                !$scope.isAuthenticated() ||
-                cachedPlan === 'free'
-            );
-        };
-
-        $scope.showAuthWarning = function () {
-            return (
-                !$scope.isAuthenticated() &&
-                $scope.templates.length >= warningLimit &&
-                $scope.templates.length < $scope.freeLimit
-            );
+            return cachedPlan === 'free';
         };
 
         $scope.reachedFreeLimit = function () {
