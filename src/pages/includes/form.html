@@ -16,12 +16,6 @@
                     <div class="modal-body">
                         <input type="hidden" id="qt-id" ng-model="templateForm.selectedTemplate.id"/> <!-- local id -->
                         <input type="hidden" id="qt-key" ng-model="templateForm.selectedTemplate.key"/>
-                        <!-- sync server id -->
-                        <div id="duplicate-alert-box" class="alert alert-info fade in hide">
-                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-                            <strong>Duplicated!</strong> Please edit this new template and hit <strong>Save
-                            template</strong>.
-                        </div>
 
                         <div class="row">
                             <div class="col-xs-7">
@@ -200,8 +194,11 @@
                         <div class="footer-button">
                             <span ng-show="templateForm.selectedTemplate.id">
                                 <button
-                                    class="btn btn-default pull-left"
+                                    type="button"
                                     tabindex="-1"
+                                    ng-class="['btn btn-default pull-left', {
+                                        'btn-loading': templateForm.duplicateLoading
+                                    }]"
                                     ng-click="templateForm.duplicateQt()"
                                     ng-if="!reachedFreeLimit()"
                                 >
