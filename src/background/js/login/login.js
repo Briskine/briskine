@@ -57,7 +57,7 @@ export default {
         <div class="login">
             <div class="container">
                 <div class="row">
-                    <div class="col-md-4 col-md-offset-4">
+                    <div class="col-lg-6 col-lg-offset-3">
 
                         <div class="text-center">
                             <a href="{{$ctrl.websiteUrl}}" target="_blank" class="login-logo">
