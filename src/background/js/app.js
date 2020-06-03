@@ -256,32 +256,13 @@ gApp.run(function ($rootScope, $location, $timeout, ProfileService, SettingsServ
 
     $rootScope.checkLoggedIn = function () {
         store.getLoginInfo()
-        .then(function (data) {
-            // force log-out on users migrated to firestore
-            if (data.logout) {
-                return $rootScope.logOut();
-            }
+        .then(function () {
+            $rootScope.isLoggedIn = true;
+            SettingsService.set("isLoggedIn", true);
 
-            if (data.is_loggedin) {
-                $rootScope.isLoggedIn = true;
-            }
-
-            SettingsService.set("isLoggedIn", data.is_loggedin).then(function () {
-                if (data.is_loggedin) {
-                    if (!data.editor.enabled) { // disable editor if disabled server side
-                        SettingsService.get("settings").then(function (settings) {
-                            settings.editor = data.editor;
-                            SettingsService.set("settings", settings);
-                        });
-                    }
-
-                    store.getAccount().then(function (data) {
-                        $rootScope.currentSubscription = data.current_subscription;
-                        $rootScope.isCustomer = data.is_customer;
-                    });
-                } else {
-                    SettingsService.set("isLoggedIn", false);
-                }
+            store.getAccount().then(function (data) {
+                $rootScope.currentSubscription = data.current_subscription;
+                $rootScope.isCustomer = data.is_customer;
             });
         }).catch(function () {
             $rootScope.isLoggedIn = false;
