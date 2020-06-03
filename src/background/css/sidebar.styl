@@ -12,6 +12,7 @@
     .sidebar-container {
         overflow-y: auto;
         height: 100%;
+        width: 100%;
         padding-left: 10px;
         padding-bottom: 100px;
         float: left;
@@ -40,7 +41,11 @@
         }
 
         .tags-wrapper a {
+            overflow: hidden;
             padding: 3px 15px;
+
+            white-space: nowrap;
+            text-overflow: ellipsis;
         }
     }
 
