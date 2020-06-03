@@ -2,6 +2,8 @@
 import $ from 'jquery';
 import Mousetrap from 'mousetrap';
 
+import exportTemplates from '../utils/export-templates';
+
 export default function SettingsCtrl ($scope, $rootScope, $timeout, AccountService, TemplateService, SettingsService) {
     'ngInject';
     $scope.activeTab = "settings";
@@ -84,5 +86,38 @@ export default function SettingsCtrl ($scope, $rootScope, $timeout, AccountServi
         if (r === true) {
             SettingsService.reset();
         }
+    };
+
+    $scope.exportLocal = function () {
+        chrome.storage.local.get(null, (data) => {
+            const legacyTemplates = Object.keys(data)
+                .filter((key) => {
+                    const item = data[key];
+                    if (typeof item === 'object' && item.id && item.body) {
+                        return true;
+                    }
+
+                    return false;
+                })
+                .map((key) => {
+                    return data[key];
+                });
+
+            const templates = Object.keys((data.firestoreLocalData || {}))
+                .map((key) => {
+                    return data[key];
+                })
+                .filter((item) => {
+                    // de-duplicate by body
+                    if (!legacyTemplates.find((legacy) => legacy.body === item.body)) {
+                        return true;
+                    }
+
+                    return false;
+                })
+                .concat(legacyTemplates);
+
+            exportTemplates(templates);
+        });
     };
 }

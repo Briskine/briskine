@@ -149,11 +149,21 @@
             Sort templates alphabetically in the Auto-complete Dialog.
         </label>
     </div>
-
     <br/>
 
     <div class="form-group">
         <a href="" class="btn btn-default" ng-click="resetSettings()">Reset Settings</a>
         <a href="" class="btn btn-default" ng-click="deleteAll()">Delete all templates</a>
+    </div>
+    <br>
+
+    <h4>Export local data</h4>
+    <p class="help-block">
+        Export your local templates (saved on your computer), in case some of them failed to sync to your account.
+    </p>
+    <div class="form-group">
+        <button type="button" class="btn btn-default" ng-click="exportLocal()">
+            Export local data
+        </button>
     </div>
 </form>
