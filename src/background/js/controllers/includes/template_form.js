@@ -431,12 +431,19 @@ export default function TemplateFormCtrl ($route, $q, $scope, $rootScope, $route
             TemplateService.create(newQt)
                 .then(function (template) {
                     if (template && typeof template.id !== 'undefined') {
-                        $('.quicktext-modal').modal('hide');
+                        const $modal = $('.quicktext-modal');
+                        $modal.modal('hide');
 
-                        // timeout required for modal hide animation
-                        setTimeout(() => {
-                            $location.url(`/list?id=${template.id}`);
-                        }, 300);
+                        $modal.one('hidden.bs.modal', () => {
+                            // wait for the next digest to prevent list controller
+                            // from removing the search id
+                            $timeout(() => {
+                                $location.path('/list');
+                                $location.search({
+                                    id: template.id
+                                });
+                            });
+                        });
                     }
                     return;
                 })
