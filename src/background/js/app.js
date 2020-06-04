@@ -246,20 +246,24 @@ gApp.run(function ($rootScope, $location, $timeout, ProfileService, SettingsServ
     $rootScope.loadingSubscription = false;
 
     $rootScope.checkLoggedIn = function () {
-        store.getLoginInfo()
-        .then(function () {
-            $rootScope.isLoggedIn = true;
-            SettingsService.set("isLoggedIn", true);
+        return store.getLoginInfo()
+            .then(function () {
+                $timeout(() => {
+                    $rootScope.isLoggedIn = true;
+                });
+                SettingsService.set('isLoggedIn', true);
 
-            store.getAccount().then(function (data) {
-                $rootScope.currentSubscription = data.current_subscription;
-                $rootScope.isCustomer = data.is_customer;
+                store.getAccount().then(function (data) {
+                    $rootScope.currentSubscription = data.current_subscription;
+                    $rootScope.isCustomer = data.is_customer;
+                });
+            }).catch(function () {
+                $timeout(() => {
+                    $rootScope.isLoggedIn = false;
+                });
+                SettingsService.set('isLoggedIn', false);
+                return;
             });
-        }).catch(function () {
-            $rootScope.isLoggedIn = false;
-            SettingsService.set("isLoggedIn", false);
-            return;
-        });
     };
 
     // logout function
