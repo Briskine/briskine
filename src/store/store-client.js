@@ -113,13 +113,16 @@ if (backgroundPage) {
 }
 
 // handle trigger from background
-chrome.runtime.onMessage.addListener((req) => {
+chrome.runtime.onMessage.addListener((req, sender, sendResponse) => {
     if (
         req.type &&
         req.type === 'trigger'
     ) {
         trigger(req.data.name);
     }
+
+    sendResponse();
+    return false;
 });
 
 var optionsStore = {};
