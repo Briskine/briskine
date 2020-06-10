@@ -119,9 +119,9 @@ chrome.runtime.onMessage.addListener((req, sender, sendResponse) => {
         req.type === 'trigger'
     ) {
         trigger(req.data.name);
+        sendResponse();
     }
 
-    sendResponse();
     return false;
 });
 
