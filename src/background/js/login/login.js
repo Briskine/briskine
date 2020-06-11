@@ -45,7 +45,9 @@ export default {
                     return;
                 })
                 .then(() => {
-                    ctrl.loading = false;
+                    $timeout(() => {
+                        ctrl.loading = false;
+                    });
                 });
         };
 

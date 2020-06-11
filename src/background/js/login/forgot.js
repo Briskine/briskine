@@ -33,7 +33,9 @@ export default {
 
             store.forgot(ctrl.credentials)
                 .then(() => {
-                    ctrl.status = getStatus('Check your email for instructions on how to change your password.', 'success');
+                    $timeout(() => {
+                        ctrl.status = getStatus('Check your email for instructions on how to change your password.', 'success');
+                    });
                     return;
                 })
                 .catch((response) => {
@@ -48,7 +50,9 @@ export default {
                     return;
                 })
                 .then(() => {
-                    ctrl.loading = false;
+                    $timeout(() => {
+                        ctrl.loading = false;
+                    });
                 });
         };
     },
