@@ -13,6 +13,8 @@ import autocomplete from './autocomplete';
 import {isQuickButtonEnabled} from './utils';
 import enableDialogSearchAttr from './dialog-search-attr';
 
+const websiteUrl = 'https://www.gorgiastemplates.com';
+
 var KEY_UP = 38;
 var KEY_DOWN = 40;
 var KEY_ENTER = 13;
@@ -93,8 +95,16 @@ var dialog = {
         // to avoid issues with body content being completely replaced.
         var container = $(document.documentElement);
 
+        // login and signup links
+        const optionsUrl = chrome.extension.getURL('pages/options.html');
+        const signupUrl = `${websiteUrl}/signup`;
+        const parsedDialogTemplate = Handlebars.compile(this.template)({
+            optionsUrl: optionsUrl,
+            signupUrl: signupUrl
+        });
+
         // Add loading dropdown
-        var $dialog = $(this.template);
+        var $dialog = $(parsedDialogTemplate);
         container.append($dialog);
 
         //Gmail HACK: set z-index to auto to a parent, otherwise the autocomplete
@@ -146,6 +156,11 @@ var dialog = {
             var templateId = $(e.target).closest('.qt-item').data('id');
             var templateUrl = chrome.extension.getURL('pages/options.html' + '#/list?id=' + templateId + '&src=qa-dialog');
             window.open(templateUrl, 'gorgias-options');
+        });
+
+        // prevent closing the dialog when clicking the info box
+        $dialog.on('mousedown', '.qt-info', function (e) {
+            e.preventDefault();
         });
     },
     setupQuickButton: function () {
@@ -365,6 +380,17 @@ var dialog = {
         // focus the input focus after setting the position
         // because it messes with the window scroll focused
         $(dialog.searchSelector).focus();
+
+        // show or hide the login hint
+        const loggedOutClassName = 'qt-logged-out';
+        const dialogElement = document.querySelector(this.dialogSelector);
+        store.getLoginInfo()
+            .then(() => {
+                dialogElement.classList.remove(loggedOutClassName);
+            })
+            .catch(() => {
+                dialogElement.classList.add(loggedOutClassName);
+            });
     },
     setDialogPosition: function (positionNode) {
         if (!dialog.isActive) {

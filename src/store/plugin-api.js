@@ -175,7 +175,7 @@ var setSettings = function (params) {
 };
 
 var getLoginInfo = function () {
-    return Promise.reject();
+    return Promise.reject('logged-out');
 };
 
 var getTemplate = function (params = {}) {

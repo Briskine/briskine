@@ -407,6 +407,7 @@ export default function TemplateFormCtrl ($route, $q, $scope, $rootScope, $route
         };
 
         // Duplicate a quicktext, perform some checks before
+        self.duplicateLoading = false;
         self.duplicateQt = function () {
             if (!self.selectedTemplate.title) {
                 alert("Please enter a title");
@@ -424,17 +425,35 @@ export default function TemplateFormCtrl ($route, $q, $scope, $rootScope, $route
             if (newQt.shortcut) {
                 newQt.shortcut = newQt.shortcut + "-copy";
             }
-            $('.modal').on('hidden.bs.modal', function () {
-                $('#duplicate-alert-box').addClass('hide');
-            });
 
-            TemplateService.create(newQt).then(function (template) {
-                if (template && typeof template.id !== 'undefined') {
-                    $('#duplicate-alert-box').removeClass('hide');
-                    //$scope.reloadTemplates();
-                    //setTimeout(self.showForm(id), 500);
-                }
-            });
+            self.duplicateLoading = true;
+
+            TemplateService.create(newQt)
+                .then(function (template) {
+                    if (template && typeof template.id !== 'undefined') {
+                        const $modal = $('.quicktext-modal');
+                        $modal.modal('hide');
+
+                        $modal.one('hidden.bs.modal', () => {
+                            // wait for the next digest to prevent list controller
+                            // from removing the search id
+                            $timeout(() => {
+                                $location.path('/list');
+                                $location.search({
+                                    id: template.id
+                                });
+                            });
+                        });
+                    }
+                    return;
+                })
+                .catch((err) => {
+                    alert(err);
+                    return;
+                })
+                .then(() => {
+                    self.duplicateLoading = false;
+                });
         };
 
         self.revokeAllAccess = function(quicktexts) {

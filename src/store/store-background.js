@@ -75,7 +75,11 @@ var trigger = function (name) {
         }, (res) => {
             if (chrome.runtime.lastError) {
                 return debug(
-                    ['chrome.runtime.lastError', chrome.runtime.lastError.message],
+                    [
+                        'chrome.runtime.lastError',
+                        chrome.runtime.lastError.message,
+                        name
+                    ],
                     'warn'
                 );
             }

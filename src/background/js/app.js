@@ -24,6 +24,8 @@ import 'tinymce/plugins/textcolor';
 import 'tinymce/plugins/imagetools';
 import 'tinymce/plugins/code';
 
+import exportTemplates from './utils/export-templates';
+
 import '../css/background.styl';
 
 import Config from './config';
@@ -33,11 +35,8 @@ import {AccountService, MemberService} from './services/account';
 import SubscriptionService from './services/subscription';
 import QuicktextSharingService from './services/sharing';
 import InstallService from './services/install-templates';
-import StatsService from './services/stats';
 import {gravatar, safe, fuzzy, tagFilter, sharingFilter, newlines, truncate, stripHTML} from './filters';
 import SidebarCtrl from './controllers/sidebar';
-import LoginCtrl from './controllers/includes/login';
-import ForgotCtrl from './controllers/includes/forgot';
 import ImportCtrl from './controllers/includes/import';
 import ListCtrl from './controllers/list';
 import SettingsCtrl from './controllers/settings';
@@ -47,7 +46,6 @@ import InstallCtrl from './controllers/install';
 import AccountCtrl from './controllers/account/account';
 import MembersCtrl from './controllers/account/members';
 import SubscriptionsCtrl from './controllers/account/subscriptions';
-import StatsCtrl from './controllers/account/stats';
 import fileread from './directives/fileread';
 import subscriptionActive from './subscription/subscription-active';
 import subscriptionUsers from './subscription/subscription-users';
@@ -55,6 +53,8 @@ import subscriptionCancel from './subscription/subscription-cancel';
 import subscriptionPremium from './subscription/subscription-premium';
 import subscriptionCanceledNotice from './subscription/subscription-canceled-notice';
 import subscriptionHint from './subscription/subscription-hint';
+import login from './login/login';
+import forgot from './login/forgot';
 
 import store from '../../store/store-client';
 
@@ -74,7 +74,6 @@ gApp
 .service('MemberService', MemberService)
 .service('QuicktextSharingService', QuicktextSharingService)
 .service('InstallService', InstallService)
-.service('StatsService', StatsService)
 .filter('gravatar', gravatar)
 .filter('safe', safe)
 .filter('fuzzy', fuzzy)
@@ -84,8 +83,6 @@ gApp
 .filter('truncate', truncate)
 .filter('stripHTML', stripHTML)
 .controller('SidebarCtrl', SidebarCtrl)
-.controller('LoginCtrl', LoginCtrl)
-.controller('ForgotCtrl', ForgotCtrl)
 .controller('ListCtrl', ListCtrl)
 .controller('TemplateFormCtrl', TemplateFormCtrl)
 .controller('ShareFormCtrl', ShareFormCtrl)
@@ -95,20 +92,23 @@ gApp
 .controller('AccountCtrl', AccountCtrl)
 .controller('MembersCtrl', MembersCtrl)
 .controller('SubscriptionsCtrl', SubscriptionsCtrl)
-.controller('StatsCtrl', StatsCtrl)
 .directive('fileread', fileread)
 .component('subscriptionActive', subscriptionActive)
 .component('subscriptionUsers', subscriptionUsers)
 .component('subscriptionCancel', subscriptionCancel)
 .component('subscriptionPremium', subscriptionPremium)
 .component('subscriptionCanceledNotice', subscriptionCanceledNotice)
-.component('subscriptionHint', subscriptionHint);
+.component('subscriptionHint', subscriptionHint)
+.component('login', login)
+.component('forgot', forgot);
 
 gApp.config(function() {
     tinyMCE.baseURL = 'tinymce';
 });
 
 gApp.config(function ($routeProvider, $compileProvider, $sceDelegateProvider, $locationProvider) {
+    'ngInject';
+
     $locationProvider.hashPrefix('');
     $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|chrome-extension):/);
     $sceDelegateProvider.resourceUrlWhitelist([
@@ -173,10 +173,6 @@ gApp.config(function ($routeProvider, $compileProvider, $sceDelegateProvider, $l
             controller: 'SubscriptionsCtrl',
             templateUrl: 'views/account/base.html'
         })
-        .when('/account/stats', {
-            controller: 'StatsCtrl',
-            templateUrl: 'views/account/base.html'
-        })
         .when('/installed', {
             templateUrl: 'views/installed.html',
             reloadOnSearch: false
@@ -204,8 +200,10 @@ gApp.config(['$compileProvider', function ($compileProvider) {
 
 /* Global run
  */
-gApp.run(function ($rootScope, $location, $timeout, ProfileService, SettingsService) {
-    $rootScope.$on('$routeChangeStart', function () {
+gApp.run(function ($rootScope, $location, $timeout, ProfileService, SettingsService, TemplateService) {
+    'ngInject';
+
+    $rootScope.$on('$routeChangeStart', () => {
         $rootScope.path = $location.path();
     });
 
@@ -215,8 +213,7 @@ gApp.run(function ($rootScope, $location, $timeout, ProfileService, SettingsServ
 
     $rootScope.userEmail = '';
     $rootScope.savedEmail = false;
-    $rootScope.loginChecked = false;
-    $rootScope.isLoggedIn = false;
+    $rootScope.isLoggedIn = null;
     $rootScope.isCustomer = null;
     $rootScope.currentSubscription = null;
 
@@ -249,38 +246,24 @@ gApp.run(function ($rootScope, $location, $timeout, ProfileService, SettingsServ
     $rootScope.loadingSubscription = false;
 
     $rootScope.checkLoggedIn = function () {
-        store.getLoginInfo()
-        .then(function (data) {
-            // force log-out on users migrated to firestore
-            if (data.logout) {
-                return $rootScope.logOut();
-            }
+        return store.getLoginInfo()
+            .then(function () {
+                $timeout(() => {
+                    $rootScope.isLoggedIn = true;
+                });
+                SettingsService.set('isLoggedIn', true);
 
-            $rootScope.loginChecked = true;
-            if (data.is_loggedin) {
-                $rootScope.isLoggedIn = true;
-            }
-
-            SettingsService.set("isLoggedIn", data.is_loggedin).then(function () {
-                if (data.is_loggedin) {
-                    if (!data.editor.enabled) { // disable editor if disabled server side
-                        SettingsService.get("settings").then(function (settings) {
-                            settings.editor = data.editor;
-                            SettingsService.set("settings", settings);
-                        });
-                    }
-
-                    store.getAccount().then(function (data) {
-                        $rootScope.currentSubscription = data.current_subscription;
-                        $rootScope.isCustomer = data.is_customer;
-                    });
-                } else {
-                    SettingsService.set("isLoggedIn", false);
-                }
+                store.getAccount().then(function (data) {
+                    $rootScope.currentSubscription = data.current_subscription;
+                    $rootScope.isCustomer = data.is_customer;
+                });
+            }).catch(function () {
+                $timeout(() => {
+                    $rootScope.isLoggedIn = false;
+                });
+                SettingsService.set('isLoggedIn', false);
+                return;
             });
-        }).catch(function () {
-            SettingsService.set("isLoggedIn", false);
-        });
     };
 
     // logout function
@@ -342,4 +325,10 @@ gApp.run(function ($rootScope, $location, $timeout, ProfileService, SettingsServ
     };
 
     $rootScope.firestoreEnabled = window.FIRESTORE_ENABLED();
+
+    $rootScope.exportTemplates = function () {
+        TemplateService.quicktexts().then(function (templates) {
+            exportTemplates(templates);
+        });
+    };
 });

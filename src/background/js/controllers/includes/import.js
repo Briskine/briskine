@@ -44,7 +44,7 @@ export default function ImportCtrl ($scope, $rootScope, $timeout) {
             var existingShortcut = Object.keys(res).find((id) => {
                 return res[id].shortcut === template.shortcut;
             });
-            if (existingShortcut) {
+            if (existingShortcut && template.shortcut) {
                 return;
             }
 

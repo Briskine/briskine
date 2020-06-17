@@ -17,7 +17,7 @@
             <a class="btn btn-default" ng-click="exportTemplates()" ng-if="filteredTemplates.length">Export</a>
         </div>
         <div
-            ng-show="isAuthenticated() && !reachedFreeLimit()"
+            ng-show="!reachedFreeLimit()"
             class="btn-group btn-more pull-right"
             >
             <a
@@ -48,7 +48,6 @@
     <subscription-hint
         free-limit="freeLimit"
         reached-free-limit="reachedFreeLimit()"
-        show-auth-warning="showAuthWarning()"
         open-upgrade="openSubscribe()"
     >
     </subscription-hint>

@@ -1,8 +1,6 @@
-import Config from '../config';
-
-export default function SidebarCtrl ($scope, $location, $window,
-                                         AccountService, SettingsService, TemplateService, FilterTagService) {
+export default function SidebarCtrl ($scope, $location, AccountService, TemplateService, FilterTagService) {
     'ngInject';
+
     $scope.profile = {};
     $scope.filterTags = [];
     $scope.account = {
@@ -10,22 +8,10 @@ export default function SidebarCtrl ($scope, $location, $window,
         current_subscription: {}
     };
 
-    $window.addEventListener('message', function (e) {
-        if (e.data == "gorgias-signedup-reload") {
-            location.reload(true);
-        }
-    });
-
     // setup account
     function loadAccount() {
-        SettingsService.get("isLoggedIn").then(function (isLoggedIn) {
-            if (!isLoggedIn) {
-                return;
-            }
-
-            AccountService.get().then(function (account) {
-                $scope.account = account;
-            });
+        AccountService.get().then(function (account) {
+            $scope.account = account;
         });
     }
 
@@ -77,11 +63,8 @@ export default function SidebarCtrl ($scope, $location, $window,
 
     $scope.isFree = function () {
         return (
-            !$scope.isAuthenticated() ||
             $scope.account.current_subscription.plan === 'free' ||
             $scope.account.current_subscription.active === false
         );
     };
-
-    $scope.signupUrl = `${Config.websiteUrl}/signup`;
 }
