@@ -385,6 +385,17 @@ function migrateLegacyLocalData () {
     });
 }
 
+function splitFullName (fullname = '') {
+    const nameParts = fullname.trim().split(' ');
+    const firstName = nameParts.shift();
+    const lastName = nameParts.join(' ');
+
+    return {
+        firstName: firstName,
+        lastName: lastName
+    };
+}
+
 // HACK borrow settings from old api plugin
 let cachedSettings = null;
 var getSettings = (params = {}) => {
@@ -402,12 +413,14 @@ var getSettings = (params = {}) => {
                         return usersCollection.doc(user.id).get();
                     })
                     .then((userDoc) => {
-                        const userSettings = userDoc.data().settings;
+                        const userData = userDoc.data();
+                        const userSettings = userData.settings;
                         const settings = Object.assign(defaultSettings(localSettings), userSettings);
 
                         // backwards compatibility
                         // map to old format
                         cachedSettings = Object.assign({}, localSettings, {
+                            name: splitFullName(userData.full_name),
                             keyboard: {
                                 enabled: settings.expand_enabled,
                                 shortcut: settings.expand_shortcut
@@ -1685,6 +1698,7 @@ function syncSettings () {
     // invalidate settings cache
     cachedSettings = null;
     const settingsMap = {};
+    // TODO BUG on impersonate, this will overwrite the user's settings
     return _GORGIAS_API_PLUGIN.getSettings({
             key: 'settings'
         })
