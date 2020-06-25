@@ -454,7 +454,7 @@ var setSettings = (params = {}) => {
     if (params.key === 'settings') {
         return _GORGIAS_API_PLUGIN.setSettings(params)
             .then(() => {
-                return syncSettings();
+                return syncSettings(true);
             });
     }
 
@@ -1694,14 +1694,16 @@ function defaultSettings (oldSettings = {}) {
 }
 
 // save local settings in the db
-function syncSettings () {
+function syncSettings (forceLocal = false) {
     // invalidate settings cache
     cachedSettings = null;
     const settingsMap = {};
-    // TODO BUG on impersonate, this will overwrite the user's settings
-    return _GORGIAS_API_PLUGIN.getSettings({
-            key: 'settings'
-        })
+    const getSettingsParams = {
+        key: 'settings'
+    };
+    const getSettingsPromise = forceLocal ? _GORGIAS_API_PLUGIN.getSettings(getSettingsParams) : getSettings(getSettingsParams);
+
+    return getSettingsPromise
         .then((res) => {
             const settings = defaultSettings(res);
             Object.keys(settings).forEach((key) => {
