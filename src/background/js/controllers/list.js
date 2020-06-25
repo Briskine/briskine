@@ -81,7 +81,7 @@ export default function ListCtrl ($route, $q, $scope, $rootScope, $routeParams, 
                     $scope.account = account;
 
                     if (
-                        ($scope.account.info.share_all == "true" && (properties.list == "tag" || properties.list == "all")) ||
+                        ($scope.account.info.share_all == true && (properties.list == "tag" || properties.list == "all")) ||
                         properties.list == "shared"
                     ) {
                         $scope.sharing_setting = "everyone";

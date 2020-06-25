@@ -577,6 +577,10 @@ var setAccount = (params = {}) => {
             );
         }
 
+        updates.push(
+            userRef.update({share_all: params.share_all})
+        );
+
         return Promise.all(updates).then(() => {
             // update details in cached user
             return updateCurrentUser(firebase.auth().currentUser);
