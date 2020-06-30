@@ -118,16 +118,6 @@ export function TemplateService ($q, $rootScope, SettingsService) {
         return deferred.promise;
     };
 
-    //TODO: Decide here at some point
-    // delete all but don't delete from server
-    self.deleteAll = function () {
-        var deferred = $q.defer();
-        store.clearLocalTemplates().then(() => {
-            deferred.resolve();
-        });
-        return deferred.promise;
-    };
-
     // get all tags from a template
     self.tags = function (t) {
         var retTags = [];

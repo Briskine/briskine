@@ -1,4 +1,4 @@
-/* globals alert, confirm */
+/* globals confirm */
 import $ from 'jquery';
 import Mousetrap from 'mousetrap';
 
@@ -68,16 +68,6 @@ export default function SettingsCtrl ($scope, $rootScope, $timeout, AccountServi
         // if the url is blank, remove it
         if($scope.settings.blacklist[index].trim() === '') {
             $scope.settings.blacklist.splice(index, 1);
-        }
-    };
-
-    // Delete all templates. This will not delete the templates on the server side
-    $scope.deleteAll = function () {
-        var r = confirm("Are you sure you want to delete all templates?\n\nNote: they will NOT be deleted from the sync server if it's setup.");
-        if (r === true) {
-            TemplateService.deleteAll().then(function(){
-                alert("All templates have been deleted from your computer.");
-            });
         }
     };
 

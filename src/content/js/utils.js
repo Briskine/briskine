@@ -4,7 +4,6 @@
 
 import $ from 'jquery';
 import Handlebars from 'handlebars';
-import _ from 'underscore';
 
 export function isContentEditable (element) {
     return element && element.hasAttribute('contenteditable');
@@ -17,7 +16,7 @@ function PrepareVars (vars) {
 
     var prep = function (data) {
         // convert array to object
-        data = _.extend({}, data);
+        data = Object.assign({}, data);
         var flat = data[0];
         for (var i in flat) {
             if (flat.hasOwnProperty(i)) {
@@ -203,24 +202,21 @@ export function insertText (params = {}) {
 
 // replace from with name saved in settings
 function replaceFrom (from, setting) {
-    setting = _.extend({
+    setting = Object.assign({
         firstName: '',
         lastName: ''
     }, setting);
     from = from || [];
 
-    if (!_.isArray(from)) {
+    if (!Array.isArray(from)) {
         from = [from];
     }
 
     return from.map(function (f) {
-        var user = _.extend({}, f);
-        if (setting.firstName || setting.lastName) {
-            user.first_name = setting.firstName;
-            user.last_name = setting.lastName;
-            user.name = setting.firstName + ' ' + setting.lastName;
-        }
-
+        var user = Object.assign({}, f);
+        user.first_name = user.first_name || setting.firstName;
+        user.last_name = user.last_name || setting.lastName;
+        user.name = user.name || `${user.first_name} ${user.last_name}`;
         return user;
     });
 }

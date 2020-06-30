@@ -4,6 +4,7 @@ import firebase from '@firebase/app';
 import '@firebase/auth';
 import '@firebase/firestore';
 import '@firebase/storage';
+import {defaults as _defaults} from 'underscore';
 
 import Config from '../background/js/config';
 import firebaseConfig from './config-firebase';
@@ -384,9 +385,81 @@ function migrateLegacyLocalData () {
     });
 }
 
+function splitFullName (fullname = '') {
+    const nameParts = fullname.trim().split(' ');
+    const firstName = nameParts.shift();
+    const lastName = nameParts.join(' ');
+
+    return {
+        firstName: firstName,
+        lastName: lastName
+    };
+}
+
 // HACK borrow settings from old api plugin
-var getSettings = _GORGIAS_API_PLUGIN.getSettings;
-var setSettings = _GORGIAS_API_PLUGIN.setSettings;
+let cachedSettings = null;
+var getSettings = (params = {}) => {
+    if (params.key === 'settings') {
+        let localSettings = {};
+        return _GORGIAS_API_PLUGIN.getSettings(params)
+            .then((settings) => {
+                localSettings = settings;
+                if (cachedSettings) {
+                    return cachedSettings;
+                }
+
+                return getSignedInUser()
+                    .then((user) => {
+                        return usersCollection.doc(user.id).get();
+                    })
+                    .then((userDoc) => {
+                        const userData = userDoc.data();
+                        const userSettings = userData.settings;
+                        const settings = Object.assign(defaultSettings(localSettings), userSettings);
+
+                        // backwards compatibility
+                        // map to old format
+                        cachedSettings = Object.assign({}, localSettings, {
+                            name: splitFullName(userData.full_name),
+                            keyboard: {
+                                enabled: settings.expand_enabled,
+                                shortcut: settings.expand_shortcut
+                            },
+                            dialog: {
+                                enabled: settings.dialog_enabled,
+                                shortcut: settings.dialog_shortcut,
+                                limit: settings.dialog_limit
+                            },
+                            qaBtn: {
+                                enabled: settings.dialog_button
+                            },
+                            editor: {
+                                enabled: settings.rich_editor
+                            },
+                            blacklist: settings.blacklist,
+                            is_sort_template_dialog_gmail: settings.dialog_sort,
+                            is_sort_template_list: settings.dashboard_sort
+                        });
+
+                        return cachedSettings;
+                    });
+            });
+
+    }
+
+    return _GORGIAS_API_PLUGIN.getSettings(params);
+};
+
+var setSettings = (params = {}) => {
+    if (params.key === 'settings') {
+        return _GORGIAS_API_PLUGIN.setSettings(params)
+            .then(() => {
+                return syncSettings(true);
+            });
+    }
+
+    return _GORGIAS_API_PLUGIN.setSettings(params);
+};
 
 var LOGGED_OUT_ERR = 'logged-out';
 function isLoggedOut (err) {
@@ -503,6 +576,10 @@ var setAccount = (params = {}) => {
                 userRef.update({full_name: params.name})
             );
         }
+
+        updates.push(
+            userRef.update({share_all: params.share_all})
+        );
 
         return Promise.all(updates).then(() => {
             // update details in cached user
@@ -1582,6 +1659,68 @@ var importTemplates = () => {
     });
 };
 
+// map old settings to new format
+function defaultSettings (oldSettings = {}) {
+    const defaults = {
+        // tab expand
+        expand_enabled: true,
+        expand_shortcut: 'tab',
+        // dialog
+        dialog_enabled: true,
+        dialog_button: true,
+        dialog_shortcut: 'ctrl+space',
+        dialog_limit: 100,
+        // dialog sort alphabetically
+        dialog_sort: false,
+        // rich editor
+        rich_editor: true,
+        // blacklist
+        blacklist: [],
+        // dashboard sort alphabetically
+        dashboard_sort: false,
+    };
+
+    const mappedSettings = {
+        expand_enabled: oldSettings.keyboard.enabled,
+        expand_shortcut: oldSettings.keyboard.shortcut,
+        dialog_enabled: oldSettings.dialog.enabled,
+        dialog_button: oldSettings.qaBtn.enabled,
+        dialog_shortcut: oldSettings.dialog.shortcut,
+        dialog_limit: oldSettings.dialog.limit,
+        dialog_sort: oldSettings.is_sort_template_dialog_gmail,
+        rich_editor: oldSettings.editor.enabled,
+        blacklist: oldSettings.blacklist,
+        dashboard_sort: oldSettings.is_sort_template_list
+    };
+
+    // merge default with existing
+    return _defaults(Object.assign({}, mappedSettings), defaults);
+}
+
+// save local settings in the db
+function syncSettings (forceLocal = false) {
+    // invalidate settings cache
+    cachedSettings = null;
+    const settingsMap = {};
+    const getSettingsParams = {
+        key: 'settings'
+    };
+    const getSettingsPromise = forceLocal ? _GORGIAS_API_PLUGIN.getSettings(getSettingsParams) : getSettings(getSettingsParams);
+
+    return getSettingsPromise
+        .then((res) => {
+            const settings = defaultSettings(res);
+            Object.keys(settings).forEach((key) => {
+                settingsMap[`settings.${key}`] = settings[key];
+            });
+
+            return getSignedInUser();
+        })
+        .then((user) => {
+            return usersCollection.doc(user.id).update(settingsMap);
+        });
+}
+
 // sync local data when starting the app
 var syncNow = function () {
     // migrate legacy templates from chrome storage
@@ -1589,6 +1728,9 @@ var syncNow = function () {
         .then(() => {
             // sync local templates
             return syncLocalData();
+        })
+        .then(() => {
+            return syncSettings();
         });
 };
 
