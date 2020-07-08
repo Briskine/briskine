@@ -1603,9 +1603,35 @@ function updateCurrentUser (firebaseUser) {
 var signin = (params = {}) => {
     return firebase.auth().signInWithEmailAndPassword(params.email, params.password)
         .then((authRes) => {
+            window.TOGGLE_FIRESTORE(true);
             return updateCurrentUser(authRes.user);
-        }).catch((err) => {
+        })
+        .catch((err) => {
             return signinError(err);
+        });
+};
+
+var session = () => {
+    return getUserToken()
+        .then((tokenRes) => {
+            // create or refresh session
+            return request(`${Config.functionsUrl}/api/1/session`, {
+                    method: 'POST',
+                    body: {
+                        token: tokenRes.token
+                    }
+                });
+        })
+        .catch(() => {
+            // logged-out,
+            // check existing session
+            return request(`${Config.functionsUrl}/api/1/session`)
+                .then((res) => {
+                    return signinWithToken(res.token);
+                })
+                .catch(() => {
+                    // no existing session
+                });
         });
 };
 
@@ -1617,9 +1643,15 @@ var forgot = (params = {}) => {
 };
 
 var logout = () => {
-    return firebase.auth().signOut().then(() => {
-        return setSignedInUser({});
-    });
+    return firebase.auth().signOut()
+        .then(() => {
+            return request(`${Config.functionsUrl}/api/1/logout`, {
+                    method: 'POST'
+                });
+        })
+        .then(() => {
+            return setSignedInUser({});
+        });
 };
 
 function signinWithToken (token = '') {
@@ -1718,6 +1750,14 @@ function syncSettings (forceLocal = false) {
         })
         .then((user) => {
             return usersCollection.doc(user.id).update(settingsMap);
+        })
+        .catch((err) => {
+            if (isLoggedOut(err)) {
+                // logged-out
+                return;
+            }
+
+            throw err;
         });
 }
 
@@ -1851,5 +1891,6 @@ export default {
     signin: signin,
     logout: logout,
     forgot: forgot,
-    importTemplates: importTemplates
+    importTemplates: importTemplates,
+    session: session
 };

@@ -152,13 +152,8 @@ var App = {
                 key: 'settings'
             }).then((settings) => {
                 callback(settings, doc, disablePlugins);
-            });
-        },
-        isLoggedIn: function(callback) {
-            store.getSettings({
-                key: 'isLoggedIn'
-            }, function(isLoggedIn) {
-                callback(isLoggedIn);
+            }).catch(() => {
+                // logged-out
             });
         }
     }
@@ -263,6 +258,7 @@ $(function() {
         return; // don't load gorgias in non html pages (json, xml, etc..)
     }
 
-    //console.log("Loaded Gorgias in", window.location.href);
     App.settings.fetchSettings(App.init, window.document);
+
+    store.session();
 });

@@ -1,7 +1,6 @@
 /* globals ENV, console */
 import _FIRESTORE_PLUGIN from './plugin-firestore';
 import _GORGIAS_API_PLUGIN from './plugin-api';
-import Config from '../background/js/config';
 import './chrome-config';
 import './browseraction-icon';
 
@@ -23,40 +22,8 @@ window.FIRESTORE_ENABLED = function () {
     return firestoreEnabled();
 };
 
-// handle fetch errors
-var handleErrors = function (response) {
-    if (!response.ok) {
-        return response.clone().json().then((res) => {
-            return Promise.reject(res);
-        });
-    }
-    return response;
-};
-
 var signin = function (params = {}) {
-    return fetch(`${Config.functionsUrl}/api/1/signin`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(params)
-    })
-    .then(handleErrors)
-    .then((res) => res.json())
-    .then((res) => {
-        window.TOGGLE_FIRESTORE(true);
-
-        if (res.reset) {
-            _FIRESTORE_PLUGIN.forgot(params);
-
-            var error = `Please reset your password. \n\nWe sent you a password reset email because you haven't logged-in for a long time.`;
-            return Promise.reject({
-               error: error
-            });
-        }
-
-        return _FIRESTORE_PLUGIN.signin(params);
-    });
+    return _FIRESTORE_PLUGIN.signin(params);
 };
 
 var forgot = (params = {}) => {

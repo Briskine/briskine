@@ -321,5 +321,6 @@ export default {
     deleteTemplate: deleteTemplate,
     clearLocalTemplates: clearLocalTemplates,
 
-    syncNow: syncNow
+    syncNow: syncNow,
+    session: () => {}
 };

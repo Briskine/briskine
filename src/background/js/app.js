@@ -331,4 +331,7 @@ gApp.run(function ($rootScope, $location, $timeout, ProfileService, SettingsServ
             exportTemplates(templates);
         });
     };
+
+    // check session
+    store.session();
 });
