@@ -1658,22 +1658,16 @@ function signinWithToken (token = '') {
 window.SIGNIN_WITH_TOKEN = signinWithToken;
 
 var impersonate = function (params = {}) {
-    return getUserToken().then((res) => {
-        return fetch(`${Config.functionsUrl}/api/1/impersonate`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    uid: params.id,
-                    token: res.token
-                })
-            })
-            .then(handleErrors)
-            .then((res) => res.json());
-    }).then((res) => {
-        return signinWithToken(res.token);
-    });
+    return request(`${Config.functionsUrl}/api/1/impersonate`, {
+            method: 'POST',
+            authorization: true,
+            body: {
+                uid: params.id
+            }
+        })
+        .then((res) => {
+            return signinWithToken(res.token);
+        });
 };
 
 // make impersonate public
