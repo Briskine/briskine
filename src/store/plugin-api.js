@@ -305,7 +305,7 @@ var _clean_tags = function (tags) {
     return tags;
 };
 
-var syncNow = function () {
+var _noop = function () {
     return Promise.resolve();
 };
 
@@ -321,6 +321,6 @@ export default {
     deleteTemplate: deleteTemplate,
     clearLocalTemplates: clearLocalTemplates,
 
-    syncNow: syncNow,
-    session: () => {}
+    syncNow: _noop,
+    session: _noop
 };

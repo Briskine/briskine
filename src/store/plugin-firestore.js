@@ -1612,18 +1612,12 @@ var signin = (params = {}) => {
 };
 
 var session = () => {
-    return getUserToken()
-        .then((tokenRes) => {
-            // create or refresh session
-            return request(`${Config.functionsUrl}/api/1/session`, {
-                    method: 'POST',
-                    body: {
-                        token: tokenRes.token
-                    }
-                });
+    return request(`${Config.functionsUrl}/api/1/session`, {
+            method: 'POST',
+            authorization: true
         })
         .catch(() => {
-            // logged-out,
+            // logged-out
             // check existing session
             return request(`${Config.functionsUrl}/api/1/session`)
                 .then((res) => {
