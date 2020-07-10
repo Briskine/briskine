@@ -9,7 +9,7 @@ import $ from 'jquery';
 import Mousetrap from 'mousetrap';
 import 'mousetrap/plugins/global-bind/mousetrap-global-bind';
 
-import './content-helpers';
+import './helpers/content-helpers';
 import './events';
 import fuzzySearch from '../../common/search';
 
