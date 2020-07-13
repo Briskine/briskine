@@ -7,9 +7,13 @@ export function SettingsService ($q) {
     self.get = function (key, def) {
         var deferred = $q.defer();
         store.getSettings({
-            key: key,
-            def: def
-        }).then(deferred.resolve);
+                key: key,
+                def: def
+            })
+            .then(deferred.resolve)
+            .catch(() => {
+                // logged-out
+            });
         return deferred.promise;
     };
     self.set = function (key, val) {

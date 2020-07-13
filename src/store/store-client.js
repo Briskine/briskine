@@ -60,7 +60,8 @@ var methods = [
     'signin',
     'logout',
     'forgot',
-    'importTemplates'
+    'importTemplates',
+    'session'
 ];
 
 var events = [];

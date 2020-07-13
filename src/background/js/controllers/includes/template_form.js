@@ -99,8 +99,18 @@ export default function TemplateFormCtrl ($route, $q, $scope, $rootScope, $route
                                     { text: 'From: First Name', onclick: function() {self.insertVar('from.first_name');}},
                                     { text: 'From: Email', onclick: function() {self.insertVar('from.email');}},
                                     { text: 'Subject', onclick: function() {self.insertVar('subject');}},
-                                    { text: 'Date: Next week', onclick: function() {self.insertVar('date \'+7\' \'days\' \'DD MMMM\'');}},
-                                    { text: 'Date: Last week', onclick: function() {self.insertVar('date \'-7\' \'days\' \'YYYY-MM-DD\'');}},
+                                    {
+                                        text: 'Date: Next week',
+                                        onclick: function() {
+                                            self.insertVar(`moment add="7;days" format="DD MMMM"`);
+                                        }
+                                    },
+                                    {
+                                        text: 'Date: Last week',
+                                        onclick: function() {
+                                            self.insertVar(`moment subtract="7;days" format="YYYY-MM-DD"`);
+                                        }
+                                    },
                                     { text: 'Random choice', onclick: function() {self.insertVar('choice \'Hello, Hi, Hey\'');}},
                                     { text: 'Extract domain', onclick: function() {self.insertVar('domain to.email');}},
                                     { text: 'Learn more about template variables', onclick: function() {

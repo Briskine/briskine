@@ -1,10 +1,10 @@
 {
     "name": "gorgias",
-    "version": "6.9.1",
+    "version": "6.9.2",
     "description": "Write everything faster.",
     "main": "index.js",
     "scripts": {
-        "test": "mocha -r esm src/**/*.spec.js && yarn run lint",
+        "test": "mocha -r esm 'src/**/*.spec.js' && yarn run lint",
         "start": "webpack-dev-server --mode=development --env development -r esm",
         "staging": "(export NODE_ENV=staging && yarn start)",
         "build": "webpack -p --env production -r esm && webpack -p --env production --config-name package -r esm",
@@ -43,6 +43,7 @@
         "file-loader": "^6.0.0",
         "mini-css-extract-plugin": "^0.9.0",
         "mocha": "^8.0.1",
+        "mockdate": "^3.0.2",
         "stylus": "^0.54.5",
         "stylus-loader": "^3.0.2",
         "url-loader": "^4.0.0",
