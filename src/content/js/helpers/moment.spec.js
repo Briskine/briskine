@@ -39,6 +39,10 @@ describe('moment handlebars helper', () => {
         expect(parseTemplate('{{moment add="1;days" format="dddd" locale="fr"}}')).to.equal('jeudi');
     });
 
+    it('should show end of week', () => {
+        expect(parseTemplate('{{moment endOf="week"}}')).to.equal('July 04 2020');
+    });
+
     it('should show time from now', () => {
         expect(parseTemplate('{{moment "2020-07-10" fromNow=true}}')).to.equal('9 days');
     });
