@@ -3,7 +3,7 @@
         <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
             aria-hidden="true">&times;</span></button>
         <strong>Warning!</strong> For the changes to take effect, please refresh all tabs (web pages) where you are
-        using Gorgias.
+        using Gorgias Templates.
     </p>
 
     <h4>Keyboard Shortcut</h4>
@@ -81,10 +81,10 @@
 
     <br/>
 
-    <h4>Blacklist</h4>
+    <h4>Deny list</h4>
 
     <p class="help-block">
-        List of websites where Gorgias will not be active.
+        List of websites where Gorgias Templates will not be active.
     </p>
 
     <div class="blacklist-list">
@@ -94,21 +94,21 @@
             <input ng-model="settings.blacklist[$index]" placeholder="www.example.com" class="blacklist-item-url"
                    ng-blur="CheckBlacklistItem($index)">
 
-            <button type="button" class="blacklist-item-remove" title="Remove website from blacklist"
+            <button type="button" class="blacklist-item-remove" title="Remove website from deny list"
                     ng-click="RemoveBlacklistItem($index)">
                 <span class="fa fa-remove"></span>
             </button>
         </div>
 
         <div class="blacklist-blank-state" ng-if="settings.blacklist.length === 0">
-            You don't have any websites blacklisted.
+            You don't have any websites in the deny list.
         </div>
 
     </div>
 
     <div class="form-group">
         <button class="btn btn-default" ng-click="AddBlacklistItem()">
-            Add website to Blacklist
+            Add website to deny list
         </button>
     </div>
     <br/>

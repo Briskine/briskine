@@ -1,6 +1,6 @@
 {
     "name": "gorgias",
-    "version": "6.9.2",
+    "version": "6.9.3",
     "description": "Write everything faster.",
     "main": "index.js",
     "scripts": {
