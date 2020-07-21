@@ -259,6 +259,4 @@ $(function() {
     }
 
     App.settings.fetchSettings(App.init, window.document);
-
-    store.session();
 });
