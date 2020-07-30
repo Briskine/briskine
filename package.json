@@ -7,7 +7,7 @@
         "test": "mocha -r esm 'src/**/*.spec.js' && yarn run lint",
         "start": "webpack-dev-server --mode=development --env development -r esm",
         "staging": "(export NODE_ENV=staging && yarn start)",
-        "build": "webpack -p --env production -r esm && webpack -p --env production --config-name package -r esm",
+        "build": "webpack -p --env production -r esm",
         "lint": "jshint src/"
     },
     "repository": "https://github.com/gorgias/gorgias-chrome/",
