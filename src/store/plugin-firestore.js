@@ -442,6 +442,10 @@ var getSettings = (params = {}) => {
                         });
 
                         return cachedSettings;
+                    })
+                    .catch(() => {
+                        // return api-plugin settings when logged-out
+                        return localSettings;
                     });
             });
 
