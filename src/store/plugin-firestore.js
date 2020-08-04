@@ -1,9 +1,9 @@
 /* globals alert */
 // Firestore plugin
-import firebase from '@firebase/app';
-import '@firebase/auth';
-import '@firebase/firestore';
-import '@firebase/storage';
+import firebase from 'firebase/app';
+import 'firebase/auth';
+import 'firebase/firestore';
+import 'firebase/storage';
 import {defaults as _defaults} from 'underscore';
 
 import Config from '../background/js/config';
