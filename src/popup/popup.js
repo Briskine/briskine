@@ -1,5 +1,44 @@
-/* globals console */
-
 import './popup.css';
 
-console.log('start popup');
+import './popup-login';
+import './popup-dashboard';
+import store from '../store/store-client';
+
+customElements.define(
+    'popup-container',
+    class extends HTMLElement {
+        constructor() {
+            super();
+            this.loggedIn = null;
+
+            this.checkLogin();
+
+            this.addEventListener('render', () => {
+                // TODO check options page login on window.onfocus
+                this.checkLogin();
+            });
+        }
+        checkLogin() {
+            return store.getLoginInfo()
+                .then(() => {
+                    this.loggedIn = true;
+                    return;
+                })
+                .catch(() => {
+                    this.loggedIn = false;
+                    return;
+                })
+                .then(() => {
+                    return this.connectedCallback();
+                });
+        }
+        connectedCallback() {
+            this.innerHTML = `
+                <div class="popup-container">
+                    ${this.loggedIn === true ? `<popup-dashboard></popup-dashboard>` : ''}
+                    ${this.loggedIn === false ? `<popup-login></popup-login>` : ''}
+                </div>
+            `;
+        }
+    }
+);

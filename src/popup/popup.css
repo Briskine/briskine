@@ -4,7 +4,15 @@
 @import "~bootstrap/dist/css/bootstrap.css";
 
 body {
-    background: #efefef;
 }
+
+.popup-container {
+    min-width: 22em;
+}
+
+.popup-box {
+    padding: 1em;
+}
+
 
 
