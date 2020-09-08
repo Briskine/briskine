@@ -1,7 +1,7 @@
 import Config from '../background/js/config';
 import store from '../store/store-client';
 
-import {file, clone, cog} from './popup-icons';
+import {plusSquare, clone, cog} from './popup-icons';
 
 const optionsUrl = chrome.extension.getURL('pages/options.html');
 const optionsTarget = 'gt-options';
@@ -71,16 +71,16 @@ customElements.define(
         connectedCallback() {
             this.innerHTML = `
                 <div class="popup-dashboard">
-                    <div class="popup-box">
+                    <div class="popup-box popup-logo">
                         <a href="${Config.websiteUrl}" target="_blank">
                             <img src="../icons/templates-logotype.png" alt="Gorgias Templates"/>
                         </a>
                     </div>
 
-                    <ul class="list-unstyled ">
+                    <ul class="list-unstyled popup-menu">
                         <li>
                             <a href="${optionsUrl}#/list?id=new&src=popup" target="${optionsTarget}">
-                                <span class="icon">${file}</span>
+                                <span class="icon">${plusSquare}</span>
                                 New template
                             </a>
                         </li>
@@ -104,7 +104,7 @@ customElements.define(
                         </p>
 
                         ${this.isFree === false ? `
-                            <p>
+                            <p class="popup-quote">
                                 ${this.stats.words < 1500 ? `Big things have small beginnings &#128170;` : ''}
                                 ${this.stats.words > 1500 && this.stats.words < 2500 ? `Or the equivalent of writing a short story &#128214;` : ''}
                                 ${this.stats.words >= 2500 && this.stats.words < 7500 ? `Did you know mushrooms are one of the largest organisms in the world? &#127812;` : ''}
@@ -126,12 +126,12 @@ customElements.define(
                         ` : ''}
                     </div>
 
-                    <div class="popup-box">
-                        <strong>
+                    <div class="popup-box popup-status">
+                        <a href="${optionsUrl}#/account" target="${optionsTarget}" class="popup-user">
                             ${this.user.email}
-                        </strong>
+                        </a>
 
-                        <button type="button" class="js-logout">
+                        <button type="button" class="js-logout btn btn-link btn-logout">
                             Log out
                         </button>
                     </div>
