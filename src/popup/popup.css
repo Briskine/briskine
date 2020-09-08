@@ -3,8 +3,7 @@
 
 @import "~bootstrap/dist/css/bootstrap.css";
 
-body {
-}
+body {}
 
 .popup-container {
     min-width: 22em;
@@ -12,6 +11,32 @@ body {
 
 .popup-box {
     padding: 1em;
+}
+
+/* bootstrap
+ */
+a {
+    color: #1e48b3;
+}
+
+.btn {
+    border: 0;
+    border-radius: 3px;
+}
+
+.btn-primary {
+    background: #1e48b3;
+}
+
+.btn-primary:hover {
+    background: #003ad1;
+}
+
+/* popup-login
+ */
+.btn-login {
+    padding-left: 2em;
+    padding-right: 2em;
 }
 
 /* popup-dashboard
@@ -55,8 +80,9 @@ body {
 }
 
 .popup-stats {
-    background: rgb(30,72,179);
-    background: linear-gradient(345deg, rgba(30,72,179,1) 0%, rgba(30,113,179,1) 100%);
+    padding: 1.4em 1em;
+    background: #1e48b3;
+    background: linear-gradient(345deg, #1e48b3 0%, #0042d1 100%);
 
     color: #fff;
     text-align: center;

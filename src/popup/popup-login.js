@@ -14,33 +14,33 @@ customElements.define(
         }
         connectedCallback() {
             this.innerHTML = `
-                <div class="popup-login">
-                    <div class="popup-box text-center">
+                <div class="popup-login text-center">
+                    <div class="popup-box popup-logo">
                         <a href="${Config.websiteUrl}" target="_blank">
                             <img src="../icons/templates-logotype.png" alt="Gorgias Templates"/>
                         </a>
                     </div>
 
-                    <div class="popup-box text-center">
+                    <div class="popup-box">
                         <p>
                             <strong>
-                                Sign in to access your templates.
+                                Sign In to access your templates.
                             </strong>
                         </p>
 
-                        <button type="button" class="btn btn-primary js-signin">
+                        <button type="button" class="js-signin btn btn-primary btn-lg btn-login">
                             Sign In
                         </button>
+                    </div>
 
-                        <p class="text-muted">
-                            <small>
-                                Don't have an account yet?
-                                <br>
-                                <a href="${Config.websiteUrl}/signup" target="_blank">
-                                    Create a free account
-                                </a>
-                            </small>
-                        </p>
+                    <div class="popup-box text-muted">
+                        <small>
+                            Don't have an account yet?
+                            <br>
+                            <a href="${Config.websiteUrl}/signup" target="_blank">
+                                Create a free account
+                            </a>
+                        </small>
                     </div>
                 </div>
             `;
