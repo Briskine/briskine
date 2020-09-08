@@ -1,6 +1,9 @@
 import Config from '../background/js/config';
 import store from '../store/store-client';
 
+const optionsUrl = chrome.extension.getURL('pages/options.html');
+const optionsTarget = 'gt-options';
+
 function niceTime (minutes) {
     if (!minutes) {
         return "0min";
@@ -72,17 +75,17 @@ customElements.define(
 
                     <ul class="list-unstyled">
                         <li>
-                            <a href="#">
+                            <a href="${optionsUrl}#/list?id=new&src=popup" target="${optionsTarget}">
                                 New template
                             </a>
                         </li>
                         <li>
-                            <a href="#">
+                            <a href="${optionsUrl}" target="${optionsTarget}">
                                 Manage templates
                             </a>
                         </li>
                         <li>
-                            <a href="#">
+                            <a href="${optionsUrl}#/settings" target="${optionsTarget}">
                                 Settings
                             </a>
                         </li>
@@ -107,9 +110,9 @@ customElements.define(
                             Template Sharing.
                         </p>
 
-                        <button type="button">
+                        <a href="${optionsUrl}#/account/subscriptions" target="${optionsTarget}" class="btn btn-primary">
                             Upgrade to Premium
-                        </button>
+                        </a>
                     </div>
 
                     <div class="popup-box">

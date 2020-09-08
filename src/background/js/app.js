@@ -205,6 +205,14 @@ gApp.run(function ($rootScope, $location, $timeout, ProfileService, SettingsServ
 
     $rootScope.$on('$routeChangeStart', () => {
         $rootScope.path = $location.path();
+
+        if (
+            $rootScope.path.includes('/settings') ||
+            $rootScope.path.includes('/account')
+        ) {
+            // HACK hide all modals when switching to the settings pages
+            $('.modal').modal('hide');
+        }
     });
 
     var userAgent = window.navigator.userAgent;
