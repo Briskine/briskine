@@ -46,12 +46,17 @@ customElements.define(
                 time: '0min',
                 words: 0
             };
-
-            // TODO isFree
-            // TODO user email for rendering
-
             getStats().then((res) => {
                 this.stats = res;
+                this.connectedCallback();
+            });
+
+            this.user = {};
+            this.isFree = null;
+            store.getAccount().then((res) => {
+                this.user = res;
+                this.isFree = this.user.current_subscription.plan === 'free';
+
                 this.connectedCallback();
             });
 
@@ -93,27 +98,33 @@ customElements.define(
                             You saved <strong>${this.stats.time}</strong> using Gorgias Templates!
                         </p>
 
-                        <p>
-                        ${this.stats.words < 1500 ? `Big things have small beginnings &#128170;` : ''}
-                        ${this.stats.words > 1500 && this.stats.words < 2500 ? `Or the equivalent of writing a short story &#128214;` : ''}
-                        ${this.stats.words >= 2500 && this.stats.words < 7500 ? `Did you know mushrooms are one of the largest organisms in the world? &#127812;` : ''}
-                        ${this.stats.words >= 7500 ? `You're awesome. Just awesome. &#9996;` : ''}
-                        </p>
+                        ${this.isFree === false ? `
+                            <p>
+                                ${this.stats.words < 1500 ? `Big things have small beginnings &#128170;` : ''}
+                                ${this.stats.words > 1500 && this.stats.words < 2500 ? `Or the equivalent of writing a short story &#128214;` : ''}
+                                ${this.stats.words >= 2500 && this.stats.words < 7500 ? `Did you know mushrooms are one of the largest organisms in the world? &#127812;` : ''}
+                                ${this.stats.words >= 7500 ? `You're awesome. Just awesome. &#9996;` : ''}
+                            </p>
+                        ` : ''}
 
-                        <p>
-                            Go Premium to get
-                            Unlimited Templates
-                            and
-                            Template Sharing.
-                        </p>
+                        ${this.isFree === true ? `
+                            <p>
+                                Go Premium to get
+                                Unlimited Templates
+                                and
+                                Template Sharing.
+                            </p>
 
-                        <a href="${optionsUrl}#/account/subscriptions" target="${optionsTarget}" class="btn btn-primary">
-                            Upgrade to Premium
-                        </a>
+                            <a href="${optionsUrl}#/account/subscriptions" target="${optionsTarget}" class="btn btn-primary">
+                                Upgrade to Premium
+                            </a>
+                        ` : ''}
                     </div>
 
                     <div class="popup-box">
-                        user@email.com
+                        <strong>
+                            ${this.user.email}
+                        </strong>
 
                         <button type="button" class="js-logout">
                             Log out
