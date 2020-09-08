@@ -342,4 +342,9 @@ gApp.run(function ($rootScope, $location, $timeout, ProfileService, SettingsServ
 
     // check session
     store.session();
+
+    // reload page on external logout
+    store.on('logout', () => {
+        window.location.reload();
+    });
 });

@@ -47,6 +47,9 @@ customElements.define(
                 words: 0
             };
 
+            // TODO isFree
+            // TODO user email for rendering
+
             getStats().then((res) => {
                 this.stats = res;
                 this.connectedCallback();
@@ -54,15 +57,9 @@ customElements.define(
 
             this.addEventListener('click', (e) => {
                 if (e.target.classList.contains('js-logout')) {
-                    store.logout().then(() => {
-                        this.render();
-                    });
+                    store.logout();
                 }
             });
-        }
-        render() {
-            // render top component
-            return this.dispatchEvent(new CustomEvent('render', {bubbles: true}));
         }
         connectedCallback() {
             this.innerHTML = `

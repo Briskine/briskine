@@ -1649,6 +1649,9 @@ var logout = () => {
         })
         .then(() => {
             return setSignedInUser({});
+        })
+        .then(() => {
+            return window.store.trigger('logout');
         });
 };
 

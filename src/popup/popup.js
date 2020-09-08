@@ -13,8 +13,7 @@ customElements.define(
 
             this.checkLogin();
 
-            this.addEventListener('render', () => {
-                // TODO check options page login on window.onfocus
+            store.on('logout', () => {
                 this.checkLogin();
             });
         }
