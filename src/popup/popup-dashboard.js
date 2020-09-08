@@ -1,6 +1,8 @@
 import Config from '../background/js/config';
 import store from '../store/store-client';
 
+import {file, clone, cog} from './popup-icons';
+
 const optionsUrl = chrome.extension.getURL('pages/options.html');
 const optionsTarget = 'gt-options';
 
@@ -75,19 +77,22 @@ customElements.define(
                         </a>
                     </div>
 
-                    <ul class="list-unstyled">
+                    <ul class="list-unstyled ">
                         <li>
                             <a href="${optionsUrl}#/list?id=new&src=popup" target="${optionsTarget}">
+                                <span class="icon">${file}</span>
                                 New template
                             </a>
                         </li>
                         <li>
                             <a href="${optionsUrl}" target="${optionsTarget}">
+                                <span class="icon">${clone}</span>
                                 Manage templates
                             </a>
                         </li>
                         <li>
                             <a href="${optionsUrl}#/settings" target="${optionsTarget}">
+                                <span class="icon">${cog}</span>
                                 Settings
                             </a>
                         </li>

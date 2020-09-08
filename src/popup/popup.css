@@ -15,4 +15,17 @@ body {
 }
 
 
+/* icons
+ */
+
+.icon {
+    vertical-align: middle;
+}
+
+.icon svg {
+    display: inline;
+    width: 12px;
+}
+
+
 
