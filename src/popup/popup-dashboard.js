@@ -129,9 +129,14 @@ customElements.define(
                     </div>
 
                     <div class="popup-box popup-status">
-                        <a href="${optionsUrl}#/account" target="${optionsTarget}" class="popup-user">
+                        <a href="${optionsUrl}#/account" target="${optionsTarget}" class="popup-user" title="Account Settings for ${this.user.email}">
                             ${this.user.email}
                         </a>
+                        ${this.isFree === false ? `
+                            <span class="label-premium">
+                                Premium
+                            </span>
+                        ` : ''}
 
                         <button type="button" class="js-logout btn btn-link btn-logout">
                             Log out

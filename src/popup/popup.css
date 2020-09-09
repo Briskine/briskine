@@ -130,7 +130,6 @@ a {
 
 .popup-user,
 .btn-logout {
-    display: inline-block;
     padding-top: .4em;
     padding-bottom: .4em;
 
@@ -145,8 +144,13 @@ a {
 }
 
 .popup-user {
+    float: left;
     position: relative;
+    overflow: hidden;
     padding-left: 1em;
+    max-width: 12em;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .popup-user:before {
@@ -162,6 +166,18 @@ a {
     margin-right: .4em;
     background-color: #37c837;
     border-radius: 100%;
+}
+
+.label-premium {
+    float: left;
+    padding: .1em .4em;
+    margin: .3em 0 .3em .4em;
+    background-color: #ffcc00;
+    border-radius: 3px;
+
+    color: #3c3000;
+    font-weight: bold;
+    cursor: default;
 }
 
 /* icons
