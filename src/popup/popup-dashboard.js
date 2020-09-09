@@ -99,9 +99,11 @@ customElements.define(
                     </ul>
 
                     <div class="popup-box popup-stats">
-                        <p>
-                            You saved <strong>${this.stats.time}</strong> using Gorgias Templates!
-                        </p>
+                        ${this.stats.time !== '0min' ? `
+                            <p>
+                                You saved <strong>${this.stats.time}</strong> using Gorgias Templates!
+                            </p>
+                        ` : ''}
 
                         ${this.isFree === false ? `
                             <p class="popup-quote">
@@ -113,14 +115,14 @@ customElements.define(
                         ` : ''}
 
                         ${this.isFree === true ? `
-                            <p>
+                            <p class="label-upgrade">
                                 Go Premium to get
                                 Unlimited Templates
                                 and
                                 Template Sharing.
                             </p>
 
-                            <a href="${optionsUrl}#/account/subscriptions" target="${optionsTarget}" class="btn btn-primary">
+                            <a href="${optionsUrl}#/account/subscriptions" target="${optionsTarget}" class="btn btn-success btn-upgrade">
                                 Upgrade to Premium
                             </a>
                         ` : ''}
