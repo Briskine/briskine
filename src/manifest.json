@@ -1,7 +1,7 @@
 {
     "manifest_version": 2,
     "name": "__MSG_extName__",
-    "version": "6.9.5",
+    "version": "6.10.0",
     "description": "__MSG_extDesc__",
     "short_name": "Gorgias",
     "default_locale": "en",
@@ -47,7 +47,9 @@
         "default_icon": {
             "16": "icons/icon-16.png",
             "32": "icons/icon-32.png"
-        }
+        },
+        "default_title": "Gorgias Templates",
+        "default_popup": "popup/popup.html"
     },
     "content_security_policy": "script-src 'self'; object-src 'self'; frame-ancestors 'none'"
 }

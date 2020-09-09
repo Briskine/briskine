@@ -55,6 +55,65 @@ class ZipPlugin {
     }
 }
 
+class Deferred {
+    constructor() {
+        this.promise = new Promise((resolve, reject) => {
+            this.reject = reject
+            this.resolve = resolve
+        })
+    }
+}
+
+let doneStatus = {}
+
+class DonePlugin {
+    constructor (status, waitFor) {
+        this.name = 'DonePlugin';
+        this.status = status;
+        this.waitFor = waitFor;
+        doneStatus[status] = new Deferred();
+    }
+
+    apply (compiler) {
+        const logger = compiler.getInfrastructureLogger(this.name);
+
+        const hooks = [ 'watchRun', 'run' ];
+        hooks.forEach((hook) => {
+            compiler.hooks[hook].tapAsync(this.name, (tap, callback) => {
+                if (!this.waitFor) {
+                    logger.log(`Start ${this.status} config.`);
+                    return callback();
+                }
+
+                const done = doneStatus[this.waitFor]
+                done.promise.then(() => {
+                    logger.log(`${this.status} config is done.`);
+                    logger.log(`Start ${this.status} config.`);
+                    callback();
+                });
+            });
+        });
+
+        compiler.hooks.done.tap(this.name, (compilation) => {
+            doneStatus[this.status].resolve()
+        });
+    }
+}
+
+function sequence (configs = []) {
+    let waitFor
+    return configs.map((config, i) => {
+        // add doneplugin to each config
+        config.plugins.push(
+            new DonePlugin(config.name, waitFor)
+        )
+
+        waitFor = config.name
+        return config
+    })
+}
+
+
 function createPackage () {
     const filename = `${packageFile.name}-${manifestFile.version}.zip`;
     return {
@@ -74,6 +133,7 @@ function createPackage () {
 
 const commonConfig = function (env) {
     return {
+        name: 'common',
         output: {
             path: devPath
         },
@@ -99,6 +159,7 @@ const commonConfig = function (env) {
 
 const optionsConfig = function (env) {
     return {
+        name: 'options',
         entry: {
             background: './src/background/js/app.js'
         },
@@ -157,8 +218,59 @@ const optionsConfig = function (env) {
     };
 };
 
+const popupConfig = (env) => {
+    return {
+        name: 'popup',
+        entry: {
+            popup: './src/popup/popup.js'
+        },
+        output: {
+            path: path.resolve(devPath, 'popup'),
+            filename: '[name].js'
+        },
+        plugins: [
+            new MiniCssExtractPlugin({
+                filename: '[name].css'
+            }),
+            new webpack.DefinePlugin({
+                ENV: JSON.stringify(env),
+            }),
+            new CopyWebpackPlugin({
+                patterns: [
+                    { from: 'src/popup/popup.html', to: '' },
+                ]
+            })
+        ],
+        module: {
+            rules: [
+                {
+                    test: /\.(css|styl)$/i,
+                    use: [
+                        MiniCssExtractPlugin.loader,
+                        'css-loader'
+                    ],
+                },
+                {
+                    test: /\.(png|woff|woff2|eot|ttf|svg)$/,
+                    use: {
+                        loader: 'url-loader',
+                        options: {
+                            limit: 8192,
+                            outputPath: '../assets',
+                            publicPath: '/assets',
+                        }
+                    }
+                }
+            ]
+        },
+        devServer: devServer,
+        devtool: devtool
+    };
+};
+
 const contentConfig = () => {
     return {
+        name: 'content',
         entry: {
             content: './src/content/js/index.js'
         },
@@ -192,6 +304,7 @@ const contentConfig = () => {
 
 const storeConfig = (env) => {
     return {
+        name: 'store',
         entry: {
             content: './src/store/store-background.js'
         },
@@ -213,18 +326,20 @@ module.exports = mode => {
     const env = process.env.NODE_ENV || mode;
     if (env === 'production') {
         devtool = 'none';
-        return [
+        return sequence([
             commonConfig(env),
             storeConfig(env),
             contentConfig(),
             optionsConfig(env),
+            popupConfig(env),
             createPackage(),
-        ];
+        ]);
     }
-    return [
+    return sequence([
         commonConfig(env),
         storeConfig(env),
         contentConfig(),
         optionsConfig(env),
-    ];
+        popupConfig(env)
+    ]);
 };
