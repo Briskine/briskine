@@ -8,6 +8,7 @@ customElements.define(
 
             this.addEventListener('click', (e) => {
                 if (e.target.classList.contains('js-signin')) {
+                    // TODO check session first, then redirect to login
                     chrome.runtime.openOptionsPage();
                 }
             });

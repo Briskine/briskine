@@ -1,25 +1,15 @@
 /* globals ENV, console */
 import _FIRESTORE_PLUGIN from './plugin-firestore';
-import _GORGIAS_API_PLUGIN from './plugin-api';
 import './chrome-config';
 import './browseraction-icon';
 
-// can't use browser.storage
-// we need a synchronous api
-var firestoreSettingKey = 'firestoreEnabled';
-function firestoreEnabled () {
-    return (window.localStorage.getItem(firestoreSettingKey) === 'true') || false;
-}
-
-// firestore toggle
-window.TOGGLE_FIRESTORE = function (enabled = false) {
-    window.localStorage.setItem(firestoreSettingKey, `${enabled}`);
-
+// TODO deprecate firestore toggle
+window.TOGGLE_FIRESTORE = function () {
     refreshStore();
 };
 
 window.FIRESTORE_ENABLED = function () {
-    return firestoreEnabled();
+    return true;
 };
 
 var signin = function (params = {}) {
@@ -78,11 +68,7 @@ var getTemplate = function (plugin) {
 };
 
 function getStore () {
-    // enable api plugin by default
-    var activePlugin = _GORGIAS_API_PLUGIN;
-    if (firestoreEnabled()) {
-        activePlugin = _FIRESTORE_PLUGIN;
-    }
+    const activePlugin = _FIRESTORE_PLUGIN;
 
     var plugin = Object.assign({}, activePlugin);
 
