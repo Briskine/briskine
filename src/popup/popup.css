@@ -19,9 +19,23 @@ a {
     color: #1e48b3;
 }
 
-.btn {
-    border: 0;
+.btn,
+.alert,
+.form-control {
     border-radius: 3px;
+}
+
+.btn,
+.alert {
+    border: 0;
+}
+
+.alert {
+    font-weight: bold;
+}
+
+.btn {
+    overflow: hidden;
 }
 
 .btn-primary {
@@ -48,12 +62,60 @@ a {
     background-color: #00a576 !important;
 }
 
-/* popup-login
- */
-.btn-login {
+.btn-lg {
     padding-left: 2em;
     padding-right: 2em;
 }
+
+/* forms
+ */
+
+.form-control:focus {
+    box-shadow: none;
+    border-color: #1e48b3;
+}
+
+.btn-forgot {
+    padding: 0;
+}
+
+/* btn-loading
+ */
+.btn-loading {
+    position: relative;
+    pointer-events: none;
+}
+
+.btn-loading:before {
+    content: '';
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    background: #445e9e;
+}
+
+.btn-loading:after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    z-index: 2;
+    transform: translate(-50%, -50%);
+    display: block;
+    width: 12px;
+    height: 12px;
+    border-color: #fff #fff #fff transparent;
+    border-style: solid;
+    border-width: 2px 2px 2px 2px;
+    border-radius: 20px;
+    animation: spin-centered .8s linear infinite;
+}
+
+@keyframes spin-centered { 100% { transform: translate(-50%, -50%) rotate(360deg); } }
 
 /* popup-dashboard
  */

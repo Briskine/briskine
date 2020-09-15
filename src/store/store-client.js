@@ -61,7 +61,9 @@ var methods = [
     'logout',
     'forgot',
     'importTemplates',
-    'session'
+
+    'getSession',
+    'createSession'
 ];
 
 var events = [];
