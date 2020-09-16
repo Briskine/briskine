@@ -1,4 +1,6 @@
 /* globals ENV */
+import Config from '../background/js/config';
+
 function resetSettings () {
     return window.store.setSettings({
         key: 'settings'
@@ -89,7 +91,7 @@ if (chrome.extension) {
         });
 
         if (details.reason == "install") {
-            chrome.tabs.create({url: "pages/frameless.html#/installed"});
+            window.open(`${Config.functionsUrl}/welcome`, 'gorgias-welcome');
         }
     });
 
