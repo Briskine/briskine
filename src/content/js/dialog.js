@@ -13,7 +13,7 @@ import autocomplete from './autocomplete';
 import {isQuickButtonEnabled} from './utils';
 import enableDialogSearchAttr from './dialog-search-attr';
 
-const websiteUrl = 'https://www.gorgiastemplates.com';
+import Config from '../../background/js/config';
 
 var KEY_UP = 38;
 var KEY_DOWN = 40;
@@ -96,10 +96,8 @@ var dialog = {
         var container = $(document.documentElement);
 
         // login and signup links
-        const optionsUrl = chrome.extension.getURL('pages/options.html');
-        const signupUrl = `${websiteUrl}/signup`;
+        const signupUrl = `${Config.websiteUrl}/signup`;
         const parsedDialogTemplate = Handlebars.compile(this.template)({
-            optionsUrl: optionsUrl,
             signupUrl: signupUrl
         });
 
@@ -161,6 +159,22 @@ var dialog = {
         // prevent closing the dialog when clicking the info box
         $dialog.on('mousedown', '.qt-info', function (e) {
             e.preventDefault();
+        });
+
+        $dialog.on('mousedown', '.js-gorgias-signin', function () {
+            // HACK
+            // we can't re-render the dialog on session success,
+            // because we lost the pointer to the editor element.
+            // we provide immediate feedback by closing the dialog.
+            // BUG requires pressing the sign-in button twice.
+            dialog.close();
+
+            // check session
+            store.getSession()
+                .catch(() => {
+                    // logged-out
+                    window.open(Config.functionsUrl, 'gorgias-dashboard');
+                });
         });
     },
     setupQuickButton: function () {
