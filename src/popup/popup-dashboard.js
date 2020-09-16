@@ -3,8 +3,6 @@ import store from '../store/store-client';
 
 import {plusSquare, clone, cog} from './popup-icons';
 
-const dashboardTarget = 'gt-dashboard';
-
 function niceTime (minutes) {
     if (!minutes) {
         return "0min";
@@ -78,19 +76,19 @@ customElements.define(
 
                     <ul class="list-unstyled popup-menu">
                         <li>
-                            <a href="${Config.functionsUrl}/#/list?id=new&src=popup" target="${dashboardTarget}">
+                            <a href="${Config.functionsUrl}/#/list?id=new&src=popup" target="${Config.dashboardTarget}">
                                 <span class="icon">${plusSquare}</span>
                                 New template
                             </a>
                         </li>
                         <li>
-                            <a href="${Config.functionsUrl}" target="${dashboardTarget}">
+                            <a href="${Config.functionsUrl}" target="${Config.dashboardTarget}">
                                 <span class="icon">${clone}</span>
                                 Manage templates
                             </a>
                         </li>
                         <li>
-                            <a href="${Config.functionsUrl}/#/settings" target="${dashboardTarget}">
+                            <a href="${Config.functionsUrl}/#/settings" target="${Config.dashboardTarget}">
                                 <span class="icon">${cog}</span>
                                 Settings
                             </a>
@@ -121,14 +119,14 @@ customElements.define(
                                 Template Sharing.
                             </p>
 
-                            <a href="${Config.functionsUrl}/#/account/subscriptions" target="${dashboardTarget}" class="btn btn-success btn-upgrade">
+                            <a href="${Config.functionsUrl}/#/account/subscriptions" target="${Config.dashboardTarget}" class="btn btn-success btn-upgrade">
                                 Upgrade to Premium
                             </a>
                         ` : ''}
                     </div>
 
                     <div class="popup-box popup-status">
-                        <a href="${Config.functionsUrl}/#/account" target="${dashboardTarget}" class="popup-user" title="Account Settings for ${this.user.email}">
+                        <a href="${Config.functionsUrl}/#/account" target="${Config.dashboardTarget}" class="popup-user" title="Account Settings for ${this.user.email}">
                             ${this.user.email}
                         </a>
                         ${this.isFree === false ? `

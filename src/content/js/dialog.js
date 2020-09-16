@@ -15,8 +15,6 @@ import enableDialogSearchAttr from './dialog-search-attr';
 
 import Config from '../../background/js/config';
 
-const dashboardTarget = 'gorgias-dashboard';
-
 var KEY_UP = 38;
 var KEY_DOWN = 40;
 var KEY_ENTER = 13;
@@ -155,7 +153,7 @@ var dialog = {
 
             var templateId = $(e.target).closest('.qt-item').data('id');
             var templateUrl = `${Config.functionsUrl}/#/list?id=${templateId}&src=qa-dialog`;
-            window.open(templateUrl, dashboardTarget);
+            window.open(templateUrl, Config.dashboardTarget);
         });
 
         // prevent closing the dialog when clicking the info box
@@ -175,7 +173,7 @@ var dialog = {
             store.getSession()
                 .catch(() => {
                     // logged-out
-                    window.open(Config.functionsUrl, dashboardTarget);
+                    window.open(Config.functionsUrl, Config.dashboardTarget);
                 });
         });
     },

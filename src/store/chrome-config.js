@@ -7,8 +7,6 @@ function resetSettings () {
     });
 }
 
-const dashboardTarget = 'gorgias-dashboard';
-
 // Register Chrome runtime protocols and context menus
 if (chrome.extension) {
 
@@ -84,7 +82,7 @@ if (chrome.extension) {
                 code: "var getHtmlSelection = function() { var selection = window.getSelection(); if (selection && selection.rangeCount > 0) { range = selection.getRangeAt(0); var clonedSelection = range.cloneContents(); var div = document.createElement('div'); div.appendChild(clonedSelection); return div.innerHTML; } else { return ''; } }; getHtmlSelection();"
             }, function (selection) {
                 var body = encodeURIComponent(selection[0]);
-                window.open(`${Config.functionsUrl}/#/list?id=new&body=${body}`, dashboardTarget);
+                window.open(`${Config.functionsUrl}/#/list?id=new&body=${body}`, Config.dashboardTarget);
             });
         });
 
@@ -110,10 +108,10 @@ if (chrome.extension) {
         }
         // Open new template window
         if (request.request === 'new') {
-            window.open(`${Config.functionsUrl}/#/list?id=new&src=qa-button`, dashboardTarget);
+            window.open(`${Config.functionsUrl}/#/list?id=new&src=qa-button`, Config.dashboardTarget);
         }
         if (request.request === 'launchGorgias') {
-            window.open(`${Config.functionsUrl}/#/list`, dashboardTarget);
+            window.open(`${Config.functionsUrl}/#/list`, Config.dashboardTarget);
         }
         if (request.request === 'track') {
             if (request.event === 'Inserted template') {
