@@ -13,7 +13,6 @@
     "background": {
         "page": "pages/bg.html"
     },
-    "options_page": "pages/options.html",
     "permissions": [
         "https://*/*",
         "http://*/*",
