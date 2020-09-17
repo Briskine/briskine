@@ -1611,6 +1611,9 @@ var signin = (params = {}) => {
             return updateCurrentUser(authRes.user);
         })
         .then(() => {
+            return createSession();
+        })
+        .then(() => {
             return window.store.trigger('login');
         })
         .catch((err) => {
