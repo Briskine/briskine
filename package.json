@@ -34,7 +34,7 @@
     "devDependencies": {
         "chai": "^4.2.0",
         "clean-webpack-plugin": "^3.0.0",
-        "copy-webpack-plugin": "^6.0.1",
+        "copy-webpack-plugin": "^6.1.1",
         "css-loader": "^4.2.0",
         "esm": "^3.2.25",
         "file-loader": "^6.0.0",
@@ -44,19 +44,19 @@
         "stylus": "^0.54.5",
         "stylus-loader": "^3.0.2",
         "url-loader": "^4.0.0",
-        "webpack": "^4.41.5",
+        "webpack": "^4.44.2",
         "webpack-cli": "^3.3.10",
         "webpack-dev-server": "^3.10.1",
         "zip-a-folder": "^0.0.12"
     },
     "dependencies": {
         "bootstrap": "^3.3.5",
-        "firebase": "^7.17.1",
+        "firebase": "^7.21.0",
         "fuse.js": "^6.0.0",
         "handlebars": "^4.5.3",
         "jquery": "^3.5.1",
         "moment": "^2.22.0",
-        "mousetrap": "xarg/mousetrap#master",
+        "mousetrap": "github:xarg/mousetrap#master",
         "underscore": "^1.8.3"
     }
 }
