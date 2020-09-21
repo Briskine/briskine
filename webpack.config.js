@@ -268,7 +268,7 @@ const popupConfig = (env) => {
     };
 };
 
-const contentConfig = () => {
+const contentConfig = (env) => {
     return {
         name: 'content',
         entry: {
@@ -281,6 +281,9 @@ const contentConfig = () => {
         plugins: [
             new MiniCssExtractPlugin({
                 filename: 'css/[name].css'
+            }),
+            new webpack.DefinePlugin({
+                ENV: JSON.stringify(env),
             })
         ],
         module: {
@@ -329,7 +332,7 @@ module.exports = mode => {
         return sequence([
             commonConfig(env),
             storeConfig(env),
-            contentConfig(),
+            contentConfig(env),
             optionsConfig(env),
             popupConfig(env),
             createPackage(),
@@ -338,7 +341,7 @@ module.exports = mode => {
     return sequence([
         commonConfig(env),
         storeConfig(env),
-        contentConfig(),
+        contentConfig(env),
         optionsConfig(env),
         popupConfig(env)
     ]);

@@ -1610,26 +1610,29 @@ var signin = (params = {}) => {
             window.TOGGLE_FIRESTORE(true);
             return updateCurrentUser(authRes.user);
         })
+        .then(() => {
+            return createSession();
+        })
+        .then(() => {
+            return window.store.trigger('login');
+        })
         .catch((err) => {
             return signinError(err);
         });
 };
 
-var session = () => {
+var createSession = () => {
     return request(`${Config.functionsUrl}/api/1/session`, {
             method: 'POST',
             authorization: true
-        })
-        .catch(() => {
-            // logged-out
-            // check existing session
-            return request(`${Config.functionsUrl}/api/1/session`)
-                .then((res) => {
-                    return signinWithToken(res.token);
-                })
-                .catch(() => {
-                    // no existing session
-                });
+        });
+};
+
+// check existing session
+var getSession = () => {
+    return request(`${Config.functionsUrl}/api/1/session`)
+        .then((res) => {
+            return signinWithToken(res.token);
         });
 };
 
@@ -1659,6 +1662,9 @@ function signinWithToken (token = '') {
     return firebase.auth().signInWithCustomToken(token)
         .then((res) => {
             return updateCurrentUser(res.user);
+        })
+        .then(() => {
+            return window.store.trigger('login');
         });
 }
 
@@ -1887,5 +1893,7 @@ export default {
     logout: logout,
     forgot: forgot,
     importTemplates: importTemplates,
-    session: session
+
+    getSession: getSession,
+    createSession: createSession
 };

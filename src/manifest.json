@@ -1,7 +1,7 @@
 {
     "manifest_version": 2,
     "name": "__MSG_extName__",
-    "version": "6.10.0",
+    "version": "6.10.1",
     "description": "__MSG_extDesc__",
     "short_name": "Gorgias",
     "default_locale": "en",
@@ -13,7 +13,6 @@
     "background": {
         "page": "pages/bg.html"
     },
-    "options_page": "pages/options.html",
     "permissions": [
         "https://*/*",
         "http://*/*",

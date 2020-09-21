@@ -1,4 +1,6 @@
 /* globals ENV */
+import Config from '../background/js/config';
+
 function resetSettings () {
     return window.store.setSettings({
         key: 'settings'
@@ -37,10 +39,6 @@ if (chrome.extension) {
 
     // Listen for any changes to the URL of any tab.
     chrome.tabs.onUpdated.addListener(updatedTab);
-
-    chrome.browserAction.onClicked.addListener(function () {
-        window.open(chrome.extension.getURL('/pages/options.html') + '#/list', 'Options');
-    });
 
     // Called after installation: https://developer.chrome.com/extensions/runtime.html#event-onInstalled
     chrome.runtime.onInstalled.addListener(function (details) {
@@ -84,12 +82,12 @@ if (chrome.extension) {
                 code: "var getHtmlSelection = function() { var selection = window.getSelection(); if (selection && selection.rangeCount > 0) { range = selection.getRangeAt(0); var clonedSelection = range.cloneContents(); var div = document.createElement('div'); div.appendChild(clonedSelection); return div.innerHTML; } else { return ''; } }; getHtmlSelection();"
             }, function (selection) {
                 var body = encodeURIComponent(selection[0]);
-                window.open(chrome.extension.getURL('/pages/options.html') + '#/list?id=new&body=' + body, 'Options');
+                window.open(`${Config.functionsUrl}/#/list?id=new&body=${body}`, Config.dashboardTarget);
             });
         });
 
         if (details.reason == "install") {
-            chrome.tabs.create({url: "pages/frameless.html#/installed"});
+            window.open(`${Config.functionsUrl}/welcome`, 'gorgias-welcome');
         }
     });
 
@@ -110,10 +108,10 @@ if (chrome.extension) {
         }
         // Open new template window
         if (request.request === 'new') {
-            window.open(chrome.extension.getURL('/pages/options.html') + '#/list?id=new&src=qa-button', 'New Template');
+            window.open(`${Config.functionsUrl}/#/list?id=new&src=qa-button`, Config.dashboardTarget);
         }
         if (request.request === 'launchGorgias') {
-            window.open(chrome.extension.getURL('/pages/options.html') + '#/list');
+            window.open(`${Config.functionsUrl}/#/list`, Config.dashboardTarget);
         }
         if (request.request === 'track') {
             if (request.event === 'Inserted template') {

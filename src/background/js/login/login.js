@@ -1,6 +1,5 @@
-import store from '../../../store/store-client';
-
 import Config from '../config';
+import store from '../../../store/store-client';
 
 export default {
     bindings: {

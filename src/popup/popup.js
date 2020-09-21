@@ -13,9 +13,8 @@ customElements.define(
 
             this.checkLogin();
 
-            store.on('logout', () => {
-                this.checkLogin();
-            });
+            store.on('login', () => this.checkLogin());
+            store.on('logout', () => this.checkLogin());
         }
         checkLogin() {
             return store.getLoginInfo()

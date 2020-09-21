@@ -1,14 +1,33 @@
 import Config from '../background/js/config';
+import store from '../store/store-client';
+import './popup-login-form';
 
 customElements.define(
     'popup-login',
     class extends HTMLElement {
         constructor() {
             super();
+            this.showLoginForm = false;
+
+            const loadingClass = 'btn-loading';
 
             this.addEventListener('click', (e) => {
                 if (e.target.classList.contains('js-signin')) {
-                    chrome.runtime.openOptionsPage();
+                    e.target.classList.add(loadingClass);
+
+                    // check session
+                    store.getSession()
+                        .then(() => {
+                            // logged-in
+                            e.target.classList.remove(loadingClass);
+                            return;
+                        })
+                        .catch(() => {
+                            // logged-out
+                            // show login form
+                            this.showLoginForm = true;
+                            this.connectedCallback();
+                        });
                 }
             });
         }
@@ -22,15 +41,19 @@ customElements.define(
                     </div>
 
                     <div class="popup-box">
-                        <p>
-                            <strong>
-                                Sign In to access your templates.
-                            </strong>
-                        </p>
+                        ${this.showLoginForm ? `
+                            <popup-login-form></popup-login-form>
+                        ` : `
+                            <p>
+                                <strong>
+                                    Sign In to access your templates.
+                                </strong>
+                            </p>
 
-                        <button type="button" class="js-signin btn btn-primary btn-lg btn-login">
-                            Sign In
-                        </button>
+                            <button type="button" class="js-signin btn btn-primary btn-lg">
+                                Sign In
+                            </button>
+                        `}
                     </div>
 
                     <div class="popup-box text-muted">
