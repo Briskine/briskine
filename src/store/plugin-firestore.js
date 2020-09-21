@@ -6,7 +6,7 @@ import 'firebase/firestore';
 import 'firebase/storage';
 import {defaults as _defaults} from 'underscore';
 
-import Config from '../background/js/config';
+import Config from '../config';
 import firebaseConfig from './config-firebase';
 
 import _GORGIAS_API_PLUGIN from './plugin-api';

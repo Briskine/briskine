@@ -1,5 +1,5 @@
 /* globals ENV */
-import Config from '../background/js/config';
+import Config from '../config';
 
 function resetSettings () {
     return window.store.setSettings({

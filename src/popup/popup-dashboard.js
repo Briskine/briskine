@@ -1,4 +1,4 @@
-import Config from '../background/js/config';
+import Config from '../config';
 import store from '../store/store-client';
 
 import {plusSquare, clone, cog} from './popup-icons';

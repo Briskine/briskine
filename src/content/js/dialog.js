@@ -13,7 +13,7 @@ import autocomplete from './autocomplete';
 import {isQuickButtonEnabled} from './utils';
 import enableDialogSearchAttr from './dialog-search-attr';
 
-import Config from '../../background/js/config';
+import Config from '../../config';
 
 var KEY_UP = 38;
 var KEY_DOWN = 40;
