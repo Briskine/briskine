@@ -4,9 +4,9 @@
     "description": "Write everything faster.",
     "main": "index.js",
     "scripts": {
-        "test": "mocha -r esm 'src/**/*.spec.js' && yarn run lint",
+        "test": "mocha -r esm 'src/**/*.spec.js' && npm run lint",
         "start": "webpack-dev-server --mode=development --env development -r esm",
-        "staging": "(export NODE_ENV=staging && yarn start)",
+        "staging": "(export NODE_ENV=staging && npm start)",
         "build": "webpack -p --env production -r esm",
         "lint": "jshint src/"
     },
@@ -58,8 +58,5 @@
         "moment": "^2.22.0",
         "mousetrap": "xarg/mousetrap#master",
         "underscore": "^1.8.3"
-    },
-    "engines": {
-        "yarn": ">= 1.0.0"
     }
 }
