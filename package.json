@@ -53,23 +53,13 @@
         "zip-a-folder": "^0.0.12"
     },
     "dependencies": {
-        "angular": "^1.7.9",
-        "angular-moment": "^1.3.0",
-        "angular-route": "^1.4.7",
         "bootstrap": "^3.3.5",
-        "css-toggle-switch": "^4.1.0",
         "firebase": "^7.17.1",
-        "font-awesome": "^4.5.0",
         "fuse.js": "^6.0.0",
         "handlebars": "^4.5.3",
         "jquery": "^3.5.1",
-        "js-md5": "^0.7.3",
         "moment": "^2.22.0",
         "mousetrap": "xarg/mousetrap#master",
-        "ng-file-upload": "^12.2.13",
-        "papaparse": "^5.1.0",
-        "selectize": "^0.12.1",
-        "tinymce": "^4.7.9",
         "underscore": "^1.8.3"
     },
     "engines": {
