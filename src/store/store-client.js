@@ -62,9 +62,6 @@ var trigger = function (name) {
 // options page
 if (backgroundPage) {
     window.FIRESTORE_ENABLED = backgroundPage.FIRESTORE_ENABLED.bind(backgroundPage);
-    window.TOGGLE_FIRESTORE = (enabled) => {
-        backgroundPage.TOGGLE_FIRESTORE.call(backgroundPage, enabled);
-    };
     window.IMPERSONATE = (params) => {
         backgroundPage.IMPERSONATE.call(backgroundPage, params).then(() => {
             // reload options
@@ -86,7 +83,6 @@ if (backgroundPage) {
         } catch (err) {}
 
         if (data.type === 'templates-subscribe-success') {
-            window.TOGGLE_FIRESTORE(true);
             window.SIGNIN_WITH_TOKEN(data.token);
         }
     });

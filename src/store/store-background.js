@@ -1,11 +1,6 @@
 /* globals ENV, console */
 import _FIRESTORE_PLUGIN from './plugin-firestore';
 
-// TODO deprecate firestore toggle
-window.TOGGLE_FIRESTORE = function () {
-    refreshStore();
-};
-
 window.FIRESTORE_ENABLED = function () {
     return true;
 };

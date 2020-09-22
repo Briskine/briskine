@@ -999,7 +999,6 @@ function updateCurrentUser (firebaseUser) {
 var signin = (params = {}) => {
     return firebase.auth().signInWithEmailAndPassword(params.email, params.password)
         .then((authRes) => {
-            window.TOGGLE_FIRESTORE(true);
             return updateCurrentUser(authRes.user);
         })
         .then(() => {
