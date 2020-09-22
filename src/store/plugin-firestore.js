@@ -892,55 +892,87 @@ function isDeleted (template = {}) {
     return !!template.deleted_datetime ? 1 : 0;
 }
 
+function getDefaultTemplates () {
+    const defaultTemplates = [
+        {
+            title: 'Say Hello',
+            shortcut: 'h',
+            subject: '',
+            tags: 'en, greetings',
+            body: '<div>Hello {{to.first_name}},</div><div></div>'
+        },
+        {
+            title: 'Nice talking to you',
+            shortcut: 'nic',
+            subject: '',
+            tags: 'en, followup',
+            body: '<div>It was nice talking to you.</div>'
+        },
+        {
+            title: 'Kind Regards',
+            shortcut: 'kr',
+            subject: '',
+            tags: 'en, closing',
+            body: '<div>Kind regards,</div><div>{{from.first_name}}.</div>'
+        },
+        {
+            title: 'My email',
+            shortcut: 'e',
+            subject: '',
+            tags: 'en, personal',
+            body: '<div>{{from.email}}</div>'
+        }
+    ];
+
+    const legacyTemplates = {};
+    defaultTemplates.forEach((template, index) => {
+        const id = String(index);
+        legacyTemplates[id] = Object.assign({
+            id: id,
+            deleted: 0
+        }, template);
+    });
+
+    return legacyTemplates;
+}
+
 var getTemplate = (params = {}) => {
-    // return single template
-    if (params.id) {
-        var templateData = {};
-        return getTemplatesFromCache(params.id)
-            .catch(() => {
-                return getSignedInUser()
-                    .then(() => {
+    return getSignedInUser()
+        .then((user) => {
+            // return single template
+            if (params.id) {
+                var templateData = {};
+                return getTemplatesFromCache(params.id)
+                    .catch(() => {
                         // template not in cache
                         return templatesCollection.doc(params.id).get()
-                            .then((res) => res.data());
-                    })
-                    .catch((err) => {
-                        if (isLoggedOut(err)) {
-                            // logged-out
-                            return getLocalData({
-                                templateId: params.id
+                            .then((res) => res.data())
+                            .then((res) => {
+                                templateData = res;
+                                return idsToTags(templateData.tags);
+                            })
+                            .then((tags) => {
+                                var template = compatibleTemplate(Object.assign({
+                                    id: params.id
+                                }, templateData), tags);
+
+                                // backwards compatibility
+                                var list = {};
+                                list[template.id] = template;
+                                return list;
                             });
-                        }
-
-                        throw err;
-                    })
-                    .then((res) => {
-                        templateData = res;
-                        return idsToTags(templateData.tags);
-                    })
-                    .then((tags) => {
-                        var template = compatibleTemplate(Object.assign({
-                            id: params.id
-                        }, templateData), tags);
-
-                        // backwards compatibility
-                        var list = {};
-                        list[template.id] = template;
-                        return list;
                     });
-            });
-    }
+            }
 
-    return getTemplatesFromCache()
-        .catch(() => {
-            // templates not cached
-            return getSignedInUser()
-                .then((user) => {
+            return getTemplatesFromCache()
+                .catch(() => {
+                    // templates not cached
                     return Promise.all([
                         getTemplatesOwned(user),
                         getTemplatesShared(user),
                         getTemplatesForEveryone(user)
-                    ]).then((res) => {
+                    ])
+                    .then((res) => {
                         var mergedTemplates = [];
                         // concat all templates
                         res.forEach((query) => {
@@ -953,35 +985,35 @@ var getTemplate = (params = {}) => {
                                 id: template.id
                             }, template.data());
                         });
-                    });
-                })
-                .catch((err) => {
-                    if (isLoggedOut(err)) {
-                        // logged-out
-                        return getLocalData({templates: true});
-                    }
+                    })
+                    .then((allTemplates) => {
+                        // backward compatibility
+                        // and template de-duplication (owned and sharing=everyone)
+                        var templates = {};
+                        return Promise.all(
+                            allTemplates.map((template) => {
+                                return idsToTags(template.tags).then((tags) => {
+                                    templates[template.id] = compatibleTemplate(template, tags);
 
-                    throw err;
-                })
-                .then((allTemplates) => {
-                    // backward compatibility
-                    // and template de-duplication (owned and sharing=everyone)
-                    var templates = {};
-                    return Promise.all(
-                        allTemplates.map((template) => {
-                            return idsToTags(template.tags).then((tags) => {
-                                templates[template.id] = compatibleTemplate(template, tags);
+                                    return;
+                                });
+                            })
+                        ).then(() => {
+                            addTemplatesToCache(templates);
 
-                                return;
-                            });
-                        })
-                    ).then(() => {
-                        addTemplatesToCache(templates);
-
-                        return templates;
+                            return templates;
+                        });
                     });
                 });
+        })
+        .catch((err) => {
+            if (isLoggedOut(err)) {
+                return getDefaultTemplates();
+            }
+
+            throw err;
         });
+
 };
 
 // delete logged-out data

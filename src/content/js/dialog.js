@@ -489,10 +489,10 @@ var dialog = {
     },
     selectActive: function () {
         if (dialog.isActive && !this.isEmpty && autocomplete.quicktexts.length) {
-            var activeItemId = $(this.contentSelector).find('.active').data('id');
-            var quicktext = autocomplete.quicktexts.filter(function (quicktext) {
+            const activeItemId = document.querySelector(this.contentSelector).querySelector('.active').dataset.id;
+            var quicktext = autocomplete.quicktexts.find(function (quicktext) {
                 return quicktext.id === activeItemId;
-            })[0];
+            });
 
             autocomplete.replaceWith({
                 element: dialog.editor,
