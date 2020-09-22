@@ -61,7 +61,6 @@ var trigger = function (name) {
 
 // options page
 if (backgroundPage) {
-    window.FIRESTORE_ENABLED = backgroundPage.FIRESTORE_ENABLED.bind(backgroundPage);
     window.IMPERSONATE = (params) => {
         backgroundPage.IMPERSONATE.call(backgroundPage, params).then(() => {
             // reload options

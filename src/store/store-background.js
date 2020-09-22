@@ -1,10 +1,6 @@
 /* globals ENV, console */
 import _FIRESTORE_PLUGIN from './plugin-firestore';
 
-window.FIRESTORE_ENABLED = function () {
-    return true;
-};
-
 var signin = function (params = {}) {
     return _FIRESTORE_PLUGIN.signin(params);
 };
