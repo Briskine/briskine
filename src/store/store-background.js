@@ -52,7 +52,7 @@ function getStore () {
     plugin.trigger = trigger;
 
     // lastuse_datetime support
-    plugin.getTemplate = getTemplate(plugin);
+    plugin.getTemplate = getTemplate(_FIRESTORE_PLUGIN);
     plugin.updateTemplateStats = updateTemplateStats;
 
     return plugin;
