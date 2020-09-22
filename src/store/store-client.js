@@ -64,18 +64,6 @@ if (backgroundPage) {
     window.IMPERSONATE = (params) => {
         backgroundPage.IMPERSONATE.call(backgroundPage, params);
     };
-
-    // subscribe automatic sign-in
-    window.addEventListener('message', function (e) {
-        var data = {};
-        try {
-            data = JSON.parse(e.data);
-        } catch (err) {}
-
-        if (data.type === 'templates-subscribe-success') {
-            window.SIGNIN_WITH_TOKEN(data.token);
-        }
-    });
 }
 
 // handle trigger from background
