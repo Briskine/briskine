@@ -1,10 +1,6 @@
 /* globals ENV, console */
 import _FIRESTORE_PLUGIN from './plugin-firestore';
 
-var signin = function (params = {}) {
-    return _FIRESTORE_PLUGIN.signin(params);
-};
-
 var trigger = function (name) {
     // send trigger message to client store
     return new Promise((resolve) => {
@@ -52,26 +48,18 @@ var getTemplate = function (plugin) {
 };
 
 function getStore () {
-    const activePlugin = _FIRESTORE_PLUGIN;
-
-    var plugin = Object.assign({}, activePlugin);
-
-    plugin.signin = signin;
-
+   var plugin = Object.assign({}, _FIRESTORE_PLUGIN);
     plugin.trigger = trigger;
 
     // lastuse_datetime support
-    plugin.getTemplate = getTemplate(activePlugin);
+    plugin.getTemplate = getTemplate(plugin);
     plugin.updateTemplateStats = updateTemplateStats;
 
     return plugin;
 }
 
 // global store
-function refreshStore () {
-    window.store = getStore();
-}
-refreshStore();
+window.store = getStore();
 
 function debug (data = [], method = 'log') {
     if (ENV === 'production') {
@@ -85,7 +73,7 @@ function debug (data = [], method = 'log') {
     console.groupEnd();
 }
 
-// respond to content and options
+// respond to content
 chrome.runtime.onMessage.addListener((req, sender, sendResponse) => {
     if (
         req.type &&
