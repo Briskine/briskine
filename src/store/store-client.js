@@ -29,38 +29,15 @@ var methods = [
 
     'getLoginInfo',
     'getAccount',
-    'setAccount',
-
-    'getMembers',
-    'setMember',
 
     'getTemplate',
-    'updateTemplate',
-    'createTemplate',
-    'deleteTemplate',
     'clearLocalTemplates',
-
-    'getSharing',
-    'updateSharing',
-
-    'getStats',
     'updateTemplateStats',
-
-    'getSubscription',
-    'updateSubscription',
-    'cancelSubscription',
-    'updateCreditCard',
-    'createSubscription',
-
-    'addAttachments',
-    'removeAttachments',
 
     'syncNow',
 
     'signin',
     'logout',
-    'forgot',
-    'importTemplates',
 
     'getSession',
     'createSession'

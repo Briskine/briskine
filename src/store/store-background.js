@@ -14,11 +14,6 @@ var signin = function (params = {}) {
     return _FIRESTORE_PLUGIN.signin(params);
 };
 
-var forgot = (params = {}) => {
-    window.TOGGLE_FIRESTORE(true);
-    return _FIRESTORE_PLUGIN.forgot(params);
-};
-
 var trigger = function (name) {
     // send trigger message to client store
     return new Promise((resolve) => {
@@ -70,9 +65,7 @@ function getStore () {
 
     var plugin = Object.assign({}, activePlugin);
 
-    // general signin and forgot methods for both plugins
     plugin.signin = signin;
-    plugin.forgot = forgot;
 
     plugin.trigger = trigger;
 
