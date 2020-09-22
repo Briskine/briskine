@@ -3,7 +3,21 @@
 
 @import "~bootstrap/dist/css/bootstrap.css";
 
-body {}
+html {
+   font-size: 14px;
+}
+
+p {
+    margin-bottom: .8rem;
+}
+
+small {
+    font-size: 85%;
+}
+
+label {
+    font-weight: 700;
+}
 
 .popup-container {
     min-width: 22em;
@@ -15,7 +29,8 @@ body {}
 
 /* bootstrap
  */
-a {
+a,
+.btn-link {
     color: #1e48b3;
 }
 
@@ -132,6 +147,7 @@ a {
     padding: .6em 1em;
 
     font-size: 1.2em;
+    line-height: 1.3;
 }
 
 .popup-menu a:hover {
@@ -210,7 +226,7 @@ a {
     position: relative;
     overflow: hidden;
     padding-left: 1em;
-    max-width: 12em;
+    max-width: 12rem;
     text-overflow: ellipsis;
     white-space: nowrap;
 }
@@ -245,7 +261,7 @@ a {
 /* icons
  */
 .icon {
-    vertical-align: middle;
+    vertical-align: 2px;
 }
 
 .icon svg {

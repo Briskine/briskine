@@ -50,7 +50,7 @@
         "zip-a-folder": "^0.0.12"
     },
     "dependencies": {
-        "bootstrap": "^3.3.5",
+        "bootstrap": "^4.5.2",
         "firebase": "^7.21.0",
         "fuse.js": "^6.0.0",
         "handlebars": "^4.5.3",
