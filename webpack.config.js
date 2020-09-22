@@ -148,7 +148,7 @@ const commonConfig = function (env) {
                     { from: 'src/_locales/', to: '_locales/' },
                     { from: 'src/pages/', to: 'pages/' },
                     { from: 'src/icons/', to: 'icons/' },
-                    { from: 'src/LICENSE', to: '' }
+                    { from: 'LICENSE', to: '' }
                 ]
             })
         ],
