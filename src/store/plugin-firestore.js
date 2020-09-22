@@ -1052,8 +1052,6 @@ function signinWithToken (token = '') {
         });
 }
 
-window.SIGNIN_WITH_TOKEN = signinWithToken;
-
 var impersonate = function (params = {}) {
     return request(`${Config.functionsUrl}/api/1/impersonate`, {
             method: 'POST',

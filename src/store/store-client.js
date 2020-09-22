@@ -59,19 +59,10 @@ var trigger = function (name) {
     });
 };
 
-// options page
+// extension pages (popup)
 if (backgroundPage) {
     window.IMPERSONATE = (params) => {
-        backgroundPage.IMPERSONATE.call(backgroundPage, params).then(() => {
-            // reload options
-            window.location.reload();
-        });
-    };
-    window.SIGNIN_WITH_TOKEN = (token) => {
-        backgroundPage.SIGNIN_WITH_TOKEN.call(backgroundPage, token).then(() => {
-            // reload options
-            window.location.reload();
-        });
+        backgroundPage.IMPERSONATE.call(backgroundPage, params);
     };
 
     // subscribe automatic sign-in
