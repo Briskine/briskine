@@ -2,12 +2,10 @@ import firebase from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/firestore';
 import 'firebase/storage';
-import {defaults as _defaults} from 'underscore';
+import {defaults as _defaults, isEmpty as _isEmpty} from 'underscore';
 
 import Config from '../config';
 import firebaseConfig from './config-firebase';
-
-import _GORGIAS_API_PLUGIN from './plugin-api';
 
 // firebase
 firebase.initializeApp(firebaseConfig);
@@ -385,12 +383,113 @@ function splitFullName (fullname = '') {
     };
 }
 
-// HACK borrow settings from old api plugin
+var _chromeStorageSettings = {
+    get: function(key, def, callback) {
+        chrome.storage.sync.get(key, function(data) {
+            if (
+                chrome.runtime.lastError ||
+                _isEmpty(data)
+            ) {
+                if (!def) {
+                    return callback(Settings.defaults[key]);
+                } else {
+                    return callback(def);
+                }
+            } else {
+                return callback(data[key]);
+            }
+        });
+    },
+    set: function(key, value, callback) {
+        var data = {};
+        data[key] = value;
+
+        // remove value/reset default
+        if (typeof value === 'undefined') {
+            chrome.storage.sync.remove(key, function() {
+                return callback(data);
+            });
+            return;
+        }
+
+        chrome.storage.sync.set(data, function() {
+            chrome.storage.sync.get(key, function(data) {
+                return callback(data);
+            });
+        });
+    }
+};
+
+var Settings = {
+    get: function(key, def, callback) {
+        return _chromeStorageSettings.get(key, def, callback);
+    },
+    set: function(key, value, callback) {
+        return _chromeStorageSettings.set(key, value, callback);
+    },
+    defaults: {
+        settings: {
+            // settings for the settings view
+            dialog: {
+                enabled: true,
+                shortcut: "ctrl+space", // shortcut that triggers the complete dialog
+                auto: false, //trigger automatically while typing - should be disabled cause it's annoying sometimes
+                delay: 1000, // if we want to trigger it automatically
+                limit: 100 // how many templates are shown in the dialog
+            },
+            qaBtn: {
+                enabled: true,
+                shownPostInstall: false,
+                caseSensitiveSearch: false,
+                fuzzySearch: true
+            },
+            keyboard: {
+                enabled: true,
+                shortcut: "tab"
+            },
+            stats: {
+                enabled: false // send anonymous statistics
+            },
+            blacklist: [],
+            fields: {
+                tags: false,
+                subject: true
+            },
+            editor: {
+                enabled: true // new editor - enable for new users
+            }
+        },
+        // refactor this into 'local' and 'remote'
+        isLoggedIn: false,
+        syncEnabled: false,
+        words: 0,
+        syncedWords: 0,
+        lastStatsSync: null,
+        lastSync: null,
+        hints: {
+            postInstall: true,
+            subscribeHint: true
+        }
+    }
+};
+
+var getLocalSettings = function (params) {
+    return new Promise((resolve) => {
+        Settings.get(params.key, params.def, resolve);
+    });
+};
+
+var setLocalSettings = function (params) {
+    return new Promise((resolve) => {
+        Settings.set(params.key, params.val, resolve);
+    });
+};
+
 let cachedSettings = null;
 var getSettings = (params = {}) => {
     if (params.key === 'settings') {
         let localSettings = {};
-        return _GORGIAS_API_PLUGIN.getSettings(params)
+        return getLocalSettings(params)
             .then((settings) => {
                 localSettings = settings;
                 if (cachedSettings) {
@@ -440,18 +539,18 @@ var getSettings = (params = {}) => {
 
     }
 
-    return _GORGIAS_API_PLUGIN.getSettings(params);
+    return getLocalSettings(params);
 };
 
 var setSettings = (params = {}) => {
     if (params.key === 'settings') {
-        return _GORGIAS_API_PLUGIN.setSettings(params)
+        return setLocalSettings(params)
             .then(() => {
                 return syncSettings(true);
             });
     }
 
-    return _GORGIAS_API_PLUGIN.setSettings(params);
+    return setLocalSettings(params);
 };
 
 var LOGGED_OUT_ERR = 'logged-out';
@@ -1114,7 +1213,7 @@ function syncSettings (forceLocal = false) {
     const getSettingsParams = {
         key: 'settings'
     };
-    const getSettingsPromise = forceLocal ? _GORGIAS_API_PLUGIN.getSettings(getSettingsParams) : getSettings(getSettingsParams);
+    const getSettingsPromise = forceLocal ? getLocalSettings(getSettingsParams) : getSettings(getSettingsParams);
 
     return getSettingsPromise
         .then((res) => {
