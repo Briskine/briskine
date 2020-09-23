@@ -1,25 +1,5 @@
 /* globals ENV, console */
 import _FIRESTORE_PLUGIN from './plugin-firestore';
-import './chrome-config';
-import './browseraction-icon';
-
-// TODO deprecate firestore toggle
-window.TOGGLE_FIRESTORE = function () {
-    refreshStore();
-};
-
-window.FIRESTORE_ENABLED = function () {
-    return true;
-};
-
-var signin = function (params = {}) {
-    return _FIRESTORE_PLUGIN.signin(params);
-};
-
-var forgot = (params = {}) => {
-    window.TOGGLE_FIRESTORE(true);
-    return _FIRESTORE_PLUGIN.forgot(params);
-};
 
 var trigger = function (name) {
     // send trigger message to client store
@@ -68,28 +48,18 @@ var getTemplate = function (plugin) {
 };
 
 function getStore () {
-    const activePlugin = _FIRESTORE_PLUGIN;
-
-    var plugin = Object.assign({}, activePlugin);
-
-    // general signin and forgot methods for both plugins
-    plugin.signin = signin;
-    plugin.forgot = forgot;
-
+   var plugin = Object.assign({}, _FIRESTORE_PLUGIN);
     plugin.trigger = trigger;
 
     // lastuse_datetime support
-    plugin.getTemplate = getTemplate(activePlugin);
+    plugin.getTemplate = getTemplate(_FIRESTORE_PLUGIN);
     plugin.updateTemplateStats = updateTemplateStats;
 
     return plugin;
 }
 
 // global store
-function refreshStore () {
-    window.store = getStore();
-}
-refreshStore();
+window.store = getStore();
 
 function debug (data = [], method = 'log') {
     if (ENV === 'production') {
@@ -103,7 +73,7 @@ function debug (data = [], method = 'log') {
     console.groupEnd();
 }
 
-// respond to content and options
+// respond to content
 chrome.runtime.onMessage.addListener((req, sender, sendResponse) => {
     if (
         req.type &&

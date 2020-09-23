@@ -11,7 +11,7 @@ import 'mousetrap/plugins/global-bind/mousetrap-global-bind';
 
 import './helpers/content-helpers';
 import './events';
-import fuzzySearch from '../../common/search';
+import fuzzySearch from './search';
 
 import store from '../../store/store-client';
 import keyboard from './keyboard';

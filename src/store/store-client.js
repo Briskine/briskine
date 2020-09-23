@@ -29,38 +29,13 @@ var methods = [
 
     'getLoginInfo',
     'getAccount',
-    'setAccount',
-
-    'getMembers',
-    'setMember',
 
     'getTemplate',
-    'updateTemplate',
-    'createTemplate',
-    'deleteTemplate',
     'clearLocalTemplates',
-
-    'getSharing',
-    'updateSharing',
-
-    'getStats',
     'updateTemplateStats',
-
-    'getSubscription',
-    'updateSubscription',
-    'cancelSubscription',
-    'updateCreditCard',
-    'createSubscription',
-
-    'addAttachments',
-    'removeAttachments',
-
-    'syncNow',
 
     'signin',
     'logout',
-    'forgot',
-    'importTemplates',
 
     'getSession',
     'createSession'
@@ -82,37 +57,11 @@ var trigger = function (name) {
     });
 };
 
-// options page
+// extension pages (popup)
 if (backgroundPage) {
-    window.FIRESTORE_ENABLED = backgroundPage.FIRESTORE_ENABLED.bind(backgroundPage);
-    window.TOGGLE_FIRESTORE = (enabled) => {
-        backgroundPage.TOGGLE_FIRESTORE.call(backgroundPage, enabled);
-    };
     window.IMPERSONATE = (params) => {
-        backgroundPage.IMPERSONATE.call(backgroundPage, params).then(() => {
-            // reload options
-            window.location.reload();
-        });
+        backgroundPage.IMPERSONATE.call(backgroundPage, params);
     };
-    window.SIGNIN_WITH_TOKEN = (token) => {
-        backgroundPage.SIGNIN_WITH_TOKEN.call(backgroundPage, token).then(() => {
-            // reload options
-            window.location.reload();
-        });
-    };
-
-    // subscribe automatic sign-in
-    window.addEventListener('message', function (e) {
-        var data = {};
-        try {
-            data = JSON.parse(e.data);
-        } catch (err) {}
-
-        if (data.type === 'templates-subscribe-success') {
-            window.TOGGLE_FIRESTORE(true);
-            window.SIGNIN_WITH_TOKEN(data.token);
-        }
-    });
 }
 
 // handle trigger from background

@@ -16,13 +16,12 @@ Development
 -----------
 
 * Install [Node.js](https://nodejs.org/en/) and [npm](https://www.npmjs.com/).
-* Install [Yarn](https://yarnpkg.com).
-* Run `yarn install` to install all dependencies.
+* Run `npm install` to install all dependencies.
 
 The following commands are available:
 
-* `yarn start` - Development mode. Creates development manifest, watches files and recompiles them automatically.
-* `yarn build` - Build extension and compress extension.
+* `npm start` - Development mode. Creates development manifest, watches files and recompiles them automatically.
+* `npm run build` - Build extension and compress extension.
 
 Known issues
 ------------

@@ -148,73 +148,11 @@ const commonConfig = function (env) {
                     { from: 'src/_locales/', to: '_locales/' },
                     { from: 'src/pages/', to: 'pages/' },
                     { from: 'src/icons/', to: 'icons/' },
-                    { from: 'src/LICENSE', to: '' },
-                    { from: 'node_modules/tinymce/skins/lightgray/', to: 'pages/tinymce/skins/lightgray/' },
+                    { from: 'LICENSE', to: '' }
                 ]
             })
         ],
         devServer: devServer
-    };
-};
-
-const optionsConfig = function (env) {
-    return {
-        name: 'options',
-        entry: {
-            background: './src/background/js/app.js'
-        },
-        output: {
-            path: path.resolve(devPath, 'background'),
-            filename: 'js/[name].js'
-        },
-        plugins: [
-            new MiniCssExtractPlugin({
-                filename: 'css/[name].css'
-            }),
-            new webpack.DefinePlugin({
-                ENV: JSON.stringify(env),
-            }),
-            new webpack.ProvidePlugin({
-                jQuery: 'jquery',
-                $: 'jquery',
-                _: 'underscore'
-            }),
-        ],
-        module: {
-            rules: [
-                {
-                    test: /\.(css|styl)$/i,
-                    use: [
-                        MiniCssExtractPlugin.loader,
-                        'css-loader',
-                        'stylus-loader'
-                    ],
-                },
-                {
-                    test: /\.(png|woff|woff2|eot|ttf|svg)$/,
-                    use: {
-                        loader: 'url-loader',
-                        options: {
-                            limit: 8192,
-                            outputPath: '../assets',
-                            publicPath: '/assets',
-                        }
-                    }
-                },
-                {
-                    test: /\.js$/,
-                    exclude: /node_modules/,
-                    use: {
-                        loader: 'babel-loader',
-                        options: {
-                            plugins: ['babel-plugin-angularjs-annotate']
-                        }
-                    }
-                }
-            ]
-        },
-        devServer: devServer,
-        devtool: devtool
     };
 };
 
@@ -305,11 +243,11 @@ const contentConfig = (env) => {
     };
 };
 
-const storeConfig = (env) => {
+const backgroundConfig = (env) => {
     return {
-        name: 'store',
+        name: 'background',
         entry: {
-            content: './src/store/store-background.js'
+            content: './src/background/background.js'
         },
         plugins: [
             new webpack.DefinePlugin({
@@ -317,8 +255,8 @@ const storeConfig = (env) => {
             })
         ],
         output: {
-            path: path.resolve(devPath, 'store'),
-            filename: 'js/store.js'
+            path: path.resolve(devPath),
+            filename: 'background.js'
         },
         devServer: devServer,
         devtool: devtool
@@ -331,18 +269,16 @@ module.exports = mode => {
         devtool = 'none';
         return sequence([
             commonConfig(env),
-            storeConfig(env),
+            backgroundConfig(env),
             contentConfig(env),
-            optionsConfig(env),
             popupConfig(env),
-            createPackage(),
+            createPackage()
         ]);
     }
     return sequence([
         commonConfig(env),
-        storeConfig(env),
+        backgroundConfig(env),
         contentConfig(env),
-        optionsConfig(env),
         popupConfig(env)
     ]);
 };

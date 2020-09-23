@@ -1,4 +1,4 @@
-import Config from '../background/js/config';
+import Config from '../config';
 import store from '../store/store-client';
 
 customElements.define(
@@ -65,7 +65,7 @@ customElements.define(
                         <a
                             href="${Config.functionsUrl}"
                             target="_blank"
-                            class="btn btn-link pull-right btn-forgot"
+                            class="btn btn-link float-right btn-forgot"
                             tabindex="-1"
                             >
                             Forgot password?

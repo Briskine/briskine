@@ -13,7 +13,7 @@ import autocomplete from './autocomplete';
 import {isQuickButtonEnabled} from './utils';
 import enableDialogSearchAttr from './dialog-search-attr';
 
-import Config from '../../background/js/config';
+import Config from '../../config';
 
 var KEY_UP = 38;
 var KEY_DOWN = 40;
@@ -489,10 +489,10 @@ var dialog = {
     },
     selectActive: function () {
         if (dialog.isActive && !this.isEmpty && autocomplete.quicktexts.length) {
-            var activeItemId = $(this.contentSelector).find('.active').data('id');
-            var quicktext = autocomplete.quicktexts.filter(function (quicktext) {
+            const activeItemId = document.querySelector(this.contentSelector).querySelector('.active').dataset.id;
+            var quicktext = autocomplete.quicktexts.find(function (quicktext) {
                 return quicktext.id === activeItemId;
-            })[0];
+            });
 
             autocomplete.replaceWith({
                 element: dialog.editor,
