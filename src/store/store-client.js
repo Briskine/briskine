@@ -34,8 +34,6 @@ var methods = [
     'clearLocalTemplates',
     'updateTemplateStats',
 
-    'syncNow',
-
     'signin',
     'logout',
 

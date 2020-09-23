@@ -1136,6 +1136,8 @@ var signin = (params = {}) => {
             return createSession();
         })
         .then(() => {
+            syncNow();
+
             return window.store.trigger('login');
         })
         .catch((err) => {
@@ -1179,6 +1181,8 @@ function signinWithToken (token = '') {
             return updateCurrentUser(res.user);
         })
         .then(() => {
+            syncNow();
+
             return window.store.trigger('login');
         });
 }
@@ -1298,8 +1302,6 @@ export default {
 
     getTemplate: getTemplate,
     clearLocalTemplates: clearLocalTemplates,
-
-    syncNow: syncNow,
 
     signin: signin,
     logout: logout,
