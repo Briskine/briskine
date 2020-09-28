@@ -38,7 +38,8 @@ var updatedTab = function () {
 // Listen for any changes to the URL of any tab.
 browser.tabs.onUpdated.addListener(updatedTab);
 
-// Called after installation: https://developer.chrome.com/extensions/runtime.html#event-onInstalled
+// Called after installation
+// https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/runtime/onInstalled
 browser.runtime.onInstalled.addListener(function (details) {
     if (details.reason == "install") {
         // reset settings
