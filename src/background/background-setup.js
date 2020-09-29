@@ -81,12 +81,16 @@ browser.runtime.onInstalled.addListener(function (details) {
             code: "var getHtmlSelection = function() { var selection = window.getSelection(); if (selection && selection.rangeCount > 0) { range = selection.getRangeAt(0); var clonedSelection = range.cloneContents(); var div = document.createElement('div'); div.appendChild(clonedSelection); return div.innerHTML; } else { return ''; } }; getHtmlSelection();"
         }).then(function (selection) {
             var body = encodeURIComponent(selection[0]);
-            window.open(`${Config.functionsUrl}/#/list?id=new&body=${body}`, Config.dashboardTarget);
+            browser.tabs.create({
+                url: `${Config.functionsUrl}/#/list?id=new&body=${body}`
+            });
         });
     });
 
     if (details.reason == "install") {
-        window.open(`${Config.functionsUrl}/welcome`, 'gorgias-welcome');
+        browser.tabs.create({
+            url: `${Config.functionsUrl}/welcome`
+        });
     }
 });
 
@@ -108,7 +112,9 @@ browser.runtime.onMessage.addListener(function (request) {
     }
     // Open new template window
     if (request.request === 'new') {
-        window.open(`${Config.functionsUrl}/#/list?id=new&src=qa-button`, Config.dashboardTarget);
+        browser.tabs.create({
+            url: `${Config.functionsUrl}/#/list?id=new&src=qa-button`
+        });
     }
     if (request.request === 'launchGorgias') {
         window.open(`${Config.functionsUrl}/#/list`, Config.dashboardTarget);
