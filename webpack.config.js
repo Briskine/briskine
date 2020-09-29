@@ -1,3 +1,6 @@
+/* globals Buffer, module, process */
+/*jshint esversion: 8 */
+
 import webpack from 'webpack';
 import path from 'path';
 import {zip} from 'zip-a-folder';
@@ -7,7 +10,6 @@ import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 
 import packageFile from './package.json';
 import manifestFile from './src/manifest.json';
-const devManifestKey = 'MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA4fz+r4Bt92pF09QQkdrVrJRt/OYUWTg6mBHGyp0u6suCPaPFJ1mysOAphZIAhCPw4O/lsQ8AlLkHgFzpb5z7IjmrU3FB1dJXGifXDY6ybZi/CcZUY0g30Do+bowHKNHRnkYIl625jaQwvrKm9ZYseIPIbCOtDHSBoD579tbP+aYLxZV+aVBmvD7O2HayVzMgL8xc+imk2gRzmu0zVjgQ+WqlGApTsEtucsVUVrNTf6Txl9nDCN9ztRJwLH7VASKctHeHMwmK1uDZgkokdO5FjHYEp6VB7c4Pe/Af1l0/Dct9HgK8aFXtsmIZa7zWPrgAihBqKVaWMk4iJTmmXfNZxQIDAQAB';
 let devtool = 'cheap-module-source-map';
 const devServer = {
     inline: false,
@@ -17,23 +19,16 @@ const devServer = {
 const devPath = path.resolve('ext');
 const productionPath = path.resolve('build');
 
-function generateManifest (env) {
+function generateManifest () {
     let updatedManifestFile = Object.assign({}, manifestFile);
-    if (env === 'production') {
-        delete updatedManifestFile.key;
-    } else {
-        updatedManifestFile.key = devManifestKey;
-        // Load content script on localhost
-        updatedManifestFile.content_scripts[0].matches.push('http://localhost/gmail/*');
-        updatedManifestFile.content_scripts[0].matches.push('https://localhost/gmail/*');
-    }
+    // get version from package
+    updatedManifestFile.version = packageFile.version;
 
     return new CopyWebpackPlugin({
         patterns: [
             {
                 from: './src/manifest.json',
                 transform: function () {
-                    // generates the manifest file using the package.json information
                     return Buffer.from(JSON.stringify(updatedManifestFile));
                 }
             }
@@ -58,13 +53,13 @@ class ZipPlugin {
 class Deferred {
     constructor() {
         this.promise = new Promise((resolve, reject) => {
-            this.reject = reject
-            this.resolve = resolve
-        })
+            this.reject = reject;
+            this.resolve = resolve;
+        });
     }
 }
 
-let doneStatus = {}
+let doneStatus = {};
 
 class DonePlugin {
     constructor (status, waitFor) {
@@ -85,7 +80,7 @@ class DonePlugin {
                     return callback();
                 }
 
-                const done = doneStatus[this.waitFor]
+                const done = doneStatus[this.waitFor];
                 done.promise.then(() => {
                     logger.log(`${this.status} config is done.`);
                     logger.log(`Start ${this.status} config.`);
@@ -94,23 +89,23 @@ class DonePlugin {
             });
         });
 
-        compiler.hooks.done.tap(this.name, (compilation) => {
-            doneStatus[this.status].resolve()
+        compiler.hooks.done.tap(this.name, () => {
+            doneStatus[this.status].resolve();
         });
     }
 }
 
 function sequence (configs = []) {
-    let waitFor
-    return configs.map((config, i) => {
+    let waitFor;
+    return configs.map((config) => {
         // add doneplugin to each config
         config.plugins.push(
             new DonePlugin(config.name, waitFor)
-        )
+        );
 
-        waitFor = config.name
-        return config
-    })
+        waitFor = config.name;
+        return config;
+    });
 }
 
 
