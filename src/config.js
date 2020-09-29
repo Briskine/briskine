@@ -2,7 +2,6 @@
 var Config = {
     websiteUrl: 'http://localhost:4000',
     functionsUrl: 'http://localhost:5000',
-    helpUrl: 'https://help.gorgiastemplates.com',
     dashboardTarget: 'gt-dashboard'
 };
 
