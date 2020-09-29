@@ -90,7 +90,7 @@ browser.runtime.onInstalled.addListener(function (details) {
     }
 });
 
-browser.runtime.onMessage.addListener(function (request, sender) {
+browser.runtime.onMessage.addListener(function (request) {
     if (request.request === 'stats') {
         if (request.key === 'words') {
             var words = parseInt(request.val, 10);
