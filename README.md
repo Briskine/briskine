@@ -1,16 +1,7 @@
-Gorgias Chrome Extension
-==========================
+Gorgias Templates Browser Extension
+===================================
 
-Google Chrome plugin for improved productivity on the web.
-
-Sites supported
----------------
-
-* Gmail
-* Outlook.com
-* Yahoo Mail
-* Linkedin
-
+Write emails faster. Create text templates and insert them with shortcuts on any website.
 
 Development
 -----------
@@ -37,7 +28,7 @@ Creating templates
 
 Templates are powered by [handlebars.js](http://handlebarsjs.com/).
 
-Following template variables are available:
+The following template variables are available:
 * **subject** _string_
 * **from** _list_; Each list element contains:
   * **name** _string_
