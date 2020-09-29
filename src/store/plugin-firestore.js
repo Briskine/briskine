@@ -386,7 +386,7 @@ function splitFullName (fullname = '') {
 
 var _browserStorageSettings = {
     get: function(key, def, callback) {
-        browser.storage.sync.get(key).then(function(data) {
+        browser.storage.local.get(key).then(function(data) {
             if (
                 browser.runtime.lastError ||
                 _isEmpty(data)
@@ -407,14 +407,14 @@ var _browserStorageSettings = {
 
         // remove value/reset default
         if (typeof value === 'undefined') {
-            browser.storage.sync.remove(key).then(function() {
+            browser.storage.local.remove(key).then(function() {
                 return callback(data);
             });
             return;
         }
 
-        browser.storage.sync.set(data).then(function() {
-            browser.storage.sync.get(key).then(function(data) {
+        browser.storage.local.set(data).then(function() {
+            browser.storage.local.get(key).then(function(data) {
                 return callback(data);
             });
         });
