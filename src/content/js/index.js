@@ -205,12 +205,6 @@ App.init = function(settings, doc) {
         return false;
     }
 
-    // This is used to open the extension options from a HTML page - it's when you signup you'd be redirected
-    // directly to the extension
-    document.addEventListener("launchGorgias", function() {
-        browser.runtime.sendMessage({ request: "launchGorgias" });
-    });
-
     doc.addEventListener("blur", (e) => {
         PubSub.publish('blur', e);
     }, true);
