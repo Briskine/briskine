@@ -3,7 +3,7 @@
  All declarations are done here
  */
 
-import '../css/content.styl';
+import '../css/content.css';
 import browser from 'webextension-polyfill';
 import $ from 'jquery';
 // creates global window.Mousetrap

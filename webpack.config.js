@@ -177,7 +177,7 @@ const popupConfig = (env) => {
         module: {
             rules: [
                 {
-                    test: /\.(css|styl)$/i,
+                    test: /\.(css)$/i,
                     use: [
                         MiniCssExtractPlugin.loader,
                         'css-loader'
@@ -222,13 +222,12 @@ const contentConfig = (env) => {
         module: {
             rules: [
                 {
-                    test: /\.(css|styl)$/i,
+                    test: /\.(css)$/i,
                     use: [
                         {
                             loader: MiniCssExtractPlugin.loader
                         },
-                        'css-loader',
-                        'stylus-loader'
+                        'css-loader'
                     ],
                 },
             ]

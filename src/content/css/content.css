@@ -10,18 +10,23 @@ div.qt-mirror {
 
     white-space: pre-wrap;
     word-wrap: break-word;
+}
 
-    .qt-caret {
-        display: inline-block;
-    }
+div.qt-mirror .qt-caret {
+    display: inline-block;
 }
 
 /* Autocomplete dropdown
 */
 
-$colorActiveBg = #EEEEEE;
-$colorText = #000;
-$padding = 8px;
+.qt-dropdown {
+    --color-active-bg: #eee;
+    --color-active-bg-dark: #dbdbdb;
+    --color-active-bg-darker: #e4e4e4;
+    --color-text: #000;
+    --color-text-light: #525252;
+    --padding: 8px;
+}
 
 .qt-dropdown {
     display: none;
@@ -58,29 +63,25 @@ $padding = 8px;
     margin: 0;
     padding: 0;
     list-style-type: none;
+}
 
-    .qt-item {
-        position: relative;
-        padding: $padding 3em $padding $padding;
-        overflow: hidden;
-        cursor: pointer;
+.qt-dropdown-content .qt-item {
+    position: relative;
+    padding: var(--padding) 3em var(--padding) var(--padding);
+    overflow: hidden;
+    cursor: pointer;
 
-        color: $colorText;
-        text-overflow: ellipsis;
+    color: var(--color-text);
+    text-overflow: ellipsis;
+}
 
-        &.default {
-            cursor: default;
-            max-height: 4em;
-        }
+.qt-dropdown-content .qt-item.default {
+    cursor: default;
+    max-height: 4em;
+}
 
-        &.active {
-            background: $colorActiveBg;
-        }
-    }
-    .qt-section {
-        padding: 4px;
-        background: darken($colorActiveBg, 4%);
-    }
+.qt-dropdown-content .qt-item.active {
+    background: var(--color-active-bg);
 }
 
 .qt-title {
@@ -97,7 +98,7 @@ $padding = 8px;
     display: block;
     overflow: hidden;
 
-    color: lighten($colorText, 32%);
+    color: var(--color-text-light);
     white-space: nowrap !important;
     text-overflow: ellipsis;
 }
@@ -105,8 +106,8 @@ $padding = 8px;
 .qt-shortcut {
     display: inline-block;
     padding: 0 4px;
-    border: 1px solid darken($colorActiveBg, 8%);
-    background: darken($colorActiveBg, 4%);
+    border: 1px solid var(--color-active-bg-darker);
+    background: var(--color-active-bg-dark);
     border-radius: 2px;
 
     font-size: .8em;
@@ -117,8 +118,8 @@ $padding = 8px;
 
 .qt-edit {
     position: absolute;
-    top: $padding;
-    right: $padding;
+    top: var(--padding);
+    right: var(--padding);
     display: block;
     padding: 2px;
     background: transparent;
@@ -151,15 +152,15 @@ $padding = 8px;
 .qt-dropdown-search {
     display: block;
     width: 100%;
-    padding: $padding;
+    padding: var(--padding);
     border: 0;
-    box-shadow: 0 1px 2px darken($colorActiveBg, 8%);
+    box-shadow: 0 1px 2px var(--color-active-bg-darker);
 
     font-size: 1em;
+}
 
-    &:focus {
-        outline: none;
-    }
+.qt-dropdown-search:focus {
+    outline: none;
 }
 
 .qt-search-highlight {
@@ -169,30 +170,33 @@ $padding = 8px;
 .qt-blank-state {
     display: block;
 
-    color: lighten($colorText, 32%);
+    color: var(--color-text-light);
     text-align: center;
     padding: 5px;
 }
 
 .g-dropdown-toolbar {
     padding: 4px;
-    .gorgias-qa-btn, button {
-        appearance: none;
-        background: linear-gradient(#ededed, #ededed 38%, #dedede);
-        border: 1px solid rgba(0, 0, 0, 0.25);
-        border-radius: 2px;
-        box-shadow: 0 1px 0 rgba(0, 0, 0, 0.08), inset 0 1px 2px rgba(255, 255, 255, 0.75);
-        color: #444;
-        text-shadow: 0 1px 0 #F0F0F0;
-        transition: all .1s ease-out;
-        cursor: pointer;
-    }
-    .g-hide-button {
-        visibility: hidden;
-        float: right;
-        margin-top: 4px;
-        font-size: 12px;
-    }
+}
+
+.g-dropdown-toolbar .gorgias-qa-btn,
+.g-dropdown-toolbar button {
+    appearance: none;
+    background: linear-gradient(#ededed, #ededed 38%, #dedede);
+    border: 1px solid rgba(0, 0, 0, 0.25);
+    border-radius: 2px;
+    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.08), inset 0 1px 2px rgba(255, 255, 255, 0.75);
+    color: #444;
+    text-shadow: 0 1px 0 #F0F0F0;
+    transition: all .1s ease-out;
+    cursor: pointer;
+}
+
+.g-dropdown-toolbar .g-hide-button {
+    visibility: hidden;
+    float: right;
+    margin-top: 4px;
+    font-size: 12px;
 }
 
 /* Quick Access Button for the Dialog
@@ -220,25 +224,25 @@ $padding = 8px;
     color: #444;
     text-shadow: 0 1px 0 #F0F0F0;
     transition: opacity .1s ease-out;
+}
 
-    &:hover {
-        opacity: 1 !important;
-        background-image: linear-gradient(#f0f0f0, #f0f0f0 38%, #e0e0e0);
-        border-color: rgba(0, 0, 0, 0.3);
-        box-shadow: 0 1px 0 rgba(0, 0, 0, 0.12), inset 0 1px 2px rgba(255, 255, 255, 0.95);
+.gorgias-qa-btn:hover {
+    opacity: 1 !important;
+    background-image: linear-gradient(#f0f0f0, #f0f0f0 38%, #e0e0e0);
+    border-color: rgba(0, 0, 0, 0.3);
+    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.12), inset 0 1px 2px rgba(255, 255, 255, 0.95);
 
-        color: #000;
-    }
+    color: #000;
+}
 
-    &:active {
-        background-image: linear-gradient(#e7e7e7, #e7e7e7 38%, #d7d7d7);
-        box-shadow: none;
-        text-shadow: none;
-    }
+.gorgias-qa-btn:active {
+    background-image: linear-gradient(#e7e7e7, #e7e7e7 38%, #d7d7d7);
+    box-shadow: none;
+    text-shadow: none;
+}
 
-    &:focus {
-        color: #000;
-    }
+.gorgias-qa-btn:focus {
+    color: #000;
 }
 
 /* white arrow used on active
@@ -290,6 +294,7 @@ $padding = 8px;
     opacity: .6;
     visibility: visible;
 }
+
 .gorgias-qa-btn-badge {
     display: none;
 
@@ -304,7 +309,6 @@ $padding = 8px;
     background: #ee2227;
 
     border-radius: 4px;
-    //box-shadow: -1px -1px 2px #5D5D5D;
 }
 
 /* qa button active styles
@@ -338,11 +342,9 @@ $padding = 8px;
     color: #fff;
     font-size: 70%;
     font-weight: bold;
-
 }
 
-.gorgias-qa-tooltip:after
-{
+.gorgias-qa-tooltip:after {
     content: '';
     position: absolute;
     border-style: solid;
