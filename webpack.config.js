@@ -110,7 +110,7 @@ function sequence (configs = []) {
 
 
 function createPackage () {
-    const filename = `${packageFile.name}-${manifestFile.version}.zip`;
+    const filename = `${packageFile.name}-${packageFile.version}.zip`;
     return {
         name: 'package',
         output: {
