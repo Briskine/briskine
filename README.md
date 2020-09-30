@@ -8,6 +8,7 @@ Development
 
 * Install [Node.js](https://nodejs.org/en/) and [npm](https://www.npmjs.com/).
 * Run `npm install` to install all dependencies.
+* Rename the `src/store/config-firebase.sample.js` file to `config-firebase.js` and add the required details from the Firebase dashboard.
 
 The following commands are available:
 
