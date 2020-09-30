@@ -418,8 +418,6 @@ var dialog = {
         var scrollTop = $(window).scrollTop();
         var scrollLeft = $(window).scrollLeft();
 
-        $('body').removeClass('qt-dropdown-show-top');
-
         var $dialog = $(dialog.dialogSelector);
 
         var dialogMetrics = $dialog.get(0).getBoundingClientRect();
@@ -461,15 +459,10 @@ var dialog = {
         // check if we have enough space at the bottom
         // for the maximum dialog height
         if ((pageHeight - (topPos - scrollTop)) < dialogMaxHeight) {
-
             topPos -= dialogMetrics.height;
             topPos -= metrics.height;
 
             topPos -= paddingTop * 2;
-
-            // add class for qa button styling
-            $('body').addClass('qt-dropdown-show-top');
-
         }
 
         $dialog.css({
@@ -535,7 +528,6 @@ var dialog = {
         }
 
         $(this.dialogSelector).removeClass('qt-dropdown-show');
-        $('body').removeClass('qt-dropdown-show-top');
         $('body').removeClass('qa-btn-dropdown-show');
         $(this.searchSelector).val('');
 

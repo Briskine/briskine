@@ -179,7 +179,6 @@ div.qt-mirror .qt-caret {
     padding: 4px;
 }
 
-.g-dropdown-toolbar .gorgias-qa-btn,
 .g-dropdown-toolbar button {
     appearance: none;
     background: linear-gradient(#ededed, #ededed 38%, #dedede);
@@ -192,16 +191,8 @@ div.qt-mirror .qt-caret {
     cursor: pointer;
 }
 
-.g-dropdown-toolbar .g-hide-button {
-    visibility: hidden;
-    float: right;
-    margin-top: 4px;
-    font-size: 12px;
-}
-
 /* Quick Access Button for the Dialog
  */
-
 .gorgias-qa-btn {
     position: absolute;
     top: 0;
@@ -243,29 +234,6 @@ div.qt-mirror .qt-caret {
 
 .gorgias-qa-btn:focus {
     color: #000;
-}
-
-/* white arrow used on active
- */
-
-.gorgias-qa-btn:before {
-    content: '';
-    position: absolute;
-    bottom: -3px;
-    left: 50%;
-    display: block;
-    margin: 0 0 0 -5px;
-    border-width: 0 5px 5px;
-    border-color: transparent transparent #fff;
-    border-style: solid;
-    visibility: hidden;
-}
-
-.qt-dropdown-show-top .gorgias-qa-btn:before {
-    bottom: auto;
-    top: -3px;
-    border-width: 5px 5px 0;
-    border-color: #fff transparent transparent;
 }
 
 /* gorgias icon on the qa button
@@ -321,10 +289,6 @@ div.qt-mirror .qt-caret {
 }
 
 .qa-dropdown-show .gorgias-qa-btn:before {
-    visibility: visible;
-}
-
-.qa-btn-dropdown-show .g-hide-button {
     visibility: visible;
 }
 
