@@ -63,7 +63,7 @@ export function insertText (params = {}) {
             focusNode = selection.focusNode;
         }
 
-        // Loom Chrome extension causes the focusNode to always be an element
+        // Loom browser extension causes the focusNode to always be an element
         // on certain websites.
         // we need to have a text node in the end
         while (focusNode.nodeType === document.ELEMENT_NODE) {
