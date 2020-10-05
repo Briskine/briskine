@@ -110,10 +110,7 @@ async function start () {
 
         message = Object.assign(JSON.parse(message), translated[locale])
 
-        // firefox add-ons require titles to be 50 chars or less,
-        // utf8 chars take more than 1 length/char.
-        // set the en name for all translations.
-        message.extName.message = extName
+        delete message.extName
 
         if (!message.extDesc.message) {
             message.extDesc.message = await translate(extDesc, locale)
