@@ -10,7 +10,7 @@
         "build": "webpack -p --env production -r esm",
         "lint": "jshint src/"
     },
-    "repository": "https://github.com/gorgias/gorgias-chrome/",
+    "repository": "https://github.com/gorgias/gorgias-templates/",
     "author": "Alexandru Plugaru <alex@gorgias.io>",
     "contributors": [
         {
