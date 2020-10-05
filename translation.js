@@ -110,17 +110,13 @@ async function start () {
 
         message = Object.assign(JSON.parse(message), translated[locale])
 
-        if (!message.extName.message) {
-            message.extName.message = await translate(extName, locale)
-        }
+        // firefox add-ons require titles to be 50 chars or less,
+        // utf8 chars take more than 1 length/char.
+        // set the en name for all translations.
+        message.extName.message = extName
 
         if (!message.extDesc.message) {
             message.extDesc.message = await translate(extDesc, locale)
-        }
-
-        // firefox add-ons require titles to be 50 chars or less
-        if (message.extName.message.length > 45) {
-            message.extName.message = extName
         }
 
         fs.writeFileSync(`${localeDir}/messages.json`, JSON.stringify(message, null, 4) + '\n', 'utf8')
