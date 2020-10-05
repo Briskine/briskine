@@ -140,7 +140,6 @@ const commonConfig = function (env) {
             generateManifest(env),
             new CopyWebpackPlugin({
                 patterns: [
-                    { from: 'src/_locales/', to: '_locales/' },
                     { from: 'src/pages/', to: 'pages/' },
                     { from: 'src/icons/', to: 'icons/' },
                     { from: 'LICENSE', to: '' }

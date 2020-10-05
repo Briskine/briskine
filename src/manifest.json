@@ -2,7 +2,7 @@
     "manifest_version": 2,
     "name": "Gorgias Templates: Email templates for Gmail",
     "version": "",
-    "description": "__MSG_extDesc__",
+    "description": "Write emails faster! Increase your productivity with templates and keyboard shortcuts on Gmail, Outlook, or LinkedIn.",
     "short_name": "Gorgias",
     "default_locale": "en",
     "icons": {
