@@ -119,7 +119,7 @@ async function start () {
         }
 
         // firefox add-ons require titles to be 50 chars or less
-        if (message.extName.message.length > 50) {
+        if (message.extName.message.length > 45) {
             message.extName.message = extName
         }
 
