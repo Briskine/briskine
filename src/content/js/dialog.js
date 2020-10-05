@@ -2,6 +2,7 @@
  * Autocomplete dialog code.
  */
 
+import browser from 'webextension-polyfill';
 import $ from 'jquery';
 import Handlebars from 'handlebars';
 import _ from 'underscore';
@@ -79,7 +80,7 @@ var dialog = {
 
             dialog.populate(params);
 
-            chrome.runtime.sendMessage({
+            browser.runtime.sendMessage({
                 'request': 'track',
                 'event': 'Showed dialog',
                 'data': {
@@ -122,7 +123,7 @@ var dialog = {
         });
 
         $(dialog.newTemplateSelector).on('mousedown', function () {
-            chrome.runtime.sendMessage({'request': 'new'});
+            browser.runtime.sendMessage({'request': 'new'});
         });
 
         $dialog.on('keyup', this.searchSelector, function (e) {
@@ -417,8 +418,6 @@ var dialog = {
         var scrollTop = $(window).scrollTop();
         var scrollLeft = $(window).scrollLeft();
 
-        $('body').removeClass('qt-dropdown-show-top');
-
         var $dialog = $(dialog.dialogSelector);
 
         var dialogMetrics = $dialog.get(0).getBoundingClientRect();
@@ -460,15 +459,10 @@ var dialog = {
         // check if we have enough space at the bottom
         // for the maximum dialog height
         if ((pageHeight - (topPos - scrollTop)) < dialogMaxHeight) {
-
             topPos -= dialogMetrics.height;
             topPos -= metrics.height;
 
             topPos -= paddingTop * 2;
-
-            // add class for qa button styling
-            $('body').addClass('qt-dropdown-show-top');
-
         }
 
         $dialog.css({
@@ -502,7 +496,7 @@ var dialog = {
 
             dialog.close();
 
-            chrome.runtime.sendMessage({
+            browser.runtime.sendMessage({
                 'request': 'track',
                 'event': 'Inserted template',
                 'data': {
@@ -534,7 +528,6 @@ var dialog = {
         }
 
         $(this.dialogSelector).removeClass('qt-dropdown-show');
-        $('body').removeClass('qt-dropdown-show-top');
         $('body').removeClass('qa-btn-dropdown-show');
         $(this.searchSelector).val('');
 
@@ -665,7 +658,7 @@ function setQaBtnPosition () {
 }
 
 // fetch template content from the extension
-var contentUrl = chrome.extension.getURL("pages/content.html");
+var contentUrl = browser.runtime.getURL("pages/content.html");
 $.get(contentUrl, function (data) {
     var vars = [
         'dialog.qaBtnTemplate',

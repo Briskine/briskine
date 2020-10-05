@@ -1,22 +1,14 @@
-Gorgias Chrome Extension
-==========================
+Gorgias Templates Browser Extension
+===================================
 
-Google Chrome plugin for improved productivity on the web.
-
-Sites supported
----------------
-
-* Gmail
-* Outlook.com
-* Yahoo Mail
-* Linkedin
-
+Write emails faster. Create text templates and insert them with shortcuts on any website.
 
 Development
 -----------
 
 * Install [Node.js](https://nodejs.org/en/) and [npm](https://www.npmjs.com/).
 * Run `npm install` to install all dependencies.
+* Rename the `src/store/config-firebase.sample.js` file to `config-firebase.js` and add the required details from the Firebase dashboard.
 
 The following commands are available:
 
@@ -37,7 +29,7 @@ Creating templates
 
 Templates are powered by [handlebars.js](http://handlebarsjs.com/).
 
-Following template variables are available:
+The following template variables are available:
 * **subject** _string_
 * **from** _list_; Each list element contains:
   * **name** _string_

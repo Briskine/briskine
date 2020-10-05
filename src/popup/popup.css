@@ -20,7 +20,7 @@ label {
 }
 
 .popup-container {
-    min-width: 22em;
+    width: 22em;
 }
 
 .popup-box {

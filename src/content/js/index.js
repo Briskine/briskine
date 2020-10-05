@@ -3,7 +3,8 @@
  All declarations are done here
  */
 
-import '../css/content.styl';
+import '../css/content.css';
+import browser from 'webextension-polyfill';
 import $ from 'jquery';
 // creates global window.Mousetrap
 import Mousetrap from 'mousetrap';
@@ -36,7 +37,7 @@ var App = {
                 for (var id in templates) {
                     var t = templates[id];
                     if (t.deleted === 0 && t.shortcut === text) {
-                        chrome.runtime.sendMessage({
+                        browser.runtime.sendMessage({
                             request: "track",
                             event: "Inserted template",
                             data: {
@@ -140,12 +141,13 @@ var App = {
             App.data.lastFilterRun = Date.now();
         },
         stats: function(key, val, callback) {
-            chrome.runtime.sendMessage(
-                { request: 'stats', key: key, val: val },
-                function(response) {
-                    callback(response);
-                }
-            );
+            browser.runtime.sendMessage({
+                request: 'stats',
+                key: key,
+                val: val
+            }).then(function(response) {
+                return callback(response);
+            });
         },
         fetchSettings: function(callback, doc, disablePlugins) {
             store.getSettings({
@@ -202,12 +204,6 @@ App.init = function(settings, doc) {
     if (isBlacklisted) {
         return false;
     }
-
-    // This is used to open the Chrome extension options from a HTML page - it's when you signup you'd be redirected
-    // directly to the extension
-    document.addEventListener("launchGorgias", function() {
-        chrome.runtime.sendMessage({ request: "launchGorgias" });
-    });
 
     doc.addEventListener("blur", (e) => {
         PubSub.publish('blur', e);

@@ -1,3 +1,4 @@
+import browser from 'webextension-polyfill';
 import firebase from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/firestore';
@@ -153,7 +154,7 @@ function refreshTemplates () {
 var localDataKey = 'firestoreLocalData';
 function getLocalData (params = {}) {
     return new Promise((resolve) => {
-        chrome.storage.local.get(localDataKey, (res) => {
+        browser.storage.local.get(localDataKey).then((res) => {
             var localData = Object.assign({
                 tags: {},
                 templates: {}
@@ -212,7 +213,7 @@ function updateLocalData (params = {}) {
 
                 var localDataContainer = {};
                 localDataContainer[localDataKey] = localData;
-                chrome.storage.local.set(localDataContainer, () => {
+                browser.storage.local.set(localDataContainer).then(() => {
                     // refresh template list
                     refreshTemplates();
 
@@ -338,7 +339,7 @@ function isLegacyTemplate (key = '', template = {}) {
 
 function migrateLegacyLocalData () {
     return new Promise((resolve) => {
-        chrome.storage.local.get(null, resolve);
+        browser.storage.local.get(null).then(resolve);
     }).then((storage) => {
         return Promise.all(
             Object.keys(storage || {}).map((key) => {
@@ -367,7 +368,7 @@ function migrateLegacyLocalData () {
     }).then((ids = []) => {
         const migratedTemplates = ids.filter((id) => !!id);
         // delete legacy data
-        chrome.storage.local.remove(migratedTemplates);
+        browser.storage.local.remove(migratedTemplates);
         return;
     });
 }
@@ -383,11 +384,11 @@ function splitFullName (fullname = '') {
     };
 }
 
-var _chromeStorageSettings = {
+var _browserStorageSettings = {
     get: function(key, def, callback) {
-        chrome.storage.sync.get(key, function(data) {
+        browser.storage.local.get(key).then(function(data) {
             if (
-                chrome.runtime.lastError ||
+                browser.runtime.lastError ||
                 _isEmpty(data)
             ) {
                 if (!def) {
@@ -406,14 +407,14 @@ var _chromeStorageSettings = {
 
         // remove value/reset default
         if (typeof value === 'undefined') {
-            chrome.storage.sync.remove(key, function() {
+            browser.storage.local.remove(key).then(function() {
                 return callback(data);
             });
             return;
         }
 
-        chrome.storage.sync.set(data, function() {
-            chrome.storage.sync.get(key, function(data) {
+        browser.storage.local.set(data).then(function() {
+            browser.storage.local.get(key).then(function(data) {
                 return callback(data);
             });
         });
@@ -422,10 +423,10 @@ var _chromeStorageSettings = {
 
 var Settings = {
     get: function(key, def, callback) {
-        return _chromeStorageSettings.get(key, def, callback);
+        return _browserStorageSettings.get(key, def, callback);
     },
     set: function(key, value, callback) {
-        return _chromeStorageSettings.set(key, value, callback);
+        return _browserStorageSettings.set(key, value, callback);
     },
     defaults: {
         settings: {
@@ -561,7 +562,7 @@ function isLoggedOut (err) {
 var globalUserKey = 'firebaseUser';
 function getSignedInUser () {
     return new Promise((resolve, reject) => {
-        chrome.storage.local.get(globalUserKey, (res) => {
+        browser.storage.local.get(globalUserKey).then((res) => {
             const user = res[globalUserKey] || {};
             if (Object.keys(user).length) {
                 return resolve(user);
@@ -576,7 +577,7 @@ function setSignedInUser (user) {
     return new Promise((resolve) => {
         var globalUser = {};
         globalUser[globalUserKey] = user;
-        chrome.storage.local.set(globalUser, () => {
+        browser.storage.local.set(globalUser).then(() => {
             resolve();
         });
     });
@@ -1021,9 +1022,9 @@ var clearLocalTemplates = () => {
     return new Promise((resolve) => {
         var localDataContainer = {};
         localDataContainer[localDataKey] = {};
-        chrome.storage.local.set(localDataContainer, () => {
+        browser.storage.local.set(localDataContainer).then(() => {
             refreshTemplates();
-            resolve();
+            return resolve();
         });
     });
 };
@@ -1046,7 +1047,7 @@ function getUserToken () {
 // backwards compatibility
 function signinError (err) {
     if (err && err.code === 'auth/too-many-requests') {
-        // recaptcha verifier is not supported in chrome extensions
+        // recaptcha verifier is not supported in browser extensions
         // only http/https
         err.message = 'Too many unsuccessful login attempts. Please try again later. ';
     }
@@ -1275,7 +1276,7 @@ function syncSettings (forceLocal = false) {
 
 // sync local data when starting the app
 var syncNow = function () {
-    // migrate legacy templates from chrome storage
+    // migrate legacy templates from browser storage
     return migrateLegacyLocalData()
         .then(() => {
             // sync local templates

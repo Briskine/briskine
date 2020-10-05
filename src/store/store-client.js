@@ -1,17 +1,19 @@
+import browser from 'webextension-polyfill';
+
 var backgroundPage = null;
 try {
     // getBackgroundPage() throws error in content script
-    backgroundPage = chrome.extension.getBackgroundPage();
+    backgroundPage = browser.extension.getBackgroundPage();
 } catch (err) {}
 
 function createRequest (type) {
     return (params) => {
         return new Promise((resolve, reject) => {
             // get from background
-            chrome.runtime.sendMessage({
+            browser.runtime.sendMessage({
                 type: type,
                 data: params
-            }, (data) => {
+            }).then((data) => {
                 // handle errors
                 if (data && data.storeError) {
                     return reject(data.storeError);
@@ -65,13 +67,13 @@ if (backgroundPage) {
 }
 
 // handle trigger from background
-chrome.runtime.onMessage.addListener((req, sender, sendResponse) => {
+browser.runtime.onMessage.addListener((req) => {
     if (
         req.type &&
         req.type === 'trigger'
     ) {
         trigger(req.data.name);
-        sendResponse();
+        return;
     }
 
     return false;

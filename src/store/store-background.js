@@ -1,28 +1,30 @@
 /* globals ENV, console */
+import browser from 'webextension-polyfill';
+
 import _FIRESTORE_PLUGIN from './plugin-firestore';
 
 var trigger = function (name) {
     // send trigger message to client store
     return new Promise((resolve) => {
-        chrome.runtime.sendMessage({
-            type: 'trigger',
-            data: {
-                name: name
-            }
-        }, (res) => {
-            if (chrome.runtime.lastError) {
+        browser.runtime.sendMessage({
+                type: 'trigger',
+                data: {
+                    name: name
+                }
+            })
+            .then((res) => {
+                return resolve(res);
+            })
+            .catch(() => {
                 return debug(
                     [
-                        'chrome.runtime.lastError',
-                        chrome.runtime.lastError.message,
+                        'browser.runtime.lastError',
+                        browser.runtime.lastError.message,
                         name
                     ],
                     'warn'
                 );
-            }
-
-            return resolve(res);
-        });
+            });
     });
 };
 
@@ -74,26 +76,25 @@ function debug (data = [], method = 'log') {
 }
 
 // respond to content
-chrome.runtime.onMessage.addListener((req, sender, sendResponse) => {
+browser.runtime.onMessage.addListener((req) => {
     if (
         req.type &&
         typeof window.store[req.type] === 'function'
     ) {
-        window.store[req.type](req.data).then((data = {}) => {
-            sendResponse(data);
-
+        return window.store[req.type](req.data).then((data = {}) => {
             // debug store calls
             debug([req.type, req.data, data]);
-        }).catch((err) => {
-            // catch errors on client
-            var storeError = {
-                storeError: err
-            };
-            sendResponse(storeError);
 
+            return data;
+        }).catch((err) => {
             debug([req.type, req.data, err], 'warn');
+
+            // catch errors on client
+            return {
+                storeError:err
+            };
         });
     }
 
-    return true;
+    return;
 });

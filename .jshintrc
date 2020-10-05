@@ -5,7 +5,6 @@
     "browser": true,
     "module": true,
     "globals": {
-        "chrome": true,
         "describe": true,
         "it": true,
         "customElements": true
