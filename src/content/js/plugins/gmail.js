@@ -104,8 +104,7 @@ function getData (params) {
         to: parseList(to),
         cc: parseList(cc),
         bcc: parseList(bcc),
-        subject: subject,
-        plugin: 'gmail'//maybe there is another way to get the active plugin..
+        subject: subject
    };
 }
 
