@@ -50,18 +50,13 @@ function getData (params) {
         subject = '';
 
     if (isContentEditable(params.element)) {
-        var title = $('[data-eqid]').attr('aria-label');
-        var fromString = '';
-        if (typeof title === 'string') {
-            // the initial string is: Google Account: Gorgias Templates Support (support@gorgiastemplates.com)
-            var parts = title.trim().split(':');
-            if (parts.length && parts.length === 2) {
-                fromString = parts[1];
-            }
-        } else {
-            // old format
-            fromString = $('.gb_vb').text() + '<' + $('.gb_xb').text() + '>';
-        }
+        const userInfoSelector = '.gb_qe';
+        const $fullName = document.querySelector(`${userInfoSelector} *:nth-last-child(2)`);
+        const $email = document.querySelector(`${userInfoSelector} *:last-child`);
+
+        const fullNameText = $fullName ? $fullName.innerText : '';
+        const emailText = $email ? $email.innerText : '';
+        const fromString = `${fullNameText} <${emailText}>`;
 
         from.push(parseString(fromString));
 
