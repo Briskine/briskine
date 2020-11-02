@@ -510,6 +510,7 @@ var getSettings = (params = {}) => {
                         // map to old format
                         cachedSettings = Object.assign({}, localSettings, {
                             name: splitFullName(userData.full_name),
+                            email: userData.email,
                             keyboard: {
                                 enabled: settings.expand_enabled,
                                 shortcut: settings.expand_shortcut

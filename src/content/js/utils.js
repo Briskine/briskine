@@ -222,8 +222,20 @@ function replaceFrom (from, setting) {
 }
 
 export function parseTemplate (template = '', data = {}) {
+    const nameSetting = window.App.settings.cache.name || {
+        firstName: '',
+        lastName: ''
+    };
     // get "from" name from settings
-    data.from = replaceFrom(data.from || {}, window.App.settings.cache.name);
+    data.from = replaceFrom(data.from || {}, nameSetting);
+
+    // account variable
+    data.account = {
+        name: `${nameSetting.firstName} ${nameSetting.lastName}`,
+        first_name: nameSetting.firstName,
+        last_name: nameSetting.lastName,
+        email: window.App.settings.cache.email
+    };
 
     return Handlebars.compile(template)(PrepareVars(data));
 }
