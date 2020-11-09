@@ -5,27 +5,6 @@
 import {parseTemplate, insertText} from '../utils';
 import {parseFullName} from '../utils/parse-text';
 
-function parseName (name) {
-    name = name.trim();
-
-    var first_name = '';
-    var last_name = '';
-
-    var firstSpace = name.indexOf(' ');
-
-    if(firstSpace === -1) {
-        firstSpace = name.length;
-    }
-
-    first_name = name.substring(0, firstSpace);
-    last_name = name.substring(firstSpace + 1, name.length);
-
-    return {
-        first_name: first_name,
-        last_name: last_name
-    };
-}
-
 function getFieldData (field, $container) {
     var $buttons = $container.querySelectorAll('[class*="wellItemText-"]') || [];
     $buttons.forEach(function ($button) {
@@ -37,7 +16,7 @@ function getFieldData (field, $container) {
                 last_name: '',
                 // BUG we can't get email
                 email: ''
-            }, parseName(fullName))
+            }, parseFullName(fullName))
         );
     });
 }
