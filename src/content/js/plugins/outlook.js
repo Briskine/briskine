@@ -153,7 +153,7 @@ function getData () {
     }
 
     let fromEmail = '';
-    const $fromEmailButton = document.querySelector('[data-lpc-hover-target-id]');
+    const $fromEmailButton = document.querySelector('[role=button] + [data-lpc-hover-target-id]');
     if ($fromEmailButton) {
         fromEmail = $fromEmailButton.innerText;
     }
