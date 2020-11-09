@@ -3,6 +3,7 @@
  */
 
 import {parseTemplate, insertText} from '../utils';
+import {parseFullName} from '../utils/parse-text';
 
 function parseName (name) {
     name = name.trim();
@@ -44,11 +45,6 @@ function getFieldData (field, $container) {
 // selector for to/cc/bcc containers
 function getContainers () {
     return document.querySelectorAll('._31eKqae41uP_KBAvjXjCLQ');
-}
-
-// BUG {{from}} variables only work when the from container is visible
-function getFromContainer () {
-    return document.querySelector('._3nCIhXkTCoPTdxfXdyv8H4');
 }
 
 function getToContainer () {
@@ -171,25 +167,24 @@ function getData () {
         subject: ''
     };
 
-   var $from = getFromContainer();
+    const $from = document.querySelector('#O365_MainLink_Me > div > div:nth-child(1)');
+    let fullName = '';
     if ($from) {
-        var $fromButton = $from.querySelector('[role=button]');
-        if ($fromButton) {
-            var fromEmail = $fromButton.innerText || '';
-            var nameAriaLabel = $fromButton.getAttribute('aria-label');
-            // BUG only works for two word names
-            var fromName = nameAriaLabel.split(' ').slice(-2).join(' ');
-
-            vars.from.push(
-                Object.assign({
-                    name: fromName,
-                    first_name: '',
-                    last_name: '',
-                    email: fromEmail
-                }, parseName(fromName))
-            );
-        }
+        fullName = $from.textContent;
     }
+
+    let fromEmail = '';
+    const $fromEmailButton = document.querySelector('[data-lpc-hover-target-id]');
+    if ($fromEmailButton) {
+        fromEmail = $fromEmailButton.innerText;
+    }
+
+    vars.from.push(
+        Object.assign({
+            name: fullName,
+            email: fromEmail
+        }, parseFullName(fullName))
+    );
 
     var $to = getToContainer();
     if ($to) {
