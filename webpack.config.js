@@ -11,9 +11,15 @@ import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import packageFile from './package.json';
 import manifestFile from './src/manifest.json';
 let devtool = 'cheap-module-source-map';
+
+// TODO completely deprecate webpack-dev-server
+// use only webpack --watch directly
 const devServer = {
+    hot: false,
     inline: false,
-    writeToDisk: true
+    liveReload: false,
+    writeToDisk: true,
+    disableHostCheck: true
 };
 
 const devPath = path.resolve('ext');
@@ -40,12 +46,9 @@ class ZipPlugin {
     constructor(options) {
         this.options = options;
     }
-
     apply(compiler) {
         compiler.hooks.done.tap('ZipPlugin', async (stats) => {
-            const output = stats.compilation.options.output;
-            const zipPath = path.join(output.path, output.filename);
-            await zip(this.options.folder, zipPath);
+            await zip(this.options.entry, this.options.output);
         });
     }
 }
@@ -126,29 +129,77 @@ function createPackage () {
 }
 
 
-const commonConfig = function (env) {
+function extensionConfig (env) {
+    const plugins = [
+        // clean the build folder
+        new CleanWebpackPlugin({
+            cleanStaleWebpackAssets: false
+        }),
+        generateManifest(env),
+        new CopyWebpackPlugin({
+            patterns: [
+                { from: 'src/popup/popup.html', to: 'popup/' },
+                { from: 'src/pages/', to: 'pages/' },
+                { from: 'src/icons/', to: 'icons/' },
+                { from: 'LICENSE', to: '' }
+            ]
+        }),
+        new webpack.DefinePlugin({
+            ENV: JSON.stringify(env),
+        }),
+        new MiniCssExtractPlugin({
+            filename: '[name]/[name].css'
+        })
+    ];
+
+    if (env === 'production') {
+        const zipFilename = `${packageFile.name}-${packageFile.version}.zip`;
+        const zipPath = path.join(productionPath, zipFilename);
+        plugins.push(
+            new ZipPlugin({
+                entry: devPath,
+                output: zipPath
+            })
+        )
+    }
+
     return {
         name: 'common',
-        output: {
-            path: devPath
+        entry: {
+            background: './src/background/background.js',
+            popup: './src/popup/popup.js',
+            content: './src/content/js/index.js'
         },
-        plugins: [
-            // clean the build folder
-            new CleanWebpackPlugin({
-                cleanStaleWebpackAssets: false
-            }),
-            generateManifest(env),
-            new CopyWebpackPlugin({
-                patterns: [
-                    { from: 'src/pages/', to: 'pages/' },
-                    { from: 'src/icons/', to: 'icons/' },
-                    { from: 'LICENSE', to: '' }
-                ]
-            })
-        ],
-        devServer: devServer
+        output: {
+            path: path.resolve(devPath),
+            filename: '[name]/[name].js'
+        },
+        plugins: plugins,
+        module: {
+            rules: [
+                {
+                    test: /\.(css)$/i,
+                    use: [
+                        MiniCssExtractPlugin.loader,
+                        'css-loader'
+                    ],
+                },
+                {
+                    test: /\.(png|woff|woff2|eot|ttf|svg)$/,
+                    use: {
+                        loader: 'url-loader',
+                        options: {
+                            limit: 8192,
+                            outputPath: '../assets',
+                            publicPath: '/assets',
+                        }
+                    }
+                }
+            ]
+        },
+        devtool: devtool
     };
-};
+}
 
 const popupConfig = (env) => {
     return {
@@ -256,22 +307,10 @@ const backgroundConfig = (env) => {
     };
 };
 
-module.exports = mode => {
-    const env = process.env.NODE_ENV || mode;
-    if (env === 'production') {
-        devtool = 'none';
-        return sequence([
-            commonConfig(env),
-            backgroundConfig(env),
-            contentConfig(env),
-            popupConfig(env),
-            createPackage()
-        ]);
+export default function (env) {
+    if (!env.mode) {
+      throw new Error('No mode specified. See webpack.config.js.');
     }
-    return sequence([
-        commonConfig(env),
-        backgroundConfig(env),
-        contentConfig(env),
-        popupConfig(env)
-    ]);
-};
+
+    return extensionConfig(env.mode)
+}

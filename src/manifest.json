@@ -26,10 +26,10 @@
                 "http://*/*"
             ],
             "js": [
-                "content/js/content.js"
+                "content/content.js"
             ],
             "css": [
-                "content/css/content.css"
+                "content/content.css"
             ],
             "run_at": "document_end",
             "all_frames": true

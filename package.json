@@ -5,9 +5,9 @@
     "main": "index.js",
     "scripts": {
         "test": "mocha -r esm 'src/**/*.spec.js' && npm run lint",
-        "start": "webpack-dev-server --mode=development --env development -r esm",
-        "staging": "(export NODE_ENV=staging && npm start)",
-        "build": "webpack -p --env production -r esm",
+        "start": "NODE_OPTIONS='-r esm' webpack -w --env mode=development",
+        "staging": "NODE_OPTIONS='-r esm' webpack -w --env mode=staging",
+        "build": "NODE_OPTIONS='-r esm' webpack --env mode=production",
         "lint": "jshint src/"
     },
     "repository": "https://github.com/gorgias/gorgias-templates/",
@@ -34,7 +34,7 @@
     "devDependencies": {
         "chai": "^4.2.0",
         "clean-webpack-plugin": "^3.0.0",
-        "copy-webpack-plugin": "^6.4.0",
+        "copy-webpack-plugin": "^7.0.0",
         "css-loader": "^5.0.1",
         "esm": "^3.2.25",
         "file-loader": "^6.2.0",
@@ -42,9 +42,9 @@
         "mocha": "^8.2.1",
         "mockdate": "^3.0.2",
         "url-loader": "^4.1.1",
-        "webextension-polyfill": "^0.6.0",
-        "webpack": "^4.44.2",
-        "webpack-cli": "^3.3.10",
+        "webextension-polyfill": "^0.7.0",
+        "webpack": "^5.10.1",
+        "webpack-cli": "^4.2.0",
         "webpack-dev-server": "^3.10.1",
         "zip-a-folder": "^0.0.12"
     },
