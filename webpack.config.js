@@ -77,7 +77,6 @@ function extensionConfig (env) {
     }
 
     return {
-        name: 'common',
         entry: {
             background: './src/background/background.js',
             popup: './src/popup/popup.js',

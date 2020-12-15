@@ -2,7 +2,6 @@
     "name": "gorgias",
     "version": "6.10.12",
     "description": "Write everything faster.",
-    "main": "index.js",
     "scripts": {
         "test": "mocha -r esm 'src/**/*.spec.js' && npm run lint",
         "start": "NODE_OPTIONS='-r esm' webpack -w --env mode=development",
