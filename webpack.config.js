@@ -97,7 +97,7 @@ function extensionConfig (env) {
                     ],
                 },
                 {
-                    test: /\.(png|woff|woff2|eot|ttf|svg)$/,
+                    test: /\.(png|svg)$/,
                     use: {
                         loader: 'url-loader',
                         options: {

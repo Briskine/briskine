@@ -657,24 +657,58 @@ function setQaBtnPosition () {
     });
 }
 
-// fetch template content from the extension
-var contentUrl = browser.runtime.getURL("pages/content.html");
-$.get(contentUrl, function (data) {
-    var vars = [
-        'dialog.qaBtnTemplate',
-        'dialog.qaBtnTooltip',
-        'dialog.template',
-        'dialog.liTemplate'
-    ];
+// dialog html templates
+dialog.qaBtnTemplate = `
+<span class="gorgias-qa-btn"></span>
+`;
 
-    for (var i in vars) {
-        var v = vars[i];
-        var start = data.indexOf(v);
-        var end = data.lastIndexOf(v);
-        // todo(@xarg): sorry the barbarian splitting, could have been done much better.
-        dialog[v.split('.').slice(-1)] = data.slice(start + v.length + 3, end - 4);
-    }
-}, "html");
+dialog.qaBtnTooltip = `
+<div class="gorgias-qa-tooltip">Search templates (CTRL+Space)</div>
+`;
+
+dialog.template = `
+<div class="qt-dropdown">
+    <div class="qt-info">
+        Please
+        <a href="#" class="js-gorgias-signin">
+            Sign in
+        </a>
+        or
+        <a href="{{signupUrl}}" target="_blank">
+            Create a free account
+        </a>
+    </div>
+
+    <input type="search" class="qt-dropdown-search" value="" placeholder="Search templates...">
+    <ul class="qt-dropdown-content">
+
+    </ul>
+    <div class="g-dropdown-toolbar">
+        <button class="g-new-template">New Template</button>
+    </div>
+</div>
+`;
+
+dialog.liTemplate = `
+{{#if elements.length}}
+{{#each elements}}
+<li class="qt-item" data-id="{{id}}"
+title="Title: {{{originalTitle}}}{{#if this.tags }}
+Tags: {{{this.tags}}}{{/if}}
+
+{{originalBody}}">
+<span class="qt-title">{{{title}}}</span>
+{{#if this.shortcut}}
+<span class="qt-shortcut">{{{this.shortcut}}}</span>
+{{/if}}
+<span class="qt-body">{{{body}}}</span>
+<button type="button" class="qt-edit" title="Edit template"></button>
+</li>
+{{/each}}
+{{else}}
+<li class="qt-blank-state">No templates found.</li>
+{{/if}}
+`;
 
 enableDialogSearchAttr();
 
