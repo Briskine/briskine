@@ -1,5 +1,5 @@
 /* globals Buffer*/
-/*jshint esversion: 8 */
+/* jshint esversion: 8 */
 
 import webpack from 'webpack';
 import path from 'path';
