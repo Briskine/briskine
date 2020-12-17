@@ -109,7 +109,13 @@ function extensionConfig (env) {
                 }
             ]
         },
-        devtool: 'cheap-module-source-map'
+        devtool: 'cheap-module-source-map',
+        resolve: {
+            alias: {
+                'handlebars/runtime': 'handlebars/dist/cjs/handlebars.runtime',
+                'handlebars': 'handlebars/dist/cjs/handlebars'
+            }
+        }
     };
 }
 
