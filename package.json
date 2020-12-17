@@ -4,7 +4,7 @@
     "description": "Write everything faster.",
     "scripts": {
         "test": "mocha -r esm 'src/**/*.spec.js' && npm run lint",
-        "start": "NODE_OPTIONS='-r esm' webpack -w --env mode=development",
+        "start": "NODE_OPTIONS='-r esm' webpack -w --mode=development --env mode=development",
         "staging": "NODE_OPTIONS='-r esm' webpack -w --env mode=staging",
         "build": "NODE_OPTIONS='-r esm' webpack --env mode=production",
         "lint": "jshint src/"
