@@ -1,5 +1,5 @@
-/* globals Buffer, module, process */
-/*jshint esversion: 8 */
+/* globals Buffer*/
+/* jshint esversion: 8 */
 
 import webpack from 'webpack';
 import path from 'path';
@@ -10,11 +10,6 @@ import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 
 import packageFile from './package.json';
 import manifestFile from './src/manifest.json';
-let devtool = 'cheap-module-source-map';
-const devServer = {
-    inline: false,
-    writeToDisk: true
-};
 
 const devPath = path.resolve('ext');
 const productionPath = path.resolve('build');
@@ -40,139 +35,58 @@ class ZipPlugin {
     constructor(options) {
         this.options = options;
     }
-
     apply(compiler) {
-        compiler.hooks.done.tap('ZipPlugin', async (stats) => {
-            const output = stats.compilation.options.output;
-            const zipPath = path.join(output.path, output.filename);
-            await zip(this.options.folder, zipPath);
+        compiler.hooks.done.tap('ZipPlugin', async () => {
+            await zip(this.options.entry, this.options.output);
         });
     }
 }
 
-class Deferred {
-    constructor() {
-        this.promise = new Promise((resolve, reject) => {
-            this.reject = reject;
-            this.resolve = resolve;
-        });
-    }
-}
+function extensionConfig (env) {
+    const plugins = [
+        // clean the build folder
+        new CleanWebpackPlugin({
+            cleanStaleWebpackAssets: false
+        }),
+        generateManifest(env),
+        new CopyWebpackPlugin({
+            patterns: [
+                { from: 'src/popup/popup.html', to: 'popup/' },
+                { from: 'src/pages/', to: 'pages/' },
+                { from: 'src/icons/', to: 'icons/' },
+                { from: 'LICENSE', to: '' }
+            ]
+        }),
+        new webpack.DefinePlugin({
+            ENV: JSON.stringify(env),
+        }),
+        new MiniCssExtractPlugin({
+            filename: '[name]/[name].css'
+        })
+    ];
 
-let doneStatus = {};
-
-class DonePlugin {
-    constructor (status, waitFor) {
-        this.name = 'DonePlugin';
-        this.status = status;
-        this.waitFor = waitFor;
-        doneStatus[status] = new Deferred();
-    }
-
-    apply (compiler) {
-        const logger = compiler.getInfrastructureLogger(this.name);
-
-        const hooks = [ 'watchRun', 'run' ];
-        hooks.forEach((hook) => {
-            compiler.hooks[hook].tapAsync(this.name, (tap, callback) => {
-                if (!this.waitFor) {
-                    logger.log(`Start ${this.status} config.`);
-                    return callback();
-                }
-
-                const done = doneStatus[this.waitFor];
-                done.promise.then(() => {
-                    logger.log(`${this.status} config is done.`);
-                    logger.log(`Start ${this.status} config.`);
-                    callback();
-                });
-            });
-        });
-
-        compiler.hooks.done.tap(this.name, () => {
-            doneStatus[this.status].resolve();
-        });
-    }
-}
-
-function sequence (configs = []) {
-    let waitFor;
-    return configs.map((config) => {
-        // add doneplugin to each config
-        config.plugins.push(
-            new DonePlugin(config.name, waitFor)
-        );
-
-        waitFor = config.name;
-        return config;
-    });
-}
-
-
-function createPackage () {
-    const filename = `${packageFile.name}-${packageFile.version}.zip`;
-    return {
-        name: 'package',
-        output: {
-            path: productionPath,
-            filename: filename
-        },
-        plugins: [
+    if (env === 'production') {
+        const zipFilename = `${packageFile.name}-${packageFile.version}.zip`;
+        const zipPath = path.join(productionPath, zipFilename);
+        plugins.push(
             new ZipPlugin({
-                folder: devPath
+                entry: devPath,
+                output: zipPath
             })
-        ]
-    };
-}
+        );
+    }
 
-
-const commonConfig = function (env) {
     return {
-        name: 'common',
-        output: {
-            path: devPath
-        },
-        plugins: [
-            // clean the build folder
-            new CleanWebpackPlugin({
-                cleanStaleWebpackAssets: false
-            }),
-            generateManifest(env),
-            new CopyWebpackPlugin({
-                patterns: [
-                    { from: 'src/pages/', to: 'pages/' },
-                    { from: 'src/icons/', to: 'icons/' },
-                    { from: 'LICENSE', to: '' }
-                ]
-            })
-        ],
-        devServer: devServer
-    };
-};
-
-const popupConfig = (env) => {
-    return {
-        name: 'popup',
         entry: {
-            popup: './src/popup/popup.js'
+            background: './src/background/background.js',
+            popup: './src/popup/popup.js',
+            content: './src/content/js/index.js'
         },
         output: {
-            path: path.resolve(devPath, 'popup'),
-            filename: '[name].js'
+            path: path.resolve(devPath),
+            filename: '[name]/[name].js'
         },
-        plugins: [
-            new MiniCssExtractPlugin({
-                filename: '[name].css'
-            }),
-            new webpack.DefinePlugin({
-                ENV: JSON.stringify(env),
-            }),
-            new CopyWebpackPlugin({
-                patterns: [
-                    { from: 'src/popup/popup.html', to: '' },
-                ]
-            })
-        ],
+        plugins: plugins,
         module: {
             rules: [
                 {
@@ -183,7 +97,7 @@ const popupConfig = (env) => {
                     ],
                 },
                 {
-                    test: /\.(png|woff|woff2|eot|ttf|svg)$/,
+                    test: /\.(png|svg)$/,
                     use: {
                         loader: 'url-loader',
                         options: {
@@ -195,83 +109,20 @@ const popupConfig = (env) => {
                 }
             ]
         },
-        devServer: devServer,
-        devtool: devtool
+        devtool: 'cheap-module-source-map',
+        resolve: {
+            alias: {
+                'handlebars/runtime': 'handlebars/dist/cjs/handlebars.runtime',
+                'handlebars': 'handlebars/dist/cjs/handlebars'
+            }
+        }
     };
-};
+}
 
-const contentConfig = (env) => {
-    return {
-        name: 'content',
-        entry: {
-            content: './src/content/js/index.js'
-        },
-        output: {
-            path: path.resolve(devPath, 'content'),
-            filename: 'js/[name].js'
-        },
-        plugins: [
-            new MiniCssExtractPlugin({
-                filename: 'css/[name].css'
-            }),
-            new webpack.DefinePlugin({
-                ENV: JSON.stringify(env),
-            })
-        ],
-        module: {
-            rules: [
-                {
-                    test: /\.(css)$/i,
-                    use: [
-                        {
-                            loader: MiniCssExtractPlugin.loader
-                        },
-                        'css-loader'
-                    ],
-                },
-            ]
-        },
-        devServer: devServer,
-        devtool: devtool
-    };
-};
-
-const backgroundConfig = (env) => {
-    return {
-        name: 'background',
-        entry: {
-            content: './src/background/background.js'
-        },
-        plugins: [
-            new webpack.DefinePlugin({
-                ENV: JSON.stringify(env),
-            })
-        ],
-        output: {
-            path: path.resolve(devPath),
-            filename: 'background.js'
-        },
-        devServer: devServer,
-        devtool: devtool
-    };
-};
-
-module.exports = mode => {
-    const env = process.env.NODE_ENV || mode;
-    if (env === 'production') {
-        devtool = 'none';
-        return sequence([
-            commonConfig(env),
-            backgroundConfig(env),
-            contentConfig(env),
-            popupConfig(env),
-            createPackage()
-        ]);
+export default function (env) {
+    if (!env.mode) {
+      throw new Error('No mode specified. See webpack.config.js.');
     }
-    return sequence([
-        commonConfig(env),
-        backgroundConfig(env),
-        contentConfig(env),
-        popupConfig(env)
-    ]);
-};
+
+    return extensionConfig(env.mode);
+}

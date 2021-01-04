@@ -26,18 +26,17 @@
                 "http://*/*"
             ],
             "js": [
-                "content/js/content.js"
+                "content/content.js"
             ],
             "css": [
-                "content/css/content.css"
+                "content/content.css"
             ],
             "run_at": "document_end",
             "all_frames": true
         }
     ],
     "web_accessible_resources": [
-        "pages/bg.html",
-        "pages/content.html"
+        "pages/bg.html"
     ],
     "browser_action": {
         "default_title": "Gorgias Templates",

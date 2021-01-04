@@ -60,7 +60,7 @@ function domTreeToText (node, newline = '') {
 
                 // only if the text and href are different
                 if (tagName === 'a' && c.textContent !== c.href) {
-                    text = `${text}(${c.href})`;
+                    text = `${text} (${c.href})`;
                 }
 
                 // add newlines to block-level nodes,

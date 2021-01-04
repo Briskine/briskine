@@ -338,3 +338,9 @@ div.qt-mirror .qt-caret {
 .qt-logged-out .qt-info {
     display: block;
 }
+
+/* hide the edit button when logged out
+ */
+.qt-logged-out .qt-edit {
+    display: none;
+}
