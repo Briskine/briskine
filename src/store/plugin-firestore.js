@@ -968,12 +968,19 @@ var getTemplate = (params = {}) => {
 
             return getTemplatesFromCache()
                 .catch(() => {
+                    const isFree = (user.current_subscription.plan === 'free');
+                    let templateCollections = [
+                        getTemplatesOwned(user)
+                    ];
+                    if (!isFree) {
+                        templateCollections = templateCollections.concat([
+                            getTemplatesShared(user),
+                            getTemplatesForEveryone(user)
+                        ]);
+                    }
+
                     // templates not cached
-                    return Promise.all([
-                        getTemplatesOwned(user),
-                        getTemplatesShared(user),
-                        getTemplatesForEveryone(user)
-                    ])
+                    return Promise.all(templateCollections)
                     .then((res) => {
                         var mergedTemplates = [];
                         // concat all templates
