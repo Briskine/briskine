@@ -2,7 +2,6 @@ node_modules
 selenium
 chrome_profile
 *.log
-.DS_Store
 build
 
 # chrome extension
@@ -15,3 +14,7 @@ ext/
 
 # firebase config
 config-firebase.js
+
+# xcode
+.DS_Store
+xcuserdata/
