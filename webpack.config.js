@@ -14,10 +14,19 @@ import manifestFile from './src/manifest.json';
 const devPath = path.resolve('ext');
 const productionPath = path.resolve('build');
 
-function generateManifest () {
+const safariManifestName = 'Gorgias Templates: Templates for Gmail';
+const safariManifestDescription = 'Write emails faster! Increase your productivity with templates and shortcuts on Gmail, Outlook, or LinkedIn.';
+
+function generateManifest (safari) {
     let updatedManifestFile = Object.assign({}, manifestFile);
     // get version from package
     updatedManifestFile.version = packageFile.version;
+	
+    // safari manifest
+    if (safari) {
+        updatedManifestFile.name = safariManifestName;
+        updatedManifestFile.description = safariManifestDescription;
+    }
 
     return new CopyWebpackPlugin({
         patterns: [
@@ -42,13 +51,13 @@ class ZipPlugin {
     }
 }
 
-function extensionConfig (env) {
+function extensionConfig (env, safari = false) {
     const plugins = [
         // clean the build folder
         new CleanWebpackPlugin({
             cleanStaleWebpackAssets: false
         }),
-        generateManifest(env),
+        generateManifest(safari),
         new CopyWebpackPlugin({
             patterns: [
                 { from: 'src/popup/popup.html', to: 'popup/' },
@@ -124,5 +133,5 @@ export default function (env) {
       throw new Error('No mode specified. See webpack.config.js.');
     }
 
-    return extensionConfig(env.mode);
+    return extensionConfig(env.mode, env.safari);
 }

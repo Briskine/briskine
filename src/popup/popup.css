@@ -119,7 +119,6 @@ a,
     top: 50%;
     left: 50%;
     z-index: 2;
-    transform: translate(-50%, -50%);
     display: block;
     width: 12px;
     height: 12px;
@@ -130,7 +129,14 @@ a,
     animation: spin-centered .8s linear infinite;
 }
 
-@keyframes spin-centered { 100% { transform: translate(-50%, -50%) rotate(360deg); } }
+@keyframes spin-centered {
+	0% {
+		transform: translate(-50%, -50%) rotate(0);
+	}
+	100% {
+		transform: translate(-50%, -50%) rotate(360deg);
+	}
+}
 
 /* popup-dashboard
  */

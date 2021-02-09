@@ -1,0 +1,526 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 50;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		A6E3BEFB25B5935100D3F1F2 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6E3BEFA25B5935100D3F1F2 /* AppDelegate.swift */; };
+		A6E3BEFE25B5935100D3F1F2 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A6E3BEFC25B5935100D3F1F2 /* Main.storyboard */; };
+		A6E3BF0025B5935100D3F1F2 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6E3BEFF25B5935100D3F1F2 /* ViewController.swift */; };
+		A6E3BF0225B5935600D3F1F2 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A6E3BF0125B5935600D3F1F2 /* Assets.xcassets */; };
+		A6E3BF0925B5935600D3F1F2 /* Gorgias Templates Extension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = A6E3BF0825B5935600D3F1F2 /* Gorgias Templates Extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		A6E3BF0E25B5935600D3F1F2 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A6E3BF0D25B5935600D3F1F2 /* Cocoa.framework */; };
+		A6E3BF1125B5935600D3F1F2 /* SafariWebExtensionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6E3BF1025B5935600D3F1F2 /* SafariWebExtensionHandler.swift */; };
+		A6E3BF2525B5935800D3F1F2 /* background in Resources */ = {isa = PBXBuildFile; fileRef = A6E3BF1E25B5935800D3F1F2 /* background */; };
+		A6E3BF2625B5935800D3F1F2 /* popup in Resources */ = {isa = PBXBuildFile; fileRef = A6E3BF1F25B5935800D3F1F2 /* popup */; };
+		A6E3BF2725B5935800D3F1F2 /* LICENSE in Resources */ = {isa = PBXBuildFile; fileRef = A6E3BF2025B5935800D3F1F2 /* LICENSE */; };
+		A6E3BF2825B5935800D3F1F2 /* content in Resources */ = {isa = PBXBuildFile; fileRef = A6E3BF2125B5935800D3F1F2 /* content */; };
+		A6E3BF2925B5935800D3F1F2 /* icons in Resources */ = {isa = PBXBuildFile; fileRef = A6E3BF2225B5935800D3F1F2 /* icons */; };
+		A6E3BF2A25B5935800D3F1F2 /* manifest.json in Resources */ = {isa = PBXBuildFile; fileRef = A6E3BF2325B5935800D3F1F2 /* manifest.json */; };
+		A6E3BF2B25B5935800D3F1F2 /* pages in Resources */ = {isa = PBXBuildFile; fileRef = A6E3BF2425B5935800D3F1F2 /* pages */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		A6E3BF0A25B5935600D3F1F2 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A6E3BEEE25B5935100D3F1F2 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = A6E3BF0725B5935600D3F1F2;
+			remoteInfo = "Gorgias Templates Extension";
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		A6E3BF1925B5935700D3F1F2 /* Embed App Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				A6E3BF0925B5935600D3F1F2 /* Gorgias Templates Extension.appex in Embed App Extensions */,
+			);
+			name = "Embed App Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		A6E3BEF625B5935100D3F1F2 /* Gorgias Templates.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Gorgias Templates.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		A6E3BEF925B5935100D3F1F2 /* Gorgias_Templates.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Gorgias_Templates.entitlements; sourceTree = "<group>"; };
+		A6E3BEFA25B5935100D3F1F2 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		A6E3BEFD25B5935100D3F1F2 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		A6E3BEFF25B5935100D3F1F2 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		A6E3BF0125B5935600D3F1F2 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		A6E3BF0325B5935600D3F1F2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		A6E3BF0825B5935600D3F1F2 /* Gorgias Templates Extension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "Gorgias Templates Extension.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
+		A6E3BF0D25B5935600D3F1F2 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
+		A6E3BF1025B5935600D3F1F2 /* SafariWebExtensionHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafariWebExtensionHandler.swift; sourceTree = "<group>"; };
+		A6E3BF1225B5935600D3F1F2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		A6E3BF1325B5935600D3F1F2 /* Gorgias_Templates_Extension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Gorgias_Templates_Extension.entitlements; sourceTree = "<group>"; };
+		A6E3BF1E25B5935800D3F1F2 /* background */ = {isa = PBXFileReference; lastKnownFileType = folder; name = background; path = ../../ext/background; sourceTree = "<group>"; };
+		A6E3BF1F25B5935800D3F1F2 /* popup */ = {isa = PBXFileReference; lastKnownFileType = folder; name = popup; path = ../../ext/popup; sourceTree = "<group>"; };
+		A6E3BF2025B5935800D3F1F2 /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; name = LICENSE; path = ../../ext/LICENSE; sourceTree = "<group>"; };
+		A6E3BF2125B5935800D3F1F2 /* content */ = {isa = PBXFileReference; lastKnownFileType = folder; name = content; path = ../../ext/content; sourceTree = "<group>"; };
+		A6E3BF2225B5935800D3F1F2 /* icons */ = {isa = PBXFileReference; lastKnownFileType = folder; name = icons; path = ../../ext/icons; sourceTree = "<group>"; };
+		A6E3BF2325B5935800D3F1F2 /* manifest.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; name = manifest.json; path = ../../ext/manifest.json; sourceTree = "<group>"; };
+		A6E3BF2425B5935800D3F1F2 /* pages */ = {isa = PBXFileReference; lastKnownFileType = folder; name = pages; path = ../../ext/pages; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		A6E3BEF325B5935100D3F1F2 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A6E3BF0525B5935600D3F1F2 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A6E3BF0E25B5935600D3F1F2 /* Cocoa.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		A6E3BEED25B5935100D3F1F2 = {
+			isa = PBXGroup;
+			children = (
+				A6E3BEF825B5935100D3F1F2 /* Gorgias Templates */,
+				A6E3BF0F25B5935600D3F1F2 /* Gorgias Templates Extension */,
+				A6E3BF0C25B5935600D3F1F2 /* Frameworks */,
+				A6E3BEF725B5935100D3F1F2 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		A6E3BEF725B5935100D3F1F2 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				A6E3BEF625B5935100D3F1F2 /* Gorgias Templates.app */,
+				A6E3BF0825B5935600D3F1F2 /* Gorgias Templates Extension.appex */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		A6E3BEF825B5935100D3F1F2 /* Gorgias Templates */ = {
+			isa = PBXGroup;
+			children = (
+				A6E3BEF925B5935100D3F1F2 /* Gorgias_Templates.entitlements */,
+				A6E3BEFA25B5935100D3F1F2 /* AppDelegate.swift */,
+				A6E3BEFC25B5935100D3F1F2 /* Main.storyboard */,
+				A6E3BEFF25B5935100D3F1F2 /* ViewController.swift */,
+				A6E3BF0125B5935600D3F1F2 /* Assets.xcassets */,
+				A6E3BF0325B5935600D3F1F2 /* Info.plist */,
+			);
+			path = "Gorgias Templates";
+			sourceTree = "<group>";
+		};
+		A6E3BF0C25B5935600D3F1F2 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				A6E3BF0D25B5935600D3F1F2 /* Cocoa.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		A6E3BF0F25B5935600D3F1F2 /* Gorgias Templates Extension */ = {
+			isa = PBXGroup;
+			children = (
+				A6E3BF1D25B5935800D3F1F2 /* Resources */,
+				A6E3BF1025B5935600D3F1F2 /* SafariWebExtensionHandler.swift */,
+				A6E3BF1225B5935600D3F1F2 /* Info.plist */,
+				A6E3BF1325B5935600D3F1F2 /* Gorgias_Templates_Extension.entitlements */,
+			);
+			path = "Gorgias Templates Extension";
+			sourceTree = "<group>";
+		};
+		A6E3BF1D25B5935800D3F1F2 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				A6E3BF1E25B5935800D3F1F2 /* background */,
+				A6E3BF1F25B5935800D3F1F2 /* popup */,
+				A6E3BF2025B5935800D3F1F2 /* LICENSE */,
+				A6E3BF2125B5935800D3F1F2 /* content */,
+				A6E3BF2225B5935800D3F1F2 /* icons */,
+				A6E3BF2325B5935800D3F1F2 /* manifest.json */,
+				A6E3BF2425B5935800D3F1F2 /* pages */,
+			);
+			name = Resources;
+			path = "Gorgias Templates Extension";
+			sourceTree = SOURCE_ROOT;
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		A6E3BEF525B5935100D3F1F2 /* Gorgias Templates */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A6E3BF1A25B5935700D3F1F2 /* Build configuration list for PBXNativeTarget "Gorgias Templates" */;
+			buildPhases = (
+				A6E3BEF225B5935100D3F1F2 /* Sources */,
+				A6E3BEF325B5935100D3F1F2 /* Frameworks */,
+				A6E3BEF425B5935100D3F1F2 /* Resources */,
+				A6E3BF1925B5935700D3F1F2 /* Embed App Extensions */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				A6E3BF0B25B5935600D3F1F2 /* PBXTargetDependency */,
+			);
+			name = "Gorgias Templates";
+			productName = "Gorgias Templates";
+			productReference = A6E3BEF625B5935100D3F1F2 /* Gorgias Templates.app */;
+			productType = "com.apple.product-type.application";
+		};
+		A6E3BF0725B5935600D3F1F2 /* Gorgias Templates Extension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A6E3BF1625B5935700D3F1F2 /* Build configuration list for PBXNativeTarget "Gorgias Templates Extension" */;
+			buildPhases = (
+				A6E3BF0425B5935600D3F1F2 /* Sources */,
+				A6E3BF0525B5935600D3F1F2 /* Frameworks */,
+				A6E3BF0625B5935600D3F1F2 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "Gorgias Templates Extension";
+			productName = "Gorgias Templates Extension";
+			productReference = A6E3BF0825B5935600D3F1F2 /* Gorgias Templates Extension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		A6E3BEEE25B5935100D3F1F2 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 1230;
+				LastUpgradeCheck = 1230;
+				TargetAttributes = {
+					A6E3BEF525B5935100D3F1F2 = {
+						CreatedOnToolsVersion = 12.3;
+					};
+					A6E3BF0725B5935600D3F1F2 = {
+						CreatedOnToolsVersion = 12.3;
+					};
+				};
+			};
+			buildConfigurationList = A6E3BEF125B5935100D3F1F2 /* Build configuration list for PBXProject "Gorgias Templates" */;
+			compatibilityVersion = "Xcode 9.3";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = A6E3BEED25B5935100D3F1F2;
+			productRefGroup = A6E3BEF725B5935100D3F1F2 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				A6E3BEF525B5935100D3F1F2 /* Gorgias Templates */,
+				A6E3BF0725B5935600D3F1F2 /* Gorgias Templates Extension */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		A6E3BEF425B5935100D3F1F2 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A6E3BF0225B5935600D3F1F2 /* Assets.xcassets in Resources */,
+				A6E3BEFE25B5935100D3F1F2 /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A6E3BF0625B5935600D3F1F2 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A6E3BF2725B5935800D3F1F2 /* LICENSE in Resources */,
+				A6E3BF2B25B5935800D3F1F2 /* pages in Resources */,
+				A6E3BF2525B5935800D3F1F2 /* background in Resources */,
+				A6E3BF2825B5935800D3F1F2 /* content in Resources */,
+				A6E3BF2925B5935800D3F1F2 /* icons in Resources */,
+				A6E3BF2A25B5935800D3F1F2 /* manifest.json in Resources */,
+				A6E3BF2625B5935800D3F1F2 /* popup in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		A6E3BEF225B5935100D3F1F2 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A6E3BF0025B5935100D3F1F2 /* ViewController.swift in Sources */,
+				A6E3BEFB25B5935100D3F1F2 /* AppDelegate.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A6E3BF0425B5935600D3F1F2 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A6E3BF1125B5935600D3F1F2 /* SafariWebExtensionHandler.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		A6E3BF0B25B5935600D3F1F2 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = A6E3BF0725B5935600D3F1F2 /* Gorgias Templates Extension */;
+			targetProxy = A6E3BF0A25B5935600D3F1F2 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		A6E3BEFC25B5935100D3F1F2 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				A6E3BEFD25B5935100D3F1F2 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		A6E3BF1425B5935700D3F1F2 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 11.1;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		A6E3BF1525B5935700D3F1F2 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 11.1;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+			};
+			name = Release;
+		};
+		A6E3BF1725B5935700D3F1F2 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = "Gorgias Templates Extension/Gorgias_Templates_Extension.entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				INFOPLIST_FILE = "Gorgias Templates Extension/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@executable_path/../../../../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				PRODUCT_BUNDLE_IDENTIFIER = com.gorgias.gorgiastemplates.extension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		A6E3BF1825B5935700D3F1F2 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = "Gorgias Templates Extension/Gorgias_Templates_Extension.entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				INFOPLIST_FILE = "Gorgias Templates Extension/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@executable_path/../../../../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				PRODUCT_BUNDLE_IDENTIFIER = com.gorgias.gorgiastemplates.extension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		A6E3BF1B25B5935700D3F1F2 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "Gorgias Templates/Gorgias_Templates.entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = "Gorgias Templates/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				PRODUCT_BUNDLE_IDENTIFIER = com.gorgias.gorgiastemplates;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		A6E3BF1C25B5935700D3F1F2 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "Gorgias Templates/Gorgias_Templates.entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = "Gorgias Templates/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				PRODUCT_BUNDLE_IDENTIFIER = com.gorgias.gorgiastemplates;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		A6E3BEF125B5935100D3F1F2 /* Build configuration list for PBXProject "Gorgias Templates" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A6E3BF1425B5935700D3F1F2 /* Debug */,
+				A6E3BF1525B5935700D3F1F2 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A6E3BF1625B5935700D3F1F2 /* Build configuration list for PBXNativeTarget "Gorgias Templates Extension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A6E3BF1725B5935700D3F1F2 /* Debug */,
+				A6E3BF1825B5935700D3F1F2 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A6E3BF1A25B5935700D3F1F2 /* Build configuration list for PBXNativeTarget "Gorgias Templates" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A6E3BF1B25B5935700D3F1F2 /* Debug */,
+				A6E3BF1C25B5935700D3F1F2 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = A6E3BEEE25B5935100D3F1F2 /* Project object */;
+}

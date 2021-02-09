@@ -2,10 +2,8 @@ node_modules
 selenium
 chrome_profile
 *.log
+.DS_Store
 build
-
-# Editor
-.idea
 
 # chrome extension
 tmp/
