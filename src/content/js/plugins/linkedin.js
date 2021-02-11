@@ -9,7 +9,7 @@ import {insertPlainText} from '../utils/plain-text';
 import {parseFullName} from '../utils/parse-text';
 
 // get all required data from the dom
-function getData () {
+function getData (params) {
     var vars = {
         from: {},
         to: [],
@@ -36,9 +36,18 @@ function getData () {
     from.last_name = parsedName.last_name;
     vars.from = from;
 
-    var $contact = $('.msg-entity-lockup__entity-title');
-    if ($contact.length) {
-        parsedName = parseFullName($contact.text());
+    // get message thread based on the focus textarea.
+    // needs different selectors for Messaging interface and chat bubble.
+    const messagingUiThread = '.msg-thread';
+    const bubbleMessageThread = '.msg-overlay-conversation-bubble__content-wrapper';
+    const contactNameSelector = '.msg-s-event-listitem--other .msg-s-message-group__name';
+    const $thread = params.element.closest(`${messagingUiThread}, ${bubbleMessageThread}`);
+    // get the contacts from the thread, that is not ours
+    const $contacts = $thread.querySelectorAll(contactNameSelector);
+    if ($contacts.length) {
+        // get the last contact
+        const $contact = $contacts.item($contacts.length - 1);
+        parsedName = parseFullName($contact.innerText);
         var to = {
             name: name,
             first_name: '',
