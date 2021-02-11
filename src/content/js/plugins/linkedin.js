@@ -16,13 +16,10 @@ function getData (params) {
         subject: ''
     };
 
-    var fromName = '';
-    var $fromContainer= $('.nav-item__profile-member-photo');
-    if ($fromContainer.length) {
-        fromName = $fromContainer.attr('alt');
-    }
-    if (!fromName) {
-        fromName = '';
+    let fromName = '';
+    const $fromContainer = document.querySelector('.global-nav__me-photo');
+    if ($fromContainer) {
+        fromName = $fromContainer.getAttribute('alt');
     }
     var from = {
         name: fromName,
