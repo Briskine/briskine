@@ -31,12 +31,23 @@ function getData (params) {
     from.last_name = parsedName.last_name;
     vars.from = from;
 
-    // get message thread based on the focus textarea.
-    // needs different selectors for Messaging interface and chat bubble.
+    // message thread in Messaging interface
     const messagingUiThread = '.msg-thread';
+    // thread in message bubble/dialog
     const bubbleMessageThread = '.msg-overlay-conversation-bubble__content-wrapper';
-    const contactNameSelector = '.msg-s-event-listitem--other .msg-s-message-group__name';
-    const $thread = params.element.closest(`${messagingUiThread}, ${bubbleMessageThread}`);
+    // post in feed
+    const feedPost = '.feed-shared-update-v2';
+    // select any
+    const messageThreadSelector = `${messagingUiThread}, ${bubbleMessageThread}, ${feedPost}`;
+
+    // contact name in message threads
+    const messageContactName = '.msg-s-event-listitem--other .msg-s-message-group__name';
+    // contact name in feed post
+    const feedContactName = '.feed-shared-actor__name';
+    // select any
+    const contactNameSelector = `${messageContactName}, ${feedContactName}`;
+
+    const $thread = params.element.closest(messageThreadSelector);
     // check if a message thread is visible,
     // otherwise we're in a non-messaging textfield.
     if ($thread) {
