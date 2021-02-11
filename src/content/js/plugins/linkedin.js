@@ -1,8 +1,6 @@
 /* Linkedin plugin
  */
 
-import $ from 'jquery';
-
 import {parseTemplate, insertText} from '../utils';
 import {isQuill} from '../utils/editors';
 import {insertPlainText} from '../utils/plain-text';
@@ -64,13 +62,6 @@ function getData (params) {
     return vars;
 }
 
-function before (params) {
-    if(params.quicktext.subject) {
-        var $subjectField = $('#subject-msgForm', window.parent.document);
-        $subjectField.val(params.quicktext.subject);
-    }
-}
-
 var activeCache = null;
 function isActive () {
     if (activeCache !== null) {
@@ -95,8 +86,6 @@ export default (params = {}) => {
 
     var data = getData(params);
     var parsedTemplate = parseTemplate(params.quicktext.body, data);
-
-    before(params);
 
     const parsedParams = Object.assign({
         text: parsedTemplate
