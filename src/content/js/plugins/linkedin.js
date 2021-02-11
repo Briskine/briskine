@@ -42,22 +42,26 @@ function getData (params) {
     const bubbleMessageThread = '.msg-overlay-conversation-bubble__content-wrapper';
     const contactNameSelector = '.msg-s-event-listitem--other .msg-s-message-group__name';
     const $thread = params.element.closest(`${messagingUiThread}, ${bubbleMessageThread}`);
-    // get the contacts from the thread, that is not ours
-    const $contacts = $thread.querySelectorAll(contactNameSelector);
-    if ($contacts.length) {
-        // get the last contact
-        const $contact = $contacts.item($contacts.length - 1);
-        parsedName = parseFullName($contact.innerText);
-        var to = {
-            name: name,
-            first_name: '',
-            last_name: '',
-            email: ''
-        };
+    // check if a message thread is visible,
+    // otherwise we're in a non-messaging textfield.
+    if ($thread) {
+        // get the contacts from the thread, that is not ours
+        const $contacts = $thread.querySelectorAll(contactNameSelector);
+        if ($contacts.length) {
+            // get the last contact
+            const $contact = $contacts.item($contacts.length - 1);
+            parsedName = parseFullName($contact.innerText);
+            var to = {
+                name: name,
+                first_name: '',
+                last_name: '',
+                email: ''
+            };
 
-        to.first_name = parsedName.first_name;
-        to.last_name = parsedName.last_name;
-        vars.to.push(to);
+            to.first_name = parsedName.first_name;
+            to.last_name = parsedName.last_name;
+            vars.to.push(to);
+        }
     }
 
     return vars;
