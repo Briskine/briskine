@@ -104,26 +104,67 @@ export default (params = {}) => {
 
     // Quill is used for posts and comments
     if (isQuill(params.element)) {
-        // BUG
-        // inserting a template with newlines causes the focus
-        // to be set at the start of the editor.
-        // we need to remove all newlines before inserting the template.
-        const newlineChar = ' ';
-        const strippedTemplate = parsedTemplate.replace(/\n/g, newlineChar);
+        // LinkedIn uses a customized Quill editor for posts.
+        // Inserting text with newlines causes each block/line to be split into
+        // multiple paragraph tags.
+        // This causes our range object to change after we insert the text,
+        // and places the focus at the start of the editor.
+        // Since the inserted dom is changed, we place a special character
+        // at the end of the template, so we can later find it and place focus there
+        // (at the end of the inserted template).
+
+        // zero-width whitespace
+        const specialChar = '\u200b';
+        // parsed template with special char
+        const updatedTemplate = `${parsedTemplate}${specialChar}`;
         insertPlainText(
             Object.assign(
                 {},
                 parsedParams,
                 {
-                    text: strippedTemplate,
-                    newline: newlineChar
+                    text: updatedTemplate
                 }
             )
         );
+
+        // HACK
+        // find the previously-placed special character in the editor contents.
+        // wait for the LinkedIn editor to restructure the inserted template nodes.
+        setTimeout(() => {
+            const selection = window.getSelection();
+            const anchorNode = selection.anchorNode;
+
+            // if the anchorNode is the editor, try to find the node with the special char.
+            // when the anchorNode is not the editor, we are inserting single-line templates,
+            // which keep the focus at the correct spot.
+            if (anchorNode === params.element) {
+                const lastSpecialCharNode = Array.from(selection.anchorNode.children).reverse().find((node) => {
+                    // trim textContent in case we add spaces after the template shortcut
+                    const text = (node.textContent || '').trim();
+                    const specialCharPosition = text.indexOf(specialChar);
+
+                    // find the node where the special char is at the end
+                    return (
+                        specialCharPosition !== -1 &&
+                        specialCharPosition === text.length - 1
+                    );
+                });
+
+                // remove the special char from the node,
+                // so we don't have issues later with finding the newest inserted one
+                // (in case we insert multiple multi-line templates).
+                lastSpecialCharNode.textContent = lastSpecialCharNode.textContent.replace(new RegExp(specialChar, 'g'), '');
+
+                // set focus at the special char
+                const range = document.getSelection().getRangeAt(0);
+                range.selectNodeContents(lastSpecialCharNode);
+                range.collapse();
+            }
+        });
+
         return true;
     }
 
     insertText(parsedParams);
-
     return true;
 };
