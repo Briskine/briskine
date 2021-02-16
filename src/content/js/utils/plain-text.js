@@ -87,8 +87,14 @@ function domToText (fragment, newline = '\n') {
     const text = domTreeToText(fragment, customNewline);
     // clean-up possible double newlines caused
     // by converting the tree to text.
-    const finder = new RegExp(`${newline}${customNewline}`, 'g');
-    return text.replace(finder, newline);
+    const finder = new RegExp(`(${newline}${customNewline}|${customNewline}${newline})`, 'g');
+    const cleanedNewlineText = text.replace(finder, newline);
+
+    return cleanedNewlineText
+
+    // TODO remove special character.
+    // it was only used for detecting double newlines.
+//     return cleanedNewlineText.replace(new RegExp(whitespace, 'g'), '');
 }
 
 export function insertPlainText (params = {}) {

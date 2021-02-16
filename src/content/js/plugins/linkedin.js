@@ -127,6 +127,8 @@ export default (params = {}) => {
             )
         );
 
+        // TODO focus is still buggy when inserting templates using the dialog, instead of keyboard shortcuts
+
         // HACK
         // find the previously-placed special character in the editor contents.
         // wait for the LinkedIn editor to restructure the inserted template nodes.
@@ -134,11 +136,16 @@ export default (params = {}) => {
             const selection = window.getSelection();
             const anchorNode = selection.anchorNode;
 
+            // TODO when inserting with the dialog, multi-line templates
+            // the anchorNode is not the dialog
+            console.log(anchorNode, params.element)
+
             // if the anchorNode is the editor, try to find the node with the special char.
             // when the anchorNode is not the editor, we are inserting single-line templates,
             // which keep the focus at the correct spot.
-            if (anchorNode === params.element) {
+//             if (anchorNode === params.element) {
                 const lastSpecialCharNode = Array.from(selection.anchorNode.children).reverse().find((node) => {
+                    console.log('node', node);
                     // trim textContent in case we add spaces after the template shortcut
                     const text = (node.textContent || '').trim();
                     const specialCharPosition = text.indexOf(specialChar);
@@ -150,6 +157,8 @@ export default (params = {}) => {
                     );
                 });
 
+                console.log('lastSpecialCharNode', lastSpecialCharNode);
+
                 // remove the special char from the node,
                 // so we don't have issues later with finding the newest inserted one
                 // (in case we insert multiple multi-line templates).
@@ -159,7 +168,7 @@ export default (params = {}) => {
                 const range = document.getSelection().getRangeAt(0);
                 range.selectNodeContents(lastSpecialCharNode);
                 range.collapse();
-            }
+//             }
         });
 
         return true;
