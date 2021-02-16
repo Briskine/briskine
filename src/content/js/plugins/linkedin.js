@@ -127,6 +127,8 @@ export default (params = {}) => {
             )
         );
 
+        console.log(updatedTemplate);
+
         // TODO focus is still buggy when inserting templates using the dialog, instead of keyboard shortcuts
 
         // HACK
@@ -143,12 +145,17 @@ export default (params = {}) => {
             // if the anchorNode is the editor, try to find the node with the special char.
             // when the anchorNode is not the editor, we are inserting single-line templates,
             // which keep the focus at the correct spot.
+
+            // BUG when inserting multiple templates from the dialog,
+            // the next template is inserted at the start.
+
 //             if (anchorNode === params.element) {
-                const lastSpecialCharNode = Array.from(selection.anchorNode.children).reverse().find((node) => {
+                const lastSpecialCharNode = Array.from(params.element.childNodes).reverse().find((node) => {
                     console.log('node', node);
                     // trim textContent in case we add spaces after the template shortcut
                     const text = (node.textContent || '').trim();
                     const specialCharPosition = text.indexOf(specialChar);
+                    console.log(specialCharPosition);
 
                     // find the node where the special char is at the end
                     return (

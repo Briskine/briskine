@@ -87,20 +87,21 @@ function domToText (fragment, newline = '\n') {
     const text = domTreeToText(fragment, customNewline);
     // clean-up possible double newlines caused
     // by converting the tree to text.
-    const finder = new RegExp(`(${newline}${customNewline}|${customNewline}${newline})`, 'g');
-    const cleanedNewlineText = text.replace(finder, newline);
-
-    return cleanedNewlineText
-
-    // TODO remove special character.
-    // it was only used for detecting double newlines.
-//     return cleanedNewlineText.replace(new RegExp(whitespace, 'g'), '');
+    const findDoubleNewlines = new RegExp(`${newline}${customNewline}`, 'g');
+    const cleanedNewlineText = text.replace(findDoubleNewlines, newline);
+    // turn the custom newlines into normal newlines,
+    // to avoid inserting special characters.
+    return cleanedNewlineText.replace(new RegExp(customNewline, 'g'), newline);
 }
 
 export function insertPlainText (params = {}) {
     params.element.focus();
 
     var range = window.getSelection().getRangeAt(0);
+    // restore focus to the correct position,
+    // in case we insert templates using the dialog.
+    range.setStartAfter(params.focusNode);
+    range.collapse();
 
     // delete shortcut
     if (params.word.text === params.quicktext.shortcut) {
