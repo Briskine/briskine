@@ -73,6 +73,41 @@ function getData (params) {
     return vars;
 }
 
+// zero-width whitespace
+const specialChar = '\u200b';
+
+function focusSpecialCharacter(editorNode) {
+    const lastSpecialCharNode = Array.from(editorNode.children).reverse().find((node) => {
+        // trim textContent in case we add spaces after the template shortcut
+        const text = (node.textContent || '').trim();
+        const specialCharPosition = text.indexOf(specialChar);
+
+        // find the node where the special char is at the end
+        return (
+            specialCharPosition !== -1 &&
+            specialCharPosition === text.length - 1
+        );
+    });
+
+    // node should always be available,
+    // but in case we don't find it.
+    if (lastSpecialCharNode) {
+        // remove the special char from the node,
+        // so we don't have issues later with finding the newest inserted one
+        // (in case we insert multiple multi-line templates).
+        lastSpecialCharNode.textContent = lastSpecialCharNode.textContent.replace(new RegExp(specialChar, 'g'), '');
+
+        // place the focus at the node with the special character
+        const range = document.createRange();
+        range.selectNodeContents(lastSpecialCharNode);
+        range.collapse();
+
+        const selection = window.getSelection();
+        selection.removeAllRanges();
+        selection.addRange(range);
+    }
+}
+
 var activeCache = null;
 function isActive () {
     if (activeCache !== null) {
@@ -113,8 +148,6 @@ export default (params = {}) => {
         // at the end of the template, so we can later find it and place focus there
         // (at the end of the inserted template).
 
-        // zero-width whitespace
-        const specialChar = '\u200b';
         // parsed template with special char
         const updatedTemplate = `${parsedTemplate}${specialChar}`;
         insertPlainText(
@@ -127,56 +160,13 @@ export default (params = {}) => {
             )
         );
 
-        console.log(updatedTemplate);
-
-        // TODO focus is still buggy when inserting templates using the dialog, instead of keyboard shortcuts
-
-        // HACK
-        // find the previously-placed special character in the editor contents.
         // wait for the LinkedIn editor to restructure the inserted template nodes.
-        setTimeout(() => {
-            const selection = window.getSelection();
-            const anchorNode = selection.anchorNode;
-
-            // TODO when inserting with the dialog, multi-line templates
-            // the anchorNode is not the dialog
-            console.log(anchorNode, params.element)
-
-            // if the anchorNode is the editor, try to find the node with the special char.
-            // when the anchorNode is not the editor, we are inserting single-line templates,
-            // which keep the focus at the correct spot.
-
-            // BUG when inserting multiple templates from the dialog,
-            // the next template is inserted at the start.
-
-//             if (anchorNode === params.element) {
-                const lastSpecialCharNode = Array.from(params.element.childNodes).reverse().find((node) => {
-                    console.log('node', node);
-                    // trim textContent in case we add spaces after the template shortcut
-                    const text = (node.textContent || '').trim();
-                    const specialCharPosition = text.indexOf(specialChar);
-                    console.log(specialCharPosition);
-
-                    // find the node where the special char is at the end
-                    return (
-                        specialCharPosition !== -1 &&
-                        specialCharPosition === text.length - 1
-                    );
-                });
-
-                console.log('lastSpecialCharNode', lastSpecialCharNode);
-
-                // remove the special char from the node,
-                // so we don't have issues later with finding the newest inserted one
-                // (in case we insert multiple multi-line templates).
-                lastSpecialCharNode.textContent = lastSpecialCharNode.textContent.replace(new RegExp(specialChar, 'g'), '');
-
-                // set focus at the special char
-                const range = document.getSelection().getRangeAt(0);
-                range.selectNodeContents(lastSpecialCharNode);
-                range.collapse();
-//             }
+        const editorUpdate = new MutationObserver((mutationsList, observer) => {
+            // find the previously-placed special character in the editor contents.
+            focusSpecialCharacter(params.element);
+            observer.disconnect();
         });
+        editorUpdate.observe(params.element, {childList: true, subtree: true});
 
         return true;
     }
