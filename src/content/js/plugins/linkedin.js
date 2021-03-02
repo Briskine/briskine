@@ -1,7 +1,7 @@
 /* Linkedin plugin
  */
 
-import {parseTemplate, insertText} from '../utils';
+import {parseTemplate} from '../utils';
 import {isQuill} from '../utils/editors';
 import {insertPlainText} from '../utils/plain-text';
 import {parseFullName} from '../utils/parse-text';
@@ -171,6 +171,49 @@ export default (params = {}) => {
         return true;
     }
 
-    insertText(parsedParams);
+    // messaging, ember editor.
+    insertPlainText(parsedParams);
+
+    // send input event.
+    // makes the ember editor aware of the inserted text,
+    // but doesn't rebuild the dom nodes.
+    // without it, the inserted template disappears when we press enter.
+    // multi line templates are shown as a singles-line, until we press enter.
+    params.element.dispatchEvent(new Event('input', {
+        bubbles: true
+    }));
+
+    // sends an empty paste event so the editor restructures the dom
+    // making it aware of the newlines.
+    // otherwise, when we press Enter, multi line templates will be
+    // compressed to one line.
+    let customPasteEvent;
+    try {
+        // will throw error in Safari,
+        // because of the DataTransfer constructor.
+        const clipboardData = new DataTransfer();
+        clipboardData.setData('text/plain', specialChar);
+        customPasteEvent = new ClipboardEvent('paste', {
+            bubbles: true,
+            clipboardData: clipboardData
+        });
+    } catch (err) {
+        // Safari doesn't support the DataTransfer constructor
+        // or passing custom clipboard data in the Event constructor,
+        // required for clipboardData.
+        // We need to create a fake clipboardData object,
+        // as LinkedIn uses clipboardData.getData().
+        customPasteEvent = new Event('paste', {
+            bubbles: true
+        });
+        customPasteEvent.clipboardData = {
+            getData: () => {
+                return specialChar
+            }
+        };
+    }
+
+    params.element.dispatchEvent(customPasteEvent);
+
     return true;
 };
