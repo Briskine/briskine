@@ -1,3 +1,4 @@
+/* globals DataTransfer, ClipboardEvent */
 /* Linkedin plugin
  */
 
@@ -202,7 +203,7 @@ export default (params = {}) => {
         // required for clipboardData.
         // Adding a fake clipboardData property to an existing event
         // also doesn't work, because it strips the entire object
-        // by the time it reaches the event handler. 
+        // by the time it reaches the event handler.
         // Until it supports the DataTransfer constructor,
         // multi-line templates will be inserted as one liners,
         // in LinkedIn messaging on Safari.
