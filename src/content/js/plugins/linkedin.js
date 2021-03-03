@@ -187,33 +187,26 @@ export default (params = {}) => {
     // making it aware of the newlines.
     // otherwise, when we press Enter, multi line templates will be
     // compressed to one line.
-    let customPasteEvent;
     try {
-        // will throw error in Safari,
-        // because of the DataTransfer constructor.
         const clipboardData = new DataTransfer();
         clipboardData.setData('text/plain', specialChar);
-        customPasteEvent = new ClipboardEvent('paste', {
+        const customPasteEvent = new ClipboardEvent('paste', {
             bubbles: true,
             clipboardData: clipboardData
         });
+        params.element.dispatchEvent(customPasteEvent);
     } catch (err) {
-        // Safari doesn't support the DataTransfer constructor
+        // will throw an error on Safari
+        // because it doesn't support the DataTransfer constructor
         // or passing custom clipboard data in the Event constructor,
         // required for clipboardData.
-        // We need to create a fake clipboardData object,
-        // as LinkedIn uses clipboardData.getData().
-        customPasteEvent = new Event('paste', {
-            bubbles: true
-        });
-        customPasteEvent.clipboardData = {
-            getData: () => {
-                return specialChar
-            }
-        };
+        // Adding a fake clipboardData property to an existing event
+        // also doesn't work, because it strips the entire object
+        // by the time it reaches the event handler. 
+        // Until it supports the DataTransfer constructor,
+        // multi-line templates will be inserted as one liners,
+        // in LinkedIn messaging on Safari.
     }
-
-    params.element.dispatchEvent(customPasteEvent);
 
     return true;
 };
