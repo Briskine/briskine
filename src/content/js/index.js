@@ -5,6 +5,8 @@
 
 import '../css/content.css';
 import browser from 'webextension-polyfill';
+// native custom elements are not supported in content scripts
+// https://bugs.chromium.org/p/chromium/issues/detail?id=390807
 import '@webcomponents/custom-elements';
 import $ from 'jquery';
 // creates global window.Mousetrap
