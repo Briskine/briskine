@@ -3,7 +3,8 @@
 
 import $ from 'jquery';
 
-import {insertText, parseTemplate, isContentEditable, enableQuickButton} from '../utils';
+import {insertText, parseTemplate, isContentEditable} from '../utils';
+import {enableBubble} from '../bubble';
 
 function parseList (list) {
     return list.filter(function (a) {
@@ -306,7 +307,7 @@ function setup () {
         return false;
     }
 
-    enableQuickButton();
+    enableBubble();
 }
 
 setup();

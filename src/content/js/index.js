@@ -5,6 +5,7 @@
 
 import '../css/content.css';
 import browser from 'webextension-polyfill';
+import '@webcomponents/custom-elements';
 import $ from 'jquery';
 // creates global window.Mousetrap
 import Mousetrap from 'mousetrap';
@@ -18,6 +19,8 @@ import store from '../../store/store-client';
 import keyboard from './keyboard';
 import dialog from './dialog';
 import PubSub from './patterns';
+
+import {setup as setupBubble} from './bubble';
 
 var App = {
     data: {
@@ -226,7 +229,7 @@ App.init = function(settings, doc) {
         !isContentEditable
     ) {
         if (settings.qaBtn.enabled) {
-            dialog.setupQuickButton();
+            setupBubble();
         }
         if (settings.dialog.limit) {
             dialog.RESULTS_LIMIT = settings.dialog.limit;
