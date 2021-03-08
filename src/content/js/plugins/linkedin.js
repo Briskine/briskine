@@ -3,7 +3,7 @@
  */
 
 import {parseTemplate, insertText} from '../utils';
-import {isQuill} from '../utils/editors';
+import {isQuill} from '../utils/editors-quill';
 import {insertPlainText} from '../utils/plain-text';
 import {parseFullName} from '../utils/parse-text';
 

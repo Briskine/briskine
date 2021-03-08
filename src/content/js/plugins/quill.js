@@ -2,7 +2,7 @@
  */
 
 import {parseTemplate} from '../utils';
-import {isQuill} from '../utils/editors';
+import {isQuill} from '../utils/editor-quill';
 import {insertPlainText} from '../utils/plain-text';
 
 export default (params = {}) => {
