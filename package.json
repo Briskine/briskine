@@ -33,7 +33,7 @@
     "devDependencies": {
         "chai": "^4.2.0",
         "clean-webpack-plugin": "^3.0.0",
-        "copy-webpack-plugin": "^7.0.0",
+        "copy-webpack-plugin": "^8.0.0",
         "css-loader": "^5.0.1",
         "esm": "^3.2.25",
         "file-loader": "^6.2.0",
