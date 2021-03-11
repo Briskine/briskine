@@ -94,6 +94,7 @@ function domToText (fragment, newline = '\n') {
     return cleanedNewlineText.replace(new RegExp(customNewline, 'g'), newline);
 }
 
+// TODO deprecate
 export function insertPlainText (params = {}) {
     params.element.focus();
 

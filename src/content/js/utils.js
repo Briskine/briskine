@@ -124,14 +124,6 @@ export function insertText (params = {}) {
         caretRange.collapse(true);
         selection.removeAllRanges();
         selection.addRange(caretRange);
-
-        window.postMessage({
-            source: 'gorgias-extension',
-            payload: {
-                event: 'template-inserted'
-            }
-        }, '*');
-
     } else {
         var $textarea = $(params.element),
             value = $textarea.val();
