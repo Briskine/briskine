@@ -22,6 +22,7 @@ export function insertTemplate (params = {}) {
             range.deleteContents();
         }
 
+        // TODO insert text as it comes, and convert as required in plugins
         const plainText = htmlToText(params.text, params.newline);
 
         const node = document.createTextNode(plainText);
