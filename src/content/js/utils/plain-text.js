@@ -49,7 +49,7 @@ const blockNodes = [
 function domTreeToText (node, newline = '') {
     if (node.childNodes.length) {
         return Array.from(node.childNodes).map((c, i) => {
-            let text = domToText(c);
+            let text = domToText(c, newline);
 
             if (c.nodeType === document.ELEMENT_NODE) {
                 const tagName = c.tagName.toLowerCase();
@@ -82,7 +82,7 @@ const whitespace = '\u200b';
 
 // default newline separator is zero-width whitespace + standard newline.
 // this is required to be able to later remove possible double newlines.
-function domToText (fragment, newline = '\n') {
+function domToText (fragment, newline) {
     const customNewline = `${whitespace}${newline}`;
     const text = domTreeToText(fragment, customNewline);
     // clean-up possible double newlines caused
@@ -92,6 +92,12 @@ function domToText (fragment, newline = '\n') {
     // turn the custom newlines into normal newlines,
     // to avoid inserting special characters.
     return cleanedNewlineText.replace(new RegExp(customNewline, 'g'), newline);
+}
+
+export function htmlToText (html, newline = '\n') {
+    const range = document.createRange();
+    const fragment = range.createContextualFragment(html);
+    return domToText(fragment, newline);
 }
 
 // TODO deprecate
@@ -111,8 +117,7 @@ export function insertPlainText (params = {}) {
         range.deleteContents();
     }
 
-    const fragment = range.createContextualFragment(params.text);
-    const plainText = domToText(fragment, params.newline);
+    const plainText = htmlToText(params.text, params.newline);
 
     const node = document.createTextNode(plainText);
     range.insertNode(node);

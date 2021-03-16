@@ -2,6 +2,7 @@
  */
 
 import {isContentEditable} from '../utils';
+import {htmlToText} from './plain-text';
 
 export function insertTemplate (params = {}) {
     // restore focus to the editable area
@@ -21,8 +22,7 @@ export function insertTemplate (params = {}) {
             range.deleteContents();
         }
 
-        const fragment = range.createContextualFragment(params.text);
-        const plainText = domToText(fragment, params.newline);
+        const plainText = htmlToText(params.text, params.newline);
 
         const node = document.createTextNode(plainText);
         range.insertNode(node);

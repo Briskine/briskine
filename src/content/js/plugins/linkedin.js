@@ -3,7 +3,7 @@
  */
 
 import {parseTemplate, insertText} from '../utils';
-import {isQuill} from '../utils/editors-quill';
+import {isQuill} from '../utils/editor-quill';
 import {insertPlainText} from '../utils/plain-text';
 import {parseFullName} from '../utils/parse-text';
 
@@ -74,8 +74,8 @@ function getData (params) {
     return vars;
 }
 
-// zero-width whitespace
-const specialChar = '\u200b';
+// zero-width no-break space
+const specialChar = '\ufeff';
 
 function focusSpecialCharacter(editorNode) {
     const lastSpecialCharNode = Array.from(editorNode.children).reverse().find((node) => {
