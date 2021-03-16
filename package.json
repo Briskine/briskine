@@ -45,7 +45,7 @@
         "webextension-polyfill": "^0.7.0",
         "webpack": "^5.11.1",
         "webpack-cli": "^4.3.1",
-        "zip-a-folder": "^0.0.12"
+        "zip-a-folder": "^0.1.0"
     },
     "dependencies": {
         "bootstrap": "^4.5.3",
