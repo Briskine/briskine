@@ -1,7 +1,6 @@
 /* jshint esversion: 8 */
 
 import path from 'path';
-import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 
 export default {
     mode: 'development',
@@ -18,4 +17,4 @@ export default {
             'handlebars': 'handlebars/dist/cjs/handlebars'
         }
     }
-}
+};
