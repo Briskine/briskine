@@ -41,6 +41,7 @@ function PrepareVars (vars) {
     return vars;
 }
 
+// TODO legacy template insert
 export function insertText (params = {}) {
     // the editor doesn't get the focus right-away.
     // so window.getSelection() returns the search field
