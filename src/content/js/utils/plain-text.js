@@ -99,29 +99,3 @@ export function htmlToText (html, newline = '\n') {
     const fragment = range.createContextualFragment(html);
     return domToText(fragment, newline);
 }
-
-// TODO deprecate
-export function insertPlainText (params = {}) {
-    params.element.focus();
-
-    var range = window.getSelection().getRangeAt(0);
-    // restore focus to the correct position,
-    // in case we insert templates using the dialog.
-    range.setStartAfter(params.focusNode);
-    range.collapse();
-
-    // delete shortcut
-    if (params.word.text === params.quicktext.shortcut) {
-        range.setStart(params.focusNode, params.word.start);
-        range.setEnd(params.focusNode, params.word.end);
-        range.deleteContents();
-    }
-
-    const plainText = htmlToText(params.text, params.newline);
-
-    const node = document.createTextNode(plainText);
-    range.insertNode(node);
-    range.collapse();
-
-    return range;
-}
