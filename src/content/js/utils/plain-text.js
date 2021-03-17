@@ -80,7 +80,7 @@ function domTreeToText (node, newline = '') {
 
                 // images
                 if (tagName === 'img') {
-                    text = `[${c.alt || ''} ${c.src || ''}]`
+                    text = `[${c.alt || ''} ${c.src || ''}]`;
                 }
 
                 // add newlines to block-level nodes,

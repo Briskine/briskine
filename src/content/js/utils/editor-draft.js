@@ -2,6 +2,8 @@
  * https://draftjs.org/
  */
 
+import {htmlToText} from './plain-text';
+
 export function isDraft (element) {
    return element.querySelector('[data-contents]');
 }
@@ -50,5 +52,8 @@ export function insertDraftText (params = {}) {
         range.deleteContents();
     }
 
-    return insertDraftBlock(params.text);
+    // draft only supports plain text
+    const content = htmlToText(params.text);
+
+    return insertDraftBlock(content);
 }

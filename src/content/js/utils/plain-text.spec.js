@@ -12,7 +12,7 @@ describe('htmlToText', () => {
     });
 
     it('should keep plain text the same', () => {
-        const content = 'line-one\n* bullet\nlink(https://gorgiastemplates.com'
+        const content = 'line-one\n* bullet\nlink(https://gorgiastemplates.com';
         expect(htmlToText(content)).equal(content);
     });
 
@@ -33,7 +33,7 @@ describe('htmlToText', () => {
     });
 
     it('should keep code blocks as code', () => {
-        const code = '<div></div><div><textarea></textarea></div>'
+        const code = '<div></div><div><textarea></textarea></div>';
         expect(htmlToText(`<code>${code}</code>`)).equal(code);
     });
 
