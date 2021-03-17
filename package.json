@@ -6,8 +6,8 @@
         "test": "NODE_OPTIONS='-r esm' webpack -c webpack.test.js && mocha-headless-chrome -f test/index.html",
         "start": "NODE_OPTIONS='-r esm' webpack -w --mode=development --env mode=development",
         "staging": "NODE_OPTIONS='-r esm' webpack -w --env mode=staging",
-        "build": "NODE_OPTIONS='-r esm' webpack --env mode=production",
-        "lint": "jshint src/"
+        "build": "NODE_OPTIONS='-r esm' webpack --mode=production --env mode=production",
+        "lint": "jshint src/ webpack.*.js"
     },
     "repository": "https://github.com/gorgias/gorgias-templates/",
     "author": "Alexandru Plugaru <alex@gorgias.io>",
@@ -31,6 +31,7 @@
     ],
     "license": "MIT",
     "devDependencies": {
+        "archiver": "^5.3.0",
         "chai": "^4.2.0",
         "copy-webpack-plugin": "^8.0.0",
         "css-loader": "^5.0.1",
@@ -44,8 +45,7 @@
         "url-loader": "^4.1.1",
         "webextension-polyfill": "^0.7.0",
         "webpack": "^5.11.1",
-        "webpack-cli": "^4.3.1",
-        "zip-a-folder": "^0.1.0"
+        "webpack-cli": "^4.3.1"
     },
     "dependencies": {
         "bootstrap": "^4.5.3",

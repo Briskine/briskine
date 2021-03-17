@@ -1,3 +1,4 @@
+/* globals __dirname */
 /* jshint esversion: 8 */
 
 import path from 'path';

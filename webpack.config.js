@@ -1,9 +1,10 @@
 /* globals Buffer*/
 /* jshint esversion: 8 */
 
+import fs from 'fs';
 import webpack from 'webpack';
 import path from 'path';
-import {zip} from 'zip-a-folder';
+import archiver from 'archiver';
 import CopyWebpackPlugin from 'copy-webpack-plugin';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 
@@ -44,8 +45,13 @@ class ZipPlugin {
         this.options = options;
     }
     apply(compiler) {
-        compiler.hooks.done.tap('ZipPlugin', async () => {
-            await zip(this.options.entry, this.options.output);
+        compiler.hooks.done.tapAsync('ZipPlugin', (params, callback) => {
+            const output = fs.createWriteStream(this.options.output);
+            const zipArchive = archiver('zip');
+            output.on('close', callback);
+            zipArchive.pipe(output);
+            zipArchive.directory(this.options.entry, false);
+            zipArchive.finalize();
         });
     }
 }
