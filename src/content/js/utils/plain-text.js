@@ -52,15 +52,35 @@ function domTreeToText (node, newline = '') {
             let text = domToText(c, newline);
 
             if (c.nodeType === document.ELEMENT_NODE) {
+                /* tag decorators
+                 */
                 const tagName = c.tagName.toLowerCase();
-                // tag decorators
+
+                // skip nodes in code blocks
+                const closestCode = c.closest('code');
+                if (closestCode && closestCode !== c) {
+                    return '';
+                }
+
+                // list bullets
                 if (tagName === 'li') {
                     text = `- ${text}`;
                 }
 
+                // code blocks kept as html
+                if (tagName === 'code') {
+                    text = c.innerHTML;
+                }
+
+                // links,
                 // only if the text and href are different
                 if (tagName === 'a' && c.textContent !== c.href) {
                     text = `${text} (${c.href})`;
+                }
+
+                // images
+                if (tagName === 'img') {
+                    text = `[${c.alt || ''} ${c.src || ''}]`
                 }
 
                 // add newlines to block-level nodes,
