@@ -25,13 +25,27 @@ function getData (params) {
         name: fromName,
         first_name: '',
         last_name: '',
-        email: ""
+        email: ''
     };
 
     var parsedName = parseFullName(fromName);
     from.first_name = parsedName.first_name;
     from.last_name = parsedName.last_name;
     vars.from = from;
+
+    // get the to field from the current viewed profile by default
+    // eg. for the connect > add note field.
+    let to = {
+        name: '',
+        first_name: '',
+        last_name: '',
+        email: ''
+    };
+    const $currentProfilePicture = document.querySelector('.presence-entity__image');
+    if ($currentProfilePicture) {
+        const toFullName = $currentProfilePicture.getAttribute('alt');
+        to = Object.assign(to, parseFullName(toFullName));
+    }
 
     // message thread in Messaging interface
     const messagingUiThread = '.msg-thread';
@@ -58,19 +72,13 @@ function getData (params) {
         if ($contacts.length) {
             // get the last contact
             const $contact = $contacts.item($contacts.length - 1);
-            parsedName = parseFullName($contact.innerText);
-            var to = {
-                name: name,
-                first_name: '',
-                last_name: '',
-                email: ''
-            };
 
-            to.first_name = parsedName.first_name;
-            to.last_name = parsedName.last_name;
-            vars.to.push(to);
+            // update the to variable to point to the current messaging contact
+            to = Object.assign(to, parseFullName($contact.innerText));
         }
     }
+
+    vars.to.push(to);
 
     return vars;
 }
