@@ -2,9 +2,10 @@
 /* Linkedin plugin
  */
 
-import {parseTemplate, insertText} from '../utils';
-import {isQuill} from '../utils/editors';
-import {insertPlainText} from '../utils/plain-text';
+import {parseTemplate} from '../utils';
+import {isQuill} from '../utils/editor-quill';
+import {insertTemplate} from '../utils/editor-generic';
+import {htmlToText} from '../utils/plain-text';
 import {parseFullName} from '../utils/parse-text';
 
 // get all required data from the dom
@@ -24,13 +25,27 @@ function getData (params) {
         name: fromName,
         first_name: '',
         last_name: '',
-        email: ""
+        email: ''
     };
 
     var parsedName = parseFullName(fromName);
     from.first_name = parsedName.first_name;
     from.last_name = parsedName.last_name;
     vars.from = from;
+
+    // get the to field from the current viewed profile by default
+    // eg. for the connect > add note field.
+    let to = {
+        name: '',
+        first_name: '',
+        last_name: '',
+        email: ''
+    };
+    const $currentProfilePicture = document.querySelector('.presence-entity__image');
+    if ($currentProfilePicture) {
+        const toFullName = $currentProfilePicture.getAttribute('alt');
+        to = Object.assign(to, parseFullName(toFullName));
+    }
 
     // message thread in Messaging interface
     const messagingUiThread = '.msg-thread';
@@ -57,24 +72,19 @@ function getData (params) {
         if ($contacts.length) {
             // get the last contact
             const $contact = $contacts.item($contacts.length - 1);
-            parsedName = parseFullName($contact.innerText);
-            var to = {
-                name: name,
-                first_name: '',
-                last_name: '',
-                email: ''
-            };
 
-            to.first_name = parsedName.first_name;
-            to.last_name = parsedName.last_name;
-            vars.to.push(to);
+            // update the to variable to point to the current messaging contact
+            to = Object.assign(to, parseFullName($contact.innerText));
         }
     }
+
+    vars.to.push(to);
 
     return vars;
 }
 
 // zero-width whitespace
+// required for multi-line templates in posts/comments/quill
 const specialChar = '\u200b';
 
 function focusSpecialCharacter(editorNode) {
@@ -140,7 +150,8 @@ export default (params = {}) => {
     }
 
     var data = getData(params);
-    var parsedTemplate = parseTemplate(params.quicktext.body, data);
+    // insert only plain text on linkedin
+    var parsedTemplate = htmlToText(parseTemplate(params.quicktext.body, data));
 
     const parsedParams = Object.assign({
         text: parsedTemplate
@@ -159,7 +170,7 @@ export default (params = {}) => {
 
         // parsed template with special char
         const updatedTemplate = `${parsedTemplate}${specialChar}`;
-        insertPlainText(
+        insertTemplate(
             Object.assign(
                 {},
                 parsedParams,
@@ -183,16 +194,7 @@ export default (params = {}) => {
     // messaging, ember editor.
     // separate handling required for multi-line templates.
     if (isMessageEditor(params.element)) {
-        insertPlainText(parsedParams);
-
-        // send input event.
-        // makes the ember editor aware of the inserted text,
-        // but doesn't rebuild the dom nodes.
-        // without it, the inserted template disappears when we press enter.
-        // multi line templates are shown as a singles-line, until we press enter.
-        params.element.dispatchEvent(new Event('input', {
-            bubbles: true
-        }));
+        insertTemplate(parsedParams);
 
         // sends an empty paste event so the editor restructures the dom
         // making it aware of the newlines.
@@ -200,7 +202,11 @@ export default (params = {}) => {
         // compressed to one line.
         try {
             const clipboardData = new DataTransfer();
-            clipboardData.setData('text/plain', specialChar);
+            // zero-width no-break space
+            // required for multi-line templates.
+            // using the regular zero-width space causes links to include it in urls.
+            const zeroWidthNoBrakeSpace = '\ufeff';
+            clipboardData.setData('text/plain', zeroWidthNoBrakeSpace);
             const customPasteEvent = new ClipboardEvent('paste', {
                 bubbles: true,
                 clipboardData: clipboardData
@@ -223,6 +229,6 @@ export default (params = {}) => {
     }
 
     // generic editor, including textareas
-    insertText(parsedParams);
+    insertTemplate(parsedParams);
     return true;
 };

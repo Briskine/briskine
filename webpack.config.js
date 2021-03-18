@@ -1,10 +1,10 @@
 /* globals Buffer*/
 /* jshint esversion: 8 */
 
+import fs from 'fs';
 import webpack from 'webpack';
 import path from 'path';
-import {zip} from 'zip-a-folder';
-import {CleanWebpackPlugin} from 'clean-webpack-plugin';
+import archiver from 'archiver';
 import CopyWebpackPlugin from 'copy-webpack-plugin';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 
@@ -21,7 +21,7 @@ function generateManifest (safari) {
     let updatedManifestFile = Object.assign({}, manifestFile);
     // get version from package
     updatedManifestFile.version = packageFile.version;
-	
+
     // safari manifest
     if (safari) {
         updatedManifestFile.name = safariManifestName;
@@ -45,18 +45,19 @@ class ZipPlugin {
         this.options = options;
     }
     apply(compiler) {
-        compiler.hooks.done.tap('ZipPlugin', async () => {
-            await zip(this.options.entry, this.options.output);
+        compiler.hooks.done.tapAsync('ZipPlugin', (params, callback) => {
+            const output = fs.createWriteStream(this.options.output);
+            const zipArchive = archiver('zip');
+            output.on('close', callback);
+            zipArchive.pipe(output);
+            zipArchive.directory(this.options.entry, false);
+            zipArchive.finalize();
         });
     }
 }
 
 function extensionConfig (env, safari = false) {
     const plugins = [
-        // clean the build folder
-        new CleanWebpackPlugin({
-            cleanStaleWebpackAssets: false
-        }),
         generateManifest(safari),
         new CopyWebpackPlugin({
             patterns: [
@@ -93,7 +94,8 @@ function extensionConfig (env, safari = false) {
         },
         output: {
             path: path.resolve(devPath),
-            filename: '[name]/[name].js'
+            filename: '[name]/[name].js',
+            clean: true
         },
         plugins: plugins,
         module: {

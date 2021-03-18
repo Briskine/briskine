@@ -10,6 +10,7 @@ export function parseFullName (fullname = '') {
     const lastName = nameParts.join(' ');
 
     return {
+        name: name,
         first_name: firstName,
         last_name: lastName
     };

@@ -1,17 +1,11 @@
 /* Draft.js plugin
  */
 
-import {insertDraftText, parseTemplate} from '../utils';
-
-function isActive (params = {}) {
-   var contentsElement = params.element.querySelector('[data-contents]');
-   if (contentsElement) {
-       return true;
-   }
-}
+import {parseTemplate} from '../utils';
+import {isDraft, insertDraftText} from '../utils/editor-draft';
 
 export default (params = {}) => {
-    if (!isActive(params)) {
+    if (!isDraft(params.element)) {
         return false;
     }
 

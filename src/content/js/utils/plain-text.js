@@ -49,18 +49,38 @@ const blockNodes = [
 function domTreeToText (node, newline = '') {
     if (node.childNodes.length) {
         return Array.from(node.childNodes).map((c, i) => {
-            let text = domToText(c);
+            let text = domToText(c, newline);
 
             if (c.nodeType === document.ELEMENT_NODE) {
+                /* tag decorators
+                 */
                 const tagName = c.tagName.toLowerCase();
-                // tag decorators
+
+                // skip nodes in code blocks
+                const closestCode = c.closest('code');
+                if (closestCode && closestCode !== c) {
+                    return '';
+                }
+
+                // list bullets
                 if (tagName === 'li') {
                     text = `- ${text}`;
                 }
 
+                // code blocks kept as html
+                if (tagName === 'code') {
+                    text = c.innerHTML;
+                }
+
+                // links,
                 // only if the text and href are different
                 if (tagName === 'a' && c.textContent !== c.href) {
                     text = `${text} (${c.href})`;
+                }
+
+                // images
+                if (tagName === 'img') {
+                    text = `[${c.alt || ''} ${c.src || ''}]`;
                 }
 
                 // add newlines to block-level nodes,
@@ -82,7 +102,7 @@ const whitespace = '\u200b';
 
 // default newline separator is zero-width whitespace + standard newline.
 // this is required to be able to later remove possible double newlines.
-function domToText (fragment, newline = '\n') {
+function domToText (fragment, newline) {
     const customNewline = `${whitespace}${newline}`;
     const text = domTreeToText(fragment, customNewline);
     // clean-up possible double newlines caused
@@ -94,28 +114,8 @@ function domToText (fragment, newline = '\n') {
     return cleanedNewlineText.replace(new RegExp(customNewline, 'g'), newline);
 }
 
-export function insertPlainText (params = {}) {
-    params.element.focus();
-
-    var range = window.getSelection().getRangeAt(0);
-    // restore focus to the correct position,
-    // in case we insert templates using the dialog.
-    range.setStartAfter(params.focusNode);
-    range.collapse();
-
-    // delete shortcut
-    if (params.word.text === params.quicktext.shortcut) {
-        range.setStart(params.focusNode, params.word.start);
-        range.setEnd(params.focusNode, params.word.end);
-        range.deleteContents();
-    }
-
-    const fragment = range.createContextualFragment(params.text);
-    const plainText = domToText(fragment, params.newline);
-
-    const node = document.createTextNode(plainText);
-    range.insertNode(node);
-    range.collapse();
-
-    return range;
+export function htmlToText (html, newline = '\n') {
+    const range = document.createRange();
+    const fragment = range.createContextualFragment(html);
+    return domToText(fragment, newline);
 }

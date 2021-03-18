@@ -1,4 +1,5 @@
-/* Editors
+/* Quill rich text editor
+ * https://quilljs.com/
  */
 
 export function isQuill (element) {

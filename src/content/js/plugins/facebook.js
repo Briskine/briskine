@@ -1,7 +1,8 @@
 /* Facebook plugin
  */
 
-import {parseTemplate, insertDraftText} from '../utils';
+import {parseTemplate} from '../utils';
+import {insertDraftText} from '../utils/editor-draft';
 
 var parseName = function(name) {
     name = name.trim();

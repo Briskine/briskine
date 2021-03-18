@@ -18,3 +18,6 @@ config-firebase.js
 # xcode
 .DS_Store
 xcuserdata/
+
+# tests
+test/bundle
