@@ -1196,22 +1196,6 @@ function signinWithToken (token = '') {
         });
 }
 
-var impersonate = function (params = {}) {
-    return request(`${Config.functionsUrl}/api/1/impersonate`, {
-            method: 'POST',
-            authorization: true,
-            body: {
-                uid: params.id
-            }
-        })
-        .then((res) => {
-            return signinWithToken(res.token);
-        });
-};
-
-// make impersonate public
-window.IMPERSONATE = impersonate;
-
 // map old settings to new format
 function defaultSettings (oldSettings = {}) {
     const defaults = {
