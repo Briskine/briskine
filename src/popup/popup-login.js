@@ -1,3 +1,4 @@
+/* globals REGISTER_DISABLED */
 import Config from '../config';
 import store from '../store/store-client';
 import './popup-login-form';

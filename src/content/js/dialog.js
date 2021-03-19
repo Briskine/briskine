@@ -1,3 +1,4 @@
+/* globals REGISTER_DISABLED */
 /**
  * Autocomplete dialog code.
  */
