@@ -59,13 +59,6 @@ var trigger = function (name) {
     });
 };
 
-// extension pages (popup)
-if (backgroundPage) {
-    window.IMPERSONATE = (params) => {
-        backgroundPage.IMPERSONATE.call(backgroundPage, params);
-    };
-}
-
 // handle trigger from background
 browser.runtime.onMessage.addListener((req) => {
     if (
