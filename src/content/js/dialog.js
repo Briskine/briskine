@@ -673,10 +673,12 @@ dialog.template = `
         <a href="#" class="js-gorgias-signin">
             Sign in
         </a>
-        or
-        <a href="{{signupUrl}}" target="_blank">
-            Create a free account
-        </a>
+        ${!REGISTER_DISABLED ? `
+            or
+            <a href="{{signupUrl}}" target="_blank">
+                Create a free account
+            </a>
+        ` : 'to access your templates.'}
     </div>
 
     <input type="search" class="qt-dropdown-search" value="" placeholder="Search templates...">
