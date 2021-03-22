@@ -409,7 +409,7 @@ function unsubscribeSnapshots () {
 }
 
 // auth change
-firebase.auth().onAuthStateChanged((firebaseUser) => {
+firebase.auth().onIdTokenChanged((firebaseUser) => {
     if (!firebaseUser) {
         invalidateTemplateCache();
         unsubscribeSnapshots();
