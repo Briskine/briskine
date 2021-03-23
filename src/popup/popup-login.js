@@ -1,3 +1,4 @@
+/* globals REGISTER_DISABLED */
 import Config from '../config';
 import store from '../store/store-client';
 import './popup-login-form';
@@ -56,15 +57,17 @@ customElements.define(
                         `}
                     </div>
 
-                    <div class="popup-box text-muted">
-                        <small>
-                            Don't have an account yet?
-                            <br>
-                            <a href="${Config.websiteUrl}/signup" target="_blank">
-                                Create a free account
-                            </a>
-                        </small>
-                    </div>
+                    ${!REGISTER_DISABLED ? `
+                        <div class="popup-box text-muted">
+                            <small>
+                                Don't have an account yet?
+                                <br>
+                                <a href="${Config.websiteUrl}/signup" target="_blank">
+                                    Create a free account
+                                </a>
+                            </small>
+                        </div>
+                    ` : ''}
                 </div>
             `;
         }

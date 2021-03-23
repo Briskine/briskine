@@ -69,6 +69,7 @@ function extensionConfig (env, safari = false) {
         }),
         new webpack.DefinePlugin({
             ENV: JSON.stringify(env),
+            REGISTER_DISABLED: safari
         }),
         new MiniCssExtractPlugin({
             filename: '[name]/[name].css'

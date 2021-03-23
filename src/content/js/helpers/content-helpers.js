@@ -1,5 +1,4 @@
 import Handlebars from 'handlebars';
-import _ from 'underscore';
 import './date';
 import './moment';
 
@@ -35,7 +34,7 @@ Handlebars.registerHelper('capitalize', function (text) {
 
 Handlebars.registerHelper("choice", function (args) {
     // split by comma and trim
-    args = _.map(args.split(','), _.trim);
+    args = args.split(',').map((a) => a.trim());
     return args[Math.floor(Math.random() * args.length)];
 });
 

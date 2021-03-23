@@ -13,14 +13,6 @@ firebase.initializeApp(firebaseConfig);
 
 var db = firebase.firestore();
 
-function fsDate (date) {
-    if (!date) {
-        return firebase.firestore.Timestamp.now();
-    }
-
-    return firebase.firestore.Timestamp.fromDate(date);
-}
-
 // convert firestore timestamps to dates
 function convertToNativeDates (obj = {}) {
     var parsed = Object.assign({}, obj);
@@ -50,13 +42,6 @@ function compatibleTemplate(template = {}, tags = []) {
 
     // convert dates
     return convertToNativeDates(cleanTemplate);
-}
-
-// uuidv4
-function uuid() {
-    return `${1e7}-${1e3}-${4e3}-${8e3}-${1e11}`.replace(/[018]/g, c =>
-        (c ^ window.crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
-    );
 }
 
 // handle fetch errors
@@ -187,189 +172,6 @@ function getLocalData (params = {}) {
 
             resolve(result);
         });
-    });
-}
-
-var batchLocalDataUpdate = Promise.resolve();
-function updateLocalData (params = {}) {
-    // batch update, to avoid overwriting data on parallel calls
-    batchLocalDataUpdate = batchLocalDataUpdate.then(() => {
-        return new Promise((resolve) => {
-            getLocalData({raw: true}).then((res) => {
-                // merge defaults with stored data
-                var localData = Object.assign({
-                    templates: {},
-                    tags: {}
-                }, res);
-
-                ['tags', 'templates'].forEach((key) => {
-                    if (params[key]) {
-                        params[key].forEach((item) => {
-                            // merge existing data
-                            localData[key][item.id] = Object.assign({}, localData[key][item.id], item);
-                        });
-                    }
-                });
-
-                var localDataContainer = {};
-                localDataContainer[localDataKey] = localData;
-                browser.storage.local.set(localDataContainer).then(() => {
-                    // refresh template list
-                    refreshTemplates();
-
-                    resolve();
-                });
-            });
-        });
-    });
-
-    return batchLocalDataUpdate;
-}
-
-function syncLocalData () {
-    var batch = db.batch();
-    var user = {};
-    return getSignedInUser()
-        .then((res) => {
-            user = res;
-            return Promise.all([
-                getLocalData({tags: true}),
-                getLocalData({templates: true})
-            ]);
-        })
-        .then((res) => {
-            var tags = res[0];
-            var templates = res[1];
-
-            tags.forEach((tag) => {
-                var ref = tagsCollection.doc(tag.id);
-                delete tag.id;
-                tag.customer = user.customer;
-                batch.set(ref, tag);
-            });
-
-            return Promise.all(
-                templates.map((template) => {
-                    var ref = templatesCollection.doc(template.id);
-                    var update = false;
-
-                    return ref.get()
-                        .then((res) => {
-                            // template exists, check modified_datetime
-                            var data = res.data();
-                            var modified_datetime = new firebase.firestore.Timestamp(
-                                template.modified_datetime.seconds,
-                                template.modified_datetime.nanoseconds
-                            );
-                            if (
-                                data.modified_datetime &&
-                                modified_datetime.toDate() > data.modified_datetime.toDate()
-                            ) {
-                                update = true;
-
-                                // sharing is set to none on new templates.
-                                // prevent making existing templates private.
-                                template = Object.assign(template, {
-                                    sharing: data.sharing,
-                                    shared_with: data.shared_with
-                                });
-                            }
-                        })
-                        .catch(() => {
-                            // template doesn't exist
-                            update = true;
-                        })
-                        .then(() => {
-                            if (update) {
-                                delete template.id;
-                                template.owner = user.id;
-                                template.customer = user.customer;
-                                // convert dates
-                                [
-                                    'created_datetime',
-                                    'deleted_datetime',
-                                    'modified_datetime',
-                                    'lastuse_datetime'
-                                ].forEach((prop) => {
-                                    if (template[prop]) {
-                                        template[prop] = new firebase.firestore.Timestamp(
-                                            template[prop].seconds,
-                                            template[prop].nanoseconds
-                                        );
-                                    }
-                                });
-
-                                batch.set(ref, template, {merge: true});
-                            }
-
-                            return;
-                        });
-                })
-            );
-        })
-        .then(() => {
-            return batch.commit();
-        })
-        .then(() => {
-            // clear local data
-            return clearLocalTemplates();
-        })
-        .catch((err) => {
-            if (isLoggedOut(err)) {
-                // logged-out
-                return;
-            }
-
-            throw err;
-        });
-}
-
-// migrate legacy local (logged-out) templates to new local format.
-// check if storage item is legacy template
-function isLegacyTemplate (key = '', template = {}) {
-    return (
-        // key is uuid
-        key.length === 36 && key.split('-').length === 5 &&
-        // template has body
-        template.body &&
-        // template has id
-        template.id
-    );
-}
-
-function migrateLegacyLocalData () {
-    return new Promise((resolve) => {
-        browser.storage.local.get(null).then(resolve);
-    }).then((storage) => {
-        return Promise.all(
-            Object.keys(storage || {}).map((key) => {
-                var template = storage[key];
-                if (isLegacyTemplate(key, template)) {
-                    var localId = template.id;
-                    var remoteId = template.remote_id || localId;
-
-                    return parseTemplate({
-                        template: template
-                    }).then((res) => {
-                        // update local data
-                        return updateLocalData({
-                            templates: [
-                                Object.assign({id: remoteId}, res)
-                            ]
-                        }).then(() => {
-                            return localId;
-                        });
-                    });
-                }
-
-                return;
-            })
-        );
-    }).then((ids = []) => {
-        const migratedTemplates = ids.filter((id) => !!id);
-        // delete legacy data
-        browser.storage.local.remove(migratedTemplates);
-        return;
     });
 }
 
@@ -607,7 +409,7 @@ function unsubscribeSnapshots () {
 }
 
 // auth change
-firebase.auth().onAuthStateChanged((firebaseUser) => {
+firebase.auth().onIdTokenChanged((firebaseUser) => {
     if (!firebaseUser) {
         invalidateTemplateCache();
         unsubscribeSnapshots();
@@ -671,81 +473,6 @@ function getTags () {
         });
 }
 
-function createTags (tags = []) {
-    if (!tags.length) {
-        return Promise.resolve([]);
-    }
-
-    var newTags = tags.map((tag) => {
-        var newTag = {
-            title: tag,
-            version: 1
-        };
-        return Object.assign({
-            id: uuid()
-        }, newTag);
-    });
-
-    return getSignedInUser()
-        .then((user) => {
-            var batch = db.batch();
-            newTags.forEach((tag) => {
-                var ref = tagsCollection.doc(tag.id);
-                var tagData = {
-                    customer: user.customer,
-                    title: tag.title,
-                    version: tag.version
-                };
-                batch.set(ref, tagData);
-            });
-
-            return batch.commit();
-        })
-        .catch((err) => {
-            if (isLoggedOut(err)) {
-                // logged-out
-                return updateLocalData({
-                    tags: newTags
-                });
-            }
-
-            throw err;
-        })
-        .then(() => newTags);
-}
-
-function tagsToArray (tagsString = '') {
-    return (tagsString || '').split(',').map((tag) => {
-        return (tag || '').trim();
-    }).filter((tag) => !!tag);
-}
-
-// replace tag titles with ids
-function tagsToIds (templateTags) {
-    return getTags().then((existingTags) => {
-        // tags to be created
-        var newTags = templateTags.filter((tag) => {
-            return !(existingTags.some((existing) => {
-                return existing.title === tag;
-            }));
-        });
-
-        return createTags(newTags).then((createdTags) => {
-            // merge existing tags with created tags
-            var updatedTags = existingTags.concat(createdTags);
-
-            // map template tag titles to ids
-            return templateTags.map((tag) => {
-                return (
-                    updatedTags.find((existingTag) => {
-                        return existingTag.title === tag;
-                    }) || {}
-                ).id;
-            });
-            });
-    });
-}
-
 function idsToTags (tagIds) {
     return getTags().then((existingTags) => {
         return tagIds.map((tagId) => {
@@ -760,65 +487,6 @@ function idsToTags (tagIds) {
             return foundTag.title;
         });
     });
-}
-
-function parseTemplate (params = {}) {
-    // private by default
-    // sharing later set by updateSharing
-    var sharing = 'none';
-    var shared_with = [];
-    var createdDatetime = params.template.created_datetime ? new Date(params.template.created_datetime) : null;
-    var modifiedDatetime = params.template.modified_datetime ? new Date(params.template.modified_datetime) : null;
-    var deletedDatetime = params.template.deleted_datetime ? new Date(params.template.deleted_datetime) : null;
-    var lastuseDatetime = params.template.lastuse_datetime ? new Date(params.template.lastuse_datetime) : null;
-
-    var template = {
-        title: params.template.title || null,
-        body: params.template.body || null,
-        shortcut: params.template.shortcut || '',
-        subject: params.template.subject || '',
-        cc: params.template.cc || '',
-        bcc: params.template.bcc || '',
-        to: params.template.to || '',
-        attachments: params.template.attachments || [],
-        created_datetime: fsDate(createdDatetime),
-        modified_datetime: fsDate(modifiedDatetime),
-        deleted_datetime: deletedDatetime ? fsDate(deletedDatetime) : null,
-        shared_with: shared_with,
-        sharing: sharing,
-        tags: [],
-        owner: null,
-        customer: null,
-        // stats
-        lastuse_datetime: lastuseDatetime ? fsDate(lastuseDatetime) : null,
-        use_count: 0,
-        version: 1
-    };
-
-    // clean-up template tags
-    var templateTags = tagsToArray(params.template.tags || '');
-
-    return getSignedInUser()
-        .then((user) => {
-            template = Object.assign(template, {
-                owner: user.id,
-                customer: user.customer
-            });
-            return;
-        }).catch((err) => {
-            if (isLoggedOut(err)) {
-                // logged-out
-                return;
-            }
-
-            throw err;
-        }).then(() => {
-            return tagsToIds(templateTags);
-        }).then((tags) => {
-            return Object.assign(template, {
-                tags: tags
-            });
-        });
 }
 
 function templatesOwnedQuery (user) {
@@ -1145,7 +813,7 @@ var signin = (params = {}) => {
             return createSession();
         })
         .then(() => {
-            syncNow();
+            syncSettings();
 
             return window.store.trigger('login');
         })
@@ -1190,27 +858,11 @@ function signinWithToken (token = '') {
             return updateCurrentUser(res.user);
         })
         .then(() => {
-            syncNow();
+            syncSettings();
 
             return window.store.trigger('login');
         });
 }
-
-var impersonate = function (params = {}) {
-    return request(`${Config.functionsUrl}/api/1/impersonate`, {
-            method: 'POST',
-            authorization: true,
-            body: {
-                uid: params.id
-            }
-        })
-        .then((res) => {
-            return signinWithToken(res.token);
-        });
-};
-
-// make impersonate public
-window.IMPERSONATE = impersonate;
 
 // map old settings to new format
 function defaultSettings (oldSettings = {}) {
@@ -1281,19 +933,6 @@ function syncSettings (forceLocal = false) {
             throw err;
         });
 }
-
-// sync local data when starting the app
-var syncNow = function () {
-    // migrate legacy templates from browser storage
-    return migrateLegacyLocalData()
-        .then(() => {
-            // sync local templates
-            return syncLocalData();
-        })
-        .then(() => {
-            return syncSettings();
-        });
-};
 
 window.addEventListener('message', function (event) {
     if (event.data.type === 'gorgias_message' && event.data.message === 'subscribe_success') {
