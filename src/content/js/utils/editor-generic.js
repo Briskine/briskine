@@ -94,9 +94,11 @@ export function insertTemplate (params = {}) {
         params.element.setSelectionRange(cursorOffset, cursorOffset);
     }
 
-    params.element.dispatchEvent(new Event('input', {
-        bubbles: true
-    }));
+    // trigger multiple change events,
+    // for frameworks and scripts to notice changes to the editable fields.
+    [ 'input', 'change' ].forEach((eventType) => {
+        params.element.dispatchEvent(new Event(eventType, {bubbles: true}));
+    });
 
     return;
 }
