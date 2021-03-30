@@ -6,7 +6,7 @@ import {parseTemplate} from '../utils';
 import {isQuill} from '../utils/editor-quill';
 import {insertTemplate} from '../utils/editor-generic';
 import {htmlToText} from '../utils/plain-text';
-import {parseFullName} from '../utils/parse-text';
+import {createContact} from '../utils/data-parse';
 
 // get all required data from the dom
 function getData (params) {
@@ -29,7 +29,7 @@ function getData (params) {
         fromName = $salesFromContainer.innerText;
     }
 
-    vars.from = parseFullName(fromName);
+    vars.from = createContact({name: fromName});
 
     let toName = '';
     // get the to field from the current viewed profile by default
@@ -81,7 +81,7 @@ function getData (params) {
         toName = $salesName.innerText;
     }
 
-    vars.to.push(parseFullName(toName));
+    vars.to.push(createContact({name: toName}));
 
     return vars;
 }
