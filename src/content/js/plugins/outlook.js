@@ -3,20 +3,18 @@
  */
 
 import {parseTemplate, insertText} from '../utils';
-import {parseFullName} from '../utils/parse-text';
+import {createContact} from '../utils/data-parse';
 
 function getFieldData (field, $container) {
     var $buttons = $container.querySelectorAll('[class*="wellItemText-"]') || [];
     $buttons.forEach(function ($button) {
         var fullName = $button.innerText || '';
         field.push(
-            Object.assign({
+            createContact({
                 name: fullName,
-                first_name: '',
-                last_name: '',
                 // BUG we can't get email
                 email: ''
-            }, parseFullName(fullName))
+            })
         );
     });
 }
@@ -159,10 +157,10 @@ function getData () {
     }
 
     vars.from.push(
-        Object.assign({
+        createContact({
             name: fullName,
             email: fromEmail
-        }, parseFullName(fullName))
+        })
     );
 
     var $to = getToContainer();

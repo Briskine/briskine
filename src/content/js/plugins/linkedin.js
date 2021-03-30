@@ -6,7 +6,7 @@ import {parseTemplate} from '../utils';
 import {isQuill} from '../utils/editor-quill';
 import {insertTemplate} from '../utils/editor-generic';
 import {htmlToText} from '../utils/plain-text';
-import {parseFullName} from '../utils/parse-text';
+import {createContact} from '../utils/data-parse';
 
 // get all required data from the dom
 function getData (params) {
@@ -17,34 +17,32 @@ function getData (params) {
     };
 
     let fromName = '';
+    // global profile
     const $fromContainer = document.querySelector('.global-nav__me-photo');
     if ($fromContainer) {
         fromName = $fromContainer.getAttribute('alt');
     }
-    var from = {
-        name: fromName,
-        first_name: '',
-        last_name: '',
-        email: ''
-    };
 
-    var parsedName = parseFullName(fromName);
-    from.first_name = parsedName.first_name;
-    from.last_name = parsedName.last_name;
-    vars.from = from;
+    // Sales Navigator global profile
+    const $salesFromContainer = document.querySelector('[data-control-name="view_user_menu_from_app_header"]');
+    if ($salesFromContainer) {
+        fromName = $salesFromContainer.innerText;
+    }
 
+    vars.from = createContact({name: fromName});
+
+    let toName = '';
     // get the to field from the current viewed profile by default
     // eg. for the connect > add note field.
-    let to = {
-        name: '',
-        first_name: '',
-        last_name: '',
-        email: ''
-    };
     const $currentProfilePicture = document.querySelector('.presence-entity__image');
     if ($currentProfilePicture) {
-        const toFullName = $currentProfilePicture.getAttribute('alt');
-        to = Object.assign(to, parseFullName(toFullName));
+        toName = $currentProfilePicture.getAttribute('alt');
+    }
+
+    // Sales Navigator Connect
+    const $salesToName = params.element.parentNode.querySelector('.artdeco-entity-lockup__title');
+    if ($salesToName) {
+        toName = $salesToName.innerText;
     }
 
     // message thread in Messaging interface
@@ -70,15 +68,20 @@ function getData (params) {
         // get the contacts from the thread, that is not ours
         const $contacts = $thread.querySelectorAll(contactNameSelector);
         if ($contacts.length) {
-            // get the last contact
+            // get the current messaging contact
             const $contact = $contacts.item($contacts.length - 1);
-
-            // update the to variable to point to the current messaging contact
-            to = Object.assign(to, parseFullName($contact.innerText));
+            toName = $contact.innerText;
         }
     }
 
-    vars.to.push(to);
+    // Sales Navigator message thread
+    const $salesConversation = document.querySelector('.conversation-insights');
+    if ($salesConversation) {
+        const $salesName = $salesConversation.querySelector('.artdeco-entity-lockup__title span:first-child');
+        toName = $salesName.innerText;
+    }
+
+    vars.to.push(createContact({name: toName}));
 
     return vars;
 }
