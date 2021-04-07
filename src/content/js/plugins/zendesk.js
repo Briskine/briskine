@@ -59,9 +59,11 @@ export default (params = {}) => {
         return false;
     }
 
+    // TODO getData no longer works
     var data = getData(params);
     var parsedTemplate = parseTemplate(params.quicktext.body, data);
 
+    // TODO use Slate template insert
     insertText(Object.assign({
         text: parsedTemplate
     }, params));
