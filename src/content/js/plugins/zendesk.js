@@ -1,41 +1,41 @@
 /* Zendesk plugin
  */
 
-import $ from 'jquery';
-
-import {parseTemplate, insertText} from '../utils';
+import {parseTemplate} from '../utils';
+import {insertSlateText} from '../utils/editor-slate';
+import {createContact} from '../utils/data-parse';
 
 function getData (params) {
-    // get top-most workspace
-    var workspace = $(params.element).parents('.workspace').last();
+    // get the agent name from the document title (eg. Full Name - Agent).
+    const agentName = document.title.substring(0, document.title.lastIndexOf('-'));
 
-    var agent_name = $('#face_box .name').text();
-    var agent_first_name = agent_name.split(' ')[0];
-    var agent_last_name = agent_name.split(' ')[1];
+    let toEmail = '';
+    let toName = '';
+    const $editorView = params.element.closest('#editor-view');
+    const avatarSelector = '[data-garden-id="tags.avatar"]';
+    const $avatar = $editorView.querySelector(avatarSelector);
+    const $name = $editorView.querySelector(`${avatarSelector} + *`);
+    if ($avatar) {
+        toEmail = $avatar.getAttribute('alt');
+    }
 
-    var name = workspace.find('span.sender').text().split('<')[0];
-    var first_name = name.split(' ')[0];
-    var last_name = name.split(' ')[1];
+    if ($name) {
+        toName = $name.innerText;
+    }
 
-    var vars = {
-        from: [{
-            'name': agent_name,
-            'first_name': agent_first_name,
-            'last_name': agent_last_name,
-            'email': ''
-        }],
-        to: [{
-            'name': name,
-            'first_name': first_name,
-            'last_name': last_name,
-            'email': workspace.find('span.sender .email').text()
-        }],
+    let subject = '';
+    const $subjectField = document.querySelector('[data-test-id="omni-header-subject"]');
+    if ($subjectField) {
+        subject = $subjectField.value;
+    }
+
+    return {
+        from: createContact({name: agentName}),
+        to: [createContact({name: toName, email: toEmail})],
         cc: [],
         bcc: [],
-        subject: workspace.find('input[name=subject]').val()
+        subject: subject
     };
-
-    return vars;
 }
 
 var activeCache = null;
@@ -59,12 +59,10 @@ export default (params = {}) => {
         return false;
     }
 
-    // TODO getData no longer works
     var data = getData(params);
     var parsedTemplate = parseTemplate(params.quicktext.body, data);
 
-    // TODO use Slate template insert
-    insertText(Object.assign({
+    insertSlateText(Object.assign({
         text: parsedTemplate
     }, params));
 

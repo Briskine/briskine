@@ -62,7 +62,7 @@ export function setCursorPosition (container, node) {
     return {
         range: range,
         focusNode: focusNode
-    }
+    };
 }
 
 export function insertTemplate (params = {}) {
