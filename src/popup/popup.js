@@ -15,7 +15,7 @@ customElements.define(
             this.checkLogin();
 
             store.on('login', () => {
-                // close tab when popup is in the new tab
+                // close window when the popup is opened as a new tab, not browser action.
                 // eg. opened from the dialog
                 const urlParams = new URLSearchParams(window.location.search);
                 if (urlParams.get('source') === 'tab') {
