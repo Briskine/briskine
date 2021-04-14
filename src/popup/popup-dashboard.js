@@ -103,11 +103,19 @@ customElements.define(
                         ` : ''}
 
                         ${this.isFree === false ? `
-                            <p class="popup-quote">
-                                ${this.stats.words < 1500 ? `Big things have small beginnings &#128170;` : ''}
-                                ${this.stats.words > 1500 && this.stats.words < 2500 ? `Or the equivalent of writing a short story &#128214;` : ''}
-                                ${this.stats.words >= 2500 && this.stats.words < 7500 ? `Did you know mushrooms are one of the largest organisms in the world? &#127812;` : ''}
-                                ${this.stats.words >= 7500 ? `You're awesome. Just awesome. &#9996;` : ''}
+                            <p>
+                                ${this.stats.words < 1500 ? `
+                                    <span class="font-italic">Big things have small beginnings</span> &#128170;
+                                ` : ''}
+                                ${this.stats.words > 1500 && this.stats.words < 2500 ? `
+                                    <span class="font-italic">Or the equivalent of writing a short story</span> &#128214;
+                                ` : ''}
+                                ${this.stats.words >= 2500 && this.stats.words < 7500 ? `
+                                    <span class="font-italic">Did you know mushrooms are one of the largest organisms in the world?</span> &#127812;
+                                ` : ''}
+                                ${this.stats.words >= 7500 ? `
+                                    <span class="font-italic">You're awesome. Just awesome.</span> &#9996;
+                                ` : ''}
                             </p>
                         ` : ''}
 
