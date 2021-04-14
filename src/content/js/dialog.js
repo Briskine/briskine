@@ -164,18 +164,11 @@ var dialog = {
 
         $dialog.on('mousedown', '.js-gorgias-signin', function () {
             // HACK
-            // we can't re-render the dialog on session success,
-            // because we lost the pointer to the editor element.
-            // we provide immediate feedback by closing the dialog.
-            // BUG requires pressing the sign-in button twice.
-            dialog.close();
-
-            // check session
-            store.getSession()
-                .catch(() => {
-                    // logged-out
-                    window.open(Config.functionsUrl, Config.dashboardTarget);
-                });
+            // browserAction.openPopup is not supported in all browsers yet.
+            // https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/browserAction/openPopup
+            // Open the browserAction popup in a new tab.
+            const popupUrl = browser.runtime.getURL('popup/popup.html');
+            window.open(`${popupUrl}?source=tab`, Config.dashboardTarget);
         });
     },
     setupQuickButton: function () {

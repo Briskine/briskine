@@ -36,7 +36,7 @@
         }
     ],
     "web_accessible_resources": [
-        "pages/bg.html"
+        "popup/popup.html"
     ],
     "browser_action": {
         "default_title": "Gorgias Templates",
