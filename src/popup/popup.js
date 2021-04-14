@@ -1,3 +1,4 @@
+/* global URLSearchParams */
 import './popup.css';
 
 import './popup-login';
@@ -13,7 +14,16 @@ customElements.define(
 
             this.checkLogin();
 
-            store.on('login', () => this.checkLogin());
+            store.on('login', () => {
+                // close tab when popup is in the new tab
+                // eg. opened from the dialog
+                const urlParams = new URLSearchParams(window.location.search);
+                if (urlParams.get('source') === 'tab') {
+                    return window.close();
+                }
+
+                return this.checkLogin();
+            });
             store.on('logout', () => this.checkLogin());
         }
         checkLogin() {

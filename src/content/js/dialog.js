@@ -168,7 +168,7 @@ var dialog = {
             // https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/browserAction/openPopup
             // Open the browserAction popup in a new tab.
             const popupUrl = browser.runtime.getURL('popup/popup.html');
-            window.open(popupUrl, Config.dashboardTarget);
+            window.open(`${popupUrl}?source=tab`, Config.dashboardTarget);
         });
     },
     setupQuickButton: function () {
