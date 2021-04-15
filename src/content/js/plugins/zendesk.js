@@ -2,7 +2,8 @@
  */
 
 import {parseTemplate} from '../utils';
-import {insertSlateText} from '../utils/editor-slate';
+import {isSlate, insertSlateText} from '../utils/editor-slate';
+import {insertTemplate} from '../utils/editor-generic';
 import {createContact} from '../utils/data-parse';
 
 function getData (params) {
@@ -62,12 +63,17 @@ export default (params = {}) => {
         return false;
     }
 
-    var data = getData(params);
-    var parsedTemplate = parseTemplate(params.quicktext.body, data);
-
-    insertSlateText(Object.assign({
+    const data = getData(params);
+    const parsedTemplate = parseTemplate(params.quicktext.body, data);
+    const parsedParams = Object.assign({
         text: parsedTemplate
-    }, params));
+    }, params);
 
+    if (isSlate(params.element)) {
+        insertSlateText(parsedParams);
+        return true;
+    }
+
+    insertTemplate(parsedParams);
     return true;
 };
