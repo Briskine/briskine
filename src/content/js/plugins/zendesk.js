@@ -2,7 +2,8 @@
  */
 
 import {parseTemplate} from '../utils';
-import {insertSlateText} from '../utils/editor-slate';
+import {isSlate, insertSlateText} from '../utils/editor-slate';
+import {insertTemplate} from '../utils/editor-generic';
 import {createContact} from '../utils/data-parse';
 
 function getData (params) {
@@ -12,16 +13,19 @@ function getData (params) {
     let toEmail = '';
     let toName = '';
     const $editorView = params.element.closest('#editor-view');
-    const avatarSelector = '[data-garden-id="tags.avatar"]';
-    const $avatar = $editorView.querySelector(avatarSelector);
-    const $name = $editorView.querySelector(`${avatarSelector} + *`);
-    if ($avatar) {
-        toEmail = $avatar.getAttribute('alt');
+    if ($editorView) {
+        const avatarSelector = '[data-garden-id="tags.avatar"]';
+        const $avatar = $editorView.querySelector(avatarSelector);
+        if ($avatar) {
+            toEmail = $avatar.getAttribute('alt');
+        }
+
+        const $name = $editorView.querySelector(`${avatarSelector} + *`);
+        if ($name) {
+            toName = $name.innerText;
+        }
     }
 
-    if ($name) {
-        toName = $name.innerText;
-    }
 
     let subject = '';
     const $subjectField = document.querySelector('[data-test-id="omni-header-subject"]');
@@ -59,12 +63,17 @@ export default (params = {}) => {
         return false;
     }
 
-    var data = getData(params);
-    var parsedTemplate = parseTemplate(params.quicktext.body, data);
-
-    insertSlateText(Object.assign({
+    const data = getData(params);
+    const parsedTemplate = parseTemplate(params.quicktext.body, data);
+    const parsedParams = Object.assign({
         text: parsedTemplate
-    }, params));
+    }, params);
 
+    if (isSlate(params.element)) {
+        insertSlateText(parsedParams);
+        return true;
+    }
+
+    insertTemplate(parsedParams);
     return true;
 };
