@@ -12,16 +12,19 @@ function getData (params) {
     let toEmail = '';
     let toName = '';
     const $editorView = params.element.closest('#editor-view');
-    const avatarSelector = '[data-garden-id="tags.avatar"]';
-    const $avatar = $editorView.querySelector(avatarSelector);
-    const $name = $editorView.querySelector(`${avatarSelector} + *`);
-    if ($avatar) {
-        toEmail = $avatar.getAttribute('alt');
+    if ($editorView) {
+        const avatarSelector = '[data-garden-id="tags.avatar"]';
+        const $avatar = $editorView.querySelector(avatarSelector);
+        if ($avatar) {
+            toEmail = $avatar.getAttribute('alt');
+        }
+
+        const $name = $editorView.querySelector(`${avatarSelector} + *`);
+        if ($name) {
+            toName = $name.innerText;
+        }
     }
 
-    if ($name) {
-        toName = $name.innerText;
-    }
 
     let subject = '';
     const $subjectField = document.querySelector('[data-test-id="omni-header-subject"]');
