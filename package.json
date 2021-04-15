@@ -1,6 +1,6 @@
 {
     "name": "gorgias",
-    "version": "6.12.0",
+    "version": "6.12.1",
     "description": "Write everything faster.",
     "scripts": {
         "test": "NODE_OPTIONS='-r esm' webpack -c webpack.test.js && mocha-headless-chrome -f test/index.html",
