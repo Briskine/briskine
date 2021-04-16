@@ -7,13 +7,17 @@ import {insertTemplate} from '../utils/editor-generic';
 import {createContact} from '../utils/data-parse';
 
 function getData (params) {
-    // get the agent name from the document title (eg. Full Name - Agent).
-    const agentName = document.title.substring(0, document.title.lastIndexOf('-'));
+    let agentName = '';
+    let subject = '';
 
     let toEmail = '';
     let toName = '';
     const $editorView = params.element.closest('#editor-view');
+    // Agent Workspace enabled
     if ($editorView) {
+        // get the agent name from the document title (eg. Full Name - Agent).
+        agentName = document.title.substring(0, document.title.lastIndexOf('-'));
+
         const avatarSelector = '[data-garden-id="tags.avatar"]';
         const $avatar = $editorView.querySelector(avatarSelector);
         if ($avatar) {
@@ -26,12 +30,50 @@ function getData (params) {
         }
     }
 
+    const $ticketSection = params.element.closest('.ticket');
+    // Agent Workspace disabled
+    if ($ticketSection) {
+        // get the variables from the ticket header
+        const $sender = $ticketSection.querySelector('.sender');
+        if ($sender) {
+            // keep only text nodes from sender container.
+            // to and from data do not have wrapper elements.
+            const $senderText = Array.from($sender.childNodes).filter((node) => {
+                return node.nodeType === document.TEXT_NODE && (node.textContent || '').trim();
+            });
 
-    let subject = '';
-    const $subjectField = document.querySelector('[data-test-id="omni-header-subject"]');
+            // TO name
+            if ($senderText[0]) {
+                toName = $senderText[0].textContent;
+            }
+
+            // TO email
+            const $email = $sender.querySelector('.email');
+            if ($email) {
+                toEmail = $email.textContent;
+            }
+
+            // FROM name
+            // eg. via First Name
+            if ($senderText[1]) {
+                let cleanAgentName = ($senderText[1].textContent || '').split(' ');
+                // remove "via" from agent name
+                if (cleanAgentName[0] === 'via') {
+                    cleanAgentName = cleanAgentName.slice(1);
+                }
+
+                agentName = cleanAgentName.join(' ');
+            }
+        }
+    }
+
+    const workspaceSubject = '[data-test-id="omni-header-subject"]';
+    const defaultSubject = '[data-test-id="ticket-pane-subject"]';
+    const $subjectField = document.querySelector(`${workspaceSubject}, ${defaultSubject}`);
     if ($subjectField) {
         subject = $subjectField.value;
     }
+
 
     return {
         from: createContact({name: agentName}),
