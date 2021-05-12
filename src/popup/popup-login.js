@@ -37,7 +37,7 @@ customElements.define(
                 <div class="popup-login text-center">
                     <div class="popup-box popup-logo">
                         <a href="${Config.websiteUrl}" target="_blank">
-                            <img src="../icons/templates-logotype.png" alt="Gorgias Templates"/>
+                            <img src="../icons/templates-logotype.png" alt="Briskine"/>
                         </a>
                     </div>
 

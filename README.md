@@ -1,4 +1,4 @@
-Gorgias Templates Browser Extension
+Briskine Browser Extension
 ===================================
 
 Write emails faster. Create text templates and insert them with shortcuts on any website.
