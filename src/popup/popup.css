@@ -8,7 +8,9 @@ html {
 }
 
 body {
-   background-color: #f7f7f7;
+   background-color: #f3f4f5;
+
+   color: #7e7084;
 }
 
 p {
@@ -77,11 +79,11 @@ a:hover,
 }
 
 .btn-primary {
-    background-color: #1e48b3;
+    background-color: #0983fa;
 }
 
 .btn-primary:hover {
-    background-color: #003ad1;
+    background-color: #0483ff;
 }
 
 .btn-success {
@@ -195,18 +197,17 @@ a:hover,
     margin-right: .4em;
     transition: all .1s ease-out;
 
-    color: #ccc;
+    color: #918992;
 }
 
 .popup-menu a:hover .icon {
     transform: scale(1.4);
-    color: #1e48b3;
+    color: #0607fb;
 }
 
 .popup-stats {
     padding: 1.4em 1em;
-    background: #1e48b3;
-    background: linear-gradient(345deg, #1e48b3 0%, #0042d1 100%);
+    background: linear-gradient(345deg, #0575e1 0%, #0983fa 100%);
 
     color: #fff;
     text-align: center;
