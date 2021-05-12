@@ -180,7 +180,6 @@ App.init = function(settings, doc) {
         settings.is_sort_template_dialog_gmail;
 
     var blacklistPrivate = [
-        "https://gorgias.io",
         "https://usecanvas.com",
         "http://usecanvas.com"
     ];

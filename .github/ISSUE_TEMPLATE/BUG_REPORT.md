@@ -14,6 +14,6 @@ assignees: ''
 
 -
 
-#### Related Gorgias tickets/Sentry events:
+#### Related tickets/Sentry events:
 
 -

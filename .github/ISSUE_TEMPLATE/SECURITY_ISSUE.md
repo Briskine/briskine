@@ -25,6 +25,6 @@ assignees: ''
 
 -
 
-#### Related Gorgias tickets/Sentry events/Hackerone ticket:
+#### Related tickets/Sentry events/Hackerone ticket:
 
 -

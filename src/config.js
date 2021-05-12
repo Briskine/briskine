@@ -8,14 +8,14 @@ var Config = {
 // firebase staging
 if (ENV === 'staging') {
     Config = Object.assign(Config, {
-        functionsUrl: 'https://staging.gorgiastemplates.com'
+        functionsUrl: 'https://staging.briskine.com'
     });
 }
 
 if (ENV === 'production') {
     Config = Object.assign(Config, {
-        websiteUrl: 'https://www.gorgiastemplates.com',
-        functionsUrl: 'https://app.gorgiastemplates.com'
+        websiteUrl: 'https://www.briskine.com',
+        functionsUrl: 'https://app.briskine.com'
     });
 }
 
