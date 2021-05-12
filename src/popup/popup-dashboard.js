@@ -70,7 +70,7 @@ customElements.define(
                 <div class="popup-dashboard">
                     <div class="popup-box popup-logo">
                         <a href="${Config.websiteUrl}" target="_blank">
-                            <img src="../icons/templates-logotype.png" alt="Briskine"/>
+                            <img src="../icons/briskine-wordmark.svg" width="100" alt="Briskine"/>
                         </a>
                     </div>
 
