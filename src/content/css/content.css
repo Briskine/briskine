@@ -179,6 +179,10 @@ div.qt-mirror .qt-caret {
     padding: 4px;
 }
 
+.qt-logged-out .g-dropdown-toolbar {
+    display: none;
+}
+
 .g-dropdown-toolbar button {
     appearance: none;
     background: linear-gradient(#ededed, #ededed 38%, #dedede);
