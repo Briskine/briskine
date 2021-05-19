@@ -33,7 +33,7 @@ customElements.define(
             });
         }
         connectedCallback() {
-            const logoImg = '<img src="../icons/briskine-wordmark.svg" width="120" alt="Briskine"/>'
+            const logoImg = '<img src="../icons/briskine-wordmark.svg" width="120" alt="Briskine"/>';
 
             this.innerHTML = `
                 <div class="popup-login text-center">
