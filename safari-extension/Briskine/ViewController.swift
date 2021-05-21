@@ -2,7 +2,7 @@ import Cocoa
 import SafariServices.SFSafariApplication
 import SafariServices.SFSafariExtensionManager
 
-let appName = "Gorgias Templates: Email templates for Gmail"
+let appName = "Briskine: Email templates for Gmail"
 let extensionBundleIdentifier = "com.gorgias.gorgiastemplates.extension"
 
 class ViewController: NSViewController {

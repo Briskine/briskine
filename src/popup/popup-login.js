@@ -33,12 +33,16 @@ customElements.define(
             });
         }
         connectedCallback() {
+            const logoImg = '<img src="../icons/briskine-wordmark.svg" width="120" alt="Briskine"/>';
+
             this.innerHTML = `
                 <div class="popup-login text-center">
                     <div class="popup-box popup-logo">
-                        <a href="${Config.websiteUrl}" target="_blank">
-                            <img src="../icons/templates-logotype.png" alt="Gorgias Templates"/>
-                        </a>
+                        ${!REGISTER_DISABLED ? `
+                            <a href="${Config.websiteUrl}" target="_blank">
+                                ${logoImg}
+                            </a>
+                        ` : logoImg}
                     </div>
 
                     <div class="popup-box">

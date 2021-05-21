@@ -28,11 +28,11 @@ describe('htmlToText', () => {
     });
 
     it('should keep plain text links intact', () => {
-        expect(htmlToText('https://www.gorgiastemplates.com/')).equal('https://www.gorgiastemplates.com/');
+        expect(htmlToText('https://www.briskine.com/')).equal('https://www.briskine.com/');
     });
 
     it('should keep plain text the same', () => {
-        const content = 'line-one\n* bullet\nlink(https://gorgiastemplates.com';
+        const content = 'line-one\n* bullet\nlink(https://briskine.com';
         expect(htmlToText(content)).equal(content);
     });
 
@@ -41,15 +41,15 @@ describe('htmlToText', () => {
     });
 
     it('should decorate links', () => {
-        expect(htmlToText('<a href="https://gorgiastemplates.com/">gorgiastemplates</a>')).equal('gorgiastemplates [https://gorgiastemplates.com/]');
+        expect(htmlToText('<a href="https://briskine.com/">briskine</a>')).equal('briskine [https://briskine.com/]');
     });
 
     it('should decorate links only with different urls', () => {
-        expect(htmlToText('<a href="https://gorgiastemplates.com/">https://gorgiastemplates.com/</a>')).equal('https://gorgiastemplates.com/');
+        expect(htmlToText('<a href="https://briskine.com/">https://briskine.com/</a>')).equal('https://briskine.com/');
     });
 
     it('should decorate images', () => {
-        expect(htmlToText('<img src="https://gorgiastemplates.com/image.jpg" alt="image alt">')).equal('image alt [https://gorgiastemplates.com/image.jpg]');
+        expect(htmlToText('<img src="https://briskine.com/image.jpg" alt="image alt">')).equal('image alt [https://briskine.com/image.jpg]');
     });
 
     it('should add newlines for br tags', () => {

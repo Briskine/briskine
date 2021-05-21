@@ -70,7 +70,7 @@ customElements.define(
                 <div class="popup-dashboard">
                     <div class="popup-box popup-logo">
                         <a href="${Config.websiteUrl}" target="_blank">
-                            <img src="../icons/templates-logotype.png" alt="Gorgias Templates"/>
+                            <img src="../icons/briskine-wordmark.svg" width="100" alt="Briskine"/>
                         </a>
                     </div>
 
@@ -98,7 +98,7 @@ customElements.define(
                     <div class="popup-box popup-stats">
                         ${this.stats.time !== '0min' ? `
                             <p>
-                                You saved <strong>${this.stats.time}</strong> using Gorgias Templates!
+                                You saved <strong>${this.stats.time}</strong> using Briskine!
                             </p>
                         ` : ''}
 

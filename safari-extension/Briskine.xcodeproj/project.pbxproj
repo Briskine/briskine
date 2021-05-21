@@ -11,7 +11,7 @@
 		A6E3BEFE25B5935100D3F1F2 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A6E3BEFC25B5935100D3F1F2 /* Main.storyboard */; };
 		A6E3BF0025B5935100D3F1F2 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6E3BEFF25B5935100D3F1F2 /* ViewController.swift */; };
 		A6E3BF0225B5935600D3F1F2 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A6E3BF0125B5935600D3F1F2 /* Assets.xcassets */; };
-		A6E3BF0925B5935600D3F1F2 /* Gorgias Templates Extension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = A6E3BF0825B5935600D3F1F2 /* Gorgias Templates Extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		A6E3BF0925B5935600D3F1F2 /* Briskine Extension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = A6E3BF0825B5935600D3F1F2 /* Briskine Extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		A6E3BF0E25B5935600D3F1F2 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A6E3BF0D25B5935600D3F1F2 /* Cocoa.framework */; };
 		A6E3BF1125B5935600D3F1F2 /* SafariWebExtensionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6E3BF1025B5935600D3F1F2 /* SafariWebExtensionHandler.swift */; };
 		A6E3BF2525B5935800D3F1F2 /* background in Resources */ = {isa = PBXBuildFile; fileRef = A6E3BF1E25B5935800D3F1F2 /* background */; };
@@ -40,7 +40,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
-				A6E3BF0925B5935600D3F1F2 /* Gorgias Templates Extension.appex in Embed App Extensions */,
+				A6E3BF0925B5935600D3F1F2 /* Briskine Extension.appex in Embed App Extensions */,
 			);
 			name = "Embed App Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -48,14 +48,14 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		A6E3BEF625B5935100D3F1F2 /* Gorgias Templates.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Gorgias Templates.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		A6E3BEF625B5935100D3F1F2 /* Briskine.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Briskine.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A6E3BEF925B5935100D3F1F2 /* Gorgias_Templates.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Gorgias_Templates.entitlements; sourceTree = "<group>"; };
 		A6E3BEFA25B5935100D3F1F2 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		A6E3BEFD25B5935100D3F1F2 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		A6E3BEFF25B5935100D3F1F2 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		A6E3BF0125B5935600D3F1F2 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A6E3BF0325B5935600D3F1F2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		A6E3BF0825B5935600D3F1F2 /* Gorgias Templates Extension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "Gorgias Templates Extension.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
+		A6E3BF0825B5935600D3F1F2 /* Briskine Extension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "Briskine Extension.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
 		A6E3BF0D25B5935600D3F1F2 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		A6E3BF1025B5935600D3F1F2 /* SafariWebExtensionHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafariWebExtensionHandler.swift; sourceTree = "<group>"; };
 		A6E3BF1225B5935600D3F1F2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -91,8 +91,8 @@
 		A6E3BEED25B5935100D3F1F2 = {
 			isa = PBXGroup;
 			children = (
-				A6E3BEF825B5935100D3F1F2 /* Gorgias Templates */,
-				A6E3BF0F25B5935600D3F1F2 /* Gorgias Templates Extension */,
+				A6E3BEF825B5935100D3F1F2 /* Briskine */,
+				A6E3BF0F25B5935600D3F1F2 /* Briskine Extension */,
 				A6E3BF0C25B5935600D3F1F2 /* Frameworks */,
 				A6E3BEF725B5935100D3F1F2 /* Products */,
 			);
@@ -101,13 +101,13 @@
 		A6E3BEF725B5935100D3F1F2 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				A6E3BEF625B5935100D3F1F2 /* Gorgias Templates.app */,
-				A6E3BF0825B5935600D3F1F2 /* Gorgias Templates Extension.appex */,
+				A6E3BEF625B5935100D3F1F2 /* Briskine.app */,
+				A6E3BF0825B5935600D3F1F2 /* Briskine Extension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		A6E3BEF825B5935100D3F1F2 /* Gorgias Templates */ = {
+		A6E3BEF825B5935100D3F1F2 /* Briskine */ = {
 			isa = PBXGroup;
 			children = (
 				A6E3BEF925B5935100D3F1F2 /* Gorgias_Templates.entitlements */,
@@ -117,7 +117,7 @@
 				A6E3BF0125B5935600D3F1F2 /* Assets.xcassets */,
 				A6E3BF0325B5935600D3F1F2 /* Info.plist */,
 			);
-			path = "Gorgias Templates";
+			path = Briskine;
 			sourceTree = "<group>";
 		};
 		A6E3BF0C25B5935600D3F1F2 /* Frameworks */ = {
@@ -128,7 +128,7 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		A6E3BF0F25B5935600D3F1F2 /* Gorgias Templates Extension */ = {
+		A6E3BF0F25B5935600D3F1F2 /* Briskine Extension */ = {
 			isa = PBXGroup;
 			children = (
 				A6E3BF1D25B5935800D3F1F2 /* Resources */,
@@ -136,7 +136,7 @@
 				A6E3BF1225B5935600D3F1F2 /* Info.plist */,
 				A6E3BF1325B5935600D3F1F2 /* Gorgias_Templates_Extension.entitlements */,
 			);
-			path = "Gorgias Templates Extension";
+			path = "Briskine Extension";
 			sourceTree = "<group>";
 		};
 		A6E3BF1D25B5935800D3F1F2 /* Resources */ = {
@@ -157,9 +157,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		A6E3BEF525B5935100D3F1F2 /* Gorgias Templates */ = {
+		A6E3BEF525B5935100D3F1F2 /* Briskine */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = A6E3BF1A25B5935700D3F1F2 /* Build configuration list for PBXNativeTarget "Gorgias Templates" */;
+			buildConfigurationList = A6E3BF1A25B5935700D3F1F2 /* Build configuration list for PBXNativeTarget "Briskine" */;
 			buildPhases = (
 				A6E3BEF225B5935100D3F1F2 /* Sources */,
 				A6E3BEF325B5935100D3F1F2 /* Frameworks */,
@@ -171,14 +171,14 @@
 			dependencies = (
 				A6E3BF0B25B5935600D3F1F2 /* PBXTargetDependency */,
 			);
-			name = "Gorgias Templates";
+			name = Briskine;
 			productName = "Gorgias Templates";
-			productReference = A6E3BEF625B5935100D3F1F2 /* Gorgias Templates.app */;
+			productReference = A6E3BEF625B5935100D3F1F2 /* Briskine.app */;
 			productType = "com.apple.product-type.application";
 		};
-		A6E3BF0725B5935600D3F1F2 /* Gorgias Templates Extension */ = {
+		A6E3BF0725B5935600D3F1F2 /* Briskine Extension */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = A6E3BF1625B5935700D3F1F2 /* Build configuration list for PBXNativeTarget "Gorgias Templates Extension" */;
+			buildConfigurationList = A6E3BF1625B5935700D3F1F2 /* Build configuration list for PBXNativeTarget "Briskine Extension" */;
 			buildPhases = (
 				A6E3BF0425B5935600D3F1F2 /* Sources */,
 				A6E3BF0525B5935600D3F1F2 /* Frameworks */,
@@ -188,9 +188,9 @@
 			);
 			dependencies = (
 			);
-			name = "Gorgias Templates Extension";
+			name = "Briskine Extension";
 			productName = "Gorgias Templates Extension";
-			productReference = A6E3BF0825B5935600D3F1F2 /* Gorgias Templates Extension.appex */;
+			productReference = A6E3BF0825B5935600D3F1F2 /* Briskine Extension.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
 /* End PBXNativeTarget section */
@@ -210,7 +210,7 @@
 					};
 				};
 			};
-			buildConfigurationList = A6E3BEF125B5935100D3F1F2 /* Build configuration list for PBXProject "Gorgias Templates" */;
+			buildConfigurationList = A6E3BEF125B5935100D3F1F2 /* Build configuration list for PBXProject "Briskine" */;
 			compatibilityVersion = "Xcode 9.3";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -223,8 +223,8 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				A6E3BEF525B5935100D3F1F2 /* Gorgias Templates */,
-				A6E3BF0725B5935600D3F1F2 /* Gorgias Templates Extension */,
+				A6E3BEF525B5935100D3F1F2 /* Briskine */,
+				A6E3BF0725B5935600D3F1F2 /* Briskine Extension */,
 			);
 		};
 /* End PBXProject section */
@@ -278,7 +278,7 @@
 /* Begin PBXTargetDependency section */
 		A6E3BF0B25B5935600D3F1F2 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = A6E3BF0725B5935600D3F1F2 /* Gorgias Templates Extension */;
+			target = A6E3BF0725B5935600D3F1F2 /* Briskine Extension */;
 			targetProxy = A6E3BF0A25B5935600D3F1F2 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -413,9 +413,9 @@
 		A6E3BF1725B5935700D3F1F2 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_ENTITLEMENTS = "Gorgias Templates Extension/Gorgias_Templates_Extension.entitlements";
+				CODE_SIGN_ENTITLEMENTS = "Briskine Extension/Gorgias_Templates_Extension.entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				INFOPLIST_FILE = "Gorgias Templates Extension/Info.plist";
+				INFOPLIST_FILE = "Briskine Extension/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
@@ -432,9 +432,9 @@
 		A6E3BF1825B5935700D3F1F2 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_ENTITLEMENTS = "Gorgias Templates Extension/Gorgias_Templates_Extension.entitlements";
+				CODE_SIGN_ENTITLEMENTS = "Briskine Extension/Gorgias_Templates_Extension.entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				INFOPLIST_FILE = "Gorgias Templates Extension/Info.plist";
+				INFOPLIST_FILE = "Briskine Extension/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
@@ -454,17 +454,17 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = "Gorgias Templates/Gorgias_Templates.entitlements";
+				CODE_SIGN_ENTITLEMENTS = Briskine/Gorgias_Templates.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1.6;
-				INFOPLIST_FILE = "Gorgias Templates/Info.plist";
+				CURRENT_PROJECT_VERSION = 1.9;
+				INFOPLIST_FILE = Briskine/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.14;
-				MARKETING_VERSION = 1.6;
+				MARKETING_VERSION = 1.9;
 				PRODUCT_BUNDLE_IDENTIFIER = com.gorgias.gorgiastemplates;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
@@ -477,17 +477,17 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = "Gorgias Templates/Gorgias_Templates.entitlements";
+				CODE_SIGN_ENTITLEMENTS = Briskine/Gorgias_Templates.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1.6;
-				INFOPLIST_FILE = "Gorgias Templates/Info.plist";
+				CURRENT_PROJECT_VERSION = 1.9;
+				INFOPLIST_FILE = Briskine/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.14;
-				MARKETING_VERSION = 1.6;
+				MARKETING_VERSION = 1.9;
 				PRODUCT_BUNDLE_IDENTIFIER = com.gorgias.gorgiastemplates;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
@@ -497,7 +497,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		A6E3BEF125B5935100D3F1F2 /* Build configuration list for PBXProject "Gorgias Templates" */ = {
+		A6E3BEF125B5935100D3F1F2 /* Build configuration list for PBXProject "Briskine" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				A6E3BF1425B5935700D3F1F2 /* Debug */,
@@ -506,7 +506,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		A6E3BF1625B5935700D3F1F2 /* Build configuration list for PBXNativeTarget "Gorgias Templates Extension" */ = {
+		A6E3BF1625B5935700D3F1F2 /* Build configuration list for PBXNativeTarget "Briskine Extension" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				A6E3BF1725B5935700D3F1F2 /* Debug */,
@@ -515,7 +515,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		A6E3BF1A25B5935700D3F1F2 /* Build configuration list for PBXNativeTarget "Gorgias Templates" */ = {
+		A6E3BF1A25B5935700D3F1F2 /* Build configuration list for PBXNativeTarget "Briskine" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				A6E3BF1B25B5935700D3F1F2 /* Debug */,

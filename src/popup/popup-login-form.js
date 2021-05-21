@@ -42,15 +42,15 @@ customElements.define(
         }
         connectedCallback() {
             this.innerHTML = `
-                <form class="popup-login-form text-left js-login-form">
+                <form class="popup-login-form text-start js-login-form">
                     ${this.error ? `
                         <div class="alert alert-danger" role="alert">
                             <p>${this.error}</p>
                         </div>
                     ` : ''}
 
-                    <div class="form-group">
-                        <label for="login-email">
+                    <div class="mb-3">
+                        <label for="login-email" class="form-label">
                             Email
                         </label>
                         <input
@@ -62,19 +62,19 @@ customElements.define(
                         />
                     </div>
 
-                    <div class="form-group">
+                    <div class="mb-3">
                         ${!REGISTER_DISABLED ? `
                         <a
                             href="${Config.functionsUrl}"
                             target="_blank"
-                            class="btn btn-link float-right btn-forgot"
+                            class="btn btn-link float-end btn-forgot"
                             tabindex="-1"
                             >
                             Forgot password?
                         </a>
                         ` : ''}
 
-                        <label for="login-password">
+                        <label for="login-password" class="form-label">
                             Password
                         </label>
                         <input

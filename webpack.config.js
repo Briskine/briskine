@@ -14,7 +14,7 @@ import manifestFile from './src/manifest.json';
 const devPath = path.resolve('ext');
 const productionPath = path.resolve('build');
 
-const safariManifestName = 'Gorgias Templates: Templates for Gmail';
+const safariManifestName = 'Briskine: Templates for Gmail';
 const safariManifestDescription = 'Write emails faster! Increase your productivity with templates and shortcuts on Gmail, Outlook, or LinkedIn.';
 
 function generateManifest (safari) {
