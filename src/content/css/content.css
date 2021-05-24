@@ -255,7 +255,7 @@ div.qt-mirror .qt-caret {
 .gorgias-qa-btn:active,
 .qa-btn-dropdown-show .gorgias-qa-btn,
 .gorgias-show-qa-btn .gorgias-qa-btn {
-    opacity: .8;
+    opacity: .7;
     visibility: visible;
 }
 
