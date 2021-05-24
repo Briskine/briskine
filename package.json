@@ -9,7 +9,7 @@
         "build": "NODE_OPTIONS='-r esm' webpack --mode=production --env mode=production",
         "lint": "jshint src/ webpack.*.js"
     },
-    "repository": "https://github.com/gorgias/gorgias-templates/",
+    "repository": "https://github.com/briskine/briskine/",
     "author": "Alexandru Plugaru <alex@gorgias.com>",
     "contributors": [
         {
