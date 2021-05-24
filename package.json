@@ -10,7 +10,7 @@
         "lint": "jshint src/ webpack.*.js"
     },
     "repository": "https://github.com/gorgias/gorgias-templates/",
-    "author": "Alexandru Plugaru <alex@gorgias.io>",
+    "author": "Alexandru Plugaru <alex@gorgias.com>",
     "contributors": [
         {
             "name": "Ionut Colceriu",
@@ -22,7 +22,7 @@
         },
         {
             "name": "Martin Latrille",
-            "email": "martin@gorgias.io"
+            "email": "martin@gorgias.com"
         },
         {
             "name": "Hadrien de Lamotte",
