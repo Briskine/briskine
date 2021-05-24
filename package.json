@@ -1,6 +1,6 @@
 {
     "name": "briskine",
-    "version": "7.0.0",
+    "version": "7.0.1",
     "description": "Write everything faster.",
     "scripts": {
         "test": "NODE_OPTIONS='-r esm' webpack -c webpack.test.js && mocha-headless-chrome -f test/index.html",
@@ -9,8 +9,8 @@
         "build": "NODE_OPTIONS='-r esm' webpack --mode=production --env mode=production",
         "lint": "jshint src/ webpack.*.js"
     },
-    "repository": "https://github.com/gorgias/gorgias-templates/",
-    "author": "Alexandru Plugaru <alex@gorgias.io>",
+    "repository": "https://github.com/briskine/briskine/",
+    "author": "Alexandru Plugaru <alex@gorgias.com>",
     "contributors": [
         {
             "name": "Ionut Colceriu",
@@ -22,7 +22,7 @@
         },
         {
             "name": "Martin Latrille",
-            "email": "martin@gorgias.io"
+            "email": "martin@gorgias.com"
         },
         {
             "name": "Hadrien de Lamotte",
@@ -33,7 +33,7 @@
     "devDependencies": {
         "archiver": "^5.3.0",
         "chai": "^4.2.0",
-        "copy-webpack-plugin": "^8.0.0",
+        "copy-webpack-plugin": "^9.0.0",
         "css-loader": "^5.0.1",
         "esm": "^3.2.25",
         "file-loader": "^6.2.0",

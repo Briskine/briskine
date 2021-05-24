@@ -212,7 +212,7 @@ div.qt-mirror .qt-caret {
     cursor: pointer;
 
     appearance: none;
-    background-color: #f3f4f5;
+    background-color: rgba(243, 244, 245, .4);
     border-radius: 5px;
     transition: opacity .1s ease-out;
 }
@@ -220,6 +220,7 @@ div.qt-mirror .qt-caret {
 .gorgias-qa-btn:hover {
     opacity: 1 !important;
     background-color: #e9eaec;
+    box-shadow: 0 0 12px rgba(0,0,0,.1);
 }
 
 .gorgias-qa-btn:active {
@@ -254,7 +255,7 @@ div.qt-mirror .qt-caret {
 .gorgias-qa-btn:active,
 .qa-btn-dropdown-show .gorgias-qa-btn,
 .gorgias-show-qa-btn .gorgias-qa-btn {
-    opacity: .8;
+    opacity: .7;
     visibility: visible;
 }
 
@@ -279,8 +280,6 @@ div.qt-mirror .qt-caret {
     height: 14px;
     padding: 5px;
     background: #2A2A2A;
-    -webkit-border-radius: 2px;
-    -moz-border-radius: 2px;
     border-radius: 2px;
     color: #fff;
     font-size: 70%;

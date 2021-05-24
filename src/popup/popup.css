@@ -253,7 +253,7 @@ a:hover,
     position: relative;
     overflow: hidden;
     padding-left: 1em;
-    max-width: 12rem;
+    max-width: 10rem;
     text-overflow: ellipsis;
     white-space: nowrap;
 }
