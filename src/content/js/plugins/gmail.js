@@ -50,7 +50,7 @@ function getData (params) {
         subject = '';
 
     if (isContentEditable(params.element)) {
-        const userInfoSelector = '.gb_cb';
+        const userInfoSelector = '.gb_bb';
         const $fullName = document.querySelector(`${userInfoSelector} *:first-child`);
         const $email = document.querySelector(`${userInfoSelector} *:nth-child(2)`);
 
