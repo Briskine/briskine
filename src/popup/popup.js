@@ -1,4 +1,4 @@
-/* global URLSearchParams */
+/* global URLSearchParams, REGISTER_DISABLED */
 import './popup.css';
 
 import './popup-login';
@@ -42,7 +42,7 @@ customElements.define(
         }
         connectedCallback() {
             this.innerHTML = `
-                <div class="popup-container">
+                <div class="popup-container ${REGISTER_DISABLED ? 'popup-register-disabled' : ''}">
                     ${this.loggedIn === true ? `<popup-dashboard></popup-dashboard>` : ''}
                     ${this.loggedIn === false ? `<popup-login></popup-login>` : ''}
                 </div>

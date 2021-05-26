@@ -14,7 +14,7 @@ The following commands are available:
 
 * `npm start` - Development mode. Creates development manifest, watches files and recompiles them automatically.
 * `npm run build` - Build extension and compress extension.
-* Append `safari` to any command to build the Safari version. (eg. `npm run build safari`)
+* Append `-- safari` to any command to build the Safari version. (eg. `npm run build -- safari`)
 
 Known issues
 ------------

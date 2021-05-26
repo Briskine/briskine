@@ -95,6 +95,8 @@ a:hover,
 
 .btn-success:hover {
     background-color: #06d79c;
+
+    text-decoration: none;
 }
 
 .btn-success:active,
@@ -223,10 +225,6 @@ a:hover,
     font-weight: bold;
 }
 
-.popup-stats p:last-child {
-    margin-bottom: 0;
-}
-
 .popup-status {
     overflow: hidden;
 
@@ -285,6 +283,18 @@ a:hover,
     cursor: default;
 }
 
+/* premium and free stats
+ */
+
+.popup-stats-details {
+    display: none;
+}
+
+.popup-premium .popup-stats-premium,
+.popup-free .popup-stats-free {
+    display: block;
+}
+
 /* icons
  */
 .icon {
@@ -296,3 +306,28 @@ a:hover,
     width: .8em;
 }
 
+/* hide website and registration links
+ * (eg. on safari)
+ */
+
+.popup-register-disabled .popup-logo,
+.popup-register-disabled .popup-user {
+    pointer-events: none;
+}
+
+.popup-register-disabled .popup-label-register,
+.popup-register-disabled .btn-forgot,
+.popup-register-disabled .popup-menu {
+    display: none;
+}
+
+/* always show the premium stats on safari
+ */
+
+.popup-register-disabled .popup-stats-free {
+    display: none;
+}
+
+.popup-register-disabled .popup-stats-premium {
+    display: block;
+}

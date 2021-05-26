@@ -1,4 +1,4 @@
-/* globals Buffer*/
+/* globals Buffer */
 /* jshint esversion: 8 */
 
 import fs from 'fs';

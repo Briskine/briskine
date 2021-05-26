@@ -457,7 +457,7 @@
 				CODE_SIGN_ENTITLEMENTS = Briskine/Gorgias_Templates.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1.9;
+				CURRENT_PROJECT_VERSION = 1.12;
 				INFOPLIST_FILE = Briskine/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -480,7 +480,7 @@
 				CODE_SIGN_ENTITLEMENTS = Briskine/Gorgias_Templates.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1.9;
+				CURRENT_PROJECT_VERSION = 1.12;
 				INFOPLIST_FILE = Briskine/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",

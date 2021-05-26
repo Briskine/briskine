@@ -1,4 +1,3 @@
-/* globals REGISTER_DISABLED */
 import Config from '../config';
 import store from '../store/store-client';
 
@@ -63,7 +62,6 @@ customElements.define(
                     </div>
 
                     <div class="mb-3">
-                        ${!REGISTER_DISABLED ? `
                         <a
                             href="${Config.functionsUrl}"
                             target="_blank"
@@ -72,7 +70,6 @@ customElements.define(
                             >
                             Forgot password?
                         </a>
-                        ` : ''}
 
                         <label for="login-password" class="form-label">
                             Password

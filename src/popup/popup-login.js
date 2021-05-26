@@ -1,4 +1,3 @@
-/* globals REGISTER_DISABLED */
 import Config from '../config';
 import store from '../store/store-client';
 import './popup-login-form';
@@ -33,16 +32,12 @@ customElements.define(
             });
         }
         connectedCallback() {
-            const logoImg = '<img src="../icons/briskine-wordmark.svg" width="120" alt="Briskine"/>';
-
             this.innerHTML = `
                 <div class="popup-login text-center">
                     <div class="popup-box popup-logo">
-                        ${!REGISTER_DISABLED ? `
-                            <a href="${Config.websiteUrl}" target="_blank">
-                                ${logoImg}
-                            </a>
-                        ` : logoImg}
+                        <a href="${Config.websiteUrl}" target="_blank">
+                            <img src="../icons/briskine-wordmark.svg" width="120" alt="Briskine"/>
+                        </a>
                     </div>
 
                     <div class="popup-box">
@@ -61,17 +56,15 @@ customElements.define(
                         `}
                     </div>
 
-                    ${!REGISTER_DISABLED ? `
-                        <div class="popup-box text-muted">
-                            <small>
-                                Don't have an account yet?
-                                <br>
-                                <a href="${Config.websiteUrl}/signup" target="_blank">
-                                    Create a free account
-                                </a>
-                            </small>
-                        </div>
-                    ` : ''}
+                    <div class="popup-box text-muted popup-label-register">
+                        <small>
+                            Don't have an account yet?
+                            <br>
+                            <a href="${Config.websiteUrl}/signup" target="_blank">
+                                Create a free account
+                            </a>
+                        </small>
+                    </div>
                 </div>
             `;
         }

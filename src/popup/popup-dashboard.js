@@ -95,31 +95,34 @@ customElements.define(
                         </li>
                     </ul>
 
-                    <div class="popup-box popup-stats">
+                    <div class="
+                        popup-box
+                        popup-stats
+                        ${this.isFree === false ? 'popup-premium' : ''}
+                        ${this.isFree === true ? 'popup-free' : ''}
+                    ">
                         ${this.stats.time !== '0min' ? `
                             <p>
                                 You saved <strong>${this.stats.time}</strong> using Briskine!
                             </p>
                         ` : ''}
 
-                        ${this.isFree === false ? `
-                            <p>
-                                ${this.stats.words < 1500 ? `
-                                    <span class="font-italic">Big things have small beginnings</span> &#128170;
-                                ` : ''}
-                                ${this.stats.words > 1500 && this.stats.words < 2500 ? `
-                                    <span class="font-italic">Or the equivalent of writing a short story</span> &#128214;
-                                ` : ''}
-                                ${this.stats.words >= 2500 && this.stats.words < 7500 ? `
-                                    <span class="font-italic">Did you know mushrooms are one of the largest organisms in the world?</span> &#127812;
-                                ` : ''}
-                                ${this.stats.words >= 7500 ? `
-                                    <span class="font-italic">You're awesome. Just awesome.</span> &#9996;
-                                ` : ''}
-                            </p>
-                        ` : ''}
+                        <div class="popup-stats-details popup-stats-premium">
+                            ${this.stats.words < 1500 ? `
+                                <span class="font-italic">Big things have small beginnings</span> &#128170;
+                            ` : ''}
+                            ${this.stats.words > 1500 && this.stats.words < 2500 ? `
+                                <span class="font-italic">Or the equivalent of writing a short story</span> &#128214;
+                            ` : ''}
+                            ${this.stats.words >= 2500 && this.stats.words < 7500 ? `
+                                <span class="font-italic">Did you know mushrooms are one of the largest organisms in the world?</span> &#127812;
+                            ` : ''}
+                            ${this.stats.words >= 7500 ? `
+                                <span class="font-italic">You're awesome. Just awesome.</span> &#9996;
+                            ` : ''}
+                        </div>
 
-                        ${this.isFree === true ? `
+                        <div class="popup-stats-details popup-stats-free">
                             <p class="label-upgrade">
                                 Go Premium to get
                                 Unlimited Templates
@@ -130,7 +133,7 @@ customElements.define(
                             <a href="${Config.functionsUrl}/#/account/subscriptions" target="${Config.dashboardTarget}" class="btn btn-success btn-upgrade">
                                 Upgrade to Premium
                             </a>
-                        ` : ''}
+                        </div>
                     </div>
 
                     <div class="popup-box popup-status">

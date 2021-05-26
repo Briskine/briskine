@@ -660,7 +660,7 @@ dialog.qaBtnTooltip = `
 `;
 
 dialog.template = `
-<div class="qt-dropdown">
+<div class="qt-dropdown ${REGISTER_DISABLED ? 'briskine-register-disabled' : ''}">
     <div class="qt-info">
         Please
         <a href="#" class="js-gorgias-signin">

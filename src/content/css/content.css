@@ -338,3 +338,12 @@ div.qt-mirror .qt-caret {
 .qt-logged-out .qt-edit {
     display: none;
 }
+
+/* hide website and registration links
+ * (eg. on safari)
+ */
+
+.briskine-register-disabled .g-dropdown-toolbar,
+.briskine-register-disabled .qt-edit {
+    display: none;
+}

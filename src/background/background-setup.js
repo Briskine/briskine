@@ -1,4 +1,4 @@
-/* globals ENV */
+/* globals ENV, REGISTER_DISABLED */
 import Config from '../config';
 import browser from 'webextension-polyfill';
 
@@ -87,10 +87,12 @@ browser.runtime.onInstalled.addListener(function (details) {
         });
     });
 
-    if (details.reason == "install") {
-        browser.tabs.create({
-            url: `${Config.functionsUrl}/welcome`
-        });
+    if (!REGISTER_DISABLED) {
+        if (details.reason == "install") {
+            browser.tabs.create({
+                url: `${Config.functionsUrl}/welcome`
+            });
+        }
     }
 });
 
