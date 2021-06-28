@@ -52,7 +52,7 @@
         "firebase": "^8.2.1",
         "fuse.js": "^6.4.5",
         "handlebars": "^4.5.3",
-        "html-to-text": "^7.0.0",
+        "html-to-text": "^8.0.0",
         "jquery": "^3.5.1",
         "moment": "^2.29.1",
         "mousetrap": "github:xarg/mousetrap#master",
