@@ -56,10 +56,12 @@ function getData (params) {
 
     // contact name in message threads
     const messageContactName = '.msg-s-event-listitem--other .msg-s-message-group__name';
+    // contact name is new message
+    const newMessageContact = '.artdeco-pill';
     // contact name in feed post
     const feedContactName = '.feed-shared-actor__name';
     // select any
-    const contactNameSelector = `${messageContactName}, ${feedContactName}`;
+    const contactNameSelector = `${messageContactName}, ${feedContactName}, ${newMessageContact}`;
 
     const $thread = params.element.closest(messageThreadSelector);
     // check if a message thread is visible,
