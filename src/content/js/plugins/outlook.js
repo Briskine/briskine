@@ -181,6 +181,11 @@ function getData () {
         getFieldData(vars.bcc, $bcc);
     }
 
+    const $subject = getSubjectField();
+    if ($subject) {
+        vars.subject = $subject.value;
+    }
+
     return vars;
 }
 
