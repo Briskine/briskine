@@ -614,8 +614,8 @@ function getDefaultTemplates () {
                 <div>from.name: {{from.name}}</div>
                 <div>from.email: {{from.email}}</div>
                 <div>subject: {{subject}}</div>
-                <div>next week: {{date '+7' 'days' 'DD MMMM'}}</div>
-                <div>last week: {{date '-7' 'days' 'YYYY-MM-DD'}}</div>
+                <div>next week: {{moment add='7;days' format='DD MMMM'}}</div>
+                <div>last week: {{moment subtract='7;days'}}</div>
                 <div>choice: {{choice 'Hello, Hi, Hey'}}</div>
                 <div>domain: {{domain to.email}}</div>
             `,
