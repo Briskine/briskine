@@ -17,11 +17,6 @@ export default {
             return true;
         }
 
-        if(selection.rangeCount) {
-            var range = selection.getRangeAt(0);
-            var caretPos = range.endOffset;
-        }
-
         // First get the cursor position
         autocomplete.cursorPosition = autocomplete.getCursorPosition(element);
         // Then get the word at the positon

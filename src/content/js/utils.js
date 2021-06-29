@@ -140,7 +140,6 @@ export function insertText (params = {}) {
                 var e = $(this);
                 var href = e.attr('href');
                 var text = $.trim(e.text());
-                var replacement = "";
 
                 if (!text.length) {
                     e.replaceWith("<span>" + href + "</span>");

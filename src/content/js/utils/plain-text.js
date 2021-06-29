@@ -13,13 +13,14 @@ export function htmlToText (html) {
     if (isHtml(html)) {
         return htmlToTextConverter(html, {
             wordwrap: false,
-            tags: {
-                'a': {
+            selectors: [
+                {
+                    selector: 'a',
                     options: {
                         hideLinkHrefIfSameAsText: true
                     }
                 }
-            }
+            ]
         });
     }
 

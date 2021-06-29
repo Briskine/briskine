@@ -1,6 +1,6 @@
 {
     "name": "briskine",
-    "version": "7.0.2",
+    "version": "7.0.3",
     "description": "Write everything faster.",
     "scripts": {
         "test": "NODE_OPTIONS='-r esm' webpack -c webpack.test.js && mocha-headless-chrome -f test/index.html",
@@ -39,7 +39,7 @@
         "file-loader": "^6.2.0",
         "jshint": "^2.12.0",
         "mini-css-extract-plugin": "^1.3.3",
-        "mocha": "^8.2.1",
+        "mocha": "^9.0.0",
         "mocha-headless-chrome": "^3.1.0",
         "mockdate": "^3.0.2",
         "url-loader": "^4.1.1",
@@ -52,7 +52,7 @@
         "firebase": "^8.2.1",
         "fuse.js": "^6.4.5",
         "handlebars": "^4.5.3",
-        "html-to-text": "^7.0.0",
+        "html-to-text": "^8.0.0",
         "jquery": "^3.5.1",
         "moment": "^2.29.1",
         "mousetrap": "github:xarg/mousetrap#master",

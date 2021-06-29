@@ -1,3 +1,4 @@
+/* globals ENV */
 import browser from 'webextension-polyfill';
 import firebase from 'firebase/app';
 import 'firebase/auth';
@@ -593,6 +594,36 @@ function getDefaultTemplates () {
             body: '<div>{{from.email}}</div>'
         }
     ];
+
+    if (ENV === 'development') {
+        defaultTemplates.push({
+            title: 'allvars',
+            shortcut: 'allvars',
+            subject: 'Subject',
+            body: `
+                <div>account.name: {{account.name}}</div>
+                <div>account.first_name: {{account.first_name}}</div>
+                <div>account.last_name: {{account.last_name}}</div>
+                <div>account.email: {{account.email}}</div>
+                <div>to.first_name: {{to.first_name}}</div>
+                <div>to.last_name: {{to.last_name}}</div>
+                <div>to.name: {{to.name}}</div>
+                <div>to.email: {{to.email}}</div>
+                <div>from.first_name: {{from.first_name}}</div>
+                <div>from.last_name: {{from.last_name}}</div>
+                <div>from.name: {{from.name}}</div>
+                <div>from.email: {{from.email}}</div>
+                <div>subject: {{subject}}</div>
+                <div>next week: {{moment add='7;days' format='DD MMMM'}}</div>
+                <div>last week: {{moment subtract='7;days'}}</div>
+                <div>choice: {{choice 'Hello, Hi, Hey'}}</div>
+                <div>domain: {{domain to.email}}</div>
+            `,
+            to: 'to@briskine.com',
+            cc: 'cc@briskine.com',
+            bcc: 'bcc@briskine.com'
+        });
+    }
 
     const legacyTemplates = {};
     defaultTemplates.forEach((template, index) => {

@@ -8,12 +8,14 @@ import {createContact} from '../utils/data-parse';
 function getFieldData (field, $container) {
     var $buttons = $container.querySelectorAll('[class*="wellItemText-"]') || [];
     $buttons.forEach(function ($button) {
-        var fullName = $button.innerText || '';
+        // names are formatted as "name <email@email.com>"
+        const labelParts = ($button.innerText || '').split(new RegExp('<|>')).filter((t) => !!t);
+        const fullName = labelParts.slice().shift();
+        const email = labelParts.slice().pop();
         field.push(
             createContact({
                 name: fullName,
-                // BUG we can't get email
-                email: ''
+                email: email
             })
         );
     });
@@ -21,23 +23,24 @@ function getFieldData (field, $container) {
 
 // selector for to/cc/bcc containers
 function getContainers () {
-    return document.querySelectorAll('._31eKqae41uP_KBAvjXjCLQ');
+    return document.querySelectorAll('._3-ZPO_m-zQ9bTiZDH0Wtjq');
 }
 
 function getToContainer () {
-    return getContainers()[0];
-}
-
-function getCcContainer () {
     return getContainers()[1];
 }
 
-function getBccContainer () {
+function getCcContainer () {
     return getContainers()[2];
 }
 
+function getBccContainer () {
+    return getContainers()[3];
+}
+
+// only 2 ms-Button--action (cc/bcc) in the message container
 function getFieldButtonSelector () {
-    return '._3EwC192cFNVVRKmlCqOY0a';
+    return '.w9fmR2qvDpeMRg-Qi0UxM';
 }
 
 function getCcButton () {
@@ -125,7 +128,7 @@ function updateSection ($container, $button, getNode, value, $editor) {
 
         var $input = getContactField($container);
         updateContactField($input, value, $editor);
-    } else {
+    } else if ($button) {
         // click CC/BCC button
         $button.click();
         waitForElement(getNode).then(($container) => {
@@ -176,6 +179,11 @@ function getData () {
     var $bcc = getBccContainer();
     if ($bcc) {
         getFieldData(vars.bcc, $bcc);
+    }
+
+    const $subject = getSubjectField();
+    if ($subject) {
+        vars.subject = $subject.value;
     }
 
     return vars;
