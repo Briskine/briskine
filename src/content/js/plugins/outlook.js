@@ -125,7 +125,7 @@ function updateSection ($container, $button, getNode, value, $editor) {
 
         var $input = getContactField($container);
         updateContactField($input, value, $editor);
-    } else {
+    } else if ($button) {
         // click CC/BCC button
         $button.click();
         waitForElement(getNode).then(($container) => {
