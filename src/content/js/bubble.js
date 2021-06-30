@@ -3,6 +3,11 @@
  * Floating action button.
  */
 
+import dialog from './dialog';
+
+let activeTextfield = null;
+let bubbleInstance = null;
+
 customElements.define(
     'b-bubble',
     class extends HTMLElement {
@@ -38,7 +43,21 @@ customElements.define(
             this.$button = this.shadowRoot.querySelector('.b-bubble');
             this.$button.addEventListener('click', (e) => {
                 console.log('click');
+
                 this.setAttribute('visible', 'true');
+
+                // return the focus to the element focused
+                // before clicking the qa button
+                activeTextfield.focus();
+
+                // position the dialog under the qa button.
+                // since the focus node is now the button
+                // we have to pass the previous focus (the text node).
+                dialog.completion(e, {
+                    focusNode: activeTextfield,
+                    dialogPositionNode: e.target,
+                    source: 'button'
+                });
             });
 
             this.bubbleVisibilityTimer = null;
@@ -66,8 +85,6 @@ customElements.define(
         static get observedAttributes() { return ['visible']; }
     }
 );
-
-let bubbleInstance = null;
 
 export function setup () {
     // TODO check settings and contenteditable before setting up the bubble
@@ -227,6 +244,8 @@ function showBubble (e) {
     if (!showQaForElement(textfield)) {
         return false;
     }
+
+    activeTextfield = textfield;
 
     console.log('show for', e.target);
 
