@@ -7,6 +7,8 @@ import dialog from './dialog';
 
 let activeTextfield = null;
 let bubbleInstance = null;
+// HACK
+let keepBubbleVisible = false;
 
 customElements.define(
     'b-bubble',
@@ -41,6 +43,10 @@ customElements.define(
             shadowRoot.innerHTML = template;
 
             this.$button = this.shadowRoot.querySelector('.b-bubble');
+            this.$button.addEventListener('mousedown', (e) => {
+                // prevent stealing focus when clicking the button
+                e.preventDefault();
+            });
             this.$button.addEventListener('click', (e) => {
                 console.log('click');
 
@@ -48,7 +54,7 @@ customElements.define(
 
                 // return the focus to the element focused
                 // before clicking the qa button
-                activeTextfield.focus();
+//                 activeTextfield.focus();
 
                 // position the dialog under the qa button.
                 // since the focus node is now the button
@@ -58,6 +64,9 @@ customElements.define(
                     dialogPositionNode: e.target,
                     source: 'button'
                 });
+
+                // TODO prevent hiding the button when anything inside the dialog is focused
+                keepBubbleVisible = true;
             });
 
             this.bubbleVisibilityTimer = null;
@@ -73,6 +82,7 @@ customElements.define(
                     clearTimeout(this.bubbleVisibilityTimer);
                 }
 
+                // TODO required for the transitions to work
                 this.bubbleVisibilityTimer = setTimeout(() => {
                     if (newValue === 'true') {
                         this.$button.classList.add(visibleClassName);
@@ -114,11 +124,18 @@ function create () {
 
     console.log('append bubble', bubbleInstance);
 
-    document.body.addEventListener('focusin', (e) => {
+    document.addEventListener('focusin', (e) => {
         return showBubble(e);
     });
 
-    document.body.addEventListener('focusout', (e) => {
+    document.addEventListener('focusout', (e) => {
+        console.log('focusout', e.target);
+
+        if (keepBubbleVisible) {
+            keepBubbleVisible = false;
+            return;
+        }
+
         return hideBubble();
     });
 
