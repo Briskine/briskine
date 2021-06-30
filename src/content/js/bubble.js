@@ -16,10 +16,16 @@ customElements.define(
                         position: absolute;
                         top: 0;
                         right: 0;
+                        opacity: 0;
+                        visibility: hidden;
+                        transform: translateY(0.4rem);
+                        transition: all ease-out .1s;
                     }
 
-                    body {
-                        background: red;
+                    .b-bubble-visible {
+                        opacity: 1;
+                        visibility: visible;
+                        transform: translateY(0);
                     }
                 </style>
                 <button type="button" class="b-bubble">
@@ -28,10 +34,36 @@ customElements.define(
             `
             const shadowRoot = this.attachShadow({mode: 'open'});
             shadowRoot.innerHTML = template;
+
+            this.$button = this.shadowRoot.querySelector('.b-bubble');
+            this.$button.addEventListener('click', (e) => {
+                console.log('click');
+                this.setAttribute('visible', 'true');
+            });
+
+            this.bubbleVisibilityTimer = null;
         }
         connectedCallback() {
 
         }
+        attributeChangedCallback (name, oldValue, newValue) {
+            if (name === 'visible') {
+                const visibleClassName = 'b-bubble-visible';
+
+                if (this.bubbleVisibilityTimer) {
+                    clearTimeout(this.bubbleVisibilityTimer);
+                }
+
+                this.bubbleVisibilityTimer = setTimeout(() => {
+                    if (newValue === 'true') {
+                        this.$button.classList.add(visibleClassName);
+                    } else {
+                        this.$button.classList.remove(visibleClassName);
+                    }
+                }, 200);
+            }
+        }
+        static get observedAttributes() { return ['visible']; }
     }
 );
 
@@ -205,11 +237,13 @@ function showBubble (e) {
         const offsetStyles = window.getComputedStyle(offsetParent);
         // in case the offsetParent is a unpositioned table element (td, th, table)
         // make it relative, for the button to have the correct positioning.
+        // https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/offsetParent
         if (offsetStyles.position === 'static') {
             offsetParent.style.position = 'relative';
         }
 
         offsetParent.appendChild(bubbleInstance);
+        bubbleInstance.setAttribute('visible', 'true');
     }
 
 //     if (relativeParent) {
@@ -271,7 +305,7 @@ function showBubble (e) {
 }
 
 function hideBubble () {
-    document.documentElement.appendChild(bubbleInstance);
+    bubbleInstance.removeAttribute('visible');
 }
 
 export function enableBubble () {
