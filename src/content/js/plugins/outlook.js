@@ -156,8 +156,9 @@ function getData () {
         fullName = $from.textContent;
     }
 
+    // BUG only works if "From" field is visible
     let fromEmail = '';
-    const $fromEmailButton = document.querySelector('[role=button] + [data-lpc-hover-target-id]');
+    const $fromEmailButton = document.querySelector('._3nL30XCbkesDXNXizP3eT4');
     if ($fromEmailButton) {
         fromEmail = $fromEmailButton.innerText;
     }
