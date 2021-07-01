@@ -7,8 +7,7 @@ import dialog from './dialog';
 
 let activeTextfield = null;
 let bubbleInstance = null;
-// HACK
-let keepBubbleVisible = false;
+const dialogSelector = '.qt-dropdown';
 
 customElements.define(
     'b-bubble',
@@ -38,7 +37,7 @@ customElements.define(
                 <button type="button" class="b-bubble">
                     gbutton
                 </button>
-            `
+            `;
             const shadowRoot = this.attachShadow({mode: 'open'});
             shadowRoot.innerHTML = template;
 
@@ -48,13 +47,7 @@ customElements.define(
                 e.preventDefault();
             });
             this.$button.addEventListener('click', (e) => {
-                console.log('click');
-
                 this.setAttribute('visible', 'true');
-
-                // return the focus to the element focused
-                // before clicking the qa button
-//                 activeTextfield.focus();
 
                 // position the dialog under the qa button.
                 // since the focus node is now the button
@@ -64,9 +57,6 @@ customElements.define(
                     dialogPositionNode: e.target,
                     source: 'button'
                 });
-
-                // TODO prevent hiding the button when anything inside the dialog is focused
-                keepBubbleVisible = true;
             });
 
             this.bubbleVisibilityTimer = null;
@@ -112,7 +102,7 @@ export function setup () {
     domObserver.observe(document.body, {
         attributes: true
     });
-};
+}
 
 function create () {
     // TODO create the button outside the body,
@@ -129,10 +119,9 @@ function create () {
     });
 
     document.addEventListener('focusout', (e) => {
-        console.log('focusout', e.target);
-
-        if (keepBubbleVisible) {
-            keepBubbleVisible = false;
+        // don't hide the bubble if the newly focused node is in the dialog.
+        // eg. when clicking the bubble.
+        if (e.relatedTarget && e.relatedTarget.closest(dialogSelector)) {
             return;
         }
 
@@ -221,7 +210,7 @@ function create () {
 //         clearTimeout(showQaTooltip);
 //         instance.qaTooltip.hide();
 //     });
-};
+}
 
 function showQaForElement (elem) {
     var show = false;
@@ -346,7 +335,7 @@ function hideBubble () {
 
 export function enableBubble () {
     document.body.dataset.briskineButton = 'true';
-};
+}
 
 function bubbleEnabled () {
     // gorgiasButton for legacy enterprise support
@@ -354,4 +343,4 @@ function bubbleEnabled () {
     return attrs.some((a) => {
         return !!document.body.dataset[a];
     });
-};
+}

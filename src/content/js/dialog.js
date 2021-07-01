@@ -11,7 +11,6 @@ import Mousetrap from 'mousetrap';
 import PubSub from './patterns';
 import store from '../../store/store-client';
 import autocomplete from './autocomplete';
-import {bubbleEnabled} from './bubble';
 import enableDialogSearchAttr from './dialog-search-attr';
 
 import Config from '../../config';
