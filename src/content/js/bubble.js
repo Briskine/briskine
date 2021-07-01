@@ -26,14 +26,12 @@ customElements.define(
                         margin: 5px;
                         opacity: 0;
                         visibility: hidden;
-                        transform: translateY(10%);
-                        transition: all ease-out .1s;
+                        transition: opacity ease-out .2s;
                     }
 
                     .b-bubble-visible {
                         opacity: 1;
                         visibility: visible;
-                        transform: translateY(0);
                     }
                 </style>
                 <button type="button" class="b-bubble">
@@ -324,7 +322,7 @@ function showBubble (textfield, settings) {
 
         offsetParent.appendChild(bubbleInstance);
         bubbleInstance.setAttribute('right', offsetRight);
-        bubbleInstance.setAttribute('top', offsetParent.top + scrollTop);
+        bubbleInstance.setAttribute('top', textfield.offsetTop + scrollTop);
         bubbleInstance.setAttribute('visible', 'true');
     }
 
