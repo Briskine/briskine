@@ -4,6 +4,7 @@
  */
 
 import dialog from './dialog';
+import store from '../../store/store-client';
 
 let activeTextfield = null;
 let bubbleInstance = null;
@@ -22,6 +23,7 @@ customElements.define(
                         position: absolute;
                         top: 0;
                         right: 0;
+                        margin: 5px;
                         opacity: 0;
                         visibility: hidden;
                         transform: translateY(0.4rem);
@@ -72,7 +74,9 @@ customElements.define(
                     clearTimeout(this.bubbleVisibilityTimer);
                 }
 
-                // TODO required for the transitions to work
+                // timer makes the visible/not-visible state to be less "flickery"
+                // when rapidly focusing and blurring textfields,
+                // and makes the transitions be visible.
                 this.bubbleVisibilityTimer = setTimeout(() => {
                     if (newValue === 'true') {
                         this.$button.classList.add(visibleClassName);
@@ -81,34 +85,50 @@ customElements.define(
                     }
                 }, 200);
             }
+
+            if (name === 'top' || name === 'right') {
+                this.$button.style[name] = `${newValue}px`;
+            }
         }
-        static get observedAttributes() { return ['visible']; }
+        static get observedAttributes() {
+            return [
+                'visible',
+                'top',
+                'right'
+            ];
+        }
     }
 );
 
 export function setup () {
-    // TODO check settings and contenteditable before setting up the bubble
-    if (bubbleEnabled()) {
-        return create();
-    }
-
-    const domObserver = new MutationObserver((records, observer) => {
-        if (bubbleEnabled()) {
-            observer.disconnect();
-
-            create();
+    // if bubble is enabled in settings
+    store.getSettings({
+        key: 'settings'
+    }).then((settings) => {
+        if (settings.qaBtn && settings.qaBtn.enabled === false) {
+            return;
         }
-    });
-    domObserver.observe(document.body, {
-        attributes: true
+
+        // if bubble is enabled in dom
+        if (bubbleEnabled()) {
+            return create();
+        }
+
+        const domObserver = new MutationObserver((records, observer) => {
+            if (bubbleEnabled()) {
+                observer.disconnect();
+                create();
+            }
+        });
+        domObserver.observe(document.body, {
+            attributes: true
+        });
     });
 }
 
 function create () {
-    // TODO create the button outside the body,
-    // when the textfield is focused, move it close to it.
-    // use shadow dom for the content and the styles.
-
+    // bubble is created outside the body.
+    // when textfields are focused, move it to the offsetParent for positioning.
     bubbleInstance = document.createElement('b-bubble');
     document.documentElement.appendChild(bubbleInstance);
 
@@ -254,7 +274,6 @@ function showBubble (e) {
     activeTextfield = textfield;
 
     console.log('show for', e.target);
-
     console.log('offsetParent', e.target.offsetParent, e.target.offsetTop, e.target.offsetLeft);
 
     const offsetParent = e.target.offsetParent;
@@ -267,14 +286,14 @@ function showBubble (e) {
             offsetParent.style.position = 'relative';
         }
 
+        // position the element relative to it's offsetParent
+        const offsetRight = offsetParent.offsetWidth - e.target.offsetLeft - e.target.offsetWidth;
+
         offsetParent.appendChild(bubbleInstance);
+        bubbleInstance.setAttribute('right', offsetRight);
+        bubbleInstance.setAttribute('top', e.target.offsetTop);
         bubbleInstance.setAttribute('visible', 'true');
     }
-
-//     if (relativeParent) {
-//         // TODO only if we have relativeParent
-//         relativeParent.appendChild(bubbleInstance);
-//     }
 
     // TODO use settings on create, not on show
 //     store.getSettings({
