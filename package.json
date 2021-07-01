@@ -1,6 +1,6 @@
 {
     "name": "briskine",
-    "version": "7.0.3",
+    "version": "7.0.4",
     "description": "Write everything faster.",
     "scripts": {
         "test": "NODE_OPTIONS='-r esm' webpack -c webpack.test.js && mocha-headless-chrome -f test/index.html",
