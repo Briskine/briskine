@@ -72,7 +72,7 @@ function getData (params) {
         bcc = $container.find('input[name=bcc]').toArray().map(function (a) {
             return a.value;
         });
-        subject = $container.find('input[name=subjectbox]').val().replace(/^Re: /, "");
+        subject = ($container.find('input[name=subjectbox]').val() || '').replace(/^Re: /, "");
     } else {
         from.push($('#guser').find('b').text());
         var toEl = $('#to');
