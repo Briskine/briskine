@@ -26,7 +26,7 @@ customElements.define(
                         margin: 5px;
                         opacity: 0;
                         visibility: hidden;
-                        transform: translateY(0.4rem);
+                        transform: translateY(10%);
                         transition: all ease-out .1s;
                     }
 
@@ -146,9 +146,26 @@ function create (settings = {}) {
         return hideBubble();
     });
 
+    // re-position bubble on scroll
+    let scrollTick = false;
+    document.addEventListener('scroll', (e) => {
+        if (!scrollTick) {
+            window.requestAnimationFrame(() => {
+                if (
+                    e.target &&
+                    e.target.contains(activeTextfield) &&
+                    bubbleInstance &&
+                    bubbleInstance.getAttribute('visible') === 'true'
+                ) {
+                    bubbleInstance.setAttribute('top', activeTextfield.offsetTop + e.target.scrollTop);
+                }
 
+                scrollTick = false;
+            });
 
-
+            scrollTick = true;
+        }
+    }, true);
 
 //     var container = $('body');
 //
@@ -235,8 +252,7 @@ function create (settings = {}) {
 function showQaForElement (elem) {
     var show = false;
 
-    // if the element is not a textarea
-    // input[type=text] or contenteditable
+    // if the element is a textfield
     if (elem.matches('textarea, input[type=text], [contenteditable]')) {
         show = true;
     }
@@ -263,6 +279,24 @@ function showQaForElement (elem) {
     return show;
 }
 
+// finds the first offsetParent that could be scrollable
+function findScrollParent (target) {
+    const parent = target.offsetParent;
+    if (!parent) {
+        return null;
+    }
+    const parentStyles = window.getComputedStyle(parent);
+
+    if (
+        parentStyles.overflow === 'scroll' ||
+        parentStyles.overflow === 'auto'
+    ) {
+        return parent;
+    }
+
+    return findScrollParent(parent);
+}
+
 function showBubble (textfield, settings) {
    // only show it for valid elements
     if (!showQaForElement(textfield)) {
@@ -270,6 +304,12 @@ function showBubble (textfield, settings) {
     }
 
     const offsetParent = textfield.offsetParent;
+    let scrollTop = 0;
+    const scrollParent = findScrollParent(textfield);
+    if (scrollParent) {
+        scrollTop = scrollParent.scrollTop;
+    }
+
     if (offsetParent) {
         const offsetStyles = window.getComputedStyle(offsetParent);
         // in case the offsetParent is a unpositioned table element (td, th, table)
@@ -284,7 +324,7 @@ function showBubble (textfield, settings) {
 
         offsetParent.appendChild(bubbleInstance);
         bubbleInstance.setAttribute('right', offsetRight);
-        bubbleInstance.setAttribute('top', textfield.offsetTop);
+        bubbleInstance.setAttribute('top', offsetParent.top + scrollTop);
         bubbleInstance.setAttribute('visible', 'true');
     }
 
