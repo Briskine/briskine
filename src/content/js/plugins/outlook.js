@@ -9,9 +9,12 @@ function getFieldData (field, $container) {
     var $buttons = $container.querySelectorAll('[class*="wellItemText-"]') || [];
     $buttons.forEach(function ($button) {
         // names are formatted as "name <email@email.com>"
-        const labelParts = ($button.innerText || '').split(new RegExp('<|>')).filter((t) => !!t);
-        const fullName = labelParts.slice().shift();
-        const email = labelParts.slice().pop();
+        let email = '';
+        const fullName = ($button.innerText || '').replace(new RegExp('<[^()]*>'), (match) => {
+            email = match.slice(1, -1);
+            return '';
+        }).trim();
+
         field.push(
             createContact({
                 name: fullName,
@@ -23,19 +26,19 @@ function getFieldData (field, $container) {
 
 // selector for to/cc/bcc containers
 function getContainers () {
-    return document.querySelectorAll('._3-ZPO_m-zQ9bTiZDH0Wtjq');
+    return document.querySelectorAll('._3xQVXnr3pZctAOyZsR6kKL');
 }
 
 function getToContainer () {
-    return getContainers()[1];
+    return getContainers()[0];
 }
 
 function getCcContainer () {
-    return getContainers()[2];
+    return getContainers()[1];
 }
 
 function getBccContainer () {
-    return getContainers()[3];
+    return getContainers()[2];
 }
 
 // only 2 ms-Button--action (cc/bcc) in the message container
