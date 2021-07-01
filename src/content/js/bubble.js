@@ -49,8 +49,6 @@ customElements.define(
                 e.preventDefault();
             });
             this.$button.addEventListener('click', (e) => {
-                this.setAttribute('visible', 'true');
-
                 // position the dialog under the qa button.
                 // since the focus node is now the button
                 // we have to pass the previous focus (the text node).
@@ -62,9 +60,6 @@ customElements.define(
             });
 
             this.bubbleVisibilityTimer = null;
-        }
-        connectedCallback() {
-
         }
         attributeChangedCallback (name, oldValue, newValue) {
             if (name === 'visible') {
@@ -111,13 +106,13 @@ export function setup () {
 
         // if bubble is enabled in dom
         if (bubbleEnabled()) {
-            return create();
+            return create(settings);
         }
 
         const domObserver = new MutationObserver((records, observer) => {
             if (bubbleEnabled()) {
                 observer.disconnect();
-                create();
+                create(settings);
             }
         });
         domObserver.observe(document.body, {
@@ -126,7 +121,7 @@ export function setup () {
     });
 }
 
-function create () {
+function create (settings = {}) {
     // bubble is created outside the body.
     // when textfields are focused, move it to the offsetParent for positioning.
     bubbleInstance = document.createElement('b-bubble');
@@ -135,7 +130,10 @@ function create () {
     console.log('append bubble', bubbleInstance);
 
     document.addEventListener('focusin', (e) => {
-        return showBubble(e);
+        // used for showing the dialog completion
+        activeTextfield = e.target;
+
+        return showBubble(e.target, settings);
     });
 
     document.addEventListener('focusout', (e) => {
@@ -147,6 +145,8 @@ function create () {
 
         return hideBubble();
     });
+
+
 
 
 
@@ -263,20 +263,13 @@ function showQaForElement (elem) {
     return show;
 }
 
-function showBubble (e) {
-    var textfield = e.target;
-
-    // only show it for valid elements
+function showBubble (textfield, settings) {
+   // only show it for valid elements
     if (!showQaForElement(textfield)) {
         return false;
     }
 
-    activeTextfield = textfield;
-
-    console.log('show for', e.target);
-    console.log('offsetParent', e.target.offsetParent, e.target.offsetTop, e.target.offsetLeft);
-
-    const offsetParent = e.target.offsetParent;
+    const offsetParent = textfield.offsetParent;
     if (offsetParent) {
         const offsetStyles = window.getComputedStyle(offsetParent);
         // in case the offsetParent is a unpositioned table element (td, th, table)
@@ -287,13 +280,30 @@ function showBubble (e) {
         }
 
         // position the element relative to it's offsetParent
-        const offsetRight = offsetParent.offsetWidth - e.target.offsetLeft - e.target.offsetWidth;
+        const offsetRight = offsetParent.offsetWidth - textfield.offsetLeft - textfield.offsetWidth;
 
         offsetParent.appendChild(bubbleInstance);
         bubbleInstance.setAttribute('right', offsetRight);
-        bubbleInstance.setAttribute('top', e.target.offsetTop);
+        bubbleInstance.setAttribute('top', textfield.offsetTop);
         bubbleInstance.setAttribute('visible', 'true');
     }
+
+    // on first-use (after extension is installed),
+    // we show the dialog immediately after the bubble is shown.
+    if (settings.qaBtn && settings.qaBtn.hasOwnProperty('shownPostInstall')) {
+        if (!settings.qaBtn.shownPostInstall) {
+            const bubbleButton = bubbleInstance.shadowRoot.querySelector('button');
+            bubbleButton.dispatchEvent(new Event('click', { bubbles: true }));
+            // don't trigger the button again on next load.
+            // mutate the settings object so we don't have to fetch it again.
+            settings.qaBtn.shownPostInstall = true;
+            store.setSettings({
+                key: 'settings',
+                val: settings
+            });
+        }
+    }
+
 
     // TODO use settings on create, not on show
 //     store.getSettings({
@@ -326,17 +336,6 @@ function showBubble (e) {
 //                 qaBtn.remove();
 //                 gmailHook.append(qaBtn);
 //
-//                 // First time a user uses our extension, we show it and then hide it
-//                 if (settings.qaBtn && settings.qaBtn.hasOwnProperty('shownPostInstall')) {
-//                     if (!settings.qaBtn.shownPostInstall) {
-//                         $(qaBtn).trigger('mouseup');
-//                         settings.qaBtn.shownPostInstall = true;
-//                         store.setSettings({
-//                             key: 'settings',
-//                             val: settings
-//                         });
-//                     }
-//                 }
 //                 return;
 //             }
 //         } else {
