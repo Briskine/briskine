@@ -16,24 +16,47 @@ customElements.define(
         constructor() {
             super();
 
+            this.ready = false;
+            this.bubbleVisibilityTimer = null;
+        }
+        connectedCallback () {
+            // element was already created,
+            // just moved around in the dom.
+            if (this.ready) {
+                return;
+            }
+
+            // dialog shortcut
+            const shortcut = this.getAttribute('shortcut') || 'ctrl+space';
+
             // TODO styles and tooltip
             const template = `
                 <style>
-                    .b-bubble {
+                    :host,
+                    :host * {
+                        box-sizing: border-box;
+                    }
+
+                    :host {
                         position: absolute;
-                        top: 0;
-                        right: 0;
                         z-index: 2147483647;
+                        display: block;
+                        width: 28px;
+                        height: 28px;
                         margin: 5px;
+
+                        font-family: sans-serif;
+                    }
+
+                    .b-bubble {
                         opacity: 0;
                         visibility: hidden;
                         transition: opacity ease-out .2s;
 
                         appearance: none;
                         display: block;
-                        box-sizing: border-box;
-                        width: 28px;
-                        height: 28px;
+                        width: 100%;
+                        height: 100%;
                         padding: 5px;
                         background-color: rgba(243, 244, 245, .4);
                         border: 0;
@@ -41,8 +64,7 @@ customElements.define(
                         cursor: pointer;
                     }
 
-                    .b-bubble:hover,
-                    .b-bubble:focus {
+                    .b-bubble:hover {
                         background-color: #e9eaec;
                         box-shadow: 0 0 12px rgba(0,0,0,.1);
                     }
@@ -69,9 +91,53 @@ customElements.define(
                         visibility: visible;
                     }
 
+                    .b-bubble:hover + .b-bubble-tooltip {
+                        opacity: 1;
+                        visibility: visible;
+                        transition-delay: 1s;
+                    }
 
+                    .b-bubble-tooltip {
+                        --tooltip-bg: #2a2a2a;
+                        visibility: hidden;
+                        opacity: 0;
+                        transition: opacity ease-in .1s;
+
+                        position: absolute;
+                        top: 50%;
+                        left: 0;
+                        padding: 3px 5px;
+                        background: var(--tooltip-bg);
+                        border-radius: 2px;
+
+                        color: #fff;
+                        font-size: 11px;
+                        font-weight: bold;
+                        white-space: nowrap;
+
+                        transform: translate(-100%, -50%);
+                        margin-left: -12px;
+                    }
+
+                    .b-bubble-tooltip:after {
+                        content: '';
+                        position: absolute;
+                        border-style: solid;
+                        border-color: transparent;
+                        border-width: 6px;
+                        border-left-color: var(--tooltip-bg);
+                        display: block;
+                        width: 0;
+                        z-index: 1;
+                        top: 0;
+                        right: 1px;
+                        transform: translate(100%, calc(50% - 3px));
+                    }
                 </style>
                 <button type="button" class="b-bubble"></button>
+                <span class="b-bubble-tooltip">
+                    Search templates (${shortcut})
+                </div>
             `;
             const shadowRoot = this.attachShadow({mode: 'open'});
             shadowRoot.innerHTML = template;
@@ -92,7 +158,7 @@ customElements.define(
                 });
             });
 
-            this.bubbleVisibilityTimer = null;
+            this.ready = true;
         }
         attributeChangedCallback (name, oldValue, newValue) {
             if (name === 'visible') {
@@ -115,7 +181,7 @@ customElements.define(
             }
 
             if (name === 'top' || name === 'right') {
-                this.$button.style[name] = `${newValue}px`;
+                this.style[name] = `${newValue}px`;
             }
         }
         static get observedAttributes() {
@@ -158,6 +224,10 @@ function create (settings = {}) {
     // bubble is created outside the body.
     // when textfields are focused, move it to the offsetParent for positioning.
     bubbleInstance = document.createElement('b-bubble');
+    // custom dialog shortcut
+    if (settings.dialog && settings.dialog.shortcut) {
+        bubbleInstance.setAttribute('shortcut', settings.dialog.shortcut);
+    }
     document.documentElement.appendChild(bubbleInstance);
 
     console.log('append bubble', bubbleInstance);
