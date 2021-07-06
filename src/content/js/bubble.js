@@ -29,7 +29,6 @@ customElements.define(
             // dialog shortcut
             const shortcut = this.getAttribute('shortcut') || 'ctrl+space';
 
-            // TODO styles and tooltip
             const template = `
                 <style>
                     :host,
@@ -41,9 +40,12 @@ customElements.define(
                         position: absolute;
                         z-index: 2147483647;
                         display: block;
-                        width: 28px;
-                        height: 28px;
-                        margin: 5px;
+
+                        --bubble-size: 28px;
+                        --bubble-margin: 5px;
+                        width: var(--bubble-size);
+                        height: var(--bubble-size);
+                        margin: var(--bubble-margin);
 
                         font-family: sans-serif;
                     }
@@ -133,6 +135,27 @@ customElements.define(
                         right: 1px;
                         transform: translate(100%, calc(50% - 3px));
                     }
+
+                    /* RTL support
+                     */
+                    :host([dir=rtl]) {
+                        right: auto !important;
+                        left: 0;
+                    }
+
+                    :host([dir=rtl]) .b-bubble-tooltip {
+                        transform: translate(var(--bubble-size), -50%);
+                        margin-left: 12px;
+                    }
+
+                    :host([dir=rtl]) .b-bubble-tooltip:after {
+                        left: 1px;
+                        right: auto;
+                        border-left-color: transparent;
+                        border-right-color: var(--tooltip-bg);
+                        transform: translate(-100%, calc(50% - 3px));
+                    }
+
                 </style>
                 <button type="button" class="b-bubble"></button>
                 <span class="b-bubble-tooltip">
@@ -406,6 +429,12 @@ function showBubble (textfield, settings) {
         return false;
     }
 
+    // detect rtl
+    const textfieldStyles = window.getComputedStyle(textfield);
+    const direction = textfieldStyles.direction || 'ltr';
+    bubbleInstance.setAttribute('dir', direction);
+
+    // scroll positioning
     const offsetParent = textfield.offsetParent;
     let scrollTop = 0;
     const scrollParent = findScrollParent(textfield);
@@ -415,6 +444,7 @@ function showBubble (textfield, settings) {
 
     if (offsetParent) {
         const offsetStyles = window.getComputedStyle(offsetParent);
+
         // in case the offsetParent is a unpositioned table element (td, th, table)
         // make it relative, for the button to have the correct positioning.
         // https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/offsetParent
