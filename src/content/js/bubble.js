@@ -138,7 +138,7 @@ customElements.define(
                     }
 
                     /* RTL support
-                     * TODO dialog positioning is broken in rtl mode,
+                     * BUG dialog positioning is broken in rtl mode,
                      * after clicking the button.
                      */
                     :host([dir=rtl]) {
@@ -256,8 +256,6 @@ function create (settings = {}) {
     }
     document.documentElement.appendChild(bubbleInstance);
 
-    console.log('append bubble', bubbleInstance);
-
     document.addEventListener('focusin', (e) => {
         // used for showing the dialog completion
         activeTextfield = e.target;
@@ -295,87 +293,6 @@ function create (settings = {}) {
             scrollTick = true;
         }
     }, true);
-
-//     var container = $('body');
-//
-//     var instance = this;
-//
-//     // add the dialog quick access icon
-//     instance.qaBtn = $(instance.qaBtnTemplate);
-//     instance.qaTooltip = $(instance.qaBtnTooltip);
-//
-//     container.append(instance.qaBtn);
-//     container.append(instance.qaTooltip);
-//
-//     var showQaBtnTimer;
-//
-//     // move the quick access button around
-//     // to the focused text field
-//     // the focus event doesn't support bubbling
-//     container.on('focusin', function (e) {
-//
-//         if (showQaBtnTimer) {
-//             clearTimeout(showQaBtnTimer);
-//         }
-//
-//         // add a small delay for showing the qa button.
-//         // in case the element's styles change its position on focus.
-//         // eg. gmail when you have multiple addresses configured,
-//         // and the from fields shows/hides on focus.
-//         showQaBtnTimer = setTimeout(function () {
-//             instance.showQaBtn(e);
-//         }, 350);
-//
-//     });
-//
-//     container.on('focusout', function (e) {
-//         if (showQaBtnTimer) {
-//             clearTimeout(showQaBtnTimer);
-//         }
-//         instance.hideQaBtn(e);
-//     });
-//
-//     instance.qaBtn.on('mouseup', function (e) {
-//
-//         // return the focus to the element focused
-//         // before clicking the qa button
-//         dialog.prevFocus.focus();
-//
-//         // position the dialog under the qa button.
-//         // since the focus node is now the button
-//         // we have to pass the previous focus (the text node).
-//         dialog.completion(e, {
-//             focusNode: dialog.prevFocus,
-//             dialogPositionNode: e.target,
-//             source: 'button'
-//         });
-//
-//         $('body').addClass('qa-btn-dropdown-show');
-//     });
-//
-//     var showQaTooltip;
-//     // Show tooltip
-//     instance.qaBtn.on('mouseenter', function () {
-//         if (showQaTooltip) {
-//             clearTimeout(showQaTooltip);
-//         }
-//         showQaTooltip = setTimeout(function () {
-//             var padding = 22;
-//             var rect = instance.qaBtn[0].getBoundingClientRect();
-//             instance.qaTooltip.css({
-//                 top: rect.top - padding - parseInt(instance.qaTooltip.css('height'), 10) + "px",
-//                 left: rect.left + 45 - parseInt(instance.qaTooltip.css('width'), 10) + "px"
-//             });
-//             instance.qaTooltip.show();
-//         }, 500);
-//
-//     });
-//
-//     // Hide tooltip
-//     instance.qaBtn.on('mouseleave', function () {
-//         clearTimeout(showQaTooltip);
-//         instance.qaTooltip.hide();
-//     });
 }
 
 function showQaForElement (elem) {
@@ -479,48 +396,6 @@ function showBubble (textfield, settings) {
             });
         }
     }
-
-
-    // TODO use settings on create, not on show
-//     store.getSettings({
-//         key: 'settings'
-//     }).then((settings) => {
-//         if (settings.qaBtn && settings.qaBtn.enabled === false) {
-//             return;
-//         }
-//
-//         $('body').addClass('gorgias-show-qa-btn');
-//
-//         dialog.prevFocus = textfield;
-//
-//         var qaBtn = dialog.qaBtn.get(0);
-//
-//         // padding from the top-right corner of the textfield
-//         var padding = 10;
-//
-//         // positioning the quick-action button.
-//         // Gmail is custom made
-//         // TODO use the general positioning method for Gmail
-//         if (window.location.origin === "https://mail.google.com") {
-//             var gmailHook = $(textfield).closest('td');
-//             if (gmailHook.length) {
-//                 $(qaBtn).css({
-//                     'top': padding + "px",
-//                     'right': padding + "px",
-//                     'left': 'initial'
-//                 });
-//                 qaBtn.remove();
-//                 gmailHook.append(qaBtn);
-//
-//                 return;
-//             }
-//         } else {
-//             activeTextfield = textfield;
-//             setQaBtnPosition();
-//             window.addEventListener('scroll', setQaBtnPosition, true);
-//         }
-//
-//     });
 }
 
 function hideBubble () {
