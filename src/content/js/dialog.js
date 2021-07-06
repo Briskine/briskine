@@ -39,7 +39,6 @@ var dialog = {
     dialogSelector: ".qt-dropdown",
     contentSelector: ".qt-dropdown-content",
     searchSelector: ".qt-dropdown-search",
-    qaBtnSelector: '.gorgias-qa-btn',
     newTemplateSelector: ".g-new-template",
 
     completion: function (e, params) {
@@ -429,34 +428,8 @@ var dialog = {
         dialog.quicktexts = [];
         dialog.cursorPosition = null;
 
-    },
-    hideQaBtn: function () {
-        activeTextfield = null;
-        window.removeEventListener('scroll', setQaBtnPosition, true);
-        document.body.classList.remove('gorgias-show-qa-btn');
     }
 };
-
-let activeTextfield = null;
-
-function setQaBtnPosition () {
-    if (!activeTextfield) {
-        return;
-    }
-    var qaBtn = dialog.qaBtn.get(0);
-    // padding from the top-right corner of the textfield
-    const padding = 5;
-
-    window.requestAnimationFrame(() => {
-        const textfieldRect = activeTextfield.getBoundingClientRect();
-        // top-right corner of the textfield
-        const top = textfieldRect.top + window.scrollY + padding;
-        const left = textfieldRect.right - window.scrollX - qaBtn.offsetWidth - padding * 2;
-
-        qaBtn.style.top = `${top}px`;
-        qaBtn.style.left = `${left}px`;
-    });
-}
 
 // dialog html templates
 dialog.qaBtnTemplate = `

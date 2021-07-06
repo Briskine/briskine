@@ -303,6 +303,7 @@ function showQaForElement (elem) {
         show = true;
     }
 
+    // TODO some classes are no longer used
     // if the quick access button is focused/clicked
     if (elem.className.indexOf('gorgias-qa-btn') !== -1) {
         show = false;
