@@ -88,9 +88,10 @@ customElements.define(
                         background-size: contain;
                     }
 
-                    .b-bubble-visible {
+                    :host([visible=true]) .b-bubble {
                         opacity: .7;
                         visibility: visible;
+                        transition-delay: .1s;
                     }
 
                     .b-bubble:hover + .b-bubble-tooltip {
@@ -115,6 +116,7 @@ customElements.define(
                         color: #fff;
                         font-size: 11px;
                         font-weight: bold;
+                        line-height: 1;
                         white-space: nowrap;
 
                         transform: translate(-100%, -50%);
@@ -184,32 +186,12 @@ customElements.define(
             this.ready = true;
         }
         attributeChangedCallback (name, oldValue, newValue) {
-            if (name === 'visible') {
-                const visibleClassName = 'b-bubble-visible';
-
-                if (this.bubbleVisibilityTimer) {
-                    clearTimeout(this.bubbleVisibilityTimer);
-                }
-
-                // timer makes the visible/not-visible state to be less "flickery"
-                // when rapidly focusing and blurring textfields,
-                // and makes the transitions be visible.
-                this.bubbleVisibilityTimer = setTimeout(() => {
-                    if (newValue === 'true') {
-                        this.$button.classList.add(visibleClassName);
-                    } else {
-                        this.$button.classList.remove(visibleClassName);
-                    }
-                }, 200);
-            }
-
             if (name === 'top' || name === 'right') {
                 this.style[name] = `${newValue}px`;
             }
         }
         static get observedAttributes() {
             return [
-                'visible',
                 'top',
                 'right'
             ];
