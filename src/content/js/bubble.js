@@ -73,6 +73,7 @@ customElements.define(
 
                     .b-bubble:active {
                         box-shadow: none;
+                        cursor: pointer;
                     }
 
                     .b-bubble:after {
