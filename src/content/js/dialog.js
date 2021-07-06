@@ -34,7 +34,6 @@ var dialog = {
     isEmpty: true,
     RESULTS_LIMIT: 5, // only show 5 results at a time
     editor: null,
-    qaBtn: null,
     prevFocus: null,
     dialogSelector: ".qt-dropdown",
     contentSelector: ".qt-dropdown-content",
@@ -419,7 +418,6 @@ var dialog = {
         }
 
         $(this.dialogSelector).removeClass('qt-dropdown-show');
-        $('body').removeClass('qa-btn-dropdown-show');
         $(this.searchSelector).val('');
 
         dialog.isActive = false;
@@ -432,14 +430,6 @@ var dialog = {
 };
 
 // dialog html templates
-dialog.qaBtnTemplate = `
-<span class="gorgias-qa-btn"></span>
-`;
-
-dialog.qaBtnTooltip = `
-<div class="gorgias-qa-tooltip">Search templates (CTRL+Space)</div>
-`;
-
 dialog.template = `
 <div class="qt-dropdown ${REGISTER_DISABLED ? 'briskine-register-disabled' : ''}">
     <div class="qt-info">
