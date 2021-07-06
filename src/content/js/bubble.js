@@ -88,10 +88,9 @@ customElements.define(
                         background-size: contain;
                     }
 
-                    :host([visible=true]) .b-bubble {
+                    .b-bubble-visible {
                         opacity: .7;
                         visibility: visible;
-                        transition-delay: .1s;
                     }
 
                     .b-bubble:hover + .b-bubble-tooltip {
@@ -139,6 +138,8 @@ customElements.define(
                     }
 
                     /* RTL support
+                     * TODO dialog positioning is broken in rtl mode,
+                     * after clicking the button.
                      */
                     :host([dir=rtl]) {
                         right: auto !important;
@@ -186,12 +187,32 @@ customElements.define(
             this.ready = true;
         }
         attributeChangedCallback (name, oldValue, newValue) {
+            if (name === 'visible') {
+                const visibleClassName = 'b-bubble-visible';
+
+                if (this.bubbleVisibilityTimer) {
+                    clearTimeout(this.bubbleVisibilityTimer);
+                }
+
+                // timer makes the visible/not-visible state to be less "flickery"
+                // when rapidly focusing and blurring textfields,
+                // and makes the transitions be visible.
+                this.bubbleVisibilityTimer = setTimeout(() => {
+                    if (newValue === 'true') {
+                        this.$button.classList.add(visibleClassName);
+                    } else {
+                        this.$button.classList.remove(visibleClassName);
+                    }
+                }, 200);
+            }
+
             if (name === 'top' || name === 'right') {
                 this.style[name] = `${newValue}px`;
             }
         }
         static get observedAttributes() {
             return [
+                'visible',
                 'top',
                 'right'
             ];
