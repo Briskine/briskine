@@ -295,35 +295,18 @@ function create (settings = {}) {
     }, true);
 }
 
-function showQaForElement (elem) {
-    var show = false;
-
+function isValidTextfield (elem) {
     // if the element is a textfield
     if (elem.matches('textarea, input[type=text], [contenteditable]')) {
-        show = true;
-    }
-
-    // TODO some classes are no longer used
-    // if the quick access button is focused/clicked
-    if (elem.className.indexOf('gorgias-qa-btn') !== -1) {
-        show = false;
-    }
-
-    // if the dialog search field is focused
-    if (elem.className.indexOf('qt-dropdown-search') !== -1) {
-        show = false;
-    }
-
-    // check if the element is big enough
-    // to only show the qa button for large textfields
-    if (show === true) {
-        var metrics = elem.getBoundingClientRect();
-        if (metrics.width < 100 || metrics.height < 30) {
-            show = false;
+        // check if the element is big enough
+        // to only show the bubble for large textfields
+        const metrics = elem.getBoundingClientRect();
+        if (metrics.width > 100 && metrics.height > 30) {
+            return true;
         }
     }
 
-    return show;
+    return false;
 }
 
 // finds the first offsetParent that could be scrollable
@@ -346,7 +329,7 @@ function findScrollParent (target) {
 
 function showBubble (textfield, settings) {
    // only show it for valid elements
-    if (!showQaForElement(textfield)) {
+    if (!isValidTextfield(textfield)) {
         return false;
     }
 
