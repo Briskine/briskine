@@ -286,11 +286,7 @@ function create (settings = {}) {
                     bubbleInstance &&
                     bubbleInstance.getAttribute('visible') === 'true'
                 ) {
-
-                    const textfieldRect = activeTextfield.getBoundingClientRect();
-                    const parentRect = e.target.getBoundingClientRect();
-
-                    bubbleInstance.setAttribute('top', activeTextfield.offsetTop + e.target.scrollTop);
+                    bubbleInstance.setAttribute('top', getTopPosition(activeTextfield, e.target));
                 }
 
                 scrollTick = false;
@@ -299,6 +295,23 @@ function create (settings = {}) {
             scrollTick = true;
         }
     }, true);
+}
+
+function getTopPosition (textfield, parent) {
+    // TODO expensive operation,
+    // see if we can improve performance.
+    const textfieldRect = textfield.getBoundingClientRect();
+    const parentRect = parent.getBoundingClientRect();
+    const distanceFromParent = textfieldRect.top - parentRect.top;
+
+    let top = activeTextfield.offsetTop;
+
+    // top position of textfield is scrolled out of view
+    if (distanceFromParent < 0) {
+        top = top + Math.abs(distanceFromParent);
+    }
+
+    return top;
 }
 
 function isValidTextfield (elem) {
@@ -355,11 +368,6 @@ function showBubble (textfield, settings) {
     // scroll positioning
     // BUG scroll positioning is buggy in Outlook and Twillio Flex
     const offsetParent = textfield.offsetParent;
-    let scrollTop = 0;
-    const scrollParent = findScrollParent(textfield);
-    if (scrollParent) {
-        scrollTop = scrollParent.scrollTop;
-    }
 
     if (offsetParent) {
         const offsetStyles = window.getComputedStyle(offsetParent);
@@ -374,9 +382,15 @@ function showBubble (textfield, settings) {
         // position the element relative to it's offsetParent
         const offsetRight = offsetParent.offsetWidth - textfield.offsetLeft - textfield.offsetWidth;
 
+        let top = textfield.offsetTop;
+        const scrollParent = findScrollParent(textfield);
+        if (scrollParent) {
+            top = getTopPosition(textfield, scrollParent);
+        }
+
         offsetParent.appendChild(bubbleInstance);
         bubbleInstance.setAttribute('right', offsetRight);
-        bubbleInstance.setAttribute('top', textfield.offsetTop + scrollTop);
+        bubbleInstance.setAttribute('top', top);
         bubbleInstance.setAttribute('visible', 'true');
     }
 
