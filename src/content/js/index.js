@@ -230,9 +230,7 @@ App.init = function(settings, doc) {
         // don't create the dialog inside editor iframes (eg. tinymce iframe)
         !isContentEditable
     ) {
-        if (settings.qaBtn.enabled) {
-            setupBubble();
-        }
+        setupBubble();
         if (settings.dialog.limit) {
             dialog.RESULTS_LIMIT = settings.dialog.limit;
         }
