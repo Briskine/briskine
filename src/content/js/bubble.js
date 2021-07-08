@@ -294,30 +294,34 @@ function create (settings = {}) {
     }
     document.documentElement.appendChild(bubbleInstance);
 
-    document.addEventListener('focusin', function showPostInstall (e) {
-        if (!isValidTextfield(e.target)) {
-            return;
+    // wait for the bubbble to be shown
+    const bubbleObserver = new MutationObserver((records, observer) => {
+        if (bubbleInstance.getAttribute('visible') === 'true') {
+            showPostInstall(settings);
+            observer.disconnect();
         }
-
-        // on first-use (after extension is installed),
-        // we show the dialog immediately after the bubble is shown.
-        if (settings.qaBtn && settings.qaBtn.hasOwnProperty('shownPostInstall')) {
-            if (!settings.qaBtn.shownPostInstall) {
-                const bubbleButton = bubbleInstance.shadowRoot.querySelector('button');
-                bubbleButton.dispatchEvent(new Event('click', { bubbles: true }));
-                // don't trigger the button again on next load.
-                // mutate the settings object so we don't have to fetch it again.
-                settings.qaBtn.shownPostInstall = true;
-                store.setSettings({
-                    key: 'settings',
-                    val: settings
-                });
-            }
-        }
-
-        // unbind event after a valid textfield was focused
-        document.removeEventListener('focusin', showPostInstall);
     });
+    bubbleObserver.observe(bubbleInstance, {
+        attributes: true
+    });
+}
+
+function showPostInstall (settings) {
+    // on first-use (after extension is installed),
+    // we show the dialog immediately after the bubble is shown.
+    if (settings.qaBtn && settings.qaBtn.hasOwnProperty('shownPostInstall')) {
+        if (!settings.qaBtn.shownPostInstall) {
+            const bubbleButton = bubbleInstance.shadowRoot.querySelector('button');
+            bubbleButton.dispatchEvent(new Event('click', { bubbles: true }));
+            // don't trigger the button again on next load.
+            // mutate the settings object so we don't have to fetch it again.
+            settings.qaBtn.shownPostInstall = true;
+            store.setSettings({
+                key: 'settings',
+                val: settings
+            });
+        }
+    }
 }
 
 // top-right sticky positioning,
