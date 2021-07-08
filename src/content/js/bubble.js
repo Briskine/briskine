@@ -38,7 +38,6 @@ customElements.define(
 
                     :host {
                         position: absolute;
-                        z-index: 2147483647;
                         display: block;
 
                         --bubble-size: 28px;
@@ -282,7 +281,6 @@ function create (settings = {}) {
                 if (
                     e.target &&
                     e.target.contains(activeTextfield) &&
-                    // TODO don't move if scrolling the textfield (eg. scrollable textarea)
                     bubbleInstance &&
                     bubbleInstance.getAttribute('visible') === 'true'
                 ) {
@@ -297,6 +295,8 @@ function create (settings = {}) {
     }, true);
 }
 
+// top-right sticky positioning,
+// considering scroll.
 function getTopPosition (textfield, parent) {
     // TODO expensive operation,
     // see if we can improve performance.
@@ -365,8 +365,6 @@ function showBubble (textfield, settings) {
     const direction = textfieldStyles.direction || 'ltr';
     bubbleInstance.setAttribute('dir', direction);
 
-    // scroll positioning
-    // BUG scroll positioning is buggy in Outlook and Twillio Flex
     const offsetParent = textfield.offsetParent;
 
     if (offsetParent) {
