@@ -6,7 +6,6 @@
 import dialog from './dialog';
 import store from '../../store/store-client';
 
-let activeTextfield = null;
 let bubbleInstance = null;
 const dialogSelector = '.qt-dropdown';
 
@@ -178,11 +177,50 @@ customElements.define(
                 // since the focus node is now the button
                 // we have to pass the previous focus (the text node).
                 dialog.completion(e, {
-                    focusNode: activeTextfield,
+                    focusNode: this.activeTextfield,
                     dialogPositionNode: e.target,
                     source: 'button'
                 });
             });
+
+            // show the bubble on focus
+            document.addEventListener('focusin', (e) => {
+                // used for showing the dialog completion
+                this.activeTextfield = e.target;
+
+                return showBubble(e.target);
+            });
+
+            document.addEventListener('focusout', (e) => {
+                // don't hide the bubble if the newly focused node is in the dialog.
+                // eg. when clicking the bubble.
+                if (e.relatedTarget && e.relatedTarget.closest(dialogSelector)) {
+                    return;
+                }
+
+                return hideBubble();
+            });
+
+            // re-position bubble on scroll
+            let scrollTick = false;
+            document.addEventListener('scroll', (e) => {
+                if (!scrollTick) {
+                    window.requestAnimationFrame(() => {
+                        if (
+                            e.target &&
+                            e.target.contains(this.activeTextfield) &&
+                            bubbleInstance &&
+                            bubbleInstance.getAttribute('visible') === 'true'
+                        ) {
+                            bubbleInstance.setAttribute('top', getTopPosition(this.activeTextfield, e.target));
+                        }
+
+                        scrollTick = false;
+                    });
+
+                    scrollTick = true;
+                }
+            }, true);
 
             this.ready = true;
         }
@@ -256,43 +294,30 @@ function create (settings = {}) {
     }
     document.documentElement.appendChild(bubbleInstance);
 
-    document.addEventListener('focusin', (e) => {
-        // used for showing the dialog completion
-        activeTextfield = e.target;
-
-        return showBubble(e.target, settings);
-    });
-
-    document.addEventListener('focusout', (e) => {
-        // don't hide the bubble if the newly focused node is in the dialog.
-        // eg. when clicking the bubble.
-        if (e.relatedTarget && e.relatedTarget.closest(dialogSelector)) {
+    document.addEventListener('focusin', function showPostInstall (e) {
+        if (!isValidTextfield(e.target)) {
             return;
         }
 
-        return hideBubble();
-    });
-
-    // re-position bubble on scroll
-    let scrollTick = false;
-    document.addEventListener('scroll', (e) => {
-        if (!scrollTick) {
-            window.requestAnimationFrame(() => {
-                if (
-                    e.target &&
-                    e.target.contains(activeTextfield) &&
-                    bubbleInstance &&
-                    bubbleInstance.getAttribute('visible') === 'true'
-                ) {
-                    bubbleInstance.setAttribute('top', getTopPosition(activeTextfield, e.target));
-                }
-
-                scrollTick = false;
-            });
-
-            scrollTick = true;
+        // on first-use (after extension is installed),
+        // we show the dialog immediately after the bubble is shown.
+        if (settings.qaBtn && settings.qaBtn.hasOwnProperty('shownPostInstall')) {
+            if (!settings.qaBtn.shownPostInstall) {
+                const bubbleButton = bubbleInstance.shadowRoot.querySelector('button');
+                bubbleButton.dispatchEvent(new Event('click', { bubbles: true }));
+                // don't trigger the button again on next load.
+                // mutate the settings object so we don't have to fetch it again.
+                settings.qaBtn.shownPostInstall = true;
+                store.setSettings({
+                    key: 'settings',
+                    val: settings
+                });
+            }
         }
-    }, true);
+
+        // unbind event after a valid textfield was focused
+        document.removeEventListener('focusin', showPostInstall);
+    });
 }
 
 // top-right sticky positioning,
@@ -304,7 +329,7 @@ function getTopPosition (textfield, parent) {
     const parentRect = parent.getBoundingClientRect();
     const distanceFromParent = textfieldRect.top - parentRect.top;
 
-    let top = activeTextfield.offsetTop;
+    let top = textfield.offsetTop;
 
     // top position of textfield is scrolled out of view
     if (distanceFromParent < 0) {
@@ -354,7 +379,7 @@ function findScrollParent (target) {
     return findScrollParent(parent);
 }
 
-function showBubble (textfield, settings) {
+function showBubble (textfield) {
    // only show it for valid elements
     if (!isValidTextfield(textfield)) {
         return false;
@@ -390,22 +415,6 @@ function showBubble (textfield, settings) {
         bubbleInstance.setAttribute('right', offsetRight);
         bubbleInstance.setAttribute('top', top);
         bubbleInstance.setAttribute('visible', 'true');
-    }
-
-    // on first-use (after extension is installed),
-    // we show the dialog immediately after the bubble is shown.
-    if (settings.qaBtn && settings.qaBtn.hasOwnProperty('shownPostInstall')) {
-        if (!settings.qaBtn.shownPostInstall) {
-            const bubbleButton = bubbleInstance.shadowRoot.querySelector('button');
-            bubbleButton.dispatchEvent(new Event('click', { bubbles: true }));
-            // don't trigger the button again on next load.
-            // mutate the settings object so we don't have to fetch it again.
-            settings.qaBtn.shownPostInstall = true;
-            store.setSettings({
-                key: 'settings',
-                val: settings
-            });
-        }
     }
 }
 
