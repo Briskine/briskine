@@ -4,6 +4,7 @@
 
 import {parseTemplate, insertText} from '../utils';
 import {createContact} from '../utils/data-parse';
+import {enableBubble} from '../bubble';
 
 function getFieldData (field, $container) {
     var $buttons = $container.querySelectorAll('[class*="wellItemText-"]') || [];
@@ -271,6 +272,10 @@ function isActive () {
     }
 
     return activeCache;
+}
+
+if (isActive()) {
+    enableBubble();
 }
 
 export default (params = {}) => {

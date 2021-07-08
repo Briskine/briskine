@@ -282,9 +282,14 @@ function create (settings = {}) {
                 if (
                     e.target &&
                     e.target.contains(activeTextfield) &&
+                    // TODO don't move if scrolling the textfield (eg. scrollable textarea)
                     bubbleInstance &&
                     bubbleInstance.getAttribute('visible') === 'true'
                 ) {
+
+                    const textfieldRect = activeTextfield.getBoundingClientRect();
+                    const parentRect = e.target.getBoundingClientRect();
+
                     bubbleInstance.setAttribute('top', activeTextfield.offsetTop + e.target.scrollTop);
                 }
 
@@ -302,7 +307,7 @@ function isValidTextfield (elem) {
         // check if the element is big enough
         // to only show the bubble for large textfields
         const metrics = elem.getBoundingClientRect();
-        if (metrics.width > 100 && metrics.height > 30) {
+        if (metrics.width > 100 && metrics.height > 34) {
             return true;
         }
     }
@@ -318,9 +323,17 @@ function findScrollParent (target) {
     }
     const parentStyles = window.getComputedStyle(parent);
 
+    const scrollValues = [
+        'scroll',
+        'auto',
+        // used by outlook.com, draws scrollbars on top of the content.
+        // deprecated form the spec and only supported in webkit-like browsers.
+        // https://developer.mozilla.org/en-US/docs/Web/CSS/overflow
+        'overlay'
+    ];
     if (
-        parentStyles.overflow === 'scroll' ||
-        parentStyles.overflow === 'auto'
+        scrollValues.includes(parentStyles.overflow) ||
+        scrollValues.includes(parentStyles.overflowY)
     ) {
         return parent;
     }
@@ -340,6 +353,7 @@ function showBubble (textfield, settings) {
     bubbleInstance.setAttribute('dir', direction);
 
     // scroll positioning
+    // BUG scroll positioning is buggy in Outlook and Twillio Flex
     const offsetParent = textfield.offsetParent;
     let scrollTop = 0;
     const scrollParent = findScrollParent(textfield);
