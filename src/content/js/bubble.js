@@ -49,6 +49,7 @@ customElements.define(
                     }
 
                     .b-bubble {
+                        position: relative;
                         opacity: 0;
                         visibility: hidden;
                         transition: opacity ease-out .2s;
