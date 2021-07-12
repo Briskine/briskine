@@ -11,7 +11,6 @@ import Mousetrap from 'mousetrap';
 import PubSub from './patterns';
 import store from '../../store/store-client';
 import autocomplete from './autocomplete';
-import {isQuickButtonEnabled} from './utils';
 import enableDialogSearchAttr from './dialog-search-attr';
 
 import Config from '../../config';
@@ -35,12 +34,10 @@ var dialog = {
     isEmpty: true,
     RESULTS_LIMIT: 5, // only show 5 results at a time
     editor: null,
-    qaBtn: null,
     prevFocus: null,
     dialogSelector: ".qt-dropdown",
     contentSelector: ".qt-dropdown-content",
     searchSelector: ".qt-dropdown-search",
-    qaBtnSelector: '.gorgias-qa-btn',
     newTemplateSelector: ".g-new-template",
 
     completion: function (e, params) {
@@ -170,106 +167,6 @@ var dialog = {
             const popupUrl = browser.runtime.getURL('popup/popup.html');
             window.open(`${popupUrl}?source=tab`, Config.dashboardTarget);
         });
-    },
-    setupQuickButton: function () {
-        if (isQuickButtonEnabled()) {
-            return dialog.createQaBtn();
-        }
-
-        const domObserver = new MutationObserver((records, observer) => {
-            if (isQuickButtonEnabled()) {
-                observer.disconnect();
-
-                dialog.createQaBtn();
-            }
-        });
-        domObserver.observe(document.body, {
-            attributes: true
-        });
-    },
-    createQaBtn: function () {
-        var container = $('body');
-
-        var instance = this;
-
-        // add the dialog quick access icon
-        instance.qaBtn = $(instance.qaBtnTemplate);
-        instance.qaTooltip = $(instance.qaBtnTooltip);
-
-        container.append(instance.qaBtn);
-        container.append(instance.qaTooltip);
-
-        var showQaBtnTimer;
-
-        // move the quick access button around
-        // to the focused text field
-        // the focus event doesn't support bubbling
-        container.on('focusin', function (e) {
-
-            if (showQaBtnTimer) {
-                clearTimeout(showQaBtnTimer);
-            }
-
-            // add a small delay for showing the qa button.
-            // in case the element's styles change its position on focus.
-            // eg. gmail when you have multiple addresses configured,
-            // and the from fields shows/hides on focus.
-            showQaBtnTimer = setTimeout(function () {
-                instance.showQaBtn(e);
-            }, 350);
-
-        });
-
-        container.on('focusout', function (e) {
-            if (showQaBtnTimer) {
-                clearTimeout(showQaBtnTimer);
-            }
-            instance.hideQaBtn(e);
-        });
-
-        instance.qaBtn.on('mouseup', function (e) {
-
-            // return the focus to the element focused
-            // before clicking the qa button
-            dialog.prevFocus.focus();
-
-            // position the dialog under the qa button.
-            // since the focus node is now the button
-            // we have to pass the previous focus (the text node).
-            dialog.completion(e, {
-                focusNode: dialog.prevFocus,
-                dialogPositionNode: e.target,
-                source: 'button'
-            });
-
-            $('body').addClass('qa-btn-dropdown-show');
-        });
-
-        var showQaTooltip;
-        // Show tooltip
-        instance.qaBtn.on('mouseenter', function () {
-            if (showQaTooltip) {
-                clearTimeout(showQaTooltip);
-            }
-            showQaTooltip = setTimeout(function () {
-                var padding = 22;
-                var rect = instance.qaBtn[0].getBoundingClientRect();
-                instance.qaTooltip.css({
-                    top: rect.top - padding - parseInt(instance.qaTooltip.css('height'), 10) + "px",
-                    left: rect.left + 45 - parseInt(instance.qaTooltip.css('width'), 10) + "px"
-                });
-                instance.qaTooltip.show();
-            }, 500);
-
-        });
-
-        // Hide tooltip
-        instance.qaBtn.on('mouseleave', function () {
-            clearTimeout(showQaTooltip);
-            instance.qaTooltip.hide();
-        });
-
-
     },
     bindKeyboardEvents: function (doc) {
         Mousetrap.bindGlobal('up', function () {
@@ -521,7 +418,6 @@ var dialog = {
         }
 
         $(this.dialogSelector).removeClass('qt-dropdown-show');
-        $('body').removeClass('qa-btn-dropdown-show');
         $(this.searchSelector).val('');
 
         dialog.isActive = false;
@@ -530,135 +426,10 @@ var dialog = {
         dialog.quicktexts = [];
         dialog.cursorPosition = null;
 
-    },
-    showQaForElement: function (elem) {
-        var show = false;
-
-        // if the element is not a textarea
-        // input[type=text] or contenteditable
-        if ($(elem).is('textarea, input[type=text], [contenteditable]')) {
-            show = true;
-        }
-
-        // if the quick access button is focused/clicked
-        if (elem.className.indexOf('gorgias-qa-btn') !== -1) {
-            show = false;
-        }
-
-        // if the dialog search field is focused
-        if (elem.className.indexOf('qt-dropdown-search') !== -1) {
-            show = false;
-        }
-
-        // check if the element is big enough
-        // to only show the qa button for large textfields
-        if (show === true) {
-            var metrics = elem.getBoundingClientRect();
-            if (metrics.width < 100 || metrics.height < 30) {
-                show = false;
-            }
-        }
-
-        return show;
-
-    },
-    showQaBtn: function (e) {
-
-        var textfield = e.target;
-
-        // only show it for valid elements
-        if (!dialog.showQaForElement(textfield)) {
-            return false;
-        }
-
-        store.getSettings({
-            key: 'settings'
-        }).then((settings) => {
-            if (settings.qaBtn && settings.qaBtn.enabled === false) {
-                return;
-            }
-
-            $('body').addClass('gorgias-show-qa-btn');
-
-            dialog.prevFocus = textfield;
-
-            var qaBtn = dialog.qaBtn.get(0);
-
-            // padding from the top-right corner of the textfield
-            var padding = 10;
-
-            // positioning the quick-action button.
-            // Gmail is custom made
-            // TODO use the general positioning method for Gmail
-            if (window.location.origin === "https://mail.google.com") {
-                var gmailHook = $(textfield).closest('td');
-                if (gmailHook.length) {
-                    $(qaBtn).css({
-                        'top': padding + "px",
-                        'right': padding + "px",
-                        'left': 'initial'
-                    });
-                    qaBtn.remove();
-                    gmailHook.append(qaBtn);
-
-                    // First time a user uses our extension, we show it and then hide it
-                    if (settings.qaBtn && settings.qaBtn.hasOwnProperty('shownPostInstall')) {
-                        if (!settings.qaBtn.shownPostInstall) {
-                            $(qaBtn).trigger('mouseup');
-                            settings.qaBtn.shownPostInstall = true;
-                            store.setSettings({
-                                key: 'settings',
-                                val: settings
-                            });
-                        }
-                    }
-                    return;
-                }
-            } else {
-                activeTextfield = textfield;
-                setQaBtnPosition();
-                window.addEventListener('scroll', setQaBtnPosition, true);
-            }
-
-        });
-    },
-    hideQaBtn: function () {
-        activeTextfield = null;
-        window.removeEventListener('scroll', setQaBtnPosition, true);
-        document.body.classList.remove('gorgias-show-qa-btn');
     }
 };
 
-let activeTextfield = null;
-
-function setQaBtnPosition () {
-    if (!activeTextfield) {
-        return;
-    }
-    var qaBtn = dialog.qaBtn.get(0);
-    // padding from the top-right corner of the textfield
-    const padding = 5;
-
-    window.requestAnimationFrame(() => {
-        const textfieldRect = activeTextfield.getBoundingClientRect();
-        // top-right corner of the textfield
-        const top = textfieldRect.top + window.scrollY + padding;
-        const left = textfieldRect.right - window.scrollX - qaBtn.offsetWidth - padding * 2;
-
-        qaBtn.style.top = `${top}px`;
-        qaBtn.style.left = `${left}px`;
-    });
-}
-
 // dialog html templates
-dialog.qaBtnTemplate = `
-<span class="gorgias-qa-btn"></span>
-`;
-
-dialog.qaBtnTooltip = `
-<div class="gorgias-qa-tooltip">Search templates (CTRL+Space)</div>
-`;
-
 dialog.template = `
 <div class="qt-dropdown ${REGISTER_DISABLED ? 'briskine-register-disabled' : ''}">
     <div class="qt-info">

@@ -3,7 +3,8 @@
 
 import $ from 'jquery';
 
-import {insertText, parseTemplate, isContentEditable, enableQuickButton} from '../utils';
+import {insertText, parseTemplate, isContentEditable} from '../utils';
+import {enableBubble} from '../bubble';
 
 function parseList (list) {
     return list.filter(function (a) {
@@ -71,7 +72,7 @@ function getData (params) {
         bcc = $container.find('input[name=bcc]').toArray().map(function (a) {
             return a.value;
         });
-        subject = $container.find('input[name=subjectbox]').val().replace(/^Re: /, "");
+        subject = ($container.find('input[name=subjectbox]').val() || '').replace(/^Re: /, "");
     } else {
         from.push($('#guser').find('b').text());
         var toEl = $('#to');
@@ -306,7 +307,7 @@ function setup () {
         return false;
     }
 
-    enableQuickButton();
+    enableBubble();
 }
 
 setup();

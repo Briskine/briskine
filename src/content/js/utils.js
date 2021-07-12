@@ -231,11 +231,3 @@ export function parseTemplate (template = '', data = {}) {
 
     return Handlebars.compile(template)(PrepareVars(data));
 }
-
-export function enableQuickButton () {
-    document.body.dataset.gorgiasButton = 'true';
-}
-
-export function isQuickButtonEnabled () {
-    return !!document.body.dataset.gorgiasButton;
-}

@@ -110,14 +110,7 @@ function extensionConfig (env, safari = false) {
                 },
                 {
                     test: /\.(png|svg)$/,
-                    use: {
-                        loader: 'url-loader',
-                        options: {
-                            limit: 8192,
-                            outputPath: '../assets',
-                            publicPath: '/assets',
-                        }
-                    }
+                    type: 'asset'
                 }
             ]
         },
