@@ -20,7 +20,7 @@ function parseList (list) {
 var regExString = /"?([^ ]*)\s*(.*)"?\s*[(<]([^>)]+)[>)]/;
 var regExEmail = /([\w!.%+\-])+@([\w\-])+(?:\.[\w\-]+)+/;
 
-function parseString (string) {
+function parseString (string = '') {
     var match = regExString.exec(string.trim());
     var data = {
         name: '',
@@ -86,27 +86,49 @@ function getData (params) {
             }
         }
     } else {
-        data.from = [ $('#guser').find('b').text() ];
-        var toEl = $('#to');
+        // plain HTML gmail
+        const $user = document.querySelector('#guser b');
+        if ($user) {
+            data.from = [ parseString($user.innerText) ];
+        }
 
-        // Full options window
-        if (toEl.length) {
-            data.to = toEl.val().split(',');
-            data.cc = $('#cc').val().split(',');
-            data.bcc = $('#bcc').val().split(',');
-            data.subject = $('input[name=subject]').val();
-        } else { // Reply window
-            data.subject = $('h2 b').text();
-            var replyToAll = $('#replyall');
-            // It there are multiple reply to options
-            if (replyToAll.length) {
-                data.to = $('input[name=' + replyToAll.attr('name') + ']:checked').closest('tr').find('label')
-                // retrieve text but child nodes
-                    .clone().children().remove().end().text().trim().split(',');
-            } else {
-                data.to = $(params.element).closest('table').find('td').first().find('td').first()
-                // retrieve text but child nodes
-                    .clone().children().remove().end().text().trim().split(',');
+        const $to = document.querySelector('#to');
+
+        if ($to) {
+            // compose window
+            [ 'to', 'cc', 'bcc' ].forEach((fieldName) => {
+                const $field = document.getElementById(fieldName);
+                if ($field) {
+                    data[fieldName] = ($field.value || '').split(',');
+                }
+            });
+
+            const $subject = document.querySelector('input[name=subject]');
+            if ($subject) {
+                data.subject = $subject.value;
+            }
+        } else {
+            // reply window
+            const $subject = document.querySelector('h2 b');
+            if ($subject) {
+                data.subject = $subject.innerText;
+            }
+
+            const $replyAll = document.querySelector('#replyall');
+            // if there are multiple reply to options
+            if ($replyAll) {
+                // get the last text node next to the checked radio
+                const $container = params.element.closest('table');
+                if ($container) {
+                    const $to = $container.querySelector('input[type=radio]:checked');
+                    if ($to) {
+                        const $toContainer = $to.closest('tr');
+                        const $label = $toContainer.querySelector('label');
+                        const labelText = Array.from($label.childNodes).pop().textContent;
+                        data.to = labelText.split(',');
+                    }
+
+                }
             }
         }
 
