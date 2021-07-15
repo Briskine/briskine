@@ -66,9 +66,13 @@ function getData (params) {
         // TODO
         // if we use multiple aliases, get from details from
         // the alias selector at the top of the compose box.
-        const $fromSelector = document.querySelector(fromFieldSelector);
-        if ($fromSelector) {
-
+        // TODO merge with container below
+        const $container2 = params.element.closest(textfieldContainerSelector);
+        if ($container2) {
+            const $fromSelect = $container2.querySelector(fromFieldSelector);
+            if ($fromSelect) {
+                fromString = $fromSelect.innerText;
+            }
         }
 
         from.push(parseString(fromString));
@@ -182,8 +186,6 @@ function before (params, data) {
         $parent.find('textarea[name=bcc]').val(parsedBcc);
     }
 
-    // TODO
-    setFromField(params.element);
 }
 
 // insert attachment node on gmail editor
@@ -351,6 +353,11 @@ export default (params = {}) => {
     if (!isActive()) {
         return false;
     }
+
+    // TODO
+    // set the from field before getting data,
+    // to have up-to-date data.
+    setFromField(params.element);
 
     var data = getData(params);
     var parsedTemplate = parseTemplate(params.quicktext.body, data);
