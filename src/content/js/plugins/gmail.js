@@ -47,11 +47,13 @@ function parseString (string) {
 
 // get all required data from the dom
 function getData (params) {
-    var from = [],
-        to = [],
-        cc = [],
-        bcc = [],
-        subject = '';
+    const data = {
+        from: [],
+        to: [],
+        cc: [],
+        bcc: [],
+        subject: ''
+    };
 
     if (isContentEditable(params.element)) {
         const userInfoSelector = '.gb_bb';
@@ -61,54 +63,48 @@ function getData (params) {
         // get from details from global user info
         const fullNameText = $fullName ? $fullName.innerText : '';
         const emailText = $email ? $email.innerText : '';
-        let fromString = `${fullNameText} <${emailText}>`;
+        data.from = [ parseString(`${fullNameText} <${emailText}>`) ];
 
-        // TODO
-        // if we use multiple aliases, get from details from
-        // the alias selector at the top of the compose box.
-        // TODO merge with container below
-        const $container2 = params.element.closest(textfieldContainerSelector);
-        if ($container2) {
-            const $fromSelect = $container2.querySelector(fromFieldSelector);
+        const $container = params.element.closest(textfieldContainerSelector);
+        if ($container) {
+            // if we use multiple aliases,
+            // get from details from the alias selector at the top of the compose box.
+            const $fromSelect = $container.querySelector(fromFieldSelector);
             if ($fromSelect) {
-                fromString = $fromSelect.innerText;
+                data.from = [ parseString($fromSelect.innerText) ];
+            }
+
+            [ 'to', 'cc', 'bcc' ].forEach((fieldName) => {
+                data[fieldName] = Array.from($container.querySelectorAll(`input[name=${fieldName}]`)).map((field) => {
+                    return field.value;
+                });
+            });
+
+            const $subjectField = $container.querySelector('input[name=subjectbox]');
+            if ($subjectField) {
+                data.subject = ($subjectField.value || '').replace(/^Re: /, '');
             }
         }
-
-        from.push(parseString(fromString));
-
-        var $container = $(params.element).closest('table').parent().closest('table').parent().closest('table');
-
-        to = $container.find('input[name=to]').toArray().map(function (a) {
-            return a.value;
-        });
-        cc = $container.find('input[name=cc]').toArray().map(function (a) {
-            return a.value;
-        });
-        bcc = $container.find('input[name=bcc]').toArray().map(function (a) {
-            return a.value;
-        });
-        subject = ($container.find('input[name=subjectbox]').val() || '').replace(/^Re: /, "");
     } else {
-        from.push($('#guser').find('b').text());
+        data.from = [ $('#guser').find('b').text() ];
         var toEl = $('#to');
 
         // Full options window
         if (toEl.length) {
-            to = toEl.val().split(',');
-            cc = $('#cc').val().split(',');
-            bcc = $('#bcc').val().split(',');
-            subject = $('input[name=subject]').val();
+            data.to = toEl.val().split(',');
+            data.cc = $('#cc').val().split(',');
+            data.bcc = $('#bcc').val().split(',');
+            data.subject = $('input[name=subject]').val();
         } else { // Reply window
-            subject = $('h2 b').text();
+            data.subject = $('h2 b').text();
             var replyToAll = $('#replyall');
             // It there are multiple reply to options
             if (replyToAll.length) {
-                to = $('input[name=' + replyToAll.attr('name') + ']:checked').closest('tr').find('label')
+                data.to = $('input[name=' + replyToAll.attr('name') + ']:checked').closest('tr').find('label')
                 // retrieve text but child nodes
                     .clone().children().remove().end().text().trim().split(',');
             } else {
-                to = $(params.element).closest('table').find('td').first().find('td').first()
+                data.to = $(params.element).closest('table').find('td').first().find('td').first()
                 // retrieve text but child nodes
                     .clone().children().remove().end().text().trim().split(',');
             }
@@ -116,13 +112,11 @@ function getData (params) {
 
     }
 
-    return {
-        from: from,
-        to: parseList(to),
-        cc: parseList(cc),
-        bcc: parseList(bcc),
-        subject: subject
-   };
+    return Object.assign(data, {
+        to: parseList(data.to),
+        cc: parseList(data.cc),
+        bcc: parseList(data.bcc)
+    });
 }
 
 // TODO experimental from field support
