@@ -1,8 +1,6 @@
 /* Gmail plugin
  */
 
-import $ from 'jquery';
-
 import {insertText, parseTemplate, isContentEditable} from '../utils';
 import {enableBubble} from '../bubble';
 
@@ -162,11 +160,11 @@ function setFromField (textfield) {
 }
 
 function before (params, data) {
-    var $parent = $(params.element).closest('table.aoP');
+    const $parent = params.element.closest(textfieldContainerSelector);
 
     if (params.quicktext.subject) {
         var parsedSubject = parseTemplate(params.quicktext.subject, data);
-        $parent.find('input[name=subjectbox]').val(parsedSubject);
+        $parent.querySelector('input[name=subjectbox]').value = parsedSubject;
     }
 
     if (params.quicktext.to ||
@@ -176,32 +174,26 @@ function before (params, data) {
         // click the receipients row.
         // a little jumpy,
         // but the only to way to show the new value.
-        $parent.find('.aoD.hl').trigger('focus');
+        $parent.querySelector('.aoD.hl').focus();
     }
 
     if (params.quicktext.to) {
         var parsedTo = parseTemplate(params.quicktext.to, data);
-        $parent.find('textarea[name=to]').val(parsedTo);
+        $parent.querySelector('textarea[name=to]').value = parsedTo;
     }
 
-    if (params.quicktext.cc) {
-        var parsedCc = parseTemplate(params.quicktext.cc, data);
+    const buttonSelectors = {
+        cc: '.aB.gQ.pE',
+        bcc: '.aB.gQ.pB'
+    };
 
-        // click the cc button
-        $parent.find('.aB.gQ.pE').trigger('click');
-
-        $parent.find('textarea[name=cc]').val(parsedCc);
-    }
-
-    if (params.quicktext.bcc) {
-        var parsedBcc = parseTemplate(params.quicktext.bcc, data);
-
-        // click the bcc button
-        $parent.find('.aB.gQ.pB').trigger('click');
-
-        $parent.find('textarea[name=bcc]').val(parsedBcc);
-    }
-
+    [ 'cc', 'bcc' ].forEach((fieldName) => {
+        if (params.quicktext[fieldName]) {
+            const parsedField = parseTemplate(params.quicktext[fieldName], data);
+            $parent.querySelector(buttonSelectors[fieldName]).dispatchEvent(new MouseEvent('click', {bubbles: true}));
+            $parent.querySelector(`textarea[name=${fieldName}]`).value = parsedField;
+        }
+    });
 }
 
 // insert attachment node on gmail editor
