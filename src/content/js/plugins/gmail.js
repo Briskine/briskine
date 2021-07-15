@@ -109,6 +109,27 @@ function getData (params) {
    };
 }
 
+// TODO experimental from field support
+function setFromField () {
+    const $fromSelect = document.querySelector('.az2');
+    // HACK HARDCODED
+    const fromEmail = 'contact@briskine.com';
+
+    if ($fromSelect) {
+        const $option = document.querySelector(`[value="${fromEmail}"]`);
+        if ($option) {
+            // open custom select
+            $fromSelect.dispatchEvent(new MouseEvent('mousedown', {bubbles: true}));
+
+            // select option
+            $option.dispatchEvent(new MouseEvent('mousedown', {bubbles: true}));
+            // HACK mouseup needs to be triggered twice for the option to be selected
+            $option.dispatchEvent(new MouseEvent('mouseup', {bubbles: true}));
+            $option.dispatchEvent(new MouseEvent('mouseup', {bubbles: true}));
+        }
+    }
+}
+
 function before (params, data) {
     var $parent = $(params.element).closest('table.aoP');
 
@@ -149,6 +170,9 @@ function before (params, data) {
 
         $parent.find('textarea[name=bcc]').val(parsedBcc);
     }
+
+    // TODO
+    setFromField();
 }
 
 // insert attachment node on gmail editor
