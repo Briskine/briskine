@@ -6,6 +6,9 @@ import $ from 'jquery';
 import {insertText, parseTemplate, isContentEditable} from '../utils';
 import {enableBubble} from '../bubble';
 
+const fromFieldSelector = '.az2';
+const textfieldContainerSelector = '.M9';
+
 function parseList (list) {
     return list.filter(function (a) {
         return a;
@@ -55,9 +58,18 @@ function getData (params) {
         const $fullName = document.querySelector(`${userInfoSelector} *:first-child`);
         const $email = document.querySelector(`${userInfoSelector} *:nth-child(2)`);
 
+        // get from details from global user info
         const fullNameText = $fullName ? $fullName.innerText : '';
         const emailText = $email ? $email.innerText : '';
-        const fromString = `${fullNameText} <${emailText}>`;
+        let fromString = `${fullNameText} <${emailText}>`;
+
+        // TODO
+        // if we use multiple aliases, get from details from
+        // the alias selector at the top of the compose box.
+        const $fromSelector = document.querySelector(fromFieldSelector);
+        if ($fromSelector) {
+
+        }
 
         from.push(parseString(fromString));
 
@@ -110,17 +122,16 @@ function getData (params) {
 }
 
 // TODO experimental from field support
-function setFromField () {
-    const $fromSelect = document.querySelector('.az2');
+function setFromField (textfield) {
     // HACK HARDCODED
     const fromEmail = 'contact@briskine.com';
+    // get current compose container,
+    // in case we are in reply area.
+    const $container = textfield.closest(textfieldContainerSelector);
 
-    if ($fromSelect) {
-        const $option = document.querySelector(`[value="${fromEmail}"]`);
+    if ($container) {
+        const $option = $container.querySelector(`[value="${fromEmail}"][role=menuitem]`);
         if ($option) {
-            // open custom select
-            $fromSelect.dispatchEvent(new MouseEvent('mousedown', {bubbles: true}));
-
             // select option
             $option.dispatchEvent(new MouseEvent('mousedown', {bubbles: true}));
             // HACK mouseup needs to be triggered twice for the option to be selected
@@ -172,7 +183,7 @@ function before (params, data) {
     }
 
     // TODO
-    setFromField();
+    setFromField(params.element);
 }
 
 // insert attachment node on gmail editor
