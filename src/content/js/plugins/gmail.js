@@ -139,13 +139,11 @@ function getData (params) {
     });
 }
 
-// TODO experimental from field support
-function setFromField (textfield) {
-    // HACK HARDCODED
-    const fromEmail = 'contact@briskine.com';
+// from field support for aliases
+function setFromField ($textfield, fromEmail = '') {
     // get current compose container,
     // in case we are in reply area.
-    const $container = textfield.closest(textfieldContainerSelector);
+    const $container = $textfield.closest(textfieldContainerSelector);
 
     if ($container) {
         const $option = $container.querySelector(`[value="${fromEmail}"][role=menuitem]`);
@@ -362,10 +360,12 @@ export default (params = {}) => {
         return false;
     }
 
-    // TODO
+    // from field support, when using multiple aliases.
     // set the from field before getting data,
     // to have up-to-date data.
-    setFromField(params.element);
+    if (params.quicktext.from) {
+        setFromField(params.element, params.quicktext.from);
+    }
 
     var data = getData(params);
     var parsedTemplate = parseTemplate(params.quicktext.body, data);
