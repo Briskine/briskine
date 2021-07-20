@@ -209,6 +209,8 @@ customElements.define(
                     window.requestAnimationFrame(() => {
                         if (
                             e.target &&
+                            // must be an element node (eg. not the document)
+                            e.target.nodeType === Node.ELEMENT_NODE &&
                             e.target.contains(this.activeTextfield) &&
                             bubbleInstance &&
                             bubbleInstance.getAttribute('visible') === 'true'

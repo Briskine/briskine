@@ -7,6 +7,7 @@ import {isQuill} from '../utils/editor-quill';
 import {insertTemplate} from '../utils/editor-generic';
 import {htmlToText} from '../utils/plain-text';
 import {createContact} from '../utils/data-parse';
+import {enableBubble} from '../bubble';
 
 // get all required data from the dom
 function getData (params) {
@@ -147,6 +148,10 @@ function isMessageEditor (element) {
         element.getAttribute('contenteditable') === 'true' &&
         element.getAttribute('role') === 'textbox'
     );
+}
+
+if (isActive()) {
+    enableBubble();
 }
 
 export default (params = {}) => {
