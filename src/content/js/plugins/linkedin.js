@@ -150,9 +150,28 @@ function isMessageEditor (element) {
     );
 }
 
-if (isActive()) {
+function setup () {
+    if (!isActive()) {
+        return;
+    }
+
     enableBubble();
+
+    // custom linkedin styles
+    const css = `
+        <style>
+            /* the message form has a caret icon on the right side.
+             * position the bubble on the left side of the icon.
+             */
+            .msg-form b-bubble {
+                margin-right: 3rem;
+            }
+        </style>
+    `;
+    document.head.insertAdjacentHTML('beforeend', css);
 }
+
+setup();
 
 export default (params = {}) => {
     if (!isActive()) {
