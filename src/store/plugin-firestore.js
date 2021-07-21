@@ -621,7 +621,8 @@ function getDefaultTemplates () {
             `,
             to: 'to@briskine.com',
             cc: 'cc@briskine.com',
-            bcc: 'bcc@briskine.com'
+            bcc: 'bcc@briskine.com',
+            from: 'contact@briskine.com'
         });
     }
 

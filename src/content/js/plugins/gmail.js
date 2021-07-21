@@ -1,10 +1,11 @@
 /* Gmail plugin
  */
 
-import $ from 'jquery';
-
 import {insertText, parseTemplate, isContentEditable} from '../utils';
 import {enableBubble} from '../bubble';
+
+const fromFieldSelector = '.az2';
+const textfieldContainerSelector = '.M9';
 
 function parseList (list) {
     return list.filter(function (a) {
@@ -17,7 +18,7 @@ function parseList (list) {
 var regExString = /"?([^ ]*)\s*(.*)"?\s*[(<]([^>)]+)[>)]/;
 var regExEmail = /([\w!.%+\-])+@([\w\-])+(?:\.[\w\-]+)+/;
 
-function parseString (string) {
+function parseString (string = '') {
     var match = regExString.exec(string.trim());
     var data = {
         name: '',
@@ -44,77 +45,124 @@ function parseString (string) {
 
 // get all required data from the dom
 function getData (params) {
-    var from = [],
-        to = [],
-        cc = [],
-        bcc = [],
-        subject = '';
+    const data = {
+        from: [],
+        to: [],
+        cc: [],
+        bcc: [],
+        subject: ''
+    };
 
     if (isContentEditable(params.element)) {
         const userInfoSelector = '.gb_bb';
         const $fullName = document.querySelector(`${userInfoSelector} *:first-child`);
         const $email = document.querySelector(`${userInfoSelector} *:nth-child(2)`);
 
+        // get from details from global user info
         const fullNameText = $fullName ? $fullName.innerText : '';
         const emailText = $email ? $email.innerText : '';
-        const fromString = `${fullNameText} <${emailText}>`;
+        data.from = [ parseString(`${fullNameText} <${emailText}>`) ];
 
-        from.push(parseString(fromString));
+        const $container = params.element.closest(textfieldContainerSelector);
+        if ($container) {
+            // if we use multiple aliases,
+            // get from details from the alias selector at the top of the compose box.
+            const $fromSelect = $container.querySelector(fromFieldSelector);
+            if ($fromSelect) {
+                data.from = [ parseString($fromSelect.innerText) ];
+            }
 
-        var $container = $(params.element).closest('table').parent().closest('table').parent().closest('table');
+            [ 'to', 'cc', 'bcc' ].forEach((fieldName) => {
+                data[fieldName] = Array.from($container.querySelectorAll(`input[name=${fieldName}]`)).map((field) => {
+                    return field.value;
+                });
+            });
 
-        to = $container.find('input[name=to]').toArray().map(function (a) {
-            return a.value;
-        });
-        cc = $container.find('input[name=cc]').toArray().map(function (a) {
-            return a.value;
-        });
-        bcc = $container.find('input[name=bcc]').toArray().map(function (a) {
-            return a.value;
-        });
-        subject = ($container.find('input[name=subjectbox]').val() || '').replace(/^Re: /, "");
+            const $subjectField = $container.querySelector('input[name=subjectbox]');
+            if ($subjectField) {
+                data.subject = ($subjectField.value || '').replace(/^Re: /, '');
+            }
+        }
     } else {
-        from.push($('#guser').find('b').text());
-        var toEl = $('#to');
+        // plain HTML gmail
+        const $user = document.querySelector('#guser b');
+        if ($user) {
+            data.from = [ parseString($user.innerText) ];
+        }
 
-        // Full options window
-        if (toEl.length) {
-            to = toEl.val().split(',');
-            cc = $('#cc').val().split(',');
-            bcc = $('#bcc').val().split(',');
-            subject = $('input[name=subject]').val();
-        } else { // Reply window
-            subject = $('h2 b').text();
-            var replyToAll = $('#replyall');
-            // It there are multiple reply to options
-            if (replyToAll.length) {
-                to = $('input[name=' + replyToAll.attr('name') + ']:checked').closest('tr').find('label')
-                // retrieve text but child nodes
-                    .clone().children().remove().end().text().trim().split(',');
-            } else {
-                to = $(params.element).closest('table').find('td').first().find('td').first()
-                // retrieve text but child nodes
-                    .clone().children().remove().end().text().trim().split(',');
+        const $to = document.querySelector('#to');
+
+        if ($to) {
+            // compose window
+            [ 'to', 'cc', 'bcc' ].forEach((fieldName) => {
+                const $field = document.getElementById(fieldName);
+                if ($field) {
+                    data[fieldName] = ($field.value || '').split(',');
+                }
+            });
+
+            const $subject = document.querySelector('input[name=subject]');
+            if ($subject) {
+                data.subject = $subject.value;
+            }
+        } else {
+            // reply window
+            const $subject = document.querySelector('h2 b');
+            if ($subject) {
+                data.subject = $subject.innerText;
+            }
+
+            const $replyAll = document.querySelector('#replyall');
+            // if there are multiple reply to options
+            if ($replyAll) {
+                // get the last text node next to the checked radio
+                const $container = params.element.closest('table');
+                if ($container) {
+                    const $to = $container.querySelector('input[type=radio]:checked');
+                    if ($to) {
+                        const $toContainer = $to.closest('tr');
+                        const $label = $toContainer.querySelector('label');
+                        const labelText = Array.from($label.childNodes).pop().textContent;
+                        data.to = labelText.split(',');
+                    }
+
+                }
             }
         }
 
     }
 
-    return {
-        from: from,
-        to: parseList(to),
-        cc: parseList(cc),
-        bcc: parseList(bcc),
-        subject: subject
-   };
+    return Object.assign(data, {
+        to: parseList(data.to),
+        cc: parseList(data.cc),
+        bcc: parseList(data.bcc)
+    });
+}
+
+// from field support for aliases
+function setFromField ($textfield, fromEmail = '') {
+    // get current compose container,
+    // in case we are in reply area.
+    const $container = $textfield.closest(textfieldContainerSelector);
+
+    if ($container) {
+        const $option = $container.querySelector(`[value="${fromEmail}"][role=menuitem]`);
+        if ($option) {
+            // select option
+            $option.dispatchEvent(new MouseEvent('mousedown', {bubbles: true}));
+            // HACK mouseup needs to be triggered twice for the option to be selected
+            $option.dispatchEvent(new MouseEvent('mouseup', {bubbles: true}));
+            $option.dispatchEvent(new MouseEvent('mouseup', {bubbles: true}));
+        }
+    }
 }
 
 function before (params, data) {
-    var $parent = $(params.element).closest('table.aoP');
+    const $parent = params.element.closest(textfieldContainerSelector);
 
     if (params.quicktext.subject) {
         var parsedSubject = parseTemplate(params.quicktext.subject, data);
-        $parent.find('input[name=subjectbox]').val(parsedSubject);
+        $parent.querySelector('input[name=subjectbox]').value = parsedSubject;
     }
 
     if (params.quicktext.to ||
@@ -124,31 +172,26 @@ function before (params, data) {
         // click the receipients row.
         // a little jumpy,
         // but the only to way to show the new value.
-        $parent.find('.aoD.hl').trigger('focus');
+        $parent.querySelector('.aoD.hl').focus();
     }
 
     if (params.quicktext.to) {
         var parsedTo = parseTemplate(params.quicktext.to, data);
-        $parent.find('textarea[name=to]').val(parsedTo);
+        $parent.querySelector('textarea[name=to]').value = parsedTo;
     }
 
-    if (params.quicktext.cc) {
-        var parsedCc = parseTemplate(params.quicktext.cc, data);
+    const buttonSelectors = {
+        cc: '.aB.gQ.pE',
+        bcc: '.aB.gQ.pB'
+    };
 
-        // click the cc button
-        $parent.find('.aB.gQ.pE').trigger('click');
-
-        $parent.find('textarea[name=cc]').val(parsedCc);
-    }
-
-    if (params.quicktext.bcc) {
-        var parsedBcc = parseTemplate(params.quicktext.bcc, data);
-
-        // click the bcc button
-        $parent.find('.aB.gQ.pB').trigger('click');
-
-        $parent.find('textarea[name=bcc]').val(parsedBcc);
-    }
+    [ 'cc', 'bcc' ].forEach((fieldName) => {
+        if (params.quicktext[fieldName]) {
+            const parsedField = parseTemplate(params.quicktext[fieldName], data);
+            $parent.querySelector(buttonSelectors[fieldName]).dispatchEvent(new MouseEvent('click', {bubbles: true}));
+            $parent.querySelector(`textarea[name=${fieldName}]`).value = parsedField;
+        }
+    });
 }
 
 // insert attachment node on gmail editor
@@ -315,6 +358,13 @@ setup();
 export default (params = {}) => {
     if (!isActive()) {
         return false;
+    }
+
+    // from field support, when using multiple aliases.
+    // set the from field before getting data,
+    // to have up-to-date data.
+    if (params.quicktext.from) {
+        setFromField(params.element, params.quicktext.from);
     }
 
     var data = getData(params);

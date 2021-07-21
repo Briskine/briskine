@@ -7,6 +7,7 @@ import {isQuill} from '../utils/editor-quill';
 import {insertTemplate} from '../utils/editor-generic';
 import {htmlToText} from '../utils/plain-text';
 import {createContact} from '../utils/data-parse';
+import {enableBubble} from '../bubble';
 
 // get all required data from the dom
 function getData (params) {
@@ -148,6 +149,37 @@ function isMessageEditor (element) {
         element.getAttribute('role') === 'textbox'
     );
 }
+
+function setup () {
+    if (!isActive()) {
+        return;
+    }
+
+    enableBubble();
+
+    // custom linkedin styles
+    const css = `
+        <style>
+            /* the message form has a caret icon on the right side.
+             * position the bubble on the left side of the icon.
+             */
+            .msg-form b-bubble {
+                margin-right: 3em;
+            }
+
+            /* hide the bubble in the new post dialog.
+             * we cannot bypass the event listeners that hide the dialog when
+             * interacting with the dialog.
+             */
+            .editor-container b-bubble {
+                display: none;
+            }
+        </style>
+    `;
+    document.head.insertAdjacentHTML('beforeend', css);
+}
+
+setup();
 
 export default (params = {}) => {
     if (!isActive()) {
