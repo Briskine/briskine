@@ -2,7 +2,8 @@
 /* Outlook plugin
  */
 
-import {parseTemplate, insertText} from '../utils';
+import {parseTemplate} from '../utils';
+import {insertTemplate} from '../utils/editor-generic';
 import {createContact} from '../utils/data-parse';
 import {enableBubble} from '../bubble';
 
@@ -262,12 +263,13 @@ function isActive () {
     }
 
     activeCache = false;
-    var outlookScript = '/owa.0.js';
-    // trigger on loaded script,
+    // trigger on specific meta tag,
     // to support custom domains.
-    if (Array.from(document.scripts).some((script) => {
-        return (script.src || '').includes(outlookScript);
-    })) {
+    const $cdnMeta = document.querySelector('meta[name=cdnUrl]');
+    if (
+        $cdnMeta &&
+        ($cdnMeta.getAttribute('content') || '').includes('.cdn.office.net')
+    ) {
         activeCache = true;
     }
 
@@ -287,7 +289,7 @@ export default (params = {}) => {
     var parsedTemplate = parseTemplate(params.quicktext.body, data);
 
     return before(params, data).then((newParams) => {
-        insertText(Object.assign({
+        insertTemplate(Object.assign({
             text: parsedTemplate
         }, newParams));
 
