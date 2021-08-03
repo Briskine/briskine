@@ -176,8 +176,9 @@ function setup () {
         <style>
             /* the message form has a caret icon on the right side.
              * position the bubble on the left side of the icon.
+             * the separate inMail message form does not have the caret icon.
              */
-            .msg-form b-bubble {
+            .msg-form:not(.full-height) b-bubble {
                 margin-right: 3em;
             }
 
