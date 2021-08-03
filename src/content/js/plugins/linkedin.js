@@ -9,6 +9,20 @@ import {htmlToText} from '../utils/plain-text';
 import {createContact} from '../utils/data-parse';
 import {enableBubble} from '../bubble';
 
+function before (params, data) {
+    const $parent = params.element.closest('.msg-overlay-conversation-bubble');
+
+    if ($parent) {
+        // set subject field value.
+        // subject is only available for inMail messaging.
+        const $subjectField = $parent.querySelector('[name=subject]');
+        if (params.quicktext.subject && $subjectField) {
+            const parsedSubject = parseTemplate(params.quicktext.subject, data);
+            $subjectField.value = parsedSubject;
+        }
+    }
+}
+
 // get all required data from the dom
 function getData (params) {
     var vars = {
@@ -162,8 +176,9 @@ function setup () {
         <style>
             /* the message form has a caret icon on the right side.
              * position the bubble on the left side of the icon.
+             * the separate inMail message form does not have the caret icon.
              */
-            .msg-form b-bubble {
+            .msg-form:not(.full-height) b-bubble {
                 margin-right: 3em;
             }
 
@@ -231,6 +246,7 @@ export default (params = {}) => {
     // messaging, ember editor.
     // separate handling required for multi-line templates.
     if (isMessageEditor(params.element)) {
+        before(parsedParams, data);
         insertTemplate(parsedParams);
 
         // sends an empty paste event so the editor restructures the dom
