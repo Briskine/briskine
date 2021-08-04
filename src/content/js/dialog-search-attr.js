@@ -1,5 +1,5 @@
 /*
- * Support for the data-gorgias-search attribute.
+ * Support for the data-briskine-search attribute.
  * Setting the attribute on the editable element will set it's value in the dialog search.
  */
 
@@ -19,7 +19,8 @@ export default function enableDialogSearchAttr () {
             return;
         }
 
-        const search = document.activeElement.dataset.gorgiasSearch;
+        // support data-gorgias-search for backwards compatibility.
+        const search = document.activeElement.dataset.briskineSearch || document.activeElement.dataset.gorgiasSearch;
         const $search = document.querySelector(searchSelector);
         // if search is visible
         if ($search && $search.offsetParent) {
