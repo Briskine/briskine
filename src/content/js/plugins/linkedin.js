@@ -34,7 +34,7 @@ function getData (params) {
     let fromName = '';
     // global profile
     const $fromContainer = document.querySelector('.global-nav__me-photo');
-    if ($fromContainer) {
+    if ($fromContainer && $fromContainer.getAttribute('alt')) {
         fromName = $fromContainer.getAttribute('alt');
     }
 
