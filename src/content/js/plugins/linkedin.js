@@ -49,8 +49,8 @@ function getData (params) {
     let toName = '';
     // get the to field from the current viewed profile by default
     // eg. for the connect > add note field.
-    const $currentProfilePicture = document.querySelector('.presence-entity__image');
-    if ($currentProfilePicture) {
+    const $currentProfilePicture = document.querySelector('.pv-top-card-profile-picture__image');
+    if ($currentProfilePicture && $currentProfilePicture.hasAttribute('alt')) {
         toName = $currentProfilePicture.getAttribute('alt');
     }
 

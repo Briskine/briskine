@@ -6,7 +6,10 @@ import {insertText, parseTemplate} from '../utils';
 function getVariableAttribute (element) {
     const attributes = [ 'data-gorgias-variables', 'data-briskine-variables' ];
     const attribute = attributes.find((attr) => element.hasAttribute(attr));
-    return element.getAttribute(attribute);
+    const value = element.getAttribute(attribute);
+    // return empty string if attribute not found.
+    // getAttribute returns '' or null.
+    return value || '';
 }
 
 function isActive (element) {
