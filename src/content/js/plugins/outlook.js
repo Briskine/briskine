@@ -28,7 +28,7 @@ function getFieldData (field, $container) {
 
 // selector for to/cc/bcc containers
 function getContainers () {
-    return document.querySelectorAll('._3xQVXnr3pZctAOyZsR6kKL');
+    return document.querySelectorAll('.mKl0Jm0rZWFpSjB8Sy4mA');
 }
 
 function getToContainer () {
@@ -45,7 +45,7 @@ function getBccContainer () {
 
 // only 2 ms-Button--action (cc/bcc) in the message container
 function getFieldButtonSelector () {
-    return '.w9fmR2qvDpeMRg-Qi0UxM';
+    return '[role=region] ~ [role=complementary] .ms-Button--command';
 }
 
 function getCcButton () {

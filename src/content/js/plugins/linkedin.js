@@ -34,7 +34,7 @@ function getData (params) {
     let fromName = '';
     // global profile
     const $fromContainer = document.querySelector('.global-nav__me-photo');
-    if ($fromContainer) {
+    if ($fromContainer && $fromContainer.getAttribute('alt')) {
         fromName = $fromContainer.getAttribute('alt');
     }
 
@@ -49,8 +49,8 @@ function getData (params) {
     let toName = '';
     // get the to field from the current viewed profile by default
     // eg. for the connect > add note field.
-    const $currentProfilePicture = document.querySelector('.presence-entity__image');
-    if ($currentProfilePicture) {
+    const $currentProfilePicture = document.querySelector('.pv-top-card-profile-picture__image');
+    if ($currentProfilePicture && $currentProfilePicture.hasAttribute('alt')) {
         toName = $currentProfilePicture.getAttribute('alt');
     }
 
@@ -171,6 +171,20 @@ function setup () {
 
     enableBubble();
 
+    // Fix interaction with our dialog in LinkedIn modals.
+    // LinkedIn uses a focusout event on the body, that restores focus
+    // when modals (Create a Post, Add a Note after Connect) are open.
+    // These modals contain editors where you can open the dialog (with bubble or shortcut).
+    // Because our dialog is created outside the body, the focusout handler
+    // stops any sort of interaction with our dialog (focus, scroll, keyboard navigation).
+    // Prevent the LinkedIn event handler from being run, when interacting with our dialog.
+    const dialogSelector = '.qt-dropdown';
+    window.addEventListener('focusout', (e) => {
+        if (e.relatedTarget && e.relatedTarget.closest(dialogSelector)) {
+            e.stopImmediatePropagation();
+        }
+    }, true);
+
     // custom linkedin styles
     const css = `
         <style>
@@ -180,14 +194,6 @@ function setup () {
              */
             .msg-form:not(.full-height) b-bubble {
                 margin-right: 3em;
-            }
-
-            /* hide the bubble in the new post dialog.
-             * we cannot bypass the event listeners that hide the dialog when
-             * interacting with the dialog.
-             */
-            .editor-container b-bubble {
-                display: none;
             }
         </style>
     `;

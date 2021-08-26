@@ -3,10 +3,17 @@
 
 import {insertText, parseTemplate} from '../utils';
 
-const attributeVariables = 'data-gorgias-variables';
+function getVariableAttribute (element) {
+    const attributes = [ 'data-gorgias-variables', 'data-briskine-variables' ];
+    const attribute = attributes.find((attr) => element.hasAttribute(attr));
+    const value = element.getAttribute(attribute);
+    // return empty string if attribute not found.
+    // getAttribute returns '' or null.
+    return value || '';
+}
 
 function isActive (element) {
-    return element && element.hasAttribute(attributeVariables);
+    return element && getVariableAttribute(element);
 }
 
 function decodeAttribute (attr = '') {
@@ -14,8 +21,7 @@ function decodeAttribute (attr = '') {
 }
 
 function getData (element) {
-    const value = element.getAttribute(attributeVariables);
-    return decodeAttribute(value);
+    return decodeAttribute(getVariableAttribute(element));
 }
 
 export default (params = {}) => {
