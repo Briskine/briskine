@@ -12,7 +12,14 @@ import firebaseConfig from './config-firebase';
 // firebase
 firebase.initializeApp(firebaseConfig);
 
-var db = firebase.firestore();
+const firebaseAuth = firebase.auth();
+const db = firebase.firestore();
+
+// development emulators
+if (ENV === 'development') {
+  firebaseAuth.useEmulator('http://localhost:9099', { disableWarnings: true });
+  db.useEmulator('localhost', 5002);
+}
 
 // convert firestore timestamps to dates
 function convertToNativeDates (obj = {}) {
@@ -387,11 +394,11 @@ function setSignedInUser (user) {
     });
 }
 
-// firebase.auth().currentUser is not a promise
+// firebaseAuth.currentUser is not a promise
 // https://github.com/firebase/firebase-js-sdk/issues/462
 function getCurrentUser () {
     return new Promise((resolve, reject) => {
-        var unsubscribe = firebase.auth().onAuthStateChanged((user) => {
+        var unsubscribe = firebaseAuth.onAuthStateChanged((user) => {
             unsubscribe();
             resolve(user);
         }, reject);
@@ -410,7 +417,7 @@ function unsubscribeSnapshots () {
 }
 
 // auth change
-firebase.auth().onIdTokenChanged((firebaseUser) => {
+firebaseAuth.onIdTokenChanged((firebaseUser) => {
     if (!firebaseUser) {
         invalidateTemplateCache();
         unsubscribeSnapshots();
@@ -837,7 +844,7 @@ function updateCurrentUser (firebaseUser) {
 }
 
 var signin = (params = {}) => {
-    return firebase.auth().signInWithEmailAndPassword(params.email, params.password)
+    return firebaseAuth.signInWithEmailAndPassword(params.email, params.password)
         .then((authRes) => {
             return updateCurrentUser(authRes.user);
         })
@@ -870,7 +877,7 @@ var getSession = () => {
 };
 
 var logout = () => {
-    return firebase.auth().signOut()
+    return firebaseAuth.signOut()
         .then(() => {
             return request(`${Config.functionsUrl}/api/1/logout`, {
                     method: 'POST'
@@ -885,7 +892,7 @@ var logout = () => {
 };
 
 function signinWithToken (token = '') {
-    return firebase.auth().signInWithCustomToken(token)
+    return firebaseAuth.signInWithCustomToken(token)
         .then((res) => {
             return updateCurrentUser(res.user);
         })
@@ -968,7 +975,7 @@ function syncSettings (forceLocal = false) {
 
 window.addEventListener('message', function (event) {
     if (event.data.type === 'gorgias_message' && event.data.message === 'subscribe_success') {
-        updateCurrentUser(firebase.auth().currentUser);
+        updateCurrentUser(firebaseAuth.currentUser);
         window.store.trigger('subscribe-success');
     }
 });
