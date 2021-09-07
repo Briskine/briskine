@@ -84,9 +84,24 @@ customElements.define(
                 return '';
             };
 
+            this.switchTeam = (e) => {
+                if (e.target.parentNode) {
+                    e.target.parentNode.classList.add('block-loading');
+                }
+
+                const customerId = e.target.value;
+            };
+
             this.addEventListener('click', (e) => {
                 if (e.target.classList.contains('js-logout')) {
-                    store.logout();
+                    return store.logout();
+                }
+            });
+
+            this.addEventListener('change', (e) => {
+                const teamSelect = this.querySelector('#team-select');
+                if (e.target === teamSelect) {
+                    return this.switchTeam(e);
                 }
             });
         }
@@ -113,19 +128,14 @@ customElements.define(
                                     <label for="team-select" class="mb-1">
                                         Switch to a different team:
                                     </label>
-                                    <div
-                                        class="topbar-team-selector"
-                                        ng-class="{
-                                        'block-loading': $ctrl.loading
-                                        }"
-                                    >
+                                    <div>
                                         <select
                                             id="team-select"
                                             class="form-select"
                                         >
                                         ${this.user.customers.map((id) => {
                                             return `
-                                                <option value="id">
+                                                <option value="${id}">
                                                     ${this.getCustomerTitle(id)}'team
                                                 </option>
                                             `;
