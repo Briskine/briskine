@@ -36,7 +36,6 @@ var methods = [
     'setActiveCustomer',
 
     'getTemplate',
-    'clearLocalTemplates',
     'updateTemplateStats',
 
     'signin',

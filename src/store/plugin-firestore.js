@@ -742,20 +742,6 @@ var getTemplate = (params = {}) => {
 
 };
 
-// TODO clear local templates no longer used?
-// delete logged-out data
-var clearLocalTemplates = () => {
-    return new Promise((resolve) => {
-        var localDataContainer = {};
-        localDataContainer[localDataKey] = {};
-        browser.storage.local.set(localDataContainer).then(() => {
-            refreshTemplates();
-            return resolve();
-        });
-    });
-};
-
-
 // return user and token
 function getUserToken () {
     return getCurrentUser().then((currentUser) => {
@@ -1028,7 +1014,6 @@ export default {
     setActiveCustomer: setActiveCustomer,
 
     getTemplate: getTemplate,
-    clearLocalTemplates: clearLocalTemplates,
 
     signin: signin,
     logout: logout,
