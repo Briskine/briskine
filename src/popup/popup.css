@@ -175,6 +175,10 @@ a:hover,
     margin: 1em 0;
 }
 
+.team-selector {
+    padding: .6em 1em;
+}
+
 .popup-menu a {
     display: block;
     padding: .6em 1em;

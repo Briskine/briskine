@@ -772,6 +772,7 @@ function signinError (err) {
     };
 }
 
+// TODO update with method from app
 function updateCurrentUser (firebaseUser) {
     var userId = firebaseUser.uid;
     var user = {
@@ -797,6 +798,9 @@ function updateCurrentUser (firebaseUser) {
             user = Object.assign(user, {
                 // only support one customer for now
                 customer: userData.customers[0],
+
+                customers: userData.customers,
+
                 // backwards compatibility
                 info: {
                     name: userData.full_name,
@@ -903,6 +907,21 @@ function signinWithToken (token = '') {
         });
 }
 
+function getCustomer (customerId) {
+  let customer = {};
+  return customersCollection
+    .doc(customerId)
+    .get()
+    .then((res) => {
+      customer = res.data();
+      return usersCollection.doc(customer.owner).get();
+    })
+    .then((res) => {
+      customer.ownerDetails = res.data();
+      return customer;
+    });
+}
+
 // map old settings to new format
 function defaultSettings (oldSettings = {}) {
     const defaults = {
@@ -986,6 +1005,8 @@ export default {
 
     getLoginInfo: getLoginInfo,
     getAccount: getAccount,
+
+    getCustomer: getCustomer,
 
     getTemplate: getTemplate,
     clearLocalTemplates: clearLocalTemplates,

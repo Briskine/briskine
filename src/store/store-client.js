@@ -32,6 +32,8 @@ var methods = [
     'getLoginInfo',
     'getAccount',
 
+    'getCustomer',
+
     'getTemplate',
     'clearLocalTemplates',
     'updateTemplateStats',

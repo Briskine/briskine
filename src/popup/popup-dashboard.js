@@ -52,12 +52,37 @@ customElements.define(
 
             this.user = {};
             this.isFree = null;
-            store.getAccount().then((res) => {
-                this.user = res;
-                this.isFree = this.user.current_subscription.plan === 'free';
+            this.customers = {};
+            store.getAccount()
+                .then((res) => {
+                    this.user = res;
+                    this.isFree = this.user.current_subscription.plan === 'free';
 
-                this.connectedCallback();
-            });
+                    // re-render after loading user
+                    this.connectedCallback();
+
+                    return Promise.all(
+                        this.user.customers.map((customerId) => {
+                            return store.getCustomer(customerId).then((customerData) => {
+                                this.customers[customerId] = customerData;
+                                return customerId;
+                            });
+                        })
+                    );
+                })
+                .then(() => {
+                    // re-render after loading customers
+                    this.connectedCallback();
+                });
+
+            this.getCustomerTitle = (customerId) => {
+                const customerData = this.customers[customerId];
+                if (customerData && customerData.ownerDetails) {
+                    return customerData.ownerDetails.full_name || customerData.ownerDetails.email;
+                }
+
+                return '';
+            };
 
             this.addEventListener('click', (e) => {
                 if (e.target.classList.contains('js-logout')) {
@@ -75,6 +100,41 @@ customElements.define(
                     </div>
 
                     <ul class="list-unstyled popup-menu">
+                        ${this.user.customers && this.user.customers.length > 1 && `
+                            <li>
+                                <form class="team-selector">
+                                    <div class="form-text mb-2">
+                                        You're signed in to
+                                        <strong>
+                                        ${this.getCustomerTitle(this.user.customer)}'s
+                                        </strong>
+                                        team.
+                                    </div>
+                                    <label for="team-select" class="mb-1">
+                                        Switch to a different team:
+                                    </label>
+                                    <div
+                                        class="topbar-team-selector"
+                                        ng-class="{
+                                        'block-loading': $ctrl.loading
+                                        }"
+                                    >
+                                        <select
+                                            id="team-select"
+                                            class="form-select"
+                                        >
+                                        ${this.user.customers.map((id) => {
+                                            return `
+                                                <option value="id">
+                                                    ${this.getCustomerTitle(id)}'team
+                                                </option>
+                                            `;
+                                        })}
+                                        </select>
+                                    </div>
+                                </form>
+                            </li>
+                        ` || ''}
                         <li>
                             <a href="${Config.functionsUrl}/#/list?id=new&src=popup" target="${Config.dashboardTarget}">
                                 <span class="icon">${plusSquare}</span>
