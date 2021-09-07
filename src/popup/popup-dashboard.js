@@ -90,6 +90,10 @@ customElements.define(
                 }
 
                 const customerId = e.target.value;
+                store.setActiveCustomer(customerId)
+                    .then(() => {
+                        window.location.reload();
+                    });
             };
 
             this.addEventListener('click', (e) => {
@@ -135,7 +139,10 @@ customElements.define(
                                         >
                                         ${this.user.customers.map((id) => {
                                             return `
-                                                <option value="${id}">
+                                                <option
+                                                    value="${id}"
+                                                    ${id === this.user.customer && 'selected' || ''}
+                                                >
                                                     ${this.getCustomerTitle(id)}'team
                                                 </option>
                                             `;

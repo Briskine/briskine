@@ -139,7 +139,10 @@ function request (url, params = {}) {
 function refreshTemplates () {
     // invalidate cache
     invalidateTemplateCache();
+
     // backwards compatibility
+    // TODO do we still use templates-sync?
+    // how about the global store pubsub events?
     window.store.trigger('templates-sync');
 }
 
@@ -416,6 +419,25 @@ function unsubscribeSnapshots () {
     });
 }
 
+// setup template change listeners on user or customer changes
+function setupTemplates (user) {
+    // refresh templates on changes
+    subscribeSnapshots([
+        templatesOwnedQuery(user).onSnapshot(refreshTemplates),
+        templatesSharedQuery(user).onSnapshot(refreshTemplates),
+        templatesEveryoneQuery(user).onSnapshot(refreshTemplates),
+        // customer changes (eg. subscription updated)
+        customersCollection.doc(user.customer).onSnapshot(() => {
+            return getCurrentUser().then((firebaseUser) => {
+                return updateCurrentUser(firebaseUser);
+            });
+        })
+    ]);
+
+    // populate in-memory template cache
+    return getTemplate();
+}
+
 // auth change
 firebaseAuth.onIdTokenChanged((firebaseUser) => {
     if (!firebaseUser) {
@@ -428,19 +450,7 @@ firebaseAuth.onIdTokenChanged((firebaseUser) => {
     return updateCurrentUser(firebaseUser).then(() => {
         return getSignedInUser()
             .then((user) => {
-                // refresh templates on changes
-                subscribeSnapshots([
-                    templatesOwnedQuery(user).onSnapshot(refreshTemplates),
-                    templatesSharedQuery(user).onSnapshot(refreshTemplates),
-                    templatesEveryoneQuery(user).onSnapshot(refreshTemplates),
-                    // customer changes (eg. subscription updated)
-                    customersCollection.doc(user.customer).onSnapshot(() => {
-                        updateCurrentUser(firebaseUser);
-                    })
-                ]);
-
-                // populate in-memory template cache
-                getTemplate();
+                return setupTemplates(user);
             })
             .catch((err) => {
                 if (isLoggedOut(err)) {
@@ -732,6 +742,7 @@ var getTemplate = (params = {}) => {
 
 };
 
+// TODO clear local templates no longer used?
 // delete logged-out data
 var clearLocalTemplates = () => {
     return new Promise((resolve) => {
@@ -772,79 +783,75 @@ function signinError (err) {
     };
 }
 
-// TODO update with method from app
 function updateCurrentUser (firebaseUser) {
-    var userId = firebaseUser.uid;
-    var user = {
-        id: userId,
-        email: firebaseUser.email,
-        created_datetime: new Date(firebaseUser.metadata.creationTime)
-    };
+    let user = {};
+    let cachedUser = {};
 
-    // HACK firestore throws an insufficient permissions error
-    // if we trigger immediately after signInWithEmailAndPassword()
-    var delay = new Promise((resolve) => {
-        setTimeout(resolve, 500);
-    });
+    // get cached user,
+    // for customer switching
+    return getSignedInUser()
+      .then((user) => {
+        cachedUser = user;
+        return cachedUser;
+      })
+      // logged-out
+      .catch(() => {return;})
+      .then(() => {
+          // get data from users collection
+          return usersCollection.doc(firebaseUser.uid).get();
+      })
+      .then((userDoc) => {
+          // get data from users collection
+          const userData = userDoc.data();
 
-    return delay
-        .then(() => {
-            // get data from users collection
-            return usersCollection.doc(userId).get();
-        })
-        .then((userDoc) => {
-            // get data from users collection
-            var userData = userDoc.data();
-            user = Object.assign(user, {
-                // only support one customer for now
-                customer: userData.customers[0],
+          user = {
+              id: firebaseUser.uid,
+              email: userData.email,
 
-                customers: userData.customers,
+              // customers user is member of
+              customers: userData.customers,
+              // active customer
+              // default to first customer
+              customer: userData.customers[0],
 
-                // backwards compatibility
-                info: {
-                    name: userData.full_name,
-                    share_all: userData.share_all || false
-                },
-                editor: {
-                    enabled: true
-                },
-                is_loggedin: true,
-                created_datetime: '',
-                current_subscription: {
-                    active: false,
-                    created_datetime: '',
-                    plan: '',
-                    quantity: 1
-                },
-                is_staff: false
-            });
+              // backwards compatibility
+              info: {
+                  name: userData.full_name,
+                  share_all: userData.share_all || false
+              },
+              current_subscription: {
+                  active: false,
+                  created_datetime: '',
+                  plan: '',
+                  quantity: 1
+              }
+          };
 
-            return customersCollection.doc(user.customer).get();
-        })
-        .then((customer) => {
-            var customerData = customer.data();
-            var isCustomer = false;
-            if (customerData.owner === user.id) {
-                isCustomer = true;
-            }
+          // customer switching support.
+          // get specific user from parameter, or from cache.
+          // only update customer if part cu current user's customers.
+          let newCustomer = firebaseUser.customer || cachedUser.customer;
+          if (user.customers.includes(newCustomer)) {
+            user.customer = newCustomer;
+          }
 
-            user = Object.assign({
-                is_customer: isCustomer
-            }, user);
+          return customersCollection.doc(user.customer).get();
+      })
+      .then((customer) => {
+          var customerData = customer.data();
+          // subscription data
+          user.current_subscription = Object.assign(user.current_subscription, {
+              plan: customerData.subscription.plan,
+              quantity: customerData.subscription.quantity
+          });
 
-            // subscription data
-            user.current_subscription = Object.assign(user.current_subscription, {
-                plan: customerData.subscription.plan,
-                quantity: customerData.subscription.quantity
-            });
+          // only premium or bonus plans are active
+          if (customerData.subscription.plan !== 'free') {
+              user.current_subscription.active = true;
+          }
 
-            if (!customerData.subscription.canceled_datetime) {
-                user.current_subscription.active = true;
-            }
-
-            return setSignedInUser(user);
-        });
+          return setSignedInUser(user);
+      });
 }
 
 var signin = (params = {}) => {
@@ -920,6 +927,17 @@ function getCustomer (customerId) {
       customer.ownerDetails = res.data();
       return customer;
     });
+}
+
+function setActiveCustomer (customerId) {
+    // TODO we need refresh templates is we still use templates-sync somewhere
+//     refreshTemplates();
+    invalidateTemplateCache();
+    unsubscribeSnapshots();
+
+    return updateCurrentUser(
+        Object.assign(firebaseAuth.currentUser, {customer: customerId})
+    );
 }
 
 // map old settings to new format
@@ -1007,6 +1025,7 @@ export default {
     getAccount: getAccount,
 
     getCustomer: getCustomer,
+    setActiveCustomer: setActiveCustomer,
 
     getTemplate: getTemplate,
     clearLocalTemplates: clearLocalTemplates,

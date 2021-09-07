@@ -33,6 +33,7 @@ var methods = [
     'getAccount',
 
     'getCustomer',
+    'setActiveCustomer',
 
     'getTemplate',
     'clearLocalTemplates',
