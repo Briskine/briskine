@@ -982,13 +982,6 @@ function syncSettings (forceLocal = false) {
         });
 }
 
-window.addEventListener('message', function (event) {
-    if (event.data.type === 'gorgias_message' && event.data.message === 'subscribe_success') {
-        updateCurrentUser(firebaseAuth.currentUser);
-        window.store.trigger('subscribe-success');
-    }
-});
-
 export default {
     getSettings: getSettings,
     setSettings: setSettings,
