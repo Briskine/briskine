@@ -134,18 +134,6 @@ function request (url, params = {}) {
         });
 }
 
-// backwards compatibility
-// update template list
-function refreshTemplates () {
-    // invalidate cache
-    invalidateTemplateCache();
-
-    // backwards compatibility
-    // TODO do we still use templates-sync?
-    // how about the global store pubsub events?
-    window.store.trigger('templates-sync');
-}
-
 // local data (when logged-out)
 var localDataKey = 'firestoreLocalData';
 function getLocalData (params = {}) {
@@ -423,9 +411,9 @@ function unsubscribeSnapshots () {
 function setupTemplates (user) {
     // refresh templates on changes
     subscribeSnapshots([
-        templatesOwnedQuery(user).onSnapshot(refreshTemplates),
-        templatesSharedQuery(user).onSnapshot(refreshTemplates),
-        templatesEveryoneQuery(user).onSnapshot(refreshTemplates),
+        templatesOwnedQuery(user).onSnapshot(invalidateTemplateCache),
+        templatesSharedQuery(user).onSnapshot(invalidateTemplateCache),
+        templatesEveryoneQuery(user).onSnapshot(invalidateTemplateCache),
         // customer changes (eg. subscription updated)
         customersCollection.doc(user.customer).onSnapshot(() => {
             return getCurrentUser().then((firebaseUser) => {
@@ -916,8 +904,6 @@ function getCustomer (customerId) {
 }
 
 function setActiveCustomer (customerId) {
-    // TODO we need refresh templates is we still use templates-sync somewhere
-//     refreshTemplates();
     invalidateTemplateCache();
     unsubscribeSnapshots();
 
