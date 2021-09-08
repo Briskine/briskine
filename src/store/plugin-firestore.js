@@ -629,6 +629,12 @@ function getDefaultTemplates () {
             bcc: 'bcc@briskine.com',
             from: 'contact@briskine.com'
         });
+
+        defaultTemplates.push({
+            title: 'broken',
+            shortcut: 'broken',
+            body: 'Hello {{to.first_name}'
+        });
     }
 
     const legacyTemplates = {};

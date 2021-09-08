@@ -243,5 +243,12 @@ export function parseTemplate (template = '', data = {}) {
         email: email
     };
 
-    return Handlebars.compile(template)(PrepareVars(data));
+    let compiledTemplate = '';
+    try {
+        compiledTemplate = Handlebars.compile(template)(PrepareVars(data));
+    } catch (err) {
+        compiledTemplate = `<pre>${err.message || err}</pre>`;
+    }
+
+    return compiledTemplate;
 }
