@@ -1,24 +1,42 @@
 /* globals ENV */
 import browser from 'webextension-polyfill';
-import firebase from 'firebase/app';
-import 'firebase/auth';
-import 'firebase/firestore';
-import 'firebase/storage';
+
+import {initializeApp} from 'firebase/app';
+import {
+  getAuth,
+  connectAuthEmulator,
+  signInWithEmailAndPassword,
+  signInWithCustomToken,
+  onIdTokenChanged,
+  onAuthStateChanged,
+  signOut
+} from 'firebase/auth';
+import {
+  getFirestore,
+  connectFirestoreEmulator,
+  doc,
+  getDoc,
+  collection,
+  query,
+  where,
+  getDocs,
+  onSnapshot,
+  updateDoc
+} from 'firebase/firestore';
+
 import {defaults as _defaults, isEmpty as _isEmpty} from 'underscore';
 
 import Config from '../config';
 import firebaseConfig from './config-firebase';
 
-// firebase
-firebase.initializeApp(firebaseConfig);
-
-const firebaseAuth = firebase.auth();
-const db = firebase.firestore();
+const firebaseApp = initializeApp(firebaseConfig);
+const firebaseAuth = getAuth(firebaseApp);
+const db = getFirestore(firebaseApp);
 
 // development emulators
 if (ENV === 'development') {
-  firebaseAuth.useEmulator('http://localhost:9099', { disableWarnings: true });
-  db.useEmulator('localhost', 5002);
+    connectAuthEmulator(firebaseAuth, 'http://localhost:9099', { disableWarnings: true });
+    connectFirestoreEmulator(db, 'localhost', 5002);
 }
 
 // convert firestore timestamps to dates
@@ -389,7 +407,7 @@ function setSignedInUser (user) {
 // https://github.com/firebase/firebase-js-sdk/issues/462
 function getCurrentUser () {
     return new Promise((resolve, reject) => {
-        var unsubscribe = firebaseAuth.onAuthStateChanged((user) => {
+        var unsubscribe = onAuthStateChanged(firebaseAuth, (user) => {
             unsubscribe();
             resolve(user);
         }, reject);
@@ -409,25 +427,27 @@ function unsubscribeSnapshots () {
 
 // setup template change listeners on user or customer changes
 function setupTemplates (user) {
-    // refresh templates on changes
-    subscribeSnapshots([
-        templatesOwnedQuery(user).onSnapshot(invalidateTemplateCache),
-        templatesSharedQuery(user).onSnapshot(invalidateTemplateCache),
-        templatesEveryoneQuery(user).onSnapshot(invalidateTemplateCache),
-        // customer changes (eg. subscription updated)
-        customersCollection.doc(user.customer).onSnapshot(() => {
-            return getCurrentUser().then((firebaseUser) => {
-                return updateCurrentUser(firebaseUser);
-            });
-        })
-    ]);
+  unsubscribeSnapshots()
 
-    // populate in-memory template cache
-    return getTemplate();
+  // refresh templates on changes
+  subscribeSnapshots([
+      onSnapshot(templatesOwnedQuery(user), invalidateTemplateCache),
+      onSnapshot(templatesSharedQuery(user), invalidateTemplateCache),
+      onSnapshot(templatesEveryoneQuery(user), invalidateTemplateCache),
+      // customer changes (eg. subscription updated)
+      onSnapshot(doc(customersCollection, user.customer), () => {
+          return getCurrentUser().then((firebaseUser) => {
+              return updateCurrentUser(firebaseUser);
+          });
+      })
+  ]);
+
+  // populate in-memory template cache
+  return getTemplate();
 }
 
 // auth change
-firebaseAuth.onIdTokenChanged((firebaseUser) => {
+onIdTokenChanged(firebaseAuth, (firebaseUser) => {
     if (!firebaseUser) {
         invalidateTemplateCache();
         unsubscribeSnapshots();
@@ -454,15 +474,15 @@ firebaseAuth.onIdTokenChanged((firebaseUser) => {
 var getLoginInfo = getSignedInUser;
 var getAccount = getSignedInUser;
 
-var usersCollection = db.collection('users');
-var customersCollection = db.collection('customers');
-var templatesCollection = db.collection('templates');
-var tagsCollection = db.collection('tags');
+const usersCollection = collection(db, 'users');
+const customersCollection = collection(db, 'customers');
+const templatesCollection = collection(db, 'templates');
+const tagsCollection = collection(db, 'tags');
 
 function getTags () {
     return getSignedInUser()
         .then((user) => {
-            return tagsCollection.where('customer', '==', user.customer).get();
+            return getDocs(query(tagsCollection, where('customer', '==', user.customer)));
         })
         .then((snapshot) => {
             return snapshot.docs.map((tag) => {
@@ -496,42 +516,45 @@ function idsToTags (tagIds) {
 }
 
 function templatesOwnedQuery (user) {
-    return templatesCollection
-        .where('customer', '==', user.customer)
-        .where('owner', '==', user.id)
-        .where('deleted_datetime', '==', null);
+    return query(
+        templatesCollection,
+        where('customer', '==', user.customer),
+        where('owner', '==', user.id),
+        where('deleted_datetime', '==', null)
+    )
 }
 
 // my templates
 function getTemplatesOwned (user) {
-    return templatesOwnedQuery(user)
-        .get();
+    return getDocs(templatesOwnedQuery(user));
 }
 
 function templatesSharedQuery (user) {
-    return templatesCollection
-        .where('customer', '==', user.customer)
-        .where('shared_with', 'array-contains', user.id)
-        .where('deleted_datetime', '==', null);
+    return query(
+      templatesCollection,
+      where('customer', '==', user.customer),
+      where('shared_with', 'array-contains', user.id),
+      where('deleted_datetime', '==', null)
+    )
 }
 
 // templates shared with me
 function getTemplatesShared (user) {
-    return templatesSharedQuery(user)
-        .get();
+    return getDocs(templatesSharedQuery(user))
 }
 
 function templatesEveryoneQuery (user) {
-    return templatesCollection
-        .where('customer', '==', user.customer)
-        .where('sharing', '==', 'everyone')
-        .where('deleted_datetime', '==', null);
+    return query(
+      templatesCollection,
+      where('customer', '==', user.customer),
+      where('sharing', '==', 'everyone'),
+      where('deleted_datetime', '==', null)
+    )
 }
 
 // templates shared with everyone
 function getTemplatesForEveryone (user) {
-    return templatesEveryoneQuery(user)
-        .get();
+    return getDocs(templatesEveryoneQuery(user))
 }
 
 // template in-memory cache
@@ -658,7 +681,7 @@ var getTemplate = (params = {}) => {
                 return getTemplatesFromCache(params.id)
                     .catch(() => {
                         // template not in cache
-                        return templatesCollection.doc(params.id).get()
+                        return getDoc(doc(templatesCollection, params.id))
                             .then((res) => res.data())
                             .then((res) => {
                                 templateData = res;
@@ -778,7 +801,7 @@ function updateCurrentUser (firebaseUser) {
       .catch(() => {return;})
       .then(() => {
           // get data from users collection
-          return usersCollection.doc(firebaseUser.uid).get();
+          return getDoc(doc(usersCollection, firebaseUser.uid));
       })
       .then((userDoc) => {
           // get data from users collection
@@ -815,7 +838,7 @@ function updateCurrentUser (firebaseUser) {
             user.customer = newCustomer;
           }
 
-          return customersCollection.doc(user.customer).get();
+          return getDoc(doc(customersCollection, user.customer));
       })
       .then((customer) => {
           var customerData = customer.data();
@@ -835,7 +858,7 @@ function updateCurrentUser (firebaseUser) {
 }
 
 var signin = (params = {}) => {
-    return firebaseAuth.signInWithEmailAndPassword(params.email, params.password)
+    return signInWithEmailAndPassword(firebaseAuth, params.email, params.password)
         .then((authRes) => {
             return updateCurrentUser(authRes.user);
         })
@@ -868,7 +891,7 @@ var getSession = () => {
 };
 
 var logout = () => {
-    return firebaseAuth.signOut()
+    return signOut(firebaseAuth)
         .then(() => {
             return request(`${Config.functionsUrl}/api/1/logout`, {
                     method: 'POST'
@@ -883,7 +906,7 @@ var logout = () => {
 };
 
 function signinWithToken (token = '') {
-    return firebaseAuth.signInWithCustomToken(token)
+    return signInWithCustomToken(firebaseAuth, token)
         .then((res) => {
             return updateCurrentUser(res.user);
         })
@@ -896,12 +919,10 @@ function signinWithToken (token = '') {
 
 function getCustomer (customerId) {
   let customer = {};
-  return customersCollection
-    .doc(customerId)
-    .get()
+  return getDoc(doc(customersCollection, customerId))
     .then((res) => {
       customer = res.data();
-      return usersCollection.doc(customer.owner).get();
+      return getDoc(doc(usersCollection, customer.owner));
     })
     .then((res) => {
       customer.ownerDetails = res.data();
@@ -976,7 +997,7 @@ function syncSettings (forceLocal = false) {
             return getSignedInUser();
         })
         .then((user) => {
-            return usersCollection.doc(user.id).update(settingsMap);
+            return updateDoc(doc(usersCollection, user.id), settingsMap);
         })
         .catch((err) => {
             if (isLoggedOut(err)) {
