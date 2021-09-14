@@ -18,7 +18,7 @@ export default {
         }
 
         var index = this.observers[topic].indexOf(observer);
-        if (~index) {
+        if (index !== -1) {
             this.observers[topic].splice(index, 1);
         }
     },

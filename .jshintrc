@@ -1,12 +1,18 @@
 {
-    "esversion": 6,
-    "unused": true,
-    "undef": true,
-    "browser": true,
-    "module": true,
-    "globals": {
-        "describe": true,
-        "it": true,
-        "customElements": true
-    }
+  "esversion": 6,
+  "unused": true,
+  "undef": true,
+  "browser": true,
+  "module": true,
+  "asi": true,
+  "curly": true,
+  "eqeqeq": true,
+  "bitwise": true,
+  "nonbsp": true,
+  "nonew": true,
+  "globals": {
+    "describe": true,
+    "it": true,
+    "customElements": true
+  }
 }

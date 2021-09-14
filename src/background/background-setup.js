@@ -41,10 +41,10 @@ browser.tabs.onUpdated.addListener(updatedTab);
 // Called after installation
 // https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/runtime/onInstalled
 browser.runtime.onInstalled.addListener(function (details) {
-    if (details.reason == "install") {
+    if (details.reason === "install") {
         // reset settings
         resetSettings();
-    } else if (details.reason == "update") {
+    } else if (details.reason === "update") {
         window.store.getSettings({
             key: 'hints'
         }).then((hints) => {
@@ -88,7 +88,7 @@ browser.runtime.onInstalled.addListener(function (details) {
     });
 
     if (!REGISTER_DISABLED) {
-        if (details.reason == "install") {
+        if (details.reason === "install") {
             browser.tabs.create({
                 url: `${Config.functionsUrl}/welcome`
             });
