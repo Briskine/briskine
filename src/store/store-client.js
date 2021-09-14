@@ -32,8 +32,10 @@ var methods = [
     'getLoginInfo',
     'getAccount',
 
+    'getCustomer',
+    'setActiveCustomer',
+
     'getTemplate',
-    'clearLocalTemplates',
     'updateTemplateStats',
 
     'signin',

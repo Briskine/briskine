@@ -52,16 +52,60 @@ customElements.define(
 
             this.user = {};
             this.isFree = null;
-            store.getAccount().then((res) => {
-                this.user = res;
-                this.isFree = this.user.current_subscription.plan === 'free';
+            this.customers = {};
+            store.getAccount()
+                .then((res) => {
+                    this.user = res;
+                    this.isFree = this.user.current_subscription.plan === 'free';
 
-                this.connectedCallback();
-            });
+                    // re-render after loading user
+                    this.connectedCallback();
+
+                    return Promise.all(
+                        this.user.customers.map((customerId) => {
+                            return store.getCustomer(customerId).then((customerData) => {
+                                this.customers[customerId] = customerData;
+                                return customerId;
+                            });
+                        })
+                    );
+                })
+                .then(() => {
+                    // re-render after loading customers
+                    this.connectedCallback();
+                });
+
+            this.getCustomerTitle = (customerId) => {
+                const customerData = this.customers[customerId];
+                if (customerData && customerData.ownerDetails) {
+                    return customerData.ownerDetails.full_name || customerData.ownerDetails.email;
+                }
+
+                return '';
+            };
+
+            this.switchTeam = (e) => {
+                if (e.target.parentNode) {
+                    e.target.parentNode.classList.add('block-loading');
+                }
+
+                const customerId = e.target.value;
+                store.setActiveCustomer(customerId)
+                    .then(() => {
+                        window.location.reload();
+                    });
+            };
 
             this.addEventListener('click', (e) => {
                 if (e.target.classList.contains('js-logout')) {
-                    store.logout();
+                    return store.logout();
+                }
+            });
+
+            this.addEventListener('change', (e) => {
+                const teamSelect = this.querySelector('#team-select');
+                if (e.target === teamSelect) {
+                    return this.switchTeam(e);
                 }
             });
         }
@@ -75,6 +119,39 @@ customElements.define(
                     </div>
 
                     <ul class="list-unstyled popup-menu">
+                        ${this.user.customers && this.user.customers.length > 1 && `
+                            <li>
+                                <form class="team-selector">
+                                    <div class="form-text mb-2">
+                                        You're signed in to
+                                        <strong>
+                                        ${this.getCustomerTitle(this.user.customer)}'s
+                                        </strong>
+                                        team.
+                                    </div>
+                                    <label for="team-select" class="mb-1">
+                                        Switch to a different team:
+                                    </label>
+                                    <div>
+                                        <select
+                                            id="team-select"
+                                            class="form-select"
+                                        >
+                                        ${this.user.customers.map((id) => {
+                                            return `
+                                                <option
+                                                    value="${id}"
+                                                    ${id === this.user.customer && 'selected' || ''}
+                                                >
+                                                    ${this.getCustomerTitle(id)}'team
+                                                </option>
+                                            `;
+                                        })}
+                                        </select>
+                                    </div>
+                                </form>
+                            </li>
+                        ` || ''}
                         <li>
                             <a href="${Config.functionsUrl}/#/list?id=new&src=popup" target="${Config.dashboardTarget}">
                                 <span class="icon">${plusSquare}</span>

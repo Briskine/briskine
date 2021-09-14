@@ -121,48 +121,60 @@ a:hover,
     padding: 0;
 }
 
-/* btn-loading
+/* loading button
  */
+.block-loading,
 .btn-loading {
-    position: relative;
-    pointer-events: none;
+  overflow: hidden;
+  position: relative;
+  pointer-events: none;
+
+  --loader: #fff;
+  --background: rgba(0,0,0,.6);
 }
 
+.block-loading {
+  --loader: #777;
+  --background: rgba(255,255,255,.9);
+}
+
+.block-loading:before,
 .btn-loading:before {
-    content: '';
-    display: block;
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 1;
-    background: #445e9e;
+  content: '';
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  background: var(--background);
 }
 
+.block-loading:after,
 .btn-loading:after {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    z-index: 2;
-    display: block;
-    width: 12px;
-    height: 12px;
-    border-color: #fff #fff #fff transparent;
-    border-style: solid;
-    border-width: 2px 2px 2px 2px;
-    border-radius: 20px;
-    animation: spin-centered .8s linear infinite;
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 3;
+  display: block;
+  width: 12px;
+  height: 12px;
+  border-color: var(--loader) var(--loader) var(--loader) transparent;
+  border-style: solid;
+  border-width: 2px 2px 2px 2px;
+  border-radius: 20px;
+  animation: spin-centered .8s linear infinite;
 }
 
 @keyframes spin-centered {
-	0% {
-		transform: translate(-50%, -50%) rotate(0);
-	}
-	100% {
-		transform: translate(-50%, -50%) rotate(360deg);
-	}
+  0% {
+    transform: translate(-50%, -50%) rotate(0);
+  }
+  100% {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
 }
 
 /* popup-dashboard
@@ -173,6 +185,10 @@ a:hover,
 
 .popup-menu {
     margin: 1em 0;
+}
+
+.team-selector {
+    padding: .6em 1em;
 }
 
 .popup-menu a {

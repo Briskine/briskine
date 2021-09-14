@@ -214,10 +214,24 @@ function replaceFrom (from, setting) {
 }
 
 export function parseTemplate (template = '', data = {}) {
-    const nameSetting = window.App.settings.cache.name || {
+    let nameSetting = {
         firstName: '',
         lastName: ''
     };
+    let email = '';
+    if (
+        window.App &&
+        window.App.settings &&
+        window.App.settings.cache
+    ) {
+        if (window.App.settings.cache.name) {
+            nameSetting = window.App.settings.cache.name;
+        }
+
+        if (window.App.settings.cache.email) {
+            email = window.App.settings.cache.email;
+        }
+    }
     // get "from" name from settings
     data.from = replaceFrom(data.from || {}, nameSetting);
 
@@ -226,8 +240,15 @@ export function parseTemplate (template = '', data = {}) {
         name: `${nameSetting.firstName} ${nameSetting.lastName}`,
         first_name: nameSetting.firstName,
         last_name: nameSetting.lastName,
-        email: window.App.settings.cache.email
+        email: email
     };
 
-    return Handlebars.compile(template)(PrepareVars(data));
+    let compiledTemplate = '';
+    try {
+        compiledTemplate = Handlebars.compile(template)(PrepareVars(data));
+    } catch (err) {
+        compiledTemplate = `<pre>${err.message || err}</pre>`;
+    }
+
+    return compiledTemplate;
 }

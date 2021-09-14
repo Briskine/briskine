@@ -12,7 +12,14 @@ import firebaseConfig from './config-firebase';
 // firebase
 firebase.initializeApp(firebaseConfig);
 
-var db = firebase.firestore();
+const firebaseAuth = firebase.auth();
+const db = firebase.firestore();
+
+// development emulators
+if (ENV === 'development') {
+  firebaseAuth.useEmulator('http://localhost:9099', { disableWarnings: true });
+  db.useEmulator('localhost', 5002);
+}
 
 // convert firestore timestamps to dates
 function convertToNativeDates (obj = {}) {
@@ -125,15 +132,6 @@ function request (url, params = {}) {
                 .then(handleErrors)
                 .then((res) => res.json());
         });
-}
-
-// backwards compatibility
-// update template list
-function refreshTemplates () {
-    // invalidate cache
-    invalidateTemplateCache();
-    // backwards compatibility
-    window.store.trigger('templates-sync');
 }
 
 // local data (when logged-out)
@@ -387,11 +385,11 @@ function setSignedInUser (user) {
     });
 }
 
-// firebase.auth().currentUser is not a promise
+// firebaseAuth.currentUser is not a promise
 // https://github.com/firebase/firebase-js-sdk/issues/462
 function getCurrentUser () {
     return new Promise((resolve, reject) => {
-        var unsubscribe = firebase.auth().onAuthStateChanged((user) => {
+        var unsubscribe = firebaseAuth.onAuthStateChanged((user) => {
             unsubscribe();
             resolve(user);
         }, reject);
@@ -409,8 +407,27 @@ function unsubscribeSnapshots () {
     });
 }
 
+// setup template change listeners on user or customer changes
+function setupTemplates (user) {
+    // refresh templates on changes
+    subscribeSnapshots([
+        templatesOwnedQuery(user).onSnapshot(invalidateTemplateCache),
+        templatesSharedQuery(user).onSnapshot(invalidateTemplateCache),
+        templatesEveryoneQuery(user).onSnapshot(invalidateTemplateCache),
+        // customer changes (eg. subscription updated)
+        customersCollection.doc(user.customer).onSnapshot(() => {
+            return getCurrentUser().then((firebaseUser) => {
+                return updateCurrentUser(firebaseUser);
+            });
+        })
+    ]);
+
+    // populate in-memory template cache
+    return getTemplate();
+}
+
 // auth change
-firebase.auth().onIdTokenChanged((firebaseUser) => {
+firebaseAuth.onIdTokenChanged((firebaseUser) => {
     if (!firebaseUser) {
         invalidateTemplateCache();
         unsubscribeSnapshots();
@@ -421,19 +438,7 @@ firebase.auth().onIdTokenChanged((firebaseUser) => {
     return updateCurrentUser(firebaseUser).then(() => {
         return getSignedInUser()
             .then((user) => {
-                // refresh templates on changes
-                subscribeSnapshots([
-                    templatesOwnedQuery(user).onSnapshot(refreshTemplates),
-                    templatesSharedQuery(user).onSnapshot(refreshTemplates),
-                    templatesEveryoneQuery(user).onSnapshot(refreshTemplates),
-                    // customer changes (eg. subscription updated)
-                    customersCollection.doc(user.customer).onSnapshot(() => {
-                        updateCurrentUser(firebaseUser);
-                    })
-                ]);
-
-                // populate in-memory template cache
-                getTemplate();
+                return setupTemplates(user);
             })
             .catch((err) => {
                 if (isLoggedOut(err)) {
@@ -624,6 +629,12 @@ function getDefaultTemplates () {
             bcc: 'bcc@briskine.com',
             from: 'contact@briskine.com'
         });
+
+        defaultTemplates.push({
+            title: 'broken',
+            shortcut: 'broken',
+            body: 'Hello {{to.first_name}'
+        });
     }
 
     const legacyTemplates = {};
@@ -725,19 +736,6 @@ var getTemplate = (params = {}) => {
 
 };
 
-// delete logged-out data
-var clearLocalTemplates = () => {
-    return new Promise((resolve) => {
-        var localDataContainer = {};
-        localDataContainer[localDataKey] = {};
-        browser.storage.local.set(localDataContainer).then(() => {
-            refreshTemplates();
-            return resolve();
-        });
-    });
-};
-
-
 // return user and token
 function getUserToken () {
     return getCurrentUser().then((currentUser) => {
@@ -766,78 +764,78 @@ function signinError (err) {
 }
 
 function updateCurrentUser (firebaseUser) {
-    var userId = firebaseUser.uid;
-    var user = {
-        id: userId,
-        email: firebaseUser.email,
-        created_datetime: new Date(firebaseUser.metadata.creationTime)
-    };
+    let user = {};
+    let cachedUser = {};
 
-    // HACK firestore throws an insufficient permissions error
-    // if we trigger immediately after signInWithEmailAndPassword()
-    var delay = new Promise((resolve) => {
-        setTimeout(resolve, 500);
-    });
+    // get cached user,
+    // for customer switching
+    return getSignedInUser()
+      .then((user) => {
+        cachedUser = user;
+        return cachedUser;
+      })
+      // logged-out
+      .catch(() => {return;})
+      .then(() => {
+          // get data from users collection
+          return usersCollection.doc(firebaseUser.uid).get();
+      })
+      .then((userDoc) => {
+          // get data from users collection
+          const userData = userDoc.data();
 
-    return delay
-        .then(() => {
-            // get data from users collection
-            return usersCollection.doc(userId).get();
-        })
-        .then((userDoc) => {
-            // get data from users collection
-            var userData = userDoc.data();
-            user = Object.assign(user, {
-                // only support one customer for now
-                customer: userData.customers[0],
-                // backwards compatibility
-                info: {
-                    name: userData.full_name,
-                    share_all: userData.share_all || false
-                },
-                editor: {
-                    enabled: true
-                },
-                is_loggedin: true,
-                created_datetime: '',
-                current_subscription: {
-                    active: false,
-                    created_datetime: '',
-                    plan: '',
-                    quantity: 1
-                },
-                is_staff: false
-            });
+          user = {
+              id: firebaseUser.uid,
+              email: userData.email,
 
-            return customersCollection.doc(user.customer).get();
-        })
-        .then((customer) => {
-            var customerData = customer.data();
-            var isCustomer = false;
-            if (customerData.owner === user.id) {
-                isCustomer = true;
-            }
+              // customers user is member of
+              customers: userData.customers,
+              // active customer
+              // default to first customer
+              customer: userData.customers[0],
 
-            user = Object.assign({
-                is_customer: isCustomer
-            }, user);
+              // backwards compatibility
+              info: {
+                  name: userData.full_name,
+                  share_all: userData.share_all || false
+              },
+              current_subscription: {
+                  active: false,
+                  created_datetime: '',
+                  plan: '',
+                  quantity: 1
+              }
+          };
 
-            // subscription data
-            user.current_subscription = Object.assign(user.current_subscription, {
-                plan: customerData.subscription.plan,
-                quantity: customerData.subscription.quantity
-            });
+          // customer switching support.
+          // get specific user from parameter, or from cache.
+          // only update customer if part cu current user's customers.
+          let newCustomer = firebaseUser.customer || cachedUser.customer;
+          if (user.customers.includes(newCustomer)) {
+            user.customer = newCustomer;
+          }
 
-            if (!customerData.subscription.canceled_datetime) {
-                user.current_subscription.active = true;
-            }
+          return customersCollection.doc(user.customer).get();
+      })
+      .then((customer) => {
+          var customerData = customer.data();
+          // subscription data
+          user.current_subscription = Object.assign(user.current_subscription, {
+              plan: customerData.subscription.plan,
+              quantity: customerData.subscription.quantity
+          });
 
-            return setSignedInUser(user);
-        });
+          // only premium or bonus plans are active
+          if (customerData.subscription.plan !== 'free') {
+              user.current_subscription.active = true;
+          }
+
+          return setSignedInUser(user);
+      });
 }
 
 var signin = (params = {}) => {
-    return firebase.auth().signInWithEmailAndPassword(params.email, params.password)
+    return firebaseAuth.signInWithEmailAndPassword(params.email, params.password)
         .then((authRes) => {
             return updateCurrentUser(authRes.user);
         })
@@ -870,7 +868,7 @@ var getSession = () => {
 };
 
 var logout = () => {
-    return firebase.auth().signOut()
+    return firebaseAuth.signOut()
         .then(() => {
             return request(`${Config.functionsUrl}/api/1/logout`, {
                     method: 'POST'
@@ -885,7 +883,7 @@ var logout = () => {
 };
 
 function signinWithToken (token = '') {
-    return firebase.auth().signInWithCustomToken(token)
+    return firebaseAuth.signInWithCustomToken(token)
         .then((res) => {
             return updateCurrentUser(res.user);
         })
@@ -894,6 +892,30 @@ function signinWithToken (token = '') {
 
             return window.store.trigger('login');
         });
+}
+
+function getCustomer (customerId) {
+  let customer = {};
+  return customersCollection
+    .doc(customerId)
+    .get()
+    .then((res) => {
+      customer = res.data();
+      return usersCollection.doc(customer.owner).get();
+    })
+    .then((res) => {
+      customer.ownerDetails = res.data();
+      return customer;
+    });
+}
+
+function setActiveCustomer (customerId) {
+    invalidateTemplateCache();
+    unsubscribeSnapshots();
+
+    return updateCurrentUser(
+        Object.assign(firebaseAuth.currentUser, {customer: customerId})
+    );
 }
 
 // map old settings to new format
@@ -966,13 +988,6 @@ function syncSettings (forceLocal = false) {
         });
 }
 
-window.addEventListener('message', function (event) {
-    if (event.data.type === 'gorgias_message' && event.data.message === 'subscribe_success') {
-        updateCurrentUser(firebase.auth().currentUser);
-        window.store.trigger('subscribe-success');
-    }
-});
-
 export default {
     getSettings: getSettings,
     setSettings: setSettings,
@@ -980,8 +995,10 @@ export default {
     getLoginInfo: getLoginInfo,
     getAccount: getAccount,
 
+    getCustomer: getCustomer,
+    setActiveCustomer: setActiveCustomer,
+
     getTemplate: getTemplate,
-    clearLocalTemplates: clearLocalTemplates,
 
     signin: signin,
     logout: logout,
