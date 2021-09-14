@@ -48,7 +48,7 @@
     "dependencies": {
         "@webcomponents/custom-elements": "^1.4.3",
         "bootstrap": "^5.0.0",
-        "firebase": "^8.2.1",
+        "firebase": "^9.0.0",
         "fuse.js": "^6.4.5",
         "handlebars": "^4.5.3",
         "html-to-text": "^8.0.0",
