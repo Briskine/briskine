@@ -24,7 +24,6 @@ import PubSub from './patterns';
 import {setup as setupBubble} from './bubble';
 
 var App = {
-    editor_enabled: true,
     // TODO move settings to module
     settings: {
         is_sort_template_list: false,
