@@ -2,6 +2,7 @@
 import Config from '../config';
 import browser from 'webextension-polyfill';
 
+// TODO deprecate resetSettings after we disable two-way setting sync
 function resetSettings () {
     return window.store.setSettings({
         key: 'settings'

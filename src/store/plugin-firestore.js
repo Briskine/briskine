@@ -97,6 +97,7 @@ function request (url, params = {}) {
     const data = Object.assign({}, defaults, paramsCopy);
     data.method = data.method.toUpperCase();
 
+    // TODO deprecate form data support
     // form post support
     if (params.form === true) {
         const $form = document.createElement('form');
