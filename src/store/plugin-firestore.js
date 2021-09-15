@@ -97,28 +97,6 @@ function request (url, params = {}) {
     const data = Object.assign({}, defaults, paramsCopy);
     data.method = data.method.toUpperCase();
 
-    // TODO deprecate form data support
-    // form post support
-    if (params.form === true) {
-        const $form = document.createElement('form');
-        $form.setAttribute('method', params.method);
-        $form.setAttribute('action', url);
-        $form.setAttribute('target', '_blank');
-
-        Object.keys(params.body).forEach((key) => {
-            const $input = document.createElement('input');
-            $input.type = 'hidden';
-            $input.name = key;
-            $input.value = params.body[key];
-            $form.appendChild($input);
-        });
-
-        document.body.appendChild($form);
-        $form.submit();
-
-        return;
-    }
-
     // querystring support
     const fullUrl = new URL(url);
     if (data.method === 'GET') {
