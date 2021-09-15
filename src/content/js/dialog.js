@@ -12,6 +12,7 @@ import PubSub from './patterns';
 import store from '../../store/store-client';
 import autocomplete from './autocomplete';
 import enableDialogSearchAttr from './dialog-search-attr';
+import fuzzySearch from './search';
 
 import Config from '../../config';
 
@@ -20,14 +21,75 @@ var KEY_DOWN = 40;
 var KEY_ENTER = 13;
 
 PubSub.subscribe('focus', function (action, element) {
-    if (action === 'off') {
-        if (element === null) {
-            dialog.close();
-        } else if ($(element).attr('class') !== $(dialog.searchSelector).attr('class')) {
-            dialog.close();
-        }
+if (action === 'off') {
+    if (element === null) {
+        dialog.close();
+    } else if ($(element).attr('class') !== $(dialog.searchSelector).attr('class')) {
+        dialog.close();
     }
+}
 });
+
+function getFilteredTemplates (text, limit) {
+  // search even the empty strings. It's not a problem because the dialog is now triggered by a user shortcut
+  return store.getTemplate().then((res) => {
+    let templates = Object.keys(res).map((id) => res[id]);
+    if (text) {
+      templates = fuzzySearch(templates, text);
+    } else {
+      // sort templates only if no search was used
+
+      // sort by created_datetime desc
+      templates.sort(function(a, b) {
+        return (
+          new Date(b.created_datetime) -
+          new Date(a.created_datetime)
+        );
+      });
+
+      // then sort by updated_datetime so the last one updated is first
+      templates.sort(function(a, b) {
+        return (
+          new Date(b.updated_datetime) -
+          new Date(a.updated_datetime)
+        );
+      });
+
+      // TODO get setting from somewhere
+      // used to be App.settings.is_sort_template_dialog_gmail
+      const sortAb = false;
+
+      if (sortAb) {
+        // Sort the filtered template alphabetically
+        templates.sort(function(a, b) {
+          return a.title.localeCompare(b.title);
+        });
+      } else {
+        // sort by lastuse_datetime desc
+        templates.sort(function(a, b) {
+          if (!a.lastuse_datetime) {
+            a.lastuse_datetime = new Date(0);
+          }
+
+          if (!b.lastuse_datetime) {
+            b.lastuse_datetime = new Date(0);
+          }
+          return (
+            new Date(b.lastuse_datetime) -
+            new Date(a.lastuse_datetime)
+          );
+        });
+      }
+
+      // Apply template limit
+      if (limit && limit < templates.length) {
+        templates = templates.slice(0, limit);
+      }
+    }
+
+    return templates;
+  });
+}
 
 var dialog = {
     isActive: false,
@@ -70,7 +132,8 @@ var dialog = {
         });
 
         // fetch templates from storage to populate the dialog
-        window.App.settings.getFiltered("", dialog.RESULTS_LIMIT, function (quicktexts) {
+        return getFilteredTemplates('', dialog.RESULTS_LIMIT)
+          .then((quicktexts) => {
             autocomplete.quicktexts = quicktexts;
 
             params.quicktexts = autocomplete.quicktexts;
@@ -123,26 +186,33 @@ var dialog = {
             browser.runtime.sendMessage({'request': 'new'});
         });
 
-        $dialog.on('keyup', this.searchSelector, function (e) {
-            // ignore modifier keys because they manipulate
-            if ([KEY_ENTER, KEY_UP, KEY_DOWN].includes(e.keyCode)) {
-                return;
-            }
+        let searchDebouncer = null
+        $dialog.on('input', this.searchSelector, function (e) {
+          // ignore modifier keys because they manipulate
+          if ([KEY_ENTER, KEY_UP, KEY_DOWN].includes(e.keyCode)) {
+            return
+          }
 
-            autocomplete.cursorPosition.word.text = $(this).val();
+          autocomplete.cursorPosition.word.text = $(this).val()
 
-            window.App.settings.getFiltered(autocomplete.cursorPosition.word.text, dialog.RESULTS_LIMIT, function (quicktexts) {
-                // don't update if dialog was closed before getting new templates
-                if (!dialog.isActive) {
-                    return;
-                }
+          if (searchDebouncer) {
+            clearTimeout(searchDebouncer)
+          }
 
-                autocomplete.quicktexts = quicktexts;
-                dialog.populate({
-                    quicktexts: autocomplete.quicktexts
-                });
-            });
-        });
+          searchDebouncer = setTimeout(() => {
+            getFilteredTemplates(autocomplete.cursorPosition.word.text, dialog.RESULTS_LIMIT).then((quicktexts) => {
+              // don't update if dialog was closed before getting new templates
+              if (!dialog.isActive) {
+                return
+              }
+
+              autocomplete.quicktexts = quicktexts;
+              dialog.populate({
+                quicktexts: autocomplete.quicktexts
+              })
+            })
+          }, 100)
+        })
 
         // edit template from dialog
         $dialog.on('mousedown', '.qt-edit', function (e) {

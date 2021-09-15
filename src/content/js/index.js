@@ -15,7 +15,6 @@ import 'mousetrap/plugins/global-bind/mousetrap-global-bind';
 
 import './helpers/content-helpers';
 import './events';
-import fuzzySearch from './search';
 
 import store from '../../store/store-client';
 import keyboard from './keyboard';
@@ -25,103 +24,12 @@ import PubSub from './patterns';
 import {setup as setupBubble} from './bubble';
 
 var App = {
-    data: {
-        searchCache: {},
-        debouncer: {},
-        lastFilterRun: 0
-    },
     editor_enabled: true,
     // TODO move settings to module
     settings: {
         is_sort_template_list: false,
         is_sort_template_dialog_gmail: false,
 
-        getFiltered: function(text, limit, callback) {
-            // use a debouncer to not trigger the filter too many times
-            // use the callback function as a uuid for the debouncers
-
-            var debouncerId = callback.toString();
-            var debouncerTime = 0;
-
-            // check if the function was previsouly called
-            // earlier than X ms ago.
-            // if it was, debounce the next run.
-            // we do this to make sure the first independent run,
-            // not part of a succession of runs
-            // (keyup events one after the other),
-            // runs instantly, and does not have any delay.
-            // helps with the dialog show delay.
-            if (Date.now() - App.data.lastFilterRun < 400) {
-                debouncerTime = 400;
-
-                if (App.data.debouncer[debouncerId]) {
-                    clearTimeout(App.data.debouncer[debouncerId]);
-                }
-            }
-
-            App.data.debouncer[debouncerId] = setTimeout(function() {
-                // search even the empty strings. It's not a problem because the dialog is now triggered by a user shortcut
-                store.getTemplate().then((res) => {
-                    var templates = [];
-                    for (var t in res) {
-                        if (!res[t].deleted) {
-                            templates.push(res[t]);
-                        }
-                    }
-                    if (text) {
-                        templates = fuzzySearch(templates, text);
-                    } else {
-                        // Sort templates only if no search was used
-
-                        // sort by created_datetime desc
-                        templates.sort(function(a, b) {
-                            return (
-                                new Date(b.created_datetime) -
-                                new Date(a.created_datetime)
-                            );
-                        });
-
-                        // then sort by updated_datetime so the last one updated is first
-                        templates.sort(function(a, b) {
-                            return (
-                                new Date(b.updated_datetime) -
-                                new Date(a.updated_datetime)
-                            );
-                        });
-
-                        if (App.settings.is_sort_template_dialog_gmail) {
-                            // Sort the filtered template alphabetically
-                            templates.sort(function(a, b) {
-                                return a.title.localeCompare(b.title);
-                            });
-                        } else {
-                            // sort by lastuse_datetime desc
-                            templates.sort(function(a, b) {
-                                if (!a.lastuse_datetime) {
-                                    a.lastuse_datetime = new Date(0);
-                                }
-
-                                if (!b.lastuse_datetime) {
-                                    b.lastuse_datetime = new Date(0);
-                                }
-                                return (
-                                    new Date(b.lastuse_datetime) -
-                                    new Date(a.lastuse_datetime)
-                                );
-                            });
-                        }
-
-                        // Apply template limit
-                        if (limit && limit < templates.length) {
-                            templates = templates.slice(0, limit);
-                        }
-                    }
-                    callback(templates);
-                });
-            }, debouncerTime);
-
-            App.data.lastFilterRun = Date.now();
-        },
         stats: function(key, val, callback) {
             browser.runtime.sendMessage({
                 request: 'stats',
