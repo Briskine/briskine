@@ -36,29 +36,6 @@ var App = {
         is_sort_template_list: false,
         is_sort_template_dialog_gmail: false,
 
-        // Get template filtered out by shortcut
-        getQuicktextsShortcut: function(text, callback) {
-            store.getTemplate().then((templates) => {
-                for (var id in templates) {
-                    var t = templates[id];
-                    if (t.deleted === 0 && t.shortcut === text) {
-                        browser.runtime.sendMessage({
-                            request: "track",
-                            event: "Inserted template",
-                            data: {
-                                id: t.id,
-                                source: "keyboard",
-                                title_size: t.title.length,
-                                body_size: t.body.length
-                            }
-                        });
-                        callback([t]);
-                        return;
-                    }
-                }
-            });
-        },
-
         getFiltered: function(text, limit, callback) {
             // use a debouncer to not trigger the filter too many times
             // use the callback function as a uuid for the debouncers

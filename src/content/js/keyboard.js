@@ -3,10 +3,27 @@
  */
 
 import autocomplete from './autocomplete';
+import store from '../../store/store-client';
+
+function getTemplateByShortcut (shortcut) {
+  return store.getTemplate()
+    .then((templates) => {
+      const templateId = Object.keys(templates).find((id) => {
+        return templates[id].shortcut === shortcut
+      })
+
+      let template
+      if (templateId) {
+        template = templates[templateId]
+        store.updateTemplateStats(templateId)
+      }
+
+      return template
+    })
+}
 
 export default {
     completion: function (e) {
-
         var element = e.target;
         var doc = element.ownerDocument;
         var selection = doc.getSelection();
@@ -26,21 +43,15 @@ export default {
         autocomplete.cursorPosition.word = word;
 
         if (word.text) {
-
-            // Find a matching Quicktext shortcut in the bg script
-            window.App.settings.getQuicktextsShortcut(word.text, function (quicktexts) {
-
-                if (quicktexts.length) {
-                    // replace with the first quicktext found
-                    autocomplete.replaceWith({
-                        element: element,
-                        quicktext: quicktexts[0],
-                        focusNode: focusNode
-                    });
-                }
-
-            });
-
+          getTemplateByShortcut(word.text).then((template) => {
+            if (template) {
+              autocomplete.replaceWith({
+                  element: element,
+                  quicktext: template,
+                  focusNode: focusNode
+              });
+            }
+          });
         }
 
     }

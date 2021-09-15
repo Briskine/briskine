@@ -386,16 +386,7 @@ var dialog = {
 
             dialog.close();
 
-            browser.runtime.sendMessage({
-                'request': 'track',
-                'event': 'Inserted template',
-                'data': {
-                    "id": quicktext.id,
-                    "source": "dialog",
-                    "title_size": quicktext.title.length,
-                    "body_size": quicktext.body.length
-                }
-            });
+            store.updateTemplateStats(quicktext.id)
         }
     },
     changeSelection: function (direction) {

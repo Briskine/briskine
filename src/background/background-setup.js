@@ -119,10 +119,5 @@ browser.runtime.onMessage.addListener(function (request) {
             url: `${Config.functionsUrl}/#/list?id=new&src=qa-button`
         });
     }
-    if (request.request === 'track') {
-        if (request.event === 'Inserted template') {
-            window.store.updateTemplateStats(request.data.id);
-        }
-    }
     return true;
 });
