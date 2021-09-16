@@ -263,10 +263,9 @@ customElements.define(
 
 export function setup () {
     // if bubble is enabled in settings
-    store.getSettings({
-        key: 'settings'
-    }).then((settings) => {
-        if (settings.qaBtn && settings.qaBtn.enabled === false) {
+    store.getSettings()
+      .then((settings) => {
+        if (settings.dialog_button === false) {
             return;
         }
 
@@ -292,9 +291,7 @@ function create (settings = {}) {
     // when textfields are focused, move it to the offsetParent for positioning.
     bubbleInstance = document.createElement('b-bubble');
     // custom dialog shortcut
-    if (settings.dialog && settings.dialog.shortcut) {
-        bubbleInstance.setAttribute('shortcut', settings.dialog.shortcut);
-    }
+    bubbleInstance.setAttribute('shortcut', settings.dialog_shortcut);
     document.documentElement.appendChild(bubbleInstance);
 
     // wait for the bubbble to be shown

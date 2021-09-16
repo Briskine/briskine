@@ -285,7 +285,7 @@ var setLocalSettings = function (params) {
 };
 
 let cachedSettings = null;
-var getSettings = (params = {}) => {
+var getSettingsOld = (params = {}) => {
     if (params.key === 'settings') {
         let localSettings = {};
         return getLocalSettings(params)
@@ -342,6 +342,7 @@ var getSettings = (params = {}) => {
     return getLocalSettings(params);
 };
 
+// TODO deprecate
 var setSettings = (params = {}) => {
     if (params.key === 'settings') {
         return setLocalSettings(params)
@@ -352,6 +353,26 @@ var setSettings = (params = {}) => {
 
     return setLocalSettings(params);
 };
+
+const defaultSettings = {
+  dialog_enabled: true,
+  dialog_button: true,
+  dialog_shortcut: 'ctrl+space',
+  dialog_limit: 100,
+  dialog_sort: false,
+
+  expand_enabled: true,
+  expand_shortcut: 'tab',
+
+  rich_editor: true
+}
+
+let settingsCache = {}
+
+var getSettings = () => {
+  // TODO
+  return Promise.resolve(defaultSettings)
+}
 
 var LOGGED_OUT_ERR = 'logged-out';
 function isLoggedOut (err) {
@@ -919,7 +940,7 @@ function setActiveCustomer (customerId) {
 }
 
 // map old settings to new format
-function defaultSettings (oldSettings = {}) {
+function defaultSettingsOld (oldSettings = {}) {
     const defaults = {
         // tab expand
         expand_enabled: true,

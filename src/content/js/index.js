@@ -25,18 +25,6 @@ import {setup as setupBubble} from './bubble';
 var App = {
     // TODO move settings to module
     settings: {
-        is_sort_template_list: false,
-        is_sort_template_dialog_gmail: false,
-
-        fetchSettings: function(callback, doc, disablePlugins) {
-            store.getSettings({
-                key: 'settings'
-            }).then((settings) => {
-                callback(settings, doc, disablePlugins);
-            }).catch(() => {
-                // logged-out
-            });
-        }
     }
 };
 
@@ -52,11 +40,8 @@ App.init = function(settings, doc) {
     var currentUrl = window.location.href;
 
     // Check if we should use editor markup
-    App.settings.editor_enabled = settings.editor.enabled;
-
-    App.settings.is_sort_template_list = settings.is_sort_template_list;
-    App.settings.is_sort_template_dialog_gmail =
-        settings.is_sort_template_dialog_gmail;
+    // TODO check utils.insertTemplate
+//     App.settings.editor_enabled = settings.editor.enabled;
 
     var blacklistPrivate = [];
 
@@ -88,25 +73,25 @@ App.init = function(settings, doc) {
     }, true);
 
     // use custom keyboard shortcuts
-    if (settings.keyboard.enabled) {
+    if (settings.expand_enabled) {
         Mousetrap.bindGlobal(
-            settings.keyboard.shortcut,
+            settings.expand_shortcut,
             keyboard.completion
         );
     }
 
     var isContentEditable = (window.document.body.contentEditable === 'true');
     if (
-        settings.dialog.enabled &&
+        settings.dialog_enabled &&
         // don't create the dialog inside editor iframes (eg. tinymce iframe)
         !isContentEditable
     ) {
         setupBubble();
-        if (settings.dialog.limit) {
-            dialog.RESULTS_LIMIT = settings.dialog.limit;
+        if (settings.dialog_limit) {
+            dialog.RESULTS_LIMIT = settings.dialog_limit;
         }
         Mousetrap.bindGlobal(
-            settings.dialog.shortcut,
+            settings.dialog_shortcut,
             dialog.completion
         );
 
@@ -117,15 +102,19 @@ App.init = function(settings, doc) {
 
     // temporary settings cache,
     // used by utils.parseTemplate
+    // TODO replace
     App.settings.cache = Object.assign({}, settings);
 };
 
 window.App = App;
 
 $(function() {
-    if (document.contentType !== "text/html") {
-        return; // don't load gorgias in non html pages (json, xml, etc..)
+    if (document.contentType !== 'text/html') {
+      // don't load on non html pages (json, xml, etc..)
+      return
     }
 
-    App.settings.fetchSettings(App.init, window.document);
+    store.getSettings().then((settings) => {
+      App.init(settings, window.document)
+    })
 });

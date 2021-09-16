@@ -31,64 +31,65 @@ if (action === 'off') {
 });
 
 function getFilteredTemplates (text, limit) {
-  // search even the empty strings. It's not a problem because the dialog is now triggered by a user shortcut
-  return store.getTemplate().then((res) => {
-    let templates = Object.keys(res).map((id) => res[id]);
-    if (text) {
-      templates = fuzzySearch(templates, text);
-    } else {
-      // sort templates only if no search was used
-
-      // sort by created_datetime desc
-      templates.sort(function(a, b) {
-        return (
-          new Date(b.created_datetime) -
-          new Date(a.created_datetime)
-        );
-      });
-
-      // then sort by updated_datetime so the last one updated is first
-      templates.sort(function(a, b) {
-        return (
-          new Date(b.updated_datetime) -
-          new Date(a.updated_datetime)
-        );
-      });
-
-      // TODO get setting from somewhere
-      // used to be App.settings.is_sort_template_dialog_gmail
-      const sortAb = false;
-
-      if (sortAb) {
-        // Sort the filtered template alphabetically
-        templates.sort(function(a, b) {
-          return a.title.localeCompare(b.title);
-        });
+  let settings = {}
+  return store.getSettings()
+    .then((res) => {
+      settings = res
+      return store.getTemplate()
+    })
+    .then((res) => {
+      let templates = Object.keys(res).map((id) => res[id]);
+      if (text) {
+        templates = fuzzySearch(templates, text);
       } else {
-        // sort by lastuse_datetime desc
-        templates.sort(function(a, b) {
-          if (!a.lastuse_datetime) {
-            a.lastuse_datetime = new Date(0);
-          }
+        // sort templates only if no search was used
 
-          if (!b.lastuse_datetime) {
-            b.lastuse_datetime = new Date(0);
-          }
+        // sort by created_datetime desc
+        templates.sort(function(a, b) {
           return (
-            new Date(b.lastuse_datetime) -
-            new Date(a.lastuse_datetime)
+            new Date(b.created_datetime) -
+            new Date(a.created_datetime)
           );
         });
+
+        // then sort by updated_datetime so the last one updated is first
+        templates.sort(function(a, b) {
+          return (
+            new Date(b.updated_datetime) -
+            new Date(a.updated_datetime)
+          );
+        });
+
+        if (settings.dialog_sort) {
+          // Sort the filtered template alphabetically
+          templates.sort(function(a, b) {
+            return a.title.localeCompare(b.title);
+          });
+        } else {
+          // sort by lastuse_datetime desc
+          templates.sort(function(a, b) {
+            if (!a.lastuse_datetime) {
+              a.lastuse_datetime = new Date(0);
+            }
+
+            if (!b.lastuse_datetime) {
+              b.lastuse_datetime = new Date(0);
+            }
+            return (
+              new Date(b.lastuse_datetime) -
+              new Date(a.lastuse_datetime)
+            );
+          });
+        }
+
+        // Apply template limit
+        if (limit && limit < templates.length) {
+          templates = templates.slice(0, limit);
+        }
       }
 
-      // Apply template limit
-      if (limit && limit < templates.length) {
-        templates = templates.slice(0, limit);
-      }
-    }
-
-    return templates;
-  });
+      return templates;
+    });
 }
 
 var dialog = {
