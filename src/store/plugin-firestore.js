@@ -184,9 +184,8 @@ const defaultSettings = {
 }
 
 let settingsCache = {}
-var getSettings = () => {
-  // TODO clear cache when settings change
-  if (Object.keys(settingsCache).length) {
+var getSettings = (forceRefresh = false) => {
+  if (Object.keys(settingsCache).length && forceRefresh !== true) {
     return Promise.resolve(settingsCache)
   }
 
@@ -201,12 +200,12 @@ var getSettings = () => {
       return settingsCache
     })
     .catch((err) => {
-        if (isLoggedOut(err)) {
-          // logged-out
-          return defaultSettings
-        }
+      if (isLoggedOut(err)) {
+        // logged-out
+        return defaultSettings
+      }
 
-        throw err
+      throw err
     })
 }
 
@@ -625,8 +624,6 @@ function signinError (err) {
 function updateCurrentUser (firebaseUser) {
     let user = {}
     let cachedUser = {}
-    // clear settings
-    settingsCache = {}
 
     // get cached user,
     // for customer switching

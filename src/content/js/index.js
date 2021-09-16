@@ -116,7 +116,7 @@ $(function() {
       return
     }
 
-    store.getSettings().then((settings) => {
+    store.getSettings(true).then((settings) => {
       App.init(settings, window.document)
     })
 });
