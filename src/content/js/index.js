@@ -68,10 +68,7 @@ App.init = function(settings, doc) {
     App.settings.is_sort_template_dialog_gmail =
         settings.is_sort_template_dialog_gmail;
 
-    var blacklistPrivate = [
-        "https://usecanvas.com",
-        "http://usecanvas.com"
-    ];
+    var blacklistPrivate = [];
 
     // create the full blacklist
     // from the editable and private one
