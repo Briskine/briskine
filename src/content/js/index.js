@@ -7,7 +7,6 @@ import '../css/content.css';
 // native custom elements are not supported in content scripts
 // https://bugs.chromium.org/p/chromium/issues/detail?id=390807
 import '@webcomponents/custom-elements';
-import $ from 'jquery';
 // creates global window.Mousetrap
 import Mousetrap from 'mousetrap';
 import 'mousetrap/plugins/global-bind/mousetrap-global-bind';
@@ -24,97 +23,103 @@ import {setup as setupBubble} from './bubble';
 
 var App = {}
 
-App.init = function(settings, doc) {
-    var body = $(doc).find("body");
+function init (settings, doc) {
+  const loadedClassName = 'gorgias-loaded'
+  if (!document.body || document.body.classList.contains(loadedClassName)) {
+    return;
+  }
+  // mark the doc that extension has been loaded
+  document.body.classList.add(loadedClassName);
 
-    if (!body.length || body.hasClass("gorgias-loaded")) {
-        return;
-    }
-    // mark the doc that extension has been loaded
-    body.addClass("gorgias-loaded");
+  var currentUrl = window.location.href;
 
-    var currentUrl = window.location.href;
+  var blacklistPrivate = [];
 
-    var blacklistPrivate = [];
+  // create the full blacklist
+  // from the editable and private one
+  var fullBlacklist = [];
+  [].push.apply(fullBlacklist, settings.blacklist);
+  [].push.apply(fullBlacklist, blacklistPrivate);
 
-    // create the full blacklist
-    // from the editable and private one
-    var fullBlacklist = [];
-    [].push.apply(fullBlacklist, settings.blacklist);
-    [].push.apply(fullBlacklist, blacklistPrivate);
+  // check if url is in blacklist
+  var isBlacklisted = false;
+  fullBlacklist.some(function(item) {
+      if (item && currentUrl.indexOf(item) !== -1) {
+          isBlacklisted = true;
+          return true;
+      }
+      return false;
+  });
 
-    // check if url is in blacklist
-    var isBlacklisted = false;
-    fullBlacklist.some(function(item) {
-        if (item && currentUrl.indexOf(item) !== -1) {
-            isBlacklisted = true;
-            return true;
-        }
-        return false;
-    });
+  if (isBlacklisted) {
+      return false;
+  }
 
-    if (isBlacklisted) {
-        return false;
-    }
+  doc.addEventListener("blur", (e) => {
+      PubSub.publish('blur', e);
+  }, true);
+  doc.addEventListener("scroll", (e) => {
+      PubSub.publish('scroll', e);
+  }, true);
 
-    doc.addEventListener("blur", (e) => {
-        PubSub.publish('blur', e);
-    }, true);
-    doc.addEventListener("scroll", (e) => {
-        PubSub.publish('scroll', e);
-    }, true);
+  // use custom keyboard shortcuts
+  if (settings.expand_enabled) {
+      Mousetrap.bindGlobal(
+          settings.expand_shortcut,
+          keyboard.completion
+      );
+  }
 
-    // use custom keyboard shortcuts
-    if (settings.expand_enabled) {
-        Mousetrap.bindGlobal(
-            settings.expand_shortcut,
-            keyboard.completion
-        );
-    }
+  var isContentEditable = (window.document.body.contentEditable === 'true');
+  if (
+      settings.dialog_enabled &&
+      // don't create the dialog inside editor iframes (eg. tinymce iframe)
+      !isContentEditable
+  ) {
+      setupBubble();
+      if (settings.dialog_limit) {
+          dialog.RESULTS_LIMIT = settings.dialog_limit;
+      }
+      Mousetrap.bindGlobal(
+          settings.dialog_shortcut,
+          dialog.completion
+      );
 
-    var isContentEditable = (window.document.body.contentEditable === 'true');
-    if (
-        settings.dialog_enabled &&
-        // don't create the dialog inside editor iframes (eg. tinymce iframe)
-        !isContentEditable
-    ) {
-        setupBubble();
-        if (settings.dialog_limit) {
-            dialog.RESULTS_LIMIT = settings.dialog_limit;
-        }
-        Mousetrap.bindGlobal(
-            settings.dialog_shortcut,
-            dialog.completion
-        );
+      // create dialog once and then reuse the same element
+      dialog.create();
+      dialog.bindKeyboardEvents(doc);
+  }
 
-        // create dialog once and then reuse the same element
-        dialog.create();
-        dialog.bindKeyboardEvents(doc);
-    }
-
-    // HACK temporary data cache.
-    // some methods in utils need to be sync, but also use settings and user data
-    App.settingsCache = Object.assign({}, settings);
-    App.accountCache = {}
-    store.getAccount()
-      .then((res) => {
-        App.accountCache.email = res.email
-        App.accountCache.full_name = res.full_name
-      })
-      .catch(() => {
-        // logged-out
-      })
-};
-
-window.App = App;
-
-$(function() {
-    if (document.contentType !== 'text/html') {
-      // don't load on non html pages (json, xml, etc..)
-      return
-    }
-
-    store.getSettings(true).then((settings) => {
-      App.init(settings, window.document)
+  // HACK temporary data cache.
+  // some methods in utils need to be sync, but also use settings and user data
+  App.settingsCache = Object.assign({}, settings);
+  App.accountCache = {}
+  store.getAccount()
+    .then((res) => {
+      App.accountCache.email = res.email
+      App.accountCache.full_name = res.full_name
     })
-});
+    .catch(() => {
+      // logged-out
+    })
+}
+
+function startup () {
+  if (document.contentType !== 'text/html') {
+    // don't load on non html pages (json, xml, etc..)
+    return
+  }
+
+  store.getSettings(true).then((settings) => {
+    init(settings, window.document)
+  })
+}
+
+// legacy
+window.App = App
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', startup)
+} else {
+  startup()
+}
