@@ -22,11 +22,7 @@ import PubSub from './patterns';
 
 import {setup as setupBubble} from './bubble';
 
-var App = {
-    // TODO move settings to module
-    settings: {
-    }
-};
+var App = {}
 
 App.init = function(settings, doc) {
     var body = $(doc).find("body");
@@ -38,10 +34,6 @@ App.init = function(settings, doc) {
     body.addClass("gorgias-loaded");
 
     var currentUrl = window.location.href;
-
-    // Check if we should use editor markup
-    // TODO check utils.insertTemplate
-//     App.settings.editor_enabled = settings.editor.enabled;
 
     var blacklistPrivate = [];
 
@@ -100,10 +92,16 @@ App.init = function(settings, doc) {
         dialog.bindKeyboardEvents(doc);
     }
 
-    // temporary settings cache,
-    // used by utils.parseTemplate
-    // TODO replace
-    App.settings.cache = Object.assign({}, settings);
+    // HACK temporary data cache.
+    // some methods in utils need to be sync, but also use settings and user data
+    App.settingsCache = Object.assign({}, settings);
+    App.accountCache = {}
+    store.getAccount().then((res) => {
+      App.accountCache.email = res.email
+      if (res.info) {
+        App.accountCache.full_name = res.info.name
+      }
+    })
 };
 
 window.App = App;

@@ -130,7 +130,7 @@ export function insertText (params = {}) {
             value = $textarea.val();
 
         // if the editor is enabled, we need to convert html into text
-        if (window.App.settings.editor_enabled) {
+        if (window.App.settingsCache.rich_editor) {
             // we want to display the text momentarily before inserting it into the textarea
             // this is needed to give the correct spaces
             var temp = $('<div id="gorgias-temp-placeholder">').html(parsedTemplate);
@@ -217,20 +217,13 @@ export function parseTemplate (template = '', data = {}) {
     let nameSetting = {
         firstName: '',
         lastName: ''
-    };
-    let email = '';
-    if (
-        window.App &&
-        window.App.settings &&
-        window.App.settings.cache
-    ) {
-        if (window.App.settings.cache.name) {
-            nameSetting = window.App.settings.cache.name;
-        }
-
-        if (window.App.settings.cache.email) {
-            email = window.App.settings.cache.email;
-        }
+    }
+    let email = window.App.accountCache.email
+    const fullName = window.App.accountCache.full_name
+    if (fullName) {
+      const nameParts = fullName.trim().split(' ')
+      nameSetting.firstName = nameParts.shift()
+      nameSetting.lastName = nameParts.join(' ')
     }
     // get "from" name from settings
     data.from = replaceFrom(data.from || {}, nameSetting);
