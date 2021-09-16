@@ -45,18 +45,6 @@ browser.runtime.onInstalled.addListener(function (details) {
     if (details.reason === "install") {
         // reset settings
         resetSettings();
-    } else if (details.reason === "update") {
-        window.store.getSettings({
-            key: 'hints'
-        }).then((hints) => {
-            if (hints && hints.postInstall) {
-                hints.postInstall = false;
-                window.store.setSettings({
-                    key: 'hints',
-                    val: hints
-                });
-            }
-        });
     }
 
     // All affected tabs should be reloaded if the extension was installed
