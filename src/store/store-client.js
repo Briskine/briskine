@@ -42,7 +42,10 @@ var methods = [
     'logout',
 
     'getSession',
-    'createSession'
+    'createSession',
+
+    'getExtensionData',
+    'setExtensionData'
 ];
 
 var events = [];

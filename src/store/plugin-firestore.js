@@ -988,6 +988,31 @@ function syncSettings (forceLocal = false) {
         });
 }
 
+const extensionDataKey = 'settings'
+const defaultExtensionData = {
+  showPostInstall: true
+}
+
+function getExtensionData () {
+  return browser.storage.local.get(extensionDataKey)
+    .then((data) => {
+      return Object.assign({}, defaultExtensionData, data[extensionDataKey])
+    })
+}
+
+function setExtensionData (params = {}) {
+  return browser.storage.local.get(extensionDataKey)
+    .then((data) => {
+      // merge existing data with defaults and new data
+      return Object.assign({}, defaultExtensionData, data[extensionDataKey], params)
+    })
+    .then((newData) => {
+      const dataWrap = {}
+      dataWrap[extensionDataKey] = newData
+      return browser.storage.local.set(dataWrap)
+    })
+}
+
 export default {
     getSettings: getSettings,
     setSettings: setSettings,
@@ -1004,5 +1029,8 @@ export default {
     logout: logout,
 
     getSession: getSession,
-    createSession: createSession
+    createSession: createSession,
+
+    getExtensionData: getExtensionData,
+    setExtensionData: setExtensionData
 };
