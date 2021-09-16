@@ -19,6 +19,8 @@ import slatePlugin from './plugins/slate';
 import crmPlugin from './plugins/crm';
 import genericPlugin from './plugins/generic';
 
+import store from '../../store/store-client'
+
 var autocomplete = {};
 
 autocomplete.quicktexts = [];
@@ -224,7 +226,12 @@ autocomplete.replaceWith = function (params) {
     ));
 
     // updates stats
-    window.App.settings.stats('words', params.quicktext.body.split(' ').length, () => {});
+    const wordCount = params.quicktext.body.split(' ').length;
+    store.getExtensionData().then((data) => {
+      store.setExtensionData({
+        words: data.words + wordCount
+      })
+    })
 };
 
 // Mirror styles are used for creating a mirror element in order to track the cursor in a textarea

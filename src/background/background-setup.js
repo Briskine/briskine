@@ -86,21 +86,6 @@ browser.runtime.onInstalled.addListener(function (details) {
 });
 
 browser.runtime.onMessage.addListener(function (request) {
-    if (request.request === 'stats') {
-        if (request.key === 'words') {
-            var words = parseInt(request.val, 10);
-            window.store.getSettings({
-                key: 'words'
-            }).then(function (oldWords) {
-                window.store.setSettings({
-                    key: 'words',
-                    val: oldWords + words
-                });
-            });
-        }
-
-        return true;
-    }
     // Open new template window
     if (request.request === 'new') {
         browser.tabs.create({

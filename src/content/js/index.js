@@ -4,7 +4,6 @@
  */
 
 import '../css/content.css';
-import browser from 'webextension-polyfill';
 // native custom elements are not supported in content scripts
 // https://bugs.chromium.org/p/chromium/issues/detail?id=390807
 import '@webcomponents/custom-elements';
@@ -29,15 +28,6 @@ var App = {
         is_sort_template_list: false,
         is_sort_template_dialog_gmail: false,
 
-        stats: function(key, val, callback) {
-            browser.runtime.sendMessage({
-                request: 'stats',
-                key: key,
-                val: val
-            }).then(function(response) {
-                return callback(response);
-            });
-        },
         fetchSettings: function(callback, doc, disablePlugins) {
             store.getSettings({
                 key: 'settings'

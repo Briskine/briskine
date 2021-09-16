@@ -990,7 +990,8 @@ function syncSettings (forceLocal = false) {
 
 const extensionDataKey = 'settings'
 const defaultExtensionData = {
-  showPostInstall: true
+  showPostInstall: true,
+  words: 0
 }
 
 function getExtensionData () {
