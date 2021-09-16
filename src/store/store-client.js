@@ -27,7 +27,6 @@ function createRequest (type) {
 
 var methods = [
     'getSettings',
-    'setSettings',
 
     'getLoginInfo',
     'getAccount',

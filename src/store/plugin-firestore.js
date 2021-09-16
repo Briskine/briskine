@@ -20,11 +20,8 @@ import {
   query,
   where,
   getDocs,
-  onSnapshot,
-  updateDoc
+  onSnapshot
 } from 'firebase/firestore';
-
-import {defaults as _defaults, isEmpty as _isEmpty} from 'underscore';
 
 import Config from '../config';
 import firebaseConfig from './config-firebase';
@@ -171,189 +168,6 @@ function getLocalData (params = {}) {
     });
 }
 
-function splitFullName (fullname = '') {
-    const nameParts = fullname.trim().split(' ');
-    const firstName = nameParts.shift();
-    const lastName = nameParts.join(' ');
-
-    return {
-        firstName: firstName,
-        lastName: lastName
-    };
-}
-
-var _browserStorageSettings = {
-    get: function(key, def, callback) {
-        browser.storage.local.get(key).then(function(data) {
-            if (
-                browser.runtime.lastError ||
-                _isEmpty(data)
-            ) {
-                if (!def) {
-                    return callback(Settings.defaults[key]);
-                } else {
-                    return callback(def);
-                }
-            } else {
-                return callback(data[key]);
-            }
-        });
-    },
-    set: function(key, value, callback) {
-        var data = {};
-        data[key] = value;
-
-        // remove value/reset default
-        if (typeof value === 'undefined') {
-            browser.storage.local.remove(key).then(function() {
-                return callback(data);
-            });
-            return;
-        }
-
-        browser.storage.local.set(data).then(function() {
-            browser.storage.local.get(key).then(function(data) {
-                return callback(data);
-            });
-        });
-    }
-};
-
-var Settings = {
-    get: function(key, def, callback) {
-        return _browserStorageSettings.get(key, def, callback);
-    },
-    set: function(key, value, callback) {
-        return _browserStorageSettings.set(key, value, callback);
-    },
-    defaults: {
-        settings: {
-            // settings for the settings view
-            dialog: {
-                enabled: true,
-                shortcut: "ctrl+space", // shortcut that triggers the complete dialog
-                auto: false, //trigger automatically while typing - should be disabled cause it's annoying sometimes
-                delay: 1000, // if we want to trigger it automatically
-                limit: 100 // how many templates are shown in the dialog
-            },
-            qaBtn: {
-                enabled: true,
-                shownPostInstall: false,
-                caseSensitiveSearch: false,
-                fuzzySearch: true
-            },
-            keyboard: {
-                enabled: true,
-                shortcut: "tab"
-            },
-            stats: {
-                enabled: false // send anonymous statistics
-            },
-            blacklist: [],
-            fields: {
-                tags: false,
-                subject: true
-            },
-            editor: {
-                enabled: true // new editor - enable for new users
-            }
-        },
-        // refactor this into 'local' and 'remote'
-        isLoggedIn: false,
-        syncEnabled: false,
-        words: 0,
-        syncedWords: 0,
-        lastStatsSync: null,
-        lastSync: null,
-        hints: {
-            postInstall: true,
-            subscribeHint: true
-        }
-    }
-};
-
-var getLocalSettings = function (params) {
-    return new Promise((resolve) => {
-        Settings.get(params.key, params.def, resolve);
-    });
-};
-
-var setLocalSettings = function (params) {
-    return new Promise((resolve) => {
-        Settings.set(params.key, params.val, resolve);
-    });
-};
-
-let cachedSettings = null;
-var getSettingsOld = (params = {}) => {
-    if (params.key === 'settings') {
-        let localSettings = {};
-        return getLocalSettings(params)
-            .then((settings) => {
-                localSettings = settings;
-                if (cachedSettings) {
-                    return cachedSettings;
-                }
-
-                return getSignedInUser()
-                    .then((user) => {
-                        return usersCollection.doc(user.id).get();
-                    })
-                    .then((userDoc) => {
-                        const userData = userDoc.data();
-                        const userSettings = userData.settings;
-                        const settings = Object.assign(defaultSettings(localSettings), userSettings);
-
-                        // backwards compatibility
-                        // map to old format
-                        cachedSettings = Object.assign({}, localSettings, {
-                            name: splitFullName(userData.full_name),
-                            email: userData.email,
-                            keyboard: {
-                                enabled: settings.expand_enabled,
-                                shortcut: settings.expand_shortcut
-                            },
-                            dialog: {
-                                enabled: settings.dialog_enabled,
-                                shortcut: settings.dialog_shortcut,
-                                limit: settings.dialog_limit
-                            },
-                            qaBtn: {
-                                enabled: settings.dialog_button
-                            },
-                            editor: {
-                                enabled: settings.rich_editor
-                            },
-                            blacklist: settings.blacklist,
-                            is_sort_template_dialog_gmail: settings.dialog_sort,
-                            is_sort_template_list: settings.dashboard_sort
-                        });
-
-                        return cachedSettings;
-                    })
-                    .catch(() => {
-                        // return api-plugin settings when logged-out
-                        return localSettings;
-                    });
-            });
-
-    }
-
-    return getLocalSettings(params);
-};
-
-// TODO deprecate
-var setSettings = (params = {}) => {
-    if (params.key === 'settings') {
-        return setLocalSettings(params)
-            .then(() => {
-                return syncSettings(true);
-            });
-    }
-
-    return setLocalSettings(params);
-};
-
 const defaultSettings = {
   dialog_enabled: true,
   dialog_button: true,
@@ -371,6 +185,7 @@ const defaultSettings = {
 
 let settingsCache = {}
 var getSettings = () => {
+  // TODO clear cache when settings change
   if (Object.keys(settingsCache).length) {
     return Promise.resolve(settingsCache)
   }
@@ -379,23 +194,19 @@ var getSettings = () => {
     .then((user) => {
       return getDoc(doc(usersCollection, user.id))
     })
+    .then((userDoc) => {
+      const userData = userDoc.data()
+      const userSettings = userData.settings
+      settingsCache = Object.assign({}, defaultSettings, userSettings)
+      return settingsCache
+    })
     .catch((err) => {
         if (isLoggedOut(err)) {
           // logged-out
-          return
+          return defaultSettings
         }
 
         throw err
-    })
-    .then((userDoc) => {
-      let userSettings = {}
-      if (userDoc) {
-        const userData = userDoc.data()
-        userSettings = userData.settings
-      }
-
-      settingsCache = Object.assign({}, defaultSettings, userSettings)
-      return settingsCache
     })
 }
 
@@ -812,8 +623,10 @@ function signinError (err) {
 }
 
 function updateCurrentUser (firebaseUser) {
-    let user = {};
-    let cachedUser = {};
+    let user = {}
+    let cachedUser = {}
+    // clear settings
+    settingsCache = {}
 
     // get cached user,
     // for customer switching
@@ -891,8 +704,6 @@ var signin = (params = {}) => {
             return createSession();
         })
         .then(() => {
-            syncSettings();
-
             return window.store.trigger('login');
         })
         .catch((err) => {
@@ -936,8 +747,6 @@ function signinWithToken (token = '') {
             return updateCurrentUser(res.user);
         })
         .then(() => {
-            syncSettings();
-
             return window.store.trigger('login');
         });
 }
@@ -964,82 +773,11 @@ function setActiveCustomer (customerId) {
     );
 }
 
-// map old settings to new format
-function defaultSettingsOld (oldSettings = {}) {
-    const defaults = {
-        // tab expand
-        expand_enabled: true,
-        expand_shortcut: 'tab',
-        // dialog
-        dialog_enabled: true,
-        dialog_button: true,
-        dialog_shortcut: 'ctrl+space',
-        dialog_limit: 100,
-        // dialog sort alphabetically
-        dialog_sort: false,
-        // rich editor
-        rich_editor: true,
-        // blacklist
-        blacklist: [],
-        // dashboard sort alphabetically
-        dashboard_sort: false,
-    };
-
-    const mappedSettings = {
-        expand_enabled: oldSettings.keyboard.enabled,
-        expand_shortcut: oldSettings.keyboard.shortcut,
-        dialog_enabled: oldSettings.dialog.enabled,
-        dialog_button: oldSettings.qaBtn.enabled,
-        dialog_shortcut: oldSettings.dialog.shortcut,
-        dialog_limit: oldSettings.dialog.limit,
-        dialog_sort: oldSettings.is_sort_template_dialog_gmail,
-        rich_editor: oldSettings.editor.enabled,
-        blacklist: oldSettings.blacklist,
-        dashboard_sort: oldSettings.is_sort_template_list
-    };
-
-    // merge default with existing
-    return _defaults(Object.assign({}, mappedSettings), defaults);
-}
-
-// save local settings in the db
-function syncSettings (forceLocal = false) {
-    // invalidate settings cache
-    cachedSettings = null;
-    const settingsMap = {};
-    const getSettingsParams = {
-        key: 'settings'
-    };
-    const getSettingsPromise = forceLocal ? getLocalSettings(getSettingsParams) : getSettings(getSettingsParams);
-
-    return getSettingsPromise
-        .then((res) => {
-            const settings = defaultSettings(res);
-            Object.keys(settings).forEach((key) => {
-                settingsMap[`settings.${key}`] = settings[key];
-            });
-
-            return getSignedInUser();
-        })
-        .then((user) => {
-            return updateDoc(doc(usersCollection, user.id), settingsMap);
-        })
-        .catch((err) => {
-            if (isLoggedOut(err)) {
-                // logged-out
-                return;
-            }
-
-            throw err;
-        });
-}
-
 const extensionDataKey = 'briskine'
 const defaultExtensionData = {
   showPostInstall: true,
   words: 0
 }
-
 function getExtensionData () {
   let extensionData = {}
   return browser.storage.local.get(extensionDataKey)
@@ -1073,7 +811,6 @@ function setExtensionData (params = {}) {
 
 export default {
     getSettings: getSettings,
-    setSettings: setSettings,
 
     getLoginInfo: getLoginInfo,
     getAccount: getAccount,
