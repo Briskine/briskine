@@ -364,14 +364,39 @@ const defaultSettings = {
   expand_enabled: true,
   expand_shortcut: 'tab',
 
-  rich_editor: true
+  rich_editor: true,
+
+  blacklist: []
 }
 
 let settingsCache = {}
-
 var getSettings = () => {
-  // TODO
-  return Promise.resolve(defaultSettings)
+  if (Object.keys(settingsCache).length) {
+    return Promise.resolve(settingsCache)
+  }
+
+  return getSignedInUser()
+    .then((user) => {
+      return getDoc(doc(usersCollection, user.id))
+    })
+    .catch((err) => {
+        if (isLoggedOut(err)) {
+          // logged-out
+          return
+        }
+
+        throw err
+    })
+    .then((userDoc) => {
+      let userSettings = {}
+      if (userDoc) {
+        const userData = userDoc.data()
+        userSettings = userData.settings
+      }
+
+      settingsCache = Object.assign({}, defaultSettings, userSettings)
+      return settingsCache
+    })
 }
 
 var LOGGED_OUT_ERR = 'logged-out';

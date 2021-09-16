@@ -96,12 +96,16 @@ App.init = function(settings, doc) {
     // some methods in utils need to be sync, but also use settings and user data
     App.settingsCache = Object.assign({}, settings);
     App.accountCache = {}
-    store.getAccount().then((res) => {
-      App.accountCache.email = res.email
-      if (res.info) {
-        App.accountCache.full_name = res.info.name
-      }
-    })
+    store.getAccount()
+      .then((res) => {
+        App.accountCache.email = res.email
+        if (res.info) {
+          App.accountCache.full_name = res.info.name
+        }
+      })
+      .catch(() => {
+        // logged-out
+      })
 };
 
 window.App = App;
