@@ -99,9 +99,7 @@ App.init = function(settings, doc) {
     store.getAccount()
       .then((res) => {
         App.accountCache.email = res.email
-        if (res.info) {
-          App.accountCache.full_name = res.info.name
-        }
+        App.accountCache.full_name = res.full_name
       })
       .catch(() => {
         // logged-out

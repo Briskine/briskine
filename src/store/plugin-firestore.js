@@ -645,6 +645,7 @@ function updateCurrentUser (firebaseUser) {
           user = {
               id: firebaseUser.uid,
               email: userData.email,
+              full_name: userData.full_name,
 
               // customers user is member of
               customers: userData.customers,
@@ -652,11 +653,6 @@ function updateCurrentUser (firebaseUser) {
               // default to first customer
               customer: userData.customers[0],
 
-              // backwards compatibility
-              info: {
-                  name: userData.full_name,
-                  share_all: userData.share_all || false
-              },
               current_subscription: {
                   active: false,
                   created_datetime: '',
