@@ -988,16 +988,27 @@ function syncSettings (forceLocal = false) {
         });
 }
 
-const extensionDataKey = 'settings'
+const extensionDataKey = 'briskine'
 const defaultExtensionData = {
   showPostInstall: true,
   words: 0
 }
 
 function getExtensionData () {
+  let extensionData = {}
   return browser.storage.local.get(extensionDataKey)
     .then((data) => {
-      return Object.assign({}, defaultExtensionData, data[extensionDataKey])
+      extensionData = Object.assign({}, defaultExtensionData, data[extensionDataKey])
+
+      return browser.storage.local.get('words')
+    })
+    .then((stats) => {
+      // backwards compatibility for stats
+      if (extensionData.words === 0 && stats && stats.words) {
+        extensionData.words = stats.words;
+      }
+
+      return extensionData
     })
 }
 

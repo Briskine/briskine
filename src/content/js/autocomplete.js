@@ -225,7 +225,7 @@ autocomplete.replaceWith = function (params) {
         }
     ));
 
-    // updates stats
+    // updates word stats
     const wordCount = params.quicktext.body.split(' ').length;
     store.getExtensionData().then((data) => {
       store.setExtensionData({
