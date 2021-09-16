@@ -2,13 +2,6 @@
 import Config from '../config';
 import browser from 'webextension-polyfill';
 
-// TODO deprecate resetSettings after we disable two-way setting sync
-function resetSettings () {
-    return window.store.setSettings({
-        key: 'settings'
-    });
-}
-
 // for tabs.query auto-reload
 var urlMatchPatterns = [
     '*://mail.google.com/*',
@@ -42,11 +35,6 @@ browser.tabs.onUpdated.addListener(updatedTab);
 // Called after installation
 // https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/runtime/onInstalled
 browser.runtime.onInstalled.addListener(function (details) {
-    if (details.reason === "install") {
-        // reset settings
-        resetSettings();
-    }
-
     // All affected tabs should be reloaded if the extension was installed
     browser.tabs.query({'url': urlMatchPatterns}).then(function (tabs) {
         for (var i in tabs) {
