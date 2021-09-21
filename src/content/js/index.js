@@ -110,7 +110,7 @@ function startup () {
     return
   }
 
-  store.getSettings(true).then((settings) => {
+  store.getSettings().then((settings) => {
     init(settings, window.document)
   })
 }

@@ -184,8 +184,8 @@ const defaultSettings = {
 }
 
 let settingsCache = {}
-var getSettings = (forceRefresh = false) => {
-  if (Object.keys(settingsCache).length && forceRefresh !== true) {
+var getSettings = (forceUpdate = false) => {
+  if (Object.keys(settingsCache).length && forceUpdate !== true) {
     return Promise.resolve(settingsCache)
   }
 
@@ -274,6 +274,11 @@ function setupTemplates (user) {
           return getCurrentUser().then((firebaseUser) => {
               return updateCurrentUser(firebaseUser);
           });
+      }),
+      // user data changed
+      onSnapshot(doc(usersCollection, user.id), () => {
+        // update settings
+        return getSettings(true)
       })
   ]);
 
