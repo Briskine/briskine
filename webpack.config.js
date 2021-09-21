@@ -9,6 +9,7 @@ import archiver from 'archiver'
 import CopyWebpackPlugin from 'copy-webpack-plugin'
 import MiniCssExtractPlugin from 'mini-css-extract-plugin'
 import PurgecssPlugin from 'purgecss-webpack-plugin'
+import CssMinimizerPlugin from 'css-minimizer-webpack-plugin'
 
 import packageFile from './package.json'
 import manifestFile from './src/manifest.json'
@@ -125,6 +126,12 @@ function extensionConfig (env, safari = false) {
                 'handlebars/runtime': 'handlebars/dist/cjs/handlebars.runtime',
                 'handlebars': 'handlebars/dist/cjs/handlebars'
             }
+        },
+        optimization: {
+          minimizer: [
+            '...',
+            new CssMinimizerPlugin()
+          ]
         }
     };
 }
