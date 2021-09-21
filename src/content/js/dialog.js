@@ -8,7 +8,6 @@ import $ from 'jquery';
 import Handlebars from 'handlebars';
 import Mousetrap from 'mousetrap';
 
-import PubSub from './patterns';
 import store from '../../store/store-client';
 import autocomplete from './autocomplete';
 import enableDialogSearchAttr from './dialog-search-attr';
@@ -19,16 +18,6 @@ import Config from '../../config';
 var KEY_UP = 38;
 var KEY_DOWN = 40;
 var KEY_ENTER = 13;
-
-PubSub.subscribe('focus', function (action, element) {
-if (action === 'off') {
-    if (element === null) {
-        dialog.close();
-    } else if ($(element).attr('class') !== $(dialog.searchSelector).attr('class')) {
-        dialog.close();
-    }
-}
-});
 
 function getFilteredTemplates (text, limit) {
   let settings = {}
@@ -238,6 +227,11 @@ var dialog = {
             const popupUrl = browser.runtime.getURL('popup/popup.html');
             window.open(`${popupUrl}?source=tab`, Config.dashboardTarget);
         });
+
+        // close the dialog when the search field is blurred
+        $dialog.on('blur', this.searchSelector, () => {
+          this.close()
+        })
     },
     bindKeyboardEvents: function (doc) {
         Mousetrap.bindGlobal('up', function () {
@@ -471,7 +465,9 @@ var dialog = {
 
         // scroll the active element into view
         var $element = content.children('.qt-item').eq(index_new);
-        $element.get(0).scrollIntoView();
+        if ($element && $element.get(0)) {
+          $element.get(0).scrollIntoView();
+        }
     },
     // remove dropdown and cleanup
     close: function () {

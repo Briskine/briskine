@@ -12,12 +12,10 @@ import Mousetrap from 'mousetrap';
 import 'mousetrap/plugins/global-bind/mousetrap-global-bind';
 
 import './helpers/content-helpers';
-import './events';
 
 import store from '../../store/store-client';
 import keyboard from './keyboard';
 import dialog from './dialog';
-import PubSub from './patterns';
 
 import {setup as setupBubble} from './bubble';
 
@@ -52,10 +50,6 @@ function init (settings, doc) {
   if (isBlacklisted) {
       return false;
   }
-
-  doc.addEventListener("blur", (e) => {
-      PubSub.publish('blur', e);
-  }, true);
 
   // use custom keyboard shortcuts
   if (settings.expand_enabled) {
