@@ -128,6 +128,7 @@ function request (url, params = {}) {
         });
 }
 
+// TODO deprecate, no longer used
 // local data (when logged-out)
 var localDataKey = 'firestoreLocalData';
 function getLocalData (params = {}) {
@@ -310,9 +311,6 @@ onIdTokenChanged(firebaseAuth, (firebaseUser) => {
             });
     });
 });
-
-var getLoginInfo = getSignedInUser;
-var getAccount = getSignedInUser;
 
 const usersCollection = collection(db, 'users');
 const customersCollection = collection(db, 'customers');
@@ -809,9 +807,7 @@ function setExtensionData (params = {}) {
 
 export default {
     getSettings: getSettings,
-
-    getLoginInfo: getLoginInfo,
-    getAccount: getAccount,
+    getAccount: getSignedInUser,
 
     getCustomer: getCustomer,
     setActiveCustomer: setActiveCustomer,

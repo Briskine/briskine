@@ -27,7 +27,7 @@ customElements.define(
             store.on('logout', () => this.checkLogin());
         }
         checkLogin() {
-            return store.getLoginInfo()
+            return store.getAccount()
                 .then(() => {
                     this.loggedIn = true;
                     return;

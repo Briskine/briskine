@@ -354,7 +354,7 @@ var dialog = {
         // show or hide the login hint
         const loggedOutClassName = 'qt-logged-out';
         const dialogElement = document.querySelector(this.dialogSelector);
-        store.getLoginInfo()
+        store.getAccount()
             .then(() => {
                 dialogElement.classList.remove(loggedOutClassName);
             })
