@@ -128,47 +128,6 @@ function request (url, params = {}) {
         });
 }
 
-// TODO deprecate, no longer used
-// local data (when logged-out)
-var localDataKey = 'firestoreLocalData';
-function getLocalData (params = {}) {
-    return new Promise((resolve) => {
-        browser.storage.local.get(localDataKey).then((res) => {
-            var localData = Object.assign({
-                tags: {},
-                templates: {}
-            }, res[localDataKey]);
-
-            var result = [];
-
-            if (params.raw) {
-                // return raw data
-                result = localData;
-            } else if (params.templateId) {
-                // return one template
-                result = localData.templates[params.templateId];
-            } else {
-                // return all tags or templates
-                ['tags', 'templates'].some((key) => {
-                    if (params[key]) {
-                        // return all items as array
-                        result = Object.keys(localData[key]).map((id) => {
-                            return localData[key][id];
-                        }).filter((item) => {
-                            // don't return deleted data
-                            return !item.deleted_datetime;
-                        });
-
-                        return true;
-                    }
-                });
-            }
-
-            resolve(result);
-        });
-    });
-}
-
 const defaultSettings = {
   dialog_enabled: true,
   dialog_button: true,
@@ -330,7 +289,7 @@ function getTags () {
         .catch((err) => {
             if (isLoggedOut(err)) {
                 // logged-out
-                return getLocalData({tags: true});
+                return;
             }
 
             throw err;
