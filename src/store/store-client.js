@@ -1,11 +1,5 @@
 import browser from 'webextension-polyfill';
 
-var backgroundPage = null;
-try {
-    // getBackgroundPage() throws error in content script
-    backgroundPage = browser.extension.getBackgroundPage();
-} catch (err) {}
-
 function createRequest (type) {
     return (params) => {
         return new Promise((resolve, reject) => {
