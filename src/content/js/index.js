@@ -56,9 +56,6 @@ function init (settings, doc) {
   doc.addEventListener("blur", (e) => {
       PubSub.publish('blur', e);
   }, true);
-  doc.addEventListener("scroll", (e) => {
-      PubSub.publish('scroll', e);
-  }, true);
 
   // use custom keyboard shortcuts
   if (settings.expand_enabled) {

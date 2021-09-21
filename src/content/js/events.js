@@ -21,9 +21,3 @@ PubSub.subscribe('blur', function (e) {
     PubSub.publish('focus', 'off', e.relatedTarget);
 });
 
-PubSub.subscribe('scroll', function () {
-    // if search is focused
-    if(document.activeElement !== $(dialog.searchSelector).get(0)) {
-        dialog.close();
-    }
-});
