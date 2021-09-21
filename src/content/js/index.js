@@ -21,8 +21,6 @@ import PubSub from './patterns';
 
 import {setup as setupBubble} from './bubble';
 
-var App = {}
-
 function init (settings, doc) {
   const loadedClassName = 'gorgias-loaded'
   if (!document.body || document.body.classList.contains(loadedClassName)) {
@@ -89,19 +87,6 @@ function init (settings, doc) {
       dialog.create();
       dialog.bindKeyboardEvents(doc);
   }
-
-  // HACK temporary data cache.
-  // some methods in utils need to be sync, but also use settings and user data
-  App.settingsCache = Object.assign({}, settings);
-  App.accountCache = {}
-  store.getAccount()
-    .then((res) => {
-      App.accountCache.email = res.email
-      App.accountCache.full_name = res.full_name
-    })
-    .catch(() => {
-      // logged-out
-    })
 }
 
 function startup () {
@@ -114,9 +99,6 @@ function startup () {
     init(settings, window.document)
   })
 }
-
-// legacy
-window.App = App
 
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', startup)
