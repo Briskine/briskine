@@ -3,7 +3,7 @@
  */
 
 import autocomplete from './autocomplete';
-import store from '../../store/store-client';
+import store from '../store/store-client';
 
 function getTemplateByShortcut (shortcut) {
   return store.getTemplate()

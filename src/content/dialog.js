@@ -8,12 +8,12 @@ import $ from 'jquery';
 import Handlebars from 'handlebars';
 import Mousetrap from 'mousetrap';
 
-import store from '../../store/store-client';
+import store from '../store/store-client';
 import autocomplete from './autocomplete';
 import enableDialogSearchAttr from './dialog-search-attr';
 import fuzzySearch from './search';
 
-import Config from '../../config';
+import Config from '../config';
 
 var KEY_UP = 38;
 var KEY_DOWN = 40;

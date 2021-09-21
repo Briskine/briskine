@@ -4,7 +4,7 @@
  */
 
 import dialog from './dialog';
-import store from '../../store/store-client';
+import store from '../store/store-client';
 
 let bubbleInstance = null;
 const dialogSelector = '.qt-dropdown';
