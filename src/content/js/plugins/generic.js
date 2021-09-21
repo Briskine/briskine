@@ -2,14 +2,13 @@
  * When no other plugin matches.
  */
 
-import {insertText, parseTemplate} from '../utils';
+import {parseTemplate} from '../utils';
+import {insertTemplate} from '../utils/editor-generic';
 
 export default (params = {}) => {
     var parsedTemplate = parseTemplate(params.quicktext.body, {});
 
-    // BUG sometimes contenteditable doesn't prevent focus switch,
-    // still switches focus with Tab.
-    insertText(Object.assign({
+    insertTemplate(Object.assign({
         text: parsedTemplate
     }, params));
 

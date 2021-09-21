@@ -3,7 +3,8 @@
 
 import $ from 'jquery';
 
-import {parseTemplate, insertText} from '../utils';
+import {parseTemplate} from '../utils';
+import {insertTemplate} from '../utils/editor-generic';
 
 function parseName (name) {
     name = name.trim();
@@ -149,7 +150,7 @@ export default (params = {}) => {
 
     before(params, data);
 
-    insertText(Object.assign({
+    insertTemplate(Object.assign({
         text: parsedTemplate
     }, params));
 

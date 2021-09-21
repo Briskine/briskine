@@ -1,7 +1,8 @@
 /* ProseMirror plugin
  */
 
-import {insertText, parseTemplate} from '../utils';
+import {parseTemplate} from '../utils';
+import {insertTemplate} from '../utils/editor-generic';
 
 function replaceNewlines (text = '') {
     return text.replace(/(\r\n|\r|\n)/g, '<br>');
@@ -19,7 +20,7 @@ export default (params = {}) => {
     var parsedTemplate = parseTemplate(params.quicktext.body, {});
     var templateWithBreaks = replaceNewlines(parsedTemplate);
 
-    insertText(Object.assign({
+    insertTemplate(Object.assign({
         text: templateWithBreaks
     }, params));
 
