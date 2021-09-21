@@ -1,18 +1,20 @@
 /* globals Buffer */
 /* jshint esversion: 8 */
 
-import fs from 'fs';
-import webpack from 'webpack';
-import path from 'path';
-import archiver from 'archiver';
-import CopyWebpackPlugin from 'copy-webpack-plugin';
-import MiniCssExtractPlugin from 'mini-css-extract-plugin';
+import fs from 'fs'
+import webpack from 'webpack'
+import path from 'path'
+import glob from 'glob'
+import archiver from 'archiver'
+import CopyWebpackPlugin from 'copy-webpack-plugin'
+import MiniCssExtractPlugin from 'mini-css-extract-plugin'
+import PurgecssPlugin from 'purgecss-webpack-plugin'
 
-import packageFile from './package.json';
-import manifestFile from './src/manifest.json';
+import packageFile from './package.json'
+import manifestFile from './src/manifest.json'
 
-const devPath = path.resolve('ext');
-const productionPath = path.resolve('build');
+const devPath = path.resolve('ext')
+const productionPath = path.resolve('build')
 
 const safariManifestName = 'Briskine: Templates for Gmail';
 const safariManifestDescription = 'Write emails faster! Increase your productivity with templates and shortcuts on Gmail, Outlook, or LinkedIn.';
@@ -73,6 +75,9 @@ function extensionConfig (env, safari = false) {
         }),
         new MiniCssExtractPlugin({
             filename: '[name]/[name].css'
+        }),
+        new PurgecssPlugin({
+          paths: glob.sync('src/**/*',  { nodir: true })
         })
     ];
 
