@@ -2,12 +2,6 @@
 import Config from '../config';
 import browser from 'webextension-polyfill';
 
-function resetSettings () {
-    return window.store.setSettings({
-        key: 'settings'
-    });
-}
-
 // for tabs.query auto-reload
 var urlMatchPatterns = [
     '*://mail.google.com/*',
@@ -41,23 +35,6 @@ browser.tabs.onUpdated.addListener(updatedTab);
 // Called after installation
 // https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/runtime/onInstalled
 browser.runtime.onInstalled.addListener(function (details) {
-    if (details.reason == "install") {
-        // reset settings
-        resetSettings();
-    } else if (details.reason == "update") {
-        window.store.getSettings({
-            key: 'hints'
-        }).then((hints) => {
-            if (hints && hints.postInstall) {
-                hints.postInstall = false;
-                window.store.setSettings({
-                    key: 'hints',
-                    val: hints
-                });
-            }
-        });
-    }
-
     // All affected tabs should be reloaded if the extension was installed
     browser.tabs.query({'url': urlMatchPatterns}).then(function (tabs) {
         for (var i in tabs) {
@@ -88,7 +65,7 @@ browser.runtime.onInstalled.addListener(function (details) {
     });
 
     if (!REGISTER_DISABLED) {
-        if (details.reason == "install") {
+        if (details.reason === "install") {
             browser.tabs.create({
                 url: `${Config.functionsUrl}/welcome`
             });
@@ -97,31 +74,11 @@ browser.runtime.onInstalled.addListener(function (details) {
 });
 
 browser.runtime.onMessage.addListener(function (request) {
-    if (request.request === 'stats') {
-        if (request.key === 'words') {
-            var words = parseInt(request.val, 10);
-            window.store.getSettings({
-                key: 'words'
-            }).then(function (oldWords) {
-                window.store.setSettings({
-                    key: 'words',
-                    val: oldWords + words
-                });
-            });
-        }
-
-        return true;
-    }
     // Open new template window
     if (request.request === 'new') {
         browser.tabs.create({
             url: `${Config.functionsUrl}/#/list?id=new&src=qa-button`
         });
-    }
-    if (request.request === 'track') {
-        if (request.event === 'Inserted template') {
-            window.store.updateTemplateStats(request.data.id);
-        }
     }
     return true;
 });

@@ -32,8 +32,9 @@ const lastuseCache = {};
 var updateTemplateStats = function (id) {
     lastuseCache[id] = {
         lastuse_datetime: new Date().toISOString()
-    };
-};
+    }
+    return Promise.resolve(lastuseCache)
+}
 
 // extend getTemplate to include lastuse_datetime
 var getTemplate = function (plugin) {

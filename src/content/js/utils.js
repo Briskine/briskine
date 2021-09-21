@@ -5,6 +5,27 @@
 import $ from 'jquery';
 import Handlebars from 'handlebars';
 
+import store from '../../store/store-client';
+
+// HACK temporary data cache.
+// some methods in need to be sync, but also use settings and user data
+let settingsCache = {};
+store.getSettings()
+  .then((res) => {
+    settingsCache = Object.assign({}, res)
+  })
+
+const accountCache = {}
+store.getAccount()
+  .then((res) => {
+    accountCache.email = res.email
+    accountCache.full_name = res.full_name
+  })
+  .catch(() => {
+    // logged-out
+  })
+
+
 export function isContentEditable (element) {
     return element && element.hasAttribute('contenteditable');
 }
@@ -130,7 +151,7 @@ export function insertText (params = {}) {
             value = $textarea.val();
 
         // if the editor is enabled, we need to convert html into text
-        if (window.App.settings.editor_enabled) {
+        if (settingsCache.rich_editor) {
             // we want to display the text momentarily before inserting it into the textarea
             // this is needed to give the correct spaces
             var temp = $('<div id="gorgias-temp-placeholder">').html(parsedTemplate);
@@ -217,20 +238,13 @@ export function parseTemplate (template = '', data = {}) {
     let nameSetting = {
         firstName: '',
         lastName: ''
-    };
-    let email = '';
-    if (
-        window.App &&
-        window.App.settings &&
-        window.App.settings.cache
-    ) {
-        if (window.App.settings.cache.name) {
-            nameSetting = window.App.settings.cache.name;
-        }
-
-        if (window.App.settings.cache.email) {
-            email = window.App.settings.cache.email;
-        }
+    }
+    let email = accountCache.email
+    const fullName = accountCache.full_name
+    if (fullName) {
+      const nameParts = fullName.trim().split(' ')
+      nameSetting.firstName = nameParts.shift()
+      nameSetting.lastName = nameParts.join(' ')
     }
     // get "from" name from settings
     data.from = replaceFrom(data.from || {}, nameSetting);

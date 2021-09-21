@@ -19,20 +19,18 @@ function niceTime (minutes) {
 }
 
 function getStats () {
-    const avgWPM = 25;
-    return store.getSettings({
-            key: 'words',
-            def: 0
-        })
-        .then((words) => {
-            // average WPM: http://en.wikipedia.org/wiki/Words_per_minute
-            const time = niceTime(Math.round(words / avgWPM));
+  const avgWPM = 25;
+  return store.getExtensionData()
+    .then((data) => {
+      const words = data.words
+      // average WPM: http://en.wikipedia.org/wiki/Words_per_minute
+      const time = niceTime(Math.round(words / avgWPM))
 
-            return {
-                time: time,
-                words: words
-            };
-        });
+      return {
+        time: time,
+        words: words
+      }
+    })
 }
 
 customElements.define(

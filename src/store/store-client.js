@@ -27,7 +27,6 @@ function createRequest (type) {
 
 var methods = [
     'getSettings',
-    'setSettings',
 
     'getLoginInfo',
     'getAccount',
@@ -42,7 +41,10 @@ var methods = [
     'logout',
 
     'getSession',
-    'createSession'
+    'createSession',
+
+    'getExtensionData',
+    'setExtensionData'
 ];
 
 var events = [];
