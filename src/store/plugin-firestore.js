@@ -107,25 +107,13 @@ function request (url, params = {}) {
         data.body = JSON.stringify(data.body);
     }
 
-    // auth support
-    let auth = Promise.resolve();
-    if (data.authorization) {
-        auth = getUserToken();
-    }
-
-    return auth.then((res) => {
-            if (res) {
-                data.headers.Authorization = `Bearer ${res.token}`;
-            }
-
-            return fetch(fullUrl, {
-                    method: data.method,
-                    headers: data.headers,
-                    body: data.body
-                })
-                .then(handleErrors)
-                .then((res) => res.json());
-        });
+    return fetch(fullUrl, {
+        method: data.method,
+        headers: data.headers,
+        body: data.body
+      })
+      .then(handleErrors)
+      .then((res) => res.json())
 }
 
 const defaultSettings = {
@@ -555,20 +543,6 @@ var getTemplate = (params = {}) => {
         });
 
 };
-
-// return user and token
-function getUserToken () {
-    return getCurrentUser().then((currentUser) => {
-        return currentUser.getIdToken(true);
-    }).then((token) => {
-        return getSignedInUser().then((user) => {
-            return {
-                user: user,
-                token: token
-            };
-        });
-    });
-}
 
 // backwards compatibility
 function signinError (err) {
