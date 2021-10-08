@@ -58,8 +58,6 @@ function compatibleTemplate(template = {}, tags = []) {
             tags: tags.join(', '),
             deleted: isDeleted(template),
             private: isPrivate(template),
-            remote_id: template.id,
-            nosync: 0
         }
     );
 
@@ -214,6 +212,7 @@ function setupTemplates (user) {
 
   // refresh templates on changes
   subscribeSnapshots([
+    // TODO update template cache, instead of invalidating it
       onSnapshot(templatesOwnedQuery(user), invalidateTemplateCache),
       onSnapshot(templatesSharedQuery(user), invalidateTemplateCache),
       onSnapshot(templatesEveryoneQuery(user), invalidateTemplateCache),
