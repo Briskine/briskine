@@ -56,8 +56,6 @@ function compatibleTemplate(template = {}, tags = []) {
         {
             // backwards compatibility
             tags: tags.join(', '),
-            deleted: isDeleted(template),
-            private: isPrivate(template),
         }
     );
 
@@ -365,14 +363,6 @@ function getTemplatesFromCache (templateId) {
 
 function invalidateTemplateCache () {
     templateCache = {};
-}
-
-function isPrivate (template = {}) {
-    return (template.sharing === 'none');
-}
-
-function isDeleted (template = {}) {
-    return !!template.deleted_datetime ? 1 : 0;
 }
 
 function getDefaultTemplates () {
