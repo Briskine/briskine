@@ -195,26 +195,10 @@ function request (url, params = {}) {
     headers: {
       'Content-Type': 'application/json'
     },
-    body: {}
   }
 
-  // deep-merge work-around
-  const paramsCopy = JSON.parse(JSON.stringify(params))
-  const data = Object.assign({}, defaults, paramsCopy)
+  const data = Object.assign({}, defaults, params)
   data.method = data.method.toUpperCase()
-
-  // querystring support
-  const fullUrl = new URL(url)
-  if (data.method === 'GET') {
-    Object.keys(data.body).forEach((key) => {
-        fullUrl.searchParams.append(key, data.body[key])
-    });
-
-      delete data.body;
-  } else {
-    // stringify body for non-get requests
-    data.body = JSON.stringify(data.body)
-  }
 
   // auth support
   let auth = Promise.resolve()
@@ -228,10 +212,9 @@ function request (url, params = {}) {
         data.headers.Authorization = `Bearer ${res.token}`
       }
 
-      return fetch(fullUrl, {
+      return fetch(url, {
           method: data.method,
           headers: data.headers,
-          body: data.body
         })
         .then(handleErrors)
         .then((res) => res.json())
