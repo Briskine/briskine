@@ -8,14 +8,11 @@ import {
   signInWithEmailAndPassword,
   signInWithCustomToken,
   onIdTokenChanged,
-  onAuthStateChanged,
   signOut
 } from 'firebase/auth';
 import {
   getFirestore,
   connectFirestoreEmulator,
-  doc,
-  getDoc,
   collection,
   query,
   where,
@@ -48,20 +45,25 @@ function convertToNativeDates (obj = {}) {
     return parsed;
 }
 
-const localDataCache = {
-  customers: null,
-  users: null,
-  tags: null,
+function defaultDataCache () {
+  return {
+    customers: null,
+    users: null,
+    tags: null,
 
-  templatesOwned: null,
-  templatesShared: null,
-  templatesEveryone: null
+    templatesOwned: null,
+    templatesShared: null,
+    templatesEveryone: null
+  }
 }
 
-const usersCollection = collection(db, 'users');
-const customersCollection = collection(db, 'customers');
-const templatesCollection = collection(db, 'templates');
-const tagsCollection = collection(db, 'tags');
+let localDataCache = defaultDataCache()
+
+function clearDataCache () {
+  localDataCache = defaultDataCache()
+}
+
+const templatesCollection = collection(db, 'templates')
 
 function templatesOwnedQuery (user) {
     return query(
@@ -170,22 +172,6 @@ function refreshLocalData (collectionName, querySnapshot) {
 
 function updateCache (params = {}) {
   localDataCache[params.collection] = params.data
-  return window.store.trigger('templates-sync')
-}
-
-// backwards compatible template
-function compatibleTemplate(template = {}, tags = []) {
-    var cleanTemplate = Object.assign(
-        {},
-        template,
-        {
-            // backwards compatibility
-            tags: tags.join(', '),
-        }
-    );
-
-    // convert dates
-    return convertToNativeDates(cleanTemplate);
 }
 
 // handle fetch errors
@@ -252,8 +238,7 @@ const defaultSettings = {
   blacklist: []
 }
 
-// TODO settings are causing too many requests
-var getSettings = (forceUpdate = false) => {
+var getSettings = () => {
   return getSignedInUser()
     .then((user) => {
       return Promise.all([
@@ -311,17 +296,6 @@ function setSignedInUser (user) {
     });
 }
 
-// firebaseAuth.currentUser is not a promise
-// https://github.com/firebase/firebase-js-sdk/issues/462
-function getCurrentUser () {
-    return new Promise((resolve, reject) => {
-        var unsubscribe = onAuthStateChanged(firebaseAuth, (user) => {
-            unsubscribe();
-            resolve(user);
-        }, reject);
-    });
-}
-
 var snapshotListeners = [];
 function subscribeSnapshots (listeners = []) {
     snapshotListeners = snapshotListeners.concat(listeners);
@@ -338,32 +312,38 @@ function setupTemplates (user) {
   unsubscribeSnapshots()
 
   // refresh templates on changes
-  subscribeSnapshots([
-    // TODO update template cache, instead of invalidating it
-      onSnapshot(templatesOwnedQuery(user), invalidateTemplateCache),
-      onSnapshot(templatesSharedQuery(user), invalidateTemplateCache),
-      onSnapshot(templatesEveryoneQuery(user), invalidateTemplateCache),
-      // customer changes (eg. subscription updated)
-      onSnapshot(doc(customersCollection, user.customer), () => {
-          return getCurrentUser().then((firebaseUser) => {
-              return updateCurrentUser(firebaseUser);
-          });
-      }),
-      // user data changed
-      onSnapshot(doc(usersCollection, user.id), () => {
-        // update settings
-        return getSettings(true)
-      })
-  ]);
+  let templateSnapshots = [
+    onSnapshot(templatesOwnedQuery(user), (snapshot) => {
+      refreshLocalData('templatesOwned', snapshot)
+    })
+  ]
 
-  // populate in-memory template cache
-  return getTemplate();
+  if (!isFree(user)) {
+    templateSnapshots = templateSnapshots.concat([
+      onSnapshot(templatesSharedQuery(user), (snapshot) => {
+        refreshLocalData('templatesShared', snapshot)
+      }),
+      onSnapshot(templatesEveryoneQuery(user), (snapshot) => {
+        refreshLocalData('templatesEveryone', snapshot)
+      }),
+    ])
+  }
+
+  subscribeSnapshots(
+    templateSnapshots.concat(
+      ['tags', 'users', 'customers'].map((collectionName) => {
+        return onSnapshot(getCollectionQuery(collectionName, user), (snapshot) => {
+          refreshLocalData(collectionName, snapshot)
+        })
+      })
+    )
+  )
 }
 
 // auth change
 onIdTokenChanged(firebaseAuth, (firebaseUser) => {
     if (!firebaseUser) {
-        invalidateTemplateCache();
+        clearDataCache();
         unsubscribeSnapshots();
 
         return setSignedInUser({});
@@ -384,84 +364,6 @@ onIdTokenChanged(firebaseAuth, (firebaseUser) => {
             });
     });
 });
-
-
-function getTags () {
-    return getSignedInUser()
-        .then((user) => {
-            return getDocs(query(tagsCollection, where('customer', '==', user.customer)));
-        })
-        .then((snapshot) => {
-            return snapshot.docs.map((tag) => {
-                return Object.assign({id: tag.id}, tag.data());
-            });
-        })
-        .catch((err) => {
-            if (isLoggedOut(err)) {
-                // logged-out
-                return;
-            }
-
-            throw err;
-        });
-}
-
-function idsToTags (tagIds) {
-    return getTags().then((existingTags) => {
-        return tagIds.map((tagId) => {
-            var foundTag = existingTags.find((tag) => {
-                return tagId === tag.id;
-            });
-
-            if (!foundTag) {
-                return '';
-            }
-
-            return foundTag.title;
-        });
-    });
-}
-
-// my templates
-function getTemplatesOwned (user) {
-    return getDocs(templatesOwnedQuery(user));
-}
-
-// templates shared with me
-function getTemplatesShared (user) {
-    return getDocs(templatesSharedQuery(user))
-}
-
-// templates shared with everyone
-function getTemplatesForEveryone (user) {
-    return getDocs(templatesEveryoneQuery(user))
-}
-
-// template in-memory cache
-var templateCache = {};
-function addTemplatesToCache (templates = {}) {
-    Object.keys(templates).forEach((templateId) => {
-        templateCache[templateId] = templates[templateId];
-    });
-}
-
-function getTemplatesFromCache (templateId) {
-    if (templateId && templateCache[templateId]) {
-        var list = {};
-        list[templateId] = templateCache[templateId];
-        return Promise.resolve(list);
-    }
-
-    if (Object.keys(templateCache).length) {
-        return Promise.resolve(templateCache);
-    }
-
-    return Promise.reject();
-}
-
-function invalidateTemplateCache () {
-    templateCache = {};
-}
 
 function getDefaultTemplates () {
     const defaultTemplates = [
@@ -544,91 +446,78 @@ function getDefaultTemplates () {
     return legacyTemplates;
 }
 
-var getTemplate = (params = {}) => {
-    return getSignedInUser()
-        .then((user) => {
-            // return single template
-            if (params.id) {
-                var templateData = {};
-                return getTemplatesFromCache(params.id)
-                    .catch(() => {
-                        // template not in cache
-                        return getDoc(doc(templatesCollection, params.id))
-                            .then((res) => res.data())
-                            .then((res) => {
-                                templateData = res;
-                                return idsToTags(templateData.tags);
-                            })
-                            .then((tags) => {
-                                var template = compatibleTemplate(Object.assign({
-                                    id: params.id
-                                }, templateData), tags);
+function isFree (user) {
+  return user.current_subscription.plan === 'free'
+}
 
-                                // backwards compatibility
-                                var list = {};
-                                list[template.id] = template;
-                                return list;
-                            });
-                    });
-            }
+function idsToTags (ids, tags) {
+  return ids.map((tagId) => {
+    const tag = tags[tagId] && tags[tagId].title
+    return tag || ''
+  })
+}
 
-            return getTemplatesFromCache()
-                .catch(() => {
-                    const isFree = (user.current_subscription.plan === 'free');
-                    let templateCollections = [
-                        getTemplatesOwned(user)
-                    ];
-                    if (!isFree) {
-                        templateCollections = templateCollections.concat([
-                            getTemplatesShared(user),
-                            getTemplatesForEveryone(user)
-                        ]);
-                    }
-
-                    // templates not cached
-                    return Promise.all(templateCollections)
-                    .then((res) => {
-                        var mergedTemplates = [];
-                        // concat all templates
-                        res.forEach((query) => {
-                            mergedTemplates = mergedTemplates.concat(query.docs);
-                        });
-
-                        // merge data and id
-                        return mergedTemplates.map((template) => {
-                            return Object.assign({
-                                id: template.id
-                            }, template.data());
-                        });
-                    })
-                    .then((allTemplates) => {
-                        // backward compatibility
-                        // and template de-duplication (owned and sharing=everyone)
-                        var templates = {};
-                        return Promise.all(
-                            allTemplates.map((template) => {
-                                return idsToTags(template.tags).then((tags) => {
-                                    templates[template.id] = compatibleTemplate(template, tags);
-
-                                    return;
-                                });
-                            })
-                        ).then(() => {
-                            addTemplatesToCache(templates);
-
-                            return templates;
-                        });
-                    });
-                });
+var getTemplate = () => {
+  return getSignedInUser()
+    .then((user) => {
+      let templateCollections = [
+        getCollection({
+          user: user,
+          collection: 'templatesOwned'
         })
-        .catch((err) => {
-            if (isLoggedOut(err)) {
-                return getDefaultTemplates();
-            }
+      ]
 
-            throw err;
-        });
+      if (!isFree(user)) {
+        templateCollections = templateCollections.concat([
+          getCollection({
+            user: user,
+            collection: 'templatesShared'
+          }),
+          getCollection({
+            user: user,
+            collection: 'templatesEveryone'
+          })
+        ])
+      }
 
+      let templates = {}
+      let tags = {}
+      return getCollection({
+          user: user,
+          collection: 'tags'
+        })
+        .then((res) => {
+          tags = res
+          return Promise.all(templateCollections)
+        })
+        .then((res) => {
+
+          res.forEach((list) => {
+            Object.keys(list).forEach((id) => {
+              templates[id] = convertToNativeDates(
+                Object.assign(
+                  {},
+                  list[id],
+                  {
+                    id: id,
+                    tags: idsToTags(list[id].tags, tags).join(', ')
+                  }
+                )
+              )
+            })
+          })
+
+          return templates
+        })
+
+    })
+    .catch((err) => {
+        if (isLoggedOut(err)) {
+            return getDefaultTemplates();
+        }
+
+        throw err;
+    });
 };
 
 // backwards compatibility
@@ -659,11 +548,17 @@ function updateCurrentUser (firebaseUser) {
       .catch(() => {return;})
       .then(() => {
           // get data from users collection
-          return getDoc(doc(usersCollection, firebaseUser.uid));
+          return Promise.all([
+            firebaseUser.uid,
+            getCollection({
+              user: cachedUser,
+              collection: 'users'
+            })
+          ])
       })
-      .then((userDoc) => {
+      .then((res) => {
           // get data from users collection
-          const userData = userDoc.data();
+          const userData = res[1][res[0]];
 
           user = {
               id: firebaseUser.uid,
@@ -692,10 +587,16 @@ function updateCurrentUser (firebaseUser) {
             user.customer = newCustomer;
           }
 
-          return getDoc(doc(customersCollection, user.customer));
+          return Promise.all([
+            user.customer,
+            getCollection({
+              user: user,
+              collection: 'customers'
+            })
+          ])
       })
-      .then((customer) => {
-          var customerData = customer.data();
+      .then((res) => {
+          const customerData = res[1][res[0]]
           // subscription data
           user.current_subscription = Object.assign(user.current_subscription, {
               plan: customerData.subscription.plan,
@@ -769,19 +670,28 @@ function signinWithToken (token = '') {
 
 function getCustomer (customerId) {
   let customer = {};
-  return getDoc(doc(customersCollection, customerId))
-    .then((res) => {
-      customer = res.data();
-      return getDoc(doc(usersCollection, customer.owner));
+  return getSignedInUser()
+    .then((user) => {
+      return Promise.all([
+        getCollection({
+          user: user,
+          collection: 'users'
+        }),
+        getCollection({
+          user: user,
+          collection: 'customers'
+        })
+      ])
     })
     .then((res) => {
-      customer.ownerDetails = res.data();
-      return customer;
-    });
+      customer = res[1][customerId]
+      customer.ownerDetails = res[0][customer.owner]
+      return customer
+    })
 }
 
 function setActiveCustomer (customerId) {
-    invalidateTemplateCache();
+    clearDataCache();
     unsubscribeSnapshots();
 
     return updateCurrentUser(
