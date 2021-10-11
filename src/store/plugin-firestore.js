@@ -189,40 +189,66 @@ function handleErrors (response) {
 // fetch wrapper
 // support authorization header, form submit, query params, error handling
 function request (url, params = {}) {
-    const defaults = {
-        authorization: false,
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: {}
-    };
+  const defaults = {
+    authorization: false,
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: {}
+  }
 
-    // deep-merge work-around
-    const paramsCopy = JSON.parse(JSON.stringify(params));
-    const data = Object.assign({}, defaults, paramsCopy);
-    data.method = data.method.toUpperCase();
+  // deep-merge work-around
+  const paramsCopy = JSON.parse(JSON.stringify(params))
+  const data = Object.assign({}, defaults, paramsCopy)
+  data.method = data.method.toUpperCase()
 
-    // querystring support
-    const fullUrl = new URL(url);
-    if (data.method === 'GET') {
-        Object.keys(data.body).forEach((key) => {
-            fullUrl.searchParams.append(key, data.body[key]);
-        });
+  // querystring support
+  const fullUrl = new URL(url)
+  if (data.method === 'GET') {
+    Object.keys(data.body).forEach((key) => {
+        fullUrl.searchParams.append(key, data.body[key])
+    });
 
-        delete data.body;
-    } else {
-        // stringify body for non-get requests
-        data.body = JSON.stringify(data.body);
-    }
+      delete data.body;
+  } else {
+    // stringify body for non-get requests
+    data.body = JSON.stringify(data.body)
+  }
 
-    return fetch(fullUrl, {
-        method: data.method,
-        headers: data.headers,
-        body: data.body
+  // auth support
+  let auth = Promise.resolve()
+  if (data.authorization) {
+    auth = getUserToken()
+  }
+
+  return auth
+    .then((res) => {
+      if (res) {
+        data.headers.Authorization = `Bearer ${res.token}`
+      }
+
+      return fetch(fullUrl, {
+          method: data.method,
+          headers: data.headers,
+          body: data.body
+        })
+        .then(handleErrors)
+        .then((res) => res.json())
+    })
+}
+
+// return user and token
+function getUserToken () {
+  return firebaseAuth.currentUser.getIdToken(true)
+    .then((token) => {
+      return getSignedInUser().then((user) => {
+        return {
+          user: user,
+          token: token
+        }
       })
-      .then(handleErrors)
-      .then((res) => res.json())
+    })
 }
 
 const defaultSettings = {
