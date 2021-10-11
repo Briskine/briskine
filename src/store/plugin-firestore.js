@@ -48,7 +48,132 @@ function convertToNativeDates (obj = {}) {
     return parsed;
 }
 
-// backwards compatible template for the angular app
+const localDataCache = {
+  customers: null,
+  users: null,
+  tags: null,
+
+  templatesOwned: null,
+  templatesShared: null,
+  templatesEveryone: null
+}
+
+const usersCollection = collection(db, 'users');
+const customersCollection = collection(db, 'customers');
+const templatesCollection = collection(db, 'templates');
+const tagsCollection = collection(db, 'tags');
+
+function templatesOwnedQuery (user) {
+    return query(
+      templatesCollection,
+      where('customer', '==', user.customer),
+      where('owner', '==', user.id),
+      where('deleted_datetime', '==', null)
+    );
+}
+
+function templatesSharedQuery (user) {
+    return query(
+      templatesCollection,
+      where('customer', '==', user.customer),
+      where('shared_with', 'array-contains', user.id),
+      where('deleted_datetime', '==', null)
+    );
+}
+
+function templatesEveryoneQuery (user) {
+    return query(
+      templatesCollection,
+      where('customer', '==', user.customer),
+      where('sharing', '==', 'everyone'),
+      where('deleted_datetime', '==', null)
+    );
+}
+
+function getCollectionQuery (name, user) {
+  const collectionQuery = {
+    users: ['customers', 'array-contains', user.customer],
+    customers: ['members', 'array-contains', user.id],
+    tags: ['customer', '==', user.customer]
+  }
+
+  if (name === 'templatesOwned') {
+    return templatesOwnedQuery(user);
+  }
+
+  if (name === 'templatesShared') {
+    return templatesSharedQuery(user);
+  }
+
+  if (name === 'templatesEveryone') {
+    return templatesEveryoneQuery(user);
+  }
+
+  return query(
+    collection(db, name),
+    where(...collectionQuery[name])
+  );
+}
+
+const collectionRequestQueue = {}
+
+function getCollection (params = {}) {
+  const data = localDataCache[params.collection]
+  if (!params.refresh && data) {
+    return Promise.resolve(data)
+  }
+
+  // request is already in progress
+  if (collectionRequestQueue[params.collection]) {
+    return collectionRequestQueue[params.collection]
+  }
+
+  localDataCache[params.collection] = null;
+
+  collectionRequestQueue[params.collection] = getDocs(
+      getCollectionQuery(params.collection, params.user)
+    )
+    .then((res) => {
+      const data = {}
+      res.docs.forEach((doc) => {
+        data[doc.id] = doc.data()
+      })
+
+      updateCache({
+        collection: params.collection,
+        data: data
+      })
+
+      collectionRequestQueue[params.collection] = null
+
+      return data
+    })
+
+  return collectionRequestQueue[params.collection]
+
+}
+
+// refresh local data cache from snapshot listeners
+function refreshLocalData (collectionName, querySnapshot) {
+  localDataCache[collectionName] = null;
+
+  const data = {}
+  querySnapshot.docs.forEach((doc) => {
+    data[doc.id] = doc.data()
+  })
+
+  return updateCache({
+    collection: collectionName,
+    data: data
+  })
+}
+
+function updateCache (params = {}) {
+  localDataCache[params.collection] = params.data
+  return window.store.trigger('templates-sync')
+}
+
+// backwards compatible template
 function compatibleTemplate(template = {}, tags = []) {
     var cleanTemplate = Object.assign(
         {},
@@ -127,21 +252,25 @@ const defaultSettings = {
   blacklist: []
 }
 
-let settingsCache = {}
+// TODO settings are causing too many requests
 var getSettings = (forceUpdate = false) => {
-  if (Object.keys(settingsCache).length && forceUpdate !== true) {
-    return Promise.resolve(settingsCache)
-  }
-
   return getSignedInUser()
     .then((user) => {
-      return getDoc(doc(usersCollection, user.id))
+      return Promise.all([
+        user.id,
+        getCollection({
+          user: user,
+          collection: 'users'
+        })
+      ])
     })
-    .then((userDoc) => {
-      const userData = userDoc.data()
-      const userSettings = userData.settings
-      settingsCache = Object.assign({}, defaultSettings, userSettings)
-      return settingsCache
+    .then((res) => {
+      const userData = res[1][res[0]]
+      if (userData) {
+        return Object.assign({}, defaultSettings, userData.settings)
+      }
+
+      return defaultSettings
     })
     .catch((err) => {
       if (isLoggedOut(err)) {
@@ -256,10 +385,6 @@ onIdTokenChanged(firebaseAuth, (firebaseUser) => {
     });
 });
 
-const usersCollection = collection(db, 'users');
-const customersCollection = collection(db, 'customers');
-const templatesCollection = collection(db, 'templates');
-const tagsCollection = collection(db, 'tags');
 
 function getTags () {
     return getSignedInUser()
@@ -297,41 +422,14 @@ function idsToTags (tagIds) {
     });
 }
 
-function templatesOwnedQuery (user) {
-    return query(
-        templatesCollection,
-        where('customer', '==', user.customer),
-        where('owner', '==', user.id),
-        where('deleted_datetime', '==', null)
-    )
-}
-
 // my templates
 function getTemplatesOwned (user) {
     return getDocs(templatesOwnedQuery(user));
 }
 
-function templatesSharedQuery (user) {
-    return query(
-      templatesCollection,
-      where('customer', '==', user.customer),
-      where('shared_with', 'array-contains', user.id),
-      where('deleted_datetime', '==', null)
-    )
-}
-
 // templates shared with me
 function getTemplatesShared (user) {
     return getDocs(templatesSharedQuery(user))
-}
-
-function templatesEveryoneQuery (user) {
-    return query(
-      templatesCollection,
-      where('customer', '==', user.customer),
-      where('sharing', '==', 'everyone'),
-      where('deleted_datetime', '==', null)
-    )
 }
 
 // templates shared with everyone
