@@ -17,7 +17,9 @@ import {
   query,
   where,
   getDocs,
-  onSnapshot
+  onSnapshot,
+  getDoc,
+  doc,
 } from 'firebase/firestore';
 
 import Config from '../config';
@@ -94,7 +96,7 @@ function templatesEveryoneQuery (user) {
 
 function getCollectionQuery (name, user) {
   const collectionQuery = {
-    users: ['customers', 'array-contains', user.customer],
+    users: ['customers', 'array-contains-any', user.customers],
     customers: ['members', 'array-contains', user.id],
     tags: ['customer', '==', user.customer]
   }
@@ -308,7 +310,7 @@ function unsubscribeSnapshots () {
 }
 
 // setup template change listeners on user or customer changes
-function setupTemplates (user) {
+function setupListeners (user) {
   unsubscribeSnapshots()
 
   // refresh templates on changes
@@ -352,7 +354,7 @@ onIdTokenChanged(firebaseAuth, (firebaseUser) => {
     return updateCurrentUser(firebaseUser).then(() => {
         return getSignedInUser()
             .then((user) => {
-                return setupTemplates(user);
+                return setupListeners(user);
             })
             .catch((err) => {
                 if (isLoggedOut(err)) {
@@ -547,18 +549,10 @@ function updateCurrentUser (firebaseUser) {
       // logged-out
       .catch(() => {return;})
       .then(() => {
-          // get data from users collection
-          return Promise.all([
-            firebaseUser.uid,
-            getCollection({
-              user: cachedUser,
-              collection: 'users'
-            })
-          ])
+        return getDoc(doc(collection(db, 'users'), firebaseUser.uid))
       })
-      .then((res) => {
-          // get data from users collection
-          const userData = res[1][res[0]];
+      .then((userDoc) => {
+        const userData = userDoc.data()
 
           user = {
               id: firebaseUser.uid,
@@ -691,12 +685,19 @@ function getCustomer (customerId) {
 }
 
 function setActiveCustomer (customerId) {
-    clearDataCache();
     unsubscribeSnapshots();
 
-    return updateCurrentUser(
-        Object.assign(firebaseAuth.currentUser, {customer: customerId})
-    );
+    return updateCurrentUser({
+        uid: firebaseAuth.currentUser.uid,
+        customer: customerId
+      })
+      .then(() => {
+        return getSignedInUser()
+      })
+      .then((user) => {
+        setupListeners(user)
+        return
+      })
 }
 
 const extensionDataKey = 'briskine'
