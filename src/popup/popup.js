@@ -4,6 +4,7 @@ import './popup.css';
 import './popup-login';
 import './popup-dashboard';
 import store from '../store/store-client';
+import render from './render';
 
 customElements.define(
     'popup-container',
@@ -41,12 +42,12 @@ customElements.define(
                 });
         }
         connectedCallback() {
-            this.innerHTML = `
+            render(this, `
                 <div class="popup-container ${REGISTER_DISABLED ? 'popup-register-disabled' : ''}">
                     ${this.loggedIn === true ? `<popup-dashboard></popup-dashboard>` : ''}
                     ${this.loggedIn === false ? `<popup-login></popup-login>` : ''}
                 </div>
-            `;
+            `)
         }
     }
 );

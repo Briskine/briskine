@@ -1,5 +1,6 @@
 import Config from '../config';
 import store from '../store/store-client';
+import render from './render';
 
 import {plusSquare, clone, cog} from './popup-icons';
 
@@ -51,6 +52,44 @@ customElements.define(
             this.user = {};
             this.isFree = null;
             this.customers = {};
+
+            this.getCustomerTitle = (customerId) => {
+                const customerData = this.customers[customerId];
+                if (customerData && customerData.ownerDetails) {
+                    return customerData.ownerDetails.full_name || customerData.ownerDetails.email;
+                }
+
+                return '';
+            };
+
+            this.switchTeam = (e) => {
+                if (e.target.parentNode) {
+                    e.target.parentNode.classList.add('block-loading');
+                }
+
+                const customerId = e.target.value;
+                store.setActiveCustomer(customerId)
+                    .then(() => {
+                      return this.refreshAccount()
+                    })
+            };
+
+            this.addEventListener('click', (e) => {
+                if (e.target.classList.contains('js-logout')) {
+                    return store.logout();
+                }
+            });
+
+            this.addEventListener('change', (e) => {
+                const teamSelect = this.querySelector('#team-select');
+                if (e.target === teamSelect) {
+                    return this.switchTeam(e);
+                }
+            });
+
+            this.refreshAccount()
+        }
+        refreshAccount () {
             store.getAccount()
                 .then((res) => {
                     this.user = res;
@@ -77,43 +116,9 @@ customElements.define(
                     // re-render after loading customers
                     this.connectedCallback();
                 });
-
-            this.getCustomerTitle = (customerId) => {
-                const customerData = this.customers[customerId];
-                if (customerData && customerData.ownerDetails) {
-                    return customerData.ownerDetails.full_name || customerData.ownerDetails.email;
-                }
-
-                return '';
-            };
-
-            this.switchTeam = (e) => {
-                if (e.target.parentNode) {
-                    e.target.parentNode.classList.add('block-loading');
-                }
-
-                const customerId = e.target.value;
-                store.setActiveCustomer(customerId)
-                    .then(() => {
-                        window.location.reload();
-                    })
-            };
-
-            this.addEventListener('click', (e) => {
-                if (e.target.classList.contains('js-logout')) {
-                    return store.logout();
-                }
-            });
-
-            this.addEventListener('change', (e) => {
-                const teamSelect = this.querySelector('#team-select');
-                if (e.target === teamSelect) {
-                    return this.switchTeam(e);
-                }
-            });
         }
         connectedCallback() {
-            this.innerHTML = `
+            render(this, `
                 <div class="popup-dashboard">
                     <div class="popup-box popup-logo">
                         <a href="${Config.websiteUrl}" target="_blank">
@@ -231,7 +236,7 @@ customElements.define(
                         </button>
                     </div>
                 </div>
-            `;
+            `)
         }
     }
 );
