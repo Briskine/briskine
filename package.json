@@ -56,8 +56,8 @@
         "html-to-text": "^8.0.0",
         "jquery": "^3.5.1",
         "moment": "^2.29.1",
-        "morphdom": "^2.6.1",
         "mousetrap": "github:xarg/mousetrap#master",
+        "nanomorph": "^5.4.3",
         "webextension-polyfill": "^0.8.0"
     }
 }

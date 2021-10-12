@@ -1,4 +1,4 @@
-import morphdom from 'morphdom'
+import nanomorph from 'nanomorph'
 
 export default function render (fromElement, toElement, options = {}) {
     options.childrenOnly = true
@@ -9,5 +9,5 @@ export default function render (fromElement, toElement, options = {}) {
         toElement = fragment
     }
 
-    return morphdom(fromElement, toElement, options)
+    return nanomorph(fromElement, toElement, options)
 }
