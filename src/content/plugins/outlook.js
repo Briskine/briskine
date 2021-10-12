@@ -28,7 +28,12 @@ function getFieldData (field, $container) {
 
 // selector for to/cc/bcc containers
 function getContainers () {
-    return document.querySelectorAll('.mKl0Jm0rZWFpSjB8Sy4mA');
+    // get last role=complementary node
+    const $section = Array.from(document.querySelectorAll('[role=complementary]')).pop()
+    // return the parent of each [role=combobox] textfield
+    return Array.from($section.querySelectorAll('[role=combobox]')).map((node) => {
+      return node.parentElement
+    })
 }
 
 function getToContainer () {
