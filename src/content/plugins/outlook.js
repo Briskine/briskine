@@ -165,7 +165,8 @@ function getData () {
 
     // BUG only works if "From" field is visible
     let fromEmail = '';
-    const $fromEmailButton = document.querySelector('._3nL30XCbkesDXNXizP3eT4');
+    // finds the From button, then the read-only from field after the button
+    const $fromEmailButton = document.querySelector('[role=complementary] [aria-haspopup=menu] + * [aria-haspopup=dialog]');
     if ($fromEmailButton) {
         fromEmail = $fromEmailButton.innerText;
     }
