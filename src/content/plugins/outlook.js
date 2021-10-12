@@ -54,11 +54,11 @@ function getFieldButtonSelector () {
 }
 
 function getCcButton () {
-    return document.querySelector(`${getFieldButtonSelector()}:first-of-type`);
+    return document.querySelector(getFieldButtonSelector());
 }
 
 function getBccButton () {
-    return document.querySelector(`${getFieldButtonSelector()}:last-of-type`);
+    return Array.from(document.querySelectorAll(getFieldButtonSelector())).pop();
 }
 
 function getSuggestionContainer () {
