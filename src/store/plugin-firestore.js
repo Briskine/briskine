@@ -323,31 +323,31 @@ function setupListeners (user) {
   unsubscribeSnapshots()
 
   // refresh templates on changes
-  let templateSnapshots = [
+  subscribeSnapshots([
     onSnapshot(templatesOwnedQuery(user), (snapshot) => {
       refreshLocalData('templatesOwned', snapshot)
     })
-  ]
+  ])
 
-  if (!isFree(user)) {
-    templateSnapshots = templateSnapshots.concat([
-      onSnapshot(templatesSharedQuery(user), (snapshot) => {
-        refreshLocalData('templatesShared', snapshot)
-      }),
-      onSnapshot(templatesEveryoneQuery(user), (snapshot) => {
-        refreshLocalData('templatesEveryone', snapshot)
-      }),
-    ])
-  }
+  isFree(user).then((freeCustomer) => {
+    if (!freeCustomer) {
+      subscribeSnapshots([
+        onSnapshot(templatesSharedQuery(user), (snapshot) => {
+          refreshLocalData('templatesShared', snapshot)
+        }),
+        onSnapshot(templatesEveryoneQuery(user), (snapshot) => {
+          refreshLocalData('templatesEveryone', snapshot)
+        }),
+      ])
+    }
+  })
 
   subscribeSnapshots(
-    templateSnapshots.concat(
-      ['tags', 'users', 'customers'].map((collectionName) => {
-        return onSnapshot(getCollectionQuery(collectionName, user), (snapshot) => {
-          refreshLocalData(collectionName, snapshot)
-        })
+    ['tags', 'users', 'customers'].map((collectionName) => {
+      return onSnapshot(getCollectionQuery(collectionName, user), (snapshot) => {
+        refreshLocalData(collectionName, snapshot)
       })
-    )
+    })
   )
 }
 
@@ -458,7 +458,14 @@ function getDefaultTemplates () {
 }
 
 function isFree (user) {
-  return user.current_subscription.plan === 'free'
+  return getCollection({
+      user: user,
+      collection: 'customers'
+    })
+    .then((customers) => {
+      const customer = customers[user.customer]
+      return customer.subscription.plan === 'free'
+    })
 }
 
 function idsToTags (ids, tags) {
@@ -471,6 +478,13 @@ function idsToTags (ids, tags) {
 var getTemplate = () => {
   return getSignedInUser()
     .then((user) => {
+      return Promise.all([
+        user,
+        isFree(user)
+      ])
+    })
+    .then((res) => {
+      const [user, freeCustomer] = res;
       let templateCollections = [
         getCollection({
           user: user,
@@ -478,7 +492,7 @@ var getTemplate = () => {
         })
       ]
 
-      if (!isFree(user)) {
+      if (!freeCustomer) {
         templateCollections = templateCollections.concat([
           getCollection({
             user: user,
@@ -573,13 +587,6 @@ function updateCurrentUser (firebaseUser) {
               // active customer
               // default to first customer
               customer: userData.customers[0],
-
-              current_subscription: {
-                  active: false,
-                  created_datetime: '',
-                  plan: '',
-                  quantity: 1
-              }
           };
 
           // customer switching support.
@@ -588,27 +595,6 @@ function updateCurrentUser (firebaseUser) {
           let newCustomer = firebaseUser.customer || cachedUser.customer;
           if (user.customers.includes(newCustomer)) {
             user.customer = newCustomer;
-          }
-
-          return Promise.all([
-            user.customer,
-            getCollection({
-              user: user,
-              collection: 'customers'
-            })
-          ])
-      })
-      .then((res) => {
-          const customerData = res[1][res[0]]
-          // subscription data
-          user.current_subscription = Object.assign(user.current_subscription, {
-              plan: customerData.subscription.plan,
-              quantity: customerData.subscription.quantity
-          });
-
-          // only premium or bonus plans are active
-          if (customerData.subscription.plan !== 'free') {
-              user.current_subscription.active = true;
           }
 
           return setSignedInUser(user);

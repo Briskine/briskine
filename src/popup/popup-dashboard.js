@@ -54,7 +54,6 @@ customElements.define(
             store.getAccount()
                 .then((res) => {
                     this.user = res;
-                    this.isFree = this.user.current_subscription.plan === 'free';
 
                     // re-render after loading user
                     this.connectedCallback();
@@ -63,6 +62,12 @@ customElements.define(
                         this.user.customers.map((customerId) => {
                             return store.getCustomer(customerId).then((customerData) => {
                                 this.customers[customerId] = customerData;
+
+                                // get current plan from active customer
+                                if (customerId === this.user.customer) {
+                                  this.isFree = (customerData.subscription.plan === 'free')
+                                }
+
                                 return customerId;
                             });
                         })
@@ -91,7 +96,7 @@ customElements.define(
                 store.setActiveCustomer(customerId)
                     .then(() => {
                         window.location.reload();
-                    });
+                    })
             };
 
             this.addEventListener('click', (e) => {
