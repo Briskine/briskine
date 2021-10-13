@@ -1,5 +1,6 @@
 import Config from '../config';
 import store from '../store/store-client';
+import render from './render';
 
 customElements.define(
     'popup-login-form',
@@ -40,7 +41,7 @@ customElements.define(
             });
         }
         connectedCallback() {
-            this.innerHTML = `
+            render(this, `
                 <form class="popup-login-form text-start js-login-form">
                     ${this.error ? `
                         <div class="alert alert-danger" role="alert">
@@ -92,7 +93,7 @@ customElements.define(
                         </button>
                     </div>
                 </form>
-            `;
+            `)
         }
     }
 );

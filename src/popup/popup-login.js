@@ -1,6 +1,7 @@
 import Config from '../config';
 import store from '../store/store-client';
 import './popup-login-form';
+import render from './render';
 
 customElements.define(
     'popup-login',
@@ -32,7 +33,7 @@ customElements.define(
             });
         }
         connectedCallback() {
-            this.innerHTML = `
+            render(this, `
                 <div class="popup-login text-center">
                     <div class="popup-box popup-logo">
                         <a href="${Config.websiteUrl}" target="_blank">
@@ -66,7 +67,7 @@ customElements.define(
                         </small>
                     </div>
                 </div>
-            `;
+            `)
         }
     }
 );

@@ -28,7 +28,12 @@ function getFieldData (field, $container) {
 
 // selector for to/cc/bcc containers
 function getContainers () {
-    return document.querySelectorAll('.mKl0Jm0rZWFpSjB8Sy4mA');
+    // get last role=complementary node
+    const $section = Array.from(document.querySelectorAll('[role=complementary]')).pop()
+    // return the parent of each [role=combobox] textfield
+    return Array.from($section.querySelectorAll('[role=combobox]')).map((node) => {
+      return node.parentElement
+    })
 }
 
 function getToContainer () {
@@ -49,11 +54,11 @@ function getFieldButtonSelector () {
 }
 
 function getCcButton () {
-    return document.querySelector(`${getFieldButtonSelector()}:first-of-type`);
+    return document.querySelector(getFieldButtonSelector());
 }
 
 function getBccButton () {
-    return document.querySelector(`${getFieldButtonSelector()}:last-of-type`);
+    return Array.from(document.querySelectorAll(getFieldButtonSelector())).pop();
 }
 
 function getSuggestionContainer () {
@@ -160,7 +165,8 @@ function getData () {
 
     // BUG only works if "From" field is visible
     let fromEmail = '';
-    const $fromEmailButton = document.querySelector('._3nL30XCbkesDXNXizP3eT4');
+    // finds the From button, then the read-only from field after the button
+    const $fromEmailButton = document.querySelector('[role=complementary] [aria-haspopup=menu] + * [aria-haspopup=dialog]');
     if ($fromEmailButton) {
         fromEmail = $fromEmailButton.innerText;
     }

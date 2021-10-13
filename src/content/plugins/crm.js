@@ -1,7 +1,8 @@
 /* CRM plugin
  */
 
-import {insertText, parseTemplate} from '../utils';
+import {parseTemplate} from '../utils';
+import {insertTemplate} from '../utils/editor-generic';
 
 function getVariableAttribute (element) {
     const attributes = [ 'data-gorgias-variables', 'data-briskine-variables' ];
@@ -32,7 +33,7 @@ export default (params = {}) => {
     var data = getData(params.element);
     var parsedTemplate = parseTemplate(params.quicktext.body, data);
 
-    insertText(Object.assign({
+    insertTemplate(Object.assign({
         text: parsedTemplate
     }, params));
 

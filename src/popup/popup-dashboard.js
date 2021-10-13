@@ -1,5 +1,6 @@
 import Config from '../config';
 import store from '../store/store-client';
+import render from './render';
 
 import {plusSquare, clone, cog} from './popup-icons';
 
@@ -51,27 +52,6 @@ customElements.define(
             this.user = {};
             this.isFree = null;
             this.customers = {};
-            store.getAccount()
-                .then((res) => {
-                    this.user = res;
-                    this.isFree = this.user.current_subscription.plan === 'free';
-
-                    // re-render after loading user
-                    this.connectedCallback();
-
-                    return Promise.all(
-                        this.user.customers.map((customerId) => {
-                            return store.getCustomer(customerId).then((customerData) => {
-                                this.customers[customerId] = customerData;
-                                return customerId;
-                            });
-                        })
-                    );
-                })
-                .then(() => {
-                    // re-render after loading customers
-                    this.connectedCallback();
-                });
 
             this.getCustomerTitle = (customerId) => {
                 const customerData = this.customers[customerId];
@@ -90,8 +70,8 @@ customElements.define(
                 const customerId = e.target.value;
                 store.setActiveCustomer(customerId)
                     .then(() => {
-                        window.location.reload();
-                    });
+                      return this.refreshAccount()
+                    })
             };
 
             this.addEventListener('click', (e) => {
@@ -106,9 +86,39 @@ customElements.define(
                     return this.switchTeam(e);
                 }
             });
+
+            this.refreshAccount()
+        }
+        refreshAccount () {
+            store.getAccount()
+                .then((res) => {
+                    this.user = res;
+
+                    // re-render after loading user
+                    this.connectedCallback();
+
+                    return Promise.all(
+                        this.user.customers.map((customerId) => {
+                            return store.getCustomer(customerId).then((customerData) => {
+                                this.customers[customerId] = customerData;
+
+                                // get current plan from active customer
+                                if (customerId === this.user.customer) {
+                                  this.isFree = (customerData.subscription.plan === 'free')
+                                }
+
+                                return customerId;
+                            });
+                        })
+                    );
+                })
+                .then(() => {
+                    // re-render after loading customers
+                    this.connectedCallback();
+                });
         }
         connectedCallback() {
-            this.innerHTML = `
+            render(this, `
                 <div class="popup-dashboard">
                     <div class="popup-box popup-logo">
                         <a href="${Config.websiteUrl}" target="_blank">
@@ -226,7 +236,7 @@ customElements.define(
                         </button>
                     </div>
                 </div>
-            `;
+            `)
         }
     }
 );

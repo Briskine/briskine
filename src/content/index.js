@@ -1,9 +1,3 @@
-/*
- This is the index file which is loaded first after patterns
- All declarations are done here
- */
-
-import '../css/content.css';
 // native custom elements are not supported in content scripts
 // https://bugs.chromium.org/p/chromium/issues/detail?id=390807
 import '@webcomponents/custom-elements';
@@ -11,9 +5,11 @@ import '@webcomponents/custom-elements';
 import Mousetrap from 'mousetrap';
 import 'mousetrap/plugins/global-bind/mousetrap-global-bind';
 
+import './content.css';
+
 import './helpers/content-helpers';
 
-import store from '../../store/store-client';
+import store from '../store/store-client';
 import keyboard from './keyboard';
 import dialog from './dialog';
 

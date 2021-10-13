@@ -19,7 +19,7 @@ import slatePlugin from './plugins/slate';
 import crmPlugin from './plugins/crm';
 import genericPlugin from './plugins/generic';
 
-import store from '../../store/store-client'
+import store from '../store/store-client'
 
 var autocomplete = {};
 

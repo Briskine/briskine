@@ -3,7 +3,8 @@
 
 import $ from 'jquery';
 
-import {parseTemplate, insertText} from '../utils';
+import {parseTemplate} from '../utils';
+import {insertTemplate} from '../utils/editor-generic';
 
 var parseList = function (list) {
     return list.filter(function (a) {
@@ -160,7 +161,7 @@ export default (params = {}) => {
 
     before(params, data);
 
-    insertText(Object.assign({
+    insertTemplate(Object.assign({
         text: parsedTemplate
     }, params));
 

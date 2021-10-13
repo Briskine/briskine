@@ -97,7 +97,7 @@ function extensionConfig (env, safari = false) {
         entry: {
             background: './src/background/background.js',
             popup: './src/popup/popup.js',
-            content: './src/content/js/index.js'
+            content: './src/content/index.js'
         },
         output: {
             path: path.resolve(devPath),

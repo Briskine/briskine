@@ -8,19 +8,18 @@ import {
   signInWithEmailAndPassword,
   signInWithCustomToken,
   onIdTokenChanged,
-  onAuthStateChanged,
   signOut
 } from 'firebase/auth';
 import {
   getFirestore,
   connectFirestoreEmulator,
-  doc,
-  getDoc,
   collection,
   query,
   where,
   getDocs,
-  onSnapshot
+  onSnapshot,
+  getDoc,
+  doc,
 } from 'firebase/firestore';
 
 import Config from '../config';
@@ -48,23 +47,133 @@ function convertToNativeDates (obj = {}) {
     return parsed;
 }
 
-// backwards compatible template for the angular app
-function compatibleTemplate(template = {}, tags = []) {
-    var cleanTemplate = Object.assign(
-        {},
-        template,
-        {
-            // backwards compatibility
-            tags: tags.join(', '),
-            deleted: isDeleted(template),
-            private: isPrivate(template),
-            remote_id: template.id,
-            nosync: 0
-        }
-    );
+function defaultDataCache () {
+  return {
+    customers: null,
+    users: null,
+    tags: null,
 
-    // convert dates
-    return convertToNativeDates(cleanTemplate);
+    templatesOwned: null,
+    templatesShared: null,
+    templatesEveryone: null
+  }
+}
+
+let localDataCache = defaultDataCache()
+
+function clearDataCache () {
+  localDataCache = defaultDataCache()
+}
+
+const templatesCollection = collection(db, 'templates')
+
+function templatesOwnedQuery (user) {
+    return query(
+      templatesCollection,
+      where('customer', '==', user.customer),
+      where('owner', '==', user.id),
+      where('deleted_datetime', '==', null)
+    );
+}
+
+function templatesSharedQuery (user) {
+    return query(
+      templatesCollection,
+      where('customer', '==', user.customer),
+      where('shared_with', 'array-contains', user.id),
+      where('deleted_datetime', '==', null)
+    );
+}
+
+function templatesEveryoneQuery (user) {
+    return query(
+      templatesCollection,
+      where('customer', '==', user.customer),
+      where('sharing', '==', 'everyone'),
+      where('deleted_datetime', '==', null)
+    );
+}
+
+function getCollectionQuery (name, user) {
+  const collectionQuery = {
+    users: ['customers', 'array-contains-any', user.customers],
+    customers: ['members', 'array-contains', user.id],
+    tags: ['customer', '==', user.customer]
+  }
+
+  if (name === 'templatesOwned') {
+    return templatesOwnedQuery(user);
+  }
+
+  if (name === 'templatesShared') {
+    return templatesSharedQuery(user);
+  }
+
+  if (name === 'templatesEveryone') {
+    return templatesEveryoneQuery(user);
+  }
+
+  return query(
+    collection(db, name),
+    where(...collectionQuery[name])
+  );
+}
+
+const collectionRequestQueue = {}
+
+function getCollection (params = {}) {
+  const data = localDataCache[params.collection]
+  if (!params.refresh && data) {
+    return Promise.resolve(data)
+  }
+
+  // request is already in progress
+  if (collectionRequestQueue[params.collection]) {
+    return collectionRequestQueue[params.collection]
+  }
+
+  localDataCache[params.collection] = null;
+
+  collectionRequestQueue[params.collection] = getDocs(
+      getCollectionQuery(params.collection, params.user)
+    )
+    .then((res) => {
+      const data = {}
+      res.docs.forEach((doc) => {
+        data[doc.id] = doc.data()
+      })
+
+      updateCache({
+        collection: params.collection,
+        data: data
+      })
+
+      collectionRequestQueue[params.collection] = null
+
+      return data
+    })
+
+  return collectionRequestQueue[params.collection]
+
+}
+
+// refresh local data cache from snapshot listeners
+function refreshLocalData (collectionName, querySnapshot) {
+  localDataCache[collectionName] = null;
+
+  const data = {}
+  querySnapshot.docs.forEach((doc) => {
+    data[doc.id] = doc.data()
+  })
+
+  return updateCache({
+    collection: collectionName,
+    data: data
+  })
+}
+
+function updateCache (params = {}) {
+  localDataCache[params.collection] = params.data
 }
 
 // handle fetch errors
@@ -80,92 +189,49 @@ function handleErrors (response) {
 // fetch wrapper
 // support authorization header, form submit, query params, error handling
 function request (url, params = {}) {
-    const defaults = {
-        authorization: false,
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: {}
-    };
+  const defaults = {
+    authorization: false,
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+  }
 
-    // deep-merge work-around
-    const paramsCopy = JSON.parse(JSON.stringify(params));
-    const data = Object.assign({}, defaults, paramsCopy);
-    data.method = data.method.toUpperCase();
+  const data = Object.assign({}, defaults, params)
+  data.method = data.method.toUpperCase()
 
-    // querystring support
-    const fullUrl = new URL(url);
-    if (data.method === 'GET') {
-        Object.keys(data.body).forEach((key) => {
-            fullUrl.searchParams.append(key, data.body[key]);
-        });
+  // auth support
+  let auth = Promise.resolve()
+  if (data.authorization) {
+    auth = getUserToken()
+  }
 
-        delete data.body;
-    } else {
-        // stringify body for non-get requests
-        data.body = JSON.stringify(data.body);
-    }
+  return auth
+    .then((res) => {
+      if (res) {
+        data.headers.Authorization = `Bearer ${res.token}`
+      }
 
-    // auth support
-    let auth = Promise.resolve();
-    if (data.authorization) {
-        auth = getUserToken();
-    }
-
-    return auth.then((res) => {
-            if (res) {
-                data.headers.Authorization = `Bearer ${res.token}`;
-            }
-
-            return fetch(fullUrl, {
-                    method: data.method,
-                    headers: data.headers,
-                    body: data.body
-                })
-                .then(handleErrors)
-                .then((res) => res.json());
-        });
+      return fetch(url, {
+          method: data.method,
+          headers: data.headers,
+        })
+        .then(handleErrors)
+        .then((res) => res.json())
+    })
 }
 
-// local data (when logged-out)
-var localDataKey = 'firestoreLocalData';
-function getLocalData (params = {}) {
-    return new Promise((resolve) => {
-        browser.storage.local.get(localDataKey).then((res) => {
-            var localData = Object.assign({
-                tags: {},
-                templates: {}
-            }, res[localDataKey]);
-
-            var result = [];
-
-            if (params.raw) {
-                // return raw data
-                result = localData;
-            } else if (params.templateId) {
-                // return one template
-                result = localData.templates[params.templateId];
-            } else {
-                // return all tags or templates
-                ['tags', 'templates'].some((key) => {
-                    if (params[key]) {
-                        // return all items as array
-                        result = Object.keys(localData[key]).map((id) => {
-                            return localData[key][id];
-                        }).filter((item) => {
-                            // don't return deleted data
-                            return !item.deleted_datetime;
-                        });
-
-                        return true;
-                    }
-                });
-            }
-
-            resolve(result);
-        });
-    });
+// return user and token
+function getUserToken () {
+  return firebaseAuth.currentUser.getIdToken(true)
+    .then((token) => {
+      return getSignedInUser().then((user) => {
+        return {
+          user: user,
+          token: token
+        }
+      })
+    })
 }
 
 const defaultSettings = {
@@ -183,21 +249,24 @@ const defaultSettings = {
   blacklist: []
 }
 
-let settingsCache = {}
-var getSettings = (forceUpdate = false) => {
-  if (Object.keys(settingsCache).length && forceUpdate !== true) {
-    return Promise.resolve(settingsCache)
-  }
-
+var getSettings = () => {
   return getSignedInUser()
     .then((user) => {
-      return getDoc(doc(usersCollection, user.id))
+      return Promise.all([
+        user.id,
+        getCollection({
+          user: user,
+          collection: 'users'
+        })
+      ])
     })
-    .then((userDoc) => {
-      const userData = userDoc.data()
-      const userSettings = userData.settings
-      settingsCache = Object.assign({}, defaultSettings, userSettings)
-      return settingsCache
+    .then((res) => {
+      const userData = res[1][res[0]]
+      if (userData) {
+        return Object.assign({}, defaultSettings, userData.settings)
+      }
+
+      return defaultSettings
     })
     .catch((err) => {
       if (isLoggedOut(err)) {
@@ -238,17 +307,6 @@ function setSignedInUser (user) {
     });
 }
 
-// firebaseAuth.currentUser is not a promise
-// https://github.com/firebase/firebase-js-sdk/issues/462
-function getCurrentUser () {
-    return new Promise((resolve, reject) => {
-        var unsubscribe = onAuthStateChanged(firebaseAuth, (user) => {
-            unsubscribe();
-            resolve(user);
-        }, reject);
-    });
-}
-
 var snapshotListeners = [];
 function subscribeSnapshots (listeners = []) {
     snapshotListeners = snapshotListeners.concat(listeners);
@@ -261,35 +319,42 @@ function unsubscribeSnapshots () {
 }
 
 // setup template change listeners on user or customer changes
-function setupTemplates (user) {
+function setupListeners (user) {
   unsubscribeSnapshots()
 
   // refresh templates on changes
   subscribeSnapshots([
-      onSnapshot(templatesOwnedQuery(user), invalidateTemplateCache),
-      onSnapshot(templatesSharedQuery(user), invalidateTemplateCache),
-      onSnapshot(templatesEveryoneQuery(user), invalidateTemplateCache),
-      // customer changes (eg. subscription updated)
-      onSnapshot(doc(customersCollection, user.customer), () => {
-          return getCurrentUser().then((firebaseUser) => {
-              return updateCurrentUser(firebaseUser);
-          });
-      }),
-      // user data changed
-      onSnapshot(doc(usersCollection, user.id), () => {
-        // update settings
-        return getSettings(true)
-      })
-  ]);
+    onSnapshot(templatesOwnedQuery(user), (snapshot) => {
+      refreshLocalData('templatesOwned', snapshot)
+    })
+  ])
 
-  // populate in-memory template cache
-  return getTemplate();
+  isFree(user).then((freeCustomer) => {
+    if (!freeCustomer) {
+      subscribeSnapshots([
+        onSnapshot(templatesSharedQuery(user), (snapshot) => {
+          refreshLocalData('templatesShared', snapshot)
+        }),
+        onSnapshot(templatesEveryoneQuery(user), (snapshot) => {
+          refreshLocalData('templatesEveryone', snapshot)
+        }),
+      ])
+    }
+  })
+
+  subscribeSnapshots(
+    ['tags', 'users', 'customers'].map((collectionName) => {
+      return onSnapshot(getCollectionQuery(collectionName, user), (snapshot) => {
+        refreshLocalData(collectionName, snapshot)
+      })
+    })
+  )
 }
 
 // auth change
 onIdTokenChanged(firebaseAuth, (firebaseUser) => {
     if (!firebaseUser) {
-        invalidateTemplateCache();
+        clearDataCache();
         unsubscribeSnapshots();
 
         return setSignedInUser({});
@@ -298,7 +363,7 @@ onIdTokenChanged(firebaseAuth, (firebaseUser) => {
     return updateCurrentUser(firebaseUser).then(() => {
         return getSignedInUser()
             .then((user) => {
-                return setupTemplates(user);
+                return setupListeners(user);
             })
             .catch((err) => {
                 if (isLoggedOut(err)) {
@@ -310,126 +375,6 @@ onIdTokenChanged(firebaseAuth, (firebaseUser) => {
             });
     });
 });
-
-var getLoginInfo = getSignedInUser;
-var getAccount = getSignedInUser;
-
-const usersCollection = collection(db, 'users');
-const customersCollection = collection(db, 'customers');
-const templatesCollection = collection(db, 'templates');
-const tagsCollection = collection(db, 'tags');
-
-function getTags () {
-    return getSignedInUser()
-        .then((user) => {
-            return getDocs(query(tagsCollection, where('customer', '==', user.customer)));
-        })
-        .then((snapshot) => {
-            return snapshot.docs.map((tag) => {
-                return Object.assign({id: tag.id}, tag.data());
-            });
-        })
-        .catch((err) => {
-            if (isLoggedOut(err)) {
-                // logged-out
-                return getLocalData({tags: true});
-            }
-
-            throw err;
-        });
-}
-
-function idsToTags (tagIds) {
-    return getTags().then((existingTags) => {
-        return tagIds.map((tagId) => {
-            var foundTag = existingTags.find((tag) => {
-                return tagId === tag.id;
-            });
-
-            if (!foundTag) {
-                return '';
-            }
-
-            return foundTag.title;
-        });
-    });
-}
-
-function templatesOwnedQuery (user) {
-    return query(
-        templatesCollection,
-        where('customer', '==', user.customer),
-        where('owner', '==', user.id),
-        where('deleted_datetime', '==', null)
-    )
-}
-
-// my templates
-function getTemplatesOwned (user) {
-    return getDocs(templatesOwnedQuery(user));
-}
-
-function templatesSharedQuery (user) {
-    return query(
-      templatesCollection,
-      where('customer', '==', user.customer),
-      where('shared_with', 'array-contains', user.id),
-      where('deleted_datetime', '==', null)
-    )
-}
-
-// templates shared with me
-function getTemplatesShared (user) {
-    return getDocs(templatesSharedQuery(user))
-}
-
-function templatesEveryoneQuery (user) {
-    return query(
-      templatesCollection,
-      where('customer', '==', user.customer),
-      where('sharing', '==', 'everyone'),
-      where('deleted_datetime', '==', null)
-    )
-}
-
-// templates shared with everyone
-function getTemplatesForEveryone (user) {
-    return getDocs(templatesEveryoneQuery(user))
-}
-
-// template in-memory cache
-var templateCache = {};
-function addTemplatesToCache (templates = {}) {
-    Object.keys(templates).forEach((templateId) => {
-        templateCache[templateId] = templates[templateId];
-    });
-}
-
-function getTemplatesFromCache (templateId) {
-    if (templateId && templateCache[templateId]) {
-        var list = {};
-        list[templateId] = templateCache[templateId];
-        return Promise.resolve(list);
-    }
-
-    if (Object.keys(templateCache).length) {
-        return Promise.resolve(templateCache);
-    }
-
-    return Promise.reject();
-}
-
-function invalidateTemplateCache () {
-    templateCache = {};
-}
-
-function isPrivate (template = {}) {
-    return (template.sharing === 'none');
-}
-
-function isDeleted (template = {}) {
-    return !!template.deleted_datetime ? 1 : 0;
-}
 
 function getDefaultTemplates () {
     const defaultTemplates = [
@@ -512,106 +457,93 @@ function getDefaultTemplates () {
     return legacyTemplates;
 }
 
-var getTemplate = (params = {}) => {
-    return getSignedInUser()
-        .then((user) => {
-            // return single template
-            if (params.id) {
-                var templateData = {};
-                return getTemplatesFromCache(params.id)
-                    .catch(() => {
-                        // template not in cache
-                        return getDoc(doc(templatesCollection, params.id))
-                            .then((res) => res.data())
-                            .then((res) => {
-                                templateData = res;
-                                return idsToTags(templateData.tags);
-                            })
-                            .then((tags) => {
-                                var template = compatibleTemplate(Object.assign({
-                                    id: params.id
-                                }, templateData), tags);
-
-                                // backwards compatibility
-                                var list = {};
-                                list[template.id] = template;
-                                return list;
-                            });
-                    });
-            }
-
-            return getTemplatesFromCache()
-                .catch(() => {
-                    const isFree = (user.current_subscription.plan === 'free');
-                    let templateCollections = [
-                        getTemplatesOwned(user)
-                    ];
-                    if (!isFree) {
-                        templateCollections = templateCollections.concat([
-                            getTemplatesShared(user),
-                            getTemplatesForEveryone(user)
-                        ]);
-                    }
-
-                    // templates not cached
-                    return Promise.all(templateCollections)
-                    .then((res) => {
-                        var mergedTemplates = [];
-                        // concat all templates
-                        res.forEach((query) => {
-                            mergedTemplates = mergedTemplates.concat(query.docs);
-                        });
-
-                        // merge data and id
-                        return mergedTemplates.map((template) => {
-                            return Object.assign({
-                                id: template.id
-                            }, template.data());
-                        });
-                    })
-                    .then((allTemplates) => {
-                        // backward compatibility
-                        // and template de-duplication (owned and sharing=everyone)
-                        var templates = {};
-                        return Promise.all(
-                            allTemplates.map((template) => {
-                                return idsToTags(template.tags).then((tags) => {
-                                    templates[template.id] = compatibleTemplate(template, tags);
-
-                                    return;
-                                });
-                            })
-                        ).then(() => {
-                            addTemplatesToCache(templates);
-
-                            return templates;
-                        });
-                    });
-                });
-        })
-        .catch((err) => {
-            if (isLoggedOut(err)) {
-                return getDefaultTemplates();
-            }
-
-            throw err;
-        });
-
-};
-
-// return user and token
-function getUserToken () {
-    return getCurrentUser().then((currentUser) => {
-        return currentUser.getIdToken(true);
-    }).then((token) => {
-        return getSignedInUser().then((user) => {
-            return {
-                user: user,
-                token: token
-            };
-        });
-    });
+function isFree (user) {
+  return getCollection({
+      user: user,
+      collection: 'customers'
+    })
+    .then((customers) => {
+      const customer = customers[user.customer]
+      return customer.subscription.plan === 'free'
+    })
 }
+
+function idsToTags (ids, tags) {
+  return ids.map((tagId) => {
+    const tag = tags[tagId] && tags[tagId].title
+    return tag || ''
+  })
+}
+
+var getTemplate = () => {
+  return getSignedInUser()
+    .then((user) => {
+      return Promise.all([
+        user,
+        isFree(user)
+      ])
+    })
+    .then((res) => {
+      const [user, freeCustomer] = res;
+      let templateCollections = [
+        getCollection({
+          user: user,
+          collection: 'templatesOwned'
+        })
+      ]
+
+      if (!freeCustomer) {
+        templateCollections = templateCollections.concat([
+          getCollection({
+            user: user,
+            collection: 'templatesShared'
+          }),
+          getCollection({
+            user: user,
+            collection: 'templatesEveryone'
+          })
+        ])
+      }
+
+      let templates = {}
+      let tags = {}
+      return getCollection({
+          user: user,
+          collection: 'tags'
+        })
+        .then((res) => {
+          tags = res
+          return Promise.all(templateCollections)
+        })
+        .then((res) => {
+
+          res.forEach((list) => {
+            Object.keys(list).forEach((id) => {
+              templates[id] = convertToNativeDates(
+                Object.assign(
+                  {},
+                  list[id],
+                  {
+                    id: id,
+                    tags: idsToTags(list[id].tags, tags).join(', ')
+                  }
+                )
+              )
+            })
+          })
+
+          return templates
+        })
+
+    })
+    .catch((err) => {
+        if (isLoggedOut(err)) {
+            return getDefaultTemplates();
+        }
+
+        throw err;
+    });
+};
 
 // backwards compatibility
 function signinError (err) {
@@ -640,12 +572,10 @@ function updateCurrentUser (firebaseUser) {
       // logged-out
       .catch(() => {return;})
       .then(() => {
-          // get data from users collection
-          return getDoc(doc(usersCollection, firebaseUser.uid));
+        return getDoc(doc(collection(db, 'users'), firebaseUser.uid))
       })
       .then((userDoc) => {
-          // get data from users collection
-          const userData = userDoc.data();
+        const userData = userDoc.data()
 
           user = {
               id: firebaseUser.uid,
@@ -657,13 +587,6 @@ function updateCurrentUser (firebaseUser) {
               // active customer
               // default to first customer
               customer: userData.customers[0],
-
-              current_subscription: {
-                  active: false,
-                  created_datetime: '',
-                  plan: '',
-                  quantity: 1
-              }
           };
 
           // customer switching support.
@@ -672,21 +595,6 @@ function updateCurrentUser (firebaseUser) {
           let newCustomer = firebaseUser.customer || cachedUser.customer;
           if (user.customers.includes(newCustomer)) {
             user.customer = newCustomer;
-          }
-
-          return getDoc(doc(customersCollection, user.customer));
-      })
-      .then((customer) => {
-          var customerData = customer.data();
-          // subscription data
-          user.current_subscription = Object.assign(user.current_subscription, {
-              plan: customerData.subscription.plan,
-              quantity: customerData.subscription.quantity
-          });
-
-          // only premium or bonus plans are active
-          if (customerData.subscription.plan !== 'free') {
-              user.current_subscription.active = true;
           }
 
           return setSignedInUser(user);
@@ -751,24 +659,40 @@ function signinWithToken (token = '') {
 
 function getCustomer (customerId) {
   let customer = {};
-  return getDoc(doc(customersCollection, customerId))
-    .then((res) => {
-      customer = res.data();
-      return getDoc(doc(usersCollection, customer.owner));
+  return getSignedInUser()
+    .then((user) => {
+      return Promise.all([
+        getCollection({
+          user: user,
+          collection: 'users'
+        }),
+        getCollection({
+          user: user,
+          collection: 'customers'
+        })
+      ])
     })
     .then((res) => {
-      customer.ownerDetails = res.data();
-      return customer;
-    });
+      customer = res[1][customerId]
+      customer.ownerDetails = res[0][customer.owner]
+      return customer
+    })
 }
 
 function setActiveCustomer (customerId) {
-    invalidateTemplateCache();
     unsubscribeSnapshots();
 
-    return updateCurrentUser(
-        Object.assign(firebaseAuth.currentUser, {customer: customerId})
-    );
+    return updateCurrentUser({
+        uid: firebaseAuth.currentUser.uid,
+        customer: customerId
+      })
+      .then(() => {
+        return getSignedInUser()
+      })
+      .then((user) => {
+        setupListeners(user)
+        return
+      })
 }
 
 const extensionDataKey = 'briskine'
@@ -809,9 +733,7 @@ function setExtensionData (params = {}) {
 
 export default {
     getSettings: getSettings,
-
-    getLoginInfo: getLoginInfo,
-    getAccount: getAccount,
+    getAccount: getSignedInUser,
 
     getCustomer: getCustomer,
     setActiveCustomer: setActiveCustomer,

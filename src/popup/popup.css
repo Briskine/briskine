@@ -112,11 +112,6 @@ a:hover,
 /* forms
  */
 
-.form-control:focus {
-    box-shadow: none;
-    border-color: #1e48b3;
-}
-
 .btn-forgot {
     padding: 0;
 }
