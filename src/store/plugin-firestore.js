@@ -343,7 +343,7 @@ function setupListeners (user) {
   })
 
   subscribeSnapshots(
-    ['tags', 'users', 'customers'].map((collectionName) => {
+    ['users', 'customers'].map((collectionName) => {
       return onSnapshot(getCollectionQuery(collectionName, user), (snapshot) => {
         refreshLocalData(collectionName, snapshot)
       })
