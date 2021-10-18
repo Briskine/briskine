@@ -20,6 +20,7 @@ import {
   onSnapshot,
   getDoc,
   doc,
+  documentId,
 } from 'firebase/firestore';
 
 import Config from '../config';
@@ -96,7 +97,7 @@ function templatesEveryoneQuery (user) {
 
 function getCollectionQuery (name, user) {
   const collectionQuery = {
-    users: ['customers', 'array-contains-any', user.customers],
+    users: [documentId(), '==', user.id],
     customers: ['members', 'array-contains', user.id],
     tags: ['customer', '==', user.customer]
   }
@@ -572,10 +573,13 @@ function updateCurrentUser (firebaseUser) {
       // logged-out
       .catch(() => {return;})
       .then(() => {
-        return getDoc(doc(collection(db, 'users'), firebaseUser.uid))
+        return getCollection({
+          user: {id: firebaseUser.uid},
+          collection: 'users'
+        })
       })
-      .then((userDoc) => {
-        const userData = userDoc.data()
+      .then((res) => {
+        const userData = res[firebaseUser.uid]
 
           user = {
               id: firebaseUser.uid,
@@ -664,17 +668,28 @@ function getCustomer (customerId) {
       return Promise.all([
         getCollection({
           user: user,
-          collection: 'users'
+          collection: 'customers'
         }),
         getCollection({
           user: user,
-          collection: 'customers'
+          collection: 'users'
         })
       ])
     })
     .then((res) => {
-      customer = res[1][customerId]
-      customer.ownerDetails = res[0][customer.owner]
+      const [customers, users] = res
+      customer = customers[customerId]
+      if (users[customer.owner]) {
+        // we have the owner cached
+        customer.ownerDetails = users[customer.owner]
+      } else {
+        return getDoc(doc(collection(db, 'users'), customer.owner))
+          .then((ownerDoc) => {
+            customer.ownerDetails = ownerDoc.data()
+            return customer
+          })
+      }
+
       return customer
     })
 }
