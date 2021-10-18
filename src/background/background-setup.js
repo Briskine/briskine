@@ -1,6 +1,7 @@
 /* globals ENV, REGISTER_DISABLED */
-import Config from '../config';
-import browser from 'webextension-polyfill';
+import browser from 'webextension-polyfill'
+
+import Config from '../config'
 
 // for tabs.query auto-reload
 var urlMatchPatterns = [
@@ -38,7 +39,7 @@ browser.runtime.onInstalled.addListener(function (details) {
     // All affected tabs should be reloaded if the extension was installed
     browser.tabs.query({'url': urlMatchPatterns}).then(function (tabs) {
         for (var i in tabs) {
-            browser.tabs.reload(tabs[i].id, {});
+//             browser.tabs.reload(tabs[i].id, {});
         }
     });
 
@@ -82,3 +83,45 @@ browser.runtime.onMessage.addListener(function (request) {
     }
     return true;
 });
+
+browser.runtime.onInstalled.addListener((details) => {
+  // TODO inject the script on install as well
+
+  const manifest = browser.runtime.getManifest();
+  console.log(manifest)
+
+  if (details.reason === 'update') {
+    // TODO re-insert content scripts
+    console.log('inser new content')
+    const scripts = manifest.content_scripts[0].js
+    const styles = manifest.content_scripts[0].css
+
+    console.log(scripts, styles)
+
+    browser.tabs.query({}).then((tabs) => {
+      tabs.forEach((tab) => {
+        const url = new URL(tab.url)
+        // don't match browser specific tabs (eg. about:blank)
+        if (!['http:', 'https:'].includes(url.protocol)) {
+          return
+        }
+
+        // TODO remove old styles
+        styles.forEach((file) => {
+          browser.tabs.removeCSS(tab.id, {file: file}).then(() => {
+            browser.tabs.insertCSS(tab.id, {file: file})
+          })
+        })
+
+        // TODO add new scripts
+        scripts.forEach((file) => {
+          browser.tabs.executeScript(tab.id, {file: file})
+        })
+      })
+    })
+
+  }
+})
+
+browser.runtime.onConnect.addListener(() => {})
+

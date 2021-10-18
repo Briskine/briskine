@@ -1,6 +1,7 @@
 // native custom elements are not supported in content scripts
 // https://bugs.chromium.org/p/chromium/issues/detail?id=390807
 import '@webcomponents/custom-elements';
+import browser from 'webextension-polyfill'
 // creates global window.Mousetrap
 import Mousetrap from 'mousetrap';
 import 'mousetrap/plugins/global-bind/mousetrap-global-bind';
@@ -13,11 +14,13 @@ import store from '../store/store-client';
 import keyboard from './keyboard';
 import dialog from './dialog';
 
-import {setup as setupBubble} from './bubble';
+import {setup as setupBubble, destroy as destroyBubble} from './bubble';
 
 function init (settings, doc) {
   const loadedClassName = 'gorgias-loaded'
-  if (!document.body || document.body.classList.contains(loadedClassName)) {
+
+//   if (!document.body || document.body.classList.contains(loadedClassName)) {
+  if (!document.body) {
     return;
   }
   // mark the doc that extension has been loaded
@@ -92,3 +95,16 @@ if (document.readyState === 'loading') {
 } else {
   startup()
 }
+
+const destroyEvent = new CustomEvent('destroy-briskine')
+
+document.dispatchEvent(destroyEvent)
+
+function destructor () {
+  console.log('destroy')
+  destroyBubble()
+
+  document.removeEventListener('destroy-briskine', destructor)
+}
+
+document.addEventListener('destroy-briskine', destructor)

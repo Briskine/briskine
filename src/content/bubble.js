@@ -3,11 +3,15 @@
  * Floating action button.
  */
 
-import dialog from './dialog';
-import store from '../store/store-client';
+import dialog from './dialog'
+import store from '../store/store-client'
 
-let bubbleInstance = null;
-const dialogSelector = '.qt-dropdown';
+let bubbleInstance = null
+let activeTextfield = null
+const domObservers = []
+const dialogSelector = '.qt-dropdown'
+
+function defineBubble () {
 
 customElements.define(
     'b-bubble',
@@ -18,10 +22,14 @@ customElements.define(
             this.ready = false;
             this.bubbleVisibilityTimer = null;
         }
+        disconnectedCallback () {
+          console.log('disconnectedCallback')
+        }
         connectedCallback () {
+          console.log('connectedCallback', this.ready, this.isConnected, this)
             // element was already created,
             // just moved around in the dom.
-            if (this.ready) {
+            if (this.ready || !this.isConnected) {
                 return;
             }
 
@@ -184,46 +192,6 @@ customElements.define(
                 });
             });
 
-            // show the bubble on focus
-            document.addEventListener('focusin', (e) => {
-                // used for showing the dialog completion
-                this.activeTextfield = e.target;
-
-                return showBubble(e.target);
-            });
-
-            document.addEventListener('focusout', (e) => {
-                // don't hide the bubble if the newly focused node is in the dialog.
-                // eg. when clicking the bubble.
-                if (e.relatedTarget && e.relatedTarget.closest(dialogSelector)) {
-                    return;
-                }
-
-                return hideBubble();
-            });
-
-            // re-position bubble on scroll
-            let scrollTick = false;
-            document.addEventListener('scroll', (e) => {
-                if (!scrollTick) {
-                    window.requestAnimationFrame(() => {
-                        if (
-                            e.target &&
-                            // must be an element node (eg. not the document)
-                            e.target.nodeType === Node.ELEMENT_NODE &&
-                            e.target.contains(this.activeTextfield) &&
-                            bubbleInstance &&
-                            bubbleInstance.getAttribute('visible') === 'true'
-                        ) {
-                            bubbleInstance.setAttribute('top', getTopPosition(this.activeTextfield, e.target));
-                        }
-
-                        scrollTick = false;
-                    });
-
-                    scrollTick = true;
-                }
-            }, true);
 
             this.ready = true;
         }
@@ -261,6 +229,48 @@ customElements.define(
     }
 );
 
+}
+
+function focusTextfield (e) {
+  // used for showing the dialog completion
+  activeTextfield = e.target;
+
+  return showBubble(e.target);
+}
+
+function blurTextfield (e) {
+  // don't hide the bubble if the newly focused node is in the dialog.
+  // eg. when clicking the bubble.
+  if (e.relatedTarget && e.relatedTarget.closest(dialogSelector)) {
+      return;
+  }
+
+  return hideBubble();
+}
+
+// reposition the bubble on scroll
+let scrollTick = false;
+function scrollDocument (e) {
+  if (!scrollTick) {
+      window.requestAnimationFrame(() => {
+          if (
+              e.target &&
+              // must be an element node (eg. not the document)
+              e.target.nodeType === Node.ELEMENT_NODE &&
+              e.target.contains(this.activeTextfield) &&
+              bubbleInstance &&
+              bubbleInstance.getAttribute('visible') === 'true'
+          ) {
+              bubbleInstance.setAttribute('top', getTopPosition(this.activeTextfield, e.target));
+          }
+
+          scrollTick = false;
+      });
+
+      scrollTick = true;
+  }
+}
+
 export function setup () {
     // if bubble is enabled in settings
     store.getSettings()
@@ -283,16 +293,27 @@ export function setup () {
         domObserver.observe(document.body, {
             attributes: true
         });
+
+        domObservers.push(domObserver)
     });
 }
 
 function create (settings = {}) {
+    defineBubble();
+
     // bubble is created outside the body.
     // when textfields are focused, move it to the offsetParent for positioning.
     bubbleInstance = document.createElement('b-bubble');
     // custom dialog shortcut
     bubbleInstance.setAttribute('shortcut', settings.dialog_shortcut);
     document.documentElement.appendChild(bubbleInstance);
+
+    // show the bubble on focus
+    document.addEventListener('focusin', focusTextfield);
+    document.addEventListener('focusout', blurTextfield);
+
+    // reposition bubble on scroll
+    document.addEventListener('scroll', scrollDocument, true);
 
     // wait for the bubbble to be shown
     const bubbleObserver = new MutationObserver((records, observer) => {
@@ -317,6 +338,24 @@ function create (settings = {}) {
     bubbleObserver.observe(bubbleInstance, {
         attributes: true
     });
+
+    domObservers.push(bubbleObserver)
+}
+
+export function destroy () {
+  if (bubbleInstance) {
+    console.log('remove bubble', bubbleInstance)
+    bubbleInstance.remove()
+  }
+
+  document.removeEventListener('focusin', focusTextfield);
+  document.removeEventListener('focusout', blurTextfield);
+  document.removeEventListener('scroll', scrollDocument, true);
+
+  // TODO disconnect all observers
+  domObservers.forEach((observer) => {
+    observer.disconnect()
+  })
 }
 
 function showPostInstall () {
