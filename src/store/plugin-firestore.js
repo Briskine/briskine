@@ -344,6 +344,7 @@ onIdTokenChanged(firebaseAuth, (firebaseUser) => {
           return;
         }
 
+        clearDataCache()
         return updateCurrentUser(firebaseUser)
       })
 });
