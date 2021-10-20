@@ -406,7 +406,7 @@ function getDefaultTemplates () {
                 <div>domain: {{domain to.email}}</div>
             `,
             to: 'to@briskine.com',
-            cc: 'cc@briskine.com',
+            cc: 'cc@briskine.com, cc2@briskine.com',
             bcc: 'bcc@briskine.com',
             from: 'contact@briskine.com'
         });

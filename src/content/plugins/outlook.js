@@ -61,13 +61,14 @@ function getBccButton () {
     return Array.from(document.querySelectorAll(getFieldButtonSelector())).pop();
 }
 
-function getSuggestionContainer () {
+function getSuggestionContainer (email) {
+  return function () {
     // "use this address" not in contact list
     var headerSelector = `.ms-Suggestions-headerContainer [class*="useAddressContainer-"]`;
     // contact list suggestion
-    var listSelector = `.ms-Suggestions-container [role="listitem"]`;
-
+    var listSelector = `.ms-Suggestions-container [aria-label*="${email}"]`;
     return document.querySelector(`${headerSelector}, ${listSelector}`);
+  }
 }
 
 function getSubjectField () {
@@ -99,30 +100,36 @@ function waitForElement (getNode) {
     });
 }
 
-var fieldUpdateQueue = [];
 function updateContactField ($field, value, $editor) {
-    // wait for previous contact field update
-    fieldUpdateQueue.push(
-        Promise.all(fieldUpdateQueue).then(() => {
-            $field.value = value;
-            $field.dispatchEvent(new Event('input', {bubbles: true}));
+  const splitValues = value.split(',')
+  splitValues.forEach((v) => {
+    const cleanValue = v.trim()
+    return addSingleContact($field, cleanValue, $editor)
+  })
+}
 
-            return waitForElement(getSuggestionContainer).then(function () {
-                // BUG only works once per field
-                $field.dispatchEvent(
-                    new KeyboardEvent('keydown', {
-                        keyCode: 13,
-                        which: 13,
-                        bubbles: true
-                    })
-                );
+var fieldUpdateQueue = Promise.resolve()
+function addSingleContact ($field, value, $editor) {
+  // wait for previous contact field update
+  fieldUpdateQueue = fieldUpdateQueue.then(() => {
+    $field.value = value
+    $field.dispatchEvent(new Event('input', {bubbles: true}))
 
-                // restore focus
-                $editor.focus();
-                return;
-            });
+    return waitForElement(getSuggestionContainer(value)).then(() => {
+      $field.dispatchEvent(
+        new KeyboardEvent('keydown', {
+          keyCode: 13,
+          which: 13,
+          bubbles: true
         })
-    );
+      )
+
+      // restore focus
+      $editor.focus()
+
+      return
+    })
+  })
 }
 
 function elementContains ($element, value) {
@@ -201,65 +208,48 @@ function getData () {
     return vars;
 }
 
-function before (params, data) {
-    // don't do anything if we don't have any extra fields
-    if (!params.quicktext.subject &&
-        !params.quicktext.to &&
-        !params.quicktext.cc &&
-        !params.quicktext.bcc
-    ) {
-        return Promise.resolve(params);
-    }
+function after (params, data) {
+  var $subject = getSubjectField();
+  if (params.quicktext.subject && $subject) {
+    var parsedSubject = parseTemplate(params.quicktext.subject, data);
+    $subject.value = parsedSubject;
+    $subject.dispatchEvent(new Event('input', {bubbles: true}));
+  }
 
-    var $subject = getSubjectField();
-    if (params.quicktext.subject && $subject) {
-        var parsedSubject = parseTemplate(params.quicktext.subject, data);
-        $subject.value = parsedSubject;
-        $subject.dispatchEvent(new Event('input', {bubbles: true}));
-    }
-
+  if (params.quicktext.to) {
     var $to = getToContainer();
-    if (params.quicktext.to) {
-        var parsedTo = parseTemplate(params.quicktext.to, data);
-        if ($to && !elementContains($to, parsedTo)) {
-            var $toInput = getContactField($to);
-            updateContactField($toInput, parsedTo, params.element);
-        }
+    var parsedTo = parseTemplate(params.quicktext.to, data);
+    if ($to && !elementContains($to, parsedTo)) {
+      var $toInput = getContactField($to);
+      updateContactField($toInput, parsedTo, params.element);
     }
+  }
 
+  if (params.quicktext.cc) {
     var $cc = getCcContainer();
-    if (params.quicktext.cc) {
-        var parsedCc = parseTemplate(params.quicktext.cc, data);
-        var $ccButton = getCcButton();
-        updateSection(
-            $cc,
-            $ccButton,
-            getCcContainer,
-            parsedCc,
-            params.element
-        );
-    }
+    var parsedCc = parseTemplate(params.quicktext.cc, data);
+    var $ccButton = getCcButton();
+    updateSection(
+      $cc,
+      $ccButton,
+      getCcContainer,
+      parsedCc,
+      params.element
+    );
+  }
 
+  if (params.quicktext.bcc) {
     var $bcc = getBccContainer();
-    if (params.quicktext.bcc) {
-        var parsedBcc = parseTemplate(params.quicktext.bcc, data);
-        var $bccButton = getBccButton();
-        updateSection(
-            $bcc,
-            $bccButton,
-            getBccContainer,
-            parsedBcc,
-            params.element
-        );
-    }
-
-    // refresh editor reference
-    return waitForElement(() => document.querySelector('[contenteditable]'))
-        .then(($container) => {
-            return Object.assign(params, {
-                element: $container
-            });
-        });
+    var parsedBcc = parseTemplate(params.quicktext.bcc, data);
+    var $bccButton = getBccButton();
+    updateSection(
+      $bcc,
+      $bccButton,
+      getBccContainer,
+      parsedBcc,
+      params.element
+    );
+  }
 }
 
 var activeCache = null;
@@ -287,18 +277,18 @@ if (isActive()) {
 }
 
 export default (params = {}) => {
-    if (!isActive()) {
-        return false;
-    }
+  if (!isActive()) {
+    return false;
+  }
 
-    var data = getData(params);
-    var parsedTemplate = parseTemplate(params.quicktext.body, data);
+  const data = getData(params);
+  const parsedTemplate = parseTemplate(params.quicktext.body, data);
 
-    return before(params, data).then((newParams) => {
-        insertTemplate(Object.assign({
-            text: parsedTemplate
-        }, newParams));
+  insertTemplate(Object.assign({
+    text: parsedTemplate
+  }, params));
 
-        return true;
-    });
+  after(params, data);
+
+  return true;
 };
