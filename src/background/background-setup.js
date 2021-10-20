@@ -53,7 +53,7 @@ browser.runtime.onInstalled.addListener((details) => {
 
   // on install or update,
   // insert the content scripts
-  if (['update', 'installed'].includes(details.reason)) {
+  if (['update', 'install'].includes(details.reason)) {
     const contentScripts = manifest.content_scripts[0]
     const scripts = contentScripts.js
     const styles = contentScripts.css

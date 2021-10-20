@@ -350,7 +350,7 @@ export function destroy () {
   document.removeEventListener('focusout', blurTextfield);
   document.removeEventListener('scroll', scrollDocument, true);
 
-  // TODO disconnect all observers
+  // disconnect all observers
   domObservers.forEach((observer) => {
     observer.disconnect()
   })
