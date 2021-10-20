@@ -2,58 +2,33 @@
 import browser from 'webextension-polyfill'
 
 import Config from '../config'
-
-// TODO move and refactor the context menu
-// Called after installation
-// https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/runtime/onInstalled
-browser.runtime.onInstalled.addListener(function (details) {
-    // Context menus
-    browser.contextMenus.create({
-        "title": 'Save \'%s\' as a template',
-        "contexts": ['editable', 'selection']
-    });
-
-    // rather than using the contextMenu onclick function, we attach
-    // an event to the onClicked event.
-    // this fixes issues with the onclick function not being triggered
-    // or the new tab not being opened.
-    browser.contextMenus.onClicked.addListener(function (info, tab) {
-        // get the HTML selection
-        browser.tabs.executeScript(tab.id, {
-            code: "var getHtmlSelection = function() { var selection = window.getSelection(); if (selection && selection.rangeCount > 0) { range = selection.getRangeAt(0); var clonedSelection = range.cloneContents(); var div = document.createElement('div'); div.appendChild(clonedSelection); return div.innerHTML; } else { return ''; } }; getHtmlSelection();"
-        }).then(function (selection) {
-            var body = encodeURIComponent(selection[0]);
-            browser.tabs.create({
-                url: `${Config.functionsUrl}/#/list?id=new&body=${body}`
-            });
-        });
-    });
-
-    if (!REGISTER_DISABLED) {
-        if (details.reason === "install") {
-            browser.tabs.create({
-                url: `${Config.functionsUrl}/welcome`
-            });
-        }
-    }
-});
+import setupContextMenus from './contextmenus'
 
 browser.runtime.onMessage.addListener(function (request) {
-    // Open new template window
-    if (request.request === 'new') {
-        browser.tabs.create({
-            url: `${Config.functionsUrl}/#/list?id=new&src=qa-button`
-        });
-    }
-    return true;
-});
+  // open new template window
+  if (request.request === 'new') {
+    browser.tabs.create({
+      url: `${Config.functionsUrl}/#/list?id=new&src=qa-button`
+    })
+  }
+  return true
+})
 
 browser.runtime.onInstalled.addListener((details) => {
   const manifest = browser.runtime.getManifest()
 
-  // on install or update,
-  // insert the content scripts
+  // open the welcome page on install
+  if (!REGISTER_DISABLED) {
+    if (details.reason === 'install') {
+      browser.tabs.create({
+        url: `${Config.functionsUrl}/welcome`
+      })
+    }
+  }
+
+  // on install or update
   if (['update', 'install'].includes(details.reason)) {
+    // insert the content scripts
     const contentScripts = manifest.content_scripts[0]
     const scripts = contentScripts.js
     const styles = contentScripts.css
@@ -76,7 +51,10 @@ browser.runtime.onInstalled.addListener((details) => {
       })
     })
 
+    // set up the context menus
+    setupContextMenus()
   }
 })
 
-browser.runtime.onConnect.addListener(() => {})
+// set up the context menus when extension starts
+setupContextMenus()
