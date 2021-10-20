@@ -96,7 +96,8 @@ if (document.readyState === 'loading') {
   startup()
 }
 
-const destroyEvent = new CustomEvent('destroy-briskine')
+const destroyEventName = 'briskine-destroy'
+const destroyEvent = new CustomEvent(destroyEventName)
 
 document.dispatchEvent(destroyEvent)
 
@@ -104,7 +105,7 @@ function destructor () {
   console.log('destroy')
   destroyBubble()
 
-  document.removeEventListener('destroy-briskine', destructor)
+  document.removeEventListener(destroyEventName, destructor)
 }
 
-document.addEventListener('destroy-briskine', destructor)
+document.addEventListener(destroyEventName, destructor)

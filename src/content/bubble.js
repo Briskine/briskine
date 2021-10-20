@@ -11,9 +11,139 @@ let activeTextfield = null
 const domObservers = []
 const dialogSelector = '.qt-dropdown'
 
-function defineBubble () {
+const bubbleStyles = `
+  :host,
+  :host * {
+    box-sizing: border-box;
+  }
 
-customElements.define(
+  :host {
+    position: absolute;
+    display: block;
+
+    --bubble-size: 28px;
+    --bubble-margin: 5px;
+    width: var(--bubble-size);
+    height: var(--bubble-size);
+    margin: var(--bubble-margin);
+
+    font-family: sans-serif;
+  }
+
+  .b-bubble {
+    position: relative;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity ease-out .2s;
+
+    appearance: none;
+    display: block;
+    width: 100%;
+    height: 100%;
+    padding: 5px;
+    background-color: rgba(243, 244, 245, .4);
+    border: 0;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+
+  .b-bubble:hover {
+    background-color: #e9eaec;
+    box-shadow: 0 0 12px rgba(0,0,0,.1);
+  }
+
+  .b-bubble:active {
+    box-shadow: none;
+    cursor: pointer;
+  }
+
+  .b-bubble:after {
+    content: '';
+    position: relative;
+    top: 0;
+    left: 0;
+    display: block;
+    height: 100%;
+    width: 100%;
+
+    background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="29mm" height="38mm" viewBox="0 0 29 38"><path d="M14.19269 0c3.68786 0 6.68658.81961 8.99614 2.45882 2.30957 1.60196 3.46435 4.32157 3.46435 8.15883 0 1.41568-.33525 2.70098-1.00577 3.85588-.63327 1.11765-1.47142 2.08628-2.51446 2.90588 1.71356.89412 3.11047 2.1049 4.19076 3.63236C28.44124 22.53922 29 24.47647 29 26.82353c0 3.50196-1.22928 6.24019-3.68786 8.21471C22.89083 37.01275 19.64998 38 15.58961 38H.00002V0z" fill="%230607fb"/><path d="M.00001.00006v20.05518A20.240457 20.242517 0 0011.0152 23.3153a20.240457 20.242517 0 0013.46005-5.12465c-.42371-.29411-.87062-.56515-1.34231-.81128 1.04303-.8196 1.88128-1.78812 2.51454-2.90576.67053-1.15491 1.00581-2.44016 1.00581-3.85584 0-3.83725-1.15493-6.55709-3.4645-8.15906C20.87921.8195 17.88043.00006 14.19258.00006z" fill="%230983fa"/></svg>') no-repeat center center;
+    background-size: contain;
+  }
+
+  .b-bubble-visible {
+    opacity: .7;
+    visibility: visible;
+  }
+
+  .b-bubble:hover + .b-bubble-tooltip {
+    opacity: 1;
+    visibility: visible;
+    transition-delay: 1s;
+  }
+
+  .b-bubble-tooltip {
+    --tooltip-bg: #2a2a2a;
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity ease-in .1s;
+
+    position: absolute;
+    top: 50%;
+    left: 0;
+    padding: 3px 5px;
+    background: var(--tooltip-bg);
+    border-radius: 2px;
+
+    color: #fff;
+    font-size: 11px;
+    font-weight: bold;
+    line-height: 1;
+    white-space: nowrap;
+
+    transform: translate(-100%, -50%);
+    margin-left: -12px;
+  }
+
+  .b-bubble-tooltip:after {
+    content: '';
+    position: absolute;
+    border-style: solid;
+    border-color: transparent;
+    border-width: 6px;
+    border-left-color: var(--tooltip-bg);
+    display: block;
+    width: 0;
+    z-index: 1;
+    top: 0;
+    right: 1px;
+    transform: translate(100%, calc(50% - 3px));
+  }
+
+  /* RTL support
+   * BUG dialog positioning is broken in rtl mode,
+   * after clicking the button.
+   */
+  :host([dir=rtl]) {
+    right: auto !important;
+    left: 0;
+  }
+
+  :host([dir=rtl]) .b-bubble-tooltip {
+    transform: translate(var(--bubble-size), -50%);
+    margin-left: 12px;
+  }
+
+  :host([dir=rtl]) .b-bubble-tooltip:after {
+    left: 1px;
+    right: auto;
+    border-left-color: transparent;
+    border-right-color: var(--tooltip-bg);
+    transform: translate(-100%, calc(50% - 3px));
+  }
+`
+
+function defineBubble () {
+  customElements.define(
     'b-bubble',
     class extends HTMLElement {
         constructor() {
@@ -22,11 +152,7 @@ customElements.define(
             this.ready = false;
             this.bubbleVisibilityTimer = null;
         }
-        disconnectedCallback () {
-          console.log('disconnectedCallback')
-        }
         connectedCallback () {
-          console.log('connectedCallback', this.ready, this.isConnected, this)
             // element was already created,
             // just moved around in the dom.
             if (this.ready || !this.isConnected) {
@@ -37,137 +163,7 @@ customElements.define(
             const shortcut = this.getAttribute('shortcut') || 'ctrl+space';
 
             const template = `
-                <style>
-                    :host,
-                    :host * {
-                        box-sizing: border-box;
-                    }
-
-                    :host {
-                        position: absolute;
-                        display: block;
-
-                        --bubble-size: 28px;
-                        --bubble-margin: 5px;
-                        width: var(--bubble-size);
-                        height: var(--bubble-size);
-                        margin: var(--bubble-margin);
-
-                        font-family: sans-serif;
-                    }
-
-                    .b-bubble {
-                        position: relative;
-                        opacity: 0;
-                        visibility: hidden;
-                        transition: opacity ease-out .2s;
-
-                        appearance: none;
-                        display: block;
-                        width: 100%;
-                        height: 100%;
-                        padding: 5px;
-                        background-color: rgba(243, 244, 245, .4);
-                        border: 0;
-                        border-radius: 5px;
-                        cursor: pointer;
-                    }
-
-                    .b-bubble:hover {
-                        background-color: #e9eaec;
-                        box-shadow: 0 0 12px rgba(0,0,0,.1);
-                    }
-
-                    .b-bubble:active {
-                        box-shadow: none;
-                        cursor: pointer;
-                    }
-
-                    .b-bubble:after {
-                        content: '';
-                        position: relative;
-                        top: 0;
-                        left: 0;
-                        display: block;
-                        height: 100%;
-                        width: 100%;
-
-                        background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="29mm" height="38mm" viewBox="0 0 29 38"><path d="M14.19269 0c3.68786 0 6.68658.81961 8.99614 2.45882 2.30957 1.60196 3.46435 4.32157 3.46435 8.15883 0 1.41568-.33525 2.70098-1.00577 3.85588-.63327 1.11765-1.47142 2.08628-2.51446 2.90588 1.71356.89412 3.11047 2.1049 4.19076 3.63236C28.44124 22.53922 29 24.47647 29 26.82353c0 3.50196-1.22928 6.24019-3.68786 8.21471C22.89083 37.01275 19.64998 38 15.58961 38H.00002V0z" fill="%230607fb"/><path d="M.00001.00006v20.05518A20.240457 20.242517 0 0011.0152 23.3153a20.240457 20.242517 0 0013.46005-5.12465c-.42371-.29411-.87062-.56515-1.34231-.81128 1.04303-.8196 1.88128-1.78812 2.51454-2.90576.67053-1.15491 1.00581-2.44016 1.00581-3.85584 0-3.83725-1.15493-6.55709-3.4645-8.15906C20.87921.8195 17.88043.00006 14.19258.00006z" fill="%230983fa"/></svg>') no-repeat center center;
-                        background-size: contain;
-                    }
-
-                    .b-bubble-visible {
-                        opacity: .7;
-                        visibility: visible;
-                    }
-
-                    .b-bubble:hover + .b-bubble-tooltip {
-                        opacity: 1;
-                        visibility: visible;
-                        transition-delay: 1s;
-                    }
-
-                    .b-bubble-tooltip {
-                        --tooltip-bg: #2a2a2a;
-                        visibility: hidden;
-                        opacity: 0;
-                        transition: opacity ease-in .1s;
-
-                        position: absolute;
-                        top: 50%;
-                        left: 0;
-                        padding: 3px 5px;
-                        background: var(--tooltip-bg);
-                        border-radius: 2px;
-
-                        color: #fff;
-                        font-size: 11px;
-                        font-weight: bold;
-                        line-height: 1;
-                        white-space: nowrap;
-
-                        transform: translate(-100%, -50%);
-                        margin-left: -12px;
-                    }
-
-                    .b-bubble-tooltip:after {
-                        content: '';
-                        position: absolute;
-                        border-style: solid;
-                        border-color: transparent;
-                        border-width: 6px;
-                        border-left-color: var(--tooltip-bg);
-                        display: block;
-                        width: 0;
-                        z-index: 1;
-                        top: 0;
-                        right: 1px;
-                        transform: translate(100%, calc(50% - 3px));
-                    }
-
-                    /* RTL support
-                     * BUG dialog positioning is broken in rtl mode,
-                     * after clicking the button.
-                     */
-                    :host([dir=rtl]) {
-                        right: auto !important;
-                        left: 0;
-                    }
-
-                    :host([dir=rtl]) .b-bubble-tooltip {
-                        transform: translate(var(--bubble-size), -50%);
-                        margin-left: 12px;
-                    }
-
-                    :host([dir=rtl]) .b-bubble-tooltip:after {
-                        left: 1px;
-                        right: auto;
-                        border-left-color: transparent;
-                        border-right-color: var(--tooltip-bg);
-                        transform: translate(-100%, calc(50% - 3px));
-                    }
-
-                </style>
+                <style>${bubbleStyles}</style>
                 <button type="button" class="b-bubble"></button>
                 <span class="b-bubble-tooltip">
                     Search templates (${shortcut})
@@ -186,7 +182,7 @@ customElements.define(
                 // since the focus node is now the button
                 // we have to pass the previous focus (the text node).
                 dialog.completion(e, {
-                    focusNode: this.activeTextfield,
+                    focusNode: activeTextfield,
                     dialogPositionNode: e.target,
                     source: 'button'
                 });
@@ -227,8 +223,7 @@ customElements.define(
             ];
         }
     }
-);
-
+  );
 }
 
 function focusTextfield (e) {
@@ -299,47 +294,51 @@ export function setup () {
 }
 
 function create (settings = {}) {
-    defineBubble();
+  // bubble is defined later,
+  // to avoid errors with other existing intances on page,
+  // when reloading the bubble without page refresh.
+  // (connectedCallback is triggered when re-defining an existing element)
+  defineBubble();
 
-    // bubble is created outside the body.
-    // when textfields are focused, move it to the offsetParent for positioning.
-    bubbleInstance = document.createElement('b-bubble');
-    // custom dialog shortcut
-    bubbleInstance.setAttribute('shortcut', settings.dialog_shortcut);
-    document.documentElement.appendChild(bubbleInstance);
+  // bubble is created outside the body.
+  // when textfields are focused, move it to the offsetParent for positioning.
+  bubbleInstance = document.createElement('b-bubble');
+  // custom dialog shortcut
+  bubbleInstance.setAttribute('shortcut', settings.dialog_shortcut);
+  document.documentElement.appendChild(bubbleInstance);
 
-    // show the bubble on focus
-    document.addEventListener('focusin', focusTextfield);
-    document.addEventListener('focusout', blurTextfield);
+  // show the bubble on focus
+  document.addEventListener('focusin', focusTextfield);
+  document.addEventListener('focusout', blurTextfield);
 
-    // reposition bubble on scroll
-    document.addEventListener('scroll', scrollDocument, true);
+  // reposition bubble on scroll
+  document.addEventListener('scroll', scrollDocument, true);
 
-    // wait for the bubbble to be shown
-    const bubbleObserver = new MutationObserver((records, observer) => {
-      if (bubbleInstance.getAttribute('visible') === 'true') {
-        // on first-use (after extension is installed),
-        // we show the dialog immediately after the bubble is shown.
-        store.getExtensionData()
-          .then((data) => {
-            if (data.showPostInstall) {
-              showPostInstall()
+  // wait for the bubbble to be shown
+  const bubbleObserver = new MutationObserver((records, observer) => {
+    if (bubbleInstance.getAttribute('visible') === 'true') {
+      // on first-use (after extension is installed),
+      // we show the dialog immediately after the bubble is shown.
+      store.getExtensionData()
+        .then((data) => {
+          if (data.showPostInstall) {
+            showPostInstall()
 
-              // don't show the button again on next load
-              store.setExtensionData({
-                showPostInstall: false
-              })
-            }
-          })
+            // don't show the button again on next load
+            store.setExtensionData({
+              showPostInstall: false
+            })
+          }
+        })
 
-        observer.disconnect()
-      }
-    })
-    bubbleObserver.observe(bubbleInstance, {
-        attributes: true
-    });
+      observer.disconnect()
+    }
+  })
+  bubbleObserver.observe(bubbleInstance, {
+      attributes: true
+  });
 
-    domObservers.push(bubbleObserver)
+  domObservers.push(bubbleObserver)
 }
 
 export function destroy () {
