@@ -10,7 +10,7 @@ import Mousetrap from 'mousetrap';
 
 import store from '../store/store-client';
 import autocomplete from './autocomplete';
-import enableDialogSearchAttr from './dialog-search-attr';
+import {enableDialogSearchAttr, disableDialogSearchAttr} from './dialog-search-attr';
 import fuzzySearch from './search';
 
 import Config from '../config';
@@ -489,6 +489,8 @@ var dialog = {
       if ($dialog) {
         $dialog.remove()
       }
+
+      disableDialogSearchAttr()
     }
 };
 
