@@ -343,7 +343,6 @@ function create (settings = {}) {
 
 export function destroy () {
   if (bubbleInstance) {
-    console.log('remove bubble', bubbleInstance)
     bubbleInstance.remove()
   }
 

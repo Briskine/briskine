@@ -1,48 +1,12 @@
-/* globals ENV, REGISTER_DISABLED */
+/* globals REGISTER_DISABLED */
 import browser from 'webextension-polyfill'
 
 import Config from '../config'
 
-// for tabs.query auto-reload
-var urlMatchPatterns = [
-    '*://mail.google.com/*',
-    '*://inbox.google.com/*',
-    '*://*.mail.yahoo.com/*',
-    '*://*.mail.live.com/*',
-    '*://outlook.live.com/*',
-    '*://*.linkedin.com/*',
-    '*://*.facebook.com/*',
-    '*://*.messenger.com/*',
-    '*://*.fastmail.com/*',
-    '*://*.uservoice.com/*',
-    '*://*.zendesk.com/*'
-];
-
-// Called when the url of a tab changes.
-var updatedTab = function () {
-    // in development
-    // also show for localhost
-    var localhostPattern = "*://localhost/*";
-
-    if (ENV && ENV === 'development' && urlMatchPatterns.indexOf(localhostPattern) === -1) {
-        urlMatchPatterns.push(localhostPattern);
-    }
-    return false;
-};
-
-// Listen for any changes to the URL of any tab.
-browser.tabs.onUpdated.addListener(updatedTab);
-
+// TODO move and refactor the context menu
 // Called after installation
 // https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/runtime/onInstalled
 browser.runtime.onInstalled.addListener(function (details) {
-    // All affected tabs should be reloaded if the extension was installed
-    browser.tabs.query({'url': urlMatchPatterns}).then(function (tabs) {
-        for (var i in tabs) {
-//             browser.tabs.reload(tabs[i].id, {});
-        }
-    });
-
     // Context menus
     browser.contextMenus.create({
         "title": 'Save \'%s\' as a template',
@@ -85,35 +49,27 @@ browser.runtime.onMessage.addListener(function (request) {
 });
 
 browser.runtime.onInstalled.addListener((details) => {
-  // TODO inject the script on install as well
+  const manifest = browser.runtime.getManifest()
 
-  const manifest = browser.runtime.getManifest();
-  console.log(manifest)
+  // on install or update,
+  // insert the content scripts
+  if (['update', 'installed'].includes(details.reason)) {
+    const contentScripts = manifest.content_scripts[0]
+    const scripts = contentScripts.js
+    const styles = contentScripts.css
 
-  if (details.reason === 'update') {
-    // TODO re-insert content scripts
-    console.log('inser new content')
-    const scripts = manifest.content_scripts[0].js
-    const styles = manifest.content_scripts[0].css
-
-    console.log(scripts, styles)
-
-    browser.tabs.query({}).then((tabs) => {
+    browser.tabs.query({
+      url: contentScripts.matches
+    }).then((tabs) => {
       tabs.forEach((tab) => {
-        const url = new URL(tab.url)
-        // don't match browser specific tabs (eg. about:blank)
-        if (!['http:', 'https:'].includes(url.protocol)) {
-          return
-        }
-
-        // TODO remove old styles
+        // remove and insert new content styles
         styles.forEach((file) => {
           browser.tabs.removeCSS(tab.id, {file: file}).then(() => {
             browser.tabs.insertCSS(tab.id, {file: file})
           })
         })
 
-        // TODO add new scripts
+        // insert new content scripts
         scripts.forEach((file) => {
           browser.tabs.executeScript(tab.id, {file: file})
         })
@@ -124,4 +80,3 @@ browser.runtime.onInstalled.addListener((details) => {
 })
 
 browser.runtime.onConnect.addListener(() => {})
-

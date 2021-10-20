@@ -483,7 +483,12 @@ var dialog = {
 
         dialog.quicktexts = [];
         dialog.cursorPosition = null;
-
+    },
+    destroy: function () {
+      const $dialog = document.querySelector(dialog.dialogSelector)
+      if ($dialog) {
+        $dialog.remove()
+      }
     }
 };
 
