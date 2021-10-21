@@ -13,11 +13,12 @@ import store from '../store/store-client';
 import keyboard from './keyboard';
 import dialog from './dialog';
 
-import {setup as setupBubble} from './bubble';
+import {setup as setupBubble, destroy as destroyBubble} from './bubble';
 
 function init (settings, doc) {
   const loadedClassName = 'gorgias-loaded'
-  if (!document.body || document.body.classList.contains(loadedClassName)) {
+
+  if (!document.body) {
     return;
   }
   // mark the doc that extension has been loaded
@@ -87,8 +88,25 @@ function startup () {
   })
 }
 
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', startup)
-} else {
-  startup()
+// destroy existing content script
+const destroyEventName = 'briskine-destroy'
+const destroyEvent = new CustomEvent(destroyEventName)
+
+document.dispatchEvent(destroyEvent)
+
+function destructor () {
+  // unbind keyboard shortcuts
+  Mousetrap.reset()
+
+  // destroy bubble
+  destroyBubble()
+
+  // destroy dialog
+  dialog.destroy()
+
+  document.removeEventListener(destroyEventName, destructor)
 }
+
+document.addEventListener(destroyEventName, destructor)
+
+startup()

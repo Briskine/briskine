@@ -3,7 +3,8 @@
  * Setting the attribute on the editable element will set it's value in the dialog search.
  */
 
-const searchSelector = '.qt-dropdown-search';
+const searchSelector = '.qt-dropdown-search'
+let attrObserver = null
 
 function setDialogSearch (value = '') {
     const $search = document.querySelector(searchSelector);
@@ -13,8 +14,8 @@ function setDialogSearch (value = '') {
     }
 }
 
-export default function enableDialogSearchAttr () {
-    const observer = new MutationObserver(() => {
+export function enableDialogSearchAttr () {
+    attrObserver = new MutationObserver(() => {
         if (!document.activeElement) {
             return;
         }
@@ -28,7 +29,13 @@ export default function enableDialogSearchAttr () {
         }
     });
 
-    observer.observe(document.body, {
+    attrObserver.observe(document.body, {
         attributes: true
     });
+}
+
+export function disableDialogSearchAttr () {
+  if (attrObserver) {
+    attrObserver.disconnect()
+  }
 }

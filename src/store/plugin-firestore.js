@@ -16,7 +16,6 @@ import {
   collection,
   query,
   where,
-  getDocs,
   onSnapshot,
   getDoc,
   doc,
@@ -125,7 +124,7 @@ const collectionRequestQueue = {}
 
 function getCollection (params = {}) {
   const data = localDataCache[params.collection]
-  if (!params.refresh && data) {
+  if (data) {
     return Promise.resolve(data)
   }
 
@@ -134,28 +133,13 @@ function getCollection (params = {}) {
     return collectionRequestQueue[params.collection]
   }
 
-  localDataCache[params.collection] = null;
-
-  collectionRequestQueue[params.collection] = getDocs(
-      getCollectionQuery(params.collection, params.user)
-    )
+  // snapshots will trigger when first set,
+  // and return the initial data.
+  collectionRequestQueue[params.collection] = startSnapshot(params.collection, params.user)
     .then((res) => {
-      const data = {}
-      res.docs.forEach((doc) => {
-        data[doc.id] = doc.data()
-      })
-
-      updateCache({
-        collection: params.collection,
-        data: data
-      })
-
       collectionRequestQueue[params.collection] = null
-
-      return data
+      return res
     })
-
-  startSnapshot(params.collection, params.user)
 
   return collectionRequestQueue[params.collection]
 
@@ -163,8 +147,6 @@ function getCollection (params = {}) {
 
 // refresh local data cache from snapshot listeners
 function refreshLocalData (collectionName, querySnapshot) {
-  localDataCache[collectionName] = null;
-
   const data = {}
   querySnapshot.docs.forEach((doc) => {
     data[doc.id] = doc.data()
@@ -178,13 +160,18 @@ function refreshLocalData (collectionName, querySnapshot) {
 
 function updateCache (params = {}) {
   localDataCache[params.collection] = params.data
+  return params.data
 }
 
 const snapshotListeners = {}
 function startSnapshot (collectionName, user) {
-  const snapshotQuery = getCollectionQuery(collectionName, user)
-  snapshotListeners[collectionName] = onSnapshot(snapshotQuery, (snapshot) => {
-    refreshLocalData(collectionName, snapshot)
+  return new Promise((resolve) => {
+    const snapshotQuery = getCollectionQuery(collectionName, user)
+    snapshotListeners[collectionName] = onSnapshot(snapshotQuery, (snapshot) => {
+      // returns first response,
+      // and keeps updating cache.
+      resolve(refreshLocalData(collectionName, snapshot))
+    })
   })
 }
 
@@ -406,7 +393,7 @@ function getDefaultTemplates () {
                 <div>domain: {{domain to.email}}</div>
             `,
             to: 'to@briskine.com',
-            cc: 'cc@briskine.com',
+            cc: 'cc@briskine.com, cc2@briskine.com',
             bcc: 'bcc@briskine.com',
             from: 'contact@briskine.com'
         });

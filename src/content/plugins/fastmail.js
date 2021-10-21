@@ -1,8 +1,6 @@
 /* Fastmail plugin
  */
 
-import $ from 'jquery';
-
 import {parseTemplate} from '../utils';
 import {insertTemplate} from '../utils/editor-generic';
 
@@ -50,21 +48,24 @@ function getData () {
         bcc = [],
         subject = '';
 
-    var $container = $('.v-Compose');
-    from = $container.find('.v-ComposeFrom-bottom select option').toArray().map(function (a) {
-        return $(a).text();
+    var $container = document.querySelector('.v-Compose');
+    from = Array.from($container.querySelectorAll('.v-ComposeFrom-bottom select option')).map(function (a) {
+      return a.innerText
     });
 
-    to = $container.find('textarea[id$="to-input"]').toArray().map(function (a) {
-        return a.value;
+    to = Array.from($container.querySelectorAll('textarea[id$="to-input"]')).map(function (a) {
+      return a.value
     });
-    cc = $container.find('textarea[id$="cc-input"]').toArray().map(function (a) {
-        return a.value;
+    cc = Array.from($container.querySelectorAll('textarea[id$="cc-input"]')).map(function (a) {
+      return a.value
     });
-    bcc = $container.find('textarea[id$="cc-input"]').toArray().map(function (a) {
-        return a.value;
+    bcc = Array.from($container.querySelectorAll('textarea[id$="cc-input"]')).map(function (a) {
+      return a.value
     });
-    subject = $container.find('input[id$="subject-input"]').val();
+    const $subject = $container.querySelector('input[id$="subject-input"]');
+    if ($subject) {
+      subject = $subject.value
+    }
 
     return {
         from: parseList(from),
@@ -80,57 +81,56 @@ function isHidden (el) {
 }
 
 function before (params, data) {
-    var $parent = $(params.element).closest('.v-Compose');
+    var $parent = params.element.closest('.v-Compose')
 
     if (params.quicktext.subject) {
-        var parsedSubject = parseTemplate(params.quicktext.subject, data);
-        $('input[id$="subject-input"]', $parent).val(parsedSubject);
+      var parsedSubject = parseTemplate(params.quicktext.subject, data)
+      $parent.querySelector('input[id$="subject-input"]').value = parsedSubject
     }
 
     if (params.quicktext.to) {
-        var parsedTo = parseTemplate(params.quicktext.to, data);
-        var $toField = $('textarea[id$="to-input"]', $parent);
-        $toField.val(parsedTo);
+      var parsedTo = parseTemplate(params.quicktext.to, data)
+      var $toField = $parent.querySelector('textarea[id$="to-input"]')
+      $toField.value = parsedTo
 
-        // jQuery's trigger does not work
-        $toField.get(0).dispatchEvent(new Event('input'));
+      $toField.dispatchEvent(new Event('input'))
     }
 
-    var $btns = $('.v-Compose-addCcBcc .u-subtleLink', $parent);
+    var $btns = $parent.querySelectorAll('.v-Compose-addCcBcc .u-subtleLink')
 
     if (params.quicktext.cc) {
-        var parsedCc = parseTemplate(params.quicktext.cc, data);
+        var parsedCc = parseTemplate(params.quicktext.cc, data)
 
-        var $ccField = $('textarea[id$="cc-input"]', $parent);
+        var $ccField = $parent.querySelector('textarea[id$="cc-input"]')
 
         // only if the cc field is hidden,
         // because the same button is used to show/hide the field.
-        if (isHidden($ccField.get(0))) {
-            var $ccBtn = $btns.eq(0);
+        if (isHidden($ccField)) {
+            var $ccBtn = $btns[0]
             // dispatchEvent or trigger do not work
-            $ccBtn.get(0).click();
+            $ccBtn.click()
         }
 
-        $ccField.val(parsedCc);
+        $ccField.value = parsedCc
 
-        $ccField.get(0).dispatchEvent(new Event('input'));
+        $ccField.dispatchEvent(new Event('input'))
     }
 
     if (params.quicktext.bcc) {
-        var parsedBcc = parseTemplate(params.quicktext.bcc, data);
+        var parsedBcc = parseTemplate(params.quicktext.bcc, data)
 
-        var $bccField = $('textarea[id$="bcc-input"]', $parent);
+        var $bccField = $parent.querySelector('textarea[id$="bcc-input"]')
 
         // only if the bcc field is hidden
-        if (isHidden($bccField.get(0))) {
-            var $bccBtn = $btns.eq(1);
+        if (isHidden($bccField)) {
+            var $bccBtn = $btns[1]
             // dispatchEvent or trigger do not work
-            $bccBtn.get(0).click();
+            $bccBtn.click()
         }
 
-        $bccField.val(parsedBcc);
+        $bccField.value = parsedBcc
 
-        $bccField.get(0).dispatchEvent(new Event('input'));
+        $bccField.dispatchEvent(new Event('input'))
     }
 }
 
