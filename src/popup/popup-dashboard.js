@@ -151,7 +151,7 @@ customElements.define(
                                                     value="${id}"
                                                     ${id === this.user.customer && 'selected' || ''}
                                                 >
-                                                    ${this.getCustomerTitle(id)}'team
+                                                    ${this.getCustomerTitle(id)}'s team
                                                 </option>
                                             `;
                                         })}

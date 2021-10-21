@@ -20,6 +20,7 @@ import {
   onSnapshot,
   getDoc,
   doc,
+  documentId,
 } from 'firebase/firestore';
 
 import Config from '../config';
@@ -63,6 +64,7 @@ let localDataCache = defaultDataCache()
 
 function clearDataCache () {
   localDataCache = defaultDataCache()
+  stopSnapshots()
 }
 
 const templatesCollection = collection(db, 'templates')
@@ -96,7 +98,7 @@ function templatesEveryoneQuery (user) {
 
 function getCollectionQuery (name, user) {
   const collectionQuery = {
-    users: ['customers', 'array-contains-any', user.customers],
+    users: [documentId(), '==', user.id],
     customers: ['members', 'array-contains', user.id],
     tags: ['customer', '==', user.customer]
   }
@@ -153,6 +155,8 @@ function getCollection (params = {}) {
       return data
     })
 
+  startSnapshot(params.collection, params.user)
+
   return collectionRequestQueue[params.collection]
 
 }
@@ -174,6 +178,25 @@ function refreshLocalData (collectionName, querySnapshot) {
 
 function updateCache (params = {}) {
   localDataCache[params.collection] = params.data
+}
+
+const snapshotListeners = {}
+function startSnapshot (collectionName, user) {
+  const snapshotQuery = getCollectionQuery(collectionName, user)
+  snapshotListeners[collectionName] = onSnapshot(snapshotQuery, (snapshot) => {
+    refreshLocalData(collectionName, snapshot)
+  })
+}
+
+function stopSnapshots () {
+  Object.keys(snapshotListeners).forEach((snapshotKey) => {
+    const unsubscriber = snapshotListeners[snapshotKey]
+    if (unsubscriber) {
+      unsubscriber()
+    }
+
+    snapshotListeners[snapshotKey] = null
+  })
 }
 
 // handle fetch errors
@@ -302,78 +325,28 @@ function setSignedInUser (user) {
         var globalUser = {};
         globalUser[globalUserKey] = user;
         browser.storage.local.set(globalUser).then(() => {
-            resolve();
+            resolve(user);
         });
     });
-}
-
-var snapshotListeners = [];
-function subscribeSnapshots (listeners = []) {
-    snapshotListeners = snapshotListeners.concat(listeners);
-}
-
-function unsubscribeSnapshots () {
-    snapshotListeners.forEach((unsubscriber) => {
-        unsubscriber();
-    });
-}
-
-// setup template change listeners on user or customer changes
-function setupListeners (user) {
-  unsubscribeSnapshots()
-
-  // refresh templates on changes
-  subscribeSnapshots([
-    onSnapshot(templatesOwnedQuery(user), (snapshot) => {
-      refreshLocalData('templatesOwned', snapshot)
-    })
-  ])
-
-  isFree(user).then((freeCustomer) => {
-    if (!freeCustomer) {
-      subscribeSnapshots([
-        onSnapshot(templatesSharedQuery(user), (snapshot) => {
-          refreshLocalData('templatesShared', snapshot)
-        }),
-        onSnapshot(templatesEveryoneQuery(user), (snapshot) => {
-          refreshLocalData('templatesEveryone', snapshot)
-        }),
-      ])
-    }
-  })
-
-  subscribeSnapshots(
-    ['tags', 'users', 'customers'].map((collectionName) => {
-      return onSnapshot(getCollectionQuery(collectionName, user), (snapshot) => {
-        refreshLocalData(collectionName, snapshot)
-      })
-    })
-  )
 }
 
 // auth change
 onIdTokenChanged(firebaseAuth, (firebaseUser) => {
     if (!firebaseUser) {
         clearDataCache();
-        unsubscribeSnapshots();
 
         return setSignedInUser({});
     }
 
-    return updateCurrentUser(firebaseUser).then(() => {
-        return getSignedInUser()
-            .then((user) => {
-                return setupListeners(user);
-            })
-            .catch((err) => {
-                if (isLoggedOut(err)) {
-                    // logged-out
-                    return;
-                }
+    return getSignedInUser()
+      .then((user) => {
+        if (user.id === firebaseUser.uid) {
+          return;
+        }
 
-                throw err;
-            });
-    });
+        clearDataCache()
+        return updateCurrentUser(firebaseUser)
+      })
 });
 
 function getDefaultTemplates () {
@@ -572,32 +545,35 @@ function updateCurrentUser (firebaseUser) {
       // logged-out
       .catch(() => {return;})
       .then(() => {
-        return getDoc(doc(collection(db, 'users'), firebaseUser.uid))
+        return getCollection({
+          user: {id: firebaseUser.uid},
+          collection: 'users'
+        })
       })
-      .then((userDoc) => {
-        const userData = userDoc.data()
+      .then((users) => {
+        const userData = users[firebaseUser.uid]
 
-          user = {
-              id: firebaseUser.uid,
-              email: userData.email,
-              full_name: userData.full_name,
+        user = {
+          id: firebaseUser.uid,
+          email: userData.email,
+          full_name: userData.full_name,
 
-              // customers user is member of
-              customers: userData.customers,
-              // active customer
-              // default to first customer
-              customer: userData.customers[0],
-          };
+          // customers user is member of
+          customers: userData.customers,
+          // active customer
+          // default to first customer
+          customer: userData.customers[0],
+        };
 
-          // customer switching support.
-          // get specific user from parameter, or from cache.
-          // only update customer if part cu current user's customers.
-          let newCustomer = firebaseUser.customer || cachedUser.customer;
-          if (user.customers.includes(newCustomer)) {
-            user.customer = newCustomer;
-          }
+        // customer switching support.
+        // get specific user from parameter, or from cache.
+        // only update customer if part cu current user's customers.
+        let newCustomer = firebaseUser.customer || cachedUser.customer;
+        if (user.customers.includes(newCustomer)) {
+          user.customer = newCustomer;
+        }
 
-          return setSignedInUser(user);
+        return setSignedInUser(user);
       });
 }
 
@@ -664,35 +640,39 @@ function getCustomer (customerId) {
       return Promise.all([
         getCollection({
           user: user,
-          collection: 'users'
+          collection: 'customers'
         }),
         getCollection({
           user: user,
-          collection: 'customers'
+          collection: 'users'
         })
       ])
     })
     .then((res) => {
-      customer = res[1][customerId]
-      customer.ownerDetails = res[0][customer.owner]
+      const [customers, users] = res
+      customer = customers[customerId]
+      if (users[customer.owner]) {
+        // we have the owner cached
+        customer.ownerDetails = users[customer.owner]
+      } else {
+        return getDoc(doc(collection(db, 'users'), customer.owner))
+          .then((ownerDoc) => {
+            customer.ownerDetails = ownerDoc.data()
+            return customer
+          })
+      }
+
       return customer
     })
 }
 
 function setActiveCustomer (customerId) {
-    unsubscribeSnapshots();
+  clearDataCache()
 
-    return updateCurrentUser({
-        uid: firebaseAuth.currentUser.uid,
-        customer: customerId
-      })
-      .then(() => {
-        return getSignedInUser()
-      })
-      .then((user) => {
-        setupListeners(user)
-        return
-      })
+  return updateCurrentUser({
+      uid: firebaseAuth.currentUser.uid,
+      customer: customerId
+    })
 }
 
 const extensionDataKey = 'briskine'

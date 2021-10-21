@@ -1,11 +1,11 @@
 {
     "name": "briskine",
-    "version": "7.2.7",
+    "version": "7.2.8",
     "description": "Write everything faster.",
     "scripts": {
         "test": "NODE_OPTIONS='-r esm' webpack -c webpack.test.js && mocha-headless-chrome -f test/index.html",
         "start": "NODE_OPTIONS='-r esm' webpack -w --mode=development --env mode=development",
-        "staging": "NODE_OPTIONS='-r esm' webpack -w --env mode=staging",
+        "staging": "NODE_OPTIONS='-r esm' webpack -w --mode=production --env mode=staging",
         "build": "NODE_OPTIONS='-r esm' webpack --mode=production --env mode=production",
         "lint": "jshint src/ webpack.*.js"
     },
