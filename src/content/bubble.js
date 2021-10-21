@@ -252,11 +252,11 @@ function scrollDocument (e) {
               e.target &&
               // must be an element node (eg. not the document)
               e.target.nodeType === Node.ELEMENT_NODE &&
-              e.target.contains(this.activeTextfield) &&
+              e.target.contains(activeTextfield) &&
               bubbleInstance &&
               bubbleInstance.getAttribute('visible') === 'true'
           ) {
-              bubbleInstance.setAttribute('top', getTopPosition(this.activeTextfield, e.target));
+              bubbleInstance.setAttribute('top', getTopPosition(activeTextfield, e.target));
           }
 
           scrollTick = false;
