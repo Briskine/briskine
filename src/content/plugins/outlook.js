@@ -66,7 +66,8 @@ function getSuggestionContainer (email) {
     // "use this address" not in contact list
     var headerSelector = `.ms-Suggestions-headerContainer [class*="useAddressContainer-"]`;
     // contact list suggestion
-    var listSelector = `.ms-Suggestions-container [aria-label*="${email}"]`;
+    // only when the suggestion contains the email and the item is first (is selected)
+    var listSelector = `.ms-Suggestions-container [aria-label*="${email}"][aria-selected=true][role=option]`;
     return document.querySelector(`${headerSelector}, ${listSelector}`);
   }
 }
