@@ -177,7 +177,10 @@ function before (params, data) {
 
     if (params.quicktext.to) {
         var parsedTo = parseTemplate(params.quicktext.to, data);
-        $parent.querySelector('textarea[name=to]').value = parsedTo;
+        const $toField = $parent.querySelector('textarea[name=to]')
+        if ($toField) {
+          $toField.value = parsedTo
+        }
     }
 
     const buttonSelectors = {
@@ -189,7 +192,10 @@ function before (params, data) {
         if (params.quicktext[fieldName]) {
             const parsedField = parseTemplate(params.quicktext[fieldName], data);
             $parent.querySelector(buttonSelectors[fieldName]).dispatchEvent(new MouseEvent('click', {bubbles: true}));
-            $parent.querySelector(`textarea[name=${fieldName}]`).value = parsedField;
+            const $field = $parent.querySelector(`textarea[name=${fieldName}]`)
+            if ($field) {
+              $field.value = parsedField
+            }
         }
     });
 }
