@@ -384,7 +384,7 @@ function getTopPosition (textfield, parent) {
 
 function isValidTextfield (elem) {
     // if the element is a textfield
-    if (elem.matches('textarea, input[type=text], [contenteditable]')) {
+    if (elem.matches('textarea, [contenteditable]')) {
         // check if the element is big enough
         // to only show the bubble for large textfields
         const metrics = elem.getBoundingClientRect();
