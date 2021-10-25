@@ -157,6 +157,14 @@ function setFromField ($textfield, fromEmail = '') {
     }
 }
 
+function extraField ($parent, fieldName) {
+  if (!parent) {
+    return
+  }
+
+  return $parent.querySelector(`textarea[name=${fieldName}], [name=${fieldName}] input`)
+}
+
 function before (params, data) {
     const $parent = params.element.closest(textfieldContainerSelector);
 
@@ -177,7 +185,7 @@ function before (params, data) {
 
     if (params.quicktext.to) {
         var parsedTo = parseTemplate(params.quicktext.to, data);
-        const $toField = $parent.querySelector('textarea[name=to]')
+        const $toField = extraField($parent, 'to')
         if ($toField) {
           $toField.value = parsedTo
         }
@@ -192,7 +200,7 @@ function before (params, data) {
         if (params.quicktext[fieldName]) {
             const parsedField = parseTemplate(params.quicktext[fieldName], data);
             $parent.querySelector(buttonSelectors[fieldName]).dispatchEvent(new MouseEvent('click', {bubbles: true}));
-            const $field = $parent.querySelector(`textarea[name=${fieldName}]`)
+            const $field = extraField($parent, fieldName)
             if ($field) {
               $field.value = parsedField
             }
