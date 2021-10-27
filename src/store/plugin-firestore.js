@@ -380,32 +380,32 @@ function getDefaultTemplates () {
             </div>
           {{/each}}
         `
-    }).join('')
+      }).join('')
 
-    allVarsBody += `
-      <div>subject: {{subject}}</div>
-      <div>next week: {{moment add='7;days' format='DD MMMM'}}</div>
-      <div>last week: {{moment subtract='7;days'}}</div>
-      <div>choice: {{choice 'Hello, Hi, Hey'}}</div>
-      <div>domain: {{domain to.email}}</div>
-    `
+      allVarsBody += `
+        <div>subject: {{subject}}</div>
+        <div>next week: {{moment add='7;days' format='DD MMMM'}}</div>
+        <div>last week: {{moment subtract='7;days'}}</div>
+        <div>choice: {{choice 'Hello, Hi, Hey'}}</div>
+        <div>domain: {{domain to.email}}</div>
+      `
 
-    defaultTemplates.push({
+      defaultTemplates.push({
         title: 'allvars',
         shortcut: 'allvars',
         subject: 'Subject',
         body: allVarsBody,
         to: 'to@briskine.com',
-          cc: 'cc@briskine.com, cc2@briskine.com',
-          bcc: 'bcc@briskine.com',
-          from: 'contact@briskine.com'
-      });
+        cc: 'cc@briskine.com, cc2@briskine.com',
+        bcc: 'bcc@briskine.com',
+        from: 'contact@briskine.com'
+      })
 
       defaultTemplates.push({
-          title: 'broken',
-          shortcut: 'broken',
-          body: 'Hello {{to.first_name}'
-      });
+        title: 'broken',
+        shortcut: 'broken',
+        body: 'Hello {{to.first_name}'
+      })
     }
 
     const legacyTemplates = {};
