@@ -1,19 +1,12 @@
 /* Gmail plugin
  */
 
-import {insertText, parseTemplate, isContentEditable} from '../utils';
-import {enableBubble} from '../bubble';
+import {insertText, parseTemplate, isContentEditable} from '../utils'
+import {createContact} from '../utils/data-parse'
+import {enableBubble} from '../bubble'
 
 const fromFieldSelector = '.az2';
 const textfieldContainerSelector = '.M9';
-
-function parseList (list) {
-    return list.filter(function (a) {
-        return a;
-    }).map(function (a) {
-        return parseString(a);
-    });
-}
 
 var regExString = /"?([^ ]*)\s*(.*)"?\s*[(<]([^>)]+)[>)]/;
 var regExEmail = /([\w!.%+\-])+@([\w\-])+(?:\.[\w\-]+)+/;
@@ -73,9 +66,23 @@ function getData (params) {
             }
 
             [ 'to', 'cc', 'bcc' ].forEach((fieldName) => {
-                data[fieldName] = Array.from($container.querySelectorAll(`input[name=${fieldName}]`)).map((field) => {
-                    return field.value;
-                });
+                data[fieldName] = Array.from(
+                    $container.querySelectorAll(`input[name=${fieldName}], [name=${fieldName}] [role=option]`)
+                  ).map((field) => {
+                    if (field.value) {
+                      return parseString(field.value)
+                    }
+
+                    const email = field.getAttribute('data-hovercard-id')
+                    if (email) {
+                      return createContact({
+                        email: email,
+                        name: field.getAttribute('data-name')
+                      })
+                    }
+
+                    return {}
+                  })
             });
 
             const $subjectField = $container.querySelector('input[name=subjectbox]');
@@ -132,11 +139,7 @@ function getData (params) {
 
     }
 
-    return Object.assign(data, {
-        to: parseList(data.to),
-        cc: parseList(data.cc),
-        bcc: parseList(data.bcc)
-    });
+    return data
 }
 
 // from field support for aliases
