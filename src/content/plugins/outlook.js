@@ -28,9 +28,8 @@ function getFieldData (field, $container) {
 
 // selector for to/cc/bcc containers
 function getContainers () {
-    const $section = document.querySelector('[role=main]')
     // return the parent of each [role=combobox] textfield
-    return Array.from($section.querySelectorAll('[role=combobox]')).map((node) => {
+    return Array.from(document.querySelectorAll('[role=main] [role=combobox]')).map((node) => {
       return node.parentElement
     })
 }
@@ -49,7 +48,7 @@ function getBccContainer () {
 
 // only 2 ms-Button--action (cc/bcc) in the message container
 function getFieldButtonSelector () {
-    return '[role=region] ~ [role=complementary] .ms-Button--command';
+    return '[role=main] .ms-Button--command';
 }
 
 function getCcButton () {
