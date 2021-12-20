@@ -4,9 +4,9 @@
     "description": "Write everything faster.",
     "type": "module",
     "scripts": {
-        "test": "NODE_OPTIONS='-r esm' webpack -c webpack.test.js && mocha-headless-chrome -f test/index.html",
+        "test": "webpack -c webpack.test.js && mocha-headless-chrome -f test/index.html",
         "start": "webpack -w --mode=development --env mode=development",
-        "staging": "NODE_OPTIONS='-r esm' webpack -w --mode=production --env mode=staging",
+        "staging": "webpack -w --mode=production --env mode=staging",
         "build": "webpack --mode=production --env mode=production",
         "lint": "jshint src/ webpack.*.js"
     },

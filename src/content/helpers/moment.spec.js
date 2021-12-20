@@ -2,7 +2,7 @@ import {expect} from 'chai';
 import Handlebars from 'handlebars';
 import MockDate from 'mockdate';
 
-import './moment';
+import './moment.js';
 
 MockDate.set('2020-07-01');
 

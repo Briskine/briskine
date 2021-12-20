@@ -1,6 +1,6 @@
 import {expect} from 'chai';
 
-import {htmlToText} from './plain-text';
+import {htmlToText} from './plain-text.js';
 
 describe('htmlToText', () => {
     it('should convert html to text', () => {
