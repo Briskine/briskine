@@ -5,7 +5,7 @@
 import $ from 'jquery';
 import Handlebars from 'handlebars';
 
-import store from '../store/store-client';
+import store from '../store/store-client.js';
 
 // HACK temporary data cache.
 // some methods in need to be sync, but also use settings and user data

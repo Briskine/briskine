@@ -1,9 +1,9 @@
 /* Gmail plugin
  */
 
-import {insertText, parseTemplate, isContentEditable} from '../utils'
-import {createContact} from '../utils/data-parse'
-import {enableBubble} from '../bubble'
+import {insertText, parseTemplate, isContentEditable} from '../utils.js'
+import {createContact} from '../utils/data-parse.js'
+import {enableBubble} from '../bubble.js'
 
 const fromFieldSelector = '.az2';
 const textfieldContainerSelector = '.M9';

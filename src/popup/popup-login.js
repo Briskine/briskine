@@ -1,7 +1,7 @@
-import Config from '../config';
-import store from '../store/store-client';
-import './popup-login-form';
-import render from './render';
+import Config from '../config.js';
+import store from '../store/store-client.js';
+import './popup-login-form.js';
+import render from './render.js';
 
 customElements.define(
     'popup-login',

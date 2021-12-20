@@ -1,6 +1,6 @@
 import browser from 'webextension-polyfill'
 
-import Config from '../config'
+import Config from '../config.js'
 
 const saveAsTemplate = 'saveAsTemplate'
 

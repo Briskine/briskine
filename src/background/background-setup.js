@@ -1,8 +1,8 @@
 /* globals REGISTER_DISABLED */
 import browser from 'webextension-polyfill'
 
-import Config from '../config'
-import setupContextMenus from './contextmenus'
+import Config from '../config.js'
+import setupContextMenus from './contextmenus.js'
 
 browser.runtime.onMessage.addListener(function (request) {
   // open new template window

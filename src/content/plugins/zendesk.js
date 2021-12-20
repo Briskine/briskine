@@ -1,10 +1,10 @@
 /* Zendesk plugin
  */
 
-import {parseTemplate} from '../utils';
-import {isSlate, insertSlateText} from '../utils/editor-slate';
-import {insertTemplate} from '../utils/editor-generic';
-import {createContact} from '../utils/data-parse';
+import {parseTemplate} from '../utils.js';
+import {isSlate, insertSlateText} from '../utils/editor-slate.js';
+import {insertTemplate} from '../utils/editor-generic.js';
+import {createContact} from '../utils/data-parse.js';
 
 function getData (params) {
     let agentName = '';

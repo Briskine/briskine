@@ -22,8 +22,8 @@ import {
   documentId,
 } from 'firebase/firestore';
 
-import Config from '../config';
-import firebaseConfig from './config-firebase';
+import Config from '../config.js';
+import firebaseConfig from './config-firebase.js';
 
 const firebaseApp = initializeApp(firebaseConfig);
 const firebaseAuth = getAuth(firebaseApp);

@@ -2,10 +2,10 @@
 /* Outlook plugin
  */
 
-import {parseTemplate} from '../utils';
-import {insertTemplate} from '../utils/editor-generic';
-import {createContact} from '../utils/data-parse';
-import {enableBubble} from '../bubble';
+import {parseTemplate} from '../utils.js';
+import {insertTemplate} from '../utils/editor-generic.js';
+import {createContact} from '../utils/data-parse.js';
+import {enableBubble} from '../bubble.js';
 
 function getFieldData (field, $container) {
     var $buttons = $container.querySelectorAll('[class*="wellItemText-"]') || [];

@@ -1,8 +1,8 @@
 /* ProseMirror plugin
  */
 
-import {parseTemplate} from '../utils';
-import {insertTemplate} from '../utils/editor-generic';
+import {parseTemplate} from '../utils.js';
+import {insertTemplate} from '../utils/editor-generic.js';
 
 function replaceNewlines (text = '') {
     return text.replace(/(\r\n|\r|\n)/g, '<br>');

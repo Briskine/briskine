@@ -1,10 +1,10 @@
 /* global URLSearchParams, REGISTER_DISABLED */
 import './popup.css';
 
-import './popup-login';
-import './popup-dashboard';
-import store from '../store/store-client';
-import render from './render';
+import './popup-login.js';
+import './popup-dashboard.js';
+import store from '../store/store-client.js';
+import render from './render.js';
 
 customElements.define(
     'popup-container',

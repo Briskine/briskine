@@ -2,7 +2,7 @@
  * https://draftjs.org/
  */
 
-import {htmlToText} from './plain-text';
+import {htmlToText} from './plain-text.js';
 
 export function isDraft (element) {
    return element.querySelector('[data-contents]');

@@ -1,8 +1,8 @@
-import Config from '../config';
-import store from '../store/store-client';
-import render from './render';
+import Config from '../config.js';
+import store from '../store/store-client.js';
+import render from './render.js';
 
-import {plusSquare, clone, cog} from './popup-icons';
+import {plusSquare, clone, cog} from './popup-icons.js';
 
 function niceTime (minutes) {
     if (!minutes) {

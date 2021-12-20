@@ -1,9 +1,9 @@
 /* Slate editor plugin
  */
 
-import {parseTemplate} from '../utils';
-import {isSlate} from '../utils/editor-slate';
-import {insertSlateText} from '../utils/editor-slate';
+import {parseTemplate} from '../utils.js';
+import {isSlate} from '../utils/editor-slate.js';
+import {insertSlateText} from '../utils/editor-slate.js';
 
 export default (params = {}) => {
     if (!isSlate(params.element)) {
