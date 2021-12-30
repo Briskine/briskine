@@ -28,10 +28,10 @@ function getFieldData (field, $container) {
 
 // selector for to/cc/bcc containers
 function getContainers () {
-    // return the parent of each [role=combobox] textfield
-    return Array.from(document.querySelectorAll('[role=main] [role=combobox]')).map((node) => {
-      return node.parentElement
-    })
+  // get the parent of each extra field input
+  return Array.from(document.querySelectorAll('[role=main] input[autocapitalize=off]')).map((node) => {
+    return node.parentElement
+  })
 }
 
 function getToContainer () {
@@ -75,7 +75,7 @@ function getSubjectField () {
 }
 
 function getContactField ($container) {
-    return $container.querySelector('[role="combobox"]');
+    return $container.querySelector('input');
 }
 
 function waitForElement (getNode) {
