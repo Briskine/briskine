@@ -1,6 +1,6 @@
 import {expect} from 'chai';
 
-import {parseSearchString} from './search';
+import {parseSearchString} from './search.js';
 
 describe('parseSearchString', () => {
     it('should only parse text', () => {

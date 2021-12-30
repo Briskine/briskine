@@ -1,10 +1,10 @@
 /* Quill editor plugin
  */
 
-import {parseTemplate} from '../utils';
-import {isQuill} from '../utils/editor-quill';
-import {insertTemplate} from '../utils/editor-generic';
-import {htmlToText} from '../utils/plain-text';
+import {parseTemplate} from '../utils.js';
+import {isQuill} from '../utils/editor-quill.js';
+import {insertTemplate} from '../utils/editor-generic.js';
+import {htmlToText} from '../utils/plain-text.js';
 
 export default (params = {}) => {
     if (!isQuill(params.element)) {

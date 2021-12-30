@@ -1,7 +1,7 @@
 /* globals ENV, console */
 import browser from 'webextension-polyfill';
 
-import _FIRESTORE_PLUGIN from './plugin-firestore';
+import _FIRESTORE_PLUGIN from './plugin-firestore.js';
 
 var trigger = function (name) {
     // send trigger message to client store

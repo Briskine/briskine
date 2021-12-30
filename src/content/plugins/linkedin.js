@@ -2,12 +2,12 @@
 /* Linkedin plugin
  */
 
-import {parseTemplate} from '../utils';
-import {isQuill} from '../utils/editor-quill';
-import {insertTemplate} from '../utils/editor-generic';
-import {htmlToText} from '../utils/plain-text';
-import {createContact} from '../utils/data-parse';
-import {enableBubble} from '../bubble';
+import {parseTemplate} from '../utils.js';
+import {isQuill} from '../utils/editor-quill.js';
+import {insertTemplate} from '../utils/editor-generic.js';
+import {htmlToText} from '../utils/plain-text.js';
+import {createContact} from '../utils/data-parse.js';
+import {enableBubble} from '../bubble.js';
 
 function before (params, data) {
     const $parent = params.element.closest('.msg-overlay-conversation-bubble');

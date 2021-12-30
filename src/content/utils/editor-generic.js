@@ -1,8 +1,8 @@
 /* Generic editors
  */
 
-import {isContentEditable} from '../utils';
-import {htmlToText} from './plain-text';
+import {isContentEditable} from '../utils.js';
+import {htmlToText} from './plain-text.js';
 
 // Set the cursor position at the end of the focusNode.
 // Used when inserting templates with the dialog,

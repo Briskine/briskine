@@ -3,17 +3,17 @@
 import '@webcomponents/custom-elements';
 // creates global window.Mousetrap
 import Mousetrap from 'mousetrap';
-import 'mousetrap/plugins/global-bind/mousetrap-global-bind';
+import 'mousetrap/plugins/global-bind/mousetrap-global-bind.js';
 
 import './content.css';
 
-import './helpers/content-helpers';
+import './helpers/content-helpers.js';
 
-import store from '../store/store-client';
-import keyboard from './keyboard';
-import dialog from './dialog';
+import store from '../store/store-client.js';
+import keyboard from './keyboard.js';
+import dialog from './dialog.js';
 
-import {setup as setupBubble, destroy as destroyBubble} from './bubble';
+import {setup as setupBubble, destroy as destroyBubble} from './bubble.js';
 
 function init (settings, doc) {
   const loadedClassName = 'gorgias-loaded'

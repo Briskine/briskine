@@ -2,8 +2,8 @@
  * Keyboard completion code.
  */
 
-import autocomplete from './autocomplete';
-import store from '../store/store-client';
+import autocomplete from './autocomplete.js';
+import store from '../store/store-client.js';
 
 function getTemplateByShortcut (shortcut) {
   return store.getTemplate()

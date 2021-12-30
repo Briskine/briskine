@@ -4,8 +4,8 @@
  * https://github.com/ianstormtaylor/slate
  */
 
-import {htmlToText} from './plain-text';
-import {setCursorPosition} from './editor-generic';
+import {htmlToText} from './plain-text.js';
+import {setCursorPosition} from './editor-generic.js';
 
 export function isSlate (element) {
     return element.dataset.slateEditor;

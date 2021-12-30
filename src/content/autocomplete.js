@@ -4,21 +4,21 @@
 
 import $ from 'jquery';
 
-import {register, run as runPlugins} from './plugin';
-import gmailPlugin from './plugins/gmail';
-import facebookPlugin from './plugins/facebook';
-import fastmailPlugin from './plugins/fastmail';
-import linkedinPlugin from './plugins/linkedin';
-import outlookPlugin from './plugins/outlook';
-import zendeskPlugin from './plugins/zendesk';
-import draftPlugin from './plugins/draft';
-import prosemirrorPlugin from './plugins/prosemirror';
-import quillPlugin from './plugins/quill';
-import slatePlugin from './plugins/slate';
-import crmPlugin from './plugins/crm';
-import genericPlugin from './plugins/generic';
+import {register, run as runPlugins} from './plugin.js';
+import gmailPlugin from './plugins/gmail.js';
+import facebookPlugin from './plugins/facebook.js';
+import fastmailPlugin from './plugins/fastmail.js';
+import linkedinPlugin from './plugins/linkedin.js';
+import outlookPlugin from './plugins/outlook.js';
+import zendeskPlugin from './plugins/zendesk.js';
+import draftPlugin from './plugins/draft.js';
+import prosemirrorPlugin from './plugins/prosemirror.js';
+import quillPlugin from './plugins/quill.js';
+import slatePlugin from './plugins/slate.js';
+import crmPlugin from './plugins/crm.js';
+import genericPlugin from './plugins/generic.js';
 
-import store from '../store/store-client'
+import store from '../store/store-client.js'
 
 var autocomplete = {};
 

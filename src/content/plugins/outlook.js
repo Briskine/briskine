@@ -2,10 +2,10 @@
 /* Outlook plugin
  */
 
-import {parseTemplate} from '../utils';
-import {insertTemplate} from '../utils/editor-generic';
-import {createContact} from '../utils/data-parse';
-import {enableBubble} from '../bubble';
+import {parseTemplate} from '../utils.js';
+import {insertTemplate} from '../utils/editor-generic.js';
+import {createContact} from '../utils/data-parse.js';
+import {enableBubble} from '../bubble.js';
 
 function getFieldData (field, $container) {
     var $buttons = $container.querySelectorAll('[class*="wellItemText-"]') || [];
@@ -28,10 +28,10 @@ function getFieldData (field, $container) {
 
 // selector for to/cc/bcc containers
 function getContainers () {
-    // return the parent of each [role=combobox] textfield
-    return Array.from(document.querySelectorAll('[role=main] [role=combobox]')).map((node) => {
-      return node.parentElement
-    })
+  // get the parent of each extra field input
+  return Array.from(document.querySelectorAll('[role=main] input[autocapitalize=off]')).map((node) => {
+    return node.parentElement
+  })
 }
 
 function getToContainer () {
@@ -75,7 +75,7 @@ function getSubjectField () {
 }
 
 function getContactField ($container) {
-    return $container.querySelector('[role="combobox"]');
+  return $container.querySelector('input');
 }
 
 function waitForElement (getNode) {

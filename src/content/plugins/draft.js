@@ -1,8 +1,8 @@
 /* Draft.js plugin
  */
 
-import {parseTemplate} from '../utils';
-import {isDraft, insertDraftText} from '../utils/editor-draft';
+import {parseTemplate} from '../utils.js';
+import {isDraft, insertDraftText} from '../utils/editor-draft.js';
 
 export default (params = {}) => {
     if (!isDraft(params.element)) {

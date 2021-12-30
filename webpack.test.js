@@ -1,4 +1,3 @@
-/* globals __dirname */
 /* jshint esversion: 8 */
 
 import path from 'path';
@@ -10,7 +9,7 @@ export default {
     },
     output: {
         filename: '[name].bundle.js',
-        path: path.resolve(__dirname, 'test/bundle')
+        path: path.resolve('test/bundle')
     },
     resolve: {
         alias: {
