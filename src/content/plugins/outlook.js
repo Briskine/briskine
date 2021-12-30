@@ -75,7 +75,7 @@ function getSubjectField () {
 }
 
 function getContactField ($container) {
-    return $container.querySelector('input');
+  return $container.querySelector('input');
 }
 
 function waitForElement (getNode) {
