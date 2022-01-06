@@ -47,14 +47,16 @@ function getData (params) {
     };
 
     if (isContentEditable(params.element)) {
-        const userInfoSelector = '.gb_bb';
-        const $fullName = document.querySelector(`${userInfoSelector} *:first-child`);
-        const $email = document.querySelector(`${userInfoSelector} *:nth-child(2)`);
+        // get the "Manage you Google Account" button in the account popup
+        const $accountButton = document.querySelector('[href^="https://myaccount.google.com/"]:not([aria-label])')
+        // get button siblings
+        const $email = $accountButton ? $accountButton.previousElementSibling : null
+        const $fullName = $email ? $email.previousElementSibling : null
 
         // get from details from global user info
-        const fullNameText = $fullName ? $fullName.innerText : '';
-        const emailText = $email ? $email.innerText : '';
-        data.from = [ parseString(`${fullNameText} <${emailText}>`) ];
+        const fullNameText = $fullName ? $fullName.innerText : ''
+        const emailText = $email ? $email.innerText : ''
+        data.from = [ parseString(`${fullNameText} <${emailText}>`) ]
 
         const $container = params.element.closest(textfieldContainerSelector);
         if ($container) {
