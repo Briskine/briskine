@@ -2,7 +2,7 @@
  */
 
 import {parseTemplate} from '../utils.js';
-import {insertDraftText} from '../utils/editor-draft.js';
+import {insertLexicalText} from '../utils/editor-lexical.js';
 
 var parseName = function(name) {
     name = name.trim();
@@ -130,7 +130,7 @@ export default (params = {}) => {
     var data = getData(params);
     var parsedTemplate = parseTemplate(params.quicktext.body, data);
 
-    insertDraftText(Object.assign({
+    insertLexicalText(Object.assign({
         text: parsedTemplate
     }, params));
 
