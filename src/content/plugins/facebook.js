@@ -1,8 +1,9 @@
 /* Facebook plugin
  */
 
-import {parseTemplate} from '../utils.js';
-import {insertLexicalText} from '../utils/editor-lexical.js';
+import {parseTemplate} from '../utils.js'
+import {createContact} from '../utils/data-parse.js'
+import {insertLexicalText} from '../utils/editor-lexical.js'
 
 var parseName = function(name) {
     name = name.trim();
@@ -22,38 +23,34 @@ var parseName = function(name) {
     };
 };
 
-var fromDetails = [];
-var getFromDetails = function () {
-    if (!fromDetails.length) {
-        var objectMatch = new RegExp('{"USER_ID":.+?}');
-        var plainUserObject = '';
-        // get full name from inline script
-        Array.from(document.scripts).some((script) => {
-            var match = (script.textContent || '').match(objectMatch);
-            if (!script.src && match) {
-                plainUserObject = match[0] || '';
-                return true;
-            }
-        });
+var fromDetails = []
+function getFromDetails () {
+  if (!fromDetails.length) {
+    var objectMatch = new RegExp('"NAME":.?".*?"')
+    var plainUserObject = ''
+    // get full name from inline script
+    Array.from(document.scripts).some((script) => {
+      var match = (script.textContent || '').match(objectMatch)
+      if (!script.src && match) {
+        plainUserObject = match[0] || ''
+        return true
+      }
+    })
 
-        var fromName = '';
-        try {
-            var parsedUserObject = JSON.parse(plainUserObject);
-            fromName = parsedUserObject.NAME || '';
-        } catch(err) {}
+    var fromName = ''
+    try {
+      var parsedUserObject = JSON.parse(`{${plainUserObject}}`)
+      fromName = parsedUserObject.NAME || '';
+    } catch(err) {}
 
-        fromDetails = [
-            Object.assign({
-                name: fromName,
-                first_name: '',
-                last_name: '',
-                email: ''
-            }, parseName(fromName))
-        ];
-    }
+    fromDetails = createContact({
+        name: fromName,
+        email: ''
+      })
+  }
 
-    return fromDetails;
-};
+  return fromDetails
+}
 
 var getToDetails = function () {
     var singleToContainer = '._1jt6';
