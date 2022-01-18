@@ -1,6 +1,6 @@
 {
     "name": "briskine",
-    "version": "7.2.14",
+    "version": "7.2.15",
     "description": "Write everything faster.",
     "type": "module",
     "scripts": {
