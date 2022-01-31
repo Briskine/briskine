@@ -21,7 +21,7 @@ browser.runtime.onInstalled.addListener((details) => {
   if (!REGISTER_DISABLED) {
     if (details.reason === 'install') {
       browser.tabs.create({
-        url: `${Config.functionsUrl}/welcome`
+        url: `${Config.functionsUrl}/getting-started`
       })
     }
   }
