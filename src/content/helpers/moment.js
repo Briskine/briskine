@@ -16,9 +16,11 @@ function momentHelper(str, pattern) {
         opts = pattern;
     }
 
+    // get the default locale from the browser
+    const defaultLocale = navigator.language || 'en'
     opts = Object.assign(
         {
-            locale: 'en',
+            locale: defaultLocale,
             format: 'MMMM DD YYYY'
         },
         opts.hash
