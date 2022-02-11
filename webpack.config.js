@@ -11,9 +11,6 @@ import MiniCssExtractPlugin from 'mini-css-extract-plugin'
 import PurgecssPlugin from 'purgecss-webpack-plugin'
 import CssMinimizerPlugin from 'css-minimizer-webpack-plugin'
 
-// import packageFile from './package.json'
-// import manifestFile from './src/manifest.json'
-
 const packageFile = JSON.parse(fs.readFileSync('./package.json', 'utf8'))
 const manifestFile = JSON.parse(fs.readFileSync('./src/manifest.json', 'utf8'))
 
