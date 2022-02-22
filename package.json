@@ -41,7 +41,7 @@
         "jshint": "^2.12.0",
         "mini-css-extract-plugin": "^2.0.0",
         "mocha": "^9.0.0",
-        "mocha-headless-chrome": "^3.1.0",
+        "mocha-headless-chrome": "^4.0.0",
         "mockdate": "^3.0.2",
         "purgecss-webpack-plugin": "^4.0.3",
         "webpack": "^5.11.1",
