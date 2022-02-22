@@ -10,13 +10,21 @@ import CopyWebpackPlugin from 'copy-webpack-plugin'
 import MiniCssExtractPlugin from 'mini-css-extract-plugin'
 import PurgecssPlugin from 'purgecss-webpack-plugin'
 import CssMinimizerPlugin from 'css-minimizer-webpack-plugin'
+import firebaseTools from 'firebase-tools'
 
 const packageFile = JSON.parse(fs.readFileSync('./package.json', 'utf8'))
 const manifestFile = JSON.parse(fs.readFileSync('./src/manifest.json', 'utf8'))
 
+const defaultFirebaseConfig = {
+  projectId: 'briskine-development',
+  apiKey: '123',
+  storageBucket: 'briskine-development-bucket'
+}
+
 const devPath = path.resolve('ext')
 const productionPath = path.resolve('build')
 
+// TODO use the name from the original manifest
 const safariManifestName = 'Briskine: Templates for Gmail';
 const safariManifestDescription = 'Write emails faster! Increase your productivity with templates and shortcuts on Gmail, Outlook, or LinkedIn.';
 
@@ -59,7 +67,7 @@ class ZipPlugin {
     }
 }
 
-function extensionConfig (env, safari = false) {
+function extensionConfig (env, safari = false, firebaseConfig) {
     const plugins = [
         generateManifest(safari),
         new CopyWebpackPlugin({
@@ -72,7 +80,8 @@ function extensionConfig (env, safari = false) {
         }),
         new webpack.DefinePlugin({
             ENV: JSON.stringify(env),
-            REGISTER_DISABLED: safari
+            REGISTER_DISABLED: safari,
+            FIREBASE_CONFIG: JSON.stringify(firebaseConfig)
         }),
         new MiniCssExtractPlugin({
             filename: '[name]/[name].css'
@@ -136,10 +145,16 @@ function extensionConfig (env, safari = false) {
     };
 }
 
-export default function (env) {
-    if (!env.mode) {
-      throw new Error('No mode specified. See webpack.config.js.');
-    }
+export default async function (env) {
+  if (!env.mode) {
+    throw new Error('No mode specified. See webpack.config.js.')
+  }
 
-    return extensionConfig(env.mode, env.safari);
+  let firebaseConfig = defaultFirebaseConfig
+  if (env.mode !== 'development') {
+    const appConfig = await firebaseTools.apps.sdkconfig()
+    firebaseConfig = appConfig.sdkConfig
+  }
+
+  return extensionConfig(env.mode, env.safari, firebaseConfig)
 }
