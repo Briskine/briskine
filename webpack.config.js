@@ -24,8 +24,6 @@ const defaultFirebaseConfig = {
 const devPath = path.resolve('ext')
 const productionPath = path.resolve('build')
 
-// TODO use the name from the original manifest
-const safariManifestName = 'Briskine: Templates for Gmail';
 const safariManifestDescription = 'Write emails faster! Increase your productivity with templates and shortcuts on Gmail, Outlook, or LinkedIn.';
 
 function generateManifest (safari) {
@@ -35,7 +33,6 @@ function generateManifest (safari) {
 
     // safari manifest
     if (safari) {
-        updatedManifestFile.name = safariManifestName;
         updatedManifestFile.description = safariManifestDescription;
     }
 
