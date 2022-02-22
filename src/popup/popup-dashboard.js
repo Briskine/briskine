@@ -161,7 +161,7 @@ customElements.define(
                             </li>
                         ` || ''}
                         <li>
-                            <a href="${Config.functionsUrl}/#/list?id=new&src=popup" target="${Config.dashboardTarget}">
+                            <a href="${Config.functionsUrl}/list?id=new" target="${Config.dashboardTarget}">
                                 <span class="icon">${plusSquare}</span>
                                 New template
                             </a>
@@ -173,7 +173,7 @@ customElements.define(
                             </a>
                         </li>
                         <li>
-                            <a href="${Config.functionsUrl}/#/settings" target="${Config.dashboardTarget}">
+                            <a href="${Config.functionsUrl}/settings" target="${Config.dashboardTarget}">
                                 <span class="icon">${cog}</span>
                                 Settings
                             </a>
@@ -215,14 +215,14 @@ customElements.define(
                                 Template Sharing.
                             </p>
 
-                            <a href="${Config.functionsUrl}/#/account/subscriptions" target="${Config.dashboardTarget}" class="btn btn-success btn-upgrade">
+                            <a href="${Config.functionsUrl}/account/subscriptions" target="${Config.dashboardTarget}" class="btn btn-success btn-upgrade">
                                 Upgrade to Premium
                             </a>
                         </div>
                     </div>
 
                     <div class="popup-box popup-status">
-                        <a href="${Config.functionsUrl}/#/account" target="${Config.dashboardTarget}" class="popup-user" title="Account Settings for ${this.user.email}">
+                        <a href="${Config.functionsUrl}/account" target="${Config.dashboardTarget}" class="popup-user" title="Account Settings for ${this.user.email}">
                             ${this.user.email}
                         </a>
                         ${this.isFree === false ? `
