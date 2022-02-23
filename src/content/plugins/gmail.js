@@ -48,7 +48,7 @@ function getData (params) {
 
     if (isContentEditable(params.element)) {
         // get details from the account details tooltip
-        let $email = document.querySelector('.gb_be > :last-child')
+        const $email = document.querySelector('.gb_be > :last-child')
         const $fullName = $email ? $email.previousElementSibling : null
 
         const fullNameText = $fullName ? $fullName.innerText : ''
