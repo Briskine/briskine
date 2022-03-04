@@ -12,9 +12,6 @@ ext/
 *.crx
 *.nex
 
-# firebase config
-config-firebase.js
-
 # xcode
 .DS_Store
 xcuserdata/

@@ -8,7 +8,7 @@ function clickContextMenu (info) {
   if (info.menuItemId === saveAsTemplate) {
     const body = encodeURIComponent(info.selectionText)
     browser.tabs.create({
-      url: `${Config.functionsUrl}/#/list?id=new&body=${body}`
+      url: `${Config.functionsUrl}/list?id=new&body=${body}`
     })
   }
 }

@@ -1,4 +1,4 @@
-/* globals ENV */
+/* globals ENV, FIREBASE_CONFIG */
 import browser from 'webextension-polyfill';
 
 import {initializeApp} from 'firebase/app';
@@ -23,9 +23,8 @@ import {
 } from 'firebase/firestore';
 
 import Config from '../config.js';
-import firebaseConfig from './config-firebase.js';
 
-const firebaseApp = initializeApp(firebaseConfig);
+const firebaseApp = initializeApp(FIREBASE_CONFIG);
 const firebaseAuth = getAuth(firebaseApp);
 const db = getFirestore(firebaseApp);
 

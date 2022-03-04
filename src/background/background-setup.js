@@ -8,7 +8,7 @@ browser.runtime.onMessage.addListener(function (request) {
   // open new template window
   if (request.request === 'new') {
     browser.tabs.create({
-      url: `${Config.functionsUrl}/#/list?id=new&src=qa-button`
+      url: `${Config.functionsUrl}/list?id=new`
     })
   }
   return true

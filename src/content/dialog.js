@@ -210,7 +210,7 @@ var dialog = {
             e.stopPropagation();
 
             var templateId = $(e.target).closest('.qt-item').data('id');
-            var templateUrl = `${Config.functionsUrl}/#/list?id=${templateId}`;
+            var templateUrl = `${Config.functionsUrl}/list?id=${templateId}`;
             window.open(templateUrl, Config.dashboardTarget);
         });
 
