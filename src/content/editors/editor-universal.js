@@ -6,6 +6,7 @@ import {isCkEditor, insertCkEditorTemplate} from './editor-ckeditor.js'
 import {isDraft, insertDraftTemplate} from './editor-draft.js'
 import {isLexical, insertLexicalTemplate} from './editor-lexical.js'
 import {isSlate, insertSlateTemplate} from './editor-slate.js'
+import {isQuill, insertQuillTemplate} from './editor-quill.js'
 import {insertTextareaTemplate} from './editor-textarea.js'
 
 export function insertTemplate (params = {}) {
@@ -23,6 +24,10 @@ export function insertTemplate (params = {}) {
 
   if (isSlate(params.element)) {
     return insertSlateTemplate(params)
+  }
+
+  if (isQuill(params.element)) {
+    return insertQuillTemplate(params)
   }
 
   if (isContentEditable(params.element)) {
