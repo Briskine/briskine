@@ -103,7 +103,8 @@ function extensionConfig (env, safari = false, firebaseConfig = {}) {
     entry: {
       background: './src/background/background.js',
       popup: './src/popup/popup.js',
-      content: './src/content/index.js'
+      content: './src/content/index.js',
+      page: './src/page/page.js',
     },
     output: {
       path: path.resolve(devPath),

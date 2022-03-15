@@ -1,19 +1,20 @@
 // native custom elements are not supported in content scripts
 // https://bugs.chromium.org/p/chromium/issues/detail?id=390807
-import '@webcomponents/custom-elements';
+import '@webcomponents/custom-elements'
+import browser from 'webextension-polyfill'
 // creates global window.Mousetrap
-import Mousetrap from 'mousetrap';
-import 'mousetrap/plugins/global-bind/mousetrap-global-bind.js';
+import Mousetrap from 'mousetrap'
+import 'mousetrap/plugins/global-bind/mousetrap-global-bind.js'
 
-import './content.css';
+import './content.css'
 
-import './helpers/content-helpers.js';
+import './helpers/content-helpers.js'
 
-import store from '../store/store-client.js';
-import keyboard from './keyboard.js';
-import dialog from './dialog.js';
+import store from '../store/store-client.js'
+import keyboard from './keyboard.js'
+import dialog from './dialog.js'
 
-import {setup as setupBubble, destroy as destroyBubble} from './bubble.js';
+import {setup as setupBubble, destroy as destroyBubble} from './bubble.js'
 
 function init (settings, doc) {
   const loadedClassName = 'gorgias-loaded'
@@ -77,6 +78,16 @@ function init (settings, doc) {
   }
 }
 
+// inject page script
+function injectPage () {
+  const page = document.createElement('script')
+  page.src = browser.runtime.getURL('page/page.js')
+  page.onload = function () {
+    this.remove()
+  }
+  document.documentElement.appendChild(page)
+}
+
 function startup () {
   if (document.contentType !== 'text/html') {
     // don't load on non html pages (json, xml, etc..)
@@ -86,6 +97,8 @@ function startup () {
   store.getSettings().then((settings) => {
     init(settings, window.document)
   })
+
+  injectPage()
 }
 
 // destroy existing content script
