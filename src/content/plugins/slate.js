@@ -2,8 +2,8 @@
  */
 
 import {parseTemplate} from '../utils.js';
-import {isSlate} from '../utils/editor-slate.js';
-import {insertSlateText} from '../utils/editor-slate.js';
+import {isSlate} from '../editors/editor-slate.js';
+import {insertSlateText} from '../editors/editor-slate.js';
 
 export default (params = {}) => {
     if (!isSlate(params.element)) {

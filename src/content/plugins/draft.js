@@ -2,7 +2,7 @@
  */
 
 import {parseTemplate} from '../utils.js';
-import {isDraft, insertDraftText} from '../utils/editor-draft.js';
+import {isDraft, insertDraftText} from '../editors/editor-draft.js';
 
 export default (params = {}) => {
     if (!isDraft(params.element)) {

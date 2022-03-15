@@ -2,7 +2,7 @@
  */
 
 import {isContentEditable} from '../utils.js';
-import {htmlToText} from './plain-text.js';
+import {htmlToText} from '../utils/plain-text.js';
 
 // Set the cursor position at the end of the focusNode.
 // Used when inserting templates with the dialog,

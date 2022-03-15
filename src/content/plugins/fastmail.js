@@ -2,7 +2,7 @@
  */
 
 import {parseTemplate} from '../utils.js';
-import {insertTemplate} from '../utils/editor-generic.js';
+import {insertTemplate} from '../editors/editor-generic.js';
 
 var parseList = function (list) {
     return list.filter(function (a) {

@@ -3,7 +3,7 @@
  */
 
 import {parseTemplate} from '../utils.js';
-import {insertTemplate} from '../utils/editor-generic.js';
+import {insertTemplate} from '../editors/editor-generic.js';
 import {createContact} from '../utils/data-parse.js';
 import {enableBubble} from '../bubble.js';
 

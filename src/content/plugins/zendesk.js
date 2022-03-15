@@ -2,8 +2,8 @@
  */
 
 import {parseTemplate} from '../utils.js';
-import {isSlate, insertSlateText} from '../utils/editor-slate.js';
-import {insertTemplate} from '../utils/editor-generic.js';
+import {isSlate, insertSlateText} from '../editors/editor-slate.js';
+import {insertTemplate} from '../editors/editor-generic.js';
 import {createContact} from '../utils/data-parse.js';
 
 function getData (params) {

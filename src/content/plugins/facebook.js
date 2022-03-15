@@ -3,7 +3,7 @@
 
 import {parseTemplate} from '../utils.js'
 import {createContact} from '../utils/data-parse.js'
-import {insertLexicalText} from '../utils/editor-lexical.js'
+import {insertLexicalText} from '../editors/editor-lexical.js'
 
 function getFromDetails () {
   var objectMatch = new RegExp('"NAME":.?".*?"')

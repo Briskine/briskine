@@ -2,7 +2,7 @@
  * https://lexical.dev/
  */
 
-import {htmlToText} from './plain-text.js';
+import {htmlToText} from '../utils/plain-text.js';
 
 export function insertLexicalText (params = {}) {
   params.element.focus()

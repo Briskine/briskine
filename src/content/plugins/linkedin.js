@@ -3,8 +3,8 @@
  */
 
 import {parseTemplate} from '../utils.js';
-import {isQuill} from '../utils/editor-quill.js';
-import {insertTemplate} from '../utils/editor-generic.js';
+import {isQuill} from '../editors/editor-quill.js';
+import {insertTemplate} from '../editors/editor-generic.js';
 import {htmlToText} from '../utils/plain-text.js';
 import {createContact} from '../utils/data-parse.js';
 import {enableBubble} from '../bubble.js';

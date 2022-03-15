@@ -2,8 +2,8 @@
  */
 
 import {parseTemplate} from '../utils.js';
-import {isQuill} from '../utils/editor-quill.js';
-import {insertTemplate} from '../utils/editor-generic.js';
+import {isQuill} from '../editors/editor-quill.js';
+import {insertTemplate} from '../editors/editor-generic.js';
 import {htmlToText} from '../utils/plain-text.js';
 
 export default (params = {}) => {
