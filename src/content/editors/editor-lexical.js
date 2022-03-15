@@ -4,6 +4,10 @@
 
 import {htmlToText} from '../utils/plain-text.js';
 
+export function isLexical (element) {
+  return element.dataset.lexicalEditor
+}
+
 export function insertLexicalText (params = {}) {
   params.element.focus()
 
