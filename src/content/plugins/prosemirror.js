@@ -4,6 +4,8 @@
 import {parseTemplate} from '../utils.js';
 import {insertTemplate} from '../editors/editor-universal.js';
 
+// TODO create an editor for prosemirror
+
 // TODO prosemirror doesn't understand block tags
 function replaceNewlines (text = '') {
     return text.replace(/(\r\n|\r|\n)/g, '<br>');

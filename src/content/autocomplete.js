@@ -12,7 +12,6 @@ import linkedinPlugin from './plugins/linkedin.js';
 import outlookPlugin from './plugins/outlook.js';
 import zendeskPlugin from './plugins/zendesk.js';
 import prosemirrorPlugin from './plugins/prosemirror.js';
-import slatePlugin from './plugins/slate.js';
 import crmPlugin from './plugins/crm.js';
 import universalPlugin from './plugins/universal.js';
 
@@ -251,7 +250,6 @@ register(linkedinPlugin);
 register(outlookPlugin);
 register(zendeskPlugin);
 register(prosemirrorPlugin);
-register(slatePlugin);
 register(crmPlugin);
 register(universalPlugin);
 
