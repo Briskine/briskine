@@ -387,6 +387,7 @@ function getDefaultTemplates () {
         <div>last week: {{moment subtract='7;days'}}</div>
         <div>choice: {{choice 'Hello, Hi, Hey'}}</div>
         <div>domain: {{domain to.email}}</div>
+        <div><img src="https://www.briskine.com/images/briskine-promo.png"></div>
       `
 
       defaultTemplates.push({

@@ -10,13 +10,23 @@
  * and this script will be obsolete.
  */
 
-import config from '../config.js'
+import config from '../../config.js'
+
+import {insertCkEditorText} from '../editors/editor-ckeditor.js'
 
 function handlePageEvents (e) {
-  console.log('briskine custom listener')
+  const detail = e.detail || {}
+
+  if (detail.type === 'ckeditor-insert') {
+    insertCkEditorText(e.target.ckeditorInstance, detail.data)
+    return
+  }
 }
 
 document.addEventListener(config.eventPage, handlePageEvents)
+
+// destroy existing instance
+document.dispatchEvent(new CustomEvent(config.eventDestroy))
 
 document.addEventListener(config.eventDestroy, () => {
   document.removeEventListener(config.eventPage, handlePageEvents)

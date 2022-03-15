@@ -16,7 +16,7 @@ import prosemirrorPlugin from './plugins/prosemirror.js';
 import quillPlugin from './plugins/quill.js';
 import slatePlugin from './plugins/slate.js';
 import crmPlugin from './plugins/crm.js';
-import genericPlugin from './plugins/generic.js';
+import universalPlugin from './plugins/universal.js';
 
 import store from '../store/store-client.js'
 
@@ -257,6 +257,6 @@ register(prosemirrorPlugin);
 register(quillPlugin);
 register(slatePlugin);
 register(crmPlugin);
-register(genericPlugin);
+register(universalPlugin);
 
 export default autocomplete;
