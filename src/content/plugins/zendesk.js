@@ -2,8 +2,7 @@
  */
 
 import {parseTemplate} from '../utils.js';
-import {isSlate, insertSlateText} from '../editors/editor-slate.js';
-import {insertTemplate} from '../editors/editor-generic.js';
+import {insertTemplate} from '../editors/editor-universal.js';
 import {createContact} from '../utils/data-parse.js';
 
 function getData (params) {
@@ -110,11 +109,6 @@ export default (params = {}) => {
     const parsedParams = Object.assign({
         text: parsedTemplate
     }, params);
-
-    if (isSlate(params.element)) {
-        insertSlateText(parsedParams);
-        return true;
-    }
 
     insertTemplate(parsedParams);
     return true;

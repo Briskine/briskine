@@ -4,7 +4,8 @@
 
 import {parseTemplate} from '../utils.js';
 import {isQuill} from '../editors/editor-quill.js';
-import {insertTemplate} from '../editors/editor-generic.js';
+import {insertTemplate} from '../editors/editor-universal.js';
+import {insertContentEditableTemplate} from '../editors/editor-contenteditable.js';
 import {htmlToText} from '../utils/plain-text.js';
 import {createContact} from '../utils/data-parse.js';
 import {enableBubble} from '../bubble.js';
@@ -228,7 +229,7 @@ export default (params = {}) => {
 
         // parsed template with special char
         const updatedTemplate = `${parsedTemplate}${specialChar}`;
-        insertTemplate(
+        insertContentEditableTemplate(
             Object.assign(
                 {},
                 parsedParams,
@@ -253,7 +254,7 @@ export default (params = {}) => {
     // separate handling required for multi-line templates.
     if (isMessageEditor(params.element)) {
         before(parsedParams, data);
-        insertTemplate(parsedParams);
+        insertContentEditableTemplate(parsedParams);
 
         // sends an empty paste event so the editor restructures the dom
         // making it aware of the newlines.

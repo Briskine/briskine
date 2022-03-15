@@ -3,7 +3,7 @@
 
 import {parseTemplate} from '../utils.js';
 import {isSlate} from '../editors/editor-slate.js';
-import {insertSlateText} from '../editors/editor-slate.js';
+import {insertSlateTemplate} from '../editors/editor-slate.js';
 
 export default (params = {}) => {
     if (!isSlate(params.element)) {
@@ -11,7 +11,7 @@ export default (params = {}) => {
     }
 
     var parsedTemplate = parseTemplate(params.quicktext.body, {});
-    insertSlateText(Object.assign({
+    insertSlateTemplate(Object.assign({
         text: parsedTemplate
     }, params));
 

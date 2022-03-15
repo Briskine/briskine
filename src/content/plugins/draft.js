@@ -2,7 +2,7 @@
  */
 
 import {parseTemplate} from '../utils.js';
-import {isDraft, insertDraftText} from '../editors/editor-draft.js';
+import {isDraft, insertDraftTemplate} from '../editors/editor-draft.js';
 
 export default (params = {}) => {
     if (!isDraft(params.element)) {
@@ -11,7 +11,7 @@ export default (params = {}) => {
 
     var parsedTemplate = parseTemplate(params.quicktext.body, {});
 
-    insertDraftText(Object.assign({
+    insertDraftTemplate(Object.assign({
         text: parsedTemplate
     }, params));
 

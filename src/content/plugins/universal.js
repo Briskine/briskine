@@ -3,21 +3,12 @@
  */
 
 import {parseTemplate} from '../utils.js'
-import {insertTemplate} from '../editors/editor-generic.js'
-
-import {isCkEditor, insertCkEditorTemplate} from '../editors/editor-ckeditor.js'
+import {insertTemplate} from '../editors/editor-universal.js'
 
 export default (params = {}) => {
-    const parsedTemplate = parseTemplate(params.quicktext.body, {});
-    const updatedParams = Object.assign({
-      text: parsedTemplate
-    }, params)
+  const parsedTemplate = parseTemplate(params.quicktext.body, {})
+  const updatedParams = Object.assign({text: parsedTemplate}, params)
 
-    if (isCkEditor(params)) {
-      insertCkEditorTemplate(updatedParams)
-      return true
-    }
-
-    insertTemplate(updatedParams)
-    return true
+  insertTemplate(updatedParams)
+  return true
 }

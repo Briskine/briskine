@@ -2,7 +2,7 @@
  */
 
 import {parseTemplate} from '../utils.js';
-import {insertTemplate} from '../editors/editor-generic.js';
+import {insertTemplate} from '../editors/editor-universal.js';
 
 function replaceNewlines (text = '') {
     return text.replace(/(\r\n|\r|\n)/g, '<br>');

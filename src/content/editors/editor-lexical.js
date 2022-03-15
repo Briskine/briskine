@@ -8,7 +8,7 @@ export function isLexical (element) {
   return element.dataset.lexicalEditor
 }
 
-export function insertLexicalText (params = {}) {
+export function insertLexicalTemplate (params = {}) {
   params.element.focus()
 
   // delete shortcut

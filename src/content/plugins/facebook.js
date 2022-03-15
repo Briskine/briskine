@@ -3,7 +3,7 @@
 
 import {parseTemplate} from '../utils.js'
 import {createContact} from '../utils/data-parse.js'
-import {insertLexicalText} from '../editors/editor-lexical.js'
+import {insertLexicalTemplate} from '../editors/editor-lexical.js'
 
 function getFromDetails () {
   var objectMatch = new RegExp('"NAME":.?".*?"')
@@ -84,7 +84,7 @@ export default (params = {}) => {
     var data = getData(params);
     var parsedTemplate = parseTemplate(params.quicktext.body, data);
 
-    insertLexicalText(Object.assign({
+    insertLexicalTemplate(Object.assign({
         text: parsedTemplate
     }, params));
 

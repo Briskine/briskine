@@ -2,7 +2,7 @@
  */
 
 import {parseTemplate} from '../utils.js';
-import {insertTemplate} from '../editors/editor-generic.js';
+import {insertTemplate} from '../editors/editor-universal.js';
 
 function getVariableAttribute (element) {
     const attributes = [ 'data-gorgias-variables', 'data-briskine-variables' ];

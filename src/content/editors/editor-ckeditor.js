@@ -4,8 +4,8 @@
 
 import config from '../../config.js'
 
-export function isCkEditor (params = {}) {
-  return params.element.classList.contains('ck-editor__editable')
+export function isCkEditor (element) {
+  return element.classList.contains('ck-editor__editable')
 }
 
 export function insertCkEditorTemplate (params = {}) {

@@ -41,7 +41,7 @@ function insertDraftBlock (text) {
   document.activeElement.dispatchEvent(new Event('input', {bubbles: true}));
 }
 
-export function insertDraftText (params = {}) {
+export function insertDraftTemplate (params = {}) {
     params.element.focus();
 
     // delete shortcut
