@@ -104,7 +104,6 @@ function startup () {
 
 // destroy existing content script
 const destroyEvent = new CustomEvent(config.destroyEvent)
-
 document.dispatchEvent(destroyEvent)
 
 function destructor () {
