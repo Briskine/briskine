@@ -3,7 +3,7 @@
 
 import {parseTemplate} from '../utils.js';
 import {insertTemplate} from '../editors/editor-universal.js';
-import {createContact} from '../utils/data-parse.js';
+import createContact from '../utils/create-contact.js';
 
 function getData (params) {
     let agentName = '';

@@ -2,7 +2,7 @@
  */
 
 import {parseTemplate} from '../utils.js'
-import {createContact} from '../utils/data-parse.js'
+import createContact from '../utils/create-contact.js'
 import {insertLexicalTemplate} from '../editors/editor-lexical.js'
 
 function getFromDetails () {

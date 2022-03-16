@@ -16,7 +16,7 @@ function parseFullName (fullname = '') {
 }
 
 // TODO use method in all plugins
-export function createContact (contact = {}) {
+export default function createContact (contact = {}) {
     return Object.assign(
         {
             email: '',

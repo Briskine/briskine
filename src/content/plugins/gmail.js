@@ -4,7 +4,7 @@
 import {parseTemplate} from '../utils.js'
 import {insertTemplate} from '../editors/editor-universal.js'
 import {isContentEditable} from '../editors/editor-contenteditable.js'
-import {createContact} from '../utils/data-parse.js'
+import createContact from '../utils/create-contact.js'
 import {enableBubble} from '../bubble.js'
 
 const fromFieldSelector = '.az2';
