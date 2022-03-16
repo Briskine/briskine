@@ -2,7 +2,7 @@
  * https://quilljs.com/
  */
 
-import {htmlToText} from '../utils/plain-text.js'
+import htmlToText from '../utils/html-to-text.js'
 import {insertContentEditableTemplate} from './editor-contenteditable.js'
 
 export function isQuill (element) {

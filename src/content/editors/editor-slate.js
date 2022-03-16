@@ -4,7 +4,7 @@
  * https://github.com/ianstormtaylor/slate
  */
 
-import {htmlToText} from '../utils/plain-text.js';
+import htmlToText from '../utils/html-to-text.js';
 
 export function isSlate (element) {
     return element.dataset.slateEditor;

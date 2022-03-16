@@ -2,7 +2,7 @@
  * https://lexical.dev/
  */
 
-import {htmlToText} from '../utils/plain-text.js';
+import htmlToText from '../utils/html-to-text.js';
 
 export function isLexical (element) {
   return element.dataset.lexicalEditor

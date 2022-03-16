@@ -1,7 +1,7 @@
 /* Generic editors
  */
 
-import {htmlToText} from '../utils/plain-text.js';
+import htmlToText from '../utils/html-to-text.js';
 
 export function insertTextareaTemplate (params = {}) {
   // restore focus to the editable area

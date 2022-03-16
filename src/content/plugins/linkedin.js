@@ -6,7 +6,7 @@ import parseTemplate from '../utils/parse-template.js';
 import {isQuill} from '../editors/editor-quill.js';
 import {insertTemplate} from '../editors/editor-universal.js';
 import {insertContentEditableTemplate} from '../editors/editor-contenteditable.js';
-import {htmlToText} from '../utils/plain-text.js';
+import htmlToText from '../utils/html-to-text.js';
 import createContact from '../utils/create-contact.js';
 import {enableBubble} from '../bubble.js';
 
