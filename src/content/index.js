@@ -15,6 +15,7 @@ import keyboard from './keyboard.js'
 import dialog from './dialog.js'
 import config from '../config.js'
 
+import {isContentEditable} from './editors/editor-contenteditable.js'
 import {setup as setupBubble, destroy as destroyBubble} from './bubble.js'
 
 function init (settings, doc) {
@@ -58,11 +59,10 @@ function init (settings, doc) {
       );
   }
 
-  var isContentEditable = (window.document.body.contentEditable === 'true');
   if (
       settings.dialog_enabled &&
       // don't create the dialog inside editor iframes (eg. tinymce iframe)
-      !isContentEditable
+      !isContentEditable(document.body)
   ) {
       setupBubble();
       if (settings.dialog_limit) {

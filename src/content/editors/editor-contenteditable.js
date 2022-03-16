@@ -1,9 +1,8 @@
 /* ContentEditable
  */
 
-// TODO how many iscontenteditable do we need?
 export function isContentEditable (element) {
-  return element.hasAttribute('contenteditable')
+  return element && element.hasAttribute('contenteditable')
 }
 
 // Set the cursor position at the end of the focusNode.

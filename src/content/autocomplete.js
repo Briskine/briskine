@@ -15,6 +15,7 @@ import crmPlugin from './plugins/crm.js';
 import universalPlugin from './plugins/universal.js';
 
 import store from '../store/store-client.js'
+import {isContentEditable} from './editors/editor-contenteditable.js'
 
 var autocomplete = {};
 
@@ -25,14 +26,9 @@ autocomplete.isEditable = function (element) {
 
     var isTextfield = (element.tagName.toLowerCase() === 'input');
     var isTextarea = (element.tagName.toLowerCase() === 'textarea');
-    var isContenteditable = autocomplete.isContentEditable(element);
 
-    return (isTextfield || isTextarea || isContenteditable);
+    return (isTextfield || isTextarea || isContentEditable(element));
 
-};
-
-autocomplete.isContentEditable = function (element) {
-    return element && element.hasAttribute('contenteditable');
 };
 
 autocomplete.getSelectedWord = function (params) {
@@ -47,7 +43,7 @@ autocomplete.getSelectedWord = function (params) {
     var beforeSelection = "";
     var selection = doc.getSelection();
 
-    if (autocomplete.isContentEditable(params.element)) {
+    if (isContentEditable(params.element)) {
         switch (selection.focusNode.nodeType) {
             // In most cases, the focusNode property refers to a Text Node.
             case (document.TEXT_NODE): // for text nodes it's easy. Just take the text and find the closest word
@@ -113,7 +109,7 @@ autocomplete.getCursorPosition = function (element) {
         }
     };
 
-    if (autocomplete.isContentEditable(position.element)) {
+    if (isContentEditable(position.element)) {
         // Working with editable div
         // Insert a virtual cursor, find its position
         // http://stackoverflow.com/questions/16580841/insert-text-at-caret-in-contenteditable-div
