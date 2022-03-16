@@ -1,7 +1,7 @@
 /* Facebook plugin
  */
 
-import {parseTemplate} from '../utils.js'
+import parseTemplate from '../utils/parse-template.js'
 import createContact from '../utils/create-contact.js'
 import {insertLexicalTemplate} from '../editors/editor-lexical.js'
 

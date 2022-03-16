@@ -1,10 +1,6 @@
-/**
- * Utils
- */
-
 import Handlebars from 'handlebars'
 
-import store from '../store/store-client.js'
+import store from '../../store/store-client.js'
 
 const accountCache = {}
 store.getAccount()
@@ -70,7 +66,7 @@ function replaceFrom (from, setting) {
     });
 }
 
-export function parseTemplate (template = '', data = {}) {
+export default function parseTemplate (template = '', data = {}) {
     let nameSetting = {
         firstName: '',
         lastName: ''

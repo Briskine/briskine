@@ -1,7 +1,7 @@
 /* CRM plugin
  */
 
-import {parseTemplate} from '../utils.js';
+import parseTemplate from '../utils/parse-template.js';
 import {insertTemplate} from '../editors/editor-universal.js';
 
 function getVariableAttribute (element) {

@@ -2,7 +2,7 @@
 /* Linkedin plugin
  */
 
-import {parseTemplate} from '../utils.js';
+import parseTemplate from '../utils/parse-template.js';
 import {isQuill} from '../editors/editor-quill.js';
 import {insertTemplate} from '../editors/editor-universal.js';
 import {insertContentEditableTemplate} from '../editors/editor-contenteditable.js';

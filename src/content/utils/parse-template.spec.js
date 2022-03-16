@@ -1,6 +1,6 @@
 import {expect} from 'chai';
 
-import {parseTemplate} from './utils.js';
+import parseTemplate from './parse-template.js';
 
 describe('parseTemplate', () => {
     it('should parse template without variables', () => {

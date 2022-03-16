@@ -2,7 +2,7 @@
  * When no other plugin matches.
  */
 
-import {parseTemplate} from '../utils.js'
+import parseTemplate from '../utils/parse-template.js'
 import {insertTemplate} from '../editors/editor-universal.js'
 
 export default (params = {}) => {
