@@ -58,7 +58,7 @@ function parseProseMirrorContent (content = '') {
     }
   })
 
-  // promsemirror interprets inserted dom fragment similarly to a pre tag
+  // prosemirror interprets inserted dom fragment similarly to a pre tag
   // and displays all the whitespace between tags.
   // find text nodes and trim all whitespace to work around them.
   const walker = document.createTreeWalker(template.content, NodeFilter.SHOW_TEXT)
