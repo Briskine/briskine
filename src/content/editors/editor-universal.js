@@ -7,6 +7,7 @@ import {isDraft, insertDraftTemplate} from './editor-draft.js'
 import {isLexical, insertLexicalTemplate} from './editor-lexical.js'
 import {isSlate, insertSlateTemplate} from './editor-slate.js'
 import {isQuill, insertQuillTemplate} from './editor-quill.js'
+import {isProseMirror, insertProseMirrorTemplate} from './editor-prosemirror.js'
 import {insertTextareaTemplate} from './editor-textarea.js'
 
 export function insertTemplate (params = {}) {
@@ -28,6 +29,10 @@ export function insertTemplate (params = {}) {
 
   if (isQuill(params.element)) {
     return insertQuillTemplate(params)
+  }
+
+  if (isProseMirror(params.element)) {
+    return insertProseMirrorTemplate(params)
   }
 
   if (isContentEditable(params.element)) {

@@ -11,7 +11,6 @@ import fastmailPlugin from './plugins/fastmail.js';
 import linkedinPlugin from './plugins/linkedin.js';
 import outlookPlugin from './plugins/outlook.js';
 import zendeskPlugin from './plugins/zendesk.js';
-import prosemirrorPlugin from './plugins/prosemirror.js';
 import crmPlugin from './plugins/crm.js';
 import universalPlugin from './plugins/universal.js';
 
@@ -249,7 +248,6 @@ register(fastmailPlugin);
 register(linkedinPlugin);
 register(outlookPlugin);
 register(zendeskPlugin);
-register(prosemirrorPlugin);
 register(crmPlugin);
 register(universalPlugin);
 
