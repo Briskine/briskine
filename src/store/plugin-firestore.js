@@ -253,8 +253,6 @@ const defaultSettings = {
   expand_enabled: true,
   expand_shortcut: 'tab',
 
-  rich_editor: true,
-
   blacklist: []
 }
 
