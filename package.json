@@ -2,6 +2,7 @@
     "name": "briskine",
     "version": "7.2.17",
     "description": "Write everything faster.",
+    "private": true,
     "type": "module",
     "scripts": {
         "test": "webpack -c webpack.test.js && mocha-headless-chrome -f test/index.html",
@@ -31,7 +32,7 @@
             "email": "hadrien.lamotte@gmail.com"
         }
     ],
-    "license": "MIT",
+    "license": "GPL-3.0-or-later",
     "devDependencies": {
         "archiver": "^5.3.0",
         "chai": "^4.2.0",
