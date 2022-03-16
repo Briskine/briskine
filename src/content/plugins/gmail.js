@@ -1,7 +1,9 @@
 /* Gmail plugin
  */
 
-import {insertText, parseTemplate, isContentEditable} from '../utils.js'
+import {parseTemplate} from '../utils.js'
+import {insertTemplate} from '../editors/editor-universal.js'
+import {isContentEditable} from '../editors/editor-contenteditable.js'
 import {createContact} from '../utils/data-parse.js'
 import {enableBubble} from '../bubble.js'
 
@@ -388,9 +390,9 @@ export default (params = {}) => {
 
     before(params, data);
 
-    insertText(Object.assign({
+    insertTemplate(Object.assign({
         text: parsedTemplate
-    }, params));
+    }, params))
 
     // add attachments
     if (
