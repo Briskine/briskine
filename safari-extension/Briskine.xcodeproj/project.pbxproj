@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A6C24FAE27E4782F00D51D82 /* background.html in Resources */ = {isa = PBXBuildFile; fileRef = A6C24FAD27E4782F00D51D82 /* background.html */; };
+		A6C24FB027E478A000D51D82 /* page in Resources */ = {isa = PBXBuildFile; fileRef = A6C24FAF27E478A000D51D82 /* page */; };
 		A6E3BEFB25B5935100D3F1F2 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6E3BEFA25B5935100D3F1F2 /* AppDelegate.swift */; };
 		A6E3BEFE25B5935100D3F1F2 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A6E3BEFC25B5935100D3F1F2 /* Main.storyboard */; };
 		A6E3BF0025B5935100D3F1F2 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6E3BEFF25B5935100D3F1F2 /* ViewController.swift */; };
@@ -20,7 +22,6 @@
 		A6E3BF2825B5935800D3F1F2 /* content in Resources */ = {isa = PBXBuildFile; fileRef = A6E3BF2125B5935800D3F1F2 /* content */; };
 		A6E3BF2925B5935800D3F1F2 /* icons in Resources */ = {isa = PBXBuildFile; fileRef = A6E3BF2225B5935800D3F1F2 /* icons */; };
 		A6E3BF2A25B5935800D3F1F2 /* manifest.json in Resources */ = {isa = PBXBuildFile; fileRef = A6E3BF2325B5935800D3F1F2 /* manifest.json */; };
-		A6E3BF2B25B5935800D3F1F2 /* pages in Resources */ = {isa = PBXBuildFile; fileRef = A6E3BF2425B5935800D3F1F2 /* pages */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -48,6 +49,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		A6C24FAD27E4782F00D51D82 /* background.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = background.html; path = ../../ext/background.html; sourceTree = "<group>"; };
+		A6C24FAF27E478A000D51D82 /* page */ = {isa = PBXFileReference; lastKnownFileType = folder; name = page; path = ../../ext/page; sourceTree = "<group>"; };
 		A6E3BEF625B5935100D3F1F2 /* Briskine.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Briskine.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A6E3BEF925B5935100D3F1F2 /* Gorgias_Templates.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Gorgias_Templates.entitlements; sourceTree = "<group>"; };
 		A6E3BEFA25B5935100D3F1F2 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -66,7 +69,6 @@
 		A6E3BF2125B5935800D3F1F2 /* content */ = {isa = PBXFileReference; lastKnownFileType = folder; name = content; path = ../../ext/content; sourceTree = "<group>"; };
 		A6E3BF2225B5935800D3F1F2 /* icons */ = {isa = PBXFileReference; lastKnownFileType = folder; name = icons; path = ../../ext/icons; sourceTree = "<group>"; };
 		A6E3BF2325B5935800D3F1F2 /* manifest.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; name = manifest.json; path = ../../ext/manifest.json; sourceTree = "<group>"; };
-		A6E3BF2425B5935800D3F1F2 /* pages */ = {isa = PBXFileReference; lastKnownFileType = folder; name = pages; path = ../../ext/pages; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -142,13 +144,14 @@
 		A6E3BF1D25B5935800D3F1F2 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				A6C24FAF27E478A000D51D82 /* page */,
+				A6C24FAD27E4782F00D51D82 /* background.html */,
 				A6E3BF1E25B5935800D3F1F2 /* background */,
 				A6E3BF1F25B5935800D3F1F2 /* popup */,
 				A6E3BF2025B5935800D3F1F2 /* LICENSE */,
 				A6E3BF2125B5935800D3F1F2 /* content */,
 				A6E3BF2225B5935800D3F1F2 /* icons */,
 				A6E3BF2325B5935800D3F1F2 /* manifest.json */,
-				A6E3BF2425B5935800D3F1F2 /* pages */,
 			);
 			name = Resources;
 			path = "Gorgias Templates Extension";
@@ -243,8 +246,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A6C24FAE27E4782F00D51D82 /* background.html in Resources */,
+				A6C24FB027E478A000D51D82 /* page in Resources */,
 				A6E3BF2725B5935800D3F1F2 /* LICENSE in Resources */,
-				A6E3BF2B25B5935800D3F1F2 /* pages in Resources */,
 				A6E3BF2525B5935800D3F1F2 /* background in Resources */,
 				A6E3BF2825B5935800D3F1F2 /* content in Resources */,
 				A6E3BF2925B5935800D3F1F2 /* icons in Resources */,
@@ -461,14 +465,14 @@
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1.40;
+				CURRENT_PROJECT_VERSION = 1.50;
 				INFOPLIST_FILE = Briskine/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.14;
-				MARKETING_VERSION = 1.40;
+				MARKETING_VERSION = 1.50;
 				PRODUCT_BUNDLE_IDENTIFIER = com.gorgias.gorgiastemplates;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
@@ -485,14 +489,14 @@
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1.40;
+				CURRENT_PROJECT_VERSION = 1.50;
 				INFOPLIST_FILE = Briskine/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.14;
-				MARKETING_VERSION = 1.40;
+				MARKETING_VERSION = 1.50;
 				PRODUCT_BUNDLE_IDENTIFIER = com.gorgias.gorgiastemplates;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
