@@ -10,7 +10,7 @@
         "128": "icons/icon-128.png"
     },
     "background": {
-        "page": "pages/bg.html"
+        "page": "background.html"
     },
     "permissions": [
         "https://*/*",
@@ -36,7 +36,8 @@
         }
     ],
     "web_accessible_resources": [
-        "popup/popup.html"
+        "popup/popup.html",
+        "page/page.js"
     ],
     "browser_action": {
         "default_title": "Briskine",

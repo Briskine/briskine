@@ -1,8 +1,8 @@
 /* Fastmail plugin
  */
 
-import {parseTemplate} from '../utils.js';
-import {insertTemplate} from '../utils/editor-generic.js';
+import parseTemplate from '../utils/parse-template.js';
+import {insertTemplate} from '../editors/editor-universal.js';
 
 var parseList = function (list) {
     return list.filter(function (a) {

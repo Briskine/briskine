@@ -2,9 +2,13 @@
  * https://lexical.dev/
  */
 
-import {htmlToText} from './plain-text.js';
+import htmlToText from '../utils/html-to-text.js';
 
-export function insertLexicalText (params = {}) {
+export function isLexical (element) {
+  return element.dataset.lexicalEditor
+}
+
+export function insertLexicalTemplate (params = {}) {
   params.element.focus()
 
   // delete shortcut

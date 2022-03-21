@@ -1,19 +1,22 @@
 // native custom elements are not supported in content scripts
 // https://bugs.chromium.org/p/chromium/issues/detail?id=390807
-import '@webcomponents/custom-elements';
+import '@webcomponents/custom-elements'
+import browser from 'webextension-polyfill'
 // creates global window.Mousetrap
-import Mousetrap from 'mousetrap';
-import 'mousetrap/plugins/global-bind/mousetrap-global-bind.js';
+import Mousetrap from 'mousetrap'
+import 'mousetrap/plugins/global-bind/mousetrap-global-bind.js'
 
-import './content.css';
+import './content.css'
 
-import './helpers/content-helpers.js';
+import './helpers/content-helpers.js'
 
-import store from '../store/store-client.js';
-import keyboard from './keyboard.js';
-import dialog from './dialog.js';
+import store from '../store/store-client.js'
+import keyboard from './keyboard.js'
+import dialog from './dialog.js'
+import config from '../config.js'
 
-import {setup as setupBubble, destroy as destroyBubble} from './bubble.js';
+import {isContentEditable} from './editors/editor-contenteditable.js'
+import {setup as setupBubble, destroy as destroyBubble} from './bubble.js'
 
 function init (settings, doc) {
   const loadedClassName = 'gorgias-loaded'
@@ -56,11 +59,10 @@ function init (settings, doc) {
       );
   }
 
-  var isContentEditable = (window.document.body.contentEditable === 'true');
   if (
       settings.dialog_enabled &&
       // don't create the dialog inside editor iframes (eg. tinymce iframe)
-      !isContentEditable
+      !isContentEditable(document.body)
   ) {
       setupBubble();
       if (settings.dialog_limit) {
@@ -77,6 +79,16 @@ function init (settings, doc) {
   }
 }
 
+// inject page script
+function injectPage () {
+  const page = document.createElement('script')
+  page.src = browser.runtime.getURL('page/page.js')
+  page.onload = function () {
+    this.remove()
+  }
+  document.documentElement.appendChild(page)
+}
+
 function startup () {
   if (document.contentType !== 'text/html') {
     // don't load on non html pages (json, xml, etc..)
@@ -86,12 +98,12 @@ function startup () {
   store.getSettings().then((settings) => {
     init(settings, window.document)
   })
+
+  injectPage()
 }
 
 // destroy existing content script
-const destroyEventName = 'briskine-destroy'
-const destroyEvent = new CustomEvent(destroyEventName)
-
+const destroyEvent = new CustomEvent(config.destroyEvent)
 document.dispatchEvent(destroyEvent)
 
 function destructor () {
@@ -103,10 +115,8 @@ function destructor () {
 
   // destroy dialog
   dialog.destroy()
-
-  document.removeEventListener(destroyEventName, destructor)
 }
 
-document.addEventListener(destroyEventName, destructor)
+document.addEventListener(config.destroyEvent, destructor, {once: true})
 
 startup()

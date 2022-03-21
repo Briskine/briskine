@@ -1,4 +1,4 @@
-/* Insert plain text
+/* Convert HTML to plain text
  */
 
 import {htmlToText as htmlToTextConverter} from 'html-to-text';
@@ -9,7 +9,7 @@ function isHtml (html) {
     return !!fragment.children.length;
 }
 
-export function htmlToText (html) {
+export default function htmlToText (html) {
     if (isHtml(html)) {
         return htmlToTextConverter(html, {
             wordwrap: false,

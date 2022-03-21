@@ -70,8 +70,8 @@ function extensionConfig (env, safari = false, firebaseConfig = {}) {
     new CopyWebpackPlugin({
       patterns: [
         { from: 'src/popup/popup.html', to: 'popup/' },
-        { from: 'src/pages/', to: 'pages/' },
         { from: 'src/icons/', to: 'icons/' },
+        { from: 'src/background.html', to: '' },
         { from: 'LICENSE', to: '' }
       ]
     }),
@@ -103,7 +103,8 @@ function extensionConfig (env, safari = false, firebaseConfig = {}) {
     entry: {
       background: './src/background/background.js',
       popup: './src/popup/popup.js',
-      content: './src/content/index.js'
+      content: './src/content/index.js',
+      page: './src/content/page/page.js',
     },
     output: {
       path: path.resolve(devPath),

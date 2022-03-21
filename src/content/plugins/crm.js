@@ -1,8 +1,8 @@
 /* CRM plugin
  */
 
-import {parseTemplate} from '../utils.js';
-import {insertTemplate} from '../utils/editor-generic.js';
+import parseTemplate from '../utils/parse-template.js';
+import {insertTemplate} from '../editors/editor-universal.js';
 
 function getVariableAttribute (element) {
     const attributes = [ 'data-gorgias-variables', 'data-briskine-variables' ];

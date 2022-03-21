@@ -4,19 +4,14 @@
  * https://github.com/ianstormtaylor/slate
  */
 
-import {htmlToText} from './plain-text.js';
-import {setCursorPosition} from './editor-generic.js';
+import htmlToText from '../utils/html-to-text.js';
 
 export function isSlate (element) {
     return element.dataset.slateEditor;
 }
 
-export function insertSlateText (params = {}) {
+export function insertSlateTemplate (params = {}) {
     params.element.focus();
-
-    // restore the cursor at the location it was,
-    // before opening the dialog.
-    setCursorPosition(params.element, params.focusNode);
 
     // Slate won't handle the text manipulation events until it notices we restored focus.
     // The timeout is required for inserting templates with the dialog.

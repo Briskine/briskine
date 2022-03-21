@@ -2,7 +2,7 @@
  * https://draftjs.org/
  */
 
-import {htmlToText} from './plain-text.js';
+import htmlToText from '../utils/html-to-text.js';
 
 export function isDraft (element) {
    return element.querySelector('[data-contents]');
@@ -41,7 +41,7 @@ function insertDraftBlock (text) {
   document.activeElement.dispatchEvent(new Event('input', {bubbles: true}));
 }
 
-export function insertDraftText (params = {}) {
+export function insertDraftTemplate (params = {}) {
     params.element.focus();
 
     // delete shortcut

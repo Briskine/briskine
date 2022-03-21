@@ -11,14 +11,11 @@ import fastmailPlugin from './plugins/fastmail.js';
 import linkedinPlugin from './plugins/linkedin.js';
 import outlookPlugin from './plugins/outlook.js';
 import zendeskPlugin from './plugins/zendesk.js';
-import draftPlugin from './plugins/draft.js';
-import prosemirrorPlugin from './plugins/prosemirror.js';
-import quillPlugin from './plugins/quill.js';
-import slatePlugin from './plugins/slate.js';
 import crmPlugin from './plugins/crm.js';
-import genericPlugin from './plugins/generic.js';
+import universalPlugin from './plugins/universal.js';
 
 import store from '../store/store-client.js'
+import {isContentEditable} from './editors/editor-contenteditable.js'
 
 var autocomplete = {};
 
@@ -29,14 +26,9 @@ autocomplete.isEditable = function (element) {
 
     var isTextfield = (element.tagName.toLowerCase() === 'input');
     var isTextarea = (element.tagName.toLowerCase() === 'textarea');
-    var isContenteditable = autocomplete.isContentEditable(element);
 
-    return (isTextfield || isTextarea || isContenteditable);
+    return (isTextfield || isTextarea || isContentEditable(element));
 
-};
-
-autocomplete.isContentEditable = function (element) {
-    return element && element.hasAttribute('contenteditable');
 };
 
 autocomplete.getSelectedWord = function (params) {
@@ -51,7 +43,7 @@ autocomplete.getSelectedWord = function (params) {
     var beforeSelection = "";
     var selection = doc.getSelection();
 
-    if (autocomplete.isContentEditable(params.element)) {
+    if (isContentEditable(params.element)) {
         switch (selection.focusNode.nodeType) {
             // In most cases, the focusNode property refers to a Text Node.
             case (document.TEXT_NODE): // for text nodes it's easy. Just take the text and find the closest word
@@ -117,7 +109,7 @@ autocomplete.getCursorPosition = function (element) {
         }
     };
 
-    if (autocomplete.isContentEditable(position.element)) {
+    if (isContentEditable(position.element)) {
         // Working with editable div
         // Insert a virtual cursor, find its position
         // http://stackoverflow.com/questions/16580841/insert-text-at-caret-in-contenteditable-div
@@ -252,11 +244,7 @@ register(fastmailPlugin);
 register(linkedinPlugin);
 register(outlookPlugin);
 register(zendeskPlugin);
-register(draftPlugin);
-register(prosemirrorPlugin);
-register(quillPlugin);
-register(slatePlugin);
 register(crmPlugin);
-register(genericPlugin);
+register(universalPlugin);
 
 export default autocomplete;

@@ -2,9 +2,9 @@
 /* Outlook plugin
  */
 
-import {parseTemplate} from '../utils.js';
-import {insertTemplate} from '../utils/editor-generic.js';
-import {createContact} from '../utils/data-parse.js';
+import parseTemplate from '../utils/parse-template.js';
+import {insertTemplate} from '../editors/editor-universal.js';
+import createContact from '../utils/create-contact.js';
 import {enableBubble} from '../bubble.js';
 
 function getFieldData (field, $container) {

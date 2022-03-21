@@ -1,8 +1,10 @@
 /* Gmail plugin
  */
 
-import {insertText, parseTemplate, isContentEditable} from '../utils.js'
-import {createContact} from '../utils/data-parse.js'
+import parseTemplate from '../utils/parse-template.js'
+import {insertTemplate} from '../editors/editor-universal.js'
+import {isContentEditable} from '../editors/editor-contenteditable.js'
+import createContact from '../utils/create-contact.js'
 import {enableBubble} from '../bubble.js'
 
 const fromFieldSelector = '.az2';
@@ -388,9 +390,9 @@ export default (params = {}) => {
 
     before(params, data);
 
-    insertText(Object.assign({
+    insertTemplate(Object.assign({
         text: parsedTemplate
-    }, params));
+    }, params))
 
     // add attachments
     if (

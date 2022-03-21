@@ -2,7 +2,10 @@
 var Config = {
     websiteUrl: 'http://localhost:4000',
     functionsUrl: 'http://localhost:5000',
-    dashboardTarget: 'gt-dashboard'
+    dashboardTarget: 'gt-dashboard',
+
+    eventDestroy: 'briskine-destroy',
+    eventPage: 'briskine-page'
 };
 
 // firebase staging
