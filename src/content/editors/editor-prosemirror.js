@@ -60,7 +60,7 @@ export function parseProseMirrorContent (content = '') {
   // we need to manually add br's after each.
   Array.from(template.content.querySelectorAll(blockLevelSelector)).forEach((node) => {
     // add br only if we have a next sibling
-    // to avoid adding after line breaks after the parent node, or after the last block
+    // to avoid adding line breaks after the parent node, or after the last block
     if (node.nextSibling) {
       node.after(document.createElement('br'))
     }
