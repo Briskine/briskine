@@ -11,8 +11,18 @@
     <div id="mocha"></div>
 
     <script>
-      mocha.setup('bdd');
-      mocha.checkLeaks();
+      mocha.setup('bdd')
+      mocha.checkLeaks()
+
+      // mock webextension api
+      window.chrome = {
+        runtime: {
+          id: 'test',
+          onMessage: {
+            addListener: () => {}
+          }
+        }
+      }
     </script>
 
     <script src="bundle/test.bundle.js"></script>
