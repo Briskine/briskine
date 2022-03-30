@@ -61,6 +61,6 @@
         "moment": "^2.29.1",
         "mousetrap": "github:xarg/mousetrap#master",
         "nanomorph": "^5.4.3",
-        "webextension-polyfill": "^0.8.0"
+        "webextension-polyfill": "^0.9.0"
     }
 }
