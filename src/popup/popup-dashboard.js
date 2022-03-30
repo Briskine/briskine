@@ -215,7 +215,7 @@ customElements.define(
                                 Template Sharing.
                             </p>
 
-                            <a href="${Config.functionsUrl}/account/subscriptions" target="${Config.dashboardTarget}" class="btn btn-success btn-upgrade">
+                            <a href="${Config.functionsUrl}/subscription" target="${Config.dashboardTarget}" class="btn btn-success btn-upgrade">
                                 Upgrade to Premium
                             </a>
                         </div>
