@@ -85,7 +85,6 @@ export function insertContentEditableTemplate (params = {}) {
   // in some contenteditable editors (eg. Front).
   // also avoids having to manually edit template html as we suggested previously:
   // https://www.briskine.com/blog/template-inline/
-  // TODO do the same with first child, to allow inline insert
   if (templateNode.lastElementChild) {
     // we can't use display: inline-block on the container or last element,
     // because Chrome will hide the caret on new lines (added with Enter right after inserted template),
