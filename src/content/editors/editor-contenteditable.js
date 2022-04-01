@@ -68,26 +68,36 @@ function setCursorPosition (container, node) {
 
 export function insertContentEditableTemplate (params = {}) {
   // restore focus to the editable area
-  params.element.focus();
+  params.element.focus()
 
-  const {range, focusNode} = setCursorPosition(params.element, params.focusNode);
+  const {range, focusNode} = setCursorPosition(params.element, params.focusNode)
 
   // delete shortcut
   if (params.word.text === params.quicktext.shortcut) {
-      range.setStart(focusNode, params.word.start);
-      range.setEnd(focusNode, params.word.end);
-      range.deleteContents();
+      range.setStart(focusNode, params.word.start)
+      range.setEnd(focusNode, params.word.end)
+      range.deleteContents()
   }
 
-  var templateNode = range.createContextualFragment(params.text);
-  range.insertNode(templateNode);
-  range.collapse();
+  var templateNode = range.createContextualFragment(params.text)
+
+  // make sure the node parent, or last child (usually div, from tinymce) is inline.
+  // fixes issues with the cursor jumping to the next line after inserting a template,
+  // in some contenteditable editors (eg. Front).
+  // also avoids having to manually edit template html as we suggested previously:
+  // https://www.briskine.com/blog/template-inline/
+  if (templateNode.lastElementChild) {
+    templateNode.lastElementChild.style.display = 'inline-block'
+  }
+
+  range.insertNode(templateNode)
+  range.collapse()
 
   // trigger multiple change events,
   // for frameworks and scripts to notice changes to the editable fields.
-  [ 'input', 'change' ].forEach((eventType) => {
-      params.element.dispatchEvent(new Event(eventType, {bubbles: true}));
-  });
+  Array('input', 'change').forEach((eventType) => {
+      params.element.dispatchEvent(new Event(eventType, {bubbles: true}))
+  })
 
-  return;
+  return
 }
