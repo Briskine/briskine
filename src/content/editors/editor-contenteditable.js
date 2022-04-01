@@ -87,7 +87,8 @@ export function insertContentEditableTemplate (params = {}) {
   // also avoids having to manually edit template html as we suggested previously:
   // https://www.briskine.com/blog/template-inline/
   if (templateNode.lastElementChild) {
-    templateNode.lastElementChild.style.display = 'inline-block'
+    // using inline-block hides the cursor on newlines after inserting template
+    templateNode.lastElementChild.style.display = 'initial'
   }
 
   range.insertNode(templateNode)
