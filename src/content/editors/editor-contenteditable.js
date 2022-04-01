@@ -79,7 +79,7 @@ export function insertContentEditableTemplate (params = {}) {
       range.deleteContents()
   }
 
-  var templateNode = range.createContextualFragment(params.text)
+  const templateNode = range.createContextualFragment(params.text)
 
   // make sure the node parent, or last child (usually div, from tinymce) is inline.
   // fixes issues with the cursor jumping to the next line after inserting a template,
