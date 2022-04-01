@@ -17,15 +17,12 @@ import config from '../config.js'
 
 import {isContentEditable} from './editors/editor-contenteditable.js'
 import {setup as setupBubble, destroy as destroyBubble} from './bubble.js'
+import {setup as setupStatus, destroy as destroyStatus} from './status.js'
 
 function init (settings, doc) {
-  const loadedClassName = 'gorgias-loaded'
-
   if (!document.body) {
     return;
   }
-  // mark the doc that extension has been loaded
-  document.body.classList.add(loadedClassName);
 
   var currentUrl = window.location.href;
 
@@ -77,6 +74,10 @@ function init (settings, doc) {
       dialog.create();
       dialog.bindKeyboardEvents(doc);
   }
+
+  injectPage()
+
+  setupStatus()
 }
 
 // inject page script
@@ -98,8 +99,6 @@ function startup () {
   store.getSettings().then((settings) => {
     init(settings, window.document)
   })
-
-  injectPage()
 }
 
 // destroy existing content script
@@ -115,6 +114,9 @@ function destructor () {
 
   // destroy dialog
   dialog.destroy()
+
+  // destroy status event
+  destroyStatus()
 }
 
 document.addEventListener(config.destroyEvent, destructor, {once: true})
