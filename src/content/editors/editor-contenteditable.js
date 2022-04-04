@@ -74,29 +74,12 @@ export function insertContentEditableTemplate (params = {}) {
 
   // delete shortcut
   if (params.word.text === params.quicktext.shortcut) {
-      range.setStart(focusNode, params.word.start)
-      range.setEnd(focusNode, params.word.end)
-      range.deleteContents()
+    range.setStart(focusNode, params.word.start)
+    range.setEnd(focusNode, params.word.end)
+    range.deleteContents()
   }
 
   const templateNode = range.createContextualFragment(params.text)
-
-  // fix issues with the cursor jumping to the next line after inserting a template,
-  // in some contenteditable editors (eg. Front).
-  // also avoids having to manually edit template html as we suggested previously:
-  // https://www.briskine.com/blog/template-inline/
-  if (templateNode.lastElementChild) {
-    // we can't use display: inline-block on the container or last element,
-    // because Chrome will hide the caret on new lines (added with Enter right after inserted template),
-    // https://bugs.chromium.org/p/chromium/issues/detail?id=896108
-    // and Firefox will prevent adding newlines with the Enter key.
-    //
-    // since tinymce will always add div containers for paragraphs,
-    // we replace the container with its contents.
-    // this also allows inserting one-liner templates inline.
-    templateNode.lastElementChild.replaceWith(...templateNode.lastElementChild.childNodes)
-  }
-
   range.insertNode(templateNode)
   range.collapse()
 
