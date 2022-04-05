@@ -49,8 +49,17 @@ function getData (params) {
     };
 
     if (isContentEditable(params.element)) {
-        // get details from the account details tooltip
-        const $email = document.querySelector('.gb_be > :last-child')
+        // get details from the account details tooltip.
+        // the details popup changes the className on each release,
+        // so we use the dom structure to find it.
+        // get the two-level deep nested div, that contains an @, from the email address.
+        // start from the end, because it's located near the end of the page,
+        // and the main container can also contain email addresses.
+        const $popup = Array
+          .from(document.querySelectorAll('body > div > div'))
+          .reverse()
+          .find((div) => (div.textContent || '').includes('@'))
+        const $email = $popup ? $popup.lastElementChild : null
         const $fullName = $email ? $email.previousElementSibling : null
 
         const fullNameText = $fullName ? $fullName.innerText : ''

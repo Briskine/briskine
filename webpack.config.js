@@ -78,7 +78,8 @@ function extensionConfig (env, safari = false, firebaseConfig = {}) {
     new webpack.DefinePlugin({
       ENV: JSON.stringify(env),
       REGISTER_DISABLED: safari,
-      FIREBASE_CONFIG: JSON.stringify(firebaseConfig)
+      FIREBASE_CONFIG: JSON.stringify(firebaseConfig),
+      VERSION: JSON.stringify(packageFile.version),
     }),
     new MiniCssExtractPlugin({
       filename: '[name]/[name].css'

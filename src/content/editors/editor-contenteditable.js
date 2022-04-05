@@ -68,26 +68,26 @@ function setCursorPosition (container, node) {
 
 export function insertContentEditableTemplate (params = {}) {
   // restore focus to the editable area
-  params.element.focus();
+  params.element.focus()
 
-  const {range, focusNode} = setCursorPosition(params.element, params.focusNode);
+  const {range, focusNode} = setCursorPosition(params.element, params.focusNode)
 
   // delete shortcut
   if (params.word.text === params.quicktext.shortcut) {
-      range.setStart(focusNode, params.word.start);
-      range.setEnd(focusNode, params.word.end);
-      range.deleteContents();
+    range.setStart(focusNode, params.word.start)
+    range.setEnd(focusNode, params.word.end)
+    range.deleteContents()
   }
 
-  var templateNode = range.createContextualFragment(params.text);
-  range.insertNode(templateNode);
-  range.collapse();
+  const templateNode = range.createContextualFragment(params.text)
+  range.insertNode(templateNode)
+  range.collapse()
 
   // trigger multiple change events,
   // for frameworks and scripts to notice changes to the editable fields.
-  [ 'input', 'change' ].forEach((eventType) => {
-      params.element.dispatchEvent(new Event(eventType, {bubbles: true}));
-  });
+  Array('input', 'change').forEach((eventType) => {
+      params.element.dispatchEvent(new Event(eventType, {bubbles: true}))
+  })
 
-  return;
+  return
 }
