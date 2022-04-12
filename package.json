@@ -8,8 +8,8 @@
         "test": "webpack -c webpack.test.js && mocha-headless-chrome -f test/index.html",
         "setup": "firebase login",
         "start": "webpack -w --mode=development --env mode=development",
-        "staging": "firebase use gorgias-templates-staging; webpack -w --mode=production --env mode=staging",
-        "build": "firebase use gorgias-templates-production; webpack --mode=production --env mode=production",
+        "staging": "webpack -w --mode=production --env mode=staging",
+        "build": "webpack --mode=production --env mode=production",
         "lint": "jshint src/ webpack.*.js"
     },
     "repository": "https://github.com/briskine/briskine/",

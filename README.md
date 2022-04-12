@@ -1,7 +1,7 @@
 # <img src="artwork/icon-64.png" height="24" with="24"> Briskine Browser Extension
 
 > Text expander for the web
-> 
+
 Write emails faster. Create text templates and insert them with shortcuts on any website.
 
 Visit the [Briskine website](https://www.briskine.com/).
