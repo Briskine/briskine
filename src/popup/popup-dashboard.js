@@ -161,7 +161,7 @@ customElements.define(
                             </li>
                         ` || ''}
                         <li>
-                            <a href="${Config.functionsUrl}/list?id=new" target="${Config.dashboardTarget}">
+                            <a href="${Config.functionsUrl}/template/new" target="${Config.dashboardTarget}">
                                 <span class="icon">${plusSquare}</span>
                                 New template
                             </a>

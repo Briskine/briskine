@@ -1,4 +1,4 @@
-/* globals Buffer */
+/* globals Buffer, console */
 /* jshint esversion: 8 */
 
 import fs from 'fs'
@@ -151,8 +151,13 @@ export default async function (env) {
 
   let firebaseConfig = defaultFirebaseConfig
   if (env.mode !== 'development') {
-    const appConfig = await firebaseTools.apps.sdkconfig()
-    firebaseConfig = appConfig.sdkConfig
+    try {
+      await firebaseTools.use(`gorgias-templates-${env.mode}`)
+      const appConfig = await firebaseTools.apps.sdkconfig()
+      firebaseConfig = appConfig.sdkConfig
+    } catch(err) {
+      console.warn(err)
+    }
   }
 
   return extensionConfig(env.mode, env.safari, firebaseConfig)
