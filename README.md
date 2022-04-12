@@ -1,23 +1,31 @@
-Briskine Browser Extension
-==========================
+# <img src="artwork/icon-64.png" height="24" with="24"> Briskine Browser Extension
 
+> Text expander for the web
+> 
 Write emails faster. Create text templates and insert them with shortcuts on any website.
 
-Development
------------
+Visit the [Briskine website](https://www.briskine.com/).
+
+## Development
 
 * Install [Node.js](https://nodejs.org/en/) and [npm](https://www.npmjs.com/).
 * Run `npm install` to install all dependencies.
-* Rename the `src/store/config-firebase.sample.js` file to `config-firebase.js` and add the required details from the Firebase dashboard.
 
 The following commands are available:
 
-* `npm start` - Development mode. Creates development manifest, watches files and recompiles them automatically.
-* `npm run build` - Build extension and compress extension.
-* Append `-- safari` to any command to build the Safari version. (eg. `npm run build -- safari`)
+* `npm start`
 
-Known issues
-------------
+Development mode. Creates development manifest, watches files and recompiles them automatically.
+The build is placed in `/ext`.
+
+* `npm run build`
+
+Build extension and compress it as a zip file. The built extension is in `/ext`, and the zip file is in `/build`.
+
+* Append `-- safari` to any command to build the Safari version. (eg. `npm run build -- safari`).
+
+
+## Known issues
 
 1. Saving a template from the context menus doesn't work with multi-lines.
 
@@ -25,63 +33,10 @@ Known issues
 
    This means that when selecting a text to save as a template it will not preserve newlines.
 
-Creating templates
-------------------
+## Help Center
 
-Templates are powered by [handlebars.js](http://handlebarsjs.com/).
+Visit our [Help Center](https://help.briskine.com/) for more details about templates, variables, and more.
 
-The following template variables are available:
-* **subject** _string_
-* **from** _list_; Each list element contains:
-  * **name** _string_
-  * **firt_name** _string_
-  * **last_name** _string_
-  * **email** _string_
-* **to** _list_ similar to _from_
-* **cc** _list_ similar to _from_
-* **bcc** _list_ similar to _from_
+## License
 
-To output a string use following syntax:
-```
-String variables are denoted by double curly braces: {{subject}}
-```
-
-If subject is _My email subject_ then it be rendered to:
-```
-String variables are denoted by double curly braces: My email subject
-```
-
-To output a list use following syntax:
-```
-To:
-{{#each to}}
-- Name {{name}}
-- First name {{first_name}}
-- Last name {{last_name}}
-- Email {{email}}
-{{/each}}
-```
-
-You also may want to output list only if it has values:
-```
-{{#if to}}
-To:
-{{#each to}}
-- Name {{name}}
-- First name {{first_name}}
-- Last name {{last_name}}
-- Email {{email}}
-{{/each}}
-{{/if}}
-```
-
-If you want to output only second element from list (note that list numbering starts with 0):
-```
-{{#if to.[1]}}
-Second To:
-- Name {{to.1.name}}
-- First name {{to.1.first_name}}
-- Last name {{to.1.last_name}}
-- Email {{to.1.email}}
-{{/if}}
-```
+The Briskine browser extension is licensed under the [GPL-3.0 license](/LICENSE).
