@@ -58,6 +58,7 @@
         "handlebars": "^4.5.3",
         "html-to-text": "^8.0.0",
         "jquery": "^3.5.1",
+        "lit-html": "^2.2.3",
         "moment": "^2.29.1",
         "mousetrap": "github:xarg/mousetrap#master",
         "nanomorph": "^5.4.3",
