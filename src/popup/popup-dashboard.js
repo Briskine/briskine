@@ -55,6 +55,7 @@ customElements.define(
       this.user = {}
       this.isFree = null
       this.customers = {}
+      this.switchingCustomer = false
 
       this.getCustomerTitle = (customerId) => {
         const customerData = this.customers[customerId]
@@ -66,14 +67,14 @@ customElements.define(
       }
 
       this.switchTeam = (e) => {
-        if (e.target.parentNode) {
-          e.target.parentNode.classList.add('block-loading')
-        }
+        this.switchingCustomer = true
+        this.connectedCallback()
 
         const customerId = e.target.value
         store.setActiveCustomer(customerId)
           .then(() => {
-            return this.refreshAccount()
+            this.switchingCustomer = false
+            this.refreshAccount()
           })
       }
 
@@ -86,14 +87,14 @@ customElements.define(
       this.addEventListener('change', (e) => {
         const teamSelect = this.querySelector('#team-select')
         if (e.target === teamSelect) {
-          return this.switchTeam(e)
+          this.switchTeam(e)
         }
       })
 
       this.refreshAccount()
     }
     refreshAccount () {
-      store.getAccount()
+      return store.getAccount()
         .then((res) => {
           this.user = res
 
@@ -118,6 +119,7 @@ customElements.define(
         .then(() => {
           // re-render after loading customers
           this.connectedCallback()
+          return
         })
     }
     connectedCallback() {
@@ -143,7 +145,10 @@ customElements.define(
                   <label for="team-select" class="mb-1">
                     Switch to a different team:
                   </label>
-                  <div>
+                  <div class=${classMap({
+                      'block-loading': this.switchingCustomer === true
+                    })}
+                    >
                     <select
                       id="team-select"
                       class="form-select"
