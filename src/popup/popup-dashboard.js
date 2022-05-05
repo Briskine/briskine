@@ -5,7 +5,7 @@ import {unsafeSVG} from 'lit-html/directives/unsafe-svg.js'
 import Config from '../config.js'
 import store from '../store/store-client.js'
 
-import {plusSquare, clone, cog} from './popup-icons.js'
+import {plusSquareFill, archiveFill, gearFill} from './popup-icons.js'
 
 function niceTime (minutes) {
   if (!minutes) {
@@ -168,7 +168,7 @@ customElements.define(
                 href=${`${Config.functionsUrl}/template/new`}
                 target=${Config.dashboardTarget}
                 >
-                <span class="icon">${unsafeSVG(plusSquare)}</span>
+                <span class="icon">${unsafeSVG(plusSquareFill)}</span>
                 New template
               </a>
             </li>
@@ -177,7 +177,7 @@ customElements.define(
                 href=${Config.functionsUrl}
                 target=${Config.dashboardTarget}
                 >
-                <span class="icon">${unsafeSVG(clone)}</span>
+                <span class="icon">${unsafeSVG(archiveFill)}</span>
                 Manage templates
               </a>
             </li>
@@ -186,7 +186,7 @@ customElements.define(
                 href=${`${Config.functionsUrl}/settings`}
                 target=${Config.dashboardTarget}
                 >
-                <span class="icon">${unsafeSVG(cog)}</span>
+                <span class="icon">${unsafeSVG(gearFill)}</span>
                 Settings
               </a>
             </li>

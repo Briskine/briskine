@@ -187,7 +187,8 @@ a:hover,
 }
 
 .popup-menu a {
-    display: block;
+    display: flex;
+    align-items: center;
     padding: .6em 1em;
 
     font-size: 1.2em;
@@ -206,11 +207,11 @@ a:hover,
 }
 
 .popup-menu .icon {
-    display: inline-block;
-    margin-right: .4em;
-    transition: all .1s ease-out;
+  display: inline-flex;
+  margin-right: .8em;
+  transition: all .1s ease-out;
 
-    color: #918992;
+  color: #918992;
 }
 
 .popup-menu a:hover .icon {
@@ -304,17 +305,6 @@ a:hover,
 .popup-premium .popup-stats-premium,
 .popup-free .popup-stats-free {
     display: block;
-}
-
-/* icons
- */
-.icon {
-    vertical-align: 2px;
-}
-
-.icon svg {
-    display: inline;
-    width: .8em;
 }
 
 /* hide website and registration links
