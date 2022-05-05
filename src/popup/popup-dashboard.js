@@ -209,7 +209,7 @@ customElements.define(
                 ${this.stats.words < 1500 ? html`
                   <span class="font-italic">Big things have small beginnings</span> &#128170;
                 ` : ''}
-                ${this.stats.words > 1500 && this.stats.words < 2500 ? html`
+                ${this.stats.words >= 1500 && this.stats.words < 2500 ? html`
                   <span class="font-italic">Or the equivalent of writing a short story</span> &#128214;
                 ` : ''}
                 ${this.stats.words >= 2500 && this.stats.words < 7500 ? html`

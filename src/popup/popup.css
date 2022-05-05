@@ -220,11 +220,12 @@ a:hover,
 }
 
 .popup-stats {
-    padding: 1.4em 1em;
-    background: linear-gradient(345deg, #0575e1 0%, #0983fa 100%);
+  min-height: 60px;
+  padding: 1.4em 1em;
+  background: linear-gradient(345deg, #0575e1 0%, #0983fa 100%);
 
-    color: #fff;
-    text-align: center;
+  color: #fff;
+  text-align: center;
 }
 
 .label-upgrade {
