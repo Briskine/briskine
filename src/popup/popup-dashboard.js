@@ -174,7 +174,7 @@ customElements.define(
             </li>
             <li>
               <a
-                href=${Config.functionsUrl}"
+                href=${Config.functionsUrl}
                 target=${Config.dashboardTarget}
                 >
                 <span class="icon">${unsafeSVG(clone)}</span>
