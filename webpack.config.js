@@ -114,7 +114,12 @@ function extensionConfig (env, safari = false, firebaseConfig = {}) {
     module: {
       rules: [
         {
+          resourceQuery: /raw/,
+          type: 'asset/source',
+        },
+        {
           test: /\.(css)$/i,
+          resourceQuery: { not: [/raw/] },
           use: [
               MiniCssExtractPlugin.loader,
               'css-loader'
