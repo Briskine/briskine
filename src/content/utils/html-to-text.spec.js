@@ -1,3 +1,4 @@
+/* globals describe, it */
 import {expect} from 'chai';
 
 import htmlToText from './html-to-text.js';

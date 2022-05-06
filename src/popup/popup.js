@@ -1,4 +1,4 @@
-/* global URLSearchParams, REGISTER_DISABLED */
+/* global REGISTER_DISABLED */
 import {html, render} from 'lit-html'
 
 import './popup.css'

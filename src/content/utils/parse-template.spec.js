@@ -1,3 +1,4 @@
+/* globals describe, it */
 import {expect} from 'chai';
 
 import parseTemplate from './parse-template.js';

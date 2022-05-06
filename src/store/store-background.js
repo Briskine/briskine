@@ -1,4 +1,4 @@
-/* globals ENV, console */
+/* globals ENV */
 import browser from 'webextension-polyfill';
 
 import _FIRESTORE_PLUGIN from './plugin-firestore.js';

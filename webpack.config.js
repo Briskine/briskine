@@ -1,6 +1,4 @@
-/* globals Buffer, console */
-/* jshint esversion: 8 */
-
+/* eslint-env node */
 import fs from 'fs'
 import webpack from 'webpack'
 import path from 'path'

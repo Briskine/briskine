@@ -1,3 +1,4 @@
+/* globals describe, it */
 import {expect} from 'chai'
 import Handlebars from 'handlebars'
 import MockDate from 'mockdate'
