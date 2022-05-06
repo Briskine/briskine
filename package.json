@@ -9,7 +9,7 @@
     "setup": "firebase login",
     "start": "webpack -w --mode=development --env mode=development",
     "staging": "webpack -w --mode=production --env mode=staging",
-    "build": "webpack --mode=production --env mode=production",
+    "build": "npm run lint && webpack --mode=production --env mode=production",
     "lint": "eslint './**/*.js'"
   },
   "repository": "https://github.com/briskine/briskine/",
