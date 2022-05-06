@@ -18,6 +18,7 @@ import config from '../config.js'
 import {isContentEditable} from './editors/editor-contenteditable.js'
 import {setup as setupBubble, destroy as destroyBubble} from './bubble/bubble.js'
 import {setup as setupStatus, destroy as destroyStatus} from './status.js'
+import {setup as setupDialog, destroy as destroyDialog} from './dialog/dialog.js'
 
 function init (settings, doc) {
   if (!document.body) {
@@ -56,23 +57,23 @@ function init (settings, doc) {
       );
   }
 
-  if (
-      settings.dialog_enabled &&
-      // don't create the dialog inside editor iframes (eg. tinymce iframe)
-      !isContentEditable(document.body)
-  ) {
-      setupBubble();
-      if (settings.dialog_limit) {
-          dialog.RESULTS_LIMIT = settings.dialog_limit;
-      }
-      Mousetrap.bindGlobal(
-          settings.dialog_shortcut,
-          dialog.completion
-      );
+  // don't create the dialog inside editor iframes (eg. tinymce iframe)
+  if (!isContentEditable(document.body)) {
+    // TODO pass settings to setup bubble so we don't get them twice
+    setupBubble()
+    setupDialog(settings)
+
+//       if (settings.dialog_limit) {
+//           dialog.RESULTS_LIMIT = settings.dialog_limit;
+//       }
+//       Mousetrap.bindGlobal(
+//           settings.dialog_shortcut,
+//           dialog.completion
+//       );
 
       // create dialog once and then reuse the same element
-      dialog.create();
-      dialog.bindKeyboardEvents(doc);
+//       dialog.create();
+//       dialog.bindKeyboardEvents(doc);
   }
 
   injectPage()
@@ -113,7 +114,8 @@ function destructor () {
   destroyBubble()
 
   // destroy dialog
-  dialog.destroy()
+//   dialog.destroy()
+  destroyDialog()
 
   // destroy status event
   destroyStatus()

@@ -1,0 +1,20 @@
+/* dialog styles
+ */
+:host,
+:host * {
+  box-sizing: border-box;
+}
+
+:host {
+  position: absolute;
+  display: block;
+
+  width: 100px;
+  height: 100px;
+
+  font-family: sans-serif;
+}
+
+
+/* TODO add support for rtl
+ */
