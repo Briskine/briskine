@@ -1,4 +1,3 @@
-/* global InputEvent */
 /* Slate
  * framework for building rich text editors.
  * https://github.com/ianstormtaylor/slate

@@ -1,3 +1,4 @@
+/* eslint-disable no-useless-escape */
 /* Gmail plugin
  */
 
@@ -291,7 +292,6 @@ var setAttachmentNode = function (attachment) {
             case 'f4a':
             case 'f4b':
             case 'ogv':
-            case 'ogg':
             case 'avi':
             case 'mov':
             case 'qt':
@@ -301,7 +301,6 @@ var setAttachmentNode = function (attachment) {
             case 'mpg':
             case 'mpeg':
             case 'm2v':
-            case 'm4v':
             case 'svi':
             case '3gp':
             case 'roq':

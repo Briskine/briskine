@@ -1,4 +1,3 @@
-/* globals KeyboardEvent */
 /* Outlook plugin
  */
 

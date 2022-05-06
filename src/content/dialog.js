@@ -2,7 +2,7 @@
 /**
  * Autocomplete dialog code.
  */
-
+/* eslint-disable no-useless-escape */
 import browser from 'webextension-polyfill';
 import $ from 'jquery';
 import Handlebars from 'handlebars';

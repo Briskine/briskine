@@ -1,4 +1,3 @@
-/* globals DataTransfer, ClipboardEvent */
 /* Linkedin plugin
  */
 
