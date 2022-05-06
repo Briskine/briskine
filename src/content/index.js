@@ -16,7 +16,7 @@ import dialog from './dialog.js'
 import config from '../config.js'
 
 import {isContentEditable} from './editors/editor-contenteditable.js'
-import {setup as setupBubble, destroy as destroyBubble} from './bubble.js'
+import {setup as setupBubble, destroy as destroyBubble} from './bubble/bubble.js'
 import {setup as setupStatus, destroy as destroyStatus} from './status.js'
 
 function init (settings, doc) {

@@ -6,7 +6,7 @@ import parseTemplate from '../utils/parse-template.js'
 import {insertTemplate} from '../editors/editor-universal.js'
 import {isContentEditable} from '../editors/editor-contenteditable.js'
 import createContact from '../utils/create-contact.js'
-import {enableBubble} from '../bubble.js'
+import {enableBubble} from '../bubble/bubble.js'
 
 const fromFieldSelector = '.az2';
 const textfieldContainerSelector = '.M9';

@@ -3,8 +3,8 @@
  * Floating action button.
  */
 
-import dialog from './dialog.js'
-import store from '../store/store-client.js'
+import dialog from '../dialog.js'
+import store from '../../store/store-client.js'
 
 let bubbleInstance = null
 let activeTextfield = null
