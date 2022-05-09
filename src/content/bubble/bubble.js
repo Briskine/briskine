@@ -3,7 +3,8 @@
  * Floating action button.
  */
 
-import dialog from '../dialog.js'
+// import dialog from '../dialog.js'
+import {dialogShowEvent} from '../dialog/dialog.js'
 import store from '../../store/store-client.js'
 
 import bubbleStyles from './bubble.css?raw'
@@ -49,14 +50,24 @@ function defineBubble () {
                 e.preventDefault();
             });
             this.$button.addEventListener('click', (e) => {
+                e.stopPropagation()
+
                 // position the dialog under the qa button.
                 // since the focus node is now the button
                 // we have to pass the previous focus (the text node).
-                dialog.completion(e, {
+                e.target.dispatchEvent(new CustomEvent(dialogShowEvent, {
+                  bubbles: true,
+                  composed: true,
+                  detail: {
                     focusNode: activeTextfield,
-                    dialogPositionNode: e.target,
-                    source: 'button'
-                });
+                  }
+                }))
+
+//                 dialog.completion(e, {
+//                     focusNode: activeTextfield,
+//                     dialogPositionNode: e.target,
+//                     source: 'button'
+//                 });
             });
 
 
