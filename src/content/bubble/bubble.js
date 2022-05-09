@@ -137,31 +137,28 @@ function scrollDocument (e) {
   }
 }
 
-export function setup () {
-    // if bubble is enabled in settings
-    store.getSettings()
-      .then((settings) => {
-        if (settings.dialog_button === false) {
-            return;
-        }
+export function setup (settings = {}) {
+  // if bubble is enabled in settings
+  if (settings.dialog_button === false) {
+      return;
+  }
 
-        // if bubble is enabled in dom
-        if (bubbleEnabled()) {
-            return create(settings);
-        }
+  // if bubble is enabled in dom
+  if (bubbleEnabled()) {
+      return create(settings);
+  }
 
-        const domObserver = new MutationObserver((records, observer) => {
-            if (bubbleEnabled()) {
-                observer.disconnect();
-                create(settings);
-            }
-        });
-        domObserver.observe(document.body, {
-            attributes: true
-        });
+  const domObserver = new MutationObserver((records, observer) => {
+      if (bubbleEnabled()) {
+          observer.disconnect();
+          create(settings);
+      }
+  });
+  domObserver.observe(document.body, {
+      attributes: true
+  });
 
-        domObservers.push(domObserver)
-    });
+  domObservers.push(domObserver)
 }
 
 function create (settings = {}) {

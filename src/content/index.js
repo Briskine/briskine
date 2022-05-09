@@ -12,7 +12,7 @@ import './helpers/content-helpers.js'
 
 import store from '../store/store-client.js'
 import keyboard from './keyboard.js'
-import dialog from './dialog.js'
+// import dialog from './dialog.js'
 import config from '../config.js'
 
 import {isContentEditable} from './editors/editor-contenteditable.js'
@@ -60,7 +60,7 @@ function init (settings, doc) {
   // don't create the dialog inside editor iframes (eg. tinymce iframe)
   if (!isContentEditable(document.body)) {
     // TODO pass settings to setup bubble so we don't get them twice
-    setupBubble()
+    setupBubble(settings)
     setupDialog(settings)
 
 //       if (settings.dialog_limit) {

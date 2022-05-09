@@ -1,8 +1,6 @@
 /* Dialog
  */
 
-import {html, render} from 'lit-html'
-
 import store from '../../store/store-client.js'
 
 import styles from './dialog.css?raw'
@@ -22,10 +20,10 @@ function defineDialog () {
         }
 
         const shadowRoot = this.attachShadow({mode: 'open'})
-        render(html`
+        this.innerHTML = `
           <style>${styles}</style>
           <div>dialog</div>
-        `, shadowRoot)
+        `
       }
     }
   )
@@ -50,6 +48,7 @@ export function setup (settings = {}) {
   }
 
   // TODO use settings.dialog_limit
+  // TODO instead of dialog_limit, use infinite loading with intersection observer
 
   create()
 }
