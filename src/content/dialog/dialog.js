@@ -9,12 +9,37 @@ let dialogInstance = null
 
 export const dialogShowEvent = 'briskine-dialog'
 
+const dialogVisibleAttr = 'visible'
+const dialogMaxHeight = 250
+
 function defineDialog () {
   customElements.define(
     'b-dialog',
     class extends HTMLElement {
       constructor () {
         super()
+
+        this.show = (e) => {
+          console.log('got show', e)
+
+          // must be set visible before positioning,
+          // so we can get its dimensions.
+          this.setAttribute(dialogVisibleAttr, true)
+
+          const position = getDialogPosition(e.target, this)
+          this.style.top = `${position.top}px`
+          this.style.left = `${position.left}px`
+        }
+
+        this.hide = (e) => {
+          // TODO keep the bubble visible if we showed the dialog from it
+          // and haven't hidden it
+          if (e && this && this.contains(e.target)) {
+            return
+          }
+
+          this.removeAttribute(dialogVisibleAttr)
+        }
       }
       connectedCallback () {
         if (!this.isConnected) {
@@ -26,23 +51,31 @@ function defineDialog () {
           <style>${styles}</style>
           <div>dialog</div>
         `
+
+        document.addEventListener(dialogShowEvent, this.show)
+        document.addEventListener('click', this.hide)
+
+        // TODO set up shortcuts and functionality
+        // TODO instead of dialog_limit, use infinite loading with intersection observer
       }
       disconnectedCallback () {
         console.log('disconnectedCallback')
+
+        document.removeEventListener(dialogShowEvent, this.show)
+        document.removeEventListener('click', this.hide)
+
+        // TODO remove key bindings
       }
     }
   )
 }
 
-// TODO add RTL support
-function setDialogPosition (targetNode) {
-  // BUG positioning is set to the right of the bubble on first click
-  const dialogMaxHeight = 250
+function getDialogPosition (targetNode, instance) {
   const pageHeight = window.innerHeight
   const scrollTop = window.scrollY
   const scrollLeft = window.scrollX
 
-  const dialogMetrics = dialogInstance.getBoundingClientRect()
+  const dialogMetrics = instance.getBoundingClientRect()
 
   // in case we want to position the dialog next to
   // another element,
@@ -53,6 +86,7 @@ function setDialogPosition (targetNode) {
   // because we use getBoundingClientRect
   // we need to add the scroll position
   let topPos = targetMetrics.top + targetMetrics.height + scrollTop
+  // TODO add RTL support
   let leftPos = targetMetrics.left + targetMetrics.width + scrollLeft - dialogMetrics.width
 
   // check if we have enough space at the bottom
@@ -62,27 +96,17 @@ function setDialogPosition (targetNode) {
     topPos = topPos - dialogMetrics.height - targetMetrics.height
   }
 
-  dialogInstance.style.top = `${topPos}px`
-  dialogInstance.style.left = `${leftPos}px`
+  return {
+    top: topPos,
+    left: leftPos
+  }
 }
 
-function show (e) {
-  console.log('got show', e)
-
-  setDialogPosition(e.target)
-
-  dialogInstance.style.display = 'block'
-}
-
-function hide (e) {
-  if (e && dialogInstance && dialogInstance.contains(e.target)) {
+export function setup (settings = {}) {
+  if (settings.dialog_enabled === false) {
     return
   }
 
-  dialogInstance.style.display = 'none'
-}
-
-function create () {
   // dialog is defined later,
   // to avoid errors with other existing intances on page,
   // when reloading the bubble without page refresh.
@@ -91,37 +115,13 @@ function create () {
 
   dialogInstance = document.createElement('b-dialog')
   document.documentElement.appendChild(dialogInstance)
-
-  document.addEventListener(dialogShowEvent, show)
-  document.addEventListener('click', hide)
-
-  // TODO set up shortcuts and functionality
-
-}
-
-export function setup (settings = {}) {
-  if (settings.dialog_enabled === false) {
-    return
-  }
-
-  // TODO use settings.dialog_limit
-  // TODO instead of dialog_limit, use infinite loading with intersection observer
-
-  create()
 }
 
 export function destroy () {
-  // TODO check if we have a dialog instance and destroy it
   if (!dialogInstance) {
     return
   }
 
-  // TODO destroy
   dialogInstance.remove()
-
-  document.removeEventListener(dialogShowEvent, show)
-  document.removeEventListener('click', hide)
-
-  // TODO remove key bindings
 }
 

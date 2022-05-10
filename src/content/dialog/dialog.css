@@ -21,6 +21,9 @@
   padding: 10px;
 }
 
+:host([visible]) {
+  display: block;
+}
 
 /* TODO add support for rtl
  */
