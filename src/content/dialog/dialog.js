@@ -24,18 +24,21 @@ function defineDialog () {
           // TODO show only if in an editable element, or from the bubble
           let target
           if (isEditable(e.target)) {
-            // TODO get caret position
-            target = getCaretNode(e.target)
-            console.log('is editable', target)
+            // input, textarea
+            target = getEditableCaret(e.target)
+          } else if (isContentEditable(e.target)) {
+            // contenteditable
+            target = getContentEditableCaret(e.target)
           } else if (e.target.tagName.toLowerCase() === bubbleTagName) {
+            // bubble
             target = e.target
           } else {
             return
           }
 
+          e.preventDefault()
+
           console.log('got show', e)
-          console.log(window.getSelection().focusNode)
-          console.log(e.target.tagName)
 
           // must be set visible before positioning,
           // so we can get its dimensions.
@@ -44,6 +47,12 @@ function defineDialog () {
           const position = getDialogPosition(target, this)
           this.style.top = `${position.top}px`
           this.style.left = `${position.left}px`
+
+          // clean-up the virtual caret mirror,
+          // used on input and textarea
+          if (isEditable(e.target)) {
+            target.parentNode.remove()
+          }
         }
 
         this.hide = (e) => {
@@ -72,7 +81,9 @@ function defineDialog () {
 
         const shortcut = this.getAttribute('shortcut')
         if (shortcut) {
-          Mousetrap.bindGlobal(shortcut, this.show)
+//           Mousetrap.bindGlobal(shortcut, this.show)
+          // HACK
+          Mousetrap.bindGlobal('alt+space', this.show)
         }
 
         // TODO set up shortcuts and functionality
@@ -91,7 +102,7 @@ function defineDialog () {
 }
 
 function isEditable (element) {
-  return ['input', 'textarea'].includes(element.tagName.toLowerCase()) || isContentEditable(element)
+  return ['input', 'textarea'].includes(element.tagName.toLowerCase())
 }
 
 function getDialogPosition (targetNode, instance) {
@@ -134,143 +145,83 @@ function getDialogPosition (targetNode, instance) {
   }
 }
 
-function getCaretNode (element) {
-    var position = {
-        element: element || null,
-        offset: 0,
-        absolute: {
-            left: 0,
-            top: 0
-        },
-        word: null
-    };
-
-    var $caret;
-
-    var getRanges = function (sel) {
-        if (sel.rangeCount) {
-            var ranges = [];
-            for (var i = 0; i < sel.rangeCount; i++) {
-                ranges.push(sel.getRangeAt(i));
-            }
-            return ranges;
-        }
-        return [];
-    };
-
-    var restoreRanges = function (sel, ranges) {
-        for (var i in ranges) {
-            sel.addRange(ranges[i]);
-        }
-    };
-
-    if (isContentEditable(element)) {
-      const selection = window.getSelection()
-      if (selection.rangeCount !== 0) {
-        const range = selection.getRangeAt(0)
-        // TODO
-        // https://github.com/w3c/csswg-drafts/issues/2514
-        if (range.collapsed === true && range.endContainer.nodeType === Node.ELEMENT_NODE) {
-          return range.endContainer
-        }
-        return range
-      }
-
-//         // Working with editable div
-//         // Insert a virtual cursor, find its position
-//         // http://stackoverflow.com/questions/16580841/insert-text-at-caret-in-contenteditable-div
-//
-//         var selection = doc.getSelection();
-//         // get the element that we are focused + plus the offset
-//         // Read more about this here: https://developer.mozilla.org/en-US/docs/Web/API/Selection.focusNode
-//         position.element = selection.focusNode;
-//         position.offset = selection.focusOffset;
-//
-//         // First we get all ranges (most likely just 1 range)
-//         var ranges = getRanges(selection);
-//         var focusNode = selection.focusNode;
-//         var focusOffset = selection.focusOffset;
-//
-//         if (!ranges.length) {
-//             return;
-//         }
-//         // remove any previous ranges
-//         selection.removeAllRanges();
-//
-//         // Added a new range to place the caret at the focus point of the cursor
-//         var range = new Range();
-//         var caretText = '<span id="qt-caret"></span>';
-//         range.setStart(focusNode, focusOffset);
-//         range.setEnd(focusNode, focusOffset);
-//         range.insertNode(range.createContextualFragment(caretText));
-//         selection.addRange(range);
-//         selection.removeAllRanges();
-//
-//         // finally we restore all the ranges that we had before
-//         restoreRanges(selection, ranges);
-//
-//         // Virtual caret
-//         $caret = $('#qt-caret');
-//
-//         if ($caret.length) {
-//
-//             position.absolute = $caret.offset();
-//             position.absolute.width = $caret.width();
-//             position.absolute.height = $caret.height();
-//
-//             // Remove virtual caret
-//             $caret.remove();
-//         }
-
-    } else {
-
-        // Working with textarea
-        // Create a mirror element, copy textarea styles
-        // Insert text until selectionEnd
-        // Insert a virtual cursor and find its position
-
-        position.start = position.element.selectionStart;
-        position.end = position.element.selectionEnd;
-
-        var $mirror = $('<div id="qt-mirror" class="qt-mirror"></div>').addClass(position.element.className),
-            $source = $(position.element),
-            $sourcePosition = $source.offset();
-
-        // copy all styles
-        for (var i in autocomplete.mirrorStyles) {
-            var style = autocomplete.mirrorStyles[i];
-            $mirror.css(style, $source.css(style));
-        }
-
-        var sourceMetrics = $source.get(0).getBoundingClientRect();
-
-        // set absolute position
-        $mirror.css({
-            top: $sourcePosition.top + 'px',
-            left: $sourcePosition.left + 'px',
-            width: sourceMetrics.width,
-            height: sourceMetrics.height
-        });
-
-        // copy content
-        $mirror.html($source.val().substr(0, position.end).split("\n").join('<br>'));
-        $mirror.append('<span id="qt-caret" class="qt-caret"></span>');
-
-        // insert mirror
-        $('body').append($mirror);
-
-        $caret = $('#qt-caret', $mirror);
-
-        position.absolute = $caret.offset();
-        position.absolute.width = $caret.width();
-        position.absolute.height = $caret.height();
-
-        $mirror.remove();
-
+function getContentEditableCaret (element) {
+  const selection = window.getSelection()
+  if (selection.rangeCount !== 0) {
+    const range = selection.getRangeAt(0)
+    // TODO explain
+    // https://github.com/w3c/csswg-drafts/issues/2514
+    if (range.collapsed === true && range.endContainer.nodeType === Node.ELEMENT_NODE) {
+      return range.endContainer
     }
+    return range
+  }
+}
 
-    return element
-};
+const mirrorStyles = [
+  // box
+  'box-sizing',
+  'height',
+  'width',
+  'padding',
+  'padding-bottom',
+  'padding-left',
+  'padding-right',
+  'padding-top',
+  'border-width',
+  // font
+  'font-family',
+  'font-size',
+  'font-style',
+  'font-variant',
+  'font-weight',
+  // spacing
+  'word-spacing',
+  'letter-spacing',
+  'line-height',
+  'text-decoration',
+  'text-indent',
+  'text-transform',
+  // direction
+  'direction',
+]
+
+// get caret position in input and textarea,
+// using a virtual caret in a mirrored block.
+function getEditableCaret (element) {
+  const $mirror = document.createElement('div')
+  $mirror.style = `
+    overflow: auto;
+    position: absolute;
+    visibility: hidden;
+
+    white-space: pre-wrap;
+    word-wrap: break-word;
+  `
+  $mirror.className = element.className
+
+  // mirror styles
+  const sourceStyles = window.getComputedStyle(element)
+  mirrorStyles.forEach((property) => {
+    $mirror.style.setProperty(property, sourceStyles.getPropertyValue(property))
+  })
+
+  const sourceMetrics = element.getBoundingClientRect()
+  $mirror.style.top = `${sourceMetrics.top}px`
+  $mirror.style.left = `${sourceMetrics.left}px`
+
+  // copy content
+  $mirror.textContent = element.value.substring(0, element.selectionEnd)
+
+  const $virtualCaret = document.createElement('span')
+  $virtualCaret.textContent = '.'
+  $mirror.appendChild($virtualCaret)
+
+  // insert mirror
+  document.body.appendChild($mirror)
+
+  return $virtualCaret
+}
 
 export function setup (settings = {}) {
   if (settings.dialog_enabled === false) {
