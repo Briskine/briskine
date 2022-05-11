@@ -145,7 +145,7 @@ function getDialogPosition (targetNode, instance) {
   }
 }
 
-function getContentEditableCaret (element) {
+function getContentEditableCaret () {
   const selection = window.getSelection()
   if (selection.rangeCount !== 0) {
     const range = selection.getRangeAt(0)

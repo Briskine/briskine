@@ -20,7 +20,7 @@ import {setup as setupBubble, destroy as destroyBubble} from './bubble/bubble.js
 import {setup as setupStatus, destroy as destroyStatus} from './status.js'
 import {setup as setupDialog, destroy as destroyDialog} from './dialog/dialog.js'
 
-function init (settings, doc) {
+function init (settings) {
   if (!document.body) {
     return;
   }
