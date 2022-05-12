@@ -159,6 +159,7 @@ export default async function (env) {
       const appConfig = await firebaseTools.apps.sdkconfig()
       firebaseConfig = appConfig.sdkConfig
     } catch(err) {
+      // eslint-disable-next-line
       console.warn(err)
     }
   }

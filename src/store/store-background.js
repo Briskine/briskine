@@ -67,11 +67,13 @@ function debug (data = [], method = 'log') {
         return;
     }
 
+    /* eslint-disable no-console */
     console.group(data.shift());
     data.forEach((item) => {
         console[method](item);
     });
     console.groupEnd();
+    /* eslint-enable no-console */
 }
 
 // respond to content

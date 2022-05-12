@@ -8,7 +8,6 @@ import store from '../store/store-client.js';
 function getTemplateByShortcut (shortcut) {
   return store.getTemplates()
     .then((templates) => {
-      console.log(templates)
       const template = templates.find((t) => {
         return t.shortcut === shortcut
       })
