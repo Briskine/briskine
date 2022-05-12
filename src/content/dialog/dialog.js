@@ -87,7 +87,19 @@ function defineDialog () {
         this.getTemplateNodes = (query = '') => {
           return store.getTemplates()
             .then((templates) => {
-              console.log(templates)
+              // TODO sort
+              return templates
+                .sort((a, b) => {
+                  return new Date(b.updated_datetime) - new Date(a.updated_datetime)
+                })
+                .map((t) => {
+                  const li = document.createElement('li')
+                  const title = document.createElement('span')
+                  title.textContent = t.title
+                  li.appendChild(title)
+
+                  return li
+                })
             })
         }
       }
@@ -104,6 +116,7 @@ function defineDialog () {
         const signupUrl = `${config.websiteUrl}/signup`
 
         const shadowRoot = this.attachShadow({mode: 'open'})
+        // TODO render a placeholder for the templates
         shadowRoot.innerHTML = `
           <style>${styles}</style>
           <div class="dialog-info">
@@ -126,8 +139,11 @@ function defineDialog () {
           </div>
         `
 
-        // TODO render templates from this list
+        // TODO update template list on sort-change, on templates updated (or on show?)
         this.getTemplateNodes()
+          .then((templateNodes) => {
+            shadowRoot.querySelector('.dialog-templates').replaceChildren(...templateNodes)
+          })
 
         document.addEventListener(dialogShowEvent, this.show)
         document.addEventListener('click', this.hide)
