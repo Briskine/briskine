@@ -46,16 +46,22 @@ function defineDialog () {
 
           console.log('got show', e)
 
+          // detect rtl
+          const targetStyle = window.getComputedStyle(e.target)
+          const direction = targetStyle.direction || 'ltr'
+          this.setAttribute('dir', direction)
+
           // must be set visible before positioning,
           // so we can get its dimensions.
           this.setAttribute(dialogVisibleAttr, true)
 
           const position = getDialogPosition(target, this)
+          this.style.setProperty(targetWidthProperty, `${position.targetWidth}px`)
 
           if (endPositioning) {
-            this.style.setProperty(targetWidthProperty, `${position.targetWidth}px`)
+            this.setAttribute('end', 'true')
           } else {
-            this.style.removeProperty(targetWidthProperty)
+            this.removeAttribute('end')
           }
 
           this.style.top = `${position.top}px`
@@ -88,7 +94,7 @@ function defineDialog () {
           <style>${styles}</style>
           <div>
             dialog
-            <input type="text">
+            <input type="text" style="width: 100%">
           </div>
         `
 
@@ -132,13 +138,9 @@ function getDialogPosition (targetNode, instance) {
   // eg. when we position it next to the qa button.
   const targetMetrics = targetNode.getBoundingClientRect()
 
-  console.log(targetMetrics)
-
   // because we use getBoundingClientRect
   // we need to add the scroll position
   let topPos = targetMetrics.top + targetMetrics.height + scrollTop
-  // TODO add RTL support
-//   let leftPos = targetMetrics.left + targetMetrics.width + scrollLeft - dialogMetrics.width
   let leftPos = targetMetrics.left + scrollLeft
 
   // if targetNode is range
@@ -166,6 +168,7 @@ function getContentEditableCaret () {
     const range = selection.getRangeAt(0)
     // TODO explain
     // https://github.com/w3c/csswg-drafts/issues/2514
+    // TODO doesn't work with rtl positining
     if (range.collapsed === true && range.endContainer.nodeType === Node.ELEMENT_NODE) {
       return range.endContainer
     }

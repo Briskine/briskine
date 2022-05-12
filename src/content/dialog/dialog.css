@@ -19,7 +19,10 @@
   border-radius: 5px;
   background: #fff;
   padding: 10px;
+}
 
+:host([dir=rtl]:not([end])),
+:host([dir=ltr][end]) {
   /* allow positioning on the right/end, when triggered form the bubble.
    * target-width is updated from js.
    */
