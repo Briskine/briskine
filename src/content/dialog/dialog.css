@@ -19,6 +19,11 @@
   border-radius: 5px;
   background: #fff;
   padding: 10px;
+
+  /* allow positioning on the right/end, when triggered form the bubble.
+   * target-width is updated from js.
+   */
+  transform: translateX(calc(-100% + var(--target-width, 100%)));
 }
 
 :host([visible]) {

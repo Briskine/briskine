@@ -12,6 +12,7 @@ const dialogVisibleAttr = 'visible'
 const dialogMaxHeight = 250
 
 const bubbleTagName = 'b-bubble'
+const targetWidthProperty = '--target-width'
 
 function defineDialog () {
   customElements.define(
@@ -21,17 +22,21 @@ function defineDialog () {
         super()
 
         this.show = (e) => {
-          // TODO show only if in an editable element, or from the bubble
           let target
+          let endPositioning = false
+          let removeCaretParent = false
+
           if (isEditable(e.target)) {
             // input, textarea
             target = getEditableCaret(e.target)
+            removeCaretParent = true
           } else if (isContentEditable(e.target)) {
             // contenteditable
             target = getContentEditableCaret(e.target)
           } else if (e.target.tagName.toLowerCase() === bubbleTagName) {
             // bubble
             target = e.target
+            endPositioning = true
           } else {
             return
           }
@@ -45,12 +50,19 @@ function defineDialog () {
           this.setAttribute(dialogVisibleAttr, true)
 
           const position = getDialogPosition(target, this)
+
+          if (endPositioning) {
+            this.style.setProperty(targetWidthProperty, `${position.targetWidth}px`)
+          } else {
+            this.style.removeProperty(targetWidthProperty)
+          }
+
           this.style.top = `${position.top}px`
           this.style.left = `${position.left}px`
 
           // clean-up the virtual caret mirror,
           // used on input and textarea
-          if (isEditable(e.target)) {
+          if (removeCaretParent) {
             target.parentNode.remove()
           }
         }
@@ -81,9 +93,7 @@ function defineDialog () {
 
         const shortcut = this.getAttribute('shortcut')
         if (shortcut) {
-//           Mousetrap.bindGlobal(shortcut, this.show)
-          // HACK
-          Mousetrap.bindGlobal('alt+space', this.show)
+          Mousetrap.bindGlobal(shortcut, this.show)
         }
 
         // TODO set up shortcuts and functionality
@@ -141,7 +151,8 @@ function getDialogPosition (targetNode, instance) {
 
   return {
     top: topPos,
-    left: leftPos
+    left: leftPos,
+    targetWidth: targetMetrics.width,
   }
 }
 
