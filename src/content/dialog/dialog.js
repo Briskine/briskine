@@ -168,7 +168,6 @@ function getContentEditableCaret () {
     const range = selection.getRangeAt(0)
     // TODO explain
     // https://github.com/w3c/csswg-drafts/issues/2514
-    // TODO doesn't work with rtl positining
     if (range.collapsed === true && range.endContainer.nodeType === Node.ELEMENT_NODE) {
       return range.endContainer
     }
