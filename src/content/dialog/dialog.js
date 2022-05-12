@@ -1,6 +1,7 @@
 /* global Mousetrap */
 import store from '../../store/store-client.js'
 import {isContentEditable} from '../editors/editor-contenteditable.js'
+import {bubbleTagName} from '../bubble/bubble.js'
 
 import styles from './dialog.css?raw'
 
@@ -10,13 +11,13 @@ export const dialogShowEvent = 'briskine-dialog'
 
 const dialogVisibleAttr = 'visible'
 const dialogMaxHeight = 250
-
-const bubbleTagName = 'b-bubble'
 const targetWidthProperty = '--target-width'
+
+export const dialogTagName = 'b-dialog'
 
 function defineDialog () {
   customElements.define(
-    'b-dialog',
+    dialogTagName,
     class extends HTMLElement {
       constructor () {
         super()
@@ -85,7 +86,10 @@ function defineDialog () {
         const shadowRoot = this.attachShadow({mode: 'open'})
         shadowRoot.innerHTML = `
           <style>${styles}</style>
-          <div>dialog</div>
+          <div>
+            dialog
+            <input type="text">
+          </div>
         `
 
         document.addEventListener(dialogShowEvent, this.show)

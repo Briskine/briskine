@@ -4,7 +4,7 @@
  */
 
 // import dialog from '../dialog.js'
-import {dialogShowEvent} from '../dialog/dialog.js'
+import {dialogShowEvent, dialogTagName} from '../dialog/dialog.js'
 import store from '../../store/store-client.js'
 
 import bubbleStyles from './bubble.css?raw'
@@ -12,11 +12,12 @@ import bubbleStyles from './bubble.css?raw'
 let bubbleInstance = null
 let activeTextfield = null
 const domObservers = []
-const dialogSelector = '.qt-dropdown'
+
+export const bubbleTagName = 'b-bubble'
 
 function defineBubble () {
   customElements.define(
-    'b-bubble',
+    bubbleTagName,
     class extends HTMLElement {
         constructor() {
             super();
@@ -118,7 +119,7 @@ function focusTextfield (e) {
 function blurTextfield (e) {
   // don't hide the bubble if the newly focused node is in the dialog.
   // eg. when clicking the bubble.
-  if (e.relatedTarget && e.relatedTarget.closest(dialogSelector)) {
+  if (e.relatedTarget && e.relatedTarget.closest(dialogTagName)) {
       return;
   }
 
