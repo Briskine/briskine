@@ -1,8 +1,12 @@
 /* global Mousetrap, REGISTER_DISABLED */
+import browser from 'webextension-polyfill'
+
 import store from '../../store/store-client.js'
 import {isContentEditable} from '../editors/editor-contenteditable.js'
 import {bubbleTagName} from '../bubble/bubble.js'
 import {getEditableCaret, getContentEditableCaret, getDialogPosition} from './dialog-position.js'
+
+import config from '../../config.js'
 
 import styles from './dialog.css?raw'
 
@@ -92,17 +96,22 @@ function defineDialog () {
           return
         }
 
-        const signInUrl = ''
+        // HACK
+        // browserAction.openPopup is not supported in all browsers yet.
+        // https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/browserAction/openPopup
+        // Open the browserAction popup in a new tab.
+        const popupUrl = browser.runtime.getURL('popup/popup.html')
+        const signupUrl = `${config.websiteUrl}/signup`
 
         const shadowRoot = this.attachShadow({mode: 'open'})
         shadowRoot.innerHTML = `
           <style>${styles}</style>
           <div class="dialog-info">
             Please
-            <a href="${signInUrl}">Sign in</a>
+            <a href="${popupUrl}" target="_blank">Sign in</a>
             ${!REGISTER_DISABLED ? `
               or
-              <a href="{{signupUrl}}" target="_blank">
+              <a href="${signupUrl}" target="_blank">
                 Create a free account
               </a>
             ` : 'to access your templates.'}
@@ -110,8 +119,8 @@ function defineDialog () {
           <div>
             <input type="search" value="" placeholder="Search templates...">
           </div>
-          <div class="dialog-templates">
-          </div>
+          <ul class="dialog-templates">
+          </ul>
           <div class="dialog-footer">
             footer
           </div>
