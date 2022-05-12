@@ -41,8 +41,11 @@ export function getContentEditableCaret () {
   const selection = window.getSelection()
   if (selection.rangeCount !== 0) {
     const range = selection.getRangeAt(0)
-    // TODO explain
+    // when the caret is collapsed inside an empty element with no text,
+    // getClientRects/getBoundingClientRect returns empty or with zero values.
+    // this is a spec issue:
     // https://github.com/w3c/csswg-drafts/issues/2514
+    // return the endContainer when we can't get the clientRect.
     if (range.collapsed === true && range.endContainer.nodeType === Node.ELEMENT_NODE) {
       return range.endContainer
     }

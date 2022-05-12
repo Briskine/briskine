@@ -43,8 +43,6 @@ function defineDialog () {
 
           e.preventDefault()
 
-          console.log('got show', e)
-
           // detect rtl
           const targetStyle = window.getComputedStyle(e.target)
           const direction = targetStyle.direction || 'ltr'
@@ -74,8 +72,6 @@ function defineDialog () {
         }
 
         this.hide = (e) => {
-          // TODO keep the bubble visible if we showed the dialog from it
-          // and haven't hidden it
           if (this.contains(e.target)) {
             return
           }
