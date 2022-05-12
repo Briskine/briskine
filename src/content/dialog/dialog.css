@@ -10,10 +10,11 @@
   z-index: 2147483646;
   display: none;
 
-  width: 100px;
-  height: 100px;
+  width: 360px;
+  max-height: 250px;
 
   font-family: sans-serif;
+  font-size: 14px;
 
   border: 1px solid red;
   border-radius: 5px;
@@ -33,5 +34,3 @@
   display: block;
 }
 
-/* TODO add support for rtl
- */

@@ -26,7 +26,7 @@ var methods = [
     'getCustomer',
     'setActiveCustomer',
 
-    'getTemplate',
+    'getTemplates',
     'updateTemplateStats',
 
     'signin',

@@ -6,16 +6,15 @@ import autocomplete from './autocomplete.js';
 import store from '../store/store-client.js';
 
 function getTemplateByShortcut (shortcut) {
-  return store.getTemplate()
+  return store.getTemplates()
     .then((templates) => {
-      const templateId = Object.keys(templates).find((id) => {
-        return templates[id].shortcut === shortcut
+      console.log(templates)
+      const template = templates.find((t) => {
+        return t.shortcut === shortcut
       })
 
-      let template
-      if (templateId) {
-        template = templates[templateId]
-        store.updateTemplateStats(templateId)
+      if (template) {
+        store.updateTemplateStats(template.id)
       }
 
       return template

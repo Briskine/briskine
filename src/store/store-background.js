@@ -37,15 +37,13 @@ var updateTemplateStats = function (id) {
 }
 
 // extend getTemplate to include lastuse_datetime
-var getTemplate = function (plugin) {
+var getTemplates = function (plugin) {
     return function (params = {}) {
-        return plugin.getTemplate(params)
+        return plugin.getTemplates(params)
             .then((templates) => {
-                const list = {};
-                Object.keys(templates).forEach((id) => {
-                    list[id] = Object.assign({}, templates[id], lastuseCache[id]);
-                });
-                return list;
+                return templates.map((t) => {
+                  return Object.assign({}, t, lastuseCache[t.id])
+                })
             });
     };
 };
@@ -55,7 +53,7 @@ function getStore () {
     plugin.trigger = trigger;
 
     // lastuse_datetime support
-    plugin.getTemplate = getTemplate(_FIRESTORE_PLUGIN);
+    plugin.getTemplates = getTemplates(_FIRESTORE_PLUGIN);
     plugin.updateTemplateStats = updateTemplateStats;
 
     return plugin;

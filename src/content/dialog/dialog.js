@@ -1,4 +1,5 @@
-/* global Mousetrap */
+/* global Mousetrap, REGISTER_DISABLED */
+import store from '../../store/store-client.js'
 import {isContentEditable} from '../editors/editor-contenteditable.js'
 import {bubbleTagName} from '../bubble/bubble.js'
 import {getEditableCaret, getContentEditableCaret, getDialogPosition} from './dialog-position.js'
@@ -78,20 +79,46 @@ function defineDialog () {
 
           this.removeAttribute(dialogVisibleAttr)
         }
+
+        this.getTemplateNodes = (query = '') => {
+          return store.getTemplates()
+            .then((templates) => {
+              console.log(templates)
+            })
+        }
       }
       connectedCallback () {
         if (!this.isConnected) {
           return
         }
 
+        const signInUrl = ''
+
         const shadowRoot = this.attachShadow({mode: 'open'})
         shadowRoot.innerHTML = `
           <style>${styles}</style>
+          <div class="dialog-info">
+            Please
+            <a href="${signInUrl}">Sign in</a>
+            ${!REGISTER_DISABLED ? `
+              or
+              <a href="{{signupUrl}}" target="_blank">
+                Create a free account
+              </a>
+            ` : 'to access your templates.'}
+          </div>
           <div>
-            dialog
-            <input type="text" style="width: 100%">
+            <input type="search" value="" placeholder="Search templates...">
+          </div>
+          <div class="dialog-templates">
+          </div>
+          <div class="dialog-footer">
+            footer
           </div>
         `
+
+        // TODO render templates from this list
+        this.getTemplateNodes()
 
         document.addEventListener(dialogShowEvent, this.show)
         document.addEventListener('click', this.hide)

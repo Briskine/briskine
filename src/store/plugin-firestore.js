@@ -406,16 +406,12 @@ function getDefaultTemplates () {
       })
     }
 
-    const legacyTemplates = {};
-    defaultTemplates.forEach((template, index) => {
-        const id = String(index);
-        legacyTemplates[id] = Object.assign({
+    return defaultTemplates.map((template, index) => {
+        const id = String(index)
+        return Object.assign({
             id: id,
-            deleted: 0
-        }, template);
-    });
-
-    return legacyTemplates;
+        }, template)
+    })
 }
 
 function isFree (user) {
@@ -436,7 +432,7 @@ function idsToTags (ids, tags) {
   })
 }
 
-var getTemplate = () => {
+var getTemplates = () => {
   return getSignedInUser()
     .then((user) => {
       return Promise.all([
@@ -466,7 +462,6 @@ var getTemplate = () => {
         ])
       }
 
-      let templates = {}
       let tags = {}
       return getCollection({
           user: user,
@@ -477,25 +472,17 @@ var getTemplate = () => {
           return Promise.all(templateCollections)
         })
         .then((res) => {
-
-          res.forEach((list) => {
-            Object.keys(list).forEach((id) => {
-              templates[id] = convertToNativeDates(
-                Object.assign(
-                  {},
-                  list[id],
-                  {
-                    id: id,
-                    tags: idsToTags(list[id].tags, tags).join(', ')
-                  }
-                )
-              )
-            })
-          })
-
-          return templates
+          // merge and de-duplication
+          return Object.assign({}, ...res)
         })
-
+        .then((templates) => {
+          return Object.keys(templates).map((id) => {
+            return Object.assign({
+              id: id,
+              tags: idsToTags(templates[id].tags, tags).join(', '),
+            }, convertToNativeDates(templates[id]))
+          })
+        })
     })
     .catch((err) => {
         if (isLoggedOut(err)) {
@@ -706,7 +693,7 @@ export default {
     getCustomer: getCustomer,
     setActiveCustomer: setActiveCustomer,
 
-    getTemplate: getTemplate,
+    getTemplates: getTemplates,
 
     signin: signin,
     logout: logout,
