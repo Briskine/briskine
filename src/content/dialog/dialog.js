@@ -5,6 +5,7 @@ import store from '../../store/store-client.js'
 import {isContentEditable} from '../editors/editor-contenteditable.js'
 import {bubbleTagName} from '../bubble/bubble.js'
 import {getEditableCaret, getContentEditableCaret, getDialogPosition} from './dialog-position.js'
+import fuzzySearch from '../search.js'
 
 import config from '../../config.js'
 
@@ -48,6 +49,7 @@ function defineDialog () {
 
           e.preventDefault()
 
+
           // detect rtl
           const targetStyle = window.getComputedStyle(e.target)
           const direction = targetStyle.direction || 'ltr'
@@ -81,14 +83,24 @@ function defineDialog () {
             return
           }
 
+          // TODO clear the search query
+          this.shadowRoot.querySelector('input[type=search]').value = ''
+          this.populateTemplates()
+
+
           this.removeAttribute(dialogVisibleAttr)
         }
 
         this.getTemplateNodes = (query = '') => {
           return store.getTemplates()
             .then((templates) => {
-              // TODO sort
-              return templates
+              let sortedTemplates = templates
+              if (query) {
+                sortedTemplates = fuzzySearch(templates, query)
+              }
+
+              return sortedTemplates
+                // TODO sort filters
                 .sort((a, b) => {
                   return new Date(b.updated_datetime) - new Date(a.updated_datetime)
                 })
@@ -100,6 +112,15 @@ function defineDialog () {
 
                   return li
                 })
+            })
+        }
+
+        this.populateTemplates = (query = '') => {
+          console.log('populate')
+          // TODO update template list on sort-change, on templates updated (or on show?)
+          this.getTemplateNodes(query)
+            .then((templateNodes) => {
+              this.shadowRoot.querySelector('.dialog-templates').replaceChildren(...templateNodes)
             })
         }
       }
@@ -133,17 +154,27 @@ function defineDialog () {
             <input type="search" value="" placeholder="Search templates...">
           </div>
           <ul class="dialog-templates">
+            <li>loading</li>
           </ul>
           <div class="dialog-footer">
             footer
           </div>
         `
 
-        // TODO update template list on sort-change, on templates updated (or on show?)
-        this.getTemplateNodes()
-          .then((templateNodes) => {
-            shadowRoot.querySelector('.dialog-templates').replaceChildren(...templateNodes)
-          })
+        store.on('login', this.populateTemplates)
+        store.on('logout', this.populateTemplates)
+
+        let searchDebouncer
+        shadowRoot.querySelector('input[type=search]').addEventListener('input', (e) => {
+          if (searchDebouncer) {
+            clearTimeout(searchDebouncer)
+          }
+
+          const query = e.target.value
+          searchDebouncer = setTimeout(() => {
+            this.populateTemplates(query)
+          }, 100)
+        })
 
         document.addEventListener(dialogShowEvent, this.show)
         document.addEventListener('click', this.hide)

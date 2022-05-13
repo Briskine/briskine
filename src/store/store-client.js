@@ -74,6 +74,5 @@ methods.forEach((method) => {
 });
 
 optionsStore.on = on;
-optionsStore.trigger = trigger;
 
 export default optionsStore;
