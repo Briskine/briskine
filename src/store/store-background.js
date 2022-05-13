@@ -1,101 +1,114 @@
 /* globals ENV */
-import browser from 'webextension-polyfill';
+import browser from 'webextension-polyfill'
 
-import _FIRESTORE_PLUGIN from './plugin-firestore.js';
+import * as storeApi from './store-api.js'
 
-var trigger = function (name) {
-    // send trigger message to client store
-    return new Promise((resolve) => {
-        browser.runtime.sendMessage({
-                type: 'trigger',
-                data: {
-                    name: name
-                }
-            })
-            .then((res) => {
-                return resolve(res);
-            })
-            .catch(() => {
-                return debug(
-                    [
-                        'browser.runtime.lastError',
-                        browser.runtime.lastError.message,
-                        name
-                    ],
-                    'warn'
-                );
-            });
-    });
-};
+function trigger (name) {
+  // send trigger message to client store
+  return new Promise((resolve) => {
+    browser.runtime
+      .sendMessage({
+        type: 'trigger',
+        data: {
+          name: name
+        }
+      })
+      .then((res) => {
+        return resolve(res)
+      })
+      .catch(() => {
+        return debug(
+          [
+            'browser.runtime.lastError',
+            browser.runtime.lastError.message,
+            name
+          ],
+          'warn'
+        )
+      })
+  })
+}
 
-const lastuseCache = {};
-var updateTemplateStats = function (id) {
-    lastuseCache[id] = {
-        lastuse_datetime: new Date().toISOString()
-    }
-    return Promise.resolve(lastuseCache)
+const lastuseCache = {}
+function updateTemplateStats (id) {
+  lastuseCache[id] = {
+    lastuse_datetime: new Date().toISOString()
+  }
+  return Promise.resolve(lastuseCache)
 }
 
 // extend getTemplate to include lastuse_datetime
-var getTemplates = function (plugin) {
-    return function (params = {}) {
-        return plugin.getTemplates(params)
-            .then((templates) => {
-                return templates.map((t) => {
-                  return Object.assign({}, t, lastuseCache[t.id])
-                })
-            });
-    };
-};
-
-function getStore () {
-   var plugin = Object.assign({}, _FIRESTORE_PLUGIN);
-    plugin.trigger = trigger;
-
-    // lastuse_datetime support
-    plugin.getTemplates = getTemplates(_FIRESTORE_PLUGIN);
-    plugin.updateTemplateStats = updateTemplateStats;
-
-    return plugin;
+function getTemplates () {
+  return storeApi.getTemplates()
+    .then((templates) => {
+      return templates.map((t) => {
+        return Object.assign({}, t, lastuseCache[t.id])
+      })
+    })
 }
 
-// global store
-window.store = getStore();
+function signin (params = {}) {
+  return storeApi.signin(params)
+    .then(() => {
+      return trigger('login')
+    })
+}
+
+function logout () {
+  return storeApi.logout()
+    .then(() => {
+      return trigger('logout')
+    })
+}
+
+function getSession () {
+  return storeApi.getSession()
+    .then(() => {
+      return trigger('login')
+    })
+}
+
+const store = Object.assign({}, storeApi)
+store.getTemplates = getTemplates
+store.updateTemplateStats = updateTemplateStats
+store.signin = signin
+store.logout = logout
+store.getSession = getSession
 
 function debug (data = [], method = 'log') {
-    if (ENV === 'production') {
-        return;
-    }
+  if (ENV === 'production') {
+      return;
+  }
 
-    /* eslint-disable no-console */
-    console.group(data.shift());
-    data.forEach((item) => {
-        console[method](item);
-    });
-    console.groupEnd();
-    /* eslint-enable no-console */
+  /* eslint-disable no-console */
+  console.group(data.shift());
+  data.forEach((item) => {
+      console[method](item);
+  });
+  console.groupEnd();
+  /* eslint-enable no-console */
 }
 
 // respond to content
 browser.runtime.onMessage.addListener((req) => {
-    if (
-        req.type &&
-        typeof window.store[req.type] === 'function'
-    ) {
-        return window.store[req.type](req.data).then((data = {}) => {
-            // debug store calls
-            debug([req.type, req.data, data]);
+  if (
+    req.type &&
+    typeof store[req.type] === 'function'
+  ) {
+    return store[req.type](req.data).then((data = {}) => {
+      // debug store calls
+      debug([req.type, req.data, data])
 
-            return data;
-        }).catch((err) => {
-            debug([req.type, req.data, err], 'warn');
+      return data
+    }).catch((err) => {
+      debug([req.type, req.data, err], 'warn')
 
-            // catch errors on client
-            return {
-                storeError:err
-            };
-        });
-    }
+      // catch errors on client
+      return {
+        storeError: err
+      }
+    })
+  }
 
-    return;
-});
+  return
+})
