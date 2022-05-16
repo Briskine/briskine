@@ -83,11 +83,6 @@ function defineDialog () {
             return
           }
 
-          // TODO clear the search query
-          this.shadowRoot.querySelector('input[type=search]').value = ''
-          this.populateTemplates()
-
-
           this.removeAttribute(dialogVisibleAttr)
         }
 
@@ -122,6 +117,16 @@ function defineDialog () {
             .then((templateNodes) => {
               this.shadowRoot.querySelector('.dialog-templates').replaceChildren(...templateNodes)
             })
+        }
+      }
+      static get observedAttributes () {
+        return ['visible']
+      }
+      attributeChangedCallback (name, oldValue, newValue) {
+        if (name === 'visible' && newValue === null) {
+          // clear the search query when hiding the dialog
+          this.shadowRoot.querySelector('input[type=search]').value = ''
+          this.populateTemplates()
         }
       }
       connectedCallback () {
