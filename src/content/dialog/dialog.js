@@ -76,6 +76,11 @@ function defineDialog () {
           if (removeCaretParent) {
             target.parentNode.remove()
           }
+
+          // clear the search query when first showing the dialog
+          this.shadowRoot.querySelector('input[type=search]').value = ''
+          // populate the template list
+          this.populateTemplates()
         }
 
         this.hide = (e) => {
@@ -84,10 +89,6 @@ function defineDialog () {
           }
 
           if (this.hasAttribute(dialogVisibleAttr)) {
-            // clear the search query when hiding the dialog
-            this.shadowRoot.querySelector('input[type=search]').value = ''
-            this.populateTemplates()
-
             this.removeAttribute(dialogVisibleAttr)
           }
         }
