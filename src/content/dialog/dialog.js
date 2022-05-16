@@ -83,7 +83,13 @@ function defineDialog () {
             return
           }
 
-          this.removeAttribute(dialogVisibleAttr)
+          if (this.hasAttribute(dialogVisibleAttr)) {
+            // clear the search query when hiding the dialog
+            this.shadowRoot.querySelector('input[type=search]').value = ''
+            this.populateTemplates()
+
+            this.removeAttribute(dialogVisibleAttr)
+          }
         }
 
         this.getTemplateNodes = (query = '') => {
@@ -117,16 +123,6 @@ function defineDialog () {
             .then((templateNodes) => {
               this.shadowRoot.querySelector('.dialog-templates').replaceChildren(...templateNodes)
             })
-        }
-      }
-      static get observedAttributes () {
-        return ['visible']
-      }
-      attributeChangedCallback (name, oldValue, newValue) {
-        if (name === 'visible' && newValue === null) {
-          // clear the search query when hiding the dialog
-          this.shadowRoot.querySelector('input[type=search]').value = ''
-          this.populateTemplates()
         }
       }
       connectedCallback () {
