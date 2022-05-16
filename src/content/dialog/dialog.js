@@ -27,6 +27,10 @@ function defineDialog () {
       constructor () {
         super()
 
+        this.searchField = null
+        this.editor = null
+        this.editorRange = null
+
         this.show = (e) => {
           let target
           let endPositioning = false
@@ -49,6 +53,13 @@ function defineDialog () {
 
           e.preventDefault()
 
+          // cache editor and range,
+          // to restore later.
+          this.editor = document.activeElement
+          const selection = window.getSelection()
+          if (selection.rangeCount !== 0) {
+            this.range = selection.getRangeAt(0)
+          }
 
           // detect rtl
           const targetStyle = window.getComputedStyle(e.target)
@@ -78,17 +89,15 @@ function defineDialog () {
           }
 
           // clear the search query when first showing the dialog
-          this.shadowRoot.querySelector('input[type=search]').value = ''
+          this.searchField.value = ''
+          this.searchField.focus()
+
           // populate the template list
           this.populateTemplates()
         }
 
-        this.hide = (e) => {
-          if (this.contains(e.target)) {
-            return
-          }
-
-          if (this.hasAttribute(dialogVisibleAttr)) {
+        this.hideOnClick = (e) => {
+          if (!this.contains(e.target) && this.hasAttribute(dialogVisibleAttr)) {
             this.removeAttribute(dialogVisibleAttr)
           }
         }
@@ -175,7 +184,8 @@ function defineDialog () {
         store.on('logout', this.populateTemplates)
 
         let searchDebouncer
-        shadowRoot.querySelector('input[type=search]').addEventListener('input', (e) => {
+        this.searchField = shadowRoot.querySelector('input[type=search]')
+        this.searchField.addEventListener('input', (e) => {
           if (searchDebouncer) {
             clearTimeout(searchDebouncer)
           }
@@ -187,12 +197,27 @@ function defineDialog () {
         })
 
         document.addEventListener(dialogShowEvent, this.show)
-        document.addEventListener('click', this.hide)
+        document.addEventListener('click', this.hideOnClick)
 
         const shortcut = this.getAttribute('shortcut')
         if (shortcut) {
           Mousetrap.bindGlobal(shortcut, this.show)
         }
+        Mousetrap.bindGlobal('escape', (e) => {
+          e.stopPropagation()
+          this.removeAttribute(dialogVisibleAttr)
+
+          // TODO restore focus
+          if (this.editor) {
+            this.editor.focus()
+
+            if (this.range) {
+              const selection = window.getSelection()
+              selection.removeAllRanges()
+              selection.addRange(this.range)
+            }
+          }
+        })
 
         // TODO set up shortcuts and functionality
         // TODO instead of dialog_limit, use infinite loading with intersection observer
@@ -201,7 +226,7 @@ function defineDialog () {
         console.log('disconnectedCallback')
 
         document.removeEventListener(dialogShowEvent, this.show)
-        document.removeEventListener('click', this.hide)
+        document.removeEventListener('click', this.hideOnClick)
 
         // TODO remove key bindings
       }
@@ -219,7 +244,7 @@ export function setup (settings = {}) {
   }
 
   // dialog is defined later,
-  // to avoid errors with other existing intances on page,
+  // to avoid errors with other existing instances on page,
   // when reloading the bubble without page refresh.
   // (connectedCallback is triggered when re-defining an existing element)
   defineDialog()
