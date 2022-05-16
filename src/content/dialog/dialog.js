@@ -101,6 +101,14 @@ function defineDialog () {
                 sortedTemplates = fuzzySearch(templates, query)
               }
 
+              // TODO return a blank slate if we don't find any templates
+              if (!sortedTemplates.length) {
+                const blank = document.createElement('div')
+                blank.textContent = 'no templates found'
+
+                return [blank]
+              }
+
               return sortedTemplates
                 // TODO sort filters
                 .sort((a, b) => {
