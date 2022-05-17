@@ -131,12 +131,14 @@ function defineDialog () {
                     li.classList.add(activeClass)
                   }
 
+                  const plainBody = htmlToText(t.body)
+                  li.title = plainBody
                   li.innerHTML = `
                     <div>
                       <h1>${htmlToText(t.title)}</h1>
                       <abbr>${htmlToText(t.shortcut)}</abbr>
                     </div>
-                    <p>${htmlToText(t.body)}</p>
+                    <p>${plainBody}</p>
                     <a href="${config.functionsUrl}/template/${t.id}" target="_blank">Edit</a>
                   `
                   return li
