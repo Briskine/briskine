@@ -159,24 +159,24 @@ function defineDialog () {
         // TODO render a placeholder for the templates
         shadowRoot.innerHTML = `
           <style>${styles}</style>
-          <div class="dialog-info">
-            Please
-            <a href="${popupUrl}" target="_blank">Sign in</a>
-            ${!REGISTER_DISABLED ? `
-              or
-              <a href="${signupUrl}" target="_blank">
-                Create a free account
-              </a>
-            ` : 'to access your templates.'}
-          </div>
-          <div>
+          <div class="dialog-container">
             <input type="search" value="" placeholder="Search templates...">
-          </div>
-          <ul class="dialog-templates">
-            <li>loading</li>
-          </ul>
-          <div class="dialog-footer">
-            footer
+            <div class="dialog-info">
+              Please
+              <a href="${popupUrl}" target="_blank">Sign in</a>
+              ${!REGISTER_DISABLED ? `
+                or
+                <a href="${signupUrl}" target="_blank">
+                  Create a free account
+                </a>
+              ` : 'to access your templates.'}
+            </div>
+            <ul class="dialog-templates">
+              <li>loading</li>
+            </ul>
+            <div class="dialog-footer">
+              footer
+            </div>
           </div>
         `
 
