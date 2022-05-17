@@ -79,7 +79,7 @@ input[type=search]:focus {
 
 .dialog-templates {
   flex: 1;
-  padding: 1px;
+  padding: 0;
   margin: 0;
   overflow: auto;
 
@@ -91,6 +91,7 @@ input[type=search]:focus {
   width: 100%;
   padding: 8px 12px;
 
+  cursor: pointer;
   color: #161616;
   white-space: nowrap;
 }
@@ -116,10 +117,20 @@ input[type=search]:focus {
 }
 
 .dialog-templates li a {
+  display: none;
+
   position: absolute;
   right: 12px;
   top: 50%;
   transform: translateY(-50%);
+}
+
+.dialog-templates li.active {
+  background: var(--gray);
+}
+
+.dialog-templates li.active a {
+  display: block;
 }
 
 .dialog-footer {

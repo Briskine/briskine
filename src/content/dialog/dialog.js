@@ -15,11 +15,11 @@ import styles from './dialog.css?raw'
 let dialogInstance = null
 
 export const dialogShowEvent = 'briskine-dialog'
+export const dialogTagName = 'b-dialog'
 
 const dialogVisibleAttr = 'visible'
 const targetWidthProperty = '--target-width'
-
-export const dialogTagName = 'b-dialog'
+const activeClass = 'active'
 
 function defineDialog () {
   customElements.define(
@@ -124,8 +124,13 @@ function defineDialog () {
                 .sort((a, b) => {
                   return new Date(b.updated_datetime) - new Date(a.updated_datetime)
                 })
-                .map((t) => {
+                .map((t, i) => {
                   const li = document.createElement('li')
+                  li.setAttribute('data-id', t.id)
+                  if (i === 0) {
+                    li.classList.add(activeClass)
+                  }
+
                   li.innerHTML = `
                     <div>
                       <h1>${htmlToText(t.title)}</h1>
@@ -146,6 +151,18 @@ function defineDialog () {
             .then((templateNodes) => {
               this.shadowRoot.querySelector('.dialog-templates').replaceChildren(...templateNodes)
             })
+        }
+
+        this.selectTemplate = (e) => {
+          if (!e.target || !e.target.hasAttribute('data-id')) {
+            return
+          }
+
+          const active = this.shadowRoot.querySelector(`.${activeClass}`)
+          if (active !== e.target) {
+            active.classList.remove(activeClass)
+            e.target.classList.add(activeClass)
+          }
         }
       }
       connectedCallback () {
@@ -203,23 +220,26 @@ function defineDialog () {
 
         document.addEventListener(dialogShowEvent, this.show)
         document.addEventListener('click', this.hideOnClick)
+        this.shadowRoot.addEventListener('mouseover', this.selectTemplate)
 
         const shortcut = this.getAttribute('shortcut')
         if (shortcut) {
           Mousetrap.bindGlobal(shortcut, this.show)
         }
         Mousetrap.bindGlobal('escape', (e) => {
-          e.stopPropagation()
-          this.removeAttribute(dialogVisibleAttr)
+          if (this.hasAttribute(dialogVisibleAttr)) {
+            e.stopPropagation()
+            this.removeAttribute(dialogVisibleAttr)
 
-          // TODO restore focus
-          if (this.editor) {
-            this.editor.focus()
+            // TODO restore focus
+            if (this.editor) {
+              this.editor.focus()
 
-            if (this.range) {
-              const selection = window.getSelection()
-              selection.removeAllRanges()
-              selection.addRange(this.range)
+              if (this.range) {
+                const selection = window.getSelection()
+                selection.removeAllRanges()
+                selection.addRange(this.range)
+              }
             }
           }
         })
