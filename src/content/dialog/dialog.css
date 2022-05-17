@@ -87,7 +87,39 @@ input[type=search]:focus {
 }
 
 .dialog-templates li {
+  position: relative;
+  width: 100%;
   padding: 8px 12px;
+
+  color: #161616;
+  white-space: nowrap;
+}
+
+.dialog-templates li h1 {
+  display: inline-block;
+  margin: 0;
+
+  font-size: 1.1em;
+}
+
+.dialog-templates li abbr {
+  display: inline-block;
+  padding: 2px;
+  background: red;
+}
+
+.dialog-templates li p {
+  overflow: hidden;
+  margin: 0;
+
+  text-overflow: ellipsis;
+}
+
+.dialog-templates li a {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 .dialog-footer {

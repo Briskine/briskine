@@ -6,6 +6,7 @@ import {isContentEditable} from '../editors/editor-contenteditable.js'
 import {bubbleTagName} from '../bubble/bubble.js'
 import {getEditableCaret, getContentEditableCaret, getDialogPosition} from './dialog-position.js'
 import fuzzySearch from '../search.js'
+import htmlToText from '../utils/html-to-text.js'
 
 import config from '../../config.js'
 
@@ -125,10 +126,14 @@ function defineDialog () {
                 })
                 .map((t) => {
                   const li = document.createElement('li')
-                  const title = document.createElement('span')
-                  title.textContent = t.title
-                  li.appendChild(title)
-
+                  li.innerHTML = `
+                    <div>
+                      <h1>${htmlToText(t.title)}</h1>
+                      <abbr>${htmlToText(t.shortcut)}</abbr>
+                    </div>
+                    <p>${htmlToText(t.body)}</p>
+                    <a href="${config.functionsUrl}/template/${t.id}" target="_blank">Edit</a>
+                  `
                   return li
                 })
             })
