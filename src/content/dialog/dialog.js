@@ -155,16 +155,19 @@ function defineDialog () {
             })
         }
 
-        this.selectTemplate = (e) => {
-          if (!e.target || !e.target.hasAttribute('data-id')) {
+        this.setActive = (id = '') => {
+          const item = this.shadowRoot.querySelector(`[data-id="${id}"]`)
+          if (!item) {
             return
           }
 
           const active = this.shadowRoot.querySelector(`.${activeClass}`)
-          if (active !== e.target) {
+          if (active !== item) {
             active.classList.remove(activeClass)
-            e.target.classList.add(activeClass)
+            item.classList.add(activeClass)
           }
+
+          return item
         }
       }
       connectedCallback () {
@@ -209,6 +212,7 @@ function defineDialog () {
 
         let searchDebouncer
         this.searchField = shadowRoot.querySelector('input[type=search]')
+        // search for templates
         this.searchField.addEventListener('input', (e) => {
           if (searchDebouncer) {
             clearTimeout(searchDebouncer)
@@ -219,10 +223,43 @@ function defineDialog () {
             this.populateTemplates(query)
           }, 100)
         })
+        // keyboard shortcuts for template insert and navigation
+        this.searchField.addEventListener('keydown', (e) => {
+          const active = this.shadowRoot.querySelector(`.${activeClass}`)
+          if (!active) {
+            return
+          }
+
+          if (e.key === 'Enter') {
+            // TODO insert template
+            const activeId = active.dataset.id
+            console.log('insert', activeId)
+            return
+          }
+
+          let nextId
+          if (e.key === 'ArrowDown' && active.nextElementSibling) {
+            nextId = active.nextElementSibling.dataset.id
+          } else if (e.key === 'ArrowUp' && active.previousElementSibling) {
+            nextId = active.previousElementSibling.dataset.id
+          }
+
+          if (nextId) {
+            e.preventDefault()
+            const newActive = this.setActive(nextId)
+            newActive.scrollIntoView()
+          }
+        })
+        // hover templates
+        this.shadowRoot.addEventListener('mouseover', (e) => {
+          const container = e.target.closest('[data-id]')
+          if (container) {
+            this.setActive(container.dataset.id)
+          }
+        })
 
         document.addEventListener(dialogShowEvent, this.show)
         document.addEventListener('click', this.hideOnClick)
-        this.shadowRoot.addEventListener('mouseover', this.selectTemplate)
 
         const shortcut = this.getAttribute('shortcut')
         if (shortcut) {
