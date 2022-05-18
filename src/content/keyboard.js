@@ -32,13 +32,9 @@ export default {
             return true;
         }
 
-        // First get the cursor position
-        autocomplete.cursorPosition = autocomplete.getCursorPosition(element);
-        // Then get the word at the positon
         var word = autocomplete.getSelectedWord({
-            element: element
-        });
-        autocomplete.cursorPosition.word = word;
+          element: element
+        })
 
         if (word.text) {
           getTemplateByShortcut(word.text).then((template) => {
@@ -46,7 +42,8 @@ export default {
               autocomplete.replaceWith({
                   element: element,
                   quicktext: template,
-                  focusNode: focusNode
+                  focusNode: focusNode,
+                  word: word,
               });
             }
           });

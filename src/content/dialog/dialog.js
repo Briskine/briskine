@@ -44,7 +44,7 @@ function defineDialog () {
           let endPositioning = false
           let removeCaretParent = false
 
-          if (isEditable(e.target)) {
+          if (isTextfield(e.target)) {
             // input, textarea
             target = getEditableCaret(e.target)
             removeCaretParent = true
@@ -199,6 +199,7 @@ function defineDialog () {
         }
 
         this.insertTemplate = (id = '') => {
+          // get from template cache
           const template = this.templates.find((t) => t.id === id)
 
           autocomplete.replaceWith({
@@ -352,7 +353,8 @@ function defineDialog () {
   )
 }
 
-function isEditable (element) {
+// is input or textarea
+function isTextfield (element) {
   return ['input', 'textarea'].includes(element.tagName.toLowerCase())
 }
 
