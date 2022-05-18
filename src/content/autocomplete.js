@@ -217,6 +217,7 @@ autocomplete.replaceWith = function (params) {
     ));
 
     // updates word stats
+    // TODO we should count only plain text
     const wordCount = params.quicktext.body.split(' ').length;
     store.getExtensionData().then((data) => {
       store.setExtensionData({

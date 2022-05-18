@@ -3,7 +3,6 @@
  * Floating action button.
  */
 
-// import dialog from '../dialog.js'
 import {dialogShowEvent, dialogTagName} from '../dialog/dialog.js'
 import store from '../../store/store-client.js'
 
@@ -59,16 +58,7 @@ function defineBubble () {
                 e.target.dispatchEvent(new CustomEvent(dialogShowEvent, {
                   bubbles: true,
                   composed: true,
-                  detail: {
-                    focusNode: activeTextfield,
-                  }
                 }))
-
-//                 dialog.completion(e, {
-//                     focusNode: activeTextfield,
-//                     dialogPositionNode: e.target,
-//                     source: 'button'
-//                 });
             });
 
 

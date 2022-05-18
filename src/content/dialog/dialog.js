@@ -7,6 +7,7 @@ import {bubbleTagName} from '../bubble/bubble.js'
 import {getEditableCaret, getContentEditableCaret, getDialogPosition} from './dialog-position.js'
 import fuzzySearch from '../search.js'
 import htmlToText from '../utils/html-to-text.js'
+import autocomplete from '../autocomplete.js'
 
 import config from '../../config.js'
 
@@ -31,8 +32,10 @@ function defineDialog () {
         super()
 
         this.searchField = null
+
         this.editor = null
-        this.editorRange = null
+        this.range = null
+        this.focusNode = null
 
         this.show = (e) => {
           let target
@@ -56,13 +59,20 @@ function defineDialog () {
 
           e.preventDefault()
 
-          // cache editor and range,
-          // to restore later.
+          // cache editor, range and focusNode,
+          // to use for inserting templates or restoring later.
           this.editor = document.activeElement
           const selection = window.getSelection()
           if (selection.rangeCount !== 0) {
             this.range = selection.getRangeAt(0)
           }
+          this.focusNode = selection.focusNode
+
+          // HACK for backwards compatibility
+          autocomplete.cursorPosition = autocomplete.getCursorPosition(this.editor)
+          autocomplete.cursorPosition.word = autocomplete.getSelectedWord({
+            element: this.editor
+          })
 
           // detect rtl
           const targetStyle = window.getComputedStyle(e.target)
@@ -105,7 +115,7 @@ function defineDialog () {
           }
         }
 
-        this.getTemplateNodes = (query = '') => {
+        this.getTemplates = (query = '') => {
           return store.getTemplates()
             .then((templates) => {
               let sortedTemplates = templates
@@ -113,46 +123,57 @@ function defineDialog () {
                 sortedTemplates = fuzzySearch(templates, query)
               }
 
-              // TODO return a blank slate if we don't find any templates
-              if (!sortedTemplates.length) {
-                const blank = document.createElement('div')
-                blank.textContent = 'no templates found'
-
-                return [blank]
-              }
-
+              // TODO sort filters
               return sortedTemplates
-                // TODO sort filters
                 .sort((a, b) => {
                   return new Date(b.updated_datetime) - new Date(a.updated_datetime)
                 })
-                .map((t, i) => {
-                  const li = document.createElement('li')
-                  li.setAttribute('data-id', t.id)
-                  if (i === 0) {
-                    li.classList.add(activeClass)
-                  }
+            })
+            .then((templates) => {
+              // TODO cache result
+              this.templates = templates
 
-                  const plainBody = htmlToText(t.body)
-                  li.title = plainBody
-                  li.innerHTML = `
-                    <div>
-                      <h1>${htmlToText(t.title)}</h1>
-                      <abbr>${htmlToText(t.shortcut)}</abbr>
-                    </div>
-                    <p>${plainBody}</p>
-                    <a href="${config.functionsUrl}/template/${t.id}" target="_blank">Edit</a>
-                  `
-                  return li
-                })
+              return templates
+            })
+        }
+
+        this.getTemplateNodes = (templates = []) => {
+          // TODO return a blank slate if we don't find any templates
+          if (!templates.length) {
+            const blank = document.createElement('div')
+            blank.textContent = 'no templates found'
+
+            return [blank]
+          }
+
+          return templates
+            .map((t, i) => {
+              const li = document.createElement('li')
+              li.setAttribute('data-id', t.id)
+              if (i === 0) {
+                li.classList.add(activeClass)
+              }
+
+              const plainBody = htmlToText(t.body)
+              li.title = plainBody
+              li.innerHTML = `
+                <div>
+                  <h1>${htmlToText(t.title)}</h1>
+                  <abbr>${htmlToText(t.shortcut)}</abbr>
+                </div>
+                <p>${plainBody}</p>
+                <a href="${config.functionsUrl}/template/${t.id}" target="_blank">Edit</a>
+              `
+              return li
             })
         }
 
         this.populateTemplates = (query = '') => {
           console.log('populate')
-          // TODO update template list on sort-change, on templates updated (or on show?)
-          this.getTemplateNodes(query)
-            .then((templateNodes) => {
+          this.getTemplates(query)
+            .then((templates) => {
+              // TODO update template list on sort-change, on templates updated (or on show?)
+              const templateNodes = this.getTemplateNodes(templates)
               this.shadowRoot.querySelector('.dialog-templates').replaceChildren(...templateNodes)
             })
         }
@@ -170,6 +191,21 @@ function defineDialog () {
           }
 
           return item
+        }
+
+        this.insertTemplate = (id = '') => {
+          const template = this.templates.find((t) => t.id === id)
+
+          autocomplete.replaceWith({
+            element: this.editor,
+            quicktext: template,
+            focusNode: this.focusNode
+          })
+
+          // TODO close
+          this.removeAttribute(dialogVisibleAttr)
+
+          // TODO update template stats
         }
       }
       connectedCallback () {
@@ -211,8 +247,8 @@ function defineDialog () {
 
         this.style.setProperty(heightProperty, `${dialogHeight}px`)
 
-        store.on('login', this.populateTemplates)
-        store.on('logout', this.populateTemplates)
+//         store.on('login', this.populateTemplates)
+//         store.on('logout', this.populateTemplates)
 
         let searchDebouncer
         this.searchField = shadowRoot.querySelector('input[type=search]')
@@ -238,7 +274,7 @@ function defineDialog () {
             // TODO insert template
             const activeId = active.dataset.id
             console.log('insert', activeId)
-            return
+            return this.insertTemplate(activeId)
           }
 
           let nextId
@@ -259,6 +295,13 @@ function defineDialog () {
           const container = e.target.closest('[data-id]')
           if (container) {
             this.setActive(container.dataset.id)
+          }
+        })
+        // insert templates on click
+        this.shadowRoot.addEventListener('click', (e) => {
+          const container = e.target.closest('[data-id]')
+          if (container) {
+            this.insertTemplate(container.dataset.id)
           }
         })
 
