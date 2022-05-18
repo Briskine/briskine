@@ -16,7 +16,7 @@
   display: none;
 
   width: 360px;
-  /* set from js
+  /* dialog-height is set from js
    */
   height: var(--dialog-height, 250px);
 

@@ -278,7 +278,9 @@ function defineDialog () {
             if (this.editor) {
               this.editor.focus()
 
-              if (this.range) {
+              // only try to restore the selection on contenteditable.
+              // input and textarea will restore the correct range with focus().
+              if (this.range && isContentEditable(this.editor)) {
                 const selection = window.getSelection()
                 selection.removeAllRanges()
                 selection.addRange(this.range)
