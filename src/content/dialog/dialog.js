@@ -32,6 +32,7 @@ function defineDialog () {
         super()
 
         this.searchField = null
+        this.templates = []
 
         this.editor = null
         this.range = null
@@ -130,9 +131,6 @@ function defineDialog () {
                 })
             })
             .then((templates) => {
-              // TODO cache result
-              this.templates = templates
-
               return templates
             })
         }
@@ -169,9 +167,16 @@ function defineDialog () {
         }
 
         this.populateTemplates = (query = '') => {
-          console.log('populate')
           this.getTemplates(query)
             .then((templates) => {
+              // naive deep compare, in case the templates didn't change
+              if (JSON.stringify(this.templates) === JSON.stringify(templates)) {
+                return
+              }
+
+              // cache result
+              this.templates = templates
+
               // TODO update template list on sort-change, on templates updated (or on show?)
               const templateNodes = this.getTemplateNodes(templates)
               this.shadowRoot.querySelector('.dialog-templates').replaceChildren(...templateNodes)
@@ -238,7 +243,7 @@ function defineDialog () {
               ` : 'to access your templates.'}
             </div>
             <ul class="dialog-templates">
-              <li>loading</li>
+              <div>loading</div>
             </ul>
             <div class="dialog-footer">
               footer
