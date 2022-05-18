@@ -40,6 +40,11 @@ function defineDialog () {
         this.word = null
 
         this.show = (e) => {
+          // dialog is already visible
+          if (this.hasAttribute(dialogVisibleAttr)) {
+            return
+          }
+
           let target
           let endPositioning = false
           let removeCaretParent = false
