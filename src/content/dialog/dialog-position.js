@@ -1,6 +1,6 @@
-const dialogMaxHeight = 250
-
-export function getDialogPosition (targetNode, instance) {
+/* Dialog positioning and caret detection
+ */
+export function getDialogPosition (targetNode, instance, dialogMaxHeight = 250) {
   const pageHeight = window.innerHeight
   const scrollTop = window.scrollY
   const scrollLeft = window.scrollX

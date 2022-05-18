@@ -20,6 +20,8 @@ export const dialogTagName = 'b-dialog'
 const dialogVisibleAttr = 'visible'
 const targetWidthProperty = '--target-width'
 const activeClass = 'active'
+const dialogHeight = 260
+const heightProperty = '--dialog-height'
 
 function defineDialog () {
   customElements.define(
@@ -71,7 +73,7 @@ function defineDialog () {
           // so we can get its dimensions.
           this.setAttribute(dialogVisibleAttr, true)
 
-          const position = getDialogPosition(target, this)
+          const position = getDialogPosition(target, this, dialogHeight)
           this.style.setProperty(targetWidthProperty, `${position.targetWidth}px`)
 
           if (endPositioning) {
@@ -207,6 +209,8 @@ function defineDialog () {
           </div>
         `
 
+        this.style.setProperty(heightProperty, `${dialogHeight}px`)
+
         store.on('login', this.populateTemplates)
         store.on('logout', this.populateTemplates)
 
@@ -223,7 +227,7 @@ function defineDialog () {
             this.populateTemplates(query)
           }, 100)
         })
-        // keyboard shortcuts for template insert and navigation
+        // keyboard navigation and insert for templates
         this.searchField.addEventListener('keydown', (e) => {
           const active = this.shadowRoot.querySelector(`.${activeClass}`)
           if (!active) {
@@ -270,7 +274,7 @@ function defineDialog () {
             e.stopPropagation()
             this.removeAttribute(dialogVisibleAttr)
 
-            // TODO restore focus
+            // restore focus
             if (this.editor) {
               this.editor.focus()
 
@@ -283,7 +287,6 @@ function defineDialog () {
           }
         })
 
-        // TODO set up shortcuts and functionality
         // TODO instead of dialog_limit, use infinite loading with intersection observer
       }
       disconnectedCallback () {

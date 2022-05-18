@@ -16,10 +16,12 @@
   display: none;
 
   width: 360px;
-  height: 250px;
+  /* set from js
+   */
+  height: var(--dialog-height, 250px);
 
   font-family: sans-serif;
-  font-size: 14px;
+  font-size: 13px;
 
   border-radius: var(--radius);
   background: #fff;
