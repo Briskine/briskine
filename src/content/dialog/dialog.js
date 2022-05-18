@@ -7,7 +7,7 @@ import {bubbleTagName} from '../bubble/bubble.js'
 import {getEditableCaret, getContentEditableCaret, getDialogPosition} from './dialog-position.js'
 import fuzzySearch from '../search.js'
 import htmlToText from '../utils/html-to-text.js'
-import autocomplete from '../autocomplete.js'
+import {autocomplete, getSelectedWord} from '../autocomplete.js'
 
 import config from '../../config.js'
 
@@ -69,9 +69,7 @@ function defineDialog () {
             this.range = selection.getRangeAt(0)
           }
           this.focusNode = selection.focusNode
-
-          // HACK for backwards compatibility
-          this.word = autocomplete.getSelectedWord({
+          this.word = getSelectedWord({
             element: this.editor
           })
 
@@ -202,7 +200,7 @@ function defineDialog () {
           // get from template cache
           const template = this.templates.find((t) => t.id === id)
 
-          autocomplete.replaceWith({
+          autocomplete({
             quicktext: template,
             element: this.editor,
             focusNode: this.focusNode,

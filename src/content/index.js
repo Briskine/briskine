@@ -11,7 +11,7 @@ import './content.css'
 import './helpers/content-helpers.js'
 
 import store from '../store/store-client.js'
-import keyboard from './keyboard.js'
+import {keyboardAutocomplete} from './keyboard.js'
 // import dialog from './dialog.js'
 import config from '../config.js'
 
@@ -53,7 +53,7 @@ function init (settings) {
   if (settings.expand_enabled) {
       Mousetrap.bindGlobal(
           settings.expand_shortcut,
-          keyboard.completion
+          keyboardAutocomplete
       );
   }
 
