@@ -61,7 +61,9 @@ autocomplete.getSelectedWord = function (params) {
                 break;
         }
     } else {
-        beforeSelection = $(params.element).val().substr(0, autocomplete.cursorPosition.end);
+      // TODO needs testing
+//       beforeSelection = $(params.element).val().substr(0, autocomplete.cursorPosition.end);
+      beforeSelection = $(params.element).val().substr(0, params.element.selectionEnd)
     }
 
     // Replace all &nbsp; with normal spaces
@@ -206,7 +208,8 @@ autocomplete.getCursorPosition = function (element) {
 };
 
 autocomplete.replaceWith = function (params) {
-    var word = autocomplete.cursorPosition.word;
+  // TODO stop getting the word from autocomplete.cursorPosition
+    var word = params.word || autocomplete.cursorPosition.word;
 
     runPlugins(Object.assign(
         {},

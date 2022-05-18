@@ -36,6 +36,7 @@ function defineDialog () {
         this.editor = null
         this.range = null
         this.focusNode = null
+        this.word = null
 
         this.show = (e) => {
           let target
@@ -69,8 +70,7 @@ function defineDialog () {
           this.focusNode = selection.focusNode
 
           // HACK for backwards compatibility
-          autocomplete.cursorPosition = autocomplete.getCursorPosition(this.editor)
-          autocomplete.cursorPosition.word = autocomplete.getSelectedWord({
+          this.word = autocomplete.getSelectedWord({
             element: this.editor
           })
 
@@ -197,9 +197,10 @@ function defineDialog () {
           const template = this.templates.find((t) => t.id === id)
 
           autocomplete.replaceWith({
-            element: this.editor,
             quicktext: template,
-            focusNode: this.focusNode
+            element: this.editor,
+            focusNode: this.focusNode,
+            word: this.word,
           })
 
           // TODO close
