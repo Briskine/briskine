@@ -19,24 +19,59 @@ function setCursorPosition (container, node) {
         focusNode = selection.focusNode;
     }
 
-    // Loom browser extension causes the focusNode to always be an element
-    // on certain websites.
-    // we need to have a text node in the end
+    // TODO BUG error thrown when inserting with the dialog
+    // and the focusNode is a element node
+
+    console.log(focusNode.textContent, focusNode.childNodes.length)
+
+    // TODO we probably don't need this anymore
+//     if (focusNode.nodeType === document.ELEMENT_NODE) {
+//       let focusOffset = selection.focusOffset
+//       // when focusNode can have child nodes,
+//       // focusOffset is the index in the childNodes collection
+//       // of the focus node where the selection ends.
+//
+//       // TODO we can't use focusOffset here, since it only works for the first level
+//       // from then on, it's incorrect as it refers to the top-level focusNode
+//
+//       // *but* if the focus point is placed after the anchor point,
+//       // (when we insert templates with the shortcut, not from the dialog),
+//       // the focus point is the first position after (not part of the selection),
+//       // therefore focusOffset can be equal to the length of focusNode childNodes.
+//       // https://developer.mozilla.org/en-US/docs/Web/API/Selection
+//       if (focusOffset === focusNode.childNodes.length) {
+//           focusOffset = selection.focusOffset - 1
+//       }
+//       // select the offset node
+//       focusNode = focusNode.childNodes[focusOffset]
+//       console.log(focusNode, focusOffset)
+//     }
+
+    // focus node can be an element node,
+    // but we need a text node in the end.
     while (focusNode.nodeType === document.ELEMENT_NODE) {
-        if (focusNode.childNodes.length > 0) {
+        if (focusNode.hasChildNodes()) {
             // when focusNode can have child nodes,
             // focusOffset is the index in the childNodes collection
             // of the focus node where the selection ends.
-            let focusOffset = selection.focusOffset;
+
+            // TODO we can't use focusOffset here, since it only works for the first level
+            // from then on, it's incorrect as it refers to the top-level focusNode
+
             // *but* if the focus point is placed after the anchor point,
             // (when we insert templates with the shortcut, not from the dialog),
             // the focus point is the first position after (not part of the selection),
             // therefore focusOffset can be equal to the length of focusNode childNodes.
-            if (selection.focusOffset === focusNode.childNodes.length) {
-                focusOffset = selection.focusOffset - 1;
-            }
-            // select a text node
-            focusNode = focusNode.childNodes[focusOffset];
+            // https://developer.mozilla.org/en-US/docs/Web/API/Selection
+//             if (focusOffset === focusNode.childNodes.length) {
+//                 focusOffset = selection.focusOffset - 1;
+//             }
+//             console.log(focusOffset, focusNode.childNodes)
+//             // select a text node
+//             focusNode = focusNode.childNodes[focusOffset];
+
+            // TODO why not just get the last element of the focus node?
+            focusNode = focusNode.lastChild
         } else {
             // create an empty text node
             var tempNode = document.createTextNode('');
@@ -52,6 +87,7 @@ function setCursorPosition (container, node) {
 
             focusNode = tempNode;
         }
+        console.log(focusNode)
     }
 
     const range = selection.getRangeAt(0);

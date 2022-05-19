@@ -74,6 +74,7 @@ function defineDialog () {
             this.range = selection.getRangeAt(0)
           }
           this.focusNode = selection.focusNode
+          console.log(this.focusNode)
           this.word = getSelectedWord({
             element: this.editor
           })
