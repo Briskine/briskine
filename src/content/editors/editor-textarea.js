@@ -17,7 +17,7 @@ export function insertTextareaTemplate (params = {}) {
   let wordStart = params.word.start;
   if (params.word.text === params.quicktext.shortcut) {
       // decrease the cursor offset with the removed text length
-      cursorOffset = cursorOffset - params.word.end - params.word.start;
+      cursorOffset = cursorOffset - params.word.text.length;
   } else {
       // don't delete anything in the textarea
       // just add the qt
