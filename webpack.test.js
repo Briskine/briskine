@@ -1,9 +1,10 @@
 import path from 'path'
+import glob from 'glob'
 
 export default {
   mode: 'development',
   entry: {
-    test: './test/test.js'
+    test: glob.sync('./src/**/*.spec.js')
   },
   output: {
     filename: '[name].bundle.js',
