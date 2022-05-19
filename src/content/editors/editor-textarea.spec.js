@@ -70,6 +70,28 @@ describe('insertTextareaTemplate', () => {
     expect(textarea.selectionEnd).to.equal(7)
   })
 
+  it('should place the cursor at the end, with preceding spaces and shortcut', () => {
+    textarea.value = '   t'
+    textarea.setSelectionRange(4, 4)
+
+    insertTextareaTemplate({
+      element: textarea,
+      text: 'test',
+      quicktext: {
+        shortcut: 't'
+      },
+      word: {
+        start: 3,
+        end: 4,
+        text: 't'
+      }
+    })
+
+    expect(textarea.value).to.equal('   test')
+    expect(textarea.selectionStart).to.equal(7)
+    expect(textarea.selectionEnd).to.equal(7)
+  })
+
   it('should place the cursor at the end, with preceding shortcut', () => {
     textarea.value = 't'
     textarea.setSelectionRange(1, 1)

@@ -52,19 +52,10 @@ export function getSelectedWord (params) {
     beforeSelection = params.element.value.substring(0, params.element.selectionEnd)
   }
 
-  // Replace all &nbsp; with normal spaces
-  beforeSelection = beforeSelection.replace('\xa0', ' ').trim()
-
-  // TODO BUG probably related to selected word
-  // if we add a couple of spaces before the keyboard shortcut
-  // when we insert the template - with keyboard or dialog
-  // part of the shortcut is still there, and focus is set before the last character of it.
-  // eg. type <space><space><space>nic<Tab>
-
   const start = 1 + Math.max(
       beforeSelection.lastIndexOf(' '),
+      beforeSelection.lastIndexOf('\xa0'),
       beforeSelection.lastIndexOf('\n'),
-      beforeSelection.lastIndexOf('<br>'),
     )
   const text = beforeSelection.substring(start)
   const end = start + text.length
