@@ -66,7 +66,7 @@ export function getSelectedWord (params) {
       beforeSelection.lastIndexOf('\n'),
       beforeSelection.lastIndexOf('<br>'),
     )
-  const text = beforeSelection.substr(start)
+  const text = beforeSelection.substring(start)
   const end = start + text.length
 
   return {
