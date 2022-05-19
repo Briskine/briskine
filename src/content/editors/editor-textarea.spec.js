@@ -92,7 +92,6 @@ describe('insertTextareaTemplate', () => {
     expect(textarea.selectionEnd).to.equal(4)
   })
 
-
   it('should place the cursor at the end, with preceding text and shortcut', () => {
     textarea.value = 'pre t'
     textarea.setSelectionRange(5, 5)

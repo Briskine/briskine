@@ -31,12 +31,6 @@ export function keyboardAutocomplete (e) {
   var selection = window.getSelection()
   var focusNode = selection.focusNode
 
-  // TODO selection is restored at the wrong position when
-  // in input, and input has additional preceding text
-  // BUT the same happens in the current production build.
-  // eg. in the Gmail subject field,
-  // type wat kr<Tab>, and the focus will not be restored to the correct position.
-
   var word = getSelectedWord({
     element: element
   })

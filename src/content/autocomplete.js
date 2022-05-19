@@ -61,8 +61,6 @@ export function getSelectedWord (params) {
   // part of the shortcut is still there, and focus is set before the last character of it.
   // eg. type <space><space><space>nic<Tab>
 
-  // TODO BUG focus restore on input+keyboard autocomplete is probably related
-
   const start = 1 + Math.max(
       beforeSelection.lastIndexOf(' '),
       beforeSelection.lastIndexOf('\n'),
