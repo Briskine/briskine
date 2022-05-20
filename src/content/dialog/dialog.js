@@ -35,9 +35,12 @@ function defineDialog () {
         this.templates = []
 
         this.editor = null
-        this.range = null
-        this.focusNode = null
         this.word = null
+        // selection cache, to restore later
+        this.focusNode = null
+        this.focusOffset = 0
+        this.anchorNode = null
+        this.anchorOffset = 0
 
         this.show = (e) => {
           // dialog is already visible
@@ -49,6 +52,11 @@ function defineDialog () {
           let endPositioning = false
           let removeCaretParent = false
 
+          this.anchorNode = null
+          this.anchorOffset = 0
+          this.focusNode = null
+          this.focusOffset = 0
+
           if (isTextfield(e.target)) {
             // input, textarea
             target = getEditableCaret(e.target)
@@ -56,6 +64,13 @@ function defineDialog () {
           } else if (isContentEditable(e.target)) {
             // contenteditable
             target = getContentEditableCaret(e.target)
+
+            // cache selection details, to restore later
+            const selection = window.getSelection()
+            this.focusNode = selection.focusNode
+            this.focusOffset = selection.focusOffset
+            this.anchorNode = selection.anchorNode
+            this.anchorOffset = selection.anchorOffset
           } else if (e.target.tagName.toLowerCase() === bubbleTagName) {
             // bubble
             target = e.target
@@ -69,11 +84,7 @@ function defineDialog () {
           // cache editor, range and focusNode,
           // to use for inserting templates or restoring later.
           this.editor = document.activeElement
-          const selection = window.getSelection()
-          if (selection.rangeCount !== 0) {
-            this.range = selection.getRangeAt(0)
-          }
-          this.focusNode = selection.focusNode
+
           this.word = getSelectedWord({
             element: this.editor
           })
@@ -201,7 +212,35 @@ function defineDialog () {
           return item
         }
 
+        // TODO restore selection before inserting and stop the focusNode craziness
+        this.restoreSelection = () => {
+          this.editor.focus()
+          // only try to restore the selection on contenteditable.
+          // input and textarea will restore the correct range with focus().
+          if (
+            isContentEditable(this.editor) &&
+            this.anchorNode &&
+            this.focusNode
+          ) {
+            if (
+              this.focusNode.nodeType === document.ELEMENT_NODE &&
+              !this.focusNode.textContent.trim()
+            ) {
+              // TODO
+              // when focusnode is an element node, the caret is restored on the next line
+              // we need to be focused on a text node
+              const textNode = document.createTextNode('')
+              this.focusNode.appendChild(textNode)
+              window.getSelection().setBaseAndExtent(textNode, 0, textNode, 0)
+            } else {
+              window.getSelection().setBaseAndExtent(this.anchorNode, this.anchorOffset, this.focusNode, this.focusOffset)
+            }
+          }
+        }
+
         this.insertTemplate = (id = '') => {
+          this.restoreSelection()
+
           // get from template cache
           const template = this.templates.find((t) => t.id === id)
 
@@ -282,6 +321,7 @@ function defineDialog () {
 
           if (e.key === 'Enter') {
             // TODO insert template
+            e.preventDefault()
             const activeId = active.dataset.id
             return this.insertTemplate(activeId)
           }
@@ -326,18 +366,7 @@ function defineDialog () {
             e.stopPropagation()
             this.removeAttribute(dialogVisibleAttr)
 
-            // restore focus
-            if (this.editor) {
-              this.editor.focus()
-
-              // only try to restore the selection on contenteditable.
-              // input and textarea will restore the correct range with focus().
-              if (this.range && isContentEditable(this.editor)) {
-                const selection = window.getSelection()
-                selection.removeAllRanges()
-                selection.addRange(this.range)
-              }
-            }
+            this.restoreSelection()
           }
         })
 

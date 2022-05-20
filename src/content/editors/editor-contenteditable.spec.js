@@ -1,4 +1,4 @@
-/* globals describe, it */
+/* globals describe, it, before, after */
 import {expect} from 'chai'
 
 import {insertContentEditableTemplate} from './editor-contenteditable.js'
@@ -34,7 +34,7 @@ describe('editor ContentEditable', () => {
 
   it('should insert template into contenteditable, with preceding text', () => {
     editable.innerHTML = '<div>pre</div>'
-    window.getSelection().setBaseAndExtent(editable.firstChild,0,editable.firstChild,0)
+    window.getSelection().setBaseAndExtent(editable.firstChild.firstChild, 3, editable.firstChild.firstChild, 3)
 
     insertContentEditableTemplate({
       text: '<div>test</div>',

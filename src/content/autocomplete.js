@@ -61,10 +61,6 @@ export function getSelectedWord (params) {
   const text = beforeSelection.substring(start)
   const end = start + text.length
 
-  console.log(selection.focusNode, selection.focusOffset, beforeSelection)
-  // TODO gets wrong word when in the middle of the inserted broken template
-  console.log(start, end, text)
-
   return {
     start: start,
     end: end,
