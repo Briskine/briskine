@@ -74,7 +74,6 @@ function defineDialog () {
             this.range = selection.getRangeAt(0)
           }
           this.focusNode = selection.focusNode
-          console.log(this.focusNode)
           this.word = getSelectedWord({
             element: this.editor
           })
@@ -284,7 +283,6 @@ function defineDialog () {
           if (e.key === 'Enter') {
             // TODO insert template
             const activeId = active.dataset.id
-            console.log('insert', activeId)
             return this.insertTemplate(activeId)
           }
 

@@ -34,12 +34,13 @@ export function getSelectedWord (params) {
   if (isContentEditable(params.element)) {
     switch (selection.focusNode.nodeType) {
       // In most cases, the focusNode property refers to a Text Node.
-      case (document.TEXT_NODE): // for text nodes it's easy. Just take the text and find the closest word
-        beforeSelection = selection.focusNode.textContent
+      case (document.TEXT_NODE):
+        // for text nodes take the text until the focusOffset
+        beforeSelection = selection.focusNode.textContent.substring(0, selection.focusOffset)
         break
-      // However, in some cases it may refer to an Element Node
       case (document.ELEMENT_NODE):
-        // In that case, the focusOffset property returns the index in the childNodes collection of the focus node where the selection ends.
+        // when we have an element node,
+        // focusOffset returns the index in the childNodes collection of the focus node where the selection ends.
         if (
           // focusOffset is larger than childNodes length when editor is empty
           selection.focusNode.childNodes[selection.focusOffset]
@@ -59,6 +60,10 @@ export function getSelectedWord (params) {
     )
   const text = beforeSelection.substring(start)
   const end = start + text.length
+
+  console.log(selection.focusNode, selection.focusOffset, beforeSelection)
+  // TODO gets wrong word when in the middle of the inserted broken template
+  console.log(start, end, text)
 
   return {
     start: start,
