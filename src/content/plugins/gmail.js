@@ -386,6 +386,13 @@ export default (params = {}) => {
         return false;
     }
 
+    // cache focus to restore later
+    const selection = window.getSelection()
+    const anchorNode = selection.anchorNode
+    const anchorOffset = selection.anchorOffset
+    const focusNode = selection.focusNode
+    const focusOffset = selection.focusOffset
+
     // from field support, when using multiple aliases.
     // set the from field before getting data,
     // to have up-to-date data.
@@ -397,6 +404,9 @@ export default (params = {}) => {
     var parsedTemplate = parseTemplate(params.quicktext.body, data);
 
     before(params, data);
+
+    // restore focus before inserting template
+    window.getSelection().setBaseAndExtent(anchorNode, anchorOffset, focusNode, focusOffset)
 
     insertTemplate(Object.assign({
         text: parsedTemplate
