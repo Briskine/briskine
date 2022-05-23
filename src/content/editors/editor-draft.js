@@ -42,18 +42,20 @@ function insertDraftBlock (text) {
 }
 
 export function insertDraftTemplate (params = {}) {
-    params.element.focus();
+  const selection = window.getSelection()
+  const range = selection.getRangeAt(0)
+  const focusNode = selection.focusNode
 
-    // delete shortcut
-    if (params.word.text === params.quicktext.shortcut) {
-        var range = window.getSelection().getRangeAt(0);
-        range.setStart(params.focusNode, params.word.start);
-        range.setEnd(params.focusNode, params.word.end);
-        range.deleteContents();
-    }
+  // TODO completely breaks draft.js when inserted from the dialog
+  // delete shortcut
+  if (params.word.text === params.quicktext.shortcut) {
+    range.setStart(focusNode, params.word.start)
+    range.setEnd(focusNode, params.word.end)
+    range.deleteContents()
+  }
 
-    // draft only supports plain text
-    const content = htmlToText(params.text);
+  // draft only supports plain text
+  const content = htmlToText(params.text)
 
-    return insertDraftBlock(content);
+  return insertDraftBlock(content)
 }

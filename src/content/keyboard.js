@@ -42,7 +42,7 @@ export function keyboardAutocomplete (e) {
   if (word.text) {
     getTemplateByShortcut(word.text).then((template) => {
       if (template) {
-        // TODO restore selection
+        // restore selection
         element.focus()
         if (
           isContentEditable(element) &&
@@ -52,12 +52,9 @@ export function keyboardAutocomplete (e) {
           window.getSelection().setBaseAndExtent(anchorNode, anchorOffset, focusNode, focusOffset)
         }
 
-        // TODO stop sending and using params.focusNode in plugins
-        // TODO stop focusing in plugins
         autocomplete({
             element: element,
             quicktext: template,
-            focusNode: focusNode,
             word: word,
         });
       }

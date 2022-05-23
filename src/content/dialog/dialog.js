@@ -229,21 +229,17 @@ function defineDialog () {
         this.insertTemplate = (id = '') => {
           this.restoreSelection()
 
-          // get from template cache
+          // get template from cache
           const template = this.templates.find((t) => t.id === id)
 
           autocomplete({
             quicktext: template,
             element: this.editor,
-            // TODO remove params.focusNode from all editors and plugins
-            focusNode: this.focusNode,
             word: this.word,
           })
 
-          // TODO close
+          // close dialog
           this.removeAttribute(dialogVisibleAttr)
-
-          // TODO update template stats
         }
       }
       connectedCallback () {
