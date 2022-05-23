@@ -1,6 +1,5 @@
 /* Dialog positioning and caret detection
  */
-// TODO wrong dialog position when triggered in a an empty contenteditable
 export function getDialogPosition (targetNode, instance, dialogMaxHeight = 250) {
   const pageHeight = window.innerHeight
   const scrollTop = window.scrollY

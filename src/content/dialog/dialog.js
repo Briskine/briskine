@@ -222,19 +222,7 @@ function defineDialog () {
             this.anchorNode &&
             this.focusNode
           ) {
-            if (
-              this.focusNode.nodeType === document.ELEMENT_NODE &&
-              !this.focusNode.textContent.trim()
-            ) {
-              // TODO
-              // when focusnode is an element node, the caret is restored on the next line
-              // we need to be focused on a text node
-              const textNode = document.createTextNode('')
-              this.focusNode.appendChild(textNode)
-              window.getSelection().setBaseAndExtent(textNode, 0, textNode, 0)
-            } else {
-              window.getSelection().setBaseAndExtent(this.anchorNode, this.anchorOffset, this.focusNode, this.focusOffset)
-            }
+            window.getSelection().setBaseAndExtent(this.anchorNode, this.anchorOffset, this.focusNode, this.focusOffset)
           }
         }
 
@@ -247,6 +235,7 @@ function defineDialog () {
           autocomplete({
             quicktext: template,
             element: this.editor,
+            // TODO remove params.focusNode from all editors and plugins
             focusNode: this.focusNode,
             word: this.word,
           })
