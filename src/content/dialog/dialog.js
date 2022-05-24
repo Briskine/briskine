@@ -205,7 +205,6 @@ function defineDialog () {
               // cache result
               this.templates = templates
 
-              // TODO update template list on sort-change, on templates updated (or on show?)
               const templateNodes = this.getTemplateNodes(templates)
               this.shadowRoot.querySelector('.dialog-templates').replaceChildren(...templateNodes)
             })
@@ -256,17 +255,12 @@ function defineDialog () {
         }
 
         this.setAuthState = () => {
-          console.log('setAuthState')
           store.getAccount()
             .then(() => {
-              console.log('logged-in')
               this.setAttribute('authenticated', 'true')
-              return
             })
             .catch(() => {
-              console.log('logged-out')
               this.removeAttribute('authenticated')
-              return
             })
         }
       }
@@ -283,7 +277,7 @@ function defineDialog () {
         const signupUrl = `${config.websiteUrl}/signup`
 
         const shadowRoot = this.attachShadow({mode: 'open'})
-        // TODO render a placeholder for the templates
+        // TODO add New Template functionality
         shadowRoot.innerHTML = `
           <style>${styles}</style>
           <div class="dialog-container">
@@ -393,16 +387,12 @@ function defineDialog () {
 
       }
       disconnectedCallback () {
-        console.log('disconnectedCallback')
-
         document.removeEventListener(dialogShowEvent, this.show)
         document.removeEventListener('click', this.hideOnClick)
 
         store.off('login', this.setAuthState)
         store.off('logout', this.setAuthState)
         store.off('templates-updated', this.populateTemplates)
-
-        // TODO remove key bindings
       }
     }
   )
