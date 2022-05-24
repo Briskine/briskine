@@ -12,8 +12,11 @@ function trigger (name) {
   }
 
   // send trigger message to client store
-  return Promise.all([
+  return Promise
+    .all([
+      // send message to popup
       browser.runtime.sendMessage(data),
+      // send message to content script
       browser.tabs.query({}).then((tabs) => {
         return tabs.map((tab) => browser.tabs.sendMessage(tab.id, data))
       })

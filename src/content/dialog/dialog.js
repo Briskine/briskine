@@ -21,7 +21,7 @@ export const dialogTagName = 'b-dialog'
 const dialogVisibleAttr = 'visible'
 const targetWidthProperty = '--target-width'
 const activeClass = 'active'
-const dialogHeight = 260
+const dialogHeight = 270
 const heightProperty = '--dialog-height'
 
 function defineDialog () {
@@ -188,7 +188,7 @@ function defineDialog () {
                   <abbr>${htmlToText(t.shortcut)}</abbr>
                 </div>
                 <p>${plainBody}</p>
-                <a href="${config.functionsUrl}/template/${t.id}" target="_blank">Edit</a>
+                <a href="${config.functionsUrl}/template/${t.id}" class="template-edit" target="_blank">Edit</a>
               `
               return li
             })

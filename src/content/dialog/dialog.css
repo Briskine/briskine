@@ -129,7 +129,7 @@ input[type=search]:focus {
   text-overflow: ellipsis;
 }
 
-.dialog-templates li a {
+.template-edit {
   display: none;
 
   position: absolute;
@@ -140,10 +140,6 @@ input[type=search]:focus {
 
 .dialog-templates li.active {
   background: var(--gray);
-}
-
-.dialog-templates li.active a {
-  display: block;
 }
 
 .templates-no-results {
@@ -164,5 +160,9 @@ input[type=search]:focus {
 }
 
 :host([authenticated]) .dialog-footer {
+  display: block;
+}
+
+:host([authenticated]) li.active .template-edit {
   display: block;
 }

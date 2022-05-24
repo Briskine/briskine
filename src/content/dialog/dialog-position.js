@@ -27,6 +27,7 @@ export function getDialogPosition (targetNode, instance, dialogMaxHeight = 250) 
   // for the maximum dialog height
   const bottomSpace = pageHeight - topPos - scrollTop
   if (bottomSpace < dialogMaxHeight) {
+    // TODO wrong position when we don't have enough room at the bottom
     topPos = topPos - dialogMetrics.height - targetMetrics.height
   }
 
