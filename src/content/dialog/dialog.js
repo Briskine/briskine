@@ -10,6 +10,7 @@ import htmlToText from '../utils/html-to-text.js'
 import {autocomplete, getSelectedWord} from '../autocomplete.js'
 
 import config from '../../config.js'
+import {editIcon} from './dialog-icons.js'
 
 import styles from './dialog.css?raw'
 
@@ -188,7 +189,14 @@ function defineDialog () {
                   <abbr>${htmlToText(t.shortcut)}</abbr>
                 </div>
                 <p>${plainBody}</p>
-                <a href="${config.functionsUrl}/template/${t.id}" class="template-edit" target="_blank">Edit</a>
+                <a
+                  href="${config.functionsUrl}/template/${t.id}"
+                  target="_blank"
+                  class="template-edit"
+                  title="Edit template"
+                  >
+                  ${editIcon}
+                </a>
               `
               return li
             })
@@ -277,7 +285,6 @@ function defineDialog () {
         const signupUrl = `${config.websiteUrl}/signup`
 
         const shadowRoot = this.attachShadow({mode: 'open'})
-        // TODO add New Template functionality
         // TODO add shortcut on the top-right of the search field
         shadowRoot.innerHTML = `
           <style>${styles}</style>
