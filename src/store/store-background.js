@@ -4,29 +4,30 @@ import browser from 'webextension-polyfill'
 import * as storeApi from './store-api.js'
 
 function trigger (name) {
+  const data = {
+    type: 'trigger',
+    data: {
+      name: name
+    }
+  }
+
   // send trigger message to client store
-  return new Promise((resolve) => {
-    browser.runtime
-      .sendMessage({
-        type: 'trigger',
-        data: {
-          name: name
-        }
+  return Promise.all([
+      browser.runtime.sendMessage(data),
+      browser.tabs.query({}).then((tabs) => {
+        return tabs.map((tab) => browser.tabs.sendMessage(tab.id, data))
       })
-      .then((res) => {
-        return resolve(res)
-      })
-      .catch(() => {
-        return debug(
-          [
-            'browser.runtime.lastError',
-            browser.runtime.lastError.message,
-            name
-          ],
-          'warn'
-        )
-      })
-  })
+    ])
+    .catch(() => {
+      return debug(
+        [
+          'browser.runtime.lastError',
+          browser.runtime.lastError.message,
+          name
+        ],
+        'warn'
+      )
+    })
 }
 
 const lastuseCache = {}

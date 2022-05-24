@@ -172,7 +172,7 @@ function create (settings = {}) {
 
   // bubble is created outside the body.
   // when textfields are focused, move it to the offsetParent for positioning.
-  bubbleInstance = document.createElement('b-bubble');
+  bubbleInstance = document.createElement(bubbleTagName);
   // custom dialog shortcut
   bubbleInstance.setAttribute('shortcut', settings.dialog_shortcut);
   document.documentElement.appendChild(bubbleInstance);

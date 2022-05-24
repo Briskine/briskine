@@ -4,16 +4,6 @@ import browser from 'webextension-polyfill'
 import Config from '../config.js'
 import setupContextMenus from './contextmenus.js'
 
-browser.runtime.onMessage.addListener(function (request) {
-  // open new template window
-  if (request.request === 'new') {
-    browser.tabs.create({
-      url: `${Config.functionsUrl}/template/new`
-    })
-  }
-  return true
-})
-
 browser.runtime.onInstalled.addListener((details) => {
   const manifest = browser.runtime.getManifest()
 

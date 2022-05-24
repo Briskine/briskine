@@ -47,6 +47,16 @@ var on = function (name, callback) {
     });
 };
 
+function off (name, callback) {
+  events = events.filter((e) => {
+    if (e.name === name && e.callback === callback) {
+      return false
+    }
+
+    return true
+  })
+}
+
 var trigger = function (name) {
     events.filter((event) => event.name === name).forEach((event) => {
         if (typeof event.callback === 'function') {
@@ -61,11 +71,8 @@ browser.runtime.onMessage.addListener((req) => {
         req.type &&
         req.type === 'trigger'
     ) {
-        trigger(req.data.name);
-        return;
+      trigger(req.data.name);
     }
-
-    return false;
 });
 
 var optionsStore = {};
@@ -74,5 +81,6 @@ methods.forEach((method) => {
 });
 
 optionsStore.on = on;
+optionsStore.off = off
 
 export default optionsStore;

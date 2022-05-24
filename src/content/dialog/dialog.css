@@ -153,5 +153,16 @@ input[type=search]:focus {
 }
 
 .dialog-footer {
+  display: none;
   border-radius: 0 0 var(--radius) var(--radius);
+}
+
+/* authenticated state
+ */
+:host([authenticated]) .dialog-info {
+  display: none;
+}
+
+:host([authenticated]) .dialog-footer {
+  display: block;
 }

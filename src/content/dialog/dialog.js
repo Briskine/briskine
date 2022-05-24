@@ -255,6 +255,21 @@ function defineDialog () {
           // close dialog
           this.removeAttribute(dialogVisibleAttr)
         }
+
+        this.setAuthState = () => {
+          console.log('setAuthState')
+          store.getAccount()
+            .then(() => {
+              console.log('logged-in')
+              this.setAttribute('authenticated', 'true')
+              return
+            })
+            .catch(() => {
+              console.log('logged-out')
+              this.removeAttribute('authenticated')
+              return
+            })
+        }
       }
       connectedCallback () {
         if (!this.isConnected) {
@@ -276,7 +291,7 @@ function defineDialog () {
             <input type="search" value="" placeholder="Search templates...">
             <div class="dialog-info">
               Please
-              <a href="${popupUrl}" target="_blank">Sign in</a>
+              <a href="${popupUrl}?source=tab" target="_blank">Sign in</a>
               ${!REGISTER_DISABLED ? `
                 or
                 <a href="${signupUrl}" target="_blank">
@@ -296,8 +311,9 @@ function defineDialog () {
         this.style.setProperty(heightProperty, `${dialogHeight}px`)
 
         // TODO check log in state
-//         store.on('login', this.populateTemplates)
-//         store.on('logout', this.populateTemplates)
+        this.setAuthState()
+        store.on('login', this.setAuthState)
+        store.on('logout', this.setAuthState)
 
         let searchDebouncer
         this.searchField = shadowRoot.querySelector('input[type=search]')
@@ -376,6 +392,9 @@ function defineDialog () {
         document.removeEventListener(dialogShowEvent, this.show)
         document.removeEventListener('click', this.hideOnClick)
 
+        store.off('login', this.setAuthState)
+        store.off('logout', this.setAuthState)
+
         // TODO remove key bindings
       }
     }
@@ -398,7 +417,7 @@ export function setup (settings = {}) {
   // (connectedCallback is triggered when re-defining an existing element)
   defineDialog()
 
-  dialogInstance = document.createElement('b-dialog')
+  dialogInstance = document.createElement(dialogTagName)
   dialogInstance.setAttribute('shortcut', settings.dialog_shortcut)
   dialogInstance.setAttribute('sort-az', settings.dialog_sort)
   dialogInstance.setAttribute('limit', settings.dialog_limit)
@@ -412,4 +431,3 @@ export function destroy () {
 
   dialogInstance.remove()
 }
-
