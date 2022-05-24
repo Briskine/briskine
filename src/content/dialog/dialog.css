@@ -78,6 +78,17 @@
   max-height: 100%;
 }
 
+/* flex
+ */
+.d-flex {
+  display: flex;
+  align-items: center;
+}
+
+.flex-fill {
+  flex: 1;
+}
+
 /* dialog
  */
 .dialog-container {
@@ -216,15 +227,15 @@ input[type=search]:focus {
 }
 
 .dialog-shortcut {
-  display: inline-block;
-  position: absolute;
-  top: 50%;
-  right: 12px;
-  transform: translateY(-50%);
-
   color: rgba(0,0,0,.3);
   font-weight: bold;
   text-align: right;
+}
+
+/* tweak spacing added by plus icon
+ */
+.btn-new-template {
+  padding-left: 8px;
 }
 
 /* loading placeholders

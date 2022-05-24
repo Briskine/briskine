@@ -10,7 +10,7 @@ import htmlToText from '../utils/html-to-text.js'
 import {autocomplete, getSelectedWord} from '../autocomplete.js'
 
 import config from '../../config.js'
-import {editIcon} from './dialog-icons.js'
+import {editIcon, plusIcon} from './dialog-icons.js'
 
 import styles from './dialog.css?raw'
 
@@ -286,7 +286,6 @@ function defineDialog () {
         const shortcut = this.getAttribute('shortcut')
 
         const shadowRoot = this.attachShadow({mode: 'open'})
-        // TODO add shortcut on the top-right of the search field
         shadowRoot.innerHTML = `
           <style>${styles}</style>
           <div class="dialog-container">
@@ -310,16 +309,27 @@ function defineDialog () {
               `).join('')}
             </ul>
             <div class="dialog-footer">
-              <a
-                href="${config.functionsUrl}/template/new"
-                target="_blank"
-                class="btn btn-primary"
-                title="Create a new template"
-                >
-                New Template
-              </a>
+              <div class="d-flex">
+                <div class="flex-fill">
+                  <a
+                    href="${config.functionsUrl}/template/new"
+                    target="_blank"
+                    class="btn btn-primary btn-new-template"
+                    title="Create a new template"
+                    >
+                    <span class="d-flex">
+                      ${plusIcon}
+                      <span>
+                        New Template
+                      </span>
+                    </span>
+                  </a>
+                </div>
 
-              <div class="dialog-shortcut">${shortcut}</div>
+                <div class="dialog-shortcut">
+                  ${shortcut}
+                </div>
+              </div>
             </div>
           </div>
         `
