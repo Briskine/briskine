@@ -18,7 +18,8 @@ export function getDialogPosition (targetNode, instance, dialogMaxHeight = 250) 
   let topPos = targetMetrics.top + targetMetrics.height + scrollTop
   let leftPos = targetMetrics.left + scrollLeft
 
-  // if targetNode is range
+  // only use the targetMetrics width when caret is a range.
+  // workaround for when the contenteditable caret is the endContainer.
   if (targetNode instanceof Range) {
     leftPos = leftPos + targetMetrics.width
   }
@@ -27,8 +28,12 @@ export function getDialogPosition (targetNode, instance, dialogMaxHeight = 250) 
   // for the maximum dialog height
   const bottomSpace = pageHeight - topPos - scrollTop
   if (bottomSpace < dialogMaxHeight) {
-    // TODO wrong position when we don't have enough room at the bottom
-    topPos = topPos - dialogMetrics.height - targetMetrics.height
+    topPos = topPos - dialogMetrics.height
+    // only use the targetMetrics when the caret is a range.
+    // workaround for when the contenteditable caret is the endContainer.
+    if (targetNode instanceof Range) {
+      topPos = topPos - targetMetrics.height
+    }
   }
 
   return {
