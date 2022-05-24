@@ -209,9 +209,22 @@ input[type=search]:focus {
 
 .dialog-footer {
   display: none;
+  position: relative;
   border-radius: 0 0 var(--radius) var(--radius);
 
   font-size: 12px;
+}
+
+.dialog-shortcut {
+  display: inline-block;
+  position: absolute;
+  top: 50%;
+  right: 12px;
+  transform: translateY(-50%);
+
+  color: rgba(0,0,0,.3);
+  font-weight: bold;
+  text-align: right;
 }
 
 /* loading placeholders

@@ -283,6 +283,7 @@ function defineDialog () {
         // Open the browserAction popup in a new tab.
         const popupUrl = browser.runtime.getURL('popup/popup.html')
         const signupUrl = `${config.websiteUrl}/signup`
+        const shortcut = this.getAttribute('shortcut')
 
         const shadowRoot = this.attachShadow({mode: 'open'})
         // TODO add shortcut on the top-right of the search field
@@ -317,6 +318,8 @@ function defineDialog () {
                 >
                 New Template
               </a>
+
+              <div class="dialog-shortcut">${shortcut}</div>
             </div>
           </div>
         `
@@ -387,10 +390,7 @@ function defineDialog () {
         document.addEventListener(dialogShowEvent, this.show)
         document.addEventListener('click', this.hideOnClick)
 
-        const shortcut = this.getAttribute('shortcut')
-        if (shortcut) {
-          Mousetrap.bindGlobal(shortcut, this.show)
-        }
+        Mousetrap.bindGlobal(shortcut, this.show)
         Mousetrap.bindGlobal('escape', (e) => {
           if (this.hasAttribute(dialogVisibleAttr)) {
             e.stopPropagation()
