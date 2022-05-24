@@ -45,6 +45,30 @@
   display: block;
 }
 
+/* buttons
+ */
+.btn {
+  display: inline-block;
+  padding: 4px 10px;
+  border: 0;
+  border-radius: 3px;
+  background: var(--gray);
+
+  text-decoration: none;
+}
+
+.btn-primary {
+  background: var(--blue);
+
+  color: #fff;
+}
+
+.btn-primary:hover {
+  background: #0b5ed7;
+}
+
+/* dialog
+ */
 .dialog-container {
   display: flex;
   flex-direction: column;
@@ -151,6 +175,8 @@ input[type=search]:focus {
 .dialog-footer {
   display: none;
   border-radius: 0 0 var(--radius) var(--radius);
+
+  font-size: 12px;
 }
 
 /* loading placeholders

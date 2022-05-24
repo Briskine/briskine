@@ -278,6 +278,7 @@ function defineDialog () {
 
         const shadowRoot = this.attachShadow({mode: 'open'})
         // TODO add New Template functionality
+        // TODO add shortcut on the top-right of the search field
         shadowRoot.innerHTML = `
           <style>${styles}</style>
           <div class="dialog-container">
@@ -301,7 +302,14 @@ function defineDialog () {
               `).join('')}
             </ul>
             <div class="dialog-footer">
-              footer
+              <a
+                href="${config.functionsUrl}/template/new"
+                target="_blank"
+                class="btn btn-primary"
+                title="Create a new template"
+                >
+                New Template
+              </a>
             </div>
           </div>
         `
