@@ -133,15 +133,31 @@ function defineDialog () {
         this.getTemplates = (query = '') => {
           return store.getTemplates()
             .then((templates) => {
-              let sortedTemplates = templates
+              let filteredTemplates = templates
               if (query) {
-                sortedTemplates = fuzzySearch(templates, query)
+                filteredTemplates = fuzzySearch(templates, query)
               }
 
-              // TODO sort filters
-              return sortedTemplates
+              // alphabetical sort
+              if (this.getAttribute('sort-az') === 'true') {
+                return filteredTemplates.sort((a, b) => {
+                  return a.title.localeCompare(b.title)
+                })
+              }
+
+              // default sort
+              return filteredTemplates
                 .sort((a, b) => {
                   return new Date(b.updated_datetime) - new Date(a.updated_datetime)
+                })
+                .sort((a, b) => {
+                  if (!a.lastuse_datetime) {
+                    a.lastuse_datetime = new Date(0)
+                  }
+                  if (!b.lastuse_datetime) {
+                    b.lastuse_datetime = new Date(0)
+                  }
+                  return new Date(b.lastuse_datetime) - new Date(a.lastuse_datetime)
                 })
             })
             .then((templates) => {
@@ -387,6 +403,7 @@ export function setup (settings = {}) {
 
   dialogInstance = document.createElement('b-dialog')
   dialogInstance.setAttribute('shortcut', settings.dialog_shortcut)
+  dialogInstance.setAttribute('sort-az', settings.dialog_sort)
   document.documentElement.appendChild(dialogInstance)
 }
 
