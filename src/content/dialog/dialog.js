@@ -314,10 +314,12 @@ function defineDialog () {
 
         this.style.setProperty(heightProperty, `${dialogHeight}px`)
 
-        // TODO check log in state
+        // check authentication state
         this.setAuthState()
         store.on('login', this.setAuthState)
         store.on('logout', this.setAuthState)
+        // set up templates when changed/received
+        store.on('templates-updated', this.populateTemplates)
 
         let searchDebouncer
         this.searchField = shadowRoot.querySelector('input[type=search]')
@@ -398,6 +400,7 @@ function defineDialog () {
 
         store.off('login', this.setAuthState)
         store.off('logout', this.setAuthState)
+        store.off('templates-updated', this.populateTemplates)
 
         // TODO remove key bindings
       }

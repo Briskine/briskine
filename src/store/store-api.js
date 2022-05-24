@@ -23,6 +23,7 @@ import {
 } from 'firebase/firestore'
 
 import config from '../config.js'
+import {trigger} from './store-trigger.js'
 
 const firebaseApp = initializeApp(FIREBASE_CONFIG)
 const firebaseAuth = getAuth(firebaseApp)
@@ -159,6 +160,10 @@ function refreshLocalData (collectionName, querySnapshot) {
 
 function updateCache (params = {}) {
   localDataCache[params.collection] = params.data
+
+  const eventName = params.collection.includes('templates') ? 'templates-updated' : `${params.collection}-updated`
+  trigger(eventName)
+
   return params.data
 }
 
@@ -553,16 +558,19 @@ function updateCurrentUser (firebaseUser) {
 }
 
 export function signin (params = {}) {
-    return signInWithEmailAndPassword(firebaseAuth, params.email, params.password)
-        .then((authRes) => {
-            return updateCurrentUser(authRes.user);
-        })
-        .then(() => {
-            return createSession();
-        })
-        .catch((err) => {
-            return signinError(err);
-        });
+  return signInWithEmailAndPassword(firebaseAuth, params.email, params.password)
+    .then((authRes) => {
+      return updateCurrentUser(authRes.user)
+    })
+    .then(() => {
+      return createSession()
+    })
+    .then(() => {
+      return trigger('login')
+    })
+    .catch((err) => {
+      return signinError(err)
+    })
 }
 
 export function createSession () {
@@ -574,22 +582,28 @@ export function createSession () {
 
 // check existing session
 export function getSession () {
-    return request(`${config.functionsUrl}/api/1/session`)
-        .then((res) => {
-            return signinWithToken(res.token);
-        });
+  return request(`${config.functionsUrl}/api/1/session`)
+    .then((res) => {
+      return signinWithToken(res.token)
+    })
+    .then(() => {
+      return trigger('login')
+    })
 }
 
 export function logout () {
-    return signOut(firebaseAuth)
-        .then(() => {
-            return request(`${config.functionsUrl}/api/1/logout`, {
-                    method: 'POST'
-                });
+  return signOut(firebaseAuth)
+    .then(() => {
+      return request(`${config.functionsUrl}/api/1/logout`, {
+          method: 'POST'
         })
-        .then(() => {
-            return setSignedInUser({});
-        })
+    })
+    .then(() => {
+      return setSignedInUser({})
+    })
+    .then(() => {
+      return trigger('logout')
+    })
 }
 
 function signinWithToken (token = '') {

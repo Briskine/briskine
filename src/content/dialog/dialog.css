@@ -143,7 +143,7 @@ input[type=search]:focus {
 }
 
 .templates-no-results {
-  padding: 12px;
+  padding: 20px;
 
   text-align: center;
 }
