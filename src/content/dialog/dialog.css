@@ -8,7 +8,7 @@
 :host {
   --gray: #e5e5e5;
   --gray-light: #f4f4f4;
-  --gray-dark: #a8a8a8;
+  --blue: #1e48b3;
   --radius: 5px;
 
   position: absolute;
@@ -20,8 +20,9 @@
    */
   height: var(--dialog-height, 250px);
 
-  font-family: sans-serif;
+  color: #333;
   font-size: 13px;
+  font-family: sans-serif;
 
   border-radius: var(--radius);
   background: #fff;
@@ -63,7 +64,6 @@ input[type=search] {
   border-radius: var(--radius) var(--radius) 0 0;
 
   font-size: 1.1em;
-  color: var(--gray-dark);
 }
 
 input[type=search]:focus {
@@ -77,6 +77,17 @@ input[type=search]:focus {
   background: #EEF2FC;
 
   font-size: .9em;
+}
+
+.dialog-info a {
+  padding: 0 2px;
+
+  font-weight: bold;
+}
+
+.dialog-info a,
+.dialog-info a:visited {
+  color: var(--blue);
 }
 
 .dialog-templates {
@@ -133,6 +144,12 @@ input[type=search]:focus {
 
 .dialog-templates li.active a {
   display: block;
+}
+
+.templates-no-results {
+  padding: 12px;
+
+  text-align: center;
 }
 
 .dialog-footer {

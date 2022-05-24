@@ -138,21 +138,25 @@ function defineDialog () {
                 filteredTemplates = fuzzySearch(templates, query)
               }
 
-              // alphabetical sort
               if (this.getAttribute('sort-az') === 'true') {
-                return filteredTemplates.sort((a, b) => {
-                  return a.title.localeCompare(b.title)
-                })
+                // alphabetical sort
+                filteredTemplates = filteredTemplates
+                  .sort((a, b) => {
+                    return a.title.localeCompare(b.title)
+                  })
+              } else {
+                // default sort
+                filteredTemplates = filteredTemplates
+                  .sort((a, b) => {
+                    return new Date(b.updated_datetime) - new Date(a.updated_datetime)
+                  })
+                  .sort((a, b) => {
+                    return new Date(b.lastuse_datetime || 0) - new Date(a.lastuse_datetime || 0)
+                  })
               }
 
-              // default sort
-              return filteredTemplates
-                .sort((a, b) => {
-                  return new Date(b.updated_datetime) - new Date(a.updated_datetime)
-                })
-                .sort((a, b) => {
-                  return new Date(b.lastuse_datetime || 0) - new Date(a.lastuse_datetime || 0)
-                })
+              const limit = parseInt(this.getAttribute('limit') || '100', 10)
+              return filteredTemplates.slice(0, limit)
             })
             .then((templates) => {
               return templates
@@ -163,8 +167,8 @@ function defineDialog () {
           // TODO return a blank slate if we don't find any templates
           if (!templates.length) {
             const blank = document.createElement('div')
-            blank.textContent = 'no templates found'
-
+            blank.classList.add('templates-no-results')
+            blank.textContent = 'No templates found.'
             return [blank]
           }
 
@@ -291,6 +295,7 @@ function defineDialog () {
 
         this.style.setProperty(heightProperty, `${dialogHeight}px`)
 
+        // TODO check log in state
 //         store.on('login', this.populateTemplates)
 //         store.on('logout', this.populateTemplates)
 
@@ -315,7 +320,6 @@ function defineDialog () {
           }
 
           if (e.key === 'Enter') {
-            // TODO insert template
             e.preventDefault()
             const activeId = active.dataset.id
             return this.insertTemplate(activeId)
@@ -365,7 +369,6 @@ function defineDialog () {
           }
         })
 
-        // TODO instead of dialog_limit, use infinite loading with intersection observer
       }
       disconnectedCallback () {
         console.log('disconnectedCallback')
@@ -398,6 +401,7 @@ export function setup (settings = {}) {
   dialogInstance = document.createElement('b-dialog')
   dialogInstance.setAttribute('shortcut', settings.dialog_shortcut)
   dialogInstance.setAttribute('sort-az', settings.dialog_sort)
+  dialogInstance.setAttribute('limit', settings.dialog_limit)
   document.documentElement.appendChild(dialogInstance)
 }
 
