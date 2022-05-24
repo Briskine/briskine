@@ -164,7 +164,7 @@ function defineDialog () {
         }
 
         this.getTemplateNodes = (templates = []) => {
-          // TODO return a blank slate if we don't find any templates
+          // blank slate when we don't find any templates
           if (!templates.length) {
             const blank = document.createElement('div')
             blank.classList.add('templates-no-results')
@@ -226,7 +226,6 @@ function defineDialog () {
           return item
         }
 
-        // TODO restore selection before inserting and stop the focusNode craziness
         this.restoreSelection = () => {
           this.editor.focus()
           // only try to restore the selection on contenteditable.
@@ -300,7 +299,12 @@ function defineDialog () {
               ` : 'to access your templates.'}
             </div>
             <ul class="dialog-templates">
-              <div>loading</div>
+              ${Array(4).fill(`
+                <div class="templates-placeholder">
+                  <div class="templates-placeholder-text"></div>
+                  <div class="templates-placeholder-text templates-placeholder-description"></div>
+                </div>
+              `).join('')}
             </ul>
             <div class="dialog-footer">
               footer

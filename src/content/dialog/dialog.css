@@ -153,6 +153,36 @@ input[type=search]:focus {
   border-radius: 0 0 var(--radius) var(--radius);
 }
 
+/* loading placeholders
+ */
+.templates-placeholder {
+  padding: 8px 12px;
+}
+
+.templates-placeholder-text {
+  height: 1em;
+  width: 50%;
+  background-color: var(--gray);
+  margin-bottom: 4px;
+
+  cursor: wait;
+  animation: glow 2s ease-in-out infinite;
+}
+
+.templates-placeholder-text:first-child {
+  font-size: 1.1em;
+}
+
+.templates-placeholder-description {
+  width: 80%;
+}
+
+@keyframes glow {
+  0% { opacity: .4; }
+  50% { opacity: 1; }
+  100% { opacity: .4; }
+}
+
 /* authenticated state
  */
 :host([authenticated]) .dialog-info {
