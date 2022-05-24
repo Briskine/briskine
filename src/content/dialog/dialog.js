@@ -151,13 +151,7 @@ function defineDialog () {
                   return new Date(b.updated_datetime) - new Date(a.updated_datetime)
                 })
                 .sort((a, b) => {
-                  if (!a.lastuse_datetime) {
-                    a.lastuse_datetime = new Date(0)
-                  }
-                  if (!b.lastuse_datetime) {
-                    b.lastuse_datetime = new Date(0)
-                  }
-                  return new Date(b.lastuse_datetime) - new Date(a.lastuse_datetime)
+                  return new Date(b.lastuse_datetime || 0) - new Date(a.lastuse_datetime || 0)
                 })
             })
             .then((templates) => {
