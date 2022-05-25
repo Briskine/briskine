@@ -281,13 +281,32 @@ function defineDialog () {
           this.removeAttribute(dialogVisibleAttr)
         }
 
+        this.setLoadingState = () => {
+          const loadingPlaceholders = Array(4).fill(`
+            <div class="templates-placeholder">
+              <div class="templates-placeholder-text"></div>
+              <div class="templates-placeholder-text templates-placeholder-description"></div>
+            </div>
+          `).join('')
+          this.shadowRoot.querySelector('.dialog-templates').innerHTML = loadingPlaceholders
+        }
+
         this.setAuthState = () => {
           store.getAccount()
             .then(() => {
               this.setAttribute('authenticated', 'true')
+              return
             })
             .catch(() => {
               this.removeAttribute('authenticated')
+              return
+            })
+            .then(() => {
+              this.setLoadingState()
+              // only start loading the templates if the dialog is visible
+              if (this.hasAttribute(dialogVisibleAttr)) {
+                this.populateTemplates()
+              }
             })
         }
       }
@@ -323,12 +342,6 @@ function defineDialog () {
               </span>
             </div>
             <ul class="dialog-templates">
-              ${Array(4).fill(`
-                <div class="templates-placeholder">
-                  <div class="templates-placeholder-text"></div>
-                  <div class="templates-placeholder-text templates-placeholder-description"></div>
-                </div>
-              `).join('')}
             </ul>
             <div class="dialog-footer">
               <div class="d-flex">
