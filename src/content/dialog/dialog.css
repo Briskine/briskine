@@ -184,6 +184,13 @@ input[type=search]:focus {
   font-size: 1.1em;
 }
 
+.dialog-templates li h1,
+.dialog-templates li p {
+  overflow: hidden;
+
+  text-overflow: ellipsis;
+}
+
 .dialog-templates li abbr {
   display: inline-block;
   padding: 0 4px;
@@ -197,11 +204,9 @@ input[type=search]:focus {
 }
 
 .dialog-templates li p {
-  overflow: hidden;
   margin: 0;
 
   color: #747474;
-  text-overflow: ellipsis;
 }
 
 .template-edit {

@@ -32,6 +32,10 @@ const htmlToTextOptions = {
   ]
 }
 
+function plainText (html) {
+  return htmlToText(html, htmlToTextOptions).trim()
+}
+
 function defineDialog () {
   customElements.define(
     dialogTagName,
@@ -191,12 +195,17 @@ function defineDialog () {
                 li.classList.add(activeClass)
               }
 
-              const plainBody = htmlToText(t.body, htmlToTextOptions)
+              const plainBody = plainText(t.body)
+              const plainShortcut = plainText(t.shortcut)
               li.title = plainBody
               li.innerHTML = `
-                <div>
-                  <h1>${htmlToText(t.title, htmlToTextOptions)}</h1>
-                  <abbr>${htmlToText(t.shortcut, htmlToTextOptions)}</abbr>
+                <div class="d-flex">
+                  <h1>${plainText(t.title)}</h1>
+                  <div>
+                  ${plainShortcut ? `
+                    <abbr>${plainShortcut}</abbr>
+                  ` : ''}
+                  </div>
                 </div>
                 <p>${plainBody}</p>
                 <a
