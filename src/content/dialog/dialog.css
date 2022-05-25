@@ -129,11 +129,16 @@ input[type=search]:focus {
   padding: 0 2px;
 
   font-weight: bold;
+  text-decoration: none;
 }
 
 .dialog-info a,
 .dialog-info a:visited {
   color: var(--blue);
+}
+
+.dialog-info a:hover {
+  text-decoration: underline;
 }
 
 .dialog-templates {
