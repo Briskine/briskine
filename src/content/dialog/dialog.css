@@ -17,12 +17,8 @@
 
   position: absolute;
   z-index: 2147483646;
-  display: none;
 
   width: 360px;
-  /* dialog-height is set from js
-   */
-  height: var(--dialog-height, 250px);
 
   color: #333;
   font-size: 13px;
@@ -35,6 +31,12 @@
     0 2px 4px rgba(0,0,0,0.07),
     0 4px 8px rgba(0,0,0,0.07),
     0 8px 16px rgba(0,0,0,0.07);
+
+  visibility: hidden;
+  opacity: 0;
+  height: calc(var(--dialog-height) - 20px);
+  transition-duration: .2s;
+  transition-property: opacity, height;
 }
 
 :host([dir=rtl]:not([end])),
@@ -46,7 +48,19 @@
 }
 
 :host([visible]) {
-  display: block;
+  /* dialog-height is set from js
+   */
+  height: var(--dialog-height, 250px);
+  visibility: visible;
+  opacity: 1;
+}
+
+/* disable the opening animation
+ */
+@media (prefers-reduced-motion) {
+  :host {
+    transition: none;
+  }
 }
 
 /* buttons
