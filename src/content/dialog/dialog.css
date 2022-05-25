@@ -259,7 +259,11 @@ input[type=search]:focus {
 /* tweak spacing added by plus icon
  */
 .btn-new-template {
-  padding-left: 8px;
+  padding-left: 6px;
+}
+
+.btn-new-template .bi {
+  margin-top: -1px;
 }
 
 /* loading placeholders
