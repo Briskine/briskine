@@ -3,11 +3,10 @@
 
 import {htmlToText as htmlToTextConverter} from 'html-to-text';
 
-// TODO xss unsafe
 function isHtml (html) {
-  const range = document.createRange()
-  const fragment = range.createContextualFragment(html)
-  return !!fragment.children.length
+  const template = document.createElement('template')
+  template.innerHTML = html
+  return Boolean(template.content.children.length)
 }
 
 export default function htmlToText (html, options = {}) {
