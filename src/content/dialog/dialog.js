@@ -25,6 +25,13 @@ const activeClass = 'active'
 const dialogHeight = 270
 const heightProperty = '--dialog-height'
 
+const htmlToTextOptions = {
+  selectors: [
+    {selector: 'img', format: 'skip'},
+    {selector: 'a', format: 'inline'},
+  ]
+}
+
 function defineDialog () {
   customElements.define(
     dialogTagName,
@@ -184,12 +191,12 @@ function defineDialog () {
                 li.classList.add(activeClass)
               }
 
-              const plainBody = htmlToText(t.body)
+              const plainBody = htmlToText(t.body, htmlToTextOptions)
               li.title = plainBody
               li.innerHTML = `
                 <div>
-                  <h1>${htmlToText(t.title)}</h1>
-                  <abbr>${htmlToText(t.shortcut)}</abbr>
+                  <h1>${htmlToText(t.title, htmlToTextOptions)}</h1>
+                  <abbr>${htmlToText(t.shortcut, htmlToTextOptions)}</abbr>
                 </div>
                 <p>${plainBody}</p>
                 <a
