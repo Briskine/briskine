@@ -6,13 +6,10 @@ import browser from 'webextension-polyfill'
 import Mousetrap from 'mousetrap'
 import 'mousetrap/plugins/global-bind/mousetrap-global-bind.js'
 
-import './content.css'
-
 import './helpers/content-helpers.js'
 
 import store from '../store/store-client.js'
 import {keyboardAutocomplete} from './keyboard.js'
-// import dialog from './dialog.js'
 import config from '../config.js'
 
 import {isContentEditable} from './editors/editor-contenteditable.js'
@@ -59,21 +56,8 @@ function init (settings) {
 
   // don't create the dialog inside editor iframes (eg. tinymce iframe)
   if (!isContentEditable(document.body)) {
-    // TODO pass settings to setup bubble so we don't get them twice
     setupBubble(settings)
     setupDialog(settings)
-
-//       if (settings.dialog_limit) {
-//           dialog.RESULTS_LIMIT = settings.dialog_limit;
-//       }
-//       Mousetrap.bindGlobal(
-//           settings.dialog_shortcut,
-//           dialog.completion
-//       );
-
-      // create dialog once and then reuse the same element
-//       dialog.create();
-//       dialog.bindKeyboardEvents(doc);
   }
 
   injectPage()
@@ -114,7 +98,6 @@ function destructor () {
   destroyBubble()
 
   // destroy dialog
-//   dialog.destroy()
   destroyDialog()
 
   // destroy status event
