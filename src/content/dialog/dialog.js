@@ -427,7 +427,9 @@ function defineDialog () {
         // insert templates on click
         this.shadowRoot.addEventListener('click', (e) => {
           const container = e.target.closest('[data-id]')
-          if (container) {
+          // prevent inserting templates when clicking the edit button
+          const editButton = e.target.closest('.template-edit')
+          if (container && !editButton) {
             this.insertTemplate(container.dataset.id)
           }
         })
