@@ -202,7 +202,7 @@ function defineDialog () {
                 <a
                   href="${config.functionsUrl}/template/${t.id}"
                   target="_blank"
-                  class="template-edit"
+                  class="template-edit dialog-safari-hide"
                   title="Edit template"
                   >
                   ${editIcon}
@@ -298,17 +298,20 @@ function defineDialog () {
         const shadowRoot = this.attachShadow({mode: 'open'})
         shadowRoot.innerHTML = `
           <style>${styles}</style>
-          <div class="dialog-container">
+          <div class="dialog-container ${REGISTER_DISABLED ? 'dialog-safari' : ''}">
             <input type="search" value="" placeholder="Search templates...">
             <div class="dialog-info">
               Please
               <a href="${popupUrl}?source=tab" target="_blank">Sign in</a>
-              ${!REGISTER_DISABLED ? `
+              <span class="dialog-safari-hide">
                 or
                 <a href="${signupUrl}" target="_blank">
                   Create a free account
                 </a>
-              ` : 'to access your templates.'}
+              </span>
+              <span class="dialog-safari-show">
+                to access your templates.
+              </span>
             </div>
             <ul class="dialog-templates">
               ${Array(4).fill(`
@@ -324,7 +327,7 @@ function defineDialog () {
                   <a
                     href="${config.functionsUrl}/template/new"
                     target="_blank"
-                    class="btn btn-primary btn-new-template"
+                    class="btn btn-primary btn-new-template dialog-safari-hide"
                     title="Create a new template"
                     >
                     <span class="d-flex">

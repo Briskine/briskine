@@ -300,3 +300,14 @@ input[type=search]:focus {
 :host([authenticated]) li.active .template-edit {
   display: block;
 }
+
+/* hidden dashboard links - for safari
+ */
+.dialog-safari .dialog-safari-hide,
+.dialog-safari-show {
+  display: none !important;
+}
+
+.dialog-safari .dialog-safari-show {
+  display: revert !important;
+}
