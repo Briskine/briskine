@@ -6,7 +6,6 @@ import {isContentEditable} from '../editors/editor-contenteditable.js'
 import {bubbleTagName} from '../bubble/bubble.js'
 import {getEditableCaret, getContentEditableCaret, getDialogPosition} from './dialog-position.js'
 import fuzzySearch from '../search.js'
-import htmlToText from '../utils/html-to-text.js'
 import {autocomplete, getSelectedWord} from '../autocomplete.js'
 
 import config from '../../config.js'
@@ -25,15 +24,10 @@ const activeClass = 'active'
 const dialogHeight = 270
 const heightProperty = '--dialog-height'
 
-const htmlToTextOptions = {
-  selectors: [
-    {selector: 'img', format: 'skip'},
-    {selector: 'a', format: 'inline'},
-  ]
-}
-
-function plainText (html) {
-  return htmlToText(html, htmlToTextOptions).trim()
+const template = document.createElement('template')
+function plainText (html = '') {
+  template.innerHTML = html
+  return (template.content.textContent || '').trim()
 }
 
 function defineDialog () {
@@ -233,7 +227,10 @@ function defineDialog () {
               this.templates = templates
 
               const templateNodes = this.getTemplateNodes(templates)
-              this.shadowRoot.querySelector('.dialog-templates').replaceChildren(...templateNodes)
+
+              window.requestAnimationFrame(() => {
+                this.shadowRoot.querySelector('.dialog-templates').replaceChildren(...templateNodes)
+              })
             })
         }
 
@@ -382,6 +379,7 @@ function defineDialog () {
         this.searchField = shadowRoot.querySelector('input[type=search]')
         // search for templates
         this.searchField.addEventListener('input', (e) => {
+          e.stopPropagation()
           if (searchDebouncer) {
             clearTimeout(searchDebouncer)
           }
@@ -389,7 +387,7 @@ function defineDialog () {
           const query = e.target.value
           searchDebouncer = setTimeout(() => {
             this.populateTemplates(query)
-          }, 100)
+          }, 200)
         })
         // keyboard navigation and insert for templates
         this.searchField.addEventListener('keydown', (e) => {
