@@ -117,12 +117,15 @@ function defineDialog () {
             target.parentNode.remove()
           }
 
-          // clear the search query when first showing the dialog
-          this.searchField.value = ''
+          // set or clear the search query when first showing the dialog.
+          // support for the data-briskine-search attribute.
+          // setting the attribute on the editable element will set it's value in the search field.
+          const searchQuery = e.target.getAttribute('data-briskine-search') || ''
+          this.searchField.value = searchQuery
           this.searchField.focus()
 
           // populate the template list
-          this.populateTemplates()
+          this.populateTemplates(searchQuery)
         }
 
         this.hideOnClick = (e) => {
