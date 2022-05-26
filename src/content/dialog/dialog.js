@@ -306,6 +306,7 @@ function defineDialog () {
               }
             })
         }
+
       }
       connectedCallback () {
         if (!this.isConnected) {
@@ -412,7 +413,7 @@ function defineDialog () {
           if (nextId) {
             e.preventDefault()
             const newActive = this.setActive(nextId)
-            newActive.scrollIntoView()
+            newActive.scrollIntoView({block: 'nearest'})
           }
         })
         // hover templates
@@ -431,6 +432,11 @@ function defineDialog () {
             this.insertTemplate(container.dataset.id)
           }
         })
+        // fix interaction with our dialog in some modals (LinkedIn, Twitter).
+        // prevent the page from capturing the focusout event when switching focus to our dialog.
+        this.shadowRoot.addEventListener('focusout', (e) => {
+          e.stopImmediatePropagation()
+        })
 
         document.addEventListener(dialogShowEvent, this.show)
         document.addEventListener('click', this.hideOnClick)
@@ -444,7 +450,6 @@ function defineDialog () {
             this.restoreSelection()
           }
         })
-
       }
       disconnectedCallback () {
         document.removeEventListener(dialogShowEvent, this.show)

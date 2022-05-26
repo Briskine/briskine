@@ -9,8 +9,6 @@ import htmlToText from '../utils/html-to-text.js';
 import createContact from '../utils/create-contact.js';
 import {enableBubble} from '../bubble/bubble.js';
 
-import {dialogTagName} from '../dialog/dialog.js'
-
 function before (params, data) {
     const $parent = params.element.closest('.msg-overlay-conversation-bubble');
 
@@ -179,19 +177,6 @@ function setup () {
     }
 
     enableBubble();
-
-    // Fix interaction with our dialog in LinkedIn modals.
-    // LinkedIn uses a focusout event on the body, that restores focus
-    // when modals (Create a Post, Add a Note after Connect) are open.
-    // These modals contain editors where you can open the dialog (with bubble or shortcut).
-    // Because our dialog is created outside the body, the focusout handler
-    // stops any sort of interaction with our dialog (focus, scroll, keyboard navigation).
-    // Prevent the LinkedIn event handler from being run, when interacting with our dialog.
-    window.addEventListener('focusout', (e) => {
-        if (e.relatedTarget && e.relatedTarget.closest(dialogTagName)) {
-            e.stopImmediatePropagation();
-        }
-    }, true);
 
     // custom linkedin styles
     const css = `
