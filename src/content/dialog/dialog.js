@@ -307,13 +307,31 @@ function defineDialog () {
             })
         }
 
+        this.globalPrevent = (e) => {
+          if (e.relatedTarget && e.relatedTarget.closest(dialogTagName)) {
+            e.stopPropagation()
+          }
+        }
+
+        this.hideOnEsc = (e) => {
+          if (e.key === 'Escape' && this.hasAttribute(dialogVisibleAttr)) {
+            e.stopPropagation()
+            // prevent triggering the keyup event on the page.
+            // causes some websites (eg. linkedin) to also close the underlying modal
+            // when closing our dialog.
+            window.addEventListener('keyup', (e) => { e.stopPropagation() }, { capture: true, once: true })
+
+            this.removeAttribute(dialogVisibleAttr)
+            this.restoreSelection()
+          }
+        }
+
       }
       connectedCallback () {
         if (!this.isConnected) {
           return
         }
 
-        // HACK
         // browserAction.openPopup is not supported in all browsers yet.
         // https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/browserAction/openPopup
         // Open the browserAction popup in a new tab.
@@ -432,24 +450,16 @@ function defineDialog () {
             this.insertTemplate(container.dataset.id)
           }
         })
-        // fix interaction with our dialog in some modals (LinkedIn, Twitter).
-        // prevent the page from capturing the focusout event when switching focus to our dialog.
-        this.shadowRoot.addEventListener('focusout', (e) => {
-          e.stopImmediatePropagation()
-        })
 
         document.addEventListener(dialogShowEvent, this.show)
         document.addEventListener('click', this.hideOnClick)
 
         Mousetrap.bindGlobal(shortcut, this.show)
-        Mousetrap.bindGlobal('escape', (e) => {
-          if (this.hasAttribute(dialogVisibleAttr)) {
-            e.stopPropagation()
-            this.removeAttribute(dialogVisibleAttr)
 
-            this.restoreSelection()
-          }
-        })
+        // fix interaction with our dialog in some modals (LinkedIn, Twitter).
+        // prevent the page from handling the focusout event when switching focus to our dialog.
+        window.addEventListener('focusout', this.globalPrevent, true)
+        window.addEventListener('keydown', this.hideOnEsc, true)
       }
       disconnectedCallback () {
         document.removeEventListener(dialogShowEvent, this.show)
@@ -458,6 +468,9 @@ function defineDialog () {
         store.off('login', this.setAuthState)
         store.off('logout', this.setAuthState)
         store.off('templates-updated', this.populateTemplates)
+
+        window.removeEventListener('focusout', this.globalPrevent, true)
+        window.removeEventListener('keydown', this.hideOnEsc, true)
       }
     }
   )
