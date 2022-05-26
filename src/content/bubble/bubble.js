@@ -12,92 +12,88 @@ let bubbleInstance = null
 let activeTextfield = null
 const domObservers = []
 
-export const bubbleTagName = 'b-bubble'
+export const bubbleTagName = `b-bubble-${Date.now()}`
 
-function defineBubble () {
-  customElements.define(
-    bubbleTagName,
-    class extends HTMLElement {
-        constructor() {
-            super();
+customElements.define(
+  bubbleTagName,
+  class extends HTMLElement {
+      constructor() {
+          super();
 
-            this.ready = false;
-            this.bubbleVisibilityTimer = null;
-        }
-        connectedCallback () {
-            // element was already created,
-            // just moved around in the dom.
-            if (this.ready || !this.isConnected) {
-                return;
-            }
+          this.ready = false;
+          this.bubbleVisibilityTimer = null;
+      }
+      connectedCallback () {
+          // element was already created,
+          // just moved around in the dom.
+          if (this.ready || !this.isConnected) {
+              return;
+          }
 
-            // dialog shortcut
-            const shortcut = this.getAttribute('shortcut') || 'ctrl+space';
+          // dialog shortcut
+          const shortcut = this.getAttribute('shortcut') || 'ctrl+space';
 
-            const template = `
-                <style>${bubbleStyles}</style>
-                <button type="button" class="b-bubble"></button>
-                <span class="b-bubble-tooltip">
-                    Search templates (${shortcut})
-                </div>
-            `;
-            const shadowRoot = this.attachShadow({mode: 'open'});
-            shadowRoot.innerHTML = template;
+          const template = `
+              <style>${bubbleStyles}</style>
+              <button type="button" class="b-bubble"></button>
+              <span class="b-bubble-tooltip">
+                  Search templates (${shortcut})
+              </div>
+          `;
+          const shadowRoot = this.attachShadow({mode: 'open'});
+          shadowRoot.innerHTML = template;
 
-            this.$button = this.shadowRoot.querySelector('.b-bubble');
-            this.$button.addEventListener('mousedown', (e) => {
-                // prevent stealing focus when clicking the button
-                e.preventDefault();
-            });
-            this.$button.addEventListener('click', (e) => {
-                e.stopPropagation()
+          this.$button = this.shadowRoot.querySelector('.b-bubble');
+          this.$button.addEventListener('mousedown', (e) => {
+              // prevent stealing focus when clicking the button
+              e.preventDefault();
+          });
+          this.$button.addEventListener('click', (e) => {
+              e.stopPropagation()
 
-                // position the dialog under the qa button.
-                // since the focus node is now the button
-                // we have to pass the previous focus (the text node).
-                e.target.dispatchEvent(new CustomEvent(dialogShowEvent, {
-                  bubbles: true,
-                  composed: true,
-                }))
-            });
+              // trigger the event on the bubble, to position the dialog next to it.
+              e.target.dispatchEvent(new CustomEvent(dialogShowEvent, {
+                bubbles: true,
+                composed: true,
+              }))
+          });
 
 
-            this.ready = true;
-        }
-        attributeChangedCallback (name, oldValue, newValue) {
-            if (name === 'visible') {
-                const visibleClassName = 'b-bubble-visible';
+          this.ready = true;
+      }
+      attributeChangedCallback (name, oldValue, newValue) {
+          if (name === 'visible') {
+              const visibleClassName = 'b-bubble-visible';
 
-                if (this.bubbleVisibilityTimer) {
-                    clearTimeout(this.bubbleVisibilityTimer);
-                }
+              if (this.bubbleVisibilityTimer) {
+                  clearTimeout(this.bubbleVisibilityTimer);
+              }
 
-                // timer makes the visible/not-visible state to be less "flickery"
-                // when rapidly focusing and blurring textfields,
-                // and makes the transitions be visible.
-                this.bubbleVisibilityTimer = setTimeout(() => {
-                    if (newValue === 'true') {
-                        this.$button.classList.add(visibleClassName);
-                    } else {
-                        this.$button.classList.remove(visibleClassName);
-                    }
-                }, 200);
-            }
+              // timer makes the visible/not-visible state to be less "flickery"
+              // when rapidly focusing and blurring textfields,
+              // and makes the transitions be visible.
+              this.bubbleVisibilityTimer = setTimeout(() => {
+                  if (newValue === 'true') {
+                      this.$button.classList.add(visibleClassName);
+                  } else {
+                      this.$button.classList.remove(visibleClassName);
+                  }
+              }, 200);
+          }
 
-            if (name === 'top' || name === 'right') {
-                this.style[name] = `${newValue}px`;
-            }
-        }
-        static get observedAttributes() {
-            return [
-                'visible',
-                'top',
-                'right'
-            ];
-        }
-    }
-  );
-}
+          if (name === 'top' || name === 'right') {
+              this.style[name] = `${newValue}px`;
+          }
+      }
+      static get observedAttributes() {
+          return [
+              'visible',
+              'top',
+              'right'
+          ];
+      }
+  }
+)
 
 function focusTextfield (e) {
   // used for showing the dialog completion
@@ -164,12 +160,6 @@ export function setup (settings = {}) {
 }
 
 function create (settings = {}) {
-  // bubble is defined later,
-  // to avoid errors with other existing intances on page,
-  // when reloading the bubble without page refresh.
-  // (connectedCallback is triggered when re-defining an existing element)
-  defineBubble();
-
   // bubble is created outside the body.
   // when textfields are focused, move it to the offsetParent for positioning.
   bubbleInstance = document.createElement(bubbleTagName);
