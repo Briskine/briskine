@@ -3,8 +3,7 @@
 
 import {isContentEditable, insertContentEditableTemplate} from './editor-contenteditable.js'
 import {isCkEditor, insertCkEditorTemplate} from './editor-ckeditor.js'
-import {isDraft, insertDraftTemplate} from './editor-draft.js'
-import {isLexical, insertLexicalTemplate} from './editor-lexical.js'
+import {isPasteEditor, insertPasteTemplate} from './editor-paste.js'
 import {isSlate, insertSlateTemplate} from './editor-slate.js'
 import {isQuill, insertQuillTemplate} from './editor-quill.js'
 import {isProseMirror, insertProseMirrorTemplate} from './editor-prosemirror.js'
@@ -15,12 +14,8 @@ export function insertTemplate (params = {}) {
     return insertCkEditorTemplate(params)
   }
 
-  if (isDraft(params.element)) {
-    return insertDraftTemplate(params)
-  }
-
-  if (isLexical(params.element)) {
-    return insertLexicalTemplate(params)
+  if (isPasteEditor(params.element)) {
+    return insertPasteTemplate(params)
   }
 
   if (isSlate(params.element)) {

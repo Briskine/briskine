@@ -1,12 +1,20 @@
-/* Lexical editor from Facebook
+/* Editors with Paste event support.
+ *
+ * Used for:
+ * Draft.js rich text editor framework
+ * https://draftjs.org/
+ *
+ * Lexical editor from Facebook
  * https://lexical.dev/
  */
 
-export function isLexical (element) {
-  return element.dataset.lexicalEditor
+import htmlToText from '../utils/html-to-text.js'
+
+export function isPasteEditor (element) {
+  return element.hasAttribute('data-lexical-editor') || element.querySelector('[data-contents]')
 }
 
-export function insertLexicalTemplate (params = {}) {
+export function insertPasteTemplate (params = {}) {
   const selection = window.getSelection()
   const range = selection.getRangeAt(0)
   const focusNode = selection.focusNode
@@ -26,7 +34,7 @@ export function insertLexicalTemplate (params = {}) {
 
   removeShortcut.then(() => {
     const clipboardData = new DataTransfer()
-    clipboardData.setData('text/html', params.text)
+    clipboardData.setData('text/plain', htmlToText(params.text))
     const customPasteEvent = new ClipboardEvent('paste', {
         clipboardData: clipboardData,
         bubbles: true,
