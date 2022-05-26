@@ -2,6 +2,8 @@
  * https://draftjs.org/
  */
 
+import htmlToText from '../utils/html-to-text.js'
+
 export function isDraft (element) {
   return element.querySelector('[data-contents]')
 }
@@ -20,7 +22,7 @@ export function insertDraftTemplate (params = {}) {
   }
 
   const clipboardData = new DataTransfer()
-  clipboardData.setData('text/html', params.text)
+  clipboardData.setData('text/plain', htmlToText(params.text))
   const customPasteEvent = new ClipboardEvent('paste', {
       clipboardData: clipboardData,
       bubbles: true,
