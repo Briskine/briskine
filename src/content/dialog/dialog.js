@@ -397,7 +397,6 @@ customElements.define(
       this.searchField = shadowRoot.querySelector('input[type=search]')
       // search for templates
       this.searchField.addEventListener('input', (e) => {
-        e.stopPropagation()
         if (searchDebouncer) {
           clearTimeout(searchDebouncer)
         }
@@ -407,6 +406,12 @@ customElements.define(
           this.populateTemplates(query)
         }, 200)
       })
+
+      // prevent Gmail from handling keydown.
+      // any keys assigned to Gmail keyboard shortcuts are prevented
+      // from being inserted in the search field.
+      this.searchField.addEventListener('keydown', (e) => {e.stopPropagation()})
+
       // keyboard navigation and insert for templates
       this.searchField.addEventListener('keydown', (e) => {
         const active = this.shadowRoot.querySelector(`.${activeClass}`)
@@ -433,6 +438,7 @@ customElements.define(
           newActive.scrollIntoView({block: 'nearest'})
         }
       })
+
       // hover templates
       this.shadowRoot.addEventListener('mouseover', (e) => {
         const container = e.target.closest('[data-id]')
@@ -440,6 +446,7 @@ customElements.define(
           this.setActive(container.dataset.id)
         }
       })
+
       // insert templates on click
       this.shadowRoot.addEventListener('click', (e) => {
         const container = e.target.closest('[data-id]')
