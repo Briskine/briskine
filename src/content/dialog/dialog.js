@@ -319,12 +319,6 @@ customElements.define(
           })
       }
 
-      this.globalPrevent = (e) => {
-        if (e.relatedTarget && e.relatedTarget.closest(dialogTagName)) {
-          e.stopPropagation()
-        }
-      }
-
       this.hideOnEsc = (e) => {
         if (e.key === 'Escape' && this.hasAttribute(dialogVisibleAttr)) {
           e.stopPropagation()
@@ -338,6 +332,19 @@ customElements.define(
         }
       }
 
+      const stopPropagation = (e, target) => {
+        if (target && (this === target || this.shadowRoot.contains(target))) {
+          e.stopPropagation()
+        }
+      }
+
+      this.stopTargetPropagation = (e) => {
+        stopPropagation(e, e.target)
+      }
+
+      this.stopRelatedTargetPropagation = (e) => {
+        stopPropagation(e, e.relatedTarget)
+      }
     }
     static get observedAttributes() { return ['visible'] }
     attributeChangedCallback (name, oldValue, newValue) {
@@ -431,11 +438,6 @@ customElements.define(
         }, 200)
       })
 
-      // prevent Gmail from handling keydown.
-      // any keys assigned to Gmail keyboard shortcuts are prevented
-      // from being inserted in the search field.
-      this.addEventListener('keydown', (e) => {e.stopPropagation()})
-
       // keyboard navigation and insert for templates
       this.searchField.addEventListener('keydown', (e) => {
         const active = this.shadowRoot.querySelector(`.${activeClass}`)
@@ -487,9 +489,16 @@ customElements.define(
 
       Mousetrap.bindGlobal(shortcut, this.show)
 
+      // prevent Gmail from handling keydown.
+      // any keys assigned to Gmail keyboard shortcuts are prevented
+      // from being inserted in the search field.
+      this.addEventListener('keydown', this.stopTargetPropagation)
+
+      // prevent parent page from handling focus events.
       // fix interaction with our dialog in some modals (LinkedIn, Twitter).
       // prevent the page from handling the focusout event when switching focus to our dialog.
-      document.addEventListener('focusout', this.globalPrevent, true)
+      document.addEventListener('focusout', this.stopRelatedTargetPropagation, true)
+      document.addEventListener('focusin', this.stopTargetPropagation, true)
     }
     disconnectedCallback () {
       document.removeEventListener(dialogShowEvent, this.show)
@@ -500,7 +509,8 @@ customElements.define(
       store.off('logout', this.setAuthState)
       store.off('templates-updated', this.populateTemplates)
 
-      document.removeEventListener('focusout', this.globalPrevent, true)
+      document.removeEventListener('focusout', this.stopRelatedTargetPropagation, true)
+      document.removeEventListener('focusin', this.stopTargetPropagation, true)
     }
   }
 )

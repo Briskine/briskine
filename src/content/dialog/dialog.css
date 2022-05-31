@@ -50,7 +50,7 @@
 @keyframes open {
   0% {
     opacity: 0;
-    transform: scale(1, .8);
+    transform: scale(.9, .8);
     transform-origin: top;
   }
   60% {
