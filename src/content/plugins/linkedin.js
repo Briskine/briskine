@@ -7,7 +7,7 @@ import {insertTemplate} from '../editors/editor-universal.js';
 import {insertContentEditableTemplate} from '../editors/editor-contenteditable.js';
 import htmlToText from '../utils/html-to-text.js';
 import createContact from '../utils/create-contact.js';
-import {enableBubble} from '../bubble/bubble.js';
+import {enableBubble, bubbleTagName} from '../bubble/bubble.js';
 
 function before (params, data) {
     const $parent = params.element.closest('.msg-overlay-conversation-bubble');
@@ -185,7 +185,7 @@ function setup () {
              * position the bubble on the left side of the icon.
              * the separate inMail message form does not have the caret icon.
              */
-            .msg-form:not(.full-height) b-bubble {
+            .msg-form:not(.full-height) ${bubbleTagName} {
                 margin-right: 3em;
             }
         </style>
