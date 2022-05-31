@@ -434,7 +434,7 @@ customElements.define(
       // prevent Gmail from handling keydown.
       // any keys assigned to Gmail keyboard shortcuts are prevented
       // from being inserted in the search field.
-      this.searchField.addEventListener('keydown', (e) => {e.stopPropagation()})
+      this.addEventListener('keydown', (e) => {e.stopPropagation()})
 
       // keyboard navigation and insert for templates
       this.searchField.addEventListener('keydown', (e) => {
@@ -483,24 +483,24 @@ customElements.define(
 
       document.addEventListener(dialogShowEvent, this.show)
       document.addEventListener('click', this.hideOnClick)
+      document.addEventListener('keydown', this.hideOnEsc, true)
 
       Mousetrap.bindGlobal(shortcut, this.show)
 
       // fix interaction with our dialog in some modals (LinkedIn, Twitter).
       // prevent the page from handling the focusout event when switching focus to our dialog.
-      window.addEventListener('focusout', this.globalPrevent, true)
-      window.addEventListener('keydown', this.hideOnEsc, true)
+      document.addEventListener('focusout', this.globalPrevent, true)
     }
     disconnectedCallback () {
       document.removeEventListener(dialogShowEvent, this.show)
       document.removeEventListener('click', this.hideOnClick)
+      document.removeEventListener('keydown', this.hideOnEsc, true)
 
       store.off('login', this.setAuthState)
       store.off('logout', this.setAuthState)
       store.off('templates-updated', this.populateTemplates)
 
-      window.removeEventListener('focusout', this.globalPrevent, true)
-      window.removeEventListener('keydown', this.hideOnEsc, true)
+      document.removeEventListener('focusout', this.globalPrevent, true)
     }
   }
 )
