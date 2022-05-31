@@ -38,12 +38,13 @@
 
 :host([visible]) {
   display: block;
-  visibility: hidden;
+
+  opacity: 0;
+  visibility: visible;
 }
 
 :host(.open-animation) {
-  visibility: visible;
-  animation: open .2s linear 1;
+  animation: open .1s linear 1 forwards;
 }
 
 @keyframes open {
@@ -52,7 +53,7 @@
     transform: scale(1, .8);
     transform-origin: top;
   }
-  50% {
+  60% {
     transform: scale(1);
   }
   100% {
@@ -64,7 +65,7 @@
  */
 @media (prefers-reduced-motion) {
   :host(.open-animation) {
-    animation: none !important;
+    animation-duration: 0s;
   }
 }
 

@@ -343,8 +343,7 @@ customElements.define(
     attributeChangedCallback (name, oldValue, newValue) {
       if (name === 'visible') {
         if (newValue === 'true') {
-          // TODO make sure we get the correct dialog size
-          // before animating
+          // make sure we get the correct dialog size before animating
           setTimeout(() => {
             this.classList.add(openAnimationClass)
           })
