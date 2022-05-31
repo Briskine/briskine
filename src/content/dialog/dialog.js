@@ -19,7 +19,6 @@ export const dialogShowEvent = 'briskine-dialog'
 export const dialogTagName = `b-dialog-${Date.now()}`
 
 const dialogVisibleAttr = 'visible'
-const targetWidthProperty = '--target-width'
 const activeClass = 'active'
 const dialogHeight = 270
 const heightProperty = '--dialog-height'
@@ -54,8 +53,13 @@ customElements.define(
         }
 
         let target
-        let endPositioning = false
         let removeCaretParent = false
+        let placement = 'top-left'
+
+        // detect rtl
+        const targetStyle = window.getComputedStyle(e.target)
+        const direction = targetStyle.direction || 'ltr'
+        this.setAttribute('dir', direction)
 
         this.anchorNode = null
         this.anchorOffset = 0
@@ -66,6 +70,11 @@ customElements.define(
           // input, textarea
           target = getEditableCaret(e.target)
           removeCaretParent = true
+          if (direction === 'rtl') {
+            placement = 'bottom-left-flip'
+          } else {
+            placement = 'bottom-right'
+          }
         } else if (isContentEditable(e.target)) {
           // contenteditable
           target = getContentEditableCaret(e.target)
@@ -76,10 +85,32 @@ customElements.define(
           this.focusOffset = selection.focusOffset
           this.anchorNode = selection.anchorNode
           this.anchorOffset = selection.anchorOffset
+
+          // only use the targetMetrics width when caret is a range.
+          // workaround for when the contenteditable caret is the endContainer.
+          const isRange = target instanceof Range
+
+          if (direction === 'rtl') {
+            if (isRange) {
+              placement = 'bottom-left-flip'
+            } else {
+              placement = 'top-right-flip'
+            }
+          } else {
+            if (isRange) {
+              placement = 'bottom-right'
+            } else {
+              placement = 'top-left'
+            }
+          }
         } else if (e.target.tagName.toLowerCase() === bubbleTagName) {
           // bubble
           target = e.target
-          endPositioning = true
+          if (direction === 'rtl') {
+            placement = 'bottom-left'
+          } else {
+            placement = 'bottom-right-flip'
+          }
         } else {
           return
         }
@@ -89,29 +120,12 @@ customElements.define(
         // cache editor, range and focusNode,
         // to use for inserting templates or restoring later.
         this.editor = document.activeElement
-
         this.word = getSelectedWord({
           element: this.editor
         })
 
-        // detect rtl
-        const targetStyle = window.getComputedStyle(e.target)
-        const direction = targetStyle.direction || 'ltr'
-        this.setAttribute('dir', direction)
-
-        // must be set visible before positioning,
-        // so we can get its dimensions.
         this.setAttribute(dialogVisibleAttr, true)
-
-        const position = getDialogPosition(target, this, dialogHeight)
-        this.style.setProperty(targetWidthProperty, `${position.targetWidth}px`)
-
-        if (endPositioning) {
-          this.setAttribute('end', 'true')
-        } else {
-          this.removeAttribute('end')
-        }
-
+        const position = getDialogPosition(target, this, placement)
         this.style.top = `${position.top}px`
         this.style.left = `${position.left}px`
 

@@ -14,11 +14,12 @@
   --blue-focus: rgb(13 110 253 / 25%);
   --radius: 5px;
   --radius-small: 3px;
+  --dialog-height: 250px;
 
   position: absolute;
-  z-index: 2147483646;
-
   width: 360px;
+  height: var(--dialog-height);
+  z-index: 2147483646;
 
   color: #333;
   font-size: 13px;
@@ -34,23 +35,19 @@
 
   visibility: hidden;
   opacity: 0;
-  height: calc(var(--dialog-height) - 20px);
-  transition-duration: .2s;
-  transition-property: opacity, height;
+  transition: height .08s, opacity .2s;
 }
 
-:host([dir=rtl]:not([end])),
-:host([dir=ltr][end]) {
+/*:host([dir=rtl]:not([end])),
+:host([dir=ltr][end]) { */
   /* allow positioning on the right/end, when triggered form the bubble.
    * target-width is updated from js.
    */
-  transform: translateX(calc(-100% + var(--target-width, 100%)));
-}
+/*   transform: translateX(calc(-100% + var(--target-width, 100%))); */
+/*   transform: translateX(-100%); */
+/* } */
 
 :host([visible]) {
-  /* dialog-height is set from js
-   */
-  height: var(--dialog-height, 250px);
   visibility: visible;
   opacity: 1;
 }
@@ -168,13 +165,16 @@ input[type=search]:focus {
   position: relative;
   width: 100%;
   padding: 8px 12px 8px 9px;
-  border-width: 0 0 0 3px;
-  border-style: solid;
-  border-color: transparent;
+  border-left: 3px solid transparent;
 
   cursor: pointer;
   color: #161616;
   white-space: nowrap;
+}
+
+:host([dir=rtl]) .dialog-templates li {
+  border-left: 0;
+  border-right: 3px solid transparent;
 }
 
 .dialog-templates li h1 {
@@ -232,7 +232,7 @@ input[type=search]:focus {
 }
 
 .dialog-templates li.active {
-  border-color: var(--blue-focus);
+  border-color: var(--blue-focus) !important;
   background: var(--gray-lighter);
 }
 

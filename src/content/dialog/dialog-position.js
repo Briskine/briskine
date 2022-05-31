@@ -1,6 +1,6 @@
 /* Dialog positioning and caret detection
  */
-export function getDialogPosition (targetNode, instance, dialogMaxHeight = 250) {
+export function getDialogPosition (targetNode, instance, placement = 'top-left') {
   const pageHeight = window.innerHeight
   const scrollTop = window.scrollY
   const scrollLeft = window.scrollX
@@ -10,36 +10,37 @@ export function getDialogPosition (targetNode, instance, dialogMaxHeight = 250) 
   // in case we want to position the dialog next to
   // another element,
   // not next to the cursor.
-  // eg. when we position it next to the qa button.
+  // eg. when we position it next to the bubble.
   const targetMetrics = targetNode.getBoundingClientRect()
 
   // because we use getBoundingClientRect
   // we need to add the scroll position
-  let topPos = targetMetrics.top + targetMetrics.height + scrollTop
+  // top-left
+  let topPos = targetMetrics.top + scrollTop
   let leftPos = targetMetrics.left + scrollLeft
 
-  // only use the targetMetrics width when caret is a range.
-  // workaround for when the contenteditable caret is the endContainer.
-  if (targetNode instanceof Range) {
+  if (placement.includes('right')) {
     leftPos = leftPos + targetMetrics.width
+  }
+
+  if (placement.includes('flip')) {
+    leftPos = leftPos - dialogMetrics.width
+  }
+
+  if (placement.includes('bottom')) {
+    topPos = topPos + targetMetrics.height
   }
 
   // check if we have enough space at the bottom
   // for the maximum dialog height
   const bottomSpace = pageHeight - topPos - scrollTop
-  if (bottomSpace < dialogMaxHeight) {
+  if (bottomSpace < dialogMetrics.height) {
     topPos = topPos - dialogMetrics.height
-    // only use the targetMetrics when the caret is a range.
-    // workaround for when the contenteditable caret is the endContainer.
-    if (targetNode instanceof Range) {
-      topPos = topPos - targetMetrics.height
-    }
   }
 
   return {
     top: topPos,
     left: leftPos,
-    targetWidth: targetMetrics.width,
   }
 }
 
@@ -52,6 +53,7 @@ export function getContentEditableCaret () {
     // this is a spec issue:
     // https://github.com/w3c/csswg-drafts/issues/2514
     // return the endContainer when we can't get the clientRect.
+    // firefox returns the contenteditable parent.
     if (range.collapsed === true && range.endContainer.nodeType === Node.ELEMENT_NODE) {
       return range.endContainer
     }
@@ -76,7 +78,7 @@ const mirrorStyles = [
   'font-style',
   'font-variant',
   'font-weight',
-  // spacing
+  // text spacing
   'word-spacing',
   'letter-spacing',
   'line-height',
