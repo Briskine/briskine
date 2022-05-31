@@ -20,8 +20,7 @@ export const dialogTagName = `b-dialog-${Date.now()}`
 
 const dialogVisibleAttr = 'visible'
 const activeClass = 'active'
-const dialogHeight = 270
-const heightProperty = '--dialog-height'
+const openAnimationClass = 'open-animation'
 
 const template = document.createElement('template')
 function plainText (html = '') {
@@ -340,6 +339,20 @@ customElements.define(
       }
 
     }
+    static get observedAttributes() { return ['visible'] }
+    attributeChangedCallback (name, oldValue, newValue) {
+      if (name === 'visible') {
+        if (newValue === 'true') {
+          // TODO make sure we get the correct dialog size
+          // before animating
+          setTimeout(() => {
+            this.classList.add(openAnimationClass)
+          })
+        } else {
+          this.classList.remove(openAnimationClass)
+        }
+      }
+    }
     connectedCallback () {
       if (!this.isConnected) {
         return
@@ -397,8 +410,6 @@ customElements.define(
           </div>
         </div>
       `
-
-      this.style.setProperty(heightProperty, `${dialogHeight}px`)
 
       // check authentication state
       this.setAuthState()

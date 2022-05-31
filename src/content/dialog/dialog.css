@@ -33,30 +33,38 @@
     0 4px 8px rgba(0,0,0,0.07),
     0 8px 16px rgba(0,0,0,0.07);
 
-  visibility: hidden;
-  opacity: 0;
-  transition: height .08s, opacity .2s;
+  display: none;
 }
 
-/*:host([dir=rtl]:not([end])),
-:host([dir=ltr][end]) { */
-  /* allow positioning on the right/end, when triggered form the bubble.
-   * target-width is updated from js.
-   */
-/*   transform: translateX(calc(-100% + var(--target-width, 100%))); */
-/*   transform: translateX(-100%); */
-/* } */
-
 :host([visible]) {
+  display: block;
+  visibility: hidden;
+}
+
+:host(.open-animation) {
   visibility: visible;
-  opacity: 1;
+  animation: open .2s linear 1;
+}
+
+@keyframes open {
+  0% {
+    opacity: 0;
+    transform: scale(1, .8);
+    transform-origin: top;
+  }
+  50% {
+    transform: scale(1);
+  }
+  100% {
+    opacity: 1;
+  }
 }
 
 /* disable the opening animation
  */
 @media (prefers-reduced-motion) {
-  :host {
-    transition: none;
+  :host(.open-animation) {
+    animation: none !important;
   }
 }
 
