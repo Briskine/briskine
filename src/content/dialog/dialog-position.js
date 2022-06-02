@@ -52,9 +52,18 @@ export function getContentEditableCaret () {
     // getClientRects/getBoundingClientRect returns empty or with zero values.
     // this is a spec issue:
     // https://github.com/w3c/csswg-drafts/issues/2514
-    // return the endContainer when we can't get the clientRect.
-    // firefox returns the contenteditable parent.
     if (range.collapsed === true && range.endContainer.nodeType === Node.ELEMENT_NODE) {
+      // try to get the element where the focus is
+      const focusNode = range.endContainer.childNodes[range.endOffset]
+      if (focusNode && focusNode.previousElementSibling) {
+        // contenteditable adds a temporary empty text node on the endOffset,
+        // which gets removed before we get its clientRect,
+        // so we try to get the previous element sibling.
+        return focusNode.previousElementSibling
+      }
+      // in case we couldn't get an element closer to the focus,
+      // return the endContainer.
+      // firefox returns the contenteditable parent.
       return range.endContainer
     }
     return range
