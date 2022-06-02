@@ -78,13 +78,6 @@ customElements.define(
           // contenteditable
           target = getContentEditableCaret(e.target)
 
-          // cache selection details, to restore later
-          const selection = window.getSelection()
-          this.focusNode = selection.focusNode
-          this.focusOffset = selection.focusOffset
-          this.anchorNode = selection.anchorNode
-          this.anchorOffset = selection.anchorOffset
-
           // only use the targetMetrics width when caret is a range.
           // workaround for when the contenteditable caret is the endContainer.
           const isRange = target instanceof Range
@@ -116,9 +109,17 @@ customElements.define(
 
         e.preventDefault()
 
-        // cache editor, range and focusNode,
+        // cache selection details, to restore later
+        const selection = window.getSelection()
+        this.focusNode = selection.focusNode
+        this.focusOffset = selection.focusOffset
+        this.anchorNode = selection.anchorNode
+        this.anchorOffset = selection.anchorOffset
+
+        // cache editor,
         // to use for inserting templates or restoring later.
         this.editor = document.activeElement
+
         this.word = getSelectedWord({
           element: this.editor
         })
