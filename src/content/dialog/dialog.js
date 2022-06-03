@@ -21,7 +21,7 @@ export const dialogTagName = `b-dialog-${Date.now()}`
 
 const dialogVisibleAttr = 'visible'
 const activeClass = 'active'
-const openAnimationClass = 'open-animation'
+const openAnimationClass = 'b-dialog-open-animation'
 
 const template = document.createElement('template')
 function plainText (html = '') {

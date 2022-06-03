@@ -43,7 +43,7 @@
   visibility: visible;
 }
 
-:host(.open-animation) {
+:host(.b-dialog-open-animation) {
   animation: open .1s linear 1 forwards;
 }
 
@@ -64,7 +64,7 @@
 /* disable the opening animation
  */
 @media (prefers-reduced-motion) {
-  :host(.open-animation) {
+  :host(.b-dialog-open-animation) {
     animation-duration: 0s;
   }
 }
