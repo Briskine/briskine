@@ -1,6 +1,7 @@
 /**
  * Keyboard completion code.
  */
+/* global Mousetrap */
 
 import {autocomplete, getSelectedWord} from './autocomplete.js'
 import {isContentEditable} from './editors/editor-contenteditable.js'
@@ -20,7 +21,7 @@ function getTemplateByShortcut (shortcut) {
     })
 }
 
-export function keyboardAutocomplete (e) {
+function keyboardAutocomplete (e) {
   const element = e.target
   // if it's not an editable element
   // don't trigger anything
@@ -60,4 +61,17 @@ export function keyboardAutocomplete (e) {
       }
     });
   }
+}
+
+export function setup (settings = {}) {
+  // use custom keyboard shortcuts
+  if (settings.expand_enabled) {
+    Mousetrap.bindGlobal(
+      settings.expand_shortcut,
+      keyboardAutocomplete
+    )
+  }
+}
+
+export function destroy () {
 }

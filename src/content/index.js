@@ -9,50 +9,32 @@ import 'mousetrap/plugins/global-bind/mousetrap-global-bind.js'
 import './helpers/content-helpers.js'
 
 import store from '../store/store-client.js'
-import {keyboardAutocomplete} from './keyboard.js'
 import config from '../config.js'
 
 import {isContentEditable} from './editors/editor-contenteditable.js'
+import {setup as setupKeyboard, destroy as destroyKeyboard} from './keyboard.js'
 import {setup as setupBubble, destroy as destroyBubble} from './bubble/bubble.js'
 import {setup as setupStatus, destroy as destroyStatus} from './status.js'
 import {setup as setupDialog, destroy as destroyDialog} from './dialog/dialog.js'
 
+const blacklistPrivate = []
+
 function init (settings) {
-  if (!document.body) {
-    return;
-  }
-
-  var currentUrl = window.location.href;
-
-  var blacklistPrivate = [];
-
   // create the full blacklist
   // from the editable and private one
-  var fullBlacklist = [];
-  [].push.apply(fullBlacklist, settings.blacklist);
-  [].push.apply(fullBlacklist, blacklistPrivate);
+  const fullBlacklist = blacklistPrivate.concat(settings.blacklist)
 
   // check if url is in blacklist
-  var isBlacklisted = false;
-  fullBlacklist.some(function(item) {
-      if (item && currentUrl.indexOf(item) !== -1) {
-          isBlacklisted = true;
-          return true;
-      }
-      return false;
-  });
+  const currentUrl = window.location.href
+  const isBlacklisted = fullBlacklist.find((url) => {
+      return url && currentUrl.includes(url)
+    })
 
   if (isBlacklisted) {
-      return false;
+    return false
   }
 
-  // use custom keyboard shortcuts
-  if (settings.expand_enabled) {
-      Mousetrap.bindGlobal(
-          settings.expand_shortcut,
-          keyboardAutocomplete
-      );
-  }
+  setupKeyboard(settings)
 
   // don't create the dialog inside editor iframes (eg. tinymce iframe)
   if (!isContentEditable(document.body)) {
@@ -76,13 +58,13 @@ function injectPage () {
 }
 
 function startup () {
-  if (document.contentType !== 'text/html') {
+  if (document.contentType !== 'text/html' || !document.body) {
     // don't load on non html pages (json, xml, etc..)
     return
   }
 
   store.getSettings().then((settings) => {
-    init(settings, window.document)
+    init(settings)
   })
 }
 
@@ -93,6 +75,9 @@ document.dispatchEvent(destroyEvent)
 function destructor () {
   // unbind keyboard shortcuts
   Mousetrap.reset()
+
+  // destroy keyboard autocomplete
+  destroyKeyboard()
 
   // destroy bubble
   destroyBubble()
