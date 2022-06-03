@@ -2,9 +2,6 @@
 // https://bugs.chromium.org/p/chromium/issues/detail?id=390807
 import '@webcomponents/custom-elements'
 import browser from 'webextension-polyfill'
-// creates global window.Mousetrap
-import Mousetrap from 'mousetrap'
-import 'mousetrap/plugins/global-bind/mousetrap-global-bind.js'
 
 import './helpers/content-helpers.js'
 
@@ -73,9 +70,6 @@ const destroyEvent = new CustomEvent(config.destroyEvent)
 document.dispatchEvent(destroyEvent)
 
 function destructor () {
-  // unbind keyboard shortcuts
-  Mousetrap.reset()
-
   // destroy keyboard autocomplete
   destroyKeyboard()
 
