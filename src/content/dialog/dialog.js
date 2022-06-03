@@ -1,4 +1,4 @@
-/* global Mousetrap, REGISTER_DISABLED */
+/* global REGISTER_DISABLED */
 import browser from 'webextension-polyfill'
 
 import store from '../../store/store-client.js'
@@ -7,6 +7,7 @@ import {bubbleTagName} from '../bubble/bubble.js'
 import {getEditableCaret, getContentEditableCaret, getDialogPosition} from './dialog-position.js'
 import fuzzySearch from '../search.js'
 import {autocomplete, getSelectedWord} from '../autocomplete.js'
+import {keybind, keyunbind} from '../keybind.js'
 
 import config from '../../config.js'
 import {editIcon, plusIcon} from './dialog-icons.js'
@@ -488,7 +489,7 @@ customElements.define(
       document.addEventListener('click', this.hideOnClick)
       document.addEventListener('keydown', this.hideOnEsc, true)
 
-      Mousetrap.bindGlobal(shortcut, this.show)
+      keybind(shortcut, this.show)
 
       // prevent Gmail from handling keydown.
       // any keys assigned to Gmail keyboard shortcuts are prevented
@@ -502,6 +503,8 @@ customElements.define(
       document.addEventListener('focusin', this.stopTargetPropagation, true)
     }
     disconnectedCallback () {
+      keyunbind(this.getAttribute('shortcut'), this.show)
+
       document.removeEventListener(dialogShowEvent, this.show)
       document.removeEventListener('click', this.hideOnClick)
       document.removeEventListener('keydown', this.hideOnEsc, true)
