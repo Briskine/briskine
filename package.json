@@ -56,6 +56,7 @@
     "firebase": "^9.0.0",
     "fuse.js": "^6.4.5",
     "handlebars": "^4.5.3",
+    "hotkeys-js": "^3.9.4",
     "html-to-text": "^8.0.0",
     "lit-html": "^2.2.3",
     "moment": "^2.29.1",

@@ -1,16 +1,11 @@
 /**
- * Keyboard completion code.
+ * Keyboard Shortcut Autocomplete
  */
-/* global Mousetrap */
-
 import {autocomplete, getSelectedWord} from './autocomplete.js'
 import {isContentEditable} from './editors/editor-contenteditable.js'
 import store from '../store/store-client.js'
 
-// is input or textarea
-function isTextfield (element) {
-  return ['input', 'textarea'].includes(element.tagName.toLowerCase())
-}
+import {keybind, keyunbind} from './keybind.js'
 
 function getTemplateByShortcut (shortcut) {
   return store.getTemplates()
@@ -23,11 +18,6 @@ function getTemplateByShortcut (shortcut) {
 
 function keyboardAutocomplete (e) {
   const element = e.target
-  // if it's not an editable element
-  // don't trigger anything
-  if (!isTextfield(element) && !isContentEditable(element)) {
-    return
-  }
 
   // cache selection details
   const selection = window.getSelection()
@@ -63,15 +53,19 @@ function keyboardAutocomplete (e) {
   }
 }
 
+let cachedKeyboardShortcut = ''
+
 export function setup (settings = {}) {
+  cachedKeyboardShortcut = settings.expand_shortcut
   // use custom keyboard shortcuts
   if (settings.expand_enabled) {
-    Mousetrap.bindGlobal(
-      settings.expand_shortcut,
-      keyboardAutocomplete
+    keybind(
+      cachedKeyboardShortcut,
+      keyboardAutocomplete,
     )
   }
 }
 
 export function destroy () {
+  keyunbind(cachedKeyboardShortcut, keyboardAutocomplete)
 }
