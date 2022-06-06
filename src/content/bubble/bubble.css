@@ -35,6 +35,14 @@
   cursor: pointer;
 }
 
+/* disable the fade transition
+ */
+@media (prefers-reduced-motion) {
+  .b-bubble {
+    transition-duration: 0s;
+  }
+}
+
 .b-bubble:hover {
   background-color: #e9eaec;
   box-shadow: 0 0 12px rgba(0,0,0,.1);
