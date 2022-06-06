@@ -7,9 +7,18 @@ import store from '../store/store-client.js'
 
 import {keybind, keyunbind} from './keybind.js'
 
+let shortcutCache = []
+function updateShortcutCache (templates = []) {
+  shortcutCache = templates.map((t) => t.shortcut).filter((shortcut) => shortcut)
+}
+
+store.on('templates-updated', updateShortcutCache)
+
 function getTemplateByShortcut (shortcut) {
   return store.getTemplates()
     .then((templates) => {
+      updateShortcutCache(templates)
+
       return templates.find((t) => {
         return t.shortcut === shortcut
       })
@@ -31,6 +40,11 @@ function keyboardAutocomplete (e) {
   })
 
   if (word.text) {
+    if (shortcutCache.includes(word.text)) {
+      e.preventDefault()
+      e.stopImmediatePropagation()
+    }
+
     getTemplateByShortcut(word.text).then((template) => {
       if (template) {
         // restore selection
@@ -47,9 +61,9 @@ function keyboardAutocomplete (e) {
             element: element,
             quicktext: template,
             word: word,
-        });
+        })
       }
-    });
+    })
   }
 }
 
