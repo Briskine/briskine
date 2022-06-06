@@ -3,6 +3,7 @@ selenium
 chrome_profile
 *.log
 build
+sourcebuild
 
 # chrome extension
 tmp/
