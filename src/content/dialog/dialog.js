@@ -486,7 +486,7 @@ customElements.define(
       })
 
       document.addEventListener(dialogShowEvent, this.show)
-      document.addEventListener('click', this.hideOnClick)
+      document.addEventListener('click', this.hideOnClick, true)
       document.addEventListener('keydown', this.hideOnEsc, true)
 
       keybind(shortcut, this.show)
@@ -506,7 +506,7 @@ customElements.define(
       keyunbind(this.getAttribute('shortcut'), this.show)
 
       document.removeEventListener(dialogShowEvent, this.show)
-      document.removeEventListener('click', this.hideOnClick)
+      document.removeEventListener('click', this.hideOnClick, true)
       document.removeEventListener('keydown', this.hideOnEsc, true)
 
       store.off('login', this.setAuthState)
