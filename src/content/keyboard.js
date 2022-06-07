@@ -14,6 +14,11 @@ function updateShortcutCache (templates = []) {
 
 store.on('templates-updated', updateShortcutCache)
 
+// is input or textarea
+function isTextfield (element) {
+  return ['input', 'textarea'].includes(element.tagName.toLowerCase())
+}
+
 function getTemplateByShortcut (shortcut) {
   return store.getTemplates()
     .then((templates) => {
@@ -27,6 +32,11 @@ function getTemplateByShortcut (shortcut) {
 
 function keyboardAutocomplete (e) {
   const element = e.target
+  // if it's not an editable element
+  // don't trigger anything
+  if (!isTextfield(element) && !isContentEditable(element)) {
+    return
+  }
 
   // cache selection details
   const selection = window.getSelection()
