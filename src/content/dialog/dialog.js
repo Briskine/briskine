@@ -159,23 +159,24 @@ customElements.define(
             let filteredTemplates = templates
             if (query) {
               filteredTemplates = fuzzySearch(templates, query)
-            }
-
-            if (this.getAttribute('sort-az') === 'true') {
-              // alphabetical sort
-              filteredTemplates = filteredTemplates
-                .sort((a, b) => {
-                  return a.title.localeCompare(b.title)
-                })
             } else {
-              // default sort
-              filteredTemplates = filteredTemplates
-                .sort((a, b) => {
-                  return new Date(b.updated_datetime) - new Date(a.updated_datetime)
-                })
-                .sort((a, b) => {
-                  return new Date(b.lastuse_datetime || 0) - new Date(a.lastuse_datetime || 0)
-                })
+              // only sort templates if no search query was used
+              if (this.getAttribute('sort-az') === 'true') {
+                // alphabetical sort
+                filteredTemplates = filteredTemplates
+                  .sort((a, b) => {
+                    return a.title.localeCompare(b.title)
+                  })
+              } else {
+                // default sort
+                filteredTemplates = filteredTemplates
+                  .sort((a, b) => {
+                    return new Date(b.updated_datetime) - new Date(a.updated_datetime)
+                  })
+                  .sort((a, b) => {
+                    return new Date(b.lastuse_datetime || 0) - new Date(a.lastuse_datetime || 0)
+                  })
+              }
             }
 
             const limit = parseInt(this.getAttribute('limit') || '100', 10)
