@@ -11,7 +11,7 @@ import {
   signOut
 } from 'firebase/auth';
 import {
-  getFirestore,
+  initializeFirestore,
   connectFirestoreEmulator,
   collection,
   query,
@@ -27,7 +27,9 @@ import {trigger} from './store-trigger.js'
 
 const firebaseApp = initializeApp(FIREBASE_CONFIG)
 const firebaseAuth = getAuth(firebaseApp)
-const db = getFirestore(firebaseApp)
+const db = initializeFirestore(firebaseApp, {
+  experimentalForceLongPolling: true
+})
 
 // development emulators
 if (ENV === 'development') {
