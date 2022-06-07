@@ -334,6 +334,39 @@ customElements.define(
         }
       }
 
+      this.handleSearchFieldShortcuts = (e) => {
+        // only handle events from the search field
+        const composedPath = e.composedPath()
+        const composedTarget = composedPath[0]
+        if (e.target !== this || composedTarget !== this.searchField) {
+          return
+        }
+
+        const active = this.shadowRoot.querySelector(`.${activeClass}`)
+        if (!active) {
+          return
+        }
+
+        if (e.key === 'Enter') {
+          e.preventDefault()
+          const activeId = active.dataset.id
+          return this.insertTemplate(activeId)
+        }
+
+        let nextId
+        if (e.key === 'ArrowDown' && active.nextElementSibling) {
+          nextId = active.nextElementSibling.dataset.id
+        } else if (e.key === 'ArrowUp' && active.previousElementSibling) {
+          nextId = active.previousElementSibling.dataset.id
+        }
+
+        if (nextId) {
+          e.preventDefault()
+          const newActive = this.setActive(nextId)
+          newActive.scrollIntoView({block: 'nearest'})
+        }
+      }
+
       const stopPropagation = (e, target) => {
         if (target && (this === target || this.shadowRoot.contains(target))) {
           e.stopPropagation()
@@ -441,31 +474,7 @@ customElements.define(
       })
 
       // keyboard navigation and insert for templates
-      this.searchField.addEventListener('keydown', (e) => {
-        const active = this.shadowRoot.querySelector(`.${activeClass}`)
-        if (!active) {
-          return
-        }
-
-        if (e.key === 'Enter') {
-          e.preventDefault()
-          const activeId = active.dataset.id
-          return this.insertTemplate(activeId)
-        }
-
-        let nextId
-        if (e.key === 'ArrowDown' && active.nextElementSibling) {
-          nextId = active.nextElementSibling.dataset.id
-        } else if (e.key === 'ArrowUp' && active.previousElementSibling) {
-          nextId = active.previousElementSibling.dataset.id
-        }
-
-        if (nextId) {
-          e.preventDefault()
-          const newActive = this.setActive(nextId)
-          newActive.scrollIntoView({block: 'nearest'})
-        }
-      })
+      window.addEventListener('keydown', this.handleSearchFieldShortcuts, true)
 
       // hover templates
       this.shadowRoot.addEventListener('mouseover', (e) => {
@@ -485,36 +494,43 @@ customElements.define(
         }
       })
 
-      document.addEventListener(dialogShowEvent, this.show)
-      document.addEventListener('click', this.hideOnClick, true)
-      document.addEventListener('keydown', this.hideOnEsc, true)
+      window.addEventListener(dialogShowEvent, this.show)
+      window.addEventListener('click', this.hideOnClick, true)
+      window.addEventListener('keydown', this.hideOnEsc, true)
 
       keybind(shortcut, this.show)
 
       // prevent Gmail from handling keydown.
       // any keys assigned to Gmail keyboard shortcuts are prevented
       // from being inserted in the search field.
-      this.addEventListener('keydown', this.stopTargetPropagation)
+      window.addEventListener('keydown', this.stopTargetPropagation, true)
+      // prevent Front from handling keyboard shortcuts
+      // when we're typing in the search field.
+      window.addEventListener('keypress', this.stopTargetPropagation, true)
 
       // prevent parent page from handling focus events.
       // fix interaction with our dialog in some modals (LinkedIn, Twitter).
       // prevent the page from handling the focusout event when switching focus to our dialog.
-      document.addEventListener('focusout', this.stopRelatedTargetPropagation, true)
-      document.addEventListener('focusin', this.stopTargetPropagation, true)
+      window.addEventListener('focusout', this.stopRelatedTargetPropagation, true)
+      window.addEventListener('focusin', this.stopTargetPropagation, true)
     }
     disconnectedCallback () {
       keyunbind(this.getAttribute('shortcut'), this.show)
 
-      document.removeEventListener(dialogShowEvent, this.show)
-      document.removeEventListener('click', this.hideOnClick, true)
-      document.removeEventListener('keydown', this.hideOnEsc, true)
+      window.removeEventListener(dialogShowEvent, this.show)
+      window.removeEventListener('click', this.hideOnClick, true)
+      window.removeEventListener('keydown', this.hideOnEsc, true)
+      window.removeEventListener('keydown', this.handleSearchFieldShortcuts, true)
 
       store.off('login', this.setAuthState)
       store.off('logout', this.setAuthState)
       store.off('templates-updated', this.populateTemplates)
 
-      document.removeEventListener('focusout', this.stopRelatedTargetPropagation, true)
-      document.removeEventListener('focusin', this.stopTargetPropagation, true)
+      window.removeEventListener('keydown', this.stopTargetPropagation, true)
+      window.removeEventListener('keypress', this.stopTargetPropagation, true)
+
+      window.removeEventListener('focusout', this.stopRelatedTargetPropagation, true)
+      window.removeEventListener('focusin', this.stopTargetPropagation, true)
     }
   }
 )
