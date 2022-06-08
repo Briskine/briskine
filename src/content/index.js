@@ -3,8 +3,6 @@
 import '@webcomponents/custom-elements'
 import browser from 'webextension-polyfill'
 
-import './helpers/content-helpers.js'
-
 import store from '../store/store-client.js'
 import config from '../config.js'
 
@@ -13,6 +11,7 @@ import {setup as setupKeyboard, destroy as destroyKeyboard} from './keyboard.js'
 import {setup as setupBubble, destroy as destroyBubble} from './bubble/bubble.js'
 import {setup as setupStatus, destroy as destroyStatus} from './status.js'
 import {setup as setupDialog, destroy as destroyDialog} from './dialog/dialog.js'
+import {setup as setupSandbox, destroy as destroySandbox} from './sandbox/sandbox-parent.js'
 
 const blacklistPrivate = []
 
@@ -42,6 +41,8 @@ function init (settings) {
   injectPage()
 
   setupStatus()
+
+  setupSandbox()
 }
 
 // inject page script
@@ -81,6 +82,9 @@ function destructor () {
 
   // destroy status event
   destroyStatus()
+
+  // destroy sandbox
+  destroySandbox()
 }
 
 document.addEventListener(config.destroyEvent, destructor, {once: true})

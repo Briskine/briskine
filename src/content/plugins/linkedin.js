@@ -9,7 +9,7 @@ import htmlToText from '../utils/html-to-text.js';
 import createContact from '../utils/create-contact.js';
 import {enableBubble, bubbleTagName} from '../bubble/bubble.js';
 
-function before (params, data) {
+async function before (params, data) {
     const $parent = params.element.closest('.msg-overlay-conversation-bubble');
 
     if ($parent) {
@@ -17,7 +17,7 @@ function before (params, data) {
         // subject is only available for inMail messaging.
         const $subjectField = $parent.querySelector('[name=subject]');
         if (params.quicktext.subject && $subjectField) {
-            const parsedSubject = parseTemplate(params.quicktext.subject, data);
+            const parsedSubject = await parseTemplate(params.quicktext.subject, data);
             $subjectField.value = parsedSubject;
         }
     }
@@ -195,14 +195,14 @@ function setup () {
 
 setup();
 
-export default (params = {}) => {
+export default async (params = {}) => {
     if (!isActive()) {
         return false;
     }
 
     var data = getData(params);
     // insert only plain text on linkedin
-    var parsedTemplate = htmlToText(parseTemplate(params.quicktext.body, data));
+    var parsedTemplate = htmlToText(await parseTemplate(params.quicktext.body, data));
 
     const parsedParams = Object.assign({
         text: parsedTemplate
@@ -245,7 +245,7 @@ export default (params = {}) => {
     // messaging, ember editor.
     // separate handling required for multi-line templates.
     if (isMessageEditor(params.element)) {
-        before(parsedParams, data);
+        await before(parsedParams, data);
         insertContentEditableTemplate(parsedParams);
 
         // sends an empty paste event so the editor restructures the dom

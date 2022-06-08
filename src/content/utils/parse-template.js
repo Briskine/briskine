@@ -1,5 +1,4 @@
-import Handlebars from 'handlebars'
-
+import {compileTemplate} from '../sandbox/sandbox-parent.js'
 import store from '../../store/store-client.js'
 
 const accountCache = {}
@@ -66,7 +65,7 @@ function replaceFrom (from, setting) {
     });
 }
 
-export default function parseTemplate (template = '', data = {}) {
+export default async function parseTemplate (template = '', data = {}) {
     let nameSetting = {
         firstName: '',
         lastName: ''
@@ -89,12 +88,6 @@ export default function parseTemplate (template = '', data = {}) {
         email: email
     };
 
-    let compiledTemplate = '';
-    try {
-        compiledTemplate = Handlebars.compile(template)(PrepareVars(data));
-    } catch (err) {
-        compiledTemplate = `<pre>${err.message || err}</pre>`;
-    }
-
-    return compiledTemplate;
+    const compiledTemplate = await compileTemplate(template, PrepareVars(data))
+    return compiledTemplate
 }
