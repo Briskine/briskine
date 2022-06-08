@@ -1,4 +1,4 @@
-/* globals REGISTER_DISABLED */
+/* globals REGISTER_DISABLED, chrome */
 import browser from 'webextension-polyfill'
 
 import Config from '../config.js'
@@ -23,20 +23,25 @@ browser.runtime.onInstalled.addListener((details) => {
     const scripts = contentScripts.js
     const styles = contentScripts.css
 
+    // TODO use browser.scripting when available in webextension-polyfill
+    // https://github.com/mozilla/webextension-polyfill/pull/383
     browser.tabs.query({
       url: contentScripts.matches
     }).then((tabs) => {
       tabs.forEach((tab) => {
         // remove and insert new content styles
         styles.forEach((file) => {
-          browser.tabs.removeCSS(tab.id, {file: file}).then(() => {
-            browser.tabs.insertCSS(tab.id, {file: file})
+          chrome.scripting.removeCSS(tab.id, {file: file}).then(() => {
+            chrome.scripting.insertCSS(tab.id, {file: file})
           })
         })
 
         // insert new content scripts
-        scripts.forEach((file) => {
-          browser.tabs.executeScript(tab.id, {file: file})
+        chrome.scripting.executeScript({
+          target: {
+            tabId: tab.id,
+          },
+          files: scripts
         })
       })
     })
