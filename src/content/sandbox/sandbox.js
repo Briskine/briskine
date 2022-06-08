@@ -2,11 +2,22 @@
 
 import Handlebars from 'handlebars'
 
-console.log('setup iframe')
-window.addEventListener("message", (e) => {
-  const test = Handlebars.compile('test {{a}}')({a:'a'})
+import '../helpers/content-helpers.js'
+import config from '../../config.js'
 
-  console.log('send', test)
-  e.source.postMessage(test)
+window.addEventListener('message', (e) => {
+  if (e.data.type === config.eventSandboxCompile) {
+    let compiledTemplate = ''
+    try {
+      compiledTemplate = Handlebars.compile(e.data.template)(e.data.context)
+    } catch (err) {
+      compiledTemplate = `<pre>${err.message || err}</pre>`
+    }
+
+    e.source.postMessage({
+      type: config.eventSandboxCompile,
+      template: compiledTemplate,
+    }, e.origin)
+  }
 })
 

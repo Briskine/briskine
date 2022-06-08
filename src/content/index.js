@@ -3,8 +3,6 @@
 import '@webcomponents/custom-elements'
 import browser from 'webextension-polyfill'
 
-import './helpers/content-helpers.js'
-
 import store from '../store/store-client.js'
 import config from '../config.js'
 
@@ -13,6 +11,7 @@ import {setup as setupKeyboard, destroy as destroyKeyboard} from './keyboard.js'
 import {setup as setupBubble, destroy as destroyBubble} from './bubble/bubble.js'
 import {setup as setupStatus, destroy as destroyStatus} from './status.js'
 import {setup as setupDialog, destroy as destroyDialog} from './dialog/dialog.js'
+import {setup as setupSandbox, destroy as destroySandbox} from './sandbox/sandbox-parent.js'
 
 const blacklistPrivate = []
 
@@ -39,27 +38,11 @@ function init (settings) {
     setupDialog(settings)
   }
 
-  // TODO restore later
-//   injectPage()
+  injectPage()
 
   setupStatus()
 
-
-  // TODO
-  const iframe = document.createElement('iframe')
-  iframe.src = browser.runtime.getURL('sandbox.html')
-  console.log('try to load sandbox')
-  iframe.onload = () => {
-    console.log('loaded iframe')
-    window.addEventListener("message", (e) => {
-      console.log('got message', e.data)
-    })
-
-    iframe.contentWindow.postMessage('test', '*')
-  }
-
-  document.documentElement.appendChild(iframe)
-
+  setupSandbox()
 }
 
 // inject page script
@@ -99,6 +82,9 @@ function destructor () {
 
   // destroy status event
   destroyStatus()
+
+  // destroy sandbox
+  destroySandbox()
 }
 
 document.addEventListener(config.destroyEvent, destructor, {once: true})
