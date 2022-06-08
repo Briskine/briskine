@@ -1,3 +1,4 @@
+import browser from 'webextension-polyfill'
 import Handlebars from 'handlebars'
 
 import store from '../../store/store-client.js'

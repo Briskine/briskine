@@ -37,6 +37,8 @@ browser.runtime.onInstalled.addListener((details) => {
         })
 
         // insert new content scripts
+        // TODO use updateContentScripts
+        // https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/scripting/updateContentScripts
         chrome.scripting.executeScript({
           target: {
             tabId: tab.id,

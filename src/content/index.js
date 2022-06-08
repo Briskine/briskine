@@ -39,9 +39,27 @@ function init (settings) {
     setupDialog(settings)
   }
 
-  injectPage()
+  // TODO restore later
+//   injectPage()
 
   setupStatus()
+
+
+  // TODO
+  const iframe = document.createElement('iframe')
+  iframe.src = browser.runtime.getURL('sandbox.html')
+  console.log('try to load sandbox')
+  iframe.onload = () => {
+    console.log('loaded iframe')
+    window.addEventListener("message", (e) => {
+      console.log('got message', e.data)
+    })
+
+    iframe.contentWindow.postMessage('test', '*')
+  }
+
+  document.documentElement.appendChild(iframe)
+
 }
 
 // inject page script

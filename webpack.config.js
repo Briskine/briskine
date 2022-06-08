@@ -69,7 +69,7 @@ function extensionConfig (env, safari = false, firebaseConfig = {}) {
       patterns: [
         { from: 'src/popup/popup.html', to: 'popup/' },
         { from: 'src/icons/', to: 'icons/' },
-        { from: 'src/background.html', to: '' },
+        { from: 'src/content/sandbox/sandbox.html', to: '' },
         { from: 'LICENSE', to: '' }
       ]
     }),
@@ -104,6 +104,7 @@ function extensionConfig (env, safari = false, firebaseConfig = {}) {
       popup: './src/popup/popup.js',
       content: './src/content/index.js',
       page: './src/content/page/page.js',
+      sandbox: './src/content/sandbox/sandbox.js',
     },
     output: {
       path: path.resolve(devPath),

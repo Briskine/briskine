@@ -39,10 +39,14 @@
   "web_accessible_resources": [{
     "resources": [
       "popup/popup.html",
-      "page/page.js"
+      "page/page.js",
+      "sandbox.html"
     ],
-    "matches": []
+    "matches": ["http://*/*", "https://*/*"]
   }],
+  "sandbox": {
+    "pages": ["sandbox.html"]
+  },
   "action": {
     "default_title": "Briskine",
     "default_icon": {
