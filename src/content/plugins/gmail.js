@@ -179,11 +179,11 @@ function extraField ($parent, fieldName) {
   return $parent.querySelector(`textarea[name=${fieldName}], [name=${fieldName}] input`)
 }
 
-function before (params, data) {
+async function before (params, data) {
     const $parent = params.element.closest(textfieldContainerSelector);
 
     if (params.quicktext.subject) {
-        var parsedSubject = parseTemplate(params.quicktext.subject, data);
+        var parsedSubject = await parseTemplate(params.quicktext.subject, data);
         $parent.querySelector('input[name=subjectbox]').value = parsedSubject;
     }
 
@@ -198,7 +198,7 @@ function before (params, data) {
     }
 
     if (params.quicktext.to) {
-        var parsedTo = parseTemplate(params.quicktext.to, data);
+        var parsedTo = await parseTemplate(params.quicktext.to, data);
         const $toField = extraField($parent, 'to')
         if ($toField) {
           $toField.value = parsedTo
@@ -210,9 +210,9 @@ function before (params, data) {
         bcc: '.aB.gQ.pB'
     };
 
-    [ 'cc', 'bcc' ].forEach((fieldName) => {
+    [ 'cc', 'bcc' ].forEach(async (fieldName) => {
         if (params.quicktext[fieldName]) {
-            const parsedField = parseTemplate(params.quicktext[fieldName], data);
+            const parsedField = await parseTemplate(params.quicktext[fieldName], data);
             $parent.querySelector(buttonSelectors[fieldName]).dispatchEvent(new MouseEvent('click', {bubbles: true}));
             const $field = extraField($parent, fieldName)
             if ($field) {
@@ -381,7 +381,7 @@ function setup () {
 
 setup();
 
-export default (params = {}) => {
+export default async (params = {}) => {
     if (!isActive()) {
         return false;
     }
@@ -401,9 +401,9 @@ export default (params = {}) => {
     }
 
     var data = getData(params);
-    var parsedTemplate = parseTemplate(params.quicktext.body, data);
+    var parsedTemplate = await parseTemplate(params.quicktext.body, data);
 
-    before(params, data);
+    await before(params, data);
 
     // restore focus before inserting template
     window.getSelection().setBaseAndExtent(anchorNode, anchorOffset, focusNode, focusOffset)

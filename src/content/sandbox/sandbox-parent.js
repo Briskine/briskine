@@ -34,16 +34,15 @@ customElements.define(
 )
 
 export function compileTemplate (template = '', context = {}) {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     // TODO see if we can prevent other message handlers from getting the message
-    window.addEventListener('message', (e) => {
+    function handleCompileMessage (e) {
       if (e.data.type === config.eventSandboxCompile) {
+        window.removeEventListener('message', handleCompileMessage)
         return resolve(e.data.template)
       }
-      return reject(e)
-    }, {
-      once: true,
-    })
+    }
+    window.addEventListener('message', handleCompileMessage)
 
     sandboxInstance.postMessage({
       type: config.eventSandboxCompile,

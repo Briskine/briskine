@@ -99,13 +99,13 @@ function isActive () {
     return activeCache;
 }
 
-export default (params = {}) => {
+export default async (params = {}) => {
     if (!isActive()) {
         return false;
     }
 
     const data = getData(params);
-    const parsedTemplate = parseTemplate(params.quicktext.body, data);
+    const parsedTemplate = await parseTemplate(params.quicktext.body, data);
     const parsedParams = Object.assign({
         text: parsedTemplate
     }, params);

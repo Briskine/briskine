@@ -206,17 +206,17 @@ function getData () {
     return vars;
 }
 
-function after (params, data) {
+async function after (params, data) {
   var $subject = getSubjectField();
   if (params.quicktext.subject && $subject) {
-    var parsedSubject = parseTemplate(params.quicktext.subject, data);
+    var parsedSubject = await parseTemplate(params.quicktext.subject, data);
     $subject.value = parsedSubject;
     $subject.dispatchEvent(new Event('input', {bubbles: true}));
   }
 
   if (params.quicktext.to) {
     var $to = getToContainer();
-    var parsedTo = parseTemplate(params.quicktext.to, data);
+    var parsedTo = await parseTemplate(params.quicktext.to, data);
     if ($to && !elementContains($to, parsedTo)) {
       var $toInput = getContactField($to);
       updateContactField($toInput, parsedTo, params.element);
@@ -225,7 +225,7 @@ function after (params, data) {
 
   if (params.quicktext.cc) {
     var $cc = getCcContainer();
-    var parsedCc = parseTemplate(params.quicktext.cc, data);
+    var parsedCc = await parseTemplate(params.quicktext.cc, data);
     var $ccButton = getCcButton();
     updateSection(
       $cc,
@@ -238,7 +238,7 @@ function after (params, data) {
 
   if (params.quicktext.bcc) {
     var $bcc = getBccContainer();
-    var parsedBcc = parseTemplate(params.quicktext.bcc, data);
+    var parsedBcc = await parseTemplate(params.quicktext.bcc, data);
     var $bccButton = getBccButton();
     updateSection(
       $bcc,
@@ -274,19 +274,19 @@ if (isActive()) {
     enableBubble();
 }
 
-export default (params = {}) => {
+export default async (params = {}) => {
   if (!isActive()) {
     return false;
   }
 
   const data = getData(params);
-  const parsedTemplate = parseTemplate(params.quicktext.body, data);
+  const parsedTemplate = await parseTemplate(params.quicktext.body, data);
 
   insertTemplate(Object.assign({
     text: parsedTemplate
   }, params));
 
-  after(params, data);
+  await after(params, data);
 
   return true;
 };
