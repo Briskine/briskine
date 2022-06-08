@@ -1,3 +1,4 @@
+/* globals describe, it */
 import {expect} from 'chai';
 
 import {parseProseMirrorContent} from './editor-prosemirror.js';

@@ -1,66 +1,66 @@
 {
-    "name": "briskine",
-    "version": "7.3.4",
-    "description": "Write everything faster.",
-    "private": true,
-    "type": "module",
-    "scripts": {
-        "test": "webpack -c webpack.test.js && mocha-headless-chrome -f test/index.html",
-        "setup": "firebase login",
-        "start": "webpack -w --mode=development --env mode=development",
-        "staging": "webpack -w --mode=production --env mode=staging",
-        "build": "webpack --mode=production --env mode=production",
-        "lint": "jshint src/ webpack.*.js"
+  "name": "briskine",
+  "version": "7.4.4",
+  "description": "Write everything faster.",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "webpack -c webpack.test.js && mocha-headless-chrome -f test/index.html",
+    "setup": "firebase login",
+    "start": "webpack -w --mode=development --env mode=development",
+    "staging": "webpack -w --mode=production --env mode=staging",
+    "build": "npm run lint && webpack --mode=production --env mode=production",
+    "sourcebuild": "git archive --format zip --output sourcebuild/sourcebuild-${npm_package_version}.zip HEAD; zip -u sourcebuild/sourcebuild-${npm_package_version}.zip .firebase-config.json",
+    "lint": "eslint './**/*.js'"
+  },
+  "repository": "https://github.com/briskine/briskine/",
+  "author": "Alexandru Plugaru <alex@gorgias.com>",
+  "contributors": [
+    {
+      "name": "Ionut Colceriu",
+      "email": "contact@ghinda.net"
     },
-    "repository": "https://github.com/briskine/briskine/",
-    "author": "Alexandru Plugaru <alex@gorgias.com>",
-    "contributors": [
-        {
-            "name": "Ionut Colceriu",
-            "email": "contact@ghinda.net"
-        },
-        {
-            "name": "Alex Bumbu",
-            "email": "bmbalex@gmail.com"
-        },
-        {
-            "name": "Martin Latrille",
-            "email": "martin@gorgias.com"
-        },
-        {
-            "name": "Hadrien de Lamotte",
-            "email": "hadrien.lamotte@gmail.com"
-        }
-    ],
-    "license": "GPL-3.0-or-later",
-    "devDependencies": {
-        "archiver": "^5.3.0",
-        "chai": "^4.2.0",
-        "copy-webpack-plugin": "^10.0.0",
-        "css-loader": "^6.0.0",
-        "css-minimizer-webpack-plugin": "^3.0.2",
-        "firebase-tools": "^10.2.1",
-        "glob": "^8.0.0",
-        "jshint": "^2.12.0",
-        "mini-css-extract-plugin": "^2.0.0",
-        "mocha": "^9.0.0",
-        "mocha-headless-chrome": "^4.0.0",
-        "mockdate": "^3.0.2",
-        "purgecss-webpack-plugin": "^4.0.3",
-        "webpack": "^5.11.1",
-        "webpack-cli": "^4.3.1"
+    {
+      "name": "Alex Bumbu",
+      "email": "bmbalex@gmail.com"
     },
-    "dependencies": {
-        "@webcomponents/custom-elements": "^1.4.3",
-        "bootstrap": "^5.0.0",
-        "firebase": "^9.0.0",
-        "fuse.js": "^6.4.5",
-        "handlebars": "^4.5.3",
-        "html-to-text": "^8.0.0",
-        "jquery": "^3.5.1",
-        "moment": "^2.29.1",
-        "mousetrap": "github:xarg/mousetrap#master",
-        "nanomorph": "^5.4.3",
-        "webextension-polyfill": "^0.9.0"
+    {
+      "name": "Martin Latrille",
+      "email": "martin@gorgias.com"
+    },
+    {
+      "name": "Hadrien de Lamotte",
+      "email": "hadrien.lamotte@gmail.com"
     }
+  ],
+  "license": "GPL-3.0-or-later",
+  "devDependencies": {
+    "archiver": "^5.3.0",
+    "chai": "^4.2.0",
+    "copy-webpack-plugin": "^11.0.0",
+    "css-loader": "^6.0.0",
+    "css-minimizer-webpack-plugin": "^4.0.0",
+    "eslint": "^8.14.0",
+    "firebase-tools": "^11.0.0",
+    "glob": "^8.0.0",
+    "mini-css-extract-plugin": "^2.0.0",
+    "mocha": "^10.0.0",
+    "mocha-headless-chrome": "^4.0.0",
+    "mockdate": "^3.0.2",
+    "purgecss-webpack-plugin": "^4.0.3",
+    "webpack": "^5.11.1",
+    "webpack-cli": "^4.3.1"
+  },
+  "dependencies": {
+    "@webcomponents/custom-elements": "^1.4.3",
+    "bootstrap": "^5.0.0",
+    "firebase": "^9.0.0",
+    "fuse.js": "^6.4.5",
+    "handlebars": "^4.5.3",
+    "html-to-text": "^8.0.0",
+    "lit-html": "^2.2.3",
+    "moment": "^2.29.1",
+    "mousetrap": "github:xarg/mousetrap#master",
+    "webextension-polyfill": "^0.9.0"
+  }
 }

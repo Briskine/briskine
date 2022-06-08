@@ -1,7 +1,7 @@
 /* globals ENV, FIREBASE_CONFIG */
-import browser from 'webextension-polyfill';
+import browser from 'webextension-polyfill'
 
-import {initializeApp} from 'firebase/app';
+import {initializeApp} from 'firebase/app'
 import {
   getAuth,
   connectAuthEmulator,
@@ -11,7 +11,7 @@ import {
   signOut
 } from 'firebase/auth';
 import {
-  getFirestore,
+  initializeFirestore,
   connectFirestoreEmulator,
   collection,
   query,
@@ -20,30 +20,33 @@ import {
   getDoc,
   doc,
   documentId,
-} from 'firebase/firestore';
+} from 'firebase/firestore'
 
-import Config from '../config.js';
+import config from '../config.js'
+import {trigger} from './store-trigger.js'
 
-const firebaseApp = initializeApp(FIREBASE_CONFIG);
-const firebaseAuth = getAuth(firebaseApp);
-const db = getFirestore(firebaseApp);
+const firebaseApp = initializeApp(FIREBASE_CONFIG)
+const firebaseAuth = getAuth(firebaseApp)
+const db = initializeFirestore(firebaseApp, {
+  experimentalForceLongPolling: true
+})
 
 // development emulators
 if (ENV === 'development') {
-    connectAuthEmulator(firebaseAuth, 'http://localhost:9099', { disableWarnings: true });
-    connectFirestoreEmulator(db, 'localhost', 5002);
+  connectAuthEmulator(firebaseAuth, 'http://localhost:9099', { disableWarnings: true });
+  connectFirestoreEmulator(db, 'localhost', 5002);
 }
 
 // convert firestore timestamps to dates
 function convertToNativeDates (obj = {}) {
-    var parsed = Object.assign({}, obj);
-    Object.keys(parsed).forEach((prop) => {
-        if (parsed[prop] && typeof parsed[prop].toDate === 'function') {
-            parsed[prop] = parsed[prop].toDate();
-        }
-    });
+  var parsed = Object.assign({}, obj);
+  Object.keys(parsed).forEach((prop) => {
+      if (parsed[prop] && typeof parsed[prop].toDate === 'function') {
+          parsed[prop] = parsed[prop].toDate();
+      }
+  });
 
-    return parsed;
+  return parsed;
 }
 
 function defaultDataCache () {
@@ -159,6 +162,10 @@ function refreshLocalData (collectionName, querySnapshot) {
 
 function updateCache (params = {}) {
   localDataCache[params.collection] = params.data
+
+  const eventName = params.collection.includes('templates') ? 'templates-updated' : `${params.collection}-updated`
+  trigger(eventName)
+
   return params.data
 }
 
@@ -256,7 +263,7 @@ const defaultSettings = {
   blacklist: []
 }
 
-var getSettings = () => {
+export function getSettings () {
   return getSignedInUser()
     .then((user) => {
       return Promise.all([
@@ -406,16 +413,12 @@ function getDefaultTemplates () {
       })
     }
 
-    const legacyTemplates = {};
-    defaultTemplates.forEach((template, index) => {
-        const id = String(index);
-        legacyTemplates[id] = Object.assign({
+    return defaultTemplates.map((template, index) => {
+        const id = String(index)
+        return Object.assign({
             id: id,
-            deleted: 0
-        }, template);
-    });
-
-    return legacyTemplates;
+        }, template)
+    })
 }
 
 function isFree (user) {
@@ -436,7 +439,7 @@ function idsToTags (ids, tags) {
   })
 }
 
-var getTemplate = () => {
+export function getTemplates () {
   return getSignedInUser()
     .then((user) => {
       return Promise.all([
@@ -466,7 +469,6 @@ var getTemplate = () => {
         ])
       }
 
-      let templates = {}
       let tags = {}
       return getCollection({
           user: user,
@@ -477,25 +479,17 @@ var getTemplate = () => {
           return Promise.all(templateCollections)
         })
         .then((res) => {
-
-          res.forEach((list) => {
-            Object.keys(list).forEach((id) => {
-              templates[id] = convertToNativeDates(
-                Object.assign(
-                  {},
-                  list[id],
-                  {
-                    id: id,
-                    tags: idsToTags(list[id].tags, tags).join(', ')
-                  }
-                )
-              )
-            })
-          })
-
-          return templates
+          // merge and de-duplication
+          return Object.assign({}, ...res)
         })
-
+        .then((templates) => {
+          return Object.keys(templates).map((id) => {
+            return Object.assign({
+              id: id,
+              tags: idsToTags(templates[id].tags, tags).join(', '),
+            }, convertToNativeDates(templates[id]))
+          })
+        })
     })
     .catch((err) => {
         if (isLoggedOut(err)) {
@@ -504,7 +498,7 @@ var getTemplate = () => {
 
         throw err;
     });
-};
+}
 
 // backwards compatibility
 function signinError (err) {
@@ -565,63 +559,63 @@ function updateCurrentUser (firebaseUser) {
       });
 }
 
-var signin = (params = {}) => {
-    return signInWithEmailAndPassword(firebaseAuth, params.email, params.password)
-        .then((authRes) => {
-            return updateCurrentUser(authRes.user);
-        })
-        .then(() => {
-            return createSession();
-        })
-        .then(() => {
-            return window.store.trigger('login');
-        })
-        .catch((err) => {
-            return signinError(err);
-        });
-};
+export function signin (params = {}) {
+  return signInWithEmailAndPassword(firebaseAuth, params.email, params.password)
+    .then((authRes) => {
+      return updateCurrentUser(authRes.user)
+    })
+    .then(() => {
+      return createSession()
+    })
+    .then(() => {
+      return trigger('login')
+    })
+    .catch((err) => {
+      return signinError(err)
+    })
+}
 
-var createSession = () => {
-    return request(`${Config.functionsUrl}/api/1/session`, {
+export function createSession () {
+    return request(`${config.functionsUrl}/api/1/session`, {
             method: 'POST',
             authorization: true
         });
-};
+}
 
 // check existing session
-var getSession = () => {
-    return request(`${Config.functionsUrl}/api/1/session`)
-        .then((res) => {
-            return signinWithToken(res.token);
-        });
-};
+export function getSession () {
+  return request(`${config.functionsUrl}/api/1/session`)
+    .then((res) => {
+      return signinWithToken(res.token)
+    })
+    .then(() => {
+      return trigger('login')
+    })
+}
 
-var logout = () => {
-    return signOut(firebaseAuth)
-        .then(() => {
-            return request(`${Config.functionsUrl}/api/1/logout`, {
-                    method: 'POST'
-                });
+export function logout () {
+  return signOut(firebaseAuth)
+    .then(() => {
+      return request(`${config.functionsUrl}/api/1/logout`, {
+          method: 'POST'
         })
-        .then(() => {
-            return setSignedInUser({});
-        })
-        .then(() => {
-            return window.store.trigger('logout');
-        });
-};
+    })
+    .then(() => {
+      return setSignedInUser({})
+    })
+    .then(() => {
+      return trigger('logout')
+    })
+}
 
 function signinWithToken (token = '') {
     return signInWithCustomToken(firebaseAuth, token)
         .then((res) => {
             return updateCurrentUser(res.user);
         })
-        .then(() => {
-            return window.store.trigger('login');
-        });
 }
 
-function getCustomer (customerId) {
+export function getCustomer (customerId) {
   let customer = {};
   return getSignedInUser()
     .then((user) => {
@@ -654,7 +648,7 @@ function getCustomer (customerId) {
     })
 }
 
-function setActiveCustomer (customerId) {
+export function setActiveCustomer (customerId) {
   clearDataCache()
 
   return updateCurrentUser({
@@ -668,7 +662,8 @@ const defaultExtensionData = {
   showPostInstall: true,
   words: 0
 }
-function getExtensionData () {
+
+export function getExtensionData () {
   let extensionData = {}
   return browser.storage.local.get(extensionDataKey)
     .then((data) => {
@@ -686,7 +681,7 @@ function getExtensionData () {
     })
 }
 
-function setExtensionData (params = {}) {
+export function setExtensionData (params = {}) {
   return browser.storage.local.get(extensionDataKey)
     .then((data) => {
       // merge existing data with defaults and new data
@@ -699,21 +694,6 @@ function setExtensionData (params = {}) {
     })
 }
 
-export default {
-    getSettings: getSettings,
-    getAccount: getSignedInUser,
-
-    getCustomer: getCustomer,
-    setActiveCustomer: setActiveCustomer,
-
-    getTemplate: getTemplate,
-
-    signin: signin,
-    logout: logout,
-
-    getSession: getSession,
-    createSession: createSession,
-
-    getExtensionData: getExtensionData,
-    setExtensionData: setExtensionData
-};
+export function getAccount () {
+  return getSignedInUser()
+}

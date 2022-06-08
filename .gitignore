@@ -3,6 +3,7 @@ selenium
 chrome_profile
 *.log
 build
+sourcebuild
 
 # chrome extension
 tmp/
@@ -18,3 +19,6 @@ xcuserdata/
 
 # tests
 test/bundle
+
+# firebase config, for firefox reviewers
+.firebase-config.json

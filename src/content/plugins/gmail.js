@@ -1,3 +1,4 @@
+/* eslint-disable no-useless-escape */
 /* Gmail plugin
  */
 
@@ -5,7 +6,7 @@ import parseTemplate from '../utils/parse-template.js'
 import {insertTemplate} from '../editors/editor-universal.js'
 import {isContentEditable} from '../editors/editor-contenteditable.js'
 import createContact from '../utils/create-contact.js'
-import {enableBubble} from '../bubble.js'
+import {enableBubble} from '../bubble/bubble.js'
 
 const fromFieldSelector = '.az2';
 const textfieldContainerSelector = '.M9';
@@ -291,7 +292,6 @@ var setAttachmentNode = function (attachment) {
             case 'f4a':
             case 'f4b':
             case 'ogv':
-            case 'ogg':
             case 'avi':
             case 'mov':
             case 'qt':
@@ -301,7 +301,6 @@ var setAttachmentNode = function (attachment) {
             case 'mpg':
             case 'mpeg':
             case 'm2v':
-            case 'm4v':
             case 'svi':
             case '3gp':
             case 'roq':
@@ -387,6 +386,13 @@ export default (params = {}) => {
         return false;
     }
 
+    // cache focus to restore later
+    const selection = window.getSelection()
+    const anchorNode = selection.anchorNode
+    const anchorOffset = selection.anchorOffset
+    const focusNode = selection.focusNode
+    const focusOffset = selection.focusOffset
+
     // from field support, when using multiple aliases.
     // set the from field before getting data,
     // to have up-to-date data.
@@ -398,6 +404,9 @@ export default (params = {}) => {
     var parsedTemplate = parseTemplate(params.quicktext.body, data);
 
     before(params, data);
+
+    // restore focus before inserting template
+    window.getSelection().setBaseAndExtent(anchorNode, anchorOffset, focusNode, focusOffset)
 
     insertTemplate(Object.assign({
         text: parsedTemplate

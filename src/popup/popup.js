@@ -1,53 +1,56 @@
-/* global URLSearchParams, REGISTER_DISABLED */
-import './popup.css';
+/* global REGISTER_DISABLED */
+import {html, render} from 'lit-html'
 
-import './popup-login.js';
-import './popup-dashboard.js';
-import store from '../store/store-client.js';
-import render from './render.js';
+import './popup.css'
+
+import './popup-login.js'
+import './popup-dashboard.js'
+import store from '../store/store-client.js'
 
 customElements.define(
-    'popup-container',
-    class extends HTMLElement {
-        constructor() {
-            super();
-            this.loggedIn = null;
+  'popup-container',
+  class extends HTMLElement {
+    constructor() {
+      super()
+      this.loggedIn = null
 
-            this.checkLogin();
+      this.checkLogin()
 
-            store.on('login', () => {
-                // close window when the popup is opened as a new tab, not browser action.
-                // eg. opened from the dialog
-                const urlParams = new URLSearchParams(window.location.search);
-                if (urlParams.get('source') === 'tab') {
-                    return window.close();
-                }
+      store.on('login', () => {
+        // close window when the popup is opened as a new tab, not browser action.
+        // eg. opened from the dialog
+        const urlParams = new URLSearchParams(window.location.search)
+        if (urlParams.get('source') === 'tab') {
+            return window.close()
+        }
 
-                return this.checkLogin();
-            });
-            store.on('logout', () => this.checkLogin());
-        }
-        checkLogin() {
-            return store.getAccount()
-                .then(() => {
-                    this.loggedIn = true;
-                    return;
-                })
-                .catch(() => {
-                    this.loggedIn = false;
-                    return;
-                })
-                .then(() => {
-                    return this.connectedCallback();
-                });
-        }
-        connectedCallback() {
-            render(this, `
-                <div class="popup-container ${REGISTER_DISABLED ? 'popup-register-disabled' : ''}">
-                    ${this.loggedIn === true ? `<popup-dashboard></popup-dashboard>` : ''}
-                    ${this.loggedIn === false ? `<popup-login></popup-login>` : ''}
-                </div>
-            `)
-        }
+        return this.checkLogin()
+      })
+      store.on('logout', () => this.checkLogin())
     }
-);
+    checkLogin() {
+      return store.getAccount()
+        .then(() => {
+          this.loggedIn = true
+          return
+        })
+        .catch(() => {
+          this.loggedIn = false
+          return
+        })
+        .then(() => {
+          return this.connectedCallback()
+        })
+    }
+    connectedCallback() {
+      render(html`
+        <div
+          class=${`popup-container ${REGISTER_DISABLED ? 'popup-register-disabled' : ''}`}
+          >
+            ${this.loggedIn === true ? html`<popup-dashboard></popup-dashboard>` : ''}
+            ${this.loggedIn === false ? html`<popup-login></popup-login>` : ''}
+        </div>
+      `, this)
+    }
+  }
+)

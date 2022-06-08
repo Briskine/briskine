@@ -2,249 +2,82 @@
  * Generic methods for autocompletion
  */
 
-import $ from 'jquery';
+import {register, run as runPlugins} from './plugin.js'
+import gmailPlugin from './plugins/gmail.js'
+import facebookPlugin from './plugins/facebook.js'
+import fastmailPlugin from './plugins/fastmail.js'
+import linkedinPlugin from './plugins/linkedin.js'
+import outlookPlugin from './plugins/outlook.js'
+import zendeskPlugin from './plugins/zendesk.js'
+import crmPlugin from './plugins/crm.js'
+import universalPlugin from './plugins/universal.js'
 
-import {register, run as runPlugins} from './plugin.js';
-import gmailPlugin from './plugins/gmail.js';
-import facebookPlugin from './plugins/facebook.js';
-import fastmailPlugin from './plugins/fastmail.js';
-import linkedinPlugin from './plugins/linkedin.js';
-import outlookPlugin from './plugins/outlook.js';
-import zendeskPlugin from './plugins/zendesk.js';
-import crmPlugin from './plugins/crm.js';
-import universalPlugin from './plugins/universal.js';
-
+import htmlToText from './utils/html-to-text.js'
 import store from '../store/store-client.js'
 import {isContentEditable} from './editors/editor-contenteditable.js'
 
-var autocomplete = {};
+// register plugins,
+// in execution order.
+register(gmailPlugin)
+register(facebookPlugin)
+register(fastmailPlugin)
+register(linkedinPlugin)
+register(outlookPlugin)
+register(zendeskPlugin)
+register(crmPlugin)
+register(universalPlugin)
 
-autocomplete.quicktexts = [];
-autocomplete.cursorPosition = null;
+export function getSelectedWord (params) {
+  let beforeSelection = ''
+  const selection = window.getSelection()
 
-autocomplete.isEditable = function (element) {
-
-    var isTextfield = (element.tagName.toLowerCase() === 'input');
-    var isTextarea = (element.tagName.toLowerCase() === 'textarea');
-
-    return (isTextfield || isTextarea || isContentEditable(element));
-
-};
-
-autocomplete.getSelectedWord = function (params) {
-    var doc = params.element.ownerDocument;
-
-    var word = {
-        start: 0,
-        end: 0,
-        text: ''
-    };
-
-    var beforeSelection = "";
-    var selection = doc.getSelection();
-
-    if (isContentEditable(params.element)) {
-        switch (selection.focusNode.nodeType) {
-            // In most cases, the focusNode property refers to a Text Node.
-            case (document.TEXT_NODE): // for text nodes it's easy. Just take the text and find the closest word
-                beforeSelection = selection.focusNode.textContent;
-                break;
-            // However, in some cases it may refer to an Element Node
-            case (document.ELEMENT_NODE):
-                // In that case, the focusOffset property returns the index in the childNodes collection of the focus node where the selection ends.
-                if (
-                    // focusOffset is larger than childNodes length when editor is empty
-                    selection.focusNode.childNodes[selection.focusOffset]
-                ) {
-                    beforeSelection = selection.focusNode.childNodes[selection.focusOffset].textContent;
-                }
-                break;
+  if (isContentEditable(params.element)) {
+    switch (selection.focusNode.nodeType) {
+      // In most cases, the focusNode property refers to a Text Node.
+      case (document.TEXT_NODE):
+        // for text nodes take the text until the focusOffset
+        beforeSelection = selection.focusNode.textContent.substring(0, selection.focusOffset)
+        break
+      case (document.ELEMENT_NODE):
+        // when we have an element node,
+        // focusOffset returns the index in the childNodes collection of the focus node where the selection ends.
+        if (
+          // focusOffset is larger than childNodes length when editor is empty
+          selection.focusNode.childNodes[selection.focusOffset]
+        ) {
+          beforeSelection = selection.focusNode.childNodes[selection.focusOffset].textContent
         }
-    } else {
-        beforeSelection = $(params.element).val().substr(0, autocomplete.cursorPosition.end);
+        break
     }
+  } else {
+    beforeSelection = params.element.value.substring(0, params.element.selectionEnd)
+  }
 
-    // Replace all &nbsp; with normal spaces
-    beforeSelection = beforeSelection.replace('\xa0', ' ').trim();
+  const start = 1 + Math.max(
+      beforeSelection.lastIndexOf(' '),
+      beforeSelection.lastIndexOf('\xa0'),
+      beforeSelection.lastIndexOf('\n'),
+    )
+  const text = beforeSelection.substring(start)
+  const end = start + text.length
 
-    word.start = Math.max(beforeSelection.lastIndexOf(" "), beforeSelection.lastIndexOf("\n"), beforeSelection.lastIndexOf("<br>")) + 1;
-    word.text = beforeSelection.substr(word.start);
-    word.end = word.start + word.text.length;
-    return word;
-};
+  return {
+    start: start,
+    end: end,
+    text: text,
+  }
+}
 
-autocomplete.getCursorPosition = function (element) {
-    var doc = element.ownerDocument;
+export function autocomplete (params) {
+  runPlugins(Object.assign({}, params))
 
-    if (!element) {
-        return false;
-    }
-
-    var position = {
-        element: element || null,
-        offset: 0,
-        absolute: {
-            left: 0,
-            top: 0
-        },
-        word: null
-    };
-
-    var $caret;
-
-    var getRanges = function (sel) {
-        if (sel.rangeCount) {
-            var ranges = [];
-            for (var i = 0; i < sel.rangeCount; i++) {
-                ranges.push(sel.getRangeAt(i));
-            }
-            return ranges;
-        }
-        return [];
-    };
-
-    var restoreRanges = function (sel, ranges) {
-        for (var i in ranges) {
-            sel.addRange(ranges[i]);
-        }
-    };
-
-    if (isContentEditable(position.element)) {
-        // Working with editable div
-        // Insert a virtual cursor, find its position
-        // http://stackoverflow.com/questions/16580841/insert-text-at-caret-in-contenteditable-div
-
-        var selection = doc.getSelection();
-        // get the element that we are focused + plus the offset
-        // Read more about this here: https://developer.mozilla.org/en-US/docs/Web/API/Selection.focusNode
-        position.element = selection.focusNode;
-        position.offset = selection.focusOffset;
-
-        // First we get all ranges (most likely just 1 range)
-        var ranges = getRanges(selection);
-        var focusNode = selection.focusNode;
-        var focusOffset = selection.focusOffset;
-
-        if (!ranges.length) {
-            return;
-        }
-        // remove any previous ranges
-        selection.removeAllRanges();
-
-        // Added a new range to place the caret at the focus point of the cursor
-        var range = new Range();
-        var caretText = '<span id="qt-caret"></span>';
-        range.setStart(focusNode, focusOffset);
-        range.setEnd(focusNode, focusOffset);
-        range.insertNode(range.createContextualFragment(caretText));
-        selection.addRange(range);
-        selection.removeAllRanges();
-
-        // finally we restore all the ranges that we had before
-        restoreRanges(selection, ranges);
-
-        // Virtual caret
-        $caret = $('#qt-caret');
-
-        if ($caret.length) {
-
-            position.absolute = $caret.offset();
-            position.absolute.width = $caret.width();
-            position.absolute.height = $caret.height();
-
-            // Remove virtual caret
-            $caret.remove();
-        }
-
-    } else {
-
-        // Working with textarea
-        // Create a mirror element, copy textarea styles
-        // Insert text until selectionEnd
-        // Insert a virtual cursor and find its position
-
-        position.start = position.element.selectionStart;
-        position.end = position.element.selectionEnd;
-
-        var $mirror = $('<div id="qt-mirror" class="qt-mirror"></div>').addClass(position.element.className),
-            $source = $(position.element),
-            $sourcePosition = $source.offset();
-
-        // copy all styles
-        for (var i in autocomplete.mirrorStyles) {
-            var style = autocomplete.mirrorStyles[i];
-            $mirror.css(style, $source.css(style));
-        }
-
-        var sourceMetrics = $source.get(0).getBoundingClientRect();
-
-        // set absolute position
-        $mirror.css({
-            top: $sourcePosition.top + 'px',
-            left: $sourcePosition.left + 'px',
-            width: sourceMetrics.width,
-            height: sourceMetrics.height
-        });
-
-        // copy content
-        $mirror.html($source.val().substr(0, position.end).split("\n").join('<br>'));
-        $mirror.append('<span id="qt-caret" class="qt-caret"></span>');
-
-        // insert mirror
-        $('body').append($mirror);
-
-        $caret = $('#qt-caret', $mirror);
-
-        position.absolute = $caret.offset();
-        position.absolute.width = $caret.width();
-        position.absolute.height = $caret.height();
-
-        $mirror.remove();
-
-    }
-    return position;
-};
-
-autocomplete.replaceWith = function (params) {
-    var word = autocomplete.cursorPosition.word;
-
-    runPlugins(Object.assign(
-        {},
-        params,
-        {
-            word: word,
-        }
-    ));
-
-    // updates word stats
-    const wordCount = params.quicktext.body.split(' ').length;
-    store.getExtensionData().then((data) => {
-      store.setExtensionData({
-        words: data.words + wordCount
-      })
+  // updates word stats
+  const wordCount = htmlToText(params.quicktext.body).split(' ').length
+  store.getExtensionData().then((data) => {
+    store.setExtensionData({
+      words: data.words + wordCount
     })
-};
+  })
 
-// Mirror styles are used for creating a mirror element in order to track the cursor in a textarea
-autocomplete.mirrorStyles = [
-    // Box Styles.
-    'box-sizing', 'height', 'width', 'padding', 'padding-bottom', 'padding-left', 'padding-right', 'padding-top', 'border-width',
-    // Font stuff.
-    'font-family', 'font-size', 'font-style', 'font-variant', 'font-weight',
-    // Spacing etc.
-    'word-spacing', 'letter-spacing', 'line-height', 'text-decoration', 'text-indent', 'text-transform',
-    // The direction.
-    'direction'
-];
-
-
-register(gmailPlugin);
-register(facebookPlugin);
-register(fastmailPlugin);
-register(linkedinPlugin);
-register(outlookPlugin);
-register(zendeskPlugin);
-register(crmPlugin);
-register(universalPlugin);
-
-export default autocomplete;
+  store.updateTemplateStats(params.quicktext.id)
+}

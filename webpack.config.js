@@ -1,6 +1,4 @@
-/* globals Buffer, console */
-/* jshint esversion: 8 */
-
+/* eslint-env node */
 import fs from 'fs'
 import webpack from 'webpack'
 import path from 'path'
@@ -116,7 +114,12 @@ function extensionConfig (env, safari = false, firebaseConfig = {}) {
     module: {
       rules: [
         {
+          resourceQuery: /raw/,
+          type: 'asset/source',
+        },
+        {
           test: /\.(css)$/i,
+          resourceQuery: { not: [/raw/] },
           use: [
               MiniCssExtractPlugin.loader,
               'css-loader'
@@ -151,12 +154,22 @@ export default async function (env) {
 
   let firebaseConfig = defaultFirebaseConfig
   if (env.mode !== 'development') {
+    const firebaseConfigFile = './.firebase-config.json'
     try {
       await firebaseTools.use(`gorgias-templates-${env.mode}`)
       const appConfig = await firebaseTools.apps.sdkconfig()
       firebaseConfig = appConfig.sdkConfig
+
+      fs.writeFileSync(firebaseConfigFile, JSON.stringify(firebaseConfig))
     } catch(err) {
-      console.warn(err)
+      // eslint-disable-next-line
+      console.warn('Reading Firebase credentials from file. This is only meant for the Firefox Add-On review process.')
+      try {
+        firebaseConfig = JSON.parse(fs.readFileSync(firebaseConfigFile, 'utf8'))
+      } catch (err) {
+        // eslint-disable-next-line
+        console.warn(err)
+      }
     }
   }
 

@@ -1,11 +1,10 @@
-/* globals KeyboardEvent */
 /* Outlook plugin
  */
 
 import parseTemplate from '../utils/parse-template.js';
 import {insertTemplate} from '../editors/editor-universal.js';
 import createContact from '../utils/create-contact.js';
-import {enableBubble} from '../bubble.js';
+import {enableBubble} from '../bubble/bubble.js';
 
 function getFieldData (field, $container) {
     var $buttons = $container.querySelectorAll('[class*="wellItemText-"]') || [];

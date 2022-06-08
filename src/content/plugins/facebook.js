@@ -3,7 +3,7 @@
 
 import parseTemplate from '../utils/parse-template.js'
 import createContact from '../utils/create-contact.js'
-import {insertLexicalTemplate} from '../editors/editor-lexical.js'
+import {insertPasteTemplate} from '../editors/editor-paste.js'
 
 function getFromDetails () {
   var objectMatch = new RegExp('"NAME":.?".*?"')
@@ -21,7 +21,9 @@ function getFromDetails () {
   try {
     var parsedUserObject = JSON.parse(`{${plainUserObject}}`)
     fromName = parsedUserObject.NAME || '';
-  } catch(err) {}
+  } catch(err) {
+    // can't parse the user object
+  }
 
   return createContact({
       name: fromName,
@@ -84,7 +86,7 @@ export default (params = {}) => {
     var data = getData(params);
     var parsedTemplate = parseTemplate(params.quicktext.body, data);
 
-    insertLexicalTemplate(Object.assign({
+    insertPasteTemplate(Object.assign({
         text: parsedTemplate
     }, params));
 

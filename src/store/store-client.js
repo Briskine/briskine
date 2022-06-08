@@ -1,79 +1,85 @@
-import browser from 'webextension-polyfill';
+import browser from 'webextension-polyfill'
 
 function createRequest (type) {
-    return (params) => {
-        return new Promise((resolve, reject) => {
-            // get from background
-            browser.runtime.sendMessage({
-                type: type,
-                data: params
-            }).then((data) => {
-                // handle errors
-                if (data && data.storeError) {
-                    return reject(data.storeError);
-                }
+  return (params) => {
+    return new Promise((resolve, reject) => {
+      // get from background
+      browser.runtime.sendMessage({
+        type: type,
+        data: params
+      }).then((data) => {
+        // handle errors
+        if (data && data.storeError) {
+            return reject(data.storeError)
+        }
 
-                return resolve(data);
-            });
-        });
-    };
+        return resolve(data)
+      })
+    })
+  }
 }
 
-var methods = [
-    'getSettings',
-    'getAccount',
+const methods = [
+  'getSettings',
+  'getAccount',
 
-    'getCustomer',
-    'setActiveCustomer',
+  'getCustomer',
+  'setActiveCustomer',
 
-    'getTemplate',
-    'updateTemplateStats',
+  'getTemplates',
+  'updateTemplateStats',
 
-    'signin',
-    'logout',
+  'signin',
+  'logout',
 
-    'getSession',
-    'createSession',
+  'getSession',
+  'createSession',
 
-    'getExtensionData',
-    'setExtensionData'
-];
+  'getExtensionData',
+  'setExtensionData'
+]
 
-var events = [];
-var on = function (name, callback) {
-    events.push({
-        name: name,
-        callback: callback
-    });
-};
+let events = []
+function on (name, callback) {
+  events.push({
+    name: name,
+    callback: callback
+  })
+}
 
-var trigger = function (name) {
-    events.filter((event) => event.name === name).forEach((event) => {
-        if (typeof event.callback === 'function') {
-            event.callback();
-        }
-    });
-};
+function off (name, callback) {
+  events = events.filter((e) => {
+    if (e.name === name && e.callback === callback) {
+      return false
+    }
+    return true
+  })
+}
+
+function trigger (name) {
+  events.filter((event) => event.name === name).forEach((event) => {
+    if (typeof event.callback === 'function') {
+      event.callback()
+    }
+  })
+}
 
 // handle trigger from background
 browser.runtime.onMessage.addListener((req) => {
-    if (
-        req.type &&
-        req.type === 'trigger'
-    ) {
-        trigger(req.data.name);
-        return;
-    }
+  if (
+    req.type &&
+    req.type === 'trigger'
+  ) {
+    trigger(req.data.name)
+  }
+})
 
-    return false;
-});
-
-var optionsStore = {};
+const optionsStore = {}
 methods.forEach((method) => {
-    optionsStore[method] = createRequest(method);
-});
+  optionsStore[method] = createRequest(method)
+})
 
-optionsStore.on = on;
-optionsStore.trigger = trigger;
+optionsStore.on = on
+optionsStore.off = off
 
-export default optionsStore;
+export default optionsStore

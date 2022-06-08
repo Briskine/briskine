@@ -23,7 +23,7 @@ function PrepareVars (vars) {
         data = Object.assign({}, data);
         var flat = data[0];
         for (var i in flat) {
-            if (flat.hasOwnProperty(i)) {
+            if (Object.prototype.hasOwnProperty.call(flat, i)) {
                 data[i] = flat[i];
             }
         }

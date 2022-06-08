@@ -9,13 +9,14 @@ export function isCkEditor (element) {
 }
 
 export function insertCkEditorTemplate (params = {}) {
-  params.element.focus()
+  const selection = window.getSelection()
+  const range = selection.getRangeAt(0)
+  const focusNode = selection.focusNode
 
   // delete shortcut
   if (params.word.text === params.quicktext.shortcut) {
-    const range = window.getSelection().getRangeAt(0)
-    range.setStart(params.focusNode, params.word.start)
-    range.setEnd(params.focusNode, params.word.end)
+    range.setStart(focusNode, params.word.start)
+    range.setEnd(focusNode, params.word.end)
     range.deleteContents()
   }
 
