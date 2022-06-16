@@ -400,9 +400,9 @@ customElements.define(
         return
       }
 
-      // browserAction.openPopup is not supported in all browsers yet.
-      // https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/browserAction/openPopup
-      // Open the browserAction popup in a new tab.
+      // action.openPopup is not supported in all browsers yet.
+      // https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/action/openPopup
+      // Open the action popup in a new tab.
       const popupUrl = browser.runtime.getURL('popup/popup.html')
       const signupUrl = `${config.websiteUrl}/signup`
       const shortcut = this.getAttribute('shortcut')
