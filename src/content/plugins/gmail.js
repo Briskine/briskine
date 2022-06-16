@@ -56,8 +56,10 @@ function getData (params) {
         // get the two-level deep nested div, that contains an @, from the email address.
         // start from the end, because it's located near the end of the page,
         // and the main container can also contain email addresses.
+        // ignore divs with peoplekit-id, as they show up after adding to/cc/bcc addresses,
+        // and are also placed at the end of the body.
         const $popup = Array
-          .from(document.querySelectorAll('body > div > div'))
+          .from(document.querySelectorAll('body > div:not([peoplekit-id]) > div'))
           .reverse()
           .find((div) => (div.textContent || '').includes('@'))
         const $email = $popup ? $popup.lastElementChild : null
