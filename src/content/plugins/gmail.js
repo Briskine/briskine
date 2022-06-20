@@ -56,8 +56,10 @@ function getData (params) {
         // get the two-level deep nested div, that contains an @, from the email address.
         // start from the end, because it's located near the end of the page,
         // and the main container can also contain email addresses.
+        // ignore divs with peoplekit-id, as they show up after adding to/cc/bcc addresses,
+        // and are also placed at the end of the body.
         const $popup = Array
-          .from(document.querySelectorAll('body > div > div'))
+          .from(document.querySelectorAll('body > div:not([peoplekit-id]) > div'))
           .reverse()
           .find((div) => (div.textContent || '').includes('@'))
         const $email = $popup ? $popup.lastElementChild : null
@@ -179,47 +181,54 @@ function extraField ($parent, fieldName) {
   return $parent.querySelector(`textarea[name=${fieldName}], [name=${fieldName}] input`)
 }
 
-async function before (params, data) {
-    const $parent = params.element.closest(textfieldContainerSelector);
+function after (params, data) {
+  const $parent = params.element.closest(textfieldContainerSelector)
 
-    if (params.quicktext.subject) {
-        var parsedSubject = await parseTemplate(params.quicktext.subject, data);
-        $parent.querySelector('input[name=subjectbox]').value = parsedSubject;
+  if (params.quicktext.subject) {
+    const parsedSubject = parseTemplate(params.quicktext.subject, data)
+    $parent.querySelector('input[name=subjectbox]').value = parsedSubject
+  }
+
+  const $recipients = $parent.querySelector('.aoD.hl')
+  if (
+    (
+      params.quicktext.to ||
+      params.quicktext.cc ||
+      params.quicktext.bcc
+    ) &&
+    $recipients
+  ) {
+    // click the receipients row.
+    // a little jumpy,
+    // but the only to way to show the new value.
+    $recipients.dispatchEvent(new MouseEvent('click', {bubbles: true}))
+  }
+
+  if (params.quicktext.to) {
+    const parsedTo = parseTemplate(params.quicktext.to, data)
+    const $toField = extraField($parent, 'to')
+    if ($toField) {
+      $toField.value = parsedTo
+      $toField.dispatchEvent(new FocusEvent('blur'))
     }
+  }
 
-    if (params.quicktext.to ||
-        params.quicktext.cc ||
-        params.quicktext.bcc
-    ) {
-        // click the receipients row.
-        // a little jumpy,
-        // but the only to way to show the new value.
-        $parent.querySelector('.aoD.hl').focus();
+  const buttonSelectors = {
+    cc: '.aB.gQ.pE',
+    bcc: '.aB.gQ.pB'
+  }
+
+  Array('cc', 'bcc').forEach((fieldName) => {
+    if (params.quicktext[fieldName]) {
+      const parsedField = parseTemplate(params.quicktext[fieldName], data)
+      $parent.querySelector(buttonSelectors[fieldName]).dispatchEvent(new MouseEvent('click', {bubbles: true}))
+      const $field = extraField($parent, fieldName)
+      if ($field) {
+        $field.value = parsedField
+        $field.dispatchEvent(new FocusEvent('blur'))
+      }
     }
-
-    if (params.quicktext.to) {
-        var parsedTo = await parseTemplate(params.quicktext.to, data);
-        const $toField = extraField($parent, 'to')
-        if ($toField) {
-          $toField.value = parsedTo
-        }
-    }
-
-    const buttonSelectors = {
-        cc: '.aB.gQ.pE',
-        bcc: '.aB.gQ.pB'
-    };
-
-    [ 'cc', 'bcc' ].forEach(async (fieldName) => {
-        if (params.quicktext[fieldName]) {
-            const parsedField = await parseTemplate(params.quicktext[fieldName], data);
-            $parent.querySelector(buttonSelectors[fieldName]).dispatchEvent(new MouseEvent('click', {bubbles: true}));
-            const $field = extraField($parent, fieldName)
-            if ($field) {
-              $field.value = parsedField
-            }
-        }
-    });
+  })
 }
 
 // insert attachment node on gmail editor
@@ -381,17 +390,19 @@ function setup () {
 
 setup();
 
-export default async (params = {}) => {
+export default (params = {}) => {
     if (!isActive()) {
         return false;
     }
 
-    // cache focus to restore later
-    const selection = window.getSelection()
-    const anchorNode = selection.anchorNode
-    const anchorOffset = selection.anchorOffset
-    const focusNode = selection.focusNode
-    const focusOffset = selection.focusOffset
+    var data = getData(params);
+    var parsedTemplate = parseTemplate(params.quicktext.body, data);
+
+    insertTemplate(Object.assign({
+        text: parsedTemplate
+    }, params))
+
+    after(params, data)
 
     // from field support, when using multiple aliases.
     // set the from field before getting data,
@@ -399,21 +410,6 @@ export default async (params = {}) => {
     if (params.quicktext.from) {
         setFromField(params.element, params.quicktext.from);
     }
-
-    var data = getData(params);
-    var parsedTemplate = await parseTemplate(params.quicktext.body, data);
-
-    await before(params, data);
-
-    // restore focus before inserting template
-    window.getSelection().setBaseAndExtent(anchorNode, anchorOffset, focusNode, focusOffset)
-
-    // restore focus before inserting template
-    window.getSelection().setBaseAndExtent(anchorNode, anchorOffset, focusNode, focusOffset)
-
-    insertTemplate(Object.assign({
-        text: parsedTemplate
-    }, params))
 
     // add attachments
     if (
