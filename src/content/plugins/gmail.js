@@ -181,11 +181,11 @@ function extraField ($parent, fieldName) {
   return $parent.querySelector(`textarea[name=${fieldName}], [name=${fieldName}] input`)
 }
 
-function after (params, data) {
+async function after (params, data) {
   const $parent = params.element.closest(textfieldContainerSelector)
 
   if (params.quicktext.subject) {
-    const parsedSubject = parseTemplate(params.quicktext.subject, data)
+    const parsedSubject = await parseTemplate(params.quicktext.subject, data)
     $parent.querySelector('input[name=subjectbox]').value = parsedSubject
   }
 
@@ -205,7 +205,7 @@ function after (params, data) {
   }
 
   if (params.quicktext.to) {
-    const parsedTo = parseTemplate(params.quicktext.to, data)
+    const parsedTo = await parseTemplate(params.quicktext.to, data)
     const $toField = extraField($parent, 'to')
     if ($toField) {
       $toField.value = parsedTo
@@ -218,9 +218,9 @@ function after (params, data) {
     bcc: '.aB.gQ.pB'
   }
 
-  Array('cc', 'bcc').forEach((fieldName) => {
+  Array('cc', 'bcc').forEach(async (fieldName) => {
     if (params.quicktext[fieldName]) {
-      const parsedField = parseTemplate(params.quicktext[fieldName], data)
+      const parsedField = await parseTemplate(params.quicktext[fieldName], data)
       $parent.querySelector(buttonSelectors[fieldName]).dispatchEvent(new MouseEvent('click', {bubbles: true}))
       const $field = extraField($parent, fieldName)
       if ($field) {
@@ -390,19 +390,19 @@ function setup () {
 
 setup();
 
-export default (params = {}) => {
+export default async (params = {}) => {
     if (!isActive()) {
         return false;
     }
 
     var data = getData(params);
-    var parsedTemplate = parseTemplate(params.quicktext.body, data);
+    var parsedTemplate = await parseTemplate(params.quicktext.body, data);
 
     insertTemplate(Object.assign({
         text: parsedTemplate
     }, params))
 
-    after(params, data)
+    await after(params, data)
 
     // from field support, when using multiple aliases.
     // set the from field before getting data,
