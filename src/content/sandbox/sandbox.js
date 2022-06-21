@@ -5,7 +5,16 @@ import Handlebars from 'handlebars'
 import '../helpers/content-helpers.js'
 import config from '../../config.js'
 
+let port2
+
 window.addEventListener('message', (e) => {
+  if (e.data.type === 'init') {
+    port2 = e.ports[0]
+    port2.onmessage = onMessage
+  }
+})
+
+function onMessage (e) {
   if (e.data.type === config.eventSandboxCompile) {
     let compiledTemplate = ''
     try {
@@ -14,10 +23,9 @@ window.addEventListener('message', (e) => {
       compiledTemplate = `<pre>${err.message || err}</pre>`
     }
 
-    e.source.postMessage({
+    port2.postMessage({
       type: config.eventSandboxCompile,
       template: compiledTemplate,
-    }, e.origin)
+    })
   }
-})
-
+}

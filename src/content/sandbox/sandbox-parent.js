@@ -5,6 +5,9 @@ import config from '../../config.js'
 let sandboxInstance = null
 const sandboxTagName = `b-sandbox-${Date.now()}`
 
+const channel = new MessageChannel()
+const port1 = channel.port1
+
 customElements.define(
   sandboxTagName,
   class extends HTMLElement {
@@ -19,13 +22,12 @@ customElements.define(
       const iframe = document.createElement('iframe')
       iframe.src = browser.runtime.getURL('sandbox.html')
       iframe.style.display = 'none'
+      iframe.onload = () => {
+        iframe.contentWindow.postMessage({ type: 'init' }, '*', [channel.port2])
+      }
 
       const shadowRoot = this.attachShadow({mode: 'closed'})
       shadowRoot.appendChild(iframe)
-
-      this.postMessage = (data = {}) => {
-        iframe.contentWindow.postMessage(data, '*')
-      }
     }
     disconnectedCallback () {
       window.removeEventListener('message', this.respond)
@@ -33,18 +35,19 @@ customElements.define(
   }
 )
 
+
 export function compileTemplate (template = '', context = {}) {
   return new Promise((resolve) => {
-    // TODO see if we can prevent other message handlers from getting the message
     function handleCompileMessage (e) {
       if (e.data.type === config.eventSandboxCompile) {
-        window.removeEventListener('message', handleCompileMessage)
+        port1.onmessage = () => {}
         return resolve(e.data.template)
       }
     }
-    window.addEventListener('message', handleCompileMessage)
 
-    sandboxInstance.postMessage({
+    port1.onmessage = handleCompileMessage
+
+    port1.postMessage({
       type: config.eventSandboxCompile,
       template: template,
       context: context
