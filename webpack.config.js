@@ -99,7 +99,7 @@ function extensionConfig (params = {}) {
       ]
     }),
     new webpack.DefinePlugin({
-      ENV: JSON.stringify(params.env),
+      ENV: JSON.stringify(params.mode),
       REGISTER_DISABLED: params.safari,
       FIREBASE_CONFIG: JSON.stringify(params.firebaseConfig),
       VERSION: JSON.stringify(packageFile.version),
@@ -113,7 +113,7 @@ function extensionConfig (params = {}) {
     })
   ]
 
-  if (params.env === 'production') {
+  if (params.mode === 'production') {
     const zipFilename = `${packageFile.name}-${packageFile.version}.zip`
     const zipPath = path.join(productionPath, zipFilename)
     plugins.push(
