@@ -14,12 +14,15 @@ import config from '../../config.js'
 
 let port2
 
-window.addEventListener('message', (e) => {
+function handleInitMessage (e) {
   if (e.data.type === 'init') {
     port2 = e.ports[0]
     port2.onmessage = onMessage
+    window.removeEventListener('message', handleInitMessage)
   }
-})
+}
+
+window.addEventListener('message', handleInitMessage)
 
 function onMessage (e) {
   if (e.data.type === config.eventSandboxCompile) {
