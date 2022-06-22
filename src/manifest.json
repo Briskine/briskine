@@ -40,7 +40,8 @@
     "resources": [
       "popup/popup.html",
       "page/page.js",
-      "sandbox.html"
+      "sandbox.html",
+      "sandbox/sandbox.js"
     ],
     "matches": [
       "https://*/*",

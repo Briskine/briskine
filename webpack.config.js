@@ -36,6 +36,22 @@ function generateManifest (params = {}) {
     updatedManifestFile.description = safariManifestDescription
   }
 
+  // manifest v2
+  if (params.manifest === '2') {
+    updatedManifestFile.manifest_version = 2
+    updatedManifestFile.background.scripts = [updatedManifestFile.background.service_worker]
+    delete updatedManifestFile.background.service_worker
+    updatedManifestFile.permissions = updatedManifestFile.permissions
+      .filter((p) => p !== 'scripting')
+      .concat(updatedManifestFile.host_permissions)
+    delete updatedManifestFile.host_permissions
+    updatedManifestFile.web_accessible_resources = updatedManifestFile.web_accessible_resources[0].resources
+    delete updatedManifestFile.sandbox
+    updatedManifestFile.page_action = updatedManifestFile.action
+    delete updatedManifestFile.action
+    updatedManifestFile.content_security_policy = updatedManifestFile.content_security_policy.extension_pages
+  }
+
   return new CopyWebpackPlugin({
     patterns: [
       {
@@ -80,6 +96,7 @@ function extensionConfig (params = {}) {
       REGISTER_DISABLED: params.safari,
       FIREBASE_CONFIG: JSON.stringify(params.firebaseConfig),
       VERSION: JSON.stringify(packageFile.version),
+      MANIFEST: JSON.stringify(params.manifest),
     }),
     new MiniCssExtractPlugin({
       filename: '[name]/[name].css'

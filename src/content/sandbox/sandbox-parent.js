@@ -1,3 +1,4 @@
+/* globals MANIFEST */
 import browser from 'webextension-polyfill'
 
 import config from '../../config.js'
@@ -19,15 +20,27 @@ customElements.define(
         return
       }
 
-      const iframe = document.createElement('iframe')
-      iframe.src = browser.runtime.getURL('sandbox.html')
-      iframe.style.display = 'none'
-      iframe.onload = () => {
-        iframe.contentWindow.postMessage({ type: 'init' }, '*', [channel.port2])
-      }
-
       const shadowRoot = this.attachShadow({mode: 'closed'})
-      shadowRoot.appendChild(iframe)
+
+      if (MANIFEST === '2') {
+        // use the sandbox script directly in manifest v2,
+        // to avoid issues with frame-ancestors csp
+        const sandbox = document.createElement('script')
+        sandbox.src = browser.runtime.getURL('sandbox/sandbox.js')
+        sandbox.onload = function () {
+          window.postMessage({ type: 'init' }, '*', [channel.port2])
+          this.remove()
+        }
+        shadowRoot.appendChild(sandbox)
+      } else {
+        const iframe = document.createElement('iframe')
+        iframe.src = browser.runtime.getURL('sandbox.html')
+        iframe.style.display = 'none'
+        iframe.onload = () => {
+          iframe.contentWindow.postMessage({ type: 'init' }, '*', [channel.port2])
+        }
+        shadowRoot.appendChild(iframe)
+      }
     }
     disconnectedCallback () {
       window.removeEventListener('message', this.respond)
