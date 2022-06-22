@@ -26,13 +26,13 @@ const productionPath = path.resolve('build')
 // https://github.com/w3c/webextensions/issues/218
 const safariManifestDescription = 'Write emails faster! Increase your productivity with templates and shortcuts on Gmail, Outlook, or LinkedIn.'
 
-function generateManifest (safari) {
+function generateManifest (params = {}) {
   let updatedManifestFile = Object.assign({}, manifestFile)
   // get version from package
   updatedManifestFile.version = packageFile.version
 
   // safari manifest
-  if (safari) {
+  if (params.safari) {
     updatedManifestFile.description = safariManifestDescription
   }
 
@@ -64,9 +64,9 @@ class ZipPlugin {
   }
 }
 
-function extensionConfig (env, safari = false, firebaseConfig = {}) {
+function extensionConfig (params = {}) {
   const plugins = [
-    generateManifest(safari),
+    generateManifest(params),
     new CopyWebpackPlugin({
       patterns: [
         { from: 'src/popup/popup.html', to: 'popup/' },
@@ -76,9 +76,9 @@ function extensionConfig (env, safari = false, firebaseConfig = {}) {
       ]
     }),
     new webpack.DefinePlugin({
-      ENV: JSON.stringify(env),
-      REGISTER_DISABLED: safari,
-      FIREBASE_CONFIG: JSON.stringify(firebaseConfig),
+      ENV: JSON.stringify(params.env),
+      REGISTER_DISABLED: params.safari,
+      FIREBASE_CONFIG: JSON.stringify(params.firebaseConfig),
       VERSION: JSON.stringify(packageFile.version),
     }),
     new MiniCssExtractPlugin({
@@ -89,7 +89,7 @@ function extensionConfig (env, safari = false, firebaseConfig = {}) {
     })
   ]
 
-  if (env === 'production') {
+  if (params.env === 'production') {
     const zipFilename = `${packageFile.name}-${packageFile.version}.zip`
     const zipPath = path.join(productionPath, zipFilename)
     plugins.push(
@@ -176,5 +176,12 @@ export default async function (env) {
     }
   }
 
-  return extensionConfig(env.mode, env.safari, firebaseConfig)
+  const params = Object.assign({
+    firebaseConfig: firebaseConfig,
+    manifest: '3',
+    safari: false,
+    mode: 'production',
+  }, env)
+
+  return extensionConfig(params)
 }
