@@ -32,22 +32,22 @@ customElements.define(
           this.remove()
         }
         shadowRoot.appendChild(sandbox)
-      } else {
-        const iframe = document.createElement('iframe')
-        iframe.src = browser.runtime.getURL('sandbox.html')
-        iframe.style.display = 'none'
-        iframe.onload = () => {
-          iframe.contentWindow.postMessage({ type: 'init' }, '*', [channel.port2])
-        }
-        shadowRoot.appendChild(iframe)
+        return
       }
+
+      const iframe = document.createElement('iframe')
+      iframe.src = browser.runtime.getURL('sandbox.html')
+      iframe.style.display = 'none'
+      iframe.onload = () => {
+        iframe.contentWindow.postMessage({ type: 'init' }, '*', [channel.port2])
+      }
+      shadowRoot.appendChild(iframe)
     }
     disconnectedCallback () {
       window.removeEventListener('message', this.respond)
     }
   }
 )
-
 
 export function compileTemplate (template = '', context = {}) {
   return new Promise((resolve) => {

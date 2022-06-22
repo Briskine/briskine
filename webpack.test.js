@@ -1,14 +1,16 @@
 import webpack from 'webpack'
 import path from 'path'
 import glob from 'glob'
+import CopyWebpackPlugin from 'copy-webpack-plugin'
 
 export default {
   mode: 'development',
   entry: {
-    test: glob.sync('./src/**/*.spec.js')
+    test: glob.sync('./src/**/*.spec.js'),
+    sandbox: './src/content/sandbox/sandbox.js',
   },
   output: {
-    filename: '[name].bundle.js',
+    filename: '[name]/[name].js',
     path: path.resolve('test/bundle')
   },
   module: {
@@ -25,6 +27,12 @@ export default {
       REGISTER_DISABLED: false,
       FIREBASE_CONFIG: {},
       VERSION: 1,
+      MANIFEST: JSON.stringify('3'),
+    }),
+    new CopyWebpackPlugin({
+      patterns: [
+        { from: 'src/content/sandbox/sandbox.html', to: 'sandbox.html' },
+      ]
     }),
   ],
   resolve: {
