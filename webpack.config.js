@@ -36,6 +36,13 @@ function generateManifest (params = {}) {
     updatedManifestFile.description = safariManifestDescription
   }
 
+  // source maps
+  if (params.mode === 'development') {
+    updatedManifestFile.web_accessible_resources[0].resources = updatedManifestFile.web_accessible_resources[0].resources.concat(
+      Array('content', 'page', 'sandbox').map((script) => `${script}/${script}.js.map`)
+    )
+  }
+
   // manifest v2
   if (params.manifest === '2') {
     updatedManifestFile.manifest_version = 2
