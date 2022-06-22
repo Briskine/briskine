@@ -1,4 +1,11 @@
-// TODO explain
+// Sandbox script that runs in an iframe on Manifest v3,
+// or directly in the page context on Manifest v2.
+// Handlebars requires unsafe-eval to compile templates.
+// Manifest v3 no longer allows the unsafe-eval CSP in the Content Script context,
+// but does allow it in the Sandbox CSP.
+// We use Channel Messaging to pass data from the content script context
+// to the sandbox context, compile the templates here, and send them back to the content script.
+// https://developer.mozilla.org/en-US/docs/Web/API/Channel_Messaging_API
 
 import Handlebars from 'handlebars'
 
