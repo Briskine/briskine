@@ -153,38 +153,32 @@ customElements.define(
         }
       }
 
-      this.getTemplates = (query = '') => {
-        return store.getTemplates()
-          .then((templates) => {
-            let filteredTemplates = templates
-            if (query) {
-              filteredTemplates = fuzzySearch(templates, query)
-            } else {
-              // only sort templates if no search query was used
-              if (this.getAttribute('sort-az') === 'true') {
-                // alphabetical sort
-                filteredTemplates = filteredTemplates
-                  .sort((a, b) => {
-                    return a.title.localeCompare(b.title)
-                  })
-              } else {
-                // default sort
-                filteredTemplates = filteredTemplates
-                  .sort((a, b) => {
-                    return new Date(b.updated_datetime) - new Date(a.updated_datetime)
-                  })
-                  .sort((a, b) => {
-                    return new Date(b.lastuse_datetime || 0) - new Date(a.lastuse_datetime || 0)
-                  })
-              }
-            }
+      this.filterTemplates = (templates = [], query = '') => {
+        let filteredTemplates = templates
+        if (query) {
+          filteredTemplates = fuzzySearch(templates, query)
+        } else {
+          // only sort templates if no search query was used
+          if (this.getAttribute('sort-az') === 'true') {
+            // alphabetical sort
+            filteredTemplates = filteredTemplates
+              .sort((a, b) => {
+                return a.title.localeCompare(b.title)
+              })
+          } else {
+            // default sort
+            filteredTemplates = filteredTemplates
+              .sort((a, b) => {
+                return new Date(b.updated_datetime) - new Date(a.updated_datetime)
+              })
+              .sort((a, b) => {
+                return new Date(b.lastuse_datetime || 0) - new Date(a.lastuse_datetime || 0)
+              })
+          }
+        }
 
-            const limit = parseInt(this.getAttribute('limit') || '100', 10)
-            return filteredTemplates.slice(0, limit)
-          })
-          .then((templates) => {
-            return templates
-          })
+        const limit = parseInt(this.getAttribute('limit') || '100', 10)
+        return filteredTemplates.slice(0, limit)
       }
 
       this.getTemplateNodes = (templates = []) => {
@@ -231,7 +225,10 @@ customElements.define(
       }
 
       this.populateTemplates = (query = '') => {
-        this.getTemplates(query)
+        store.getTemplates()
+          .then((templates) => {
+            return this.filterTemplates(templates, query)
+          })
           .then((templates) => {
             // naive deep compare, in case the templates didn't change
             if (JSON.stringify(this.templates) === JSON.stringify(templates)) {
@@ -457,8 +454,6 @@ customElements.define(
       this.setAuthState()
       store.on('login', this.setAuthState)
       store.on('logout', this.setAuthState)
-      // set up templates when changed/received
-      store.on('templates-updated', this.populateTemplates)
 
       let searchDebouncer
       this.searchField = shadowRoot.querySelector('input[type=search]')
@@ -525,7 +520,6 @@ customElements.define(
 
       store.off('login', this.setAuthState)
       store.off('logout', this.setAuthState)
-      store.off('templates-updated', this.populateTemplates)
 
       window.removeEventListener('keydown', this.stopTargetPropagation, true)
       window.removeEventListener('keypress', this.stopTargetPropagation, true)

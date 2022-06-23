@@ -164,7 +164,7 @@ function updateCache (params = {}) {
   localDataCache[params.collection] = params.data
 
   const eventName = params.collection.includes('templates') ? 'templates-updated' : `${params.collection}-updated`
-  trigger(eventName)
+  trigger(eventName, params.data)
 
   return params.data
 }
@@ -492,11 +492,13 @@ export function getTemplates () {
         })
     })
     .catch((err) => {
-        if (isLoggedOut(err)) {
-            return getDefaultTemplates();
-        }
+      if (isLoggedOut(err)) {
+        const templates = getDefaultTemplates()
+        trigger('templates-updated', templates)
+        return templates
+      }
 
-        throw err;
+      throw err;
     });
 }
 

@@ -43,6 +43,11 @@ function init (settings) {
   setupStatus()
 
   setupSandbox()
+
+  // prepopulate template cache on google sheets
+  if (window.location.href.includes('docs.google.com/spreadsheets/')) {
+    store.getTemplates()
+  }
 }
 
 // inject page script

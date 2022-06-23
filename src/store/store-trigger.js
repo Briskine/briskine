@@ -18,11 +18,12 @@ if (ENV !== 'production') {
 
 export {debug}
 
-export function trigger (name) {
+export function trigger (name, details) {
   const data = {
     type: 'trigger',
     data: {
-      name: name
+      name: name,
+      details: details,
     }
   }
 
@@ -40,7 +41,7 @@ export function trigger (name) {
       return debug(
         [
           'browser.runtime.lastError',
-          browser.runtime.lastError.message,
+          browser.runtime.lastError,
           name
         ],
         'warn'
