@@ -32,9 +32,6 @@ browser.runtime.onMessage.addListener((req) => {
     typeof store[req.type] === 'function'
   ) {
     return store[req.type](req.data).then((data = {}) => {
-      // debug store calls
-      debug([req.type, req.data, data])
-
       return data
     }).catch((err) => {
       debug([req.type, req.data, err], 'warn')

@@ -34,17 +34,15 @@ export function trigger (name, details) {
       browser.runtime.sendMessage(data),
       // send message to content script
       browser.tabs.query({}).then((tabs) => {
-        return tabs.map((tab) => browser.tabs.sendMessage(tab.id, data))
+        return tabs
+          .filter((tab) => tab.url.includes('http://') || tab.url.includes('https://'))
+          .map((tab) => browser.tabs.sendMessage(tab.id, data))
       })
     ])
-    .catch(() => {
+    .catch((err) => {
       return debug(
-        [
-          'browser.runtime.lastError',
-          browser.runtime.lastError,
-          name
-        ],
-        'warn'
+        ['trigger', name, err],
+        'error'
       )
     })
 }

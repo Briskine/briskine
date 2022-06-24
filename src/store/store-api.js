@@ -323,22 +323,22 @@ function setSignedInUser (user) {
 
 // auth change
 onIdTokenChanged(firebaseAuth, (firebaseUser) => {
-    if (!firebaseUser) {
-        clearDataCache();
+  if (!firebaseUser) {
+    clearDataCache()
+    trigger('templates-updated', getDefaultTemplates())
+    return setSignedInUser({})
+  }
 
-        return setSignedInUser({});
-    }
+  return getSignedInUser()
+    .then((user) => {
+      if (user.id === firebaseUser.uid) {
+        return
+      }
 
-    return getSignedInUser()
-      .then((user) => {
-        if (user.id === firebaseUser.uid) {
-          return;
-        }
-
-        clearDataCache()
-        return updateCurrentUser(firebaseUser)
-      })
-});
+      clearDataCache()
+      return updateCurrentUser(firebaseUser)
+    })
+})
 
 function getDefaultTemplates () {
     const defaultTemplates = [
@@ -493,9 +493,7 @@ export function getTemplates () {
     })
     .catch((err) => {
       if (isLoggedOut(err)) {
-        const templates = getDefaultTemplates()
-        trigger('templates-updated', templates)
-        return templates
+        return getDefaultTemplates()
       }
 
       throw err;
