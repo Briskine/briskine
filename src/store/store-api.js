@@ -325,7 +325,6 @@ function setSignedInUser (user) {
 onIdTokenChanged(firebaseAuth, (firebaseUser) => {
   if (!firebaseUser) {
     clearDataCache()
-    trigger('templates-updated', getDefaultTemplates())
     return setSignedInUser({})
   }
 

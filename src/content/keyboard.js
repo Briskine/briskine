@@ -7,13 +7,6 @@ import store from '../store/store-client.js'
 
 import {keybind, keyunbind} from './keybind.js'
 
-let shortcutCache = []
-function updateShortcutCache (templates = []) {
-  shortcutCache = templates.map((t) => t.shortcut).filter((shortcut) => shortcut)
-}
-
-store.on('templates-updated', updateShortcutCache)
-
 // is input or textarea
 function isTextfield (element) {
   return ['input', 'textarea'].includes(element.tagName.toLowerCase())
@@ -22,15 +15,21 @@ function isTextfield (element) {
 function getTemplateByShortcut (shortcut) {
   return store.getTemplates()
     .then((templates) => {
-      updateShortcutCache(templates)
-
       return templates.find((t) => {
         return t.shortcut === shortcut
       })
     })
 }
 
+let replayEvent = false
+
 function keyboardAutocomplete (e) {
+  // if we're in the replay phase, skip our handler
+  if (replayEvent === true) {
+    replayEvent = false
+    return
+  }
+
   const element = e.target
   // if it's not an editable element
   // don't trigger anything
@@ -50,10 +49,10 @@ function keyboardAutocomplete (e) {
   })
 
   if (word.text) {
-    if (shortcutCache.includes(word.text)) {
-      e.preventDefault()
-      e.stopImmediatePropagation()
-    }
+    // stop event by default,
+    // we'll replay it later if it doesn't match any template.
+    e.preventDefault()
+    e.stopImmediatePropagation()
 
     getTemplateByShortcut(word.text).then((template) => {
       if (template) {
@@ -67,12 +66,17 @@ function keyboardAutocomplete (e) {
           window.getSelection().setBaseAndExtent(anchorNode, anchorOffset, focusNode, focusOffset)
         }
 
-        autocomplete({
+        return autocomplete({
             element: element,
             quicktext: template,
             word: word,
         })
       }
+
+      // template with specific shortcut not found,
+      // replay the original event.
+      replayEvent = true
+      e.target.dispatchEvent(e)
     })
   }
 }
