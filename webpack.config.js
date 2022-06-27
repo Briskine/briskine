@@ -114,7 +114,7 @@ function extensionConfig (params = {}) {
   ]
 
   if (params.mode === 'production') {
-    const zipFilename = `${packageFile.name}-${packageFile.version}.zip`
+    const zipFilename = `${packageFile.name}-${packageFile.version}-manifest${params.manifest}.zip`
     const zipPath = path.join(productionPath, zipFilename)
     plugins.push(
       new ZipPlugin({
