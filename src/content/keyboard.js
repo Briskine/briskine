@@ -21,12 +21,13 @@ function getTemplateByShortcut (shortcut) {
     })
 }
 
-let replayEvent = false
+let skipKeyboardEvent = false
 
 function keyboardAutocomplete (e) {
-  // if we're in the replay phase, skip our handler
-  if (replayEvent === true) {
-    replayEvent = false
+  // if we're in the replay phase,
+  // skip our handler
+  if (skipKeyboardEvent === true) {
+    skipKeyboardEvent = false
     return
   }
 
@@ -37,47 +38,56 @@ function keyboardAutocomplete (e) {
     return
   }
 
-  // cache selection details
-  const selection = window.getSelection()
-  const focusNode = selection.focusNode
-  const focusOffset = selection.focusOffset
-  const anchorNode = selection.anchorNode
-  const anchorOffset = selection.anchorOffset
-
   const word = getSelectedWord({
     element: element
   })
 
   if (word.text) {
+    // cache selection details
+    const selection = window.getSelection()
+    const focusNode = selection.focusNode
+    const focusOffset = selection.focusOffset
+    const anchorNode = selection.anchorNode
+    const anchorOffset = selection.anchorOffset
+
     // stop event by default,
     // we'll replay it later if it doesn't match any template.
     e.preventDefault()
     e.stopImmediatePropagation()
 
-    getTemplateByShortcut(word.text).then((template) => {
-      if (template) {
-        // restore selection
-        element.focus()
-        if (
-          isContentEditable(element) &&
-          anchorNode &&
-          focusNode
-        ) {
-          window.getSelection().setBaseAndExtent(anchorNode, anchorOffset, focusNode, focusOffset)
+    getTemplateByShortcut(word.text)
+      .then((template) => {
+        if (template) {
+          // restore selection
+          element.focus()
+          if (
+            isContentEditable(element) &&
+            anchorNode &&
+            focusNode
+          ) {
+            window.getSelection().setBaseAndExtent(anchorNode, anchorOffset, focusNode, focusOffset)
+          }
+
+          return autocomplete({
+              element: element,
+              quicktext: template,
+              word: word,
+          })
         }
 
-        return autocomplete({
-            element: element,
-            quicktext: template,
-            word: word,
-        })
-      }
+        // template with specific shortcut not found,
+        // replay the original event.
+        skipKeyboardEvent = true
+        element.dispatchEvent(e)
+      })
+      .catch((err) => {
+        // replay the original event,
+        // if there was an error getting the templates.
+        skipKeyboardEvent = true
+        element.dispatchEvent(e)
 
-      // template with specific shortcut not found,
-      // replay the original event.
-      replayEvent = true
-      e.target.dispatchEvent(e)
-    })
+        throw err
+      })
   }
 }
 

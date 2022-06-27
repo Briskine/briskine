@@ -1,17 +1,6 @@
 import {compileTemplate} from '../sandbox/sandbox-parent.js'
 import store from '../../store/store-client.js'
 
-const accountCache = {}
-store.getAccount()
-  .then((res) => {
-    accountCache.email = res.email
-    accountCache.full_name = res.full_name
-  })
-  .catch(() => {
-    // logged-out
-  })
-
-
 function PrepareVars (vars) {
     if (!vars) {
         return vars;
@@ -45,49 +34,50 @@ function PrepareVars (vars) {
 }
 
 // replace from with name saved in settings
-function replaceFrom (from, setting) {
-    setting = Object.assign({
-        firstName: '',
-        lastName: ''
-    }, setting);
-    from = from || [];
+function replaceFrom (from, account = {}) {
+  from = from || []
 
-    if (!Array.isArray(from)) {
-        from = [from];
-    }
+  if (!Array.isArray(from)) {
+    from = [from]
+  }
 
-    return from.map(function (f) {
-        var user = Object.assign({}, f);
-        user.first_name = user.first_name || setting.firstName;
-        user.last_name = user.last_name || setting.lastName;
-        user.name = user.name || `${user.first_name} ${user.last_name}`;
-        return user;
-    });
+  return from.map(function (user) {
+    return Object.assign({}, account, user)
+  })
 }
 
 export default async function parseTemplate (template = '', data = {}) {
-    let nameSetting = {
-        firstName: '',
-        lastName: ''
-    }
-    let email = accountCache.email
-    const fullName = accountCache.full_name
-    if (fullName) {
-      const nameParts = fullName.trim().split(' ')
-      nameSetting.firstName = nameParts.shift()
-      nameSetting.lastName = nameParts.join(' ')
-    }
-    // get "from" name from settings
-    data.from = replaceFrom(data.from || {}, nameSetting);
+  let account = {
+    email: '',
+    full_name: '',
+  }
 
-    // account variable
-    data.account = {
-        name: `${nameSetting.firstName} ${nameSetting.lastName}`,
-        first_name: nameSetting.firstName,
-        last_name: nameSetting.lastName,
-        email: email
-    };
+  try {
+    account = await store.getAccount()
+  } catch (err) {
+    // logged-out
+  }
 
-    const compiledTemplate = await compileTemplate(template, PrepareVars(data))
-    return compiledTemplate
+  let firstName = ''
+  let lastName = ''
+
+  if (account.full_name) {
+    const nameParts = account.full_name.trim().split(' ')
+    firstName = nameParts.shift()
+    lastName = nameParts.join(' ')
+  }
+
+  // account variable
+  data.account = {
+    email: account.email,
+    name: account.full_name,
+    first_name: firstName,
+    last_name: lastName,
+  }
+
+  // parse from to array and use it from data={} or getAccount
+  data.from = replaceFrom(data.from || {}, data.account)
+
+  const compiledTemplate = await compileTemplate(template, PrepareVars(data))
+  return compiledTemplate
 }
