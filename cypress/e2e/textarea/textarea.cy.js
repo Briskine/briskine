@@ -1,4 +1,5 @@
 /// <reference types="cypress" />
+/* globals cy, describe, before, it */
 
 describe('Textarea', () => {
   before(() => {
