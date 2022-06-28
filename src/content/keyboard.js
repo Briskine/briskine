@@ -7,6 +7,13 @@ import store from '../store/store-client.js'
 
 import {keybind, keyunbind} from './keybind.js'
 
+let shortcutCache = []
+function updateShortcutCache (templates = []) {
+  shortcutCache = templates.map((t) => t.shortcut).filter((shortcut) => shortcut)
+}
+
+store.on('templates-updated', updateShortcutCache)
+
 // is input or textarea
 function isTextfield (element) {
   return ['input', 'textarea'].includes(element.tagName.toLowerCase())
@@ -15,22 +22,15 @@ function isTextfield (element) {
 function getTemplateByShortcut (shortcut) {
   return store.getTemplates()
     .then((templates) => {
+      updateShortcutCache(templates)
+
       return templates.find((t) => {
         return t.shortcut === shortcut
       })
     })
 }
 
-let skipKeyboardEvent = false
-
 function keyboardAutocomplete (e) {
-  // if we're in the replay phase,
-  // skip our handler
-  if (skipKeyboardEvent === true) {
-    skipKeyboardEvent = false
-    return
-  }
-
   const element = e.target
   // if it's not an editable element
   // don't trigger anything
@@ -50,10 +50,10 @@ function keyboardAutocomplete (e) {
     const anchorNode = selection.anchorNode
     const anchorOffset = selection.anchorOffset
 
-    // stop event by default,
-    // we'll replay it later if it doesn't match any template.
-    e.preventDefault()
-    e.stopImmediatePropagation()
+    if (shortcutCache.includes(word.text)) {
+      e.preventDefault()
+      e.stopImmediatePropagation()
+    }
 
     getTemplateByShortcut(word.text)
       .then((template) => {
@@ -74,19 +74,6 @@ function keyboardAutocomplete (e) {
               word: word,
           })
         }
-
-        // template with specific shortcut not found,
-        // replay the original event.
-        skipKeyboardEvent = true
-        element.dispatchEvent(e)
-      })
-      .catch((err) => {
-        // replay the original event,
-        // if there was an error getting the templates.
-        skipKeyboardEvent = true
-        element.dispatchEvent(e)
-
-        throw err
       })
   }
 }
