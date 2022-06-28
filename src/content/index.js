@@ -6,7 +6,6 @@ import browser from 'webextension-polyfill'
 import store from '../store/store-client.js'
 import config from '../config.js'
 
-import {isContentEditable} from './editors/editor-contenteditable.js'
 import {setup as setupKeyboard, destroy as destroyKeyboard} from './keyboard.js'
 import {setup as setupBubble, destroy as destroyBubble} from './bubble/bubble.js'
 import {setup as setupStatus, destroy as destroyStatus} from './status.js'
@@ -31,17 +30,11 @@ function init (settings) {
   }
 
   setupKeyboard(settings)
-
-  // don't create the dialog inside editor iframes (eg. tinymce iframe)
-  if (!isContentEditable(document.body)) {
-    setupBubble(settings)
-    setupDialog(settings)
-  }
+  setupBubble(settings)
+  setupDialog(settings)
 
   injectPage()
-
   setupStatus()
-
   setupSandbox()
 }
 
