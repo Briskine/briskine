@@ -12,18 +12,41 @@ function updateShortcutCache (templates = []) {
   shortcutCache = templates.map((t) => t.shortcut).filter((shortcut) => shortcut)
 }
 
-store.on('templates-updated', updateShortcutCache)
-
 // is input or textarea
 function isTextfield (element) {
   return ['input', 'textarea'].includes(element.tagName.toLowerCase())
 }
 
-function getTemplateByShortcut (shortcut) {
+function getTemplates () {
   return store.getTemplates()
     .then((templates) => {
       updateShortcutCache(templates)
+      return templates
+    })
+}
 
+// pre-populate the shortcut cache on certain websites
+function populateCache () {
+  const urls = [
+    '://docs.google.com/spreadsheets/',
+  ]
+
+  urls.find((url) => {
+    if (window.location.href.includes(url)) {
+      getTemplates()
+      return true
+    }
+  })
+}
+
+store.on('templates-updated', populateCache)
+store.on('login', populateCache)
+store.on('logout', populateCache)
+populateCache()
+
+function getTemplateByShortcut (shortcut) {
+  return getTemplates()
+    .then((templates) => {
       return templates.find((t) => {
         return t.shortcut === shortcut
       })
