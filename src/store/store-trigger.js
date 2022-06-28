@@ -31,7 +31,15 @@ export function trigger (name, details) {
   return Promise
     .all([
       // send message to popup
-      browser.runtime.sendMessage(data),
+      browser.runtime.sendMessage(data)
+        .catch((err) => {
+          if (err.message && err.message === 'Could not establish connection. Receiving end does not exist.') {
+            // popup is not loaded
+            return
+          }
+
+          throw err
+        }),
       // send message to content script
       browser.tabs.query({}).then((tabs) => {
         return tabs
