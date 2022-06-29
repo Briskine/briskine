@@ -1,5 +1,5 @@
 /// <reference types="cypress" />
-/* globals cy, describe, before, it */
+/* globals cy, describe, before, it, expect */
 
 describe('ContentEditable', () => {
   before(() => {

@@ -1,3 +1,4 @@
+/* globals Cypress */
 
 Cypress.Commands.add('tabEvent', {prevSubject: true},($el) => {
   $el.get(0).dispatchEvent(new KeyboardEvent('keydown', {
