@@ -11,22 +11,23 @@ describe('Draft.js', () => {
       .type('kr')
       .tabEvent()
       .wait(500)
-      .then(($el) => {
-        expect($el.text()).to.equal('Kind regards,.')
-        return $el
-      })
+      .should('have.text', 'Kind regards,.')
       .type('{selectAll}{del}')
   })
 
   it('should insert template from dialog', () => {
     cy.get('[contenteditable]').type('{ctrl} ')
     cy.get('[visible=true]').should('be.visible')
-    cy.focused().shadow().find('input[type=search]').type('kr{enter}', {force: true})
+
+    cy.focused()
+      .shadow()
+      .find('input[type=search]')
+      .type('nic', {force: true})
+      .wait(500)
+      .type('{enter}')
+
     cy.get('[contenteditable]')
-      .then(($el) => {
-        expect($el.text()).to.equal('Kind regards,.')
-        return $el
-      })
+      .should('have.text', 'It was nice talking to you.')
       .type('{selectAll}{del}')
   })
 })
