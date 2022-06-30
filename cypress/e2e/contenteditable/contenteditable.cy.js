@@ -6,7 +6,7 @@ describe('ContentEditable', () => {
     cy.visit('./cypress/e2e/contenteditable/contenteditable.html')
   })
 
-  it('should insert template with keyboard shortcut in contenteditable', () => {
+  it('should insert template with keyboard shortcut', () => {
     cy.get('[contenteditable]')
       .type('kr')
       .tab()
@@ -18,7 +18,7 @@ describe('ContentEditable', () => {
       })
   })
 
-  it('should insert template from dialog in contenteditable', () => {
+  it('should insert template from dialog', () => {
     cy.get('[contenteditable]').type('{ctrl} ')
     cy.get('[visible=true]').should('be.visible')
 
