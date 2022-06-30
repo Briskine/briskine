@@ -1,7 +1,7 @@
 /// <reference types="cypress" />
 /* globals cy, describe, before, it */
 
-describe('Draft.js', () => {
+describe('Lexical', () => {
   before(() => {
     cy.visit('./cypress/e2e/lexical/lexical.html')
   })
