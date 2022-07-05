@@ -148,7 +148,13 @@ customElements.define(
       }
 
       this.hideOnClick = (e) => {
-        if (!this.contains(e.target) && this.hasAttribute(dialogVisibleAttr)) {
+        if (
+          // clicking inside the dialog
+          !this.contains(e.target) &&
+          this.hasAttribute(dialogVisibleAttr) &&
+          // clicking the bubble
+          e.target.tagName.toLowerCase() !== bubbleTagName
+        ) {
           this.removeAttribute(dialogVisibleAttr)
         }
       }
