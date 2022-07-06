@@ -17,6 +17,8 @@ const blacklistPrivate = [
 ]
 
 function init (settings) {
+  setupStatus()
+
   // create the full blacklist
   // from the editable and private one
   const fullBlacklist = blacklistPrivate.concat(settings.blacklist)
@@ -36,7 +38,6 @@ function init (settings) {
   setupDialog(settings)
 
   injectPage()
-  setupStatus()
   setupSandbox()
 }
 
