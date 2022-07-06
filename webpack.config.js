@@ -54,7 +54,7 @@ function generateManifest (params = {}) {
     delete updatedManifestFile.host_permissions
     updatedManifestFile.web_accessible_resources = updatedManifestFile.web_accessible_resources[0].resources
     delete updatedManifestFile.sandbox
-    updatedManifestFile.page_action = updatedManifestFile.action
+    updatedManifestFile.browser_action = updatedManifestFile.action
     delete updatedManifestFile.action
     updatedManifestFile.content_security_policy = updatedManifestFile.content_security_policy.extension_pages
   }
