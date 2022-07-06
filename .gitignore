@@ -26,3 +26,4 @@ test/bundle
 # cypress
 cypress/screenshots/
 cypress/videos/
+cypress/downloads/
