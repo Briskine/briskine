@@ -50,19 +50,19 @@ function getData (params) {
     };
 
     if (isContentEditable(params.element)) {
-        // get details from the account details tooltip.
+        // get the email field from the account details tooltip.
         // the details popup changes the className on each release,
         // so we use the dom structure to find it.
         // get the two-level deep nested div, that contains an @, from the email address.
-        // start from the end, because it's located near the end of the page,
+        // start from the end, because the popup is located near the end of the page,
         // and the main container can also contain email addresses.
         // ignore divs with peoplekit-id, as they show up after adding to/cc/bcc addresses,
         // and are also placed at the end of the body.
-        const $popup = Array
-          .from(document.querySelectorAll('body > div:not([peoplekit-id]) > div'))
+        const $email = Array
+          .from(document.querySelectorAll('body > div:not([peoplekit-id]) > div > div'))
           .reverse()
-          .find((div) => (div.textContent || '').includes('@'))
-        const $email = $popup ? $popup.lastElementChild : null
+          // div containing only text nodes with @
+          .find((div) => (div.children.length === 0 && (div.textContent || '').includes('@')))
         const $fullName = $email ? $email.previousElementSibling : null
 
         const fullNameText = $fullName ? $fullName.innerText : ''
