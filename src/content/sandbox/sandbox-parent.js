@@ -1,6 +1,7 @@
 /* globals MANIFEST */
 import browser from 'webextension-polyfill'
 
+import {compileTemplate as sandboxCompile} from './sandbox.js'
 import config from '../../config.js'
 
 let sandboxInstance = null
@@ -16,24 +17,11 @@ customElements.define(
       super()
     }
     connectedCallback () {
-      if (!this.isConnected) {
+      if (!this.isConnected || MANIFEST !== 3) {
         return
       }
 
       const shadowRoot = this.attachShadow({mode: 'closed'})
-
-      if (MANIFEST === '2') {
-        // use the sandbox script directly in manifest v2,
-        // to avoid issues with frame-ancestors csp
-        const sandbox = document.createElement('script')
-        sandbox.src = browser.runtime.getURL('sandbox/sandbox.js')
-        sandbox.onload = function () {
-          window.postMessage({ type: 'init' }, '*', [channel.port2])
-          this.remove()
-        }
-        shadowRoot.appendChild(sandbox)
-        return
-      }
 
       const iframe = document.createElement('iframe')
       iframe.src = browser.runtime.getURL('sandbox.html')
@@ -51,6 +39,10 @@ customElements.define(
 
 export function compileTemplate (template = '', context = {}) {
   return new Promise((resolve) => {
+    if (MANIFEST === '2') {
+      return resolve(sandboxCompile(template, context))
+    }
+
     function handleCompileMessage (e) {
       if (e.data.type === config.eventSandboxCompile) {
         port1.onmessage = () => {}
