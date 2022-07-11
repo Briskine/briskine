@@ -94,7 +94,7 @@ function extensionConfig (params = {}) {
       patterns: [
         { from: 'src/popup/popup.html', to: 'popup/' },
         { from: 'src/icons/', to: 'icons/' },
-        { from: 'src/content/sandbox/sandbox.html', to: '' },
+        { from: 'src/content/sandbox/sandbox.html', to: 'sandbox/' },
         { from: 'LICENSE', to: '' }
       ]
     }),

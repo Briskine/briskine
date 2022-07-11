@@ -41,7 +41,7 @@
     "resources": [
       "popup/popup.html",
       "page/page.js",
-      "sandbox.html",
+      "sandbox/sandbox.html",
       "sandbox/sandbox.js"
     ],
     "matches": [
@@ -50,7 +50,7 @@
     ]
   }],
   "sandbox": {
-    "pages": ["sandbox.html"]
+    "pages": ["sandbox/sandbox.html"]
   },
   "action": {
     "default_title": "Briskine",
