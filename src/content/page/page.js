@@ -14,20 +14,26 @@ import config from '../../config.js'
 
 import {insertCkEditorText} from '../editors/editor-ckeditor.js'
 
-function handlePageEvents (e) {
-  const detail = e.detail || {}
+let port2
 
-  if (detail.type === 'ckeditor-insert') {
-    insertCkEditorText(e.target.ckeditorInstance, detail.data)
-    return
+function handleInitMessage (e) {
+  if (e.data.type === 'page-init') {
+    port2 = e.ports[0]
+    port2.onmessage = onMessage
+    window.removeEventListener('message', handleInitMessage)
   }
 }
 
-document.addEventListener(config.eventPage, handlePageEvents)
+window.addEventListener('message', handleInitMessage)
 
-// destroy existing instance
-document.dispatchEvent(new CustomEvent(config.eventDestroy))
+function onMessage (e) {
+  const detail = e.data || {}
 
-document.addEventListener(config.eventDestroy, () => {
-  document.removeEventListener(config.eventPage, handlePageEvents)
-}, {once: true})
+  if (detail.type === 'ckeditor-insert') {
+    insertCkEditorText(document.activeElement, detail.data)
+  }
+
+  port2.postMessage({
+    type: config.eventPage,
+  })
+}

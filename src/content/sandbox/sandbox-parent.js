@@ -17,7 +17,7 @@ customElements.define(
       super()
     }
     connectedCallback () {
-      if (!this.isConnected || MANIFEST !== 3) {
+      if (!this.isConnected || MANIFEST !== '3') {
         return
       }
 

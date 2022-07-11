@@ -1,7 +1,6 @@
 // native custom elements are not supported in content scripts
 // https://bugs.chromium.org/p/chromium/issues/detail?id=390807
 import '@webcomponents/custom-elements'
-import browser from 'webextension-polyfill'
 
 import store from '../store/store-client.js'
 import config from '../config.js'
@@ -11,6 +10,7 @@ import {setup as setupBubble, destroy as destroyBubble} from './bubble/bubble.js
 import {setup as setupStatus, destroy as destroyStatus} from './status.js'
 import {setup as setupDialog, destroy as destroyDialog} from './dialog/dialog.js'
 import {setup as setupSandbox, destroy as destroySandbox} from './sandbox/sandbox-parent.js'
+import {setup as setupPage, destroy as destroyPage} from './page/page-parent.js'
 
 const blacklistPrivate = [
   '.briskine.com',
@@ -37,18 +37,8 @@ function init (settings) {
   setupBubble(settings)
   setupDialog(settings)
 
-  injectPage()
   setupSandbox()
-}
-
-// inject page script
-function injectPage () {
-  const page = document.createElement('script')
-  page.src = browser.runtime.getURL('page/page.js')
-  page.onload = function () {
-    this.remove()
-  }
-  document.documentElement.appendChild(page)
+  setupPage()
 }
 
 function startup () {
@@ -67,20 +57,12 @@ const destroyEvent = new CustomEvent(config.destroyEvent)
 document.dispatchEvent(destroyEvent)
 
 function destructor () {
-  // destroy keyboard autocomplete
   destroyKeyboard()
-
-  // destroy bubble
   destroyBubble()
-
-  // destroy dialog
   destroyDialog()
-
-  // destroy status event
   destroyStatus()
-
-  // destroy sandbox
   destroySandbox()
+  destroyPage()
 }
 
 document.addEventListener(config.destroyEvent, destructor, {once: true})
