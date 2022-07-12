@@ -31,7 +31,7 @@ export default {
     }),
     new CopyWebpackPlugin({
       patterns: [
-        { from: 'src/content/sandbox/sandbox.html', to: 'sandbox.html' },
+        { from: 'src/content/sandbox/sandbox.html', to: 'sandbox/sandbox.html' },
       ]
     }),
   ],
