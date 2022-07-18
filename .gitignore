@@ -22,3 +22,8 @@ test/bundle
 
 # firebase config, for firefox reviewers
 .firebase-config.json
+
+# cypress
+cypress/screenshots/
+cypress/videos/
+cypress/downloads/

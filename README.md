@@ -23,6 +23,7 @@ The build is placed in `/ext`.
 Build extension and compress it as a zip file. The built extension is in `/ext`, and the zip file is in `/build`.
 
 * Append `-- safari` to any command to build the Safari version. (eg. `npm run build -- safari`).
+* Append `-- manifest=2` to any command to build the Manifest v2 version. (eg. `npm run build -- manifest=2`).
 
 
 ## Known issues

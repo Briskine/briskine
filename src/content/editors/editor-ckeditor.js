@@ -2,7 +2,7 @@
  * https://ckeditor.com/ckeditor-5/
  */
 
-import config from '../../config.js'
+import {sendToPage} from '../page/page-parent.js'
 
 export function isCkEditor (element) {
   return element.classList.contains('ck-editor__editable')
@@ -24,18 +24,17 @@ export function insertCkEditorTemplate (params = {}) {
   // give it a second to update the editor state,
   // after removing the shortcut.
   setTimeout(() => {
-    params.element.dispatchEvent(new CustomEvent(config.eventPage, {
-      bubbles: true,
-      detail: {
-        type: 'ckeditor-insert',
-        data: params.text
-      }
-    }))
+    sendToPage({
+      type: 'ckeditor-insert',
+      data: params.text,
+    })
   })
 }
 
 // runs in the page context
-export function insertCkEditorText (editor, content = '') {
+export function insertCkEditorText (node, content = '') {
+  const editor = node.ckeditorInstance
+
   // editor is the ckeditorInstance.
   // convert the html string to a ckeditor fragment.
   const viewFragment = editor.data.processor.toView(content)

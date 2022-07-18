@@ -1,4 +1,4 @@
-/* globals REGISTER_DISABLED */
+/* globals REGISTER_DISABLED, MANIFEST */
 import browser from 'webextension-polyfill'
 
 import Config from '../config.js'
@@ -23,21 +23,35 @@ browser.runtime.onInstalled.addListener((details) => {
     const scripts = contentScripts.js
     const styles = contentScripts.css
 
+    let scriptingNamespace = 'scripting'
+    if (MANIFEST === '2') {
+      scriptingNamespace = 'tabs'
+    }
+
     browser.tabs.query({
       url: contentScripts.matches
     }).then((tabs) => {
       tabs.forEach((tab) => {
         // remove and insert new content styles
         styles.forEach((file) => {
-          browser.tabs.removeCSS(tab.id, {file: file}).then(() => {
-            browser.tabs.insertCSS(tab.id, {file: file})
+          browser[scriptingNamespace].removeCSS(tab.id, {file: file}).then(() => {
+            browser[scriptingNamespace].insertCSS(tab.id, {file: file})
           })
         })
 
         // insert new content scripts
-        scripts.forEach((file) => {
-          browser.tabs.executeScript(tab.id, {file: file})
-        })
+        if (MANIFEST === '2') {
+          scripts.forEach((script) => {
+            browser.tabs.executeScript(tab.id, {file: script})
+          })
+        } else {
+          browser.scripting.executeScript({
+            target: {
+              tabId: tab.id,
+            },
+            files: scripts
+          })
+        }
       })
     })
 

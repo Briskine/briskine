@@ -25,13 +25,13 @@ function getData (element) {
     return decodeAttribute(getVariableAttribute(element));
 }
 
-export default (params = {}) => {
+export default async (params = {}) => {
     if (!isActive(params.element)) {
         return false;
     }
 
     var data = getData(params.element);
-    var parsedTemplate = parseTemplate(params.quicktext.body, data);
+    var parsedTemplate = await parseTemplate(params.quicktext.body, data);
 
     insertTemplate(Object.assign({
         text: parsedTemplate

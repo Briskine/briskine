@@ -22,16 +22,41 @@ const defaultFirebaseConfig = {
 const devPath = path.resolve('ext')
 const productionPath = path.resolve('build')
 
+// the manifest description is limited to 112 characters on Safari
+// https://github.com/w3c/webextensions/issues/218
 const safariManifestDescription = 'Write emails faster! Increase your productivity with templates and shortcuts on Gmail, Outlook, or LinkedIn.'
 
-function generateManifest (safari) {
+function generateManifest (params = {}) {
   let updatedManifestFile = Object.assign({}, manifestFile)
   // get version from package
   updatedManifestFile.version = packageFile.version
 
   // safari manifest
-  if (safari) {
+  if (params.safari) {
     updatedManifestFile.description = safariManifestDescription
+  }
+
+  // source maps
+  if (params.mode === 'development') {
+    updatedManifestFile.web_accessible_resources[0].resources = updatedManifestFile.web_accessible_resources[0].resources.concat(
+      Array('content', 'page', 'sandbox').map((script) => `${script}/${script}.js.map`)
+    )
+  }
+
+  // manifest v2
+  if (params.manifest === '2') {
+    updatedManifestFile.manifest_version = 2
+    updatedManifestFile.background.scripts = [updatedManifestFile.background.service_worker]
+    delete updatedManifestFile.background.service_worker
+    updatedManifestFile.permissions = updatedManifestFile.permissions
+      .filter((p) => p !== 'scripting')
+      .concat(updatedManifestFile.host_permissions)
+    delete updatedManifestFile.host_permissions
+    updatedManifestFile.web_accessible_resources = updatedManifestFile.web_accessible_resources[0].resources
+    delete updatedManifestFile.sandbox
+    updatedManifestFile.browser_action = updatedManifestFile.action
+    delete updatedManifestFile.action
+    updatedManifestFile.content_security_policy = updatedManifestFile.content_security_policy.extension_pages
   }
 
   return new CopyWebpackPlugin({
@@ -62,22 +87,23 @@ class ZipPlugin {
   }
 }
 
-function extensionConfig (env, safari = false, firebaseConfig = {}) {
+function extensionConfig (params = {}) {
   const plugins = [
-    generateManifest(safari),
+    generateManifest(params),
     new CopyWebpackPlugin({
       patterns: [
         { from: 'src/popup/popup.html', to: 'popup/' },
         { from: 'src/icons/', to: 'icons/' },
-        { from: 'src/background.html', to: '' },
+        { from: 'src/content/sandbox/sandbox.html', to: 'sandbox/' },
         { from: 'LICENSE', to: '' }
       ]
     }),
     new webpack.DefinePlugin({
-      ENV: JSON.stringify(env),
-      REGISTER_DISABLED: safari,
-      FIREBASE_CONFIG: JSON.stringify(firebaseConfig),
+      ENV: JSON.stringify(params.mode),
+      REGISTER_DISABLED: params.safari,
+      FIREBASE_CONFIG: JSON.stringify(params.firebaseConfig),
       VERSION: JSON.stringify(packageFile.version),
+      MANIFEST: JSON.stringify(params.manifest),
     }),
     new MiniCssExtractPlugin({
       filename: '[name]/[name].css'
@@ -87,8 +113,8 @@ function extensionConfig (env, safari = false, firebaseConfig = {}) {
     })
   ]
 
-  if (env === 'production') {
-    const zipFilename = `${packageFile.name}-${packageFile.version}.zip`
+  if (params.mode === 'production') {
+    const zipFilename = `${packageFile.name}-${packageFile.version}-manifest${params.manifest}.zip`
     const zipPath = path.join(productionPath, zipFilename)
     plugins.push(
       new ZipPlugin({
@@ -104,6 +130,7 @@ function extensionConfig (env, safari = false, firebaseConfig = {}) {
       popup: './src/popup/popup.js',
       content: './src/content/index.js',
       page: './src/content/page/page.js',
+      sandbox: './src/content/sandbox/sandbox.js',
     },
     output: {
       path: path.resolve(devPath),
@@ -173,5 +200,12 @@ export default async function (env) {
     }
   }
 
-  return extensionConfig(env.mode, env.safari, firebaseConfig)
+  const params = Object.assign({
+    firebaseConfig: firebaseConfig,
+    manifest: '3',
+    safari: false,
+    mode: 'production',
+  }, env)
+
+  return extensionConfig(params)
 }

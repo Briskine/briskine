@@ -226,8 +226,6 @@ function showPostInstall () {
 // top-right sticky positioning,
 // considering scroll.
 function getTopPosition (textfield, parent) {
-    // TODO expensive operation,
-    // see if we can improve performance.
     const textfieldRect = textfield.getBoundingClientRect();
     const parentRect = parent.getBoundingClientRect();
     const distanceFromParent = textfieldRect.top - parentRect.top;

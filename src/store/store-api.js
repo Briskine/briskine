@@ -164,7 +164,7 @@ function updateCache (params = {}) {
   localDataCache[params.collection] = params.data
 
   const eventName = params.collection.includes('templates') ? 'templates-updated' : `${params.collection}-updated`
-  trigger(eventName)
+  trigger(eventName, params.data)
 
   return params.data
 }
@@ -323,22 +323,21 @@ function setSignedInUser (user) {
 
 // auth change
 onIdTokenChanged(firebaseAuth, (firebaseUser) => {
-    if (!firebaseUser) {
-        clearDataCache();
+  if (!firebaseUser) {
+    clearDataCache()
+    return setSignedInUser({})
+  }
 
-        return setSignedInUser({});
-    }
+  return getSignedInUser()
+    .then((user) => {
+      if (user.id === firebaseUser.uid) {
+        return
+      }
 
-    return getSignedInUser()
-      .then((user) => {
-        if (user.id === firebaseUser.uid) {
-          return;
-        }
-
-        clearDataCache()
-        return updateCurrentUser(firebaseUser)
-      })
-});
+      clearDataCache()
+      return updateCurrentUser(firebaseUser)
+    })
+})
 
 function getDefaultTemplates () {
     const defaultTemplates = [
@@ -492,11 +491,11 @@ export function getTemplates () {
         })
     })
     .catch((err) => {
-        if (isLoggedOut(err)) {
-            return getDefaultTemplates();
-        }
+      if (isLoggedOut(err)) {
+        return getDefaultTemplates()
+      }
 
-        throw err;
+      throw err;
     });
 }
 

@@ -81,16 +81,16 @@ function isHidden (el) {
     return (el.offsetParent === null);
 }
 
-function before (params, data) {
+async function before (params, data) {
     var $parent = params.element.closest('.v-Compose')
 
     if (params.quicktext.subject) {
-      var parsedSubject = parseTemplate(params.quicktext.subject, data)
+      var parsedSubject = await parseTemplate(params.quicktext.subject, data)
       $parent.querySelector('input[id$="subject-input"]').value = parsedSubject
     }
 
     if (params.quicktext.to) {
-      var parsedTo = parseTemplate(params.quicktext.to, data)
+      var parsedTo = await parseTemplate(params.quicktext.to, data)
       var $toField = $parent.querySelector('textarea[id$="to-input"]')
       $toField.value = parsedTo
 
@@ -100,7 +100,7 @@ function before (params, data) {
     var $btns = $parent.querySelectorAll('.v-Compose-addCcBcc .u-subtleLink')
 
     if (params.quicktext.cc) {
-        var parsedCc = parseTemplate(params.quicktext.cc, data)
+        var parsedCc = await parseTemplate(params.quicktext.cc, data)
 
         var $ccField = $parent.querySelector('textarea[id$="cc-input"]')
 
@@ -118,7 +118,7 @@ function before (params, data) {
     }
 
     if (params.quicktext.bcc) {
-        var parsedBcc = parseTemplate(params.quicktext.bcc, data)
+        var parsedBcc = await parseTemplate(params.quicktext.bcc, data)
 
         var $bccField = $parent.querySelector('textarea[id$="bcc-input"]')
 
@@ -152,15 +152,15 @@ function isActive () {
     return activeCache;
 }
 
-export default (params = {}) => {
+export default async (params = {}) => {
     if (!isActive()) {
         return false;
     }
 
     var data = getData(params);
-    var parsedTemplate = parseTemplate(params.quicktext.body, data);
+    var parsedTemplate = await parseTemplate(params.quicktext.body, data);
 
-    before(params, data);
+    await before(params, data);
 
     insertTemplate(Object.assign({
         text: parsedTemplate

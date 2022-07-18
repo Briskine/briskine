@@ -28,7 +28,7 @@ function getFieldData (field, $container) {
 // selector for to/cc/bcc containers
 function getContainers () {
   // get the parent of each extra field input
-  return Array.from(document.querySelectorAll('[role=main] input[autocapitalize=off]')).map((node) => {
+  return Array.from(document.querySelectorAll('[role=main] [role=textbox]')).map((node) => {
     return node.parentElement
   })
 }
@@ -61,11 +61,11 @@ function getBccButton () {
 function getSuggestionContainer (email) {
   return function () {
     // "use this address" not in contact list
-    var headerSelector = `.ms-Suggestions-headerContainer [class*="useAddressContainer-"]`;
+    const headerSelector = `.ms-Suggestions-footerContainer [role=listitem] .ms-Suggestions-sectionButton`
     // contact list suggestion
     // only when the suggestion contains the email and the item is first (is selected)
-    var listSelector = `.ms-Suggestions-container [aria-label*="${email}"][aria-selected=true][role=option]`;
-    return document.querySelector(`${headerSelector}, ${listSelector}`);
+    const listSelector = `.ms-Suggestions-container [aria-label*="${email}"][role=listitem]`
+    return document.querySelector(`${headerSelector}, ${listSelector}`)
   }
 }
 
@@ -74,7 +74,9 @@ function getSubjectField () {
 }
 
 function getContactField ($container) {
-  return $container.querySelector('input');
+  return waitForElement(() => {
+    return $container.querySelector('[contenteditable]')
+  })
 }
 
 function waitForElement (getNode) {
@@ -88,7 +90,9 @@ function waitForElement (getNode) {
             $element = getNode();
             if ($element) {
                 observer.disconnect();
-                resolve($element);
+                setTimeout(() => {
+                  resolve($element)
+                })
             }
         });
         selectorObserver.observe(document.body, {
@@ -98,19 +102,35 @@ function waitForElement (getNode) {
     });
 }
 
-function updateContactField ($field, value, $editor) {
+function updateContactField ($field, value) {
   const splitValues = value.split(',')
   splitValues.forEach((v) => {
     const cleanValue = v.trim()
-    return addSingleContact($field, cleanValue, $editor)
+    if (elementContains($field, cleanValue)) {
+      // value already added
+      return
+    }
+
+    return addSingleContact($field, cleanValue)
   })
 }
 
 var fieldUpdateQueue = Promise.resolve()
-function addSingleContact ($field, value, $editor) {
+function addSingleContact ($field, value) {
   // wait for previous contact field update
   fieldUpdateQueue = fieldUpdateQueue.then(() => {
-    $field.value = value
+    // cache selection details, to restore later
+    const selection = window.getSelection()
+    const focusNode = selection.focusNode
+    const focusOffset = selection.focusOffset
+    const anchorNode = selection.anchorNode
+    const anchorOffset = selection.anchorOffset
+
+    $field.focus()
+    const range = window.getSelection().getRangeAt(0)
+    const templateNode = range.createContextualFragment(value)
+    range.insertNode(templateNode)
+    range.collapse()
     $field.dispatchEvent(new Event('input', {bubbles: true}))
 
     return waitForElement(getSuggestionContainer(value)).then(() => {
@@ -118,14 +138,20 @@ function addSingleContact ($field, value, $editor) {
         new KeyboardEvent('keydown', {
           keyCode: 13,
           which: 13,
+          key: 'Enter',
+          code: 'Enter',
           bubbles: true
         })
       )
 
-      // restore focus
-      $editor.focus()
-
-      return
+      return new Promise((resolve) => {
+        // give it a second to render the selected item
+        setTimeout(() => {
+          // restore focus
+          window.getSelection().setBaseAndExtent(anchorNode, anchorOffset, focusNode, focusOffset)
+          resolve()
+        })
+      })
     })
   })
 }
@@ -134,20 +160,15 @@ function elementContains ($element, value) {
     return ($element.innerText || '').includes(value);
 }
 
-function updateSection ($container, $button, getNode, value, $editor) {
+async function updateSection ($container, $button, getNode, value) {
     if ($container) {
-        if (elementContains($container, value)) {
-            // email already added
-            return;
-        }
-
-        var $input = getContactField($container);
-        updateContactField($input, value, $editor);
+        var $input = await getContactField($container);
+        updateContactField($input, value);
     } else if ($button) {
         // click CC/BCC button
         $button.click();
         waitForElement(getNode).then(($container) => {
-            updateSection($container, $button, getNode, value, $editor);
+            updateSection($container, $button, getNode, value)
         });
     }
 }
@@ -206,46 +227,44 @@ function getData () {
     return vars;
 }
 
-function after (params, data) {
+async function after (params, data) {
   var $subject = getSubjectField();
   if (params.quicktext.subject && $subject) {
-    var parsedSubject = parseTemplate(params.quicktext.subject, data);
+    var parsedSubject = await parseTemplate(params.quicktext.subject, data);
     $subject.value = parsedSubject;
     $subject.dispatchEvent(new Event('input', {bubbles: true}));
   }
 
   if (params.quicktext.to) {
     var $to = getToContainer();
-    var parsedTo = parseTemplate(params.quicktext.to, data);
+    var parsedTo = await parseTemplate(params.quicktext.to, data);
     if ($to && !elementContains($to, parsedTo)) {
-      var $toInput = getContactField($to);
-      updateContactField($toInput, parsedTo, params.element);
+      var $toInput = await getContactField($to);
+      updateContactField($toInput, parsedTo);
     }
   }
 
   if (params.quicktext.cc) {
     var $cc = getCcContainer();
-    var parsedCc = parseTemplate(params.quicktext.cc, data);
+    var parsedCc = await parseTemplate(params.quicktext.cc, data);
     var $ccButton = getCcButton();
     updateSection(
       $cc,
       $ccButton,
       getCcContainer,
       parsedCc,
-      params.element
     );
   }
 
   if (params.quicktext.bcc) {
     var $bcc = getBccContainer();
-    var parsedBcc = parseTemplate(params.quicktext.bcc, data);
+    var parsedBcc = await parseTemplate(params.quicktext.bcc, data);
     var $bccButton = getBccButton();
     updateSection(
       $bcc,
       $bccButton,
       getBccContainer,
       parsedBcc,
-      params.element
     );
   }
 }
@@ -274,19 +293,19 @@ if (isActive()) {
     enableBubble();
 }
 
-export default (params = {}) => {
+export default async (params = {}) => {
   if (!isActive()) {
     return false;
   }
 
   const data = getData(params);
-  const parsedTemplate = parseTemplate(params.quicktext.body, data);
+  const parsedTemplate = await parseTemplate(params.quicktext.body, data);
 
   insertTemplate(Object.assign({
     text: parsedTemplate
   }, params));
 
-  after(params, data);
+  await after(params, data);
 
   return true;
 };

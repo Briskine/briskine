@@ -1,0 +1,35 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+  </head>
+  <body>
+    <div id="editor" contenteditable></div>
+
+    <script type="module">
+      import React from 'https://cdn.jsdelivr.net/npm/react@18/+esm'
+      import ReactDOM from 'https://cdn.jsdelivr.net/npm/react-dom@18/+esm'
+      import Lexical from 'https://cdn.jsdelivr.net/npm/lexical@0/+esm'
+
+      import LexicalComposer from 'https://cdn.jsdelivr.net/npm/@lexical/react@0/LexicalComposer/+esm'
+      import PlainTextPlugin from 'https://cdn.jsdelivr.net/npm/@lexical/react@0/LexicalPlainTextPlugin/+esm'
+      import ContentEditable from 'https://cdn.jsdelivr.net/npm/@lexical/react@0/LexicalContentEditable/+esm'
+
+      function Editor () {
+        const initialConfig = {
+          namespace: 'MyEditor',
+          onError: console.error,
+        }
+
+        return React.createElement(LexicalComposer.LexicalComposer, {
+          initialConfig: initialConfig
+        }, React.createElement(PlainTextPlugin.PlainTextPlugin, {
+          contentEditable: ContentEditable.ContentEditable
+        }))
+      }
+
+      const root = ReactDOM.createRoot(document.getElementById('editor'))
+      root.render(React.createElement(Editor))
+    </script>
+  </body>
+</html>

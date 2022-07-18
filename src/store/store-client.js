@@ -56,10 +56,10 @@ function off (name, callback) {
   })
 }
 
-function trigger (name) {
-  events.filter((event) => event.name === name).forEach((event) => {
+function trigger (data = {}) {
+  events.filter((event) => event.name === data.name).forEach((event) => {
     if (typeof event.callback === 'function') {
-      event.callback()
+      event.callback(data.details)
     }
   })
 }
@@ -70,7 +70,7 @@ browser.runtime.onMessage.addListener((req) => {
     req.type &&
     req.type === 'trigger'
   ) {
-    trigger(req.data.name)
+    trigger(req.data)
   }
 })
 

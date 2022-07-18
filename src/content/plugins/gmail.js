@@ -50,19 +50,19 @@ function getData (params) {
     };
 
     if (isContentEditable(params.element)) {
-        // get details from the account details tooltip.
+        // get the email field from the account details tooltip.
         // the details popup changes the className on each release,
         // so we use the dom structure to find it.
         // get the two-level deep nested div, that contains an @, from the email address.
-        // start from the end, because it's located near the end of the page,
+        // start from the end, because the popup is located near the end of the page,
         // and the main container can also contain email addresses.
         // ignore divs with peoplekit-id, as they show up after adding to/cc/bcc addresses,
         // and are also placed at the end of the body.
-        const $popup = Array
-          .from(document.querySelectorAll('body > div:not([peoplekit-id]) > div'))
+        const $email = Array
+          .from(document.querySelectorAll('body > div:not([peoplekit-id]) > div > div'))
           .reverse()
-          .find((div) => (div.textContent || '').includes('@'))
-        const $email = $popup ? $popup.lastElementChild : null
+          // div containing only text nodes with @
+          .find((div) => (div.children.length === 0 && (div.textContent || '').includes('@')))
         const $fullName = $email ? $email.previousElementSibling : null
 
         const fullNameText = $fullName ? $fullName.innerText : ''
@@ -181,11 +181,11 @@ function extraField ($parent, fieldName) {
   return $parent.querySelector(`textarea[name=${fieldName}], [name=${fieldName}] input`)
 }
 
-function after (params, data) {
+async function after (params, data) {
   const $parent = params.element.closest(textfieldContainerSelector)
 
   if (params.quicktext.subject) {
-    const parsedSubject = parseTemplate(params.quicktext.subject, data)
+    const parsedSubject = await parseTemplate(params.quicktext.subject, data)
     $parent.querySelector('input[name=subjectbox]').value = parsedSubject
   }
 
@@ -205,7 +205,7 @@ function after (params, data) {
   }
 
   if (params.quicktext.to) {
-    const parsedTo = parseTemplate(params.quicktext.to, data)
+    const parsedTo = await parseTemplate(params.quicktext.to, data)
     const $toField = extraField($parent, 'to')
     if ($toField) {
       $toField.value = parsedTo
@@ -218,9 +218,9 @@ function after (params, data) {
     bcc: '.aB.gQ.pB'
   }
 
-  Array('cc', 'bcc').forEach((fieldName) => {
+  Array('cc', 'bcc').forEach(async (fieldName) => {
     if (params.quicktext[fieldName]) {
-      const parsedField = parseTemplate(params.quicktext[fieldName], data)
+      const parsedField = await parseTemplate(params.quicktext[fieldName], data)
       $parent.querySelector(buttonSelectors[fieldName]).dispatchEvent(new MouseEvent('click', {bubbles: true}))
       const $field = extraField($parent, fieldName)
       if ($field) {
@@ -390,19 +390,19 @@ function setup () {
 
 setup();
 
-export default (params = {}) => {
+export default async (params = {}) => {
     if (!isActive()) {
         return false;
     }
 
     var data = getData(params);
-    var parsedTemplate = parseTemplate(params.quicktext.body, data);
+    var parsedTemplate = await parseTemplate(params.quicktext.body, data);
 
     insertTemplate(Object.assign({
         text: parsedTemplate
     }, params))
 
-    after(params, data)
+    await after(params, data)
 
     // from field support, when using multiple aliases.
     // set the from field before getting data,

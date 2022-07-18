@@ -12,18 +12,41 @@ function updateShortcutCache (templates = []) {
   shortcutCache = templates.map((t) => t.shortcut).filter((shortcut) => shortcut)
 }
 
-store.on('templates-updated', updateShortcutCache)
-
 // is input or textarea
 function isTextfield (element) {
   return ['input', 'textarea'].includes(element.tagName.toLowerCase())
 }
 
-function getTemplateByShortcut (shortcut) {
+function getTemplates () {
   return store.getTemplates()
     .then((templates) => {
       updateShortcutCache(templates)
+      return templates
+    })
+}
 
+// pre-populate the shortcut cache on certain websites
+function populateCache () {
+  const urls = [
+    '://docs.google.com/spreadsheets/',
+  ]
+
+  urls.find((url) => {
+    if (window.location.href.includes(url)) {
+      getTemplates()
+      return true
+    }
+  })
+}
+
+store.on('templates-updated', populateCache)
+store.on('login', populateCache)
+store.on('logout', populateCache)
+populateCache()
+
+function getTemplateByShortcut (shortcut) {
+  return getTemplates()
+    .then((templates) => {
       return templates.find((t) => {
         return t.shortcut === shortcut
       })
@@ -38,42 +61,43 @@ function keyboardAutocomplete (e) {
     return
   }
 
-  // cache selection details
-  const selection = window.getSelection()
-  const focusNode = selection.focusNode
-  const focusOffset = selection.focusOffset
-  const anchorNode = selection.anchorNode
-  const anchorOffset = selection.anchorOffset
-
   const word = getSelectedWord({
     element: element
   })
 
   if (word.text) {
+    // cache selection details
+    const selection = window.getSelection()
+    const focusNode = selection.focusNode
+    const focusOffset = selection.focusOffset
+    const anchorNode = selection.anchorNode
+    const anchorOffset = selection.anchorOffset
+
     if (shortcutCache.includes(word.text)) {
       e.preventDefault()
       e.stopImmediatePropagation()
     }
 
-    getTemplateByShortcut(word.text).then((template) => {
-      if (template) {
-        // restore selection
-        element.focus()
-        if (
-          isContentEditable(element) &&
-          anchorNode &&
-          focusNode
-        ) {
-          window.getSelection().setBaseAndExtent(anchorNode, anchorOffset, focusNode, focusOffset)
-        }
+    getTemplateByShortcut(word.text)
+      .then((template) => {
+        if (template) {
+          // restore selection
+          element.focus()
+          if (
+            isContentEditable(element) &&
+            anchorNode &&
+            focusNode
+          ) {
+            window.getSelection().setBaseAndExtent(anchorNode, anchorOffset, focusNode, focusOffset)
+          }
 
-        autocomplete({
-            element: element,
-            quicktext: template,
-            word: word,
-        })
-      }
-    })
+          return autocomplete({
+              element: element,
+              quicktext: template,
+              word: word,
+          })
+        }
+      })
   }
 }
 

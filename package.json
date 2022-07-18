@@ -1,6 +1,6 @@
 {
   "name": "briskine",
-  "version": "7.4.5",
+  "version": "7.5.4",
   "description": "Write everything faster.",
   "private": true,
   "type": "module",
@@ -11,7 +11,8 @@
     "staging": "webpack -w --mode=production --env mode=staging",
     "build": "npm run lint && webpack --mode=production --env mode=production",
     "sourcebuild": "git archive --format zip --output sourcebuild/sourcebuild-${npm_package_version}.zip HEAD; zip -u sourcebuild/sourcebuild-${npm_package_version}.zip .firebase-config.json",
-    "lint": "eslint './**/*.js'"
+    "lint": "eslint './**/*.js'",
+    "cypress:open": "cypress open"
   },
   "repository": "https://github.com/briskine/briskine/",
   "author": "Alexandru Plugaru <alex@gorgias.com>",
@@ -40,6 +41,8 @@
     "copy-webpack-plugin": "^11.0.0",
     "css-loader": "^6.0.0",
     "css-minimizer-webpack-plugin": "^4.0.0",
+    "cypress": "^10.2.0",
+    "cypress-plugin-tab": "^1.0.5",
     "eslint": "^8.14.0",
     "firebase-tools": "^11.0.0",
     "glob": "^8.0.0",

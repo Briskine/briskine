@@ -1,22 +1,24 @@
 // native custom elements are not supported in content scripts
 // https://bugs.chromium.org/p/chromium/issues/detail?id=390807
 import '@webcomponents/custom-elements'
-import browser from 'webextension-polyfill'
-
-import './helpers/content-helpers.js'
 
 import store from '../store/store-client.js'
 import config from '../config.js'
 
-import {isContentEditable} from './editors/editor-contenteditable.js'
 import {setup as setupKeyboard, destroy as destroyKeyboard} from './keyboard.js'
 import {setup as setupBubble, destroy as destroyBubble} from './bubble/bubble.js'
 import {setup as setupStatus, destroy as destroyStatus} from './status.js'
 import {setup as setupDialog, destroy as destroyDialog} from './dialog/dialog.js'
+import {setup as setupSandbox, destroy as destroySandbox} from './sandbox/sandbox-parent.js'
+import {setup as setupPage, destroy as destroyPage} from './page/page-parent.js'
 
-const blacklistPrivate = []
+const blacklistPrivate = [
+  '.briskine.com',
+]
 
 function init (settings) {
+  setupStatus()
+
   // create the full blacklist
   // from the editable and private one
   const fullBlacklist = blacklistPrivate.concat(settings.blacklist)
@@ -32,26 +34,11 @@ function init (settings) {
   }
 
   setupKeyboard(settings)
+  setupBubble(settings)
+  setupDialog(settings)
 
-  // don't create the dialog inside editor iframes (eg. tinymce iframe)
-  if (!isContentEditable(document.body)) {
-    setupBubble(settings)
-    setupDialog(settings)
-  }
-
-  injectPage()
-
-  setupStatus()
-}
-
-// inject page script
-function injectPage () {
-  const page = document.createElement('script')
-  page.src = browser.runtime.getURL('page/page.js')
-  page.onload = function () {
-    this.remove()
-  }
-  document.documentElement.appendChild(page)
+  setupSandbox()
+  setupPage()
 }
 
 function startup () {
@@ -70,17 +57,12 @@ const destroyEvent = new CustomEvent(config.destroyEvent)
 document.dispatchEvent(destroyEvent)
 
 function destructor () {
-  // destroy keyboard autocomplete
   destroyKeyboard()
-
-  // destroy bubble
   destroyBubble()
-
-  // destroy dialog
   destroyDialog()
-
-  // destroy status event
   destroyStatus()
+  destroySandbox()
+  destroyPage()
 }
 
 document.addEventListener(config.destroyEvent, destructor, {once: true})

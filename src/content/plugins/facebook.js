@@ -78,13 +78,13 @@ function isActive () {
     return activeCache;
 }
 
-export default (params = {}) => {
+export default async (params = {}) => {
     if (!isActive()) {
         return false;
     }
 
     var data = getData(params);
-    var parsedTemplate = parseTemplate(params.quicktext.body, data);
+    var parsedTemplate = await parseTemplate(params.quicktext.body, data);
 
     insertPasteTemplate(Object.assign({
         text: parsedTemplate

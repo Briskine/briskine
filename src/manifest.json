@@ -1,49 +1,67 @@
 {
-    "manifest_version": 2,
-    "name": "Briskine: Email templates for Gmail",
-    "version": "",
-    "description": "Write emails faster! Increase your productivity with templates and keyboard shortcuts on Gmail, Outlook, or LinkedIn.",
-    "short_name": "Briskine",
-    "icons": {
-        "16": "icons/icon-16.png",
-        "48": "icons/icon-48.png",
-        "128": "icons/icon-128.png"
-    },
-    "background": {
-        "page": "background.html"
-    },
-    "permissions": [
+  "manifest_version": 3,
+  "name": "Briskine: Email templates for Gmail",
+  "version": "",
+  "description": "Write emails faster! Increase your productivity with templates and keyboard shortcuts on Gmail, Outlook, or LinkedIn.",
+  "short_name": "Briskine",
+  "icons": {
+    "16": "icons/icon-16.png",
+    "48": "icons/icon-48.png",
+    "128": "icons/icon-128.png"
+  },
+  "background": {
+    "service_worker": "background/background.js"
+  },
+  "permissions": [
+    "tabs",
+    "contextMenus",
+    "storage",
+    "scripting"
+  ],
+  "host_permissions": [
+    "https://*/*",
+    "http://*/*"
+  ],
+  "content_scripts": [
+    {
+      "matches": [
         "https://*/*",
-        "http://*/*",
-        "tabs",
-        "contextMenus",
-        "storage"
+        "http://*/*"
+      ],
+      "js": [
+        "content/content.js"
+      ],
+      "css": [],
+      "run_at": "document_end",
+      "all_frames": true,
+      "match_about_blank": true
+    }
+  ],
+  "web_accessible_resources": [{
+    "resources": [
+      "popup/popup.html",
+      "page/page.js",
+      "sandbox/sandbox.html",
+      "sandbox/sandbox.js"
     ],
-    "content_scripts": [
-        {
-            "matches": [
-                "https://*/*",
-                "http://*/*"
-            ],
-            "js": [
-                "content/content.js"
-            ],
-            "css": [],
-            "run_at": "document_end",
-            "all_frames": true
-        }
-    ],
-    "web_accessible_resources": [
-        "popup/popup.html",
-        "page/page.js"
-    ],
-    "browser_action": {
-        "default_title": "Briskine",
-        "default_icon": {
-            "16": "icons/icon-16.png",
-            "32": "icons/icon-32.png"
-        },
-        "default_popup": "popup/popup.html"
+    "matches": [
+      "https://*/*",
+      "http://*/*"
+    ]
+  }],
+  "sandbox": {
+    "pages": ["sandbox/sandbox.html"]
+  },
+  "action": {
+    "default_title": "Briskine",
+    "default_icon": {
+      "16": "icons/icon-16.png",
+      "32": "icons/icon-32.png"
     },
-    "content_security_policy": "script-src 'self'; object-src 'self'; frame-ancestors 'none'"
+    "default_popup": "popup/popup.html"
+  },
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'; frame-ancestors 'none'",
+    "sandbox": "sandbox allow-scripts; script-src 'self' 'unsafe-eval'; child-src 'self';"
+  }
 }
