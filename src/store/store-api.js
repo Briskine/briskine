@@ -63,8 +63,20 @@ function defaultDataCache () {
 
 let localDataCache = defaultDataCache()
 
+const collectionCacheKey = 'localDataCache'
+browser.storage.local.get(collectionCacheKey).then((res) => {
+  if (res[collectionCacheKey]) {
+    localDataCache = Object.assign(localDataCache, res[collectionCacheKey])
+  }
+})
+
 function clearDataCache () {
   localDataCache = defaultDataCache()
+
+  browser.storage.local.set({
+    [collectionCacheKey]: localDataCache
+  })
+
   stopSnapshots()
 }
 
@@ -162,6 +174,10 @@ function refreshLocalData (collectionName, querySnapshot) {
 
 function updateCache (params = {}) {
   localDataCache[params.collection] = params.data
+
+  browser.storage.local.set({
+    [collectionCacheKey]: localDataCache
+  })
 
   const eventName = params.collection.includes('templates') ? 'templates-updated' : `${params.collection}-updated`
   trigger(eventName, params.data)
