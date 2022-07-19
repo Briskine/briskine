@@ -137,26 +137,28 @@ function getCollectionQuery (name, user) {
 const collectionRequestQueue = {}
 
 function getCollection (params = {}) {
-  const data = localDataCache[params.collection]
-  if (data) {
-    return Promise.resolve(data)
-  }
-
   // request is already in progress
   if (collectionRequestQueue[params.collection]) {
     return collectionRequestQueue[params.collection]
   }
 
-  // snapshots will trigger when first set,
-  // and return the initial data.
-  collectionRequestQueue[params.collection] = startSnapshot(params.collection, params.user)
-    .then((res) => {
-      collectionRequestQueue[params.collection] = null
-      return res
-    })
+  // if the snapshot was not set yet
+  if (!snapshotListeners[params.collection]) {
+    // snapshots will trigger when first set,
+    // and return the initial data.
+    collectionRequestQueue[params.collection] = startSnapshot(params.collection, params.user)
+      .then((res) => {
+        collectionRequestQueue[params.collection] = null
+        return res
+      })
+  }
+
+  const data = localDataCache[params.collection]
+  if (data) {
+    return Promise.resolve(data)
+  }
 
   return collectionRequestQueue[params.collection]
-
 }
 
 // refresh local data cache from snapshot listeners
