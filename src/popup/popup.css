@@ -60,7 +60,7 @@ a,
 
 a:hover,
 .btn-link:hover {
-    text-decoration: underline;
+  text-decoration: underline;
 }
 
 .btn,
@@ -71,53 +71,53 @@ a:hover,
 
 .btn,
 .alert {
-    border: 0;
+  border: 0;
 }
 
 .alert {
-    font-weight: bold;
+  font-weight: bold;
 }
 
 .btn {
-    overflow: hidden;
+  overflow: hidden;
 }
 
 .btn-primary {
-    background-color: #0983fa;
+  background-color: #0983fa;
 }
 
 .btn-primary:hover {
-    background-color: #0483ff;
+  background-color: #0483ff;
 }
 
 .btn-success {
-    background-color: #02c38d;
-    box-shadow: 0 4px 6px 0 rgba(50,50,93,0.11), 1px 1px 3px 0 rgba(0,0,0,0.08);
+  background-color: #02c38d;
+  box-shadow: 0 4px 6px 0 rgba(50,50,93,0.11), 1px 1px 3px 0 rgba(0,0,0,0.08);
 
-    text-shadow: 1px 1px 0 rgba(0,0,0,0.2);
+  text-shadow: 1px 1px 0 rgba(0,0,0,0.2);
 }
 
 .btn-success:hover {
-    background-color: #06d79c;
+  background-color: #06d79c;
 
-    text-decoration: none;
+  text-decoration: none;
 }
 
 .btn-success:active,
 .btn-success:focus {
-    background-color: #00a576 !important;
+  background-color: #00a576 !important;
 }
 
 .btn-lg {
-    padding-left: 2em;
-    padding-right: 2em;
+  padding-left: 2em;
+  padding-right: 2em;
 }
 
 /* forms
  */
 
 .btn-forgot {
-    padding: 0;
+  padding: 0;
 }
 
 /* loading button
@@ -179,35 +179,35 @@ a:hover,
 /* popup-dashboard
  */
 .popup-logo {
-    border-bottom: 1px solid #ececec;
+  border-bottom: 1px solid #ececec;
 }
 
 .popup-menu {
-    margin: 1em 0;
+  margin: 1em 0;
 }
 
 .team-selector {
-    padding: .6em 1em;
+  padding: .6em 1em;
 }
 
 .popup-menu a {
-    display: flex;
-    align-items: center;
-    padding: .6em 1em;
+  display: flex;
+  align-items: center;
+  padding: .6em 1em;
 
-    font-size: 1.2em;
-    line-height: 1.3;
-    text-decoration: none;
+  font-size: 1.2em;
+  line-height: 1.3;
+  text-decoration: none;
 }
 
 .popup-menu a:hover {
-    background-color: #f9f9f9;
+  background-color: #f9f9f9;
 
-    text-decoration: none;
+  text-decoration: none;
 }
 
 .popup-menu a:active {
-    background-color: #e6e6e6;
+  background-color: #e6e6e6;
 }
 
 .popup-menu .icon {
@@ -219,8 +219,8 @@ a:hover,
 }
 
 .popup-menu a:hover .icon {
-    transform: scale(1.4);
-    color: #0607fb;
+  transform: scale(1.4);
+  color: #0607fb;
 }
 
 .popup-stats {
@@ -233,83 +233,83 @@ a:hover,
 }
 
 .label-upgrade {
-    font-style: italic;
+  font-style: italic;
 }
 
 .btn-upgrade {
-    padding: .6em 2em;
+  padding: .6em 2em;
 
-    font-weight: bold;
+  font-weight: bold;
 }
 
 .popup-status {
-    overflow: hidden;
+  overflow: hidden;
 
-    font-size: 12px;
+  font-size: 12px;
 }
 
 .popup-user,
 .btn-logout {
-    padding-top: .4em;
-    padding-bottom: .4em;
+  padding-top: .4em;
+  padding-bottom: .4em;
 
-    color: #808080;
-    font-size: inherit;
+  color: #808080;
+  font-size: inherit;
 }
 
 .btn-logout {
-    float: right;
-    border: 0;
-    margin-right: -1em;
+  float: right;
+  border: 0;
+  margin-right: -1em;
 }
 
 .popup-user {
-    float: left;
-    position: relative;
-    overflow: hidden;
-    padding-left: 1em;
-    max-width: 10rem;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+  float: left;
+  position: relative;
+  overflow: hidden;
+  padding-left: 1em;
+  max-width: 10rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .popup-user:before {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 0;
-    transform: translateY(-50%);
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  transform: translateY(-50%);
 
-    display: inline-block;
-    width: 6px;
-    height: 6px;
-    margin-right: .4em;
-    background-color: #37c837;
-    border-radius: 100%;
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  margin-right: .4em;
+  background-color: #37c837;
+  border-radius: 100%;
 }
 
 .label-premium {
-    float: left;
-    padding: .1em .4em;
-    margin: .3em 0 .3em .4em;
-    background-color: #ffcc00;
-    border-radius: 3px;
+  float: left;
+  padding: .1em .4em;
+  margin: .3em 0 .3em .4em;
+  background-color: #ffcc00;
+  border-radius: 3px;
 
-    color: #3c3000;
-    font-weight: bold;
-    cursor: default;
+  color: #3c3000;
+  font-weight: bold;
+  cursor: default;
 }
 
 /* premium and free stats
  */
 
 .popup-stats-details {
-    display: none;
+  display: none;
 }
 
 .popup-premium .popup-stats-premium,
 .popup-free .popup-stats-free {
-    display: block;
+  display: block;
 }
 
 /* hide website and registration links
@@ -318,22 +318,22 @@ a:hover,
 
 .popup-register-disabled .popup-logo,
 .popup-register-disabled .popup-user {
-    pointer-events: none;
+  pointer-events: none;
 }
 
 .popup-register-disabled .popup-label-register,
 .popup-register-disabled .btn-forgot,
 .popup-register-disabled .popup-menu {
-    display: none;
+  display: none;
 }
 
 /* always show the premium stats on safari
  */
 
 .popup-register-disabled .popup-stats-free {
-    display: none;
+  display: none;
 }
 
 .popup-register-disabled .popup-stats-premium {
-    display: block;
+  display: block;
 }
