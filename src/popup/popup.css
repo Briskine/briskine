@@ -3,55 +3,59 @@
 
 @import "~bootstrap/dist/css/bootstrap.css";
 
+:root {
+  --bs-border-radius: 3px;
+}
+
 html {
-   font-size: 14px;
+  font-size: 14px;
 }
 
 body {
-   background-color: #f3f4f5;
+  background-color: #f3f4f5;
 
-   color: #7e7084;
+  color: #7e7084;
 }
 
 p {
-    margin-bottom: .8rem;
+  margin-bottom: .8rem;
 }
 
 small {
-    font-size: 85%;
+  font-size: 85%;
 }
 
 label {
-    font-weight: 700;
+  font-weight: 700;
 }
 
 .popup-container {
-    width: 22em;
-    margin: 0 auto;
-    background-color: #fff;
+  width: 22em;
+  margin: 0 auto;
+  background-color: #fff;
 }
 
 @media only screen and (min-width: 42em) {
-    .popup-container {
-        width: 28em;
-        margin-top: 2em;
-        margin-bottom: 2em;
+  .popup-container {
+    width: 28em;
+    margin-top: 2em;
+    margin-bottom: 2em;
 
-        border-radius: 4px;
-        box-shadow: 0 10px 8px -4px rgb(0 0 0 / 5%);
-    }
+    border-radius: 4px;
+    box-shadow: 0 10px 8px -4px rgb(0 0 0 / 5%);
+  }
 }
 
 .popup-box {
-    padding: 1em;
+  padding: 1em;
 }
 
 /* bootstrap
  */
 a,
 .btn-link {
-    color: #1e48b3;
-    text-decoration: none;
+  color: #1e48b3;
+  text-decoration: none;
 }
 
 a:hover,
@@ -62,7 +66,7 @@ a:hover,
 .btn,
 .alert,
 .form-control {
-    border-radius: 3px;
+  border-radius: var(--bs-border-radius);
 }
 
 .btn,
