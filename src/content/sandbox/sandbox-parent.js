@@ -17,7 +17,7 @@ customElements.define(
       super()
     }
     connectedCallback () {
-      if (!this.isConnected || MANIFEST !== '3') {
+      if (!this.isConnected) {
         return
       }
 
@@ -61,6 +61,11 @@ export function compileTemplate (template = '', context = {}) {
 }
 
 export function setup () {
+  // only create the sandbox element in manifest v3
+  if (MANIFEST !== '3') {
+    return
+  }
+
   sandboxInstance = document.createElement(sandboxTagName)
   document.documentElement.appendChild(sandboxInstance)
 }
