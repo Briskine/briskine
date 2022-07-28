@@ -6,7 +6,8 @@ describe('Draft.js', () => {
     cy.visit('./cypress/e2e/draft-js/draft-js.html')
   })
 
-  it('should insert template with keyboard shortcut', () => {
+  // draft.js insert does not work on Firefox
+  it('should insert template with keyboard shortcut', {browser: 'chrome'}, () => {
     cy.get('[contenteditable]')
       .type('kr')
       .tabEvent()
