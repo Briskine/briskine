@@ -4,6 +4,7 @@ import { defineConfig } from 'cypress'
 export default defineConfig({
   e2e: {
     setupNodeEvents(on) {
+      // eslint-disable-next-line
       on('before:browser:launch', (browser = {}, launchOptions) => {
         const extensionFolder = path.resolve('./ext')
         launchOptions.extensions.push(extensionFolder)
@@ -11,4 +12,4 @@ export default defineConfig({
       })
     },
   },
-});
+})
