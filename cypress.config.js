@@ -6,11 +6,7 @@ export default defineConfig({
     setupNodeEvents(on) {
       on('before:browser:launch', (browser = {}, launchOptions) => {
         const extensionFolder = path.resolve('./ext')
-
-        if (browser.family === 'chromium') {
-          launchOptions.args.push(`--load-extension=${extensionFolder}`)
-        }
-
+        launchOptions.extensions.push(extensionFolder)
         return launchOptions
       })
     },

@@ -13,7 +13,7 @@
     "sourcebuild": "git archive --format zip --output sourcebuild/sourcebuild-${npm_package_version}.zip HEAD; zip -u sourcebuild/sourcebuild-${npm_package_version}.zip .firebase-config.json",
     "lint": "eslint './**/*.js'",
     "cypress:open": "cypress open",
-    "cypress:run": "webpack --mode=production --env mode=production e2e && cypress run -b chrome --headed"
+    "cypress:run": "webpack --mode=production --env mode=production e2e && cypress run -b chrome firefox --headed"
   },
   "repository": "https://github.com/briskine/briskine/",
   "author": "Alexandru Plugaru <alex@gorgias.com>",
