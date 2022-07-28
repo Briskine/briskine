@@ -62,7 +62,7 @@ export function compileTemplate (template = '', context = {}) {
 
 export function setup () {
   // only create the sandbox element in manifest v3
-  if (MANIFEST !== '3') {
+  if (MANIFEST === '2') {
     return
   }
 

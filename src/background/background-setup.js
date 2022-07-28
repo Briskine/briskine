@@ -1,4 +1,4 @@
-/* globals REGISTER_DISABLED, MANIFEST */
+/* globals REGISTER_DISABLED, MANIFEST, E2E */
 import browser from 'webextension-polyfill'
 
 import Config from '../config.js'
@@ -8,7 +8,7 @@ browser.runtime.onInstalled.addListener((details) => {
   const manifest = browser.runtime.getManifest()
 
   // open the welcome page on install
-  if (!REGISTER_DISABLED) {
+  if (!REGISTER_DISABLED && !E2E) {
     if (details.reason === 'install') {
       browser.tabs.create({
         url: `${Config.functionsUrl}/getting-started`
