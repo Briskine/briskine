@@ -496,11 +496,8 @@ customElements.define(
         }
       })
 
-      window.addEventListener(dialogShowEvent, this.show)
       window.addEventListener('click', this.hideOnClick, true)
       window.addEventListener('keydown', this.hideOnEsc, true)
-
-      keybind(shortcut, this.show)
 
       // prevent Gmail from handling keydown.
       // any keys assigned to Gmail keyboard shortcuts are prevented
@@ -517,9 +514,6 @@ customElements.define(
       window.addEventListener('focusin', this.stopTargetPropagation, true)
     }
     disconnectedCallback () {
-      keyunbind(this.getAttribute('shortcut'), this.show)
-
-      window.removeEventListener(dialogShowEvent, this.show)
       window.removeEventListener('click', this.hideOnClick, true)
       window.removeEventListener('keydown', this.hideOnEsc, true)
       window.removeEventListener('keydown', this.handleSearchFieldShortcuts, true)
@@ -541,22 +535,39 @@ function isTextfield (element) {
   return ['input', 'textarea'].includes(element.tagName.toLowerCase())
 }
 
+function createDialog (settings = {}) {
+  const instance = document.createElement(dialogTagName)
+  instance.setAttribute('shortcut', settings.dialog_shortcut)
+  instance.setAttribute('sort-az', settings.dialog_sort)
+  instance.setAttribute('limit', settings.dialog_limit)
+  document.documentElement.appendChild(instance)
+
+  return instance
+}
+
+let settingsCache = {}
+function createAndShow (e) {
+  if (!dialogInstance) {
+    dialogInstance = createDialog(settingsCache)
+  }
+  return dialogInstance.show(e)
+}
+
 export function setup (settings = {}) {
   if (settings.dialog_enabled === false) {
     return
   }
 
-  dialogInstance = document.createElement(dialogTagName)
-  dialogInstance.setAttribute('shortcut', settings.dialog_shortcut)
-  dialogInstance.setAttribute('sort-az', settings.dialog_sort)
-  dialogInstance.setAttribute('limit', settings.dialog_limit)
-  document.documentElement.appendChild(dialogInstance)
+  settingsCache = settings
+  keybind(settingsCache.dialog_shortcut, createAndShow)
+  window.addEventListener(dialogShowEvent, createAndShow)
 }
 
 export function destroy () {
-  if (!dialogInstance) {
-    return
-  }
+  keyunbind(settingsCache.dialog_shortcut, createAndShow)
+  window.removeEventListener(dialogShowEvent, createAndShow)
 
-  dialogInstance.remove()
+  if (dialogInstance) {
+    dialogInstance.remove()
+  }
 }
