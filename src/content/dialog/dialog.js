@@ -210,11 +210,9 @@ customElements.define(
             li.innerHTML = `
               <div class="d-flex">
                 <h1>${plainText(t.title)}</h1>
-                <div>
                 ${plainShortcut ? `
                   <abbr>${plainShortcut}</abbr>
                 ` : ''}
-                </div>
               </div>
               <p>${plainBody}</p>
               <a
