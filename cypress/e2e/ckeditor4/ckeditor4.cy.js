@@ -7,9 +7,15 @@ describe('CKEditor', () => {
       .wait(1000)
   })
 
+  function getEditorFrame () {
+    return cy
+      .get('iframe')
+      .its('0.contentDocument')
+  }
+
   it('should insert template with keyboard shortcut', () => {
-    cy.get('.cke_wysiwyg_frame')
-      .its('0.contentDocument.body')
+    getEditorFrame()
+      .its('body')
       .type('kr')
       .tab()
       .wait(500)
@@ -18,20 +24,27 @@ describe('CKEditor', () => {
   })
 
   it('should insert template from dialog', () => {
-    cy.get('.cke_wysiwyg_frame')
-      .its('0.contentDocument.body')
-      .type('{ctrl}')
-    cy.get('[visible=true]').should('be.visible')
-    cy.focused()
+    getEditorFrame()
+      .its('body')
+      .type('{ctrl} ')
+
+    getEditorFrame()
+      .then(($el) => {
+        return $el.querySelector('[visible=true]')
+      })
+      .should('be.visible')
       .shadow()
       .find('input[type=search]')
       .type('nic', {force: true})
       .wait(500)
       .type('{enter}')
 
-    cy.get('.cke_wysiwyg_frame')
-      .its('0.contentDocument.body')
+    getEditorFrame()
+      .its('body')
       .should('have.text', 'It was nice talking to you.')
-      .type('{selectAll}{del}')
+      .then(($el) => {
+        $el.innerHTML = ''
+        return $el
+      })
   })
 })
