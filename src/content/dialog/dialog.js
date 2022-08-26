@@ -141,7 +141,11 @@ customElements.define(
         // setting the attribute on the editable element will set it's value in the search field.
         const searchQuery = e.target.getAttribute('data-briskine-search') || ''
         this.searchField.value = searchQuery
-        this.searchField.focus()
+        // give it a second before focusing.
+        // in production, the search field is not focused on some websites (eg. google sheets, salesfoce).
+        setTimeout(() => {
+          this.searchField.focus()
+        })
 
         // populate the template list
         this.populateTemplates(searchQuery)
