@@ -12,6 +12,8 @@ import {setup as setupDialog, destroy as destroyDialog} from './dialog/dialog.js
 import {setup as setupSandbox, destroy as destroySandbox} from './sandbox/sandbox-parent.js'
 import {setup as setupPage, destroy as destroyPage} from './page/page-parent.js'
 
+const currentUrl = window.location.href
+
 const blacklistPrivate = [
   '.briskine.com',
 ]
@@ -24,7 +26,6 @@ function init (settings) {
   const fullBlacklist = blacklistPrivate.concat(settings.blacklist)
 
   // check if url is in blacklist
-  const currentUrl = window.location.href
   const isBlacklisted = fullBlacklist.find((url) => {
       return url && currentUrl.includes(url)
     })
@@ -41,15 +42,40 @@ function init (settings) {
   setupPage()
 }
 
+const startupDelayList = [
+  // salesforce needs a delay when initializing,
+  // because it rewrites the ckeditor iframe after it loads, with document.write/open,
+  // and causes all of our event listeners to be removed.
+  '.force.com',
+]
+
+let startupDelay = 0
+let startupRetries = 0
+if (startupDelayList.find((url) => currentUrl.includes(url))) {
+  startupDelay = 500
+}
+
 function startup () {
-  if (document.contentType !== 'text/html' || !document.body) {
-    // don't load on non html pages (json, xml, etc..)
+  // don't load on non html pages (json, xml, etc..)
+  if (document.contentType !== 'text/html') {
     return
   }
 
-  store.getSettings().then((settings) => {
-    init(settings)
-  })
+  // some editors load the entire contenteditable in a separate iframe (eg. ckeditor 4),
+  // so we need to wait for the body to be available.
+  if (document.body) {
+    if (startupDelay) {
+      setTimeout(() => {
+        store.getSettings().then(init)
+      }, startupDelay)
+    } else {
+      store.getSettings().then(init)
+    }
+  } else if (startupRetries < 5) {
+    startupDelay = 500
+    startupRetries = startupRetries + 1
+    setTimeout(startup, startupDelay)
+  }
 }
 
 // destroy existing content script
