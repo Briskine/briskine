@@ -32,12 +32,13 @@ export function getDialogPosition (targetNode, instance, placement = 'top-left')
   }
 
   const bottomSpace = pageHeight - topPos - scrollTop
+  const topSpace = topPos - scrollTop
   if (
     // check if we have enough space at the bottom
     // for the maximum dialog height
     bottomSpace < dialogMetrics.height &&
     // and we have enough space at the top
-    topPos > dialogMetrics.height
+    topSpace > dialogMetrics.height
   ) {
     topPos = topPos - dialogMetrics.height
   }
