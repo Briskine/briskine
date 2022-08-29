@@ -53,11 +53,22 @@ export function getSelectedWord (params) {
     beforeSelection = params.element.value.substring(0, params.element.selectionEnd)
   }
 
-  const start = 1 + Math.max(
-      beforeSelection.lastIndexOf(' '),
-      beforeSelection.lastIndexOf('\xa0'),
-      beforeSelection.lastIndexOf('\n'),
-    )
+  // all regular and special whitespace chars we want to find.
+  // https://jkorpela.fi/chars/spaces.html
+  // we can't use regex \S to match the first non-whitespace character,
+  // because it also considers special chars like zero-width-whitespace as non-whitespace.
+  const spaces = [
+    '\n', //newline
+    '\u0020', // space
+    '\u00A0', // no-break space
+    '\u200B', // zero width whitespace
+    '\uFEFF', // zero width no-break space
+  ]
+
+  const lastWhitespace = Math.max(...spaces.map((char) => beforeSelection.lastIndexOf(char)))
+
+  // first character is one index away from the last whitespace
+  const start = 1 + lastWhitespace
   const text = beforeSelection.substring(start)
   const end = start + text.length
 
