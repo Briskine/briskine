@@ -65,6 +65,8 @@ export function getSelectedWord (params) {
     '\uFEFF', // zero width no-break space
   ]
 
+  // will return -1 from lastIndexOf,
+  // if no whitespace is preset before the word.
   const lastWhitespace = Math.max(...spaces.map((char) => beforeSelection.lastIndexOf(char)))
 
   // first character is one index away from the last whitespace
