@@ -83,11 +83,7 @@ function keyboardAutocomplete (e) {
         if (template) {
           // restore selection
           element.focus()
-          if (
-            isContentEditable(element) &&
-            anchorNode &&
-            focusNode
-          ) {
+          if (anchorNode && focusNode) {
             window.getSelection().setBaseAndExtent(anchorNode, anchorOffset, focusNode, focusOffset)
           }
 
