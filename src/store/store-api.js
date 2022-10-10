@@ -501,10 +501,10 @@ export function getTemplates () {
         })
         .then((templates) => {
           return Object.keys(templates).map((id) => {
-            return Object.assign({
+            return Object.assign(convertToNativeDates(templates[id]), {
               id: id,
               tags: idsToTags(templates[id].tags, tags).join(', '),
-            }, convertToNativeDates(templates[id]))
+            })
           })
         })
     })

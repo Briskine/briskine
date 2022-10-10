@@ -7,22 +7,24 @@ import createContact from '../utils/create-contact.js';
 import {enableBubble} from '../bubble/bubble.js';
 
 function getFieldData (field, $container) {
-    var $buttons = $container.querySelectorAll('[class*="wellItemText-"]') || [];
-    $buttons.forEach(function ($button) {
-        // names are formatted as "name <email@email.com>"
-        let email = '';
-        const fullName = ($button.innerText || '').replace(new RegExp('<[^()]*>'), (match) => {
-            email = match.slice(1, -1);
-            return '';
-        }).trim();
+  var $buttons = $container.querySelectorAll('[draggable="true"]') || [];
+  $buttons.forEach(function ($button) {
+    // we can no longer get recepient emails,
+    // as they're not included in the dom anymore.
+    const email = ''
+    let fullName = ''
+    const $fullNameContainer = $button.querySelector('span > span > span > span')
+    if ($fullNameContainer) {
+      fullName = $fullNameContainer.innerText
+    }
 
-        field.push(
-            createContact({
-                name: fullName,
-                email: email
-            })
-        );
-    });
+    field.push(
+      createContact({
+        name: fullName,
+        email: email
+      })
+    )
+  })
 }
 
 // selector for to/cc/bcc containers
