@@ -6,7 +6,7 @@ import glob from 'glob'
 import archiver from 'archiver'
 import CopyWebpackPlugin from 'copy-webpack-plugin'
 import MiniCssExtractPlugin from 'mini-css-extract-plugin'
-import PurgecssPlugin from 'purgecss-webpack-plugin'
+import {PurgeCSSPlugin} from 'purgecss-webpack-plugin'
 import CssMinimizerPlugin from 'css-minimizer-webpack-plugin'
 import firebaseTools from 'firebase-tools'
 
@@ -109,7 +109,7 @@ function extensionConfig (params = {}) {
     new MiniCssExtractPlugin({
       filename: '[name]/[name].css'
     }),
-    new PurgecssPlugin({
+    new PurgeCSSPlugin({
       paths: glob.sync('src/**/*',  { nodir: true })
     })
   ]
