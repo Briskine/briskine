@@ -273,26 +273,32 @@ async function after (params, data) {
 
 var activeCache = null;
 function isActive () {
-    if (activeCache !== null) {
-        return activeCache;
-    }
+  if (activeCache !== null) {
+    return activeCache
+  }
 
-    activeCache = false;
-    // trigger on specific meta tag,
-    // to support custom domains.
-    const $cdnMeta = document.querySelector('meta[name=cdnUrl]');
-    if (
-        $cdnMeta &&
-        ($cdnMeta.getAttribute('content') || '').includes('.cdn.office.net')
-    ) {
-        activeCache = true;
-    }
+  activeCache = false
+  // trigger on specific meta tag,
+  // to support custom domains.
+  const $cdnMeta = document.querySelector('meta[name=cdnUrl]')
+  if (
+    $cdnMeta &&
+    ($cdnMeta.getAttribute('content') || '').includes('.cdn.office.net')
+  ) {
+    activeCache = true
+  }
 
-    return activeCache;
+  // also trigger on specific domain,
+  // to support the open-email-in-new-window popup.
+  if (window.location.host === 'outlook.live.com') {
+    activeCache = true
+  }
+
+  return activeCache
 }
 
 if (isActive()) {
-    enableBubble();
+  enableBubble()
 }
 
 export default async (params = {}) => {
@@ -300,14 +306,14 @@ export default async (params = {}) => {
     return false;
   }
 
-  const data = getData(params);
-  const parsedTemplate = await parseTemplate(params.quicktext.body, data);
+  const data = getData(params)
+  const parsedTemplate = await parseTemplate(params.quicktext.body, data)
 
   insertTemplate(Object.assign({
     text: parsedTemplate
-  }, params));
+  }, params))
 
-  await after(params, data);
+  await after(params, data)
 
-  return true;
-};
+  return true
+}
