@@ -42,11 +42,13 @@ function init (settings) {
   setupPage()
 }
 
+// some pages need a delay when initializing
 const startupDelayList = [
-  // salesforce needs a delay when initializing,
-  // because it rewrites the ckeditor iframe after it loads, with document.write/open,
+  // salesforce rewrites the ckeditor iframe after it loads, with document.write/open,
   // and causes all of our event listeners to be removed.
   '.force.com',
+  // the outlook "open-email-in-new-window" popup is a dynamically created frame.
+  'outlook.live.com',
 ]
 
 let startupDelay = 0
