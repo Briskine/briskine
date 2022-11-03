@@ -23,7 +23,7 @@ export default function createContact (contact = {}) {
       first_name: '',
       last_name: ''
     },
-    parseFullName(contact.name || ''),
+    parseFullName(contact.name),
     contact,
   )
 }
