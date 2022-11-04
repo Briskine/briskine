@@ -32,18 +32,25 @@ function getFromDetails () {
 }
 
 function getToDetails (editor) {
-  // role=main for messenger
-  // data-testid for message popup on facebook
-  const parentSelector = `[role=main], [data-testid]`
-  const $to = editor.closest(parentSelector).querySelector('img[alt]')
+  // default to messenger view
+  let $chat = editor.closest('[role=main]')
+  // if not messenger view,
+  // check if message popup view on facebook.
+  if (!$chat) {
+    $chat = editor.closest('[tabindex="-1"]')
+  }
 
-  if ($to) {
-    return [
-      createContact({
-        name: $to.getAttribute('alt'),
-        email: ''
-      })
-    ]
+  if ($chat) {
+    const contactNameAttribute = 'aria-label'
+    const $to = $chat.querySelector(`a[${contactNameAttribute}]`)
+    if ($to) {
+      return [
+        createContact({
+          name: $to.getAttribute(contactNameAttribute) || '',
+          email: ''
+        })
+      ]
+    }
   }
 
   return []
