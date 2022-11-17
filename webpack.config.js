@@ -142,10 +142,6 @@ function extensionConfig (params = {}) {
     module: {
       rules: [
         {
-          resourceQuery: /raw/,
-          type: 'asset/source',
-        },
-        {
           test: /\.(css)$/i,
           resourceQuery: { not: [/raw/] },
           use: [
@@ -156,7 +152,11 @@ function extensionConfig (params = {}) {
         {
           test: /\.(png|svg)$/,
           type: 'asset'
-        }
+        },
+        {
+          resourceQuery: /raw/,
+          type: 'asset/source',
+        },
       ]
     },
     devtool: 'cheap-module-source-map',

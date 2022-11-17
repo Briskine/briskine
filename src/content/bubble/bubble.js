@@ -7,6 +7,7 @@ import {dialogShowEvent, dialogTagName} from '../dialog/dialog.js'
 import store from '../../store/store-client.js'
 
 import bubbleStyles from './bubble.css?raw'
+import bubbleIcon from '../../icons/briskine-logo-small-bare.svg?raw'
 
 let bubbleInstance = null
 let activeTextfield = null
@@ -35,7 +36,7 @@ customElements.define(
 
           const template = `
               <style>${bubbleStyles}</style>
-              <button type="button" class="b-bubble"></button>
+              <button type="button" class="b-bubble">${bubbleIcon}</button>
               <span class="b-bubble-tooltip">
                   Search templates (${shortcut})
               </div>

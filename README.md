@@ -1,4 +1,4 @@
-# <img src="artwork/icon-64.png" height="24" with="24"> Briskine Browser Extension
+# <img src="src/icons/briskine-combo.svg" with="300" height="55" alt="Briskine Browser Extension">
 
 > Text expander for the web
 

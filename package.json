@@ -1,6 +1,6 @@
 {
   "name": "briskine",
-  "version": "7.5.13",
+  "version": "7.6.0",
   "description": "Write everything faster.",
   "private": true,
   "type": "module",
@@ -44,7 +44,7 @@
     "copy-webpack-plugin": "^11.0.0",
     "css-loader": "^6.0.0",
     "css-minimizer-webpack-plugin": "^4.0.0",
-    "cypress": "^10.2.0",
+    "cypress": "^11.0.0",
     "cypress-plugin-tab": "^1.0.5",
     "eslint": "^8.14.0",
     "firebase-tools": "^11.0.0",

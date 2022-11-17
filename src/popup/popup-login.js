@@ -38,7 +38,7 @@ customElements.define(
         <div class="popup-login text-center">
           <div class="popup-box popup-logo">
             <a href=${Config.websiteUrl} target="_blank">
-              <img src="../icons/briskine-wordmark.svg" width="120" alt="Briskine"/>
+              <img src="../icons/briskine-combo.svg" width="160" alt="Briskine"/>
             </a>
           </div>
 
