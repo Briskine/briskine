@@ -77,6 +77,11 @@ function clearDataCache () {
     [collectionCacheKey]: localDataCache
   })
 
+  // clear templates last used cache
+  setExtensionData({
+    templatesLastUsed: {}
+  })
+
   stopSnapshots()
 }
 
@@ -677,7 +682,8 @@ export function setActiveCustomer (customerId) {
 const extensionDataKey = 'briskine'
 const defaultExtensionData = {
   showPostInstall: true,
-  words: 0
+  words: 0,
+  templatesLastUsed: {},
 }
 
 export function getExtensionData () {
@@ -689,6 +695,7 @@ export function getExtensionData () {
       return browser.storage.local.get('words')
     })
     .then((stats) => {
+      // TODO remove words backwards compatibility
       // backwards compatibility for stats
       if (extensionData.words === 0 && stats && stats.words) {
         extensionData.words = stats.words;
@@ -708,6 +715,18 @@ export function setExtensionData (params = {}) {
       const dataWrap = {}
       dataWrap[extensionDataKey] = newData
       return browser.storage.local.set(dataWrap)
+    })
+}
+
+export function updateTemplateStats (id) {
+  return getExtensionData()
+    .then((data) => {
+      let lastuseCache = data.templatesLastUsed || {}
+      lastuseCache[id] = new Date().toISOString()
+
+      return setExtensionData({
+        templatesLastUsed: lastuseCache
+      })
     })
 }
 
