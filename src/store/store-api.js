@@ -687,21 +687,9 @@ const defaultExtensionData = {
 }
 
 export function getExtensionData () {
-  let extensionData = {}
   return browser.storage.local.get(extensionDataKey)
     .then((data) => {
-      extensionData = Object.assign({}, defaultExtensionData, data[extensionDataKey])
-
-      return browser.storage.local.get('words')
-    })
-    .then((stats) => {
-      // TODO remove words backwards compatibility
-      // backwards compatibility for stats
-      if (extensionData.words === 0 && stats && stats.words) {
-        extensionData.words = stats.words;
-      }
-
-      return extensionData
+      return Object.assign({}, defaultExtensionData, data[extensionDataKey])
     })
 }
 
