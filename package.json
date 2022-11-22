@@ -55,7 +55,7 @@
     "mockdate": "^3.0.2",
     "purgecss-webpack-plugin": "^5.0.0",
     "webpack": "^5.11.1",
-    "webpack-cli": "^4.3.1"
+    "webpack-cli": "^5.0.0"
   },
   "dependencies": {
     "@webcomponents/custom-elements": "^1.4.3",
