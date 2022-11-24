@@ -271,35 +271,31 @@ async function after (params, data) {
   }
 }
 
-var activeCache = null;
+var activeCache = null
 function isActive () {
   if (activeCache !== null) {
     return activeCache
   }
 
   activeCache = false
-  // trigger on specific meta tag,
-  // to support custom domains.
-  const $cdnMeta = document.querySelector('meta[name=cdnUrl]')
-  if (
-    $cdnMeta &&
-    ($cdnMeta.getAttribute('content') || '').includes('.cdn.office.net')
-  ) {
-    activeCache = true
-  }
-
-  // also trigger on specific domain,
-  // to support the open-email-in-new-window popup.
-  if (window.location.host === 'outlook.live.com') {
+  // when loading assets from the office cdn.
+  // to support custom domains and dynamically created frames,
+  // eg. the open-email-in-new-window popup.
+  const $officeCdn = document.querySelector('head *[href*="res.cdn.office.net"]')
+  if ($officeCdn) {
     activeCache = true
   }
 
   return activeCache
 }
 
-if (isActive()) {
-  enableBubble()
-}
+// enable the bubble with a delay,
+// in case we're in the open-email-in-new-window dynamically created popup.
+setTimeout(() => {
+  if (isActive()) {
+    enableBubble()
+  }
+}, 500)
 
 export default async (params = {}) => {
   if (!isActive()) {
