@@ -27,4 +27,3 @@ Cypress.Commands.add('tabEvent', {prevSubject: true}, ($el) => {
       return $el
     })
 })
-
