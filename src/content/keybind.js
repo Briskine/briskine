@@ -32,5 +32,9 @@ export function keybind (key = '', callback = () => {}) {
 }
 
 export function keyunbind (key = '') {
-  return keyboard.unbind(key)
+  if (keyboard) {
+    return keyboard.unbind(key)
+  }
+
+  return
 }
