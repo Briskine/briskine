@@ -1,4 +1,4 @@
-/* globals Cypress */
+/* globals Cypress, cy */
 
 Cypress.Commands.add('tabEvent', {prevSubject: true}, ($el) => {
   const eventOptions = {

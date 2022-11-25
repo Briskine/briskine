@@ -27,6 +27,20 @@ register(zendeskPlugin)
 register(crmPlugin)
 register(universalPlugin)
 
+// returns the event target
+// with support for composed events from shadow dom
+export function getEventTarget (e) {
+  // get target from shadow dom if event is composed
+  if (e.composed) {
+    const composedPath = e.composedPath()
+    if (composedPath[0]) {
+      return e.composedPath()[0]
+    }
+  }
+
+  return e.target
+}
+
 // getSelection that pierces through shadow dom.
 // Blink returns the shadow root when using window.getSelection, and the focus is a shadow dom,
 // but adds a non-standard getSelection method on the shadow root.

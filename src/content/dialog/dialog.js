@@ -6,7 +6,7 @@ import {isContentEditable} from '../editors/editor-contenteditable.js'
 import {bubbleTagName} from '../bubble/bubble.js'
 import {getEditableCaret, getContentEditableCaret, getDialogPosition} from './dialog-position.js'
 import fuzzySearch from '../search.js'
-import {autocomplete, getSelectedWord, getSelection} from '../autocomplete.js'
+import {autocomplete, getSelectedWord, getSelection, getEventTarget} from '../autocomplete.js'
 import {keybind, keyunbind} from '../keybind.js'
 
 import config from '../../config.js'
@@ -56,14 +56,7 @@ customElements.define(
         let removeCaretParent = false
         let placement = 'top-left'
 
-        let element = e.target
-        // get target from shadow dom if event is composed
-        if (e.composed) {
-          const composedPath = e.composedPath()
-          if (composedPath[0]) {
-            element = e.composedPath()[0]
-          }
-        }
+        let element = getEventTarget(e)
 
         // detect rtl
         const targetStyle = window.getComputedStyle(element)
