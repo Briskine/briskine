@@ -16,14 +16,15 @@ export function insertContentEditableTemplate (params = {}) {
   // while the selection object will reflect the real state.
   // using a cloned range fixes the issue.
   const range = selection.getRangeAt(0).cloneRange()
-  const focusNode = selection.focusNode
 
   // delete shortcut
   if (params.word.text === params.quicktext.shortcut) {
-    range.setStart(focusNode, params.word.start)
-    range.setEnd(focusNode, params.word.end)
-    range.deleteContents()
+    range.setStart(selection.focusNode, params.word.start)
+    range.setEnd(selection.focusNode, params.word.end)
   }
+
+  // always delete the selected text
+  range.deleteContents()
 
   const templateNode = range.createContextualFragment(params.text)
   range.insertNode(templateNode)

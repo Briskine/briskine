@@ -110,14 +110,16 @@ customElements.define(
           return
         }
 
+        // prevent capturing keystrokes by the parent
+        e.stopPropagation()
         e.preventDefault()
 
         // cache selection details, to restore later
         const selection = getSelection(element)
-        this.focusNode = selection.focusNode
-        this.focusOffset = selection.focusOffset
         this.anchorNode = selection.anchorNode
         this.anchorOffset = selection.anchorOffset
+        this.focusNode = selection.focusNode
+        this.focusOffset = selection.focusOffset
 
         // cache editor,
         // to use for inserting templates or restoring later.
@@ -276,7 +278,6 @@ customElements.define(
       }
 
       this.restoreSelection = () => {
-        this.editor.focus()
         // only try to restore the selection on contenteditable.
         // input and textarea will restore the correct range with focus().
         if (
@@ -285,6 +286,8 @@ customElements.define(
           this.focusNode
         ) {
           window.getSelection().setBaseAndExtent(this.anchorNode, this.anchorOffset, this.focusNode, this.focusOffset)
+        } else {
+          this.editor.focus()
         }
       }
 
