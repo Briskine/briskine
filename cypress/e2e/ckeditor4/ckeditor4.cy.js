@@ -1,8 +1,8 @@
 /// <reference types="cypress" />
-/* globals cy, describe, before, it */
+/* globals cy, describe, beforeEach, it */
 
 describe('CKEditor', () => {
-  before(() => {
+  beforeEach(() => {
     cy.visit('./cypress/e2e/ckeditor4/ckeditor4.html')
       .wait(1000)
   })
@@ -16,6 +16,7 @@ describe('CKEditor', () => {
   it('should insert template with keyboard shortcut', () => {
     getEditorFrame()
       .its('body')
+      .wait(1)
       .type('kr')
       .tab()
       .wait(500)
@@ -26,6 +27,7 @@ describe('CKEditor', () => {
   it('should insert template from dialog', () => {
     getEditorFrame()
       .its('body')
+      .wait(1)
       .type('{ctrl} ')
 
     getEditorFrame()

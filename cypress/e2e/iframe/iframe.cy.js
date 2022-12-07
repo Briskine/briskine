@@ -1,8 +1,8 @@
 /// <reference types="cypress" />
-/* globals cy, describe, before, it */
+/* globals cy, describe, beforeEach, it */
 
 describe('Slate', () => {
-  before(() => {
+  beforeEach(() => {
     cy.visit('./cypress/e2e/iframe/iframe.html')
   })
 

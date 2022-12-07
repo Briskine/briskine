@@ -1,8 +1,8 @@
 /// <reference types="cypress" />
-/* globals cy, describe, before, it */
+/* globals cy, describe, beforeEach, it */
 
 describe('Draft.js', () => {
-  before(() => {
+  beforeEach(() => {
     cy.visit('./cypress/e2e/draft-js/draft-js.html')
   })
 
