@@ -1,8 +1,8 @@
 /* globals chrome, browser */
 import config from '../../config.js'
 
-const channel = new MessageChannel()
-const port1 = channel.port1
+let channel = new MessageChannel()
+let port1 = channel.port1
 
 let pageScript
 
@@ -25,6 +25,11 @@ export function setup () {
   pageScript = document.createElement('script')
   pageScript.src = (chrome || browser).runtime.getURL('page/page.js')
   pageScript.onload = function () {
+    // create a new message channel, in case the old one was neutered,
+    // on subsequent startup retries (eg. in dynamically created iframes).
+    channel = new MessageChannel()
+    port1 = channel.port1
+
     window.postMessage({ type: 'page-init' }, '*', [channel.port2])
     this.remove()
   }

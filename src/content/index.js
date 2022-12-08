@@ -40,44 +40,50 @@ function init (settings) {
 
   setupSandbox()
   setupPage()
+
+  return
 }
 
-// some pages need a delay when initializing
-const startupDelayList = [
-  // salesforce rewrites the ckeditor iframe after it loads, with document.write/open,
-  // and causes all of our event listeners to be removed.
-  '.force.com',
-  // the outlook "open-email-in-new-window" popup is a dynamically created frame.
-  'outlook.live.com',
-]
-
-let startupDelay = 0
+let startupDelay = 500
 let startupRetries = 0
-if (startupDelayList.find((url) => currentUrl.includes(url))) {
-  startupDelay = 500
-}
+const maxStartupRetries = 10
 
 function startup () {
+  startupRetries = startupRetries + 1
+
+  if (startupRetries > maxStartupRetries) {
+    return
+  }
+
   // don't load on non html pages (json, xml, etc..)
   if (document.contentType !== 'text/html') {
     return
   }
 
-  // some editors load the entire contenteditable in a separate iframe (eg. ckeditor 4),
-  // so we need to wait for the body to be available.
-  if (document.body) {
-    if (startupDelay) {
-      setTimeout(() => {
-        store.getSettings().then(init)
-      }, startupDelay)
-    } else {
-      store.getSettings().then(init)
-    }
-  } else if (startupRetries < 5) {
-    startupDelay = 500
-    startupRetries = startupRetries + 1
-    setTimeout(startup, startupDelay)
+  // try again later if we don't have a body yet,
+  // for dynamically created iframes.
+  if (!document.body) {
+    return setTimeout(startup, startupDelay)
   }
+
+  // use a custom property on the body,
+  // to detect if the body was rewrote (eg. in dynamically created iframes).
+  document.body._briskineLoaded = true
+
+  return store.getSettings()
+    .then((settings) => {
+      init(settings)
+      return
+    })
+    .then(() => {
+      setTimeout(() => {
+        // if the body was rewrote,
+        // we'll retry initializing.
+        if (!document.body._briskineLoaded) {
+          startup()
+        }
+      }, startupDelay)
+    })
 }
 
 // destroy existing content script

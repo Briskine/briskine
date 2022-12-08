@@ -1,25 +1,28 @@
 /// <reference types="cypress" />
 /* globals cy, describe, beforeEach, it */
 
-describe('Draft.js', () => {
+describe('Slate', () => {
   beforeEach(() => {
-    cy.visit('./cypress/e2e/draft-js/draft-js.html')
+    cy.visit('./cypress/e2e/shadow/shadow.html')
   })
 
-  // draft.js insert does not work on Firefox
-  it('should insert template with keyboard shortcut', {browser: 'chrome'}, () => {
-    cy.get('[contenteditable]')
+  it('should insert template with keyboard shortcut', () => {
+    cy.get('editor-shadow')
+      .shadow()
+      .find('[contenteditable]')
       .type('kr')
       .tabEvent()
       .wait(500)
       .should('have.text', 'Kind regards,.')
-      .type('{selectAll}{del}')
+      .type('{selectAll}{backspace}')
   })
 
   it('should insert template from dialog', () => {
-    cy.get('[contenteditable]').type('{ctrl} ')
+    cy.get('editor-shadow')
+      .shadow()
+      .find('[contenteditable]')
+      .type('{ctrl} ')
     cy.get('[visible=true]').should('be.visible')
-
     cy.focused()
       .shadow()
       .find('input[type=search]')
@@ -27,7 +30,9 @@ describe('Draft.js', () => {
       .wait(500)
       .type('{enter}')
 
-    cy.get('[contenteditable]')
+    cy.get('editor-shadow')
+      .shadow()
+      .find('[contenteditable]')
       .should('have.text', 'It was nice talking to you.')
       .type('{selectAll}{del}')
   })

@@ -1,8 +1,8 @@
 /// <reference types="cypress" />
-/* globals cy, describe, before, it */
+/* globals cy, describe, beforeEach, it */
 
 describe('Textarea', () => {
-  before(() => {
+  beforeEach(() => {
     cy.visit('./cypress/e2e/textarea/textarea.html')
   })
 

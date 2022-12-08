@@ -1,7 +1,7 @@
 /**
  * Keyboard Shortcut Autocomplete
  */
-import {autocomplete, getSelectedWord} from './autocomplete.js'
+import {autocomplete, getSelectedWord, getSelection, getEventTarget} from './autocomplete.js'
 import {isContentEditable} from './editors/editor-contenteditable.js'
 import store from '../store/store-client.js'
 
@@ -54,7 +54,8 @@ function getTemplateByShortcut (shortcut) {
 }
 
 function keyboardAutocomplete (e) {
-  const element = e.target
+  let element = getEventTarget(e)
+
   // if it's not an editable element
   // don't trigger anything
   if (!isTextfield(element) && !isContentEditable(element)) {
@@ -67,7 +68,7 @@ function keyboardAutocomplete (e) {
 
   if (word.text) {
     // cache selection details
-    const selection = window.getSelection()
+    const selection = getSelection(element)
     const focusNode = selection.focusNode
     const focusOffset = selection.focusOffset
     const anchorNode = selection.anchorNode
@@ -84,7 +85,7 @@ function keyboardAutocomplete (e) {
           // restore selection
           element.focus()
           if (anchorNode && focusNode) {
-            window.getSelection().setBaseAndExtent(anchorNode, anchorOffset, focusNode, focusOffset)
+            getSelection(element).setBaseAndExtent(anchorNode, anchorOffset, focusNode, focusOffset)
           }
 
           return autocomplete({

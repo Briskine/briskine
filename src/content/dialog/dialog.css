@@ -6,6 +6,10 @@
 }
 
 :host {
+  /* reset inherited html and body styles
+   */
+  all: initial;
+
   --gray: #e5e5e5;
   --gray-light: #f4f4f4;
   --gray-lighter: #f7f7f7;

@@ -1,9 +1,9 @@
 /// <reference types="cypress" />
-/* globals cy, describe, beforeEach, it, expect */
+/* globals cy, describe, beforeEach, it */
 
-describe('ProseMirror', () => {
+describe('Slate', () => {
   beforeEach(() => {
-    cy.visit('./cypress/e2e/prosemirror/prosemirror.html')
+    cy.visit('./cypress/e2e/squire/squire.html')
   })
 
   it('should insert template with keyboard shortcut', () => {
@@ -11,10 +11,7 @@ describe('ProseMirror', () => {
       .type('kr')
       .tab()
       .wait(500)
-      .then(($el) => {
-        expect($el.html()).to.equal('<p>Kind regards,<br>.</p>')
-        return $el
-      })
+      .should('have.text', 'Kind regards,.')
       .type('{selectAll}{del}')
   })
 
@@ -29,10 +26,7 @@ describe('ProseMirror', () => {
       .type('{enter}')
 
     cy.get('[contenteditable]')
-      .then(($el) => {
-        expect($el.html()).to.equal('<p>It was nice talking to you.</p>')
-        return $el
-      })
+      .should('have.text', 'It was nice talking to you.')
       .type('{selectAll}{del}')
   })
 })

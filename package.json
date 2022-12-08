@@ -1,6 +1,6 @@
 {
   "name": "briskine",
-  "version": "7.6.0",
+  "version": "7.6.2",
   "description": "Write everything faster.",
   "private": true,
   "type": "module",
@@ -44,7 +44,7 @@
     "copy-webpack-plugin": "^11.0.0",
     "css-loader": "^6.0.0",
     "css-minimizer-webpack-plugin": "^4.0.0",
-    "cypress": "^11.0.0",
+    "cypress": "^12.0.0",
     "cypress-plugin-tab": "^1.0.5",
     "eslint": "^8.14.0",
     "firebase-tools": "^11.0.0",
@@ -55,7 +55,7 @@
     "mockdate": "^3.0.2",
     "purgecss-webpack-plugin": "^5.0.0",
     "webpack": "^5.11.1",
-    "webpack-cli": "^4.3.1"
+    "webpack-cli": "^5.0.0"
   },
   "dependencies": {
     "@webcomponents/custom-elements": "^1.4.3",
@@ -63,7 +63,7 @@
     "firebase": "^9.0.0",
     "fuse.js": "^6.4.5",
     "handlebars": "^4.5.3",
-    "html-to-text": "^8.0.0",
+    "html-to-text": "^9.0.0",
     "lit-html": "^2.2.3",
     "moment": "^2.29.1",
     "mousetrap": "github:briskine/mousetrap#master",

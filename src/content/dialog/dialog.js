@@ -6,7 +6,7 @@ import {isContentEditable} from '../editors/editor-contenteditable.js'
 import {bubbleTagName} from '../bubble/bubble.js'
 import {getEditableCaret, getContentEditableCaret, getDialogPosition} from './dialog-position.js'
 import fuzzySearch from '../search.js'
-import {autocomplete, getSelectedWord} from '../autocomplete.js'
+import {autocomplete, getSelectedWord, getSelection, getEventTarget} from '../autocomplete.js'
 import {keybind, keyunbind} from '../keybind.js'
 
 import config from '../../config.js'
@@ -56,8 +56,10 @@ customElements.define(
         let removeCaretParent = false
         let placement = 'top-left'
 
+        let element = getEventTarget(e)
+
         // detect rtl
-        const targetStyle = window.getComputedStyle(e.target)
+        const targetStyle = window.getComputedStyle(element)
         const direction = targetStyle.direction || 'ltr'
         this.setAttribute('dir', direction)
 
@@ -66,18 +68,18 @@ customElements.define(
         this.focusNode = null
         this.focusOffset = 0
 
-        if (isTextfield(e.target)) {
+        if (isTextfield(element)) {
           // input, textarea
-          target = getEditableCaret(e.target)
+          target = getEditableCaret(element)
           removeCaretParent = true
           if (direction === 'rtl') {
             placement = 'bottom-left-flip'
           } else {
             placement = 'bottom-right'
           }
-        } else if (isContentEditable(e.target)) {
+        } else if (isContentEditable(element)) {
           // contenteditable
-          target = getContentEditableCaret(e.target)
+          target = getContentEditableCaret(element)
 
           // only use the targetMetrics width when caret is a range.
           // workaround for when the contenteditable caret is the endContainer.
@@ -108,18 +110,24 @@ customElements.define(
           return
         }
 
+        // prevent capturing keystrokes by the parent
+        e.stopPropagation()
         e.preventDefault()
 
         // cache selection details, to restore later
-        const selection = window.getSelection()
-        this.focusNode = selection.focusNode
-        this.focusOffset = selection.focusOffset
+        const selection = getSelection(element)
         this.anchorNode = selection.anchorNode
         this.anchorOffset = selection.anchorOffset
+        this.focusNode = selection.focusNode
+        this.focusOffset = selection.focusOffset
 
         // cache editor,
         // to use for inserting templates or restoring later.
         this.editor = document.activeElement
+        // support having the activeElement inside a shadow root
+        if (this.editor.shadowRoot) {
+          this.editor = this.editor.shadowRoot.activeElement
+        }
 
         this.word = getSelectedWord({
           element: this.editor
@@ -139,7 +147,7 @@ customElements.define(
         // set or clear the search query when first showing the dialog.
         // support for the data-briskine-search attribute.
         // setting the attribute on the editable element will set it's value in the search field.
-        const searchQuery = e.target.getAttribute('data-briskine-search') || ''
+        const searchQuery = element.getAttribute('data-briskine-search') || ''
         this.searchField.value = searchQuery
         // give it a second before focusing.
         // in production, the search field is not focused on some websites (eg. google sheets, salesfoce).
@@ -270,7 +278,6 @@ customElements.define(
       }
 
       this.restoreSelection = () => {
-        this.editor.focus()
         // only try to restore the selection on contenteditable.
         // input and textarea will restore the correct range with focus().
         if (
@@ -279,6 +286,8 @@ customElements.define(
           this.focusNode
         ) {
           window.getSelection().setBaseAndExtent(this.anchorNode, this.anchorOffset, this.focusNode, this.focusOffset)
+        } else {
+          this.editor.focus()
         }
       }
 
