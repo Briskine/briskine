@@ -30,44 +30,71 @@ function getFieldData (field, $container) {
 // selector for to/cc/bcc containers
 function getContainers () {
   // get the parent of each extra field input
-  return Array.from(document.querySelectorAll('[role=main] [role=textbox]')).map((node) => {
-    return node.parentElement
-  })
+  return Array.from(document.querySelectorAll('[role=main] [role=textbox]'))
+    .map((node) => {
+      return node.parentElement
+    })
 }
 
 function getToContainer () {
-    return getContainers()[0];
+    return getContainers()[0]
 }
 
 function getCcContainer () {
-    return getContainers()[1];
+  return getFieldContainer(2)
+}
+
+function getFieldContainer (length = 2) {
+  const $containers = getContainers()
+  return $containers
+    .find((node) => {
+      return Array.from(node.querySelectorAll('[aria-label'))
+        .find((node) => {
+          return node.getAttribute('aria-label').length === length
+        })
+    })
 }
 
 function getBccContainer () {
-    return getContainers()[2];
+  return getFieldContainer(3)
 }
 
-// only 2 ms-Button--action (cc/bcc) in the message container
-function getFieldButtonSelector () {
-    return '[role=main] .ms-Button--command';
+function getFieldButton (length = 2) {
+  return Array.from(document.querySelectorAll('[role=main] .ms-Button--command'))
+    .find(($node) => {
+      return $node.innerText.length === length
+    })
 }
 
+// 2 chars in text
 function getCcButton () {
-    return document.querySelector(getFieldButtonSelector());
+  return getFieldButton(2)
 }
 
+// 3 chars in text
 function getBccButton () {
-    return Array.from(document.querySelectorAll(getFieldButtonSelector())).pop();
+  return getFieldButton(3)
 }
 
-function getSuggestionContainer (email) {
+function getSuggestionButton (email) {
   return function () {
     // "use this address" not in contact list
-    const headerSelector = `.ms-Suggestions-footerContainer [role=listitem] .ms-Suggestions-sectionButton`
+    const $nonContactList = document.querySelectorAll(`.ms-Suggestions-sectionButton`)
+    if (
+      $nonContactList.length
+      && Array.from($nonContactList).find(($node) => $node.innerText.includes(email))
+    ) {
+      return $nonContactList
+    }
+
     // contact list suggestion
     // only when the suggestion contains the email and the item is first (is selected)
-    const listSelector = `.ms-Suggestions-container [aria-label*="${email}"][role=listitem]`
-    return document.querySelector(`${headerSelector}, ${listSelector}`)
+    const $listSelector = document.querySelector(`.ms-FloatingSuggestionsList [aria-label*="${email}"]`)
+    if ($listSelector) {
+      return $listSelector
+    }
+
+    return null
   }
 }
 
@@ -82,97 +109,91 @@ function getContactField ($container) {
 }
 
 function waitForElement (getNode) {
-    return new Promise((resolve) => {
-        var $element = getNode();
-        if ($element) {
-            return resolve($element);
-        }
-
-        var selectorObserver = new MutationObserver(function (records, observer) {
-            $element = getNode();
-            if ($element) {
-                observer.disconnect();
-                setTimeout(() => {
-                  resolve($element)
-                })
-            }
-        });
-        selectorObserver.observe(document.body, {
-            childList: true,
-            subtree: true
-        });
-    });
-}
-
-function updateContactField ($field, value) {
-  const splitValues = value.split(',')
-  splitValues.forEach((v) => {
-    const cleanValue = v.trim()
-    if (elementContains($field, cleanValue)) {
-      // value already added
-      return
+  return new Promise((resolve, reject) => {
+    let $element = getNode()
+    if ($element) {
+      return resolve($element)
     }
 
-    return addSingleContact($field, cleanValue)
-  })
-}
-
-var fieldUpdateQueue = Promise.resolve()
-function addSingleContact ($field, value) {
-  // wait for previous contact field update
-  fieldUpdateQueue = fieldUpdateQueue.then(() => {
-    // cache selection details, to restore later
-    const selection = window.getSelection()
-    const focusNode = selection.focusNode
-    const focusOffset = selection.focusOffset
-    const anchorNode = selection.anchorNode
-    const anchorOffset = selection.anchorOffset
-
-    $field.focus()
-    const range = window.getSelection().getRangeAt(0)
-    const templateNode = range.createContextualFragment(value)
-    range.insertNode(templateNode)
-    range.collapse()
-    $field.dispatchEvent(new Event('input', {bubbles: true}))
-
-    return waitForElement(getSuggestionContainer(value)).then(() => {
-      $field.dispatchEvent(
-        new KeyboardEvent('keydown', {
-          keyCode: 13,
-          which: 13,
-          key: 'Enter',
-          code: 'Enter',
-          bubbles: true
-        })
-      )
-
-      return new Promise((resolve) => {
-        // give it a second to render the selected item
+    const selectorObserver = new MutationObserver(function (records, observer) {
+      $element = getNode()
+      if ($element) {
+        clearTimeout(timeout)
+        observer.disconnect()
         setTimeout(() => {
-          // restore focus
-          window.getSelection().setBaseAndExtent(anchorNode, anchorOffset, focusNode, focusOffset)
-          resolve()
+          resolve($element)
         })
-      })
+      }
+    })
+
+    const timeout = setTimeout(() => {
+      selectorObserver.disconnect()
+      reject()
+    }, 5000)
+
+    selectorObserver.observe(document.body, {
+      childList: true,
+      subtree: true
     })
   })
 }
 
+async function updateContactField ($field, value) {
+  const splitValues = value.split(',')
+  for (const v of splitValues) {
+    const cleanValue = v.trim()
+    if (elementContains($field, cleanValue)) {
+      // value already added
+      continue
+    }
+
+    await addSingleContact($field, cleanValue)
+  }
+}
+
+function addSingleContact ($field, value) {
+  $field.focus()
+  const range = window.getSelection().getRangeAt(0)
+  const templateNode = range.createContextualFragment(value)
+  range.insertNode(templateNode)
+  range.collapse()
+  $field.dispatchEvent(new Event('input', {bubbles: true}))
+
+  return waitForElement(getSuggestionButton(value))
+    .then(() => {
+      return new Promise((resolve) => {
+        // give it a second to attach event listeners
+        setTimeout(() => {
+          $field.dispatchEvent(
+            new KeyboardEvent('keydown', {
+              keyCode: 13,
+              which: 13,
+              key: 'Enter',
+              code: 'Enter',
+              bubbles: true
+            })
+          )
+          resolve()
+        })
+      })
+    })
+}
+
 function elementContains ($element, value) {
-    return ($element.innerText || '').includes(value);
+  return ($element.innerText || '').includes(value)
 }
 
 async function updateSection ($container, $button, getNode, value) {
-    if ($container) {
-        var $input = await getContactField($container);
-        updateContactField($input, value);
-    } else if ($button) {
-        // click CC/BCC button
-        $button.click();
-        waitForElement(getNode).then(($container) => {
-            updateSection($container, $button, getNode, value)
-        });
-    }
+  if ($container) {
+    var $input = await getContactField($container)
+    return updateContactField($input, value)
+  } else if ($button) {
+    // click CC/BCC button
+    $button.click()
+    return waitForElement(getNode).then(($container) => {
+      return updateSection($container, $button, getNode, value)
+    })
+  }
 }
 
 // get all required data from the dom
@@ -232,43 +253,55 @@ function getData () {
 async function after (params, data) {
   var $subject = getSubjectField();
   if (params.quicktext.subject && $subject) {
-    var parsedSubject = await parseTemplate(params.quicktext.subject, data);
-    $subject.value = parsedSubject;
-    $subject.dispatchEvent(new Event('input', {bubbles: true}));
+    var parsedSubject = await parseTemplate(params.quicktext.subject, data)
+    $subject.value = parsedSubject
+    $subject.dispatchEvent(new Event('input', {bubbles: true}))
   }
 
+  // updating extra fields values will change the focus,
+  // as the fields use contenteditable.
+  // cache the focus here, to restore later.
+  const selection = window.getSelection()
+  const focusNode = selection.focusNode
+  const focusOffset = selection.focusOffset
+  const anchorNode = selection.anchorNode
+  const anchorOffset = selection.anchorOffset
+
   if (params.quicktext.to) {
-    var $to = getToContainer();
-    var parsedTo = await parseTemplate(params.quicktext.to, data);
+    const $to = getToContainer()
+    const parsedTo = await parseTemplate(params.quicktext.to, data)
     if ($to && !elementContains($to, parsedTo)) {
-      var $toInput = await getContactField($to);
-      updateContactField($toInput, parsedTo);
+      const $toInput = await getContactField($to)
+      await updateContactField($toInput, parsedTo)
     }
   }
 
   if (params.quicktext.cc) {
     var $cc = getCcContainer();
-    var parsedCc = await parseTemplate(params.quicktext.cc, data);
-    var $ccButton = getCcButton();
-    updateSection(
+    var parsedCc = await parseTemplate(params.quicktext.cc, data)
+    var $ccButton = getCcButton()
+    await updateSection(
       $cc,
       $ccButton,
       getCcContainer,
       parsedCc,
-    );
+    )
   }
 
   if (params.quicktext.bcc) {
-    var $bcc = getBccContainer();
-    var parsedBcc = await parseTemplate(params.quicktext.bcc, data);
-    var $bccButton = getBccButton();
-    updateSection(
+    const $bcc = getBccContainer()
+    const parsedBcc = await parseTemplate(params.quicktext.bcc, data)
+    const $bccButton = getBccButton()
+    await updateSection(
       $bcc,
       $bccButton,
       getBccContainer,
       parsedBcc,
-    );
+    )
   }
+
+  // restore selection to where it was before changing extra fields
+  window.getSelection().setBaseAndExtent(anchorNode, anchorOffset, focusNode, focusOffset)
 }
 
 var activeCache = null
