@@ -61,20 +61,10 @@ function defaultDataCache () {
   }
 }
 
-let localDataCache = defaultDataCache()
-
 const collectionCacheKey = 'localDataCache'
-browser.storage.local.get(collectionCacheKey).then((res) => {
-  if (res[collectionCacheKey]) {
-    localDataCache = Object.assign(localDataCache, res[collectionCacheKey])
-  }
-})
-
 function clearDataCache () {
-  localDataCache = defaultDataCache()
-
   browser.storage.local.set({
-    [collectionCacheKey]: localDataCache
+    [collectionCacheKey]: defaultDataCache()
   })
 
   // clear templates last used cache
@@ -158,12 +148,18 @@ function getCollection (params = {}) {
       })
   }
 
-  const data = localDataCache[params.collection]
-  if (data) {
-    return Promise.resolve(data)
-  }
+  // get from cache
+  return browser.storage.local.get(collectionCacheKey)
+    .then((res) => {
+      if (
+        res[collectionCacheKey] &&
+        res[collectionCacheKey][params.collection]
+      ) {
+        return res[collectionCacheKey][params.collection]
+      }
 
-  return collectionRequestQueue[params.collection]
+      return collectionRequestQueue[params.collection]
+    })
 }
 
 // refresh local data cache from snapshot listeners
@@ -180,11 +176,14 @@ function refreshLocalData (collectionName, querySnapshot) {
 }
 
 function updateCache (params = {}) {
-  localDataCache[params.collection] = params.data
-
-  browser.storage.local.set({
-    [collectionCacheKey]: localDataCache
-  })
+  browser.storage.local.get(collectionCacheKey)
+    .then((res) => {
+      const data = res[collectionCacheKey]
+      data[params.collection] = params.data
+      browser.storage.local.set({
+        [collectionCacheKey]: data
+      })
+    })
 
   const eventName = params.collection.includes('templates') ? 'templates-updated' : `${params.collection}-updated`
   trigger(eventName, params.data)
