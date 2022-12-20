@@ -23,7 +23,7 @@ import {
 } from 'firebase/firestore'
 
 import config from '../config.js'
-import {trigger} from './store-trigger.js'
+import trigger from './store-trigger.js'
 
 const firebaseApp = initializeApp(FIREBASE_CONFIG)
 const firebaseAuth = getAuth(firebaseApp)

@@ -4,7 +4,7 @@ import browser from 'webextension-polyfill'
 
 import debug from './store-debug.js'
 
-export function trigger (name, details) {
+export default function trigger (name, details) {
   const data = {
     type: 'trigger',
     data: {
