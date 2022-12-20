@@ -1,22 +1,8 @@
-/* globals ENV */
 /* Trigger events from the background store
  */
 import browser from 'webextension-polyfill'
 
-let debug = () => {}
-if (ENV !== 'production') {
-  debug = (data = [], method = 'log') => {
-    /* eslint-disable no-console */
-    console.group(data.shift())
-    data.forEach((item) => {
-      console[method](item)
-    })
-    console.groupEnd()
-    /* eslint-enable no-console */
-  }
-}
-
-export {debug}
+import debug from './store-debug.js'
 
 export function trigger (name, details) {
   const data = {

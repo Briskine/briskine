@@ -1,7 +1,7 @@
 import browser from 'webextension-polyfill'
 
 import * as storeApi from './store-api.js'
-import {debug} from './store-trigger.js'
+import debug from './store-debug.js'
 
 // respond to content
 browser.runtime.onMessage.addListener((req) => {
