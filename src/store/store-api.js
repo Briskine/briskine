@@ -296,8 +296,8 @@ export function getSettings () {
         })
       ])
     })
-    .then((res) => {
-      const userData = res[1][res[0]]
+    .then(([id, users]) => {
+      const userData = users[id]
       if (userData) {
         return Object.assign({}, defaultSettings, userData.settings)
       }
@@ -314,33 +314,33 @@ export function getSettings () {
     })
 }
 
-var LOGGED_OUT_ERR = 'logged-out';
+var LOGGED_OUT_ERR = 'logged-out'
 function isLoggedOut (err) {
-    return err === LOGGED_OUT_ERR;
+  return err === LOGGED_OUT_ERR
 }
 
-var globalUserKey = 'firebaseUser';
+var globalUserKey = 'firebaseUser'
 function getSignedInUser () {
-    return new Promise((resolve, reject) => {
-        browser.storage.local.get(globalUserKey).then((res) => {
-            const user = res[globalUserKey] || {};
-            if (Object.keys(user).length) {
-                return resolve(user);
-            }
+  return new Promise((resolve, reject) => {
+    browser.storage.local.get(globalUserKey).then((res) => {
+      const user = res[globalUserKey] || {}
+      if (Object.keys(user).length) {
+        return resolve(user)
+      }
 
-            return reject(LOGGED_OUT_ERR);
-        });
-    });
+      return reject(LOGGED_OUT_ERR)
+    })
+  })
 }
 
 function setSignedInUser (user) {
-    return new Promise((resolve) => {
-        var globalUser = {};
-        globalUser[globalUserKey] = user;
-        browser.storage.local.set(globalUser).then(() => {
-            resolve(user);
-        });
-    });
+  return new Promise((resolve) => {
+    let globalUser = {}
+    globalUser[globalUserKey] = user
+    browser.storage.local.set(globalUser).then(() => {
+      resolve(user)
+    })
+  })
 }
 
 // auth change
@@ -523,61 +523,58 @@ export function getTemplates () {
 
 // backwards compatibility
 function signinError (err) {
-    if (err && err.code === 'auth/too-many-requests') {
-        // recaptcha verifier is not supported in browser extensions
-        // only http/https
-        err.message = 'Too many unsuccessful login attempts. Please try again later. ';
-    }
+  if (err && err.code === 'auth/too-many-requests') {
+    // recaptcha verifier is not supported in browser extensions
+    // only http/https
+    err.message = 'Too many unsuccessful login attempts. Please try again later. '
+  }
 
-    throw {
-        error: err.message || 'There was an issue signing you in. Please try again later.'
-    };
+  throw {
+    error: err.message || 'There was an issue signing you in. Please try again later.'
+  }
 }
 
 function updateCurrentUser (firebaseUser) {
-    let user = {}
-    let cachedUser = {}
+  let cachedUser = {}
 
-    // get cached user,
-    // for customer switching
-    return getSignedInUser()
-      .then((user) => {
-        cachedUser = user;
-        return cachedUser;
+  // get cached user,
+  // for customer switching
+  return getSignedInUser()
+    .then((user) => {
+      cachedUser = user
+      return cachedUser
+    })
+    // logged-out
+    .catch(() => {
+      return
+    })
+    .then(() => {
+      return getCollection({
+        user: {id: firebaseUser.uid},
+        collection: 'users'
       })
-      // logged-out
-      .catch(() => {return;})
-      .then(() => {
-        return getCollection({
-          user: {id: firebaseUser.uid},
-          collection: 'users'
-        })
+    })
+    .then((users) => {
+      const userData = users[firebaseUser.uid]
+      const customers = userData.customers
+
+      // active customer,
+      // default to first customer
+      let customer = userData.customers[0]
+
+      // customer switching support.
+      // get specific user from parameter, or from cache.
+      // only update customer if part cu current user's customers.
+      let newCustomer = firebaseUser.customer || cachedUser.customer
+      if (customers.includes(newCustomer)) {
+        customer = newCustomer
+      }
+
+      return setSignedInUser({
+        id: firebaseUser.uid,
+        customer: customer,
       })
-      .then((users) => {
-        const userData = users[firebaseUser.uid]
-
-        user = {
-          id: firebaseUser.uid,
-          email: userData.email,
-          full_name: userData.full_name,
-
-          // customers user is member of
-          customers: userData.customers,
-          // active customer
-          // default to first customer
-          customer: userData.customers[0],
-        };
-
-        // customer switching support.
-        // get specific user from parameter, or from cache.
-        // only update customer if part cu current user's customers.
-        let newCustomer = firebaseUser.customer || cachedUser.customer;
-        if (user.customers.includes(newCustomer)) {
-          user.customer = newCustomer;
-        }
-
-        return setSignedInUser(user);
-      });
+    })
 }
 
 export function signin (params = {}) {
@@ -651,8 +648,7 @@ export function getCustomer (customerId) {
         })
       ])
     })
-    .then((res) => {
-      const [customers, users] = res
+    .then(([customers, users]) => {
       customer = customers[customerId]
       if (users[customer.owner]) {
         // we have the owner cached
@@ -719,4 +715,24 @@ export function updateTemplateStats (id) {
 
 export function getAccount () {
   return getSignedInUser()
+    .then((user) => {
+      return Promise.all([
+        user,
+        getCollection({
+          user: user,
+          collection: 'users'
+        })
+      ])
+    })
+    .then(([cachedUser, users]) => {
+      const userData = users[cachedUser.id]
+      return {
+        id: cachedUser.id,
+        customer: cachedUser.customer,
+
+        customers: userData.customers,
+        email: userData.email,
+        full_name: userData.full_name,
+      }
+    })
 }
