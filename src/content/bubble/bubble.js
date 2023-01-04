@@ -205,6 +205,7 @@ function create (settings = {}) {
 export function destroy () {
   if (bubbleInstance) {
     bubbleInstance.remove()
+    bubbleInstance = null
   }
 
   document.removeEventListener('focusin', focusTextfield);

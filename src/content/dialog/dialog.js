@@ -585,5 +585,6 @@ export function destroy () {
 
   if (dialogInstance) {
     dialogInstance.remove()
+    dialogInstance = null
   }
 }

@@ -41,6 +41,10 @@ function init (settings) {
   setupSandbox()
   setupPage()
 
+  // update the content components if settings change
+  settingsCache = Object.assign({}, settings)
+  store.on('users-updated', refreshContentScripts)
+
   return
 }
 
@@ -97,8 +101,30 @@ function destructor () {
   destroyStatus()
   destroySandbox()
   destroyPage()
+
+  settingsCache = {}
+  store.off('users-updated', refreshContentScripts)
 }
 
 document.addEventListener(config.destroyEvent, destructor, {once: true})
+
+let settingsCache = {}
+function refreshContentScripts () {
+  // run only if we already have settings cached,
+  // when content components were initialized.
+  if (!Object.keys(settingsCache).length) {
+    return
+  }
+
+  // restart the content components if any of the settings changed
+  store.getSettings()
+    .then((settings) => {
+      const settingsChanged = JSON.stringify(settings) !== JSON.stringify(settingsCache)
+      if (settingsChanged) {
+        destructor()
+        init(settings)
+      }
+    })
+}
 
 startup()
