@@ -49,22 +49,20 @@ function convertToNativeDates (obj = {}) {
   return parsed;
 }
 
-function defaultDataCache () {
-  return {
-    customers: null,
-    users: null,
-    tags: null,
+const collections = [
+  'customers',
+  'users',
+  'tags',
+  'templatesOwned',
+  'templatesShared',
+  'templatesEveryone',
+]
 
-    templatesOwned: null,
-    templatesShared: null,
-    templatesEveryone: null
-  }
-}
-
-const collectionCacheKey = 'localDataCache'
 function clearDataCache () {
-  browser.storage.local.set({
-    [collectionCacheKey]: defaultDataCache()
+  collections.forEach((collection) => {
+    browser.storage.local.set({
+      [collection]: null
+    })
   })
 
   // clear templates last used cache
@@ -149,13 +147,10 @@ function getCollection (params = {}) {
   }
 
   // get from cache
-  return browser.storage.local.get(collectionCacheKey)
+  return browser.storage.local.get(params.collection)
     .then((res) => {
-      if (
-        res[collectionCacheKey] &&
-        res[collectionCacheKey][params.collection]
-      ) {
-        return res[collectionCacheKey][params.collection]
+      if (res[params.collection]) {
+        return res[params.collection]
       }
 
       return collectionRequestQueue[params.collection]
@@ -176,14 +171,9 @@ function refreshLocalData (collectionName, querySnapshot) {
 }
 
 function updateCache (params = {}) {
-  browser.storage.local.get(collectionCacheKey)
-    .then((res) => {
-      const data = res[collectionCacheKey]
-      data[params.collection] = params.data
-      browser.storage.local.set({
-        [collectionCacheKey]: data
-      })
-    })
+  browser.storage.local.set({
+    [params.collection]: params.data
+  })
 
   const eventName = params.collection.includes('templates') ? 'templates-updated' : `${params.collection}-updated`
   trigger(eventName, params.data)
