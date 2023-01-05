@@ -7,7 +7,7 @@ import {insertTemplate} from '../editors/editor-universal.js';
 import {insertContentEditableTemplate} from '../editors/editor-contenteditable.js';
 import htmlToText from '../utils/html-to-text.js';
 import createContact from '../utils/create-contact.js';
-import {enableBubble, bubbleTagName} from '../bubble/bubble.js';
+import {enableBubble} from '../bubble/bubble.js';
 
 async function before (params, data) {
     const $parent = params.element.closest('.msg-overlay-conversation-bubble');
@@ -172,28 +172,14 @@ function isMessageEditor (element) {
 }
 
 function setup () {
-    if (!isActive()) {
-        return;
-    }
+  if (!isActive()) {
+    return
+  }
 
-    enableBubble();
-
-    // custom linkedin styles
-    const css = `
-        <style>
-            /* the message form has a caret icon on the right side.
-             * position the bubble on the left side of the icon.
-             * the separate inMail message form does not have the caret icon.
-             */
-            .msg-form:not(.full-height) ${bubbleTagName} {
-                margin-right: 3em;
-            }
-        </style>
-    `;
-    document.head.insertAdjacentHTML('beforeend', css);
+  enableBubble()
 }
 
-setup();
+setup()
 
 export default async (params = {}) => {
     if (!isActive()) {
