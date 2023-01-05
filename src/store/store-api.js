@@ -49,28 +49,20 @@ function convertToNativeDates (obj = {}) {
   return parsed;
 }
 
-const collections = [
-  'customers',
-  'users',
-  'tags',
-  'templatesOwned',
-  'templatesShared',
-  'templatesEveryone',
-]
-
-function clearDataCache () {
-  collections.forEach((collection) => {
-    browser.storage.local.set({
-      [collection]: null
-    })
-  })
-
-  // clear templates last used cache
-  setExtensionData({
-    templatesLastUsed: {}
-  })
-
+async function clearDataCache () {
   stopSnapshots()
+
+  // cache stats,
+  // to keep them between login sessions
+  const extensionData = await getExtensionData()
+  const words = extensionData.words
+
+  await browser.storage.local.clear()
+
+  // restore time-saved stats
+  return setExtensionData({
+    words: words,
+  })
 }
 
 const templatesCollection = collection(db, 'templates')
@@ -655,8 +647,8 @@ export function getCustomer (customerId) {
     })
 }
 
-export function setActiveCustomer (customerId) {
-  clearDataCache()
+export async function setActiveCustomer (customerId) {
+  await clearDataCache()
 
   return updateCurrentUser({
       uid: firebaseAuth.currentUser.uid,
