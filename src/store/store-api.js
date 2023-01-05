@@ -658,7 +658,6 @@ export async function setActiveCustomer (customerId) {
 
 const extensionDataKey = 'briskine'
 const defaultExtensionData = {
-  showPostInstall: true,
   words: 0,
   templatesLastUsed: {},
 }

@@ -4,7 +4,6 @@
  */
 
 import {dialogShowEvent, dialogTagName} from '../dialog/dialog.js'
-import store from '../../store/store-client.js'
 
 import bubbleStyles from './bubble.css?raw'
 import bubbleIcon from '../../icons/briskine-logo-small-bare.svg?raw'
@@ -174,32 +173,6 @@ function create (settings = {}) {
 
   // reposition bubble on scroll
   document.addEventListener('scroll', scrollDocument, true);
-
-  // wait for the bubbble to be shown
-  const bubbleObserver = new MutationObserver((records, observer) => {
-    if (bubbleInstance.getAttribute('visible') === 'true') {
-      // on first-use (after extension is installed),
-      // we show the dialog immediately after the bubble is shown.
-      store.getExtensionData()
-        .then((data) => {
-          if (data.showPostInstall) {
-            showPostInstall()
-
-            // don't show the button again on next load
-            store.setExtensionData({
-              showPostInstall: false
-            })
-          }
-        })
-
-      observer.disconnect()
-    }
-  })
-  bubbleObserver.observe(bubbleInstance, {
-      attributes: true
-  });
-
-  domObservers.push(bubbleObserver)
 }
 
 export function destroy () {
@@ -216,13 +189,6 @@ export function destroy () {
   domObservers.forEach((observer) => {
     observer.disconnect()
   })
-}
-
-function showPostInstall () {
-  const bubbleButton = bubbleInstance.shadowRoot.querySelector('button');
-  if (bubbleButton) {
-    bubbleButton.dispatchEvent(new Event('click', { bubbles: true }));
-  }
 }
 
 // top-right sticky positioning,
