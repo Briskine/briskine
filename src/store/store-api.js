@@ -17,8 +17,6 @@ import {
   query,
   where,
   onSnapshot,
-  getDoc,
-  doc,
   documentId,
 } from 'firebase/firestore'
 
@@ -616,34 +614,15 @@ function signinWithToken (token = '') {
 }
 
 export function getCustomer (customerId) {
-  let customer = {};
   return getSignedInUser()
     .then((user) => {
-      return Promise.all([
-        getCollection({
-          user: user,
-          collection: 'customers'
-        }),
-        getCollection({
-          user: user,
-          collection: 'users'
-        })
-      ])
+      return getCollection({
+        user: user,
+        collection: 'customers'
+      })
     })
-    .then(([customers, users]) => {
-      customer = customers[customerId]
-      if (users[customer.owner]) {
-        // we have the owner cached
-        customer.ownerDetails = users[customer.owner]
-      } else {
-        return getDoc(doc(collection(db, 'users'), customer.owner))
-          .then((ownerDoc) => {
-            customer.ownerDetails = ownerDoc.data()
-            return customer
-          })
-      }
-
-      return customer
+    .then((customers) => {
+      return customers[customerId]
     })
 }
 

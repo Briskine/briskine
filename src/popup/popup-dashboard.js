@@ -59,8 +59,8 @@ customElements.define(
 
       this.getCustomerTitle = (customerId) => {
         const customerData = this.customers[customerId]
-        if (customerData && customerData.ownerDetails) {
-          return customerData.ownerDetails.full_name || customerData.ownerDetails.email
+        if (customerData) {
+          return customerData.title
         }
 
         return ''
@@ -138,9 +138,8 @@ customElements.define(
                   <div class="form-text mb-2">
                     You're signed in to
                     <strong>
-                    ${this.getCustomerTitle(this.user.customer)}'s
+                    ${this.getCustomerTitle(this.user.customer)}
                     </strong>
-                    team.
                   </div>
                   <label for="team-select" class="mb-1">
                     Switch to a different team:
@@ -159,7 +158,7 @@ customElements.define(
                             value=${id}
                             ?selected=${id === this.user.customer}
                             >
-                            ${this.getCustomerTitle(id)}'s team
+                            ${this.getCustomerTitle(id)}
                           </option>
                         `
                       })}
