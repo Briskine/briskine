@@ -59,8 +59,8 @@ customElements.define(
 
       this.getCustomerTitle = (customerId) => {
         const customerData = this.customers[customerId]
-        if (customerData && customerData.ownerDetails) {
-          return customerData.ownerDetails.full_name || customerData.ownerDetails.email
+        if (customerData) {
+          return customerData.title
         }
 
         return ''
@@ -138,9 +138,8 @@ customElements.define(
                   <div class="form-text mb-2">
                     You're signed in to
                     <strong>
-                    ${this.getCustomerTitle(this.user.customer)}'s
+                    ${this.getCustomerTitle(this.user.customer)}
                     </strong>
-                    team.
                   </div>
                   <label for="team-select" class="mb-1">
                     Switch to a different team:
@@ -159,7 +158,7 @@ customElements.define(
                             value=${id}
                             ?selected=${id === this.user.customer}
                             >
-                            ${this.getCustomerTitle(id)}'s team
+                            ${this.getCustomerTitle(id)}
                           </option>
                         `
                       })}
@@ -211,18 +210,26 @@ customElements.define(
               ` : ''}
 
               <div class="popup-stats-details popup-stats-premium">
-                ${this.stats.words < 1500 ? html`
-                  <span class="font-italic">Big things have small beginnings</span> &#128170;
-                ` : ''}
-                ${this.stats.words >= 1500 && this.stats.words < 2500 ? html`
-                  <span class="font-italic">Or the equivalent of writing a short story</span> &#128214;
-                ` : ''}
-                ${this.stats.words >= 2500 && this.stats.words < 7500 ? html`
-                  <span class="font-italic">Did you know mushrooms are one of the largest organisms in the world?</span> &#127812;
-                ` : ''}
-                ${this.stats.words >= 7500 ? html`
-                  <span class="font-italic">You're awesome. Just awesome.</span> &#9996;
-                ` : ''}
+                ${((words) => {
+                  if (words < 1500) {
+                    return html`
+                      <span class="fst-italic">Big things have small beginnings</span> &#128170;
+                    `
+                  } else if (words >= 1500 && words < 2500) {
+                    return html`
+                      <span class="fst-italic">Or the equivalent of writing a short story</span> &#128214;
+                    `
+                  } else if (words >= 2500 && words < 7500) {
+                    html`
+                      <span class="fst-italic">Did you know mushrooms are one of the largest organisms in the world?</span> &#127812;
+                    `
+                  } else {
+                    // more than 7500
+                    return html`
+                      <span class="fst-italic">You're awesome. Just awesome.</span> &#9996;
+                    `
+                  }
+                })(this.stats.words)}
               </div>
 
               <div class="popup-stats-details popup-stats-free">

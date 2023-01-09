@@ -172,31 +172,36 @@ customElements.define(
       }
 
       this.filterTemplates = (templates = [], query = '') => {
-        let filteredTemplates = templates
-        if (query) {
-          filteredTemplates = fuzzySearch(templates, query)
-        } else {
-          // only sort templates if no search query was used
-          if (this.getAttribute('sort-az') === 'true') {
-            // alphabetical sort
-            filteredTemplates = filteredTemplates
-              .sort((a, b) => {
-                return a.title.localeCompare(b.title)
-              })
-          } else {
-            // default sort
-            filteredTemplates = filteredTemplates
-              .sort((a, b) => {
-                return new Date(b.updated_datetime) - new Date(a.updated_datetime)
-              })
-              .sort((a, b) => {
-                return new Date(b.lastuse_datetime || 0) - new Date(a.lastuse_datetime || 0)
-              })
-          }
-        }
+        return store.getExtensionData()
+          .then((data) => {
+            const lastUsed = data.templatesLastUsed
 
-        const limit = parseInt(this.getAttribute('limit') || '100', 10)
-        return filteredTemplates.slice(0, limit)
+            let filteredTemplates = templates
+            if (query) {
+              filteredTemplates = fuzzySearch(templates, query)
+            } else {
+              // only sort templates if no search query was used
+              if (this.getAttribute('sort-az') === 'true') {
+                // alphabetical sort
+                filteredTemplates = filteredTemplates
+                  .sort((a, b) => {
+                    return a.title.localeCompare(b.title)
+                  })
+              } else {
+                // default sort
+                filteredTemplates = filteredTemplates
+                  .sort((a, b) => {
+                    return new Date(b.updated_datetime) - new Date(a.updated_datetime)
+                  })
+                  .sort((a, b) => {
+                    return new Date(lastUsed[b.id] || 0) - new Date(lastUsed[a.id] || 0)
+                  })
+              }
+            }
+
+            const limit = parseInt(this.getAttribute('limit') || '100', 10)
+            return filteredTemplates.slice(0, limit)
+          })
       }
 
       this.getTemplateNodes = (templates = []) => {
@@ -580,5 +585,6 @@ export function destroy () {
 
   if (dialogInstance) {
     dialogInstance.remove()
+    dialogInstance = null
   }
 }
