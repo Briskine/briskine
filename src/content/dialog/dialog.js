@@ -1,5 +1,6 @@
 /* global REGISTER_DISABLED */
 import browser from 'webextension-polyfill'
+import {render, html} from 'lit-html'
 
 import store from '../../store/store-client.js'
 import {isContentEditable} from '../editors/editor-contenteditable.js'
@@ -22,6 +23,12 @@ export const dialogTagName = `b-dialog-${Date.now()}`
 const dialogVisibleAttr = 'visible'
 const activeClass = 'active'
 const openAnimationClass = 'b-dialog-open-animation'
+
+// action.openPopup is not supported in all browsers yet.
+// https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/action/openPopup
+// Open the action popup in a new tab.
+const popupUrl = browser.runtime.getURL('popup/popup.html')
+const signupUrl = `${config.websiteUrl}/signup`
 
 const template = document.createElement('template')
 function plainText (html = '') {
@@ -419,58 +426,8 @@ customElements.define(
         return
       }
 
-      // action.openPopup is not supported in all browsers yet.
-      // https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/action/openPopup
-      // Open the action popup in a new tab.
-      const popupUrl = browser.runtime.getURL('popup/popup.html')
-      const signupUrl = `${config.websiteUrl}/signup`
-      const shortcut = this.getAttribute('shortcut')
-
-      const shadowRoot = this.attachShadow({mode: 'open'})
-      shadowRoot.innerHTML = `
-        <style>${styles}</style>
-        <div class="dialog-container ${REGISTER_DISABLED ? 'dialog-safari' : ''}">
-          <input type="search" value="" placeholder="Search templates...">
-          <div class="dialog-info">
-            Please
-            <a href="${popupUrl}?source=tab" target="_blank">Sign in</a>
-            <span class="dialog-safari-hide">
-              or
-              <a href="${signupUrl}" target="_blank">
-                Create a free account
-              </a>
-            </span>
-            <span class="dialog-safari-show">
-              to access your templates.
-            </span>
-          </div>
-          <ul class="dialog-templates">
-          </ul>
-          <div class="dialog-footer">
-            <div class="d-flex">
-              <div class="flex-fill">
-                <a
-                  href="${config.functionsUrl}/template/new"
-                  target="_blank"
-                  class="btn btn-primary btn-new-template dialog-safari-hide"
-                  title="Create a new template"
-                  >
-                  <span class="d-flex">
-                    ${plusIcon}
-                    <span>
-                      New Template
-                    </span>
-                  </span>
-                </a>
-              </div>
-
-              <div class="dialog-shortcut">
-                ${shortcut}
-              </div>
-            </div>
-          </div>
-        </div>
-      `
+      this.attachShadow({mode: 'open'})
+      this.render()
 
       // check authentication state
       this.setAuthState()
@@ -478,7 +435,7 @@ customElements.define(
       store.on('logout', this.setAuthState)
 
       let searchDebouncer
-      this.searchField = shadowRoot.querySelector('input[type=search]')
+      this.searchField = this.shadowRoot.querySelector('input[type=search]')
       // search for templates
       this.searchField.addEventListener('input', (e) => {
         if (searchDebouncer) {
@@ -542,6 +499,52 @@ customElements.define(
 
       window.removeEventListener('focusout', this.stopRelatedTargetPropagation, true)
       window.removeEventListener('focusin', this.stopTargetPropagation, true)
+    }
+    render () {
+      render(html`
+        <style>${styles}</style>
+        <div class="dialog-container ${REGISTER_DISABLED ? 'dialog-safari' : ''}">
+          <input type="search" value="" placeholder="Search templates...">
+          <div class="dialog-info">
+            Please
+            <a href="${popupUrl}?source=tab" target="_blank">Sign in</a>
+            <span class="dialog-safari-hide">
+              or
+              <a href="${signupUrl}" target="_blank">
+                Create a free account
+              </a>
+            </span>
+            <span class="dialog-safari-show">
+              to access your templates.
+            </span>
+          </div>
+          <ul class="dialog-templates">
+          </ul>
+          <div class="dialog-footer">
+            <div class="d-flex">
+              <div class="flex-fill">
+                <a
+                  href="${config.functionsUrl}/template/new"
+                  target="_blank"
+                  class="btn btn-primary btn-new-template dialog-safari-hide"
+                  title="Create a new template"
+                  >
+                  <span class="d-flex">
+                    ${plusIcon}
+                    <span>
+                      New Template
+                    </span>
+                  </span>
+                </a>
+              </div>
+
+              <div class="dialog-shortcut">
+                ${this.getAttribute('shortcut')}
+              </div>
+            </div>
+          </div>
+        </div>
+      `, this.shadowRoot)
     }
   }
 )
