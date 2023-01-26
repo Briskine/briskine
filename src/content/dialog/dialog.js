@@ -1,6 +1,9 @@
 /* global REGISTER_DISABLED */
 import browser from 'webextension-polyfill'
 import {render, html} from 'lit-html'
+import {classMap} from 'lit-html/directives/class-map.js'
+import {unsafeSVG} from 'lit-html/directives/unsafe-svg.js'
+import {repeat} from 'lit-html/directives/repeat.js'
 
 import store from '../../store/store-client.js'
 import {isContentEditable} from '../editors/editor-contenteditable.js'
@@ -43,7 +46,10 @@ customElements.define(
       super()
 
       this.searchField = null
+      // templates visible
       this.templates = []
+      // TODO all templates from the store
+      this.allTemplates = []
 
       this.editor = null
       this.word = null
@@ -245,7 +251,7 @@ customElements.define(
                 class="template-edit dialog-safari-hide"
                 title="Edit template"
                 >
-                ${editIcon}
+                ${unsafeSVG(editIcon)}
               </a>
             `
             return li
@@ -258,18 +264,14 @@ customElements.define(
             return this.filterTemplates(templates, query)
           })
           .then((templates) => {
-            // naive deep compare, in case the templates didn't change
-            if (JSON.stringify(this.templates) === JSON.stringify(templates)) {
-              return
-            }
-
             // cache result
             this.templates = templates
+            this.render()
 
-            const templateNodes = this.getTemplateNodes(templates)
+            // const templateNodes = this.getTemplateNodes(templates)
 
             window.requestAnimationFrame(() => {
-              this.shadowRoot.querySelector('.dialog-templates').replaceChildren(...templateNodes)
+              // this.shadowRoot.querySelector('.dialog-templates').replaceChildren(...templateNodes)
             })
           })
       }
@@ -319,6 +321,7 @@ customElements.define(
         this.removeAttribute(dialogVisibleAttr)
       }
 
+      // TODO
       this.setLoadingState = () => {
         const loadingPlaceholders = Array(4).fill(`
           <div class="templates-placeholder">
@@ -340,7 +343,8 @@ customElements.define(
             return
           })
           .then(() => {
-            this.setLoadingState()
+            // TODO re-enable loading state
+            // this.setLoadingState()
             // only start loading the templates if the dialog is visible
             if (this.hasAttribute(dialogVisibleAttr)) {
               this.populateTemplates()
@@ -503,7 +507,12 @@ customElements.define(
     render () {
       render(html`
         <style>${styles}</style>
-        <div class="dialog-container ${REGISTER_DISABLED ? 'dialog-safari' : ''}">
+        <div
+          class=${classMap({
+            'dialog-container': true,
+            'dialog-safari': REGISTER_DISABLED,
+          })}
+          >
           <input type="search" value="" placeholder="Search templates...">
           <div class="dialog-info">
             Please
@@ -519,6 +528,42 @@ customElements.define(
             </span>
           </div>
           <ul class="dialog-templates">
+            ${this.templates.length
+              ? repeat(this.templates, (t) => t.id, (t, i) => {
+                  const plainShortcut = plainText(t.shortcut)
+                  const plainBody = plainText(t.body)
+                  return html`
+                    <li
+                      data-id=${t.id}
+                      data-index=${i}
+                      title=${plainBody}
+                      class=${classMap({
+                        [activeClass]: i === 0,
+                      })}
+                      >
+                      <div class="d-flex">
+                        <h1>${plainText(t.title)}</h1>
+                        ${plainShortcut ? html`
+                          <abbr>${plainShortcut}</abbr>
+                        ` : ''}
+                      </div>
+                      <p>${plainBody}</p>
+                      <a
+                        href="${config.functionsUrl}/template/${t.id}"
+                        target="_blank"
+                        class="template-edit dialog-safari-hide"
+                        title="Edit template"
+                        >
+                        ${unsafeSVG(editIcon)}
+                      </a>
+                    </li>
+                  `
+                })
+              : html`
+                <div class="templates-no-results">
+                  No templates found
+                </div>
+              `}
           </ul>
           <div class="dialog-footer">
             <div class="d-flex">
@@ -530,7 +575,7 @@ customElements.define(
                   title="Create a new template"
                   >
                   <span class="d-flex">
-                    ${plusIcon}
+                    ${unsafeSVG(plusIcon)}
                     <span>
                       New Template
                     </span>
