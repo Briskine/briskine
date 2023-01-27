@@ -24,7 +24,6 @@ export const dialogShowEvent = 'briskine-dialog'
 export const dialogTagName = `b-dialog-${Date.now()}`
 
 const dialogVisibleAttr = 'visible'
-const activeClass = 'active'
 const openAnimationClass = 'b-dialog-open-animation'
 
 // action.openPopup is not supported in all browsers yet.
@@ -48,8 +47,11 @@ customElements.define(
       this.searchField = null
       // templates visible
       this.templates = []
+
       // TODO all templates from the store
-      this.allTemplates = []
+      this.allTemplates = null
+
+      this.activeItem = null
 
       this.editor = null
       this.word = null
@@ -217,78 +219,47 @@ customElements.define(
           })
       }
 
-      this.getTemplateNodes = (templates = []) => {
-        // blank slate when we don't find any templates
-        if (!templates.length) {
-          const blank = document.createElement('div')
-          blank.classList.add('templates-no-results')
-          blank.textContent = 'No templates found.'
-          return [blank]
+      this.getAllTemplates = () => {
+        if (this.allTemplates) {
+          return Promise.resolve(this.allTemplates)
         }
 
-        return templates
-          .map((t, i) => {
-            const li = document.createElement('li')
-            li.setAttribute('data-id', t.id)
-            if (i === 0) {
-              li.classList.add(activeClass)
-            }
-
-            const plainBody = plainText(t.body)
-            const plainShortcut = plainText(t.shortcut)
-            li.title = plainBody
-            li.innerHTML = `
-              <div class="d-flex">
-                <h1>${plainText(t.title)}</h1>
-                ${plainShortcut ? `
-                  <abbr>${plainShortcut}</abbr>
-                ` : ''}
-              </div>
-              <p>${plainBody}</p>
-              <a
-                href="${config.functionsUrl}/template/${t.id}"
-                target="_blank"
-                class="template-edit dialog-safari-hide"
-                title="Edit template"
-                >
-                ${unsafeSVG(editIcon)}
-              </a>
-            `
-            return li
+        return store.getTemplates()
+          .then((templates) => {
+            this.allTemplates = templates
+            return templates
           })
       }
 
       this.populateTemplates = (query = '') => {
-        store.getTemplates()
+        return this.getAllTemplates()
           .then((templates) => {
             return this.filterTemplates(templates, query)
           })
           .then((templates) => {
-            // cache result
             this.templates = templates
+
+            // set active item
+            if (!templates.length) {
+              this.activeItem = null
+            } else if (!templates.find((t) => t.id === this.activeItem)) {
+              this.activeItem = this.templates[0].id
+            }
+
             this.render()
-
-            // const templateNodes = this.getTemplateNodes(templates)
-
-            window.requestAnimationFrame(() => {
-              // this.shadowRoot.querySelector('.dialog-templates').replaceChildren(...templateNodes)
-            })
           })
       }
 
-      this.setActive = (id = '') => {
-        const item = this.shadowRoot.querySelector(`[data-id="${id}"]`)
-        if (!item) {
-          return
-        }
+      this.setActive = (id = '', scrollIntoView = false) => {
+        this.activeItem = id
+        this.render()
 
-        const active = this.shadowRoot.querySelector(`.${activeClass}`)
-        if (active !== item) {
-          active.classList.remove(activeClass)
-          item.classList.add(activeClass)
+        if (scrollIntoView) {
+          const item = this.shadowRoot.querySelector(`[data-id="${id}"]`)
+          if (item) {
+            item.scrollIntoView({block: 'nearest'})
+          }
         }
-
-        return item
       }
 
       this.restoreSelection = () => {
@@ -321,17 +292,6 @@ customElements.define(
         this.removeAttribute(dialogVisibleAttr)
       }
 
-      // TODO
-      this.setLoadingState = () => {
-        const loadingPlaceholders = Array(4).fill(`
-          <div class="templates-placeholder">
-            <div class="templates-placeholder-text"></div>
-            <div class="templates-placeholder-text templates-placeholder-description"></div>
-          </div>
-        `).join('')
-        this.shadowRoot.querySelector('.dialog-templates').innerHTML = loadingPlaceholders
-      }
-
       this.setAuthState = () => {
         store.getAccount()
           .then(() => {
@@ -343,8 +303,8 @@ customElements.define(
             return
           })
           .then(() => {
-            // TODO re-enable loading state
-            // this.setLoadingState()
+            this.allTemplates = null
+
             // only start loading the templates if the dialog is visible
             if (this.hasAttribute(dialogVisibleAttr)) {
               this.populateTemplates()
@@ -373,28 +333,22 @@ customElements.define(
           return
         }
 
-        const active = this.shadowRoot.querySelector(`.${activeClass}`)
-        if (!active) {
-          return
-        }
-
+        const index = this.templates.findIndex((t) => t.id === this.activeItem)
         if (e.key === 'Enter') {
           e.preventDefault()
-          const activeId = active.dataset.id
-          return this.insertTemplate(activeId)
+          return this.insertTemplate(this.activeItem)
         }
 
         let nextId
-        if (e.key === 'ArrowDown' && active.nextElementSibling) {
-          nextId = active.nextElementSibling.dataset.id
-        } else if (e.key === 'ArrowUp' && active.previousElementSibling) {
-          nextId = active.previousElementSibling.dataset.id
+        if (e.key === 'ArrowDown' && this.templates[index + 1]) {
+          nextId = this.templates[index + 1].id
+        } else if (e.key === 'ArrowUp' && this.templates[index - 1]) {
+          nextId = this.templates[index - 1].id
         }
 
         if (nextId) {
           e.preventDefault()
-          const newActive = this.setActive(nextId)
-          newActive.scrollIntoView({block: 'nearest'})
+          this.setActive(nextId, true)
         }
       }
 
@@ -528,17 +482,23 @@ customElements.define(
             </span>
           </div>
           <ul class="dialog-templates">
-            ${this.templates.length
-              ? repeat(this.templates, (t) => t.id, (t, i) => {
+            ${!this.allTemplates
+              ? Array(4).map(() => html `
+                <div class="templates-placeholder">
+                  <div class="templates-placeholder-text"></div>
+                  <div class="templates-placeholder-text templates-placeholder-description"></div>
+                </div>
+              `)
+              : this.templates.length
+              ? this.templates.map((t) => {
                   const plainShortcut = plainText(t.shortcut)
                   const plainBody = plainText(t.body)
                   return html`
                     <li
                       data-id=${t.id}
-                      data-index=${i}
                       title=${plainBody}
                       class=${classMap({
-                        [activeClass]: i === 0,
+                        'active': t.id === this.activeItem,
                       })}
                       >
                       <div class="d-flex">
