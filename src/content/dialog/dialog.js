@@ -25,6 +25,7 @@ export const dialogTagName = `b-dialog-${Date.now()}`
 
 const dialogVisibleAttr = 'visible'
 const openAnimationClass = 'b-dialog-open-animation'
+const activeTemplateClass = 'active'
 
 // action.openPopup is not supported in all browsers yet.
 // https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/action/openPopup
@@ -35,7 +36,7 @@ const signupUrl = `${config.websiteUrl}/signup`
 const template = document.createElement('template')
 function plainText (html = '') {
   template.innerHTML = html
-  return (template.content.textContent || '').trim()
+  return (template.content.textContent || '').replace(/\s+/g, ' ').trim()
 }
 
 customElements.define(
@@ -43,16 +44,14 @@ customElements.define(
   class extends HTMLElement {
     constructor () {
       super()
+      // templates filtered
+      this.templates = []
+      // selected template
+      this.activeItem = null
+      // loading state
+      this.loading = true
 
       this.searchField = null
-      // templates visible
-      this.templates = []
-
-      // TODO all templates from the store
-      this.allTemplates = null
-
-      this.activeItem = null
-
       this.editor = null
       this.word = null
       // selection cache, to restore later
@@ -171,7 +170,9 @@ customElements.define(
         })
 
         // populate the template list
-        this.populateTemplates(searchQuery)
+        window.requestAnimationFrame(() => {
+          this.populateTemplates(searchQuery)
+        })
       }
 
       this.hideOnClick = (e) => {
@@ -214,19 +215,14 @@ customElements.define(
               }
             }
 
-            const limit = parseInt(this.getAttribute('limit') || '100', 10)
-            return filteredTemplates.slice(0, limit)
+            return filteredTemplates
           })
       }
 
       this.getAllTemplates = () => {
-        if (this.allTemplates) {
-          return Promise.resolve(this.allTemplates)
-        }
-
         return store.getTemplates()
           .then((templates) => {
-            this.allTemplates = templates
+            this.loading = false
             return templates
           })
       }
@@ -238,26 +234,42 @@ customElements.define(
           })
           .then((templates) => {
             this.templates = templates
-
             // set active item
-            if (!templates.length) {
-              this.activeItem = null
-            } else if (!templates.find((t) => t.id === this.activeItem)) {
-              this.activeItem = this.templates[0].id
+            let active = null
+            if (templates.length) {
+              active = this.templates[0].id
             }
 
+            // set active and scroll to top
+            this.setActive(active)
+            // scroll to top
+            // using setActive is not reliable before re-rendering
+            const list = this.shadowRoot.querySelector('.dialog-templates')
+            if (list) {
+              list.scrollTop = 0
+            }
             this.render()
           })
       }
 
       this.setActive = (id = '', scrollIntoView = false) => {
         this.activeItem = id
-        this.render()
+        if (!this.activeItem) {
+          return
+        }
 
-        if (scrollIntoView) {
-          const item = this.shadowRoot.querySelector(`[data-id="${id}"]`)
-          if (item) {
-            item.scrollIntoView({block: 'nearest'})
+        // manually apply and remove active classes,
+        // and relying on conditionally rendering the active class can get slow with large lists.
+        const currentActive = this.shadowRoot.querySelector(`.${activeTemplateClass}`)
+        if (currentActive) {
+          currentActive.classList.remove(activeTemplateClass)
+        }
+
+        const newActive = this.shadowRoot.querySelector(`[data-id="${id}"]`)
+        if (newActive) {
+          newActive.classList.add(activeTemplateClass)
+          if (scrollIntoView) {
+            newActive.scrollIntoView({block: 'nearest'})
           }
         }
       }
@@ -303,7 +315,8 @@ customElements.define(
             return
           })
           .then(() => {
-            this.allTemplates = null
+            this.loading = true
+            this.render()
 
             // only start loading the templates if the dialog is visible
             if (this.hasAttribute(dialogVisibleAttr)) {
@@ -482,32 +495,31 @@ customElements.define(
             </span>
           </div>
           <ul class="dialog-templates">
-            ${!this.allTemplates
-              ? Array(4).map(() => html `
+            ${this.loading === true
+              ? Array(4).fill(html`
                 <div class="templates-placeholder">
                   <div class="templates-placeholder-text"></div>
                   <div class="templates-placeholder-text templates-placeholder-description"></div>
                 </div>
               `)
               : this.templates.length
-              ? this.templates.map((t) => {
-                  const plainShortcut = plainText(t.shortcut)
+              ? repeat(this.templates, (t) => t.id, (t) => {
                   const plainBody = plainText(t.body)
                   return html`
                     <li
                       data-id=${t.id}
                       title=${plainBody}
                       class=${classMap({
-                        'active': t.id === this.activeItem,
+                        [activeTemplateClass]: t.id === this.activeItem,
                       })}
                       >
                       <div class="d-flex">
-                        <h1>${plainText(t.title)}</h1>
-                        ${plainShortcut ? html`
-                          <abbr>${plainShortcut}</abbr>
+                        <h1>${t.title}</h1>
+                        ${t.shortcut ? html`
+                          <abbr>${t.shortcut}</abbr>
                         ` : ''}
                       </div>
-                      <p>${plainBody}</p>
+                      <p>${plainBody.slice(0, 100)}</p>
                       <a
                         href="${config.functionsUrl}/template/${t.id}"
                         target="_blank"
@@ -563,7 +575,6 @@ function createDialog (settings = {}) {
   const instance = document.createElement(dialogTagName)
   instance.setAttribute('shortcut', settings.dialog_shortcut)
   instance.setAttribute('sort-az', settings.dialog_sort)
-  instance.setAttribute('limit', settings.dialog_limit)
   document.documentElement.appendChild(instance)
 
   return instance

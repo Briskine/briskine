@@ -256,7 +256,6 @@ const defaultSettings = {
   dialog_enabled: true,
   dialog_button: true,
   dialog_shortcut: 'ctrl+space',
-  dialog_limit: 100,
   dialog_sort: false,
 
   expand_enabled: true,
@@ -414,12 +413,13 @@ function getDefaultTemplates () {
       })
     }
 
-    return defaultTemplates.map((template, index) => {
+    return defaultTemplates
+      .map((template, index) => {
         const id = String(index)
         return Object.assign({
             id: id,
         }, template)
-    })
+      })
 }
 
 function isFree (user) {
