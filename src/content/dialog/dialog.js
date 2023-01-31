@@ -163,6 +163,9 @@ customElements.define(
           this.searchField.focus()
         })
 
+        // restore scroll position
+        this.setActive(this.activeItem, true)
+
         // populate the template list
         window.requestAnimationFrame(() => {
           this.populateTemplates(searchQuery)
@@ -228,45 +231,35 @@ customElements.define(
           })
           .then((templates) => {
             this.templates = templates
-
-            // set active item
-            let active = null
-            if (templates.length) {
-              active = this.templates[0].id
-            }
-
-            // set active and scroll to top
-            this.setActive(active)
-            // scroll to top
-            // using setActive is not reliable before re-rendering
-            const list = this.shadowRoot.querySelector('.dialog-templates')
-            if (list) {
-              list.scrollTop = 0
-            }
             this.render()
+
+            // TODO correctly select item if not already selected?
+            if (this.activeItem && this.templates.find((t) => t.id === this.activeItem)) {
+              this.setActive(this.activeItem, true)
+            } else if (this.templates.length) {
+              this.setActive(this.templates[0].id, true)
+            }
           })
       }
 
       this.setActive = (id = '', scrollIntoView = false) => {
-        this.activeItem = id
-        if (!this.activeItem) {
-          return
-        }
-
-        // manually apply and remove active classes,
-        // and relying on conditionally rendering the active class can get slow with large lists.
-        const currentActive = this.shadowRoot.querySelector(`.${activeTemplateClass}`)
-        if (currentActive) {
-          currentActive.classList.remove(activeTemplateClass)
-        }
-
         const newActive = this.shadowRoot.querySelector(`[data-id="${id}"]`)
-        if (newActive) {
-          newActive.classList.add(activeTemplateClass)
-          if (scrollIntoView) {
-            newActive.scrollIntoView({block: 'nearest'})
+        if (this.activeItem !== id) {
+          // manually apply and remove active classes,
+          // relying on conditionally rendering the active class can get slow with large lists.
+          const currentActive = this.shadowRoot.querySelector(`.${activeTemplateClass}`)
+          if (currentActive) {
+            currentActive.classList.remove(activeTemplateClass)
+          }
+          if (newActive) {
+            newActive.classList.add(activeTemplateClass)
           }
         }
+
+        if (newActive && scrollIntoView) {
+          newActive.scrollIntoView({block: 'nearest'})
+        }
+        this.activeItem = id
       }
 
       this.restoreSelection = () => {
