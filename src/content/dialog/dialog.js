@@ -33,12 +33,6 @@ const activeTemplateClass = 'active'
 const popupUrl = browser.runtime.getURL('popup/popup.html')
 const signupUrl = `${config.websiteUrl}/signup`
 
-const template = document.createElement('template')
-function plainText (html = '') {
-  template.innerHTML = html
-  return (template.content.textContent || '').replace(/\s+/g, ' ').trim()
-}
-
 customElements.define(
   dialogTagName,
   class extends HTMLElement {
@@ -164,7 +158,7 @@ customElements.define(
         const searchQuery = element.getAttribute('data-briskine-search') || ''
         this.searchField.value = searchQuery
         // give it a second before focusing.
-        // in production, the search field is not focused on some websites (eg. google sheets, salesfoce).
+        // in production, the search field is not focused on some websites (eg. google sheets, salesforce).
         setTimeout(() => {
           this.searchField.focus()
         })
@@ -234,6 +228,7 @@ customElements.define(
           })
           .then((templates) => {
             this.templates = templates
+
             // set active item
             let active = null
             if (templates.length) {
@@ -383,10 +378,7 @@ customElements.define(
     attributeChangedCallback (name, oldValue, newValue) {
       if (name === 'visible') {
         if (newValue === 'true') {
-          // make sure we get the correct dialog size before animating
-          setTimeout(() => {
-            this.classList.add(openAnimationClass)
-          })
+          this.classList.add(openAnimationClass)
         } else {
           this.classList.remove(openAnimationClass)
         }
@@ -504,11 +496,10 @@ customElements.define(
               `)
               : this.templates.length
               ? repeat(this.templates, (t) => t.id, (t) => {
-                  const plainBody = plainText(t.body)
                   return html`
                     <li
                       data-id=${t.id}
-                      title=${plainBody}
+                      title=${t._body_plaintext}
                       class=${classMap({
                         [activeTemplateClass]: t.id === this.activeItem,
                       })}
@@ -519,7 +510,7 @@ customElements.define(
                           <abbr>${t.shortcut}</abbr>
                         ` : ''}
                       </div>
-                      <p>${plainBody.slice(0, 100)}</p>
+                      <p>${t._body_plaintext.slice(0, 100)}</p>
                       <a
                         href="${config.functionsUrl}/template/${t.id}"
                         target="_blank"

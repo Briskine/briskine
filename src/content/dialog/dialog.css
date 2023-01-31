@@ -48,7 +48,7 @@
 }
 
 :host(.b-dialog-open-animation) {
-  animation: open .1s linear 1 forwards;
+  animation: .1s open .1s linear 1 forwards;
 }
 
 @keyframes open {

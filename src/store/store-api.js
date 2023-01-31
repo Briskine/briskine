@@ -35,6 +35,11 @@ if (ENV === 'development') {
   connectFirestoreEmulator(db, 'localhost', 5002);
 }
 
+// convert template html body to text
+function plainText (html = '') {
+  return html.replace(/(<[^>]*>)|(&nbsp;)/g, '').replace(/\s+/g, ' ').trim()
+}
+
 // convert firestore timestamps to dates
 function convertToNativeDates (obj = {}) {
   var parsed = Object.assign({}, obj);
@@ -485,9 +490,11 @@ export function getTemplates () {
         })
         .then((templates) => {
           return Object.keys(templates).map((id) => {
-            return Object.assign(convertToNativeDates(templates[id]), {
+            const template = templates[id]
+            return Object.assign(convertToNativeDates(template), {
               id: id,
-              tags: idsToTags(templates[id].tags, tags).join(', '),
+              tags: idsToTags(template.tags, tags).join(', '),
+              _body_plaintext: plainText(template.body),
             })
           })
         })
