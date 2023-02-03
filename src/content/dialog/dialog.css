@@ -19,6 +19,7 @@
   --radius: 5px;
   --radius-small: 3px;
   --dialog-height: 250px;
+  --footer-height: 40px;
 
   position: absolute;
   width: 360px;
@@ -123,6 +124,8 @@
 
 input[type=search],
 .dialog-footer {
+  overflow: hidden;
+  height: var(--footer-height);
   margin: 0 -1px;
   padding: 8px 12px;
   background: var(--gray-light);

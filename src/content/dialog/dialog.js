@@ -1,6 +1,7 @@
 /* global REGISTER_DISABLED */
 import browser from 'webextension-polyfill'
-import {render, html} from 'lit-html'
+import {render} from 'lit-html'
+import {html, literal, unsafeStatic} from 'lit-html/static.js'
 import {classMap} from 'lit-html/directives/class-map.js'
 import {unsafeSVG} from 'lit-html/directives/unsafe-svg.js'
 import {repeat} from 'lit-html/directives/repeat.js'
@@ -14,8 +15,12 @@ import {keybind, keyunbind} from '../keybind.js'
 
 import config from '../../config.js'
 import {editIcon, plusIcon} from './dialog-icons.js'
+import {dialogSettingsTagName} from './dialog-settings.js'
 
 import styles from './dialog.css?raw'
+
+const dialogSettingsComponent = literal([dialogSettingsTagName])
+const dialogStyles = unsafeStatic(styles)
 
 let dialogInstance = null
 
@@ -476,7 +481,7 @@ customElements.define(
     render () {
       const t0 = performance.now()
       render(html`
-        <style>${styles}</style>
+        <style>${dialogStyles}</style>
         <div
           class=${classMap({
             'dialog-container': true,
@@ -559,8 +564,12 @@ customElements.define(
               <div class="dialog-shortcut">
                 ${this.getAttribute('shortcut')}
               </div>
+              <button type="button">
+                Settings
+              </button>
             </div>
           </div>
+          <${dialogSettingsComponent} />
         </div>
       `, this.shadowRoot)
       const t1 = performance.now()
