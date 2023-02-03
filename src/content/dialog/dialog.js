@@ -186,17 +186,16 @@ customElements.define(
 
       this.sortTemplates = async (templates = []) => {
         const data = await store.getExtensionData()
+        const sort = data.dialogSort
         const lastUsed = data.templatesLastUsed
-        const sort = ''
 
-        // TODO get sort type from extension data
         if (sort === 'alphabetical') {
           return templates.sort((a, b) => {
               return a.title.localeCompare(b.title)
             })
         }
 
-        // default lastUsed sort
+        // default last_used sort
         return templates
           .sort((a, b) => {
             return new Date(b.updated_datetime) - new Date(a.updated_datetime)
@@ -572,7 +571,6 @@ function isTextfield (element) {
 function createDialog (settings = {}) {
   const instance = document.createElement(dialogTagName)
   instance.setAttribute('shortcut', settings.dialog_shortcut)
-  instance.setAttribute('sort-az', settings.dialog_sort)
   document.documentElement.appendChild(instance)
 
   return instance

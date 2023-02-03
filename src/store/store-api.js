@@ -262,7 +262,6 @@ const defaultSettings = {
   dialog_enabled: true,
   dialog_button: true,
   dialog_shortcut: 'ctrl+space',
-  dialog_sort: false,
 
   expand_enabled: true,
   expand_shortcut: 'tab',
@@ -647,6 +646,7 @@ const extensionDataKey = 'briskine'
 const defaultExtensionData = {
   words: 0,
   templatesLastUsed: {},
+  dialogSort: 'last_used',
 }
 
 export function getExtensionData () {
