@@ -422,6 +422,13 @@ customElements.define(
         const container = e.target.closest('[data-id]')
         if (container) {
           this.setActive(container.dataset.id)
+
+          // add the title attribute only when hovering the template.
+          // speeds up rendering the template list.
+          const template = this.templates.find((t) => t.id === container.dataset.id)
+          if (template) {
+            container.title = template._body_plaintext
+          }
         }
       })
 
@@ -467,7 +474,7 @@ customElements.define(
       window.removeEventListener('focusin', this.stopTargetPropagation, true)
     }
     render () {
-      // const t0 = performance.now()
+      const t0 = performance.now()
       render(html`
         <style>${styles}</style>
         <div
@@ -503,7 +510,6 @@ customElements.define(
                   return html`
                     <li
                       data-id=${t.id}
-                      title=${t._body_plaintext}
                       class=${classMap({
                         [activeTemplateClass]: t.id === this.activeItem,
                       })}
@@ -557,8 +563,8 @@ customElements.define(
           </div>
         </div>
       `, this.shadowRoot)
-      // const t1 = performance.now()
-      // console.log('render time', t1 - t0)
+      const t1 = performance.now()
+      console.log('render time', t1 - t0)
     }
   }
 )
