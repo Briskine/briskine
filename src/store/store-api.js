@@ -22,6 +22,7 @@ import {
 
 import config from '../config.js'
 import trigger from './store-trigger.js'
+import fuzzySearch from './search.js'
 
 const firebaseApp = initializeApp(FIREBASE_CONFIG)
 const firebaseAuth = getAuth(firebaseApp)
@@ -700,6 +701,28 @@ export function getAccount () {
         customers: userData.customers,
         email: userData.email,
         full_name: userData.full_name,
+      }
+    })
+}
+
+let lastSearchQuery = ''
+export function searchTemplates (query = '') {
+  lastSearchQuery = query
+
+  return getTemplates()
+    .then((templates) => {
+      // avoid triggering fuzzySearch
+      // if this is not the latest search query, for better performance.
+      if (query !== lastSearchQuery) {
+        return {
+          query: '_SEARCH_CANCELED',
+          results: [],
+        }
+      }
+
+      return {
+        query: query,
+        results: fuzzySearch(templates, query),
       }
     })
 }

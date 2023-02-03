@@ -126,14 +126,15 @@ export default function search (list = [], text = '') {
                 weight: 0.4
             },
             {
-                name: 'body',
+                name: '_body_plaintext',
                 weight: 0.2
             }
         ]
     };
 
-    var fuse = new Fuse(filteredList, options);
-    return fuse.search(advancedSearch.text).map((result) => {
-        return result.item;
-    });
+    var fuse = new Fuse(filteredList, options)
+    const fuseSearch = fuse.search(advancedSearch.text)
+    return fuseSearch.map((result) => {
+      return result.item
+    })
 }

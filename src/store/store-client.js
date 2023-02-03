@@ -28,6 +28,7 @@ const methods = [
 
   'getTemplates',
   'updateTemplateStats',
+  'searchTemplates',
 
   'signin',
   'logout',
@@ -36,7 +37,7 @@ const methods = [
   'createSession',
 
   'getExtensionData',
-  'setExtensionData'
+  'setExtensionData',
 ]
 
 let events = []

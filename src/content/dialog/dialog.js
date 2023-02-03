@@ -9,7 +9,6 @@ import store from '../../store/store-client.js'
 import {isContentEditable} from '../editors/editor-contenteditable.js'
 import {bubbleTagName} from '../bubble/bubble.js'
 import {getEditableCaret, getContentEditableCaret, getDialogPosition} from './dialog-position.js'
-import fuzzySearch from '../search.js'
 import {autocomplete, getSelectedWord, getSelection, getEventTarget} from '../autocomplete.js'
 import {keybind, keyunbind} from '../keybind.js'
 
@@ -46,6 +45,8 @@ customElements.define(
       this.loading = true
 
       this.searchField = null
+      this.searchQuery = ''
+
       this.editor = null
       this.word = null
       // selection cache, to restore later
@@ -54,7 +55,7 @@ customElements.define(
       this.anchorNode = null
       this.anchorOffset = 0
 
-      this.show = (e) => {
+      this.show = async (e) => {
         // dialog is already visible
         if (this.hasAttribute(dialogVisibleAttr)) {
           return
@@ -157,19 +158,18 @@ customElements.define(
         // setting the attribute on the editable element will set it's value in the search field.
         const searchQuery = element.getAttribute('data-briskine-search') || ''
         this.searchField.value = searchQuery
+        this.searchQuery = searchQuery
         // give it a second before focusing.
         // in production, the search field is not focused on some websites (eg. google sheets, salesforce).
         setTimeout(() => {
           this.searchField.focus()
         })
 
-        // restore scroll position
+        // restore scroll position faster than on re-rendering
         this.setActive(this.activeItem, true)
 
         // populate the template list
-        window.requestAnimationFrame(() => {
-          this.populateTemplates(searchQuery)
-        })
+        window.requestAnimationFrame(this.populateTemplates)
       }
 
       this.hideOnClick = (e) => {
@@ -184,62 +184,61 @@ customElements.define(
         }
       }
 
-      this.filterTemplates = (templates = [], query = '') => {
-        return store.getExtensionData()
-          .then((data) => {
-            const lastUsed = data.templatesLastUsed
+      this.sortTemplates = async (templates = []) => {
+        const data = await store.getExtensionData()
+        const lastUsed = data.templatesLastUsed
+        const sort = ''
 
-            let filteredTemplates = templates
-            if (query) {
-              filteredTemplates = fuzzySearch(templates, query)
-            } else {
-              // only sort templates if no search query was used
-              if (this.getAttribute('sort-az') === 'true') {
-                // alphabetical sort
-                filteredTemplates = filteredTemplates
-                  .sort((a, b) => {
-                    return a.title.localeCompare(b.title)
-                  })
-              } else {
-                // default sort
-                filteredTemplates = filteredTemplates
-                  .sort((a, b) => {
-                    return new Date(b.updated_datetime) - new Date(a.updated_datetime)
-                  })
-                  .sort((a, b) => {
-                    return new Date(lastUsed[b.id] || 0) - new Date(lastUsed[a.id] || 0)
-                  })
-              }
-            }
+        // TODO get sort type from extension data
+        if (sort === 'alphabetical') {
+          return templates.sort((a, b) => {
+              return a.title.localeCompare(b.title)
+            })
+        }
 
-            return filteredTemplates
+        // default lastUsed sort
+        return templates
+          .sort((a, b) => {
+            return new Date(b.updated_datetime) - new Date(a.updated_datetime)
+          })
+          .sort((a, b) => {
+            return new Date(lastUsed[b.id] || 0) - new Date(lastUsed[a.id] || 0)
           })
       }
 
-      this.getAllTemplates = () => {
-        return store.getTemplates()
-          .then((templates) => {
-            this.loading = false
-            return templates
-          })
+      this.getAllTemplates = async () => {
+        const templates = await store.getTemplates()
+        this.loading = false
+        return templates
       }
 
-      this.populateTemplates = (query = '') => {
-        return this.getAllTemplates()
-          .then((templates) => {
-            return this.filterTemplates(templates, query)
-          })
-          .then((templates) => {
-            this.templates = templates
-            this.render()
+      this.populateTemplates = async () => {
+        let active = null
+        if (this.searchQuery) {
+          const {query, results} = await store.searchTemplates(this.searchQuery)
+          if (query !== this.searchQuery) {
+            return
+          }
 
-            // TODO correctly select item if not already selected?
-            if (this.activeItem && this.templates.find((t) => t.id === this.activeItem)) {
-              this.setActive(this.activeItem, true)
-            } else if (this.templates.length) {
-              this.setActive(this.templates[0].id, true)
-            }
-          })
+          // do not sort on search
+          this.templates = results
+          // set first active and scroll to top
+          if (this.templates.length) {
+            active = this.templates[0].id
+          }
+        } else {
+          const allTemplates = await this.getAllTemplates()
+          this.templates = await this.sortTemplates(allTemplates)
+
+          if (this.activeItem && this.templates.find((t) => t.id === this.activeItem)) {
+            active = this.activeItem
+          } else if (this.templates.length) {
+            active = this.templates[0].id
+          }
+        }
+
+        this.render()
+        this.setActive(active, true)
       }
 
       this.setActive = (id = '', scrollIntoView = false) => {
@@ -330,7 +329,11 @@ customElements.define(
         // only handle events from the search field
         const composedPath = e.composedPath()
         const composedTarget = composedPath[0]
-        if (e.target !== this || composedTarget !== this.searchField) {
+        if (
+          e.target !== this ||
+          composedTarget !== this.searchField ||
+          !['Enter', 'ArrowDown', 'ArrowUp'].includes(e.key)
+        ) {
           return
         }
 
@@ -374,6 +377,15 @@ customElements.define(
           this.classList.add(openAnimationClass)
         } else {
           this.classList.remove(openAnimationClass)
+
+          window.requestAnimationFrame(() => {
+            // clear the search query
+            this.searchQuery = ''
+
+            // re-render in the background,
+            // to speed up rendering on show.
+            this.populateTemplates()
+          })
         }
       }
     }
@@ -392,16 +404,15 @@ customElements.define(
 
       let searchDebouncer
       this.searchField = this.shadowRoot.querySelector('input[type=search]')
+
       // search for templates
       this.searchField.addEventListener('input', (e) => {
         if (searchDebouncer) {
           clearTimeout(searchDebouncer)
         }
 
-        const query = e.target.value
-        searchDebouncer = setTimeout(() => {
-          this.populateTemplates(query)
-        }, 200)
+        this.searchQuery = e.target.value
+        searchDebouncer = setTimeout(this.populateTemplates, 200)
       })
 
       // keyboard navigation and insert for templates
@@ -457,6 +468,7 @@ customElements.define(
       window.removeEventListener('focusin', this.stopTargetPropagation, true)
     }
     render () {
+      // const t0 = performance.now()
       render(html`
         <style>${styles}</style>
         <div
@@ -546,6 +558,8 @@ customElements.define(
           </div>
         </div>
       `, this.shadowRoot)
+      // const t1 = performance.now()
+      // console.log('render time', t1 - t0)
     }
   }
 )
