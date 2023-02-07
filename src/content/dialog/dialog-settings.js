@@ -52,6 +52,13 @@ customElements.define(
       this.attachShadow({mode: 'open'})
       this.render()
 
+      const closeBtn = this.shadowRoot.querySelector('.btn-close')
+      if (closeBtn) {
+        closeBtn.addEventListener('click', (e) => {
+          this.dispatchEvent(new Event('settings-close', { bubbles: true, composed: true }))
+        })
+      }
+
       const form = this.shadowRoot.querySelector('form')
       if (form) {
         form.addEventListener('change', (e) => {
@@ -60,6 +67,8 @@ customElements.define(
             store.setExtensionData({
               dialogSort: e.target.value,
             })
+
+            this.dispatchEvent(new Event('settings-updated', { bubbles: true, composed: true }))
           }
         })
       }
@@ -69,8 +78,14 @@ customElements.define(
       render(html`
         <style>${styles}</style>
         <div>
-          <div class="dialog-settings-title">
-            Briskine Dialog Settings
+          <div class="dialog-settings-header">
+            <h2>
+              Briskine Dialog Settings
+            </h2>
+
+            <button type="button" class="btn-close" title="Close Briskine Dialog Settings">
+              Close
+            </button>
           </div>
           <div class="dialog-settings-content">
             <form>
@@ -88,6 +103,12 @@ customElements.define(
                     </option>
                   `)}
                 </select>
+              </div>
+
+              <div>
+                <a href="#">
+                  Briskine General Settings
+                </a>
               </div>
             </form>
           </div>

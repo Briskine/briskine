@@ -52,6 +52,8 @@ customElements.define(
       this.searchField = null
       this.searchQuery = ''
 
+      this.settingsContainer = null
+
       this.editor = null
       this.word = null
       // selection cache, to restore later
@@ -194,17 +196,22 @@ customElements.define(
         const sort = data.dialogSort
         const lastUsed = data.templatesLastUsed
 
-        if (sort === 'alphabetical') {
-          return templates.sort((a, b) => {
-              return a.title.localeCompare(b.title)
+        if (['title', 'shortcut'].includes(sort)) {
+          return templates
+            .sort((a, b) => {
+              return a[sort].localeCompare(b[sort])
             })
+        }
+
+        if (sort === 'modified_datetime') {
+        return templates
+          .sort((a, b) => {
+            return new Date(b.modified_datetime || 0) - new Date(a.modified_datetime || 0)
+          })
         }
 
         // default last_used sort
         return templates
-          .sort((a, b) => {
-            return new Date(b.updated_datetime) - new Date(a.updated_datetime)
-          })
           .sort((a, b) => {
             return new Date(lastUsed[b.id] || 0) - new Date(lastUsed[a.id] || 0)
           })
@@ -316,6 +323,11 @@ customElements.define(
           })
       }
 
+      this.toggleSettings = (force) => {
+        this.toggleAttribute('settings', force)
+        this.settingsContainer.toggleAttribute('visible', force)
+      }
+
       this.hideOnEsc = (e) => {
         if (e.key === 'Escape' && this.hasAttribute(dialogVisibleAttr)) {
           e.stopPropagation()
@@ -385,6 +397,8 @@ customElements.define(
           window.requestAnimationFrame(() => {
             // clear the search query
             this.searchQuery = ''
+            // close settings
+            this.toggleSettings(false)
 
             // re-render in the background,
             // to speed up rendering on show.
@@ -445,6 +459,26 @@ customElements.define(
         if (container && !editButton) {
           this.insertTemplate(container.dataset.id)
         }
+      })
+
+      // open settings
+      this.settingsContainer = this.shadowRoot.querySelector(dialogSettingsTagName)
+      this.shadowRoot.addEventListener('click', (e) => {
+        const settingsBtn = e.target.closest('.btn-settings')
+        if (settingsBtn) {
+          this.toggleSettings()
+        }
+      })
+
+      this.addEventListener('settings-updated', () => {
+        // reset the active item,
+        // to select the first item after changing the settings.
+        this.activeItem = null
+        window.requestAnimationFrame(this.populateTemplates)
+      })
+
+      this.addEventListener('settings-close', () => {
+        this.toggleSettings(false)
       })
 
       window.addEventListener('click', this.hideOnClick, true)
@@ -564,7 +598,7 @@ customElements.define(
               <div class="dialog-shortcut">
                 ${this.getAttribute('shortcut')}
               </div>
-              <button type="button">
+              <button type="button" class="btn-settings">
                 Settings
               </button>
             </div>

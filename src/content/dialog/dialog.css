@@ -20,15 +20,19 @@
   --radius-small: 3px;
   --dialog-height: 250px;
   --footer-height: 40px;
+  --padding-x: 12px;
+  --padding-y: 8px;
 
   position: absolute;
   width: 360px;
   height: var(--dialog-height);
   z-index: 2147483646;
+  overflow: hidden;
 
   color: #333;
   font-size: 13px;
   font-family: sans-serif;
+  line-height: 1.2;
 
   border-radius: var(--radius);
   background: #fff;

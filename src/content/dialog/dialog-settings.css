@@ -1,6 +1,7 @@
 /* dialog styles
  */
 :host {
+  display: none;
   position: absolute;
   top: 0;
   left: 0;
@@ -8,5 +9,30 @@
   height: calc(100% - var(--footer-height));
 
   background: white;
+}
+
+:host([visible]) {
+  display: block;
+}
+
+.dialog-settings-content,
+.dialog-settings-header {
+  padding: var(--padding-y) var(--padding-x);
+}
+
+.dialog-settings-header {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0 -1px;
+  border: 1px solid var(--gray);
+}
+
+h2 {
+  margin: 0;
+
+  font-size: 1.1em;
+  font-weight: normal;
 }
 
