@@ -8,7 +8,16 @@ describe('CKEditor', () => {
 
   it('should insert template with keyboard shortcut', () => {
     cy.get('[contenteditable]')
-      .type('kr')
+      // HACK workaround for being unable to use type()
+      // select-all+del makes sure the selection is at the end of "kr"
+      .type('{selectAll}{del}')
+      .then((node) => {
+        const editor = node.get(0).ckeditorInstance
+        const viewFragment = editor.data.processor.toView('kr')
+        const modelFragment = editor.data.toModel(viewFragment)
+        editor.model.insertContent(modelFragment)
+        return node
+      })
       .tab()
       .wait(500)
       .then(($el) => {
