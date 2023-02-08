@@ -32,19 +32,21 @@ export function insertCkEditorText (node, data = {}) {
     return
   }
 
-  // remove template shortcut
-  if (data.removeShortcut) {
-    // select the previous word,
-    // our template shortcuts cut and word boundaries (eg. space).
-    editor.model.modifySelection(editor.model.document.selection, {
-      direction: 'backward',
-      unit: 'word',
-    })
-  }
+  editor.model.change((writer) => {
+    // remove template shortcut
+    if (data.removeShortcut) {
+      // select the previous word,
+      // our template shortcuts cut and word boundaries (eg. space).
+      writer.model.modifySelection(editor.model.document.selection, {
+        direction: 'backward',
+        unit: 'word',
+      })
+    }
 
-  // convert the html string to a ckeditor fragment.
-  const viewFragment = editor.data.processor.toView(data.content)
-  const modelFragment = editor.data.toModel(viewFragment)
+    // convert the html string to a ckeditor fragment.
+    const viewFragment = editor.data.processor.toView(data.content)
+    const modelFragment = editor.data.toModel(viewFragment)
 
-  editor.model.insertContent(modelFragment)
+    writer.model.insertContent(modelFragment)
+  })
 }
