@@ -9,36 +9,44 @@ export function isCkEditor (element) {
 }
 
 export function insertCkEditorTemplate (params = {}) {
-  const selection = window.getSelection()
-  const range = selection.getRangeAt(0)
-  const focusNode = selection.focusNode
-
+  let removeShortcut = false
   // delete shortcut
   if (params.word.text === params.quicktext.shortcut) {
-    range.setStart(focusNode, params.word.start)
-    range.setEnd(focusNode, params.word.end)
-    range.deleteContents()
+    removeShortcut = true
   }
 
-  // HACK
-  // give it a second to update the editor state,
-  // after removing the shortcut.
-  setTimeout(() => {
-    sendToPage({
-      type: 'ckeditor-insert',
-      data: params.text,
-    })
+  sendToPage({
+    type: 'ckeditor-insert',
+    data: {
+      removeShortcut: removeShortcut,
+      content: params.text,
+    },
   })
 }
 
 // runs in the page context
-export function insertCkEditorText (node, content = '') {
-  const editor = node.ckeditorInstance
-
+export function insertCkEditorText (node, data = {}) {
   // editor is the ckeditorInstance.
-  // convert the html string to a ckeditor fragment.
-  const viewFragment = editor.data.processor.toView(content)
-  const modelFragment = editor.data.toModel(viewFragment)
+  const editor = node.ckeditorInstance
+  if (!editor) {
+    return
+  }
 
-  editor.model.insertContent(modelFragment)
+  editor.model.change((writer) => {
+    // remove template shortcut
+    if (data.removeShortcut) {
+      // select the previous word,
+      // our template shortcuts cut at word boundaries (eg. space).
+      writer.model.modifySelection(editor.model.document.selection, {
+        direction: 'backward',
+        unit: 'word',
+      })
+    }
+
+    // convert the html string to a ckeditor fragment.
+    const viewFragment = editor.data.processor.toView(data.content)
+    const modelFragment = editor.data.toModel(viewFragment)
+
+    writer.model.insertContent(modelFragment)
+  })
 }
