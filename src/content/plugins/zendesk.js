@@ -14,8 +14,11 @@ function getData (params) {
     const $editorView = params.element.closest('#editor-view');
     // Agent Workspace enabled
     if ($editorView) {
-        // get the agent name from the document title (eg. Full Name - Agent).
-        agentName = document.title.substring(0, document.title.lastIndexOf('-'));
+        // get the agent name from the document title (eg. Ticket – Full Name – Zendesk)
+      const titleParts = document.title.split('–')
+      if (titleParts.length) {
+        agentName = (titleParts[titleParts.length - 2] || '').trim()
+      }
 
         const avatarSelector = '[data-garden-id="tags.avatar"]';
         const $avatar = $editorView.querySelector(avatarSelector);
@@ -100,23 +103,24 @@ function isActive () {
 }
 
 export default async (params = {}) => {
-    if (!isActive()) {
-        return false;
-    }
+  if (!isActive()) {
+    return false
+  }
 
-    const data = getData(params);
-    const parsedTemplate = await parseTemplate(params.quicktext.body, data);
-    const parsedParams = Object.assign({
-        text: parsedTemplate
-    }, params)
+  const data = getData(params)
+  console.log(data)
+  const parsedTemplate = await parseTemplate(params.quicktext.body, data)
+  const parsedParams = Object.assign({
+    text: parsedTemplate
+  }, params)
 
-    // HACK
-    // zendesk does some additional onfocus work, and causes our caret to be placed
-    // at the start of the first line, instead of the end of the inserted template,
-    // when the editor is not focused on insert (eg. when inserting from the dialog).
-    // triggering the insert later fixes the wrongly placed caret.
-    setTimeout(() => {
-      insertTemplate(parsedParams)
-    }, 100)
-    return true
-};
+  // HACK
+  // zendesk does some additional onfocus work, and causes our caret to be placed
+  // at the start of the first line, instead of the end of the inserted template,
+  // when the editor is not focused on insert (eg. when inserting from the dialog).
+  // triggering the insert later fixes the wrongly placed caret.
+  setTimeout(() => {
+    insertTemplate(parsedParams)
+  }, 100)
+  return true
+}
