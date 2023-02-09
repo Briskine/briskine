@@ -108,8 +108,15 @@ export default async (params = {}) => {
     const parsedTemplate = await parseTemplate(params.quicktext.body, data);
     const parsedParams = Object.assign({
         text: parsedTemplate
-    }, params);
+    }, params)
 
-    insertTemplate(parsedParams);
-    return true;
+    // HACK
+    // zendesk does some additional onfocus work, and causes our caret to be placed
+    // at the start of the first line, instead of the end of the inserted template,
+    // when the editor is not focused on insert (eg. when inserting from the dialog).
+    // triggering the insert later fixes the wrongly placed caret.
+    setTimeout(() => {
+      insertTemplate(parsedParams)
+    }, 100)
+    return true
 };

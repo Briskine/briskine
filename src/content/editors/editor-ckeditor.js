@@ -36,7 +36,7 @@ export function insertCkEditorText (node, data = {}) {
     // remove template shortcut
     if (data.removeShortcut) {
       // select the previous word,
-      // our template shortcuts cut and word boundaries (eg. space).
+      // our template shortcuts cut at word boundaries (eg. space).
       writer.model.modifySelection(editor.model.document.selection, {
         direction: 'backward',
         unit: 'word',
