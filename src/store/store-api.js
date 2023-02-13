@@ -346,85 +346,86 @@ onIdTokenChanged(firebaseAuth, (firebaseUser) => {
 })
 
 function getDefaultTemplates () {
-    const defaultTemplates = [
-        {
-            title: 'Say Hello',
-            shortcut: 'h',
-            subject: '',
-            tags: 'en, greetings',
-            body: '<div>Hello {{to.first_name}},</div><div></div>'
-        },
-        {
-            title: 'Nice talking to you',
-            shortcut: 'nic',
-            subject: '',
-            tags: 'en, followup',
-            body: '<div>It was nice talking to you.</div>'
-        },
-        {
-            title: 'Kind Regards',
-            shortcut: 'kr',
-            subject: '',
-            tags: 'en, closing',
-            body: '<div>Kind regards,</div><div>{{from.first_name}}.</div>'
-        },
-        {
-            title: 'My email',
-            shortcut: 'e',
-            subject: '',
-            tags: 'en, personal',
-            body: '<div>{{from.email}}</div>'
-        }
-    ];
-
-    if (ENV === 'development') {
-      let allVarsBody = [ 'account', 'from', 'to', 'cc', 'bcc' ].map((field) => {
-        return `
-          <div>
-            <strong># ${field}</strong>
-          </div>
-          {{#each ${field}}}
-            <div>
-              {{@key}}: {{this}}
-            </div>
-          {{/each}}
-        `
-      }).join('')
-
-      allVarsBody += `
-        <div>subject: {{subject}}</div>
-        <div>next week: {{moment add='7;days' format='DD MMMM'}}</div>
-        <div>last week: {{moment subtract='7;days'}}</div>
-        <div>choice: {{choice 'Hello, Hi, Hey'}}</div>
-        <div>domain: {{domain to.email}}</div>
-        <div><img src="https://www.briskine.com/images/briskine-promo.png" width="100" height="73"></div>
-      `
-
-      defaultTemplates.push({
-        title: 'allvars',
-        shortcut: 'allvars',
-        subject: 'Subject',
-        body: allVarsBody,
-        to: 'to@briskine.com',
-        cc: 'cc@briskine.com, cc2@briskine.com',
-        bcc: 'bcc@briskine.com',
-        from: 'contact@briskine.com'
-      })
-
-      defaultTemplates.push({
-        title: 'broken',
-        shortcut: 'broken',
-        body: 'Hello {{to.first_name}'
-      })
+  const defaultTemplates = [
+    {
+      title: 'Say Hello',
+      shortcut: 'h',
+      subject: '',
+      tags: 'en, greetings',
+      body: '<div>Hello {{to.first_name}},</div><div></div>'
+    },
+    {
+      title: 'Nice talking to you',
+      shortcut: 'nic',
+      subject: '',
+      tags: 'en, followup',
+      body: '<div>It was nice talking to you.</div>'
+    },
+    {
+      title: 'Kind Regards',
+      shortcut: 'kr',
+      subject: '',
+      tags: 'en, closing',
+      body: '<div>Kind regards,</div><div>{{from.first_name}}.</div>'
+    },
+    {
+      title: 'My email',
+      shortcut: 'e',
+      subject: '',
+      tags: 'en, personal',
+      body: '<div>{{from.email}}</div>'
     }
+  ]
 
-    return defaultTemplates
-      .map((template, index) => {
-        const id = String(index)
-        return Object.assign({
-            id: id,
-        }, template)
-      })
+  if (ENV === 'development') {
+    let allVarsBody = [ 'account', 'from', 'to', 'cc', 'bcc' ].map((field) => {
+      return `
+        <div>
+          <strong># ${field}</strong>
+        </div>
+        {{#each ${field}}}
+          <div>
+            {{@key}}: {{this}}
+          </div>
+        {{/each}}
+      `
+    }).join('')
+
+    allVarsBody += `
+      <div>subject: {{subject}}</div>
+      <div>next week: {{moment add='7;days' format='DD MMMM'}}</div>
+      <div>last week: {{moment subtract='7;days'}}</div>
+      <div>choice: {{choice 'Hello, Hi, Hey'}}</div>
+      <div>domain: {{domain to.email}}</div>
+      <div><img src="https://www.briskine.com/images/briskine-promo.png" width="100" height="73"></div>
+    `
+
+    defaultTemplates.push({
+      title: 'allvars',
+      shortcut: 'allvars',
+      subject: 'Subject',
+      body: allVarsBody,
+      to: 'to@briskine.com',
+      cc: 'cc@briskine.com, cc2@briskine.com',
+      bcc: 'bcc@briskine.com',
+      from: 'contact@briskine.com'
+    })
+
+    defaultTemplates.push({
+      title: 'broken',
+      shortcut: 'broken',
+      body: 'Hello {{to.first_name}'
+    })
+  }
+
+  return defaultTemplates
+    .map((template, index) => {
+      const id = String(index)
+      return Object.assign({
+        id: id,
+        _body_plaintext: plainText(template.body),
+      }, template)
+    })
 }
 
 function isFree (user) {
