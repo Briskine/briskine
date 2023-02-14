@@ -106,14 +106,16 @@ p {
   border: 0;
   border-radius: var(--radius-small);
   background: var(--gray);
-  cursor: pointer;
 
   color: var(--gray-dark);
   text-decoration: none;
 }
 
-.btn:hover {
+a.btn:hover,
+button.btn:hover {
   background: var(--gray-light);
+
+  cursor: pointer;
 }
 
 .btn-primary {
@@ -122,7 +124,8 @@ p {
   color: #fff;
 }
 
-.btn-primary:hover {
+a.btn-primary:hover,
+button.btn-primary:hover {
   background: var(--blue-light);
 }
 
@@ -313,6 +316,8 @@ input[type=search]:focus {
 }
 
 .dialog-shortcut {
+  height: 24px;
+
   color: rgba(0,0,0,.3);
   font-weight: bold;
   text-align: right;
@@ -425,7 +430,7 @@ input[type=search]:focus {
 /* settings
  */
 .btn-settings {
-  margin-left: 1em;
+  margin-left: .2rem;
 }
 
 :host([modal=settings]) .btn-settings {

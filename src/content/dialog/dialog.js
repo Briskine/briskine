@@ -593,7 +593,10 @@ customElements.define(
                 </a>
               </div>
 
-              <div class="dialog-shortcut">
+              <div
+                class="dialog-shortcut btn"
+                title="Press ${this.getAttribute('shortcut')} to open the Briskine Dialog"
+                >
                 ${this.getAttribute('shortcut')}
               </div>
               <button
@@ -601,7 +604,6 @@ customElements.define(
                 class="btn btn-sm btn-settings"
                 title="Dialog Settings"
                 >
-                <span></span>
                 ${unsafeSVG(gearIcon)}
               </button>
             </div>
