@@ -511,7 +511,6 @@ customElements.define(
       window.removeEventListener('focusin', this.stopTargetPropagation, true)
     }
     render () {
-      const t0 = performance.now()
       render(html`
         <style>${dialogStyles}</style>
         <div
@@ -611,8 +610,6 @@ customElements.define(
           <${dialogSettingsComponent} />
         </div>
       `, this.shadowRoot)
-      const t1 = performance.now()
-      console.log('render time', t1 - t0)
     }
   }
 )
