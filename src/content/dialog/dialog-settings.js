@@ -12,7 +12,7 @@ import {editIcon, plusIcon} from './dialog-icons.js'
 
 import styles from './dialog-settings.css?raw'
 
-export const dialogSettingsTagName = `b-dialog-settings-${Date.now()}`
+export const dialogSettingsTagName = `b-dialog-settings-${Date.now().toString(36)}`
 
 const sortOptions = [
   {
@@ -77,7 +77,7 @@ customElements.define(
     render () {
       render(html`
         <style>${styles}</style>
-        <div>
+        <div class="dialog-settings">
           <div class="dialog-settings-header">
             <h2>
               Briskine Dialog Settings

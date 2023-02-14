@@ -26,7 +26,7 @@ const dialogStyles = unsafeStatic(styles)
 let dialogInstance = null
 
 export const dialogShowEvent = 'briskine-dialog'
-export const dialogTagName = `b-dialog-${Date.now()}`
+export const dialogTagName = `b-dialog-${Date.now().toString(36)}`
 
 const dialogVisibleAttr = 'visible'
 const openAnimationClass = 'b-dialog-open-animation'
@@ -52,8 +52,6 @@ customElements.define(
 
       this.searchField = null
       this.searchQuery = ''
-
-      this.settingsContainer = null
 
       this.editor = null
       this.word = null
@@ -326,7 +324,6 @@ customElements.define(
 
       this.toggleSettings = (force) => {
         this.toggleAttribute('settings', force)
-        this.settingsContainer.toggleAttribute('visible', force)
       }
 
       this.hideOnEsc = (e) => {
@@ -463,7 +460,6 @@ customElements.define(
       })
 
       // open settings
-      this.settingsContainer = this.shadowRoot.querySelector(dialogSettingsTagName)
       this.shadowRoot.addEventListener('click', (e) => {
         const settingsBtn = e.target.closest('.btn-settings')
         if (settingsBtn) {

@@ -1,6 +1,6 @@
 /* dialog styles
  */
-:host {
+.dialog-settings {
   display: none;
   position: absolute;
   top: 0;
@@ -11,7 +11,7 @@
   background: white;
 }
 
-:host([visible]) {
+:host([settings]) .dialog-settings {
   display: block;
 }
 
@@ -29,7 +29,7 @@
   border: 1px solid var(--gray);
 }
 
-h2 {
+.dialog-settings h2 {
   margin: 0;
 
   font-size: 1.1em;
