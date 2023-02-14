@@ -598,7 +598,7 @@ customElements.define(
               <button
                 type="button"
                 class="btn btn-sm btn-settings"
-                title="Briskine Dialog Settings"
+                title="Dialog Settings"
                 >
                 <span></span>
                 ${unsafeSVG(gearIcon)}

@@ -13,9 +13,12 @@
   --gray: #e5e5e5;
   --gray-light: #f4f4f4;
   --gray-lighter: #f7f7f7;
+  --gray-dark: #23374d;
+
   --blue: #1e48b3;
   --blue-light: #0b5ed7;
   --blue-focus: rgb(13 110 253 / 25%);
+
   --radius: 5px;
   --radius-small: 3px;
   --dialog-height: 250px;
@@ -29,7 +32,7 @@
   z-index: 2147483646;
   overflow: hidden;
 
-  color: #333;
+  color: var(--gray-dark);
   font-size: 13px;
   font-family: sans-serif;
   line-height: 1.2;
@@ -78,6 +81,23 @@
   }
 }
 
+/* general
+ */
+p {
+  margin: 0  0 1rem 0;
+}
+
+/* utilities
+ */
+.d-flex {
+  display: flex;
+  align-items: center;
+}
+
+.flex-fill {
+  flex: 1;
+}
+
 /* buttons
  */
 .btn {
@@ -88,6 +108,7 @@
   background: var(--gray);
   cursor: pointer;
 
+  color: var(--gray-dark);
   text-decoration: none;
 }
 
@@ -109,6 +130,21 @@
   padding: 4px;
 }
 
+/* close button
+ */
+.btn-close {
+  --btn-close-bg: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23000'%3e%3cpath d='M.293.293a1 1 0 0 1 1.414 0L8 6.586 14.293.293a1 1 0 1 1 1.414 1.414L9.414 8l6.293 6.293a1 1 0 0 1-1.414 1.414L8 9.414l-6.293 6.293a1 1 0 0 1-1.414-1.414L6.586 8 .293 1.707a1 1 0 0 1 0-1.414z'/%3e%3c/svg%3e");
+
+  width: 1em;
+  height: 1em;
+  background: transparent var(--btn-close-bg) center/1em auto no-repeat !important;
+  opacity: .5;
+}
+
+.btn-close:hover {
+  opacity: .75;
+}
+
 /* icons
  */
 .bi {
@@ -117,45 +153,35 @@
   max-height: 100%;
 }
 
-/* flex
- */
-.d-flex {
-  display: flex;
-  align-items: center;
-}
-
-.flex-fill {
-  flex: 1;
-}
-
 /* dialog
  */
 .dialog-container {
   display: flex;
   flex-direction: column;
   height: 100%;
+  border: 1px solid var(--gray);
 }
 
 input[type=search],
 .dialog-footer {
   height: var(--footer-height);
   margin: 0 -1px;
-  padding: 8px 12px;
+  padding: var(--padding-y) var(--padding-x);
   background: var(--gray-light);
-  border: 1px solid var(--gray);
+  border-style: solid;
+  border-color: var(--gray);
 }
 
 input[type=search] {
   position: relative;
-  border-radius: var(--radius) var(--radius) 0 0;
+  border-width: 0 0 1px;
 
   font-size: 1.1em;
 }
 
 input[type=search]:focus {
   outline: none;
-  border-color: #86b7fe;
-  box-shadow: inset 0 0 0 2px var(--blue-focus);
+  background: var(--gray-lighter);
 }
 
 .dialog-info {
@@ -280,7 +306,8 @@ input[type=search]:focus {
 .dialog-footer {
   display: none;
   position: relative;
-  border-radius: 0 0 var(--radius) var(--radius);
+  z-index: 2;
+  border-width: 1px 0 0;
 
   font-size: 12px;
 }
@@ -356,13 +383,77 @@ input[type=search]:focus {
   display: revert !important;
 }
 
+/* dialog modals
+ */
+.dialog-modal {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: calc(100% - var(--footer-height));
+  background: #fff;
+  border-radius: var(--radius) var(--radius) 0 0;
+
+  visibility: hidden;
+  opacity: 0;
+  transform: translateY(30%);
+  transition: all .1s ease-in;
+}
+
+.dialog-modal-header {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--padding-x);
+
+  color: var(--gray-dark);
+}
+
+.dialog-modal-header h2 {
+  margin: 0;
+
+  opacity: .75;
+  font-size: 1em;
+  font-weight: bold;
+}
+
+.dialog-modal-body {
+  padding: var(--padding-y) var(--padding-x);
+}
+
 /* settings
  */
-
 .btn-settings {
   margin-left: 1em;
 }
 
 :host([settings]) .btn-settings {
-  background: #fff;
+  background: #cacaca;
+}
+
+/* forms
+ */
+.form-label {
+  display: inline-block;
+}
+
+.form-select {
+  --form-select-bg-img: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
+
+  appearance: none;
+  display: block;
+  width: 100%;
+  margin-bottom: 0;
+  padding: .375rem 2.25rem .375rem .75rem;
+  background-color: #fff;
+  background-image: var(--form-select-bg-img);
+  background-repeat: no-repeat;
+  background-position: right .75rem center;
+  background-size: 16px 12px;
+  border: 1px solid var(--gray);
+  border-radius: var(--radius-small);
+
+  color: var(--bs-body-color);
+  line-height: 1.5;
 }

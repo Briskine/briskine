@@ -1,18 +1,14 @@
-/* global REGISTER_DISABLED */
-import browser from 'webextension-polyfill'
 import {render, html} from 'lit-html'
-import {classMap} from 'lit-html/directives/class-map.js'
-import {unsafeSVG} from 'lit-html/directives/unsafe-svg.js'
-import iconX from 'bootstrap-icons/icons/x.svg?raw'
 
 import store from '../../store/store-client.js'
 
 import config from '../../config.js'
-import {editIcon, plusIcon} from './dialog-icons.js'
 
 import styles from './dialog-settings.css?raw'
 
 export const dialogSettingsTagName = `b-dialog-settings-${Date.now().toString(36)}`
+
+const settingsUrl = `${config.functionsUrl}/settings`
 
 const sortOptions = [
   {
@@ -54,7 +50,7 @@ customElements.define(
 
       const closeBtn = this.querySelector('.btn-close')
       if (closeBtn) {
-        closeBtn.addEventListener('click', (e) => {
+        closeBtn.addEventListener('click', () => {
           this.dispatchEvent(new Event('settings-close', { bubbles: true, composed: true }))
         })
       }
@@ -62,7 +58,6 @@ customElements.define(
       const form = this.querySelector('form')
       if (form) {
         form.addEventListener('change', (e) => {
-          console.log('change', e.target.value)
           if (e.target && e.target.id === 'sort_by') {
             store.setExtensionData({
               dialogSort: e.target.value,
@@ -77,27 +72,26 @@ customElements.define(
     render () {
       render(html`
         <style>${styles}</style>
-        <div class="dialog-settings">
-          <div class="dialog-settings-header">
+        <div class="dialog-settings dialog-modal">
+          <div class="dialog-modal-header">
             <h2>
-              Briskine Dialog Settings
+              Dialog Settings
             </h2>
 
             <button
               type="button"
               class="btn btn-close"
-              title="Close Briskine Dialog Settings"
+              title="Close Dialog Settings"
               >
-              ${unsafeSVG(iconX)}
             </button>
           </div>
-          <div class="dialog-settings-content">
+          <div class="dialog-modal-body">
             <form>
-              <div>
-                <label for="sort_by">
-                  Sort by
+              <div class="form-block d-flex">
+                <label for="sort_by" class="form-label">
+                  Sort templates by
                 </label>
-                <select id="sort_by">
+                <select id="sort_by" class="form-select">
                   ${sortOptions.map((option) => html`
                     <option
                       value=${option.value}
@@ -108,11 +102,18 @@ customElements.define(
                   `)}
                 </select>
               </div>
-
-              <div>
-                <a href="#">
-                  Briskine General Settings
-                </a>
+              <div class="form-block d-flex">
+                <label class="form-label">
+                  General settings
+                </label>
+                <div>
+                  <p>
+                    Manage additional settings for Briskine in the Dashboard.
+                  </p>
+                  <a href=${settingsUrl} target="_blank" class="btn">
+                    Open General Settings
+                  </a>
+                </div>
               </div>
             </form>
           </div>

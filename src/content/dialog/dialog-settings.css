@@ -1,38 +1,19 @@
 /* dialog styles
  */
-.dialog-settings {
-  display: none;
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: calc(100% - var(--footer-height));
-
-  background: white;
-}
-
 :host([settings]) .dialog-settings {
-  display: block;
+  visibility: visible;
+  opacity: 1;
+  transform: translateY(0);
 }
 
-.dialog-settings-content,
-.dialog-settings-header {
-  padding: var(--padding-y) var(--padding-x);
-}
-
-.dialog-settings-header {
-  display: flex;
+.dialog-settings .form-label {
+  width: 36%;
   flex-shrink: 0;
-  align-items: center;
-  justify-content: space-between;
-  margin: 0 -1px;
-  border: 1px solid var(--gray);
+
+  font-weight: bold;
 }
 
-.dialog-settings h2 {
-  margin: 0;
-
-  font-size: 1.1em;
-  font-weight: normal;
+.dialog-settings .form-block {
+  align-items: baseline;
+  margin-bottom: 1rem;
 }
-
