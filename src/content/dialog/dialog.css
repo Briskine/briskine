@@ -86,8 +86,13 @@
   border: 0;
   border-radius: var(--radius-small);
   background: var(--gray);
+  cursor: pointer;
 
   text-decoration: none;
+}
+
+.btn:hover {
+  background: var(--gray-light);
 }
 
 .btn-primary {
@@ -100,9 +105,14 @@
   background: var(--blue-light);
 }
 
+.btn-sm {
+  padding: 4px;
+}
+
 /* icons
  */
 .bi {
+  display: block;
   max-width: 100%;
   max-height: 100%;
 }
@@ -128,7 +138,6 @@
 
 input[type=search],
 .dialog-footer {
-  overflow: hidden;
   height: var(--footer-height);
   margin: 0 -1px;
   padding: 8px 12px;
@@ -345,4 +354,15 @@ input[type=search]:focus {
 
 .dialog-safari .dialog-safari-show {
   display: revert !important;
+}
+
+/* settings
+ */
+
+.btn-settings {
+  margin-left: 1em;
+}
+
+:host([settings]) .btn-settings {
+  background: #fff;
 }

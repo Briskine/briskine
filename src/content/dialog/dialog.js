@@ -5,6 +5,7 @@ import {html, literal, unsafeStatic} from 'lit-html/static.js'
 import {classMap} from 'lit-html/directives/class-map.js'
 import {unsafeSVG} from 'lit-html/directives/unsafe-svg.js'
 import {repeat} from 'lit-html/directives/repeat.js'
+import gearIcon from 'bootstrap-icons/icons/gear.svg?raw'
 
 import store from '../../store/store-client.js'
 import {isContentEditable} from '../editors/editor-contenteditable.js'
@@ -598,8 +599,13 @@ customElements.define(
               <div class="dialog-shortcut">
                 ${this.getAttribute('shortcut')}
               </div>
-              <button type="button" class="btn-settings">
-                Settings
+              <button
+                type="button"
+                class="btn btn-sm btn-settings"
+                title="Briskine Dialog Settings"
+                >
+                <span></span>
+                ${unsafeSVG(gearIcon)}
               </button>
             </div>
           </div>

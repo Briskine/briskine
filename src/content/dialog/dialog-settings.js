@@ -3,6 +3,7 @@ import browser from 'webextension-polyfill'
 import {render, html} from 'lit-html'
 import {classMap} from 'lit-html/directives/class-map.js'
 import {unsafeSVG} from 'lit-html/directives/unsafe-svg.js'
+import iconX from 'bootstrap-icons/icons/x.svg?raw'
 
 import store from '../../store/store-client.js'
 
@@ -49,17 +50,16 @@ customElements.define(
         return
       }
 
-      this.attachShadow({mode: 'open'})
       this.render()
 
-      const closeBtn = this.shadowRoot.querySelector('.btn-close')
+      const closeBtn = this.querySelector('.btn-close')
       if (closeBtn) {
         closeBtn.addEventListener('click', (e) => {
           this.dispatchEvent(new Event('settings-close', { bubbles: true, composed: true }))
         })
       }
 
-      const form = this.shadowRoot.querySelector('form')
+      const form = this.querySelector('form')
       if (form) {
         form.addEventListener('change', (e) => {
           console.log('change', e.target.value)
@@ -83,8 +83,12 @@ customElements.define(
               Briskine Dialog Settings
             </h2>
 
-            <button type="button" class="btn-close" title="Close Briskine Dialog Settings">
-              Close
+            <button
+              type="button"
+              class="btn btn-close"
+              title="Close Briskine Dialog Settings"
+              >
+              ${unsafeSVG(iconX)}
             </button>
           </div>
           <div class="dialog-settings-content">
@@ -113,7 +117,7 @@ customElements.define(
             </form>
           </div>
         </div>
-      `, this.shadowRoot)
+      `, this)
     }
   }
 )
