@@ -8,8 +8,6 @@ import styles from './dialog-settings.css?raw'
 
 export const dialogSettingsTagName = `b-dialog-settings-${Date.now().toString(36)}`
 
-const settingsUrl = `${config.functionsUrl}/settings`
-
 const sortOptions = [
   {
     label: 'Recently used',
@@ -110,7 +108,7 @@ customElements.define(
                   <p>
                     Manage additional settings for Briskine in the Dashboard.
                   </p>
-                  <a href=${settingsUrl} target="_blank" class="btn">
+                  <a href="${config.functionsUrl}/settings" target="_blank" class="btn">
                     Open General Settings
                   </a>
                 </div>

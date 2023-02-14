@@ -428,7 +428,7 @@ input[type=search]:focus {
   margin-left: 1em;
 }
 
-:host([settings]) .btn-settings {
+:host([modal=settings]) .btn-settings {
   background: #cacaca;
 }
 

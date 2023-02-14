@@ -28,6 +28,7 @@ let dialogInstance = null
 export const dialogShowEvent = 'briskine-dialog'
 export const dialogTagName = `b-dialog-${Date.now().toString(36)}`
 
+const modalAttribute = 'modal'
 const dialogVisibleAttr = 'visible'
 const openAnimationClass = 'b-dialog-open-animation'
 const activeTemplateClass = 'active'
@@ -322,10 +323,6 @@ customElements.define(
           })
       }
 
-      this.toggleSettings = (force) => {
-        this.toggleAttribute('settings', force)
-      }
-
       this.hideOnEsc = (e) => {
         if (e.key === 'Escape' && this.hasAttribute(dialogVisibleAttr)) {
           e.stopPropagation()
@@ -396,7 +393,7 @@ customElements.define(
             // clear the search query
             this.searchQuery = ''
             // close settings
-            this.toggleSettings(false)
+            this.removeAttribute(modalAttribute)
 
             // re-render in the background,
             // to speed up rendering on show.
@@ -463,7 +460,11 @@ customElements.define(
       this.shadowRoot.addEventListener('click', (e) => {
         const settingsBtn = e.target.closest('.btn-settings')
         if (settingsBtn) {
-          this.toggleSettings()
+          if (this.getAttribute(modalAttribute) === 'settings') {
+            this.removeAttribute(modalAttribute)
+          } else {
+            this.setAttribute(modalAttribute, 'settings')
+          }
         }
       })
 
@@ -475,7 +476,7 @@ customElements.define(
       })
 
       this.addEventListener('settings-close', () => {
-        this.toggleSettings(false)
+        this.removeAttribute(modalAttribute)
       })
 
       window.addEventListener('click', this.hideOnClick, true)

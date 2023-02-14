@@ -1,6 +1,6 @@
 /* dialog styles
  */
-:host([settings]) .dialog-settings {
+:host([modal=settings]) .dialog-settings {
   visibility: visible;
   opacity: 1;
   transform: translateY(0);
