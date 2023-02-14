@@ -6,6 +6,7 @@ import {classMap} from 'lit-html/directives/class-map.js'
 import {unsafeSVG} from 'lit-html/directives/unsafe-svg.js'
 import {repeat} from 'lit-html/directives/repeat.js'
 import gearIcon from 'bootstrap-icons/icons/gear.svg?raw'
+import iconArrowUpRightSquare from 'bootstrap-icons/icons/arrow-up-right-square.svg?raw'
 
 import store from '../../store/store-client.js'
 import {isContentEditable} from '../editors/editor-contenteditable.js'
@@ -15,7 +16,7 @@ import {autocomplete, getSelectedWord, getSelection, getEventTarget} from '../au
 import {keybind, keyunbind} from '../keybind.js'
 
 import config from '../../config.js'
-import {editIcon, plusIcon} from './dialog-icons.js'
+import {plusIcon} from './dialog-icons.js'
 import {dialogSettingsTagName} from './dialog-settings.js'
 
 import styles from './dialog.css?raw'
@@ -557,14 +558,16 @@ customElements.define(
                         ` : ''}
                       </div>
                       <p>${t._body_plaintext.slice(0, 100)}</p>
-                      <a
-                        href="${config.functionsUrl}/template/${t.id}"
-                        target="_blank"
-                        class="template-edit dialog-safari-hide"
-                        title="Edit template"
-                        >
-                        ${unsafeSVG(editIcon)}
-                      </a>
+                      <div class="edit-container">
+                        <a
+                          href="${config.functionsUrl}/template/${t.id}"
+                          target="_blank"
+                          class="btn btn-sm btn-edit dialog-safari-hide"
+                          title="Edit template"
+                          >
+                          ${unsafeSVG(iconArrowUpRightSquare)}
+                        </a>
+                      </div>
                     </li>
                   `
                 })
