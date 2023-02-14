@@ -594,7 +594,7 @@ customElements.define(
 
               <div
                 class="dialog-shortcut btn"
-                title="Press ${this.getAttribute('shortcut')} to open the Briskine Dialog"
+                title="Press ${this.getAttribute('shortcut')} in any text field to open the Briskine Dialog."
                 >
                 ${this.getAttribute('shortcut')}
               </div>

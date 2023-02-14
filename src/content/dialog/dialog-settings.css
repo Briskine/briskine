@@ -1,11 +1,5 @@
 /* dialog styles
  */
-:host([modal=settings]) .dialog-settings {
-  visibility: visible;
-  opacity: 1;
-  transform: translateY(0);
-}
-
 .dialog-settings .form-label {
   width: 36%;
   flex-shrink: 0;

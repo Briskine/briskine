@@ -37,6 +37,7 @@
   font-family: sans-serif;
   line-height: 1.2;
 
+  border: 1px solid var(--gray);
   border-radius: var(--radius);
   background: #fff;
 
@@ -162,7 +163,6 @@ button.btn-primary:hover {
   display: flex;
   flex-direction: column;
   height: 100%;
-  border: 1px solid var(--gray);
 }
 
 input[type=search],
@@ -401,8 +401,8 @@ input[type=search]:focus {
 
   visibility: hidden;
   opacity: 0;
-  transform: translateY(30%);
-  transition: all .1s ease-in;
+  transform: translateY(30%) scale(0.95);
+  transition: all .075s ease-in;
 }
 
 .dialog-modal-header {
@@ -425,6 +425,12 @@ input[type=search]:focus {
 
 .dialog-modal-body {
   padding: var(--padding-y) var(--padding-x);
+}
+
+:host([modal=settings]) .dialog-settings {
+  visibility: visible;
+  opacity: 1;
+  transform: translateY(0) scale(1);
 }
 
 /* settings
