@@ -123,24 +123,28 @@ customElements.define(
         })
     }
     getMotivationalMessage (words = 0) {
-      if (words < 1500) {
-        return html`
-          <span class="fst-italic">Big things have small beginnings</span> &#128170;
-        `
-      } else if (words >= 1500 && words < 2500) {
-        return html`
-          <span class="fst-italic">Or the equivalent of writing a short story</span> &#128214;
-        `
-      } else if (words >= 2500 && words < 7500) {
-        html`
-          <span class="fst-italic">Did you know mushrooms are one of the largest organisms in the world?</span> &#127812;
-        `
-      } else {
-        // more than 7500
+      if (words > 7500) {
         return html`
           <span class="fst-italic">You're awesome. Just awesome.</span> &#9996;
         `
       }
+
+      if (words > 2500) {
+        return html`
+          <span class="fst-italic">Did you know mushrooms are one of the largest organisms in the world?</span> &#127812;
+        `
+      }
+
+      if (words > 1500) {
+        return html`
+          <span class="fst-italic">Or the equivalent of writing a short story</span> &#128214;
+        `
+      }
+
+      // default, less than 1500
+      return html`
+        <span class="fst-italic">Big things have small beginnings</span> &#128170;
+      `
     }
     connectedCallback() {
       render(html`
