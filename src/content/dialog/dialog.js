@@ -451,7 +451,7 @@ customElements.define(
       this.shadowRoot.addEventListener('click', (e) => {
         const container = e.target.closest('[data-id]')
         // prevent inserting templates when clicking the edit button
-        const editButton = e.target.closest('.template-edit')
+        const editButton = e.target.closest('.btn-edit')
         if (container && !editButton) {
           this.insertTemplate(container.dataset.id)
         }
