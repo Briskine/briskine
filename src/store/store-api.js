@@ -36,7 +36,7 @@ if (ENV === 'development') {
   connectFirestoreEmulator(db, 'localhost', 5002);
 }
 
-// convert template html body to text
+// naive html to text conversion
 function plainText (html = '') {
   return html.replace(/(<[^>]*>)|(&nbsp;)/g, '').replace(/\s+/g, ' ').trim()
 }
