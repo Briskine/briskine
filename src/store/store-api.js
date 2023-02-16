@@ -476,15 +476,7 @@ export function getTemplates () {
         ])
       }
 
-      let tags = {}
-      return getCollection({
-          user: user,
-          collection: 'tags'
-        })
-        .then((res) => {
-          tags = res
-          return Promise.all(templateCollections)
-        })
+      return Promise.all(templateCollections)
         .then((res) => {
           // merge and de-duplication
           return Object.assign({}, ...res)
@@ -494,7 +486,6 @@ export function getTemplates () {
             const template = templates[id]
             return Object.assign(convertToNativeDates(template), {
               id: id,
-              tags: idsToTags(template.tags, tags).join(', '),
               _body_plaintext: plainText(template.body),
             })
           })
@@ -648,6 +639,7 @@ const defaultExtensionData = {
   words: 0,
   templatesLastUsed: {},
   dialogSort: 'last_used',
+  dialogTags: true,
 }
 
 export function getExtensionData () {
@@ -706,24 +698,53 @@ export function getAccount () {
     })
 }
 
+export function getTags () {
+  return getSignedInUser()
+    .then((user) => {
+      return getCollection({
+        collection: 'tags',
+        user: user
+      })
+    })
+    .then((tags) => {
+      return Object.keys(tags).map((id) => {
+        return Object.assign({id: id}, tags[id])
+      })
+    })
+}
+
 let lastSearchQuery = ''
 export function searchTemplates (query = '') {
   lastSearchQuery = query
 
-  return getTemplates()
-    .then((templates) => {
+  return Promise.all([
+      getTemplates(),
+      getTags()
+    ])
+    .then(([templates, tags]) => {
       // avoid triggering fuzzySearch
       // if this is not the latest search query, for better performance.
       if (query !== lastSearchQuery) {
         return {
           query: '_SEARCH_CANCELED',
+          tags: [],
           results: [],
         }
       }
 
+      // map tag ids to strings,
+      // for the fuzzy search.
+      const templatesWithTags = templates.map((template) => {
+        return Object.assign(template, {
+          tags: idsToTags(template.tags, tags).join(', '),
+        })
+      })
+
       return {
         query: query,
-        results: fuzzySearch(templates, query),
+        // return tags, to avoid another round-trip to the store
+        tags: tags,
+        results: fuzzySearch(templatesWithTags, query),
       }
     })
 }

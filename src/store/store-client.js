@@ -30,6 +30,8 @@ const methods = [
   'updateTemplateStats',
   'searchTemplates',
 
+  'getTags',
+
   'signin',
   'logout',
 

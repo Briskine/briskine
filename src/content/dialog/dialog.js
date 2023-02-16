@@ -52,6 +52,8 @@ customElements.define(
       // loading state
       this.loading = true
 
+      this.tags = []
+
       this.searchField = null
       this.searchQuery = ''
 
@@ -227,13 +229,16 @@ customElements.define(
       this.populateTemplates = async () => {
         let active = null
         if (this.searchQuery) {
-          const {query, results} = await store.searchTemplates(this.searchQuery)
+          const {query, results, tags} = await store.searchTemplates(this.searchQuery)
           if (query !== this.searchQuery) {
             return
           }
 
+          // refresh the tags
+          this.tags = tags
           // do not sort on search
           this.templates = results
+
           // set first active and scroll to top
           if (this.templates.length) {
             active = this.templates[0].id
@@ -241,6 +246,8 @@ customElements.define(
         } else {
           const allTemplates = await this.getAllTemplates()
           this.templates = await this.sortTemplates(allTemplates)
+          // TODO get tags, only if the dialogTags extensionData property is true
+          this.tags = await store.getTags()
 
           if (this.activeItem && this.templates.find((t) => t.id === this.activeItem)) {
             active = this.activeItem
@@ -558,6 +565,22 @@ customElements.define(
                         ` : ''}
                       </div>
                       <p>${t._body_plaintext.slice(0, 100)}</p>
+                      ${t.tags && t.tags.length ? html`
+                        <ul>
+                          ${repeat(t.tags, (tagId) => tagId, (tagId) => {
+                            const tag = this.tags.find((tag) => tag.id === tagId)
+                            if (!tag) {
+                              return ''
+                            }
+
+                            return html`
+                              <li>
+                                ${tag.title}
+                              </li>
+                            `
+                          })}
+                        </ul>
+                      ` : ''}
                       <div class="edit-container">
                         <a
                           href="${config.functionsUrl}/template/${t.id}"
