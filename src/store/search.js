@@ -38,7 +38,7 @@ export function parseSearchString (searchString = '') {
   const fuzzyTokens = []
 
   let value = ''
-  let filter = {};
+  let filter = {}
   for (let i = 0; i < searchString.length; i++) {
     const token = searchString[i]
     if (token === ':') {
@@ -133,9 +133,9 @@ export default function search (list = [], searchList = [], text = '') {
         weight: 0.2
       }
     ]
-  };
+  }
 
-  var fuse = new Fuse(filteredList, options);
+  var fuse = new Fuse(filteredList, options)
   return fuse.search(advancedSearch.text).map((result) => {
     return result.item
   })

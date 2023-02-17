@@ -748,9 +748,16 @@ function parseTags (tagIds = [], allTags = []) {
 
 function getSearchList (templates = [], allTags = []) {
   return templates.map((template) => {
+    // cherry-pick search properties
     return {
-      ...template,
+      title: template.title,
+      shortcut: template.shortcut,
       body: template._body_plaintext,
+      to: template.to,
+      cc: template.cc,
+      bcc: template.bcc,
+      subject: template.subject,
+      sharing: template.sharing,
       tags: parseTags(template.tags, allTags).map((t) => t?.title),
     }
   })
