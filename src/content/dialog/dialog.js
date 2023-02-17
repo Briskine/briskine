@@ -236,6 +236,7 @@ customElements.define(
 
           // refresh the tags
           this.tags = tags
+
           // do not sort on search
           this.templates = results
 
@@ -246,7 +247,6 @@ customElements.define(
         } else {
           const allTemplates = await this.getAllTemplates()
           this.templates = await this.sortTemplates(allTemplates)
-          // TODO get tags, only if the dialogTags extensionData property is true
           this.tags = await store.getTags()
 
           if (this.activeItem && this.templates.find((t) => t.id === this.activeItem)) {

@@ -14,11 +14,14 @@ function fieldAlias (field = '') {
 
 const operations = {
     tag: function (filter, item) {
-        const tags = (item.tags || '').split(',').map((t) => lowerCase(t.trim()));
-        return tags.includes(lowerCase(filter.value));
+        const tags = (item.tags || []).map((t) => lowerCase(t.trim()))
+        return tags.includes(lowerCase(filter.value))
     },
     generic: function (filter, item) {
-        return lowerCase(item[filter.field]) === lowerCase(filter.value);
+      // only compare string properties
+      if (typeof item[filter.field] === 'string') {
+        return lowerCase(item[filter.field]) === lowerCase(filter.value)
+      }
     }
 };
 
@@ -98,13 +101,13 @@ export function parseSearchString (searchString = '') {
     };
 }
 
-export default function search (list = [], text = '') {
+export default function search (list = [], searchList = [], text = '') {
     const advancedSearch = parseSearchString(text);
     let filteredList = list.slice();
 
     advancedSearch.filters.forEach((filter) => {
-        filteredList = filteredList.filter((item) => {
-            return filterOperation(filter, item);
+        filteredList = filteredList.filter((item, index) => {
+            return filterOperation(filter, searchList[index]);
         });
     });
 
@@ -126,15 +129,14 @@ export default function search (list = [], text = '') {
                 weight: 0.4
             },
             {
-                name: '_body_plaintext',
+                name: 'body',
                 weight: 0.2
             }
         ]
     };
 
-    var fuse = new Fuse(filteredList, options)
-    const fuseSearch = fuse.search(advancedSearch.text)
-    return fuseSearch.map((result) => {
-      return result.item
-    })
+    var fuse = new Fuse(filteredList, options);
+    return fuse.search(advancedSearch.text).map((result) => {
+        return result.item;
+    });
 }

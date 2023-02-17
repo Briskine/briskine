@@ -345,34 +345,58 @@ onIdTokenChanged(firebaseAuth, (firebaseUser) => {
     })
 })
 
+const defaultTags = [
+  {title: 'en'},
+  {title: 'greetings'},
+  {title: 'followup'},
+  {title: 'closing'},
+  {title: 'personal'},
+].map((tag, index) => {
+  return {
+    ...tag,
+    id: String(index),
+  }
+})
+
+function filterDefaultTags (titles = []) {
+  return defaultTags
+    .filter((tag) => {
+      if (titles.length) {
+        return titles.includes(tag.title)
+      }
+      return true
+    })
+    .map((tag) => tag.id)
+}
+
 function getDefaultTemplates () {
   const defaultTemplates = [
     {
       title: 'Say Hello',
       shortcut: 'h',
       subject: '',
-      tags: 'en, greetings',
+      tags: filterDefaultTags(['en', 'greetings']),
       body: '<div>Hello {{to.first_name}},</div><div></div>'
     },
     {
       title: 'Nice talking to you',
       shortcut: 'nic',
       subject: '',
-      tags: 'en, followup',
+      tags: filterDefaultTags(['en', 'followup']),
       body: '<div>It was nice talking to you.</div>'
     },
     {
       title: 'Kind Regards',
       shortcut: 'kr',
       subject: '',
-      tags: 'en, closing',
+      tags: filterDefaultTags(['en', 'closing']),
       body: '<div>Kind regards,</div><div>{{from.first_name}}.</div>'
     },
     {
       title: 'My email',
       shortcut: 'e',
       subject: '',
-      tags: 'en, personal',
+      tags: filterDefaultTags(['en', 'personal']),
       body: '<div>{{from.email}}</div>'
     }
   ]
@@ -437,13 +461,6 @@ function isFree (user) {
       const customer = customers[user.customer]
       return customer.subscription.plan === 'free'
     })
-}
-
-function idsToTags (ids, tags) {
-  return ids.map((tagId) => {
-    const tag = tags[tagId] && tags[tagId].title
-    return tag || ''
-  })
 }
 
 export function getTemplates () {
@@ -711,6 +728,32 @@ export function getTags () {
         return Object.assign({id: id}, tags[id])
       })
     })
+    .catch((err) => {
+      if (isLoggedOut(err)) {
+        // logged-out
+        return defaultTags
+      }
+
+      throw err
+    })
+}
+
+function parseTags (tagIds = [], allTags = []) {
+  return tagIds
+    .map((tagId) => {
+      return allTags.find((t) => t.id === tagId)
+    })
+    .filter(Boolean)
+}
+
+function getSearchList (templates = [], allTags = []) {
+  return templates.map((template) => {
+    return {
+      ...template,
+      body: template._body_plaintext,
+      tags: parseTags(template.tags, allTags).map((t) => t?.title),
+    }
+  })
 }
 
 let lastSearchQuery = ''
@@ -719,7 +762,7 @@ export function searchTemplates (query = '') {
 
   return Promise.all([
       getTemplates(),
-      getTags()
+      getTags(),
     ])
     .then(([templates, tags]) => {
       // avoid triggering fuzzySearch
@@ -732,19 +775,12 @@ export function searchTemplates (query = '') {
         }
       }
 
-      // map tag ids to strings,
-      // for the fuzzy search.
-      const templatesWithTags = templates.map((template) => {
-        return Object.assign(template, {
-          tags: idsToTags(template.tags, tags).join(', '),
-        })
-      })
-
+      const templateSearchList = getSearchList(templates, tags)
       return {
         query: query,
         // return tags, to avoid another round-trip to the store
         tags: tags,
-        results: fuzzySearch(templatesWithTags, query),
+        results: fuzzySearch(templates, templateSearchList, query),
       }
     })
 }
