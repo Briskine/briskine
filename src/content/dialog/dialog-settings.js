@@ -3,8 +3,6 @@ import {render, html} from 'lit-html'
 import store from '../../store/store-client.js'
 import config from '../../config.js'
 
-import styles from './dialog-settings.css'
-
 export const dialogSettingsTagName = `b-dialog-settings-${Date.now().toString(36)}`
 
 const sortOptions = [
@@ -68,7 +66,6 @@ customElements.define(
 
     render () {
       render(html`
-        <style>${styles}</style>
         <div class="dialog-settings dialog-modal">
           <div class="dialog-modal-header">
             <h2>
