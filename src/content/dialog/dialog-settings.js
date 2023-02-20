@@ -30,10 +30,7 @@ customElements.define(
     constructor () {
       super()
 
-      this.sortBy = 'last_used'
-      store.getExtensionData().then((data) => {
-        this.sortBy = data.dialogSort
-      })
+      this.extensionData = {}
     }
 
     connectedCallback () {
@@ -42,6 +39,12 @@ customElements.define(
       }
 
       this.render()
+
+      store.getExtensionData()
+        .then((data) => {
+          this.extensionData = data
+          this.render()
+        })
 
       const closeBtn = this.querySelector('.btn-close')
       if (closeBtn) {
@@ -53,13 +56,17 @@ customElements.define(
       const form = this.querySelector('form')
       if (form) {
         form.addEventListener('change', (e) => {
-          if (e.target && e.target.id === 'sort_by') {
-            store.setExtensionData({
-              dialogSort: e.target.value,
-            })
-
-            this.dispatchEvent(new Event('settings-updated', { bubbles: true, composed: true }))
+          let updatedData = {}
+          if (e.target.id === 'dialog_sort') {
+            updatedData.dialogSort = e.target.value
           }
+
+          if (e.target.id === 'dialog_tags') {
+            updatedData.dialogTags = e.target.checked
+          }
+
+          store.setExtensionData(updatedData)
+          this.dispatchEvent(new Event('settings-updated', { bubbles: true, composed: true }))
         })
       }
     }
@@ -82,14 +89,14 @@ customElements.define(
           <div class="dialog-modal-body">
             <form>
               <div class="form-block d-flex">
-                <label for="sort_by" class="form-label">
+                <label for="dialog_sort" class="form-label">
                   Sort templates by
                 </label>
-                <select id="sort_by" class="form-select">
+                <select id="dialog_sort" class="form-select">
                   ${sortOptions.map((option) => html`
                     <option
                       value=${option.value}
-                      ?selected=${option.value === this.sortBy}
+                      ?selected=${option.value === this.extensionData.dialogSort}
                       >
                       ${option.label}
                     </option>
@@ -101,8 +108,13 @@ customElements.define(
                   Template tags
                 </label>
                 <div class="form-check">
-                  <input class="form-check-input" type="checkbox" value="" id="show_tags">
-                  <label class="form-check-label" for="show_tags">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    id="dialog_tags"
+                    ?checked=${this.extensionData.dialogTags}
+                    >
+                  <label class="form-check-label" for="dialog_tags">
                     Show tags in the dialog
                   </label>
                 </div>
