@@ -142,8 +142,18 @@ function extensionConfig (params = {}) {
     module: {
       rules: [
         {
-          test: /\.(css)$/i,
-          resourceQuery: { not: [/raw/] },
+          test: /\/content\/.+.(css)$/i,
+          use: [
+            {
+              loader: 'css-loader',
+              options: {
+                exportType: 'string'
+              }
+            }
+          ]
+        },
+        {
+          test: /\/popup\/.+.(css)$/i,
           use: [
               MiniCssExtractPlugin.loader,
               'css-loader'

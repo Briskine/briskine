@@ -3,7 +3,7 @@ import {render, html} from 'lit-html'
 import store from '../../store/store-client.js'
 import config from '../../config.js'
 
-import styles from './dialog-settings.css?raw'
+import styles from './dialog-settings.css'
 
 export const dialogSettingsTagName = `b-dialog-settings-${Date.now().toString(36)}`
 

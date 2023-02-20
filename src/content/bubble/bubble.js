@@ -5,7 +5,7 @@
 
 import {dialogShowEvent, dialogTagName} from '../dialog/dialog.js'
 
-import bubbleStyles from './bubble.css?raw'
+import bubbleStyles from './bubble.css'
 import bubbleIcon from '../../icons/briskine-logo-small-bare.svg?raw'
 
 let bubbleInstance = null

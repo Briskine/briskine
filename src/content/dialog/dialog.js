@@ -19,7 +19,7 @@ import {keybind, keyunbind} from '../keybind.js'
 import config from '../../config.js'
 import {dialogSettingsTagName} from './dialog-settings.js'
 
-import styles from './dialog.css?raw'
+import styles from './dialog.css'
 
 const dialogSettingsComponent = literal([dialogSettingsTagName])
 const dialogStyles = unsafeStatic(styles)
