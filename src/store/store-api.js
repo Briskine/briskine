@@ -346,8 +346,8 @@ onIdTokenChanged(firebaseAuth, (firebaseUser) => {
 })
 
 const defaultTags = [
-  {title: 'en'},
-  {title: 'greetings'},
+  {title: 'en', color: 'blue'},
+  {title: 'greetings', color: 'green'},
   {title: 'followup'},
   {title: 'closing'},
   {title: 'personal'},

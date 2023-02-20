@@ -555,6 +555,7 @@ customElements.define(
                     <li
                       data-id=${t.id}
                       class=${classMap({
+                        'dialog-template-item': true,
                         [activeTemplateClass]: t.id === this.activeItem,
                       })}
                       >
@@ -566,7 +567,7 @@ customElements.define(
                       </div>
                       <p>${t._body_plaintext.slice(0, 100)}</p>
                       ${t.tags && t.tags.length ? html`
-                        <ul>
+                        <ul class="dialog-tags">
                           ${repeat(t.tags, (tagId) => tagId, (tagId) => {
                             const tag = this.tags.find((tag) => tag.id === tagId)
                             if (!tag) {
@@ -574,7 +575,12 @@ customElements.define(
                             }
 
                             return html`
-                              <li>
+                              <li
+                                style="--tag-bg-color: var(--tag-color-${tag.color})"
+                                class=${classMap({
+                                  'text-secondary': !tag.color || tag.color === 'transparent',
+                                })}
+                              >
                                 ${tag.title}
                               </li>
                             `
