@@ -101,6 +101,17 @@ customElements.define(
               </div>
               <div class="form-block d-flex">
                 <label class="form-label">
+                  Template tags
+                </label>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" value="" id="show_tags">
+                  <label class="form-check-label" for="show_tags">
+                    Show tags in the dialog
+                  </label>
+                </div>
+              </div>
+              <div class="form-block d-flex">
+                <label class="form-label">
                   General settings
                 </label>
                 <div>

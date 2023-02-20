@@ -9,5 +9,8 @@
 
 .dialog-settings .form-block {
   align-items: baseline;
-  margin-bottom: 1rem;
+}
+
+.dialog-settings .form-block:not(:last-of-type) {
+  margin-bottom: .5rem;
 }
