@@ -13,7 +13,7 @@ let activeTextfield = null
 const domObservers = []
 
 const bubbleAttribute = 'data-briskine-bubble'
-export const bubbleTagName = `b-bubble-${Date.now()}`
+export const bubbleTagName = `b-bubble-${Date.now().toString(36)}`
 
 customElements.define(
   bubbleTagName,
