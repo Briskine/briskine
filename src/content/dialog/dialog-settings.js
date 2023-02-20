@@ -30,21 +30,21 @@ customElements.define(
     constructor () {
       super()
 
-      this.extensionData = {}
+      this.data = {}
     }
-
+    set extensionData (value) {
+      // re-render when the extensionData prop changes
+      if (JSON.stringify(this.data) !== JSON.stringify(value)) {
+        this.data = value
+        this.render()
+      }
+    }
     connectedCallback () {
       if (!this.isConnected) {
         return
       }
 
       this.render()
-
-      store.getExtensionData()
-        .then((data) => {
-          this.extensionData = data
-          this.render()
-        })
 
       const closeBtn = this.querySelector('.btn-close')
       if (closeBtn) {
@@ -66,7 +66,11 @@ customElements.define(
           }
 
           store.setExtensionData(updatedData)
-          this.dispatchEvent(new Event('settings-updated', { bubbles: true, composed: true }))
+          this.dispatchEvent(new CustomEvent('settings-updated', {
+            detail: updatedData,
+            bubbles: true,
+            composed: true,
+          }))
         })
       }
     }
@@ -96,7 +100,7 @@ customElements.define(
                   ${sortOptions.map((option) => html`
                     <option
                       value=${option.value}
-                      ?selected=${option.value === this.extensionData.dialogSort}
+                      .selected=${option.value === this.data.dialogSort}
                       >
                       ${option.label}
                     </option>
@@ -112,7 +116,7 @@ customElements.define(
                     class="form-check-input"
                     type="checkbox"
                     id="dialog_tags"
-                    ?checked=${this.extensionData.dialogTags}
+                    .checked=${this.data.dialogTags}
                     >
                   <label class="form-check-label" for="dialog_tags">
                     Show tags in the dialog

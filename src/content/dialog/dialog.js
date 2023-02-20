@@ -54,6 +54,8 @@ customElements.define(
 
       this.tags = []
 
+      this.extensionData = {}
+
       this.searchField = null
       this.searchQuery = ''
 
@@ -65,7 +67,7 @@ customElements.define(
       this.anchorNode = null
       this.anchorOffset = 0
 
-      this.show = async (e) => {
+      this.show = (e) => {
         // dialog is already visible
         if (this.hasAttribute(dialogVisibleAttr)) {
           return
@@ -195,9 +197,8 @@ customElements.define(
       }
 
       this.sortTemplates = async (templates = []) => {
-        const data = await store.getExtensionData()
-        const sort = data.dialogSort
-        const lastUsed = data.templatesLastUsed
+        const sort = this.extensionData.dialogSort || 'last_used'
+        const lastUsed = this.extensionData.templatesLastUsed || {}
 
         if (['title', 'shortcut'].includes(sort)) {
           return templates
@@ -207,10 +208,10 @@ customElements.define(
         }
 
         if (sort === 'modified_datetime') {
-        return templates
-          .sort((a, b) => {
-            return new Date(b.modified_datetime || 0) - new Date(a.modified_datetime || 0)
-          })
+          return templates
+            .sort((a, b) => {
+              return new Date(b.modified_datetime || 0) - new Date(a.modified_datetime || 0)
+            })
         }
 
         // default last_used sort
@@ -329,6 +330,11 @@ customElements.define(
               this.populateTemplates()
             }
           })
+      }
+
+      this.updateExtensionData = (data) => {
+        this.extensionData = data
+        this.render()
       }
 
       this.hideOnEsc = (e) => {
@@ -476,12 +482,19 @@ customElements.define(
         }
       })
 
-      this.addEventListener('settings-updated', () => {
+      this.addEventListener('settings-updated', (e) => {
         // reset the active item,
         // to select the first item after changing the settings.
         this.activeItem = null
+
+        // update extensiondata
+        this.extensionData = Object.assign(this.extensionData, e.detail)
+
         window.requestAnimationFrame(this.populateTemplates)
       })
+
+      store.getExtensionData().then(this.updateExtensionData)
+      store.on('extension-data-updated', this.updateExtensionData)
 
       this.addEventListener('settings-close', () => {
         this.removeAttribute(modalAttribute)
@@ -511,6 +524,8 @@ customElements.define(
 
       store.off('login', this.setAuthState)
       store.off('logout', this.setAuthState)
+
+      store.off('extension-data-updated', this.updateExtensionData)
 
       window.removeEventListener('keydown', this.stopTargetPropagation, true)
       window.removeEventListener('keypress', this.stopTargetPropagation, true)
@@ -566,7 +581,7 @@ customElements.define(
                         ` : ''}
                       </div>
                       <p>${t._body_plaintext.slice(0, 100)}</p>
-                      ${t.tags && t.tags.length ? html`
+                      ${this.extensionData.dialogTags && t.tags && t.tags.length ? html`
                         <ul class="dialog-tags">
                           ${repeat(t.tags, (tagId) => tagId, (tagId) => {
                             const tag = this.tags.find((tag) => tag.id === tagId)
@@ -639,7 +654,9 @@ customElements.define(
               </button>
             </div>
           </div>
-          <${dialogSettingsComponent} />
+          <${dialogSettingsComponent}
+            .extensionData=${{...this.extensionData}}
+          />
         </div>
       `, this.shadowRoot)
     }
