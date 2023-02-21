@@ -29,6 +29,7 @@ let dialogInstance = null
 export const dialogShowEvent = 'briskine-dialog'
 export const dialogTagName = `b-dialog-${Date.now().toString(36)}`
 
+const templateRenderLimit = 42
 const modalAttribute = 'modal'
 const dialogVisibleAttr = 'visible'
 const openAnimationClass = 'b-dialog-open-animation'
@@ -235,19 +236,14 @@ customElements.define(
             return
           }
 
-          // refresh the tags
           this.tags = tags
-
-          // do not sort on search
-          this.templates = results
-
-          // set first active and scroll to top
+          this.templates = results.slice(0, templateRenderLimit)
           if (this.templates.length) {
             active = this.templates[0].id
           }
         } else {
           const allTemplates = await this.getAllTemplates()
-          this.templates = await this.sortTemplates(allTemplates)
+          this.templates = await this.sortTemplates(allTemplates.slice(0, templateRenderLimit))
           this.tags = await store.getTags()
 
           if (this.activeItem && this.templates.find((t) => t.id === this.activeItem)) {
@@ -256,9 +252,6 @@ customElements.define(
             active = this.templates[0].id
           }
         }
-
-        // render max number of templates
-        this.templates = this.templates.slice(0, 42)
 
         this.render()
         this.setActive(active, true)
