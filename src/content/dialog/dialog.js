@@ -257,6 +257,9 @@ customElements.define(
           }
         }
 
+        // render max number of templates
+        this.templates = this.templates.slice(0, 80)
+
         this.render()
         this.setActive(active, true)
       }
