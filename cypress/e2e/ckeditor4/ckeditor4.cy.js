@@ -34,6 +34,7 @@ describe('CKEditor', () => {
       .then(($el) => {
         return $el.querySelector('[visible=true]')
       })
+      .wait(500)
       .should('be.visible')
       .shadow()
       .find('input[type=search]')

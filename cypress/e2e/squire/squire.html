@@ -2,12 +2,21 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <script src="https://unpkg.com/squire-rte/build/squire-raw.js"></script>
   </head>
   <body>
     <div id="editor"></div>
-    <script>
-      var editor = new Squire(document.querySelector('div'))
+
+    <script src="https://cdn.jsdelivr.net/npm/dompurify/dist/purify.min.js"></script>
+    <script type="importmap">
+      {
+        "imports": {
+          "squire-rte": "https://cdn.jsdelivr.net/npm/squire-rte/+esm"
+        }
+      }
+    </script>
+    <script type="module">
+      import Squire from 'squire-rte'
+      new Squire(document.querySelector('div'))
     </script>
   </body>
 </html>
