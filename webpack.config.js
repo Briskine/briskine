@@ -169,7 +169,7 @@ function extensionConfig (params = {}) {
         },
       ]
     },
-    devtool: 'cheap-module-source-map',
+    devtool: params.mode === 'production' ? false : 'cheap-module-source-map',
     resolve: {
       alias: {
         'handlebars/runtime': 'handlebars/dist/cjs/handlebars.runtime',
