@@ -1,42 +1,64 @@
 /* global REGISTER_DISABLED */
 import browser from 'webextension-polyfill'
+import {render} from 'lit-html'
+import {html, literal, unsafeStatic} from 'lit-html/static.js'
+import {classMap} from 'lit-html/directives/class-map.js'
+import {unsafeSVG} from 'lit-html/directives/unsafe-svg.js'
+import {repeat} from 'lit-html/directives/repeat.js'
+import iconGear from 'bootstrap-icons/icons/gear.svg?raw'
+import iconArrowUpRightSquare from 'bootstrap-icons/icons/arrow-up-right-square.svg?raw'
+import iconPlus from 'bootstrap-icons/icons/plus.svg?raw'
 
 import store from '../../store/store-client.js'
 import {isContentEditable} from '../editors/editor-contenteditable.js'
 import {bubbleTagName} from '../bubble/bubble.js'
 import {getEditableCaret, getContentEditableCaret, getDialogPosition} from './dialog-position.js'
-import fuzzySearch from '../search.js'
 import {autocomplete, getSelectedWord, getSelection, getEventTarget} from '../autocomplete.js'
 import {keybind, keyunbind} from '../keybind.js'
 
 import config from '../../config.js'
-import {editIcon, plusIcon} from './dialog-icons.js'
+import {dialogSettingsTagName} from './dialog-settings.js'
 
-import styles from './dialog.css?raw'
+import styles from './dialog.css'
+
+const dialogSettingsComponent = literal([dialogSettingsTagName])
+const dialogStyles = unsafeStatic(styles)
 
 let dialogInstance = null
 
 export const dialogShowEvent = 'briskine-dialog'
-export const dialogTagName = `b-dialog-${Date.now()}`
+export const dialogTagName = `b-dialog-${Date.now().toString(36)}`
 
+const templateRenderLimit = 42
+const modalAttribute = 'modal'
 const dialogVisibleAttr = 'visible'
-const activeClass = 'active'
 const openAnimationClass = 'b-dialog-open-animation'
+const activeTemplateClass = 'active'
 
-const template = document.createElement('template')
-function plainText (html = '') {
-  template.innerHTML = html
-  return (template.content.textContent || '').trim()
-}
+// action.openPopup is not supported in all browsers yet.
+// https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/action/openPopup
+// Open the action popup in a new tab.
+const popupUrl = browser.runtime.getURL('popup/popup.html')
+const signupUrl = `${config.websiteUrl}/signup`
 
 customElements.define(
   dialogTagName,
   class extends HTMLElement {
     constructor () {
       super()
+      // templates filtered
+      this.templates = []
+      // selected template
+      this.activeItem = null
+      // loading state
+      this.loading = true
+
+      this.tags = []
+
+      this.extensionData = {}
 
       this.searchField = null
-      this.templates = []
+      this.searchQuery = ''
 
       this.editor = null
       this.word = null
@@ -149,14 +171,18 @@ customElements.define(
         // setting the attribute on the editable element will set it's value in the search field.
         const searchQuery = element.getAttribute('data-briskine-search') || ''
         this.searchField.value = searchQuery
+        this.searchQuery = searchQuery
         // give it a second before focusing.
-        // in production, the search field is not focused on some websites (eg. google sheets, salesfoce).
+        // in production, the search field is not focused on some websites (eg. google sheets, salesforce).
         setTimeout(() => {
           this.searchField.focus()
         })
 
+        // restore scroll position faster than on re-rendering
+        this.setActive(this.activeItem, true)
+
         // populate the template list
-        this.populateTemplates(searchQuery)
+        window.requestAnimationFrame(this.populateTemplates)
       }
 
       this.hideOnClick = (e) => {
@@ -171,115 +197,84 @@ customElements.define(
         }
       }
 
-      this.filterTemplates = (templates = [], query = '') => {
-        return store.getExtensionData()
-          .then((data) => {
-            const lastUsed = data.templatesLastUsed
+      this.sortTemplates = async (templates = []) => {
+        const sort = this.extensionData.dialogSort || 'last_used'
+        const lastUsed = this.extensionData.templatesLastUsed || {}
 
-            let filteredTemplates = templates
-            if (query) {
-              filteredTemplates = fuzzySearch(templates, query)
-            } else {
-              // only sort templates if no search query was used
-              if (this.getAttribute('sort-az') === 'true') {
-                // alphabetical sort
-                filteredTemplates = filteredTemplates
-                  .sort((a, b) => {
-                    return a.title.localeCompare(b.title)
-                  })
-              } else {
-                // default sort
-                filteredTemplates = filteredTemplates
-                  .sort((a, b) => {
-                    return new Date(b.updated_datetime) - new Date(a.updated_datetime)
-                  })
-                  .sort((a, b) => {
-                    return new Date(lastUsed[b.id] || 0) - new Date(lastUsed[a.id] || 0)
-                  })
-              }
-            }
-
-            const limit = parseInt(this.getAttribute('limit') || '100', 10)
-            return filteredTemplates.slice(0, limit)
-          })
-      }
-
-      this.getTemplateNodes = (templates = []) => {
-        // blank slate when we don't find any templates
-        if (!templates.length) {
-          const blank = document.createElement('div')
-          blank.classList.add('templates-no-results')
-          blank.textContent = 'No templates found.'
-          return [blank]
-        }
-
-        return templates
-          .map((t, i) => {
-            const li = document.createElement('li')
-            li.setAttribute('data-id', t.id)
-            if (i === 0) {
-              li.classList.add(activeClass)
-            }
-
-            const plainBody = plainText(t.body)
-            const plainShortcut = plainText(t.shortcut)
-            li.title = plainBody
-            li.innerHTML = `
-              <div class="d-flex">
-                <h1>${plainText(t.title)}</h1>
-                ${plainShortcut ? `
-                  <abbr>${plainShortcut}</abbr>
-                ` : ''}
-              </div>
-              <p>${plainBody}</p>
-              <a
-                href="${config.functionsUrl}/template/${t.id}"
-                target="_blank"
-                class="template-edit dialog-safari-hide"
-                title="Edit template"
-                >
-                ${editIcon}
-              </a>
-            `
-            return li
-          })
-      }
-
-      this.populateTemplates = (query = '') => {
-        store.getTemplates()
-          .then((templates) => {
-            return this.filterTemplates(templates, query)
-          })
-          .then((templates) => {
-            // naive deep compare, in case the templates didn't change
-            if (JSON.stringify(this.templates) === JSON.stringify(templates)) {
-              return
-            }
-
-            // cache result
-            this.templates = templates
-
-            const templateNodes = this.getTemplateNodes(templates)
-
-            window.requestAnimationFrame(() => {
-              this.shadowRoot.querySelector('.dialog-templates').replaceChildren(...templateNodes)
+        if (['title', 'shortcut'].includes(sort)) {
+          return templates
+            .sort((a, b) => {
+              return a[sort].localeCompare(b[sort])
             })
+        }
+
+        if (sort === 'modified_datetime') {
+          return templates
+            .sort((a, b) => {
+              return new Date(b.modified_datetime || 0) - new Date(a.modified_datetime || 0)
+            })
+        }
+
+        // default last_used sort
+        return templates
+          .sort((a, b) => {
+            return new Date(lastUsed[b.id] || 0) - new Date(lastUsed[a.id] || 0)
           })
       }
 
-      this.setActive = (id = '') => {
-        const item = this.shadowRoot.querySelector(`[data-id="${id}"]`)
-        if (!item) {
-          return
+      this.getAllTemplates = async () => {
+        const templates = await store.getTemplates()
+        this.loading = false
+        return templates
+      }
+
+      this.populateTemplates = async () => {
+        let active = null
+        if (this.searchQuery) {
+          const {query, results, tags} = await store.searchTemplates(this.searchQuery)
+          if (query !== this.searchQuery) {
+            return
+          }
+
+          this.tags = tags
+          this.templates = results.slice(0, templateRenderLimit)
+          if (this.templates.length) {
+            active = this.templates[0].id
+          }
+        } else {
+          const allTemplates = await this.getAllTemplates()
+          this.templates = await this.sortTemplates(allTemplates.slice(0, templateRenderLimit))
+          this.tags = await store.getTags()
+
+          if (this.activeItem && this.templates.find((t) => t.id === this.activeItem)) {
+            active = this.activeItem
+          } else if (this.templates.length) {
+            active = this.templates[0].id
+          }
         }
 
-        const active = this.shadowRoot.querySelector(`.${activeClass}`)
-        if (active !== item) {
-          active.classList.remove(activeClass)
-          item.classList.add(activeClass)
+        this.render()
+        this.setActive(active, true)
+      }
+
+      this.setActive = (id = '', scrollIntoView = false) => {
+        const newActive = this.shadowRoot.querySelector(`[data-id="${id}"]`)
+        if (this.activeItem !== id) {
+          // manually apply and remove active classes,
+          // relying on conditionally rendering the active class can get slow with large lists.
+          const currentActive = this.shadowRoot.querySelector(`.${activeTemplateClass}`)
+          if (currentActive) {
+            currentActive.classList.remove(activeTemplateClass)
+          }
+          if (newActive) {
+            newActive.classList.add(activeTemplateClass)
+          }
         }
 
-        return item
+        if (newActive && scrollIntoView) {
+          newActive.scrollIntoView({block: 'nearest'})
+        }
+        this.activeItem = id
       }
 
       this.restoreSelection = () => {
@@ -312,16 +307,6 @@ customElements.define(
         this.removeAttribute(dialogVisibleAttr)
       }
 
-      this.setLoadingState = () => {
-        const loadingPlaceholders = Array(4).fill(`
-          <div class="templates-placeholder">
-            <div class="templates-placeholder-text"></div>
-            <div class="templates-placeholder-text templates-placeholder-description"></div>
-          </div>
-        `).join('')
-        this.shadowRoot.querySelector('.dialog-templates').innerHTML = loadingPlaceholders
-      }
-
       this.setAuthState = () => {
         store.getAccount()
           .then(() => {
@@ -333,12 +318,19 @@ customElements.define(
             return
           })
           .then(() => {
-            this.setLoadingState()
+            this.loading = true
+            this.render()
+
             // only start loading the templates if the dialog is visible
             if (this.hasAttribute(dialogVisibleAttr)) {
               this.populateTemplates()
             }
           })
+      }
+
+      this.updateExtensionData = (data) => {
+        this.extensionData = data
+        this.render()
       }
 
       this.hideOnEsc = (e) => {
@@ -358,32 +350,30 @@ customElements.define(
         // only handle events from the search field
         const composedPath = e.composedPath()
         const composedTarget = composedPath[0]
-        if (e.target !== this || composedTarget !== this.searchField) {
+        if (
+          e.target !== this ||
+          composedTarget !== this.searchField ||
+          !['Enter', 'ArrowDown', 'ArrowUp'].includes(e.key)
+        ) {
           return
         }
 
-        const active = this.shadowRoot.querySelector(`.${activeClass}`)
-        if (!active) {
-          return
-        }
-
+        const index = this.templates.findIndex((t) => t.id === this.activeItem)
         if (e.key === 'Enter') {
           e.preventDefault()
-          const activeId = active.dataset.id
-          return this.insertTemplate(activeId)
+          return this.insertTemplate(this.activeItem)
         }
 
         let nextId
-        if (e.key === 'ArrowDown' && active.nextElementSibling) {
-          nextId = active.nextElementSibling.dataset.id
-        } else if (e.key === 'ArrowUp' && active.previousElementSibling) {
-          nextId = active.previousElementSibling.dataset.id
+        if (e.key === 'ArrowDown' && this.templates[index + 1]) {
+          nextId = this.templates[index + 1].id
+        } else if (e.key === 'ArrowUp' && this.templates[index - 1]) {
+          nextId = this.templates[index - 1].id
         }
 
         if (nextId) {
           e.preventDefault()
-          const newActive = this.setActive(nextId)
-          newActive.scrollIntoView({block: 'nearest'})
+          this.setActive(nextId, true)
         }
       }
 
@@ -405,12 +395,20 @@ customElements.define(
     attributeChangedCallback (name, oldValue, newValue) {
       if (name === 'visible') {
         if (newValue === 'true') {
-          // make sure we get the correct dialog size before animating
-          setTimeout(() => {
-            this.classList.add(openAnimationClass)
-          })
+          this.classList.add(openAnimationClass)
         } else {
           this.classList.remove(openAnimationClass)
+
+          window.requestAnimationFrame(() => {
+            // clear the search query
+            this.searchQuery = ''
+            // close settings
+            this.removeAttribute(modalAttribute)
+
+            // re-render in the background,
+            // to speed up rendering on show.
+            this.populateTemplates()
+          })
         }
       }
     }
@@ -419,58 +417,8 @@ customElements.define(
         return
       }
 
-      // action.openPopup is not supported in all browsers yet.
-      // https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/action/openPopup
-      // Open the action popup in a new tab.
-      const popupUrl = browser.runtime.getURL('popup/popup.html')
-      const signupUrl = `${config.websiteUrl}/signup`
-      const shortcut = this.getAttribute('shortcut')
-
-      const shadowRoot = this.attachShadow({mode: 'open'})
-      shadowRoot.innerHTML = `
-        <style>${styles}</style>
-        <div class="dialog-container ${REGISTER_DISABLED ? 'dialog-safari' : ''}">
-          <input type="search" value="" placeholder="Search templates...">
-          <div class="dialog-info">
-            Please
-            <a href="${popupUrl}?source=tab" target="_blank">Sign in</a>
-            <span class="dialog-safari-hide">
-              or
-              <a href="${signupUrl}" target="_blank">
-                Create a free account
-              </a>
-            </span>
-            <span class="dialog-safari-show">
-              to access your templates.
-            </span>
-          </div>
-          <ul class="dialog-templates">
-          </ul>
-          <div class="dialog-footer">
-            <div class="d-flex">
-              <div class="flex-fill">
-                <a
-                  href="${config.functionsUrl}/template/new"
-                  target="_blank"
-                  class="btn btn-primary btn-new-template dialog-safari-hide"
-                  title="Create a new template"
-                  >
-                  <span class="d-flex">
-                    ${plusIcon}
-                    <span>
-                      New Template
-                    </span>
-                  </span>
-                </a>
-              </div>
-
-              <div class="dialog-shortcut">
-                ${shortcut}
-              </div>
-            </div>
-          </div>
-        </div>
-      `
+      this.attachShadow({mode: 'open'})
+      this.render()
 
       // check authentication state
       this.setAuthState()
@@ -478,17 +426,16 @@ customElements.define(
       store.on('logout', this.setAuthState)
 
       let searchDebouncer
-      this.searchField = shadowRoot.querySelector('input[type=search]')
+      this.searchField = this.shadowRoot.querySelector('input[type=search]')
+
       // search for templates
       this.searchField.addEventListener('input', (e) => {
         if (searchDebouncer) {
           clearTimeout(searchDebouncer)
         }
 
-        const query = e.target.value
-        searchDebouncer = setTimeout(() => {
-          this.populateTemplates(query)
-        }, 200)
+        this.searchQuery = e.target.value
+        searchDebouncer = setTimeout(this.populateTemplates, 200)
       })
 
       // keyboard navigation and insert for templates
@@ -499,6 +446,13 @@ customElements.define(
         const container = e.target.closest('[data-id]')
         if (container) {
           this.setActive(container.dataset.id)
+
+          // add the title attribute only when hovering the template.
+          // speeds up rendering the template list.
+          const template = this.templates.find((t) => t.id === container.dataset.id)
+          if (template) {
+            container.title = template._body_plaintext
+          }
         }
       })
 
@@ -506,10 +460,40 @@ customElements.define(
       this.shadowRoot.addEventListener('click', (e) => {
         const container = e.target.closest('[data-id]')
         // prevent inserting templates when clicking the edit button
-        const editButton = e.target.closest('.template-edit')
+        const editButton = e.target.closest('.btn-edit')
         if (container && !editButton) {
           this.insertTemplate(container.dataset.id)
         }
+      })
+
+      // open settings
+      this.shadowRoot.addEventListener('click', (e) => {
+        const settingsBtn = e.target.closest('.btn-settings')
+        if (settingsBtn) {
+          if (this.getAttribute(modalAttribute) === 'settings') {
+            this.removeAttribute(modalAttribute)
+          } else {
+            this.setAttribute(modalAttribute, 'settings')
+          }
+        }
+      })
+
+      this.addEventListener('settings-updated', (e) => {
+        // reset the active item,
+        // to select the first item after changing the settings.
+        this.activeItem = null
+
+        // update extensiondata
+        this.extensionData = Object.assign(this.extensionData, e.detail)
+
+        window.requestAnimationFrame(this.populateTemplates)
+      })
+
+      store.getExtensionData().then(this.updateExtensionData)
+      store.on('extension-data-updated', this.updateExtensionData)
+
+      this.addEventListener('settings-close', () => {
+        this.removeAttribute(modalAttribute)
       })
 
       window.addEventListener('click', this.hideOnClick, true)
@@ -537,11 +521,140 @@ customElements.define(
       store.off('login', this.setAuthState)
       store.off('logout', this.setAuthState)
 
+      store.off('extension-data-updated', this.updateExtensionData)
+
       window.removeEventListener('keydown', this.stopTargetPropagation, true)
       window.removeEventListener('keypress', this.stopTargetPropagation, true)
 
       window.removeEventListener('focusout', this.stopRelatedTargetPropagation, true)
       window.removeEventListener('focusin', this.stopTargetPropagation, true)
+    }
+    render () {
+      render(html`
+        <style>${dialogStyles}</style>
+        <div
+          class=${classMap({
+            'dialog-container': true,
+            'dialog-safari': REGISTER_DISABLED,
+          })}
+          >
+          <input type="search" value="" placeholder="Search templates...">
+          <div class="dialog-info">
+            Please
+            <a href="${popupUrl}?source=tab" target="_blank">Sign in</a>
+            <span class="dialog-safari-hide">
+              or
+              <a href="${signupUrl}" target="_blank">
+                Create a free account
+              </a>
+            </span>
+            <span class="dialog-safari-show">
+              to access your templates.
+            </span>
+          </div>
+          <ul class="dialog-templates">
+            ${this.loading === true
+              ? Array(4).fill(html`
+                <div class="templates-placeholder">
+                  <div class="templates-placeholder-text"></div>
+                  <div class="templates-placeholder-text templates-placeholder-description"></div>
+                </div>
+              `)
+              : this.templates.length
+              ? repeat(this.templates, (t) => t.id, (t) => {
+                  return html`
+                    <li
+                      data-id=${t.id}
+                      class=${classMap({
+                        'dialog-template-item': true,
+                        [activeTemplateClass]: t.id === this.activeItem,
+                      })}
+                      >
+                      <div class="d-flex">
+                        <h1>${t.title}</h1>
+                        ${t.shortcut ? html`
+                          <abbr>${t.shortcut}</abbr>
+                        ` : ''}
+                      </div>
+                      <p>${t._body_plaintext.slice(0, 100)}</p>
+                      ${this.extensionData.dialogTags && t.tags && t.tags.length ? html`
+                        <ul class="dialog-tags">
+                          ${repeat(t.tags, (tagId) => tagId, (tagId) => {
+                            const tag = this.tags.find((tag) => tag.id === tagId)
+                            if (!tag) {
+                              return ''
+                            }
+
+                            return html`
+                              <li
+                                style="--tag-bg-color: var(--tag-color-${tag.color})"
+                                class=${classMap({
+                                  'text-secondary': !tag.color || tag.color === 'transparent',
+                                })}
+                              >
+                                ${tag.title}
+                              </li>
+                            `
+                          })}
+                        </ul>
+                      ` : ''}
+                      <div class="edit-container">
+                        <a
+                          href="${config.functionsUrl}/template/${t.id}"
+                          target="_blank"
+                          class="btn btn-sm btn-edit dialog-safari-hide"
+                          title="Edit template"
+                          >
+                          ${unsafeSVG(iconArrowUpRightSquare)}
+                        </a>
+                      </div>
+                    </li>
+                  `
+                })
+              : html`
+                <div class="templates-no-results">
+                  No templates found
+                </div>
+              `}
+          </ul>
+          <div class="dialog-footer">
+            <div class="d-flex">
+              <div class="flex-fill">
+                <a
+                  href="${config.functionsUrl}/template/new"
+                  target="_blank"
+                  class="btn btn-primary btn-new-template dialog-safari-hide"
+                  title="Create a new template"
+                  >
+                  <span class="d-flex">
+                    ${unsafeSVG(iconPlus)}
+                    <span>
+                      New Template
+                    </span>
+                  </span>
+                </a>
+              </div>
+
+              <div
+                class="dialog-shortcut btn"
+                title="Press ${this.getAttribute('shortcut')} in any text field to open the Briskine Dialog."
+                >
+                ${this.getAttribute('shortcut')}
+              </div>
+              <button
+                type="button"
+                class="btn btn-sm btn-settings"
+                title="Dialog Settings"
+                >
+                ${unsafeSVG(iconGear)}
+              </button>
+            </div>
+          </div>
+          <${dialogSettingsComponent}
+            .extensionData=${{...this.extensionData}}
+          />
+        </div>
+      `, this.shadowRoot)
     }
   }
 )
@@ -554,8 +667,6 @@ function isTextfield (element) {
 function createDialog (settings = {}) {
   const instance = document.createElement(dialogTagName)
   instance.setAttribute('shortcut', settings.dialog_shortcut)
-  instance.setAttribute('sort-az', settings.dialog_sort)
-  instance.setAttribute('limit', settings.dialog_limit)
   document.documentElement.appendChild(instance)
 
   return instance

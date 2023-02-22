@@ -5,14 +5,15 @@
 
 import {dialogShowEvent, dialogTagName} from '../dialog/dialog.js'
 
-import bubbleStyles from './bubble.css?raw'
+import bubbleStyles from './bubble.css'
 import bubbleIcon from '../../icons/briskine-logo-small-bare.svg?raw'
 
 let bubbleInstance = null
 let activeTextfield = null
 const domObservers = []
 
-export const bubbleTagName = `b-bubble-${Date.now()}`
+const bubbleAttribute = 'data-briskine-bubble'
+export const bubbleTagName = `b-bubble-${Date.now().toString(36)}`
 
 customElements.define(
   bubbleTagName,
@@ -292,13 +293,12 @@ function hideBubble () {
 }
 
 export function enableBubble () {
-    document.body.dataset.briskineButton = 'true';
+  document.body.setAttribute(bubbleAttribute, 'true')
 }
 
 function bubbleEnabled () {
-    // gorgiasButton for legacy enterprise support
-    const attrs = [ 'gorgiasButton', 'briskineButton' ];
-    return attrs.some((a) => {
-        return !!document.body.dataset[a];
-    });
+  return (
+    document.body &&
+    document.body.hasAttribute(bubbleAttribute)
+  )
 }

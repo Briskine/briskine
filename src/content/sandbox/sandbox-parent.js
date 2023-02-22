@@ -5,7 +5,7 @@ import {compileTemplate as sandboxCompile} from './sandbox.js'
 import config from '../../config.js'
 
 let sandboxInstance = null
-const sandboxTagName = `b-sandbox-${Date.now()}`
+const sandboxTagName = `b-sandbox-${Date.now().toString(36)}`
 
 const channel = new MessageChannel()
 const port1 = channel.port1

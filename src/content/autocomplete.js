@@ -12,7 +12,6 @@ import zendeskPlugin from './plugins/zendesk.js'
 import crmPlugin from './plugins/crm.js'
 import universalPlugin from './plugins/universal.js'
 
-import htmlToText from './utils/html-to-text.js'
 import store from '../store/store-client.js'
 import {isContentEditable} from './editors/editor-contenteditable.js'
 
@@ -119,13 +118,13 @@ export function getSelectedWord (params) {
 export function autocomplete (params) {
   runPlugins(Object.assign({}, params))
 
+  store.updateTemplateStats(params.quicktext.id)
+
   // updates word stats
-  const wordCount = htmlToText(params.quicktext.body).split(' ').length
+  const wordCount = (params.quicktext._body_plaintext || '').split(' ').length
   store.getExtensionData().then((data) => {
     store.setExtensionData({
       words: data.words + wordCount
     })
   })
-
-  store.updateTemplateStats(params.quicktext.id)
 }

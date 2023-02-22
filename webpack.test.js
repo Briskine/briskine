@@ -19,6 +19,17 @@ export default {
         resourceQuery: /raw/,
         type: 'asset/source',
       },
+      {
+        test: /\/content\/.+.(css)$/i,
+        use: [
+          {
+            loader: 'css-loader',
+            options: {
+              exportType: 'string'
+            }
+          }
+        ]
+      },
     ]
   },
   plugins: [

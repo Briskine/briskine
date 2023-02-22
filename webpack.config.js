@@ -142,8 +142,18 @@ function extensionConfig (params = {}) {
     module: {
       rules: [
         {
-          test: /\.(css)$/i,
-          resourceQuery: { not: [/raw/] },
+          test: /\/content\/.+.(css)$/i,
+          use: [
+            {
+              loader: 'css-loader',
+              options: {
+                exportType: 'string'
+              }
+            }
+          ]
+        },
+        {
+          test: /\/popup\/.+.(css)$/i,
           use: [
               MiniCssExtractPlugin.loader,
               'css-loader'
@@ -159,7 +169,7 @@ function extensionConfig (params = {}) {
         },
       ]
     },
-    devtool: 'cheap-module-source-map',
+    devtool: params.mode === 'production' ? false : 'cheap-module-source-map',
     resolve: {
       alias: {
         'handlebars/runtime': 'handlebars/dist/cjs/handlebars.runtime',

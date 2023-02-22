@@ -22,6 +22,7 @@ import {
 
 import config from '../config.js'
 import trigger from './store-trigger.js'
+import fuzzySearch from './search.js'
 
 const firebaseApp = initializeApp(FIREBASE_CONFIG)
 const firebaseAuth = getAuth(firebaseApp)
@@ -33,6 +34,11 @@ const db = initializeFirestore(firebaseApp, {
 if (ENV === 'development') {
   connectAuthEmulator(firebaseAuth, 'http://localhost:9099', { disableWarnings: true });
   connectFirestoreEmulator(db, 'localhost', 5002);
+}
+
+// naive html to text conversion
+function plainText (html = '') {
+  return html.replace(/(<[^>]*>)|(&nbsp;)/g, '').replace(/\s+/g, ' ').trim()
 }
 
 // convert firestore timestamps to dates
@@ -256,8 +262,6 @@ const defaultSettings = {
   dialog_enabled: true,
   dialog_button: true,
   dialog_shortcut: 'ctrl+space',
-  dialog_limit: 100,
-  dialog_sort: false,
 
   expand_enabled: true,
   expand_shortcut: 'tab',
@@ -341,84 +345,110 @@ onIdTokenChanged(firebaseAuth, (firebaseUser) => {
     })
 })
 
+const defaultTags = [
+  {title: 'en', color: 'blue'},
+  {title: 'greetings', color: 'green'},
+  {title: 'followup'},
+  {title: 'closing'},
+  {title: 'personal'},
+].map((tag, index) => {
+  return {
+    ...tag,
+    id: String(index),
+  }
+})
+
+function filterDefaultTags (titles = []) {
+  return defaultTags
+    .filter((tag) => {
+      if (titles.length) {
+        return titles.includes(tag.title)
+      }
+      return true
+    })
+    .map((tag) => tag.id)
+}
+
 function getDefaultTemplates () {
-    const defaultTemplates = [
-        {
-            title: 'Say Hello',
-            shortcut: 'h',
-            subject: '',
-            tags: 'en, greetings',
-            body: '<div>Hello {{to.first_name}},</div><div></div>'
-        },
-        {
-            title: 'Nice talking to you',
-            shortcut: 'nic',
-            subject: '',
-            tags: 'en, followup',
-            body: '<div>It was nice talking to you.</div>'
-        },
-        {
-            title: 'Kind Regards',
-            shortcut: 'kr',
-            subject: '',
-            tags: 'en, closing',
-            body: '<div>Kind regards,</div><div>{{from.first_name}}.</div>'
-        },
-        {
-            title: 'My email',
-            shortcut: 'e',
-            subject: '',
-            tags: 'en, personal',
-            body: '<div>{{from.email}}</div>'
-        }
-    ];
-
-    if (ENV === 'development') {
-      let allVarsBody = [ 'account', 'from', 'to', 'cc', 'bcc' ].map((field) => {
-        return `
-          <div>
-            <strong># ${field}</strong>
-          </div>
-          {{#each ${field}}}
-            <div>
-              {{@key}}: {{this}}
-            </div>
-          {{/each}}
-        `
-      }).join('')
-
-      allVarsBody += `
-        <div>subject: {{subject}}</div>
-        <div>next week: {{moment add='7;days' format='DD MMMM'}}</div>
-        <div>last week: {{moment subtract='7;days'}}</div>
-        <div>choice: {{choice 'Hello, Hi, Hey'}}</div>
-        <div>domain: {{domain to.email}}</div>
-        <div><img src="https://www.briskine.com/images/briskine-promo.png" width="100" height="73"></div>
-      `
-
-      defaultTemplates.push({
-        title: 'allvars',
-        shortcut: 'allvars',
-        subject: 'Subject',
-        body: allVarsBody,
-        to: 'to@briskine.com',
-        cc: 'cc@briskine.com, cc2@briskine.com',
-        bcc: 'bcc@briskine.com',
-        from: 'contact@briskine.com'
-      })
-
-      defaultTemplates.push({
-        title: 'broken',
-        shortcut: 'broken',
-        body: 'Hello {{to.first_name}'
-      })
+  const defaultTemplates = [
+    {
+      title: 'Say Hello',
+      shortcut: 'h',
+      subject: '',
+      tags: filterDefaultTags(['en', 'greetings']),
+      body: '<div>Hello {{to.first_name}},</div><div></div>'
+    },
+    {
+      title: 'Nice talking to you',
+      shortcut: 'nic',
+      subject: '',
+      tags: filterDefaultTags(['en', 'followup']),
+      body: '<div>It was nice talking to you.</div>'
+    },
+    {
+      title: 'Kind Regards',
+      shortcut: 'kr',
+      subject: '',
+      tags: filterDefaultTags(['en', 'closing']),
+      body: '<div>Kind regards,</div><div>{{from.first_name}}.</div>'
+    },
+    {
+      title: 'My email',
+      shortcut: 'e',
+      subject: '',
+      tags: filterDefaultTags(['en', 'personal']),
+      body: '<div>{{from.email}}</div>'
     }
+  ]
 
-    return defaultTemplates.map((template, index) => {
-        const id = String(index)
-        return Object.assign({
-            id: id,
-        }, template)
+  if (ENV === 'development') {
+    let allVarsBody = [ 'account', 'from', 'to', 'cc', 'bcc' ].map((field) => {
+      return `
+        <div>
+          <strong># ${field}</strong>
+        </div>
+        {{#each ${field}}}
+          <div>
+            {{@key}}: {{this}}
+          </div>
+        {{/each}}
+      `
+    }).join('')
+
+    allVarsBody += `
+      <div>subject: {{subject}}</div>
+      <div>next week: {{moment add='7;days' format='DD MMMM'}}</div>
+      <div>last week: {{moment subtract='7;days'}}</div>
+      <div>choice: {{choice 'Hello, Hi, Hey'}}</div>
+      <div>domain: {{domain to.email}}</div>
+      <div><img src="https://www.briskine.com/images/briskine-promo.png" width="100" height="73"></div>
+    `
+
+    defaultTemplates.push({
+      title: 'allvars',
+      shortcut: 'allvars',
+      subject: 'Subject',
+      body: allVarsBody,
+      to: 'to@briskine.com',
+      cc: 'cc@briskine.com, cc2@briskine.com',
+      bcc: 'bcc@briskine.com',
+      from: 'contact@briskine.com'
+    })
+
+    defaultTemplates.push({
+      title: 'broken',
+      shortcut: 'broken',
+      body: 'Hello {{to.first_name}'
+    })
+  }
+
+  return defaultTemplates
+    .map((template, index) => {
+      const id = String(index)
+      return Object.assign({
+        id: id,
+        _body_plaintext: plainText(template.body),
+      }, template)
     })
 }
 
@@ -431,13 +461,6 @@ function isFree (user) {
       const customer = customers[user.customer]
       return customer.subscription.plan === 'free'
     })
-}
-
-function idsToTags (ids, tags) {
-  return ids.map((tagId) => {
-    const tag = tags[tagId] && tags[tagId].title
-    return tag || ''
-  })
 }
 
 export function getTemplates () {
@@ -470,24 +493,17 @@ export function getTemplates () {
         ])
       }
 
-      let tags = {}
-      return getCollection({
-          user: user,
-          collection: 'tags'
-        })
-        .then((res) => {
-          tags = res
-          return Promise.all(templateCollections)
-        })
+      return Promise.all(templateCollections)
         .then((res) => {
           // merge and de-duplication
           return Object.assign({}, ...res)
         })
         .then((templates) => {
           return Object.keys(templates).map((id) => {
-            return Object.assign(convertToNativeDates(templates[id]), {
+            const template = templates[id]
+            return Object.assign(convertToNativeDates(template), {
               id: id,
-              tags: idsToTags(templates[id].tags, tags).join(', '),
+              _body_plaintext: plainText(template.body),
             })
           })
         })
@@ -639,6 +655,8 @@ const extensionDataKey = 'briskine'
 const defaultExtensionData = {
   words: 0,
   templatesLastUsed: {},
+  dialogSort: 'last_used',
+  dialogTags: true,
 }
 
 export function getExtensionData () {
@@ -657,6 +675,9 @@ export function setExtensionData (params = {}) {
     .then((newData) => {
       const dataWrap = {}
       dataWrap[extensionDataKey] = newData
+
+      trigger('extension-data-updated', newData)
+
       return browser.storage.local.set(dataWrap)
     })
 }
@@ -693,6 +714,83 @@ export function getAccount () {
         customers: userData.customers,
         email: userData.email,
         full_name: userData.full_name,
+      }
+    })
+}
+
+export function getTags () {
+  return getSignedInUser()
+    .then((user) => {
+      return getCollection({
+        collection: 'tags',
+        user: user
+      })
+    })
+    .then((tags) => {
+      return Object.keys(tags).map((id) => {
+        return Object.assign({id: id}, tags[id])
+      })
+    })
+    .catch((err) => {
+      if (isLoggedOut(err)) {
+        // logged-out
+        return defaultTags
+      }
+
+      throw err
+    })
+}
+
+function parseTags (tagIds = [], allTags = []) {
+  return tagIds
+    .map((tagId) => {
+      return allTags.find((t) => t.id === tagId)
+    })
+    .filter(Boolean)
+}
+
+function getSearchList (templates = [], allTags = []) {
+  return templates.map((template) => {
+    // cherry-pick search properties
+    return {
+      title: template.title,
+      shortcut: template.shortcut,
+      body: template._body_plaintext,
+      to: template.to,
+      cc: template.cc,
+      bcc: template.bcc,
+      subject: template.subject,
+      sharing: template.sharing,
+      tags: parseTags(template.tags, allTags).map((t) => t?.title),
+    }
+  })
+}
+
+let lastSearchQuery = ''
+export function searchTemplates (query = '') {
+  lastSearchQuery = query
+
+  return Promise.all([
+      getTemplates(),
+      getTags(),
+    ])
+    .then(([templates, tags]) => {
+      // avoid triggering fuzzySearch
+      // if this is not the latest search query, for better performance.
+      if (query !== lastSearchQuery) {
+        return {
+          query: '_SEARCH_CANCELED',
+          tags: [],
+          results: [],
+        }
+      }
+
+      const templateSearchList = getSearchList(templates, tags)
+      return {
+        query: query,
+        // return tags, to avoid another round-trip to the store
+        tags: tags,
+        results: fuzzySearch(templates, templateSearchList, query),
       }
     })
 }
