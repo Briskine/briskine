@@ -390,6 +390,134 @@ customElements.define(
       this.stopRelatedTargetPropagation = (e) => {
         stopPropagation(e, e.relatedTarget)
       }
+
+      this.render = () => {
+        render(html`
+          <style>${dialogStyles}</style>
+          <div
+            class=${classMap({
+              'dialog-container': true,
+              'dialog-safari': REGISTER_DISABLED,
+            })}
+            >
+            <input type="search" value="" placeholder="Search templates...">
+            <div class="dialog-info">
+              Please
+              <a href="${popupUrl}?source=tab" target="_blank">Sign in</a>
+              <span class="dialog-safari-hide">
+                or
+                <a href="${signupUrl}" target="_blank">
+                  Create a free account
+                </a>
+              </span>
+              <span class="dialog-safari-show">
+                to access your templates.
+              </span>
+            </div>
+            <ul class="dialog-templates">
+              ${this.loading === true
+                ? Array(4).fill(html`
+                  <div class="templates-placeholder">
+                    <div class="templates-placeholder-text"></div>
+                    <div class="templates-placeholder-text templates-placeholder-description"></div>
+                  </div>
+                `)
+                : this.templates.length
+                ? repeat(this.templates, (t) => t.id, (t) => {
+                    return html`
+                      <li
+                        data-id=${t.id}
+                        class=${classMap({
+                          'dialog-template-item': true,
+                          [activeTemplateClass]: t.id === this.activeItem,
+                        })}
+                        >
+                        <div class="d-flex">
+                          <h1>${t.title}</h1>
+                          ${t.shortcut ? html`
+                            <abbr>${t.shortcut}</abbr>
+                          ` : ''}
+                        </div>
+                        <p>${t._body_plaintext.slice(0, 100)}</p>
+                        ${this.extensionData.dialogTags && t.tags && t.tags.length ? html`
+                          <ul class="dialog-tags">
+                            ${repeat(t.tags, (tagId) => tagId, (tagId) => {
+                              const tag = this.tags.find((tag) => tag.id === tagId)
+                              if (!tag) {
+                                return ''
+                              }
+
+                              return html`
+                                <li
+                                  style="--tag-bg-color: var(--tag-color-${tag.color})"
+                                  class=${classMap({
+                                    'text-secondary': !tag.color || tag.color === 'transparent',
+                                  })}
+                                >
+                                  ${tag.title}
+                                </li>
+                              `
+                            })}
+                          </ul>
+                        ` : ''}
+                        <div class="edit-container">
+                          <a
+                            href="${config.functionsUrl}/template/${t.id}"
+                            target="_blank"
+                            class="btn btn-sm btn-edit dialog-safari-hide"
+                            title="Edit template"
+                            >
+                            ${unsafeSVG(iconArrowUpRightSquare)}
+                          </a>
+                        </div>
+                      </li>
+                    `
+                  })
+                : html`
+                  <div class="templates-no-results">
+                    No templates found
+                  </div>
+                `}
+            </ul>
+            <div class="dialog-footer">
+              <div class="d-flex">
+                <div class="flex-fill">
+                  <a
+                    href="${config.functionsUrl}/template/new"
+                    target="_blank"
+                    class="btn btn-primary btn-new-template dialog-safari-hide"
+                    title="Create a new template"
+                    >
+                    <span class="d-flex">
+                      ${unsafeSVG(iconPlus)}
+                      <span>
+                        New Template
+                      </span>
+                    </span>
+                  </a>
+                </div>
+
+                <div
+                  class="dialog-shortcut btn"
+                  title="Press ${this.getAttribute('shortcut')} in any text field to open the Briskine Dialog."
+                  >
+                  ${this.getAttribute('shortcut')}
+                </div>
+                <button
+                  type="button"
+                  class="btn btn-sm btn-settings"
+                  title="Dialog Settings"
+                  >
+                  ${unsafeSVG(iconGear)}
+                </button>
+              </div>
+            </div>
+            <${dialogSettingsComponent}
+              .extensionData=${{...this.extensionData}}
+            />
+          </div>
+        `, this.shadowRoot)
+      }
     }
     static get observedAttributes() { return ['visible'] }
     attributeChangedCallback (name, oldValue, newValue) {
@@ -528,133 +656,6 @@ customElements.define(
 
       window.removeEventListener('focusout', this.stopRelatedTargetPropagation, true)
       window.removeEventListener('focusin', this.stopTargetPropagation, true)
-    }
-    render () {
-      render(html`
-        <style>${dialogStyles}</style>
-        <div
-          class=${classMap({
-            'dialog-container': true,
-            'dialog-safari': REGISTER_DISABLED,
-          })}
-          >
-          <input type="search" value="" placeholder="Search templates...">
-          <div class="dialog-info">
-            Please
-            <a href="${popupUrl}?source=tab" target="_blank">Sign in</a>
-            <span class="dialog-safari-hide">
-              or
-              <a href="${signupUrl}" target="_blank">
-                Create a free account
-              </a>
-            </span>
-            <span class="dialog-safari-show">
-              to access your templates.
-            </span>
-          </div>
-          <ul class="dialog-templates">
-            ${this.loading === true
-              ? Array(4).fill(html`
-                <div class="templates-placeholder">
-                  <div class="templates-placeholder-text"></div>
-                  <div class="templates-placeholder-text templates-placeholder-description"></div>
-                </div>
-              `)
-              : this.templates.length
-              ? repeat(this.templates, (t) => t.id, (t) => {
-                  return html`
-                    <li
-                      data-id=${t.id}
-                      class=${classMap({
-                        'dialog-template-item': true,
-                        [activeTemplateClass]: t.id === this.activeItem,
-                      })}
-                      >
-                      <div class="d-flex">
-                        <h1>${t.title}</h1>
-                        ${t.shortcut ? html`
-                          <abbr>${t.shortcut}</abbr>
-                        ` : ''}
-                      </div>
-                      <p>${t._body_plaintext.slice(0, 100)}</p>
-                      ${this.extensionData.dialogTags && t.tags && t.tags.length ? html`
-                        <ul class="dialog-tags">
-                          ${repeat(t.tags, (tagId) => tagId, (tagId) => {
-                            const tag = this.tags.find((tag) => tag.id === tagId)
-                            if (!tag) {
-                              return ''
-                            }
-
-                            return html`
-                              <li
-                                style="--tag-bg-color: var(--tag-color-${tag.color})"
-                                class=${classMap({
-                                  'text-secondary': !tag.color || tag.color === 'transparent',
-                                })}
-                              >
-                                ${tag.title}
-                              </li>
-                            `
-                          })}
-                        </ul>
-                      ` : ''}
-                      <div class="edit-container">
-                        <a
-                          href="${config.functionsUrl}/template/${t.id}"
-                          target="_blank"
-                          class="btn btn-sm btn-edit dialog-safari-hide"
-                          title="Edit template"
-                          >
-                          ${unsafeSVG(iconArrowUpRightSquare)}
-                        </a>
-                      </div>
-                    </li>
-                  `
-                })
-              : html`
-                <div class="templates-no-results">
-                  No templates found
-                </div>
-              `}
-          </ul>
-          <div class="dialog-footer">
-            <div class="d-flex">
-              <div class="flex-fill">
-                <a
-                  href="${config.functionsUrl}/template/new"
-                  target="_blank"
-                  class="btn btn-primary btn-new-template dialog-safari-hide"
-                  title="Create a new template"
-                  >
-                  <span class="d-flex">
-                    ${unsafeSVG(iconPlus)}
-                    <span>
-                      New Template
-                    </span>
-                  </span>
-                </a>
-              </div>
-
-              <div
-                class="dialog-shortcut btn"
-                title="Press ${this.getAttribute('shortcut')} in any text field to open the Briskine Dialog."
-                >
-                ${this.getAttribute('shortcut')}
-              </div>
-              <button
-                type="button"
-                class="btn btn-sm btn-settings"
-                title="Dialog Settings"
-                >
-                ${unsafeSVG(iconGear)}
-              </button>
-            </div>
-          </div>
-          <${dialogSettingsComponent}
-            .extensionData=${{...this.extensionData}}
-          />
-        </div>
-      `, this.shadowRoot)
     }
   }
 )
