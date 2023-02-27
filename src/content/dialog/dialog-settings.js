@@ -31,6 +31,73 @@ customElements.define(
       super()
 
       this.data = {}
+
+      this.render = () => {
+        render(html`
+          <div class="dialog-settings dialog-modal">
+            <div class="dialog-modal-header">
+              <h2>
+                Dialog Settings
+              </h2>
+
+              <button
+                type="button"
+                class="btn btn-close"
+                title="Close Dialog Settings"
+                >
+              </button>
+            </div>
+            <div class="dialog-modal-body">
+              <form>
+                <div class="form-block d-flex">
+                  <label for="dialog_sort" class="form-label">
+                    Sort templates by
+                  </label>
+                  <select id="dialog_sort" class="form-select">
+                    ${sortOptions.map((option) => html`
+                      <option
+                        value=${option.value}
+                        .selected=${option.value === this.data.dialogSort}
+                        >
+                        ${option.label}
+                      </option>
+                    `)}
+                  </select>
+                </div>
+                <div class="form-block d-flex">
+                  <label class="form-label">
+                    Template tags
+                  </label>
+                  <div class="form-check">
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      id="dialog_tags"
+                      .checked=${this.data.dialogTags}
+                      >
+                    <label class="form-check-label" for="dialog_tags">
+                      Show tags in the dialog
+                    </label>
+                  </div>
+                </div>
+                <div class="form-block d-flex">
+                  <label class="form-label">
+                    General settings
+                  </label>
+                  <div>
+                    <p>
+                      Manage additional settings for Briskine in the Dashboard.
+                    </p>
+                    <a href="${config.functionsUrl}/settings" target="_blank" class="btn">
+                      Open General Settings
+                    </a>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        `, this)
+      }
     }
     set extensionData (value) {
       // re-render when the extensionData prop changes
@@ -75,71 +142,5 @@ customElements.define(
       }
     }
 
-    render () {
-      render(html`
-        <div class="dialog-settings dialog-modal">
-          <div class="dialog-modal-header">
-            <h2>
-              Dialog Settings
-            </h2>
-
-            <button
-              type="button"
-              class="btn btn-close"
-              title="Close Dialog Settings"
-              >
-            </button>
-          </div>
-          <div class="dialog-modal-body">
-            <form>
-              <div class="form-block d-flex">
-                <label for="dialog_sort" class="form-label">
-                  Sort templates by
-                </label>
-                <select id="dialog_sort" class="form-select">
-                  ${sortOptions.map((option) => html`
-                    <option
-                      value=${option.value}
-                      .selected=${option.value === this.data.dialogSort}
-                      >
-                      ${option.label}
-                    </option>
-                  `)}
-                </select>
-              </div>
-              <div class="form-block d-flex">
-                <label class="form-label">
-                  Template tags
-                </label>
-                <div class="form-check">
-                  <input
-                    class="form-check-input"
-                    type="checkbox"
-                    id="dialog_tags"
-                    .checked=${this.data.dialogTags}
-                    >
-                  <label class="form-check-label" for="dialog_tags">
-                    Show tags in the dialog
-                  </label>
-                </div>
-              </div>
-              <div class="form-block d-flex">
-                <label class="form-label">
-                  General settings
-                </label>
-                <div>
-                  <p>
-                    Manage additional settings for Briskine in the Dashboard.
-                  </p>
-                  <a href="${config.functionsUrl}/settings" target="_blank" class="btn">
-                    Open General Settings
-                  </a>
-                </div>
-              </div>
-            </form>
-          </div>
-        </div>
-      `, this)
-    }
   }
 )
