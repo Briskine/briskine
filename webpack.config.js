@@ -2,7 +2,7 @@
 import fs from 'fs'
 import webpack from 'webpack'
 import path from 'path'
-import glob from 'glob'
+import {globSync} from 'glob'
 import archiver from 'archiver'
 import CopyWebpackPlugin from 'copy-webpack-plugin'
 import MiniCssExtractPlugin from 'mini-css-extract-plugin'
@@ -110,7 +110,7 @@ function extensionConfig (params = {}) {
       filename: '[name]/[name].css'
     }),
     new PurgeCSSPlugin({
-      paths: glob.sync('src/**/*',  { nodir: true })
+      paths: globSync('src/**/*',  {nodir: true, dotRelative: true})
     })
   ]
 

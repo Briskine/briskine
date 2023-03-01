@@ -1,12 +1,14 @@
 import webpack from 'webpack'
 import path from 'path'
-import glob from 'glob'
+import {globSync} from 'glob'
 import CopyWebpackPlugin from 'copy-webpack-plugin'
+
+console.log(globSync('./src/**/*.spec.js'))
 
 export default {
   mode: 'development',
   entry: {
-    test: glob.sync('./src/**/*.spec.js'),
+    test: globSync('./src/**/*.spec.js', {dotRelative: true}),
     sandbox: './src/content/sandbox/sandbox.js',
   },
   output: {
