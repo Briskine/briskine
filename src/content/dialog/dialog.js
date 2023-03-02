@@ -329,6 +329,12 @@ customElements.define(
       }
 
       this.updateExtensionData = (data) => {
+        if (this.extensionData.dialogSort !== data.dialogSort) {
+          // require to re-sort templates
+          // TODO but this triggers a double render, with the render below
+          this.populateTemplates()
+        }
+
         this.extensionData = data
         this.render()
       }
@@ -604,17 +610,6 @@ customElements.define(
             this.setAttribute(modalAttribute, 'settings')
           }
         }
-      })
-
-      this.addEventListener('settings-updated', (e) => {
-        // reset the active item,
-        // to select the first item after changing the settings.
-        this.activeItem = null
-
-        // update extensiondata
-        this.extensionData = Object.assign(this.extensionData, e.detail)
-
-        window.requestAnimationFrame(this.populateTemplates)
       })
 
       store.getExtensionData().then(this.updateExtensionData)

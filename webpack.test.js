@@ -3,8 +3,6 @@ import path from 'path'
 import {globSync} from 'glob'
 import CopyWebpackPlugin from 'copy-webpack-plugin'
 
-console.log(globSync('./src/**/*.spec.js'))
-
 export default {
   mode: 'development',
   entry: {
