@@ -211,31 +211,6 @@ customElements.define(
         }
       }
 
-      this.sortTemplates = async (templates = []) => {
-        const sort = this.extensionData.dialogSort || 'last_used'
-        const lastUsed = this.extensionData.templatesLastUsed || {}
-
-        if (['title', 'shortcut'].includes(sort)) {
-          return templates
-            .sort((a, b) => {
-              return a[sort].localeCompare(b[sort])
-            })
-        }
-
-        if (sort === 'modified_datetime') {
-          return templates
-            .sort((a, b) => {
-              return new Date(b.modified_datetime || 0) - new Date(a.modified_datetime || 0)
-            })
-        }
-
-        // default last_used sort
-        return templates
-          .sort((a, b) => {
-            return new Date(lastUsed[b.id] || 0) - new Date(lastUsed[a.id] || 0)
-          })
-      }
-
       this.getAllTemplates = async () => {
         const templates = await store.getTemplates()
         this.loading = false
@@ -257,7 +232,7 @@ customElements.define(
           }
         } else {
           const allTemplates = await this.getAllTemplates()
-          this.templates = await this.sortTemplates(allTemplates.slice(0, templateRenderLimit))
+          this.templates = allTemplates.slice(0, templateRenderLimit)
           this.tags = await store.getTags()
 
           if (this.activeItem && this.templates.find((t) => t.id === this.activeItem)) {
@@ -440,6 +415,8 @@ customElements.define(
               .templates=${this.templates}
               .activeItem=${this.activeItem}
               .showTags=${this.extensionData.dialogTags}
+              .sort=${this.extensionData.dialogSort}
+              .lastUsed=${this.extensionData.templatesLastUsed}
               >
             </${components.templates}>
 

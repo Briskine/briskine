@@ -8,6 +8,29 @@ import config from '../../config.js'
 
 const activeTemplateClass = 'active'
 
+function sortTemplates (templates = [], sort = 'last_used', lastUsed = {}) {
+  if (['title', 'shortcut'].includes(sort)) {
+    return templates
+      .sort((a, b) => {
+        return a[sort].localeCompare(b[sort])
+      })
+  }
+
+  if (sort === 'modified_datetime') {
+    return templates
+      .sort((a, b) => {
+        return new Date(b.modified_datetime || 0) - new Date(a.modified_datetime || 0)
+      })
+  }
+
+  // default last_used sort
+  return templates
+    .sort((a, b) => {
+      return new Date(lastUsed[b.id] || 0) - new Date(lastUsed[a.id] || 0)
+    })
+}
+
+
 export default class DialogTemplates extends HTMLElement {
   constructor () {
     super()
@@ -16,7 +39,12 @@ export default class DialogTemplates extends HTMLElement {
       loading: false,
       templates: [],
       activeItem: '',
+
+      sort: 'last_used',
+      lastUsed: {},
+
       showTags: true,
+      tags: [],
     }
 
     this.render = () => {
@@ -40,17 +68,18 @@ export default class DialogTemplates extends HTMLElement {
     }
 
     this.render()
-
     this.classList.add('dialog-templates')
   }
 }
 
 function template ({
-  loading = false,
-  templates = [],
-  activeItem = '',
-  showTags = true,
-  tags = [],
+  loading,
+  templates,
+  activeItem,
+  showTags,
+  tags,
+  sort,
+  lastUsed,
 }) {
   return html`
     <ul>
@@ -62,7 +91,7 @@ function template ({
           </div>
         `)
         : templates.length
-        ? repeat(templates, (t) => t.id, (t) => {
+        ? repeat(sortTemplates(templates, sort, lastUsed).slice(0, 42), (t) => t.id, (t) => {
             return html`
               <li
                 data-id=${t.id}
