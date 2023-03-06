@@ -415,6 +415,7 @@ customElements.define(
               .templates=${this.templates}
               .activeItem=${this.activeItem}
               .showTags=${this.extensionData.dialogTags}
+              .tags=${this.tags}
               .sort=${this.extensionData.dialogSort}
               .lastUsed=${this.extensionData.templatesLastUsed}
               >
@@ -485,6 +486,7 @@ customElements.define(
       window.addEventListener('keydown', this.handleSearchFieldShortcuts, true)
 
       // hover templates
+      // TODO move setActive and this, to dialog-templates
       this.shadowRoot.addEventListener('mouseover', (e) => {
         const container = e.target.closest('[data-id]')
         if (container) {
