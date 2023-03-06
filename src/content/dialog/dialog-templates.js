@@ -22,22 +22,17 @@ export default class DialogTemplates extends HTMLElement {
     this.render = () => {
       render(template(this.state), this)
     }
-  }
-  set loading (value = false) {
-    this.state.loading = value
-    this.render()
-  }
-  set templates (value = []) {
-    this.state.templates = value
-    this.render()
-  }
-  set activeItem (value = '') {
-    this.state.activeItem = value
-    this.render()
-  }
-  set showTags (value = true) {
-    this.state.showTags = value
-    this.render()
+
+    Object.keys(this.state).forEach((key) => {
+      Object.defineProperty(this, key, {
+        set (value) {
+          if (this.state[key] !== value) {
+            this.state[key] = value
+            this.render()
+          }
+        }
+      })
+    })
   }
   connectedCallback () {
     if (!this.isConnected) {
