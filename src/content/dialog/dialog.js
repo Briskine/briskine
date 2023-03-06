@@ -5,9 +5,7 @@ import {html, literal, unsafeStatic} from 'lit-html/static.js'
 import {classMap} from 'lit-html/directives/class-map.js'
 import {unsafeSVG} from 'lit-html/directives/unsafe-svg.js'
 import {repeat} from 'lit-html/directives/repeat.js'
-import iconGear from 'bootstrap-icons/icons/gear.svg?raw'
 import iconArrowUpRightSquare from 'bootstrap-icons/icons/arrow-up-right-square.svg?raw'
-import iconPlus from 'bootstrap-icons/icons/plus.svg?raw'
 
 import store from '../../store/store-client.js'
 import {isContentEditable} from '../editors/editor-contenteditable.js'
@@ -19,7 +17,17 @@ import {keybind, keyunbind} from '../keybind.js'
 import config from '../../config.js'
 import {dialogSettingsTagName} from './dialog-settings.js'
 
+import DialogFooter from './dialog-footer.js'
+
 import styles from './dialog.css'
+
+function scopeElementName (name = '') {
+  return `${name}-${Date.now().toString(36)}`
+}
+
+const dialogFooterTagName = scopeElementName('b-dialog-footer')
+customElements.define(dialogFooterTagName, DialogFooter)
+const dialogFooterComponent = literal([dialogFooterTagName])
 
 const dialogSettingsComponent = literal([dialogSettingsTagName])
 const dialogStyles = unsafeStatic(styles)
@@ -56,6 +64,7 @@ customElements.define(
       this.tags = []
 
       this.extensionData = {}
+      this.keyboardShortcut = ''
 
       this.searchField = null
       this.searchQuery = ''
@@ -485,39 +494,9 @@ customElements.define(
                   </div>
                 `}
             </ul>
-            <div class="dialog-footer">
-              <div class="d-flex">
-                <div class="flex-fill">
-                  <a
-                    href="${config.functionsUrl}/template/new"
-                    target="_blank"
-                    class="btn btn-primary btn-new-template dialog-safari-hide"
-                    title="Create a new template"
-                    >
-                    <span class="d-flex">
-                      ${unsafeSVG(iconPlus)}
-                      <span>
-                        New Template
-                      </span>
-                    </span>
-                  </a>
-                </div>
-
-                <div
-                  class="dialog-shortcut btn"
-                  title="Press ${this.getAttribute('shortcut')} in any text field to open the Briskine Dialog."
-                  >
-                  ${this.getAttribute('shortcut')}
-                </div>
-                <button
-                  type="button"
-                  class="btn btn-sm btn-settings"
-                  title="Dialog Settings"
-                  >
-                  ${unsafeSVG(iconGear)}
-                </button>
-              </div>
-            </div>
+            <${dialogFooterComponent}
+              .shortcut=${this.keyboardShortcut}
+            />
             <${dialogSettingsComponent}
               .extensionData=${{...this.extensionData}}
             />
@@ -600,23 +579,15 @@ customElements.define(
         }
       })
 
-      // open settings
-      this.shadowRoot.addEventListener('click', (e) => {
-        const settingsBtn = e.target.closest('.btn-settings')
-        if (settingsBtn) {
-          if (this.getAttribute(modalAttribute) === 'settings') {
-            this.removeAttribute(modalAttribute)
-          } else {
-            this.setAttribute(modalAttribute, 'settings')
-          }
-        }
-      })
-
       store.getExtensionData().then(this.updateExtensionData)
       store.on('extension-data-updated', this.updateExtensionData)
 
-      this.addEventListener('settings-close', () => {
-        this.removeAttribute(modalAttribute)
+      this.addEventListener('b-dialog-set-modal', (e) => {
+        if (e.detail && this.getAttribute(modalAttribute) !== e.detail) {
+          this.setAttribute(modalAttribute, e.detail)
+        } else {
+          this.removeAttribute(modalAttribute)
+        }
       })
 
       window.addEventListener('click', this.hideOnClick, true)
@@ -662,7 +633,7 @@ function isTextfield (element) {
 
 function createDialog (settings = {}) {
   const instance = document.createElement(dialogTagName)
-  instance.setAttribute('shortcut', settings.dialog_shortcut)
+  instance.keyboardShortcut = settings.dialog_shortcut
   document.documentElement.appendChild(instance)
 
   return instance

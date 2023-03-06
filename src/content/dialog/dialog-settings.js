@@ -33,7 +33,11 @@ customElements.define(
       const closeBtn = this.querySelector('.btn-close')
       if (closeBtn) {
         closeBtn.addEventListener('click', () => {
-          this.dispatchEvent(new Event('settings-close', { bubbles: true, composed: true }))
+          this.dispatchEvent(new CustomEvent('b-dialog-set-modal', {
+            bubbles: true,
+            composed: true,
+            detail: '',
+          }))
         })
       }
 
