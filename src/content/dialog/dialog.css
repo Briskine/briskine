@@ -218,15 +218,18 @@ input[type=search]:focus {
 .dialog-templates {
   flex: 1;
   padding: 0 0 20px;
-  margin: 0;
   overflow: auto;
-
-  list-style-type: none;
 
   /* improve performance for rendering large lists
    */
   content-visibility: auto;
   contain-intrinsic-size: auto 350px;
+}
+
+.dialog-templates ul {
+  padding: 0;
+  margin: 0;
+  list-style-type: none;
 }
 
 .dialog-template-item {

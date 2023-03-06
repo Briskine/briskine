@@ -3,9 +3,6 @@ import browser from 'webextension-polyfill'
 import {render} from 'lit-html'
 import {html, literal, unsafeStatic} from 'lit-html/static.js'
 import {classMap} from 'lit-html/directives/class-map.js'
-import {unsafeSVG} from 'lit-html/directives/unsafe-svg.js'
-import {repeat} from 'lit-html/directives/repeat.js'
-import iconArrowUpRightSquare from 'bootstrap-icons/icons/arrow-up-right-square.svg?raw'
 
 import store from '../../store/store-client.js'
 import {isContentEditable} from '../editors/editor-contenteditable.js'
@@ -18,6 +15,7 @@ import config from '../../config.js'
 
 import DialogFooter from './dialog-footer.js'
 import DialogSettings from './dialog-settings.js'
+import DialogTemplates from './dialog-templates.js'
 
 import styles from './dialog.css'
 
@@ -25,20 +23,24 @@ function scopeElementName (name = '') {
   return `${name}-${Date.now().toString(36)}`
 }
 
-const dialogFooterTagName = scopeElementName('b-dialog-footer')
-customElements.define(dialogFooterTagName, DialogFooter)
-const dialogFooterComponent = literal([dialogFooterTagName])
+const components = {
+  'templates': DialogTemplates,
+  'footer': DialogFooter,
+  'settings': DialogSettings,
+}
 
-const dialogSettingsTagName = scopeElementName('b-dialog-settings')
-customElements.define(dialogSettingsTagName, DialogSettings)
-const dialogSettingsComponent = literal([dialogSettingsTagName])
+Object.keys(components).forEach((name) => {
+  const tagName = scopeElementName(`b-dialog-${name}`)
+  customElements.define(tagName, components[name])
+  components[name] = literal([tagName])
+})
 
 const dialogStyles = unsafeStatic(styles)
 
 let dialogInstance = null
 
 export const dialogShowEvent = 'briskine-dialog'
-export const dialogTagName = `b-dialog-${Date.now().toString(36)}`
+export const dialogTagName = scopeElementName('b-dialog')
 
 const templateRenderLimit = 42
 const modalAttribute = 'modal'
@@ -432,77 +434,25 @@ customElements.define(
                 to access your templates.
               </span>
             </div>
-            <ul class="dialog-templates">
-              ${this.loading === true
-                ? Array(4).fill(html`
-                  <div class="templates-placeholder">
-                    <div class="templates-placeholder-text"></div>
-                    <div class="templates-placeholder-text templates-placeholder-description"></div>
-                  </div>
-                `)
-                : this.templates.length
-                ? repeat(this.templates, (t) => t.id, (t) => {
-                    return html`
-                      <li
-                        data-id=${t.id}
-                        class=${classMap({
-                          'dialog-template-item': true,
-                          [activeTemplateClass]: t.id === this.activeItem,
-                        })}
-                        >
-                        <div class="d-flex">
-                          <h1>${t.title}</h1>
-                          ${t.shortcut ? html`
-                            <abbr>${t.shortcut}</abbr>
-                          ` : ''}
-                        </div>
-                        <p>${t._body_plaintext.slice(0, 100)}</p>
-                        ${this.extensionData.dialogTags && t.tags && t.tags.length ? html`
-                          <ul class="dialog-tags">
-                            ${repeat(t.tags, (tagId) => tagId, (tagId) => {
-                              const tag = this.tags.find((tag) => tag.id === tagId)
-                              if (!tag) {
-                                return ''
-                              }
 
-                              return html`
-                                <li
-                                  style="--tag-bg-color: var(--tag-color-${tag.color})"
-                                  class=${classMap({
-                                    'text-secondary': !tag.color || tag.color === 'transparent',
-                                  })}
-                                >
-                                  ${tag.title}
-                                </li>
-                              `
-                            })}
-                          </ul>
-                        ` : ''}
-                        <div class="edit-container">
-                          <a
-                            href="${config.functionsUrl}/template/${t.id}"
-                            target="_blank"
-                            class="btn btn-sm btn-edit dialog-safari-hide"
-                            title="Edit template"
-                            >
-                            ${unsafeSVG(iconArrowUpRightSquare)}
-                          </a>
-                        </div>
-                      </li>
-                    `
-                  })
-                : html`
-                  <div class="templates-no-results">
-                    No templates found
-                  </div>
-                `}
-            </ul>
-            <${dialogFooterComponent}
+            <${components.templates}
+              .loading=${this.loading}
+              .templates=${this.templates}
+              .activeItem=${this.activeItem}
+              .showTags=${this.extensionData.dialogTags}
+              >
+            </${components.templates}>
+
+            <${components.footer}
               .shortcut=${this.keyboardShortcut}
-            />
-            <${dialogSettingsComponent}
-              .extensionData=${{...this.extensionData}}
-            />
+              >
+            </${components.footer}>
+
+            <${components.settings}
+              .extensionData=${this.extensionData}
+              >
+            </${components.settings}>
+
           </div>
         `, this.shadowRoot)
       }

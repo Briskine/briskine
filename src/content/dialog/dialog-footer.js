@@ -28,6 +28,8 @@ export default class DialogFooter extends HTMLElement {
 
     this.render()
 
+    this.classList.add('dialog-footer')
+
     this.addEventListener('click', (e) => {
       const settingsBtn = e.target.closest('.btn-settings')
       if (settingsBtn) {
@@ -43,38 +45,36 @@ export default class DialogFooter extends HTMLElement {
 
 function template ({shortcut=''}) {
   return html`
-    <div class="dialog-footer">
-      <div class="d-flex">
-        <div class="flex-fill">
-          <a
-            href="${config.functionsUrl}/template/new"
-            target="_blank"
-            class="btn btn-primary btn-new-template dialog-safari-hide"
-            title="Create a new template"
-            >
-            <span class="d-flex">
-              ${unsafeSVG(iconPlus)}
-              <span>
-                New Template
-              </span>
+    <div class="d-flex">
+      <div class="flex-fill">
+        <a
+          href="${config.functionsUrl}/template/new"
+          target="_blank"
+          class="btn btn-primary btn-new-template dialog-safari-hide"
+          title="Create a new template"
+          >
+          <span class="d-flex">
+            ${unsafeSVG(iconPlus)}
+            <span>
+              New Template
             </span>
-          </a>
-        </div>
-
-        <div
-          class="dialog-shortcut btn"
-          title="Press ${shortcut} in any text field to open the Briskine Dialog."
-          >
-          ${shortcut}
-        </div>
-        <button
-          type="button"
-          class="btn btn-sm btn-settings"
-          title="Dialog Settings"
-          >
-          ${unsafeSVG(iconGear)}
-        </button>
+          </span>
+        </a>
       </div>
+
+      <div
+        class="dialog-shortcut btn"
+        title="Press ${shortcut} in any text field to open the Briskine Dialog."
+        >
+        ${shortcut}
+      </div>
+      <button
+        type="button"
+        class="btn btn-sm btn-settings"
+        title="Dialog Settings"
+        >
+        ${unsafeSVG(iconGear)}
+      </button>
     </div>
   `
 }
