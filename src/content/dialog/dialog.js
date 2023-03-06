@@ -232,7 +232,7 @@ customElements.define(
           }
         } else {
           const allTemplates = await this.getAllTemplates()
-          this.templates = allTemplates.slice(0, templateRenderLimit)
+          this.templates = allTemplates
           this.tags = await store.getTags()
 
           if (this.activeItem && this.templates.find((t) => t.id === this.activeItem)) {
@@ -499,16 +499,6 @@ customElements.define(
         }
       })
 
-      // insert templates on click
-      this.shadowRoot.addEventListener('click', (e) => {
-        const container = e.target.closest('[data-id]')
-        // prevent inserting templates when clicking the edit button
-        const editButton = e.target.closest('.btn-edit')
-        if (container && !editButton) {
-          this.insertTemplate(container.dataset.id)
-        }
-      })
-
       store.getExtensionData().then(this.updateExtensionData)
       store.on('extension-data-updated', this.updateExtensionData)
 
@@ -518,6 +508,10 @@ customElements.define(
         } else {
           this.removeAttribute(modalAttribute)
         }
+      })
+
+      this.addEventListener('b-dialog-insert-template', (e) => {
+        this.insertTemplate(e.detail)
       })
 
       window.addEventListener('click', this.hideOnClick, true)

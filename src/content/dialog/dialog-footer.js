@@ -43,7 +43,7 @@ export default class DialogFooter extends HTMLElement {
   }
 }
 
-function template ({shortcut=''}) {
+function template ({shortcut}) {
   return html`
     <div class="d-flex">
       <div class="flex-fill">

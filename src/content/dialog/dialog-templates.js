@@ -69,6 +69,20 @@ export default class DialogTemplates extends HTMLElement {
 
     this.render()
     this.classList.add('dialog-templates')
+
+    // insert templates on click
+    this.addEventListener('click', (e) => {
+      const container = e.target.closest('[data-id]')
+      // prevent inserting templates when clicking the edit button
+      const editButton = e.target.closest('.btn-edit')
+      if (container && !editButton) {
+        this.dispatchEvent(new CustomEvent('b-dialog-insert-template', {
+          bubbles: true,
+          composed: true,
+          detail: container.dataset.id,
+        }))
+      }
+    })
   }
 }
 
