@@ -15,9 +15,9 @@ import {autocomplete, getSelectedWord, getSelection, getEventTarget} from '../au
 import {keybind, keyunbind} from '../keybind.js'
 
 import config from '../../config.js'
-import {dialogSettingsTagName} from './dialog-settings.js'
 
 import DialogFooter from './dialog-footer.js'
+import DialogSettings from './dialog-settings.js'
 
 import styles from './dialog.css'
 
@@ -29,7 +29,10 @@ const dialogFooterTagName = scopeElementName('b-dialog-footer')
 customElements.define(dialogFooterTagName, DialogFooter)
 const dialogFooterComponent = literal([dialogFooterTagName])
 
+const dialogSettingsTagName = scopeElementName('b-dialog-settings')
+customElements.define(dialogSettingsTagName, DialogSettings)
 const dialogSettingsComponent = literal([dialogSettingsTagName])
+
 const dialogStyles = unsafeStatic(styles)
 
 let dialogInstance = null

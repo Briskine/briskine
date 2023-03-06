@@ -3,62 +3,57 @@ import {render, html} from 'lit-html'
 import store from '../../store/store-client.js'
 import config from '../../config.js'
 
-export const dialogSettingsTagName = `b-dialog-settings-${Date.now().toString(36)}`
+export default class DialogSettings extends HTMLElement {
+  constructor () {
+    super()
 
-customElements.define(
-  dialogSettingsTagName,
-  class extends HTMLElement {
-    constructor () {
-      super()
-
-      this.state = {
-        extensionData: {}
-      }
-
-      this.render = () => {
-        render(template(this.state), this)
-      }
+    this.state = {
+      extensionData: {}
     }
-    set extensionData (value = {}) {
-      this.state.extensionData = value
-      this.render()
-    }
-    connectedCallback () {
-      if (!this.isConnected) {
-        return
-      }
 
-      this.render()
-
-      const closeBtn = this.querySelector('.btn-close')
-      if (closeBtn) {
-        closeBtn.addEventListener('click', () => {
-          this.dispatchEvent(new CustomEvent('b-dialog-set-modal', {
-            bubbles: true,
-            composed: true,
-            detail: '',
-          }))
-        })
-      }
-
-      const form = this.querySelector('form')
-      if (form) {
-        form.addEventListener('change', (e) => {
-          let updatedData = {}
-          if (e.target.id === 'dialog_sort') {
-            updatedData.dialogSort = e.target.value
-          }
-
-          if (e.target.id === 'dialog_tags') {
-            updatedData.dialogTags = e.target.checked
-          }
-
-          store.setExtensionData(updatedData)
-        })
-      }
+    this.render = () => {
+      render(template(this.state), this)
     }
   }
-)
+  set extensionData (value = {}) {
+    this.state.extensionData = value
+    this.render()
+  }
+  connectedCallback () {
+    if (!this.isConnected) {
+      return
+    }
+
+    this.render()
+
+    const closeBtn = this.querySelector('.btn-close')
+    if (closeBtn) {
+      closeBtn.addEventListener('click', () => {
+        this.dispatchEvent(new CustomEvent('b-dialog-set-modal', {
+          bubbles: true,
+          composed: true,
+          detail: '',
+        }))
+      })
+    }
+
+    const form = this.querySelector('form')
+    if (form) {
+      form.addEventListener('change', (e) => {
+        let updatedData = {}
+        if (e.target.id === 'dialog_sort') {
+          updatedData.dialogSort = e.target.value
+        }
+
+        if (e.target.id === 'dialog_tags') {
+          updatedData.dialogTags = e.target.checked
+        }
+
+        store.setExtensionData(updatedData)
+      })
+    }
+  }
+}
 
 const sortOptions = [
   {
