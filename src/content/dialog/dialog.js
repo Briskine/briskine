@@ -16,24 +16,28 @@ import config from '../../config.js'
 import DialogFooter from './dialog-footer.js'
 import DialogSettings from './dialog-settings.js'
 import DialogTemplates from './dialog-templates.js'
+import DialogList from './dialog-list.js'
 
 import styles from './dialog.css'
 
 function scopeElementName (name = '') {
-  return `${name}-${Date.now().toString(36)}`
+  return `${name.toLowerCase()}-${Date.now().toString(36)}`
 }
 
-const components = {
-  'templates': DialogTemplates,
-  'footer': DialogFooter,
-  'settings': DialogSettings,
+function scopedComponent (componentClass) {
+  const tagName = scopeElementName(`b-${componentClass.name}`)
+  customElements.define(tagName, componentClass)
+
+  return {
+    component: unsafeStatic(tagName),
+    tagName: tagName,
+  }
 }
 
-Object.keys(components).forEach((name) => {
-  const tagName = scopeElementName(`b-dialog-${name}`)
-  customElements.define(tagName, components[name])
-  components[name] = literal([tagName])
-})
+const {component: templatesComponent} = scopedComponent(DialogTemplates)
+const {component: footerComponent} = scopedComponent(DialogFooter)
+const {component: settingsComponent} = scopedComponent(DialogSettings)
+const {tagName: listComponentTagName} = scopedComponent(DialogList)
 
 const dialogStyles = unsafeStatic(styles)
 
@@ -192,11 +196,12 @@ customElements.define(
           this.searchField.focus()
         })
 
+        // TODO handle in dialog-templates component
         // restore scroll position faster than on re-rendering
-        this.setActive(this.activeItem, true)
+        // this.setActive(this.activeItem, true)
 
         // populate the template list
-        window.requestAnimationFrame(this.populateTemplates)
+        // window.requestAnimationFrame(this.populateTemplates)
       }
 
       this.hideOnClick = (e) => {
@@ -211,13 +216,17 @@ customElements.define(
         }
       }
 
+      // TODO deprecate
       this.getAllTemplates = async () => {
         const templates = await store.getTemplates()
         this.loading = false
         return templates
       }
 
+      // TODO deprecate
       this.populateTemplates = async () => {
+        console.log('populate')
+
         let active = null
         if (this.searchQuery) {
           const {query, results, tags} = await store.searchTemplates(this.searchQuery)
@@ -312,7 +321,7 @@ customElements.define(
 
             // only start loading the templates if the dialog is visible
             if (this.hasAttribute(dialogVisibleAttr)) {
-              this.populateTemplates()
+              // this.populateTemplates()
             }
           })
       }
@@ -321,7 +330,7 @@ customElements.define(
         if (this.extensionData.dialogSort !== data.dialogSort) {
           // require to re-sort templates
           // TODO but this triggers a double render, with the render below
-          this.populateTemplates()
+          // this.populateTemplates()
         }
 
         this.extensionData = data
@@ -359,17 +368,27 @@ customElements.define(
           return this.insertTemplate(this.activeItem)
         }
 
-        let nextId
-        if (e.key === 'ArrowDown' && this.templates[index + 1]) {
-          nextId = this.templates[index + 1].id
-        } else if (e.key === 'ArrowUp' && this.templates[index - 1]) {
-          nextId = this.templates[index - 1].id
+        // let nextId
+        // if (e.key === 'ArrowDown' && this.templates[index + 1]) {
+        //   nextId = this.templates[index + 1].id
+        // } else if (e.key === 'ArrowUp' && this.templates[index - 1]) {
+        //   nextId = this.templates[index - 1].id
+        // }
+
+        if (e.key === 'ArrowDown') {
+          // HACK
+          const $list = this.shadowRoot.querySelector('.dialog-list')
+          $list.dispatchEvent(new Event('b-dialog-select-next', {
+            bubbles: true,
+            composed: true,
+          }))
         }
 
-        if (nextId) {
-          e.preventDefault()
-          this.setActive(nextId, true)
-        }
+        // if (nextId) {
+          // TODO see if we can still support preventDefault conditionally
+          // e.preventDefault()
+          // this.setActive(nextId, true)
+        // }
       }
 
       const stopPropagation = (e, target) => {
@@ -384,6 +403,16 @@ customElements.define(
 
       this.stopRelatedTargetPropagation = (e) => {
         stopPropagation(e, e.relatedTarget)
+      }
+
+      this.templatesUpdated = async () => {
+        this.templates = await store.getTemplates()
+        this.render()
+      }
+
+      this.tagsUpdated = async () => {
+        this.tags = await store.getTags()
+        this.render()
       }
 
       this.render = () => {
@@ -410,26 +439,26 @@ customElements.define(
               </span>
             </div>
 
-            <${components.templates}
+            <${templatesComponent}
               .loading=${this.loading}
               .templates=${this.templates}
-              .activeItem=${this.activeItem}
               .showTags=${this.extensionData.dialogTags}
               .tags=${this.tags}
               .sort=${this.extensionData.dialogSort}
               .lastUsed=${this.extensionData.templatesLastUsed}
+              .listComponentTagName=${listComponentTagName}
               >
-            </${components.templates}>
+            </${templatesComponent}>
 
-            <${components.footer}
+            <${footerComponent}
               .shortcut=${this.keyboardShortcut}
               >
-            </${components.footer}>
+            </${footerComponent}>
 
-            <${components.settings}
+            <${settingsComponent}
               .extensionData=${this.extensionData}
               >
-            </${components.settings}>
+            </${settingsComponent}>
 
           </div>
         `, this.shadowRoot)
@@ -451,7 +480,7 @@ customElements.define(
 
             // re-render in the background,
             // to speed up rendering on show.
-            this.populateTemplates()
+            // this.populateTemplates()
           })
         }
       }
@@ -469,6 +498,21 @@ customElements.define(
       store.on('login', this.setAuthState)
       store.on('logout', this.setAuthState)
 
+      // TODO handle auth state change
+      Promise.all([
+        store.getTemplates(),
+        store.getTags(),
+      ]).then(([templates, tags]) => {
+        this.templates = templates
+        this.tags = tags
+
+        this.loading = false
+        this.render()
+      })
+
+      store.on('templates-updated', this.templatesUpdated)
+      store.on('tags-updated', this.tagsUpdated)
+
       let searchDebouncer
       this.searchField = this.shadowRoot.querySelector('input[type=search]')
 
@@ -484,22 +528,6 @@ customElements.define(
 
       // keyboard navigation and insert for templates
       window.addEventListener('keydown', this.handleSearchFieldShortcuts, true)
-
-      // hover templates
-      // TODO move setActive and this, to dialog-templates
-      this.shadowRoot.addEventListener('mouseover', (e) => {
-        const container = e.target.closest('[data-id]')
-        if (container) {
-          this.setActive(container.dataset.id)
-
-          // add the title attribute only when hovering the template.
-          // speeds up rendering the template list.
-          const template = this.templates.find((t) => t.id === container.dataset.id)
-          if (template) {
-            container.title = template._body_plaintext
-          }
-        }
-      })
 
       store.getExtensionData().then(this.updateExtensionData)
       store.on('extension-data-updated', this.updateExtensionData)
@@ -540,6 +568,9 @@ customElements.define(
 
       store.off('login', this.setAuthState)
       store.off('logout', this.setAuthState)
+
+      store.off('templates-updated', this.templatesUpdated)
+      store.off('tags-updated', this.tagsUpdated)
 
       store.off('extension-data-updated', this.updateExtensionData)
 
