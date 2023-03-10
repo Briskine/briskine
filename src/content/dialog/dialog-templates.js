@@ -1,11 +1,9 @@
 import {render} from 'lit-html'
 import {html, unsafeStatic} from 'lit-html/static.js'
 import {classMap} from 'lit-html/directives/class-map.js'
-import {repeat} from 'lit-html/directives/repeat.js'
-import {unsafeSVG} from 'lit-html/directives/unsafe-svg.js'
-import iconArrowUpRightSquare from 'bootstrap-icons/icons/arrow-up-right-square.svg?raw'
 
 import config from '../../config.js'
+import {batch, reactive} from '../component.js'
 
 function sortTemplates (templates = [], sort = 'last_used', lastUsed = {}) {
   if (['title', 'shortcut'].includes(sort)) {
@@ -34,7 +32,7 @@ export default class DialogTemplates extends HTMLElement {
   constructor () {
     super()
 
-    this.state = {
+    this.state = reactive({
       loading: false,
       templates: [],
 
@@ -47,39 +45,20 @@ export default class DialogTemplates extends HTMLElement {
       tags: [],
 
       _templates: [],
-    }
-
-    let renderRequested = false
-    this.render = async () => {
-      // lit-element style batched updates
-      if (!renderRequested) {
-        renderRequested = true
-        renderRequested = await false
-        render(template({listComponent: this.listComponent, ...this.state}), this)
+    }, this, (key, value, props) => {
+      if (['templates', 'extensionData'].includes(key)) {
+        props._templates = sortTemplates(
+          props.templates,
+          props.extensionData.dialogSort,
+          props.extensionData.templatesLastUsed,
+        ).slice(0, 42)
       }
-    }
 
-    Object.keys(this.state).forEach((key) => {
-      Object.defineProperty(this, key, {
-        set (value) {
-          if (this.state[key] !== value) {
-            this.state[key] = value
+      this.render()
+    })
 
-            if (['templates', 'extensionData'].includes(key)) {
-              this.state._templates = sortTemplates(
-                this.state.templates,
-                this.state.extensionData.dialogSort,
-                this.state.extensionData.templatesLastUsed,
-              ).slice(0, 42)
-            }
-
-            this.render()
-          }
-        },
-        get () {
-          return this.state[key]
-        }
-      })
+    this.render = batch(() => {
+      render(template({listComponent: this.listComponent, ...this.state}), this)
     })
   }
   set listComponentTagName (value) {

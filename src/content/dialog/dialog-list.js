@@ -5,6 +5,7 @@ import {unsafeSVG} from 'lit-html/directives/unsafe-svg.js'
 import iconArrowUpRightSquare from 'bootstrap-icons/icons/arrow-up-right-square.svg?raw'
 
 import config from '../../config.js'
+import {batch, reactive} from '../component.js'
 
 const activeTemplateClass = 'active'
 
@@ -12,47 +13,29 @@ export default class DialogList extends HTMLElement {
   constructor () {
     super()
 
-    this.state = {
+    this.state = reactive({
       list: [],
 
       showTags: true,
       tags: [],
 
       _active: '',
-    }
-
-    let renderRequested = false
-    this.render = async () => {
-      // lit-element style batched updates
-      if (!renderRequested) {
-        renderRequested = true
-        renderRequested = await false
-        render(template(this.state), this)
+    }, this, (key, value, props) => {
+      // select first item when list changes,
+      // and current item not in list.
+      if (
+        key === 'list'
+        && props.list.length
+        && !props.list.find((item) => item.id === props._active)
+      ) {
+        props._active = props.list[0].id
       }
-    }
 
-    Object.keys(this.state).forEach((key) => {
-      Object.defineProperty(this, key, {
-        set (value) {
-          if (this.state[key] !== value) {
-            this.state[key] = value
+      this.render()
+    })
 
-            // TODO default select first item
-            if (
-              key === 'list'
-              && this.state.list.length
-              && !this.state.list.find((item) => item.id === this.state._active)
-            ) {
-              this.state._active = this.state.list[0].id
-            }
-
-            this.render()
-          }
-        },
-        get () {
-          return this.state[key]
-        }
-      })
+    this.render = batch(() => {
+      render(template(this.state), this)
     })
 
     this.setActive = (id = '', scrollIntoView = false) => {
@@ -121,7 +104,7 @@ export default class DialogList extends HTMLElement {
     })
 
     // insert with enter
-    this.addEventListener('b-dialog-select-active', (e) => {
+    this.addEventListener('b-dialog-select-active', () => {
       this.dispatchEvent(new CustomEvent('b-dialog-insert', {
         composed: true,
         detail: this._active,
