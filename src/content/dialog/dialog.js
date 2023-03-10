@@ -255,10 +255,9 @@ customElements.define(
             this.loading = true
             this.render()
 
-            // only start loading the templates if the dialog is visible
+            // only start loading data if the dialog is visible
             if (this.hasAttribute(dialogVisibleAttr)) {
-              // TODO load templates if dialog is visible
-              // this.populateTemplates()
+              this.loadData()
             }
           })
       }
@@ -329,6 +328,15 @@ customElements.define(
         stopPropagation(e, e.relatedTarget)
       }
 
+      this.loadData = async () => {
+        await this.templatesUpdated()
+        this.loading = false
+        this.render()
+
+        this.tagsUpdated()
+        store.getExtensionData().then(this.extensionDataUpdated)
+      }
+
       this.templatesUpdated = async () => {
         this.templates = await store.getTemplates()
         this.render()
@@ -363,6 +371,8 @@ customElements.define(
       if (name === 'visible') {
         if (newValue === 'true') {
           this.classList.add(openAnimationClass)
+
+          // TODO send a message to the list, to activate and scroll to the first item
         } else {
           this.classList.remove(openAnimationClass)
 
@@ -389,20 +399,11 @@ customElements.define(
       store.on('login', this.setAuthState)
       store.on('logout', this.setAuthState)
 
-      // TODO handle auth state change
-      Promise.all([
-        store.getTemplates(),
-        store.getTags(),
-      ]).then(([templates, tags]) => {
-        this.templates = templates
-        this.tags = tags
-
-        this.loading = false
-        this.render()
-      })
+      this.loadData()
 
       store.on('templates-updated', this.templatesUpdated)
       store.on('tags-updated', this.tagsUpdated)
+      store.on('extension-data-updated', this.extensionDataUpdated)
 
       let searchDebouncer
       this.searchField = this.shadowRoot.querySelector('input[type=search]')
@@ -432,9 +433,6 @@ customElements.define(
 
       // keyboard navigation and insert for templates
       window.addEventListener('keydown', this.handleSearchFieldShortcuts, true)
-
-      store.getExtensionData().then(this.extensionDataUpdated)
-      store.on('extension-data-updated', this.extensionDataUpdated)
 
       this.addEventListener('b-dialog-set-modal', (e) => {
         if (e.detail && this.getAttribute(modalAttribute) !== e.detail) {
