@@ -1,8 +1,6 @@
 import {render} from 'lit-html'
 import {html, unsafeStatic} from 'lit-html/static.js'
-import {classMap} from 'lit-html/directives/class-map.js'
 
-import config from '../../config.js'
 import {batch, reactive} from '../component.js'
 
 export default class DialogSearch extends HTMLElement {

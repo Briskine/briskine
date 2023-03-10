@@ -1,9 +1,8 @@
 /* global REGISTER_DISABLED */
 import browser from 'webextension-polyfill'
 import {render} from 'lit-html'
-import {html, literal, unsafeStatic} from 'lit-html/static.js'
+import {html, unsafeStatic} from 'lit-html/static.js'
 import {classMap} from 'lit-html/directives/class-map.js'
-import {cache} from 'lit-html/directives/cache.js'
 
 import store from '../../store/store-client.js'
 import {isContentEditable} from '../editors/editor-contenteditable.js'
@@ -54,7 +53,6 @@ const templateRenderLimit = 42
 const modalAttribute = 'modal'
 const dialogVisibleAttr = 'visible'
 const openAnimationClass = 'b-dialog-open-animation'
-const activeTemplateClass = 'active'
 
 // action.openPopup is not supported in all browsers yet.
 // https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/action/openPopup
@@ -418,6 +416,7 @@ customElements.define(
         const searchValue = e.target.value
         if (searchValue) {
           searchDebouncer = setTimeout(async () => {
+            // TODO stop returning tags from search
             const {query, results, tags} = await store.searchTemplates(searchValue)
             if (query === searchValue) {
               this.searchQuery = searchValue
