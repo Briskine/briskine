@@ -95,6 +95,7 @@ export default class DialogList extends HTMLElement {
       // prevent inserting templates when clicking the edit button
       const editButton = e.target.closest('.btn-edit')
       if (container && !editButton) {
+        // TODO after inserting template, we don't scroll to active when dialog is re-opened
         this.dispatchEvent(new CustomEvent('b-dialog-insert', {
           bubbles: true,
           composed: true,

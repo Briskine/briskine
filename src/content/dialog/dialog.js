@@ -11,6 +11,7 @@ import {bubbleTagName} from '../bubble/bubble.js'
 import {getEditableCaret, getContentEditableCaret, getDialogPosition} from './dialog-position.js'
 import {autocomplete, getSelectedWord, getSelection, getEventTarget} from '../autocomplete.js'
 import {keybind, keyunbind} from '../keybind.js'
+import {batch} from '../component.js'
 
 import config from '../../config.js'
 
@@ -66,10 +67,8 @@ customElements.define(
   class extends HTMLElement {
     constructor () {
       super()
-      // templates filtered
+      // all templates
       this.templates = []
-      // selected template
-      this.activeItem = null
       // loading state
       this.loading = true
 
@@ -194,18 +193,12 @@ customElements.define(
         const searchQuery = element.getAttribute('data-briskine-search') || ''
         this.searchField.value = searchQuery
         this.searchQuery = searchQuery
+        this.render()
         // give it a second before focusing.
         // in production, the search field is not focused on some websites (eg. google sheets, salesforce).
         setTimeout(() => {
           this.searchField.focus()
         })
-
-        // TODO handle in dialog-templates component
-        // restore scroll position faster than on re-rendering
-        // this.setActive(this.activeItem, true)
-
-        // populate the template list
-        // window.requestAnimationFrame(this.populateTemplates)
       }
 
       this.hideOnClick = (e) => {
@@ -218,65 +211,6 @@ customElements.define(
         ) {
           this.removeAttribute(dialogVisibleAttr)
         }
-      }
-
-      // TODO deprecate
-      this.getAllTemplates = async () => {
-        const templates = await store.getTemplates()
-        this.loading = false
-        return templates
-      }
-
-      // TODO deprecate
-      this.populateTemplates = async () => {
-        console.log('populate')
-
-        let active = null
-        if (this.searchQuery) {
-          const {query, results, tags} = await store.searchTemplates(this.searchQuery)
-          if (query !== this.searchQuery) {
-            return
-          }
-
-          this.tags = tags
-          this.templates = results.slice(0, templateRenderLimit)
-          if (this.templates.length) {
-            active = this.templates[0].id
-          }
-        } else {
-          const allTemplates = await this.getAllTemplates()
-          this.templates = allTemplates
-          this.tags = await store.getTags()
-
-          if (this.activeItem && this.templates.find((t) => t.id === this.activeItem)) {
-            active = this.activeItem
-          } else if (this.templates.length) {
-            active = this.templates[0].id
-          }
-        }
-
-        this.render()
-        this.setActive(active, true)
-      }
-
-      this.setActive = (id = '', scrollIntoView = false) => {
-        const newActive = this.shadowRoot.querySelector(`[data-id="${id}"]`)
-        if (this.activeItem !== id) {
-          // manually apply and remove active classes,
-          // relying on conditionally rendering the active class can get slow with large lists.
-          const currentActive = this.shadowRoot.querySelector(`.${activeTemplateClass}`)
-          if (currentActive) {
-            currentActive.classList.remove(activeTemplateClass)
-          }
-          if (newActive) {
-            newActive.classList.add(activeTemplateClass)
-          }
-        }
-
-        if (newActive && scrollIntoView) {
-          newActive.scrollIntoView({block: 'nearest'})
-        }
-        this.activeItem = id
       }
 
       this.restoreSelection = () => {
@@ -325,6 +259,7 @@ customElements.define(
 
             // only start loading the templates if the dialog is visible
             if (this.hasAttribute(dialogVisibleAttr)) {
+              // TODO load templates if dialog is visible
               // this.populateTemplates()
             }
           })
@@ -411,65 +346,19 @@ customElements.define(
         this.render()
       }
 
-      this.render = () => {
-        render(html`
-          <style>${dialogStyles}</style>
-          <div
-            class=${classMap({
-              'dialog-container': true,
-              'dialog-safari': REGISTER_DISABLED,
-            })}
-            >
-            <input type="search" value="" placeholder="Search templates...">
-            <div class="dialog-info">
-              Please
-              <a href="${popupUrl}?source=tab" target="_blank">Sign in</a>
-              <span class="dialog-safari-hide">
-                or
-                <a href="${signupUrl}" target="_blank">
-                  Create a free account
-                </a>
-              </span>
-              <span class="dialog-safari-show">
-                to access your templates.
-              </span>
-            </div>
-
-            ${this.searchQuery
-              ? html`
-                <${searchComponent}
-                  .results=${this.searchResults}
-                  .tags=${this.tags}
-                  .extensionData=${this.extensionData}
-                  .listComponentTagName=${listComponentTagName}
-                  >
-                </${searchComponent}>
-              `
-              : html`
-                <${templatesComponent}
-                  .loading=${this.loading}
-                  .templates=${this.templates}
-                  .tags=${this.tags}
-                  .extensionData=${this.extensionData}
-                  .listComponentTagName=${listComponentTagName}
-                  >
-                </${templatesComponent}>
-              `
-            }
-
-            <${footerComponent}
-              .shortcut=${this.keyboardShortcut}
-              >
-            </${footerComponent}>
-
-            <${settingsComponent}
-              .extensionData=${this.extensionData}
-              >
-            </${settingsComponent}>
-
-          </div>
-        `, this.shadowRoot)
+      this.urgentRender = () => {
+        render(template({
+          templates: this.templates,
+          tags: this.tags,
+          loading: this.loading,
+          extensionData: this.extensionData,
+          searchQuery: this.searchQuery,
+          searchResults: this.searchResults,
+          keyboardShortcut: this.keyboardShortcut,
+        }), this.shadowRoot)
       }
+
+      this.render = batch(this.urgentRender)
     }
     static get observedAttributes() { return ['visible'] }
     attributeChangedCallback (name, oldValue, newValue) {
@@ -481,7 +370,6 @@ customElements.define(
 
           window.requestAnimationFrame(() => {
             // clear the search query
-            // TODO won't clear the search query in the template
             this.searchQuery = ''
             // close settings
             this.removeAttribute(modalAttribute)
@@ -496,7 +384,7 @@ customElements.define(
       }
 
       this.attachShadow({mode: 'open'})
-      this.render()
+      this.urgentRender()
 
       // check authentication state
       this.setAuthState()
@@ -588,7 +476,6 @@ customElements.define(
 
       store.off('templates-updated', this.templatesUpdated)
       store.off('tags-updated', this.tagsUpdated)
-
       store.off('extension-data-updated', this.extensionDataUpdated)
 
       window.removeEventListener('keydown', this.stopTargetPropagation, true)
@@ -599,6 +486,74 @@ customElements.define(
     }
   }
 )
+
+function template({
+  templates,
+  tags,
+  loading,
+  extensionData,
+  searchQuery,
+  searchResults,
+  keyboardShortcut,
+}) {
+  return html`
+    <style>${dialogStyles}</style>
+    <div
+      class=${classMap({
+        'dialog-container': true,
+        'dialog-safari': REGISTER_DISABLED,
+      })}
+      >
+      <input type="search" value="" placeholder="Search templates...">
+      <div class="dialog-info">
+        Please
+        <a href="${popupUrl}?source=tab" target="_blank">Sign in</a>
+        <span class="dialog-safari-hide">
+          or
+          <a href="${signupUrl}" target="_blank">
+            Create a free account
+          </a>
+        </span>
+        <span class="dialog-safari-show">
+          to access your templates.
+        </span>
+      </div>
+
+      ${searchQuery
+        ? html`
+          <${searchComponent}
+            .results=${searchResults}
+            .tags=${tags}
+            .extensionData=${extensionData}
+            .listComponentTagName=${listComponentTagName}
+            >
+          </${searchComponent}>
+        `
+        : html`
+          <${templatesComponent}
+            .loading=${loading}
+            .templates=${templates}
+            .tags=${tags}
+            .extensionData=${extensionData}
+            .listComponentTagName=${listComponentTagName}
+            >
+          </${templatesComponent}>
+        `
+      }
+
+      <${footerComponent}
+        .shortcut=${keyboardShortcut}
+        >
+      </${footerComponent}>
+
+      <${settingsComponent}
+        .extensionData=${extensionData}
+        >
+      </${settingsComponent}>
+
+    </div>
+  `
+}
 
 // is input or textarea
 function isTextfield (element) {
