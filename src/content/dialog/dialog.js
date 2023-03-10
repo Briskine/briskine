@@ -442,10 +442,8 @@ customElements.define(
             <${templatesComponent}
               .loading=${this.loading}
               .templates=${this.templates}
-              .showTags=${this.extensionData.dialogTags}
               .tags=${this.tags}
-              .sort=${this.extensionData.dialogSort}
-              .lastUsed=${this.extensionData.templatesLastUsed}
+              .extensionData=${this.extensionData}
               .listComponentTagName=${listComponentTagName}
               >
             </${templatesComponent}>

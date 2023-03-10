@@ -108,7 +108,6 @@ export default class DialogList extends HTMLElement {
       const index = this.state.list.findIndex((t) => t.id === this._active)
       console.log(index)
       if (this.state.list[index + 1]) {
-        // TODO scroll into view, after render
         this._active = this.setActive(this.state.list[index + 1].id, true)
       }
     })

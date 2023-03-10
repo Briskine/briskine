@@ -38,10 +38,12 @@ export default class DialogTemplates extends HTMLElement {
       loading: false,
       templates: [],
 
-      sort: 'last_used',
-      lastUsed: {},
+      extensionData: {
+        dialogTags: true,
+        dialogSort: 'last_used',
+        templatesLastUsed: {},
+      },
 
-      showTags: true,
       tags: [],
 
       _templates: [],
@@ -63,10 +65,12 @@ export default class DialogTemplates extends HTMLElement {
           if (this.state[key] !== value) {
             this.state[key] = value
 
-            if (['templates', 'sort', 'lastUsed'].includes(key)) {
-              // TODO re-sort templates
-              // changing sort doesn't always update list
-              this.state._templates = sortTemplates(this.state.templates, this.state.sort, this.state.lastUsed).slice(0, 42)
+            if (['templates', 'extensionData'].includes(key)) {
+              this.state._templates = sortTemplates(
+                this.state.templates,
+                this.state.extensionData.dialogSort,
+                this.state.extensionData.templatesLastUsed,
+              ).slice(0, 42)
             }
 
             this.render()
@@ -93,10 +97,8 @@ export default class DialogTemplates extends HTMLElement {
 
 function template ({
   loading,
-  showTags,
   tags,
-  sort,
-  lastUsed,
+  extensionData: {dialogTags},
 
   _templates,
 
@@ -114,7 +116,7 @@ function template ({
         : html`
           <${listComponent}
             .list=${_templates}
-            .showTags=${showTags}
+            .showTags=${dialogTags}
             .tags=${tags}
             >
           </${listComponent}>
