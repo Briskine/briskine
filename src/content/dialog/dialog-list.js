@@ -89,13 +89,30 @@ export default class DialogList extends HTMLElement {
       }
     })
 
+    // keyboard navigation
+    this.addEventListener('b-dialog-select', (e) => {
+      const index = this.state.list.findIndex((t) => t.id === this._active)
+      const move = e.detail
+      let nextIndex
+
+      if (move === 'next') {
+        nextIndex = index + 1
+      } else if (move === 'previous') {
+        nextIndex = index - 1
+      }
+
+      if (nextIndex && this.state.list[nextIndex]) {
+        this._active = this.setActive(this.state.list[nextIndex].id, true)
+      }
+    })
+
     // insert templates on click
     this.addEventListener('click', (e) => {
       const container = e.target.closest('[data-id]')
       // prevent inserting templates when clicking the edit button
       const editButton = e.target.closest('.btn-edit')
       if (container && !editButton) {
-        this.dispatchEvent(new CustomEvent('b-dialog-insert-template', {
+        this.dispatchEvent(new CustomEvent('b-dialog-insert', {
           bubbles: true,
           composed: true,
           detail: container.dataset.id,
@@ -103,13 +120,12 @@ export default class DialogList extends HTMLElement {
       }
     })
 
-    this.addEventListener('b-dialog-select-next', () => {
-      console.log('next')
-      const index = this.state.list.findIndex((t) => t.id === this._active)
-      console.log(index)
-      if (this.state.list[index + 1]) {
-        this._active = this.setActive(this.state.list[index + 1].id, true)
-      }
+    // insert with enter
+    this.addEventListener('b-dialog-select-active', (e) => {
+      this.dispatchEvent(new CustomEvent('b-dialog-insert', {
+        composed: true,
+        detail: this._active,
+      }))
     })
   }
 }

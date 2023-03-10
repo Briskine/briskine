@@ -326,17 +326,6 @@ customElements.define(
           })
       }
 
-      this.updateExtensionData = (data) => {
-        if (this.extensionData.dialogSort !== data.dialogSort) {
-          // require to re-sort templates
-          // TODO but this triggers a double render, with the render below
-          // this.populateTemplates()
-        }
-
-        this.extensionData = data
-        this.render()
-      }
-
       this.hideOnEsc = (e) => {
         if (e.key === 'Escape' && this.hasAttribute(dialogVisibleAttr)) {
           e.stopPropagation()
@@ -354,41 +343,39 @@ customElements.define(
         // only handle events from the search field
         const composedPath = e.composedPath()
         const composedTarget = composedPath[0]
+        const $list = this.shadowRoot.querySelector('.dialog-list')
         if (
           e.target !== this ||
           composedTarget !== this.searchField ||
-          !['Enter', 'ArrowDown', 'ArrowUp'].includes(e.key)
+          !['Enter', 'ArrowDown', 'ArrowUp'].includes(e.key) ||
+          !$list
         ) {
           return
         }
 
-        const index = this.templates.findIndex((t) => t.id === this.activeItem)
         if (e.key === 'Enter') {
-          e.preventDefault()
-          return this.insertTemplate(this.activeItem)
-        }
-
-        // let nextId
-        // if (e.key === 'ArrowDown' && this.templates[index + 1]) {
-        //   nextId = this.templates[index + 1].id
-        // } else if (e.key === 'ArrowUp' && this.templates[index - 1]) {
-        //   nextId = this.templates[index - 1].id
-        // }
-
-        if (e.key === 'ArrowDown') {
-          // HACK
-          const $list = this.shadowRoot.querySelector('.dialog-list')
-          $list.dispatchEvent(new Event('b-dialog-select-next', {
-            bubbles: true,
+          $list.dispatchEvent(new Event('b-dialog-select-active', {
             composed: true,
           }))
+          return e.preventDefault()
         }
 
-        // if (nextId) {
-          // TODO see if we can still support preventDefault conditionally
-          // e.preventDefault()
-          // this.setActive(nextId, true)
-        // }
+        let move
+        if (e.key === 'ArrowDown') {
+          move = 'next'
+        } else if (e.key === 'ArrowUp') {
+          move = 'previous'
+        }
+
+        if (move) {
+          $list.dispatchEvent(new CustomEvent('b-dialog-select', {
+            bubbles: true,
+            composed: true,
+            detail: move,
+          }))
+          // prevent moving the cursor to the start/end of the search field
+          e.preventDefault()
+        }
       }
 
       const stopPropagation = (e, target) => {
@@ -412,6 +399,11 @@ customElements.define(
 
       this.tagsUpdated = async () => {
         this.tags = await store.getTags()
+        this.render()
+      }
+
+      this.extensionDataUpdated = (data) => {
+        this.extensionData = data
         this.render()
       }
 
@@ -472,13 +464,10 @@ customElements.define(
 
           window.requestAnimationFrame(() => {
             // clear the search query
+            // TODO won't clear the search query in the template
             this.searchQuery = ''
             // close settings
             this.removeAttribute(modalAttribute)
-
-            // re-render in the background,
-            // to speed up rendering on show.
-            // this.populateTemplates()
           })
         }
       }
@@ -527,8 +516,8 @@ customElements.define(
       // keyboard navigation and insert for templates
       window.addEventListener('keydown', this.handleSearchFieldShortcuts, true)
 
-      store.getExtensionData().then(this.updateExtensionData)
-      store.on('extension-data-updated', this.updateExtensionData)
+      store.getExtensionData().then(this.extensionDataUpdated)
+      store.on('extension-data-updated', this.extensionDataUpdated)
 
       this.addEventListener('b-dialog-set-modal', (e) => {
         if (e.detail && this.getAttribute(modalAttribute) !== e.detail) {
@@ -538,7 +527,7 @@ customElements.define(
         }
       })
 
-      this.addEventListener('b-dialog-insert-template', (e) => {
+      this.addEventListener('b-dialog-insert', (e) => {
         this.insertTemplate(e.detail)
       })
 
@@ -570,7 +559,7 @@ customElements.define(
       store.off('templates-updated', this.templatesUpdated)
       store.off('tags-updated', this.tagsUpdated)
 
-      store.off('extension-data-updated', this.updateExtensionData)
+      store.off('extension-data-updated', this.extensionDataUpdated)
 
       window.removeEventListener('keydown', this.stopTargetPropagation, true)
       window.removeEventListener('keypress', this.stopTargetPropagation, true)
