@@ -3,6 +3,7 @@ import browser from 'webextension-polyfill'
 import {render} from 'lit-html'
 import {html, literal, unsafeStatic} from 'lit-html/static.js'
 import {classMap} from 'lit-html/directives/class-map.js'
+import {cache} from 'lit-html/directives/cache.js'
 
 import store from '../../store/store-client.js'
 import {isContentEditable} from '../editors/editor-contenteditable.js'
@@ -16,6 +17,7 @@ import config from '../../config.js'
 import DialogFooter from './dialog-footer.js'
 import DialogSettings from './dialog-settings.js'
 import DialogTemplates from './dialog-templates.js'
+import DialogSearch from './dialog-search.js'
 import DialogList from './dialog-list.js'
 
 import styles from './dialog.css'
@@ -37,6 +39,7 @@ function scopedComponent (componentClass) {
 const {component: templatesComponent} = scopedComponent(DialogTemplates)
 const {component: footerComponent} = scopedComponent(DialogFooter)
 const {component: settingsComponent} = scopedComponent(DialogSettings)
+const {component: searchComponent} = scopedComponent(DialogSearch)
 const {tagName: listComponentTagName} = scopedComponent(DialogList)
 
 const dialogStyles = unsafeStatic(styles)
@@ -77,6 +80,7 @@ customElements.define(
 
       this.searchField = null
       this.searchQuery = ''
+      this.searchResults = []
 
       this.editor = null
       this.word = null
@@ -431,14 +435,27 @@ customElements.define(
               </span>
             </div>
 
-            <${templatesComponent}
-              .loading=${this.loading}
-              .templates=${this.templates}
-              .tags=${this.tags}
-              .extensionData=${this.extensionData}
-              .listComponentTagName=${listComponentTagName}
-              >
-            </${templatesComponent}>
+            ${this.searchQuery
+              ? html`
+                <${searchComponent}
+                  .results=${this.searchResults}
+                  .tags=${this.tags}
+                  .extensionData=${this.extensionData}
+                  .listComponentTagName=${listComponentTagName}
+                  >
+                </${searchComponent}>
+              `
+              : html`
+                <${templatesComponent}
+                  .loading=${this.loading}
+                  .templates=${this.templates}
+                  .tags=${this.tags}
+                  .extensionData=${this.extensionData}
+                  .listComponentTagName=${listComponentTagName}
+                  >
+                </${templatesComponent}>
+              `
+            }
 
             <${footerComponent}
               .shortcut=${this.keyboardShortcut}
@@ -468,6 +485,7 @@ customElements.define(
             this.searchQuery = ''
             // close settings
             this.removeAttribute(modalAttribute)
+            this.render()
           })
         }
       }
@@ -509,8 +527,20 @@ customElements.define(
           clearTimeout(searchDebouncer)
         }
 
-        this.searchQuery = e.target.value
-        searchDebouncer = setTimeout(this.populateTemplates, 200)
+        const searchValue = e.target.value
+        if (searchValue) {
+          searchDebouncer = setTimeout(async () => {
+            const {query, results, tags} = await store.searchTemplates(searchValue)
+            if (query === searchValue) {
+              this.searchQuery = searchValue
+              this.searchResults = results.slice(0, templateRenderLimit)
+              this.render()
+            }
+          }, 50)
+        } else {
+          this.searchQuery = ''
+          this.render()
+        }
       })
 
       // keyboard navigation and insert for templates

@@ -84,7 +84,7 @@ function template ({
   listComponent,
 }) {
   return html`
-    <ul>
+    <div>
       ${loading === true
         ? Array(4).fill(html`
           <div class="templates-placeholder">
@@ -101,6 +101,6 @@ function template ({
           </${listComponent}>
         `
       }
-    </ul>
+    </div>
   `
 }
