@@ -416,8 +416,7 @@ customElements.define(
         const searchValue = e.target.value
         if (searchValue) {
           searchDebouncer = setTimeout(async () => {
-            // TODO stop returning tags from search
-            const {query, results, tags} = await store.searchTemplates(searchValue)
+            const {query, results} = await store.searchTemplates(searchValue)
             if (query === searchValue) {
               this.searchQuery = searchValue
               this.searchResults = results
