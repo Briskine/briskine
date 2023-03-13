@@ -4,11 +4,12 @@
   list-style-type: none;
 }
 
-.dialog-template-item {
+.dialog-list-item {
+  overflow: hidden;
   position: relative;
   width: 100%;
   padding: 8px 12px 8px 9px;
-  border-left: 3px solid transparent;
+  border-radius: var(--radius-small);
 
   cursor: pointer;
   color: #161616;
@@ -16,26 +17,21 @@
   line-height: 1.2;
 }
 
-:host([dir=rtl]) .dialog-template-item {
-  border-left: 0;
-  border-right: 3px solid transparent;
-}
-
-.dialog-template-item h1 {
+.dialog-list-item h1 {
   display: inline-block;
   margin: 0 4px 0 0;
 
   font-size: 1.1em;
 }
 
-.dialog-template-item h1,
-.dialog-template-item p {
+.dialog-list-item h1,
+.dialog-list-item p {
   overflow: hidden;
 
   text-overflow: ellipsis;
 }
 
-.dialog-template-item abbr {
+.dialog-list-item abbr {
   overflow: hidden;
   padding: 0 4px;
   background: var(--gray-lighter);
@@ -48,7 +44,7 @@
   text-overflow: ellipsis;
 }
 
-.dialog-template-item p {
+.dialog-list-item p {
   margin: 0;
 
   color: #747474;
@@ -73,12 +69,11 @@
   visibility: visible;
 }
 
-.dialog-template-item.active {
-  border-color: var(--blue-focus) !important;
+.dialog-list-item.active {
   background: var(--gray-lighter);
 }
 
-.templates-no-results {
+.list-no-results {
   padding: 20px;
 
   text-align: center;

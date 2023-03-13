@@ -148,7 +148,7 @@ function template ({
               <li
                 data-id=${t.id}
                 class=${classMap({
-                  'dialog-template-item': true,
+                  'dialog-list-item': true,
                   [activeTemplateClass]: t.id === _active,
                 })}
                 >
@@ -197,7 +197,7 @@ function template ({
             `
           })
         : html`
-          <div class="templates-no-results">
+          <div class="list-no-results">
             No templates found
           </div>
         `}

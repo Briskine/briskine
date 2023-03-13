@@ -193,8 +193,10 @@ input[type=search]:focus {
 }
 
 .dialog-info {
-  padding: 8px 12px;
+  padding: var(--padding-y) var(--padding-x);
   background: #EEF2FC;
+  border-radius: var(--radius-small);
+  margin-bottom: 3px;
 
   font-size: .9em;
 }
@@ -217,7 +219,7 @@ input[type=search]:focus {
 
 .dialog-content {
   flex: 1;
-  padding: 0 0 20px;
+  padding: 3px;
   overflow: auto;
 
   /* improve performance for rendering large lists
