@@ -52,6 +52,7 @@ export const dialogTagName = scopeElementName('b-dialog')
 const modalAttribute = 'modal'
 const dialogVisibleAttr = 'visible'
 const openAnimationClass = 'b-dialog-open-animation'
+const listSelector = '.dialog-list'
 
 // action.openPopup is not supported in all browsers yet.
 // https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/action/openPopup
@@ -278,7 +279,7 @@ customElements.define(
         // only handle events from the search field
         const composedPath = e.composedPath()
         const composedTarget = composedPath[0]
-        const $list = this.shadowRoot.querySelector('.dialog-list')
+        const $list = this.shadowRoot.querySelector(listSelector)
         if (
           e.target !== this ||
           composedTarget !== this.searchField ||
@@ -328,12 +329,13 @@ customElements.define(
       }
 
       this.loadData = async () => {
+        const extensionData = await store.getExtensionData()
+        this.extensionDataUpdated(extensionData)
         await this.templatesUpdated()
+        await this.tagsUpdated()
+
         this.loading = false
         this.render()
-
-        this.tagsUpdated()
-        store.getExtensionData().then(this.extensionDataUpdated)
       }
 
       this.templatesUpdated = async () => {
@@ -372,6 +374,10 @@ customElements.define(
           this.classList.add(openAnimationClass)
 
           // TODO send a message to the list, to activate and scroll to the first item
+          const $list = this.shadowRoot.querySelector(listSelector)
+          if ($list) {
+            $list.dispatchEvent(new Event('b-dialog-select-first'))
+          }
         } else {
           this.classList.remove(openAnimationClass)
 
@@ -431,6 +437,9 @@ customElements.define(
 
       // keyboard navigation and insert for templates
       window.addEventListener('keydown', this.handleSearchFieldShortcuts, true)
+      this.addEventListener('b-dialog-insert', (e) => {
+        this.insertTemplate(e.detail)
+      })
 
       this.addEventListener('b-dialog-set-modal', (e) => {
         if (e.detail && this.getAttribute(modalAttribute) !== e.detail) {
@@ -438,10 +447,6 @@ customElements.define(
         } else {
           this.removeAttribute(modalAttribute)
         }
-      })
-
-      this.addEventListener('b-dialog-insert', (e) => {
-        this.insertTemplate(e.detail)
       })
 
       window.addEventListener('click', this.hideOnClick, true)

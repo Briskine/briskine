@@ -25,16 +25,15 @@ export default class DialogList extends HTMLElement {
       // render less items, for performance
       if (key === 'list') {
         props.list = props.list.slice(0, templateRenderLimit)
-      }
 
-      // select first item when list changes,
-      // and current item not in list.
-      if (
-        key === 'list'
-        && props.list.length
-        && !props.list.find((item) => item.id === props._active)
-      ) {
-        props._active = props.list[0].id
+        // select first item when list changes,
+        // and current item not in list.
+        if (
+          props.list.length
+          && !props.list.find((item) => item.id === props._active)
+        ) {
+          props._active = this.setActive(props.list[0].id)
+        }
       }
 
       this.render()
@@ -101,7 +100,6 @@ export default class DialogList extends HTMLElement {
       // prevent inserting templates when clicking the edit button
       const editButton = e.target.closest('.btn-edit')
       if (container && !editButton) {
-        // TODO after inserting template, we don't scroll to active when dialog is re-opened
         this.dispatchEvent(new CustomEvent('b-dialog-insert', {
           bubbles: true,
           composed: true,
@@ -116,6 +114,13 @@ export default class DialogList extends HTMLElement {
         composed: true,
         detail: this._active,
       }))
+    })
+
+    // select first item
+    this.addEventListener('b-dialog-select-first', () => {
+      if (this.state.list.length) {
+        this._active = this.setActive(this.state.list[0].id)
+      }
     })
   }
 }
