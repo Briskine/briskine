@@ -185,13 +185,6 @@ customElements.define(
           target.parentNode.remove()
         }
 
-        // set or clear the search query when first showing the dialog.
-        // support for the data-briskine-search attribute.
-        // setting the attribute on the editable element will set it's value in the search field.
-        const searchQuery = element.getAttribute('data-briskine-search') || ''
-        this.searchField.value = searchQuery
-        this.searchQuery = searchQuery
-        this.render()
         // give it a second before focusing.
         // in production, the search field is not focused on some websites (eg. google sheets, salesforce).
         setTimeout(() => {
@@ -383,7 +376,9 @@ customElements.define(
 
           window.requestAnimationFrame(() => {
             // clear the search query
+            this.searchField.value = ''
             this.searchQuery = ''
+
             // close settings
             this.removeAttribute(modalAttribute)
             this.render()
