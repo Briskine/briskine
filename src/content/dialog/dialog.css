@@ -215,7 +215,7 @@ input[type=search]:focus {
   text-decoration: underline;
 }
 
-.dialog-templates {
+.dialog-content {
   flex: 1;
   padding: 0 0 20px;
   overflow: auto;
@@ -226,7 +226,7 @@ input[type=search]:focus {
   contain-intrinsic-size: auto 350px;
 }
 
-.dialog-templates ul {
+.dialog-list ul {
   padding: 0;
   margin: 0;
   list-style-type: none;

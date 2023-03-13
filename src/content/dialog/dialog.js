@@ -17,7 +17,6 @@ import config from '../../config.js'
 import DialogFooter from './dialog-footer.js'
 import DialogSettings from './dialog-settings.js'
 import DialogTemplates from './dialog-templates.js'
-import DialogSearch from './dialog-search.js'
 import DialogList from './dialog-list.js'
 
 import styles from './dialog.css'
@@ -39,8 +38,7 @@ function scopedComponent (componentClass) {
 const {component: templatesComponent} = scopedComponent(DialogTemplates)
 const {component: footerComponent} = scopedComponent(DialogFooter)
 const {component: settingsComponent} = scopedComponent(DialogSettings)
-const {component: searchComponent} = scopedComponent(DialogSearch)
-const {tagName: listComponentTagName} = scopedComponent(DialogList)
+const {component: listComponent, tagName: listComponentTagName} = scopedComponent(DialogList)
 
 const dialogStyles = unsafeStatic(styles)
 
@@ -482,41 +480,44 @@ function template({
       })}
       >
       <input type="search" value="" placeholder="Search templates...">
-      <div class="dialog-info">
-        Please
-        <a href="${popupUrl}?source=tab" target="_blank">Sign in</a>
-        <span class="dialog-safari-hide">
-          or
-          <a href="${signupUrl}" target="_blank">
-            Create a free account
-          </a>
-        </span>
-        <span class="dialog-safari-show">
-          to access your templates.
-        </span>
-      </div>
 
-      ${searchQuery
-        ? html`
-          <${searchComponent}
-            .results=${searchResults}
-            .tags=${tags}
-            .extensionData=${extensionData}
-            .listComponentTagName=${listComponentTagName}
-            >
-          </${searchComponent}>
-        `
-        : html`
-          <${templatesComponent}
-            .loading=${loading}
-            .templates=${templates}
-            .tags=${tags}
-            .extensionData=${extensionData}
-            .listComponentTagName=${listComponentTagName}
-            >
-          </${templatesComponent}>
-        `
-      }
+      <div class="dialog-content">
+
+        <div class="dialog-info">
+          Please
+          <a href="${popupUrl}?source=tab" target="_blank">Sign in</a>
+          <span class="dialog-safari-hide">
+            or
+            <a href="${signupUrl}" target="_blank">
+              Create a free account
+            </a>
+          </span>
+          <span class="dialog-safari-show">
+            to access your templates.
+          </span>
+        </div>
+
+        ${searchQuery
+          ? html`
+            <${listComponent}
+              .list=${searchResults}
+              .showTags=${extensionData.dialogTags}
+              .tags=${tags}
+              >
+            </${listComponent}>
+          `
+          : html`
+            <${templatesComponent}
+              .loading=${loading}
+              .templates=${templates}
+              .tags=${tags}
+              .extensionData=${extensionData}
+              .listComponentTagName=${listComponentTagName}
+              >
+            </${templatesComponent}>
+          `
+        }
+      </div>
 
       <${footerComponent}
         .shortcut=${keyboardShortcut}
