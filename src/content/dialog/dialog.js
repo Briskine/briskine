@@ -11,6 +11,8 @@ import {getEditableCaret, getContentEditableCaret, getDialogPosition} from './di
 import {autocomplete, getSelectedWord, getSelection, getEventTarget} from '../autocomplete.js'
 import {keybind, keyunbind} from '../keybind.js'
 import {batch, reactive} from '../component.js'
+import iconSearch from 'bootstrap-icons/icons/search.svg?raw'
+import {unsafeSVG} from 'lit-html/directives/unsafe-svg.js'
 
 import config from '../../config.js'
 
@@ -481,7 +483,11 @@ function template({
         'dialog-safari': REGISTER_DISABLED,
       })}
       >
-      <input type="search" value="" placeholder="Search templates...">
+
+      <div class="search-container">
+        <input type="search" value="" placeholder="Search templates...">
+        <div class="search-icon">${unsafeSVG(iconSearch)}</div>
+      </div>
 
       <div class="dialog-content">
 

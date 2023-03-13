@@ -95,7 +95,7 @@ export default class DialogList extends HTMLElement {
         nextIndex = index - 1
       }
 
-      if (nextIndex && this.state.list[nextIndex]) {
+      if (typeof nextIndex !== 'undefined' && this.state.list[nextIndex]) {
         this._active = this.setActive(this.state.list[nextIndex].id, true)
       }
     })
