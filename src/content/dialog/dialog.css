@@ -226,94 +226,7 @@ input[type=search]:focus {
   contain-intrinsic-size: auto 350px;
 }
 
-.dialog-list ul {
-  padding: 0;
-  margin: 0;
-  list-style-type: none;
-}
-
-.dialog-template-item {
-  position: relative;
-  width: 100%;
-  padding: 8px 12px 8px 9px;
-  border-left: 3px solid transparent;
-
-  cursor: pointer;
-  color: #161616;
-  white-space: nowrap;
-  line-height: 1.2;
-}
-
-:host([dir=rtl]) .dialog-template-item {
-  border-left: 0;
-  border-right: 3px solid transparent;
-}
-
-.dialog-template-item h1 {
-  display: inline-block;
-  margin: 0 4px 0 0;
-
-  font-size: 1.1em;
-}
-
-.dialog-template-item h1,
-.dialog-template-item p {
-  overflow: hidden;
-
-  text-overflow: ellipsis;
-}
-
-.dialog-template-item abbr {
-  overflow: hidden;
-  padding: 0 4px;
-  background: var(--gray-lighter);
-  border: 1px solid var(--blue-light);
-  border-radius: var(--radius-small);
-
-  font-size: 11px;
-  font-weight: bold;
-  vertical-align: top;
-  text-overflow: ellipsis;
-}
-
-.dialog-template-item p {
-  margin: 0;
-
-  color: #747474;
-}
-
-.edit-container {
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 5rem;
-  height: 100%;
-  padding-right: 0.5rem;
-  display: flex;
-  align-items: center;
-  justify-content: end;
-  background: linear-gradient(to right, transparent, var(--gray-lighter) 60%);
-
-  visibility: hidden;
-}
-
-:host([authenticated]) li.active .edit-container {
-  visibility: visible;
-}
-
-.dialog-template-item.active {
-  border-color: var(--blue-focus) !important;
-  background: var(--gray-lighter);
-}
-
-.templates-no-results {
-  padding: 20px;
-
-  text-align: center;
-}
-
 .dialog-footer {
-  display: none;
   position: relative;
   z-index: 2;
   border-width: 1px 0 0;
@@ -367,16 +280,6 @@ input[type=search]:focus {
   0% { opacity: .4; }
   50% { opacity: 1; }
   100% { opacity: .4; }
-}
-
-/* authenticated state
- */
-:host([authenticated]) .dialog-info {
-  display: none;
-}
-
-:host([authenticated]) .dialog-footer {
-  display: block;
 }
 
 /* hidden dashboard links - for safari

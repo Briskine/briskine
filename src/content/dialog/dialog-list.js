@@ -1,4 +1,5 @@
-import {render, html} from 'lit-html'
+import {render} from 'lit-html'
+import {html, unsafeStatic} from 'lit-html/static.js'
 import {classMap} from 'lit-html/directives/class-map.js'
 import {repeat} from 'lit-html/directives/repeat.js'
 import {unsafeSVG} from 'lit-html/directives/unsafe-svg.js'
@@ -6,6 +7,10 @@ import iconArrowUpRightSquare from 'bootstrap-icons/icons/arrow-up-right-square.
 
 import config from '../../config.js'
 import {batch, reactive} from '../component.js'
+
+import styles from './dialog-list.css'
+
+const componentStyles = unsafeStatic(styles)
 
 const activeTemplateClass = 'active'
 const templateRenderLimit = 42
@@ -15,6 +20,7 @@ export default class DialogList extends HTMLElement {
     super()
 
     this.state = reactive({
+      loggedIn: false,
       list: [],
 
       showTags: true,
@@ -126,6 +132,7 @@ export default class DialogList extends HTMLElement {
 }
 
 function template ({
+  loggedIn,
   showTags,
   tags,
   list,
@@ -133,6 +140,7 @@ function template ({
   _active,
 }) {
   return html`
+    <style>${componentStyles}</style>
     <ul>
       ${list.length
         ? repeat(list, (t) => t.id, (t) => {
@@ -172,16 +180,19 @@ function template ({
                     })}
                   </ul>
                 ` : ''}
-                <div class="edit-container">
-                  <a
-                    href="${config.functionsUrl}/template/${t.id}"
-                    target="_blank"
-                    class="btn btn-sm btn-edit dialog-safari-hide"
-                    title="Edit template"
-                    >
-                    ${unsafeSVG(iconArrowUpRightSquare)}
-                  </a>
-                </div>
+
+                ${loggedIn ? html`
+                  <div class="edit-container">
+                    <a
+                      href="${config.functionsUrl}/template/${t.id}"
+                      target="_blank"
+                      class="btn btn-sm btn-edit dialog-safari-hide"
+                      title="Edit template"
+                      >
+                      ${unsafeSVG(iconArrowUpRightSquare)}
+                    </a>
+                  </div>
+                ` : ''}
               </li>
             `
           })

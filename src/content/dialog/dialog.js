@@ -65,7 +65,8 @@ customElements.define(
       super()
 
       this.state = reactive({
-        loading: false,
+        loggedIn: false,
+        loading: true,
         templates: [],
         tags: [],
         extensionData: {},
@@ -189,6 +190,10 @@ customElements.define(
         setTimeout(() => {
           this.searchField.focus()
         })
+
+        if (this.loading === true) {
+          this.loadData()
+        }
       }
 
       this.hideOnClick = (e) => {
@@ -236,14 +241,14 @@ customElements.define(
       this.setAuthState = () => {
         store.getAccount()
           .then(() => {
-            this.setAttribute('authenticated', 'true')
-            return
+            return true
           })
           .catch(() => {
-            this.removeAttribute('authenticated')
-            return
+            return false
           })
-          .then(() => {
+          .then((loggedIn) => {
+            this.loggedIn = loggedIn
+            this.loading = true
 
             // only start loading data if the dialog is visible
             if (this.hasAttribute(dialogVisibleAttr)) {
@@ -315,8 +320,6 @@ customElements.define(
       }
 
       this.loadData = async () => {
-        this.loading = true
-
         const extensionData = await store.getExtensionData()
         this.extensionDataUpdated(extensionData)
 
@@ -463,9 +466,10 @@ customElements.define(
 )
 
 function template({
+  loggedIn,
+  loading,
   templates,
   tags,
-  loading,
   extensionData,
   searchQuery,
   searchResults,
@@ -483,23 +487,26 @@ function template({
 
       <div class="dialog-content">
 
-        <div class="dialog-info">
-          Please
-          <a href="${popupUrl}?source=tab" target="_blank">Sign in</a>
-          <span class="dialog-safari-hide">
-            or
-            <a href="${signupUrl}" target="_blank">
-              Create a free account
-            </a>
-          </span>
-          <span class="dialog-safari-show">
-            to access your templates.
-          </span>
-        </div>
+        ${!loggedIn ? html`
+          <div class="dialog-info">
+            Please
+            <a href="${popupUrl}?source=tab" target="_blank">Sign in</a>
+            <span class="dialog-safari-hide">
+              or
+              <a href="${signupUrl}" target="_blank">
+                Create a free account
+              </a>
+            </span>
+            <span class="dialog-safari-show">
+              to access your templates.
+            </span>
+          </div>
+        ` : ''}
 
         ${searchQuery
           ? html`
             <${listComponent}
+              .loggedIn=${loggedIn}
               .list=${searchResults}
               .showTags=${extensionData.dialogTags}
               .tags=${tags}
@@ -508,6 +515,7 @@ function template({
           `
           : html`
             <${templatesComponent}
+              .loggedIn=${loggedIn}
               .loading=${loading}
               .templates=${templates}
               .tags=${tags}
@@ -519,16 +527,17 @@ function template({
         }
       </div>
 
-      <${footerComponent}
-        .shortcut=${keyboardShortcut}
-        >
-      </${footerComponent}>
+      ${loggedIn ? html`
+        <${footerComponent}
+          .shortcut=${keyboardShortcut}
+          >
+        </${footerComponent}>
 
-      <${settingsComponent}
-        .extensionData=${extensionData}
-        >
-      </${settingsComponent}>
-
+        <${settingsComponent}
+          .extensionData=${extensionData}
+          >
+        </${settingsComponent}>
+      ` : ''}
     </div>
   `
 }

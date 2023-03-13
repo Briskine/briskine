@@ -31,6 +31,7 @@ export default class DialogTemplates extends HTMLElement {
     super()
 
     this.state = reactive({
+      loggedIn: false,
       loading: false,
       templates: [],
 
@@ -68,11 +69,11 @@ export default class DialogTemplates extends HTMLElement {
     }
 
     this.render()
-    this.classList.add('dialog-templates')
   }
 }
 
 function template ({
+  loggedIn,
   loading,
   tags,
   extensionData: {dialogTags},
@@ -82,23 +83,22 @@ function template ({
   listComponent,
 }) {
   return html`
-    <div>
-      ${loading === true
-        ? Array(4).fill(html`
-          <div class="templates-placeholder">
-            <div class="templates-placeholder-text"></div>
-            <div class="templates-placeholder-text templates-placeholder-description"></div>
-          </div>
-        `)
-        : html`
-          <${listComponent}
-            .list=${_templates}
-            .showTags=${dialogTags}
-            .tags=${tags}
-            >
-          </${listComponent}>
-        `
-      }
-    </div>
+    ${loading === true
+      ? Array(4).fill(html`
+        <div class="templates-placeholder">
+          <div class="templates-placeholder-text"></div>
+          <div class="templates-placeholder-text templates-placeholder-description"></div>
+        </div>
+      `)
+      : html`
+        <${listComponent}
+          .loggedIn=${loggedIn}
+          .list=${_templates}
+          .showTags=${dialogTags}
+          .tags=${tags}
+          >
+        </${listComponent}>
+      `
+    }
   `
 }
