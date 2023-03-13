@@ -10,7 +10,7 @@ import {bubbleTagName} from '../bubble/bubble.js'
 import {getEditableCaret, getContentEditableCaret, getDialogPosition} from './dialog-position.js'
 import {autocomplete, getSelectedWord, getSelection, getEventTarget} from '../autocomplete.js'
 import {keybind, keyunbind} from '../keybind.js'
-import {batch} from '../component.js'
+import {batch, reactive} from '../component.js'
 
 import config from '../../config.js'
 
@@ -65,19 +65,20 @@ customElements.define(
   class extends HTMLElement {
     constructor () {
       super()
-      // all templates
-      this.templates = []
-      // loading state
-      this.loading = true
 
-      this.tags = []
-
-      this.extensionData = {}
-      this.keyboardShortcut = ''
+      this.state = reactive({
+        loading: false,
+        templates: [],
+        tags: [],
+        extensionData: {},
+        keyboardShortcut: '',
+        searchQuery: '',
+        searchResults: [],
+      }, this, () => {
+        this.render()
+      })
 
       this.searchField = null
-      this.searchQuery = ''
-      this.searchResults = []
 
       this.editor = null
       this.word = null
@@ -245,8 +246,6 @@ customElements.define(
             return
           })
           .then(() => {
-            this.loading = true
-            this.render()
 
             // only start loading data if the dialog is visible
             if (this.hasAttribute(dialogVisibleAttr)) {
@@ -322,40 +321,30 @@ customElements.define(
       }
 
       this.loadData = async () => {
+        this.loading = true
+
         const extensionData = await store.getExtensionData()
         this.extensionDataUpdated(extensionData)
         await this.templatesUpdated()
         await this.tagsUpdated()
 
         this.loading = false
-        this.render()
       }
 
       this.templatesUpdated = async () => {
         this.templates = await store.getTemplates()
-        this.render()
       }
 
       this.tagsUpdated = async () => {
         this.tags = await store.getTags()
-        this.render()
       }
 
       this.extensionDataUpdated = (data) => {
         this.extensionData = data
-        this.render()
       }
 
       this.urgentRender = () => {
-        render(template({
-          templates: this.templates,
-          tags: this.tags,
-          loading: this.loading,
-          extensionData: this.extensionData,
-          searchQuery: this.searchQuery,
-          searchResults: this.searchResults,
-          keyboardShortcut: this.keyboardShortcut,
-        }), this.shadowRoot)
+        render(template(this.state), this.shadowRoot)
       }
 
       this.render = batch(this.urgentRender)
@@ -366,7 +355,7 @@ customElements.define(
         if (newValue === 'true') {
           this.classList.add(openAnimationClass)
 
-          // TODO send a message to the list, to activate and scroll to the first item
+          // activate the first item in the list
           const $list = this.shadowRoot.querySelector(listSelector)
           if ($list) {
             $list.dispatchEvent(new Event('b-dialog-select-first'))
@@ -378,10 +367,8 @@ customElements.define(
             // clear the search query
             this.searchField.value = ''
             this.searchQuery = ''
-
             // close settings
             this.removeAttribute(modalAttribute)
-            this.render()
           })
         }
       }
@@ -421,12 +408,10 @@ customElements.define(
             if (query === searchValue) {
               this.searchQuery = searchValue
               this.searchResults = results
-              this.render()
             }
           }, 50)
         } else {
           this.searchQuery = ''
-          this.render()
         }
       })
 
