@@ -49,7 +49,7 @@ export default class DialogTemplates extends HTMLElement {
           props.templates,
           props.extensionData.dialogSort,
           props.extensionData.templatesLastUsed,
-        ).slice(0, 42)
+        )
       }
 
       this.render()

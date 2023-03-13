@@ -13,7 +13,6 @@ export default class DialogSearch extends HTMLElement {
       extensionData: {
         dialogTags: true,
       },
-
     }, this, () => {
       this.render()
     })

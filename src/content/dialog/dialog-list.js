@@ -8,6 +8,7 @@ import config from '../../config.js'
 import {batch, reactive} from '../component.js'
 
 const activeTemplateClass = 'active'
+const templateRenderLimit = 42
 
 export default class DialogList extends HTMLElement {
   constructor () {
@@ -21,6 +22,11 @@ export default class DialogList extends HTMLElement {
 
       _active: '',
     }, this, (key, value, props) => {
+      // render less items, for performance
+      if (key === 'list') {
+        props.list = props.list.slice(0, templateRenderLimit)
+      }
+
       // select first item when list changes,
       // and current item not in list.
       if (

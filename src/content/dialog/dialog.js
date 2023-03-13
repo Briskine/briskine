@@ -49,7 +49,6 @@ let dialogInstance = null
 export const dialogShowEvent = 'briskine-dialog'
 export const dialogTagName = scopeElementName('b-dialog')
 
-const templateRenderLimit = 42
 const modalAttribute = 'modal'
 const dialogVisibleAttr = 'visible'
 const openAnimationClass = 'b-dialog-open-animation'
@@ -421,7 +420,7 @@ customElements.define(
             const {query, results, tags} = await store.searchTemplates(searchValue)
             if (query === searchValue) {
               this.searchQuery = searchValue
-              this.searchResults = results.slice(0, templateRenderLimit)
+              this.searchResults = results
               this.render()
             }
           }, 50)
