@@ -384,8 +384,6 @@ customElements.define(
       store.on('login', this.setAuthState)
       store.on('logout', this.setAuthState)
 
-      this.loadData()
-
       store.on('templates-updated', this.templatesUpdated)
       store.on('tags-updated', this.tagsUpdated)
       store.on('extension-data-updated', this.extensionDataUpdated)
