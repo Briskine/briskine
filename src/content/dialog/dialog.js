@@ -282,9 +282,7 @@ customElements.define(
         }
 
         if (e.key === 'Enter') {
-          $list.dispatchEvent(new Event('b-dialog-select-active', {
-            composed: true,
-          }))
+          $list.dispatchEvent(new Event('b-dialog-select-active'))
           return e.preventDefault()
         }
 
@@ -297,8 +295,6 @@ customElements.define(
 
         if (move) {
           $list.dispatchEvent(new CustomEvent('b-dialog-select', {
-            bubbles: true,
-            composed: true,
             detail: move,
           }))
           // prevent moving the cursor to the start/end of the search field
@@ -325,6 +321,7 @@ customElements.define(
 
         const extensionData = await store.getExtensionData()
         this.extensionDataUpdated(extensionData)
+
         await this.templatesUpdated()
         await this.tagsUpdated()
 
@@ -367,7 +364,7 @@ customElements.define(
             // clear the search query
             this.searchField.value = ''
             this.searchQuery = ''
-            // close settings
+            // close modals
             this.removeAttribute(modalAttribute)
           })
         }
