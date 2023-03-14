@@ -7,20 +7,14 @@ import iconQuestionCircle from 'bootstrap-icons/icons/question-circle.svg?raw'
 import iconTwitter from 'bootstrap-icons/icons/twitter.svg?raw'
 import iconGlobe from 'bootstrap-icons/icons/globe.svg?raw'
 
-import {batch, reactive} from '../component.js'
-
-import store from '../../store/store-client.js'
 import config from '../../config.js'
 
 export default class DialogActions extends HTMLElement {
   constructor () {
     super()
 
-    this.state = {
-    }
-
     this.render = () => {
-      render(template(this.state), this)
+      render(template(), this)
     }
   }
   connectedCallback () {
@@ -71,7 +65,7 @@ const actions = [
   },
 ]
 
-function template ({}) {
+function template () {
   return html`
     <div class="dialog-actions dialog-modal">
       <div class="dialog-modal-header">

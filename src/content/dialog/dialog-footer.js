@@ -5,8 +5,6 @@ import iconGear from 'bootstrap-icons/icons/gear.svg?raw'
 
 import iconBriskine from '../../icons/briskine-logo-small.svg?raw'
 
-import config from '../../config.js'
-
 import styles from './dialog-footer.css'
 
 const componentStyles = unsafeStatic(styles)
