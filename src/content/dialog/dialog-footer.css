@@ -14,28 +14,20 @@
   color: rgba(0,0,0,.3);
   font-weight: bold;
   text-align: right;
-}
-
-.dialog-footer .btn {
-  background: transparent;
+  cursor: default;
 }
 
 /* actions
  */
 .btn-actions {
   display: inline-block;
+  padding: 1px;
 }
 
 .btn-actions svg {
   display: block;
   width: 18px;
   height: 18px;
-}
-
-/* settings
- */
-.btn-settings {
-  margin-left: .2rem;
 }
 
 /* show modals
@@ -47,7 +39,10 @@
   transform: translateY(0) scale(1);
 }
 
-:host([modal=settings]) .btn-settings,
+:host([modal=settings]) .btn-settings {
+  background: var(--border-color);
+}
+
 :host([modal=actions]) .btn-actions {
-  background: #cacaca;
+  background-color: var(--blue);
 }

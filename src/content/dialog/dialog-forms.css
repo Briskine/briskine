@@ -15,12 +15,12 @@
   width: 100%;
   margin-bottom: 0;
   padding: .375rem 2.25rem .375rem .75rem;
-  background-color: #fff;
+  background-color: var(--border-color);
   background-image: var(--form-select-bg-img);
   background-repeat: no-repeat;
   background-position: right .75rem center;
   background-size: 16px 12px;
-  border: 1px solid var(--gray);
+  border: 0;
   border-radius: var(--radius-small);
 
   color: var(--bs-body-color);
@@ -39,9 +39,9 @@
   height: 1em;
   margin-left: -1.5em;
   margin-top: .25em;
-  border: 1px solid var(--gray);
+  border: 0;
   border-radius: .25em;
-  background-color: #fff;
+  background-color: var(--border-color);
   background-image: var(--form-check-input-bg);
   background-repeat: no-repeat;
   background-position: center;
@@ -70,4 +70,8 @@
 
 .form-block:not(:last-of-type) {
   margin-bottom: .75rem;
+}
+
+form .btn {
+  background-color: var(--border-color);
 }

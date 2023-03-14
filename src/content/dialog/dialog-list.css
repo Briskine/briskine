@@ -35,7 +35,7 @@
   overflow: hidden;
   padding: 0 4px;
   background: var(--gray-lighter);
-  border: 1px solid var(--blue-light);
+  border: 1px solid var(--blue);
   border-radius: var(--radius-small);
 
   font-size: 11px;
