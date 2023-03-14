@@ -158,7 +158,7 @@ function template ({
                     <abbr>${t.shortcut}</abbr>
                   ` : ''}
                 </div>
-                <p>${t._body_plaintext.slice(0, 100)}</p>
+                <p class="text-secondary">${t._body_plaintext.slice(0, 100)}</p>
                 ${showTags && t.tags && t.tags.length ? html`
                   <ul class="dialog-tags">
                     ${repeat(t.tags, (tagId) => tagId, (tagId) => {

@@ -73,7 +73,7 @@ function template ({shortcut}) {
       </div>
 
       <div
-        class="dialog-shortcut d-flex btn"
+        class="dialog-shortcut btn text-secondary"
         title="Press ${shortcut} in any text field to open the Briskine dialog"
         >
         ${shortcut}

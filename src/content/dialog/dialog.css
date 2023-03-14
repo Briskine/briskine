@@ -11,8 +11,9 @@
    */
   all: initial;
 
-  --blue: #0d7af6;
-  --blue-focus: rgb(13 110 253 / 25%);
+  --primary-color-hsl: 212 93% 51%;
+  --primary-color: hsl(var(--primary-color-hsl));
+
   --background-color: hsl(0 0% 100%);
   --background-color-highlight: hsl(0 0% 98%);
   --border-color-hsl: 0 0% 94%;
@@ -209,7 +210,7 @@ input[type=search]:focus {
 
 .dialog-info {
   padding: var(--padding-y) var(--padding-x);
-  background: #EEF2FC;
+  background: hsl(var(--primary-color-hsl) / 8%);
   border-radius: var(--radius-small);
   margin-bottom: 3px;
 
@@ -225,7 +226,7 @@ input[type=search]:focus {
 
 .dialog-info a,
 .dialog-info a:visited {
-  color: var(--blue);
+  color: var(--primary-color);
 }
 
 .dialog-info a:hover {
@@ -294,7 +295,7 @@ input[type=search]:focus {
   height: calc(100% - var(--footer-height));
   display: flex;
   flex-direction: column;
-  background: #fff;
+  background: var(--background-color);
   border-radius: var(--radius) var(--radius) 0 0;
 
   visibility: hidden;
