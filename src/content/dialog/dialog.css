@@ -331,19 +331,3 @@ input[type=search]:focus {
   overflow: auto;
   padding: var(--padding-y) var(--padding-x);
 }
-
-:host([modal=settings]) .dialog-settings {
-  visibility: visible;
-  opacity: 1;
-  transform: translateY(0) scale(1);
-}
-
-/* settings
- */
-.btn-settings {
-  margin-left: .2rem;
-}
-
-:host([modal=settings]) .btn-settings {
-  background: #cacaca;
-}

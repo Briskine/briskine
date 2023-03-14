@@ -16,12 +16,38 @@
   text-align: right;
 }
 
-/* tweak spacing added by plus icon
- */
-.btn-new-template {
-  padding-left: 6px;
+.dialog-footer .btn {
+  background: transparent;
 }
 
-.btn-new-template .bi {
-  margin-top: -1px;
+/* actions
+ */
+.btn-actions {
+  display: inline-block;
+}
+
+.btn-actions svg {
+  display: block;
+  width: 18px;
+  height: 18px;
+}
+
+/* settings
+ */
+.btn-settings {
+  margin-left: .2rem;
+}
+
+/* show modals
+ */
+:host([modal=settings]) .dialog-settings,
+:host([modal=actions]) .dialog-actions {
+  visibility: visible;
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+:host([modal=settings]) .btn-settings,
+:host([modal=actions]) .btn-actions {
+  background: #cacaca;
 }

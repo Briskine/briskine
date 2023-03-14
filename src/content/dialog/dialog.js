@@ -20,6 +20,7 @@ import DialogFooter from './dialog-footer.js'
 import DialogSettings from './dialog-settings.js'
 import DialogTemplates from './dialog-templates.js'
 import DialogList from './dialog-list.js'
+import DialogActions from './dialog-actions.js'
 
 import styles from './dialog.css'
 
@@ -40,6 +41,7 @@ function scopedComponent (componentClass) {
 const {component: templatesComponent} = scopedComponent(DialogTemplates)
 const {component: footerComponent} = scopedComponent(DialogFooter)
 const {component: settingsComponent} = scopedComponent(DialogSettings)
+const {component: actionsComponent} = scopedComponent(DialogActions)
 const {component: listComponent, tagName: listComponentTagName} = scopedComponent(DialogList)
 
 const dialogStyles = unsafeStatic(styles)
@@ -541,6 +543,10 @@ function template({
           .extensionData=${extensionData}
           >
         </${settingsComponent}>
+
+        <${actionsComponent}
+          >
+        </${actionsComponent}>
       ` : ''}
     </div>
   `

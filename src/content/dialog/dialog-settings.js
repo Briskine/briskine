@@ -79,13 +79,13 @@ function template ({extensionData: {dialogTags, dialogSort}}) {
     <div class="dialog-settings dialog-modal">
       <div class="dialog-modal-header">
         <h2>
-          Dialog Settings
+          Dialog settings
         </h2>
 
         <button
           type="button"
           class="btn btn-close"
-          title="Close Dialog Settings"
+          title="Close dialog settings"
           >
         </button>
       </div>
@@ -131,7 +131,7 @@ function template ({extensionData: {dialogTags, dialogSort}}) {
                 Manage additional settings for Briskine in the Dashboard.
               </p>
               <a href="${config.functionsUrl}/settings" target="_blank" class="btn">
-                Open General Settings
+                Open general settings
               </a>
             </div>
           </div>
