@@ -484,9 +484,9 @@ function template({
       })}
       >
 
-      <div class="search-container">
+      <div class="dialog-search">
         <input type="search" value="" placeholder="Search templates...">
-        <div class="search-icon">${unsafeSVG(iconSearch)}</div>
+        <div class="dialog-search-icon">${unsafeSVG(iconSearch)}</div>
       </div>
 
       <div class="dialog-content">

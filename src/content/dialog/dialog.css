@@ -22,12 +22,16 @@
   --blue-light: #0b5ed7;
   --blue-focus: rgb(13 110 253 / 25%);
 
+  --background-color: hsl(0 0% 100%);
+  --background-color-darker: hsl(0 0% 98%);
+
   --radius: 5px;
   --radius-small: 3px;
   --dialog-height: 250px;
   --footer-height: 40px;
   --padding-x: 12px;
   --padding-y: 8px;
+  --padding-icon: 2.3rem;
 
   position: absolute;
   width: 360px;
@@ -40,11 +44,10 @@
   font-family: sans-serif;
   line-height: 1.5;
 
-  border: 1px solid var(--gray);
   border-radius: var(--radius);
   background: #fff;
 
-  box-shadow: 0 1px 2px rgba(0,0,0,0.07),
+  box-shadow: 0 0 2px rgba(0,0,0,.1),
     0 2px 4px rgba(0,0,0,0.07),
     0 4px 8px rgba(0,0,0,0.07),
     0 8px 16px rgba(0,0,0,0.07);
@@ -170,34 +173,35 @@ button.btn-primary:hover {
   height: 100%;
 }
 
-input[type=search],
-.dialog-footer {
+.dialog-search {
+  border-bottom: 1px solid var(--gray);
+}
+
+input[type=search] {
+  border: 0;
   height: var(--footer-height);
   padding: var(--padding-y) var(--padding-x);
-  background: var(--gray-light);
-  border-style: solid;
-  border-color: var(--gray);
+  background: var(--background-color-darker);
 }
 
 input[type=search] {
   position: relative;
-  border-width: 0 0 1px;
   width: 100%;
-  padding-left: 2.2rem;
+  padding-left: var(--padding-icon);
 
   font-size: 1.1em;
 }
 
 input[type=search]:focus {
   outline: none;
-  background: var(--gray-lighter);
+  background: var(--background-color);
 }
 
-.search-container {
+.dialog-search {
   position: relative;
 }
 
-.search-icon {
+.dialog-search-icon {
   position: absolute;
   top: 50%;
   left: var(--padding-x);
@@ -247,7 +251,8 @@ input[type=search]:focus {
 .dialog-footer {
   position: relative;
   z-index: 2;
-  border-width: 1px 0 0;
+  padding: var(--padding-y) var(--padding-x);
+  background: var(--background-color-darker);
 
   font-size: 12px;
 }
@@ -367,39 +372,4 @@ input[type=search]:focus {
 
 :host([modal=settings]) .btn-settings {
   background: #cacaca;
-}
-
-/* tags
- */
-.dialog-tags {
-  --tag-color-green: #61bd4f;
-  --tag-color-yellow: #f2d600;
-  --tag-color-orange: #ff9f1a;
-  --tag-color-red: #eb5a46;
-  --tag-color-purple: #c377e0;
-  --tag-color-blue: #0079bf;
-  --tag-color-sky: #00c2e0;
-  --tag-color-lime: #51e898;
-  --tag-color-pink: #ff78cb;
-  --tag-color-black: #344563;
-
-  display: block;
-  overflow: hidden;
-  padding: 0;
-  margin-top: .2rem;
-  list-style-type: none;
-
-  white-space: nowrap;
-  text-overflow: ellipsis;
-}
-
-.dialog-tags li {
-  display: inline-block;
-  padding: .2em .4em;
-  border-radius: var(--radius-small);
-  background-color: var(--tag-bg-color, transparent);
-
-  color: #fff;
-  font-size: .75em;
-  font-weight: 700;
 }
