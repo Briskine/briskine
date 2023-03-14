@@ -24,6 +24,7 @@
 
   --background-color: hsl(0 0% 100%);
   --background-color-darker: hsl(0 0% 98%);
+  --border-color: hsl(0 0% 94%);
 
   --radius: 5px;
   --radius-small: 3px;
@@ -174,7 +175,7 @@ button.btn-primary:hover {
 }
 
 .dialog-search {
-  border-bottom: 1px solid var(--gray);
+  border-bottom: 1px solid var(--border-color);
 }
 
 input[type=search] {
@@ -246,33 +247,6 @@ input[type=search]:focus {
    */
   content-visibility: auto;
   contain-intrinsic-size: auto 350px;
-}
-
-.dialog-footer {
-  position: relative;
-  z-index: 2;
-  padding: var(--padding-y) var(--padding-x);
-  background: var(--background-color-darker);
-
-  font-size: 12px;
-}
-
-.dialog-shortcut {
-  height: 24px;
-
-  color: rgba(0,0,0,.3);
-  font-weight: bold;
-  text-align: right;
-}
-
-/* tweak spacing added by plus icon
- */
-.btn-new-template {
-  padding-left: 6px;
-}
-
-.btn-new-template .bi {
-  margin-top: -1px;
 }
 
 /* loading placeholders

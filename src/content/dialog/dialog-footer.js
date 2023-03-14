@@ -1,9 +1,14 @@
-import {render, html} from 'lit-html'
+import {render} from 'lit-html'
+import {html, unsafeStatic} from 'lit-html/static.js'
 import {unsafeSVG} from 'lit-html/directives/unsafe-svg.js'
 import iconGear from 'bootstrap-icons/icons/gear.svg?raw'
 import iconPlus from 'bootstrap-icons/icons/plus.svg?raw'
 
 import config from '../../config.js'
+
+import styles from './dialog-footer.css'
+
+const componentStyles = unsafeStatic(styles)
 
 export default class DialogFooter extends HTMLElement {
   constructor () {
@@ -45,6 +50,7 @@ export default class DialogFooter extends HTMLElement {
 
 function template ({shortcut}) {
   return html`
+    <style>${componentStyles}</style>
     <div class="d-flex">
       <div class="flex-fill">
         <a

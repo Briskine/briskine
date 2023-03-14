@@ -1,0 +1,27 @@
+.dialog-footer {
+  position: relative;
+  z-index: 2;
+  padding: var(--padding-y) var(--padding-x);
+  background: var(--background-color-darker);
+  border-top: 1px solid var(--border-color);
+
+  font-size: 12px;
+}
+
+.dialog-shortcut {
+  height: 24px;
+
+  color: rgba(0,0,0,.3);
+  font-weight: bold;
+  text-align: right;
+}
+
+/* tweak spacing added by plus icon
+ */
+.btn-new-template {
+  padding-left: 6px;
+}
+
+.btn-new-template .bi {
+  margin-top: -1px;
+}
