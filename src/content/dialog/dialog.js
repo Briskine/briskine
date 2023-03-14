@@ -3,6 +3,7 @@ import browser from 'webextension-polyfill'
 import {render} from 'lit-html'
 import {html, unsafeStatic} from 'lit-html/static.js'
 import {classMap} from 'lit-html/directives/class-map.js'
+import {unsafeSVG} from 'lit-html/directives/unsafe-svg.js'
 
 import store from '../../store/store-client.js'
 import {isContentEditable} from '../editors/editor-contenteditable.js'
@@ -12,7 +13,7 @@ import {autocomplete, getSelectedWord, getSelection, getEventTarget} from '../au
 import {keybind, keyunbind} from '../keybind.js'
 import {batch, reactive} from '../component.js'
 import iconSearch from 'bootstrap-icons/icons/search.svg?raw'
-import {unsafeSVG} from 'lit-html/directives/unsafe-svg.js'
+import iconBriskine from '../../icons/briskine-logo-small.svg?raw'
 
 import config from '../../config.js'
 
@@ -494,18 +495,14 @@ function template({
       <div class="dialog-content">
 
         ${!loggedIn ? html`
-          <div class="dialog-info">
-            Please
-            <a href="${popupUrl}?source=tab" target="_blank">Sign in</a>
-            <span class="dialog-safari-hide">
-              or
-              <a href="${signupUrl}" target="_blank">
-                Create a free account
-              </a>
-            </span>
-            <span class="dialog-safari-show">
-              to access your templates.
-            </span>
+          <div class="dialog-info d-flex">
+            <div class="dialog-info-icon">
+              ${unsafeSVG(iconBriskine)}
+            </div>
+            <div>
+              <a href="${popupUrl}?source=tab" target="_blank">Sign in</a>
+              to Briskine to access your templates.
+            </div>
           </div>
         ` : ''}
 

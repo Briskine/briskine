@@ -28,7 +28,6 @@
   --footer-height: 40px;
   --padding-x: 12px;
   --padding-y: 8px;
-  --padding-icon: 2.3rem;
 
   position: absolute;
   width: 360px;
@@ -42,7 +41,7 @@
   line-height: 1.5;
 
   border-radius: var(--radius);
-  background: #fff;
+  background: var(--background-color);
 
   box-shadow: 0 0 2px rgba(0,0,0,.1),
     0 2px 4px rgba(0,0,0,0.07),
@@ -183,7 +182,7 @@ input[type=search] {
 input[type=search] {
   position: relative;
   width: 100%;
-  padding-left: var(--padding-icon);
+  padding-left: 2.8em;
 
   font-size: 1.1em;
 }
@@ -200,7 +199,7 @@ input[type=search]:focus {
 .dialog-search-icon {
   position: absolute;
   top: 50%;
-  left: var(--padding-x);
+  left: calc(var(--padding-x) + 3px);
   transform: translateY(-50%);
   opacity: .6;
   pointer-events: none;
@@ -208,18 +207,27 @@ input[type=search]:focus {
   color: hsl(var(--text-color-hsl) / 60%);
 }
 
+.dialog-content {
+  flex: 1;
+  padding: 3px;
+  overflow: auto;
+
+  /* improve performance for rendering large lists
+   */
+  content-visibility: auto;
+  contain-intrinsic-size: auto 350px;
+}
+
+/* info
+ */
 .dialog-info {
   padding: var(--padding-y) var(--padding-x);
   background: hsl(var(--primary-color-hsl) / 8%);
   border-radius: var(--radius-small);
   margin-bottom: 3px;
-
-  font-size: .9em;
 }
 
 .dialog-info a {
-  padding: 0 2px;
-
   font-weight: bold;
   text-decoration: none;
 }
@@ -233,15 +241,14 @@ input[type=search]:focus {
   text-decoration: underline;
 }
 
-.dialog-content {
-  flex: 1;
-  padding: 3px;
-  overflow: auto;
+.dialog-info-icon {
+  padding-right: 8px;
+}
 
-  /* improve performance for rendering large lists
-   */
-  content-visibility: auto;
-  contain-intrinsic-size: auto 350px;
+.dialog-info-icon svg {
+  display: block;
+  width: 18px;
+  height: 18px;
 }
 
 /* loading placeholders

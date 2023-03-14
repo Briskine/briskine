@@ -8,7 +8,7 @@
   overflow: hidden;
   position: relative;
   width: 100%;
-  padding: var(--padding-y) var(--padding-x) var(--padding-y) var(--padding-y);
+  padding: var(--padding-y) var(--padding-x);
   border-radius: var(--radius-small);
 
   cursor: pointer;
