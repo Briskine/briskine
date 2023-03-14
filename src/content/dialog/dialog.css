@@ -1,8 +1,6 @@
 /* dialog styles
  */
 
-@import url('./dialog-forms.css');
-
 :host,
 :host * {
   box-sizing: border-box;
@@ -13,15 +11,15 @@
    */
   all: initial;
 
-  --gray-lighter: #f7f7f7;
-  --gray-dark: #23374d;
-
   --blue: #0d7af6;
   --blue-focus: rgb(13 110 253 / 25%);
   --background-color: hsl(0 0% 100%);
-  --background-color-darker: hsl(0 0% 98%);
-  --border-color: hsl(0 0% 94%);
-  --text-color: #010134;
+  --background-color-highlight: hsl(0 0% 98%);
+  --border-color-hsl: 0 0% 94%;
+  --border-color: hsl(var(--border-color-hsl));
+
+  --text-color-hsl: 240 96% 10%;
+  --text-color: hsl(var(--text-color-hsl));
 
   --radius: 5px;
   --radius-small: 3px;
@@ -102,7 +100,7 @@ p {
 }
 
 .text-secondary {
-  color: var(--gray-dark) !important;
+  color: hsl(var(--text-color-hsl) / 60%) !important;
 }
 
 .list-group {
@@ -124,13 +122,13 @@ p {
   border-radius: var(--radius-small);
   background: transparent;
 
-  color: var(--gray-dark);
+  color: var(--text-color);
   text-decoration: none;
 }
 
 a.btn:hover,
 button.btn:hover {
-  background: var(--background-color-darker);
+  background: var(--background-color-highlight);
 
   cursor: pointer;
 }
@@ -178,7 +176,7 @@ input[type=search] {
   border: 0;
   height: var(--footer-height);
   padding: var(--padding-y) var(--padding-x);
-  background: var(--background-color-darker);
+  background: var(--background-color-highlight);
 }
 
 input[type=search] {
@@ -206,7 +204,7 @@ input[type=search]:focus {
   opacity: .6;
   pointer-events: none;
 
-  color: var(--gray-dark);
+  color: hsl(var(--text-color-hsl) / 60%);
 }
 
 .dialog-info {
@@ -311,8 +309,6 @@ input[type=search]:focus {
   align-items: center;
   justify-content: space-between;
   padding: var(--padding-x);
-
-  color: var(--gray-dark);
 }
 
 .dialog-modal-header h2 {

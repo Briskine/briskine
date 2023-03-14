@@ -75,7 +75,7 @@ function template ({}) {
   return html`
     <div class="dialog-actions dialog-modal">
       <div class="dialog-modal-header">
-        <h2>
+        <h2 class="text-secondary">
           Briskine v${VERSION}
         </h2>
 

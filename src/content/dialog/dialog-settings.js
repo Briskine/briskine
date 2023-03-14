@@ -1,7 +1,12 @@
-import {render, html} from 'lit-html'
+import {render} from 'lit-html'
+import {html, unsafeStatic} from 'lit-html/static.js'
 
 import store from '../../store/store-client.js'
 import config from '../../config.js'
+
+import styles from './dialog-settings.css'
+
+const componentStyles = unsafeStatic(styles)
 
 export default class DialogSettings extends HTMLElement {
   constructor () {
@@ -76,9 +81,10 @@ const sortOptions = [
 
 function template ({extensionData: {dialogTags, dialogSort}}) {
   return html`
+    <style>${componentStyles}</style>
     <div class="dialog-settings dialog-modal">
       <div class="dialog-modal-header">
-        <h2>
+        <h2 class="text-secondary">
           Dialog settings
         </h2>
 

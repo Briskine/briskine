@@ -34,7 +34,7 @@
 .dialog-list-item abbr {
   overflow: hidden;
   padding: 0 4px;
-  background: var(--gray-lighter);
+  background: var(--background-color-highlight);
   border: 1px solid var(--blue);
   border-radius: var(--radius-small);
 
@@ -60,7 +60,7 @@
   display: flex;
   align-items: center;
   justify-content: end;
-  background: linear-gradient(to right, transparent, var(--gray-lighter) 60%);
+  background: linear-gradient(to right, transparent, hsl(var(--border-color-hsl) / 98%) 60%);
 
   visibility: hidden;
 }
@@ -70,7 +70,7 @@
 }
 
 .dialog-list-item.active {
-  background: var(--gray-lighter);
+  background: hsl(var(--border-color-hsl) / 60%);
 }
 
 .list-no-results {

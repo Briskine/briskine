@@ -2,7 +2,7 @@
   position: relative;
   z-index: 2;
   padding: var(--padding-y) var(--padding-x);
-  background: var(--background-color-darker);
+  background: var(--background-color-highlight);
   border-top: 1px solid var(--border-color);
 
   font-size: 12px;
