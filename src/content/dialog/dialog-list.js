@@ -182,11 +182,11 @@ function template ({
                 ` : ''}
 
                 ${loggedIn ? html`
-                  <div class="edit-container">
+                  <div class="edit-container dialog-safari-hide">
                     <a
                       href="${config.functionsUrl}/template/${t.id}"
                       target="_blank"
-                      class="btn btn-sm btn-edit dialog-safari-hide"
+                      class="btn btn-sm btn-edit"
                       title="Edit template"
                       >
                       ${unsafeSVG(iconArrowUpRightSquare)}

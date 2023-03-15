@@ -136,7 +136,11 @@ function template ({extensionData: {dialogTags, dialogSort}}) {
               <p>
                 Manage additional settings for Briskine in the Dashboard.
               </p>
-              <a href="${config.functionsUrl}/settings" target="_blank" class="btn">
+              <a
+                href="${config.functionsUrl}/settings"
+                target="_blank"
+                class="btn dialog-safari-hide"
+                >
                 Open general settings
               </a>
             </div>

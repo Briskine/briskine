@@ -42,11 +42,13 @@ const actions = [
     title: 'New template',
     icon: unsafeSVG(iconPlusSquare),
     href: `${config.functionsUrl}/template/new`,
+    class: 'dialog-safari-hide',
   },
   {
     title: 'Manage templates',
     icon: unsafeSVG(iconArchive),
     href: config.functionsUrl,
+    class: 'dialog-safari-hide',
   },
   {
     title: 'Help Center',
@@ -57,6 +59,7 @@ const actions = [
     title: 'Briskine website',
     icon: unsafeSVG(iconGlobe),
     href: config.websiteUrl,
+    class: 'dialog-safari-hide',
   },
   {
     title: 'Follow us on Twitter',
@@ -87,7 +90,7 @@ function template () {
               <a
                 href=${action.href}
                 target="_blank"
-                class="btn d-flex flex-fill"
+                class="btn d-flex flex-fill ${action.class}"
                 >
                 <span class="list-group-icon">${action.icon}</span>
                 <span>${action.title}</span>
