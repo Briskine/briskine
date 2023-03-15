@@ -5,6 +5,7 @@ import iconGear from 'bootstrap-icons/icons/gear.svg?raw'
 
 import iconBriskine from '../../icons/briskine-logo-small.svg?raw'
 
+import {reactive} from '../component.js'
 import styles from './dialog-footer.css'
 
 const componentStyles = unsafeStatic(styles)
@@ -13,17 +14,15 @@ export default class DialogFooter extends HTMLElement {
   constructor () {
     super()
 
-    this.state = {
+    this.state = reactive({
       shortcut: '',
-    }
+    }, this, () => {
+      this.render()
+    })
 
     this.render = () => {
       render(template(this.state), this)
     }
-  }
-  set shortcut (value = '') {
-    this.state.shortcut = value
-    this.render()
   }
   connectedCallback () {
     if (!this.isConnected) {

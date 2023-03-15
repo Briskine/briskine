@@ -30,6 +30,8 @@ export default class DialogTemplates extends HTMLElement {
   constructor () {
     super()
 
+    this.listComponent = ''
+
     this.state = reactive({
       loggedIn: false,
       loading: false,
@@ -42,6 +44,7 @@ export default class DialogTemplates extends HTMLElement {
       },
 
       tags: [],
+      listComponentTagName: '',
 
       _templates: [],
     }, this, (key, value, props) => {
@@ -53,15 +56,16 @@ export default class DialogTemplates extends HTMLElement {
         )
       }
 
+      if (key === 'listComponentTagName') {
+        this.listComponent = unsafeStatic(value)
+      }
+
       this.render()
     })
 
     this.render = batch(() => {
       render(template({listComponent: this.listComponent, ...this.state}), this)
     })
-  }
-  set listComponentTagName (value) {
-    this.listComponent = unsafeStatic(value)
   }
   connectedCallback () {
     if (!this.isConnected) {

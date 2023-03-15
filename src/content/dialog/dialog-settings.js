@@ -1,6 +1,7 @@
 import {render} from 'lit-html'
 import {html, unsafeStatic} from 'lit-html/static.js'
 
+import {reactive} from '../component.js'
 import store from '../../store/store-client.js'
 import config from '../../config.js'
 
@@ -12,17 +13,15 @@ export default class DialogSettings extends HTMLElement {
   constructor () {
     super()
 
-    this.state = {
-      extensionData: {}
-    }
+    this.state = reactive({
+      extensionData: {},
+    }, this, () => {
+      this.render()
+    })
 
     this.render = () => {
       render(template(this.state), this)
     }
-  }
-  set extensionData (value = {}) {
-    this.state.extensionData = value
-    this.render()
   }
   connectedCallback () {
     if (!this.isConnected) {

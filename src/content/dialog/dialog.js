@@ -15,8 +15,6 @@ import {batch, reactive} from '../component.js'
 import iconSearch from 'bootstrap-icons/icons/search.svg?raw'
 import iconBriskine from '../../icons/briskine-logo-small.svg?raw'
 
-import config from '../../config.js'
-
 import DialogFooter from './dialog-footer.js'
 import DialogSettings from './dialog-settings.js'
 import DialogTemplates from './dialog-templates.js'
@@ -61,7 +59,6 @@ const listSelector = '.dialog-list'
 // https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/action/openPopup
 // Open the action popup in a new tab.
 const popupUrl = browser.runtime.getURL('popup/popup.html')
-const signupUrl = `${config.websiteUrl}/signup`
 
 customElements.define(
   dialogTagName,
