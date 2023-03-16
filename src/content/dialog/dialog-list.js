@@ -125,7 +125,7 @@ export default class DialogList extends HTMLElement {
     // select first item
     this.addEventListener('b-dialog-select-first', () => {
       if (this.state.list.length) {
-        this._active = this.setActive(this.state.list[0].id)
+        this._active = this.setActive(this.state.list[0].id, true)
       }
     })
   }
