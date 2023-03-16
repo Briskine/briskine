@@ -7,9 +7,16 @@ import store from '../store/store-client.js'
 
 import {keybind, keyunbind} from './keybind.js'
 
-let shortcutCache = []
-function updateShortcutCache (templates = []) {
-  shortcutCache = templates.map((t) => t.shortcut).filter((shortcut) => shortcut)
+let templateCache = []
+function updateTemplateCache (templates = []) {
+  templateCache = templates
+}
+
+function getTemplateFromCache (shortcut) {
+  if (!shortcut) {
+    return
+  }
+  return templateCache.find((template) => template.shortcut === shortcut)
 }
 
 // is input or textarea
@@ -20,7 +27,7 @@ function isTextfield (element) {
 function getTemplates () {
   return store.getTemplates()
     .then((templates) => {
-      updateShortcutCache(templates)
+      updateTemplateCache(templates)
       return templates
     })
 }
@@ -39,7 +46,7 @@ function populateCache () {
   })
 }
 
-store.on('templates-updated', populateCache)
+store.on('templates-updated', getTemplates)
 store.on('login', populateCache)
 store.on('logout', populateCache)
 populateCache()
@@ -53,7 +60,7 @@ function getTemplateByShortcut (shortcut) {
     })
 }
 
-function keyboardAutocomplete (e) {
+async function keyboardAutocomplete (e) {
   let element = getEventTarget(e)
 
   // if it's not an editable element
@@ -74,27 +81,27 @@ function keyboardAutocomplete (e) {
     const anchorNode = selection.anchorNode
     const anchorOffset = selection.anchorOffset
 
-    if (shortcutCache.includes(word.text)) {
+    let template = getTemplateFromCache(word.text)
+    if (template) {
       e.preventDefault()
       e.stopImmediatePropagation()
+    } else {
+      template = await getTemplateByShortcut(word.text)
     }
 
-    getTemplateByShortcut(word.text)
-      .then((template) => {
-        if (template) {
-          // restore selection
-          element.focus()
-          if (anchorNode && focusNode) {
-            getSelection(element).setBaseAndExtent(anchorNode, anchorOffset, focusNode, focusOffset)
-          }
+    if (template) {
+      // restore selection
+      element.focus()
+      if (anchorNode && focusNode) {
+        getSelection(element).setBaseAndExtent(anchorNode, anchorOffset, focusNode, focusOffset)
+      }
 
-          return autocomplete({
-              element: element,
-              quicktext: template,
-              word: word,
-          })
-        }
+      return autocomplete({
+        element: element,
+        quicktext: template,
+        word: word,
       })
+    }
   }
 }
 

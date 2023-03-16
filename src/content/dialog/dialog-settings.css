@@ -15,15 +15,13 @@
   width: 100%;
   margin-bottom: 0;
   padding: .375rem 2.25rem .375rem .75rem;
-  background-color: #fff;
+  background-color: var(--border-color);
   background-image: var(--form-select-bg-img);
   background-repeat: no-repeat;
   background-position: right .75rem center;
   background-size: 16px 12px;
-  border: 1px solid var(--gray);
+  border: 0;
   border-radius: var(--radius-small);
-
-  color: var(--bs-body-color);
 }
 
 .form-check {
@@ -39,9 +37,9 @@
   height: 1em;
   margin-left: -1.5em;
   margin-top: .25em;
-  border: 1px solid var(--gray);
+  border: 0;
   border-radius: .25em;
-  background-color: #fff;
+  background-color: var(--border-color);
   background-image: var(--form-check-input-bg);
   background-repeat: no-repeat;
   background-position: center;
@@ -54,14 +52,13 @@
 .form-check-input:checked {
   --form-check-input-bg: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3e%3cpath fill='none' stroke='%23fff' stroke-linecap='round' stroke-linejoin='round' stroke-width='3' d='m6 10 3 3 6-6'/%3e%3c/svg%3e");
 
-  background-color: var(--blue);
-  border-color: var(--blue);
+  background-color: var(--primary-color);
 }
 
 .form-select:focus,
 .form-check-input:focus {
   outline: none;
-  box-shadow: 0 0 0 0.25rem var(--blue-focus);
+  box-shadow: 0 0 0 0.25rem hsl(var(--primary-color-hsl) / 25%);
 }
 
 .form-block {
@@ -70,4 +67,8 @@
 
 .form-block:not(:last-of-type) {
   margin-bottom: .75rem;
+}
+
+form .btn {
+  background-color: var(--border-color);
 }

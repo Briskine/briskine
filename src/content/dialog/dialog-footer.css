@@ -1,0 +1,45 @@
+.dialog-footer {
+  position: relative;
+  z-index: 2;
+  padding: var(--padding-y) var(--padding-x);
+  background: var(--background-color-highlight);
+  border-top: 1px solid var(--border-color);
+
+}
+
+.dialog-shortcut {
+  font-size: .8em;
+  font-weight: bold;
+  text-align: right;
+  cursor: default;
+}
+
+/* actions
+ */
+.btn-actions {
+  display: inline-block;
+  padding: 1px;
+}
+
+.btn-actions svg {
+  display: block;
+  width: 18px;
+  height: 18px;
+}
+
+/* show modals
+ */
+:host([modal=settings]) .dialog-settings,
+:host([modal=actions]) .dialog-actions {
+  visibility: visible;
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+:host([modal=settings]) .btn-settings {
+  background: var(--border-color);
+}
+
+:host([modal=actions]) .btn-actions {
+  background-color: var(--primary-color);
+}

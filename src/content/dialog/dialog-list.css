@@ -1,0 +1,112 @@
+.dialog-list ul {
+  padding: 0;
+  margin: 0;
+  list-style-type: none;
+}
+
+.dialog-list-item {
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+  padding: var(--padding-y) var(--padding-x);
+  border-radius: var(--radius-small);
+
+  cursor: pointer;
+  white-space: nowrap;
+  line-height: 1.2;
+}
+
+.dialog-list-item h1 {
+  display: inline-block;
+  margin: 0 4px 0 0;
+
+  font-size: 1.1em;
+}
+
+.dialog-list-item h1,
+.dialog-list-item p {
+  overflow: hidden;
+
+  text-overflow: ellipsis;
+}
+
+.dialog-list-item abbr {
+  overflow: hidden;
+  padding: 0 4px;
+  background: var(--background-color-highlight);
+  border: 1px solid var(--primary-color);
+  border-radius: var(--radius-small);
+
+  font-size: .9em;
+  font-weight: bold;
+  vertical-align: top;
+  text-overflow: ellipsis;
+}
+
+.dialog-list-item p {
+  margin: 0;
+}
+
+.edit-container {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 5rem;
+  height: 100%;
+  padding-right: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: end;
+  background: linear-gradient(to right, transparent, hsl(var(--border-color-hsl) / 98%) 60%);
+
+  visibility: hidden;
+}
+
+:host li.active .edit-container {
+  visibility: visible;
+}
+
+.dialog-list-item.active {
+  background: hsl(var(--border-color-hsl) / 60%);
+}
+
+.list-no-results {
+  padding: 20px;
+
+  text-align: center;
+}
+
+/* tags
+ */
+.dialog-tags {
+  --tag-color-green: #61bd4f;
+  --tag-color-yellow: #f2d600;
+  --tag-color-orange: #ff9f1a;
+  --tag-color-red: #eb5a46;
+  --tag-color-purple: #c377e0;
+  --tag-color-blue: #0079bf;
+  --tag-color-sky: #00c2e0;
+  --tag-color-lime: #51e898;
+  --tag-color-pink: #ff78cb;
+  --tag-color-black: #344563;
+
+  display: block;
+  overflow: hidden;
+  padding: 0;
+  margin-top: .2rem;
+  list-style-type: none;
+
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.dialog-tags li {
+  display: inline-block;
+  padding: .2em .4em;
+  border-radius: var(--radius-small);
+  background-color: var(--tag-bg-color, transparent);
+
+  color: #fff;
+  font-size: .75em;
+  font-weight: 700;
+}

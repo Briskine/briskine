@@ -48,7 +48,7 @@ customElements.define(
               ` : html`
                 <p>
                   <strong>
-                    Sign In to access your templates.
+                    Sign in to access your templates.
                   </strong>
                 </p>
 

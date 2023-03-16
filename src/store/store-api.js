@@ -780,7 +780,6 @@ export function searchTemplates (query = '') {
       if (query !== lastSearchQuery) {
         return {
           query: '_SEARCH_CANCELED',
-          tags: [],
           results: [],
         }
       }
@@ -788,8 +787,6 @@ export function searchTemplates (query = '') {
       const templateSearchList = getSearchList(templates, tags)
       return {
         query: query,
-        // return tags, to avoid another round-trip to the store
-        tags: tags,
         results: fuzzySearch(templates, templateSearchList, query),
       }
     })

@@ -3,6 +3,7 @@ var Config = {
   version: VERSION,
   websiteUrl: 'http://localhost:4000',
   functionsUrl: 'http://localhost:5000',
+  helpUrl: 'https://help.briskine.com/',
   dashboardTarget: 'gt-dashboard',
 
   eventDestroy: 'briskine-destroy',
