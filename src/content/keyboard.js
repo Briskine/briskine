@@ -46,7 +46,7 @@ function populateCache () {
   })
 }
 
-store.on('templates-updated', populateCache)
+store.on('templates-updated', getTemplates)
 store.on('login', populateCache)
 store.on('logout', populateCache)
 populateCache()
