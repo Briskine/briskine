@@ -36,7 +36,7 @@ customElements.define(
 
           const template = `
               <style>${bubbleStyles}</style>
-              <button type="button" class="b-bubble">${bubbleIcon}</button>
+              <button type="button" class="b-bubble" tabindex="-1">${bubbleIcon}</button>
               <span class="b-bubble-tooltip">
                   Search templates (${shortcut})
               </div>

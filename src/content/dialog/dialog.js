@@ -423,6 +423,7 @@ customElements.define(
         if (e.detail && this.getAttribute(modalAttribute) !== e.detail) {
           this.setAttribute(modalAttribute, e.detail)
         } else {
+          // TODO focus the text field when closing the modals
           this.removeAttribute(modalAttribute)
         }
       })
@@ -482,6 +483,7 @@ function template({
         'dialog-container': true,
         'dialog-safari': REGISTER_DISABLED,
       })}
+      tabindex="-1"
       >
 
       <div class="dialog-search">
