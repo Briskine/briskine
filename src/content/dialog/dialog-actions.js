@@ -23,17 +23,6 @@ export default class DialogActions extends HTMLElement {
     }
 
     this.render()
-
-    const closeBtn = this.querySelector('.btn-close')
-    if (closeBtn) {
-      closeBtn.addEventListener('click', () => {
-        this.dispatchEvent(new CustomEvent('b-dialog-set-modal', {
-          bubbles: true,
-          composed: true,
-          detail: '',
-        }))
-      })
-    }
   }
 }
 
@@ -80,6 +69,7 @@ function template () {
           type="button"
           class="btn btn-close"
           title="Close dialog actions"
+          data-b-modal="actions"
           >
         </button>
       </div>

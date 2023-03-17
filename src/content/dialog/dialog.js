@@ -419,16 +419,24 @@ customElements.define(
         this.insertTemplate(e.detail)
       })
 
-      this.addEventListener('b-dialog-set-modal', (e) => {
-        if (e.detail && this.getAttribute(modalAttribute) !== e.detail) {
-          this.setAttribute(modalAttribute, e.detail)
-        } else {
-          this.removeAttribute(modalAttribute)
+      // open and close modals
+      this.addEventListener('click', (e) => {
+        const composedPath = e.composedPath()
+        const composedTarget = composedPath[0]
+        const btnModalAttribute = 'data-b-modal'
+        const modalBtn = composedTarget.closest(`[${btnModalAttribute}]`)
+        if (modalBtn) {
+          const modal = modalBtn.getAttribute(btnModalAttribute)
+          if (this.getAttribute(modalAttribute) !== modal) {
+            this.setAttribute(modalAttribute, modal)
+          } else {
+            this.removeAttribute(modalAttribute)
 
-          // focus the search field when closing the modals,
-          // and returning to the list view.
-          if (this.searchField) {
-            this.searchField.focus()
+            // focus the search field when closing the modals,
+            // and returning to the list view.
+            if (this.searchField) {
+              this.searchField.focus()
+            }
           }
         }
       })
