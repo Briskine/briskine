@@ -423,8 +423,13 @@ customElements.define(
         if (e.detail && this.getAttribute(modalAttribute) !== e.detail) {
           this.setAttribute(modalAttribute, e.detail)
         } else {
-          // TODO focus the text field when closing the modals
           this.removeAttribute(modalAttribute)
+
+          // focus the search field when closing the modals,
+          // and returning to the list view.
+          if (this.searchField) {
+            this.searchField.focus()
+          }
         }
       })
 
