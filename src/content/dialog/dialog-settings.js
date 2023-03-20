@@ -30,17 +30,6 @@ export default class DialogSettings extends HTMLElement {
 
     this.render()
 
-    const closeBtn = this.querySelector('.btn-close')
-    if (closeBtn) {
-      closeBtn.addEventListener('click', () => {
-        this.dispatchEvent(new CustomEvent('b-dialog-set-modal', {
-          bubbles: true,
-          composed: true,
-          detail: '',
-        }))
-      })
-    }
-
     const form = this.querySelector('form')
     if (form) {
       form.addEventListener('change', (e) => {
@@ -91,6 +80,7 @@ function template ({extensionData: {dialogTags, dialogSort}}) {
           type="button"
           class="btn btn-close"
           title="Close dialog settings"
+          data-b-modal="settings"
           >
         </button>
       </div>

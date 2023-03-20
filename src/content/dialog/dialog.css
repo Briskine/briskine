@@ -311,6 +311,12 @@ input[type=search]:focus {
   transition: all .075s ease-in;
 }
 
+@media (prefers-reduced-motion) {
+  .dialog-modal {
+    transition: none;
+  }
+}
+
 .dialog-modal-header {
   display: flex;
   flex-shrink: 0;

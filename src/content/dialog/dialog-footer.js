@@ -32,26 +32,6 @@ export default class DialogFooter extends HTMLElement {
     this.render()
 
     this.classList.add('dialog-footer')
-
-    this.addEventListener('click', (e) => {
-      const settingsBtn = e.target.closest('.btn-settings')
-      const actionsBtn = e.target.closest('.btn-actions')
-      let modal
-      if (settingsBtn) {
-        modal = 'settings'
-      }
-      if (actionsBtn) {
-        modal = 'actions'
-      }
-
-      if (modal) {
-        this.dispatchEvent(new CustomEvent('b-dialog-set-modal', {
-          bubbles: true,
-          composed: true,
-          detail: modal,
-        }))
-      }
-    })
   }
 }
 
@@ -64,6 +44,7 @@ function template ({shortcut}) {
           type="button"
           class="btn btn-sm btn-actions"
           title="Briskine dialog actions"
+          data-b-modal="actions"
           >
           ${unsafeSVG(iconBriskine)}
         </a>
@@ -79,6 +60,7 @@ function template ({shortcut}) {
         type="button"
         class="btn btn-sm btn-settings"
         title="Dialog settings"
+        data-b-modal="settings"
         >
         ${unsafeSVG(iconGear)}
       </button>
