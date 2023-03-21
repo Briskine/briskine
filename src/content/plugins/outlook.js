@@ -54,9 +54,14 @@ function getCcContainer () {
 function getFieldContainer (length = 2) {
   const $containers = getContainers()
   return $containers
+    // exclude the first (to) container
+    .slice(1)
     .find((node) => {
       return Array.from(node.querySelectorAll('[aria-label'))
         .find((node) => {
+          // HACK
+          // match containers by the length of the aria-label field.
+          // will not work for all languages.
           return node.getAttribute('aria-label').length === length
         })
     })
@@ -67,7 +72,11 @@ function getBccContainer () {
 }
 
 function getFieldButton (length = 2) {
-  return Array.from(document.querySelectorAll('[role=main] .ms-Button--command'))
+  // [data-app-section] for the compose popup view.
+  return Array.from(document.querySelectorAll(`
+    [role=main] .ms-Button--command,
+    [data-app-section="Form_Content"] .ms-Button--command
+  `))
     .find(($node) => {
       return $node.innerText.length === length
     })
