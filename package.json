@@ -8,6 +8,7 @@
     "test": "webpack -c webpack.test.js && mocha-headless-chrome -f test/index.html",
     "setup": "firebase login",
     "start": "webpack -w --mode=development --env mode=development",
+    "start:firefox:android": "web-ext run --source-dir ./ext/ -t firefox-android",
     "staging": "webpack -w --mode=production --env mode=staging",
     "build": "npm run lint && webpack --mode=production --env mode=production",
     "sourcebuild": "git archive --format zip --output sourcebuild/sourcebuild-${npm_package_version}.zip HEAD; zip -u sourcebuild/sourcebuild-${npm_package_version}.zip .firebase-config.json",
@@ -55,6 +56,7 @@
     "mocha-headless-chrome": "^4.0.0",
     "mockdate": "^3.0.2",
     "purgecss-webpack-plugin": "^5.0.0",
+    "web-ext": "^7.6.0",
     "webpack": "^5.11.1",
     "webpack-cli": "^5.0.0"
   },
