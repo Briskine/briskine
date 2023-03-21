@@ -1,0 +1,963 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		A6A5D6D029C88DE400BE4AC5 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6A5D6CF29C88DE400BE4AC5 /* AppDelegate.swift */; };
+		A6A5D6D229C88DE400BE4AC5 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6A5D6D129C88DE400BE4AC5 /* SceneDelegate.swift */; };
+		A6A5D6D529C88DE400BE4AC5 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A6A5D6D329C88DE400BE4AC5 /* LaunchScreen.storyboard */; };
+		A6A5D6D829C88DE400BE4AC5 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A6A5D6D629C88DE400BE4AC5 /* Main.storyboard */; };
+		A6A5D6E129C88DE400BE4AC5 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6A5D6E029C88DE400BE4AC5 /* AppDelegate.swift */; };
+		A6A5D6E429C88DE400BE4AC5 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A6A5D6E229C88DE400BE4AC5 /* Main.storyboard */; };
+		A6A5D6EC29C88DE400BE4AC5 /* Briskine Extension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = A6A5D6EB29C88DE400BE4AC5 /* Briskine Extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		A6A5D6F629C88DE400BE4AC5 /* Briskine Extension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = A6A5D6F529C88DE400BE4AC5 /* Briskine Extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		A6A5D6FC29C88DE400BE4AC5 /* Main.html in Resources */ = {isa = PBXBuildFile; fileRef = A6A5D6BF29C88DE100BE4AC5 /* Main.html */; };
+		A6A5D6FD29C88DE400BE4AC5 /* Main.html in Resources */ = {isa = PBXBuildFile; fileRef = A6A5D6BF29C88DE100BE4AC5 /* Main.html */; };
+		A6A5D6FE29C88DE400BE4AC5 /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = A6A5D6C129C88DE100BE4AC5 /* Icon.png */; };
+		A6A5D6FF29C88DE400BE4AC5 /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = A6A5D6C129C88DE100BE4AC5 /* Icon.png */; };
+		A6A5D70029C88DE400BE4AC5 /* Style.css in Resources */ = {isa = PBXBuildFile; fileRef = A6A5D6C229C88DE100BE4AC5 /* Style.css */; };
+		A6A5D70129C88DE400BE4AC5 /* Style.css in Resources */ = {isa = PBXBuildFile; fileRef = A6A5D6C229C88DE100BE4AC5 /* Style.css */; };
+		A6A5D70229C88DE400BE4AC5 /* Script.js in Resources */ = {isa = PBXBuildFile; fileRef = A6A5D6C329C88DE100BE4AC5 /* Script.js */; };
+		A6A5D70329C88DE400BE4AC5 /* Script.js in Resources */ = {isa = PBXBuildFile; fileRef = A6A5D6C329C88DE100BE4AC5 /* Script.js */; };
+		A6A5D70429C88DE400BE4AC5 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6A5D6C429C88DE100BE4AC5 /* ViewController.swift */; };
+		A6A5D70529C88DE400BE4AC5 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6A5D6C429C88DE100BE4AC5 /* ViewController.swift */; };
+		A6A5D70629C88DE400BE4AC5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A6A5D6C529C88DE400BE4AC5 /* Assets.xcassets */; };
+		A6A5D70729C88DE400BE4AC5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A6A5D6C529C88DE400BE4AC5 /* Assets.xcassets */; };
+		A6A5D70829C88DE400BE4AC5 /* SafariWebExtensionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6A5D6C729C88DE400BE4AC5 /* SafariWebExtensionHandler.swift */; };
+		A6A5D70929C88DE400BE4AC5 /* SafariWebExtensionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6A5D6C729C88DE400BE4AC5 /* SafariWebExtensionHandler.swift */; };
+		A6A5D72329C88DE400BE4AC5 /* background in Resources */ = {isa = PBXBuildFile; fileRef = A6A5D71B29C88DE400BE4AC5 /* background */; };
+		A6A5D72429C88DE400BE4AC5 /* page in Resources */ = {isa = PBXBuildFile; fileRef = A6A5D71C29C88DE400BE4AC5 /* page */; };
+		A6A5D72529C88DE400BE4AC5 /* popup in Resources */ = {isa = PBXBuildFile; fileRef = A6A5D71D29C88DE400BE4AC5 /* popup */; };
+		A6A5D72629C88DE400BE4AC5 /* LICENSE in Resources */ = {isa = PBXBuildFile; fileRef = A6A5D71E29C88DE400BE4AC5 /* LICENSE */; };
+		A6A5D72729C88DE400BE4AC5 /* content in Resources */ = {isa = PBXBuildFile; fileRef = A6A5D71F29C88DE400BE4AC5 /* content */; };
+		A6A5D72829C88DE400BE4AC5 /* sandbox in Resources */ = {isa = PBXBuildFile; fileRef = A6A5D72029C88DE400BE4AC5 /* sandbox */; };
+		A6A5D72929C88DE400BE4AC5 /* icons in Resources */ = {isa = PBXBuildFile; fileRef = A6A5D72129C88DE400BE4AC5 /* icons */; };
+		A6A5D72A29C88DE400BE4AC5 /* manifest.json in Resources */ = {isa = PBXBuildFile; fileRef = A6A5D72229C88DE400BE4AC5 /* manifest.json */; };
+		A6A5D72B29C88DE400BE4AC5 /* background in Resources */ = {isa = PBXBuildFile; fileRef = A6A5D71B29C88DE400BE4AC5 /* background */; };
+		A6A5D72C29C88DE400BE4AC5 /* page in Resources */ = {isa = PBXBuildFile; fileRef = A6A5D71C29C88DE400BE4AC5 /* page */; };
+		A6A5D72D29C88DE400BE4AC5 /* popup in Resources */ = {isa = PBXBuildFile; fileRef = A6A5D71D29C88DE400BE4AC5 /* popup */; };
+		A6A5D72E29C88DE400BE4AC5 /* LICENSE in Resources */ = {isa = PBXBuildFile; fileRef = A6A5D71E29C88DE400BE4AC5 /* LICENSE */; };
+		A6A5D72F29C88DE400BE4AC5 /* content in Resources */ = {isa = PBXBuildFile; fileRef = A6A5D71F29C88DE400BE4AC5 /* content */; };
+		A6A5D73029C88DE400BE4AC5 /* sandbox in Resources */ = {isa = PBXBuildFile; fileRef = A6A5D72029C88DE400BE4AC5 /* sandbox */; };
+		A6A5D73129C88DE400BE4AC5 /* icons in Resources */ = {isa = PBXBuildFile; fileRef = A6A5D72129C88DE400BE4AC5 /* icons */; };
+		A6A5D73229C88DE400BE4AC5 /* manifest.json in Resources */ = {isa = PBXBuildFile; fileRef = A6A5D72229C88DE400BE4AC5 /* manifest.json */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		A6A5D6ED29C88DE400BE4AC5 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A6A5D6B929C88DE100BE4AC5 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = A6A5D6EA29C88DE400BE4AC5;
+			remoteInfo = "Briskine Extension (iOS)";
+		};
+		A6A5D6F729C88DE400BE4AC5 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A6A5D6B929C88DE100BE4AC5 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = A6A5D6F429C88DE400BE4AC5;
+			remoteInfo = "Briskine Extension (macOS)";
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		A6A5D70F29C88DE400BE4AC5 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				A6A5D6EC29C88DE400BE4AC5 /* Briskine Extension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A6A5D71629C88DE400BE4AC5 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				A6A5D6F629C88DE400BE4AC5 /* Briskine Extension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		A6A5D6C029C88DE100BE4AC5 /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.html; name = Base; path = ../Base.lproj/Main.html; sourceTree = "<group>"; };
+		A6A5D6C129C88DE100BE4AC5 /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Icon.png; sourceTree = "<group>"; };
+		A6A5D6C229C88DE100BE4AC5 /* Style.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = Style.css; sourceTree = "<group>"; };
+		A6A5D6C329C88DE100BE4AC5 /* Script.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = Script.js; sourceTree = "<group>"; };
+		A6A5D6C429C88DE100BE4AC5 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		A6A5D6C529C88DE400BE4AC5 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		A6A5D6C729C88DE400BE4AC5 /* SafariWebExtensionHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafariWebExtensionHandler.swift; sourceTree = "<group>"; };
+		A6A5D6CC29C88DE400BE4AC5 /* Briskine.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Briskine.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A6A5D6CF29C88DE400BE4AC5 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		A6A5D6D129C88DE400BE4AC5 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
+		A6A5D6D429C88DE400BE4AC5 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		A6A5D6D729C88DE400BE4AC5 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		A6A5D6D929C88DE400BE4AC5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		A6A5D6DE29C88DE400BE4AC5 /* Briskine.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Briskine.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A6A5D6E029C88DE400BE4AC5 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		A6A5D6E329C88DE400BE4AC5 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		A6A5D6E529C88DE400BE4AC5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		A6A5D6E629C88DE400BE4AC5 /* Briskine.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Briskine.entitlements; sourceTree = "<group>"; };
+		A6A5D6EB29C88DE400BE4AC5 /* Briskine Extension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "Briskine Extension.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
+		A6A5D6F029C88DE400BE4AC5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		A6A5D6F529C88DE400BE4AC5 /* Briskine Extension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "Briskine Extension.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
+		A6A5D6FA29C88DE400BE4AC5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		A6A5D6FB29C88DE400BE4AC5 /* Briskine.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Briskine.entitlements; sourceTree = "<group>"; };
+		A6A5D71B29C88DE400BE4AC5 /* background */ = {isa = PBXFileReference; lastKnownFileType = folder; path = background; sourceTree = "<group>"; };
+		A6A5D71C29C88DE400BE4AC5 /* page */ = {isa = PBXFileReference; lastKnownFileType = folder; path = page; sourceTree = "<group>"; };
+		A6A5D71D29C88DE400BE4AC5 /* popup */ = {isa = PBXFileReference; lastKnownFileType = folder; path = popup; sourceTree = "<group>"; };
+		A6A5D71E29C88DE400BE4AC5 /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
+		A6A5D71F29C88DE400BE4AC5 /* content */ = {isa = PBXFileReference; lastKnownFileType = folder; path = content; sourceTree = "<group>"; };
+		A6A5D72029C88DE400BE4AC5 /* sandbox */ = {isa = PBXFileReference; lastKnownFileType = folder; path = sandbox; sourceTree = "<group>"; };
+		A6A5D72129C88DE400BE4AC5 /* icons */ = {isa = PBXFileReference; lastKnownFileType = folder; path = icons; sourceTree = "<group>"; };
+		A6A5D72229C88DE400BE4AC5 /* manifest.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = manifest.json; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		A6A5D6C929C88DE400BE4AC5 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A6A5D6DB29C88DE400BE4AC5 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A6A5D6E829C88DE400BE4AC5 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A6A5D6F229C88DE400BE4AC5 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		A6A5D6B829C88DE100BE4AC5 = {
+			isa = PBXGroup;
+			children = (
+				A6A5D6BD29C88DE100BE4AC5 /* Shared (App) */,
+				A6A5D6C629C88DE400BE4AC5 /* Shared (Extension) */,
+				A6A5D6CE29C88DE400BE4AC5 /* iOS (App) */,
+				A6A5D6DF29C88DE400BE4AC5 /* macOS (App) */,
+				A6A5D6EF29C88DE400BE4AC5 /* iOS (Extension) */,
+				A6A5D6F929C88DE400BE4AC5 /* macOS (Extension) */,
+				A6A5D6CD29C88DE400BE4AC5 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		A6A5D6BD29C88DE100BE4AC5 /* Shared (App) */ = {
+			isa = PBXGroup;
+			children = (
+				A6A5D6C429C88DE100BE4AC5 /* ViewController.swift */,
+				A6A5D6C529C88DE400BE4AC5 /* Assets.xcassets */,
+				A6A5D6BE29C88DE100BE4AC5 /* Resources */,
+			);
+			path = "Shared (App)";
+			sourceTree = "<group>";
+		};
+		A6A5D6BE29C88DE100BE4AC5 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				A6A5D6BF29C88DE100BE4AC5 /* Main.html */,
+				A6A5D6C129C88DE100BE4AC5 /* Icon.png */,
+				A6A5D6C229C88DE100BE4AC5 /* Style.css */,
+				A6A5D6C329C88DE100BE4AC5 /* Script.js */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		A6A5D6C629C88DE400BE4AC5 /* Shared (Extension) */ = {
+			isa = PBXGroup;
+			children = (
+				A6A5D71A29C88DE400BE4AC5 /* Resources */,
+				A6A5D6C729C88DE400BE4AC5 /* SafariWebExtensionHandler.swift */,
+			);
+			path = "Shared (Extension)";
+			sourceTree = "<group>";
+		};
+		A6A5D6CD29C88DE400BE4AC5 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				A6A5D6CC29C88DE400BE4AC5 /* Briskine.app */,
+				A6A5D6DE29C88DE400BE4AC5 /* Briskine.app */,
+				A6A5D6EB29C88DE400BE4AC5 /* Briskine Extension.appex */,
+				A6A5D6F529C88DE400BE4AC5 /* Briskine Extension.appex */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		A6A5D6CE29C88DE400BE4AC5 /* iOS (App) */ = {
+			isa = PBXGroup;
+			children = (
+				A6A5D6CF29C88DE400BE4AC5 /* AppDelegate.swift */,
+				A6A5D6D129C88DE400BE4AC5 /* SceneDelegate.swift */,
+				A6A5D6D329C88DE400BE4AC5 /* LaunchScreen.storyboard */,
+				A6A5D6D629C88DE400BE4AC5 /* Main.storyboard */,
+				A6A5D6D929C88DE400BE4AC5 /* Info.plist */,
+			);
+			path = "iOS (App)";
+			sourceTree = "<group>";
+		};
+		A6A5D6DF29C88DE400BE4AC5 /* macOS (App) */ = {
+			isa = PBXGroup;
+			children = (
+				A6A5D6E029C88DE400BE4AC5 /* AppDelegate.swift */,
+				A6A5D6E229C88DE400BE4AC5 /* Main.storyboard */,
+				A6A5D6E529C88DE400BE4AC5 /* Info.plist */,
+				A6A5D6E629C88DE400BE4AC5 /* Briskine.entitlements */,
+			);
+			path = "macOS (App)";
+			sourceTree = "<group>";
+		};
+		A6A5D6EF29C88DE400BE4AC5 /* iOS (Extension) */ = {
+			isa = PBXGroup;
+			children = (
+				A6A5D6F029C88DE400BE4AC5 /* Info.plist */,
+			);
+			path = "iOS (Extension)";
+			sourceTree = "<group>";
+		};
+		A6A5D6F929C88DE400BE4AC5 /* macOS (Extension) */ = {
+			isa = PBXGroup;
+			children = (
+				A6A5D6FA29C88DE400BE4AC5 /* Info.plist */,
+				A6A5D6FB29C88DE400BE4AC5 /* Briskine.entitlements */,
+			);
+			path = "macOS (Extension)";
+			sourceTree = "<group>";
+		};
+		A6A5D71A29C88DE400BE4AC5 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				A6A5D71B29C88DE400BE4AC5 /* background */,
+				A6A5D71C29C88DE400BE4AC5 /* page */,
+				A6A5D71D29C88DE400BE4AC5 /* popup */,
+				A6A5D71E29C88DE400BE4AC5 /* LICENSE */,
+				A6A5D71F29C88DE400BE4AC5 /* content */,
+				A6A5D72029C88DE400BE4AC5 /* sandbox */,
+				A6A5D72129C88DE400BE4AC5 /* icons */,
+				A6A5D72229C88DE400BE4AC5 /* manifest.json */,
+			);
+			name = Resources;
+			path = ../ext;
+			sourceTree = SOURCE_ROOT;
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		A6A5D6CB29C88DE400BE4AC5 /* Briskine (iOS) */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A6A5D71029C88DE400BE4AC5 /* Build configuration list for PBXNativeTarget "Briskine (iOS)" */;
+			buildPhases = (
+				A6A5D6C829C88DE400BE4AC5 /* Sources */,
+				A6A5D6C929C88DE400BE4AC5 /* Frameworks */,
+				A6A5D6CA29C88DE400BE4AC5 /* Resources */,
+				A6A5D70F29C88DE400BE4AC5 /* Embed Foundation Extensions */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				A6A5D6EE29C88DE400BE4AC5 /* PBXTargetDependency */,
+			);
+			name = "Briskine (iOS)";
+			productName = "Briskine (iOS)";
+			productReference = A6A5D6CC29C88DE400BE4AC5 /* Briskine.app */;
+			productType = "com.apple.product-type.application";
+		};
+		A6A5D6DD29C88DE400BE4AC5 /* Briskine (macOS) */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A6A5D71729C88DE400BE4AC5 /* Build configuration list for PBXNativeTarget "Briskine (macOS)" */;
+			buildPhases = (
+				A6A5D6DA29C88DE400BE4AC5 /* Sources */,
+				A6A5D6DB29C88DE400BE4AC5 /* Frameworks */,
+				A6A5D6DC29C88DE400BE4AC5 /* Resources */,
+				A6A5D71629C88DE400BE4AC5 /* Embed Foundation Extensions */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				A6A5D6F829C88DE400BE4AC5 /* PBXTargetDependency */,
+			);
+			name = "Briskine (macOS)";
+			productName = "Briskine (macOS)";
+			productReference = A6A5D6DE29C88DE400BE4AC5 /* Briskine.app */;
+			productType = "com.apple.product-type.application";
+		};
+		A6A5D6EA29C88DE400BE4AC5 /* Briskine Extension (iOS) */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A6A5D70C29C88DE400BE4AC5 /* Build configuration list for PBXNativeTarget "Briskine Extension (iOS)" */;
+			buildPhases = (
+				A6A5D6E729C88DE400BE4AC5 /* Sources */,
+				A6A5D6E829C88DE400BE4AC5 /* Frameworks */,
+				A6A5D6E929C88DE400BE4AC5 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "Briskine Extension (iOS)";
+			productName = "Briskine Extension (iOS)";
+			productReference = A6A5D6EB29C88DE400BE4AC5 /* Briskine Extension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+		A6A5D6F429C88DE400BE4AC5 /* Briskine Extension (macOS) */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A6A5D71329C88DE400BE4AC5 /* Build configuration list for PBXNativeTarget "Briskine Extension (macOS)" */;
+			buildPhases = (
+				A6A5D6F129C88DE400BE4AC5 /* Sources */,
+				A6A5D6F229C88DE400BE4AC5 /* Frameworks */,
+				A6A5D6F329C88DE400BE4AC5 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "Briskine Extension (macOS)";
+			productName = "Briskine Extension (macOS)";
+			productReference = A6A5D6F529C88DE400BE4AC5 /* Briskine Extension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		A6A5D6B929C88DE100BE4AC5 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1420;
+				LastUpgradeCheck = 1420;
+				TargetAttributes = {
+					A6A5D6CB29C88DE400BE4AC5 = {
+						CreatedOnToolsVersion = 14.2;
+					};
+					A6A5D6DD29C88DE400BE4AC5 = {
+						CreatedOnToolsVersion = 14.2;
+					};
+					A6A5D6EA29C88DE400BE4AC5 = {
+						CreatedOnToolsVersion = 14.2;
+					};
+					A6A5D6F429C88DE400BE4AC5 = {
+						CreatedOnToolsVersion = 14.2;
+					};
+				};
+			};
+			buildConfigurationList = A6A5D6BC29C88DE100BE4AC5 /* Build configuration list for PBXProject "Briskine" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = A6A5D6B829C88DE100BE4AC5;
+			productRefGroup = A6A5D6CD29C88DE400BE4AC5 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				A6A5D6CB29C88DE400BE4AC5 /* Briskine (iOS) */,
+				A6A5D6DD29C88DE400BE4AC5 /* Briskine (macOS) */,
+				A6A5D6EA29C88DE400BE4AC5 /* Briskine Extension (iOS) */,
+				A6A5D6F429C88DE400BE4AC5 /* Briskine Extension (macOS) */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		A6A5D6CA29C88DE400BE4AC5 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A6A5D6FE29C88DE400BE4AC5 /* Icon.png in Resources */,
+				A6A5D6D529C88DE400BE4AC5 /* LaunchScreen.storyboard in Resources */,
+				A6A5D6FC29C88DE400BE4AC5 /* Main.html in Resources */,
+				A6A5D70229C88DE400BE4AC5 /* Script.js in Resources */,
+				A6A5D70629C88DE400BE4AC5 /* Assets.xcassets in Resources */,
+				A6A5D6D829C88DE400BE4AC5 /* Main.storyboard in Resources */,
+				A6A5D70029C88DE400BE4AC5 /* Style.css in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A6A5D6DC29C88DE400BE4AC5 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A6A5D6FF29C88DE400BE4AC5 /* Icon.png in Resources */,
+				A6A5D70129C88DE400BE4AC5 /* Style.css in Resources */,
+				A6A5D6E429C88DE400BE4AC5 /* Main.storyboard in Resources */,
+				A6A5D70329C88DE400BE4AC5 /* Script.js in Resources */,
+				A6A5D70729C88DE400BE4AC5 /* Assets.xcassets in Resources */,
+				A6A5D6FD29C88DE400BE4AC5 /* Main.html in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A6A5D6E929C88DE400BE4AC5 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A6A5D73029C88DE400BE4AC5 /* sandbox in Resources */,
+				A6A5D72D29C88DE400BE4AC5 /* popup in Resources */,
+				A6A5D72B29C88DE400BE4AC5 /* background in Resources */,
+				A6A5D72E29C88DE400BE4AC5 /* LICENSE in Resources */,
+				A6A5D73229C88DE400BE4AC5 /* manifest.json in Resources */,
+				A6A5D72C29C88DE400BE4AC5 /* page in Resources */,
+				A6A5D73129C88DE400BE4AC5 /* icons in Resources */,
+				A6A5D72F29C88DE400BE4AC5 /* content in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A6A5D6F329C88DE400BE4AC5 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A6A5D72829C88DE400BE4AC5 /* sandbox in Resources */,
+				A6A5D72529C88DE400BE4AC5 /* popup in Resources */,
+				A6A5D72329C88DE400BE4AC5 /* background in Resources */,
+				A6A5D72629C88DE400BE4AC5 /* LICENSE in Resources */,
+				A6A5D72A29C88DE400BE4AC5 /* manifest.json in Resources */,
+				A6A5D72429C88DE400BE4AC5 /* page in Resources */,
+				A6A5D72929C88DE400BE4AC5 /* icons in Resources */,
+				A6A5D72729C88DE400BE4AC5 /* content in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		A6A5D6C829C88DE400BE4AC5 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A6A5D70429C88DE400BE4AC5 /* ViewController.swift in Sources */,
+				A6A5D6D029C88DE400BE4AC5 /* AppDelegate.swift in Sources */,
+				A6A5D6D229C88DE400BE4AC5 /* SceneDelegate.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A6A5D6DA29C88DE400BE4AC5 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A6A5D70529C88DE400BE4AC5 /* ViewController.swift in Sources */,
+				A6A5D6E129C88DE400BE4AC5 /* AppDelegate.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A6A5D6E729C88DE400BE4AC5 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A6A5D70829C88DE400BE4AC5 /* SafariWebExtensionHandler.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A6A5D6F129C88DE400BE4AC5 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A6A5D70929C88DE400BE4AC5 /* SafariWebExtensionHandler.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		A6A5D6EE29C88DE400BE4AC5 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = A6A5D6EA29C88DE400BE4AC5 /* Briskine Extension (iOS) */;
+			targetProxy = A6A5D6ED29C88DE400BE4AC5 /* PBXContainerItemProxy */;
+		};
+		A6A5D6F829C88DE400BE4AC5 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = A6A5D6F429C88DE400BE4AC5 /* Briskine Extension (macOS) */;
+			targetProxy = A6A5D6F729C88DE400BE4AC5 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		A6A5D6BF29C88DE100BE4AC5 /* Main.html */ = {
+			isa = PBXVariantGroup;
+			children = (
+				A6A5D6C029C88DE100BE4AC5 /* Base */,
+			);
+			name = Main.html;
+			sourceTree = "<group>";
+		};
+		A6A5D6D329C88DE400BE4AC5 /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				A6A5D6D429C88DE400BE4AC5 /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+		A6A5D6D629C88DE400BE4AC5 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				A6A5D6D729C88DE400BE4AC5 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		A6A5D6E229C88DE400BE4AC5 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				A6A5D6E329C88DE400BE4AC5 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		A6A5D70A29C88DE400BE4AC5 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		A6A5D70B29C88DE400BE4AC5 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+			};
+			name = Release;
+		};
+		A6A5D70D29C88DE400BE4AC5 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "iOS (Extension)/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "Briskine Extension";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"-framework",
+					SafariServices,
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.gorgias.Briskine.Extension;
+				PRODUCT_NAME = "Briskine Extension";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		A6A5D70E29C88DE400BE4AC5 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "iOS (Extension)/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "Briskine Extension";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"-framework",
+					SafariServices,
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.gorgias.Briskine.Extension;
+				PRODUCT_NAME = "Briskine Extension";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		A6A5D71129C88DE400BE4AC5 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "iOS (App)/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = Briskine;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
+				INFOPLIST_KEY_UIMainStoryboardFile = Main;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"-framework",
+					SafariServices,
+					"-framework",
+					WebKit,
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.gorgias.Briskine;
+				PRODUCT_NAME = Briskine;
+				SDKROOT = iphoneos;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		A6A5D71229C88DE400BE4AC5 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "iOS (App)/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = Briskine;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
+				INFOPLIST_KEY_UIMainStoryboardFile = Main;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"-framework",
+					SafariServices,
+					"-framework",
+					WebKit,
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.gorgias.Briskine;
+				PRODUCT_NAME = Briskine;
+				SDKROOT = iphoneos;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		A6A5D71429C88DE400BE4AC5 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = "macOS (Extension)/Briskine.entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_HARDENED_RUNTIME = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "macOS (Extension)/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "Briskine Extension";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@executable_path/../../../../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"-framework",
+					SafariServices,
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.gorgias.Briskine.Extension;
+				PRODUCT_NAME = "Briskine Extension";
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		A6A5D71529C88DE400BE4AC5 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = "macOS (Extension)/Briskine.entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_HARDENED_RUNTIME = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "macOS (Extension)/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "Briskine Extension";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@executable_path/../../../../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"-framework",
+					SafariServices,
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.gorgias.Briskine.Extension;
+				PRODUCT_NAME = "Briskine Extension";
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		A6A5D71829C88DE400BE4AC5 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "macOS (App)/Briskine.entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_HARDENED_RUNTIME = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "macOS (App)/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = Briskine;
+				INFOPLIST_KEY_NSMainStoryboardFile = Main;
+				INFOPLIST_KEY_NSPrincipalClass = NSApplication;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"-framework",
+					SafariServices,
+					"-framework",
+					WebKit,
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.gorgias.Briskine;
+				PRODUCT_NAME = Briskine;
+				SDKROOT = macosx;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		A6A5D71929C88DE400BE4AC5 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "macOS (App)/Briskine.entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_HARDENED_RUNTIME = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "macOS (App)/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = Briskine;
+				INFOPLIST_KEY_NSMainStoryboardFile = Main;
+				INFOPLIST_KEY_NSPrincipalClass = NSApplication;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"-framework",
+					SafariServices,
+					"-framework",
+					WebKit,
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.gorgias.Briskine;
+				PRODUCT_NAME = Briskine;
+				SDKROOT = macosx;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		A6A5D6BC29C88DE100BE4AC5 /* Build configuration list for PBXProject "Briskine" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A6A5D70A29C88DE400BE4AC5 /* Debug */,
+				A6A5D70B29C88DE400BE4AC5 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A6A5D70C29C88DE400BE4AC5 /* Build configuration list for PBXNativeTarget "Briskine Extension (iOS)" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A6A5D70D29C88DE400BE4AC5 /* Debug */,
+				A6A5D70E29C88DE400BE4AC5 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A6A5D71029C88DE400BE4AC5 /* Build configuration list for PBXNativeTarget "Briskine (iOS)" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A6A5D71129C88DE400BE4AC5 /* Debug */,
+				A6A5D71229C88DE400BE4AC5 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A6A5D71329C88DE400BE4AC5 /* Build configuration list for PBXNativeTarget "Briskine Extension (macOS)" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A6A5D71429C88DE400BE4AC5 /* Debug */,
+				A6A5D71529C88DE400BE4AC5 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A6A5D71729C88DE400BE4AC5 /* Build configuration list for PBXNativeTarget "Briskine (macOS)" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A6A5D71829C88DE400BE4AC5 /* Debug */,
+				A6A5D71929C88DE400BE4AC5 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = A6A5D6B929C88DE100BE4AC5 /* Project object */;
+}
