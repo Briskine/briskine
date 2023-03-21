@@ -29,10 +29,15 @@ function getFieldData (field, $container) {
 
 // selector for to/cc/bcc containers
 function getContainers () {
-  // get the parent of each extra field input
-  // BUG main compose text is also role=textbox
-  // BUG when opened in new window, the compose window doesn't contain role=main
-  return Array.from(document.querySelectorAll('[role=main] [role=textbox]'))
+  // get the parent of each extra field input.
+
+  // :not([textprediction]) excludes the email body.
+  // [role=main] for the default outlook view.
+  // [data-app-section] for the compose popup view.
+  return Array.from(document.querySelectorAll(`
+    [role=main] [role=textbox]:not([textprediction]),
+    [data-app-section="Form_Content"] [role=textbox]:not([textprediction])
+  `))
     .map((node) => {
       return node.parentElement
     })
