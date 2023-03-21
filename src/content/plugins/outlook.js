@@ -30,6 +30,8 @@ function getFieldData (field, $container) {
 // selector for to/cc/bcc containers
 function getContainers () {
   // get the parent of each extra field input
+  // BUG main compose text is also role=textbox
+  // BUG when opened in new window, the compose window doesn't contain role=main
   return Array.from(document.querySelectorAll('[role=main] [role=textbox]'))
     .map((node) => {
       return node.parentElement
@@ -314,7 +316,7 @@ function isActive () {
   // when loading assets from the office cdn.
   // to support custom domains and dynamically created frames,
   // eg. the open-email-in-new-window popup.
-  const $officeCdn = document.querySelector('head *[href*="res.cdn.office.net"]')
+  const $officeCdn = document.querySelector('head *[href*=".cdn.office.net"]')
   if ($officeCdn) {
     activeCache = true
   }
