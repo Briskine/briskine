@@ -27,6 +27,10 @@ export function getDialogPosition (targetNode, instance, placement = 'top-left')
     leftPos = leftPos - dialogMetrics.width
   }
 
+  if (leftPos < 0) {
+    leftPos = 0
+  }
+
   if (placement.includes('bottom')) {
     topPos = topPos + targetMetrics.height
   }
