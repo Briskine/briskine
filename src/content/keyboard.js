@@ -6,6 +6,7 @@ import {isContentEditable} from './editors/editor-contenteditable.js'
 import store from '../store/store-client.js'
 
 import {keybind, keyunbind} from './keybind.js'
+import {swipebind, swipeunbind} from './swipe.js'
 
 let templateCache = []
 function updateTemplateCache (templates = []) {
@@ -115,9 +116,12 @@ export function setup (settings = {}) {
       cachedKeyboardShortcut,
       keyboardAutocomplete,
     )
+
+    swipebind(keyboardAutocomplete)
   }
 }
 
 export function destroy () {
   keyunbind(cachedKeyboardShortcut, keyboardAutocomplete)
+  swipeunbind()
 }
