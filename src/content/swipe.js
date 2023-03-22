@@ -2,7 +2,7 @@
  * Swipe right support
  */
 
-const threshold = 20
+const threshold = 30
 const timeout = 500
 
 let done = () => {}
