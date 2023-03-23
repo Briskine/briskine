@@ -29,8 +29,15 @@ function getFieldData (field, $container) {
 
 // selector for to/cc/bcc containers
 function getContainers () {
-  // get the parent of each extra field input
-  return Array.from(document.querySelectorAll('[role=main] [role=textbox]'))
+  // get the parent of each extra field input.
+
+  // :not([textprediction]) excludes the email body.
+  // [role=main] for the default outlook view.
+  // [data-app-section] for the compose popup view.
+  return Array.from(document.querySelectorAll(`
+    [role=main] [role=textbox]:not([textprediction]),
+    [data-app-section="Form_Content"] [role=textbox]:not([textprediction])
+  `))
     .map((node) => {
       return node.parentElement
     })
@@ -47,9 +54,14 @@ function getCcContainer () {
 function getFieldContainer (length = 2) {
   const $containers = getContainers()
   return $containers
+    // exclude the first (to) container
+    .slice(1)
     .find((node) => {
       return Array.from(node.querySelectorAll('[aria-label'))
         .find((node) => {
+          // HACK
+          // match containers by the length of the aria-label field.
+          // will not work for all languages.
           return node.getAttribute('aria-label').length === length
         })
     })
@@ -60,7 +72,11 @@ function getBccContainer () {
 }
 
 function getFieldButton (length = 2) {
-  return Array.from(document.querySelectorAll('[role=main] .ms-Button--command'))
+  // [data-app-section] for the compose popup view.
+  return Array.from(document.querySelectorAll(`
+    [role=main] .ms-Button--command,
+    [data-app-section="Form_Content"] .ms-Button--command
+  `))
     .find(($node) => {
       return $node.innerText.length === length
     })
@@ -314,7 +330,7 @@ function isActive () {
   // when loading assets from the office cdn.
   // to support custom domains and dynamically created frames,
   // eg. the open-email-in-new-window popup.
-  const $officeCdn = document.querySelector('head *[href*="res.cdn.office.net"]')
+  const $officeCdn = document.querySelector('head *[href*=".cdn.office.net"]')
   if ($officeCdn) {
     activeCache = true
   }
