@@ -43,6 +43,7 @@ const actions = [
     title: 'Help Center',
     icon: unsafeSVG(iconQuestionCircle),
     href: config.helpUrl,
+    class: 'dialog-safari-hide',
   },
   {
     title: 'Briskine website',

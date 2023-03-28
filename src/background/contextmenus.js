@@ -14,6 +14,10 @@ function clickContextMenu (info) {
 }
 
 export default function setupContextMenus () {
+  if (typeof browser.contextMenus === 'undefined') {
+    return
+  }
+
   browser.contextMenus.removeAll()
     .then(() => {
       browser.contextMenus.create({

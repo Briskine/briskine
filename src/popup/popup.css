@@ -5,6 +5,15 @@
 
 :root {
   --bs-border-radius: 3px;
+  --bs-body-color:  #7e7084;
+
+  --background-color: #fff;
+  --background-color-overlay: #f3f4f5;
+}
+
+body,
+html {
+  height: 100%;
 }
 
 html {
@@ -12,9 +21,7 @@ html {
 }
 
 body {
-  background-color: #f3f4f5;
-
-  color: #7e7084;
+  background-color: var(--background-color-overlay);
 }
 
 p {
@@ -30,14 +37,17 @@ label {
 }
 
 .popup-container {
-  width: 22em;
+  width: 100%;
+  min-height: 100%;
+  min-width: 22em;
   margin: 0 auto;
-  background-color: #fff;
+  background-color: var(--background-color);
 }
 
-@media only screen and (min-width: 42em) {
+@media (min-width: 42em) {
   .popup-container {
     width: 28em;
+    min-height: auto;
     margin-top: 2em;
     margin-bottom: 2em;
 

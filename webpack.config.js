@@ -34,6 +34,7 @@ function generateManifest (params = {}) {
   // safari manifest
   if (params.safari) {
     updatedManifestFile.description = safariManifestDescription
+    updatedManifestFile.background.persistent = false
   }
 
   // source maps
