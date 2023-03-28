@@ -2,8 +2,6 @@
 //  SafariWebExtensionHandler.swift
 //  Shared (Extension)
 //
-//  Created by mocho on 20.03.2023.
-//
 
 import SafariServices
 import os.log
