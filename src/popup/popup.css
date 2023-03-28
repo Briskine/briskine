@@ -5,6 +5,7 @@
 
 :root {
   --bs-border-radius: 3px;
+  --bs-body-color:  #7e7084;
 
   --background-color: #fff;
   --background-color-overlay: #f3f4f5;
@@ -15,11 +16,12 @@ html {
   height: 100%;
 }
 
+html {
+  font-size: 14px;
+}
+
 body {
   background-color: var(--background-color-overlay);
-
-  font-size: 14px;
-  color: #7e7084;
 }
 
 p {
