@@ -11,17 +11,19 @@
   --background-color-overlay: #f3f4f5;
 }
 
-body,
-html {
-  height: 100%;
-}
-
 html {
   font-size: 14px;
 }
 
 body {
-  background-color: var(--background-color-overlay);
+  background-color: var(--background-color);
+}
+
+@media (min-width: 42em) {
+  body {
+    padding: 2em;
+    background-color: var(--background-color-overlay);
+  }
 }
 
 p {
@@ -37,20 +39,23 @@ label {
 }
 
 .popup-container {
-  width: 100%;
-  min-height: 100%;
-  min-width: 22em;
+  /* browser action width */
+  width: 22em;
   margin: 0 auto;
   background-color: var(--background-color);
 }
 
+@media (min-width: 22em) {
+  .popup-container {
+    /* small screen width */
+    width: 100%;
+  }
+}
+
 @media (min-width: 42em) {
   .popup-container {
+    /* full screen width */
     width: 28em;
-    min-height: auto;
-    margin-top: 2em;
-    margin-bottom: 2em;
-
     border-radius: 4px;
     box-shadow: 0 10px 8px -4px rgb(0 0 0 / 5%);
   }
