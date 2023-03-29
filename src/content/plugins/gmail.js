@@ -184,9 +184,16 @@ function extraField ($parent, fieldName) {
 async function after (params, data) {
   const $parent = params.element.closest(textfieldContainerSelector)
 
-  if (params.quicktext.subject) {
+  const $subject = $parent.querySelector('input[name=subjectbox]')
+  // set subject only when the subject field is visible.
+  // makes sure we don't break threads when replying.
+  if (
+    params.quicktext.subject
+    && $subject
+    && $subject.getBoundingClientRect().width
+  ) {
     const parsedSubject = await parseTemplate(params.quicktext.subject, data)
-    $parent.querySelector('input[name=subjectbox]').value = parsedSubject
+    $subject.value = parsedSubject
   }
 
   const $recipients = $parent.querySelector('.aoD.hl')
