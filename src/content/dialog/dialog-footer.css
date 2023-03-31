@@ -8,10 +8,18 @@
 }
 
 .dialog-shortcut {
+  display: none;
+
   font-size: .8em;
   font-weight: bold;
   text-align: right;
   cursor: default;
+}
+
+@media (min-width: 992px) {
+  .dialog-shortcut {
+    display: inline-block;
+  }
 }
 
 /* actions
