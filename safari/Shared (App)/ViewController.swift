@@ -14,7 +14,7 @@ import SafariServices
 typealias PlatformViewController = NSViewController
 #endif
 
-let extensionBundleIdentifier = "com.gorgias.Briskine.Extension"
+let extensionBundleIdentifier = "com.gorgias.gorgiastemplates.Extension"
 
 class ViewController: PlatformViewController, WKNavigationDelegate, WKScriptMessageHandler {
 

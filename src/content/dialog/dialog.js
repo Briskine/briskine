@@ -1,5 +1,4 @@
 /* global REGISTER_DISABLED */
-import browser from 'webextension-polyfill'
 import {render} from 'lit-html'
 import {html, unsafeStatic} from 'lit-html/static.js'
 import {classMap} from 'lit-html/directives/class-map.js'
@@ -54,11 +53,6 @@ const modalAttribute = 'modal'
 const dialogVisibleAttr = 'visible'
 const openAnimationClass = 'b-dialog-open-animation'
 const listSelector = '.dialog-list'
-
-// action.openPopup is not supported in all browsers yet.
-// https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/action/openPopup
-// Open the action popup in a new tab.
-const popupUrl = browser.runtime.getURL('popup/popup.html')
 
 customElements.define(
   dialogTagName,
@@ -419,10 +413,11 @@ customElements.define(
         this.insertTemplate(e.detail)
       })
 
-      // open and close modals
       this.addEventListener('click', (e) => {
         const composedPath = e.composedPath()
         const composedTarget = composedPath[0]
+
+        // open and close modals
         const btnModalAttribute = 'data-b-modal'
         const modalBtn = composedTarget.closest(`[${btnModalAttribute}]`)
         if (modalBtn) {
@@ -438,6 +433,13 @@ customElements.define(
               this.searchField.focus()
             }
           }
+        }
+
+        // login button
+        if (composedTarget.closest('.dialog-login-btn')) {
+          e.preventDefault()
+          store.openPopup()
+          this.removeAttribute(dialogVisibleAttr)
         }
       })
 
@@ -512,7 +514,7 @@ function template({
               ${unsafeSVG(iconBriskine)}
             </div>
             <div>
-              <a href="${popupUrl}?source=tab" target="_blank">Sign in</a>
+              <a href="" class="dialog-login-btn">Sign in</a>
               to Briskine to access your templates.
             </div>
           </div>

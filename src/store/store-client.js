@@ -40,6 +40,8 @@ const methods = [
 
   'getExtensionData',
   'setExtensionData',
+
+  'openPopup',
 ]
 
 let events = []
