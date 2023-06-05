@@ -96,6 +96,9 @@ customElements.define(
     refreshAccount () {
       return store.getAccount()
         .then((res) => {
+          // update session
+          store.getSession()
+
           this.user = res
 
           // re-render after loading user
