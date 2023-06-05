@@ -41,7 +41,6 @@
   "license": "GPL-3.0-or-later",
   "devDependencies": {
     "archiver": "^5.3.0",
-    "bootstrap-icons": "^1.10.3",
     "chai": "^4.2.0",
     "copy-webpack-plugin": "^11.0.0",
     "css-loader": "^6.0.0",
@@ -62,7 +61,8 @@
   },
   "dependencies": {
     "@webcomponents/custom-elements": "^1.4.3",
-    "bootstrap": "^5.0.0",
+    "bootstrap": "5.2.x",
+    "bootstrap-icons": "^1.10.3",
     "firebase": "^9.0.0",
     "fuse.js": "^6.4.5",
     "handlebars": "^4.5.3",
