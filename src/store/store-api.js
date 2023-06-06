@@ -365,6 +365,15 @@ onIdTokenChanged(firebaseAuth, (firebaseUser) => {
       clearDataCache()
       return updateCurrentUser(firebaseUser)
     })
+    .catch((err) => {
+      // first login
+      if (isLoggedOut(err)) {
+        // logged-out
+        return
+      }
+
+      throw err
+    })
 })
 
 const defaultTags = [

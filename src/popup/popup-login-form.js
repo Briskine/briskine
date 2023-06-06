@@ -63,7 +63,7 @@ customElements.define(
         <form class="popup-login-form text-start js-login-form">
           ${this.error ? html`
             <div class="alert alert-danger" role="alert">
-                <p>${this.error}</p>
+              ${this.error}
             </div>
           ` : ''}
 
