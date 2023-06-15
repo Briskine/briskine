@@ -62,7 +62,7 @@ customElements.define(
             <small>
               Don't have an account yet?
               <br>
-              <a href=${`${Config.websiteUrl}/signup`} target="_blank">
+              <a href=${`${Config.functionsUrl}/signup/`} target="_blank">
                 Create a free account
               </a>
             </small>

@@ -36,7 +36,6 @@ const methods = [
   'logout',
 
   'getSession',
-  'createSession',
 
   'getExtensionData',
   'setExtensionData',

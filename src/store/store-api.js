@@ -5,7 +5,6 @@ import {initializeApp} from 'firebase/app'
 import {
   getAuth,
   connectAuthEmulator,
-  signInWithEmailAndPassword,
   signInWithCustomToken,
   onIdTokenChanged,
   signOut
@@ -219,6 +218,7 @@ function request (url, params = {}) {
     headers: {
       'Content-Type': 'application/json'
     },
+    body: {},
   }
 
   const data = Object.assign({}, defaults, params)
@@ -236,9 +236,16 @@ function request (url, params = {}) {
         data.headers.Authorization = `Bearer ${res.token}`
       }
 
+      if (data.method !== 'GET') {
+        data.body = JSON.stringify(data.body)
+      } else {
+        delete data.body
+      }
+
       return fetch(url, {
           method: data.method,
           headers: data.headers,
+          body: data.body,
         })
         .then(handleErrors)
         .then((res) => res.json())
@@ -330,8 +337,23 @@ function setSignedInUser (user) {
 // auth change
 onIdTokenChanged(firebaseAuth, (firebaseUser) => {
   if (!firebaseUser) {
-    clearDataCache()
-    return setSignedInUser({})
+    return getSignedInUser()
+      .then((user) => {
+        if (user) {
+          clearDataCache()
+          return setSignedInUser({})
+        }
+
+        // eslint-disable-next-line
+        return
+      })
+      .catch((err) => {
+        if (isLoggedOut(err)) {
+          return
+        }
+
+        throw err
+      })
   }
 
   return getSignedInUser()
@@ -342,6 +364,15 @@ onIdTokenChanged(firebaseAuth, (firebaseUser) => {
 
       clearDataCache()
       return updateCurrentUser(firebaseUser)
+    })
+    .catch((err) => {
+      // first login
+      if (isLoggedOut(err)) {
+        // logged-out
+        return
+      }
+
+      throw err
     })
 })
 
@@ -574,12 +605,16 @@ function updateCurrentUser (firebaseUser) {
 }
 
 export function signin (params = {}) {
-  return signInWithEmailAndPassword(firebaseAuth, params.email, params.password)
-    .then((authRes) => {
-      return updateCurrentUser(authRes.user)
+  return request(`${config.functionsUrl}/api/1/login`, {
+      method: 'POST',
+      body: {
+        email: params.email,
+        password: params.password,
+        apiKey: FIREBASE_CONFIG.apiKey,
+      }
     })
-    .then(() => {
-      return createSession()
+    .then((res) => {
+      return signinWithToken(res.token)
     })
     .then(() => {
       return trigger('login')
@@ -589,21 +624,35 @@ export function signin (params = {}) {
     })
 }
 
-export function createSession () {
-    return request(`${config.functionsUrl}/api/1/session`, {
-            method: 'POST',
-            authorization: true
-        });
-}
-
-// check existing session
 export function getSession () {
-  return request(`${config.functionsUrl}/api/1/session`)
-    .then((res) => {
-      return signinWithToken(res.token)
-    })
+  return getSignedInUser()
     .then(() => {
-      return trigger('login')
+      // create session
+      return true
+    })
+    .catch(() => {
+      // try to auto login
+      return false
+    })
+    .then((loggedIn) => {
+      // create session
+      return Promise.all([
+        loggedIn,
+        request(`${config.functionsUrl}/api/1/session`, {
+          authorization: loggedIn,
+        })
+      ])
+    })
+    .then(([loggedIn, res]) => {
+      if (!loggedIn) {
+        // auto-login if not logged-in
+        return signinWithToken(res.token)
+          .then(() => {
+            return trigger('login')
+          })
+      }
+
+      return res
     })
 }
 
@@ -623,10 +672,10 @@ export function logout () {
 }
 
 function signinWithToken (token = '') {
-    return signInWithCustomToken(firebaseAuth, token)
-        .then((res) => {
-            return updateCurrentUser(res.user);
-        })
+  return signInWithCustomToken(firebaseAuth, token)
+    .then((res) => {
+      return updateCurrentUser(res.user)
+    })
 }
 
 export function getCustomer (customerId) {
