@@ -1,13 +1,37 @@
+import iconX from 'bootstrap-icons/icons/x.svg?raw'
+
+import attachmentStyles from './attachments.css'
+
 const attachmentClassName = 'briskine-attachment'
 
 function getAttachmentMarkup (attachment = {}) {
   return `
-    <div contenteditable="false" class="${attachmentClassName}">
+    <div
+      contenteditable="false"
+      class="${attachmentClassName}"
+      style="
+        width: 70%;
+        background-color: hsl(200deg 6% 86% / 0.3);
+        border-radius: 3px;
+        padding: 5px;
+      "
+      >
       <a
         href="${attachment.url}"
         target="_blank"
+        style="
+          overflow: hidden;
+          font-weight: bold;
+          font-size: 13px;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        "
         >${attachment.name}</a>
-      <button type="button">remove</button>
+      <button
+        type="button"
+        title="Remove attachment"
+        style="display: none;"
+        >${iconX}</button>
     </div>
   `
 }

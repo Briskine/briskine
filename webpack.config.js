@@ -154,7 +154,7 @@ function extensionConfig (params = {}) {
           ]
         },
         {
-          test: /\/popup\/.+.(css)$/i,
+          test: /(\/popup\/|\/content\/attachments\/).+.(css)$/i,
           use: [
               MiniCssExtractPlugin.loader,
               'css-loader'

@@ -1,0 +1,23 @@
+/* global styles for attachments
+ */
+
+.briskine-attachment {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.briskine-attachment button {
+  padding: 0 5px;
+  height: 100%;
+  border: 0;
+  background-color: transparent;
+  border: 0;
+  cursor: pointer;
+
+  color: #333;
+}
+
+[contenteditable=true] .briskine-attachment:hover button {
+  display: flex !important;
+}
