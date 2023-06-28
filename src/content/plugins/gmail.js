@@ -7,6 +7,7 @@ import {insertTemplate} from '../editors/editor-universal.js'
 import {isContentEditable} from '../editors/editor-contenteditable.js'
 import createContact from '../utils/create-contact.js'
 import {enableBubble} from '../bubble/bubble.js'
+import {addAttachments} from '../attachments/attachments.js'
 
 const fromFieldSelector = '.az2';
 const textfieldContainerSelector = '.M9';
@@ -403,7 +404,10 @@ export default async (params = {}) => {
     }
 
     var data = getData(params);
-    var parsedTemplate = await parseTemplate(params.quicktext.body, data);
+    const parsedTemplate = addAttachments(
+      await parseTemplate(params.quicktext.body, data),
+      params.quicktext.attachments
+    )
 
     insertTemplate(Object.assign({
         text: parsedTemplate

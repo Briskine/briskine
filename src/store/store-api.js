@@ -471,6 +471,18 @@ function getDefaultTemplates () {
       shortcut: 'broken',
       body: 'Hello {{to.first_name}'
     })
+
+    defaultTemplates.push({
+      title: 'attachment',
+      shortcut: 'attachment',
+      body: 'attachment',
+      attachments: [
+        {
+          name: 'briskine.svg',
+          url: 'https://www.briskine.com/favicon.svg',
+        }
+      ]
+    })
   }
 
   return defaultTemplates
