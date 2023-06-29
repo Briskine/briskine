@@ -4,6 +4,7 @@
 
 import parseTemplate from '../utils/parse-template.js';
 import {insertTemplate} from '../editors/editor-universal.js';
+import {addAttachments} from '../attachments/attachments.js'
 
 var parseList = function (list) {
     return list.filter(function (a) {
@@ -158,7 +159,10 @@ export default async (params = {}) => {
     }
 
     var data = getData(params);
-    var parsedTemplate = await parseTemplate(params.quicktext.body, data);
+    const parsedTemplate = addAttachments(
+      await parseTemplate(params.quicktext.body, data),
+      params.quicktext.attachments,
+    )
 
     await before(params, data);
 
