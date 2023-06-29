@@ -1,7 +1,7 @@
 import './attachments.css'
 
 const attachmentClassName = 'briskine-attachment'
-const iconUrl = 'https://storage.googleapis.com/briskine-static/attachments/1'
+const iconUrl = 'https://static.briskine.com/attachments/1'
 
 function getIcon (name = '') {
   switch (name.split('.').pop()) {
