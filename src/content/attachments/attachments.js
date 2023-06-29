@@ -76,11 +76,10 @@ function getAttachmentMarkup (attachment = {}) {
       width="70%"
       contenteditable="false"
       class="${attachmentClassName}"
-      style="background-color: #f6f5f4; border-radius: 3px; max-width: 400px; margin-bottom: 5px;"
+      style="table-layout: fixed; background-color: #f6f5f4; border-radius: 3px; max-width: 400px; margin-bottom: 5px;"
       >
         <tr>
         <td
-          width="100%"
           style="
             overflow: hidden;
             vertical-align: middle;
@@ -110,10 +109,10 @@ function getAttachmentMarkup (attachment = {}) {
               "></span>${attachment.name}
           </a>
         </td>
-        <td>
+        <td width="16">
           <button
             type="button"
-            title="Remove attachment"
+            title="Remove Briskine attachment"
             style="display: none;"
             ></button>
         </td>
