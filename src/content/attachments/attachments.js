@@ -1,38 +1,123 @@
-import iconX from 'bootstrap-icons/icons/x.svg?raw'
-
-import attachmentStyles from './attachments.css'
+import './attachments.css'
 
 const attachmentClassName = 'briskine-attachment'
+const iconUrl = 'https://storage.googleapis.com/briskine-static/attachments/1'
+
+function getIcon (name = '') {
+  switch (name.split('.').pop()) {
+    case 'jpg':
+    case 'jpeg':
+    case 'png':
+    case 'gif':
+    case 'svg':
+      return 'file-earmark-image-fill'
+    case 'doc':
+    case 'docx':
+      return 'file-earmark-word-fill'
+    case 'pdf':
+      return 'file-earmark-pdf-fill'
+    case 'tar':
+    case 'zip':
+    case 'rar':
+    case 'gz':
+    case 'uca':
+    case 'dmg':
+    case 'iso':
+      return 'file-earmark-zip-fill'
+    case 'riff':
+    case 'wav':
+    case 'bwf':
+    case 'ogg':
+    case 'aiff':
+    case 'caf':
+    case 'flac':
+    case 'mp3':
+    case 'wma':
+    case 'au':
+    case 'aac':
+    case 'mp4':
+    case 'm4a':
+      return 'file-earmark-music-fill'
+    case 'webm':
+    case 'flv':
+    case 'f4v':
+    case 'f4p':
+    case 'f4a':
+    case 'f4b':
+    case 'ogv':
+    case 'avi':
+    case 'mov':
+    case 'qt':
+    case 'yuv':
+    case 'm4p':
+    case 'm4v':
+    case 'mpg':
+    case 'mpeg':
+    case 'm2v':
+    case 'svi':
+    case '3gp':
+    case 'roq':
+      return 'file-earmark-play-fill'
+    case 'js':
+    case 'txt':
+    case 'css':
+    case 'html':
+    case 'json':
+      return 'file-earmark-text-fill'
+  }
+
+  return 'file-earmark-fill'
+}
 
 function getAttachmentMarkup (attachment = {}) {
   return `
-    <div
+    <table
+      cellspacing="5"
       contenteditable="false"
       class="${attachmentClassName}"
       style="
         width: 70%;
         background-color: hsl(200deg 6% 86% / 0.3);
         border-radius: 3px;
-        padding: 5px;
       "
       >
-      <a
-        href="${attachment.url}"
-        target="_blank"
-        style="
-          overflow: hidden;
-          font-weight: bold;
-          font-size: 13px;
-          text-overflow: ellipsis;
-          white-space: nowrap;
-        "
-        >${attachment.name}</a>
-      <button
-        type="button"
-        title="Remove attachment"
-        style="display: none;"
-        >${iconX}</button>
-    </div>
+        <tr>
+        <td
+          width="100%"
+          style="
+            overflow: hidden;
+            vertical-align: middle;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+          "
+          >
+          <a
+            href="${attachment.url}"
+            target="_blank"
+            style="
+              font-weight: bold;
+              font-size: 13px;
+            "
+            >
+            <img
+              src="${iconUrl}/${getIcon(attachment.name)}.png"
+              width="12"
+              height="16"
+              style="
+                vertical-align: middle;
+                margin-right: 5px;
+              ">${attachment.name}
+          </a>
+        </td>
+        <td>
+          <button
+            type="button"
+            title="Remove attachment"
+            style="display: none;"
+            ></button>
+        </td>
+      </tr>
+    </table>
   `
 }
 
@@ -52,7 +137,8 @@ export function addAttachments (template = '', attachments = []) {
 
 function clickAttachment (e) {
   const $attachment = e.target.closest(`.${attachmentClassName}`)
-  if (!$attachment) {
+  // allow right-click
+  if (!$attachment || e.button !== 0) {
     return
   }
 

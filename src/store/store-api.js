@@ -480,7 +480,35 @@ function getDefaultTemplates () {
         {
           name: 'briskine.svg',
           url: 'https://www.briskine.com/favicon.svg',
-        }
+        },
+        {
+          name: 'briskine.doc',
+          url: 'https://www.briskine.com/favicon.svg',
+        },
+        {
+          name: 'briskine.pdf',
+          url: 'https://www.briskine.com/favicon.svg',
+        },
+        {
+          name: 'briskine.zip',
+          url: 'https://www.briskine.com/favicon.svg',
+        },
+        {
+          name: 'briskine.mp3',
+          url: 'https://www.briskine.com/favicon.svg',
+        },
+        {
+          name: 'briskine.webm',
+          url: 'https://www.briskine.com/favicon.svg',
+        },
+        {
+          name: 'briskine.txt',
+          url: 'https://www.briskine.com/favicon.svg',
+        },
+        {
+          name: 'briskine.generic',
+          url: 'https://www.briskine.com/favicon.svg',
+        },
       ]
     })
   }
