@@ -132,7 +132,7 @@ export function addAttachments (template = '', attachments = []) {
     })
     .join('')
 
-  return `${template}<br>${attachmentsMarkup}`
+  return `${template}<br>${attachmentsMarkup}<br>`
 }
 
 function clickAttachment (e) {

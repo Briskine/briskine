@@ -422,16 +422,5 @@ export default async (params = {}) => {
         setFromField(params.element, params.quicktext.from);
     }
 
-    // add attachments
-    if (
-        isContentEditable(params.element) &&
-        params.quicktext.attachments &&
-        params.quicktext.attachments.length
-    ) {
-        params.quicktext.attachments.map(function (attachment) {
-            setAttachmentNode(attachment);
-        });
-    }
-
     return true;
 };
