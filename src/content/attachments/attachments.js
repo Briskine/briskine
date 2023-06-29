@@ -76,7 +76,7 @@ function getAttachmentMarkup (attachment = {}) {
       width="70%"
       contenteditable="false"
       class="${attachmentClassName}"
-      style="background-color: #f6f5f4; border-radius: 3px; max-width: 400px;"
+      style="background-color: #f6f5f4; border-radius: 3px; max-width: 400px; margin-bottom: 5px;"
       >
         <tr>
         <td
@@ -131,7 +131,7 @@ export function addAttachments (template = '', attachments = []) {
     .map((attachment) => {
       return getAttachmentMarkup(attachment)
     })
-    .join('<br>')
+    .join('')
 
   return `${template}<br>${attachmentsMarkup}`
 }
@@ -157,10 +157,10 @@ function clickAttachment (e) {
 }
 
 export function setup () {
-  document.addEventListener('mousedown', clickAttachment, true)
+  document.addEventListener('mouseup', clickAttachment, true)
 }
 
 export function destroy () {
-  document.removeEventListener('mousedown', clickAttachment, true)
+  document.removeEventListener('mouseup', clickAttachment, true)
 }
 
