@@ -2,7 +2,7 @@
  */
 
 [contenteditable=true] .briskine-attachment:hover {
-  background-color: hsl(200deg 6% 86% / 0.5) !important;
+  background-color: #e9eceb !important;
 }
 
 .briskine-attachment button {

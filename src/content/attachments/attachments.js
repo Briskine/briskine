@@ -73,13 +73,10 @@ function getAttachmentMarkup (attachment = {}) {
   return `
     <table
       cellspacing="5"
+      width="70%"
       contenteditable="false"
       class="${attachmentClassName}"
-      style="
-        width: 70%;
-        background-color: hsl(200deg 6% 86% / 0.3);
-        border-radius: 3px;
-      "
+      style="background-color: #f6f5f4; border-radius: 3px; max-width: 400px;"
       >
         <tr>
         <td
