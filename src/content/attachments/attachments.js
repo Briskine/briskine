@@ -156,10 +156,10 @@ function clickAttachment (e) {
 }
 
 export function setup () {
-  document.addEventListener('mouseup', clickAttachment, true)
+  document.addEventListener('mousedown', clickAttachment, true)
 }
 
 export function destroy () {
-  document.removeEventListener('mouseup', clickAttachment, true)
+  document.removeEventListener('mousedown', clickAttachment, true)
 }
 
