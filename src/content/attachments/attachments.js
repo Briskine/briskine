@@ -96,14 +96,18 @@ function getAttachmentMarkup (attachment = {}) {
               font-size: 13px;
             "
             >
-            <img
-              src="${iconUrl}/${getIcon(attachment.name)}.png"
-              width="12"
-              height="16"
+            <span
               style="
+                display: inline-block;
+                width: 12px;
+                height: 16px;
+                background-image: url('${iconUrl}/${getIcon(attachment.name)}.png');
+                background-repeat: no-repeat;
+                background-size: 100%;
+                background-position: center;
                 vertical-align: middle;
                 margin-right: 5px;
-              ">${attachment.name}
+              "></span>${attachment.name}
           </a>
         </td>
         <td>
