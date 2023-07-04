@@ -738,6 +738,12 @@ export async function setActiveCustomer (customerId) {
       uid: firebaseAuth.currentUser.uid,
       customer: customerId
     })
+    .then(() => {
+      // update data when customer changes
+      trigger('templates-updated')
+      trigger('tags-updated')
+      return
+    })
 }
 
 const extensionDataKey = 'briskine'
