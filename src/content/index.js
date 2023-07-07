@@ -11,6 +11,7 @@ import {setup as setupStatus, destroy as destroyStatus} from './status.js'
 import {setup as setupDialog, destroy as destroyDialog} from './dialog/dialog.js'
 import {setup as setupSandbox, destroy as destroySandbox} from './sandbox/sandbox-parent.js'
 import {setup as setupPage, destroy as destroyPage} from './page/page-parent.js'
+import {setup as setupAttachments, destroy as destroyAttachments} from './attachments/attachments.js'
 
 const currentUrl = window.location.href
 
@@ -40,6 +41,7 @@ function init (settings) {
 
   setupSandbox()
   setupPage()
+  setupAttachments()
 
   // update the content components if settings change
   settingsCache = Object.assign({}, settings)
@@ -101,6 +103,7 @@ function destructor () {
   destroyStatus()
   destroySandbox()
   destroyPage()
+  destroyAttachments()
 
   settingsCache = {}
   store.off('users-updated', refreshContentScripts)

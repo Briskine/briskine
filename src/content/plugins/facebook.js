@@ -4,6 +4,7 @@
 import parseTemplate from '../utils/parse-template.js'
 import createContact from '../utils/create-contact.js'
 import {insertPasteTemplate} from '../editors/editor-paste.js'
+import {addAttachments} from '../attachments/attachments.js'
 
 function getFromDetails () {
   var objectMatch = new RegExp('"NAME":.?".*?"')
@@ -91,7 +92,10 @@ export default async (params = {}) => {
     }
 
     var data = getData(params);
-    var parsedTemplate = await parseTemplate(params.quicktext.body, data);
+    const parsedTemplate = addAttachments(
+      await parseTemplate(params.quicktext.body, data),
+      params.quicktext.attachments,
+    )
 
     insertPasteTemplate(Object.assign({
         text: parsedTemplate

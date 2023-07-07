@@ -5,6 +5,7 @@ import parseTemplate from '../utils/parse-template.js';
 import {insertTemplate} from '../editors/editor-universal.js';
 import createContact from '../utils/create-contact.js';
 import {enableBubble} from '../bubble/bubble.js';
+import {addAttachments} from '../attachments/attachments.js'
 
 function getFieldData (field, $container) {
   var $buttons = $container.querySelectorAll('[draggable="true"]') || [];
@@ -352,7 +353,10 @@ export default async (params = {}) => {
   }
 
   const data = getData(params)
-  const parsedTemplate = await parseTemplate(params.quicktext.body, data)
+  const parsedTemplate = addAttachments(
+    await parseTemplate(params.quicktext.body, data),
+    params.quicktext.attachments,
+  )
 
   insertTemplate(Object.assign({
     text: parsedTemplate

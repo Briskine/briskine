@@ -471,6 +471,46 @@ function getDefaultTemplates () {
       shortcut: 'broken',
       body: 'Hello {{to.first_name}'
     })
+
+    defaultTemplates.push({
+      title: 'attachment',
+      shortcut: 'attachment',
+      body: 'attachment',
+      attachments: [
+        {
+          name: 'briskine.svg',
+          url: 'https://www.briskine.com/favicon.svg',
+        },
+        {
+          name: 'briskine.doc',
+          url: 'https://www.briskine.com/favicon.svg',
+        },
+        {
+          name: 'briskine.pdf',
+          url: 'https://www.briskine.com/favicon.svg',
+        },
+        {
+          name: 'briskine.zip',
+          url: 'https://www.briskine.com/favicon.svg',
+        },
+        {
+          name: 'briskine.mp3',
+          url: 'https://www.briskine.com/favicon.svg',
+        },
+        {
+          name: 'briskine.webm',
+          url: 'https://www.briskine.com/favicon.svg',
+        },
+        {
+          name: 'briskine.txt',
+          url: 'https://www.briskine.com/favicon.svg',
+        },
+        {
+          name: 'briskine.generic',
+          url: 'https://www.briskine.com/favicon.svg',
+        },
+      ]
+    })
   }
 
   return defaultTemplates
@@ -697,6 +737,12 @@ export async function setActiveCustomer (customerId) {
   return updateCurrentUser({
       uid: firebaseAuth.currentUser.uid,
       customer: customerId
+    })
+    .then(() => {
+      // update data when customer changes
+      trigger('templates-updated')
+      trigger('tags-updated')
+      return
     })
 }
 

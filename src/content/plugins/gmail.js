@@ -7,6 +7,7 @@ import {insertTemplate} from '../editors/editor-universal.js'
 import {isContentEditable} from '../editors/editor-contenteditable.js'
 import createContact from '../utils/create-contact.js'
 import {enableBubble} from '../bubble/bubble.js'
+import {addAttachments} from '../attachments/attachments.js'
 
 const fromFieldSelector = '.az2';
 const textfieldContainerSelector = '.M9';
@@ -238,138 +239,6 @@ async function after (params, data) {
   })
 }
 
-// insert attachment node on gmail editor
-var setAttachmentNode = function (attachment) {
-    if (!attachment) {
-        return;
-    }
-    var range = window.getSelection().getRangeAt(0);
-
-    function concatIconString(number, type) {
-        return "https://ssl.gstatic.com/docs/doclist/images/icon_" + number + "_" + type + "_list.png";
-    }
-
-    var driveIcons = {
-        image: concatIconString('11', 'image'),
-        audio: concatIconString('10', 'audio'),
-        pdf: concatIconString('12', 'pdf'),
-        video: concatIconString('11', 'video'),
-        archive: concatIconString('9', 'archive'),
-        word: concatIconString('10', 'word'),
-        text: concatIconString('10', 'text'),
-        generic: concatIconString('10', 'generic')
-    };
-
-    function getDriveIcon(attachment) {
-        var attachmentIcon;
-        switch (attachment.name.split('.').pop()) {
-            case 'jpg':
-            case 'jpeg':
-            case 'png':
-            case 'gif':
-            case 'svg':
-                attachmentIcon = driveIcons.image;
-                break;
-            case 'doc':
-            case 'docx':
-                attachmentIcon = driveIcons.word;
-                break;
-            case 'pdf':
-                attachmentIcon = driveIcons.pdf;
-                break;
-            case 'tar':
-            case 'zip':
-            case 'rar':
-            case 'gz':
-            case 'uca':
-            case 'dmg':
-            case 'iso':
-                attachmentIcon = driveIcons.archive;
-                break;
-            case 'riff':
-            case 'wav':
-            case 'bwf':
-            case 'ogg':
-            case 'aiff':
-            case 'caf':
-            case 'flac':
-            case 'mp3':
-            case 'wma':
-            case 'au':
-            case 'aac':
-            case 'mp4':
-            case 'm4a':
-                attachmentIcon = driveIcons.audio;
-                break;
-            case 'webm':
-            case 'flv':
-            case 'f4v':
-            case 'f4p':
-            case 'f4a':
-            case 'f4b':
-            case 'ogv':
-            case 'avi':
-            case 'mov':
-            case 'qt':
-            case 'yuv':
-            case 'm4p':
-            case 'm4v':
-            case 'mpg':
-            case 'mpeg':
-            case 'm2v':
-            case 'svi':
-            case '3gp':
-            case 'roq':
-                attachmentIcon = driveIcons.video;
-                break;
-            case 'js':
-            case 'txt':
-            case 'css':
-            case 'html':
-            case 'json':
-                attachmentIcon = driveIcons.text;
-                break;
-            default:
-                attachmentIcon = driveIcons.generic;
-        }
-        return attachmentIcon;
-    }
-
-    var icon = getDriveIcon(attachment);
-
-    var attachmentString = '&#8203;<div contenteditable="false" class="gmail_chip" style="width: 396px; height: 18px; max-height: 18px; padding: 5px; color: rgb(34, 34, 34); font-family: arial; font-style: normal; font-weight: bold; font-size: 13px; cursor: default; border: 1px solid rgb(221, 221, 221); line-height: 1; background-color: rgb(245, 245, 245);"><img src="//ssl.gstatic.com/ui/v1/icons/common/x_8px.png" style="opacity: 0.55; cursor: pointer; float: right; position: relative; top: -1px; display: none;"><a href=' + attachment.url + ' target="_blank" style=" display:inline-block; max-width: 366px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; text-decoration: none; cursor: pointer; padding: 1px 0; border: none; " aria-label=' + attachment.name + '><img style="vertical-align: bottom; border: none;" src=' + icon + '>&nbsp;<span dir="ltr" style="color: rgb(17, 85, 204); text-decoration: none; vertical-align: bottom;">' + attachment.name + '</span></a></div>&#8203;';
-
-    function addEventToAttachment(node) {
-        var closeImage = node.querySelector('img');
-        var link = node.querySelector('a');
-        var spanLink = link.querySelector('span');
-
-        node.onmouseenter = function () {
-            this.style.border = "1px solid rgb(204, 204, 204)";
-            closeImage.style.display = 'block';
-            spanLink.style.textDecoration = 'underline';
-        };
-        node.onmouseleave = function () {
-            this.style.border = "1px solid rgb(221, 221, 221)";
-            closeImage.style.display = 'none';
-            spanLink.style.textDecoration = 'none';
-        };
-        link.onclick = function () {
-            window.open(link.href, '_blank');
-        };
-        closeImage.onclick = function (e) {
-            e.stopPropagation();
-            range.commonAncestorContainer.removeChild(node);
-        };
-    }
-
-    var attachmentNode = range.createContextualFragment(attachmentString);
-    addEventToAttachment(attachmentNode.firstElementChild);
-    range.insertNode(attachmentNode);
-
-    range.collapse();
-};
-
 var activeCache = null;
 function isActive () {
     if (activeCache !== null) {
@@ -403,7 +272,10 @@ export default async (params = {}) => {
     }
 
     var data = getData(params);
-    var parsedTemplate = await parseTemplate(params.quicktext.body, data);
+    const parsedTemplate = addAttachments(
+      await parseTemplate(params.quicktext.body, data),
+      params.quicktext.attachments
+    )
 
     insertTemplate(Object.assign({
         text: parsedTemplate
@@ -416,17 +288,6 @@ export default async (params = {}) => {
     // to have up-to-date data.
     if (params.quicktext.from) {
         setFromField(params.element, params.quicktext.from);
-    }
-
-    // add attachments
-    if (
-        isContentEditable(params.element) &&
-        params.quicktext.attachments &&
-        params.quicktext.attachments.length
-    ) {
-        params.quicktext.attachments.map(function (attachment) {
-            setAttachmentNode(attachment);
-        });
     }
 
     return true;

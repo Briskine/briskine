@@ -8,6 +8,7 @@ import {insertContentEditableTemplate} from '../editors/editor-contenteditable.j
 import htmlToText from '../utils/html-to-text.js';
 import createContact from '../utils/create-contact.js';
 import {enableBubble} from '../bubble/bubble.js';
+import {addAttachments} from '../attachments/attachments.js'
 
 async function before (params, data) {
     const $parent = params.element.closest('.msg-overlay-conversation-bubble');
@@ -188,7 +189,13 @@ export default async (params = {}) => {
 
     var data = getData(params);
     // insert only plain text on linkedin
-    var parsedTemplate = htmlToText(await parseTemplate(params.quicktext.body, data));
+    const parsedTemplate = htmlToText(
+      addAttachments(
+        await parseTemplate(params.quicktext.body, data),
+        params.quicktext.attachments
+      )
+    )
+
 
     const parsedParams = Object.assign({
         text: parsedTemplate

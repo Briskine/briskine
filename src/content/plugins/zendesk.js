@@ -4,6 +4,7 @@
 import parseTemplate from '../utils/parse-template.js'
 import {insertTemplate} from '../editors/editor-universal.js'
 import createContact from '../utils/create-contact.js'
+import {addAttachments} from '../attachments/attachments.js'
 
 function getData (params) {
   let agentName = ''
@@ -108,7 +109,10 @@ export default async (params = {}) => {
   }
 
   const data = getData(params)
-  const parsedTemplate = await parseTemplate(params.quicktext.body, data)
+  const parsedTemplate = addAttachments(
+    await parseTemplate(params.quicktext.body, data),
+    params.quicktext.attachments,
+  )
   const parsedParams = Object.assign({
     text: parsedTemplate
   }, params)
