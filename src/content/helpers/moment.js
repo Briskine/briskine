@@ -16,7 +16,11 @@ export default function momentHelper (dateParam, options) {
   }
 
   // get the default locale from the browser
-  const defaultLocale = navigator.language || 'en'
+  let defaultLocale = 'en'
+  if (typeof navigator !== 'undefined') {
+      defaultLocale = navigator.language
+  }
+
   opts = Object.assign(
     {
       locale: defaultLocale,
