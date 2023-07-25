@@ -43,7 +43,7 @@ function momentHelper(str, options) {
         // handle only last display method
         if (displayMethods.includes(key)) {
             display = key;
-            if (opts[key]) {
+            if (opts[key] !== '') {
               displayParams = [opts[key]]
             } else {
               displayParams = []
