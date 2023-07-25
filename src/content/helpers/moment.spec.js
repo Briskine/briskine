@@ -3,7 +3,9 @@ import {expect} from 'chai'
 import Handlebars from 'handlebars'
 import MockDate from 'mockdate'
 
-import './moment.js'
+import helperMoment from './moment.js'
+
+Handlebars.registerHelper('moment', helperMoment)
 
 MockDate.set('2020-07-01')
 
