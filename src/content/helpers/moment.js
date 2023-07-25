@@ -1,7 +1,7 @@
 import Handlebars from 'handlebars';
 import moment from 'moment';
 
-function momentHelper(str, pattern) {
+function momentHelper(str, options) {
     // check if str is a valid date
     let dateString;
     if (typeof str === 'string' && moment(str).isValid()) {
@@ -12,8 +12,8 @@ function momentHelper(str, pattern) {
     let opts = {};
     if (typeof str === 'object') {
         opts = str;
-    } else if (typeof pattern === 'object') {
-        opts = pattern;
+    } else if (typeof options === 'object') {
+        opts = options;
     }
 
     // get the default locale from the browser
@@ -34,14 +34,20 @@ function momentHelper(str, pattern) {
         'format',
         'fromNow',
         'toNow',
-        'daysInMonth'
+        'daysInMonth',
+        'week',
+        'weeks',
     ];
 
     for (const key in opts) {
         // handle only last display method
         if (displayMethods.includes(key)) {
             display = key;
-            displayParams = [opts[key]];
+            if (opts[key]) {
+              displayParams = [opts[key]]
+            } else {
+              displayParams = []
+            }
             continue;
         }
 

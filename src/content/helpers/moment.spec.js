@@ -56,6 +56,11 @@ describe('moment handlebars helper', () => {
     expect(parseTemplate('{{moment daysInMonth=true}}')).to.equal('31')
   })
 
+  it('should show the week number', () => {
+    expect(parseTemplate('{{moment week=""}}')).to.equal('27')
+    expect(parseTemplate('{{moment weeks=""}}')).to.equal('27')
+  })
+
   it('should use default browser locale', () => {
     // forcefully set navigator.language
     Object.defineProperty(navigator, 'language', {
