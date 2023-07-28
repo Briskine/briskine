@@ -26,8 +26,8 @@ function scopeElementName (name = '') {
   return `${name.toLowerCase()}-${Date.now().toString(36)}`
 }
 
-function scopedComponent (componentClass) {
-  const tagName = scopeElementName(`b-${componentClass.name}`)
+function scopedComponent (componentClass, name) {
+  const tagName = scopeElementName(`b-${name}`)
   customElements.define(tagName, componentClass)
 
   return {
@@ -36,11 +36,11 @@ function scopedComponent (componentClass) {
   }
 }
 
-const {component: templatesComponent} = scopedComponent(DialogTemplates)
-const {component: footerComponent} = scopedComponent(DialogFooter)
-const {component: settingsComponent} = scopedComponent(DialogSettings)
-const {component: actionsComponent} = scopedComponent(DialogActions)
-const {component: listComponent, tagName: listComponentTagName} = scopedComponent(DialogList)
+const {component: templatesComponent} = scopedComponent(DialogTemplates, 'dialog-templates')
+const {component: footerComponent} = scopedComponent(DialogFooter, 'dialog-footer')
+const {component: settingsComponent} = scopedComponent(DialogSettings, 'dialog-settings')
+const {component: actionsComponent} = scopedComponent(DialogActions, 'dialog-actions')
+const {component: listComponent, tagName: listComponentTagName} = scopedComponent(DialogList, 'dialog-list')
 
 const dialogStyles = unsafeStatic(styles)
 
