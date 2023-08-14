@@ -3,7 +3,9 @@ import {expect} from 'chai'
 import Handlebars from 'handlebars'
 import MockDate from 'mockdate'
 
-import './moment.js'
+import helperMoment from './moment.js'
+
+Handlebars.registerHelper('moment', helperMoment)
 
 MockDate.set('2020-07-01')
 
@@ -45,7 +47,7 @@ describe('moment handlebars helper', () => {
   })
 
   it('should show time from now', () => {
-    expect(parseTemplate('{{moment "2020-07-10" fromNow=true}}')).to.equal('9 days')
+    expect(parseTemplate('{{moment "2020-07-10" fromNow=""}}')).to.equal('in 9 days')
   })
 
   it('should show time to now', () => {
@@ -53,7 +55,12 @@ describe('moment handlebars helper', () => {
   })
 
   it('should show days in month', () => {
-    expect(parseTemplate('{{moment daysInMonth=true}}')).to.equal('31')
+    expect(parseTemplate('{{moment daysInMonth=""}}')).to.equal('31')
+  })
+
+  it('should show the week number', () => {
+    expect(parseTemplate('{{moment week=""}}')).to.equal('27')
+    expect(parseTemplate('{{moment weeks=""}}')).to.equal('27')
   })
 
   it('should use default browser locale', () => {

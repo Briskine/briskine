@@ -14,9 +14,9 @@ const packageFile = JSON.parse(fs.readFileSync('./package.json', 'utf8'))
 const manifestFile = JSON.parse(fs.readFileSync('./src/manifest.json', 'utf8'))
 
 const defaultFirebaseConfig = {
-  projectId: 'briskine-development',
+  projectId: 'demo-briskine-development',
   apiKey: '123',
-  storageBucket: 'briskine-development-bucket'
+  storageBucket: 'demo-briskine-development-bucket'
 }
 
 const devPath = path.resolve('ext')

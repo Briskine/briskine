@@ -128,7 +128,7 @@ export default function search (list = [], searchList = [], text = '') {
         weight: 0.4
       },
       {
-        name: 'body',
+        name: '_body_plaintext',
         weight: 0.2
       }
     ]
