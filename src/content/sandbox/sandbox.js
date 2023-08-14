@@ -9,8 +9,14 @@
 
 import Handlebars from 'handlebars'
 
-import '../helpers/content-helpers.js'
 import config from '../../config.js'
+
+import '../helpers/content-helpers.js'
+import helperMoment from '../helpers/moment.js'
+import helperDate from '../helpers/date.js'
+
+Handlebars.registerHelper('date', helperDate)
+Handlebars.registerHelper('moment', helperMoment)
 
 let port2
 

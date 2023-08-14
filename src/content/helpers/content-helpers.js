@@ -1,10 +1,4 @@
 import Handlebars from 'handlebars';
-import './date.js';
-import './moment.js';
-
-import helperMoment from './moment.js'
-
-Handlebars.registerHelper('moment', helperMoment)
 
 // This is useful for template variables
 Handlebars.registerHelper('or', function (first, second) {
