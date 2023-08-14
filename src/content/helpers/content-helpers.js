@@ -30,12 +30,6 @@ Handlebars.registerHelper('capitalize', function (text) {
     return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase();
 });
 
-Handlebars.registerHelper("choice", function (args) {
-    // split by comma and trim
-    args = args.split(',').map((a) => a.trim());
-    return args[Math.floor(Math.random() * args.length)];
-});
-
 function underscored(str) {
     return str.replace(/([a-z\d])([A-Z]+)/g, '$1_$2').replace(/[-\s]+/g, '_').toLowerCase().trim();
 }

@@ -14,9 +14,11 @@ import config from '../../config.js'
 import '../helpers/content-helpers.js'
 import helperMoment from '../helpers/moment.js'
 import helperDate from '../helpers/date.js'
+import helperChoice from '../helpers/choice.js'
 
 Handlebars.registerHelper('date', helperDate)
 Handlebars.registerHelper('moment', helperMoment)
+Handlebars.registerHelper('choice', helperChoice)
 
 let port2
 
