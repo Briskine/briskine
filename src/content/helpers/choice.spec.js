@@ -4,7 +4,7 @@ import {expect} from 'chai'
 import {compileTemplate} from '../sandbox/sandbox.js'
 
 describe('choice handlebars helper', () => {
-  it('should default format date', () => {
+  it('should render only option', () => {
     expect(compileTemplate('{{choice "one"}}')).to.equal('one')
   })
 })

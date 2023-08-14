@@ -11,14 +11,18 @@ import Handlebars from 'handlebars'
 
 import config from '../../config.js'
 
+// TODO deprecate unsupported content helpers after we have replacements
 import '../helpers/content-helpers.js'
+
 import helperMoment from '../helpers/moment.js'
 import helperDate from '../helpers/date.js'
 import helperChoice from '../helpers/choice.js'
+import helperDomain from '../helpers/domain.js'
 
 Handlebars.registerHelper('date', helperDate)
 Handlebars.registerHelper('moment', helperMoment)
 Handlebars.registerHelper('choice', helperChoice)
+Handlebars.registerHelper('domain', helperDomain)
 
 let port2
 
