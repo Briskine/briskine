@@ -1,6 +1,7 @@
+import Handlebars from 'handlebars'
 import moment from 'moment'
 
-export default function momentHelper (dateParam, options) {
+function helperMoment (dateParam, options) {
   // check if str is a valid date
   let dateString
   if (typeof dateParam === 'string' && moment(dateParam).isValid()) {
@@ -68,3 +69,5 @@ export default function momentHelper (dateParam, options) {
 
   return date[display].apply(date, displayParams)
 }
+
+Handlebars.registerHelper('moment', helperMoment)

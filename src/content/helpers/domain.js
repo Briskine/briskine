@@ -1,4 +1,5 @@
 // domain handlebars helper
+import Handlebars from 'handlebars'
 
 function underscored (str) {
   return str.replace(/([a-z\d])([A-Z]+)/g, '$1_$2').replace(/[-\s]+/g, '_').toLowerCase().trim()
@@ -14,7 +15,7 @@ function humanize (str) {
   return titleize(underscored(str).replace(/_id$/, '').replace(/_/g, ' '))
 }
 
-export default function domain (text) {
+function domain (text) {
   if (!text || typeof text !== 'string') {
     return text
   }
@@ -27,3 +28,6 @@ export default function domain (text) {
   var domain = tld.split('.')[0] // AWESOME-sweet-bakery
   return humanize(domain) // Awesome Sweet Bakery
 }
+
+Handlebars.registerHelper('domain', domain)
+
