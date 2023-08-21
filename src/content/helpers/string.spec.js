@@ -29,7 +29,14 @@ describe('string handlebars helper', () => {
   })
 
   // startsWith
-  it('should render conditional startsWith subexpression', () => {
+  it('should print conditional startsWith subexpression', () => {
     expect(compileTemplate('{{#if (string "john@brisk@ne.com" "startsWith" "john")}}Hello John{{/if}}')).to.equal('Hello John')
+  })
+
+  // replicate the legacy domain helper with string
+  it('should print prettified domain name', () => {
+    expect(compileTemplate(`
+      {{~capitalizeAll (string (string (lookup (string (lookup (string "contact@AWESOME-sweet-bakery.co.uk" "split" "@") 1) "split" ".") 0) "replaceAll" "-" " ") "toLowerCase")~}}
+    `)).to.equal('Awesome Sweet Bakery')
   })
 })
