@@ -4,7 +4,7 @@
 import {isContentEditable, insertContentEditableTemplate} from './editor-contenteditable.js'
 import {isCkEditor, insertCkEditorTemplate} from './editor-ckeditor.js'
 import {isPasteEditor, insertPasteTemplate} from './editor-paste.js'
-import {isSlate, insertSlateTemplate} from './editor-slate.js'
+import {isBeforeInputEditor, insertBeforeInputTemplate} from './editor-beforeinput.js'
 import {isQuill, insertQuillTemplate} from './editor-quill.js'
 import {isProseMirror, insertProseMirrorTemplate} from './editor-prosemirror.js'
 import {insertTextareaTemplate} from './editor-textarea.js'
@@ -18,8 +18,8 @@ export function insertTemplate (params = {}) {
     return insertPasteTemplate(params)
   }
 
-  if (isSlate(params.element)) {
-    return insertSlateTemplate(params)
+  if (isBeforeInputEditor(params.element)) {
+    return insertBeforeInputTemplate(params)
   }
 
   if (isQuill(params.element)) {
