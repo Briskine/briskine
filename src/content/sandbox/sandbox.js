@@ -18,6 +18,7 @@ import '../helpers/moment.js'
 import '../helpers/date.js'
 import '../helpers/choice.js'
 import '../helpers/domain.js'
+import '../helpers/string.js'
 
 let port2
 
