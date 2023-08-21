@@ -1,13 +1,15 @@
-// string handlebars helpers
-
+// general purpose string helper
 import Handlebars from 'handlebars'
 
-function split (str = '', character = ',') {
-  if (typeof str !== 'string') {
+function string (str = '', method, ...args) {
+  if (typeof str !== 'string' || typeof method !== 'string') {
     return ''
   }
 
-  return str.split(character)
+  // last argument is the handlebars options object
+  const params = args.slice(0, args.length - 1)
+  return str[method].apply(str, params)
 }
 
-Handlebars.registerHelper('split', split)
+Handlebars.registerHelper('string', string)
+
