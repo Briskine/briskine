@@ -27,9 +27,3 @@ Handlebars.registerHelper("splitString", function (context, options) {
     }
 });
 
-// This is useful for template variables
-// TODO deprecate
-Handlebars.registerHelper('capitalize', function (text) {
-    return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase();
-});
-

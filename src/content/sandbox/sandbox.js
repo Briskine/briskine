@@ -13,12 +13,14 @@ import config from '../../config.js'
 
 // TODO deprecate unsupported content helpers after we have replacements
 import '../helpers/content-helpers.js'
+// legacy date helper
+import '../helpers/date.js'
 
 import '../helpers/moment.js'
-import '../helpers/date.js'
 import '../helpers/choice.js'
 import '../helpers/domain.js'
 import '../helpers/string.js'
+import '../helpers/capitalize.js'
 
 let port2
 
