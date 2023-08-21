@@ -33,8 +33,8 @@ export function insertPasteTemplate (params = {}) {
     const clipboardData = new DataTransfer()
     clipboardData.setData('text/plain', htmlToText(params.text))
     const customPasteEvent = new ClipboardEvent('paste', {
-        clipboardData: clipboardData,
-        bubbles: true,
+      clipboardData: clipboardData,
+      bubbles: true,
     })
     params.element.dispatchEvent(customPasteEvent)
     clipboardData.clearData()
