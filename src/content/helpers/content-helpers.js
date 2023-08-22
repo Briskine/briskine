@@ -1,11 +1,5 @@
 import Handlebars from 'handlebars';
 
-// This is useful for template variables
-// TODO deprecate when we have an alternative
-Handlebars.registerHelper('or', function (first, second) {
-    return first || second;
-});
-
 // TODO deprecate
 Handlebars.registerHelper("splitString", function (context, options) {
     if (context) {
