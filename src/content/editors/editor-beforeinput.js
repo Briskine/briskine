@@ -39,7 +39,7 @@ export function insertBeforeInputTemplate (params = {}) {
     const content = htmlToText(params.text)
     const insertText = new InputEvent('beforeinput', {
       bubbles: true,
-      inputType: 'insertText',
+      inputType: 'insertReplacementText',
       data: content
     })
     params.element.dispatchEvent(insertText)
