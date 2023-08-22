@@ -21,6 +21,7 @@ import '../helpers/text.js'
 import '../helpers/list.js'
 import '../helpers/capitalize.js'
 import '../helpers/or.js'
+import '../helpers/and.js'
 
 let port2
 
