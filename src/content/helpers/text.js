@@ -1,7 +1,8 @@
-// general purpose string helper
+// general purpose text helper
+// can use all methods on the String object
 import Handlebars from 'handlebars'
 
-function string (str = '', method, ...args) {
+function text (str = '', method, ...args) {
   if (typeof str !== 'string' || typeof method !== 'string') {
     return ''
   }
@@ -11,5 +12,5 @@ function string (str = '', method, ...args) {
   return str[method].apply(str, params)
 }
 
-Handlebars.registerHelper('string', string)
+Handlebars.registerHelper('text', text)
 
