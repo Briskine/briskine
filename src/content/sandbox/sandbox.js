@@ -20,6 +20,7 @@ import '../helpers/moment.js'
 import '../helpers/choice.js'
 import '../helpers/domain.js'
 import '../helpers/text.js'
+import '../helpers/list.js'
 import '../helpers/capitalize.js'
 
 let port2
