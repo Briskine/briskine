@@ -12,7 +12,6 @@ function list (arr = [], method, ...args) {
   if (
     !Array.isArray(arr)
     || typeof method !== 'string'
-    // TODO use check in the text helper as well
     || !(Array.prototype[method] instanceof Function)
   ) {
     return ''
