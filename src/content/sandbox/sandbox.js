@@ -11,8 +11,6 @@ import Handlebars from 'handlebars'
 
 import config from '../../config.js'
 
-// TODO deprecate unsupported content helpers after we have replacements
-import '../helpers/content-helpers.js'
 // legacy date helper
 import '../helpers/date.js'
 
