@@ -1,17 +1,14 @@
 /* Editors with Paste event support.
  *
- * Used for:
  * Draft.js rich text editor framework
  * https://draftjs.org/
  *
- * Lexical editor from Facebook
- * https://lexical.dev/
  */
 
 import htmlToText from '../utils/html-to-text.js'
 
 export function isPasteEditor (element) {
-  return element.hasAttribute('data-lexical-editor') || element.querySelector('[data-contents]')
+  return element.querySelector('[data-contents]')
 }
 
 export function insertPasteTemplate (params = {}) {
@@ -36,8 +33,8 @@ export function insertPasteTemplate (params = {}) {
     const clipboardData = new DataTransfer()
     clipboardData.setData('text/plain', htmlToText(params.text))
     const customPasteEvent = new ClipboardEvent('paste', {
-        clipboardData: clipboardData,
-        bubbles: true,
+      clipboardData: clipboardData,
+      bubbles: true,
     })
     params.element.dispatchEvent(customPasteEvent)
     clipboardData.clearData()
