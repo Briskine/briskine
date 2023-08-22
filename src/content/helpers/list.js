@@ -1,5 +1,5 @@
 // general purpose list helper
-// can use all methods on the Array object
+// exposes all methods on the Array object
 import Handlebars from 'handlebars'
 
 function list (arr = [], method, ...args) {
@@ -9,13 +9,18 @@ function list (arr = [], method, ...args) {
     arr = new Array(arr)
   }
 
-  if (!Array.isArray(arr) || typeof method !== 'string') {
+  if (
+    !Array.isArray(arr)
+    || typeof method !== 'string'
+    // TODO use check in the text helper as well
+    || !(Array.prototype[method] instanceof Function)
+  ) {
     return ''
   }
 
   // last argument is the handlebars options object
   const params = args.slice(0, args.length - 1)
-  return arr[method].apply(arr, params)
+  return Array.prototype[method].apply(arr, params)
 }
 
 Handlebars.registerHelper('list', list)

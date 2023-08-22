@@ -24,6 +24,15 @@
           getURL: (str) => `bundle/${str}`,
         }
       }
+
+      // array toSorted polyfill for mocha-headless-chrome
+      if (!Array.prototype.toSorted) {
+        Array.prototype.toSorted = function () {
+          let arr = this
+          arr.sort()
+          return arr
+        }
+      }
     </script>
 
     <script src="bundle/test/test.js"></script>
