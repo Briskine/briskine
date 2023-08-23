@@ -9,6 +9,7 @@
  */
 
 import htmlToText from '../utils/html-to-text.js';
+import {getSelection} from '../autocomplete.js'
 
 export function isBeforeInputEditor (element) {
   return element.hasAttribute('data-lexical-editor') || element.hasAttribute('data-slate-editor')
@@ -27,16 +28,16 @@ export function insertBeforeInputTemplate (params = {}) {
     // Slate and Lexical handle beforeinput events with stadard inputType's
     // https://github.com/ianstormtaylor/slate/blob/16ff44d0566889a843a346215d3fb7621fc0ed8c/packages/slate-react/src/components/editable.tsx#L193
     if (params.word.text === params.quicktext.shortcut) {
-      const deleteWordBackward = new InputEvent('beforeinput', {
-        bubbles: true,
-        // template shortcut will always be the word before the cursor
-        inputType: 'deleteWordBackward'
-      })
-      params.element.dispatchEvent(deleteWordBackward)
+      // select the shortcut
+      const selection = getSelection(params.element)
+      const range = selection.getRangeAt(0)
+      range.setStart(selection.focusNode, params.word.start)
+      range.setEnd(selection.focusNode, params.word.end)
     }
 
     // only supports plain text
     const content = htmlToText(params.text)
+    // replace selected text
     const insertText = new InputEvent('beforeinput', {
       bubbles: true,
       inputType: 'insertReplacementText',
