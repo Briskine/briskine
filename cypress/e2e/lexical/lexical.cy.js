@@ -30,4 +30,21 @@ describe('Lexical', () => {
       .should('have.text', 'It was nice talking to you.')
       .type('{selectAll}{del}')
   })
+
+  it('should insert template from dialog typing text', () => {
+    cy.get('[contenteditable]').type('Before')
+
+    cy.get('[contenteditable]').type('{ctrl} ')
+    cy.get('[visible=true]').should('be.visible')
+
+    cy.focused()
+      .shadow()
+      .find('input[type=search]')
+      .type('nic', {force: true})
+      .wait(500)
+      .type('{enter}')
+
+    cy.get('[contenteditable]')
+      .should('have.text', 'BeforeIt was nice talking to you.')
+  })
 })
