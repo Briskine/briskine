@@ -7,27 +7,33 @@ import createContact from '../utils/create-contact.js';
 import {enableBubble} from '../bubble/bubble.js';
 import {addAttachments} from '../attachments/attachments.js'
 
+// names and emails are formatted as "full name <name@email.com>"
+function parseNameAndEmail (nameAndEmail = '') {
+  const index = nameAndEmail.lastIndexOf('<')
+  const lastIndex = nameAndEmail.lastIndexOf('>')
+  if (index > -1 && lastIndex > -1) {
+    return {
+      name: nameAndEmail.substring(0, index),
+      email: nameAndEmail.substring(index + 1, lastIndex),
+    }
+  }
+
+  return {
+    name: nameAndEmail,
+    email: '',
+  }
+}
+
 function getFieldData (field, $container) {
   var $buttons = $container.querySelectorAll('[draggable="true"]') || [];
   $buttons.forEach(function ($button) {
-    // TODO names + emails are now formatted as "full name <email@email.com>"
-    // TODO parse string
-
-    // we can no longer get recepient emails,
-    // as they're not included in the dom anymore.
-    const email = ''
     let fullName = ''
     const $fullNameContainer = $button.querySelector('span > span > span > span')
     if ($fullNameContainer) {
       fullName = $fullNameContainer.innerText
     }
 
-    field.push(
-      createContact({
-        name: fullName,
-        email: email
-      })
-    )
+    field.push(createContact(parseNameAndEmail(fullName)))
   })
 }
 
