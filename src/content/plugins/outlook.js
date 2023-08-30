@@ -352,6 +352,28 @@ export default async (params = {}) => {
     return false;
   }
 
+  // make the extra fields editable, so we can find them.
+  const $main = params.element.closest('[id*="docking_InitVisiblePart"]')
+  if ($main) {
+    // specific selector to avoid triggering focus when the fields are already editable
+    const $to = $main.querySelector('div[tabindex]:nth-child(2):not([role="button"])')
+    if ($to) {
+      // cache selection
+      const selection = window.getSelection()
+      const focusNode = selection.focusNode
+      const focusOffset = selection.focusOffset
+      const anchorNode = selection.anchorNode
+      const anchorOffset = selection.anchorOffset
+
+      $to.dispatchEvent(new FocusEvent('focusin', {bubbles: true}))
+      // give it a second to show the editable from/to/cc/bcc fields
+      await new Promise((resolve) => setTimeout(resolve, 100))
+
+      // restore selection
+      window.getSelection().setBaseAndExtent(anchorNode, anchorOffset, focusNode, focusOffset)
+    }
+  }
+
   const data = getData(params)
   const parsedTemplate = addAttachments(
     await parseTemplate(params.quicktext.body, data),
