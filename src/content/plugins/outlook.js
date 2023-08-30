@@ -10,6 +10,9 @@ import {addAttachments} from '../attachments/attachments.js'
 function getFieldData (field, $container) {
   var $buttons = $container.querySelectorAll('[draggable="true"]') || [];
   $buttons.forEach(function ($button) {
+    // TODO names + emails are now formatted as "full name <email@email.com>"
+    // TODO parse string
+
     // we can no longer get recepient emails,
     // as they're not included in the dom anymore.
     const email = ''
@@ -370,7 +373,10 @@ export default async (params = {}) => {
       await new Promise((resolve) => setTimeout(resolve, 100))
 
       // restore selection
-      window.getSelection().setBaseAndExtent(anchorNode, anchorOffset, focusNode, focusOffset)
+      params.element.focus()
+      if (anchorNode && focusNode) {
+        window.getSelection().setBaseAndExtent(anchorNode, anchorOffset, focusNode, focusOffset)
+      }
     }
   }
 
