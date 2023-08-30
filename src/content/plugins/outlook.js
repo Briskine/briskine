@@ -155,7 +155,7 @@ function waitForElement (getNode) {
     const timeout = setTimeout(() => {
       selectorObserver.disconnect()
       reject()
-    }, 5000)
+    }, 500)
 
     selectorObserver.observe(document.body, {
       childList: true,
@@ -177,7 +177,7 @@ async function updateContactField ($field, value) {
   }
 }
 
-function addSingleContact ($field, value) {
+async function addSingleContact ($field, value) {
   $field.focus()
   const range = window.getSelection().getRangeAt(0)
   const templateNode = range.createContextualFragment(value)
@@ -185,24 +185,27 @@ function addSingleContact ($field, value) {
   range.collapse()
   $field.dispatchEvent(new Event('input', {bubbles: true}))
 
-  return waitForElement(getSuggestionButton(value))
-    .then(() => {
-      return new Promise((resolve) => {
-        // give it a second to attach event listeners
-        setTimeout(() => {
-          $field.dispatchEvent(
-            new KeyboardEvent('keydown', {
-              keyCode: 13,
-              which: 13,
-              key: 'Enter',
-              code: 'Enter',
-              bubbles: true
-            })
-          )
-          resolve()
-        })
+  try {
+    await waitForElement(getSuggestionButton(value))
+    // give it a second to attach event listeners
+    await new Promise((resolve) => setTimeout(resolve))
+
+    $field.dispatchEvent(
+      new KeyboardEvent('keydown', {
+        keyCode: 13,
+        which: 13,
+        key: 'Enter',
+        code: 'Enter',
+        bubbles: true
       })
-    })
+    )
+
+    // give it a second to clean up the suggestions dialog
+    await new Promise((resolve) => setTimeout(resolve))
+  } catch {
+    // continue if we couldn't find the element
+    return
+  }
 }
 
 function elementContains ($element, value) {
