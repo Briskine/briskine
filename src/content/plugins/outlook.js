@@ -333,6 +333,11 @@ async function after (params, data) {
   window.getSelection().setBaseAndExtent(anchorNode, anchorOffset, focusNode, focusOffset)
 }
 
+const urls = [
+  'outlook.live.com',
+  'outlook.office365.com',
+]
+
 var activeCache = null
 function isActive () {
   if (activeCache !== null) {
@@ -345,6 +350,12 @@ function isActive () {
   // eg. the open-email-in-new-window popup.
   const $officeCdn = document.querySelector('head *[href*=".cdn.office.net"]')
   if ($officeCdn) {
+    activeCache = true
+  }
+
+  // also check for urls
+  const outlookUrl = urls.some((url) => window.location.href.includes(url))
+  if (outlookUrl) {
     activeCache = true
   }
 
