@@ -7,24 +7,33 @@ import createContact from '../utils/create-contact.js';
 import {enableBubble} from '../bubble/bubble.js';
 import {addAttachments} from '../attachments/attachments.js'
 
+// names and emails are formatted as "full name <name@email.com>"
+function parseNameAndEmail (nameAndEmail = '') {
+  const index = nameAndEmail.lastIndexOf('<')
+  const lastIndex = nameAndEmail.lastIndexOf('>')
+  if (index > -1 && lastIndex > -1) {
+    return {
+      name: nameAndEmail.substring(0, index),
+      email: nameAndEmail.substring(index + 1, lastIndex),
+    }
+  }
+
+  return {
+    name: nameAndEmail,
+    email: '',
+  }
+}
+
 function getFieldData (field, $container) {
   var $buttons = $container.querySelectorAll('[draggable="true"]') || [];
   $buttons.forEach(function ($button) {
-    // we can no longer get recepient emails,
-    // as they're not included in the dom anymore.
-    const email = ''
     let fullName = ''
     const $fullNameContainer = $button.querySelector('span > span > span > span')
     if ($fullNameContainer) {
       fullName = $fullNameContainer.innerText
     }
 
-    field.push(
-      createContact({
-        name: fullName,
-        email: email
-      })
-    )
+    field.push(createContact(parseNameAndEmail(fullName)))
   })
 }
 
@@ -146,7 +155,7 @@ function waitForElement (getNode) {
     const timeout = setTimeout(() => {
       selectorObserver.disconnect()
       reject()
-    }, 5000)
+    }, 500)
 
     selectorObserver.observe(document.body, {
       childList: true,
@@ -168,7 +177,7 @@ async function updateContactField ($field, value) {
   }
 }
 
-function addSingleContact ($field, value) {
+async function addSingleContact ($field, value) {
   $field.focus()
   const range = window.getSelection().getRangeAt(0)
   const templateNode = range.createContextualFragment(value)
@@ -176,24 +185,27 @@ function addSingleContact ($field, value) {
   range.collapse()
   $field.dispatchEvent(new Event('input', {bubbles: true}))
 
-  return waitForElement(getSuggestionButton(value))
-    .then(() => {
-      return new Promise((resolve) => {
-        // give it a second to attach event listeners
-        setTimeout(() => {
-          $field.dispatchEvent(
-            new KeyboardEvent('keydown', {
-              keyCode: 13,
-              which: 13,
-              key: 'Enter',
-              code: 'Enter',
-              bubbles: true
-            })
-          )
-          resolve()
-        })
+  try {
+    await waitForElement(getSuggestionButton(value))
+    // give it a second to attach event listeners
+    await new Promise((resolve) => setTimeout(resolve))
+
+    $field.dispatchEvent(
+      new KeyboardEvent('keydown', {
+        keyCode: 13,
+        which: 13,
+        key: 'Enter',
+        code: 'Enter',
+        bubbles: true
       })
-    })
+    )
+
+    // give it a second to clean up the suggestions dialog
+    await new Promise((resolve) => setTimeout(resolve))
+  } catch {
+    // continue if we couldn't find the element
+    return
+  }
 }
 
 function elementContains ($element, value) {
@@ -321,6 +333,11 @@ async function after (params, data) {
   window.getSelection().setBaseAndExtent(anchorNode, anchorOffset, focusNode, focusOffset)
 }
 
+const urls = [
+  'outlook.live.com',
+  'outlook.office365.com',
+]
+
 var activeCache = null
 function isActive () {
   if (activeCache !== null) {
@@ -333,6 +350,12 @@ function isActive () {
   // eg. the open-email-in-new-window popup.
   const $officeCdn = document.querySelector('head *[href*=".cdn.office.net"]')
   if ($officeCdn) {
+    activeCache = true
+  }
+
+  // also check for urls
+  const outlookUrl = urls.some((url) => window.location.href.includes(url))
+  if (outlookUrl) {
     activeCache = true
   }
 
@@ -350,6 +373,31 @@ setTimeout(() => {
 export default async (params = {}) => {
   if (!isActive()) {
     return false;
+  }
+
+  // make the extra fields editable, so we can find them.
+  const $main = params.element.closest('[id*="docking_InitVisiblePart"]')
+  if ($main) {
+    // specific selector to avoid triggering focus when the fields are already editable
+    const $to = $main.querySelector('div[tabindex]:nth-child(2):not([role="button"])')
+    if ($to) {
+      // cache selection
+      const selection = window.getSelection()
+      const focusNode = selection.focusNode
+      const focusOffset = selection.focusOffset
+      const anchorNode = selection.anchorNode
+      const anchorOffset = selection.anchorOffset
+
+      $to.dispatchEvent(new FocusEvent('focusin', {bubbles: true}))
+      // give it a second to show the editable from/to/cc/bcc fields
+      await new Promise((resolve) => setTimeout(resolve, 100))
+
+      // restore selection
+      params.element.focus()
+      if (anchorNode && focusNode) {
+        window.getSelection().setBaseAndExtent(anchorNode, anchorOffset, focusNode, focusOffset)
+      }
+    }
   }
 
   const data = getData(params)
