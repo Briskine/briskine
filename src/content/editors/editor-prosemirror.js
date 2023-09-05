@@ -86,6 +86,20 @@ export function parseProseMirrorContent (content = '') {
     }
   }
 
+  // HACK workaround for prosemirror bug.
+  // when the inserted content is <div><a href="#">anchor</a></div>
+  // prosemirror strips out the anchor tag, and keeps only the anchor text content,
+  // becoming <p>anchor</p>.
+  // we work around it by prepending a zero width whitespace char before the parsed template.
+  const zeroWidthWhitespace = '\u200b'
+  if (
+    template.content.children.length === 1 &&
+    template.content.children[0].children.length === 1 &&
+    template.content.children[0].children[0].tagName.toLowerCase() === 'a'
+  ) {
+    template.content.children[0].prepend(document.createTextNode(zeroWidthWhitespace))
+  }
+
   return template.innerHTML
 }
 

@@ -35,7 +35,7 @@ describe('editor ProseMirror', () => {
     `)).to.equal('<div>one</div><br><div>two</div>')
   })
 
-  it.only('should insert template containing only anchor', function (done) {
+  it('should insert template containing only anchor', function (done) {
     this.timeout(20000)
 
     const $link = document.createElement('link')
@@ -92,9 +92,7 @@ describe('editor ProseMirror', () => {
 
       // give it a second to parse the template
       setTimeout(() => {
-        // console.log($editor.innerHTML)
-        // expect($editor.innerHTML).to.equal('<p><a href="https://www.briskine.com">briskine.com</a></p>')
-        expect($editor.innerHTML).to.equal('<p>briskine.com</p>')
+        expect($editor.innerHTML).to.include('<a href="https://www.briskine.com">briskine.com</a>')
         done()
       })
     }, {once: true})
