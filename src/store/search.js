@@ -22,6 +22,7 @@ const operations = {
     if (typeof item[filter.field] === 'string') {
       return lowerCase(item[filter.field]) === lowerCase(filter.value)
     }
+    return false
   }
 }
 
@@ -103,39 +104,46 @@ export function parseSearchString (searchString = '') {
 
 export default function search (list = [], searchList = [], text = '') {
   const advancedSearch = parseSearchString(text)
-  let filteredList = list.slice()
+  let filteredList = searchList.slice()
 
   advancedSearch.filters.forEach((filter) => {
-    filteredList = filteredList.filter((item, index) => {
-      return filterOperation(filter, searchList[index])
+    filteredList = filteredList.filter((item) => {
+      return filterOperation(filter, item)
     })
   })
 
   if (!advancedSearch.text) {
-    return filteredList
+    return filteredList.map((item) => {
+      return list.find((l) => l.id === item.id)
+    })
   }
 
   const options = {
     useExtendedSearch: true,
-    threshold: 0.4,
+    ignoreLocation: true,
+    threshold: 0.3,
     keys: [
       {
         name: 'shortcut',
-        weight: 0.4
+        weight: 4
       },
       {
         name: 'title',
-        weight: 0.4
+        weight: 3
       },
       {
-        name: '_body_plaintext',
-        weight: 0.2
-      }
+        name: 'body',
+        weight: 2
+      },
+      {
+        name: 'tags',
+        weight: 1
+      },
     ]
   }
 
   var fuse = new Fuse(filteredList, options)
   return fuse.search(advancedSearch.text).map((result) => {
-    return result.item
+    return list.find((l) => l.id === result.item.id)
   })
 }
