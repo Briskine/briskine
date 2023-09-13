@@ -23,6 +23,7 @@ import '../helpers/capitalize.js'
 import '../helpers/or.js'
 import '../helpers/and.js'
 import '../helpers/compare.js'
+import '../helpers/random.js'
 
 let port2
 

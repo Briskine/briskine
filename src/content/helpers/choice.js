@@ -1,8 +1,5 @@
-// random choice helper
+// legacy random choice helper
 // {{ choice 'one, two, three' }}
-
-// TODO we need a new helper that doesn't use comma separators
-// {{ choice "one" "two" "three" ... }}
 
 import Handlebars from 'handlebars'
 
