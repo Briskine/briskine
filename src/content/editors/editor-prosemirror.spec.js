@@ -1,4 +1,4 @@
-/* globals describe, it */
+/* globals describe, it, before, after */
 import {expect} from 'chai';
 
 import {parseProseMirrorContent, insertProseMirrorTemplate} from './editor-prosemirror.js';
@@ -93,7 +93,31 @@ describe.only('editor ProseMirror', () => {
     `)).to.equal('<div>one</div><br><div>two</div>')
   })
 
-  it('should insert template containing only anchor width div container', function (done) {
+  it('should insert template containing only anchor', function (done) {
+    const template = '<a href="https://www.briskine.com">briskine-two</a>'
+
+    $editor.focus()
+    insertProseMirrorTemplate({
+      element: $editor,
+      text: template,
+      word: {
+        start: 0,
+        end: 0,
+        text: '',
+      },
+      quicktext: {},
+    })
+
+    // give it a second to parse the template
+    setTimeout(() => {
+      expect($editor.innerHTML).to.include('<a href="https://www.briskine.com">briskine-two</a>')
+
+      cleanEditor()
+      done()
+    })
+  })
+
+  it('should insert template containing anchor with div container', function (done) {
     const template = '<div><a href="https://www.briskine.com">briskine-one</a></div>'
 
     $editor.focus()
@@ -117,8 +141,8 @@ describe.only('editor ProseMirror', () => {
     })
   })
 
-  it('should insert template containing only anchor', function (done) {
-    const template = '<a href="https://www.briskine.com">briskine-two</a>'
+  it('should insert template containing anchor with multiple containers', function (done) {
+    const template = '<div><div><p><a href="https://www.briskine.com">briskine-one</a></p></div></div>'
 
     $editor.focus()
     insertProseMirrorTemplate({
@@ -134,13 +158,13 @@ describe.only('editor ProseMirror', () => {
 
     // give it a second to parse the template
     setTimeout(() => {
-      console.log($editor.innerHTML)
-      expect($editor.innerHTML).to.include('<a href="https://www.briskine.com">briskine-two</a>')
+      expect($editor.innerHTML).to.include('<a href="https://www.briskine.com">briskine-one</a>')
 
       cleanEditor()
       done()
     })
   })
+
 
   after(() => {
     $link.remove()
