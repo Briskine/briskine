@@ -3,7 +3,7 @@
 
 import parseTemplate from '../utils/parse-template.js'
 import createContact from '../utils/create-contact.js'
-import {insertPasteTemplate} from '../editors/editor-paste.js'
+import {insertTemplate} from '../editors/editor-universal.js'
 import {addAttachments} from '../attachments/attachments.js'
 
 function getFromDetails () {
@@ -97,7 +97,7 @@ export default async (params = {}) => {
       params.quicktext.attachments,
     )
 
-    insertPasteTemplate(Object.assign({
+    insertTemplate(Object.assign({
         text: parsedTemplate
     }, params));
 
