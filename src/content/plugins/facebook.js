@@ -65,25 +65,24 @@ function getData (params) {
   }
 }
 
-var activeCache = null;
+let activeCache = null
 function isActive () {
-    if (activeCache !== null) {
-        return activeCache;
-    }
+  if (activeCache !== null) {
+    return activeCache
+  }
 
-    activeCache = false;
-    var facebookUrl = '.facebook.com/';
-    var messengerUrl = '.messenger.com/';
+  activeCache = false
+  const urls = [
+    '.facebook.com/',
+    '.messenger.com/',
+  ]
 
-    // trigger the extension based on url
-    if (
-        window.location.href.indexOf(facebookUrl) !== -1 ||
-        window.location.href.indexOf(messengerUrl) !== -1
-    ) {
-        activeCache = true;
-    }
+  // trigger the extension based on url
+  if (urls.find((url) => window.location.href.includes(url))) {
+    activeCache = true
+  }
 
-    return activeCache;
+  return activeCache
 }
 
 export default async (params = {}) => {
