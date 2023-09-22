@@ -1,9 +1,67 @@
-/* globals describe, it */
+/* globals describe, it, before, after */
 import {expect} from 'chai';
 
 import {parseProseMirrorContent, insertProseMirrorTemplate} from './editor-prosemirror.js';
 
+let $link
+let $script
+let $editor
+
+function cleanEditor () {
+  $editor.innerHTML = ''
+  Array('input', 'change').forEach((eventType) => {
+    $editor.dispatchEvent(new Event(eventType, {bubbles: true}))
+  })
+}
+
 describe('editor ProseMirror', () => {
+  before(function (done) {
+    this.timeout(20000)
+
+    $link = document.createElement('link')
+    $link.rel = 'stylesheet'
+    $link.href = 'https://prosemirror.net/css/editor.css'
+    document.head.appendChild($link)
+
+    $script = document.createElement('script')
+    $script.type = 'module'
+    $script.textContent = `
+      import {EditorState} from 'https://cdn.jsdelivr.net/npm/prosemirror-state@1/+esm'
+      import {EditorView} from 'https://cdn.jsdelivr.net/npm/prosemirror-view@1/+esm'
+      import {Schema, DOMParser} from 'https://cdn.jsdelivr.net/npm/prosemirror-model@1/+esm'
+      import {schema} from 'https://cdn.jsdelivr.net/npm/prosemirror-schema-basic@1/+esm'
+      import {addListNodes} from 'https://cdn.jsdelivr.net/npm/prosemirror-schema-list@1/+esm'
+      import {exampleSetup} from 'https://cdn.jsdelivr.net/npm/prosemirror-example-setup@1/+esm'
+
+      const $editor = document.createElement('div')
+      const $content = document.createElement('div')
+      document.body.appendChild($editor)
+
+      // Mix the nodes from prosemirror-schema-list into the basic schema to
+      // create a schema with list support.
+      const mySchema = new Schema({
+        nodes: addListNodes(schema.spec.nodes, 'paragraph block*', 'block'),
+        marks: schema.spec.marks
+      })
+
+      new EditorView($editor, {
+        state: EditorState.create({
+          doc: DOMParser.fromSchema(mySchema).parse($content),
+          plugins: exampleSetup({schema: mySchema})
+        })
+      })
+
+      window.dispatchEvent(new Event('prosemirror-ready'))
+    `
+
+    window.addEventListener('prosemirror-ready', () => {
+      $editor = document.querySelector('[contenteditable]')
+      done()
+    }, {once: true})
+
+    document.body.appendChild($script)
+  })
+
   it('should add brs after block nodes', () => {
     expect(parseProseMirrorContent('<div>one</div><div>two</div>')).to.equal('<div>one</div><br><div>two</div>')
   })
@@ -36,68 +94,81 @@ describe('editor ProseMirror', () => {
   })
 
   it('should insert template containing only anchor', function (done) {
-    this.timeout(20000)
+    const template = '<a href="https://www.briskine.com">briskine-two</a>'
 
-    const $link = document.createElement('link')
-    $link.rel = 'stylesheet'
-    $link.href = 'https://prosemirror.net/css/editor.css'
-    document.head.appendChild($link)
+    $editor.focus()
+    insertProseMirrorTemplate({
+      element: $editor,
+      text: template,
+      word: {
+        start: 0,
+        end: 0,
+        text: '',
+      },
+      quicktext: {},
+    })
 
-    const $script = document.createElement('script')
-    $script.type = 'module'
-    $script.textContent = `
-      import {EditorState} from 'https://cdn.jsdelivr.net/npm/prosemirror-state@1/+esm'
-      import {EditorView} from 'https://cdn.jsdelivr.net/npm/prosemirror-view@1/+esm'
-      import {Schema, DOMParser} from 'https://cdn.jsdelivr.net/npm/prosemirror-model@1/+esm'
-      import {schema} from 'https://cdn.jsdelivr.net/npm/prosemirror-schema-basic@1/+esm'
-      import {addListNodes} from 'https://cdn.jsdelivr.net/npm/prosemirror-schema-list@1/+esm'
-      import {exampleSetup} from 'https://cdn.jsdelivr.net/npm/prosemirror-example-setup@1/+esm'
+    // give it a second to parse the template
+    setTimeout(() => {
+      expect($editor.innerHTML).to.include('<a href="https://www.briskine.com">briskine-two</a>')
 
-      const $editor = document.createElement('div')
-      const $content = document.createElement('div')
-      document.body.appendChild($editor)
+      cleanEditor()
+      done()
+    })
+  })
 
-      // Mix the nodes from prosemirror-schema-list into the basic schema to
-      // create a schema with list support.
-      const mySchema = new Schema({
-        nodes: addListNodes(schema.spec.nodes, 'paragraph block*', 'block'),
-        marks: schema.spec.marks
-      })
+  it('should insert template containing anchor with div container', function (done) {
+    const template = '<div><a href="https://www.briskine.com">briskine-one</a></div>'
 
-      new EditorView($editor, {
-        state: EditorState.create({
-          doc: DOMParser.fromSchema(mySchema).parse($content),
-          plugins: exampleSetup({schema: mySchema})
-        })
-      })
+    $editor.focus()
+    insertProseMirrorTemplate({
+      element: $editor,
+      text: template,
+      word: {
+        start: 0,
+        end: 0,
+        text: '',
+      },
+      quicktext: {},
+    })
 
-      window.dispatchEvent(new Event('prosemirror-ready'))
-    `
+    // give it a second to parse the template
+    setTimeout(() => {
+      expect($editor.innerHTML).to.include('<a href="https://www.briskine.com">briskine-one</a>')
 
-    window.addEventListener('prosemirror-ready', () => {
-      const template = '<div><a href="https://www.briskine.com">briskine.com</a></div>'
-      const $editor = document.querySelector('[contenteditable]')
+      cleanEditor()
+      done()
+    })
+  })
 
-      $editor.focus()
-      insertProseMirrorTemplate({
-        element: $editor,
-        text: template,
-        word: {
-          start: 0,
-          end: 0,
-          text: '',
-        },
-        quicktext: {},
-      })
+  it('should insert template containing anchor with multiple containers', function (done) {
+    const template = '<div><div><p><a href="https://www.briskine.com">briskine-one</a></p></div></div>'
 
-      // give it a second to parse the template
-      setTimeout(() => {
-        expect($editor.innerHTML).to.include('<a href="https://www.briskine.com">briskine.com</a>')
-        done()
-      })
-    }, {once: true})
+    $editor.focus()
+    insertProseMirrorTemplate({
+      element: $editor,
+      text: template,
+      word: {
+        start: 0,
+        end: 0,
+        text: '',
+      },
+      quicktext: {},
+    })
 
-    document.body.appendChild($script)
+    // give it a second to parse the template
+    setTimeout(() => {
+      expect($editor.innerHTML).to.include('<a href="https://www.briskine.com">briskine-one</a>')
+
+      cleanEditor()
+      done()
+    })
+  })
+
+
+  after(() => {
+    $link.remove()
+    $script.remove()
+    $editor.remove()
   })
 })
-

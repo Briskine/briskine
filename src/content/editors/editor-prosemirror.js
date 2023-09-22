@@ -8,6 +8,18 @@ export function isProseMirror (element) {
   return element.classList.contains('ProseMirror')
 }
 
+function hasOnlyAnchorChild (node) {
+  if (node.tagName && node.tagName.toLowerCase() === 'a') {
+    return true
+  }
+
+  if (node.children.length === 1) {
+    return hasOnlyAnchorChild(node.children[0])
+  }
+
+  return false
+}
+
 const blockLevelSelector = [
   'address',
   'article',
@@ -87,17 +99,16 @@ export function parseProseMirrorContent (content = '') {
   }
 
   // HACK workaround for prosemirror bug.
-  // when the inserted content is <div><a href="#">anchor</a></div>
-  // prosemirror strips out the anchor tag, and keeps only the anchor text content,
-  // becoming <p>anchor</p>.
-  // we work around it by prepending a zero width whitespace char before the parsed template.
+  // when the inserted content is <div><a href="#">anchor</a></div> or <a href="#">anchor</a>
+  // prosemirror strips out the anchor tag, and keeps only the anchor text content, becoming <p>anchor</p>.
+  // we work around it by prepending a span with a zero-width whitespace char before the parsed template.
+  // using only a text node with the zero-width whitespace does not work
+  // when the content is an anchor without a (div) container.
   const zeroWidthWhitespace = '\u200b'
-  if (
-    template.content.children.length === 1 &&
-    template.content.children[0].children.length === 1 &&
-    template.content.children[0].children[0].tagName.toLowerCase() === 'a'
-  ) {
-    template.content.children[0].prepend(document.createTextNode(zeroWidthWhitespace))
+  if (hasOnlyAnchorChild(template.content)) {
+    const span = document.createElement('span')
+    span.textContent = zeroWidthWhitespace
+    template.content.prepend(span)
   }
 
   return template.innerHTML
