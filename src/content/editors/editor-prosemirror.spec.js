@@ -14,7 +14,7 @@ function cleanEditor () {
   })
 }
 
-describe.only('editor ProseMirror', () => {
+describe('editor ProseMirror', () => {
   before(function (done) {
     this.timeout(20000)
 
