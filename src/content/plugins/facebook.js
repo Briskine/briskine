@@ -21,15 +21,15 @@ function getFromDetails () {
   var fromName = ''
   try {
     var parsedUserObject = JSON.parse(`{${plainUserObject}}`)
-    fromName = parsedUserObject.NAME || '';
+    fromName = parsedUserObject.NAME || ''
   } catch(err) {
     // can't parse the user object
   }
 
   return createContact({
-      name: fromName,
-      email: ''
-    })
+    name: fromName,
+    email: ''
+  })
 }
 
 function getToDetails (editor) {
@@ -86,19 +86,19 @@ function isActive () {
 }
 
 export default async (params = {}) => {
-    if (!isActive()) {
-        return false;
-    }
+  if (!isActive()) {
+    return false
+  }
 
-    var data = getData(params);
-    const parsedTemplate = addAttachments(
-      await parseTemplate(params.quicktext.body, data),
-      params.quicktext.attachments,
-    )
+  var data = getData(params)
+  const parsedTemplate = addAttachments(
+    await parseTemplate(params.quicktext.body, data),
+    params.quicktext.attachments,
+  )
 
-    insertTemplate(Object.assign({
-        text: parsedTemplate
-    }, params));
+  insertTemplate(Object.assign({
+    text: parsedTemplate
+  }, params))
 
-    return true;
-};
+  return true
+}
