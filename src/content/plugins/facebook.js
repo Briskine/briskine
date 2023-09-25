@@ -3,7 +3,7 @@
 
 import parseTemplate from '../utils/parse-template.js'
 import createContact from '../utils/create-contact.js'
-import {insertPasteTemplate} from '../editors/editor-paste.js'
+import {insertTemplate} from '../editors/editor-universal.js'
 import {addAttachments} from '../attachments/attachments.js'
 
 function getFromDetails () {
@@ -21,15 +21,15 @@ function getFromDetails () {
   var fromName = ''
   try {
     var parsedUserObject = JSON.parse(`{${plainUserObject}}`)
-    fromName = parsedUserObject.NAME || '';
+    fromName = parsedUserObject.NAME || ''
   } catch(err) {
     // can't parse the user object
   }
 
   return createContact({
-      name: fromName,
-      email: ''
-    })
+    name: fromName,
+    email: ''
+  })
 }
 
 function getToDetails (editor) {
@@ -65,41 +65,40 @@ function getData (params) {
   }
 }
 
-var activeCache = null;
+let activeCache = null
 function isActive () {
-    if (activeCache !== null) {
-        return activeCache;
-    }
+  if (activeCache !== null) {
+    return activeCache
+  }
 
-    activeCache = false;
-    var facebookUrl = '.facebook.com/';
-    var messengerUrl = '.messenger.com/';
+  activeCache = false
+  const urls = [
+    '.facebook.com/',
+    '.messenger.com/',
+  ]
 
-    // trigger the extension based on url
-    if (
-        window.location.href.indexOf(facebookUrl) !== -1 ||
-        window.location.href.indexOf(messengerUrl) !== -1
-    ) {
-        activeCache = true;
-    }
+  // trigger the extension based on url
+  if (urls.find((url) => window.location.href.includes(url))) {
+    activeCache = true
+  }
 
-    return activeCache;
+  return activeCache
 }
 
 export default async (params = {}) => {
-    if (!isActive()) {
-        return false;
-    }
+  if (!isActive()) {
+    return false
+  }
 
-    var data = getData(params);
-    const parsedTemplate = addAttachments(
-      await parseTemplate(params.quicktext.body, data),
-      params.quicktext.attachments,
-    )
+  var data = getData(params)
+  const parsedTemplate = addAttachments(
+    await parseTemplate(params.quicktext.body, data),
+    params.quicktext.attachments,
+  )
 
-    insertPasteTemplate(Object.assign({
-        text: parsedTemplate
-    }, params));
+  insertTemplate(Object.assign({
+    text: parsedTemplate
+  }, params))
 
-    return true;
-};
+  return true
+}
