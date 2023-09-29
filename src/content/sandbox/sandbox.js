@@ -9,8 +9,21 @@
 
 import Handlebars from 'handlebars'
 
-import '../helpers/content-helpers.js'
 import config from '../../config.js'
+
+// legacy date helper
+import '../helpers/date.js'
+
+import '../helpers/moment.js'
+import '../helpers/choice.js'
+import '../helpers/domain.js'
+import '../helpers/text.js'
+import '../helpers/list.js'
+import '../helpers/capitalize.js'
+import '../helpers/or.js'
+import '../helpers/and.js'
+import '../helpers/compare.js'
+import '../helpers/random.js'
 
 let port2
 
