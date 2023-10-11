@@ -23,6 +23,7 @@ import {
 import config from '../config.js'
 import trigger from './store-trigger.js'
 import fuzzySearch from './search.js'
+import badgeUpdate from '../background/badge-update.js'
 
 const firebaseApp = initializeApp(FIREBASE_CONFIG)
 const firebaseAuth = getAuth(firebaseApp)
@@ -343,6 +344,8 @@ function setSignedInUser (user) {
 
 // auth change
 onIdTokenChanged(firebaseAuth, (firebaseUser) => {
+  badgeUpdate(firebaseUser)
+
   if (!firebaseUser) {
     return getSignedInUser()
       .then((user) => {
