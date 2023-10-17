@@ -17,11 +17,13 @@ import {
   where,
   onSnapshot,
   documentId,
+  Timestamp,
 } from 'firebase/firestore'
 
 import config from '../config.js'
 import trigger from './store-trigger.js'
 import fuzzySearch from './search.js'
+import badgeUpdate from '../background/badge-update.js'
 
 const firebaseApp = initializeApp(FIREBASE_CONFIG)
 const firebaseAuth = getAuth(firebaseApp)
@@ -41,15 +43,21 @@ function plainText (html = '') {
 }
 
 // convert firestore timestamps to dates
-function convertToNativeDates (obj = {}) {
-  var parsed = Object.assign({}, obj);
-  Object.keys(parsed).forEach((prop) => {
-      if (parsed[prop] && typeof parsed[prop].toDate === 'function') {
-          parsed[prop] = parsed[prop].toDate();
-      }
-  });
+const timestamps = [
+  'created_datetime',
+  'modified_datetime',
+  'deleted_datetime',
+]
 
-  return parsed;
+function convertToNativeDates (obj = {}) {
+  const parsed = Object.assign({}, obj)
+  timestamps.forEach((prop) => {
+    if (obj[prop] && obj[prop].seconds && obj[prop].nanoseconds) {
+      const d = new Timestamp(obj[prop].seconds, obj[prop].nanoseconds)
+      parsed[prop] = d.toDate()
+    }
+  })
+  return parsed
 }
 
 async function clearDataCache () {
@@ -336,6 +344,8 @@ function setSignedInUser (user) {
 
 // auth change
 onIdTokenChanged(firebaseAuth, (firebaseUser) => {
+  badgeUpdate(firebaseUser)
+
   if (!firebaseUser) {
     return getSignedInUser()
       .then((user) => {
@@ -535,6 +545,8 @@ function isFree (user) {
     })
 }
 
+const templatesFreeLimit = 30
+
 export function getTemplates () {
   return getSignedInUser()
     .then((user) => {
@@ -578,6 +590,16 @@ export function getTemplates () {
               _body_plaintext: plainText(template.body),
             })
           })
+        })
+        .then((templates) => {
+          if (freeCustomer) {
+            return templates
+              .sort((a, b) => {
+                return new Date(a.created_datetime || 0) - new Date(b.created_datetime || 0)
+              })
+              .slice(0, templatesFreeLimit)
+          }
+          return templates
         })
     })
     .catch((err) => {

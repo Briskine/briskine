@@ -1,6 +1,6 @@
 {
   "name": "briskine",
-  "version": "7.10.0",
+  "version": "7.10.2",
   "description": "Write everything faster.",
   "private": true,
   "type": "module",
@@ -68,7 +68,7 @@
     "fuse.js": "^6.4.5",
     "handlebars": "^4.5.3",
     "html-to-text": "^9.0.0",
-    "lit-html": "^2.2.3",
+    "lit-html": "^3.0.0",
     "moment": "^2.29.1",
     "mousetrap": "github:briskine/mousetrap#master",
     "webextension-polyfill": "^0.10.0"

@@ -6,6 +6,7 @@
   "short_name": "Briskine",
   "icons": {
     "16": "icons/icon-16.png",
+    "32": "icons/icon-32.png",
     "48": "icons/icon-48.png",
     "128": "icons/icon-128.png"
   },
@@ -45,7 +46,13 @@
       "popup/popup.html",
       "page/page.js",
       "sandbox/sandbox.html",
-      "sandbox/sandbox.js"
+      "sandbox/sandbox.js",
+      "icons/icon-16.png",
+      "icons/icon-16-loggedout.png",
+      "icons/icon-32.png",
+      "icons/icon-32-loggedout.png",
+      "icons/icon-48.png",
+      "icons/icon-48-loggedout.png"
     ],
     "matches": [
       "https://*/*",
