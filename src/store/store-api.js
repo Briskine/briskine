@@ -52,7 +52,7 @@ const timestamps = [
 function convertToNativeDates (obj = {}) {
   const parsed = Object.assign({}, obj)
   timestamps.forEach((prop) => {
-    if (obj[prop] && obj[prop].seconds && obj[prop].nanoseconds) {
+    if (obj[prop] && typeof obj[prop].seconds === 'number' && typeof obj[prop].nanoseconds === 'number') {
       const d = new Timestamp(obj[prop].seconds, obj[prop].nanoseconds)
       parsed[prop] = d.toDate()
     }
