@@ -1,4 +1,3 @@
-/* eslint-disable no-useless-escape */
 /* Gmail mobile (small-screen) plugin
  */
 
@@ -8,11 +7,8 @@ import createContact from '../utils/create-contact.js'
 import {enableBubble} from '../bubble/bubble.js'
 import {addAttachments} from '../attachments/attachments.js'
 
-const fromFieldSelector = '.az2';
-const textfieldContainerSelector = '.M9';
-
 // get all required data from the dom
-function getData (params) {
+function getData () {
   const data = {
     from: [],
     to: [],
