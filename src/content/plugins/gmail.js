@@ -72,8 +72,6 @@ function getData (params) {
 
     const $container = params.element.closest(textfieldContainerSelector);
     if ($container) {
-      // TODO desktop gmail
-
       // if we use multiple aliases,
       // get from details from the alias selector at the top of the compose box.
       const $fromSelect = $container.querySelector(fromFieldSelector);
@@ -105,8 +103,6 @@ function getData (params) {
       if ($subjectField) {
         data.subject = ($subjectField.value || '').replace(/^Re: /, '');
       }
-    } else {
-      // TODO could be mobile gmail
     }
   }
 
@@ -199,32 +195,34 @@ async function after (params, data) {
   })
 }
 
-var activeCache = null;
+let activeCache = null
+const gmailMobileToken = '/mu/'
 function isActive () {
-    if (activeCache !== null) {
-        return activeCache;
-    }
+  if (activeCache !== null) {
+    return activeCache
+  }
 
-    activeCache = false;
-    var gmailUrl = '//mail.google.com/';
+  activeCache = false
+  // trigger the extension based on url
+  if (
+    window.location.host === 'mail.google.com'
+    && !window.location.href.includes(gmailMobileToken)
+  ) {
+    activeCache = true
+  }
 
-    // trigger the extension based on url
-    if (window.location.href.indexOf(gmailUrl) !== -1) {
-        activeCache = true;
-    }
-
-    return activeCache;
+  return activeCache
 }
 
 function setup () {
-    if (!isActive()) {
-        return false;
-    }
+  if (!isActive()) {
+    return false
+  }
 
-    enableBubble();
+  enableBubble()
 }
 
-setup();
+setup()
 
 export default async (params = {}) => {
     if (!isActive()) {
