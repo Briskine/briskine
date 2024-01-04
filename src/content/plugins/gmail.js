@@ -104,53 +104,6 @@ function getData (params) {
                 data.subject = ($subjectField.value || '').replace(/^Re: /, '');
             }
         }
-    } else {
-        // plain HTML gmail
-        const $user = document.querySelector('#guser b');
-        if ($user) {
-            data.from = [ parseString($user.innerText) ];
-        }
-
-        const $to = document.querySelector('#to');
-
-        if ($to) {
-            // compose window
-            [ 'to', 'cc', 'bcc' ].forEach((fieldName) => {
-                const $field = document.getElementById(fieldName);
-                if ($field) {
-                    data[fieldName] = ($field.value || '').split(',');
-                }
-            });
-
-            const $subject = document.querySelector('input[name=subject]');
-            if ($subject) {
-                data.subject = $subject.value;
-            }
-        } else {
-            // reply window
-            const $subject = document.querySelector('h2 b');
-            if ($subject) {
-                data.subject = $subject.innerText;
-            }
-
-            const $replyAll = document.querySelector('#replyall');
-            // if there are multiple reply to options
-            if ($replyAll) {
-                // get the last text node next to the checked radio
-                const $container = params.element.closest('table');
-                if ($container) {
-                    const $to = $container.querySelector('input[type=radio]:checked');
-                    if ($to) {
-                        const $toContainer = $to.closest('tr');
-                        const $label = $toContainer.querySelector('label');
-                        const labelText = Array.from($label.childNodes).pop().textContent;
-                        data.to = labelText.split(',');
-                    }
-
-                }
-            }
-        }
-
     }
 
     return data
