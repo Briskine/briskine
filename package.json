@@ -42,7 +42,7 @@
   "license": "GPL-3.0-or-later",
   "devDependencies": {
     "archiver": "^6.0.0",
-    "chai": "^4.2.0",
+    "chai": "^5.0.0",
     "copy-webpack-plugin": "^11.0.0",
     "css-loader": "^6.0.0",
     "css-minimizer-webpack-plugin": "^5.0.0",
