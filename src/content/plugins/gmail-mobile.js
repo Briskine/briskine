@@ -50,6 +50,7 @@ function getData (params) {
     }
   })
 
+  data.subject = document.querySelector('#cmcsubj')?.value
 
   return data
 }
