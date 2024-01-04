@@ -21,6 +21,35 @@ function getData (params) {
     subject: '',
   }
 
+  const fromName = document.querySelector('.Bu')?.innerText
+  const fromEmail = document.querySelector('.Cu')?.innerText
+  if (fromName && fromEmail) {
+    data.from.push(
+      createContact({
+        email: fromEmail,
+        name: fromName,
+      })
+    )
+  }
+
+  const fields = [ 'to', 'cc', 'bcc' ]
+  fields.forEach((f) => {
+    const $container = document.querySelector(`#cmae_compose${f}`)
+    if ($container) {
+      data[f] = Array.from(
+          $container.querySelectorAll(`[id^="compose${f}_"]`)
+        ).map(($person) => {
+          const name = $person.querySelector('.Uf')?.innerText || ''
+          const email = $person.querySelector('.Sf')?.innerText || ''
+
+          return createContact({
+            email: email,
+            name: name,
+          })
+        })
+    }
+  })
+
 
   return data
 }
