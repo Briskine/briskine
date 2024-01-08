@@ -4,6 +4,7 @@
 
 import {register, run as runPlugins} from './plugin.js'
 import gmailPlugin from './plugins/gmail.js'
+import gmailMobilePlugin from './plugins/gmail-mobile.js'
 import facebookPlugin from './plugins/facebook.js'
 import fastmailPlugin from './plugins/fastmail.js'
 import linkedinPlugin from './plugins/linkedin.js'
@@ -18,6 +19,7 @@ import {isContentEditable} from './editors/editor-contenteditable.js'
 // register plugins,
 // in execution order.
 register(gmailPlugin)
+register(gmailMobilePlugin)
 register(facebookPlugin)
 register(fastmailPlugin)
 register(linkedinPlugin)

@@ -42,118 +42,71 @@ function parseString (string = '') {
 
 // get all required data from the dom
 function getData (params) {
-    const data = {
-        from: [],
-        to: [],
-        cc: [],
-        bcc: [],
-        subject: ''
-    };
+  const data = {
+    from: [],
+    to: [],
+    cc: [],
+    bcc: [],
+    subject: '',
+  }
 
-    if (isContentEditable(params.element)) {
-        // get the email field from the account details tooltip.
-        // the details popup changes the className on each release,
-        // so we use the dom structure to find it.
-        // get the two-level deep nested div, that contains an @, from the email address.
-        // start from the end, because the popup is located near the end of the page,
-        // and the main container can also contain email addresses.
-        // ignore divs with peoplekit-id, as they show up after adding to/cc/bcc addresses,
-        // and are also placed at the end of the body.
-        const $email = Array
-          .from(document.querySelectorAll('body > div:not([peoplekit-id]) > div > div'))
-          .reverse()
-          // div containing only text nodes with @
-          .find((div) => (div.children.length === 0 && (div.textContent || '').includes('@')))
-        const $fullName = $email ? $email.previousElementSibling : null
+  if (isContentEditable(params.element)) {
+    // get the email field from the account details tooltip.
+    // the details popup changes the className on each release,
+    // so we use the dom structure to find it.
+    // get the two-level deep nested div, that contains an @, from the email address.
+    // start from the end, because the popup is located near the end of the page,
+    // and the main container can also contain email addresses.
+    // ignore divs with peoplekit-id, as they show up after adding to/cc/bcc addresses,
+    // and are also placed at the end of the body.
+    const $email = Array
+      .from(document.querySelectorAll('body > div:not([peoplekit-id]) > div > div'))
+      .reverse()
+      // div containing only text nodes with @
+      .find((div) => (div.children.length === 0 && (div.textContent || '').includes('@')))
+    const $fullName = $email ? $email.previousElementSibling : null
 
-        const fullNameText = $fullName ? $fullName.innerText : ''
-        const emailText = $email ? $email.innerText : ''
-        data.from = [ parseString(`${fullNameText} <${emailText}>`) ]
+    const fullNameText = $fullName ? $fullName.innerText : ''
+    const emailText = $email ? $email.innerText : ''
+    data.from = [ parseString(`${fullNameText} <${emailText}>`) ]
 
-        const $container = params.element.closest(textfieldContainerSelector);
-        if ($container) {
-            // if we use multiple aliases,
-            // get from details from the alias selector at the top of the compose box.
-            const $fromSelect = $container.querySelector(fromFieldSelector);
-            if ($fromSelect) {
-                data.from = [ parseString($fromSelect.innerText) ];
-            }
+    const $container = params.element.closest(textfieldContainerSelector);
+    if ($container) {
+      // if we use multiple aliases,
+      // get from details from the alias selector at the top of the compose box.
+      const $fromSelect = $container.querySelector(fromFieldSelector);
+      if ($fromSelect) {
+        data.from = [ parseString($fromSelect.innerText) ];
+      }
 
-            [ 'to', 'cc', 'bcc' ].forEach((fieldName) => {
-                data[fieldName] = Array.from(
-                    $container.querySelectorAll(`input[name=${fieldName}], [name=${fieldName}] [role=option]`)
-                  ).map((field) => {
-                    if (field.value) {
-                      return parseString(field.value)
-                    }
+      [ 'to', 'cc', 'bcc' ].forEach((fieldName) => {
+        data[fieldName] = Array.from(
+          $container.querySelectorAll(`input[name=${fieldName}], [name=${fieldName}] [role=option]`)
+        ).map((field) => {
+          if (field.value) {
+            return parseString(field.value)
+          }
 
-                    const email = field.getAttribute('data-hovercard-id')
-                    if (email) {
-                      return createContact({
-                        email: email,
-                        name: field.getAttribute('data-name')
-                      })
-                    }
+          const email = field.getAttribute('data-hovercard-id')
+          if (email) {
+            return createContact({
+              email: email,
+              name: field.getAttribute('data-name')
+            })
+          }
 
-                    return {}
-                  })
-            });
+          return {}
+        })
+      });
 
-            const $subjectField = $container.querySelector('input[name=subjectbox]');
-            if ($subjectField) {
-                data.subject = ($subjectField.value || '').replace(/^Re: /, '');
-            }
-        }
-    } else {
-        // plain HTML gmail
-        const $user = document.querySelector('#guser b');
-        if ($user) {
-            data.from = [ parseString($user.innerText) ];
-        }
-
-        const $to = document.querySelector('#to');
-
-        if ($to) {
-            // compose window
-            [ 'to', 'cc', 'bcc' ].forEach((fieldName) => {
-                const $field = document.getElementById(fieldName);
-                if ($field) {
-                    data[fieldName] = ($field.value || '').split(',');
-                }
-            });
-
-            const $subject = document.querySelector('input[name=subject]');
-            if ($subject) {
-                data.subject = $subject.value;
-            }
-        } else {
-            // reply window
-            const $subject = document.querySelector('h2 b');
-            if ($subject) {
-                data.subject = $subject.innerText;
-            }
-
-            const $replyAll = document.querySelector('#replyall');
-            // if there are multiple reply to options
-            if ($replyAll) {
-                // get the last text node next to the checked radio
-                const $container = params.element.closest('table');
-                if ($container) {
-                    const $to = $container.querySelector('input[type=radio]:checked');
-                    if ($to) {
-                        const $toContainer = $to.closest('tr');
-                        const $label = $toContainer.querySelector('label');
-                        const labelText = Array.from($label.childNodes).pop().textContent;
-                        data.to = labelText.split(',');
-                    }
-
-                }
-            }
-        }
-
+      const $subjectField = $container.querySelector('input[name=subjectbox]');
+      if ($subjectField) {
+        data.subject = ($subjectField.value || '').replace(/^Re: /, '');
+      }
     }
+  }
 
-    return data
+  return data
 }
 
 // from field support for aliases
@@ -184,6 +137,9 @@ function extraField ($parent, fieldName) {
 
 async function after (params, data) {
   const $parent = params.element.closest(textfieldContainerSelector)
+  if (!$parent) {
+    return
+  }
 
   const $subject = $parent.querySelector('input[name=subjectbox]')
   // set subject only when the subject field is visible.
@@ -239,32 +195,34 @@ async function after (params, data) {
   })
 }
 
-var activeCache = null;
+let activeCache = null
+const gmailMobileToken = '/mu/'
 function isActive () {
-    if (activeCache !== null) {
-        return activeCache;
-    }
+  if (activeCache !== null) {
+    return activeCache
+  }
 
-    activeCache = false;
-    var gmailUrl = '//mail.google.com/';
+  activeCache = false
+  // trigger the extension based on url
+  if (
+    window.location.host === 'mail.google.com'
+    && !window.location.href.includes(gmailMobileToken)
+  ) {
+    activeCache = true
+  }
 
-    // trigger the extension based on url
-    if (window.location.href.indexOf(gmailUrl) !== -1) {
-        activeCache = true;
-    }
-
-    return activeCache;
+  return activeCache
 }
 
 function setup () {
-    if (!isActive()) {
-        return false;
-    }
+  if (!isActive()) {
+    return false
+  }
 
-    enableBubble();
+  enableBubble()
 }
 
-setup();
+setup()
 
 export default async (params = {}) => {
     if (!isActive()) {
