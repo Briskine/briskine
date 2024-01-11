@@ -367,6 +367,9 @@ onIdTokenChanged(firebaseAuth, (firebaseUser) => {
 
         throw err
       })
+      .finally(() => {
+        return trigger('logout')
+      })
   }
 
   return getSignedInUser()
@@ -731,9 +734,6 @@ export function logout () {
     })
     .then(() => {
       return setSignedInUser({})
-    })
-    .then(() => {
-      return trigger('logout')
     })
 }
 
