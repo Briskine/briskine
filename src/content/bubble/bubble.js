@@ -75,9 +75,9 @@ customElements.define(
         // and makes the transitions be visible.
         this.bubbleVisibilityTimer = setTimeout(() => {
           if (newValue === 'true') {
-            this.$button.classList.add(visibleClassName);
+            this.$button.classList.add(visibleClassName)
           } else {
-            this.$button.classList.remove(visibleClassName);
+            this.$button.classList.remove(visibleClassName)
           }
         }, 200)
       }
@@ -152,7 +152,7 @@ export function setup (settings = {}) {
       observer.disconnect()
       create(settings)
     }
-  });
+  })
   domObserver.observe(document.body, {
     attributes: true
   })
@@ -214,7 +214,7 @@ function isValidTextfield (elem) {
   if (elem.matches('textarea, [contenteditable]')) {
     // check if the element is big enough
     // to only show the bubble for large textfields
-    const metrics = elem.getBoundingClientRect();
+    const metrics = elem.getBoundingClientRect()
     if (metrics.width > 100 && metrics.height > 34) {
       return true
     }
@@ -275,7 +275,7 @@ function showBubble (textfield) {
     // position the element relative to it's offsetParent
     const offsetRight = offsetParent.offsetWidth - textfield.offsetLeft - textfield.offsetWidth
 
-    let top = textfield.offsetTop;
+    let top = textfield.offsetTop
     const scrollParent = findScrollParent(textfield)
     if (scrollParent) {
       top = getTopPosition(textfield, scrollParent)
