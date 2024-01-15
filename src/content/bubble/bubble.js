@@ -169,8 +169,8 @@ function create (settings = {}) {
   document.documentElement.appendChild(bubbleInstance);
 
   // show the bubble on focus
-  document.addEventListener('focusin', focusTextfield);
-  document.addEventListener('focusout', blurTextfield);
+  document.addEventListener('focusin', focusTextfield, true);
+  document.addEventListener('focusout', blurTextfield, true);
 
   // reposition bubble on scroll
   document.addEventListener('scroll', scrollDocument, true);
@@ -182,8 +182,8 @@ export function destroy () {
     bubbleInstance = null
   }
 
-  document.removeEventListener('focusin', focusTextfield);
-  document.removeEventListener('focusout', blurTextfield);
+  document.removeEventListener('focusin', focusTextfield, true);
+  document.removeEventListener('focusout', blurTextfield, true);
   document.removeEventListener('scroll', scrollDocument, true);
 
   // disconnect all observers
