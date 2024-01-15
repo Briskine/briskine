@@ -79,30 +79,33 @@ async function clearDataCache () {
 const templatesCollection = collection(db, 'templates')
 
 function templatesOwnedQuery (user) {
-    return query(
-      templatesCollection,
-      where('customer', '==', user.customer),
-      where('owner', '==', user.id),
-      where('deleted_datetime', '==', null)
-    );
+  return query(
+    templatesCollection,
+    where('customer', '==', user.customer),
+    where('deleted_datetime', '==', null),
+    where('owner', '==', user.id),
+  )
 }
 
 function templatesSharedQuery (user) {
-    return query(
-      templatesCollection,
-      where('customer', '==', user.customer),
-      where('shared_with', 'array-contains', user.id),
-      where('deleted_datetime', '==', null)
-    );
+  return query(
+    templatesCollection,
+    where('customer', '==', user.customer),
+    where('deleted_datetime', '==', null),
+    where('sharing', '==', 'custom'),
+    where('shared_with', 'array-contains', user.id),
+    where('owner', '!=', user.id),
+  )
 }
 
 function templatesEveryoneQuery (user) {
-    return query(
-      templatesCollection,
-      where('customer', '==', user.customer),
-      where('sharing', '==', 'everyone'),
-      where('deleted_datetime', '==', null)
-    );
+  return query(
+    templatesCollection,
+    where('customer', '==', user.customer),
+    where('deleted_datetime', '==', null),
+    where('sharing', '==', 'everyone'),
+    where('owner', '!=', user.id),
+  )
 }
 
 function getCollectionQuery (name, user) {
@@ -363,6 +366,9 @@ onIdTokenChanged(firebaseAuth, (firebaseUser) => {
         }
 
         throw err
+      })
+      .finally(() => {
+        return trigger('logout')
       })
   }
 
@@ -728,9 +734,6 @@ export function logout () {
     })
     .then(() => {
       return setSignedInUser({})
-    })
-    .then(() => {
-      return trigger('logout')
     })
 }
 

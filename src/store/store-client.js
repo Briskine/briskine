@@ -1,5 +1,7 @@
 import browser from 'webextension-polyfill'
 
+import config from '../config.js'
+
 function createRequest (type) {
   return (params) => {
     return new Promise((resolve, reject) => {
@@ -10,10 +12,18 @@ function createRequest (type) {
       }).then((data) => {
         // handle errors
         if (data && data.storeError) {
-            return reject(data.storeError)
+          return reject(data.storeError)
         }
 
         return resolve(data)
+      }).catch((err) => {
+        // extension context invalidated
+        if (!browser.runtime.id) {
+          // destroy existing content scripts
+          return document.dispatchEvent(new CustomEvent(config.destroyEvent))
+        }
+
+        return reject(err)
       })
     })
   }
