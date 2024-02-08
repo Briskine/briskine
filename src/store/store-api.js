@@ -3,7 +3,10 @@ import browser from 'webextension-polyfill'
 
 import {initializeApp} from 'firebase/app'
 import {
-  getAuth,
+  initializeAuth,
+  indexedDBLocalPersistence,
+  browserLocalPersistence,
+  browserSessionPersistence,
   connectAuthEmulator,
   signInWithCustomToken,
   onIdTokenChanged,
@@ -26,7 +29,13 @@ import fuzzySearch from './search.js'
 import badgeUpdate from '../background/badge-update.js'
 
 const firebaseApp = initializeApp(FIREBASE_CONFIG)
-const firebaseAuth = getAuth(firebaseApp)
+const firebaseAuth = initializeAuth(firebaseApp, {
+  persistence: [
+    indexedDBLocalPersistence,
+    browserLocalPersistence,
+    browserSessionPersistence,
+  ],
+})
 const db = initializeFirestore(firebaseApp, {
   experimentalForceLongPolling: true
 })
