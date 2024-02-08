@@ -1,4 +1,4 @@
-/* globals ENV, FIREBASE_CONFIG */
+/* globals ENV, FIREBASE_CONFIG, MANIFEST */
 import browser from 'webextension-polyfill'
 
 import {initializeApp} from 'firebase/app'
@@ -915,9 +915,11 @@ export function searchTemplates (query = '') {
     })
 }
 
+const actionNamespace = (MANIFEST === '2') ? 'browserAction' : 'action'
+
 export async function openPopup () {
   try {
-    await browser.browserAction.openPopup()
+    await browser[actionNamespace].openPopup()
   } catch (err) {
     // browserAction.openPopup is not supported in all browsers yet.
     // https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/action/openPopup
