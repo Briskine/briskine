@@ -11,7 +11,7 @@ import {
   signInWithCustomToken,
   onIdTokenChanged,
   signOut
-} from 'firebase/auth';
+} from 'firebase/auth'
 import {
   initializeFirestore,
   connectFirestoreEmulator,
@@ -35,6 +35,7 @@ const firebaseAuth = initializeAuth(firebaseApp, {
     browserLocalPersistence,
     browserSessionPersistence,
   ],
+  popupRedirectResolver: undefined,
 })
 const db = initializeFirestore(firebaseApp, {
   experimentalForceLongPolling: true
