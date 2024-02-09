@@ -342,53 +342,6 @@ function setSignedInUser (user) {
   })
 }
 
-// auth change
-onIdTokenChanged(firebaseAuth, (firebaseUser) => {
-  badgeUpdate(firebaseUser)
-
-  if (!firebaseUser) {
-    return getSignedInUser()
-      .then((user) => {
-        if (user) {
-          clearDataCache()
-          return setSignedInUser({})
-        }
-
-        // eslint-disable-next-line
-        return
-      })
-      .catch((err) => {
-        if (isLoggedOut(err)) {
-          return
-        }
-
-        throw err
-      })
-      .finally(() => {
-        return trigger('logout')
-      })
-  }
-
-  return getSignedInUser()
-    .then((user) => {
-      if (user.id === firebaseUser.uid) {
-        return
-      }
-
-      clearDataCache()
-      return updateCurrentUser(firebaseUser)
-    })
-    .catch((err) => {
-      // first login
-      if (isLoggedOut(err)) {
-        // logged-out
-        return
-      }
-
-      throw err
-    })
-})
-
 const defaultTags = [
   {title: 'en', color: 'blue'},
   {title: 'greetings', color: 'green'},
@@ -917,3 +870,50 @@ export async function openPopup () {
     })
   }
 }
+
+// auth change
+onIdTokenChanged(firebaseAuth, (firebaseUser) => {
+  badgeUpdate(firebaseUser)
+
+  if (!firebaseUser) {
+    return getSignedInUser()
+      .then((user) => {
+        if (user) {
+          clearDataCache()
+          return setSignedInUser({})
+        }
+
+        // eslint-disable-next-line
+        return
+      })
+      .catch((err) => {
+        if (isLoggedOut(err)) {
+          return
+        }
+
+        throw err
+      })
+      .finally(() => {
+        return trigger('logout')
+      })
+  }
+
+  return getSignedInUser()
+    .then((user) => {
+      if (user.id === firebaseUser.uid) {
+        return
+      }
+
+      clearDataCache()
+      return updateCurrentUser(firebaseUser)
+    })
+    .catch((err) => {
+      // first login
+      if (isLoggedOut(err)) {
+        // logged-out
+        return
+      }
+
+      throw err
+    })
+})
