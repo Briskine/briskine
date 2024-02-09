@@ -214,7 +214,7 @@ export default async function (env) {
 
   const params = Object.assign({
     firebaseConfig: firebaseConfig,
-    manifest: '3',
+    manifest: '2',
     safari: false,
     e2e: false,
     mode: 'production',
