@@ -204,7 +204,7 @@ export function clearCollectionCache (collections = []) {
     cache[c] = null
   })
 
-  browser.storage.local.set(cache)
+  return browser.storage.local.set(cache)
 }
 
 // handle fetch errors

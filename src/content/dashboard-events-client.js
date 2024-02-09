@@ -27,13 +27,18 @@ function clearCache (collection) {
   }
 
   clearCacheTimer = setTimeout(() => {
-    console.log('clear collection cache for', batchedUpdates)
     store.clearCollectionCache(batchedUpdates)
 
     clearCacheTimer = null
     batchedUpdates = []
   }, 500)
 }
+
+const templateCollections = [
+  'templatesOwned',
+  'templatesShared',
+  'templatesEveryone',
+]
 
 function dashboardEvent (e) {
   if (e.origin !== config.functionsUrl) {
@@ -42,10 +47,14 @@ function dashboardEvent (e) {
 
   const dashboardEvent = dashboardEvents.find((dEvent) => dEvent.type === e?.data?.type)
   if (dashboardEvent) {
-    clearCache(dashboardEvent.collection)
+    if (dashboardEvent.collection === 'templates') {
+      templateCollections.forEach((tc) => {
+        clearCache(tc)
+      })
+    } else {
+      clearCache(dashboardEvent.collection)
+    }
   }
-
-  return
 }
 
 export function setup () {
