@@ -51,6 +51,7 @@ const methods = [
   'setExtensionData',
 
   'openPopup',
+  'clearCollectionCache',
 ]
 
 let events = []

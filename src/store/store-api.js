@@ -19,6 +19,7 @@ import {
   query,
   where,
   onSnapshot,
+  getDocs,
   documentId,
   Timestamp,
 } from 'firebase/firestore'
@@ -118,6 +119,15 @@ function templatesEveryoneQuery (user) {
   )
 }
 
+const allCollections = [
+  'users',
+  'customers',
+  'tags',
+  'templatesOwned',
+  'templatesShared',
+  'templatesEveryone',
+]
+
 function getCollectionQuery (name, user) {
   const collectionQuery = {
     users: [documentId(), '==', user.id],
@@ -150,17 +160,17 @@ function getCollection (params = {}) {
   if (collectionRequestQueue[params.collection]) {
     return collectionRequestQueue[params.collection]
   }
-
-  // if the snapshot was not set yet
-  if (!snapshotListeners[params.collection]) {
-    // snapshots will trigger when first set,
-    // and return the initial data.
-    collectionRequestQueue[params.collection] = startSnapshot(params.collection, params.user)
-      .then((res) => {
-        collectionRequestQueue[params.collection] = null
-        return res
-      })
-  }
+  //
+  // // if the snapshot was not set yet
+  // if (!snapshotListeners[params.collection]) {
+  //   // snapshots will trigger when first set,
+  //   // and return the initial data.
+  //   collectionRequestQueue[params.collection] = startSnapshot(params.collection, params.user)
+  //     .then((res) => {
+  //       collectionRequestQueue[params.collection] = null
+  //       return res
+  //     })
+  // }
 
   // get from cache
   return browser.storage.local.get(params.collection)
@@ -168,6 +178,12 @@ function getCollection (params = {}) {
       if (res[params.collection]) {
         return res[params.collection]
       }
+
+      const query = getCollectionQuery(params.collection, params.user)
+      collectionRequestQueue[params.collection] = getDocs(query).then((snapshot) => {
+        collectionRequestQueue[params.collection] = null
+        return refreshLocalData(params.collection, snapshot)
+      })
 
       return collectionRequestQueue[params.collection]
     })
@@ -195,6 +211,16 @@ function updateCache (params = {}) {
   trigger(eventName, params.data)
 
   return params.data
+}
+
+export function clearCollectionCache (collections = []) {
+  const collectionsToClear = collections.length ? collections : allCollections
+  const cache = {}
+  collectionsToClear.forEach((c) => {
+    cache[c] = null
+  })
+
+  browser.storage.local.set(cache)
 }
 
 const snapshotListeners = {}

@@ -8,16 +8,16 @@ import store from '../store/store-client.js'
 import {keybind, keyunbind} from './keybind.js'
 import {swipebind, swipeunbind} from './swipe.js'
 
-let templateCache = []
-function updateTemplateCache (templates = []) {
-  templateCache = templates
+let shortcutCache = []
+function updateShortcutCache (templates = []) {
+  shortcutCache = templates.map((t) => t.shortcut)
 }
 
-function getTemplateFromCache (shortcut) {
+function isShortcutInCache (shortcut) {
   if (!shortcut) {
     return
   }
-  return templateCache.find((template) => template.shortcut === shortcut)
+  return shortcutCache.includes(shortcut)
 }
 
 // is input or textarea
@@ -28,7 +28,7 @@ function isTextfield (element) {
 function getTemplates () {
   return store.getTemplates()
     .then((templates) => {
-      updateTemplateCache(templates)
+      updateShortcutCache(templates)
       return templates
     })
 }
@@ -82,13 +82,13 @@ async function keyboardAutocomplete (e) {
     const anchorNode = selection.anchorNode
     const anchorOffset = selection.anchorOffset
 
-    let template = getTemplateFromCache(word.text)
-    if (template) {
+    let inCache = isShortcutInCache(word.text)
+    if (inCache) {
       e.preventDefault()
       e.stopImmediatePropagation()
-    } else {
-      template = await getTemplateByShortcut(word.text)
     }
+
+    const template = await getTemplateByShortcut(word.text)
 
     if (template) {
       // restore selection

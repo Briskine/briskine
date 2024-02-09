@@ -1,6 +1,7 @@
 // native custom elements are not supported in content scripts
 // https://bugs.chromium.org/p/chromium/issues/detail?id=390807
 import '@webcomponents/custom-elements'
+import deepEqual from 'deep-equal'
 
 import store from '../store/store-client.js'
 import config from '../config.js'
@@ -122,7 +123,7 @@ function refreshContentScripts () {
   // restart the content components if any of the settings changed
   store.getSettings()
     .then((settings) => {
-      const settingsChanged = JSON.stringify(settings) !== JSON.stringify(settingsCache)
+      const settingsChanged = !deepEqual(settings, settingsCache)
       if (settingsChanged) {
         destructor()
         init(settings)
