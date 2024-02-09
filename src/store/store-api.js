@@ -18,7 +18,6 @@ import {
   collection,
   query,
   where,
-  onSnapshot,
   getDocs,
   documentId,
   Timestamp,
@@ -72,8 +71,6 @@ function convertToNativeDates (obj = {}) {
 }
 
 async function clearDataCache () {
-  stopSnapshots()
-
   // cache stats,
   // to keep them between login sessions
   const extensionData = await getExtensionData()
@@ -160,17 +157,6 @@ function getCollection (params = {}) {
   if (collectionRequestQueue[params.collection]) {
     return collectionRequestQueue[params.collection]
   }
-  //
-  // // if the snapshot was not set yet
-  // if (!snapshotListeners[params.collection]) {
-  //   // snapshots will trigger when first set,
-  //   // and return the initial data.
-  //   collectionRequestQueue[params.collection] = startSnapshot(params.collection, params.user)
-  //     .then((res) => {
-  //       collectionRequestQueue[params.collection] = null
-  //       return res
-  //     })
-  // }
 
   // get from cache
   return browser.storage.local.get(params.collection)
@@ -221,29 +207,6 @@ export function clearCollectionCache (collections = []) {
   })
 
   browser.storage.local.set(cache)
-}
-
-const snapshotListeners = {}
-function startSnapshot (collectionName, user) {
-  return new Promise((resolve) => {
-    const snapshotQuery = getCollectionQuery(collectionName, user)
-    snapshotListeners[collectionName] = onSnapshot(snapshotQuery, (snapshot) => {
-      // returns first response,
-      // and keeps updating cache.
-      resolve(refreshLocalData(collectionName, snapshot))
-    })
-  })
-}
-
-function stopSnapshots () {
-  Object.keys(snapshotListeners).forEach((snapshotKey) => {
-    const unsubscriber = snapshotListeners[snapshotKey]
-    if (unsubscriber) {
-      unsubscriber()
-    }
-
-    snapshotListeners[snapshotKey] = null
-  })
 }
 
 // handle fetch errors
