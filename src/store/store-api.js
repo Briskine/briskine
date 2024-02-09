@@ -21,7 +21,7 @@ import {
   getDocs,
   documentId,
   Timestamp,
-} from 'firebase/firestore'
+} from 'firebase/firestore/lite'
 
 import config from '../config.js'
 import trigger from './store-trigger.js'
@@ -37,9 +37,7 @@ const firebaseAuth = initializeAuth(firebaseApp, {
   ],
   popupRedirectResolver: undefined,
 })
-const db = initializeFirestore(firebaseApp, {
-  experimentalForceLongPolling: true
-})
+const db = initializeFirestore(firebaseApp, {})
 
 // development emulators
 if (ENV === 'development') {
