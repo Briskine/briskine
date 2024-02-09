@@ -187,9 +187,7 @@ customElements.define(
           this.searchField.focus()
         })
 
-        if (this.loading === true) {
-          this.loadData()
-        }
+        this.loadData()
       }
 
       this.hideOnClick = (e) => {
@@ -244,7 +242,6 @@ customElements.define(
           })
           .then((loggedIn) => {
             this.loggedIn = loggedIn
-            this.loading = true
 
             // only start loading data if the dialog is visible
             if (this.hasAttribute(dialogVisibleAttr)) {
@@ -316,6 +313,8 @@ customElements.define(
       }
 
       this.loadData = async () => {
+        this.loading = true
+
         const extensionData = await store.getExtensionData()
         this.extensionDataUpdated(extensionData)
 
