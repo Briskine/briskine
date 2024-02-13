@@ -281,7 +281,8 @@ const defaultSettings = {
   expand_enabled: true,
   expand_shortcut: 'tab',
 
-  blacklist: []
+  blacklist: [],
+  share_all: false,
 }
 
 export function getSettings () {
