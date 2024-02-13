@@ -23,6 +23,7 @@ const blacklistPrivate = [
 
 function init (settings) {
   setupStatus()
+  setupDashboardEvents()
 
   // create the full blacklist
   // from the editable and private one
@@ -44,7 +45,6 @@ function init (settings) {
   setupSandbox()
   setupPage()
   setupAttachments()
-  setupDashboardEvents()
 
   // update the content components if settings change
   settingsCache = Object.assign({}, settings)
