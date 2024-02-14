@@ -27,7 +27,7 @@ function clearCache (collection) {
   }
 
   clearCacheTimer = setTimeout(() => {
-    store.clearCollectionCache(batchedUpdates)
+    store.refetchCollections(batchedUpdates)
 
     clearCacheTimer = null
     batchedUpdates = []

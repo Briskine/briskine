@@ -186,25 +186,38 @@ function refreshLocalData (collectionName, querySnapshot) {
   })
 }
 
-function updateCache (params = {}) {
-  browser.storage.local.set({
+async function updateCache (params = {}) {
+  await browser.storage.local.set({
     [params.collection]: params.data
   })
 
   const eventName = params.collection.includes('templates') ? 'templates-updated' : `${params.collection}-updated`
   trigger(eventName, params.data)
 
+  // TODO set a lastSync in extension-data
+  await setExtensionData({
+    lastSync: Date.now(),
+  })
+
   return params.data
 }
 
-export function clearCollectionCache (collections = []) {
+export async function refetchCollections (collections = []) {
   const collectionsToClear = collections.length ? collections : allCollections
   const cache = {}
   collectionsToClear.forEach((c) => {
     cache[c] = null
   })
 
-  return browser.storage.local.set(cache)
+  await browser.storage.local.set(cache)
+
+  const user = await getSignedInUser()
+  return Promise.all(
+      collectionsToClear.map((c) => getCollection({
+        collection: c,
+        user: user,
+      }))
+    )
 }
 
 // handle fetch errors
@@ -729,6 +742,7 @@ const defaultExtensionData = {
   templatesLastUsed: {},
   dialogSort: 'last_used',
   dialogTags: true,
+  lastSync: Date.now(),
 }
 
 export function getExtensionData () {

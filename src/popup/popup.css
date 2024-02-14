@@ -315,6 +315,15 @@ a:hover,
   cursor: default;
 }
 
+/* sync button
+ */
+.btn-sync {
+}
+
+.btn-sync-loading {
+  background-color: red;
+}
+
 /* premium and free stats
  */
 

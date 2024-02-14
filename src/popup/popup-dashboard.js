@@ -22,19 +22,15 @@ function niceTime (minutes) {
   }
 }
 
-function getStats () {
-  const avgWPM = 25;
-  return store.getExtensionData()
-    .then((data) => {
-      const words = data.words
-      // average WPM: http://en.wikipedia.org/wiki/Words_per_minute
-      const time = niceTime(Math.round(words / avgWPM))
+function getStats (words = 0) {
+  const avgWPM = 25
+  // average WPM: http://en.wikipedia.org/wiki/Words_per_minute
+  const time = niceTime(Math.round(words / avgWPM))
 
-      return {
-        time: time,
-        words: words
-      }
-    })
+  return {
+    time: time,
+    words: words
+  }
 }
 
 customElements.define(
@@ -43,14 +39,17 @@ customElements.define(
     constructor() {
       super()
 
-      this.stats = {
-        time: '0min',
-        words: 0,
-      }
-      getStats().then((res) => {
-        this.stats = res
-        this.connectedCallback()
-      })
+      this.syncing = false
+      this.stats = getStats(0)
+      this.lastSync = Date.now()
+
+      store.getExtensionData()
+        .then((data) => {
+          this.lastSync = new Date(data.lastSync)
+          this.stats = getStats(data.words)
+
+          this.connectedCallback()
+        })
 
       this.user = {}
       this.isFree = null
@@ -88,6 +87,24 @@ customElements.define(
         const teamSelect = this.querySelector('#team-select')
         if (e.target === teamSelect) {
           this.switchTeam(e)
+        }
+      })
+
+      this.addEventListener('click', (e) => {
+        if (e.target.classList.contains('js-sync-now')) {
+          this.syncing = true
+          this.connectedCallback()
+
+          return store.refetchCollections()
+            .then(() => {
+              return store.getExtensionData()
+            })
+            .then((data) => {
+              this.syncing = false
+
+              this.lastSync = new Date(data.lastSync)
+              return this.connectedCallback()
+            })
         }
       })
 
@@ -152,10 +169,22 @@ customElements.define(
     connectedCallback() {
       render(html`
         <div class="popup-dashboard">
-          <div class="popup-box popup-logo">
+          <div class="popup-box popup-logo d-flex justify-content-between">
             <a href=${Config.websiteUrl} target="_blank">
               <img src="../icons/briskine-combo.svg" width="132" alt="Briskine"/>
             </a>
+
+            <button
+              type="button"
+              class=${classMap({
+                'btn-sync': true,
+                'btn-sync-loading': this.syncing,
+                'js-sync-now': true,
+              })}
+              title=${`Sync templates now (Last sync: ${this.lastSync.toLocaleString()})`}
+              >
+              Sync
+            </button>
           </div>
 
           <ul class="list-unstyled popup-menu">
