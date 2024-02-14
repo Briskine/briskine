@@ -104,12 +104,7 @@ customElements.define(
             .then((data) => {
               this.syncing = false
               this.lastSync = new Date(data.lastSync)
-
-              setTimeout(() => {
-                this.connectedCallback()
-              }, 1000)
-
-              return
+              return this.connectedCallback()
             })
         }
       })

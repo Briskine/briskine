@@ -211,13 +211,33 @@ export async function refetchCollections (collections = []) {
 
   await browser.storage.local.set(cache)
 
-  const user = await getSignedInUser()
-  return Promise.all(
-      collectionsToClear.map((c) => getCollection({
-        collection: c,
-        user: user,
-      }))
-    )
+  return getSignedInUser()
+    .then((user) => {
+      return Promise.all([
+        user,
+        isFree(user),
+      ])
+    })
+    .then(([user, free]) => {
+      let collectionsToRefetch = collectionsToClear
+      // don't refetch shared templates for free users
+      if (free) {
+        collectionsToRefetch = collectionsToClear.filter((c) => !['templatesShared', 'templatesEveryone'].includes(c))
+      }
+      return Promise.all(
+        collectionsToRefetch.map((c) => getCollection({
+          collection: c,
+          user: user,
+        }))
+      )
+    })
+    .catch((err) => {
+      if (isLoggedOut(err)) {
+        return getDefaultTemplates()
+      }
+
+      throw err
+    })
 }
 
 // handle fetch errors
