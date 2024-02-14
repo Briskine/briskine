@@ -194,7 +194,6 @@ async function updateCache (params = {}) {
   const eventName = params.collection.includes('templates') ? 'templates-updated' : `${params.collection}-updated`
   trigger(eventName, params.data)
 
-  // TODO set a lastSync in extension-data
   await setExtensionData({
     lastSync: Date.now(),
   })
