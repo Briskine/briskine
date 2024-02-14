@@ -5,7 +5,7 @@ import {unsafeSVG} from 'lit-html/directives/unsafe-svg.js'
 import Config from '../config.js'
 import store from '../store/store-client.js'
 
-import {plusSquareFill, archiveFill, gearFill} from './popup-icons.js'
+import {plusSquareFill, archiveFill, gearFill, arrowRepeat} from './popup-icons.js'
 
 function niceTime (minutes) {
   if (!minutes) {
@@ -46,6 +46,8 @@ customElements.define(
       store.getExtensionData()
         .then((data) => {
           this.lastSync = new Date(data.lastSync)
+          // TODO if the lastSync is more than 1 hour ago, trigger sync
+
           this.stats = getStats(data.words)
 
           this.connectedCallback()
@@ -91,7 +93,7 @@ customElements.define(
       })
 
       this.addEventListener('click', (e) => {
-        if (e.target.classList.contains('js-sync-now')) {
+        if (e.target.closest('.js-sync-now')) {
           this.syncing = true
           this.connectedCallback()
 
@@ -101,9 +103,13 @@ customElements.define(
             })
             .then((data) => {
               this.syncing = false
-
               this.lastSync = new Date(data.lastSync)
-              return this.connectedCallback()
+
+              setTimeout(() => {
+                this.connectedCallback()
+              }, 1000)
+
+              return
             })
         }
       })
@@ -181,9 +187,10 @@ customElements.define(
                 'btn-sync-loading': this.syncing,
                 'js-sync-now': true,
               })}
+              ?disabled=${this.syncing}
               title=${`Sync templates now (Last sync: ${this.lastSync.toLocaleString()})`}
               >
-              Sync
+                ${unsafeSVG(arrowRepeat)}
             </button>
           </div>
 
