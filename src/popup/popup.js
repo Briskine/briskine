@@ -32,11 +32,6 @@ customElements.define(
       return store.getAccount()
         .then(() => {
           this.loggedIn = true
-
-          setTimeout(() => {
-            store.clearCollectionCache()
-          }, 1000)
-
           return
         })
         .catch(() => {
