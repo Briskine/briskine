@@ -31,7 +31,7 @@ function clearCache (collection) {
 
     clearCacheTimer = null
     batchedUpdates = []
-  }, 500)
+  }, 1000)
 }
 
 const templateCollections = [
