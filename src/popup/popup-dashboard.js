@@ -192,7 +192,7 @@ customElements.define(
                 'js-sync-now': true,
               })}
               ?disabled=${this.syncing}
-              title=${`Sync templates now (Last sync: ${this.lastSync.toLocaleString()})`}
+              title=${`Sync templates now \n(Last sync: ${this.lastSync.toLocaleString()})`}
               >
                 ${unsafeSVG(arrowRepeat)}
             </button>
