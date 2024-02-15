@@ -25,21 +25,29 @@ browser.runtime.onInstalled.addListener((details) => {
     const scripts = contentScripts.js
     const styles = contentScripts.css
 
-    let scriptingNamespace = 'scripting'
-    if (MANIFEST === '2') {
-      scriptingNamespace = 'tabs'
-    }
-
     browser.tabs.query({
       url: contentScripts.matches
     }).then((tabs) => {
       tabs.forEach((tab) => {
         // remove and insert new content styles
-        styles.forEach((file) => {
-          browser[scriptingNamespace].removeCSS(tab.id, {file: file}).then(() => {
-            browser[scriptingNamespace].insertCSS(tab.id, {file: file})
+        if (MANIFEST === '2') {
+          styles.forEach((file) => {
+            browser.tabs.removeCSS(tab.id, {file: file}).then(() => {
+              browser.tabs.insertCSS(tab.id, {file: file})
+            })
           })
-        })
+        } else {
+          const cssInjectParams = {
+            target: {
+              tabId: tab.id,
+            },
+            files: styles,
+          }
+
+          browser.scripting.removeCSS(cssInjectParams).then(() => {
+            browser.scripting.insertCSS(cssInjectParams)
+          })
+        }
 
         // insert new content scripts
         if (MANIFEST === '2') {

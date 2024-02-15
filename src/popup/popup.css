@@ -9,6 +9,9 @@
 
   --background-color: #fff;
   --background-color-overlay: #f3f4f5;
+
+  --green: #37c837;
+  --yellow: #ffcc00;
 }
 
 html {
@@ -171,6 +174,7 @@ a:hover,
   position: absolute;
   top: 50%;
   left: 50%;
+  translate: -50% -50%;
   z-index: 3;
   display: block;
   width: 12px;
@@ -179,15 +183,15 @@ a:hover,
   border-style: solid;
   border-width: 2px 2px 2px 2px;
   border-radius: 20px;
-  animation: spin-centered .8s linear infinite;
+  animation: spin .8s linear infinite;
 }
 
-@keyframes spin-centered {
+@keyframes spin {
   0% {
-    transform: translate(-50%, -50%) rotate(0);
+    rotate: 0;
   }
   100% {
-    transform: translate(-50%, -50%) rotate(360deg);
+    rotate: 360deg;
   }
 }
 
@@ -258,6 +262,7 @@ a:hover,
 }
 
 .popup-status {
+  display: flex;
   overflow: hidden;
 
   font-size: 12px;
@@ -273,17 +278,19 @@ a:hover,
 }
 
 .btn-logout {
-  float: right;
+  min-width: 5em;
   border: 0;
-  margin-right: -1em;
+  margin-left: auto;
+  padding-right: 0;
+
+  white-space: nowrap;
 }
 
 .popup-user {
-  float: left;
   position: relative;
   overflow: hidden;
   padding-left: 1em;
-  max-width: 10rem;
+
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -299,20 +306,42 @@ a:hover,
   width: 6px;
   height: 6px;
   margin-right: .4em;
-  background-color: #37c837;
+  background-color: var(--green);
   border-radius: 100%;
 }
 
 .label-premium {
-  float: left;
   padding: .1em .4em;
   margin: .3em 0 .3em .4em;
-  background-color: #ffcc00;
+  background-color: var(--yellow);
   border-radius: 3px;
 
   color: #3c3000;
   font-weight: bold;
   cursor: default;
+}
+
+/* sync button
+ */
+.btn-sync {
+  display: flex;
+  margin-top: auto;
+  margin-bottom: auto;
+  padding: 3px;
+  border: 0;
+  border-radius: 100%;
+  background-color: var(--green);
+  transition: background-color .5s ease-out;
+
+  color: #fff;
+}
+
+.btn-sync-loading {
+  background-color: var(--yellow);
+}
+
+.btn-sync-loading svg {
+  animation: spin .5s linear infinite;
 }
 
 /* premium and free stats

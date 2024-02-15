@@ -5,7 +5,7 @@ import {unsafeSVG} from 'lit-html/directives/unsafe-svg.js'
 import Config from '../config.js'
 import store from '../store/store-client.js'
 
-import {plusSquareFill, archiveFill, gearFill} from './popup-icons.js'
+import {plusSquareFill, archiveFill, gearFill, arrowRepeat} from './popup-icons.js'
 
 function niceTime (minutes) {
   if (!minutes) {
@@ -22,20 +22,19 @@ function niceTime (minutes) {
   }
 }
 
-function getStats () {
-  const avgWPM = 25;
-  return store.getExtensionData()
-    .then((data) => {
-      const words = data.words
-      // average WPM: http://en.wikipedia.org/wiki/Words_per_minute
-      const time = niceTime(Math.round(words / avgWPM))
+function getStats (words = 0) {
+  const avgWPM = 25
+  // average WPM: http://en.wikipedia.org/wiki/Words_per_minute
+  const time = niceTime(Math.round(words / avgWPM))
 
-      return {
-        time: time,
-        words: words
-      }
-    })
+  return {
+    time: time,
+    words: words
+  }
 }
+
+// one hour
+const autoSyncTime = 60 * 60 * 1000
 
 customElements.define(
   'popup-dashboard',
@@ -43,14 +42,22 @@ customElements.define(
     constructor() {
       super()
 
-      this.stats = {
-        time: '0min',
-        words: 0,
-      }
-      getStats().then((res) => {
-        this.stats = res
-        this.connectedCallback()
-      })
+      this.syncing = false
+      this.stats = getStats(0)
+      this.lastSync = Date.now()
+
+      store.getExtensionData()
+        .then((data) => {
+          this.lastSync = new Date(data.lastSync)
+          // auto sync is last sync was more than one hour ago
+          if (new Date() - this.lastSync > autoSyncTime) {
+            this.sync()
+          }
+
+          this.stats = getStats(data.words)
+
+          this.connectedCallback()
+        })
 
       this.user = {}
       this.isFree = null
@@ -91,7 +98,27 @@ customElements.define(
         }
       })
 
+      this.addEventListener('click', (e) => {
+        if (e.target.closest('.js-sync-now')) {
+          this.sync()
+        }
+      })
+
       this.refreshAccount()
+    }
+    sync () {
+      this.syncing = true
+      this.connectedCallback()
+
+      return store.refetchCollections()
+        .then(() => {
+          return store.getExtensionData()
+        })
+        .then((data) => {
+          this.syncing = false
+          this.lastSync = new Date(data.lastSync)
+          return this.connectedCallback()
+        })
     }
     refreshAccount () {
       return store.getAccount()
@@ -152,10 +179,23 @@ customElements.define(
     connectedCallback() {
       render(html`
         <div class="popup-dashboard">
-          <div class="popup-box popup-logo">
+          <div class="popup-box popup-logo d-flex justify-content-between">
             <a href=${Config.websiteUrl} target="_blank">
               <img src="../icons/briskine-combo.svg" width="132" alt="Briskine"/>
             </a>
+
+            <button
+              type="button"
+              class=${classMap({
+                'btn-sync': true,
+                'btn-sync-loading': this.syncing,
+                'js-sync-now': true,
+              })}
+              ?disabled=${this.syncing}
+              title=${`Sync templates now \n(Last sync: ${this.lastSync.toLocaleString()})`}
+              >
+                ${unsafeSVG(arrowRepeat)}
+            </button>
           </div>
 
           <ul class="list-unstyled popup-menu">
@@ -263,7 +303,7 @@ customElements.define(
                 href=${`${Config.functionsUrl}/account`}
                 target=${Config.dashboardTarget}
                 class="popup-user"
-                title=${`Account Settings for ${this.user.email}`}
+                title=${`Account settings for ${this.user.email}`}
                 >
                 ${this.user.email}
               </a>

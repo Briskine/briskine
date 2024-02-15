@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "Briskine: Email templates for Gmail",
+  "name": "Briskine: Email templates for Gmail™",
   "version": "",
-  "description": "Write emails faster! Increase your productivity with templates and keyboard shortcuts on Gmail, Outlook, or LinkedIn.",
+  "description": "Write emails faster! Increase your productivity with templates and keyboard shortcuts on Gmail™, Outlook, or LinkedIn.",
   "short_name": "Briskine",
   "icons": {
     "16": "icons/icon-16.png",

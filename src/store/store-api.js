@@ -1,24 +1,27 @@
-/* globals ENV, FIREBASE_CONFIG */
+/* globals ENV, FIREBASE_CONFIG, MANIFEST */
 import browser from 'webextension-polyfill'
 
 import {initializeApp} from 'firebase/app'
 import {
-  getAuth,
+  initializeAuth,
+  indexedDBLocalPersistence,
+  browserLocalPersistence,
+  browserSessionPersistence,
   connectAuthEmulator,
   signInWithCustomToken,
   onIdTokenChanged,
   signOut
-} from 'firebase/auth';
+} from 'firebase/auth'
 import {
   initializeFirestore,
   connectFirestoreEmulator,
   collection,
   query,
   where,
-  onSnapshot,
+  getDocs,
   documentId,
   Timestamp,
-} from 'firebase/firestore'
+} from 'firebase/firestore/lite'
 
 import config from '../config.js'
 import trigger from './store-trigger.js'
@@ -26,10 +29,15 @@ import fuzzySearch from './search.js'
 import badgeUpdate from '../background/badge-update.js'
 
 const firebaseApp = initializeApp(FIREBASE_CONFIG)
-const firebaseAuth = getAuth(firebaseApp)
-const db = initializeFirestore(firebaseApp, {
-  experimentalForceLongPolling: true
+const firebaseAuth = initializeAuth(firebaseApp, {
+  persistence: [
+    indexedDBLocalPersistence,
+    browserLocalPersistence,
+    browserSessionPersistence,
+  ],
+  popupRedirectResolver: undefined,
 })
+const db = initializeFirestore(firebaseApp, {})
 
 // development emulators
 if (ENV === 'development') {
@@ -61,8 +69,6 @@ function convertToNativeDates (obj = {}) {
 }
 
 async function clearDataCache () {
-  stopSnapshots()
-
   // cache stats,
   // to keep them between login sessions
   const extensionData = await getExtensionData()
@@ -108,6 +114,15 @@ function templatesEveryoneQuery (user) {
   )
 }
 
+const allCollections = [
+  'users',
+  'customers',
+  'tags',
+  'templatesOwned',
+  'templatesShared',
+  'templatesEveryone',
+]
+
 function getCollectionQuery (name, user) {
   const collectionQuery = {
     users: [documentId(), '==', user.id],
@@ -141,23 +156,18 @@ function getCollection (params = {}) {
     return collectionRequestQueue[params.collection]
   }
 
-  // if the snapshot was not set yet
-  if (!snapshotListeners[params.collection]) {
-    // snapshots will trigger when first set,
-    // and return the initial data.
-    collectionRequestQueue[params.collection] = startSnapshot(params.collection, params.user)
-      .then((res) => {
-        collectionRequestQueue[params.collection] = null
-        return res
-      })
-  }
-
   // get from cache
   return browser.storage.local.get(params.collection)
     .then((res) => {
       if (res[params.collection]) {
         return res[params.collection]
       }
+
+      const query = getCollectionQuery(params.collection, params.user)
+      collectionRequestQueue[params.collection] = getDocs(query).then((snapshot) => {
+        collectionRequestQueue[params.collection] = null
+        return refreshLocalData(params.collection, snapshot)
+      })
 
       return collectionRequestQueue[params.collection]
     })
@@ -176,38 +186,57 @@ function refreshLocalData (collectionName, querySnapshot) {
   })
 }
 
-function updateCache (params = {}) {
-  browser.storage.local.set({
+async function updateCache (params = {}) {
+  await browser.storage.local.set({
     [params.collection]: params.data
   })
 
   const eventName = params.collection.includes('templates') ? 'templates-updated' : `${params.collection}-updated`
   trigger(eventName, params.data)
 
+  await setExtensionData({
+    lastSync: Date.now(),
+  })
+
   return params.data
 }
 
-const snapshotListeners = {}
-function startSnapshot (collectionName, user) {
-  return new Promise((resolve) => {
-    const snapshotQuery = getCollectionQuery(collectionName, user)
-    snapshotListeners[collectionName] = onSnapshot(snapshotQuery, (snapshot) => {
-      // returns first response,
-      // and keeps updating cache.
-      resolve(refreshLocalData(collectionName, snapshot))
+export async function refetchCollections (collections = []) {
+  const collectionsToClear = collections.length ? collections : allCollections
+  const cache = {}
+  collectionsToClear.forEach((c) => {
+    cache[c] = null
+  })
+
+  await browser.storage.local.set(cache)
+
+  return getSignedInUser()
+    .then((user) => {
+      return Promise.all([
+        user,
+        isFree(user),
+      ])
     })
-  })
-}
+    .then(([user, free]) => {
+      let collectionsToRefetch = collectionsToClear
+      // don't refetch shared templates for free users
+      if (free) {
+        collectionsToRefetch = collectionsToClear.filter((c) => !['templatesShared', 'templatesEveryone'].includes(c))
+      }
+      return Promise.all(
+        collectionsToRefetch.map((c) => getCollection({
+          collection: c,
+          user: user,
+        }))
+      )
+    })
+    .catch((err) => {
+      if (isLoggedOut(err)) {
+        return
+      }
 
-function stopSnapshots () {
-  Object.keys(snapshotListeners).forEach((snapshotKey) => {
-    const unsubscriber = snapshotListeners[snapshotKey]
-    if (unsubscriber) {
-      unsubscriber()
-    }
-
-    snapshotListeners[snapshotKey] = null
-  })
+      throw err
+    })
 }
 
 // handle fetch errors
@@ -284,7 +313,8 @@ const defaultSettings = {
   expand_enabled: true,
   expand_shortcut: 'tab',
 
-  blacklist: []
+  blacklist: [],
+  share_all: false,
 }
 
 export function getSettings () {
@@ -344,53 +374,6 @@ function setSignedInUser (user) {
     })
   })
 }
-
-// auth change
-onIdTokenChanged(firebaseAuth, (firebaseUser) => {
-  badgeUpdate(firebaseUser)
-
-  if (!firebaseUser) {
-    return getSignedInUser()
-      .then((user) => {
-        if (user) {
-          clearDataCache()
-          return setSignedInUser({})
-        }
-
-        // eslint-disable-next-line
-        return
-      })
-      .catch((err) => {
-        if (isLoggedOut(err)) {
-          return
-        }
-
-        throw err
-      })
-      .finally(() => {
-        return trigger('logout')
-      })
-  }
-
-  return getSignedInUser()
-    .then((user) => {
-      if (user.id === firebaseUser.uid) {
-        return
-      }
-
-      clearDataCache()
-      return updateCurrentUser(firebaseUser)
-    })
-    .catch((err) => {
-      // first login
-      if (isLoggedOut(err)) {
-        // logged-out
-        return
-      }
-
-      throw err
-    })
-})
 
 const defaultTags = [
   {title: 'en', color: 'blue'},
@@ -778,6 +761,7 @@ const defaultExtensionData = {
   templatesLastUsed: {},
   dialogSort: 'last_used',
   dialogTags: true,
+  lastSync: Date.now(),
 }
 
 export function getExtensionData () {
@@ -905,9 +889,11 @@ export function searchTemplates (query = '') {
     })
 }
 
+const actionNamespace = (MANIFEST === '2') ? 'browserAction' : 'action'
+
 export async function openPopup () {
   try {
-    await browser.browserAction.openPopup()
+    await browser[actionNamespace].openPopup()
   } catch (err) {
     // browserAction.openPopup is not supported in all browsers yet.
     // https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/action/openPopup
@@ -918,3 +904,50 @@ export async function openPopup () {
     })
   }
 }
+
+// auth change
+onIdTokenChanged(firebaseAuth, (firebaseUser) => {
+  badgeUpdate(firebaseUser)
+
+  if (!firebaseUser) {
+    return getSignedInUser()
+      .then((user) => {
+        if (user) {
+          clearDataCache()
+          return setSignedInUser({})
+        }
+
+        // eslint-disable-next-line
+        return
+      })
+      .catch((err) => {
+        if (isLoggedOut(err)) {
+          return
+        }
+
+        throw err
+      })
+      .finally(() => {
+        return trigger('logout')
+      })
+  }
+
+  return getSignedInUser()
+    .then((user) => {
+      if (user.id === firebaseUser.uid) {
+        return
+      }
+
+      clearDataCache()
+      return updateCurrentUser(firebaseUser)
+    })
+    .catch((err) => {
+      // first login
+      if (isLoggedOut(err)) {
+        // logged-out
+        return
+      }
+
+      throw err
+    })
+})

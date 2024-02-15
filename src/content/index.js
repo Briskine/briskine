@@ -1,6 +1,7 @@
 // native custom elements are not supported in content scripts
 // https://bugs.chromium.org/p/chromium/issues/detail?id=390807
 import '@webcomponents/custom-elements'
+import deepEqual from 'deep-equal'
 
 import store from '../store/store-client.js'
 import config from '../config.js'
@@ -12,8 +13,22 @@ import {setup as setupDialog, destroy as destroyDialog} from './dialog/dialog.js
 import {setup as setupSandbox, destroy as destroySandbox} from './sandbox/sandbox-parent.js'
 import {setup as setupPage, destroy as destroyPage} from './page/page-parent.js'
 import {setup as setupAttachments, destroy as destroyAttachments} from './attachments/attachments.js'
+import {setup as setupDashboardEvents, destroy as destroyDashboardEvents} from './dashboard-events-client.js'
 
-const currentUrl = window.location.href
+function getParentUrl () {
+  let url = window.location.href
+  if (window !== window.parent) {
+    try {
+      url = window.parent.location.href
+    } catch (err) {
+      // iframe from different domain
+    }
+  }
+
+  return url
+}
+
+const currentUrl = getParentUrl()
 
 const blacklistPrivate = [
   '.briskine.com',
@@ -21,6 +36,7 @@ const blacklistPrivate = [
 
 function init (settings) {
   setupStatus()
+  setupDashboardEvents()
 
   // create the full blacklist
   // from the editable and private one
@@ -104,6 +120,7 @@ function destructor () {
   destroySandbox()
   destroyPage()
   destroyAttachments()
+  destroyDashboardEvents()
 
   settingsCache = {}
   store.off('users-updated', refreshContentScripts)
@@ -122,7 +139,7 @@ function refreshContentScripts () {
   // restart the content components if any of the settings changed
   store.getSettings()
     .then((settings) => {
-      const settingsChanged = JSON.stringify(settings) !== JSON.stringify(settingsCache)
+      const settingsChanged = !deepEqual(settings, settingsCache)
       if (settingsChanged) {
         destructor()
         init(settings)

@@ -49,6 +49,7 @@ function generateManifest (params = {}) {
     updatedManifestFile.manifest_version = 2
     updatedManifestFile.background.scripts = [updatedManifestFile.background.service_worker]
     delete updatedManifestFile.background.service_worker
+    updatedManifestFile.background.persistent = false
     updatedManifestFile.permissions = updatedManifestFile.permissions
       .filter((p) => p !== 'scripting')
       .concat(updatedManifestFile.host_permissions)

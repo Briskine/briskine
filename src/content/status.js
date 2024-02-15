@@ -11,6 +11,10 @@ function respondToStatus () {
 const requestEvent = `${config.eventStatus}-request`
 
 export function setup () {
+  if (window.location.origin !== config.functionsUrl) {
+    return
+  }
+
   document.addEventListener(requestEvent, respondToStatus)
 }
 
