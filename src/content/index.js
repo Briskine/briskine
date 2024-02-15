@@ -15,7 +15,20 @@ import {setup as setupPage, destroy as destroyPage} from './page/page-parent.js'
 import {setup as setupAttachments, destroy as destroyAttachments} from './attachments/attachments.js'
 import {setup as setupDashboardEvents, destroy as destroyDashboardEvents} from './dashboard-events-client.js'
 
-const currentUrl = window.location.href
+function getParentUrl () {
+  let url = window.location.href
+  if (window !== window.parent) {
+    try {
+      url = window.parent.location.href
+    } catch (err) {
+      // iframe from different domain
+    }
+  }
+
+  return url
+}
+
+const currentUrl = getParentUrl()
 
 const blacklistPrivate = [
   '.briskine.com',
