@@ -16,7 +16,8 @@ const dashboardEvents = [
 })
 
 let batchedUpdates = []
-let clearCacheTimer
+let clearCacheTimer = null
+let refetching = Promise.resolve()
 function clearCache (collection) {
   if (!batchedUpdates.includes(collection)) {
     batchedUpdates.push(collection)
@@ -27,7 +28,10 @@ function clearCache (collection) {
   }
 
   clearCacheTimer = setTimeout(() => {
-    store.refetchCollections(batchedUpdates)
+    const updates = batchedUpdates.slice()
+    refetching.then(() => {
+      refetching = store.refetchCollections(updates)
+    })
 
     clearCacheTimer = null
     batchedUpdates = []

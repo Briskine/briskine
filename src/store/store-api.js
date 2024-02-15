@@ -232,7 +232,7 @@ export async function refetchCollections (collections = []) {
     })
     .catch((err) => {
       if (isLoggedOut(err)) {
-        return getDefaultTemplates()
+        return
       }
 
       throw err
