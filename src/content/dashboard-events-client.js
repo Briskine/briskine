@@ -41,10 +41,6 @@ const templateCollections = [
 ]
 
 function dashboardEvent (e) {
-  if (e.origin !== config.functionsUrl) {
-    return
-  }
-
   const dashboardEvent = dashboardEvents.find((dEvent) => dEvent.type === e?.data?.type)
   if (dashboardEvent) {
     if (dashboardEvent.collection === 'templates') {
@@ -58,6 +54,10 @@ function dashboardEvent (e) {
 }
 
 export function setup () {
+  if (window.location.origin !== config.functionsUrl) {
+    return
+  }
+
   window.addEventListener('message', dashboardEvent)
 }
 
