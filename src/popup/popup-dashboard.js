@@ -33,9 +33,6 @@ function getStats (words = 0) {
   }
 }
 
-// one hour
-const autoSyncTime = 60 * 60 * 1000
-
 customElements.define(
   'popup-dashboard',
   class extends HTMLElement {
@@ -48,14 +45,10 @@ customElements.define(
 
       store.getExtensionData()
         .then((data) => {
+          store.autosync()
+
           this.lastSync = new Date(data.lastSync)
-          // auto sync is last sync was more than one hour ago
-          if (new Date() - this.lastSync > autoSyncTime) {
-            this.sync()
-          }
-
           this.stats = getStats(data.words)
-
           this.connectedCallback()
         })
 

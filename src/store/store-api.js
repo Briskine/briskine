@@ -239,6 +239,19 @@ export async function refetchCollections (collections = []) {
     })
 }
 
+// one hour
+const autoSyncTime = 60 * 60 * 1000
+export async function autosync () {
+  const data = await getExtensionData()
+  const lastSync = new Date(data.lastSync)
+  // auto sync is last sync was more than one hour ago
+  if (new Date() - lastSync > autoSyncTime) {
+    return refetchCollections()
+  }
+
+  return
+}
+
 // handle fetch errors
 function handleErrors (response) {
     if (!response.ok) {
@@ -905,49 +918,57 @@ export async function openPopup () {
   }
 }
 
-// auth change
-onIdTokenChanged(firebaseAuth, (firebaseUser) => {
-  badgeUpdate(firebaseUser)
+function authChangeListener () {
+  // auth change
+  onIdTokenChanged(firebaseAuth, (firebaseUser) => {
+    badgeUpdate(firebaseUser)
 
-  if (!firebaseUser) {
+    if (!firebaseUser) {
+      return getSignedInUser()
+        .then((user) => {
+          if (user) {
+            clearDataCache()
+            return setSignedInUser({})
+          }
+
+          // eslint-disable-next-line
+          return
+        })
+        .catch((err) => {
+          if (isLoggedOut(err)) {
+            return
+          }
+
+          throw err
+        })
+        .finally(() => {
+          return trigger('logout')
+        })
+    }
+
     return getSignedInUser()
       .then((user) => {
-        if (user) {
-          clearDataCache()
-          return setSignedInUser({})
+        if (user.id === firebaseUser.uid) {
+          return
         }
 
-        // eslint-disable-next-line
-        return
+        clearDataCache()
+        return updateCurrentUser(firebaseUser)
       })
       .catch((err) => {
+        // first login
         if (isLoggedOut(err)) {
+          // logged-out
           return
         }
 
         throw err
       })
-      .finally(() => {
-        return trigger('logout')
-      })
-  }
+  })
+}
 
-  return getSignedInUser()
-    .then((user) => {
-      if (user.id === firebaseUser.uid) {
-        return
-      }
+browser.runtime.onStartup.addListener(authChangeListener)
+browser.runtime.onInstalled.addListener(authChangeListener)
 
-      clearDataCache()
-      return updateCurrentUser(firebaseUser)
-    })
-    .catch((err) => {
-      // first login
-      if (isLoggedOut(err)) {
-        // logged-out
-        return
-      }
-
-      throw err
-    })
-})
+browser.runtime.onStartup.addListener(autosync)
+browser.runtime.onInstalled.addListener(autosync)
