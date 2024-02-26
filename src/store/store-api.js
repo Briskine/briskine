@@ -10,6 +10,7 @@ import {
   connectAuthEmulator,
   signInWithCustomToken,
   onIdTokenChanged,
+  onAuthStateChanged,
   signOut
 } from 'firebase/auth'
 import {
@@ -365,19 +366,38 @@ function isLoggedOut (err) {
 }
 
 var globalUserKey = 'firebaseUser'
-function getSignedInUser () {
-  return new Promise((resolve, reject) => {
-    browser.storage.local.get(globalUserKey).then((res) => {
-      const user = res[globalUserKey] || {}
-      if (Object.keys(user).length) {
-        return resolve(user)
+async function getSignedInUser () {
+  const storedUser = await browser.storage.local.get(globalUserKey)
+  const user = storedUser[globalUserKey] || {}
+
+  return new Promise(async (resolve, reject) => {
+    const unsubscribe = onAuthStateChanged(firebaseAuth, async (firebaseUser) => {
+      unsubscribe()
+
+      if (firebaseUser) {
+        // logged in to firebase and storage
+        if (user.id === firebaseUser.uid) {
+          return resolve(user)
+        }
+
+        // logged-out in storage
+        clearDataCache()
+        await signOut(firebaseAuth)
+      } else {
+        // automatic firebase logout
+        if (Object.keys(user).length) {
+          clearDataCache()
+          await setSignedInUser({})
+        }
       }
 
+      badgeUpdate(false)
       return reject(LOGGED_OUT_ERR)
     })
   })
 }
 
+// TODO having both setSignedInUser and updateCurrentUser is confusing
 function setSignedInUser (user) {
   return new Promise((resolve) => {
     let globalUser = {}
@@ -626,6 +646,17 @@ function signinError (err) {
   }
 }
 
+function getDefaultCustomer (firebaseUser) {
+  return getCollection({
+    user: {id: firebaseUser.uid},
+    collection: 'users'
+  })
+  .then((users) => {
+    const userData = users[firebaseUser.uid]
+    return userData.customers[0]
+  })
+}
+
 function updateCurrentUser (firebaseUser) {
   let cachedUser = {}
 
@@ -724,19 +755,35 @@ export function getSession () {
 export function logout () {
   return signOut(firebaseAuth)
     .then(() => {
+      return setSignedInUser({})
+    })
+    .then(() => {
+      badgeUpdate(false)
+      return trigger('logout')
+    })
+    .then(() => {
       return request(`${config.functionsUrl}/api/1/logout`, {
           method: 'POST'
         })
-    })
-    .then(() => {
-      return setSignedInUser({})
     })
 }
 
 function signinWithToken (token = '') {
   return signInWithCustomToken(firebaseAuth, token)
     .then((res) => {
-      return updateCurrentUser(res.user)
+      badgeUpdate(true)
+      return Promise.all([
+        res.user,
+        getDefaultCustomer(res.user),
+      ])
+    })
+    .then(([user, customerId]) => {
+      return setSignedInUser({
+        id: user.uid,
+        customer: customerId,
+      })
+
+      // return updateCurrentUser(res.user)
     })
 }
 
@@ -756,9 +803,13 @@ export function getCustomer (customerId) {
 export async function setActiveCustomer (customerId) {
   await clearDataCache()
 
-  return updateCurrentUser({
-      uid: firebaseAuth.currentUser.uid,
-      customer: customerId
+  // return updateCurrentUser({
+  //     uid: firebaseAuth.currentUser.uid,
+  //     customer: customerId
+  //   })
+  return setSignedInUser({
+      id: firebaseAuth.currentUser.uid,
+      customer: customerId,
     })
     .then(() => {
       // update data when customer changes
@@ -918,9 +969,13 @@ export async function openPopup () {
   }
 }
 
-function authChangeListener () {
+
+function setAuthState() {
   // auth change
-  onIdTokenChanged(firebaseAuth, (firebaseUser) => {
+  const unsubscribe = onAuthStateChanged(firebaseAuth, (firebaseUser) => {
+  // const unsubscribe = onIdTokenChanged(firebaseAuth, (firebaseUser) => {
+    unsubscribe()
+
     badgeUpdate(firebaseUser)
 
     if (!firebaseUser) {
@@ -965,10 +1020,11 @@ function authChangeListener () {
         throw err
       })
   })
+
 }
 
-browser.runtime.onStartup.addListener(authChangeListener)
-browser.runtime.onInstalled.addListener(authChangeListener)
+// browser.runtime.onStartup.addListener(setAuthState)
+// browser.runtime.onInstalled.addListener(setAuthState)
 
 browser.runtime.onStartup.addListener(autosync)
 browser.runtime.onInstalled.addListener(autosync)
