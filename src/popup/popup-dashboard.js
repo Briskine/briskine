@@ -98,8 +98,11 @@ customElements.define(
       this.sync()
     }
     sync (force = false) {
-      this.syncing = true
-      this.connectedCallback()
+      // only show feedback when force-syncing
+      if (force === true) {
+        this.syncing = true
+        this.connectedCallback()
+      }
 
       return store.autosync(force)
         .then(() => {
