@@ -377,7 +377,19 @@ async function getSignedInUser () {
       if (firebaseUser) {
         // logged in to firebase and storage
         if (user.id === firebaseUser.uid) {
-          return resolve(user)
+          const customer = await getActiveCustomer(user)
+          // keep the active customer consistent in storage
+          if (customer !== user.customer) {
+            setSignedInUser({
+              id: user.id,
+              customer: customer,
+            })
+          }
+
+          return resolve({
+            id: user.id,
+            customer: customer,
+          })
         }
 
         // logged-out in storage
@@ -646,13 +658,22 @@ function signinError (err) {
   }
 }
 
-function getDefaultCustomer (firebaseUser) {
+function getActiveCustomer (user = {}) {
   return getCollection({
-    user: {id: firebaseUser.uid},
+    user: {id: user.id},
     collection: 'users'
   })
   .then((users) => {
-    const userData = users[firebaseUser.uid]
+    const userData = users[user.id]
+    const customers = userData.customers
+
+    // make sure we are still part of this customer
+    if (user.customer && customers.includes(user.customer)) {
+      return user.customer
+    }
+
+    // active customer,
+    // default to first customer
     return userData.customers[0]
   })
 }
@@ -774,7 +795,9 @@ function signinWithToken (token = '') {
       badgeUpdate(true)
       return Promise.all([
         res.user,
-        getDefaultCustomer(res.user),
+        getActiveCustomer({
+          id: res.user.uid
+        }),
       ])
     })
     .then(([user, customerId]) => {
@@ -782,8 +805,6 @@ function signinWithToken (token = '') {
         id: user.uid,
         customer: customerId,
       })
-
-      // return updateCurrentUser(res.user)
     })
 }
 
@@ -803,10 +824,6 @@ export function getCustomer (customerId) {
 export async function setActiveCustomer (customerId) {
   await clearDataCache()
 
-  // return updateCurrentUser({
-  //     uid: firebaseAuth.currentUser.uid,
-  //     customer: customerId
-  //   })
   return setSignedInUser({
       id: firebaseAuth.currentUser.uid,
       customer: customerId,
