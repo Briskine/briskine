@@ -403,12 +403,12 @@ async function getSignedInUser () {
   } else {
     // automatic firebase logout
     if (Object.keys(user).length) {
+      badgeUpdate(false)
       clearDataCache()
       await setSignedInUser({})
     }
   }
 
-  badgeUpdate(false)
   throw LOGGED_OUT_ERR
 }
 
@@ -712,19 +712,16 @@ export function getSession () {
     })
 }
 
-export function logout () {
-  return signOut(firebaseAuth)
-    .then(() => {
-      return setSignedInUser({})
-    })
-    .then(() => {
-      badgeUpdate(false)
-      return trigger('logout')
-    })
-    .then(() => {
-      return request(`${config.functionsUrl}/api/1/logout`, {
-          method: 'POST'
-        })
+export async function logout () {
+  await signOut(firebaseAuth)
+  await setSignedInUser({})
+
+  badgeUpdate(false)
+  clearDataCache()
+  trigger('logout')
+
+  return request(`${config.functionsUrl}/api/1/logout`, {
+      method: 'POST'
     })
 }
 
@@ -945,6 +942,17 @@ export async function openPopup () {
     })
   }
 }
+
+async function setInitialBadge () {
+  try {
+    await getSignedInUser()
+  } catch (err) {
+    badgeUpdate(false)
+  }
+}
+
+browser.runtime.onStartup.addListener(setInitialBadge)
+browser.runtime.onInstalled.addListener(setInitialBadge)
 
 browser.runtime.onStartup.addListener(() => autosync())
 browser.runtime.onInstalled.addListener(() => autosync())
