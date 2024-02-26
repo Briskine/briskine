@@ -43,15 +43,6 @@ customElements.define(
       this.stats = getStats(0)
       this.lastSync = Date.now()
 
-      store.getExtensionData()
-        .then((data) => {
-          store.autosync()
-
-          this.lastSync = new Date(data.lastSync)
-          this.stats = getStats(data.words)
-          this.connectedCallback()
-        })
-
       this.user = {}
       this.isFree = null
       this.customers = {}
@@ -93,24 +84,32 @@ customElements.define(
 
       this.addEventListener('click', (e) => {
         if (e.target.closest('.js-sync-now')) {
-          this.sync()
+          this.sync(true)
         }
       })
 
-      this.refreshAccount()
+      store.getExtensionData()
+        .then((data) => {
+          this.lastSync = new Date(data.lastSync)
+          this.stats = getStats(data.words)
+          this.connectedCallback()
+        })
+
+      this.sync()
     }
-    sync () {
+    sync (force = false) {
       this.syncing = true
       this.connectedCallback()
 
-      return store.refetchCollections()
+      return store.autosync(force)
         .then(() => {
           return store.getExtensionData()
         })
         .then((data) => {
           this.syncing = false
           this.lastSync = new Date(data.lastSync)
-          return this.connectedCallback()
+
+          return this.refreshAccount()
         })
     }
     refreshAccount () {

@@ -242,11 +242,11 @@ export async function refetchCollections (collections = []) {
 
 // one hour
 const autoSyncTime = 60 * 60 * 1000
-export async function autosync () {
+export async function autosync (force = false) {
   const data = await getExtensionData()
   const lastSync = new Date(data.lastSync)
   // auto sync is last sync was more than one hour ago
-  if (new Date() - lastSync > autoSyncTime) {
+  if ((new Date() - lastSync > autoSyncTime) || force === true) {
     return refetchCollections()
   }
 
@@ -1026,5 +1026,5 @@ function setAuthState() {
 // browser.runtime.onStartup.addListener(setAuthState)
 // browser.runtime.onInstalled.addListener(setAuthState)
 
-browser.runtime.onStartup.addListener(autosync)
-browser.runtime.onInstalled.addListener(autosync)
+browser.runtime.onStartup.addListener(() => autosync())
+browser.runtime.onInstalled.addListener(() => autosync())
