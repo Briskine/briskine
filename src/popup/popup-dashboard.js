@@ -33,9 +33,6 @@ function getStats (words = 0) {
   }
 }
 
-// one hour
-const autoSyncTime = 60 * 60 * 1000
-
 customElements.define(
   'popup-dashboard',
   class extends HTMLElement {
@@ -45,19 +42,6 @@ customElements.define(
       this.syncing = false
       this.stats = getStats(0)
       this.lastSync = Date.now()
-
-      store.getExtensionData()
-        .then((data) => {
-          this.lastSync = new Date(data.lastSync)
-          // auto sync is last sync was more than one hour ago
-          if (new Date() - this.lastSync > autoSyncTime) {
-            this.sync()
-          }
-
-          this.stats = getStats(data.words)
-
-          this.connectedCallback()
-        })
 
       this.user = {}
       this.isFree = null
@@ -100,24 +84,35 @@ customElements.define(
 
       this.addEventListener('click', (e) => {
         if (e.target.closest('.js-sync-now')) {
-          this.sync()
+          this.sync(true)
         }
       })
 
-      this.refreshAccount()
-    }
-    sync () {
-      this.syncing = true
-      this.connectedCallback()
+      store.getExtensionData()
+        .then((data) => {
+          this.lastSync = new Date(data.lastSync)
+          this.stats = getStats(data.words)
+          this.connectedCallback()
+        })
 
-      return store.refetchCollections()
+      this.sync()
+    }
+    sync (force = false) {
+      // only show feedback when force-syncing
+      if (force === true) {
+        this.syncing = true
+        this.connectedCallback()
+      }
+
+      return store.autosync(force)
         .then(() => {
           return store.getExtensionData()
         })
         .then((data) => {
           this.syncing = false
           this.lastSync = new Date(data.lastSync)
-          return this.connectedCallback()
+
+          return this.refreshAccount()
         })
     }
     refreshAccount () {

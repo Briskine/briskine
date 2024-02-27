@@ -3,8 +3,8 @@ import browser from 'webextension-polyfill'
 
 const actionNamespace = (MANIFEST === '2') ? 'browserAction' : 'action'
 
-export default function badgeUpdate(user = null) {
-  const suffix = user ? '' : '-loggedout'
+export default function badgeUpdate(signedIn = false) {
+  const suffix = signedIn ? '' : '-loggedout'
 
   const icons = {}
   const sizes = ['16', '32', '48']

@@ -9,7 +9,7 @@ import {
   browserSessionPersistence,
   connectAuthEmulator,
   signInWithCustomToken,
-  onIdTokenChanged,
+  onAuthStateChanged,
   signOut
 } from 'firebase/auth'
 import {
@@ -239,6 +239,19 @@ export async function refetchCollections (collections = []) {
     })
 }
 
+// one hour
+const autoSyncTime = 60 * 60 * 1000
+export async function autosync (force = false) {
+  const data = await getExtensionData()
+  const lastSync = new Date(data.lastSync)
+  // auto sync is last sync was more than one hour ago
+  if ((new Date() - lastSync > autoSyncTime) || force === true) {
+    return refetchCollections()
+  }
+
+  return
+}
+
 // handle fetch errors
 function handleErrors (response) {
     if (!response.ok) {
@@ -351,18 +364,52 @@ function isLoggedOut (err) {
   return err === LOGGED_OUT_ERR
 }
 
-var globalUserKey = 'firebaseUser'
-function getSignedInUser () {
+function getFirebaseUser () {
   return new Promise((resolve, reject) => {
-    browser.storage.local.get(globalUserKey).then((res) => {
-      const user = res[globalUserKey] || {}
-      if (Object.keys(user).length) {
-        return resolve(user)
-      }
-
-      return reject(LOGGED_OUT_ERR)
+    const unsubscribe = onAuthStateChanged(firebaseAuth, (user) => {
+      unsubscribe()
+      resolve(user)
+    }, (err) => {
+      reject(err)
     })
   })
+}
+
+var globalUserKey = 'firebaseUser'
+async function getSignedInUser () {
+  const storedUser = await browser.storage.local.get(globalUserKey)
+  const user = storedUser[globalUserKey] || {}
+
+  const firebaseUser = await getFirebaseUser()
+  if (firebaseUser) {
+    // logged in to firebase and storage
+    if (user.id === firebaseUser.uid) {
+      const customer = await getActiveCustomer(user)
+      // if we're no longer part of cached customer,
+      // store default customer and refresh data.
+      if (customer !== user.customer) {
+        setActiveCustomer(customer)
+      }
+
+      return {
+        id: user.id,
+        customer: customer,
+      }
+    }
+
+    // logged-out in storage
+    clearDataCache()
+    await signOut(firebaseAuth)
+  } else {
+    // automatic firebase logout
+    if (Object.keys(user).length) {
+      badgeUpdate(false)
+      clearDataCache()
+      await setSignedInUser({})
+    }
+  }
+
+  throw LOGGED_OUT_ERR
 }
 
 function setSignedInUser (user) {
@@ -613,49 +660,6 @@ function signinError (err) {
   }
 }
 
-function updateCurrentUser (firebaseUser) {
-  let cachedUser = {}
-
-  // get cached user,
-  // for customer switching
-  return getSignedInUser()
-    .then((user) => {
-      cachedUser = user
-      return cachedUser
-    })
-    // logged-out
-    .catch(() => {
-      return
-    })
-    .then(() => {
-      return getCollection({
-        user: {id: firebaseUser.uid},
-        collection: 'users'
-      })
-    })
-    .then((users) => {
-      const userData = users[firebaseUser.uid]
-      const customers = userData.customers
-
-      // active customer,
-      // default to first customer
-      let customer = userData.customers[0]
-
-      // customer switching support.
-      // get specific user from parameter, or from cache.
-      // only update customer if part cu current user's customers.
-      let newCustomer = firebaseUser.customer || cachedUser.customer
-      if (customers.includes(newCustomer)) {
-        customer = newCustomer
-      }
-
-      return setSignedInUser({
-        id: firebaseUser.uid,
-        customer: customer,
-      })
-    })
-}
-
 export function signin (params = {}) {
   return request(`${config.functionsUrl}/api/1/login`, {
       method: 'POST',
@@ -708,22 +712,35 @@ export function getSession () {
     })
 }
 
-export function logout () {
-  return signOut(firebaseAuth)
-    .then(() => {
-      return request(`${config.functionsUrl}/api/1/logout`, {
-          method: 'POST'
-        })
-    })
-    .then(() => {
-      return setSignedInUser({})
+export async function logout () {
+  await signOut(firebaseAuth)
+  await setSignedInUser({})
+
+  badgeUpdate(false)
+  clearDataCache()
+  trigger('logout')
+
+  return request(`${config.functionsUrl}/api/1/logout`, {
+      method: 'POST'
     })
 }
 
 function signinWithToken (token = '') {
   return signInWithCustomToken(firebaseAuth, token)
     .then((res) => {
-      return updateCurrentUser(res.user)
+      badgeUpdate(true)
+      return Promise.all([
+        res.user,
+        getActiveCustomer({
+          id: res.user.uid
+        }),
+      ])
+    })
+    .then(([user, customerId]) => {
+      return setSignedInUser({
+        id: user.uid,
+        customer: customerId,
+      })
     })
 }
 
@@ -740,17 +757,38 @@ export function getCustomer (customerId) {
     })
 }
 
-export async function setActiveCustomer (customerId) {
-  await clearDataCache()
+async function getActiveCustomer (user = {}) {
+  const users = await getCollection({
+      user: {id: user.id},
+      collection: 'users'
+    })
 
-  return updateCurrentUser({
-      uid: firebaseAuth.currentUser.uid,
-      customer: customerId
+  const userData = users[user.id]
+  const customers = userData.customers
+
+  // make sure we are still part of this customer
+  if (user.customer && customers.includes(user.customer)) {
+    return user.customer
+  }
+
+  // active customer,
+  // default to first customer
+  return userData.customers[0]
+}
+
+export async function setActiveCustomer (customerId) {
+  return setSignedInUser({
+      id: firebaseAuth.currentUser.uid,
+      customer: customerId,
     })
     .then(() => {
       // update data when customer changes
-      trigger('templates-updated')
-      trigger('tags-updated')
+      refetchCollections([
+        'templatesOwned',
+        'templatesShared',
+        'templatesEveryone',
+        'tags',
+      ])
       return
     })
 }
@@ -905,49 +943,16 @@ export async function openPopup () {
   }
 }
 
-// auth change
-onIdTokenChanged(firebaseAuth, (firebaseUser) => {
-  badgeUpdate(firebaseUser)
-
-  if (!firebaseUser) {
-    return getSignedInUser()
-      .then((user) => {
-        if (user) {
-          clearDataCache()
-          return setSignedInUser({})
-        }
-
-        // eslint-disable-next-line
-        return
-      })
-      .catch((err) => {
-        if (isLoggedOut(err)) {
-          return
-        }
-
-        throw err
-      })
-      .finally(() => {
-        return trigger('logout')
-      })
+async function setInitialBadge () {
+  try {
+    await getSignedInUser()
+  } catch (err) {
+    badgeUpdate(false)
   }
+}
 
-  return getSignedInUser()
-    .then((user) => {
-      if (user.id === firebaseUser.uid) {
-        return
-      }
+browser.runtime.onStartup.addListener(setInitialBadge)
+browser.runtime.onInstalled.addListener(setInitialBadge)
 
-      clearDataCache()
-      return updateCurrentUser(firebaseUser)
-    })
-    .catch((err) => {
-      // first login
-      if (isLoggedOut(err)) {
-        // logged-out
-        return
-      }
-
-      throw err
-    })
-})
+browser.runtime.onStartup.addListener(() => autosync())
+browser.runtime.onInstalled.addListener(() => autosync())

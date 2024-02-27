@@ -52,6 +52,7 @@ const methods = [
 
   'openPopup',
   'refetchCollections',
+  'autosync',
 ]
 
 let events = []
