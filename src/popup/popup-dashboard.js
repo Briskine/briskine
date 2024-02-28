@@ -83,7 +83,7 @@ customElements.define(
       })
 
       this.addEventListener('click', (e) => {
-        if (e.target.closest('.js-sync-now')) {
+        if (e.target.closest('.js-sync-now') && this.syncing === false) {
           this.sync(true)
         }
       })
