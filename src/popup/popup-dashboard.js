@@ -83,7 +83,7 @@ customElements.define(
       })
 
       this.addEventListener('click', (e) => {
-        if (e.target.closest('.js-sync-now')) {
+        if (e.target.closest('.js-sync-now') && this.syncing === false) {
           this.sync(true)
         }
       })
@@ -95,7 +95,13 @@ customElements.define(
           this.connectedCallback()
         })
 
-      this.sync()
+      this.refreshAccount()
+        .then(() => {
+          this.sync()
+        })
+
+      // update session
+      store.getSession()
     }
     sync (force = false) {
       // only show feedback when force-syncing
@@ -118,12 +124,7 @@ customElements.define(
     refreshAccount () {
       return store.getAccount()
         .then((res) => {
-          // update session
-          store.getSession()
-
           this.user = res
-
-          // re-render after loading user
           this.connectedCallback()
 
           return Promise.all(

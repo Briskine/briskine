@@ -86,7 +86,14 @@ export function getSelectedWord (params) {
         break
     }
   } else {
-    beforeSelection = params.element.value.substring(0, params.element.selectionEnd)
+    // selectionEnd property applies only to inputs of types text, search, URL, tel, and password.
+    // returns null while accessing selectionEnd property on non-text input elements (e.g., email).
+    // https://developer.mozilla.org/en-US/docs/Web/API/HTMLInputElement/selectionEnd
+    if (params.element.selectionEnd !== null) {
+      beforeSelection = params.element.value.substring(0, params.element.selectionEnd)
+    } else {
+      beforeSelection = params.element.value
+    }
   }
 
   // all regular and special whitespace chars we want to find.
@@ -102,7 +109,7 @@ export function getSelectedWord (params) {
   ]
 
   // will return -1 from lastIndexOf,
-  // if no whitespace is preset before the word.
+  // if no whitespace is present before the word.
   const lastWhitespace = Math.max(...spaces.map((char) => beforeSelection.lastIndexOf(char)))
 
   // first character is one index away from the last whitespace
