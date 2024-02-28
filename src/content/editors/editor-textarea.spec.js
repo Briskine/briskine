@@ -1,4 +1,4 @@
-/* globals describe, it, before, after */
+/* globals describe, it, before, after, afterEach */
 import {expect} from 'chai'
 
 import {insertTextareaTemplate} from './editor-textarea.js'
@@ -8,6 +8,9 @@ describe('insertTextareaTemplate', () => {
   before(() => {
     textarea = document.createElement('textarea')
     document.body.appendChild(textarea)
+  })
+  afterEach(() => {
+    textarea.value = ''
   })
 
   it('should insert template in textarea', () => {
@@ -134,6 +137,75 @@ describe('insertTextareaTemplate', () => {
     expect(textarea.value).to.equal('pre test')
     expect(textarea.selectionStart).to.equal(8)
     expect(textarea.selectionEnd).to.equal(8)
+  })
+
+  it('should insert template in input type=text field', () => {
+    const input = document.createElement('input')
+    input.type = 'text'
+    document.body.appendChild(input)
+
+    insertTextareaTemplate({
+      element: input,
+      text: 'test',
+      quicktext: {
+        shortcut: 't'
+      },
+      word: {
+        start: 0,
+        end: 0,
+        text: ''
+      }
+    })
+
+    expect(input.value).to.equal('test')
+
+    input.remove()
+  })
+
+  it('should insert template in input type=search field', () => {
+    const input = document.createElement('input')
+    input.type = 'search'
+    document.body.appendChild(input)
+
+    insertTextareaTemplate({
+      element: input,
+      text: 'test',
+      quicktext: {
+        shortcut: 't'
+      },
+      word: {
+        start: 0,
+        end: 0,
+        text: ''
+      }
+    })
+
+    expect(input.value).to.equal('test')
+
+    input.remove()
+  })
+
+  it('should insert template in input type=email field', () => {
+    const input = document.createElement('input')
+    input.type = 'email'
+    document.body.appendChild(input)
+
+    insertTextareaTemplate({
+      element: input,
+      text: 'test',
+      quicktext: {
+        shortcut: 't'
+      },
+      word: {
+        start: 0,
+        end: 0,
+        text: ''
+      }
+    })
+
+    expect(input.value).to.equal('test')
+
+    input.remove()
   })
 
   after(() => {

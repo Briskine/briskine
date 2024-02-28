@@ -26,8 +26,14 @@ export function insertTextareaTemplate (params = {}) {
 
   params.element.value = textfieldValue.substr(0, wordStart) + content + textfieldValue.substr(params.word.end)
 
-  // set focus at the end of the added template
-  params.element.setSelectionRange(cursorOffset, cursorOffset)
+  // set focus at the end of the added template.
+  // only supported on inputs of types text, search, URL, tel and password.
+  // https://developer.mozilla.org/en-US/docs/Web/API/HTMLInputElement/setSelectionRange
+  try {
+    params.element.setSelectionRange(cursorOffset, cursorOffset)
+  } catch (err) {
+    // probably unsupported input type
+  }
 
   // trigger multiple change events,
   // for frameworks and scripts to notice changes to the editable fields.
