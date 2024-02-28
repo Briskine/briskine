@@ -244,7 +244,7 @@ const autoSyncTime = 60 * 60 * 1000
 export async function autosync (force = false) {
   const data = await getExtensionData()
   const lastSync = new Date(data.lastSync)
-  // auto sync is last sync was more than one hour ago
+  // auto sync if last sync was more than one hour ago
   if ((new Date() - lastSync > autoSyncTime) || force === true) {
     return refetchCollections()
   }
