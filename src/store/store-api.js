@@ -29,6 +29,9 @@ import fuzzySearch from './search.js'
 import badgeUpdate from '../background/badge-update.js'
 import {getDefaultTemplates, defaultTags, defaultSettings} from './default-data.js'
 import plainText from './plain-text.js'
+import {getExtensionData, setExtensionData} from './extension-data.js'
+
+export {getExtensionData, setExtensionData} from './extension-data.js'
 
 const firebaseApp = initializeApp(FIREBASE_CONFIG)
 const firebaseAuth = initializeAuth(firebaseApp, {
@@ -627,38 +630,6 @@ export async function setActiveCustomer (customerId) {
         'tags',
       ])
       return
-    })
-}
-
-const extensionDataKey = 'briskine'
-const defaultExtensionData = {
-  words: 0,
-  templatesLastUsed: {},
-  dialogSort: 'last_used',
-  dialogTags: true,
-  lastSync: Date.now(),
-}
-
-export function getExtensionData () {
-  return browser.storage.local.get(extensionDataKey)
-    .then((data) => {
-      return Object.assign({}, defaultExtensionData, data[extensionDataKey])
-    })
-}
-
-export function setExtensionData (params = {}) {
-  return browser.storage.local.get(extensionDataKey)
-    .then((data) => {
-      // merge existing data with defaults and new data
-      return Object.assign({}, defaultExtensionData, data[extensionDataKey], params)
-    })
-    .then((newData) => {
-      const dataWrap = {}
-      dataWrap[extensionDataKey] = newData
-
-      trigger('extension-data-updated', newData)
-
-      return browser.storage.local.set(dataWrap)
     })
 }
 
