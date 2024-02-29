@@ -396,10 +396,6 @@ async function getSignedInUser () {
         customer: customer,
       }
     }
-
-    // logged-out in storage
-    clearDataCache()
-    await signOut(firebaseAuth)
   } else {
     // automatic firebase logout
     if (Object.keys(user).length) {
