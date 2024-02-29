@@ -1,4 +1,4 @@
-/* globals ENV, FIREBASE_CONFIG, MANIFEST */
+/* globals ENV, FIREBASE_CONFIG */
 import browser from 'webextension-polyfill'
 
 import {initializeApp} from 'firebase/app'
@@ -32,6 +32,7 @@ import plainText from './plain-text.js'
 import {getExtensionData, setExtensionData} from './extension-data.js'
 
 export {getExtensionData, setExtensionData} from './extension-data.js'
+export {openPopup} from './open-popup.js'
 
 const firebaseApp = initializeApp(FIREBASE_CONFIG)
 const firebaseAuth = initializeAuth(firebaseApp, {
@@ -733,22 +734,6 @@ export function searchTemplates (query = '') {
         results: fuzzySearch(templates, templateSearchList, query),
       }
     })
-}
-
-const actionNamespace = (MANIFEST === '2') ? 'browserAction' : 'action'
-
-export async function openPopup () {
-  try {
-    await browser[actionNamespace].openPopup()
-  } catch (err) {
-    // browserAction.openPopup is not supported in all browsers yet.
-    // https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/action/openPopup
-    // Open the action popup in a new tab.
-    const popupUrl = browser.runtime.getURL('popup/popup.html')
-    browser.tabs.create({
-      url: `${popupUrl}?source=tab`
-    })
-  }
 }
 
 async function setInitialBadge () {
