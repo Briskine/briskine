@@ -131,21 +131,21 @@ function getCollectionQuery (name, user) {
   }
 
   if (name === 'templatesOwned') {
-    return templatesOwnedQuery(user);
+    return templatesOwnedQuery(user)
   }
 
   if (name === 'templatesShared') {
-    return templatesSharedQuery(user);
+    return templatesSharedQuery(user)
   }
 
   if (name === 'templatesEveryone') {
-    return templatesEveryoneQuery(user);
+    return templatesEveryoneQuery(user)
   }
 
   return query(
     collection(db, name),
-    where(...collectionQuery[name])
-  );
+    where(...collectionQuery[name]),
+  )
 }
 
 const collectionRequestQueue = {}
@@ -387,7 +387,9 @@ async function getSignedInUser () {
       const customer = await getActiveCustomer(user)
       // if we're no longer part of cached customer,
       // store default customer and refresh data.
-      if (customer !== user.customer) {
+      // on first run after login, user.customer is null,
+      // and will be populated once signinWithToken is done.
+      if (user.customer && user.customer !== customer) {
         setActiveCustomer(customer)
       }
 
@@ -721,23 +723,25 @@ export async function logout () {
     })
 }
 
-function signinWithToken (token = '') {
-  return signInWithCustomToken(firebaseAuth, token)
-    .then((res) => {
-      badgeUpdate(true)
-      return Promise.all([
-        res.user,
-        getActiveCustomer({
-          id: res.user.uid
-        }),
-      ])
-    })
-    .then(([user, customerId]) => {
-      return setSignedInUser({
-        id: user.uid,
-        customer: customerId,
-      })
-    })
+async function signinWithToken (token = '') {
+  const auth = await signInWithCustomToken(firebaseAuth, token)
+  // immediately set stored user, in case we call getSignedInUser,
+  // before signinWithToken is done.
+  const user = await setSignedInUser({
+    id: auth.user.uid,
+    customer: null,
+  })
+
+  badgeUpdate(true)
+
+  // triggers users-updated because of getCollection,
+  // which in turn triggers getSignedInUser.
+  const customer = await getActiveCustomer(user)
+
+  return setSignedInUser({
+    id: user.id,
+    customer: customer,
+  })
 }
 
 export function getCustomer (customerId) {
