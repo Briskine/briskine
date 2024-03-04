@@ -1,4 +1,4 @@
-/* globals ENV, FIREBASE_CONFIG, MANIFEST */
+/* globals ENV, FIREBASE_CONFIG */
 import browser from 'webextension-polyfill'
 
 import {initializeApp} from 'firebase/app'
@@ -27,6 +27,12 @@ import config from '../config.js'
 import trigger from './store-trigger.js'
 import fuzzySearch from './search.js'
 import badgeUpdate from '../background/badge-update.js'
+import {getDefaultTemplates, defaultTags, defaultSettings} from './default-data.js'
+import plainText from './plain-text.js'
+import {getExtensionData, setExtensionData} from './extension-data.js'
+
+export {getExtensionData, setExtensionData} from './extension-data.js'
+export {openPopup} from './open-popup.js'
 
 const firebaseApp = initializeApp(FIREBASE_CONFIG)
 const firebaseAuth = initializeAuth(firebaseApp, {
@@ -43,11 +49,6 @@ const db = initializeFirestore(firebaseApp, {})
 if (ENV === 'development') {
   connectAuthEmulator(firebaseAuth, 'http://localhost:9099', { disableWarnings: true });
   connectFirestoreEmulator(db, 'localhost', 5002);
-}
-
-// naive html to text conversion
-function plainText (html = '') {
-  return html.replace(/(<[^>]*>)|(&nbsp;)/g, '').replace(/\s+/g, ' ').trim()
 }
 
 // convert firestore timestamps to dates
@@ -131,21 +132,21 @@ function getCollectionQuery (name, user) {
   }
 
   if (name === 'templatesOwned') {
-    return templatesOwnedQuery(user);
+    return templatesOwnedQuery(user)
   }
 
   if (name === 'templatesShared') {
-    return templatesSharedQuery(user);
+    return templatesSharedQuery(user)
   }
 
   if (name === 'templatesEveryone') {
-    return templatesEveryoneQuery(user);
+    return templatesEveryoneQuery(user)
   }
 
   return query(
     collection(db, name),
-    where(...collectionQuery[name])
-  );
+    where(...collectionQuery[name]),
+  )
 }
 
 const collectionRequestQueue = {}
@@ -318,18 +319,6 @@ function getUserToken () {
     })
 }
 
-const defaultSettings = {
-  dialog_enabled: true,
-  dialog_button: true,
-  dialog_shortcut: 'ctrl+space',
-
-  expand_enabled: true,
-  expand_shortcut: 'tab',
-
-  blacklist: [],
-  share_all: false,
-}
-
 export function getSettings () {
   return getSignedInUser()
     .then((user) => {
@@ -387,7 +376,9 @@ async function getSignedInUser () {
       const customer = await getActiveCustomer(user)
       // if we're no longer part of cached customer,
       // store default customer and refresh data.
-      if (customer !== user.customer) {
+      // on first run after login, user.customer is null,
+      // and will be populated once signinWithToken is done.
+      if (user.customer && user.customer !== customer) {
         setActiveCustomer(customer)
       }
 
@@ -396,10 +387,6 @@ async function getSignedInUser () {
         customer: customer,
       }
     }
-
-    // logged-out in storage
-    clearDataCache()
-    await signOut(firebaseAuth)
   } else {
     // automatic firebase logout
     if (Object.keys(user).length) {
@@ -420,154 +407,6 @@ function setSignedInUser (user) {
       resolve(user)
     })
   })
-}
-
-const defaultTags = [
-  {title: 'en', color: 'blue'},
-  {title: 'greetings', color: 'green'},
-  {title: 'followup'},
-  {title: 'closing'},
-  {title: 'personal'},
-].map((tag, index) => {
-  return {
-    ...tag,
-    id: String(index),
-  }
-})
-
-function filterDefaultTags (titles = []) {
-  return defaultTags
-    .filter((tag) => {
-      if (titles.length) {
-        return titles.includes(tag.title)
-      }
-      return true
-    })
-    .map((tag) => tag.id)
-}
-
-function getDefaultTemplates () {
-  const defaultTemplates = [
-    {
-      title: 'Say Hello',
-      shortcut: 'h',
-      subject: '',
-      tags: filterDefaultTags(['en', 'greetings']),
-      body: '<div>Hello {{to.first_name}},</div><div></div>'
-    },
-    {
-      title: 'Nice talking to you',
-      shortcut: 'nic',
-      subject: '',
-      tags: filterDefaultTags(['en', 'followup']),
-      body: '<div>It was nice talking to you.</div>'
-    },
-    {
-      title: 'Kind Regards',
-      shortcut: 'kr',
-      subject: '',
-      tags: filterDefaultTags(['en', 'closing']),
-      body: '<div>Kind regards,</div><div>{{from.first_name}}.</div>'
-    },
-    {
-      title: 'My email',
-      shortcut: 'e',
-      subject: '',
-      tags: filterDefaultTags(['en', 'personal']),
-      body: '<div>{{from.email}}</div>'
-    }
-  ]
-
-  if (ENV === 'development') {
-    let allVarsBody = [ 'account', 'from', 'to', 'cc', 'bcc' ].map((field) => {
-      return `
-        <div>
-          <strong># ${field}</strong>
-        </div>
-        {{#each ${field}}}
-          <div>
-            {{@key}}: {{this}}
-          </div>
-        {{/each}}
-      `
-    }).join('')
-
-    allVarsBody += `
-      <div>subject: {{subject}}</div>
-      <div>next week: {{moment add='7;days' format='DD MMMM'}}</div>
-      <div>last week: {{moment subtract='7;days'}}</div>
-      <div>week number: {{moment week=''}}</div>
-      <div>choice: {{choice 'Hello, Hi, Hey'}}</div>
-      <div>domain: {{domain to.email}}</div>
-      <div><img src="https://www.briskine.com/images/briskine-promo.png" width="100" height="73"></div>
-    `
-
-    defaultTemplates.push({
-      title: 'allvars',
-      shortcut: 'allvars',
-      subject: 'Subject',
-      body: allVarsBody,
-      to: 'to@briskine.com',
-      cc: 'cc@briskine.com, cc2@briskine.com',
-      bcc: 'bcc@briskine.com',
-      from: 'contact@briskine.com'
-    })
-
-    defaultTemplates.push({
-      title: 'broken',
-      shortcut: 'broken',
-      body: 'Hello {{to.first_name}'
-    })
-
-    defaultTemplates.push({
-      title: 'attachment',
-      shortcut: 'attachment',
-      body: 'attachment',
-      attachments: [
-        {
-          name: 'briskine.svg',
-          url: 'https://www.briskine.com/favicon.svg',
-        },
-        {
-          name: 'briskine.doc',
-          url: 'https://www.briskine.com/favicon.svg',
-        },
-        {
-          name: 'briskine.pdf',
-          url: 'https://www.briskine.com/favicon.svg',
-        },
-        {
-          name: 'briskine.zip',
-          url: 'https://www.briskine.com/favicon.svg',
-        },
-        {
-          name: 'briskine.mp3',
-          url: 'https://www.briskine.com/favicon.svg',
-        },
-        {
-          name: 'briskine.webm',
-          url: 'https://www.briskine.com/favicon.svg',
-        },
-        {
-          name: 'briskine.txt',
-          url: 'https://www.briskine.com/favicon.svg',
-        },
-        {
-          name: 'briskine.generic',
-          url: 'https://www.briskine.com/favicon.svg',
-        },
-      ]
-    })
-  }
-
-  return defaultTemplates
-    .map((template, index) => {
-      const id = String(index)
-      return Object.assign({
-        id: id,
-        _body_plaintext: plainText(template.body),
-      }, template)
-    })
 }
 
 function isFree (user) {
@@ -725,23 +564,25 @@ export async function logout () {
     })
 }
 
-function signinWithToken (token = '') {
-  return signInWithCustomToken(firebaseAuth, token)
-    .then((res) => {
-      badgeUpdate(true)
-      return Promise.all([
-        res.user,
-        getActiveCustomer({
-          id: res.user.uid
-        }),
-      ])
-    })
-    .then(([user, customerId]) => {
-      return setSignedInUser({
-        id: user.uid,
-        customer: customerId,
-      })
-    })
+async function signinWithToken (token = '') {
+  const auth = await signInWithCustomToken(firebaseAuth, token)
+  // immediately set stored user, in case we call getSignedInUser,
+  // before signinWithToken is done.
+  const user = await setSignedInUser({
+    id: auth.user.uid,
+    customer: null,
+  })
+
+  badgeUpdate(true)
+
+  // triggers users-updated because of getCollection,
+  // which in turn triggers getSignedInUser.
+  const customer = await getActiveCustomer(user)
+
+  return setSignedInUser({
+    id: user.id,
+    customer: customer,
+  })
 }
 
 export function getCustomer (customerId) {
@@ -790,38 +631,6 @@ export async function setActiveCustomer (customerId) {
         'tags',
       ])
       return
-    })
-}
-
-const extensionDataKey = 'briskine'
-const defaultExtensionData = {
-  words: 0,
-  templatesLastUsed: {},
-  dialogSort: 'last_used',
-  dialogTags: true,
-  lastSync: Date.now(),
-}
-
-export function getExtensionData () {
-  return browser.storage.local.get(extensionDataKey)
-    .then((data) => {
-      return Object.assign({}, defaultExtensionData, data[extensionDataKey])
-    })
-}
-
-export function setExtensionData (params = {}) {
-  return browser.storage.local.get(extensionDataKey)
-    .then((data) => {
-      // merge existing data with defaults and new data
-      return Object.assign({}, defaultExtensionData, data[extensionDataKey], params)
-    })
-    .then((newData) => {
-      const dataWrap = {}
-      dataWrap[extensionDataKey] = newData
-
-      trigger('extension-data-updated', newData)
-
-      return browser.storage.local.set(dataWrap)
     })
 }
 
@@ -925,22 +734,6 @@ export function searchTemplates (query = '') {
         results: fuzzySearch(templates, templateSearchList, query),
       }
     })
-}
-
-const actionNamespace = (MANIFEST === '2') ? 'browserAction' : 'action'
-
-export async function openPopup () {
-  try {
-    await browser[actionNamespace].openPopup()
-  } catch (err) {
-    // browserAction.openPopup is not supported in all browsers yet.
-    // https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/action/openPopup
-    // Open the action popup in a new tab.
-    const popupUrl = browser.runtime.getURL('popup/popup.html')
-    browser.tabs.create({
-      url: `${popupUrl}?source=tab`
-    })
-  }
 }
 
 async function setInitialBadge () {
