@@ -502,7 +502,7 @@ function template({
       >
 
       <div class="dialog-search">
-        <input type="search" value="" placeholder="Search templates...">
+        <input type="search" value="" placeholder="Search templates..." spellcheck="false">
         <div class="dialog-search-icon">${unsafeSVG(iconSearch)}</div>
       </div>
 
