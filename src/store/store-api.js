@@ -5,13 +5,11 @@ import {initializeApp} from 'firebase/app'
 import {
   initializeAuth,
   indexedDBLocalPersistence,
-  browserLocalPersistence,
-  browserSessionPersistence,
   connectAuthEmulator,
   signInWithCustomToken,
   onAuthStateChanged,
   signOut
-} from 'firebase/auth'
+} from 'firebase/auth/web-extension'
 import {
   initializeFirestore,
   connectFirestoreEmulator,
@@ -38,10 +36,7 @@ const firebaseApp = initializeApp(FIREBASE_CONFIG)
 const firebaseAuth = initializeAuth(firebaseApp, {
   persistence: [
     indexedDBLocalPersistence,
-    browserLocalPersistence,
-    browserSessionPersistence,
   ],
-  popupRedirectResolver: undefined,
 })
 const db = initializeFirestore(firebaseApp, {})
 
