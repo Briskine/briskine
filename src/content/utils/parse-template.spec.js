@@ -1,4 +1,4 @@
-/* globals describe, it, before, after, beforeEach */
+/* globals describe, it, after, beforeEach */
 import {expect} from 'chai'
 
 import parseTemplate from './parse-template.js'
