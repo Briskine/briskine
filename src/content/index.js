@@ -10,7 +10,7 @@ import {setup as setupKeyboard, destroy as destroyKeyboard} from './keyboard.js'
 import {setup as setupBubble, destroy as destroyBubble} from './bubble/bubble.js'
 import {setup as setupStatus, destroy as destroyStatus} from './status.js'
 import {setup as setupDialog, destroy as destroyDialog} from './dialog/dialog.js'
-import {setup as setupSandbox, destroy as destroySandbox} from './sandbox/sandbox-parent.js'
+import {destroy as destroySandbox} from './sandbox/sandbox-parent.js'
 import {setup as setupPage, destroy as destroyPage} from './page/page-parent.js'
 import {setup as setupAttachments, destroy as destroyAttachments} from './attachments/attachments.js'
 import {setup as setupDashboardEvents, destroy as destroyDashboardEvents} from './dashboard-events-client.js'
@@ -55,7 +55,6 @@ function init (settings) {
   setupBubble(settings)
   setupDialog(settings)
 
-  setupSandbox()
   setupPage()
   setupAttachments()
 

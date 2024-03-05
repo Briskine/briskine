@@ -15,6 +15,8 @@ customElements.define(
   class extends HTMLElement {
     constructor() {
       super()
+
+      this.onload = () => {}
     }
     connectedCallback () {
       if (!this.isConnected) {
@@ -28,6 +30,7 @@ customElements.define(
       iframe.style.display = 'none'
       iframe.onload = () => {
         iframe.contentWindow.postMessage({ type: 'init' }, '*', [channel.port2])
+        this.onload()
       }
       shadowRoot.appendChild(iframe)
     }
@@ -52,28 +55,27 @@ export function compileTemplate (template = '', context = {}) {
 
     port1.onmessage = handleCompileMessage
 
-    port1.postMessage({
-      type: config.eventSandboxCompile,
-      template: template,
-      context: context
-    })
+    function sendCompileMessage () {
+      port1.postMessage({
+        type: config.eventSandboxCompile,
+        template: template,
+        context: context,
+      })
+    }
+
+    if (!sandboxInstance) {
+      // create the sandbox instance on first call
+      sandboxInstance = document.createElement(sandboxTagName)
+      sandboxInstance.onload = sendCompileMessage
+      document.documentElement.appendChild(sandboxInstance)
+    } else {
+      sendCompileMessage()
+    }
   })
 }
 
-export function setup () {
-  // only create the sandbox element in manifest v3
-  if (MANIFEST === '2') {
-    return
-  }
-
-  sandboxInstance = document.createElement(sandboxTagName)
-  document.documentElement.appendChild(sandboxInstance)
-}
-
 export function destroy () {
-  if (!sandboxInstance) {
-    return
+  if (sandboxInstance) {
+    sandboxInstance.remove()
   }
-
-  sandboxInstance.remove()
 }
