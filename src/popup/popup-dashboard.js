@@ -84,7 +84,7 @@ customElements.define(
 
       this.addEventListener('click', (e) => {
         if (e.target.closest('.js-sync-now') && this.syncing === false) {
-          this.sync(5000)
+          this.sync(1000)
         }
       })
 
@@ -103,20 +103,25 @@ customElements.define(
       // update session
       store.getSession()
     }
-    sync (timeout) {
-      this.syncing = true
-      this.connectedCallback()
+    async sync (timeout) {
+      // show the indicator only if autosync takes more than 50ms.
+      // prevents the sync indicator from showing up when opening the popup,
+      // and re-fetching was not triggered.
+      const indicatorTimeout = setTimeout(() => {
+        this.syncing = true
+        this.connectedCallback()
+      }, 50)
 
-      return store.autosync(timeout)
-        .then(() => {
-          return store.getExtensionData()
-        })
-        .then((data) => {
-          this.syncing = false
-          this.lastSync = new Date(data.lastSync)
+      await store.autosync(timeout)
+      clearTimeout(indicatorTimeout)
 
-          return this.refreshAccount()
-        })
+      const data = await store.getExtensionData()
+      this.syncing = false
+      this.lastSync = new Date(data.lastSync)
+      // sync indicator will be visible for at least 1s.
+      await new Promise((resolve) => setTimeout(resolve, 1000))
+
+      return this.refreshAccount()
     }
     refreshAccount () {
       return store.getAccount()
