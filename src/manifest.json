@@ -57,7 +57,8 @@
     "matches": [
       "https://*/*",
       "http://*/*"
-    ]
+    ],
+    "use_dynamic_url": true
   }],
   "sandbox": {
     "pages": ["sandbox/sandbox.html"]

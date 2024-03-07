@@ -1,12 +1,10 @@
-/* globals describe, it, before, after, beforeEach */
+/* globals describe, it, after, beforeEach */
 import {expect} from 'chai'
 
 import parseTemplate from './parse-template.js'
-import {setup, destroy} from '../sandbox/sandbox-parent.js'
+import {destroy} from '../sandbox/sandbox-parent.js'
 
 describe('parseTemplate', async () => {
-  before(setup)
-
   beforeEach(() => {
     // sandbox needs a second to respond
     return new Promise((resolve) => {
