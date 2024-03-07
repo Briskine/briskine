@@ -84,7 +84,7 @@ customElements.define(
 
       this.addEventListener('click', (e) => {
         if (e.target.closest('.js-sync-now') && this.syncing === false) {
-          this.sync(true)
+          this.sync(5000)
         }
       })
 
@@ -103,14 +103,11 @@ customElements.define(
       // update session
       store.getSession()
     }
-    sync (force = false) {
-      // only show feedback when force-syncing
-      if (force === true) {
-        this.syncing = true
-        this.connectedCallback()
-      }
+    sync (timeout) {
+      this.syncing = true
+      this.connectedCallback()
 
-      return store.autosync(force)
+      return store.autosync(timeout)
         .then(() => {
           return store.getExtensionData()
         })
