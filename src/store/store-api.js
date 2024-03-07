@@ -250,12 +250,12 @@ export async function autosync (timeout = defaultSyncTimeout) {
 
 // handle fetch errors
 function handleErrors (response) {
-    if (!response.ok) {
-        return response.clone().json().then((res) => {
-            return Promise.reject(res);
-        });
-    }
-    return response;
+  if (!response.ok) {
+    return response.clone().json().then((res) => {
+      return Promise.reject(res)
+    })
+  }
+  return response
 }
 
 // fetch wrapper
