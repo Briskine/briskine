@@ -197,7 +197,6 @@ async function updateCache (params = {}) {
   return params.data
 }
 
-const refetching = {}
 export async function refetchCollections (collections = []) {
   const collectionsToClear = collections.length ? collections : allCollections
   const cache = {}
@@ -217,14 +216,10 @@ export async function refetchCollections (collections = []) {
     }
 
     for (const c of collectionsToRefetch) {
-      // only if we're not already re-fetching this collection
-      if (!refetching[c]) {
-        refetching[c] = await getCollection({
-          collection: c,
-          user: user,
-        })
-        refetching[c] = null
-      }
+      await getCollection({
+        collection: c,
+        user: user,
+      })
     }
   } catch (err) {
     if (isLoggedOut(err)) {
