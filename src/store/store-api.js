@@ -197,6 +197,7 @@ async function updateCache (params = {}) {
   return params.data
 }
 
+const refetching = {}
 export async function refetchCollections (collections = []) {
   const collectionsToClear = collections.length ? collections : allCollections
   const cache = {}
@@ -206,33 +207,32 @@ export async function refetchCollections (collections = []) {
 
   await browser.storage.local.set(cache)
 
-  return getSignedInUser()
-    .then((user) => {
-      return Promise.all([
-        user,
-        isFree(user),
-      ])
-    })
-    .then(([user, free]) => {
-      let collectionsToRefetch = collectionsToClear
-      // don't refetch shared templates for free users
-      if (free) {
-        collectionsToRefetch = collectionsToClear.filter((c) => !['templatesShared', 'templatesEveryone'].includes(c))
-      }
-      return Promise.all(
-        collectionsToRefetch.map((c) => getCollection({
+  try {
+    const user = await getSignedInUser()
+    const free = await isFree(user)
+    let collectionsToRefetch = collectionsToClear
+    // don't refetch shared templates for free users
+    if (free) {
+      collectionsToRefetch = collectionsToClear.filter((c) => !['templatesShared', 'templatesEveryone'].includes(c))
+    }
+
+    for (const c of collectionsToRefetch) {
+      // only if we're not already re-fetching this collection
+      if (!refetching[c]) {
+        refetching[c] = await getCollection({
           collection: c,
           user: user,
-        }))
-      )
-    })
-    .catch((err) => {
-      if (isLoggedOut(err)) {
-        return
+        })
+        refetching[c] = null
       }
+    }
+  } catch (err) {
+    if (isLoggedOut(err)) {
+      return
+    }
 
-      throw err
-    })
+    throw err
+  }
 }
 
 // one hour
