@@ -67,13 +67,14 @@ function setupEvents () {
   store.on('templates-updated', getTemplates)
   store.on('login', populateCache)
   store.on('logout', populateCache)
+  eventsReady = true
 }
 
 function destroyEvents () {
-  eventsReady = false
   store.off('templates-updated', getTemplates)
   store.off('login', populateCache)
   store.off('logout', populateCache)
+  eventsReady = false
 }
 
 async function keyboardAutocomplete (e) {
