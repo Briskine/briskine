@@ -557,6 +557,9 @@ export async function logout () {
 
 async function signinWithToken (token = '') {
   const auth = await signInWithCustomToken(firebaseAuth, token)
+  // clear existing cached data,
+  // in case we still have collections cached from another user
+  await clearDataCache()
   // immediately set stored user, in case we call getSignedInUser,
   // before signinWithToken is done.
   const user = await setSignedInUser({
