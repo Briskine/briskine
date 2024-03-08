@@ -215,12 +215,12 @@ export async function refetchCollections (collections = []) {
       collectionsToRefetch = collectionsToClear.filter((c) => !['templatesShared', 'templatesEveryone'].includes(c))
     }
 
-    for (const c of collectionsToRefetch) {
-      await getCollection({
+    return Promise.all(
+      collectionsToRefetch.map((c) => getCollection({
         collection: c,
         user: user,
-      })
-    }
+      }))
+    )
   } catch (err) {
     if (isLoggedOut(err)) {
       return
