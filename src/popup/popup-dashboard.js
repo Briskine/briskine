@@ -104,22 +104,13 @@ customElements.define(
       store.getSession()
     }
     async sync (timeout) {
-      // show the indicator only if autosync takes more than 50ms.
-      // prevents the sync indicator from showing up when opening the popup,
-      // and re-fetching was not triggered.
-      const indicatorTimeout = setTimeout(() => {
-        this.syncing = true
-        this.connectedCallback()
-      }, 50)
+      this.syncing = true
+      this.connectedCallback()
 
       await store.autosync(timeout)
-      clearTimeout(indicatorTimeout)
-
       const data = await store.getExtensionData()
       this.syncing = false
       this.lastSync = new Date(data.lastSync)
-      // sync indicator will be visible for at least 1s.
-      await new Promise((resolve) => setTimeout(resolve, 1000))
 
       return this.refreshAccount()
     }
