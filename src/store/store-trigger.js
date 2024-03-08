@@ -41,9 +41,20 @@ function sendEvent (data) {
     })
 }
 
+
 let queue = []
 let timer = null
-export default function trigger (name, details) {
+
+function runQueue () {
+  return Promise
+    .allSettled(queue.map((d) => sendEvent(d)))
+    .then(() => {
+      queue = []
+      return
+    })
+}
+
+export default function trigger (name, details, timeout = 1000) {
   const existing = queue.find((d) => d.name === name)
   if (existing) {
     existing.details = details
@@ -59,12 +70,13 @@ export default function trigger (name, details) {
     clearTimeout(timer)
   }
 
+  if (timeout === 0) {
+    return runQueue()
+  }
+
   return new Promise((resolve) => {
     timer = setTimeout(() => {
-      Promise.allSettled(queue.map((d) => sendEvent(d))).then(() => {
-        queue = []
-        resolve()
-      })
-    }, 1000)
+      runQueue().then(resolve)
+    }, timeout)
   })
 }
