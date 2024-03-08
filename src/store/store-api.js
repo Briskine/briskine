@@ -383,6 +383,7 @@ async function getSignedInUser () {
       badgeUpdate(false)
       clearDataCache()
       await setSignedInUser({})
+      trigger('logout', {}, 0)
     }
   }
 
