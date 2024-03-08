@@ -27,10 +27,13 @@ export function setExtensionData (params = {}) {
     .then((newData) => {
       const dataWrap = {}
       dataWrap[extensionDataKey] = newData
-      return browser.storage.local.set(dataWrap)
+      return Promise.all([
+        newData,
+        browser.storage.local.set(dataWrap),
+      ])
     })
-    .then(() => {
-      trigger('extension-data-updated')
+    .then(([data]) => {
+      trigger('extension-data-updated', data)
       return
     })
 }
