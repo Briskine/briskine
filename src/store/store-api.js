@@ -502,7 +502,8 @@ export function signin (params = {}) {
       return signinWithToken(res.token)
     })
     .then(() => {
-      return trigger('login')
+      trigger('login')
+      return
     })
     .catch((err) => {
       return signinError(err)
@@ -533,7 +534,8 @@ export function getSession () {
         // auto-login if not logged-in
         return signinWithToken(res.token)
           .then(() => {
-            return trigger('login')
+            trigger('login')
+            return
           })
       }
 
