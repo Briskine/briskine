@@ -15,7 +15,7 @@ export default function trigger (name, details) {
 
   // send trigger message to client store
   return Promise
-    .all([
+    .allSettled([
       // send message to popup
       browser.runtime.sendMessage(data)
         .catch((err) => {
@@ -33,10 +33,13 @@ export default function trigger (name, details) {
           .map((tab) => browser.tabs.sendMessage(tab.id, data))
       })
     ])
-    .catch((err) => {
-      return debug(
-        ['trigger', name, err],
-        'error'
-      )
+    .then((results) => {
+      results.forEach((result) => {
+        if (result.status === 'rejected') {
+          debug(['trigger', name, result], 'error')
+        }
+      })
+
+      return
     })
 }
