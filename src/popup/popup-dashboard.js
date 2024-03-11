@@ -23,13 +23,14 @@ function niceTime (minutes) {
 }
 
 function getStats (words = 0) {
-  const avgWPM = 25
-  // average WPM: http://en.wikipedia.org/wiki/Words_per_minute
+  const avgWPM = 35
+  // average WPM
+  // http://en.wikipedia.org/wiki/Words_per_minute
   const time = niceTime(Math.round(words / avgWPM))
 
   return {
     time: time,
-    words: words
+    words: words,
   }
 }
 
