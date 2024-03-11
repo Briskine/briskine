@@ -7,13 +7,15 @@
   --bs-border-radius: 3px;
   --green: #37c837;
   --yellow: #ffcc00;
+  --blue: #0d7af6;
+}
+
+html {
+  font-size: 14px;
 }
 
 body {
-  min-height: 250px;
   background-color: var(--bs-tertiary-bg);
-
-  font-size: 14px;
 }
 
 @media (min-width: 42em) {
@@ -38,6 +40,7 @@ label {
 .popup-container {
   /* browser action width */
   width: 22em;
+  min-height: 250px;
   margin: 0 auto;
   background-color: var(--bs-body-bg);
 }
@@ -228,7 +231,7 @@ a:hover,
 
 .popup-menu a:hover .icon {
   transform: scale(1.4);
-  color: #0607fb;
+  color: var(--blue);
 }
 
 .popup-stats {
