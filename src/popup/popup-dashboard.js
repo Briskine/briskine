@@ -292,7 +292,7 @@ customElements.define(
               <a
                 href=${`${Config.functionsUrl}/account`}
                 target=${Config.dashboardTarget}
-                class="popup-user"
+                class="popup-user btn btn-link"
                 title=${`Account settings for ${this.user.email}`}
                 >
                 ${this.user.email}
