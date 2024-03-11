@@ -137,8 +137,8 @@ function scrollDocument (e) {
 }
 
 export function setup (settings = {}) {
-  // if bubble is enabled in settings
-  if (settings.dialog_button === false) {
+  // check if bubble or dialog are disabled in settings
+  if (settings.dialog_button === false || settings.dialog_enabled === false) {
     return
   }
 

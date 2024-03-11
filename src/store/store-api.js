@@ -206,42 +206,37 @@ export async function refetchCollections (collections = []) {
 
   await browser.storage.local.set(cache)
 
-  return getSignedInUser()
-    .then((user) => {
-      return Promise.all([
-        user,
-        isFree(user),
-      ])
-    })
-    .then(([user, free]) => {
-      let collectionsToRefetch = collectionsToClear
-      // don't refetch shared templates for free users
-      if (free) {
-        collectionsToRefetch = collectionsToClear.filter((c) => !['templatesShared', 'templatesEveryone'].includes(c))
-      }
-      return Promise.all(
-        collectionsToRefetch.map((c) => getCollection({
-          collection: c,
-          user: user,
-        }))
-      )
-    })
-    .catch((err) => {
-      if (isLoggedOut(err)) {
-        return
-      }
+  try {
+    const user = await getSignedInUser()
+    const free = await isFree(user)
+    let collectionsToRefetch = collectionsToClear
+    // don't refetch shared templates for free users
+    if (free) {
+      collectionsToRefetch = collectionsToClear.filter((c) => !['templatesShared', 'templatesEveryone'].includes(c))
+    }
 
-      throw err
-    })
+    return Promise.all(
+      collectionsToRefetch.map((c) => getCollection({
+        collection: c,
+        user: user,
+      }))
+    )
+  } catch (err) {
+    if (isLoggedOut(err)) {
+      return
+    }
+
+    throw err
+  }
 }
 
 // one hour
-const autoSyncTime = 60 * 60 * 1000
-export async function autosync (force = false) {
+const defaultSyncTimeout = 60 * 60 * 1000
+export async function autosync (timeout = defaultSyncTimeout) {
   const data = await getExtensionData()
   const lastSync = new Date(data.lastSync)
   // auto sync if last sync was more than one hour ago
-  if ((new Date() - lastSync > autoSyncTime) || force === true) {
+  if (new Date() - lastSync > timeout) {
     return refetchCollections()
   }
 
@@ -250,12 +245,12 @@ export async function autosync (force = false) {
 
 // handle fetch errors
 function handleErrors (response) {
-    if (!response.ok) {
-        return response.clone().json().then((res) => {
-            return Promise.reject(res);
-        });
-    }
-    return response;
+  if (!response.ok) {
+    return response.clone().json().then((res) => {
+      return Promise.reject(res)
+    })
+  }
+  return response
 }
 
 // fetch wrapper
@@ -388,6 +383,7 @@ async function getSignedInUser () {
       badgeUpdate(false)
       clearDataCache()
       await setSignedInUser({})
+      trigger('logout', {}, 0)
     }
   }
 
@@ -507,7 +503,7 @@ export function signin (params = {}) {
       return signinWithToken(res.token)
     })
     .then(() => {
-      return trigger('login')
+      return trigger('login', {}, 0)
     })
     .catch((err) => {
       return signinError(err)
@@ -538,7 +534,7 @@ export function getSession () {
         // auto-login if not logged-in
         return signinWithToken(res.token)
           .then(() => {
-            return trigger('login')
+            return trigger('login', {}, 0)
           })
       }
 
@@ -552,7 +548,7 @@ export async function logout () {
 
   badgeUpdate(false)
   clearDataCache()
-  trigger('logout')
+  trigger('logout', {}, 0)
 
   return request(`${config.functionsUrl}/api/1/logout`, {
       method: 'POST'
@@ -561,6 +557,9 @@ export async function logout () {
 
 async function signinWithToken (token = '') {
   const auth = await signInWithCustomToken(firebaseAuth, token)
+  // clear existing cached data,
+  // in case we still have collections cached from another user
+  await clearDataCache()
   // immediately set stored user, in case we call getSignedInUser,
   // before signinWithToken is done.
   const user = await setSignedInUser({

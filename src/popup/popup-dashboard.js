@@ -84,7 +84,7 @@ customElements.define(
 
       this.addEventListener('click', (e) => {
         if (e.target.closest('.js-sync-now') && this.syncing === false) {
-          this.sync(true)
+          this.sync(1000)
         }
       })
 
@@ -103,23 +103,16 @@ customElements.define(
       // update session
       store.getSession()
     }
-    sync (force = false) {
-      // only show feedback when force-syncing
-      if (force === true) {
-        this.syncing = true
-        this.connectedCallback()
-      }
+    async sync (timeout) {
+      this.syncing = true
+      this.connectedCallback()
 
-      return store.autosync(force)
-        .then(() => {
-          return store.getExtensionData()
-        })
-        .then((data) => {
-          this.syncing = false
-          this.lastSync = new Date(data.lastSync)
+      await store.autosync(timeout)
+      const data = await store.getExtensionData()
+      this.syncing = false
+      this.lastSync = new Date(data.lastSync)
 
-          return this.refreshAccount()
-        })
+      return this.refreshAccount()
     }
     refreshAccount () {
       return store.getAccount()

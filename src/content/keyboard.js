@@ -47,10 +47,6 @@ function populateCache () {
   })
 }
 
-store.on('templates-updated', getTemplates)
-store.on('login', populateCache)
-store.on('logout', populateCache)
-populateCache()
 
 function getTemplateByShortcut (shortcut) {
   return getTemplates()
@@ -59,6 +55,26 @@ function getTemplateByShortcut (shortcut) {
         return t.shortcut === shortcut
       })
     })
+}
+
+// setup store events on first keyboard insert
+let eventsReady = false
+function setupEvents () {
+  if (eventsReady) {
+    return
+  }
+
+  store.on('templates-updated', getTemplates)
+  store.on('login', populateCache)
+  store.on('logout', populateCache)
+  eventsReady = true
+}
+
+function destroyEvents () {
+  store.off('templates-updated', getTemplates)
+  store.off('login', populateCache)
+  store.off('logout', populateCache)
+  eventsReady = false
 }
 
 async function keyboardAutocomplete (e) {
@@ -91,6 +107,8 @@ async function keyboardAutocomplete (e) {
     }
 
     if (template) {
+      setupEvents()
+
       // restore selection
       element.focus()
       if (anchorNode && focusNode) {
@@ -110,18 +128,17 @@ let cachedKeyboardShortcut = ''
 
 export function setup (settings = {}) {
   cachedKeyboardShortcut = settings.expand_shortcut
-  // use custom keyboard shortcuts
   if (settings.expand_enabled) {
-    keybind(
-      cachedKeyboardShortcut,
-      keyboardAutocomplete,
-    )
+    populateCache()
 
+    keybind(cachedKeyboardShortcut, keyboardAutocomplete)
     swipebind(keyboardAutocomplete)
   }
 }
 
 export function destroy () {
+  destroyEvents()
+
   keyunbind(cachedKeyboardShortcut, keyboardAutocomplete)
   swipeunbind()
 }

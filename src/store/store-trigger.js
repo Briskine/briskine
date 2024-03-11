@@ -4,20 +4,17 @@ import browser from 'webextension-polyfill'
 
 import debug from './store-debug.js'
 
-export default function trigger (name, details) {
-  const data = {
+function sendEvent (data) {
+  const params = {
     type: 'trigger',
-    data: {
-      name: name,
-      details: details,
-    }
+    data: data,
   }
 
   // send trigger message to client store
   return Promise
-    .all([
+    .allSettled([
       // send message to popup
-      browser.runtime.sendMessage(data)
+      browser.runtime.sendMessage(params)
         .catch((err) => {
           if (err.message && err.message === 'Could not establish connection. Receiving end does not exist.') {
             // popup is not loaded
@@ -30,13 +27,56 @@ export default function trigger (name, details) {
       browser.tabs.query({}).then((tabs) => {
         return tabs
           .filter((tab) => tab.url.includes('http://') || tab.url.includes('https://'))
-          .map((tab) => browser.tabs.sendMessage(tab.id, data))
+          .map((tab) => browser.tabs.sendMessage(tab.id, params))
       })
     ])
-    .catch((err) => {
-      return debug(
-        ['trigger', name, err],
-        'error'
-      )
+    .then((results) => {
+      results.forEach((result) => {
+        if (result.status === 'rejected') {
+          debug(['trigger', params.data.name, result], 'error')
+        }
+      })
+
+      return
     })
+}
+
+
+let queue = []
+let timer = null
+
+function runQueue () {
+  return Promise
+    .allSettled(queue.map((d) => sendEvent(d)))
+    .then(() => {
+      queue = []
+      return
+    })
+}
+
+export default function trigger (name, details, timeout = 1000) {
+  const existing = queue.find((d) => d.name === name)
+  if (existing) {
+    existing.details = details
+  } else {
+    const data = {
+      name: name,
+      details: details,
+    }
+    queue.push(data)
+  }
+
+  if (timer) {
+    clearTimeout(timer)
+  }
+
+  if (timeout === 0) {
+    return runQueue()
+  }
+
+  return new Promise((resolve) => {
+    timer = setTimeout(() => {
+      runQueue().then(resolve)
+    }, timeout)
+  })
 }
