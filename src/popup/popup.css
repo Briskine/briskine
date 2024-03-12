@@ -5,13 +5,9 @@
 
 :root {
   --bs-border-radius: 3px;
-  --bs-body-color:  #7e7084;
-
-  --background-color: #fff;
-  --background-color-overlay: #f3f4f5;
-
   --green: #37c837;
   --yellow: #ffcc00;
+  --blue: #0d7af6;
 }
 
 html {
@@ -19,14 +15,13 @@ html {
 }
 
 body {
-  min-height: 250px;
-  background-color: var(--background-color);
+  background-color: var(--bs-tertiary-bg);
 }
 
 @media (min-width: 42em) {
   body {
     padding: 2em;
-    background-color: var(--background-color-overlay);
+    min-height: 100%;
   }
 }
 
@@ -45,8 +40,9 @@ label {
 .popup-container {
   /* browser action width */
   width: 22em;
+  min-height: 250px;
   margin: 0 auto;
-  background-color: var(--background-color);
+  background-color: var(--bs-body-bg);
 }
 
 @media (min-width: 22em) {
@@ -73,7 +69,6 @@ label {
  */
 a,
 .btn-link {
-  color: #1e48b3;
   text-decoration: none;
 }
 
@@ -199,7 +194,7 @@ a:hover,
 /* popup-dashboard
  */
 .popup-logo {
-  border-bottom: 1px solid #ececec;
+  border-bottom: 1px solid var(--bs-tertiary-bg);
 }
 
 .popup-menu {
@@ -221,13 +216,9 @@ a:hover,
 }
 
 .popup-menu a:hover {
-  background-color: #f9f9f9;
+  background-color: var(--bs-tertiary-bg);
 
   text-decoration: none;
-}
-
-.popup-menu a:active {
-  background-color: #e6e6e6;
 }
 
 .popup-menu .icon {
@@ -240,7 +231,7 @@ a:hover,
 
 .popup-menu a:hover .icon {
   transform: scale(1.4);
-  color: #0607fb;
+  color: var(--blue);
 }
 
 .popup-stats {
@@ -273,8 +264,9 @@ a:hover,
 .btn-logout {
   padding-top: .4em;
   padding-bottom: .4em;
+  padding-right: 0;
 
-  color: #808080;
+  color: var(--bs-secondary);
   font-size: inherit;
 }
 
@@ -282,7 +274,6 @@ a:hover,
   min-width: 5em;
   border: 0;
   margin-left: auto;
-  padding-right: 0;
 
   white-space: nowrap;
 }

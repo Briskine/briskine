@@ -115,7 +115,7 @@ async function keyboardAutocomplete (e) {
         getSelection(element).setBaseAndExtent(anchorNode, anchorOffset, focusNode, focusOffset)
       }
 
-      return autocomplete({
+      autocomplete({
         element: element,
         quicktext: template,
         word: word,

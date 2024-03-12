@@ -124,16 +124,8 @@ export function getSelectedWord (params) {
   }
 }
 
-export function autocomplete (params) {
-  runPlugins(Object.assign({}, params))
-
-  store.updateTemplateStats(params.quicktext.id)
-
-  // updates word stats
-  const wordCount = (params.quicktext._body_plaintext || '').split(' ').length
-  store.getExtensionData().then((data) => {
-    store.setExtensionData({
-      words: data.words + wordCount
-    })
-  })
+export async function autocomplete (params) {
+  await runPlugins(Object.assign({}, params))
+  await store.updateTemplateStats(params.quicktext)
+  return params
 }

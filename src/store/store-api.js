@@ -628,14 +628,19 @@ export async function setActiveCustomer (customerId) {
     })
 }
 
-export function updateTemplateStats (id) {
+export function updateTemplateStats ({id = '', _body_plaintext = ''}) {
   return getExtensionData()
     .then((data) => {
+      // last used cache
       let lastuseCache = data.templatesLastUsed || {}
       lastuseCache[id] = new Date().toISOString()
+      // time saved (words)
+      const wordCount = (_body_plaintext || '').split(' ').length
+      const words = data.words + wordCount
 
       return setExtensionData({
-        templatesLastUsed: lastuseCache
+        templatesLastUsed: lastuseCache,
+        words: words,
       })
     })
 }

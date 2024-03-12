@@ -6,14 +6,16 @@ import './popup.css'
 import './popup-login.js'
 import './popup-dashboard.js'
 import store from '../store/store-client.js'
+import setTheme from './popup-theme.js'
 
 customElements.define(
   'popup-container',
   class extends HTMLElement {
     constructor() {
       super()
-      this.loggedIn = null
+      setTheme()
 
+      this.loggedIn = null
       this.checkLogin()
 
       store.on('login', () => {
