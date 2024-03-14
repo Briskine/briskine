@@ -27,3 +27,9 @@ test/bundle
 cypress/screenshots/
 cypress/videos/
 cypress/downloads/
+
+# playwright
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/

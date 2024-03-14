@@ -17,7 +17,9 @@
     "cypress:run": "npm run cypress:run:chrome",
     "cypress:run:firefox": "npm run build -- e2e manifest=2 && cypress run -b firefox --headed",
     "cypress:run:chrome": "npm run build -- e2e && cypress run -b chrome --headed",
-    "release": "npm run lint && npm test && npm run cypress:run && npm run build -- manifest=2 && npm run build && npm run sourcebuild"
+    "release": "npm run lint && npm test && npm run cypress:run && npm run build -- manifest=2 && npm run build && npm run sourcebuild",
+    "playwright:firefox": "npm run build -- e2e manifest=2 && npx playwright test --project=firefox",
+    "playwright:chrome": "npm run build -- e2e && npx playwright test --project=chromium"
   },
   "repository": "https://github.com/briskine/briskine/",
   "author": "Alexandru Plugaru <alex@gorgias.com>",
@@ -41,6 +43,8 @@
   ],
   "license": "GPL-3.0-or-later",
   "devDependencies": {
+    "@playwright/test": "^1.42.1",
+    "@types/node": "^20.11.27",
     "archiver": "^7.0.0",
     "chai": "^5.0.0",
     "copy-webpack-plugin": "^12.0.0",
@@ -51,6 +55,7 @@
     "eslint": "^8.14.0",
     "firebase-tools": "^13.0.0",
     "glob": "^10.0.0",
+    "http-server": "^14.1.1",
     "mini-css-extract-plugin": "^2.0.0",
     "mocha": "^10.0.0",
     "mocha-headless-chrome": "^4.0.0",
