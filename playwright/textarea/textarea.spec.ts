@@ -43,7 +43,4 @@ test.describe('Textarea', () => {
     await search.press('Enter')
     await expect(input).toHaveValue('It was nice talking to you.')
   })
-
-
-
 })
