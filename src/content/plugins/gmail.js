@@ -179,10 +179,10 @@ async function after (params, data) {
 
   const buttonSelectors = {
     cc: '.aB.gQ.pE',
-    bcc: '.aB.gQ.pB'
+    bcc: '.aB.gQ.pB',
   }
 
-  Array('cc', 'bcc').forEach(async (fieldName) => {
+  for (const fieldName of ['cc', 'bcc']) {
     if (params.quicktext[fieldName]) {
       const parsedField = await parseTemplate(params.quicktext[fieldName], data)
       $parent.querySelector(buttonSelectors[fieldName]).dispatchEvent(new MouseEvent('click', {bubbles: true}))
@@ -192,7 +192,7 @@ async function after (params, data) {
         $field.dispatchEvent(new FocusEvent('blur'))
       }
     }
-  })
+  }
 }
 
 let activeCache = null
