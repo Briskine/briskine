@@ -1,4 +1,4 @@
-import { test, expect } from '../fixtures.ts'
+import {test, expect} from '../fixtures.ts'
 
 test.describe('Textarea', () => {
   test.beforeEach(async ({page}) => {
@@ -10,16 +10,16 @@ test.describe('Textarea', () => {
   })
 
   test('should insert template with keyboard shortcut in textarea', async ({page}) => {
-    const textarea = await page.getByTestId('textarea')
+    const textarea = page.getByTestId('textarea')
     await textarea.fill('kr')
     await textarea.press('Tab')
     await expect(textarea).toHaveValue('Kind regards,\n.')
   })
 
   test('should insert template from dialog in textarea', async ({page}) => {
-    const textarea = await page.getByTestId('textarea')
+    const textarea = page.getByTestId('textarea')
     await textarea.press('Control+ ')
-    const search = await page.getByPlaceholder('Search templates...')
+    const search = page.getByPlaceholder('Search templates...')
     await expect(search).toBeVisible()
     await search.fill('nic')
     await page.waitForTimeout(500)
@@ -28,16 +28,16 @@ test.describe('Textarea', () => {
   })
 
   test('should insert template with keyboard shortcut in input', async ({page}) => {
-    const input = await page.getByTestId('input')
+    const input = page.getByTestId('input')
     await input.fill('kr')
     await input.press('Tab')
     await expect(input).toHaveValue('Kind regards,.')
   })
 
   test('should insert template from dialog in input', async ({page}) => {
-    const input = await page.getByTestId('input')
+    const input = page.getByTestId('input')
     await input.press('Control+ ')
-    const search = await page.getByPlaceholder('Search templates...')
+    const search = page.getByPlaceholder('Search templates...')
     await search.fill('nic')
     await page.waitForTimeout(500)
     await search.press('Enter')
