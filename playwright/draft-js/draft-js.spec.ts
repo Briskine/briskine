@@ -1,8 +1,8 @@
 import {test, expect} from '../fixtures.ts'
 
-test.describe('ContentEditable', () => {
+test.describe('Draft.js', () => {
   test.beforeEach(async ({page}) => {
-    await page.goto('/contenteditable/contenteditable.html')
+    await page.goto('/draft-js/draft-js.html')
   })
 
   test.afterEach(async ({page}) => {
@@ -14,8 +14,7 @@ test.describe('ContentEditable', () => {
     await textbox.fill('kr')
     await textbox.press('Tab')
     await page.waitForTimeout(500)
-    const html = await textbox.innerHTML()
-    expect(html).toEqual('<div>Kind regards,</div><div>.</div>')
+    await expect(textbox).toHaveText('Kind regards,.')
   })
 
   test('should insert template from dialog', async ({page}) => {
@@ -27,7 +26,6 @@ test.describe('ContentEditable', () => {
     await page.waitForTimeout(500)
     await search.press('Enter')
     await page.waitForTimeout(500)
-    const html = await textbox.innerHTML()
-    expect(html).toEqual('<div>It was nice talking to you.</div>')
+    await expect(textbox).toHaveText('It was nice talking to you.')
   })
 })
