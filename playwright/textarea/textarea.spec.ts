@@ -43,4 +43,12 @@ test.describe('Textarea', () => {
     await search.press('Enter')
     await expect(input).toHaveValue('It was nice talking to you.')
   })
+
+  test(`should move focus to next field when template shortcut doesn't match`, async ({page}) => {
+    const input = page.getByTestId('input')
+    await input.fill('mock')
+    await input.press('Tab')
+    await page.waitForTimeout(500)
+    await expect(page.getByTestId('email')).toBeFocused()
+  })
 })
