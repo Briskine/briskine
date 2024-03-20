@@ -11,7 +11,7 @@ test.describe('Slate', () => {
 
   test('should insert template with keyboard shortcut', async ({page}) => {
     const textbox = page.getByRole('textbox')
-    await textbox.fill('kr')
+    await textbox.pressSequentially('kr')
     await textbox.press('Tab')
     await page.waitForTimeout(500)
     const text = await textbox.innerText()

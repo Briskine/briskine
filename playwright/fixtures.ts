@@ -55,12 +55,4 @@ export const test = base.extend<{
   },
 })
 
-// skip all dialog tests on Firefox,
-// until they fix the Permission Denied bug when accessing any properties
-// on custom elements in content scripts.
-// https://bugzilla.mozilla.org/show_bug.cgi?id=1492002
-test.beforeEach(async ({browserName}, testInfo) => {
-  test.skip(browserName === 'firefox' && testInfo.title.includes('dialog'), 'Dialog testing not supported in Firefox.')
-})
-
 export const expect = test.expect

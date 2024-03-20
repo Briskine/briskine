@@ -14,8 +14,7 @@ test.describe('Squire', () => {
     await textbox.fill('kr')
     await textbox.press('Tab')
     await page.waitForTimeout(500)
-    const text = await textbox.innerText()
-    expect(text).toEqual('Kind regards,\n.')
+    await expect(textbox).toHaveText('Kind regards,.')
   })
 
   test('should insert template from dialog', async ({page}) => {

@@ -17,7 +17,13 @@ test.describe('Draft.js', () => {
     await expect(textbox).toHaveText('Kind regards,.')
   })
 
-  test('should insert template from dialog', async ({page}) => {
+  test('should insert template from dialog', async ({page, browserName}) => {
+    // skip dialog tests on Firefox,
+    // until they fix the Permission Denied bug when accessing any properties
+    // on custom elements in content scripts.
+    // https://bugzilla.mozilla.org/show_bug.cgi?id=1492002
+    test.skip(browserName === 'firefox', 'Dialog testing not supported in Firefox.')
+
     const textbox = page.getByRole('textbox')
     await textbox.press('Control+ ')
     const search = page.getByPlaceholder('Search templates...')
