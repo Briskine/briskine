@@ -17,10 +17,10 @@
     "cypress:run": "npm run cypress:run:chrome",
     "cypress:run:firefox": "npm run build -- e2e manifest=2 && cypress run -b firefox --headed",
     "cypress:run:chrome": "npm run build -- e2e && cypress run -b chrome --headed",
-    "release": "npm run lint && npm test && npm run cypress:run && npm run build -- manifest=2 && npm run build && npm run sourcebuild",
-    "playwright:firefox": "npm run build -- e2e manifest=2 && npx playwright test --project=firefox",
+    "playwright:firefox": "npm run build -- e2e manifest=2 && npx playwright test --project=firefox --workers=1",
     "playwright:chrome": "npm run build -- e2e && npx playwright test --project=chromium",
-    "playwright:run": "npm run playwright:firefox && npm run playwright:chrome"
+    "playwright:run": "npm run playwright:firefox && npm run playwright:chrome",
+    "release": "npm run lint && npm test && npm run playwright:run && npm run build -- manifest=2 && npm run build && npm run sourcebuild"
   },
   "repository": "https://github.com/briskine/briskine/",
   "author": "Alexandru Plugaru <alex@gorgias.com>",

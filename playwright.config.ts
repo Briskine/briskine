@@ -6,7 +6,8 @@ export default defineConfig({
   fullyParallel: true,
   forbidOnly: false,
   retries: 0,
-  workers: 1,
+  maxFailures: 1,
+  workers: 2,
   reporter: 'line',
   use: {
     baseURL: baseURL,
