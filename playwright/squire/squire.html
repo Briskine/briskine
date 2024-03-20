@@ -1,0 +1,15 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+  </head>
+  <body>
+    <div id="editor" role="textbox"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/dompurify/dist/purify.min.js"></script>
+    <script type="module">
+      import Squire from 'https://cdn.jsdelivr.net/npm/squire-rte/+esm'
+      new Squire(document.querySelector('div'))
+    </script>
+  </body>
+</html>
