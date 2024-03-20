@@ -1,8 +1,8 @@
 import {test, expect} from '../fixtures.ts'
 
-test.describe('Shadow', () => {
+test.describe('Slate', () => {
   test.beforeEach(async ({page}) => {
-    await page.goto('/shadow/shadow.html')
+    await page.goto('/slate/slate.html')
   })
 
   test.afterEach(async ({page}) => {

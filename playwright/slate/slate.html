@@ -1,0 +1,36 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/slate@0/dist/slate.js"></script>
+    <script src="https://unpkg.com/slate-react@0/dist/slate-react.js"></script>
+  </head>
+  <body>
+    <div id="editor"></div>
+
+    <script>
+      const initialValue = [
+        {
+          type: 'paragraph',
+          children: [
+            { text: '' },
+          ],
+        },
+      ]
+
+      function Editor () {
+        const [editor] = React.useState(() => SlateReact.withReact(Slate.createEditor()), [])
+
+        return React.createElement(SlateReact.Slate, {
+          editor: editor,
+          initialValue: initialValue,
+        }, React.createElement(SlateReact.Editable))
+      }
+
+      const root = ReactDOM.createRoot(document.getElementById('editor'))
+      root.render(React.createElement(Editor))
+    </script>
+  </body>
+</html>
