@@ -1,8 +1,8 @@
 import {test, expect} from '../fixtures.ts'
 
-test.describe('Lexical', () => {
+test.describe('ProseMirror', () => {
   test.beforeEach(async ({page}) => {
-    await page.goto('/lexical/lexical.html')
+    await page.goto('/prosemirror/prosemirror.html')
   })
 
   test.afterEach(async ({page}) => {
@@ -11,10 +11,11 @@ test.describe('Lexical', () => {
 
   test('should insert template with keyboard shortcut', async ({page}) => {
     const textbox = page.getByRole('textbox')
-    await textbox.fill('kr')
+    await textbox.pressSequentially('kr')
     await textbox.press('Tab')
     await page.waitForTimeout(500)
-    await expect(textbox).toHaveText('Kind regards,\n.')
+    const text = await textbox.innerText()
+    expect(text).toEqual('Kind regards,\n.')
   })
 
   test('should insert template from dialog', async ({page}) => {
@@ -26,6 +27,7 @@ test.describe('Lexical', () => {
     await page.waitForTimeout(500)
     await search.press('Enter')
     await page.waitForTimeout(500)
-    await expect(textbox).toHaveText('It was nice talking to you.')
+    const html = await textbox.innerHTML()
+    expect(html).toEqual('<p>It was nice talking to you.</p>')
   })
 })
