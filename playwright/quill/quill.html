@@ -1,0 +1,19 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <link href="https://cdn.jsdelivr.net/npm/quill@1/dist/quill.snow.min.css" rel="stylesheet">
+  </head>
+  <body>
+    <div id="editor"></div>
+
+    <script type="module">
+      import Quill from 'https://cdn.jsdelivr.net/npm/quill@1/+esm'
+
+      const quill = new Quill('#editor', {
+        theme: 'snow'
+      })
+      quill.root.setAttribute('role', 'textbox')
+    </script>
+  </body>
+</html>
