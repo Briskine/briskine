@@ -1,4 +1,4 @@
-import { defineConfig, devices } from '@playwright/test'
+import { defineConfig } from '@playwright/test'
 
 const baseURL = 'http://127.0.0.1:8080'
 export default defineConfig({
@@ -15,11 +15,11 @@ export default defineConfig({
   projects: [
     {
       name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
+      use: { browserName: 'chromium' },
     },
     {
       name: 'firefox',
-      use: { ...devices['Desktop Firefox'] },
+      use: { browserName: 'firefox' },
     },
   ],
   webServer: {
