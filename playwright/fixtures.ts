@@ -43,14 +43,16 @@ export const test = base.extend<{
     await context.close()
   },
   extensionId: async ({context, browserName}, use) => {
-    if (browserName !== 'firefox') {
+    if (browserName === 'firefox') {
+      extensionId = `moz-extension://${extensionId}`
+    } else {
       let [background] = context.serviceWorkers()
       if (!background)
         background = await context.waitForEvent('serviceworker')
 
       extensionId = background.url().split('/')[2]
+      extensionId = `chrome-extension://${extensionId}`
     }
-
     await use(extensionId)
   },
 })

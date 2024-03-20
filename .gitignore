@@ -4,6 +4,7 @@ chrome_profile
 *.log
 build
 sourcebuild
+.env
 
 # chrome extension
 tmp/
