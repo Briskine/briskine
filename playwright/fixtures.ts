@@ -44,6 +44,7 @@ export const test = base.extend<{
   },
   extensionId: async ({context, browserName}, use) => {
     if (browserName === 'firefox') {
+      // TODO BUG extensionId is "temporary-addon"
       extensionId = `moz-extension://${extensionId}`
     } else {
       let [background] = context.serviceWorkers()
