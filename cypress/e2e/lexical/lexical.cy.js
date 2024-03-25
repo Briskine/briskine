@@ -11,7 +11,7 @@ describe('Lexical', () => {
       .type('kr')
       .tabEvent()
       .wait(1000)
-      .should('have.text', 'Kind regards,.')
+      .should('have.text', 'Kind regards,\n.')
       .type('{selectAll}{del}')
   })
 

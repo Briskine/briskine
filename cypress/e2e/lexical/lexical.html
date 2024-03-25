@@ -4,16 +4,14 @@
     <meta charset="utf-8">
   </head>
   <body>
-    <div id="editor" contenteditable></div>
-
+    <div id="lexical-container"></div>
     <script type="module">
       import React from 'https://cdn.jsdelivr.net/npm/react@18/+esm'
       import ReactDOM from 'https://cdn.jsdelivr.net/npm/react-dom@18/+esm'
-      import Lexical from 'https://cdn.jsdelivr.net/npm/lexical@0/+esm'
 
-      import LexicalComposer from 'https://cdn.jsdelivr.net/npm/@lexical/react@0/LexicalComposer/+esm'
-      import PlainTextPlugin from 'https://cdn.jsdelivr.net/npm/@lexical/react@0/LexicalPlainTextPlugin/+esm'
-      import ContentEditable from 'https://cdn.jsdelivr.net/npm/@lexical/react@0/LexicalContentEditable/+esm'
+      import {LexicalComposer} from 'https://cdn.jsdelivr.net/npm/@lexical/react@0/LexicalComposer/+esm'
+      import {PlainTextPlugin} from 'https://cdn.jsdelivr.net/npm/@lexical/react@0/LexicalPlainTextPlugin/+esm'
+      import {ContentEditable} from 'https://cdn.jsdelivr.net/npm/@lexical/react@0/LexicalContentEditable/+esm'
 
       function Editor () {
         const initialConfig = {
@@ -21,14 +19,14 @@
           onError: console.error,
         }
 
-        return React.createElement(LexicalComposer.LexicalComposer, {
-          initialConfig: initialConfig
-        }, React.createElement(PlainTextPlugin.PlainTextPlugin, {
-          contentEditable: ContentEditable.ContentEditable
+        return React.createElement(LexicalComposer, {
+          initialConfig: initialConfig,
+        }, React.createElement(PlainTextPlugin, {
+          contentEditable: React.createElement(ContentEditable),
         }))
       }
 
-      const root = ReactDOM.createRoot(document.getElementById('editor'))
+      const root = ReactDOM.createRoot(document.getElementById('lexical-container'))
       root.render(React.createElement(Editor))
     </script>
   </body>
