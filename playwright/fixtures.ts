@@ -51,7 +51,8 @@ export const test = base.extend<{
   },
   extensionId: async ({context, browserName}, use) => {
     if (browserName === 'firefox') {
-      // TODO BUG extensionId is "temporary-addon"
+      // BUG extensionId is "temporary-addon" in firefox,
+      // so we can't test the popup in firefox.
       extensionId = `moz-extension://${extensionId}`
     } else {
       let [background] = context.serviceWorkers()

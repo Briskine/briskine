@@ -5,6 +5,8 @@ export {test, expect} from './fixtures.ts'
 
 dotenv.config()
 
+test.skip(({browserName}) => browserName === 'firefox', 'Auth testing not supported in Firefox.')
+
 test.beforeEach(async ({page, extensionId}) => {
   await page.goto(`${extensionId}/popup/popup.html`)
   await page.getByRole('button').click()
