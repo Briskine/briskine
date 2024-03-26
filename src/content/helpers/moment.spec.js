@@ -35,6 +35,10 @@ describe('moment handlebars helper', () => {
     expect(compileTemplate('{{moment add="1;days" format="dddd" locale="fr"}}')).to.equal('jeudi')
   })
 
+  it('should show next day in Japanese', () => {
+    expect(compileTemplate('{{moment add="1;days" format="YYYY年 MMM Do (dddd)" locale="ja"}}')).to.equal('2020年 7月 2日 (木曜日)')
+  })
+
   it('should show end of week', () => {
     expect(compileTemplate('{{moment endOf="week"}}')).to.equal('July 04 2020')
   })
