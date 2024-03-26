@@ -17,9 +17,9 @@ export const test = base.extend<{
     let context
 
     if (browserName === 'firefox') {
-      context = await firefox.launch({
+      context = await firefox.launchPersistentContext('', {
         headless: false,
-        args: [ '-start-debugger-server', String(RDP_PORT) ],
+        args: ['-start-debugger-server', String(RDP_PORT)],
         firefoxUserPrefs: {
           'devtools.debugger.remote-enabled': true,
           'devtools.debugger.prompt-connection': false,
@@ -37,6 +37,13 @@ export const test = base.extend<{
           `--load-extension=${pathToExtension}`,
         ],
       })
+    }
+
+    // close the getting-started tab
+    // which gets opened automatically on install
+    const newPage = await context.waitForEvent('page')
+    if (newPage.url().includes('/getting-started')) {
+      await newPage.close()
     }
 
     await use(context)

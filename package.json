@@ -13,8 +13,8 @@
     "build": "webpack --mode=production --env mode=production",
     "sourcebuild": "git archive --format zip --output sourcebuild/sourcebuild-${npm_package_version}.zip HEAD; zip -u sourcebuild/sourcebuild-${npm_package_version}.zip .firebase-config.json",
     "lint": "eslint './**/*.js'",
-    "playwright:firefox": "npm run build -- e2e manifest=2 && playwright test --project=firefox --workers=1",
-    "playwright:chrome": "npm run build -- e2e && playwright test --project=chromium",
+    "playwright:firefox": "npm run build -- manifest=2 && playwright test --project=firefox --workers=1",
+    "playwright:chrome": "npm run build && playwright test --project=chromium",
     "playwright:run": "npm run playwright:firefox && npm run playwright:chrome",
     "release": "npm run lint && npm test && npm run playwright:run && npm run build -- manifest=2 && npm run build && npm run sourcebuild"
   },
