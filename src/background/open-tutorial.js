@@ -9,7 +9,7 @@ browser.runtime.onInstalled.addListener((details) => {
   }
 
   // disable the welcome page on Safari,
-  // and when running e2e tests with Cypress, as we can't change the active tab.
+  // and when running e2e tests, as we can't change the active tab.
   if (!REGISTER_DISABLED && !E2E) {
     // open the getting-started tutorial page on install
     browser.tabs.create({
