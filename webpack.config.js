@@ -103,7 +103,6 @@ function extensionConfig (params = {}) {
     new webpack.DefinePlugin({
       ENV: JSON.stringify(params.mode),
       REGISTER_DISABLED: params.safari,
-      E2E: params.e2e,
       FIREBASE_CONFIG: JSON.stringify(params.firebaseConfig),
       VERSION: JSON.stringify(packageFile.version),
       MANIFEST: JSON.stringify(params.manifest),
@@ -217,7 +216,6 @@ export default async function (env) {
     firebaseConfig: firebaseConfig,
     manifest: '3',
     safari: false,
-    e2e: false,
     mode: 'production',
   }, env)
 
