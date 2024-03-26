@@ -4,6 +4,7 @@ chrome_profile
 *.log
 build
 sourcebuild
+.env
 
 # chrome extension
 tmp/
@@ -23,7 +24,8 @@ test/bundle
 # firebase config, for firefox reviewers
 .firebase-config.json
 
-# cypress
-cypress/screenshots/
-cypress/videos/
-cypress/downloads/
+# playwright
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/

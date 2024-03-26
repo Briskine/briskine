@@ -68,8 +68,9 @@ function init (settings) {
 let startupDelay = 500
 let startupRetries = 0
 const maxStartupRetries = 10
+let destroyed = false
 
-function startup () {
+async function startup () {
   startupRetries = startupRetries + 1
 
   if (startupRetries > maxStartupRetries) {
@@ -88,28 +89,23 @@ function startup () {
   }
 
   // use a custom property on the body,
-  // to detect if the body was rewrote (eg. in dynamically created iframes).
+  // to detect if the body was recreated (eg. in dynamically created iframes).
   document.body._briskineLoaded = true
 
-  return store.getSettings()
-    .then((settings) => {
-      init(settings)
-      return
-    })
-    .then(() => {
-      setTimeout(() => {
-        // if the body was rewrote,
-        // we'll retry initializing.
-        if (!document.body._briskineLoaded) {
-          startup()
-        }
-      }, startupDelay)
-    })
-}
+  const settings = await store.getSettings()
+  // check if we were destroyed while waiting for settings, or startupDelay
+  if (destroyed === false) {
+    init(settings)
 
-// destroy existing content script
-const destroyEvent = new CustomEvent(config.destroyEvent)
-document.dispatchEvent(destroyEvent)
+    setTimeout(() => {
+      // if the body was recreated,
+      // we'll retry initializing.
+      if (!document.body._briskineLoaded) {
+        startup()
+      }
+    }, startupDelay)
+  }
+}
 
 function destructor () {
   destroyKeyboard()
@@ -123,7 +119,12 @@ function destructor () {
 
   settingsCache = {}
   store.off('users-updated', refreshContentScripts)
+  destroyed = true
 }
+
+// destroy existing content script
+const destroyEvent = new CustomEvent(config.destroyEvent)
+document.dispatchEvent(destroyEvent)
 
 document.addEventListener(config.destroyEvent, destructor, {once: true})
 
