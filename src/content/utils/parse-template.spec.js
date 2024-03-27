@@ -29,6 +29,30 @@ describe('parseTemplate', async () => {
     expect(await parseTemplate('Hello {{to.first_name}}', {to: {first_name: 'Briskine'}})).to.equal('Hello Briskine')
   })
 
+  it('should parse template with variable under index', async () => {
+    expect(await parseTemplate('Hello {{to.0.first_name}}', {to: {first_name: 'Briskine'}})).to.equal('Hello Briskine')
+  })
+
+  it('should parse template with array value', async () => {
+    expect(await parseTemplate('Hello {{to.0.first_name}}', {to: [{first_name: 'Briskine'}]})).to.equal('Hello Briskine')
+  })
+
+  it('should parse template with from variable, when only account is provided', async () => {
+    expect(await parseTemplate('Hello {{from.first_name}}', {account: {first_name: 'Briskine'}})).to.equal('Hello Briskine')
+  })
+
+  it('should parse template with from variable, when from is provided', async () => {
+    expect(await parseTemplate('Hello {{from.first_name}}', {from: {first_name: 'Briskine'}})).to.equal('Hello Briskine')
+  })
+
+  it('should parse template with from variable, when both from and account are provided', async () => {
+    expect(await parseTemplate('Hello {{from.first_name}}', {account: {first_name: 'Account'}, from: {first_name: 'From'}})).to.equal('Hello From')
+  })
+
+  it('should parse template with account variable, when both from and account are provided', async () => {
+    expect(await parseTemplate('Hello {{account.first_name}}', {account: {first_name: 'Account'}, from: {first_name: 'From'}})).to.equal('Hello Account')
+  })
+
   it('should return parsing error string from broken template', async () => {
     expect(await parseTemplate('Hello {{to.first_name}')).to.equal(`<pre>Parse error on line 1:
 ...ello {{to.first_name}
@@ -39,6 +63,8 @@ Expecting 'CLOSE_RAW_BLOCK', 'CLOSE', 'CLOSE_UNESCAPED', 'OPEN_SEXPR', 'CLOSE_SE
   it('should parse template with utf8 characters', async () => {
     expect(await parseTemplate('{{moment format="YYYY年 MMM Do" locale="ja"}}', {})).to.equal(`${year}年 ${month}月 ${day}日`)
   })
+
+  // TODO test {{acccount}} variable, to make sure we have the correct from/account behavior
 
   after(destroy)
 })

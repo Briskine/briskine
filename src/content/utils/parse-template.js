@@ -1,6 +1,8 @@
 import {compileTemplate} from '../sandbox/sandbox-parent.js'
 import store from '../../store/store-client.js'
 
+// TODO test PrepareVars, to make sure have to correct behavior
+// eg. from should have both from.0.name and from.name, with indexes added as properties
 function PrepareVars (vars) {
     if (!vars) {
         return vars;
@@ -53,6 +55,8 @@ export default async function parseTemplate (template = '', data = {}) {
   }
 
   try {
+    // TODO cache account details so we don't have to wake up the service worker
+    // just to parse the template
     account = await store.getAccount()
   } catch (err) {
     // logged-out
