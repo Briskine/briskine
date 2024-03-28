@@ -1,87 +1,62 @@
 import {compileTemplate} from '../sandbox/sandbox-parent.js'
 import store from '../../store/store-client.js'
+import createContact from './create-contact.js'
 
-// TODO test PrepareVars, to make sure have to correct behavior
-// eg. from should have both from.0.name and from.name, with indexes added as properties
-function PrepareVars (vars) {
-    if (!vars) {
-        return vars;
-    }
-
-    var prep = function (data) {
-        // convert array to object
-        data = Object.assign({}, data);
-        var flat = data[0];
-        for (var i in flat) {
-            if (Object.prototype.hasOwnProperty.call(flat, i)) {
-                data[i] = flat[i];
-            }
-        }
-        return data;
-    };
-
-    if (vars.to && vars.to.length) {
-        vars.to = prep(vars.to);
-    }
-    if (vars.from && vars.from.length) {
-        vars.from = prep(vars.from);
-    }
-    if (vars.cc && vars.cc.length) {
-        vars.cc = prep(vars.cc);
-    }
-    if (vars.bcc && vars.bcc.length) {
-        vars.bcc = prep(vars.bcc);
-    }
-    return vars;
+const contactProps = ['email', 'name', 'first_name', 'last_name']
+function mergeContacts (a = {}, b = {}) {
+  const merged = {}
+  contactProps.forEach((p) => merged[p] = b[p] || a[p] || '')
+  return merged
 }
 
-// replace from with name saved in settings
-function replaceFrom (from, account = {}) {
-  from = from || []
-
-  if (!Array.isArray(from)) {
-    from = [from]
+// requires page refresh for account update
+let accountCache = {}
+async function getAccount (contextAccount = {}) {
+  if (!Object.keys(accountCache).length) {
+    try {
+      accountCache = await store.getAccount()
+    } catch (err) {
+      // logged-out
+    }
   }
 
-  return from.map(function (user) {
-    return Object.assign({}, account, user)
+  return createContact(mergeContacts(accountCache, contextAccount))
+}
+
+// return array of contacts, with the first contact exposed directly on the array.
+// to.first_name and to.0.first_name will both work,
+// but looping will only return array index items.
+function contactsArray (contacts = []) {
+  const context = []
+  if (contacts.length) {
+    // make sure each array item is a contact
+    contacts.forEach((contact) => context.push(createContact(contact)))
+
+    // expose the first contact's properties on the array
+    Object.entries(context[0]).forEach(([key, value]) => context[key] = value)
+  }
+
+  return context
+}
+
+const arrayProps = ['to', 'cc', 'bcc']
+async function parseContext (data = {}) {
+  const context = structuredClone(data)
+  arrayProps.forEach((p) => {
+    const propData = Array.isArray(context[p] || []) ? context[p] : [context[p]]
+    context[p] = contactsArray(propData)
   })
+
+  context.account = await getAccount(context.account)
+
+  // TODO check all plugins and make sure from is object
+  // merge from details with account
+  context.from = createContact(mergeContacts(context.account, context.from))
+
+  return context
 }
 
 export default async function parseTemplate (template = '', data = {}) {
-  let account = {
-    email: '',
-    full_name: '',
-  }
-
-  try {
-    // TODO cache account details so we don't have to wake up the service worker
-    // just to parse the template
-    account = await store.getAccount()
-  } catch (err) {
-    // logged-out
-  }
-
-  let firstName = ''
-  let lastName = ''
-
-  if (account.full_name) {
-    const nameParts = account.full_name.trim().split(' ')
-    firstName = nameParts.shift()
-    lastName = nameParts.join(' ')
-  }
-
-  // account variable
-  data.account = {
-    email: account.email,
-    name: account.full_name,
-    first_name: firstName,
-    last_name: lastName,
-  }
-
-  // parse from to array and use it from data={} or getAccount
-  data.from = replaceFrom(data.from || {}, data.account)
-
-  const compiledTemplate = await compileTemplate(template, PrepareVars(data))
-  return compiledTemplate
+  const context = await parseContext(data)
+  return compileTemplate(template, context)
 }
