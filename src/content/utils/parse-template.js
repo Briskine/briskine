@@ -39,10 +39,10 @@ function contactsArray (contacts = []) {
   return context
 }
 
-const arrayProps = ['to', 'cc', 'bcc']
+const contactLists = ['to', 'cc', 'bcc']
 async function parseContext (data = {}) {
   const context = structuredClone(data)
-  arrayProps.forEach((p) => {
+  contactLists.forEach((p) => {
     const propData = Array.isArray(context[p] || []) ? context[p] : [context[p]]
     context[p] = contactsArray(propData)
   })
