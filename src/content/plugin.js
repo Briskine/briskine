@@ -14,11 +14,10 @@ export async function run (params = {}, index = 0) {
     return true
   }
 
-  const done = await Promise.resolve().then(() => plugin(params))
+  const done = await plugin(params)
   if (done === true) {
     return true
   }
 
   return run(params, index + 1)
 }
-

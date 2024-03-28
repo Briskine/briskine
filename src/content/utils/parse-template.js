@@ -48,8 +48,6 @@ async function parseContext (data = {}) {
   })
 
   context.account = await getAccount(context.account)
-
-  // TODO check all plugins and make sure from is object
   // merge from details with account
   context.from = createContact(mergeContacts(context.account, context.from))
 
