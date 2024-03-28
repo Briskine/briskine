@@ -49,8 +49,12 @@ describe('parseTemplate', async () => {
     expect(await parseTemplate('{{to.last_name}}', {to: [{name: 'Briskine Last'}]})).to.equal('Last')
   })
 
-  it('should print from variable at index from array value', async () => {
+  it('should print to variable at index from array value', async () => {
     expect(await parseTemplate('Hello {{to.0.first_name}}', {to: [{first_name: 'Briskine'}]})).to.equal('Hello Briskine')
+  })
+
+  it('should print from variable, when context not provided', async () => {
+    expect(await parseTemplate('Hello {{from.first_name}}')).to.equal('Hello ')
   })
 
   it('should print from variable, when only account is provided', async () => {
@@ -65,7 +69,7 @@ describe('parseTemplate', async () => {
     expect(await parseTemplate('Hello {{from.first_name}}', {account: {first_name: 'Account'}, from: {first_name: 'From'}})).to.equal('Hello From')
   })
 
-  it('should print from variable, when from and account are provided, but from is epmty', async () => {
+  it('should print from variable, when from and account are provided, but from is empty', async () => {
     expect(await parseTemplate('Hello {{from.first_name}}', {
       account: {first_name: 'Account'}, from: {first_name: ''}
     })).to.equal('Hello Account')
