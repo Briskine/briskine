@@ -14,7 +14,12 @@ let accountCache = {}
 async function getAccount (contextAccount = {}) {
   if (!Object.keys(accountCache).length) {
     try {
-      accountCache = await store.getAccount()
+      const storeAccount = await store.getAccount()
+      // map response to contact format
+      accountCache = {
+        name: storeAccount.full_name,
+        email: storeAccount.email,
+      }
     } catch (err) {
       // logged-out
     }
