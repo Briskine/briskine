@@ -43,7 +43,7 @@ function parseString (string = '') {
 // get all required data from the dom
 function getData (params) {
   const data = {
-    from: [],
+    from: {},
     to: [],
     cc: [],
     bcc: [],
@@ -68,7 +68,7 @@ function getData (params) {
 
     const fullNameText = $fullName ? $fullName.innerText : ''
     const emailText = $email ? $email.innerText : ''
-    data.from = [ parseString(`${fullNameText} <${emailText}>`) ]
+    data.from = parseString(`${fullNameText} <${emailText}>`)
 
     const $container = params.element.closest(textfieldContainerSelector);
     if ($container) {
@@ -76,7 +76,7 @@ function getData (params) {
       // get from details from the alias selector at the top of the compose box.
       const $fromSelect = $container.querySelector(fromFieldSelector);
       if ($fromSelect) {
-        data.from = [ parseString($fromSelect.innerText) ];
+        data.from = parseString($fromSelect.innerText);
       }
 
       [ 'to', 'cc', 'bcc' ].forEach((fieldName) => {

@@ -228,7 +228,7 @@ async function updateSection ($container, $button, getNode, value) {
 // get all required data from the dom
 function getData () {
     var vars = {
-        from: [],
+        from: {},
         to: [],
         cc: [],
         bcc: [],
@@ -249,12 +249,10 @@ function getData () {
         fromEmail = $fromEmailButton.innerText;
     }
 
-    vars.from.push(
-        createContact({
-            name: fullName,
-            email: fromEmail
-        })
-    );
+    vars.from = createContact({
+      name: fullName,
+      email: fromEmail,
+    })
 
     var $to = getToContainer();
     if ($to) {
