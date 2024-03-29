@@ -17,6 +17,22 @@ test.describe('ContentEditable Authenticated', () => {
     await expect(textbox).toHaveText('Write emails faster.')
   })
 
+  test('should insert template with account variable', async ({page}) => {
+    const textbox = page.getByRole('textbox')
+    await textbox.fill('acc')
+    await textbox.press('Tab')
+    await page.waitForTimeout(500)
+    await expect(textbox).toHaveText('Briskine Test - Briskine Test\ncontact+test@briskine.com')
+  })
+
+  test('should insert template with from variable, when not available', async ({page}) => {
+    const textbox = page.getByRole('textbox')
+    await textbox.fill('from')
+    await textbox.press('Tab')
+    await page.waitForTimeout(500)
+    await expect(textbox).toHaveText('Briskine Test - Briskine Test\ncontact+test@briskine.com')
+  })
+
   test('should insert template from dialog', async ({page}) => {
     const textbox = page.getByRole('textbox')
     await textbox.press('Control+ ')
