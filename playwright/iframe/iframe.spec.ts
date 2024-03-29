@@ -13,7 +13,6 @@ test.describe('Iframe', () => {
     const textbox = page.frameLocator('#iframe').getByRole('textbox')
     await textbox.fill('kr')
     await textbox.press('Tab')
-    await page.waitForTimeout(500)
     await expect(textbox).toHaveText('Kind regards,.')
   })
 
@@ -23,10 +22,11 @@ test.describe('Iframe', () => {
     await textbox.press('Control+ ')
     const search = frame.getByPlaceholder('Search templates...')
     await expect(search).toBeVisible()
-    await search.fill('nic')
-    await page.waitForTimeout(500)
+    await search.pressSequentially('nic', {delay: 100})
+    const template = 'It was nice talking to you.'
+    const list = frame.getByText(template)
+    await list.waitFor()
     await search.press('Enter')
-    await page.waitForTimeout(500)
     await expect(textbox).toHaveText('It was nice talking to you.')
   })
 })

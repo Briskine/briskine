@@ -13,7 +13,6 @@ test.describe('Lexical', () => {
     const textbox = page.getByRole('textbox')
     await textbox.fill('kr')
     await textbox.press('Tab')
-    await page.waitForTimeout(500)
     await expect(textbox).toHaveText('Kind regards,\n.')
   })
 
@@ -22,10 +21,11 @@ test.describe('Lexical', () => {
     await textbox.press('Control+ ')
     const search = page.getByPlaceholder('Search templates...')
     await expect(search).toBeVisible()
-    await search.fill('nic')
-    await page.waitForTimeout(500)
+    await search.pressSequentially('nic', {delay: 100})
+    const template = 'It was nice talking to you.'
+    const list = page.getByText(template)
+    await list.waitFor()
     await search.press('Enter')
-    await page.waitForTimeout(500)
     await expect(textbox).toHaveText('It was nice talking to you.')
   })
 })
