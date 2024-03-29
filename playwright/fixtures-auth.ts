@@ -14,5 +14,6 @@ test.beforeEach(async ({page, extensionId}) => {
   await page.getByLabel('Email').fill(process.env.TEST_EMAIL || 'MISSING EMAIL')
   await page.getByLabel('Password').fill(process.env.TEST_PASSWORD || 'MISSING PASSWORD')
   await page.getByRole('button').click()
-  await page.waitForTimeout(5000)
+  const premium = page.getByText('Go premium')
+  await premium.waitFor()
 })
