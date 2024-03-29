@@ -16,7 +16,7 @@
     "playwright:firefox": "npm run build -- manifest=2 && playwright test --project=firefox",
     "playwright:chrome": "npm run build && playwright test --project=chromium --workers=2",
     "playwright:run": "npm run playwright:firefox && npm run playwright:chrome",
-    "release": "npm run lint && npm test && npm run playwright:run && npm run build -- manifest=2 && npm run build && npm run sourcebuild"
+    "release": "npm run lint && npm test && npm run playwright:run && npm run sourcebuild"
   },
   "repository": "https://github.com/briskine/briskine/",
   "author": "Alexandru Plugaru <alex@gorgias.com>",
