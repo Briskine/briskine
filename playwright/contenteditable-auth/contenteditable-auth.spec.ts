@@ -36,8 +36,10 @@ test.describe('ContentEditable Authenticated', () => {
     const search = page.getByRole('searchbox')
     await expect(search).toBeVisible()
     await search.fill('create')
-    await page.waitForTimeout(1000)
+    const template = 'Create text templates and insert them with shortcuts.'
+    const list = page.getByText(template)
+    await list.waitFor()
     await search.press('Enter')
-    await expect(textbox).toHaveText('Create text templates and insert them with shortcuts.')
+    await expect(textbox).toHaveText(template)
   })
 })
