@@ -7,8 +7,11 @@ export default defineConfig({
   forbidOnly: false,
   retries: 0,
   maxFailures: 1,
-  workers: 2,
+  workers: 1,
   reporter: 'line',
+  expect: {
+    timeout: 10 * 1000,
+  },
   use: {
     baseURL: baseURL,
     trace: 'on-first-retry',

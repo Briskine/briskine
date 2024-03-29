@@ -13,7 +13,6 @@ test.describe('ContentEditable Authenticated', () => {
     const textbox = page.getByRole('textbox')
     await textbox.fill('w')
     await textbox.press('Tab')
-    await page.waitForTimeout(500)
     await expect(textbox).toHaveText('Write emails faster.')
   })
 
@@ -21,7 +20,6 @@ test.describe('ContentEditable Authenticated', () => {
     const textbox = page.getByRole('textbox')
     await textbox.fill('acc')
     await textbox.press('Tab')
-    await page.waitForTimeout(500)
     await expect(textbox).toHaveText('Briskine Test - Briskine Test\ncontact+test@briskine.com')
   })
 
@@ -29,7 +27,6 @@ test.describe('ContentEditable Authenticated', () => {
     const textbox = page.getByRole('textbox')
     await textbox.fill('from')
     await textbox.press('Tab')
-    await page.waitForTimeout(500)
     await expect(textbox).toHaveText('Briskine Test - Briskine Test\ncontact+test@briskine.com')
   })
 
@@ -41,7 +38,6 @@ test.describe('ContentEditable Authenticated', () => {
     await search.fill('create')
     await page.waitForTimeout(1000)
     await search.press('Enter')
-    await page.waitForTimeout(500)
     await expect(textbox).toHaveText('Create text templates and insert them with shortcuts.')
   })
 })
