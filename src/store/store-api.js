@@ -343,7 +343,12 @@ function isLoggedOut (err) {
   return err === LOGGED_OUT_ERR
 }
 
-function getFirebaseUser () {
+async function getFirebaseUser () {
+  // return faster if possible
+  if (firebaseAuth.currentUser) {
+    return firebaseAuth.currentUser
+  }
+
   return new Promise((resolve, reject) => {
     const unsubscribe = onAuthStateChanged(firebaseAuth, (user) => {
       unsubscribe()
