@@ -41,12 +41,11 @@ function getFieldData (field, $container) {
 function getContainers () {
   // get the parent of each extra field input.
 
-  // :not([textprediction]) excludes the email body.
   // [role=main] for the default outlook view.
   // [data-app-section] for the compose popup view.
   return Array.from(document.querySelectorAll(`
-    [role=main] [role=textbox]:not([textprediction]),
-    [data-app-section="Form_Content"] [role=textbox]:not([textprediction])
+    [role=main] [role=combobox],
+    [data-app-section="Form_Content"] [role=combobox]
   `))
     .map((node) => {
       return node.parentElement
