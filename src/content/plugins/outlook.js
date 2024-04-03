@@ -102,25 +102,23 @@ function getBccButton () {
 }
 
 function getSuggestionButton (email) {
-  return function () {
-    // "use this address" not in contact list
-    const $nonContactList = document.querySelectorAll(`.ms-Suggestions-sectionButton`)
-    if (
-      $nonContactList.length
-      && Array.from($nonContactList).find(($node) => $node.innerText.includes(email))
-    ) {
-      return $nonContactList
-    }
-
-    // contact list suggestion
-    // only when the suggestion contains the email and the item is first (is selected)
-    const $listSelector = document.querySelector(`.ms-FloatingSuggestionsList [aria-label*="${email}"]`)
-    if ($listSelector) {
-      return $listSelector
-    }
-
-    return null
+  // "use this address" not in contact list
+  const $nonContactList = document.querySelectorAll(`.ms-Suggestions-sectionButton`)
+  if (
+    $nonContactList.length
+    && Array.from($nonContactList).find(($node) => $node.innerText.includes(email))
+  ) {
+    return $nonContactList
   }
+
+  // contact list suggestion
+  // only when the suggestion contains the email and the item is first (is selected)
+  const $listSelector = document.querySelector(`.ms-FloatingSuggestionsList [aria-label*="${email}"]`)
+  if ($listSelector) {
+    return $listSelector
+  }
+
+  return null
 }
 
 function getSubjectField () {
@@ -185,7 +183,7 @@ async function addSingleContact ($field, value) {
   $field.dispatchEvent(new Event('input', {bubbles: true}))
 
   try {
-    await waitForElement(getSuggestionButton(value))
+    await waitForElement(() => getSuggestionButton(value))
     // give it a second to attach event listeners
     await new Promise((resolve) => setTimeout(resolve))
 
