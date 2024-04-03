@@ -11,19 +11,15 @@ function parseFullName (fullname = '') {
   return {
     name: name,
     first_name: firstName,
-    last_name: lastName
+    last_name: lastName,
   }
 }
 
+const props = ['email', 'name', 'first_name', 'last_name']
 export default function createContact (contact = {}) {
-  return Object.assign(
-    {
-      email: '',
-      name: '',
-      first_name: '',
-      last_name: ''
-    },
-    parseFullName(contact.name),
-    contact,
-  )
+  const parsed = parseFullName(contact.name)
+  for (const p of props) {
+    parsed[p] = contact[p] || parsed[p] || ''
+  }
+  return parsed
 }

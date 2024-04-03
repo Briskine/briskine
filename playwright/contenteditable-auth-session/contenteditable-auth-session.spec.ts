@@ -1,8 +1,8 @@
-import {test, expect} from '../fixtures.ts'
+import {test, expect} from '../fixtures-auth-session.ts'
 
-test.describe('ProseMirror', () => {
+test.describe('ContentEditable Session Authenticated', () => {
   test.beforeEach(async ({page}) => {
-    await page.goto('/prosemirror/prosemirror.html')
+    await page.goto('/contenteditable-auth-session/contenteditable-auth-session.html')
   })
 
   test.afterEach(async ({page}) => {
@@ -11,21 +11,21 @@ test.describe('ProseMirror', () => {
 
   test('should insert template with keyboard shortcut', async ({page}) => {
     const textbox = page.getByRole('textbox')
-    await textbox.pressSequentially('kr')
+    await textbox.fill('w')
     await textbox.press('Tab')
-    await expect(textbox).toHaveText('Kind regards,.')
+    await expect(textbox).toHaveText('Write emails faster.')
   })
 
   test('should insert template from dialog', async ({page}) => {
     const textbox = page.getByRole('textbox')
     await textbox.press('Control+ ')
-    const search = page.getByPlaceholder('Search templates...')
+    const search = page.getByRole('searchbox')
     await expect(search).toBeVisible()
-    await search.pressSequentially('nic', {delay: 100})
-    const template = 'It was nice talking to you.'
+    await search.fill('create')
+    const template = 'Create text templates and insert them with shortcuts.'
     const list = page.getByText(template)
     await list.waitFor()
     await search.press('Enter')
-    await expect(textbox).toHaveText('It was nice talking to you.')
+    await expect(textbox).toHaveText(template)
   })
 })

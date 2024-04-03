@@ -34,9 +34,6 @@ customElements.define(
       }
       shadowRoot.appendChild(iframe)
     }
-    disconnectedCallback () {
-      window.removeEventListener('message', this.respond)
-    }
   }
 )
 

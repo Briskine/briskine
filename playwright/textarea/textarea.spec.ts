@@ -21,10 +21,12 @@ test.describe('Textarea', () => {
     await textarea.press('Control+ ')
     const search = page.getByPlaceholder('Search templates...')
     await expect(search).toBeVisible()
-    await search.fill('nic')
-    await page.waitForTimeout(500)
+    await search.pressSequentially('nic', {delay: 100})
+    const template = 'It was nice talking to you.'
+    const list = page.getByText(template)
+    await list.waitFor()
     await search.press('Enter')
-    await expect(textarea).toHaveValue('It was nice talking to you.')
+    await expect(textarea).toHaveValue(template)
   })
 
   test('should insert template with keyboard shortcut in input', async ({page}) => {
@@ -38,17 +40,18 @@ test.describe('Textarea', () => {
     const input = page.getByTestId('input')
     await input.press('Control+ ')
     const search = page.getByPlaceholder('Search templates...')
-    await search.fill('nic')
-    await page.waitForTimeout(500)
+    await search.pressSequentially('nic', {delay: 100})
+    const template = 'It was nice talking to you.'
+    const list = page.getByText(template)
+    await list.waitFor()
     await search.press('Enter')
-    await expect(input).toHaveValue('It was nice talking to you.')
+    await expect(input).toHaveValue(template)
   })
 
   test(`should move focus to next field when template shortcut doesn't match`, async ({page}) => {
     const input = page.getByTestId('input')
     await input.fill('mock')
     await input.press('Tab')
-    await page.waitForTimeout(500)
     await expect(page.getByTestId('email')).toBeFocused()
   })
 })

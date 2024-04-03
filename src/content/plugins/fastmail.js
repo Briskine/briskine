@@ -5,6 +5,7 @@
 import parseTemplate from '../utils/parse-template.js';
 import {insertTemplate} from '../editors/editor-universal.js';
 import {addAttachments} from '../attachments/attachments.js'
+import createContact from '../utils/create-contact.js'
 
 var parseList = function (list) {
     return list.filter(function (a) {
@@ -44,16 +45,17 @@ var parseString = function (string) {
 
 // get all required data from the dom
 function getData () {
-    var from = [],
+    var from = {},
         to = [],
         cc = [],
         bcc = [],
         subject = '';
 
     var $container = document.querySelector('.v-Compose');
-    from = Array.from($container.querySelectorAll('.v-ComposeFrom-bottom select option')).map(function (a) {
-      return a.innerText
-    });
+    const $fromContainer = $container.querySelector('.v-ComposeFrom-bottom select option:checked')
+    if ($fromContainer) {
+      from = createContact({name: $fromContainer.innerText})
+    }
 
     to = Array.from($container.querySelectorAll('textarea[id$="to-input"]')).map(function (a) {
       return a.value
@@ -70,7 +72,7 @@ function getData () {
     }
 
     return {
-        from: parseList(from),
+        from: from,
         to: parseList(to),
         cc: parseList(cc),
         bcc: parseList(bcc),

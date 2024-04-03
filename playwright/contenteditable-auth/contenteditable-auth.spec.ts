@@ -13,8 +13,21 @@ test.describe('ContentEditable Authenticated', () => {
     const textbox = page.getByRole('textbox')
     await textbox.fill('w')
     await textbox.press('Tab')
-    await page.waitForTimeout(500)
     await expect(textbox).toHaveText('Write emails faster.')
+  })
+
+  test('should insert template with account variable', async ({page}) => {
+    const textbox = page.getByRole('textbox')
+    await textbox.fill('acc')
+    await textbox.press('Tab')
+    await expect(textbox).toHaveText('Briskine Test - Briskine Test\ncontact+test@briskine.com')
+  })
+
+  test('should insert template with from variable, when not available', async ({page}) => {
+    const textbox = page.getByRole('textbox')
+    await textbox.fill('from')
+    await textbox.press('Tab')
+    await expect(textbox).toHaveText('Briskine Test - Briskine Test\ncontact+test@briskine.com')
   })
 
   test('should insert template from dialog', async ({page}) => {
@@ -23,9 +36,10 @@ test.describe('ContentEditable Authenticated', () => {
     const search = page.getByRole('searchbox')
     await expect(search).toBeVisible()
     await search.fill('create')
-    await page.waitForTimeout(1000)
+    const template = 'Create text templates and insert them with shortcuts.'
+    const list = page.getByText(template)
+    await list.waitFor()
     await search.press('Enter')
-    await page.waitForTimeout(500)
-    await expect(textbox).toHaveText('Create text templates and insert them with shortcuts.')
+    await expect(textbox).toHaveText(template)
   })
 })

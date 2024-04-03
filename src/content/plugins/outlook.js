@@ -228,7 +228,7 @@ async function updateSection ($container, $button, getNode, value) {
 // get all required data from the dom
 function getData () {
     var vars = {
-        from: [],
+        from: {},
         to: [],
         cc: [],
         bcc: [],
@@ -249,12 +249,10 @@ function getData () {
         fromEmail = $fromEmailButton.innerText;
     }
 
-    vars.from.push(
-        createContact({
-            name: fullName,
-            email: fromEmail
-        })
-    );
+    vars.from = createContact({
+      name: fullName,
+      email: fromEmail,
+    })
 
     var $to = getToContainer();
     if ($to) {
@@ -343,19 +341,25 @@ function isActive () {
   if (activeCache !== null) {
     return activeCache
   }
-
   activeCache = false
-  // when loading assets from the office cdn.
-  // to support custom domains and dynamically created frames,
-  // eg. the open-email-in-new-window popup.
-  const $officeCdn = document.querySelector('head *[href*=".cdn.office.net"]')
-  if ($officeCdn) {
-    activeCache = true
-  }
 
-  // also check for urls
+  // check for urls
   const outlookUrl = urls.some((url) => window.location.href.includes(url))
   if (outlookUrl) {
+    activeCache = true
+    return activeCache
+  }
+
+  // or detect specific nodes
+  // to support custom domains and dynamically created frames,
+  // eg. the open-email-in-new-window popup.
+  const $owaNodes = document.querySelector(`
+    head [href*="cdn.office.net"],
+    meta[content*="owamail"],
+    link[href*="/owamail/"],
+    script[src*="/owamail/"]
+  `)
+  if ($owaNodes) {
     activeCache = true
   }
 

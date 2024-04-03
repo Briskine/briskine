@@ -10,7 +10,7 @@ import {addAttachments} from '../attachments/attachments.js'
 // get all required data from the dom
 function getData () {
   const data = {
-    from: [],
+    from: {},
     to: [],
     cc: [],
     bcc: [],
@@ -20,12 +20,10 @@ function getData () {
   const fromName = document.querySelector('.Bu')?.innerText
   const fromEmail = document.querySelector('.Cu')?.innerText
   if (fromName && fromEmail) {
-    data.from.push(
-      createContact({
-        email: fromEmail,
-        name: fromName,
-      })
-    )
+    data.from = createContact({
+      email: fromEmail,
+      name: fromName,
+    })
   }
 
   const fields = [ 'to', 'cc', 'bcc' ]
