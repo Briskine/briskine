@@ -73,6 +73,6 @@
     "lit-html": "^3.0.0",
     "moment": "^2.29.1",
     "mousetrap": "github:briskine/mousetrap#master",
-    "webextension-polyfill": "^0.10.0"
+    "webextension-polyfill": "^0.11.0"
   }
 }
