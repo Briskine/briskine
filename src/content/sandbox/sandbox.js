@@ -9,7 +9,7 @@
 
 import Handlebars from 'handlebars'
 
-import {respond} from './sandbox-events-client.js'
+import {respond} from './sandbox-messenger-client.js'
 import config from '../../config.js'
 
 // legacy date helper

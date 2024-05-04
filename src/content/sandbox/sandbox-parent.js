@@ -2,7 +2,7 @@
 import browser from 'webextension-polyfill'
 
 import {compileTemplate as sandboxCompile} from './sandbox.js'
-import {handshake, request} from './sandbox-events-server.js'
+import {handshake, request} from './sandbox-messenger-server.js'
 import config from '../../config.js'
 
 let sandboxInstance = null
