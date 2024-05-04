@@ -2,13 +2,11 @@
 import browser from 'webextension-polyfill'
 
 import {compileTemplate as sandboxCompile} from './sandbox.js'
+import {handshake, request} from './sandbox-events-server.js'
 import config from '../../config.js'
 
 let sandboxInstance = null
 const sandboxTagName = `b-sandbox-${Date.now().toString(36)}`
-
-const channel = new MessageChannel()
-const port1 = channel.port1
 
 customElements.define(
   sandboxTagName,
@@ -29,7 +27,8 @@ customElements.define(
       iframe.src = browser.runtime.getURL('sandbox/sandbox.html')
       iframe.style.display = 'none'
       iframe.onload = () => {
-        iframe.contentWindow.postMessage({ type: 'init' }, '*', [channel.port2])
+        handshake(iframe.contentWindow)
+
         this.onload()
       }
       shadowRoot.appendChild(iframe)
@@ -43,18 +42,8 @@ export function compileTemplate (template = '', context = {}) {
       return resolve(sandboxCompile(template, context))
     }
 
-    function handleCompileMessage (e) {
-      if (e.data.type === config.eventSandboxCompile) {
-        port1.onmessage = () => {}
-        return resolve(e.data.template)
-      }
-    }
-
-    port1.onmessage = handleCompileMessage
-
     function sendCompileMessage () {
-      port1.postMessage({
-        type: config.eventSandboxCompile,
+      return request(config.eventSandboxCompile, {
         template: template,
         context: context,
       })
@@ -63,10 +52,12 @@ export function compileTemplate (template = '', context = {}) {
     if (!sandboxInstance) {
       // create the sandbox instance on first call
       sandboxInstance = document.createElement(sandboxTagName)
-      sandboxInstance.onload = sendCompileMessage
+      sandboxInstance.onload = () => {
+        sendCompileMessage().then(resolve)
+      }
       document.documentElement.appendChild(sandboxInstance)
     } else {
-      sendCompileMessage()
+      resolve(sendCompileMessage())
     }
   })
 }

@@ -9,6 +9,7 @@
 
 import Handlebars from 'handlebars'
 
+import {respond} from './sandbox-events-client.js'
 import config from '../../config.js'
 
 // legacy date helper
@@ -25,18 +26,6 @@ import '../helpers/and.js'
 import '../helpers/compare.js'
 import '../helpers/random.js'
 
-let port2
-
-function handleInitMessage (e) {
-  if (e.data.type === 'init') {
-    port2 = e.ports[0]
-    port2.onmessage = onMessage
-    window.removeEventListener('message', handleInitMessage)
-  }
-}
-
-window.addEventListener('message', handleInitMessage)
-
 export function compileTemplate (template = '', context = {}) {
   try {
     return Handlebars.compile(template)(context)
@@ -45,11 +34,6 @@ export function compileTemplate (template = '', context = {}) {
   }
 }
 
-function onMessage (e) {
-  if (e.data.type === config.eventSandboxCompile) {
-    port2.postMessage({
-      type: config.eventSandboxCompile,
-      template: compileTemplate(e.data.template, e.data.context),
-    })
-  }
-}
+respond(config.eventSandboxCompile, ({template, context}) => {
+  return compileTemplate(template, context)
+})
