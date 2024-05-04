@@ -1,3 +1,11 @@
+function Deferred () {
+  let resolve, reject
+  const promise = new Promise((res, rej) => {
+    [resolve, reject] = [res, rej]
+  })
+  return {promise, reject, resolve}
+}
+
 export default function Messenger ({type = 'server'}) {
   const handshakeEvent = 'handshake'
 
@@ -26,14 +34,6 @@ export default function Messenger ({type = 'server'}) {
   const actions = {}
   const respond = function (type = '', fn = () => {}) {
     actions[type] = fn
-  }
-
-  function Deferred () {
-    let resolve, reject
-    const promise = new Promise((res, rej) => {
-      [resolve, reject] = [res, rej]
-    })
-    return {promise, reject, resolve}
   }
 
   const deferreds = {}

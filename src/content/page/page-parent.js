@@ -1,24 +1,11 @@
 /* globals chrome, browser */
-import config from '../../config.js'
+import Messenger from '../messenger/messenger.js'
 
-let channel = new MessageChannel()
-let port1 = channel.port1
-
+let pageMessengerServer = Messenger({type: 'server'})
 let pageScript
 
-export function sendToPage (data = {}) {
-  return new Promise((resolve) => {
-    function handlePageMessage (e) {
-      if (e.data.type === config.eventPage) {
-        port1.onmessage = () => {}
-        return resolve(data)
-      }
-    }
-
-    port1.onmessage = handlePageMessage
-    port1.postMessage(data)
-  })
-
+export function request (type, options) {
+  return pageMessengerServer.request(type, options)
 }
 
 export function setup () {
@@ -27,10 +14,9 @@ export function setup () {
   pageScript.onload = function () {
     // create a new message channel, in case the old one was neutered,
     // on subsequent startup retries (eg. in dynamically created iframes).
-    channel = new MessageChannel()
-    port1 = channel.port1
+    pageMessengerServer = Messenger({type: 'server'})
+    pageMessengerServer.handshake(window)
 
-    window.postMessage({ type: 'page-init' }, '*', [channel.port2])
     this.remove()
   }
 
