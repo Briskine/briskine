@@ -26,7 +26,7 @@ function setGlobals () {
   window.CKEDITOR_TRANSLATIONS = translations
 }
 
-describe.only('editor CKEditor', function () {
+describe('editor CKEditor', function () {
   before(function (done) {
     setup()
 
