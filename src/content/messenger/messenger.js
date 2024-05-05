@@ -48,18 +48,32 @@ export default function Messenger ({type = 'server'}) {
   }
 
   async function onMessage (e) {
-    const type = e.data.type
+    const {type} = e.data
     if (actions[type]) {
-      const actionResponse = await actions[type](e.data.options)
-      // send client response
+      const message = {}
+      try {
+        message.response = await actions[type](e.data.options)
+      } catch (err) {
+        message.error = err
+      }
+
+      // send response
       return port.postMessage({
         type: type,
-        response: actionResponse,
+        ...message
       })
     }
 
-    const response = e.data.response
-    deferreds[type].resolve(response)
+    // resolve local response
+    if (deferreds[type]) {
+      const {response, error} = e.data
+      if (error) {
+        return deferreds[type].reject(error)
+      }
+
+      deferreds[type].resolve(response)
+      deferreds[type] = null
+    }
   }
 
   return {handshake, request, respond}

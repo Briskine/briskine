@@ -14,7 +14,9 @@ export function setup () {
   pageScript.onload = function () {
     // create a new message channel, in case the old one was neutered,
     // on subsequent startup retries (eg. in dynamically created iframes).
-    pageMessengerServer = Messenger({type: 'server'})
+    if (!pageMessengerServer) {
+      pageMessengerServer = Messenger({type: 'server'})
+    }
     pageMessengerServer.handshake(window)
 
     this.remove()
