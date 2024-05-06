@@ -1,9 +1,10 @@
 /* globals MANIFEST */
 import browser from 'webextension-polyfill'
 
-import {compileTemplate as sandboxCompile} from './sandbox.js'
 import {connect, request} from './sandbox-messenger-server.js'
 import config from '../../config.js'
+
+import '../helpers/_sender-parent.js'
 
 let sandboxInstance = null
 const sandboxTagName = `b-sandbox-${Date.now().toString(36)}`
@@ -23,43 +24,48 @@ customElements.define(
 
       const shadowRoot = this.attachShadow({mode: 'closed'})
 
-      const iframe = document.createElement('iframe')
-      iframe.src = browser.runtime.getURL('sandbox/sandbox.html')
-      iframe.style.display = 'none'
-      iframe.onload = async () => {
-        await connect(iframe.contentWindow)
-
-        this.onload()
+      if (MANIFEST === '2') {
+        const sandboxScript = document.createElement('script')
+        sandboxScript.src = browser.runtime.getURL('sandbox/sandbox.js')
+        sandboxScript.onload = async () => {
+          await connect(self)
+          this.onload()
+        }
+        shadowRoot.appendChild(sandboxScript)
+      } else {
+        const iframe = document.createElement('iframe')
+        iframe.src = browser.runtime.getURL('sandbox/sandbox.html')
+        iframe.style.display = 'none'
+        iframe.onload = async () => {
+          await connect(iframe.contentWindow)
+          this.onload()
+        }
+        shadowRoot.appendChild(iframe)
       }
-      shadowRoot.appendChild(iframe)
     }
   }
 )
 
+function sendCompileMessage (template, context) {
+  return request(config.eventSandboxCompile, {
+    template: template,
+    context: context,
+  })
+}
+
 export function compileTemplate (template = '', context = {}) {
-  return new Promise((resolve) => {
-    if (MANIFEST === '2') {
-      return resolve(sandboxCompile(template, context))
-    }
-
-    function sendCompileMessage () {
-      return request(config.eventSandboxCompile, {
-        template: template,
-        context: context,
-      })
-    }
-
-    if (!sandboxInstance) {
-      // create the sandbox instance on first call
-      sandboxInstance = document.createElement(sandboxTagName)
+  if (!sandboxInstance) {
+    // create the sandbox instance on first call
+    sandboxInstance = document.createElement(sandboxTagName)
+    return new Promise((resolve) => {
       sandboxInstance.onload = () => {
-        sendCompileMessage().then(resolve)
+        sendCompileMessage(template, context).then(resolve)
       }
       document.documentElement.appendChild(sandboxInstance)
-    } else {
-      resolve(sendCompileMessage())
-    }
-  })
+    })
+  } else {
+    return sendCompileMessage(template, context)
+  }
 }
 
 export function destroy () {

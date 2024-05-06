@@ -6,8 +6,8 @@ function Deferred () {
   return {promise, reject, resolve}
 }
 
-export default function Messenger () {
-  const handshakeEvent = 'briskine-messenger-connect'
+export default function Messenger (scope = '') {
+  const handshakeEvent = `briskine-messenger-connect-${scope}`
 
   let channel
   let port
@@ -20,9 +20,8 @@ export default function Messenger () {
       port = e.ports[0]
       port.onmessage = onMessage
       port.postMessage({ type: handshakeEvent })
+      self.removeEventListener('message', handleHandshake)
     }
-
-    self.removeEventListener('message', handleHandshake)
   }
 
   self.addEventListener('message', handleHandshake)

@@ -1,7 +1,7 @@
 import Handlebars from 'handlebars'
-import store from '../../store/store-client.js'
 import createContact from '../utils/create-contact.js'
 import {helper} from '../utils/async-helpers.js'
+import {request} from '../sandbox/sandbox-messenger-client.js'
 
 function mergeContacts (a = {}, b = {}) {
   const merged = {}
@@ -14,7 +14,7 @@ let accountCache = {}
 async function getAccount (contextAccount = {}) {
   if (!Object.keys(accountCache).length) {
     try {
-      const storeAccount = await store.getAccount()
+      const storeAccount = await request('helper-_sender-account')
       // map response to contact format
       accountCache = {
         name: storeAccount.full_name,

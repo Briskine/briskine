@@ -46,9 +46,6 @@ export default {
         {
           from: 'src/content/sandbox/sandbox.html',
           to: 'sandbox/sandbox.html',
-          transform: (content) => {
-            return `<script src="../../polyfill.js"></script> ${content}`
-          }
         },
       ]
     }),

@@ -14,7 +14,7 @@ export function setup () {
   pageScript.onload = async function () {
     // create the message channel when the iframe loads,
     // for subsequent startup retries (eg. in dynamically created iframes).
-    pageMessengerServer = Messenger()
+    pageMessengerServer = Messenger('page')
     await pageMessengerServer.connect(window)
 
     this.remove()

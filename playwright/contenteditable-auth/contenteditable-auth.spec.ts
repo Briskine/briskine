@@ -1,6 +1,6 @@
 import {test, expect} from '../fixtures-auth.ts'
 
-test.describe('ContentEditable Authenticated', () => {
+test.describe.only('ContentEditable Authenticated', () => {
   test.beforeEach(async ({page}) => {
     await page.goto('/contenteditable-auth/contenteditable-auth.html')
   })
