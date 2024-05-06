@@ -33,11 +33,13 @@ export default function Messenger (scope = '') {
     channel = new MessageChannel()
     port = channel.port1
     port.onmessage = onMessage
-    deferreds[handshakeEvent] = Deferred()
+
+    const res = Deferred()
+    deferreds[handshakeEvent] = [res]
 
     client.postMessage({type: handshakeEvent}, '*', [channel.port2])
 
-    return deferreds[handshakeEvent].promise
+    return res.promise
   }
 
   const respond = function (type = '', fn = () => {}) {
@@ -50,8 +52,11 @@ export default function Messenger (scope = '') {
       options: options,
     })
 
-    deferreds[type] = Deferred(type)
-    return deferreds[type].promise
+    const res = Deferred()
+    deferreds[type] = deferreds[type] || []
+    deferreds[type].push(res)
+
+    return res.promise
   }
 
   async function onMessage (e) {
@@ -72,13 +77,13 @@ export default function Messenger (scope = '') {
     }
 
     // resolve local response
-    if (deferreds[type]) {
+    if (deferreds[type]?.length) {
       const {response, error} = e.data
       if (error) {
-        return deferreds[type].reject(error)
+        return deferreds[type].forEach((d) => d.reject(error))
       }
 
-      deferreds[type].resolve(response)
+      deferreds[type].forEach((d) => d.resolve(response))
       deferreds[type] = null
     }
   }
