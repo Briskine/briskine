@@ -1,3 +1,3 @@
 import Messenger from '../messenger/messenger.js'
 
-export const {handshake, respond, request} = Messenger({ type: 'server' })
+export const {connect, respond, request} = Messenger()

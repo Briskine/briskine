@@ -6,37 +6,45 @@ function Deferred () {
   return {promise, reject, resolve}
 }
 
-export default function Messenger ({type = 'server'}) {
-  const handshakeEvent = 'handshake'
+export default function Messenger () {
+  const handshakeEvent = 'briskine-messenger-connect'
 
   let channel
   let port
-  if (type === 'server') {
+  const deferreds = {}
+  const actions = {}
+
+  // client-only
+  const handleHandshake = async function (e) {
+    if (e.data.type === handshakeEvent) {
+      port = e.ports[0]
+      port.onmessage = onMessage
+      port.postMessage({ type: handshakeEvent })
+    }
+
+    self.removeEventListener('message', handleHandshake)
+  }
+
+  self.addEventListener('message', handleHandshake)
+
+  // server-only
+  const connect = function (client) {
+    self.removeEventListener('message', handleHandshake)
+
     channel = new MessageChannel()
     port = channel.port1
     port.onmessage = onMessage
-  } else if (type === 'client') {
-    const handleHandshake = function (e) {
-      if (e.data.type === handshakeEvent) {
-        port = e.ports[0]
-        port.onmessage = onMessage
-        window.removeEventListener('message', handleHandshake)
-      }
-    }
+    deferreds[handshakeEvent] = Deferred()
 
-    window.addEventListener('message', handleHandshake)
+    client.postMessage({type: handshakeEvent}, '*', [channel.port2])
+
+    return deferreds[handshakeEvent].promise
   }
 
-  const handshake = function (clientWindow) {
-    clientWindow.postMessage({type: handshakeEvent}, '*', [channel.port2])
-  }
-
-  const actions = {}
   const respond = function (type = '', fn = () => {}) {
     actions[type] = fn
   }
 
-  const deferreds = {}
   const request = function (type = '', options = {}) {
     port.postMessage({
       type: type,
@@ -76,5 +84,5 @@ export default function Messenger ({type = 'server'}) {
     }
   }
 
-  return {handshake, request, respond}
+  return {connect, request, respond}
 }

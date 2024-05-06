@@ -8,7 +8,7 @@ import Messenger from '../messenger/messenger.js'
 
 import {insertCkEditorText} from '../editors/editor-ckeditor.js'
 
-const pageMessengerClient = Messenger({type: 'client'})
+const pageMessengerClient = Messenger()
 
 pageMessengerClient.respond('ckeditor-insert', (options) => {
   return insertCkEditorText(document.activeElement, options)

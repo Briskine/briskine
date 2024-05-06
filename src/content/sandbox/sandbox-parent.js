@@ -2,7 +2,7 @@
 import browser from 'webextension-polyfill'
 
 import {compileTemplate as sandboxCompile} from './sandbox.js'
-import {handshake, request} from './sandbox-messenger-server.js'
+import {connect, request} from './sandbox-messenger-server.js'
 import config from '../../config.js'
 
 let sandboxInstance = null
@@ -26,8 +26,8 @@ customElements.define(
       const iframe = document.createElement('iframe')
       iframe.src = browser.runtime.getURL('sandbox/sandbox.html')
       iframe.style.display = 'none'
-      iframe.onload = () => {
-        handshake(iframe.contentWindow)
+      iframe.onload = async () => {
+        await connect(iframe.contentWindow)
 
         this.onload()
       }
