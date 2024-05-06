@@ -1,32 +1,5 @@
 import {compileTemplate} from '../sandbox/sandbox-parent.js'
-import store from '../../store/store-client.js'
 import createContact from './create-contact.js'
-
-const contactProps = ['email', 'name', 'first_name', 'last_name']
-function mergeContacts (a = {}, b = {}) {
-  const merged = {}
-  contactProps.forEach((p) => merged[p] = b[p] || a[p] || '')
-  return merged
-}
-
-// requires page refresh for account update
-let accountCache = {}
-async function getAccount (contextAccount = {}) {
-  if (!Object.keys(accountCache).length) {
-    try {
-      const storeAccount = await store.getAccount()
-      // map response to contact format
-      accountCache = {
-        name: storeAccount.full_name,
-        email: storeAccount.email,
-      }
-    } catch (err) {
-      // logged-out
-    }
-  }
-
-  return createContact(mergeContacts(accountCache, contextAccount))
-}
 
 // return array of contacts, with the first contact exposed directly on the array.
 // to.first_name and to.0.first_name will both work,
@@ -44,25 +17,39 @@ function contactsArray (contacts = []) {
   return context
 }
 
+const senderPaths = {}
+Array('from', 'account').forEach((p) => {
+  senderPaths[p] = {}
+  Object.keys(createContact()).forEach((c) => {
+    senderPaths[p][c] = `${p}.${c}`
+  })
+})
+
 const contactLists = ['to', 'cc', 'bcc']
-async function parseContext (data = {}) {
+function parseContext (data = {}) {
   const context = structuredClone(data)
   contactLists.forEach((p) => {
     const propData = Array.isArray(context[p] || []) ? context[p] : [context[p]]
     context[p] = contactsArray(propData)
   })
 
-  context.from = createContact(context.from)
+  // backwards compatibility with the from and account variables,
+  // they are now using the async _sender helper under the hood
+  context._briskineFrom = createContact(context.from)
+  context._briskineAccount = createContact(context.account)
+  context._briskineSenderPaths = senderPaths
 
-  // TODO will be handled by _sender private helper
-  // context.account = await getAccount(context.account)
-  // merge from details with account
-  // context.from = createContact(mergeContacts(context.account, context.from))
+  Array('from', 'account').forEach((p) => {
+    context[p] = {}
+    Object.keys(createContact()).forEach((c) => {
+      context[p][c] = `{{ _sender _briskineFrom _briskineAccount _briskineSenderPaths.${p}.${c} }}`
+    })
+  })
 
   return context
 }
 
-export default async function parseTemplate (template = '', data = {}) {
-  const context = await parseContext(data)
+export default function parseTemplate (template = '', data = {}) {
+  const context = parseContext(data)
   return compileTemplate(template, context)
 }

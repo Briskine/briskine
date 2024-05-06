@@ -3,10 +3,9 @@ import store from '../../store/store-client.js'
 import createContact from '../utils/create-contact.js'
 import {helper} from '../utils/async-helpers.js'
 
-const contactProps = ['email', 'name', 'first_name', 'last_name']
 function mergeContacts (a = {}, b = {}) {
   const merged = {}
-  contactProps.forEach((p) => merged[p] = b[p] || a[p] || '')
+  Object.keys(createContact()).forEach((p) => merged[p] = b[p] || a[p] || '')
   return merged
 }
 

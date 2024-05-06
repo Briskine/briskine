@@ -12,7 +12,7 @@ export async function resolveAsyncHelpers (template = '') {
     )
   const dom = new DOMParser().parseFromString(template, 'text/html')
   Array.from(dom.querySelectorAll(`[${asyncHelperAttr}]`)).forEach((node, index) => {
-    node.replaceWith(results[index].value || '')
+    node.replaceWith(results[index].value || results[index].reason || '')
   })
 
   actions = []
