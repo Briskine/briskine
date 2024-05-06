@@ -11,6 +11,7 @@ import Handlebars from 'handlebars'
 
 import {respond} from './sandbox-messenger-client.js'
 import config from '../../config.js'
+import {resolveAsyncHelpers} from '../utils/async-helpers.js'
 
 // legacy date helper
 import '../helpers/date.js'
@@ -25,10 +26,13 @@ import '../helpers/or.js'
 import '../helpers/and.js'
 import '../helpers/compare.js'
 import '../helpers/random.js'
+import '../helpers/_sender.js'
 
-export function compileTemplate (template = '', context = {}) {
+export async function compileTemplate (template = '', context = {}) {
   try {
-    return Handlebars.compile(template)(context)
+    const compileFirst = Handlebars.compile(template)(context)
+    const compileAsync = await resolveAsyncHelpers(compileFirst)
+    return compileAsync
   } catch (err) {
     return `<pre>${err.message || err}</pre>`
   }

@@ -52,9 +52,12 @@ async function parseContext (data = {}) {
     context[p] = contactsArray(propData)
   })
 
-  context.account = await getAccount(context.account)
+  context.from = createContact(context.from)
+
+  // TODO will be handled by _sender private helper
+  // context.account = await getAccount(context.account)
   // merge from details with account
-  context.from = createContact(mergeContacts(context.account, context.from))
+  // context.from = createContact(mergeContacts(context.account, context.from))
 
   return context
 }
