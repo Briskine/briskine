@@ -34,7 +34,8 @@ contentStore.on = store.on
 contentStore.off = store.off
 
 contentStore.setup = () => {
-  store.on('logout', logout)
+  store.on('login', clear)
+  store.on('logout', clear)
   store.on('users-updated', usersUpdated)
   store.on('templates-updated', templatesUpdated)
   store.on('tags-updated', tagsUpdated)
@@ -44,7 +45,8 @@ contentStore.setup = () => {
 }
 
 contentStore.destroy = () => {
-  store.off('logout', logout)
+  store.off('login', clear)
+  store.off('logout', clear)
   store.off('users-updated', usersUpdated)
   store.off('templates-updated', templatesUpdated)
   store.off('tags-updated', tagsUpdated)
@@ -53,7 +55,7 @@ contentStore.destroy = () => {
   cache = {}
 }
 
-function logout () {
+function clear () {
   cache = {}
 }
 
