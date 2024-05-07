@@ -5,7 +5,7 @@ import './popup.css'
 
 import './popup-login.js'
 import './popup-dashboard.js'
-import store from '../store/store-client.js'
+import store from '../store/store-content.js'
 import setTheme from './popup-theme.js'
 
 customElements.define(

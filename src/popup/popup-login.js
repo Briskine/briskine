@@ -1,7 +1,7 @@
 import {render, html} from 'lit-html'
 
 import Config from '../config.js'
-import store from '../store/store-client.js'
+import store from '../store/store-content.js'
 import './popup-login-form.js'
 
 customElements.define(

@@ -3,7 +3,7 @@ import {classMap} from 'lit-html/directives/class-map.js'
 import {unsafeSVG} from 'lit-html/directives/unsafe-svg.js'
 
 import Config from '../config.js'
-import store from '../store/store-client.js'
+import store from '../store/store-content.js'
 
 import {plusSquareFill, archiveFill, gearFill, arrowRepeat} from './popup-icons.js'
 
