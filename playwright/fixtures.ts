@@ -67,3 +67,21 @@ export const test = base.extend<{
 })
 
 export const expect = test.expect
+
+// wait for briskine to load (status event)
+test.beforeEach(async ({page}) => {
+  await new Promise((resolve) => {
+    if (!page.url().includes('/playwright/')) {
+      return resolve(true)
+    }
+
+    page.on('load', () => {
+      document.addEventListener('briskine-status', (e) => {
+        resolve(true)
+      }, {once: true})
+
+      const statusEvent = new CustomEvent('briskine-status-request')
+      document.dispatchEvent(statusEvent)
+    })
+  })
+})
