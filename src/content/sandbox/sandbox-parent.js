@@ -4,8 +4,6 @@ import browser from 'webextension-polyfill'
 import {connect, request} from './sandbox-messenger-server.js'
 import config from '../../config.js'
 
-import '../helpers/_sender-parent.js'
-
 let sandboxInstance = null
 const sandboxTagName = `b-sandbox-${Date.now().toString(36)}`
 

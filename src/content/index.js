@@ -111,6 +111,9 @@ async function startup () {
 }
 
 function destructor () {
+  store.off('users-updated', refreshContentScripts)
+  store.destroy()
+
   destroyKeyboard()
   destroyBubble()
   destroyDialog()
@@ -121,8 +124,6 @@ function destructor () {
   destroyDashboardEvents()
 
   settingsCache = {}
-  store.off('users-updated', refreshContentScripts)
-  store.destroy()
   destroyed = true
 }
 

@@ -54,20 +54,20 @@ contentStore.destroy = () => {
 }
 
 async function usersUpdated () {
-  cache.getSettings = await contentStore.getSettings()
-  cache.getAccount = await contentStore.getAccount()
+  cache.getSettings = null
+  cache.getAccount = null
 }
 
 async function templatesUpdated () {
-  cache.getTemplates = await contentStore.getTemplates()
+  cache.getTemplates = null
 }
 
 async function tagsUpdated () {
-  cache.getTags = await contentStore.getTags()
+  cache.getTags = null
 }
 
 async function extensionDataUpdated () {
-  cache.getExtensionData = await contentStore.getExtensionData()
+  cache.getExtensionData = null
 }
 
 export default contentStore
