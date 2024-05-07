@@ -40,7 +40,7 @@ contentStore.setup = () => {
   store.on('tags-updated', tagsUpdated)
   store.on('extension-data-updated', extensionDataUpdated)
 
-  cachedMethods.map((m) => contentStore[m]())
+  Promise.allSettled(cachedMethods.map((m) => contentStore[m]()))
 }
 
 contentStore.destroy = () => {
