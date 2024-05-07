@@ -17,39 +17,28 @@ function contactsArray (contacts = []) {
   return context
 }
 
-const senderPaths = {}
-Array('from', 'account').forEach((p) => {
-  senderPaths[p] = {}
-  Object.keys(createContact()).forEach((c) => {
-    senderPaths[p][c] = `${p}.${c}`
-  })
-})
-
 const contactLists = ['to', 'cc', 'bcc']
-function parseContext (data = {}) {
+async function parseContext (data = {}) {
   const context = structuredClone(data)
   contactLists.forEach((p) => {
     const propData = Array.isArray(context[p] || []) ? context[p] : [context[p]]
     context[p] = contactsArray(propData)
   })
 
-  // backwards compatibility with the from and account variables,
-  // they are now using the async _sender helper under the hood
-  context._briskineFrom = createContact(context.from)
-  context._briskineAccount = createContact(context.account)
-  context._briskineSenderPaths = senderPaths
-
-  Array('from', 'account').forEach((p) => {
+  // backwards-compatibility for the account and from variables
+  const _from = structuredClone(context.from)
+  const _account = structuredClone(context.account)
+  for (const p of ['from', 'account']) {
     context[p] = {}
-    Object.keys(createContact()).forEach((c) => {
-      context[p][c] = `{{ _sender _briskineFrom _briskineAccount _briskineSenderPaths.${p}.${c} }}`
-    })
-  })
+    for (const c in createContact()) {
+      context[p][c] = await compileTemplate(`{{ _${p}_${c} }}`, {from: _from, account: _account})
+    }
+  }
 
   return context
 }
 
-export default function parseTemplate (template = '', data = {}) {
-  const context = parseContext(data)
+export default async function parseTemplate (template = '', data = {}) {
+  const context = await parseContext(data)
   return compileTemplate(template, context)
 }

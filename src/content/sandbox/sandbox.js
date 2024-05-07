@@ -30,10 +30,9 @@ import '../helpers/_sender.js'
 
 export async function compileTemplate (template = '', context = {}) {
   try {
-    const compiled = Handlebars.compile(template)(context)
-    const compiledNestedHelpers = Handlebars.compile(compiled)(context)
-    const compiledAsyncHelpers = await resolveAsyncHelpers(compiledNestedHelpers)
-    return compiledAsyncHelpers
+    let compiled = Handlebars.compile(template)(context)
+    compiled = await resolveAsyncHelpers(compiled)
+    return compiled
   } catch (err) {
     return `<pre>${err.message || err}</pre>`
   }

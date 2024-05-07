@@ -7,7 +7,7 @@ let actions = []
 export async function resolveAsyncHelpers (template = '') {
   const results = await Promise.allSettled(
       actions.map((a) => {
-        return a.fn.call(null, ...a.args)
+        return a.fn.call(a.self, ...a.args)
       })
     )
   const dom = new DOMParser().parseFromString(template, 'text/html')
@@ -24,6 +24,7 @@ export function helper (fn = () => {}) {
   return function () {
     actions.push({
       fn: fn,
+      self: this,
       args: arguments,
     })
 

@@ -25,20 +25,27 @@ async function getAccount (contextAccount = {}) {
     }
   }
 
-  return createContact(mergeContacts(accountCache, contextAccount))
+  return mergeContacts(accountCache, contextAccount)
 }
 
-async function _sender (...args) {
-  const params = args.slice(0, args.length - 1)
-  const [from, account, path] = params
-  const [obj, key] = path.split('.')
-
+async function _sender (obj = {}, key ='', _from ={}, _account = {}) {
   const response = {}
-  response.account = await getAccount(account)
+  response.account = await getAccount(_account)
   // merge from details with account
-  response.from = createContact(mergeContacts(response.account, from))
+  response.from = mergeContacts(response.account, _from)
 
-  return response[obj][key]
+  return createContact(response[obj])[key]
 }
 
-Handlebars.registerHelper('_sender', helper(_sender))
+function _senderWrapper (parent, key) {
+  return function () {
+    const {from, account} = this
+    return _sender(parent, key, from, account)
+  }
+}
+
+Array('from', 'account').forEach((parent) => {
+  Object.keys(createContact()).forEach((key) => {
+    Handlebars.registerHelper(`_${parent}_${key}`, helper(_senderWrapper(parent, key)))
+  })
+})
