@@ -15,6 +15,8 @@ customElements.define(
       super()
       setTheme()
 
+      store.setup()
+
       this.loggedIn = null
       this.checkLogin()
 
@@ -28,7 +30,9 @@ customElements.define(
 
         return this.checkLogin()
       })
-      store.on('logout', () => this.checkLogin())
+      store.on('logout', () => {
+        this.checkLogin()
+      })
     }
     checkLogin() {
       return store.getAccount()

@@ -33,40 +33,44 @@ methods.forEach((method) => {
 contentStore.on = store.on
 contentStore.off = store.off
 
-contentStore.setup = async () => {
-  await Promise.allSettled(
-    cachedMethods.map((m) => contentStore[m]())
-  )
-
+contentStore.setup = () => {
+  store.on('logout', logout)
   store.on('users-updated', usersUpdated)
   store.on('templates-updated', templatesUpdated)
   store.on('tags-updated', tagsUpdated)
   store.on('extension-data-updated', extensionDataUpdated)
+
+  cachedMethods.map((m) => contentStore[m]())
 }
 
 contentStore.destroy = () => {
-  cache = {}
-
+  store.off('logout', logout)
   store.off('users-updated', usersUpdated)
   store.off('templates-updated', templatesUpdated)
   store.off('tags-updated', tagsUpdated)
   store.off('extension-data-updated', extensionDataUpdated)
+
+  cache = {}
 }
 
-async function usersUpdated () {
+function logout () {
+  cache = {}
+}
+
+function usersUpdated () {
   cache.getSettings = null
   cache.getAccount = null
 }
 
-async function templatesUpdated () {
+function templatesUpdated () {
   cache.getTemplates = null
 }
 
-async function tagsUpdated () {
+function tagsUpdated () {
   cache.getTags = null
 }
 
-async function extensionDataUpdated () {
+function extensionDataUpdated () {
   cache.getExtensionData = null
 }
 
