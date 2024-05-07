@@ -20,7 +20,7 @@ async function getAccount (contextAccount = {}) {
         name: storeAccount.full_name,
         email: storeAccount.email,
       }
-    } catch (err) {
+    } catch {
       // logged-out
     }
   }

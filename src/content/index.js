@@ -20,7 +20,7 @@ function getParentUrl () {
   if (window !== window.parent) {
     try {
       url = window.parent.location.href
-    } catch (err) {
+    } catch {
       // iframe from different domain
     }
   }

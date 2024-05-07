@@ -31,7 +31,7 @@ export function insertTextareaTemplate (params = {}) {
   // https://developer.mozilla.org/en-US/docs/Web/API/HTMLInputElement/setSelectionRange
   try {
     params.element.setSelectionRange(cursorOffset, cursorOffset)
-  } catch (err) {
+  } catch {
     // probably unsupported input type
   }
 

@@ -257,7 +257,7 @@ export default async (params = {}) => {
                 clipboardData: clipboardData
             });
             params.element.dispatchEvent(customPasteEvent);
-        } catch (err) {
+        } catch {
             // will throw an error on Safari
             // because it doesn't support the DataTransfer constructor
             // or passing custom clipboard data in the Event constructor,

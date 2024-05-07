@@ -22,7 +22,7 @@ function getFromDetails () {
   try {
     var parsedUserObject = JSON.parse(`{${plainUserObject}}`)
     fromName = parsedUserObject.NAME || ''
-  } catch(err) {
+  } catch {
     // can't parse the user object
   }
 
