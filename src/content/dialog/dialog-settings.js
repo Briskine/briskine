@@ -2,7 +2,7 @@ import {render} from 'lit-html'
 import {html, unsafeStatic} from 'lit-html/static.js'
 
 import {reactive} from '../component.js'
-import store from '../../store/store-client.js'
+import store from '../../store/store-content.js'
 import config from '../../config.js'
 
 import styles from './dialog-settings.css'

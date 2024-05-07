@@ -9,7 +9,6 @@ let cache = {}
 const cachedMethods = [
   'getSettings',
   'getAccount',
-  'getCustomer',
   'getTemplates',
   'getTags',
   'getExtensionData',
@@ -36,7 +35,7 @@ contentStore.off = store.off
 
 contentStore.setup = async () => {
   await Promise.allSettled(
-    cachedMethods.map((m) => contentStore(m))
+    cachedMethods.map((m) => contentStore[m]())
   )
 
   store.on('users-updated', usersUpdated)
@@ -54,22 +53,21 @@ contentStore.destroy = () => {
   store.off('extension-data-updated', extensionDataUpdated)
 }
 
-function usersUpdated () {
-  cache.getSettings = null
-  cache.getAccount = null
-  cache.getCustomer = null
+async function usersUpdated () {
+  cache.getSettings = await contentStore.getSettings()
+  cache.getAccount = await contentStore.getAccount()
 }
 
-function templatesUpdated () {
-  cache.getTemplates = null
+async function templatesUpdated () {
+  cache.getTemplates = await contentStore.getTemplates()
 }
 
-function tagsUpdated () {
-  cache.getTags = null
+async function tagsUpdated () {
+  cache.getTags = await contentStore.getTags()
 }
 
-function extensionDataUpdated () {
-  cache.getExtensionData = null
+async function extensionDataUpdated () {
+  cache.getExtensionData = await contentStore.getExtensionData()
 }
 
 export default contentStore

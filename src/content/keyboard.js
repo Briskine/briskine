@@ -3,78 +3,23 @@
  */
 import {autocomplete, getSelectedWord, getSelection, getEventTarget} from './autocomplete.js'
 import {isContentEditable} from './editors/editor-contenteditable.js'
-import store from '../store/store-client.js'
+import store from '../store/store-content.js'
 
 import {keybind, keyunbind} from './keybind.js'
 import {swipebind, swipeunbind} from './swipe.js'
-
-let templateCache = []
-function updateTemplateCache (templates = []) {
-  templateCache = templates
-}
-
-function getTemplateFromCache (shortcut) {
-  if (!shortcut) {
-    return
-  }
-  return templateCache.find((template) => template.shortcut === shortcut)
-}
 
 // is input or textarea
 function isTextfield (element) {
   return ['input', 'textarea'].includes(element.tagName.toLowerCase())
 }
 
-function getTemplates () {
-  return store.getTemplates()
-    .then((templates) => {
-      updateTemplateCache(templates)
-      return templates
-    })
-}
-
-// pre-populate the shortcut cache on certain websites
-function populateCache () {
-  const urls = [
-    '://docs.google.com/spreadsheets/',
-  ]
-
-  urls.find((url) => {
-    if (window.location.href.includes(url)) {
-      getTemplates()
-      return true
-    }
-  })
-}
-
-
 function getTemplateByShortcut (shortcut) {
-  return getTemplates()
+  return store.getTemplates()
     .then((templates) => {
       return templates.find((t) => {
         return t.shortcut === shortcut
       })
     })
-}
-
-// setup store events on first keyboard insert
-let eventsReady = false
-function setupEvents () {
-  if (eventsReady) {
-    return
-  }
-
-  store.on('templates-updated', getTemplates)
-  store.on('login', populateCache)
-  store.on('logout', populateCache)
-  eventsReady = true
-}
-
-function destroyEvents () {
-  store.off('templates-updated', getTemplates)
-  store.off('login', populateCache)
-  store.off('logout', populateCache)
-  eventsReady = false
 }
 
 async function keyboardAutocomplete (e) {
@@ -98,16 +43,11 @@ async function keyboardAutocomplete (e) {
     const anchorNode = selection.anchorNode
     const anchorOffset = selection.anchorOffset
 
-    let template = getTemplateFromCache(word.text)
+    const template = await getTemplateByShortcut(word.text)
     if (template) {
+      // prevent default when getTemplateByShortcut returns immediately
       e.preventDefault()
       e.stopImmediatePropagation()
-    } else {
-      template = await getTemplateByShortcut(word.text)
-    }
-
-    if (template) {
-      setupEvents()
 
       // restore selection
       element.focus()
@@ -129,16 +69,12 @@ let cachedKeyboardShortcut = ''
 export function setup (settings = {}) {
   cachedKeyboardShortcut = settings.expand_shortcut
   if (settings.expand_enabled) {
-    populateCache()
-
     keybind(cachedKeyboardShortcut, keyboardAutocomplete)
     swipebind(keyboardAutocomplete)
   }
 }
 
 export function destroy () {
-  destroyEvents()
-
   keyunbind(cachedKeyboardShortcut, keyboardAutocomplete)
   swipeunbind()
 }

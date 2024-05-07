@@ -4,7 +4,7 @@ import {html, unsafeStatic} from 'lit-html/static.js'
 import {classMap} from 'lit-html/directives/class-map.js'
 import {unsafeSVG} from 'lit-html/directives/unsafe-svg.js'
 
-import store from '../../store/store-client.js'
+import store from '../../store/store-content.js'
 import {isContentEditable} from '../editors/editor-contenteditable.js'
 import {bubbleTagName} from '../bubble/bubble.js'
 import {getEditableCaret, getContentEditableCaret, getDialogPosition} from './dialog-position.js'

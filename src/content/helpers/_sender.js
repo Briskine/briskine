@@ -14,6 +14,7 @@ let accountCache = {}
 async function getAccount (contextAccount = {}) {
   if (!Object.keys(accountCache).length) {
     try {
+      // TODO extremely slow when not cached and gets called on each compile
       const storeAccount = await request('helper-_sender-account')
       // map response to contact format
       accountCache = {

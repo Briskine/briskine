@@ -3,7 +3,6 @@
 import '@webcomponents/custom-elements'
 import deepEqual from 'deep-equal'
 
-// import store from '../store/store-client.js'
 import store from '../store/store-content.js'
 import config from '../config.js'
 

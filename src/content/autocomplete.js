@@ -13,7 +13,7 @@ import zendeskPlugin from './plugins/zendesk.js'
 import crmPlugin from './plugins/crm.js'
 import universalPlugin from './plugins/universal.js'
 
-import store from '../store/store-client.js'
+import store from '../store/store-content.js'
 import {isContentEditable} from './editors/editor-contenteditable.js'
 
 // register plugins,
