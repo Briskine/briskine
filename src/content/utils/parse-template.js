@@ -8,20 +8,17 @@ function mergeContacts (a = {}, b = {}) {
   return merged
 }
 
-// requires page refresh for account update
-let accountCache = {}
 async function getAccount (contextAccount = {}) {
-  if (!Object.keys(accountCache).length) {
-    try {
-      const storeAccount = await store.getAccount()
-      // map response to contact format
-      accountCache = {
-        name: storeAccount.full_name,
-        email: storeAccount.email,
-      }
-    } catch {
-      // logged-out
+  let accountCache = {}
+  try {
+    const storeAccount = await store.getAccount()
+    // map response to contact format
+    accountCache = {
+      name: storeAccount.full_name,
+      email: storeAccount.email,
     }
+  } catch {
+    // logged-out
   }
 
   return mergeContacts(accountCache, contextAccount)
