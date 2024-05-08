@@ -1,10 +1,7 @@
-/* globals MANIFEST */
 import browser from 'webextension-polyfill'
 
 import {connect, request} from './sandbox-messenger-server.js'
 import config from '../../config.js'
-
-import {compileTemplate as sandboxCompile} from './sandbox.js'
 
 let sandboxInstance = null
 const sandboxTagName = `b-sandbox-${Date.now().toString(36)}`
@@ -43,10 +40,6 @@ function sendCompileMessage (template, context) {
 }
 
 export async function compileTemplate (template = '', context = {}) {
-  if (MANIFEST === '2') {
-    return sandboxCompile(template, context)
-  }
-
   if (!sandboxInstance) {
     // create the sandbox instance on first call
     sandboxInstance = document.createElement(sandboxTagName)
