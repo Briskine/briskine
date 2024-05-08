@@ -1,6 +1,17 @@
+/* globals MANIFEST
+ */
 import {compileTemplate} from '../sandbox/sandbox-parent.js'
 import createContact from './create-contact.js'
 import store from '../../store/store-content.js'
+
+let compileTemplateLegacy = async () => {}
+if (MANIFEST === '2') {
+  const sandbox = await import(
+    /* webpackMode: "eager" */
+    '../sandbox/sandbox.js'
+  )
+  compileTemplateLegacy = sandbox.compileTemplate
+}
 
 function mergeContacts (a = {}, b = {}) {
   const merged = {}
@@ -57,5 +68,9 @@ async function parseContext (data = {}) {
 
 export default async function parseTemplate (template = '', data = {}) {
   const context = await parseContext(data)
+
+  if (MANIFEST === '2') {
+    return compileTemplateLegacy(template, context)
+  }
   return compileTemplate(template, context)
 }

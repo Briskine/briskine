@@ -10,6 +10,7 @@ export default {
     sandbox: './src/content/sandbox/sandbox.js',
     page: './src/content/page/page.js',
   },
+  devtool: 'cheap-module-source-map',
   output: {
     filename: '[name]/[name].js',
     path: path.resolve('test/bundle')

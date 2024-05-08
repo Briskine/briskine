@@ -1,4 +1,3 @@
-/* globals MANIFEST */
 import browser from 'webextension-polyfill'
 
 import {connect, request} from './sandbox-messenger-server.js'
@@ -21,25 +20,14 @@ customElements.define(
       }
 
       const shadowRoot = this.attachShadow({mode: 'closed'})
-
-      if (MANIFEST === '2') {
-        const sandboxScript = document.createElement('script')
-        sandboxScript.src = browser.runtime.getURL('sandbox/sandbox.js')
-        sandboxScript.onload = async () => {
-          await connect(self)
-          this.onload()
-        }
-        shadowRoot.appendChild(sandboxScript)
-      } else {
-        const iframe = document.createElement('iframe')
-        iframe.src = browser.runtime.getURL('sandbox/sandbox.html')
-        iframe.style.display = 'none'
-        iframe.onload = async () => {
-          await connect(iframe.contentWindow)
-          this.onload()
-        }
-        shadowRoot.appendChild(iframe)
+      const iframe = document.createElement('iframe')
+      iframe.src = browser.runtime.getURL('sandbox/sandbox.html')
+      iframe.style.display = 'none'
+      iframe.onload = async () => {
+        await connect(iframe.contentWindow)
+        this.onload()
       }
+      shadowRoot.appendChild(iframe)
     }
   }
 )
@@ -51,7 +39,7 @@ function sendCompileMessage (template, context) {
   })
 }
 
-export function compileTemplate (template = '', context = {}) {
+export async function compileTemplate (template = '', context = {}) {
   if (!sandboxInstance) {
     // create the sandbox instance on first call
     sandboxInstance = document.createElement(sandboxTagName)
