@@ -2,7 +2,7 @@
  * https://ckeditor.com/ckeditor-5/
  */
 
-import {sendToPage} from '../page/page-parent.js'
+import {request} from '../page/page-parent.js'
 
 export function isCkEditor (element) {
   return element.classList.contains('ck-editor__editable')
@@ -15,12 +15,9 @@ export function insertCkEditorTemplate (params = {}) {
     removeShortcut = true
   }
 
-  sendToPage({
-    type: 'ckeditor-insert',
-    data: {
-      removeShortcut: removeShortcut,
-      content: params.text,
-    },
+  return request('ckeditor-insert', {
+    removeShortcut: removeShortcut,
+    content: params.text,
   })
 }
 

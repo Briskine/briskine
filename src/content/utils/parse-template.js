@@ -1,31 +1,27 @@
 import {compileTemplate} from '../sandbox/sandbox-parent.js'
-import store from '../../store/store-client.js'
 import createContact from './create-contact.js'
+import store from '../../store/store-content.js'
 
-const contactProps = ['email', 'name', 'first_name', 'last_name']
 function mergeContacts (a = {}, b = {}) {
   const merged = {}
-  contactProps.forEach((p) => merged[p] = b[p] || a[p] || '')
+  Object.keys(createContact()).forEach((p) => merged[p] = b[p] || a[p] || '')
   return merged
 }
 
-// requires page refresh for account update
-let accountCache = {}
 async function getAccount (contextAccount = {}) {
-  if (!Object.keys(accountCache).length) {
-    try {
-      const storeAccount = await store.getAccount()
-      // map response to contact format
-      accountCache = {
-        name: storeAccount.full_name,
-        email: storeAccount.email,
-      }
-    } catch (err) {
-      // logged-out
+  let accountCache = {}
+  try {
+    const storeAccount = await store.getAccount()
+    // map response to contact format
+    accountCache = {
+      name: storeAccount.full_name,
+      email: storeAccount.email,
     }
+  } catch {
+    // logged-out
   }
 
-  return createContact(mergeContacts(accountCache, contextAccount))
+  return mergeContacts(accountCache, contextAccount)
 }
 
 // return array of contacts, with the first contact exposed directly on the array.
@@ -52,7 +48,7 @@ async function parseContext (data = {}) {
     context[p] = contactsArray(propData)
   })
 
-  context.account = await getAccount(context.account)
+  context.account = createContact(await getAccount(context.account))
   // merge from details with account
   context.from = createContact(mergeContacts(context.account, context.from))
 

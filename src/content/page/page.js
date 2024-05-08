@@ -4,30 +4,12 @@
  * Required to be able to call global/dom-element-attached methods exposed by 3rd party editors.
  */
 
-import config from '../../config.js'
+import Messenger from '../messenger/messenger.js'
 
 import {insertCkEditorText} from '../editors/editor-ckeditor.js'
 
-let port2
+const pageMessengerClient = Messenger('page')
 
-function handleInitMessage (e) {
-  if (e.data.type === 'page-init') {
-    port2 = e.ports[0]
-    port2.onmessage = onMessage
-    window.removeEventListener('message', handleInitMessage)
-  }
-}
-
-window.addEventListener('message', handleInitMessage)
-
-function onMessage (e) {
-  const detail = e.data || {}
-
-  if (detail.type === 'ckeditor-insert') {
-    insertCkEditorText(document.activeElement, detail.data)
-  }
-
-  port2.postMessage({
-    type: config.eventPage,
-  })
-}
+pageMessengerClient.respond('ckeditor-insert', (options) => {
+  return insertCkEditorText(document.activeElement, options)
+})

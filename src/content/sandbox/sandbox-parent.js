@@ -1,14 +1,11 @@
 /* globals MANIFEST */
 import browser from 'webextension-polyfill'
 
-import {compileTemplate as sandboxCompile} from './sandbox.js'
+import {connect, request} from './sandbox-messenger-server.js'
 import config from '../../config.js'
 
 let sandboxInstance = null
 const sandboxTagName = `b-sandbox-${Date.now().toString(36)}`
-
-const channel = new MessageChannel()
-const port1 = channel.port1
 
 customElements.define(
   sandboxTagName,
@@ -25,50 +22,48 @@ customElements.define(
 
       const shadowRoot = this.attachShadow({mode: 'closed'})
 
-      const iframe = document.createElement('iframe')
-      iframe.src = browser.runtime.getURL('sandbox/sandbox.html')
-      iframe.style.display = 'none'
-      iframe.onload = () => {
-        iframe.contentWindow.postMessage({ type: 'init' }, '*', [channel.port2])
-        this.onload()
+      if (MANIFEST === '2') {
+        const sandboxScript = document.createElement('script')
+        sandboxScript.src = browser.runtime.getURL('sandbox/sandbox.js')
+        sandboxScript.onload = async () => {
+          await connect(self)
+          this.onload()
+        }
+        shadowRoot.appendChild(sandboxScript)
+      } else {
+        const iframe = document.createElement('iframe')
+        iframe.src = browser.runtime.getURL('sandbox/sandbox.html')
+        iframe.style.display = 'none'
+        iframe.onload = async () => {
+          await connect(iframe.contentWindow)
+          this.onload()
+        }
+        shadowRoot.appendChild(iframe)
       }
-      shadowRoot.appendChild(iframe)
     }
   }
 )
 
-export function compileTemplate (template = '', context = {}) {
-  return new Promise((resolve) => {
-    if (MANIFEST === '2') {
-      return resolve(sandboxCompile(template, context))
-    }
-
-    function handleCompileMessage (e) {
-      if (e.data.type === config.eventSandboxCompile) {
-        port1.onmessage = () => {}
-        return resolve(e.data.template)
-      }
-    }
-
-    port1.onmessage = handleCompileMessage
-
-    function sendCompileMessage () {
-      port1.postMessage({
-        type: config.eventSandboxCompile,
-        template: template,
-        context: context,
-      })
-    }
-
-    if (!sandboxInstance) {
-      // create the sandbox instance on first call
-      sandboxInstance = document.createElement(sandboxTagName)
-      sandboxInstance.onload = sendCompileMessage
-      document.documentElement.appendChild(sandboxInstance)
-    } else {
-      sendCompileMessage()
-    }
+function sendCompileMessage (template, context) {
+  return request(config.eventSandboxCompile, {
+    template: template,
+    context: context,
   })
+}
+
+export function compileTemplate (template = '', context = {}) {
+  if (!sandboxInstance) {
+    // create the sandbox instance on first call
+    sandboxInstance = document.createElement(sandboxTagName)
+    return new Promise((resolve) => {
+      sandboxInstance.onload = () => {
+        sendCompileMessage(template, context).then(resolve)
+      }
+      document.documentElement.appendChild(sandboxInstance)
+    })
+  } else {
+    return sendCompileMessage(template, context)
+  }
 }
 
 export function destroy () {

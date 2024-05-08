@@ -743,7 +743,7 @@ export function searchTemplates (query = '') {
 async function setInitialBadge () {
   try {
     await getSignedInUser()
-  } catch (err) {
+  } catch {
     badgeUpdate(false)
   }
 }

@@ -6,12 +6,12 @@
   <body>
     <div id="lexical-container"></div>
     <script type="module">
-      import React from 'https://cdn.jsdelivr.net/npm/react@18/+esm'
-      import ReactDOM from 'https://cdn.jsdelivr.net/npm/react-dom@18/+esm'
+      import {createElement} from 'https://cdn.jsdelivr.net/npm/react@18/+esm'
+      import {createRoot} from 'https://cdn.jsdelivr.net/npm/react-dom@18/client/+esm'
 
-      import {LexicalComposer} from 'https://cdn.jsdelivr.net/npm/@lexical/react@0/LexicalComposer/+esm'
-      import {PlainTextPlugin} from 'https://cdn.jsdelivr.net/npm/@lexical/react@0/LexicalPlainTextPlugin/+esm'
-      import {ContentEditable} from 'https://cdn.jsdelivr.net/npm/@lexical/react@0/LexicalContentEditable/+esm'
+      import {LexicalComposer} from 'https://cdn.jsdelivr.net/npm/@lexical/react@0.14.4/LexicalComposer/+esm'
+      import {PlainTextPlugin} from 'https://cdn.jsdelivr.net/npm/@lexical/react@0.14.4/LexicalPlainTextPlugin/+esm'
+      import {ContentEditable} from 'https://cdn.jsdelivr.net/npm/@lexical/react@0.14.4/LexicalContentEditable/+esm'
 
       function Editor () {
         const initialConfig = {
@@ -19,15 +19,15 @@
           onError: console.error,
         }
 
-        return React.createElement(LexicalComposer, {
+        return createElement(LexicalComposer, {
           initialConfig: initialConfig,
-        }, React.createElement(PlainTextPlugin, {
-          contentEditable: React.createElement(ContentEditable),
+        }, createElement(PlainTextPlugin, {
+          contentEditable: createElement(ContentEditable),
         }))
       }
 
-      const root = ReactDOM.createRoot(document.getElementById('lexical-container'))
-      root.render(React.createElement(Editor))
+      const root = createRoot(document.getElementById('lexical-container'))
+      root.render(createElement(Editor))
     </script>
   </body>
 </html>

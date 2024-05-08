@@ -13,16 +13,16 @@ describe('random handlebars helper', () => {
     }
   })
 
-  it('should print last item', () => {
-    expect(compileTemplate('{{random "one"}}')).to.equal('one')
+  it('should print last item', async () => {
+    expect(await compileTemplate('{{random "one"}}')).to.equal('one')
   })
 
-  it('should print second item', () => {
-    expect(compileTemplate('{{random "one" "two" "three"}}')).to.equal('two')
+  it('should print second item', async () => {
+    expect(await compileTemplate('{{random "one" "two" "three"}}')).to.equal('two')
   })
 
-  it('should print last item', () => {
-    expect(compileTemplate('{{random "one" 2}}')).to.equal('2')
+  it('should print last item', async () => {
+    expect(await compileTemplate('{{random "one" 2}}')).to.equal('2')
   })
 
   after(() => {

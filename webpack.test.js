@@ -8,6 +8,7 @@ export default {
   entry: {
     test: globSync('./src/**/*.spec.js', {dotRelative: true}),
     sandbox: './src/content/sandbox/sandbox.js',
+    page: './src/content/page/page.js',
   },
   output: {
     filename: '[name]/[name].js',
@@ -42,7 +43,10 @@ export default {
     }),
     new CopyWebpackPlugin({
       patterns: [
-        { from: 'src/content/sandbox/sandbox.html', to: 'sandbox/sandbox.html' },
+        {
+          from: 'src/content/sandbox/sandbox.html',
+          to: 'sandbox/sandbox.html',
+        },
       ]
     }),
   ],

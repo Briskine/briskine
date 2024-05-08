@@ -1,6 +1,7 @@
 import browser from 'webextension-polyfill'
 
 import config from '../config.js'
+import methods from './store-methods.js'
 
 function createRequest (type) {
   return (params) => {
@@ -28,32 +29,6 @@ function createRequest (type) {
     })
   }
 }
-
-const methods = [
-  'getSettings',
-  'getAccount',
-
-  'getCustomer',
-  'setActiveCustomer',
-
-  'getTemplates',
-  'updateTemplateStats',
-  'searchTemplates',
-
-  'getTags',
-
-  'signin',
-  'logout',
-
-  'getSession',
-
-  'getExtensionData',
-  'setExtensionData',
-
-  'openPopup',
-  'refetchCollections',
-  'autosync',
-]
 
 let events = []
 function on (name, callback) {
@@ -90,12 +65,12 @@ browser.runtime.onMessage.addListener((req) => {
   }
 })
 
-const optionsStore = {}
+const clientStore = {}
 methods.forEach((method) => {
-  optionsStore[method] = createRequest(method)
+  clientStore[method] = createRequest(method)
 })
 
-optionsStore.on = on
-optionsStore.off = off
+clientStore.on = on
+clientStore.off = off
 
-export default optionsStore
+export default clientStore

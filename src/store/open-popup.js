@@ -6,7 +6,7 @@ const actionNamespace = (MANIFEST === '2') ? 'browserAction' : 'action'
 export async function openPopup () {
   try {
     await browser[actionNamespace].openPopup()
-  } catch (err) {
+  } catch {
     // browserAction.openPopup is not supported in all browsers yet.
     // https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/action/openPopup
     // Open the action popup in a new tab.

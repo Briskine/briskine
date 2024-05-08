@@ -6,6 +6,7 @@ import {parseProseMirrorContent, insertProseMirrorTemplate} from './editor-prose
 let $link
 let $script
 let $editor
+let containerId = 'prosemirror-container'
 
 function cleanEditor () {
   $editor.innerHTML = ''
@@ -34,6 +35,7 @@ describe('editor ProseMirror', () => {
       import {exampleSetup} from 'https://cdn.jsdelivr.net/npm/prosemirror-example-setup@1/+esm'
 
       const $editor = document.createElement('div')
+      $editor.id = '${containerId}'
       const $content = document.createElement('div')
       document.body.appendChild($editor)
 
@@ -169,6 +171,6 @@ describe('editor ProseMirror', () => {
   after(() => {
     $link.remove()
     $script.remove()
-    $editor.remove()
+    document.querySelector(`#${containerId}`).remove()
   })
 })

@@ -7,7 +7,6 @@ var Config = {
   dashboardTarget: 'gt-dashboard',
 
   eventDestroy: 'briskine-destroy',
-  eventPage: 'briskine-page',
   eventStatus: 'briskine-status',
   eventSandboxCompile: 'briskine-template-compile',
 }

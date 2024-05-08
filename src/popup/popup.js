@@ -5,7 +5,7 @@ import './popup.css'
 
 import './popup-login.js'
 import './popup-dashboard.js'
-import store from '../store/store-client.js'
+import store from '../store/store-content.js'
 import setTheme from './popup-theme.js'
 
 customElements.define(
@@ -14,6 +14,8 @@ customElements.define(
     constructor() {
       super()
       setTheme()
+
+      store.setup()
 
       this.loggedIn = null
       this.checkLogin()
@@ -28,7 +30,9 @@ customElements.define(
 
         return this.checkLogin()
       })
-      store.on('logout', () => this.checkLogin())
+      store.on('logout', () => {
+        this.checkLogin()
+      })
     }
     checkLogin() {
       return store.getAccount()

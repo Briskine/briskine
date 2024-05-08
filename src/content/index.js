@@ -3,7 +3,7 @@
 import '@webcomponents/custom-elements'
 import deepEqual from 'deep-equal'
 
-import store from '../store/store-client.js'
+import store from '../store/store-content.js'
 import config from '../config.js'
 
 import {setup as setupKeyboard, destroy as destroyKeyboard} from './keyboard.js'
@@ -15,12 +15,13 @@ import {setup as setupPage, destroy as destroyPage} from './page/page-parent.js'
 import {setup as setupAttachments, destroy as destroyAttachments} from './attachments/attachments.js'
 import {setup as setupDashboardEvents, destroy as destroyDashboardEvents} from './dashboard-events-client.js'
 
+
 function getParentUrl () {
   let url = window.location.href
   if (window !== window.parent) {
     try {
       url = window.parent.location.href
-    } catch (err) {
+    } catch {
       // iframe from different domain
     }
   }
@@ -50,6 +51,8 @@ function init (settings) {
   if (isBlacklisted) {
     return false
   }
+
+  store.setup()
 
   setupKeyboard(settings)
   setupBubble(settings)
@@ -108,6 +111,9 @@ async function startup () {
 }
 
 function destructor () {
+  store.off('users-updated', refreshContentScripts)
+  store.destroy()
+
   destroyKeyboard()
   destroyBubble()
   destroyDialog()
@@ -118,7 +124,6 @@ function destructor () {
   destroyDashboardEvents()
 
   settingsCache = {}
-  store.off('users-updated', refreshContentScripts)
   destroyed = true
 }
 
