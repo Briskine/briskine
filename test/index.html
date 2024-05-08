@@ -10,16 +10,8 @@
   <body>
     <div id="mocha"></div>
 
-    <script>
-      mocha.setup('bdd')
-      mocha.checkLeaks()
-    </script>
-
-    <script src="polyfill.js"></script>
+    <script src="test-bootstrap.js"></script>
     <script src="bundle/test/test.js"></script>
-
-    <script>
-      mocha.run();
-    </script>
+    <script src="test-run.js"></script>
   </body>
 </html>

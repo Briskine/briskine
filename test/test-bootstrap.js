@@ -1,3 +1,12 @@
+/* Mocha startup
+ */
+
+mocha.setup('bdd')
+mocha.checkLeaks()
+
+/* polyfill
+ */
+
 // mock webextension api
 window.chrome = {
   runtime: {
