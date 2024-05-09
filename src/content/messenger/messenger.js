@@ -16,7 +16,7 @@ export default function Messenger (scope = '') {
 
   // client-only
   const handleHandshake = async function (e) {
-    if (e.data.type === handshakeEvent) {
+    if (e?.data?.type === handshakeEvent) {
       port = e.ports[0]
       port.onmessage = onMessage
       port.postMessage({ type: handshakeEvent })

@@ -740,6 +740,16 @@ export function searchTemplates (query = '') {
     })
 }
 
+export async function isCached () {
+  const key = 'templatesOwned'
+  const cache = await browser.storage.local.get(key)
+  if (cache[key]) {
+    return true
+  }
+
+  return false
+}
+
 async function setInitialBadge () {
   try {
     await getSignedInUser()

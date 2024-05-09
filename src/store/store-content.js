@@ -33,13 +33,18 @@ methods.forEach((method) => {
 contentStore.on = store.on
 contentStore.off = store.off
 
-contentStore.setup = () => {
+contentStore.setup = async () => {
   store.on('login', clear)
   store.on('logout', clear)
   store.on('users-updated', usersUpdated)
   store.on('templates-updated', templatesUpdated)
   store.on('tags-updated', tagsUpdated)
   store.on('extension-data-updated', extensionDataUpdated)
+
+  const cached = await store.isCached()
+  if (cached === true) {
+    Promise.allSettled(cachedMethods.map((m) => contentStore[m]()))
+  }
 }
 
 contentStore.destroy = () => {

@@ -22,4 +22,5 @@ export default [
   'openPopup',
   'refetchCollections',
   'autosync',
+  'isCached',
 ]
