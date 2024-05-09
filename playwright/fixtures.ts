@@ -56,8 +56,9 @@ export const test = base.extend<{
       extensionId = `moz-extension://${extensionId}`
     } else {
       let [background] = context.serviceWorkers()
-      if (!background)
+      if (!background) {
         background = await context.waitForEvent('serviceworker')
+      }
 
       extensionId = background.url().split('/')[2]
       extensionId = `chrome-extension://${extensionId}`

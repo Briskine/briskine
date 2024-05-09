@@ -1,7 +1,11 @@
-import {test, expect} from '../fixtures-auth-session.ts'
+import {test, expect} from '../fixtures.ts'
+import loginSession from '../login-session.js'
 
 test.describe('ContentEditable Session Authenticated', () => {
-  test.beforeEach(async ({page}) => {
+test.skip(({browserName}) => browserName === 'firefox', 'Auth testing not supported in Firefox.')
+
+  test.beforeEach(async ({page, extensionId}) => {
+    await loginSession({page, extensionId})
     await page.goto('/contenteditable-auth-session/contenteditable-auth-session.html')
   })
 

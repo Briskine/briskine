@@ -1,14 +1,19 @@
-import {test, expect} from '../fixtures-auth.ts'
+import {test, expect} from '../fixtures.ts'
+import login from '../login.js'
 
 test.describe('ContentEditable Authenticated Service Worker suspend', () => {
-  test.beforeEach(async ({page, extensionId, context}) => {
+  test.skip(({browserName}) => browserName === 'firefox', 'Auth testing not supported in Firefox.')
+
+  test.beforeEach(async ({page, extensionId}) => {
+    await login({page, extensionId})
+
     // stop service worker
     await page.goto('chrome://serviceworker-internals/')
     await page.getByRole('button', {name: 'Stop'}).click()
 
     await page.goto('/contenteditable-auth-suspend/contenteditable-auth-suspend.html')
-    // wait for the service worker to wake up and reply,
-    // so we can start briskine.
+    // wait for the service worker to start
+    // and briskine initialized
     await page.waitForTimeout(1000)
   })
 
