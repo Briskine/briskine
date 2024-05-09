@@ -230,12 +230,12 @@ export async function refetchCollections (collections = []) {
   }
 }
 
-// one hour
-const defaultSyncTimeout = 60 * 60 * 1000
+// two hours
+const defaultSyncTimeout = 2 * 60 * 60 * 1000
 export async function autosync (timeout = defaultSyncTimeout) {
   const data = await getExtensionData()
   const lastSync = new Date(data.lastSync)
-  // auto sync if last sync was more than one hour ago
+  // auto sync if last sync was more than timeout ago
   if (new Date() - lastSync > timeout) {
     return refetchCollections()
   }
