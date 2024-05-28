@@ -25,7 +25,10 @@ function parseNameAndEmail (nameAndEmail = '') {
 }
 
 function getFieldData (field, $container) {
-  var $buttons = $container.querySelectorAll('[draggable="true"]') || [];
+  var $buttons = $container.querySelectorAll(`
+    [draggable="true"],
+    [data-lpc-hover-target-id]
+  `) || [];
   $buttons.forEach(function ($button) {
     let fullName = ''
     const $fullNameContainer = $button.querySelector('span > span > span > span')
@@ -44,9 +47,9 @@ function getContainers () {
   // [role=main] for the default outlook view.
   // [data-app-section] for the compose popup view.
   return Array.from(document.querySelectorAll(`
-    [role=main] [role=combobox],
-    [data-app-section="Form_Content"] [role=combobox]
-  `))
+      [role=main] [role=textbox]:not([dir]),
+      [data-app-section="Form_Content"] [role=textbox]:not([dir])
+    `))
     .map((node) => {
       return node.parentElement
     })
