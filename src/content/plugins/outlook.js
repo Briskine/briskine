@@ -152,15 +152,15 @@ function waitForElement (getNode) {
       }
     })
 
-    const timeout = setTimeout(() => {
-      selectorObserver.disconnect()
-      reject()
-    }, 500)
-
     selectorObserver.observe(document.body, {
       childList: true,
       subtree: true
     })
+
+    const timeout = setTimeout(() => {
+      selectorObserver.disconnect()
+      reject()
+    }, 1000)
   })
 }
 
@@ -179,6 +179,7 @@ async function updateContactField ($field, value) {
 
 async function addSingleContact ($field, value) {
   $field.focus()
+  await new Promise((resolve) => setTimeout(resolve))
   const range = window.getSelection().getRangeAt(0)
   const templateNode = range.createContextualFragment(value)
   range.insertNode(templateNode)
