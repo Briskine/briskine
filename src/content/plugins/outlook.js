@@ -345,7 +345,7 @@ function isActive () {
   activeCache = false
 
   // check for urls
-  const outlookUrl = urls.some((url) => window.location.href.includes(url))
+  const outlookUrl = urls.some((url) => window.location.hostname === url)
   if (outlookUrl) {
     activeCache = true
     return activeCache

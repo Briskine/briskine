@@ -205,7 +205,7 @@ function isActive () {
   activeCache = false
   // trigger the extension based on url
   if (
-    window.location.host === 'mail.google.com'
+    window.location.hostname === 'mail.google.com'
     && !window.location.href.includes(gmailMobileToken)
   ) {
     activeCache = true
