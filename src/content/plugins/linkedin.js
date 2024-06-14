@@ -154,10 +154,10 @@ function isActive () {
     }
 
     activeCache = false;
-    var linkedinUrl = '.linkedin.com/';
+    var linkedinUrl = 'www.linkedin.com';
 
     // trigger the extension based on url
-    if (window.location.href.indexOf(linkedinUrl) !== -1) {
+    if (window.location.hostname === linkedinUrl) {
         activeCache = true;
     }
 

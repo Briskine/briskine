@@ -25,7 +25,10 @@ function parseNameAndEmail (nameAndEmail = '') {
 }
 
 function getFieldData (field, $container) {
-  var $buttons = $container.querySelectorAll('[draggable="true"]') || [];
+  var $buttons = $container.querySelectorAll(`
+    [draggable="true"],
+    [data-lpc-hover-target-id]
+  `) || [];
   $buttons.forEach(function ($button) {
     let fullName = ''
     const $fullNameContainer = $button.querySelector('span > span > span > span')
@@ -44,9 +47,9 @@ function getContainers () {
   // [role=main] for the default outlook view.
   // [data-app-section] for the compose popup view.
   return Array.from(document.querySelectorAll(`
-    [role=main] [role=combobox],
-    [data-app-section="Form_Content"] [role=combobox]
-  `))
+      [role=main] [role=textbox]:not([dir]),
+      [data-app-section="Form_Content"] [role=textbox]:not([dir])
+    `))
     .map((node) => {
       return node.parentElement
     })
@@ -149,15 +152,15 @@ function waitForElement (getNode) {
       }
     })
 
-    const timeout = setTimeout(() => {
-      selectorObserver.disconnect()
-      reject()
-    }, 500)
-
     selectorObserver.observe(document.body, {
       childList: true,
       subtree: true
     })
+
+    const timeout = setTimeout(() => {
+      selectorObserver.disconnect()
+      reject()
+    }, 1000)
   })
 }
 
@@ -176,6 +179,7 @@ async function updateContactField ($field, value) {
 
 async function addSingleContact ($field, value) {
   $field.focus()
+  await new Promise((resolve) => setTimeout(resolve))
   const range = window.getSelection().getRangeAt(0)
   const templateNode = range.createContextualFragment(value)
   range.insertNode(templateNode)
@@ -341,7 +345,7 @@ function isActive () {
   activeCache = false
 
   // check for urls
-  const outlookUrl = urls.some((url) => window.location.href.includes(url))
+  const outlookUrl = urls.some((url) => window.location.hostname === url)
   if (outlookUrl) {
     activeCache = true
     return activeCache

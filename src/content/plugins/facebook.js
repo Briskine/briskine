@@ -73,12 +73,12 @@ function isActive () {
 
   activeCache = false
   const urls = [
-    '.facebook.com/',
-    '.messenger.com/',
+    'www.facebook.com',
+    'www.messenger.com',
   ]
 
   // trigger the extension based on url
-  if (urls.find((url) => window.location.href.includes(url))) {
+  if (urls.find((url) => window.location.hostname === url)) {
     activeCache = true
   }
 

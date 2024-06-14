@@ -70,7 +70,7 @@ export function getDefaultTemplates () {
   ]
 
   if (ENV === 'development') {
-    let allVarsBody = [ 'account', 'from', 'to', 'cc', 'bcc' ].map((field) => {
+    let allVarsBody = [ 'account', 'from' ].map((field) => {
       return `
         <div>
           <strong># ${field}</strong>
@@ -78,6 +78,24 @@ export function getDefaultTemplates () {
         {{#each ${field}}}
           <div>
             {{@key}}: {{this}}
+          </div>
+        {{/each}}
+      `
+    }).join('')
+
+    allVarsBody += [ 'to', 'cc', 'bcc' ].map((field) => {
+      return `
+        <div>
+          <strong># ${field}</strong>
+        </div>
+        {{#each ${field}}}
+          <div>
+            {{@key}}:
+            {{#each this}}
+              <div>
+                {{@key}}: {{this}}
+              </div>
+            {{/each}}
           </div>
         {{/each}}
       `

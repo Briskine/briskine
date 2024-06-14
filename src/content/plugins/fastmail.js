@@ -1,3 +1,5 @@
+// DEPRECATED
+// will be removed in future versions
 /* eslint-disable no-useless-escape */
 /* Fastmail plugin
  */
@@ -145,10 +147,10 @@ function isActive () {
     }
 
     activeCache = false;
-    var fastmailUrl = '//www.fastmail.com/';
+    var fastmailUrl = 'www.fastmail.com';
 
     // trigger the extension based on url
-    if (window.location.href.indexOf(fastmailUrl) !== -1) {
+    if (window.location.hostname === fastmailUrl) {
         activeCache = true;
     }
 
