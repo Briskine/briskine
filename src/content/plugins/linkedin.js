@@ -26,89 +26,91 @@ async function before (params, data) {
 
 // get all required data from the dom
 function getData (params) {
-    var vars = {
-        from: {},
-        to: [],
-        subject: ''
-    };
+  var vars = {
+    from: {},
+    to: [],
+    subject: ''
+  };
 
-    let fromName = '';
-    // global profile
-    const $fromContainer = document.querySelector('.global-nav__me-photo');
-    if ($fromContainer && $fromContainer.getAttribute('alt')) {
-        fromName = $fromContainer.getAttribute('alt');
+  let fromName = '';
+  // global profile
+  const $fromContainer = document.querySelector('.global-nav__me-photo');
+  if ($fromContainer && $fromContainer.getAttribute('alt')) {
+    fromName = $fromContainer.getAttribute('alt');
+  }
+
+  // Sales Navigator global profile
+  const $salesFromContainer = document.querySelector('[data-control-name="view_user_menu_from_app_header"]');
+  if ($salesFromContainer) {
+    fromName = $salesFromContainer.innerText;
+  }
+
+  vars.from = createContact({name: fromName});
+
+  let toName = '';
+  // get the to field from the current viewed profile by default
+  // eg. for the connect > add note field.
+  const $currentProfilePicture = document.querySelector('img[width="200"][height="200"], img[class*="pv-top-card-profile-picture"]');
+  if ($currentProfilePicture && $currentProfilePicture.hasAttribute('alt')) {
+    toName = $currentProfilePicture.getAttribute('alt') || ''
+    // remove open to work badge
+    toName = toName.replace(', #OPEN_TO_WORK', '')
+  }
+
+  // Sales Navigator Connect
+  const $salesToName = params.element.parentNode.querySelector('.artdeco-entity-lockup__title');
+  if ($salesToName) {
+    toName = $salesToName.innerText;
+  }
+
+  // message thread in Messaging interface
+  const messagingUiThread = '.msg-thread';
+  // thread in message bubble/dialog
+  const bubbleMessageThread = '.msg-overlay-conversation-bubble__content-wrapper';
+  // post in feed
+  const feedPost = '.feed-shared-update-v2';
+  // select any
+  const messageThreadSelector = `${messagingUiThread}, ${bubbleMessageThread}, ${feedPost}`;
+
+  // contact name in message threads
+  const messageContactName = '.msg-s-event-listitem--other .msg-s-message-group__name'
+  // contact name in message threads, when contact hasn't replied - from thread title
+  const messageContentTitleName = '.artdeco-entity-lockup__title'
+  // contact name is new message
+  const newMessageContact = '.artdeco-pill'
+  // contact name in feed post
+  const feedContactName = '.feed-shared-actor__name'
+  // select any
+  const contactNameSelector = `
+  ${messageContactName},
+  ${feedContactName},
+  ${newMessageContact},
+  ${messageContentTitleName}
+  `
+
+  const $thread = params.element.closest(messageThreadSelector);
+  // check if a message thread is visible,
+  // otherwise we're in a non-messaging textfield.
+  if ($thread) {
+    // get the contacts from the thread, that is not ours
+    const $contacts = $thread.querySelectorAll(contactNameSelector);
+    if ($contacts.length) {
+      // get the current messaging contact
+      const $contact = $contacts.item($contacts.length - 1);
+      toName = $contact.innerText;
     }
+  }
 
-    // Sales Navigator global profile
-    const $salesFromContainer = document.querySelector('[data-control-name="view_user_menu_from_app_header"]');
-    if ($salesFromContainer) {
-        fromName = $salesFromContainer.innerText;
-    }
+  // Sales Navigator message thread
+  const $salesConversation = document.querySelector('.conversation-insights');
+  if ($salesConversation) {
+    const $salesName = $salesConversation.querySelector('.artdeco-entity-lockup__title span:first-child');
+    toName = $salesName.innerText;
+  }
 
-    vars.from = createContact({name: fromName});
+  vars.to.push(createContact({name: toName}));
 
-    let toName = '';
-    // get the to field from the current viewed profile by default
-    // eg. for the connect > add note field.
-    const $currentProfilePicture = document.querySelector('img[width="200"][height="200"], img[class*="pv-top-card-profile-picture"]');
-    if ($currentProfilePicture && $currentProfilePicture.hasAttribute('alt')) {
-        toName = $currentProfilePicture.getAttribute('alt');
-    }
-
-    // Sales Navigator Connect
-    const $salesToName = params.element.parentNode.querySelector('.artdeco-entity-lockup__title');
-    if ($salesToName) {
-        toName = $salesToName.innerText;
-    }
-
-    // message thread in Messaging interface
-    const messagingUiThread = '.msg-thread';
-    // thread in message bubble/dialog
-    const bubbleMessageThread = '.msg-overlay-conversation-bubble__content-wrapper';
-    // post in feed
-    const feedPost = '.feed-shared-update-v2';
-    // select any
-    const messageThreadSelector = `${messagingUiThread}, ${bubbleMessageThread}, ${feedPost}`;
-
-    // contact name in message threads
-    const messageContactName = '.msg-s-event-listitem--other .msg-s-message-group__name'
-    // contact name in message threads, when contact hasn't replied - from thread title
-    const messageContentTitleName = '.artdeco-entity-lockup__title'
-    // contact name is new message
-    const newMessageContact = '.artdeco-pill'
-    // contact name in feed post
-    const feedContactName = '.feed-shared-actor__name'
-    // select any
-    const contactNameSelector = `
-      ${messageContactName},
-      ${feedContactName},
-      ${newMessageContact},
-      ${messageContentTitleName}
-    `
-
-    const $thread = params.element.closest(messageThreadSelector);
-    // check if a message thread is visible,
-    // otherwise we're in a non-messaging textfield.
-    if ($thread) {
-        // get the contacts from the thread, that is not ours
-        const $contacts = $thread.querySelectorAll(contactNameSelector);
-        if ($contacts.length) {
-            // get the current messaging contact
-            const $contact = $contacts.item($contacts.length - 1);
-            toName = $contact.innerText;
-        }
-    }
-
-    // Sales Navigator message thread
-    const $salesConversation = document.querySelector('.conversation-insights');
-    if ($salesConversation) {
-        const $salesName = $salesConversation.querySelector('.artdeco-entity-lockup__title span:first-child');
-        toName = $salesName.innerText;
-    }
-
-    vars.to.push(createContact({name: toName}));
-
-    return vars;
+  return vars;
 }
 
 // zero-width whitespace
