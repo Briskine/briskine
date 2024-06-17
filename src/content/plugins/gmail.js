@@ -9,11 +9,11 @@ import createContact from '../utils/create-contact.js'
 import {enableBubble} from '../bubble/bubble.js'
 import {addAttachments} from '../attachments/attachments.js'
 
-const fromFieldSelector = '.az2';
-const textfieldContainerSelector = '.M9';
+const fromFieldSelector = '.az2'
+const textfieldContainerSelector = '.M9'
 
-var regExString = /"?([^ ]*)\s*(.*)"?\s*[(<]([^>)]+)[>)]/;
-var regExEmail = /([\w!.%+\-])+@([\w\-])+(?:\.[\w\-]+)+/;
+var regExString = /"?([^ ]*)\s*(.*)"?\s*[(<]([^>)]+)[>)]/
+var regExEmail = /([\w!.%+\-])+@([\w\-])+(?:\.[\w\-]+)+/
 
 function parseString (string = '') {
     var match = regExString.exec(string.trim());
@@ -51,24 +51,20 @@ function getData (params) {
   }
 
   if (isContentEditable(params.element)) {
-    // get the email field from the account details tooltip.
-    // the details popup changes the className on each release,
-    // so we use the dom structure to find it.
-    // get the two-level deep nested div, that contains an @, from the email address.
-    // start from the end, because the popup is located near the end of the page,
-    // and the main container can also contain email addresses.
-    // ignore divs with peoplekit-id, as they show up after adding to/cc/bcc addresses,
-    // and are also placed at the end of the body.
-    const $email = Array
-      .from(document.querySelectorAll('body > div:not([peoplekit-id]) > div > div'))
-      .reverse()
-      // div containing only text nodes with @
-      .find((div) => (div.children.length === 0 && (div.textContent || '').includes('@')))
-    const $fullName = $email ? $email.previousElementSibling : null
-
-    const fullNameText = $fullName ? $fullName.innerText : ''
-    const emailText = $email ? $email.innerText : ''
-    data.from = parseString(`${fullNameText} <${emailText}>`)
+    // get the email address from the title
+    const email = (document.title || '').split(' ').find((part) => part.includes('@')) || ''
+    // find the email node from the user details popup
+    // visible on hovering the google account on the top-right
+    const emailNode = Array.from(document.querySelectorAll('div')).reverse().find((node) => {
+      return node.innerText === email
+    })
+    // the full name node is before the email node
+    const fullNameNode = emailNode ? emailNode.previousElementSibling : null
+    const fullName = fullNameNode ? fullNameNode.innerText : ''
+    data.from = createContact({
+      name: fullName,
+      email: email,
+    })
 
     const $container = params.element.closest(textfieldContainerSelector);
     if ($container) {
