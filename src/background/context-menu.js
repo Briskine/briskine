@@ -1,14 +1,31 @@
 import browser from 'webextension-polyfill'
 
+/* globals MANIFEST */
 import config from '../config.js'
 
 const saveAsTemplate = 'saveAsTemplate'
 
-function clickContextMenu (info) {
+function getSelection () {
+  return window.getSelection()?.toString?.()
+}
+
+async function clickContextMenu (info) {
   if (info.menuItemId === saveAsTemplate) {
-    const body = encodeURIComponent(info.selectionText)
+    let body = info.selectionText
+    if (MANIFEST === '3') {
+      const activeTab = await browser.tabs.query({active: true})
+      const selection = await browser.scripting.executeScript({
+        target: {
+          tabId: activeTab[0].id,
+        },
+        func: getSelection,
+      })
+      // replace newlines with brs
+      body = selection[0]?.result?.replace?.(/(?:\r\n|\r|\n)/g, '<br>')
+    }
+
     browser.tabs.create({
-      url: `${config.functionsUrl}/template/new?body=${body}`
+      url: `${config.functionsUrl}/template/new?body=${encodeURIComponent(body)}`
     })
   }
 }
