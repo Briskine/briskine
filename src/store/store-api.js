@@ -24,7 +24,7 @@ import {
 import config from '../config.js'
 import trigger from './store-trigger.js'
 import fuzzySearch from './search.js'
-import badgeUpdate from '../background/badge-update.js'
+import {badgeUpdate} from '../background/badge.js'
 import {getDefaultTemplates, defaultTags, defaultSettings} from './default-data.js'
 import plainText from './plain-text.js'
 import {getExtensionData, setExtensionData} from './extension-data.js'
@@ -360,7 +360,7 @@ async function getFirebaseUser () {
 }
 
 var globalUserKey = 'firebaseUser'
-async function getSignedInUser () {
+export async function getSignedInUser () {
   const storedUser = await browser.storage.local.get(globalUserKey)
   const user = storedUser[globalUserKey] || {}
 
@@ -749,17 +749,3 @@ export async function isCached () {
 
   return false
 }
-
-async function setInitialBadge () {
-  try {
-    await getSignedInUser()
-  } catch {
-    badgeUpdate(false)
-  }
-}
-
-browser.runtime.onStartup.addListener(setInitialBadge)
-browser.runtime.onInstalled.addListener(setInitialBadge)
-
-browser.runtime.onStartup.addListener(() => autosync())
-browser.runtime.onInstalled.addListener(() => autosync())
