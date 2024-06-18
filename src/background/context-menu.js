@@ -12,6 +12,16 @@ function getSelectedText () {
   return window.getSelection()?.toString?.()
 }
 
+function showDialog () {
+  const dialogShowEvent = 'briskine-dialog'
+  if (document.activeElement) {
+    document.activeElement.dispatchEvent(new CustomEvent(dialogShowEvent, {
+      bubbles: true,
+      composed: true,
+    }))
+  }
+}
+
 async function saveAsTemplateAction (info) {
   let body = info.selectionText
   if (MANIFEST === '3') {
@@ -33,10 +43,17 @@ async function saveAsTemplateAction (info) {
   })
 }
 
-async function openDialogAction (info) {
+async function openDialogAction () {
+  const activeTab = await browser.tabs.query({active: true})
+  await browser.scripting.executeScript({
+    target: {
+      tabId: activeTab[0].id,
+    },
+    func: showDialog,
+  })
 }
 
-async function signInAction (info) {
+async function signInAction () {
   return openPopup()
 }
 
@@ -46,11 +63,11 @@ async function clickContextMenu (info) {
   }
 
   if (info.menuItemId === openDialogMenu) {
-    return openDialogAction(info)
+    return openDialogAction()
   }
 
   if (info.menuItemId === signInMenu) {
-    return signInAction(info)
+    return signInAction()
   }
 }
 
@@ -77,7 +94,7 @@ async function setupContextMenus () {
   })
 
   browser.contextMenus.create({
-    contexts: ['all'],
+    contexts: ['editable', 'selection'],
     type: 'separator',
     parentId: parentMenu,
     id: 'mainSeparator',
@@ -91,7 +108,7 @@ async function setupContextMenus () {
   })
 
   browser.contextMenus.create({
-    contexts: ['all'],
+    contexts: ['editable'],
     title: 'Open Briskine dialog',
     parentId: parentMenu,
     id: openDialogMenu,
