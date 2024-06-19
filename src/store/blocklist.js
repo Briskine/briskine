@@ -2,11 +2,12 @@ const blocklistPrivate = [
   '.briskine.com',
 ]
 
+function getBlocklist (settings = {}) {
+  return blocklistPrivate.concat(settings.blacklist)
+}
+
 export function isBlocklisted (settings = {}, currentUrl = '') {
-  // create the full blocklist
-  // from the editable and private one
-  const blocklist = blocklistPrivate.concat(settings.blacklist)
-  return blocklist.find((url) => {
+  return getBlocklist(settings).find((url) => {
     return url && currentUrl.includes(url)
   })
 }

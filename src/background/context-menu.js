@@ -117,8 +117,6 @@ async function setupContextMenus () {
     id: parentMenu,
   })
 
-  // TODO context menus will show up on blocklisted websites
-
   try {
     // logged-in
     await getAccount()
