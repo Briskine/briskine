@@ -191,7 +191,8 @@ async function setupContextMenus () {
   })
 }
 
-browser.runtime.onInstalled.addListener(setupContextMenus)
+const debouncedSetupContextMenus = debounce(setupContextMenus, 1000)
+browser.runtime.onInstalled.addListener(debouncedSetupContextMenus)
 browser.contextMenus.onClicked.addListener(clickContextMenu)
 
 const watchedKeys = [
@@ -209,7 +210,7 @@ function storageChange (changes = {}) {
       const oldValue = changes[item].oldValue
       const newValue = changes[item].newValue
       if (!isEqual(oldValue, newValue)) {
-        setupContextMenus()
+        debouncedSetupContextMenus()
         return true
       }
     }
