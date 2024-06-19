@@ -13,7 +13,7 @@ const signInMenu = 'signIn'
 const parentMenu = 'briskineMenu'
 const separatorMenu = 'mainSeparator'
 
-const templatesLimit = 42
+const templatesLimit = 20
 
 function getSelectedText () {
   return window.getSelection()?.toString?.()
