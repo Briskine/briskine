@@ -3,7 +3,8 @@ import isEqual from 'lodash.isequal'
 import debounce from 'lodash.debounce'
 
 import config from '../config.js'
-import {getAccount, getTemplates} from '../store/store-api.js'
+import {getAccount, getTemplates, getExtensionData} from '../store/store-api.js'
+import sortTemplates from '../store/sort-templates.js'
 import {openPopup} from '../store/open-popup.js'
 
 const saveAsTemplateMenu = 'saveAsTemplate'
@@ -11,6 +12,8 @@ const openDialogMenu = 'openDialog'
 const signInMenu = 'signIn'
 const parentMenu = 'briskineMenu'
 const separatorMenu = 'mainSeparator'
+
+const templatesLimit = 42
 
 function getSelectedText () {
   return window.getSelection()?.toString?.()
@@ -172,13 +175,15 @@ async function setupContextMenus () {
     id: insertTemplatesMenu,
   })
 
-  // TODO sort like dialog
-  const templates = await getTemplates()
-  templates.forEach((template) => {
+  // same sorting and rendering settings like the dialog
+  const allTemplates = await getTemplates()
+  const extensionData = await getExtensionData()
+  const templates = sortTemplates(allTemplates, extensionData.dialogSort, extensionData.templatesLastUsed)
+  templates.slice(0, templatesLimit).forEach((template) => {
     browser.contextMenus.create({
       contexts: ['editable'],
       documentUrlPatterns: documentUrlPatterns,
-      title: `${template.title} ${template.shortcut ? `(${template.shortcut})` : ''}`,
+      title: `${template.title}${template.shortcut ? ` (${template.shortcut})` : ''}`,
       parentId: insertTemplatesMenu,
       id: template.id,
     })
@@ -188,9 +193,8 @@ async function setupContextMenus () {
 browser.runtime.onInstalled.addListener(setupContextMenus)
 browser.contextMenus.onClicked.addListener(clickContextMenu)
 
-const debouncedSetupContextMenus = debounce(setupContextMenus, 500)
-
 const watchedKeys = [
+  'briskine',
   'firebaseUser',
   'templatesOwned',
   'templatesShared',
@@ -204,7 +208,7 @@ function storageChange (changes = {}) {
       const oldValue = changes[item].oldValue
       const newValue = changes[item].newValue
       if (!isEqual(oldValue, newValue)) {
-        debouncedSetupContextMenus()
+        setupContextMenus()
         return true
       }
     }
@@ -213,4 +217,5 @@ function storageChange (changes = {}) {
   })
 }
 
-browser.storage.local.onChanged.addListener(storageChange)
+const debouncedStorageChange = debounce(storageChange, 1000)
+browser.storage.local.onChanged.addListener(debouncedStorageChange)

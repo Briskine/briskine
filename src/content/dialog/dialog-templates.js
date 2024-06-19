@@ -1,30 +1,8 @@
 import {render} from 'lit-html'
 import {html, unsafeStatic} from 'lit-html/static.js'
 
+import sortTemplates from '../../store/sort-templates.js'
 import {batch, reactive} from '../component.js'
-
-function sortTemplates (templates = [], sort = 'last_used', lastUsed = {}) {
-  if (['title', 'shortcut'].includes(sort)) {
-    return templates
-      .sort((a, b) => {
-        return a[sort].localeCompare(b[sort])
-      })
-  }
-
-  if (sort === 'modified_datetime') {
-    return templates
-      .sort((a, b) => {
-        return new Date(b.modified_datetime || 0) - new Date(a.modified_datetime || 0)
-      })
-  }
-
-  // default last_used sort
-  return templates
-    .sort((a, b) => {
-      return new Date(lastUsed[b.id] || 0) - new Date(lastUsed[a.id] || 0)
-    })
-}
-
 
 export default class DialogTemplates extends HTMLElement {
   constructor () {
