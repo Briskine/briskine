@@ -1,4 +1,3 @@
-/* globals MANIFEST */
 import browser from 'webextension-polyfill'
 import isEqual from 'lodash.isequal'
 import debounce from 'lodash.debounce'
@@ -37,12 +36,14 @@ async function executeScript (info = {}, tab = {}, func = () => {}) {
 
 async function saveAsTemplateAction (info, tab) {
   let body = info.selectionText
-  if (MANIFEST === '3') {
+  try {
     const selection = await executeScript(info, tab, getSelectedText)
     // replace newlines with brs
     if (selection[0].result) {
       body = selection[0].result.replace(/(?:\r\n|\r|\n)/g, '<br>')
     }
+  } catch {
+    // can't get multi-line selection
   }
 
   browser.tabs.create({
@@ -105,6 +106,11 @@ async function setupContextMenus () {
     })
   }
 
+  const documentUrlPatterns = [
+    'https://*/*',
+    'http://*/*',
+  ]
+
   browser.contextMenus.create({
     contexts: ['editable', 'selection'],
     type: 'separator',
@@ -121,6 +127,7 @@ async function setupContextMenus () {
 
   browser.contextMenus.create({
     contexts: ['editable'],
+    documentUrlPatterns: documentUrlPatterns,
     title: 'Open Briskine dialog',
     parentId: parentMenu,
     id: openDialogMenu,
