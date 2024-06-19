@@ -14,6 +14,7 @@ import {destroy as destroySandbox} from './sandbox/sandbox-parent.js'
 import {setup as setupPage, destroy as destroyPage} from './page/page-parent.js'
 import {setup as setupAttachments, destroy as destroyAttachments} from './attachments/attachments.js'
 import {setup as setupDashboardEvents, destroy as destroyDashboardEvents} from './dashboard-events-client.js'
+import {setup as setupInsertEvent, destroy as destroyInsertEvent} from './insert-template-event.js'
 
 
 function getParentUrl () {
@@ -60,6 +61,8 @@ function init (settings) {
 
   setupPage()
   setupAttachments()
+
+  setupInsertEvent()
 
   // update the content components if settings change
   settingsCache = Object.assign({}, settings)
@@ -122,6 +125,7 @@ function destructor () {
   destroyPage()
   destroyAttachments()
   destroyDashboardEvents()
+  destroyInsertEvent()
 
   settingsCache = {}
   destroyed = true

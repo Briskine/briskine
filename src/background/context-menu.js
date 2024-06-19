@@ -25,8 +25,14 @@ function showDialog (eventShowDialog) {
   }
 }
 
-function insertTemplate (templateId) {
-  console.log('insert template', templateId)
+function insertTemplate (eventInsertTemplate, template) {
+  if (document.activeElement) {
+    document.activeElement.dispatchEvent(new CustomEvent(eventInsertTemplate, {
+      bubbles: true,
+      composed: true,
+      detail: template,
+    }))
+  }
 }
 
 async function executeScript ({ info = {}, tab = {}, args = [], func = () => {} }) {
@@ -79,7 +85,7 @@ function insertTemplateAction (info, tab, template) {
     info: info,
     tab: tab,
     func: insertTemplate,
-    args: [template],
+    args: [config.eventInsertTemplate, template],
   })
 }
 
@@ -110,6 +116,8 @@ async function setupContextMenus () {
     title: 'Briskine',
     id: parentMenu,
   })
+
+  // TODO context menus will show up on blocklisted websites
 
   try {
     // logged-in
