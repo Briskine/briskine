@@ -46,11 +46,13 @@ async function saveAsTemplateAction (info) {
   })
 }
 
-async function openDialogAction () {
+async function openDialogAction (info = {}) {
+  // TODO manifest v2
   const activeTab = await browser.tabs.query({active: true})
   await browser.scripting.executeScript({
     target: {
       tabId: activeTab[0].id,
+      frameIds: [info.frameId],
     },
     func: showDialog,
   })
@@ -66,7 +68,7 @@ async function clickContextMenu (info) {
   }
 
   if (info.menuItemId === openDialogMenu) {
-    return openDialogAction()
+    return openDialogAction(info)
   }
 
   if (info.menuItemId === signInMenu) {
@@ -159,4 +161,3 @@ function storageChange (changes = {}) {
 }
 
 browser.storage.local.onChanged.addListener(storageChange)
-
