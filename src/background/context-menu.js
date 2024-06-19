@@ -1,7 +1,9 @@
 /* globals MANIFEST */
 import browser from 'webextension-polyfill'
+import deepEqual from 'deep-equal'
 
 import config from '../config.js'
+import {getAccount} from '../store/store-api.js'
 import {openPopup} from '../store/open-popup.js'
 
 const saveAsTemplateMenu = 'saveAsTemplate'
@@ -85,13 +87,24 @@ async function setupContextMenus () {
     id: parentMenu,
   })
 
-  // TODO show when no logged in
-  browser.contextMenus.create({
-    contexts: ['all'],
-    title: 'Sign in to access your templates',
-    id: signInMenu,
-    parentId: parentMenu,
-  })
+  try {
+    // logged-in
+    await getAccount()
+    browser.contextMenus.create({
+      contexts: ['all'],
+      title: 'Open Briskine popup',
+      id: signInMenu,
+      parentId: parentMenu,
+    })
+  } catch {
+    // logged-out
+    browser.contextMenus.create({
+      contexts: ['all'],
+      title: 'Sign in to access your templates',
+      id: signInMenu,
+      parentId: parentMenu,
+    })
+  }
 
   browser.contextMenus.create({
     contexts: ['editable', 'selection'],
@@ -118,3 +131,29 @@ async function setupContextMenus () {
 }
 
 browser.runtime.onInstalled.addListener(setupContextMenus)
+
+const watchedKeys = [
+  'firebaseUser',
+  'templatesOwned',
+  'templatesShared',
+  'templatesEveryone',
+]
+
+function storageChange (changes = {}) {
+  const changedItems = Object.keys(changes)
+  changedItems.some((item) => {
+    if (watchedKeys.includes(item)) {
+      const oldValue = changes[item].oldValue
+      const newValue = changes[item].newValue
+      if (!deepEqual(oldValue, newValue)) {
+        setupContextMenus()
+        return true
+      }
+    }
+
+    return false
+  })
+}
+
+browser.storage.local.onChanged.addListener(storageChange)
+
