@@ -144,6 +144,7 @@ function refreshContentScripts () {
   // restart the content components if any of the settings changed
   store.getSettings()
     .then((settings) => {
+      // TODO replace with lodash.isequal
       const settingsChanged = !deepEqual(settings, settingsCache)
       if (settingsChanged) {
         destructor()

@@ -1,6 +1,7 @@
 /* globals MANIFEST */
 import browser from 'webextension-polyfill'
-import deepEqual from 'deep-equal'
+import isEqual from 'lodash.isequal'
+import debounce from 'lodash.debounce'
 
 import config from '../config.js'
 import {getAccount} from '../store/store-api.js'
@@ -132,6 +133,8 @@ async function setupContextMenus () {
 
 browser.runtime.onInstalled.addListener(setupContextMenus)
 
+const debouncedSetupContextMenus = debounce(setupContextMenus, 500)
+
 const watchedKeys = [
   'firebaseUser',
   'templatesOwned',
@@ -145,8 +148,8 @@ function storageChange (changes = {}) {
     if (watchedKeys.includes(item)) {
       const oldValue = changes[item].oldValue
       const newValue = changes[item].newValue
-      if (!deepEqual(oldValue, newValue)) {
-        setupContextMenus()
+      if (!isEqual(oldValue, newValue)) {
+        debouncedSetupContextMenus()
         return true
       }
     }
