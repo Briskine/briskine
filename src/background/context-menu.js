@@ -25,16 +25,20 @@ function showDialog () {
   }
 }
 
-async function saveAsTemplateAction (info) {
+async function executeScript (info = {}, tab = {}, func = () => {}) {
+  return browser.scripting.executeScript({
+    target: {
+      tabId: tab.id,
+      frameIds: [info.frameId],
+    },
+    func: func,
+  })
+}
+
+async function saveAsTemplateAction (info, tab) {
   let body = info.selectionText
   if (MANIFEST === '3') {
-    const activeTab = await browser.tabs.query({active: true})
-    const selection = await browser.scripting.executeScript({
-      target: {
-        tabId: activeTab[0].id,
-      },
-      func: getSelectedText,
-    })
+    const selection = await executeScript(info, tab, getSelectedText)
     // replace newlines with brs
     if (selection[0].result) {
       body = selection[0].result.replace(/(?:\r\n|\r|\n)/g, '<br>')
@@ -46,29 +50,21 @@ async function saveAsTemplateAction (info) {
   })
 }
 
-async function openDialogAction (info = {}) {
-  // TODO manifest v2
-  const activeTab = await browser.tabs.query({active: true})
-  await browser.scripting.executeScript({
-    target: {
-      tabId: activeTab[0].id,
-      frameIds: [info.frameId],
-    },
-    func: showDialog,
-  })
+async function openDialogAction (info, tab) {
+  await executeScript(info, tab, showDialog)
 }
 
 async function signInAction () {
   return openPopup()
 }
 
-async function clickContextMenu (info) {
+async function clickContextMenu (info = {}, tab = {}) {
   if (info.menuItemId === saveAsTemplateMenu) {
-    return saveAsTemplateAction(info)
+    return saveAsTemplateAction(info, tab)
   }
 
   if (info.menuItemId === openDialogMenu) {
-    return openDialogAction(info)
+    return openDialogAction(info, tab)
   }
 
   if (info.menuItemId === signInMenu) {
