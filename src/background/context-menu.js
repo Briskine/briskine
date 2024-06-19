@@ -74,10 +74,6 @@ async function clickContextMenu (info = {}, tab = {}) {
 }
 
 async function setupContextMenus () {
-  if (!browser.contextMenus) {
-    return
-  }
-
   await browser.contextMenus.removeAll()
 
   const parentMenu = 'briskineMenu'
@@ -132,11 +128,10 @@ async function setupContextMenus () {
     parentId: parentMenu,
     id: openDialogMenu,
   })
-
-  browser.contextMenus.onClicked.addListener(clickContextMenu)
 }
 
 browser.runtime.onInstalled.addListener(setupContextMenus)
+browser.contextMenus.onClicked.addListener(clickContextMenu)
 
 const debouncedSetupContextMenus = debounce(setupContextMenus, 500)
 
