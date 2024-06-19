@@ -5,6 +5,7 @@ import isEqual from 'lodash.isequal'
 
 import store from '../store/store-content.js'
 import config from '../config.js'
+import {isBlocklisted} from '../store/blocklist.js'
 
 import {setup as setupKeyboard, destroy as destroyKeyboard} from './keyboard.js'
 import {setup as setupBubble, destroy as destroyBubble} from './bubble/bubble.js'
@@ -30,26 +31,11 @@ function getParentUrl () {
   return url
 }
 
-const currentUrl = getParentUrl()
-
-const blacklistPrivate = [
-  '.briskine.com',
-]
-
 function init (settings) {
   setupStatus()
   setupDashboardEvents()
 
-  // create the full blacklist
-  // from the editable and private one
-  const fullBlacklist = blacklistPrivate.concat(settings.blacklist)
-
-  // check if url is in blacklist
-  const isBlacklisted = fullBlacklist.find((url) => {
-      return url && currentUrl.includes(url)
-    })
-
-  if (isBlacklisted) {
+  if (isBlocklisted(settings, getParentUrl())) {
     return false
   }
 
