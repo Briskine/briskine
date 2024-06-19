@@ -1,7 +1,7 @@
 // native custom elements are not supported in content scripts
 // https://bugs.chromium.org/p/chromium/issues/detail?id=390807
 import '@webcomponents/custom-elements'
-import deepEqual from 'deep-equal'
+import isEqual from 'lodash.isequal'
 
 import store from '../store/store-content.js'
 import config from '../config.js'
@@ -144,8 +144,7 @@ function refreshContentScripts () {
   // restart the content components if any of the settings changed
   store.getSettings()
     .then((settings) => {
-      // TODO replace with lodash.isequal
-      const settingsChanged = !deepEqual(settings, settingsCache)
+      const settingsChanged = !isEqual(settings, settingsCache)
       if (settingsChanged) {
         destructor()
         init(settings)
