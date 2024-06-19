@@ -3,7 +3,8 @@
  * Floating action button.
  */
 
-import {dialogShowEvent, dialogTagName} from '../dialog/dialog.js'
+import config from '../../config.js'
+import {dialogTagName} from '../dialog/dialog.js'
 
 import bubbleStyles from './bubble.css'
 import bubbleIcon from '../../icons/briskine-logo-small-bare.svg?raw'
@@ -53,7 +54,7 @@ customElements.define(
         e.stopPropagation()
 
         // trigger the event on the bubble, to position the dialog next to it.
-        e.target.dispatchEvent(new CustomEvent(dialogShowEvent, {
+        e.target.dispatchEvent(new CustomEvent(config.eventShowDialog, {
           bubbles: true,
           composed: true,
         }))

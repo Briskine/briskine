@@ -3,41 +3,51 @@ import isEqual from 'lodash.isequal'
 import debounce from 'lodash.debounce'
 
 import config from '../config.js'
-import {getAccount} from '../store/store-api.js'
+import {getAccount, getTemplates} from '../store/store-api.js'
 import {openPopup} from '../store/open-popup.js'
 
 const saveAsTemplateMenu = 'saveAsTemplate'
 const openDialogMenu = 'openDialog'
 const signInMenu = 'signIn'
+const parentMenu = 'briskineMenu'
+const separatorMenu = 'mainSeparator'
 
 function getSelectedText () {
   return window.getSelection()?.toString?.()
 }
 
-function showDialog () {
-  const dialogShowEvent = 'briskine-dialog'
+function showDialog (eventShowDialog) {
   if (document.activeElement) {
-    document.activeElement.dispatchEvent(new CustomEvent(dialogShowEvent, {
+    document.activeElement.dispatchEvent(new CustomEvent(eventShowDialog, {
       bubbles: true,
       composed: true,
     }))
   }
 }
 
-async function executeScript (info = {}, tab = {}, func = () => {}) {
+function insertTemplate (templateId) {
+  console.log('insert template', templateId)
+}
+
+async function executeScript ({ info = {}, tab = {}, args = [], func = () => {} }) {
   return browser.scripting.executeScript({
     target: {
       tabId: tab.id,
       frameIds: [info.frameId],
     },
     func: func,
+    args: args,
   })
 }
 
 async function saveAsTemplateAction (info, tab) {
   let body = info.selectionText
   try {
-    const selection = await executeScript(info, tab, getSelectedText)
+    const selection = await executeScript({
+      info: info,
+      tab: tab,
+      func: getSelectedText,
+    })
     // replace newlines with brs
     if (selection[0].result) {
       body = selection[0].result.replace(/(?:\r\n|\r|\n)/g, '<br>')
@@ -52,11 +62,25 @@ async function saveAsTemplateAction (info, tab) {
 }
 
 async function openDialogAction (info, tab) {
-  await executeScript(info, tab, showDialog)
+  await executeScript({
+    info: info,
+    tab: tab,
+    func: showDialog,
+    args: [config.eventShowDialog],
+  })
 }
 
 async function signInAction () {
   return openPopup()
+}
+
+function insertTemplateAction (info, tab, template) {
+  return executeScript({
+    info: info,
+    tab: tab,
+    func: insertTemplate,
+    args: [template],
+  })
 }
 
 async function clickContextMenu (info = {}, tab = {}) {
@@ -71,12 +95,16 @@ async function clickContextMenu (info = {}, tab = {}) {
   if (info.menuItemId === signInMenu) {
     return signInAction()
   }
+
+  // insert template
+  const templates = await getTemplates()
+  const selected = templates.find((t) => t.id === info.menuItemId)
+  return insertTemplateAction(info, tab, selected)
 }
 
 async function setupContextMenus () {
   await browser.contextMenus.removeAll()
 
-  const parentMenu = 'briskineMenu'
   browser.contextMenus.create({
     contexts: ['all'],
     title: 'Briskine',
@@ -111,7 +139,7 @@ async function setupContextMenus () {
     contexts: ['editable', 'selection'],
     type: 'separator',
     parentId: parentMenu,
-    id: 'mainSeparator',
+    id: separatorMenu,
   })
 
   browser.contextMenus.create({
@@ -127,6 +155,27 @@ async function setupContextMenus () {
     title: 'Open Briskine dialog',
     parentId: parentMenu,
     id: openDialogMenu,
+  })
+
+  const insertTemplatesMenu = 'insertTemplates'
+  browser.contextMenus.create({
+    contexts: ['editable'],
+    documentUrlPatterns: documentUrlPatterns,
+    title: 'Insert template',
+    parentId: parentMenu,
+    id: insertTemplatesMenu,
+  })
+
+  // TODO sort like dialog
+  const templates = await getTemplates()
+  templates.forEach((template) => {
+    browser.contextMenus.create({
+      contexts: ['editable'],
+      documentUrlPatterns: documentUrlPatterns,
+      title: `${template.title} ${template.shortcut ? `(${template.shortcut})` : ''}`,
+      parentId: insertTemplatesMenu,
+      id: template.id,
+    })
   })
 }
 
