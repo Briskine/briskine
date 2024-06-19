@@ -5,7 +5,7 @@ import isEqual from 'lodash.isequal'
 
 import store from '../store/store-content.js'
 import config from '../config.js'
-import {isBlocklisted} from '../store/blocklist.js'
+import {isBlocklisted} from './blocklist.js'
 
 import {setup as setupKeyboard, destroy as destroyKeyboard} from './keyboard.js'
 import {setup as setupBubble, destroy as destroyBubble} from './bubble/bubble.js'
