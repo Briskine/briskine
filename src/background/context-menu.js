@@ -12,8 +12,14 @@ const openDialogMenu = 'openDialog'
 const signInMenu = 'signIn'
 const parentMenu = 'briskineMenu'
 const separatorMenu = 'mainSeparator'
+const insertTemplatesMenu = 'insertTemplates'
 
-const templatesLimit = 20
+const templatesLimit = 30
+// context menus will show up on blocklisted sites as well
+const documentUrlPatterns = [
+  'https://*/*',
+  'http://*/*',
+]
 
 function getSelectedText () {
   return window.getSelection()?.toString?.()
@@ -111,27 +117,45 @@ async function clickContextMenu (info = {}, tab = {}) {
   return insertTemplateAction(info, tab, selected)
 }
 
-async function setupContextMenus () {
+async function createContextMenus (menus = []) {
   await browser.contextMenus.removeAll()
+  menus.forEach((m) => {
+    browser.contextMenus.create(m)
+  })
+}
 
-  browser.contextMenus.create({
+let existingMenus = []
+async function setupContextMenus () {
+  let signedIn = false
+  try {
+    await getAccount()
+    signedIn = true
+  } catch {
+    // logged-out
+  }
+
+  // same sorting and rendering settings like the dialog
+  const allTemplates = await getTemplates()
+  const extensionData = await getExtensionData()
+  const templates = sortTemplates(allTemplates, extensionData.dialogSort, extensionData.templatesLastUsed)
+
+  const menus = []
+
+  menus.push({
     contexts: ['all'],
     title: 'Briskine',
     id: parentMenu,
   })
 
-  try {
-    // logged-in
-    await getAccount()
-    browser.contextMenus.create({
+  if (signedIn) {
+    menus.push({
       contexts: ['all'],
       title: 'Open Briskine popup',
       id: signInMenu,
       parentId: parentMenu,
     })
-  } catch {
-    // logged-out
-    browser.contextMenus.create({
+  } else {
+    menus.push({
       contexts: ['all'],
       title: 'Sign in to access your templates',
       id: signInMenu,
@@ -139,27 +163,21 @@ async function setupContextMenus () {
     })
   }
 
-  // context menus will show up on blocklisted sites as well
-  const documentUrlPatterns = [
-    'https://*/*',
-    'http://*/*',
-  ]
-
-  browser.contextMenus.create({
+  menus.push({
     contexts: ['editable', 'selection'],
     type: 'separator',
     parentId: parentMenu,
     id: separatorMenu,
   })
 
-  browser.contextMenus.create({
+  menus.push({
     contexts: ['selection'],
     title: 'Save "%s" as a template',
     parentId: parentMenu,
     id: saveAsTemplateMenu,
   })
 
-  browser.contextMenus.create({
+  menus.push({
     contexts: ['editable'],
     documentUrlPatterns: documentUrlPatterns,
     title: 'Open Briskine dialog',
@@ -167,8 +185,7 @@ async function setupContextMenus () {
     id: openDialogMenu,
   })
 
-  const insertTemplatesMenu = 'insertTemplates'
-  browser.contextMenus.create({
+  menus.push({
     contexts: ['editable'],
     documentUrlPatterns: documentUrlPatterns,
     title: 'Insert template',
@@ -176,12 +193,8 @@ async function setupContextMenus () {
     id: insertTemplatesMenu,
   })
 
-  // same sorting and rendering settings like the dialog
-  const allTemplates = await getTemplates()
-  const extensionData = await getExtensionData()
-  const templates = sortTemplates(allTemplates, extensionData.dialogSort, extensionData.templatesLastUsed)
   templates.slice(0, templatesLimit).forEach((template) => {
-    browser.contextMenus.create({
+    menus.push({
       contexts: ['editable'],
       documentUrlPatterns: documentUrlPatterns,
       title: `${template.title}${template.shortcut ? ` (${template.shortcut})` : ''}`,
@@ -189,10 +202,14 @@ async function setupContextMenus () {
       id: template.id,
     })
   })
+
+  if (!isEqual(existingMenus, menus)) {
+    existingMenus = menus
+    await createContextMenus(menus)
+  }
 }
 
-const debouncedSetupContextMenus = debounce(setupContextMenus, 1000)
-browser.runtime.onInstalled.addListener(debouncedSetupContextMenus)
+browser.runtime.onInstalled.addListener(setupContextMenus)
 browser.contextMenus.onClicked.addListener(clickContextMenu)
 
 const watchedKeys = [
@@ -210,7 +227,7 @@ function storageChange (changes = {}) {
       const oldValue = changes[item].oldValue
       const newValue = changes[item].newValue
       if (!isEqual(oldValue, newValue)) {
-        debouncedSetupContextMenus()
+        setupContextMenus()
         return true
       }
     }
