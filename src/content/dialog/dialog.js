@@ -4,6 +4,7 @@ import {html, unsafeStatic} from 'lit-html/static.js'
 import {classMap} from 'lit-html/directives/class-map.js'
 import {unsafeSVG} from 'lit-html/directives/unsafe-svg.js'
 
+import config from '../../config.js'
 import store from '../../store/store-content.js'
 import {isContentEditable} from '../editors/editor-contenteditable.js'
 import {bubbleTagName} from '../bubble/bubble.js'
@@ -46,7 +47,6 @@ const dialogStyles = unsafeStatic(styles)
 
 let dialogInstance = null
 
-export const dialogShowEvent = 'briskine-dialog'
 export const dialogTagName = scopeElementName('b-dialog')
 
 const modalAttribute = 'modal'
@@ -591,12 +591,12 @@ export function setup (settings = {}) {
 
   settingsCache = settings
   keybind(settingsCache.dialog_shortcut, createAndShow)
-  window.addEventListener(dialogShowEvent, createAndShow)
+  window.addEventListener(config.eventShowDialog, createAndShow)
 }
 
 export function destroy () {
   keyunbind(settingsCache.dialog_shortcut, createAndShow)
-  window.removeEventListener(dialogShowEvent, createAndShow)
+  window.removeEventListener(config.eventShowDialog, createAndShow)
 
   if (dialogInstance) {
     dialogInstance.remove()

@@ -25,15 +25,6 @@ Build extension and compress it as a zip file. The built extension is in `/ext`,
 * Append `-- safari` to any command to build the Safari version. (eg. `npm run build -- safari`).
 * Append `-- manifest=2` to any command to build the Manifest v2 version. (eg. `npm run build -- manifest=2`).
 
-
-## Known issues
-
-1. Saving a template from the context menus doesn't work with multi-lines.
-
-   Relevant bug: https://code.google.com/p/chromium/issues/detail?id=116429
-
-   This means that when selecting a text to save as a template it will not preserve newlines.
-
 ## Help Center
 
 Visit our [Help Center](https://help.briskine.com/) for more details about templates, variables, and more.

@@ -1,10 +1,11 @@
 // native custom elements are not supported in content scripts
 // https://bugs.chromium.org/p/chromium/issues/detail?id=390807
 import '@webcomponents/custom-elements'
-import deepEqual from 'deep-equal'
+import isEqual from 'lodash.isequal'
 
 import store from '../store/store-content.js'
 import config from '../config.js'
+import {isBlocklisted} from './blocklist.js'
 
 import {setup as setupKeyboard, destroy as destroyKeyboard} from './keyboard.js'
 import {setup as setupBubble, destroy as destroyBubble} from './bubble/bubble.js'
@@ -14,6 +15,7 @@ import {destroy as destroySandbox} from './sandbox/sandbox-parent.js'
 import {setup as setupPage, destroy as destroyPage} from './page/page-parent.js'
 import {setup as setupAttachments, destroy as destroyAttachments} from './attachments/attachments.js'
 import {setup as setupDashboardEvents, destroy as destroyDashboardEvents} from './dashboard-events-client.js'
+import {setup as setupInsertEvent, destroy as destroyInsertEvent} from './insert-template-event.js'
 
 
 function getParentUrl () {
@@ -29,26 +31,11 @@ function getParentUrl () {
   return url
 }
 
-const currentUrl = getParentUrl()
-
-const blacklistPrivate = [
-  '.briskine.com',
-]
-
 function init (settings) {
   setupStatus()
   setupDashboardEvents()
 
-  // create the full blacklist
-  // from the editable and private one
-  const fullBlacklist = blacklistPrivate.concat(settings.blacklist)
-
-  // check if url is in blacklist
-  const isBlacklisted = fullBlacklist.find((url) => {
-      return url && currentUrl.includes(url)
-    })
-
-  if (isBlacklisted) {
+  if (isBlocklisted(settings, getParentUrl())) {
     return false
   }
 
@@ -60,6 +47,8 @@ function init (settings) {
 
   setupPage()
   setupAttachments()
+
+  setupInsertEvent()
 
   // update the content components if settings change
   settingsCache = Object.assign({}, settings)
@@ -122,6 +111,7 @@ function destructor () {
   destroyPage()
   destroyAttachments()
   destroyDashboardEvents()
+  destroyInsertEvent()
 
   settingsCache = {}
   destroyed = true
@@ -144,7 +134,7 @@ function refreshContentScripts () {
   // restart the content components if any of the settings changed
   store.getSettings()
     .then((settings) => {
-      const settingsChanged = !deepEqual(settings, settingsCache)
+      const settingsChanged = !isEqual(settings, settingsCache)
       if (settingsChanged) {
         destructor()
         init(settings)

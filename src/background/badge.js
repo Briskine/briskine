@@ -1,9 +1,11 @@
 /* globals MANIFEST */
 import browser from 'webextension-polyfill'
 
+import {getSignedInUser} from '../store/store-api.js'
+
 const actionNamespace = (MANIFEST === '2') ? 'browserAction' : 'action'
 
-export default function badgeUpdate(signedIn = false) {
+export function badgeUpdate(signedIn = false) {
   const suffix = signedIn ? '' : '-loggedout'
 
   const icons = {}
@@ -16,3 +18,15 @@ export default function badgeUpdate(signedIn = false) {
     path: icons
   })
 }
+
+async function setInitialBadge () {
+  try {
+    await getSignedInUser()
+  } catch {
+    badgeUpdate(false)
+  }
+}
+
+browser.runtime.onStartup.addListener(setInitialBadge)
+browser.runtime.onInstalled.addListener(setInitialBadge)
+

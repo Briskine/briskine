@@ -9,6 +9,8 @@ var Config = {
   eventDestroy: 'briskine-destroy',
   eventStatus: 'briskine-status',
   eventSandboxCompile: 'briskine-template-compile',
+  eventShowDialog: 'briskine-dialog',
+  eventInsertTemplate: 'briskine-insert-template',
 }
 
 // firebase staging

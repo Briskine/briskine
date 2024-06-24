@@ -51,7 +51,6 @@ function generateManifest (params = {}) {
     delete updatedManifestFile.background.service_worker
     updatedManifestFile.background.persistent = false
     updatedManifestFile.permissions = updatedManifestFile.permissions
-      .filter((p) => p !== 'scripting')
       .concat(updatedManifestFile.host_permissions)
     delete updatedManifestFile.host_permissions
     updatedManifestFile.web_accessible_resources = updatedManifestFile.web_accessible_resources[0].resources
