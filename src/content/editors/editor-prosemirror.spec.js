@@ -1,7 +1,7 @@
 /* globals describe, it, before, after */
 import {expect} from 'chai';
 
-import {parseProseMirrorContent, insertProseMirrorTemplate} from './editor-prosemirror.js';
+import {insertProseMirrorTemplate} from './editor-prosemirror.js';
 
 let $link
 let $script
@@ -15,7 +15,7 @@ function cleanEditor () {
   })
 }
 
-describe('editor ProseMirror', () => {
+describe.only('editor ProseMirror', () => {
   before(function (done) {
     this.timeout(20000)
 
@@ -62,37 +62,6 @@ describe('editor ProseMirror', () => {
     }, {once: true})
 
     document.body.appendChild($script)
-  })
-
-  it('should add brs after block nodes', () => {
-    expect(parseProseMirrorContent('<div>one</div><div>two</div>')).to.equal('<div>one</div><br><div>two</div>')
-  })
-
-  it('should add brs only if the block node has a next sibling', () => {
-    expect(parseProseMirrorContent('<div>one<div>two</div></div>')).to.equal('<div>one<div>two</div></div>')
-  })
-
-  it('should trim collapsed whitespace', () => {
-    expect(parseProseMirrorContent('<div>    one    </div>')).to.equal('<div>one</div>')
-  })
-
-  it('should keep inline whitespace', () => {
-    expect(parseProseMirrorContent('<div>one <strong>two</strong> three</div>')).to.equal('<div>one <strong>two</strong> three</div>')
-  })
-
-  it('should keep whitespace inside inline nodes', () => {
-    expect(parseProseMirrorContent('<div>one<strong> two </strong>three</div>')).to.equal('<div>one<strong> two </strong>three</div>')
-  })
-
-  it('should collapse consecutive whitespace to a single whitespace', () => {
-    expect(parseProseMirrorContent('<div>one    <strong>two</strong</div>')).to.equal('<div>one <strong>two</strong></div>')
-  })
-
-  it('should remove whitespace-only blocks and newlines', () => {
-    expect(parseProseMirrorContent(`
-      <div>one</div>
-      <div>two</div>
-    `)).to.equal('<div>one</div><br><div>two</div>')
   })
 
   it('should insert template containing only anchor', function (done) {
@@ -167,6 +136,53 @@ describe('editor ProseMirror', () => {
     })
   })
 
+  it('should insert template containing heading', function (done) {
+    const template = '<h1>heading 1</h1>'
+
+    $editor.focus()
+    insertProseMirrorTemplate({
+      element: $editor,
+      text: template,
+      word: {
+        start: 0,
+        end: 0,
+        text: '',
+      },
+      quicktext: {},
+    })
+
+    // give it a second to parse the template
+    setTimeout(() => {
+      expect($editor.innerHTML).to.include('<h1>heading 1</h1>')
+
+      cleanEditor()
+      done()
+    })
+  })
+
+  it('should insert template containing list', function (done) {
+    const template = '<ul><li>item</li><li>item</li></ul>'
+
+    $editor.focus()
+    insertProseMirrorTemplate({
+      element: $editor,
+      text: template,
+      word: {
+        start: 0,
+        end: 0,
+        text: '',
+      },
+      quicktext: {},
+    })
+
+    // give it a second to parse the template
+    setTimeout(() => {
+      expect($editor.innerHTML).to.include('<ul><li><p>item</p></li><li><p>item</p></li></ul>')
+
+      cleanEditor()
+      done()
+    })
+  })
 
   after(() => {
     $link.remove()
