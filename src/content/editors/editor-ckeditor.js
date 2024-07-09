@@ -22,9 +22,10 @@ export function insertCkEditorTemplate (params = {}) {
 }
 
 // runs in the page context
-export function insertCkEditorText (node, data = {}) {
+export function pageInsertCkEditorTemplate (data = {}) {
+  const element = document.activeElement
   // editor is the ckeditorInstance.
-  const editor = node.ckeditorInstance
+  const editor = element.ckeditorInstance
   if (!editor) {
     return
   }
