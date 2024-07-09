@@ -10,6 +10,7 @@
  */
 
 import htmlToText from '../utils/html-to-text.js'
+import {request} from '../page/page-parent.js'
 
 export function isPasteEditor (element) {
   return (
@@ -20,7 +21,19 @@ export function isPasteEditor (element) {
   )
 }
 
-export async function insertPasteTemplate (params = {}) {
+export function insertPasteTemplate (params = {}) {
+  return request('paste-insert', {
+    word: params.word,
+    quicktext: params.quicktext,
+    text: params.text,
+  })
+}
+
+// runs in page context,
+// otherwise Firefox won't trigger the event.
+export async function pageInsertPasteTemplate (params = {}) {
+  // we can't pass the element instance to the page script
+  const element = document.activeElement
   // select shortcut
   if (params.word.text === params.quicktext.shortcut) {
     const selection = window.getSelection()
@@ -31,21 +44,21 @@ export async function insertPasteTemplate (params = {}) {
     // required for correct caret placement at the end in JIRA
     range.deleteContents()
     // required for draft.js
-    params.element.dispatchEvent(new Event('input', {bubbles: true}))
+    element.dispatchEvent(new Event('input', {bubbles: true}))
 
     // give the editor a second to notice the change
     await new Promise((resolve) => setTimeout(resolve))
   }
 
   const plainText = htmlToText(params.text)
-  const clipboardData = new DataTransfer()
-  clipboardData.setData('text/html', params.text)
-  clipboardData.setData('text/plain', plainText)
   const e = new ClipboardEvent('paste', {
-    clipboardData: clipboardData,
+    clipboardData: new DataTransfer(),
     // required for draft.js
     bubbles: true,
   })
-  params.element.dispatchEvent(e)
-  clipboardData.clearData()
+  // set the data on the event, instead of a separate DataTransfer instance.
+  // otherwise Firefox sends an empty DataTransfer object.
+  e.clipboardData.setData('text/html', params.text)
+  e.clipboardData.setData('text/plain', plainText)
+  element.dispatchEvent(e)
 }
