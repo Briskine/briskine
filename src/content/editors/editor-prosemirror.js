@@ -4,6 +4,8 @@
  * Used by: JIRA
  */
 
+import htmlToText from '../utils/html-to-text.js'
+
 export function isProseMirror (element) {
   return element.classList.contains('ProseMirror')
 }
@@ -22,8 +24,10 @@ export async function insertProseMirrorTemplate (params = {}) {
     await new Promise((resolve) => setTimeout(resolve))
   }
 
+  const plainText = htmlToText(params.text)
   const dt = new DataTransfer()
   dt.setData('text/html', params.text)
+  dt.setData('text/plain', plainText)
   const e = new ClipboardEvent('paste', {
     clipboardData: dt,
   })
