@@ -95,4 +95,40 @@ describe('createContact', () => {
       last_name: 'Last'
     })
   })
+
+  it('should create contact from full name with suffix', () => {
+    expect(createContact({name: 'First Last, PhD'})).to.deep.equal({
+      email: '',
+      name: 'First Last',
+      first_name: 'First',
+      last_name: 'Last'
+    })
+  })
+
+  it('should create contact from full name with non standard suffix', () => {
+    expect(createContact({name: 'First Last, Ph.D'})).to.deep.equal({
+      email: '',
+      name: 'First Last',
+      first_name: 'First',
+      last_name: 'Last'
+    })
+  })
+
+  it('should create contact from full name with suffix and wrong space', () => {
+    expect(createContact({name: 'First Last ,Ph.D'})).to.deep.equal({
+      email: '',
+      name: 'First Last',
+      first_name: 'First',
+      last_name: 'Last'
+    })
+  })
+
+  it('should create contact from full name with multiple suffixes', () => {
+    expect(createContact({name: 'First Last, PhD, SLP'})).to.deep.equal({
+      email: '',
+      name: 'First Last',
+      first_name: 'First',
+      last_name: 'Last'
+    })
+  })
 })
