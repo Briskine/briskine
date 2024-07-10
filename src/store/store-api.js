@@ -26,7 +26,7 @@ import trigger from './store-trigger.js'
 import fuzzySearch from './search.js'
 import {badgeUpdate} from '../background/badge.js'
 import {getDefaultTemplates, defaultTags, defaultSettings} from './default-data.js'
-import plainText from './plain-text.js'
+import htmlToText from '../content/utils/html-to-text.js'
 import {getExtensionData, setExtensionData} from './extension-data.js'
 
 export {getExtensionData, setExtensionData} from './extension-data.js'
@@ -458,7 +458,7 @@ export function getTemplates () {
             const template = templates[id]
             return Object.assign(convertToNativeDates(template), {
               id: id,
-              _body_plaintext: plainText(template.body),
+              _body_plaintext: htmlToText(template.body),
             })
           })
         })

@@ -1,5 +1,5 @@
 /* globals ENV */
-import plainText from './plain-text.js'
+import htmlToText from '../content/utils/html-to-text.js'
 
 export const defaultSettings = {
   dialog_enabled: true,
@@ -174,7 +174,7 @@ export function getDefaultTemplates () {
       const id = String(index)
       return Object.assign({
         id: id,
-        _body_plaintext: plainText(template.body),
+        _body_plaintext: htmlToText(template.body),
       }, template)
     })
 }
