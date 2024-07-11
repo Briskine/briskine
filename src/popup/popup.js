@@ -1,5 +1,6 @@
 /* global REGISTER_DISABLED */
-import {html, render} from 'lit-html'
+import {customElement, noShadowDOM} from 'solid-element'
+import {createSignal, onMount, Show} from 'solid-js'
 
 import './popup.css'
 
@@ -8,55 +9,55 @@ import './popup-dashboard.js'
 import store from '../store/store-content.js'
 import setTheme from './popup-theme.js'
 
-customElements.define(
-  'popup-container',
-  class extends HTMLElement {
-    constructor() {
-      super()
-      setTheme()
+customElement('popup-container', {}, () => {
+  noShadowDOM()
 
-      store.setup()
+  const [loggedIn, setLoggedIn] = createSignal(null)
 
-      this.loggedIn = null
-      this.checkLogin()
-
-      store.on('login', () => {
-        // close window when the popup is opened as a new tab, not browser action.
-        // eg. opened from the dialog
-        const urlParams = new URLSearchParams(window.location.search)
-        if (urlParams.get('source') === 'tab') {
-            return window.close()
-        }
-
-        return this.checkLogin()
-      })
-      store.on('logout', () => {
-        this.checkLogin()
-      })
-    }
-    checkLogin() {
-      return store.getAccount()
-        .then(() => {
-          this.loggedIn = true
-          return
-        })
-        .catch(() => {
-          this.loggedIn = false
-          return
-        })
-        .then(() => {
-          return this.connectedCallback()
-        })
-    }
-    connectedCallback() {
-      render(html`
-        <div
-          class=${`popup-container ${REGISTER_DISABLED ? 'popup-register-disabled' : ''}`}
-          >
-            ${this.loggedIn === true ? html`<popup-dashboard></popup-dashboard>` : ''}
-            ${this.loggedIn === false ? html`<popup-login></popup-login>` : ''}
-        </div>
-      `, this)
-    }
+  function checkLogin() {
+    return store.getAccount()
+    .then(() => {
+      setLoggedIn(true)
+      return
+    })
+    .catch(() => {
+      setLoggedIn(false)
+      return
+    })
   }
-)
+
+  onMount(() => {
+    setTheme()
+    store.setup()
+    checkLogin()
+
+    store.on('login', () => {
+      // close window when the popup is opened as a new tab, not browser action.
+      // eg. opened from the dialog
+      const urlParams = new URLSearchParams(window.location.search)
+      if (urlParams.get('source') === 'tab') {
+          return window.close()
+      }
+
+      return checkLogin()
+    })
+
+    store.on('logout', () => {
+      checkLogin()
+    })
+  })
+
+
+  return (
+    <div
+      class={`popup-container ${REGISTER_DISABLED ? 'popup-register-disabled' : ''}`}
+      >
+        <Show when={loggedIn() === true}>
+          <popup-dashboard />
+        </Show>
+        <Show when={loggedIn() === false}>
+          <popup-login />
+        </Show>
+    </div>
+  )
+})

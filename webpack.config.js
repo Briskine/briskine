@@ -169,6 +169,16 @@ function extensionConfig (params = {}) {
           resourceQuery: /raw/,
           type: 'asset/source',
         },
+        {
+          test: /\.js$/,
+          exclude: /node_modules/,
+          use: {
+            loader: 'babel-loader',
+            options: {
+              presets: ['babel-preset-solid'],
+            }
+          }
+        },
       ]
     },
     devtool: params.mode === 'production' ? false : 'cheap-module-source-map',
