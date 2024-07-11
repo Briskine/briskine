@@ -1,9 +1,29 @@
 /* Parse texts
  */
 
-// split full name intro first and last
+// clean full name and remove suffixes.
+// mostly for LinkedIn where can have
+// "First Last, Phd" / "First Last, Ph.d" / "First Last, Phd, SLP"
+function cleanFullName (fullname = '') {
+  const clean = fullname ? fullname.trim() : ''
+  // if the name includes a comma
+  if (clean.includes(',')) {
+    const parts = clean.split(',')
+    const first = parts[0].trim()
+    // if the first part includes a space
+    if (first.includes(' ')) {
+      // we consider it the full name, and discard the suffix
+      return first
+    }
+  }
+
+  return clean
+}
+
+// split full name into first and last
+// supports "First Last" and "Last, First" formats
 function parseFullName (fullname = '') {
-  const clean = fullname.trim()
+  const clean = cleanFullName(fullname)
   let first = ''
   let last = ''
   if (clean.includes(',')) {

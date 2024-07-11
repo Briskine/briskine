@@ -1,7 +1,8 @@
 /* globals describe, it, before, after */
-import {expect} from 'chai';
+import {expect} from 'chai'
 
-import {parseProseMirrorContent, insertProseMirrorTemplate} from './editor-prosemirror.js';
+import {insertPasteTemplate} from './editor-paste.js'
+import {setup, destroy} from '../page/page-parent.js'
 
 let $link
 let $script
@@ -15,9 +16,12 @@ function cleanEditor () {
   })
 }
 
-describe('editor ProseMirror', () => {
+// paste is used for ProseMirror and Draft.js.
+// we're only testing ProseMirror here.
+describe('editor Paste', () => {
   before(function (done) {
     this.timeout(20000)
+    setup()
 
     $link = document.createElement('link')
     $link.rel = 'stylesheet'
@@ -64,42 +68,11 @@ describe('editor ProseMirror', () => {
     document.body.appendChild($script)
   })
 
-  it('should add brs after block nodes', () => {
-    expect(parseProseMirrorContent('<div>one</div><div>two</div>')).to.equal('<div>one</div><br><div>two</div>')
-  })
-
-  it('should add brs only if the block node has a next sibling', () => {
-    expect(parseProseMirrorContent('<div>one<div>two</div></div>')).to.equal('<div>one<div>two</div></div>')
-  })
-
-  it('should trim collapsed whitespace', () => {
-    expect(parseProseMirrorContent('<div>    one    </div>')).to.equal('<div>one</div>')
-  })
-
-  it('should keep inline whitespace', () => {
-    expect(parseProseMirrorContent('<div>one <strong>two</strong> three</div>')).to.equal('<div>one <strong>two</strong> three</div>')
-  })
-
-  it('should keep whitespace inside inline nodes', () => {
-    expect(parseProseMirrorContent('<div>one<strong> two </strong>three</div>')).to.equal('<div>one<strong> two </strong>three</div>')
-  })
-
-  it('should collapse consecutive whitespace to a single whitespace', () => {
-    expect(parseProseMirrorContent('<div>one    <strong>two</strong</div>')).to.equal('<div>one <strong>two</strong></div>')
-  })
-
-  it('should remove whitespace-only blocks and newlines', () => {
-    expect(parseProseMirrorContent(`
-      <div>one</div>
-      <div>two</div>
-    `)).to.equal('<div>one</div><br><div>two</div>')
-  })
-
   it('should insert template containing only anchor', function (done) {
     const template = '<a href="https://www.briskine.com">briskine-two</a>'
 
     $editor.focus()
-    insertProseMirrorTemplate({
+    insertPasteTemplate({
       element: $editor,
       text: template,
       word: {
@@ -123,7 +96,7 @@ describe('editor ProseMirror', () => {
     const template = '<div><a href="https://www.briskine.com">briskine-one</a></div>'
 
     $editor.focus()
-    insertProseMirrorTemplate({
+    insertPasteTemplate({
       element: $editor,
       text: template,
       word: {
@@ -147,7 +120,7 @@ describe('editor ProseMirror', () => {
     const template = '<div><div><p><a href="https://www.briskine.com">briskine-one</a></p></div></div>'
 
     $editor.focus()
-    insertProseMirrorTemplate({
+    insertPasteTemplate({
       element: $editor,
       text: template,
       word: {
@@ -167,10 +140,58 @@ describe('editor ProseMirror', () => {
     })
   })
 
+  it('should insert template containing heading', function (done) {
+    const template = '<h1>heading 1</h1>'
+
+    $editor.focus()
+    insertPasteTemplate({
+      element: $editor,
+      text: template,
+      word: {
+        start: 0,
+        end: 0,
+        text: '',
+      },
+      quicktext: {},
+    })
+
+    // give it a second to parse the template
+    setTimeout(() => {
+      expect($editor.innerHTML).to.include('<h1>heading 1</h1>')
+
+      cleanEditor()
+      done()
+    })
+  })
+
+  it('should insert template containing list', function (done) {
+    const template = '<ul><li>item</li></ul>'
+
+    $editor.focus()
+    insertPasteTemplate({
+      element: $editor,
+      text: template,
+      word: {
+        start: 0,
+        end: 0,
+        text: '',
+      },
+      quicktext: {},
+    })
+
+    // give it a second to parse the template
+    setTimeout(() => {
+      expect($editor.innerHTML).to.include('<ul><li><p>item</p></li></ul>')
+
+      cleanEditor()
+      done()
+    })
+  })
 
   after(() => {
     $link.remove()
     $script.remove()
     document.querySelector(`#${containerId}`).remove()
+    destroy()
   })
 })

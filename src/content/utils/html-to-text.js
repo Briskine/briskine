@@ -1,29 +1,36 @@
 /* Convert HTML to plain text
  */
 
-import {htmlToText as htmlToTextConverter} from 'html-to-text';
+import {compile} from 'html-to-text'
+
+const parserOptions = {
+  wordwrap: false,
+  selectors: [
+    {
+      selector: 'a',
+      options: {
+        hideLinkHrefIfSameAsText: true
+      }
+    }
+  ]
+}
+
+const htmlToTextConverter = compile(parserOptions)
 
 function isHtml (html) {
+  // always true in service worker
+  if (typeof document === 'undefined') {
+    return true
+  }
+
   const template = document.createElement('template')
   template.innerHTML = html
   return Boolean(template.content.children.length)
 }
 
-export default function htmlToText (html, options = {}) {
+export default function htmlToText (html) {
   if (isHtml(html)) {
-    const parserOptions = Object.assign({
-        wordwrap: false,
-        selectors: [
-          {
-            selector: 'a',
-            options: {
-              hideLinkHrefIfSameAsText: true
-            }
-          }
-        ]
-      }, options)
-
-    return htmlToTextConverter(html, parserOptions)
+    return htmlToTextConverter(html)
   }
 
   return html
