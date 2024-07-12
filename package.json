@@ -43,6 +43,7 @@
     "@babel/core": "^7.24.7",
     "@eslint/js": "^9.2.0",
     "@playwright/test": "^1.42.1",
+    "@svgr/webpack": "^8.1.0",
     "@types/node": "^20.11.27",
     "archiver": "^7.0.0",
     "babel-loader": "^9.1.3",

@@ -162,7 +162,7 @@ function extensionConfig (params = {}) {
           ]
         },
         {
-          test: /\.(png|svg)$/,
+          test: /\.(png)$/,
           type: 'asset'
         },
         {
@@ -178,6 +178,25 @@ function extensionConfig (params = {}) {
               presets: ['babel-preset-solid'],
             }
           }
+        },
+        {
+          test: /\.svg$/i,
+          use: [
+            {
+              loader: 'babel-loader',
+              options: {
+                presets: ['babel-preset-solid'],
+              },
+            },
+            {
+              loader: '@svgr/webpack',
+              options: {
+                babel: false,
+                jsxRuntime: 'automatic',
+                svgo: false,
+              },
+            }
+          ],
         },
       ]
     },
