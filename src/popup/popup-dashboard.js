@@ -1,4 +1,3 @@
-import {customElement, noShadowDOM} from 'solid-element'
 import {createSignal, createResource, Show, Switch, Match, onMount, For, createMemo} from 'solid-js'
 
 import config from '../config.js'
@@ -58,9 +57,7 @@ function MotivationalMessage (props) {
   )
 }
 
-customElement('popup-dashboard', {}, () => {
-  noShadowDOM()
-
+export default function PopupDashboard () {
   const [lastSync, setLastSync] = createSignal(Date.now())
   const [sync, setSync] = createSignal({})
   const [syncRequest] = createResource(sync, async ({timeout}) => {
@@ -276,4 +273,4 @@ customElement('popup-dashboard', {}, () => {
       </div>
     </div>
   )
-})
+}

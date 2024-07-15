@@ -1,12 +1,9 @@
-import {customElement, noShadowDOM} from 'solid-element'
 import {createSignal, createResource, Show} from 'solid-js'
 
 import config from '../config.js'
 import store from '../store/store-content.js'
 
-customElement('popup-login-form', {}, () => {
-  noShadowDOM()
-
+export default function PopupLoginForm ()  {
   const [credentials, setCredentials] = createSignal()
   const [signinRequest] = createResource(credentials, (data) => {
     return store.signin({
@@ -86,4 +83,4 @@ customElement('popup-login-form', {}, () => {
       </div>
     </form>
   )
-})
+}
