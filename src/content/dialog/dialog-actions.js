@@ -1,69 +1,55 @@
 /* globals VERSION */
-import {render, html} from 'lit-html'
-import {unsafeSVG} from 'lit-html/directives/unsafe-svg.js'
-import iconPlusSquare from 'bootstrap-icons/icons/plus-square.svg?raw'
-import iconArchive from 'bootstrap-icons/icons/archive.svg?raw'
-import iconQuestionCircle from 'bootstrap-icons/icons/question-circle.svg?raw'
-import iconTwitter from 'bootstrap-icons/icons/twitter.svg?raw'
-import iconGlobe from 'bootstrap-icons/icons/globe.svg?raw'
+import {customElement, noShadowDOM} from 'solid-element'
+import {For} from 'solid-js'
+
+import IconPlusSquare from 'bootstrap-icons/icons/plus-square.svg'
+import IconArchive from 'bootstrap-icons/icons/archive.svg'
+import IconQuestionCircle from 'bootstrap-icons/icons/question-circle.svg'
+import IconTwitter from 'bootstrap-icons/icons/twitter.svg'
+import IconGlobe from 'bootstrap-icons/icons/globe.svg'
 
 import config from '../../config.js'
-
-export default class DialogActions extends HTMLElement {
-  constructor () {
-    super()
-
-    this.render = () => {
-      render(template(), this)
-    }
-  }
-  connectedCallback () {
-    if (!this.isConnected) {
-      return
-    }
-
-    this.render()
-  }
-}
 
 const actions = [
   {
     title: 'New template',
-    icon: unsafeSVG(iconPlusSquare),
+    icon: IconPlusSquare,
     href: `${config.functionsUrl}/template/new`,
     class: 'dialog-safari-hide',
   },
   {
     title: 'Manage templates',
-    icon: unsafeSVG(iconArchive),
+    icon: IconArchive,
     href: config.functionsUrl,
     class: 'dialog-safari-hide',
   },
   {
     title: 'Help Center',
-    icon: unsafeSVG(iconQuestionCircle),
+    icon: IconQuestionCircle,
     href: config.helpUrl,
     class: 'dialog-safari-hide',
   },
   {
     title: 'Briskine website',
-    icon: unsafeSVG(iconGlobe),
+    icon: IconGlobe,
     href: config.websiteUrl,
     class: 'dialog-safari-hide',
   },
   {
     title: 'Follow us on Twitter',
-    icon: unsafeSVG(iconTwitter),
+    icon: IconTwitter,
     href: 'https://twitter.com/briskineapp',
   },
 ]
 
-function template () {
-  return html`
+customElement('dialog-actions', {}, () => {
+  noShadowDOM()
+
+  return (
     <div class="dialog-actions dialog-modal">
       <div class="dialog-modal-header">
         <h2 class="text-secondary">
-          Briskine v${VERSION}
+          Briskine v{VERSION}
         </h2>
 
         <button
@@ -71,25 +57,26 @@ function template () {
           class="btn btn-close"
           title="Close dialog actions"
           data-b-modal="actions"
-          >
-        </button>
+          />
       </div>
       <div class="dialog-modal-body">
         <ul class="list-group">
-          ${actions.map((action) => html`
-            <li>
-              <a
-                href=${action.href}
-                target="_blank"
-                class="btn d-flex flex-fill ${action.class}"
-                >
-                <span class="list-group-icon">${action.icon}</span>
-                <span>${action.title}</span>
-              </a>
-            </li>
-          `)}
+          <For each={actions}>
+            {(action) => (
+              <li>
+                <a
+                  href={action.href}
+                  target="_blank"
+                  class="btn d-flex flex-fill ${action.class}"
+                  >
+                  <span class="list-group-icon">{action.icon}</span>
+                  <span>{action.title}</span>
+                </a>
+              </li>
+            )}
+          </For>
         </ul>
       </div>
     </div>
-  `
-}
+  )
+})
