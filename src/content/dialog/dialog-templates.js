@@ -1,7 +1,7 @@
-import {customElement, noShadowDOM} from 'solid-element'
-import {Show, createMemo, For} from 'solid-js'
+import {Show, createMemo, For, mergeProps} from 'solid-js'
 
 import sortTemplates from '../../store/sort-templates.js'
+import DialogList from './dialog-list.js'
 
 function Loader () {
   return (
@@ -16,14 +16,14 @@ function Loader () {
   )
 }
 
-customElement('dialog-templates', {
-  loggedIn: null,
-  loading: null,
-  tags: [],
-  templates: [],
-  extensionData: {},
-}, (props) => {
-  noShadowDOM()
+export default function DialogTemplates (originalProps) {
+  const props = mergeProps({
+    loggedIn: null,
+    loading: null,
+    tags: [],
+    templates: [],
+    extensionData: {},
+  }, originalProps)
 
   const _templates = createMemo(() => {
     return sortTemplates(
@@ -40,7 +40,7 @@ customElement('dialog-templates', {
         fallback={(
           <Loader />
         )}>
-        <dialog-list
+        <DialogList
           loggedIn={props.loggedIn}
           list={_templates()}
           showTags={props.extensionData.dialogTags}
@@ -49,4 +49,4 @@ customElement('dialog-templates', {
       </Show>
     </>
   )
-})
+}

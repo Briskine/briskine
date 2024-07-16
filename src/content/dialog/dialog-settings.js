@@ -1,5 +1,4 @@
-import {customElement, noShadowDOM} from 'solid-element'
-import {For} from 'solid-js'
+import {For, mergeProps} from 'solid-js'
 
 import store from '../../store/store-content.js'
 import config from '../../config.js'
@@ -25,10 +24,10 @@ const sortOptions = [
   },
 ]
 
-customElement('dialog-settings', {
-  extensionData: {}
-}, (props) => {
-  noShadowDOM()
+export default function DialogSettings (originalProps) {
+  const props = mergeProps({
+    extensionData: {}
+  }, originalProps)
 
   function updateSettings (e) {
     let updatedData = {}
@@ -116,4 +115,4 @@ customElement('dialog-settings', {
       </div>
     </>
   )
-})
+}

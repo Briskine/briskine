@@ -1,14 +1,14 @@
-import {customElement, noShadowDOM} from 'solid-element'
+import {mergeProps} from 'solid-js'
 
 import IconGear from 'bootstrap-icons/icons/gear.svg'
 import IconBriskine from '../../icons/briskine-logo-small.svg'
 
 import styles from './dialog-footer.css'
 
-customElement('dialog-footer', {
-  shortcut: '',
-}, (props) => {
-  noShadowDOM()
+export default function DialogFooter (originalProps) {
+  const props = mergeProps({
+    shortcut: '',
+  }, originalProps)
 
   return (
     <div class="dialog-footer">
@@ -42,4 +42,4 @@ customElement('dialog-footer', {
       </div>
     </div>
   )
-})
+}

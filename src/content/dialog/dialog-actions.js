@@ -1,5 +1,4 @@
 /* globals VERSION */
-import {customElement, noShadowDOM} from 'solid-element'
 import {For} from 'solid-js'
 
 import IconPlusSquare from 'bootstrap-icons/icons/plus-square.svg'
@@ -42,9 +41,7 @@ const actions = [
   },
 ]
 
-customElement('dialog-actions', {}, () => {
-  noShadowDOM()
-
+export default function DialogActions () {
   return (
     <div class="dialog-actions dialog-modal">
       <div class="dialog-modal-header">
@@ -79,4 +76,4 @@ customElement('dialog-actions', {}, () => {
       </div>
     </div>
   )
-})
+}

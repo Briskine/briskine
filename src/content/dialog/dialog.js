@@ -12,11 +12,11 @@ import {keybind, keyunbind} from '../keybind.js'
 import IconSearch from 'bootstrap-icons/icons/search.svg'
 import IconBriskine from '../../icons/briskine-logo-small.svg'
 
-import './dialog-list.js'
-import './dialog-settings.js'
-import './dialog-actions.js'
-import './dialog-footer.js'
-import './dialog-templates.js'
+import DialogFooter from './dialog-footer.js'
+import DialogList from './dialog-list.js'
+import DialogTemplates from './dialog-templates.js'
+import DialogSettings from './dialog-settings.js'
+import DialogActions from './dialog-actions.js'
 
 import styles from './dialog.css'
 
@@ -475,40 +475,30 @@ customElement(dialogTagName, {
           </Show>
 
           <Show
-            when={searchQuery}
+            when={searchQuery()}
             fallback={(
-              <dialog-templates
+              <DialogTemplates
                 loggedIn={loggedIn()}
                 loading={loading()}
                 templates={templates()}
                 tags={tags()}
                 extensionData={extensionData()}
-                >
-              </dialog-templates>
+                />
             )}
             >
-            <dialog-list
+            <DialogList
               loggedIn={loggedIn()}
               list={searchResults()}
               showTags={extensionData().dialogTags}
               tags={tags()}
-              >
-            </dialog-list>
+              />
           </Show>
         </div>
 
         <Show when={loggedIn()}>
-          <dialog-footer
-            shortcut={props.keyboardShortcut}
-            >
-          </dialog-footer>
-
-          <dialog-settings
-            extensionData={extensionData()}
-            >
-          </dialog-settings>
-
-          <dialog-actions></dialog-actions>
+          <DialogFooter shortcut={props.keyboardShortcut} />
+          <DialogSettings extensionData={extensionData()} />
+          <DialogActions />
         </Show>
       </div>
     </>

@@ -1,5 +1,4 @@
-import {customElement, noShadowDOM} from 'solid-element'
-import {For, Show, createEffect, createSignal, onMount} from 'solid-js'
+import {For, Show, createEffect, createSignal, onMount, mergeProps} from 'solid-js'
 
 import IconArrowUpRightSquare from 'bootstrap-icons/icons/arrow-up-right-square.svg'
 
@@ -10,13 +9,13 @@ import styles from './dialog-list.css'
 const activeTemplateClass = 'active'
 // const templateRenderLimit = 42
 
-customElement('dialog-list', {
-  loggedIn: null,
-  showTags: true,
-  tags: [],
-  list: [],
-}, (props) => {
-  noShadowDOM()
+export default function DialogList (originalProps) {
+  const props = mergeProps({
+    loggedIn: null,
+    showTags: true,
+    tags: [],
+    list: [],
+  }, originalProps)
 
   let element = null
 
@@ -192,4 +191,4 @@ customElement('dialog-list', {
       </ul>
     </div>
   )
-})
+}
