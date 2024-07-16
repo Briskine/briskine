@@ -105,8 +105,6 @@ function extensionConfig (params = {}) {
       FIREBASE_CONFIG: JSON.stringify(params.firebaseConfig),
       VERSION: JSON.stringify(packageFile.version),
       MANIFEST: JSON.stringify(params.manifest),
-      // disable trusted types support in lit-html
-      'globalThis.trustedTypes': null,
     }),
     new MiniCssExtractPlugin({
       filename: '[name]/[name].css'
