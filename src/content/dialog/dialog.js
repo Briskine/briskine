@@ -15,11 +15,11 @@ import {batch, reactive} from '../component.js'
 import iconSearch from 'bootstrap-icons/icons/search.svg?raw'
 import iconBriskine from '../../icons/briskine-logo-small.svg?raw'
 
-import DialogFooter from './dialog-footer.js'
 import DialogTemplates from './dialog-templates.js'
 import DialogList from './dialog-list.js'
 import './dialog-settings.js'
 import './dialog-actions.js'
+import './dialog-footer.js'
 
 import styles from './dialog.css'
 
@@ -38,7 +38,6 @@ function scopedComponent (componentClass, name) {
 }
 
 const {component: templatesComponent} = scopedComponent(DialogTemplates, 'dialog-templates')
-const {component: footerComponent} = scopedComponent(DialogFooter, 'dialog-footer')
 const {component: listComponent, tagName: listComponentTagName} = scopedComponent(DialogList, 'dialog-list')
 
 const dialogStyles = unsafeStatic(styles)
@@ -543,16 +542,17 @@ function template({
       </div>
 
       ${loggedIn ? html`
-        <${footerComponent}
+        <dialog-footer
           .shortcut=${keyboardShortcut}
           >
-        </${footerComponent}>
+        </dialog-footer>
 
         <dialog-settings
           .extensionData=${extensionData}
-          />
+          >
+        </dialog-settings>
 
-        <dialog-actions />
+        <dialog-actions></dialog-actions>
       ` : ''}
     </div>
   `
