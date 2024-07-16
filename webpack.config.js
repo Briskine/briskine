@@ -181,6 +181,8 @@ function extensionConfig (params = {}) {
         },
         {
           test: /\.svg$/i,
+          // TODO remove when not using raw svgs anymore
+          resourceQuery: { not: [/raw/] },
           use: [
             {
               loader: 'babel-loader',
