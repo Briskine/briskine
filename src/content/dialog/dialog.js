@@ -15,11 +15,11 @@ import {batch, reactive} from '../component.js'
 import iconSearch from 'bootstrap-icons/icons/search.svg?raw'
 import iconBriskine from '../../icons/briskine-logo-small.svg?raw'
 
-import DialogTemplates from './dialog-templates.js'
-import DialogList from './dialog-list.js'
+import './dialog-list.js'
 import './dialog-settings.js'
 import './dialog-actions.js'
 import './dialog-footer.js'
+import './dialog-templates.js'
 
 import styles from './dialog.css'
 
@@ -36,9 +36,6 @@ function scopedComponent (componentClass, name) {
     tagName: tagName,
   }
 }
-
-const {component: templatesComponent} = scopedComponent(DialogTemplates, 'dialog-templates')
-const {component: listComponent, tagName: listComponentTagName} = scopedComponent(DialogList, 'dialog-list')
 
 const dialogStyles = unsafeStatic(styles)
 
@@ -519,24 +516,23 @@ function template({
 
         ${searchQuery
           ? html`
-            <${listComponent}
+            <dialog-list
               .loggedIn=${loggedIn}
               .list=${searchResults}
               .showTags=${extensionData.dialogTags}
               .tags=${tags}
               >
-            </${listComponent}>
+            </dialog-list>
           `
           : html`
-            <${templatesComponent}
+            <dialog-templates
               .loggedIn=${loggedIn}
               .loading=${loading}
               .templates=${templates}
               .tags=${tags}
               .extensionData=${extensionData}
-              .listComponentTagName=${listComponentTagName}
               >
-            </${templatesComponent}>
+            </dialog-templates>
           `
         }
       </div>
