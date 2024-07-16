@@ -169,7 +169,7 @@ customElement(dialogTagName, {
     })
 
     element.setAttribute(dialogVisibleAttr, true)
-    const position = getDialogPosition(target, this, placement)
+    const position = getDialogPosition(target, element, placement)
     element.style.top = `${position.top}px`
     element.style.left = `${position.left}px`
 
