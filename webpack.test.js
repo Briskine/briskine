@@ -32,6 +32,36 @@ export default {
           }
         ]
       },
+      {
+        test: /\.js$/,
+        exclude: /node_modules/,
+        use: {
+          loader: 'babel-loader',
+          options: {
+            presets: ['babel-preset-solid'],
+          }
+        }
+      },
+      {
+        test: /\.svg$/i,
+        resourceQuery: { not: [/raw/] },
+        use: [
+          {
+            loader: 'babel-loader',
+            options: {
+              presets: ['babel-preset-solid'],
+            },
+          },
+          {
+            loader: '@svgr/webpack',
+            options: {
+              babel: false,
+              jsxRuntime: 'automatic',
+              svgo: false,
+            },
+          }
+        ],
+      },
     ]
   },
   plugins: [
