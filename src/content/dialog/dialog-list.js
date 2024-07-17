@@ -1,4 +1,4 @@
-import {For, Show, createEffect, createSignal, onMount, mergeProps} from 'solid-js'
+import {For, Show, createEffect, createSignal, onMount, mergeProps, createMemo} from 'solid-js'
 
 import IconArrowUpRightSquare from 'bootstrap-icons/icons/arrow-up-right-square.svg'
 
@@ -7,7 +7,7 @@ import config from '../../config.js'
 import styles from './dialog-list.css'
 
 const activeTemplateClass = 'active'
-// const templateRenderLimit = 42
+const templateRenderLimit = 42
 
 export default function DialogList (originalProps) {
   const props = mergeProps({
@@ -21,18 +21,19 @@ export default function DialogList (originalProps) {
 
   const [active, setActive] = createSignal()
 
-  // TODO use a memo to limit number of templates rendered?
-  // render less items, for performance
-  // props.list = props.list.slice(0, templateRenderLimit)
+  // render only part of the list
+  const shortlist = createMemo(() => {
+    return props.list.slice(0, templateRenderLimit)
+  })
 
   createEffect(() => {
     // select first item when list changes,
     // and current item not in list.
     if (
-      props.list.length
-      && !props.list.find((item) => item.id === active)
+      shortlist().length
+      && !shortlist().find((item) => item.id === active)
     ) {
-      return setActive(props.list[0].id)
+      return setActive(shortlist()[0].id)
     }
 
     return active()
@@ -78,18 +79,18 @@ export default function DialogList (originalProps) {
   onMount(() => {
     // keyboard navigation
     element.addEventListener('b-dialog-select', (e) => {
-      const index = props.list.findIndex((t) => t.id === active())
+      const index = shortlist().findIndex((t) => t.id === active())
       const move = e.detail
       let nextIndex
 
-      if (move === 'next' && index !== props.list.length - 1) {
+      if (move === 'next' && index !== shortlist().length - 1) {
         nextIndex = index + 1
       } else if (move === 'previous' && index !== 0) {
         nextIndex = index - 1
       }
 
-      if (typeof nextIndex !== 'undefined' && props.list[nextIndex]) {
-        const newActive = props.list[nextIndex].id
+      if (typeof nextIndex !== 'undefined' && shortlist()[nextIndex]) {
+        const newActive = shortlist()[nextIndex].id
         setActive(newActive)
         scrollToActive(newActive)
       }
@@ -105,8 +106,8 @@ export default function DialogList (originalProps) {
 
     // select first item
     element.addEventListener('b-dialog-select-first', () => {
-      if (props.list.length) {
-        const newActive = props.list[0].id
+      if (shortlist().length) {
+        const newActive = shortlist()[0].id
         setActive(newActive)
         scrollToActive(newActive)
       }
@@ -123,14 +124,14 @@ export default function DialogList (originalProps) {
       <style>{styles}</style>
       <ul>
         <Show
-          when={props.list.length}
+          when={shortlist().length}
           fallback={(
             <div class="list-no-results">
               No templates found
             </div>
           )}
           >
-          <For each={props.list}>
+          <For each={shortlist()}>
             {(t) => (
               <li
                 data-id={t.id}
