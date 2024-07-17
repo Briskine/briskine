@@ -107,7 +107,7 @@ function Dialog (originalProps) {
     focusNode = null
     focusOffset = 0
 
-    if (isTextfield(element)) {
+    if (isTextfield(node)) {
       // input, textarea
       target = getEditableCaret(node)
       removeCaretParent = true
