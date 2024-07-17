@@ -45,18 +45,20 @@ export default function DialogList (originalProps) {
     }
   }
 
+  let lastX = 0
+  let lastY = 0
   function onMouseOver (e) {
+    if (e.screenX === lastX && e.screenY === lastY) {
+      return
+    }
+
+    lastX = e.screenX
+    lastY = e.screenY
+
     // hover templates
     const container = e.target.closest('[data-id]')
     if (container) {
       setActive(container.dataset.id)
-
-      // add the title attribute only when hovering the template.
-      // speeds up rendering the template list.
-      const template = props.list.find((t) => t.id === container.dataset.id)
-      if (template) {
-        container.title = template._body_plaintext
-      }
     }
   }
 
@@ -80,9 +82,9 @@ export default function DialogList (originalProps) {
       const move = e.detail
       let nextIndex
 
-      if (move === 'next') {
+      if (move === 'next' && index !== props.list.length - 1) {
         nextIndex = index + 1
-      } else if (move === 'previous') {
+      } else if (move === 'previous' && index !== 0) {
         nextIndex = index - 1
       }
 
@@ -132,6 +134,7 @@ export default function DialogList (originalProps) {
             {(t) => (
               <li
                 data-id={t.id}
+                title={t._body_plaintext}
                 classList={{
                   'dialog-list-item': true,
                   [activeTemplateClass]: t.id === active(),

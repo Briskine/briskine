@@ -267,8 +267,6 @@ function Dialog (originalProps) {
   }
 
   function handleSearchFieldShortcuts (e) {
-    // TODO keyboard navigation is flaky, doesn't work correctly
-
     // only handle events from the search field
     const target = e.composedPath()[0]
     const $list = element.querySelector(listSelector)
