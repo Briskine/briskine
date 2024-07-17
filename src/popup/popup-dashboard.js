@@ -109,7 +109,12 @@ export default function PopupDashboard () {
   }
 
   const isFree = createMemo(() => {
-    return customers()[user().customer]?.subscription?.plan === 'free'
+    const plan = customers()[user().customer]?.subscription?.plan
+    if (typeof plan === 'undefined') {
+      return null
+    }
+
+    return plan === 'free'
   }, null)
 
   function switchTeam (e) {
