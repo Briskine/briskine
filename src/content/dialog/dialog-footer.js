@@ -27,7 +27,7 @@ export default function DialogFooter (originalProps) {
 
         <div
           class="dialog-shortcut btn text-secondary"
-          title="Press ${shortcut} in any text field to open the Briskine dialog"
+          title={`Press ${props.shortcut} in any text field to open the Briskine dialog`}
           >
           {props.shortcut}
         </div>

@@ -1,6 +1,6 @@
 /* global REGISTER_DISABLED */
-import {customElement} from 'solid-element'
-import {Show, onMount, onCleanup, createSignal, createEffect} from 'solid-js'
+import {Show, onMount, onCleanup, createSignal, createEffect, mergeProps} from 'solid-js'
+import {render} from 'solid-js/web'
 
 import config from '../../config.js'
 import store from '../../store/store-content.js'
@@ -29,15 +29,18 @@ let dialogInstance = null
 export const dialogTagName = scopeElementName('b-dialog')
 
 const modalAttribute = 'modal'
-const dialogVisibleAttr = 'visible'
 const openAnimationClass = 'b-dialog-open-animation'
 const listSelector = '.dialog-list'
 
-customElement(dialogTagName, {
-  keyboardShortcut: '',
-  visible: false,
-}, (props, {element}) => {
+function Dialog (originalProps) {
+  const props = mergeProps({
+    keyboardShortcut: '',
+    visible: false,
+  }, originalProps)
 
+  let element
+
+  const [visible, setVisible] = createSignal(false)
   const [loggedIn, setLoggedIn] = createSignal()
   const [loading, setLoading] = createSignal()
   const [templates, setTemplates] = createSignal([])
@@ -57,11 +60,12 @@ customElement(dialogTagName, {
   let focusOffset = 0
 
   createEffect(() => {
-    if (props.visible === true) {
+    if (visible() === true) {
       element.classList.add(openAnimationClass)
 
       // activate the first item in the list
-      const $list = element.shadowRoot.querySelector(listSelector)
+      // TODO sometimes doesn't work correctly
+      const $list = element.querySelector(listSelector)
       if ($list) {
         $list.dispatchEvent(new Event('b-dialog-select-first'))
       }
@@ -83,7 +87,7 @@ customElement(dialogTagName, {
 
   function show (e) {
     // dialog is already visible
-    if (element.hasAttribute(dialogVisibleAttr)) {
+    if (visible()) {
       return
     }
 
@@ -168,7 +172,7 @@ customElement(dialogTagName, {
       element: editor
     })
 
-    element.setAttribute(dialogVisibleAttr, true)
+    setVisible(true)
     const position = getDialogPosition(target, element, placement)
     element.style.top = `${position.top}px`
     element.style.left = `${position.left}px`
@@ -190,8 +194,6 @@ customElement(dialogTagName, {
     }
   }
 
-  element.show = show
-
   function insertTemplate (id = '') {
     restoreSelection()
 
@@ -205,11 +207,11 @@ customElement(dialogTagName, {
     })
 
     // close dialog
-    element.removeAttribute(dialogVisibleAttr)
+    setVisible(false)
   }
 
   function stopPropagation (e, target) {
-    if (target && (element === target || element.shadowRoot.contains(target))) {
+    if (target && (element === target || element.contains(target))) {
       e.stopPropagation()
     }
   }
@@ -252,25 +254,26 @@ customElement(dialogTagName, {
     .catch(() => {
       return false
     })
+    // eslint-disable-next-line solid/reactivity
     .then((status) => {
       setLoggedIn(status)
       setLoading(true)
 
       // only start loading data if the dialog is visible
-      if (element.hasAttribute(dialogVisibleAttr)) {
+      if (visible()) {
         loadData()
       }
     })
   }
 
   function handleSearchFieldShortcuts (e) {
+    // TODO keyboard navigation is flaky, doesn't work correctly
+
     // only handle events from the search field
-    const composedPath = e.composedPath()
-    const composedTarget = composedPath[0]
-    const $list = element.shadowRoot.querySelector(listSelector)
+    const target = e.composedPath()[0]
+    const $list = element.querySelector(listSelector)
     if (
-      e.target !== element ||
-      composedTarget !== searchField ||
+      target !== searchField ||
       !['Enter', 'ArrowDown', 'ArrowUp'].includes(e.key) ||
       !$list
     ) {
@@ -315,24 +318,24 @@ customElement(dialogTagName, {
   function hideOnClick (e) {
     if (
       // clicking inside the dialog
-      !element.contains(e.target) &&
-      element.hasAttribute(dialogVisibleAttr) &&
+      !element.contains(e.composedPath()[0])
+      && visible()
       // clicking the bubble
-      e.target.tagName.toLowerCase() !== bubbleTagName
+      && e.target.tagName.toLowerCase() !== bubbleTagName
     ) {
-      element.removeAttribute(dialogVisibleAttr)
+      setVisible(false)
     }
   }
 
   function hideOnEsc (e) {
-    if (e.key === 'Escape' && element.hasAttribute(dialogVisibleAttr)) {
+    if (e.key === 'Escape' && visible()) {
       e.stopPropagation()
       // prevent triggering the keyup event on the page.
       // causes some websites (eg. linkedin) to also close the underlying modal
       // when closing our dialog.
       window.addEventListener('keyup', (e) => { e.stopPropagation() }, { capture: true, once: true })
 
-      element.removeAttribute(dialogVisibleAttr)
+      setVisible(false)
       restoreSelection()
     }
   }
@@ -348,7 +351,7 @@ customElement(dialogTagName, {
     store.on('extension-data-updated', extensionDataUpdated)
 
     let searchDebouncer
-    searchField = element.shadowRoot.querySelector('input[type=search]')
+    searchField = element.querySelector('input[type=search]')
 
     // search for templates
     searchField.addEventListener('input', (e) => {
@@ -374,15 +377,15 @@ customElement(dialogTagName, {
     window.addEventListener('keydown', handleSearchFieldShortcuts, true)
     element.addEventListener('b-dialog-insert', (e) => {
       insertTemplate(e.detail)
+      e.stopImmediatePropagation()
     })
 
     element.addEventListener('click', (e) => {
-      const composedPath = e.composedPath()
-      const composedTarget = composedPath[0]
+      const target = e.target
 
       // open and close modals
       const btnModalAttribute = 'data-b-modal'
-      const modalBtn = composedTarget.closest(`[${btnModalAttribute}]`)
+      const modalBtn = target.closest(`[${btnModalAttribute}]`)
       if (modalBtn) {
         const modal = modalBtn.getAttribute(btnModalAttribute)
         if (element.getAttribute(modalAttribute) !== modal) {
@@ -396,13 +399,15 @@ customElement(dialogTagName, {
             searchField.focus()
           }
         }
+
+        return
       }
 
       // login button
-      if (composedTarget.closest('.dialog-login-btn')) {
+      if (target.closest('.dialog-login-btn')) {
         e.preventDefault()
         store.openPopup()
-        element.removeAttribute(dialogVisibleAttr)
+        setVisible(false)
       }
     })
 
@@ -422,6 +427,9 @@ customElement(dialogTagName, {
     // prevent the page from handling the focusout event when switching focus to our dialog.
     window.addEventListener('focusout', stopRelatedTargetPropagation, true)
     window.addEventListener('focusin', stopTargetPropagation, true)
+
+    // expose show on element
+    element.show = show
   })
 
   onCleanup(() => {
@@ -444,7 +452,13 @@ customElement(dialogTagName, {
   })
 
   return (
-    <>
+    <div
+      ref={element}
+      class="briskine-dialog"
+      classList={{
+        'briskine-dialog-visible': visible(),
+      }}
+      >
       <style>{styles}</style>
       <div
         classList={{
@@ -468,8 +482,7 @@ customElement(dialogTagName, {
                 <IconBriskine />
               </div>
               <div>
-                <a href="" class="dialog-login-btn">Sign in</a>
-                to Briskine to access your templates.
+                <a href="" class="dialog-login-btn">Sign in</a> to Briskine to access your templates.
               </div>
             </div>
           </Show>
@@ -501,8 +514,30 @@ customElement(dialogTagName, {
           <DialogActions />
         </Show>
       </div>
-    </>
+    </div>
   )
+}
+
+customElements.define(dialogTagName, class extends HTMLElement {
+  constructor () {
+    super()
+
+    this.keyboardShortcut = ''
+
+    this.show = function (e) {
+      this.shadowRoot.querySelector('.briskine-dialog').show(e)
+    }
+  }
+  connectedCallback () {
+    if (!this.isConnected) {
+      return
+    }
+
+    this.attachShadow({mode: 'open'})
+    render(() => (
+      <Dialog keyboardShortcut={this.keyboardShortcut} />
+    ), this.shadowRoot)
+  }
 })
 
 // is input or textarea

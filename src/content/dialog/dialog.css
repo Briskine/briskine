@@ -1,12 +1,12 @@
 /* dialog styles
  */
 
-:host,
-:host * {
+.briskine-dialog,
+.briskine-dialog * {
   box-sizing: border-box;
 }
 
-:host {
+.briskine-dialog {
   /* reset inherited html and body styles
    */
   all: initial;
@@ -51,12 +51,12 @@
   display: none;
 }
 
-:host([visible]) {
+.briskine-dialog-visible {
   display: block;
   opacity: 0;
 }
 
-:host(.b-dialog-open-animation) {
+.briskine-dialog.b-dialog-open-animation {
   animation: .1s open .1s linear 1 forwards;
 }
 
@@ -77,7 +77,7 @@
 /* disable the opening animation
  */
 @media (prefers-reduced-motion) {
-  :host(.b-dialog-open-animation) {
+  .briskine-dialog.b-dialog-open-animation {
     animation-duration: 0s;
   }
 }

@@ -96,7 +96,7 @@ export default function DialogList (originalProps) {
     // insert with enter
     element.addEventListener('b-dialog-select-active', () => {
       element.dispatchEvent(new CustomEvent('b-dialog-insert', {
-        composed: true,
+        bubbles: true,
         detail: active(),
       }))
     })

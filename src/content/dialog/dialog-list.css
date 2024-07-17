@@ -62,7 +62,7 @@
   visibility: hidden;
 }
 
-:host li.active .edit-container {
+.dialog-list-item.active .edit-container {
   visibility: visible;
 }
 
