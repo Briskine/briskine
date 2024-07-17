@@ -523,6 +523,7 @@ customElements.define(dialogTagName, class extends HTMLElement {
     super()
 
     this.keyboardShortcut = ''
+    this.disposer = () => {}
 
     this.show = function (e) {
       this.shadowRoot.querySelector('.briskine-dialog').show(e)
@@ -534,9 +535,12 @@ customElements.define(dialogTagName, class extends HTMLElement {
     }
 
     this.attachShadow({mode: 'open'})
-    render(() => (
+    this.disposer = render(() => (
       <Dialog keyboardShortcut={this.keyboardShortcut} />
     ), this.shadowRoot)
+  }
+  disconnectedCallback () {
+    this.disposer()
   }
 })
 
