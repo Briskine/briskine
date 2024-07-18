@@ -62,13 +62,13 @@ function Dialog (originalProps) {
 
   createEffect(() => {
     if (visible() === true) {
-      element.classList.add(openAnimationClass)
-
       // activate the first item in the list
       const $list = element.querySelector(listSelector)
       if ($list) {
         $list.dispatchEvent(new Event('b-dialog-select-first'))
       }
+
+      element.classList.add(openAnimationClass)
     } else {
       element.classList.remove(openAnimationClass)
 
