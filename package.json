@@ -80,7 +80,6 @@
     "lodash.isequal": "^4.5.0",
     "moment": "^2.29.1",
     "mousetrap": "github:briskine/mousetrap#master",
-    "solid-element": "^1.8.1",
     "solid-js": "^1.8.18",
     "webextension-polyfill": "^0.12.0"
   }
