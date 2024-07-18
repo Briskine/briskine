@@ -64,7 +64,10 @@ export default function DialogActions () {
                 <a
                   href={action.href}
                   target="_blank"
-                  class="btn d-flex flex-fill ${action.class}"
+                  class="btn d-flex flex-fill"
+                  classList={{
+                    [action.class]: true,
+                  }}
                   >
                   <span class="list-group-icon">{action.icon}</span>
                   <span>{action.title}</span>
