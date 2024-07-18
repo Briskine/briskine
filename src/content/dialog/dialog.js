@@ -31,6 +31,7 @@ export const dialogTagName = scopeElementName('b-dialog')
 const modalAttribute = 'modal'
 const openAnimationClass = 'b-dialog-open-animation'
 const listSelector = '.dialog-list'
+const dialogSelector = '.briskine-dialog'
 
 function Dialog (originalProps) {
   const props = mergeProps({
@@ -523,7 +524,7 @@ customElements.define(dialogTagName, class extends HTMLElement {
     this.disposer = () => {}
 
     this.show = function (e) {
-      this.shadowRoot.querySelector('.briskine-dialog').show(e)
+      this.shadowRoot.querySelector(dialogSelector).show(e)
     }
   }
   connectedCallback () {
