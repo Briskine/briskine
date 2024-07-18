@@ -64,7 +64,6 @@ function Dialog (originalProps) {
       element.classList.add(openAnimationClass)
 
       // activate the first item in the list
-      // TODO sometimes doesn't work correctly
       const $list = element.querySelector(listSelector)
       if ($list) {
         $list.dispatchEvent(new Event('b-dialog-select-first'))
