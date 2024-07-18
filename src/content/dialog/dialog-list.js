@@ -4,8 +4,6 @@ import IconArrowUpRightSquare from 'bootstrap-icons/icons/arrow-up-right-square.
 
 import config from '../../config.js'
 
-import styles from './dialog-list.css'
-
 const activeTemplateClass = 'active'
 const templateRenderLimit = 42
 
@@ -121,7 +119,6 @@ export default function DialogList (originalProps) {
       on:mouseover={onMouseOver}
       onClick={onClick}
       >
-      <style>{styles}</style>
       <ul>
         <Show
           when={shortlist().length}

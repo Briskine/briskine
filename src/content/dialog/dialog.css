@@ -1,6 +1,10 @@
 /* dialog styles
  */
 
+@import url("./dialog-footer.css");
+@import url("./dialog-list.css");
+@import url("./dialog-settings.css");
+
 .briskine-dialog,
 .briskine-dialog * {
   box-sizing: border-box;

@@ -3,8 +3,6 @@ import {mergeProps} from 'solid-js'
 import IconGear from 'bootstrap-icons/icons/gear.svg'
 import IconBriskine from '../../icons/briskine-logo-small.svg'
 
-import styles from './dialog-footer.css'
-
 export default function DialogFooter (originalProps) {
   const props = mergeProps({
     shortcut: '',
@@ -12,7 +10,6 @@ export default function DialogFooter (originalProps) {
 
   return (
     <div class="dialog-footer">
-      <style>{styles}</style>
       <div class="d-flex">
         <div class="d-flex flex-fill">
           <button
