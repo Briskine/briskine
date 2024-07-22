@@ -1,8 +1,6 @@
 /* global REGISTER_DISABLED */
-import {render} from 'lit-html'
-import {html, unsafeStatic} from 'lit-html/static.js'
-import {classMap} from 'lit-html/directives/class-map.js'
-import {unsafeSVG} from 'lit-html/directives/unsafe-svg.js'
+import {Show, onMount, onCleanup, createSignal, createEffect, mergeProps} from 'solid-js'
+import {render} from 'solid-js/web'
 
 import config from '../../config.js'
 import store from '../../store/store-content.js'
@@ -11,14 +9,13 @@ import {bubbleTagName} from '../bubble/bubble.js'
 import {getEditableCaret, getContentEditableCaret, getDialogPosition} from './dialog-position.js'
 import {autocomplete, getSelectedWord, getSelection, getEventTarget} from '../autocomplete.js'
 import {keybind, keyunbind} from '../keybind.js'
-import {batch, reactive} from '../component.js'
-import iconSearch from 'bootstrap-icons/icons/search.svg?raw'
-import iconBriskine from '../../icons/briskine-logo-small.svg?raw'
+import IconSearch from 'bootstrap-icons/icons/search.svg'
+import IconBriskine from '../../icons/briskine-logo-small.svg'
 
 import DialogFooter from './dialog-footer.js'
-import DialogSettings from './dialog-settings.js'
-import DialogTemplates from './dialog-templates.js'
 import DialogList from './dialog-list.js'
+import DialogTemplates from './dialog-templates.js'
+import DialogSettings from './dialog-settings.js'
 import DialogActions from './dialog-actions.js'
 
 import styles from './dialog.css'
@@ -27,541 +24,523 @@ function scopeElementName (name = '') {
   return `${name.toLowerCase()}-${Date.now().toString(36)}`
 }
 
-function scopedComponent (componentClass, name) {
-  const tagName = scopeElementName(`b-${name}`)
-  customElements.define(tagName, componentClass)
-
-  return {
-    component: unsafeStatic(tagName),
-    tagName: tagName,
-  }
-}
-
-const {component: templatesComponent} = scopedComponent(DialogTemplates, 'dialog-templates')
-const {component: footerComponent} = scopedComponent(DialogFooter, 'dialog-footer')
-const {component: settingsComponent} = scopedComponent(DialogSettings, 'dialog-settings')
-const {component: actionsComponent} = scopedComponent(DialogActions, 'dialog-actions')
-const {component: listComponent, tagName: listComponentTagName} = scopedComponent(DialogList, 'dialog-list')
-
-const dialogStyles = unsafeStatic(styles)
-
 let dialogInstance = null
 
 export const dialogTagName = scopeElementName('b-dialog')
 
 const modalAttribute = 'modal'
-const dialogVisibleAttr = 'visible'
 const openAnimationClass = 'b-dialog-open-animation'
 const listSelector = '.dialog-list'
+const dialogSelector = '.briskine-dialog'
 
-customElements.define(
-  dialogTagName,
-  class extends HTMLElement {
-    constructor () {
-      super()
+function Dialog (originalProps) {
+  const props = mergeProps({
+    keyboardShortcut: '',
+    visible: false,
+  }, originalProps)
 
-      this.state = reactive({
-        loggedIn: false,
-        loading: true,
-        templates: [],
-        tags: [],
-        extensionData: {},
-        keyboardShortcut: '',
-        searchQuery: '',
-        searchResults: [],
-      }, this, () => {
-        this.render()
+  let element
+
+  const [visible, setVisible] = createSignal(false)
+  const [loggedIn, setLoggedIn] = createSignal()
+  const [loading, setLoading] = createSignal()
+  const [templates, setTemplates] = createSignal([])
+  const [tags, setTags] = createSignal([])
+  const [extensionData, setExtensionData] = createSignal({})
+
+  const [searchResults, setSearchResults] = createSignal([])
+  const [searchQuery, setSearchQuery] = createSignal('')
+
+  let editor
+  let word
+  let searchField
+
+  let anchorNode = null
+  let anchorOffset = 0
+  let focusNode = null
+  let focusOffset = 0
+
+  createEffect(() => {
+    if (visible() === true) {
+      // activate the first item in the list
+      const $list = element.querySelector(listSelector)
+      if ($list) {
+        $list.dispatchEvent(new Event('b-dialog-select-first'))
+      }
+
+      element.classList.add(openAnimationClass)
+    } else {
+      element.classList.remove(openAnimationClass)
+
+      window.requestAnimationFrame(() => {
+        // clear the search query
+        if (searchField) {
+          searchField.value = ''
+        }
+
+        setSearchQuery('')
+        // close modals
+        element.removeAttribute(modalAttribute)
       })
-
-      this.searchField = null
-
-      this.editor = null
-      this.word = null
-      // selection cache, to restore later
-      this.focusNode = null
-      this.focusOffset = 0
-      this.anchorNode = null
-      this.anchorOffset = 0
-
-      this.show = (e) => {
-        // dialog is already visible
-        if (this.hasAttribute(dialogVisibleAttr)) {
-          return
-        }
-
-        let target
-        let removeCaretParent = false
-        let placement = 'top-left'
-
-        let element = getEventTarget(e)
-
-        // detect rtl
-        const targetStyle = window.getComputedStyle(element)
-        const direction = targetStyle.direction || 'ltr'
-        this.setAttribute('dir', direction)
-
-        this.anchorNode = null
-        this.anchorOffset = 0
-        this.focusNode = null
-        this.focusOffset = 0
-
-        if (isTextfield(element)) {
-          // input, textarea
-          target = getEditableCaret(element)
-          removeCaretParent = true
-          if (direction === 'rtl') {
-            placement = 'bottom-left-flip'
-          } else {
-            placement = 'bottom-right'
-          }
-        } else if (isContentEditable(element)) {
-          // contenteditable
-          target = getContentEditableCaret(element)
-
-          // only use the targetMetrics width when caret is a range.
-          // workaround for when the contenteditable caret is the endContainer.
-          const isRange = target instanceof Range
-
-          if (direction === 'rtl') {
-            if (isRange) {
-              placement = 'bottom-left-flip'
-            } else {
-              placement = 'top-right-flip'
-            }
-          } else {
-            if (isRange) {
-              placement = 'bottom-right'
-            } else {
-              placement = 'top-left'
-            }
-          }
-        } else if (e.target.tagName.toLowerCase() === bubbleTagName) {
-          // bubble
-          target = e.target
-          if (direction === 'rtl') {
-            placement = 'bottom-left'
-          } else {
-            placement = 'bottom-right-flip'
-          }
-        } else {
-          return
-        }
-
-        // prevent capturing keystrokes by the parent
-        e.stopPropagation()
-        e.preventDefault()
-
-        // cache selection details, to restore later
-        const selection = getSelection(element)
-        this.anchorNode = selection.anchorNode
-        this.anchorOffset = selection.anchorOffset
-        this.focusNode = selection.focusNode
-        this.focusOffset = selection.focusOffset
-
-        // cache editor,
-        // to use for inserting templates or restoring later.
-        this.editor = document.activeElement
-        // support having the activeElement inside a shadow root
-        if (this.editor.shadowRoot) {
-          this.editor = this.editor.shadowRoot.activeElement
-        }
-
-        this.word = getSelectedWord({
-          element: this.editor
-        })
-
-        this.setAttribute(dialogVisibleAttr, true)
-        const position = getDialogPosition(target, this, placement)
-        this.style.top = `${position.top}px`
-        this.style.left = `${position.left}px`
-
-        // clean-up the virtual caret mirror,
-        // used on input and textarea
-        if (removeCaretParent) {
-          target.parentNode.remove()
-        }
-
-        // give it a second before focusing.
-        // in production, the search field is not focused on some websites (eg. google sheets, salesforce).
-        setTimeout(() => {
-          this.searchField.focus()
-        })
-
-        if (this.loading === true) {
-          this.loadData()
-        }
-      }
-
-      this.hideOnClick = (e) => {
-        if (
-          // clicking inside the dialog
-          !this.contains(e.target) &&
-          this.hasAttribute(dialogVisibleAttr) &&
-          // clicking the bubble
-          e.target.tagName.toLowerCase() !== bubbleTagName
-        ) {
-          this.removeAttribute(dialogVisibleAttr)
-        }
-      }
-
-      this.restoreSelection = () => {
-        // only try to restore the selection on contenteditable.
-        // input and textarea will restore the correct range with focus().
-        if (
-          isContentEditable(this.editor) &&
-          this.anchorNode &&
-          this.focusNode
-        ) {
-          window.getSelection().setBaseAndExtent(this.anchorNode, this.anchorOffset, this.focusNode, this.focusOffset)
-        } else {
-          this.editor.focus()
-        }
-      }
-
-      this.insertTemplate = (id = '') => {
-        this.restoreSelection()
-
-        // get template from cache
-        const template = this.templates.find((t) => t.id === id)
-
-        autocomplete({
-          quicktext: template,
-          element: this.editor,
-          word: this.word,
-        })
-
-        // close dialog
-        this.removeAttribute(dialogVisibleAttr)
-      }
-
-      this.setAuthState = () => {
-        store.getAccount()
-          .then(() => {
-            return true
-          })
-          .catch(() => {
-            return false
-          })
-          .then((loggedIn) => {
-            this.loggedIn = loggedIn
-            this.loading = true
-
-            // only start loading data if the dialog is visible
-            if (this.hasAttribute(dialogVisibleAttr)) {
-              this.loadData()
-            }
-          })
-      }
-
-      this.hideOnEsc = (e) => {
-        if (e.key === 'Escape' && this.hasAttribute(dialogVisibleAttr)) {
-          e.stopPropagation()
-          // prevent triggering the keyup event on the page.
-          // causes some websites (eg. linkedin) to also close the underlying modal
-          // when closing our dialog.
-          window.addEventListener('keyup', (e) => { e.stopPropagation() }, { capture: true, once: true })
-
-          this.removeAttribute(dialogVisibleAttr)
-          this.restoreSelection()
-        }
-      }
-
-      this.handleSearchFieldShortcuts = (e) => {
-        // only handle events from the search field
-        const composedPath = e.composedPath()
-        const composedTarget = composedPath[0]
-        const $list = this.shadowRoot.querySelector(listSelector)
-        if (
-          e.target !== this ||
-          composedTarget !== this.searchField ||
-          !['Enter', 'ArrowDown', 'ArrowUp'].includes(e.key) ||
-          !$list
-        ) {
-          return
-        }
-
-        if (e.key === 'Enter') {
-          $list.dispatchEvent(new Event('b-dialog-select-active'))
-          return e.preventDefault()
-        }
-
-        let move
-        if (e.key === 'ArrowDown') {
-          move = 'next'
-        } else if (e.key === 'ArrowUp') {
-          move = 'previous'
-        }
-
-        if (move) {
-          $list.dispatchEvent(new CustomEvent('b-dialog-select', {
-            detail: move,
-          }))
-          // prevent moving the cursor to the start/end of the search field
-          e.preventDefault()
-        }
-      }
-
-      const stopPropagation = (e, target) => {
-        if (target && (this === target || this.shadowRoot.contains(target))) {
-          e.stopPropagation()
-        }
-      }
-
-      this.stopTargetPropagation = (e) => {
-        stopPropagation(e, e.target)
-      }
-
-      this.stopRelatedTargetPropagation = (e) => {
-        stopPropagation(e, e.relatedTarget)
-      }
-
-      this.loadData = async () => {
-        const extensionData = await store.getExtensionData()
-        this.extensionDataUpdated(extensionData)
-
-        await this.templatesUpdated()
-        await this.tagsUpdated()
-
-        this.loading = false
-      }
-
-      this.templatesUpdated = async () => {
-        this.templates = await store.getTemplates()
-      }
-
-      this.tagsUpdated = async () => {
-        this.tags = await store.getTags()
-      }
-
-      this.extensionDataUpdated = (data) => {
-        this.extensionData = data
-      }
-
-      this.urgentRender = () => {
-        render(template(this.state), this.shadowRoot)
-      }
-
-      this.render = batch(this.urgentRender)
     }
-    static get observedAttributes() { return ['visible'] }
-    attributeChangedCallback (name, oldValue, newValue) {
-      if (name === 'visible') {
-        if (newValue === 'true') {
-          this.classList.add(openAnimationClass)
+  })
 
-          // activate the first item in the list
-          const $list = this.shadowRoot.querySelector(listSelector)
-          if ($list) {
-            $list.dispatchEvent(new Event('b-dialog-select-first'))
-          }
+  function show (e) {
+    // dialog is already visible
+    if (visible()) {
+      return
+    }
+
+    let target
+    let removeCaretParent = false
+    let placement = 'top-left'
+
+    let node = getEventTarget(e)
+
+    // detect rtl
+    const targetStyle = window.getComputedStyle(node)
+    const direction = targetStyle.direction || 'ltr'
+    element.setAttribute('dir', direction)
+
+    anchorNode = null
+    anchorOffset = 0
+    focusNode = null
+    focusOffset = 0
+
+    if (isTextfield(node)) {
+      // input, textarea
+      target = getEditableCaret(node)
+      removeCaretParent = true
+      if (direction === 'rtl') {
+        placement = 'bottom-left-flip'
+      } else {
+        placement = 'bottom-right'
+      }
+    } else if (isContentEditable(node)) {
+      // contenteditable
+      target = getContentEditableCaret(node)
+
+      // only use the targetMetrics width when caret is a range.
+      // workaround for when the contenteditable caret is the endContainer.
+      const isRange = target instanceof Range
+
+      if (direction === 'rtl') {
+        if (isRange) {
+          placement = 'bottom-left-flip'
         } else {
-          this.classList.remove(openAnimationClass)
-
-          window.requestAnimationFrame(() => {
-            // clear the search query
-            this.searchField.value = ''
-            this.searchQuery = ''
-            // close modals
-            this.removeAttribute(modalAttribute)
-          })
+          placement = 'top-right-flip'
+        }
+      } else {
+        if (isRange) {
+          placement = 'bottom-right'
+        } else {
+          placement = 'top-left'
         }
       }
+    } else if (e.target.tagName.toLowerCase() === bubbleTagName) {
+      // bubble
+      target = e.target
+      if (direction === 'rtl') {
+        placement = 'bottom-left'
+      } else {
+        placement = 'bottom-right-flip'
+      }
+    } else {
+      return
     }
-    connectedCallback () {
-      if (!this.isConnected) {
+
+    // prevent capturing keystrokes by the parent
+    e.stopPropagation()
+    e.preventDefault()
+
+    // cache selection details, to restore later
+    const selection = getSelection(node)
+    anchorNode = selection.anchorNode
+    anchorOffset = selection.anchorOffset
+    focusNode = selection.focusNode
+    focusOffset = selection.focusOffset
+
+    // cache editor,
+    // to use for inserting templates or restoring later.
+    editor = document.activeElement
+    // support having the activeElement inside a shadow root
+    if (editor.shadowRoot) {
+      editor = editor.shadowRoot.activeElement
+    }
+
+    word = getSelectedWord({
+      element: editor
+    })
+
+    setVisible(true)
+    const position = getDialogPosition(target, element, placement)
+    element.style.top = `${position.top}px`
+    element.style.left = `${position.left}px`
+
+    // clean-up the virtual caret mirror,
+    // used on input and textarea
+    if (removeCaretParent) {
+      target.parentNode.remove()
+    }
+
+    // give it a second before focusing.
+    // in production, the search field is not focused on some websites (eg. google sheets, salesforce).
+    setTimeout(() => {
+      searchField.focus()
+    })
+
+    if (loading() === true) {
+      loadData()
+    }
+  }
+
+  function insertTemplate (id = '') {
+    restoreSelection()
+
+    // get template from cache
+    const template = templates().find((t) => t.id === id)
+
+    autocomplete({
+      quicktext: template,
+      element: editor,
+      word: word,
+    })
+
+    // close dialog
+    setVisible(false)
+  }
+
+  function stopPropagation (e, target) {
+    if (target && (element === target || element.contains(target))) {
+      e.stopPropagation()
+    }
+  }
+
+  function stopTargetPropagation (e) {
+    stopPropagation(e, e.target)
+  }
+
+  function stopRelatedTargetPropagation (e) {
+    stopPropagation(e, e.relatedTarget)
+  }
+
+  async function templatesUpdated () {
+    setTemplates(await store.getTemplates())
+  }
+
+  async function tagsUpdated () {
+    setTags(await store.getTags())
+  }
+
+  function extensionDataUpdated (data) {
+    setExtensionData(data)
+  }
+
+  async function loadData () {
+    const extensionData = await store.getExtensionData()
+    extensionDataUpdated(extensionData)
+
+    await templatesUpdated()
+    await tagsUpdated()
+
+    setLoading(false)
+  }
+
+  function setAuthState () {
+    store.getAccount()
+    .then(() => {
+      return true
+    })
+    .catch(() => {
+      return false
+    })
+    // eslint-disable-next-line solid/reactivity
+    .then((status) => {
+      setLoggedIn(status)
+      setLoading(true)
+
+      // only start loading data if the dialog is visible
+      if (visible()) {
+        loadData()
+      }
+    })
+  }
+
+  function handleSearchFieldShortcuts (e) {
+    // only handle events from the search field
+    const target = e.composedPath()[0]
+    const $list = element.querySelector(listSelector)
+    if (
+      target !== searchField ||
+      !['Enter', 'ArrowDown', 'ArrowUp'].includes(e.key) ||
+      !$list
+    ) {
+      return
+    }
+
+    if (e.key === 'Enter') {
+      $list.dispatchEvent(new Event('b-dialog-select-active'))
+      return e.preventDefault()
+    }
+
+    let move
+    if (e.key === 'ArrowDown') {
+      move = 'next'
+    } else if (e.key === 'ArrowUp') {
+      move = 'previous'
+    }
+
+    if (move) {
+      $list.dispatchEvent(new CustomEvent('b-dialog-select', {
+        detail: move,
+      }))
+      // prevent moving the cursor to the start/end of the search field
+      e.preventDefault()
+    }
+  }
+
+  function restoreSelection () {
+    // only try to restore the selection on contenteditable.
+    // input and textarea will restore the correct range with focus().
+    if (
+      isContentEditable(editor) &&
+      anchorNode &&
+      focusNode
+    ) {
+      window.getSelection().setBaseAndExtent(anchorNode, anchorOffset, focusNode, focusOffset)
+    } else {
+      editor.focus()
+    }
+  }
+
+  function hideOnClick (e) {
+    if (
+      // clicking inside the dialog
+      !element.contains(e.composedPath()[0])
+      && visible()
+      // clicking the bubble
+      && e.target.tagName.toLowerCase() !== bubbleTagName
+    ) {
+      setVisible(false)
+    }
+  }
+
+  function hideOnEsc (e) {
+    if (e.key === 'Escape' && visible()) {
+      e.stopPropagation()
+      // prevent triggering the keyup event on the page.
+      // causes some websites (eg. linkedin) to also close the underlying modal
+      // when closing our dialog.
+      window.addEventListener('keyup', (e) => { e.stopPropagation() }, { capture: true, once: true })
+
+      setVisible(false)
+      restoreSelection()
+    }
+  }
+
+  onMount(() => {
+    // check authentication state
+    setAuthState()
+    store.on('login', setAuthState)
+    store.on('logout', setAuthState)
+
+    store.on('templates-updated', templatesUpdated)
+    store.on('tags-updated', tagsUpdated)
+    store.on('extension-data-updated', extensionDataUpdated)
+
+    let searchDebouncer
+    searchField = element.querySelector('input[type=search]')
+
+    // search for templates
+    searchField.addEventListener('input', (e) => {
+      if (searchDebouncer) {
+        clearTimeout(searchDebouncer)
+      }
+
+      const searchValue = e.target.value
+      if (searchValue) {
+        searchDebouncer = setTimeout(async () => {
+          const {query, results} = await store.searchTemplates(searchValue)
+          if (query === searchValue) {
+            setSearchQuery(searchValue)
+            setSearchResults(results)
+          }
+        }, 50)
+      } else {
+        setSearchQuery('')
+      }
+    })
+
+    // keyboard navigation and insert for templates
+    window.addEventListener('keydown', handleSearchFieldShortcuts, true)
+    element.addEventListener('b-dialog-insert', (e) => {
+      insertTemplate(e.detail)
+      e.stopImmediatePropagation()
+    })
+
+    element.addEventListener('click', (e) => {
+      const target = e.target
+
+      // open and close modals
+      const btnModalAttribute = 'data-b-modal'
+      const modalBtn = target.closest(`[${btnModalAttribute}]`)
+      if (modalBtn) {
+        const modal = modalBtn.getAttribute(btnModalAttribute)
+        if (element.getAttribute(modalAttribute) !== modal) {
+          element.setAttribute(modalAttribute, modal)
+        } else {
+          element.removeAttribute(modalAttribute)
+
+          // focus the search field when closing the modals,
+          // and returning to the list view.
+          if (searchField) {
+            searchField.focus()
+          }
+        }
+
         return
       }
 
-      this.attachShadow({mode: 'open'})
-      this.urgentRender()
+      // login button
+      if (target.closest('.dialog-login-btn')) {
+        e.preventDefault()
+        store.openPopup()
+        setVisible(false)
+      }
+    })
 
-      // check authentication state
-      this.setAuthState()
-      store.on('login', this.setAuthState)
-      store.on('logout', this.setAuthState)
+    window.addEventListener('click', hideOnClick, true)
+    window.addEventListener('keydown', hideOnEsc, true)
 
-      store.on('templates-updated', this.templatesUpdated)
-      store.on('tags-updated', this.tagsUpdated)
-      store.on('extension-data-updated', this.extensionDataUpdated)
+    // prevent Gmail from handling keydown.
+    // any keys assigned to Gmail keyboard shortcuts are prevented
+    // from being inserted in the search field.
+    window.addEventListener('keydown', stopTargetPropagation, true)
+    // prevent Front from handling keyboard shortcuts
+    // when we're typing in the search field.
+    window.addEventListener('keypress', stopTargetPropagation, true)
 
-      let searchDebouncer
-      this.searchField = this.shadowRoot.querySelector('input[type=search]')
+    // prevent parent page from handling focus events.
+    // fix interaction with our dialog in some modals (LinkedIn, Twitter).
+    // prevent the page from handling the focusout event when switching focus to our dialog.
+    window.addEventListener('focusout', stopRelatedTargetPropagation, true)
+    window.addEventListener('focusin', stopTargetPropagation, true)
 
-      // search for templates
-      this.searchField.addEventListener('input', (e) => {
-        if (searchDebouncer) {
-          clearTimeout(searchDebouncer)
-        }
+    // expose show on element
+    element.show = show
+  })
 
-        const searchValue = e.target.value
-        if (searchValue) {
-          searchDebouncer = setTimeout(async () => {
-            const {query, results} = await store.searchTemplates(searchValue)
-            if (query === searchValue) {
-              this.searchQuery = searchValue
-              this.searchResults = results
-            }
-          }, 50)
-        } else {
-          this.searchQuery = ''
-        }
-      })
+  onCleanup(() => {
+    window.removeEventListener('click', hideOnClick, true)
+    window.removeEventListener('keydown', hideOnEsc, true)
+    window.removeEventListener('keydown', handleSearchFieldShortcuts, true)
 
-      // keyboard navigation and insert for templates
-      window.addEventListener('keydown', this.handleSearchFieldShortcuts, true)
-      this.addEventListener('b-dialog-insert', (e) => {
-        this.insertTemplate(e.detail)
-      })
+    store.off('login', setAuthState)
+    store.off('logout', setAuthState)
 
-      this.addEventListener('click', (e) => {
-        const composedPath = e.composedPath()
-        const composedTarget = composedPath[0]
+    store.off('templates-updated', templatesUpdated)
+    store.off('tags-updated', tagsUpdated)
+    store.off('extension-data-updated', extensionDataUpdated)
 
-        // open and close modals
-        const btnModalAttribute = 'data-b-modal'
-        const modalBtn = composedTarget.closest(`[${btnModalAttribute}]`)
-        if (modalBtn) {
-          const modal = modalBtn.getAttribute(btnModalAttribute)
-          if (this.getAttribute(modalAttribute) !== modal) {
-            this.setAttribute(modalAttribute, modal)
-          } else {
-            this.removeAttribute(modalAttribute)
+    window.removeEventListener('keydown', stopTargetPropagation, true)
+    window.removeEventListener('keypress', stopTargetPropagation, true)
 
-            // focus the search field when closing the modals,
-            // and returning to the list view.
-            if (this.searchField) {
-              this.searchField.focus()
-            }
-          }
-        }
+    window.removeEventListener('focusout', stopRelatedTargetPropagation, true)
+    window.removeEventListener('focusin', stopTargetPropagation, true)
+  })
 
-        // login button
-        if (composedTarget.closest('.dialog-login-btn')) {
-          e.preventDefault()
-          store.openPopup()
-          this.removeAttribute(dialogVisibleAttr)
-        }
-      })
+  return (
+    <div
+      ref={element}
+      class="briskine-dialog"
+      classList={{
+        'briskine-dialog-visible': visible(),
+      }}
+      >
+      <style>{styles}</style>
+      <div
+        classList={{
+          'dialog-container': true,
+          'dialog-safari': REGISTER_DISABLED,
+        }}
+        tabindex="-1"
+        >
 
-      window.addEventListener('click', this.hideOnClick, true)
-      window.addEventListener('keydown', this.hideOnEsc, true)
+        <div class="dialog-search">
+          <input type="search" value="" placeholder="Search templates..." spellcheck="false" />
+          <div class="dialog-search-icon">
+            <IconSearch />
+          </div>
+        </div>
 
-      // prevent Gmail from handling keydown.
-      // any keys assigned to Gmail keyboard shortcuts are prevented
-      // from being inserted in the search field.
-      window.addEventListener('keydown', this.stopTargetPropagation, true)
-      // prevent Front from handling keyboard shortcuts
-      // when we're typing in the search field.
-      window.addEventListener('keypress', this.stopTargetPropagation, true)
+        <div class="dialog-content">
+          <Show when={!loggedIn()}>
+            <div class="dialog-info d-flex">
+              <div class="dialog-info-icon">
+                <IconBriskine />
+              </div>
+              <div>
+                <a href="" class="dialog-login-btn">Sign in</a> to Briskine to access your templates.
+              </div>
+            </div>
+          </Show>
 
-      // prevent parent page from handling focus events.
-      // fix interaction with our dialog in some modals (LinkedIn, Twitter).
-      // prevent the page from handling the focusout event when switching focus to our dialog.
-      window.addEventListener('focusout', this.stopRelatedTargetPropagation, true)
-      window.addEventListener('focusin', this.stopTargetPropagation, true)
-    }
-    disconnectedCallback () {
-      window.removeEventListener('click', this.hideOnClick, true)
-      window.removeEventListener('keydown', this.hideOnEsc, true)
-      window.removeEventListener('keydown', this.handleSearchFieldShortcuts, true)
+          <Show
+            when={searchQuery()}
+            fallback={(
+              <DialogTemplates
+                loggedIn={loggedIn()}
+                loading={loading()}
+                templates={templates()}
+                tags={tags()}
+                extensionData={extensionData()}
+                />
+            )}
+            >
+            <DialogList
+              loggedIn={loggedIn()}
+              list={searchResults()}
+              showTags={extensionData().dialogTags}
+              tags={tags()}
+              />
+          </Show>
+        </div>
 
-      store.off('login', this.setAuthState)
-      store.off('logout', this.setAuthState)
+        <Show when={loggedIn()}>
+          <DialogFooter shortcut={props.keyboardShortcut} />
+          <DialogSettings extensionData={extensionData()} />
+          <DialogActions />
+        </Show>
+      </div>
+    </div>
+  )
+}
 
-      store.off('templates-updated', this.templatesUpdated)
-      store.off('tags-updated', this.tagsUpdated)
-      store.off('extension-data-updated', this.extensionDataUpdated)
+customElements.define(dialogTagName, class extends HTMLElement {
+  constructor () {
+    super()
 
-      window.removeEventListener('keydown', this.stopTargetPropagation, true)
-      window.removeEventListener('keypress', this.stopTargetPropagation, true)
+    this.keyboardShortcut = ''
+    this.disposer = () => {}
 
-      window.removeEventListener('focusout', this.stopRelatedTargetPropagation, true)
-      window.removeEventListener('focusin', this.stopTargetPropagation, true)
+    this.show = function (e) {
+      this.shadowRoot.querySelector(dialogSelector).show(e)
     }
   }
-)
+  connectedCallback () {
+    if (!this.isConnected) {
+      return
+    }
 
-function template({
-  loggedIn,
-  loading,
-  templates,
-  tags,
-  extensionData,
-  searchQuery,
-  searchResults,
-  keyboardShortcut,
-}) {
-  return html`
-    <style>${dialogStyles}</style>
-    <div
-      class=${classMap({
-        'dialog-container': true,
-        'dialog-safari': REGISTER_DISABLED,
-      })}
-      tabindex="-1"
-      >
-
-      <div class="dialog-search">
-        <input type="search" value="" placeholder="Search templates..." spellcheck="false">
-        <div class="dialog-search-icon">${unsafeSVG(iconSearch)}</div>
-      </div>
-
-      <div class="dialog-content">
-
-        ${!loggedIn ? html`
-          <div class="dialog-info d-flex">
-            <div class="dialog-info-icon">
-              ${unsafeSVG(iconBriskine)}
-            </div>
-            <div>
-              <a href="" class="dialog-login-btn">Sign in</a>
-              to Briskine to access your templates.
-            </div>
-          </div>
-        ` : ''}
-
-        ${searchQuery
-          ? html`
-            <${listComponent}
-              .loggedIn=${loggedIn}
-              .list=${searchResults}
-              .showTags=${extensionData.dialogTags}
-              .tags=${tags}
-              >
-            </${listComponent}>
-          `
-          : html`
-            <${templatesComponent}
-              .loggedIn=${loggedIn}
-              .loading=${loading}
-              .templates=${templates}
-              .tags=${tags}
-              .extensionData=${extensionData}
-              .listComponentTagName=${listComponentTagName}
-              >
-            </${templatesComponent}>
-          `
-        }
-      </div>
-
-      ${loggedIn ? html`
-        <${footerComponent}
-          .shortcut=${keyboardShortcut}
-          >
-        </${footerComponent}>
-
-        <${settingsComponent}
-          .extensionData=${extensionData}
-          >
-        </${settingsComponent}>
-
-        <${actionsComponent}
-          >
-        </${actionsComponent}>
-      ` : ''}
-    </div>
-  `
-}
+    this.attachShadow({mode: 'open'})
+    this.disposer = render(() => (
+      <Dialog keyboardShortcut={this.keyboardShortcut} />
+    ), this.shadowRoot)
+  }
+  disconnectedCallback () {
+    this.disposer()
+  }
+})
 
 // is input or textarea
 function isTextfield (element) {

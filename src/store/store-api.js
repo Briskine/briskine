@@ -482,17 +482,21 @@ export function getTemplates () {
     });
 }
 
-// backwards compatibility
+const networkError = 'There was an issue signing you in. Please disable your firewall or antivirus software and try again.'
+
 function signinError (err) {
   if (err && err.code === 'auth/too-many-requests') {
     // recaptcha verifier is not supported in browser extensions
     // only http/https
-    err.message = 'Too many unsuccessful login attempts. Please try again later. '
+    throw 'Too many unsuccessful login attempts. Please try again later. '
   }
 
-  throw {
-    error: err.message || 'There was an issue signing you in. Please try again later.'
+  // catch "TypeError: Failed to fetch" errors
+  if (!err.message || err instanceof TypeError) {
+    throw networkError
   }
+
+  throw err.message
 }
 
 export function signin (params = {}) {

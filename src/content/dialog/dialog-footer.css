@@ -37,17 +37,17 @@
 
 /* show modals
  */
-:host([modal=settings]) .dialog-settings,
-:host([modal=actions]) .dialog-actions {
+.briskine-dialog[modal=settings] .dialog-settings,
+.briskine-dialog[modal=actions] .dialog-actions {
   visibility: visible;
   opacity: 1;
   transform: translateY(0) scale(1);
 }
 
-:host([modal=settings]) .btn-settings {
+.briskine-dialog[modal=settings] .btn-settings {
   background: var(--border-color);
 }
 
-:host([modal=actions]) .btn-actions {
+.briskine-dialog[modal=actions] .btn-actions {
   background-color: var(--primary-color);
 }

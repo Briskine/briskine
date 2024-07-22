@@ -1,86 +1,52 @@
-import {render} from 'lit-html'
-import {html, unsafeStatic} from 'lit-html/static.js'
+import {Show, createMemo, For, mergeProps} from 'solid-js'
 
 import sortTemplates from '../../store/sort-templates.js'
-import {batch, reactive} from '../component.js'
+import DialogList from './dialog-list.js'
 
-export default class DialogTemplates extends HTMLElement {
-  constructor () {
-    super()
-
-    this.listComponent = ''
-
-    this.state = reactive({
-      loggedIn: false,
-      loading: false,
-      templates: [],
-
-      extensionData: {
-        dialogTags: true,
-        dialogSort: 'last_used',
-        templatesLastUsed: {},
-      },
-
-      tags: [],
-      listComponentTagName: '',
-
-      _templates: [],
-    }, this, (key, value, props) => {
-      if (['templates', 'extensionData'].includes(key)) {
-        props._templates = sortTemplates(
-          props.templates,
-          props.extensionData.dialogSort,
-          props.extensionData.templatesLastUsed,
-        )
-      }
-
-      if (key === 'listComponentTagName') {
-        this.listComponent = unsafeStatic(value)
-      }
-
-      this.render()
-    })
-
-    this.render = batch(() => {
-      render(template({listComponent: this.listComponent, ...this.state}), this)
-    })
-  }
-  connectedCallback () {
-    if (!this.isConnected) {
-      return
-    }
-
-    this.render()
-  }
+function Loader () {
+  return (
+    <For each={Array(4)}>
+      {() => (
+        <div class="templates-placeholder">
+          <div class="templates-placeholder-text" />
+          <div class="templates-placeholder-text templates-placeholder-description" />
+        </div>
+      )}
+    </For>
+  )
 }
 
-function template ({
-  loggedIn,
-  loading,
-  tags,
-  extensionData: {dialogTags},
+export default function DialogTemplates (originalProps) {
+  const props = mergeProps({
+    loggedIn: null,
+    loading: null,
+    tags: [],
+    templates: [],
+    extensionData: {},
+  }, originalProps)
 
-  _templates,
+  const _templates = createMemo(() => {
+    return sortTemplates(
+      props.templates,
+      props.extensionData.dialogSort,
+      props.extensionData.templatesLastUsed,
+    )
+  })
 
-  listComponent,
-}) {
-  return html`
-    ${loading === true
-      ? Array(4).fill(html`
-        <div class="templates-placeholder">
-          <div class="templates-placeholder-text"></div>
-          <div class="templates-placeholder-text templates-placeholder-description"></div>
-        </div>
-      `)
-      : html`
-        <${listComponent}
-          .loggedIn=${loggedIn}
-          .list=${_templates}
-          .showTags=${dialogTags}
-          .tags=${tags}
-          >
-        </${listComponent}>
-      `
-    }
-  `
+  return (
+    <>
+      <Show
+        when={props.loading !== true}
+        fallback={(
+          <Loader />
+        )}>
+        <DialogList
+          loggedIn={props.loggedIn}
+          list={_templates()}
+          showTags={props.extensionData.dialogTags}
+          tags={props.tags}
+          />
+      </Show>
+    </>
+  )
 }

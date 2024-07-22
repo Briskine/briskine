@@ -62,7 +62,7 @@
   visibility: hidden;
 }
 
-:host li.active .edit-container {
+.dialog-list-item.active .edit-container {
   visibility: visible;
 }
 
@@ -103,6 +103,7 @@
 .dialog-tags li {
   display: inline-block;
   padding: .2em .4em;
+  margin-right: .2em;
   border-radius: var(--radius-small);
   background-color: var(--tag-bg-color, transparent);
 

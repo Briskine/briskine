@@ -1,74 +1,61 @@
-import {render, html} from 'lit-html'
+import {createSignal, createResource, Show} from 'solid-js'
 
-import Config from '../config.js'
+import config from '../config.js'
 import store from '../store/store-content.js'
-import './popup-login-form.js'
+import PopupLoginForm from './popup-login-form.js'
 
-customElements.define(
-  'popup-login',
-  class extends HTMLElement {
-    constructor() {
-      super()
-      this.showLoginForm = false
-
-      const loadingClass = 'btn-loading'
-
-      this.addEventListener('click', (e) => {
-        if (e.target.classList.contains('js-signin')) {
-          e.target.classList.add(loadingClass)
-
-          // check session
-          store.getSession()
-            .then(() => {
-              // logged-in
-              e.target.classList.remove(loadingClass)
-              return
-            })
-            .catch(() => {
-              // logged-out
-              // show login form
-              this.showLoginForm = true
-              this.connectedCallback()
-            })
-        }
+export default function PopupLogin () {
+  const [getSession, setGetSession] = createSignal(false)
+  const [showLoginForm] = createResource(getSession, () => {
+    // check session
+    return store.getSession()
+      .then(() => {
+        return false
       })
-    }
-    connectedCallback() {
-      render(html`
-        <div class="popup-login text-center">
-          <div class="popup-box popup-logo">
-            <a href=${Config.websiteUrl} target="_blank">
-              <img src="../icons/briskine-combo.svg" width="160" alt="Briskine"/>
-            </a>
-          </div>
+      .catch(() => {
+        // logged-out
+        // show login form
+        return true
+      })
+  })
 
-          <div class="popup-box">
-            ${this.showLoginForm ? html`
-                <popup-login-form></popup-login-form>
-              ` : html`
-                <p>
-                  <strong>
-                    Sign in to access your templates.
-                  </strong>
-                </p>
+  return (
+    <div class="popup-login text-center">
+      <div class="popup-box popup-logo">
+        <a href={config.websiteUrl} target="_blank">
+          <img src="../icons/briskine-combo.svg" width="160" alt="Briskine"/>
+        </a>
+      </div>
 
-                <button type="button" class="js-signin btn btn-primary btn-lg">
-                  Sign In
-                </button>
-            `}
-          </div>
+      <div class="popup-box">
+        <Show when={!showLoginForm()} fallback={(<PopupLoginForm />)}>
+          <p>
+            <strong>
+              Sign in to access your templates.
+            </strong>
+          </p>
 
-          <div class="popup-box text-muted popup-label-register">
-            <small>
-              Don't have an account yet?
-              <br>
-              <a href=${`${Config.functionsUrl}/signup/`} target="_blank">
-                Create a free account
-              </a>
-            </small>
-          </div>
-        </div>
-      `, this)
-    }
-  }
-)
+          <button
+            type="button"
+            class="btn btn-lg btn-primary"
+            classList={{
+              'btn-loading': showLoginForm.loading
+            }}
+            onClick={() => setGetSession(true)}>
+            Sign In
+          </button>
+        </Show>
+      </div>
+
+      <div class="popup-box text-muted popup-label-register">
+        <small>
+          Don't have an account yet?
+          <br />
+          <a href={`${config.functionsUrl}/signup/`} target="_blank">
+            Create a free account
+          </a>
+        </small>
+      </div>
+    </div>
+  )
+}

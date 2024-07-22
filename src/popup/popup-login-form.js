@@ -1,117 +1,86 @@
-import {render, html} from 'lit-html'
+import {createSignal, createResource, Show} from 'solid-js'
 
-import Config from '../config.js'
+import config from '../config.js'
 import store from '../store/store-content.js'
 
-customElements.define(
-  'popup-login-form',
-  class extends HTMLElement {
-    constructor() {
-      super()
-      this.error = ''
-      this.email = ''
-      this.password = ''
-
-      this.addEventListener('submit', (e) => {
-        e.preventDefault()
-
-        if (e.target.classList.contains('js-login-form')) {
-          // cache form values before re-rendering
-          this.email = e.target.querySelector('#login-email').value.trim()
-          this.password = e.target.querySelector('#login-password').value.trim()
-
-          this.error = ''
-          this.loading = true
-          this.connectedCallback()
-
-          store.signin({
-              email: this.email,
-              password: this.password
-            })
-            .catch((response) => {
-              this.loading = false
-
-              const networkError = 'Could not connect to login server. Please try disabling your firewall or antivirus software and try again.'
-              if (response && response.error) {
-                const messages = [
-                  {
-                    status: 'auth/user-not-found',
-                    message: `We couldn't find any users with that email address.`
-                  },
-                  {
-                    status: 'auth/wrong-password',
-                    message: 'Wrong email address or password.'
-                  },
-                  {
-                    status: 'auth/network-request-failed',
-                    message: networkError
-                  }
-                ]
-                const error = messages.find((m) => response.error.includes(m.status))
-                this.error = error ? error.message : response.error
-              } else {
-                this.error = networkError
-              }
-
-              return this.connectedCallback()
-            })
-        }
+export default function PopupLoginForm ()  {
+  const [credentials, setCredentials] = createSignal()
+  const [signinRequest] = createResource(credentials, (data) => {
+    return store.signin({
+        email: data.email,
+        password: data.password,
       })
-    }
-    connectedCallback() {
-      render(html`
-        <form class="popup-login-form text-start js-login-form">
-          ${this.error ? html`
-            <div class="alert alert-danger" role="alert">
-              ${this.error}
-            </div>
-          ` : ''}
+  })
 
-          <div class="mb-3">
-            <label for="login-email" class="form-label">
-              Email
-            </label>
-            <input
-              type="email"
-              class="form-control"
-              id="login-email"
-              value=${this.email}
-              required
-            />
-          </div>
+  function submit (e) {
+    e.preventDefault()
 
-          <div class="mb-3">
-            <a
-              href=${Config.functionsUrl}
-              target="_blank"
-              class="btn btn-link float-end btn-forgot"
-              tabindex="-1"
-              >
-              Forgot password?
-            </a>
+    const email = e.target.querySelector('#login-email').value.trim()
+    const password = e.target.querySelector('#login-password').value.trim()
 
-            <label for="login-password" class="form-label">
-                Password
-            </label>
-            <input
-              type="password"
-              class="form-control"
-              id="login-password"
-              value=${this.password}
-              required
-              />
-          </div>
-
-          <div class="text-center">
-            <button
-              type="submit"
-              class=${`btn btn-primary btn-lg ${this.loading ? 'btn-loading' : ''}`}
-              >
-              Sign In
-            </button>
-          </div>
-        </form>
-      `, this)
-    }
+    setCredentials({
+      email: email,
+      password: password,
+    })
   }
-)
+
+  return (
+    <form
+      class="popup-login-form text-start js-login-form"
+      onSubmit={submit}
+      >
+      <Show when={signinRequest.error}>
+        <div class="alert alert-danger" role="alert">
+         {signinRequest.error.message}
+        </div>
+      </Show>
+
+      <div class="mb-3">
+        <label for="login-email" class="form-label">
+          Email
+        </label>
+        <input
+          type="email"
+          class="form-control"
+          id="login-email"
+          autocomplete="username"
+          required
+        />
+      </div>
+
+      <div class="mb-3">
+        <a
+          href={config.functionsUrl}
+          target="_blank"
+          class="btn btn-link float-end btn-forgot"
+          tabindex="-1"
+          >
+          Forgot password?
+        </a>
+
+        <label for="login-password" class="form-label">
+            Password
+        </label>
+        <input
+          type="password"
+          class="form-control"
+          id="login-password"
+          autocomplete="password"
+          required
+          />
+      </div>
+
+      <div class="text-center">
+        <button
+          type="submit"
+          class="btn btn-lg btn-primary"
+          classList={{
+            'btn-loading' : signinRequest.loading,
+          }}
+          >
+          Sign In
+        </button>
+      </div>
+    </form>
+  )
+}

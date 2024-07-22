@@ -105,8 +105,6 @@ function extensionConfig (params = {}) {
       FIREBASE_CONFIG: JSON.stringify(params.firebaseConfig),
       VERSION: JSON.stringify(packageFile.version),
       MANIFEST: JSON.stringify(params.manifest),
-      // disable trusted types support in lit-html
-      'globalThis.trustedTypes': null,
     }),
     new MiniCssExtractPlugin({
       filename: '[name]/[name].css'
@@ -162,12 +160,42 @@ function extensionConfig (params = {}) {
           ]
         },
         {
-          test: /\.(png|svg)$/,
+          test: /\.(png)$/,
           type: 'asset'
         },
         {
           resourceQuery: /raw/,
           type: 'asset/source',
+        },
+        {
+          test: /\.js$/,
+          exclude: /node_modules/,
+          use: {
+            loader: 'babel-loader',
+            options: {
+              presets: ['babel-preset-solid'],
+            }
+          }
+        },
+        {
+          test: /\.svg$/i,
+          resourceQuery: { not: [/raw/] },
+          use: [
+            {
+              loader: 'babel-loader',
+              options: {
+                presets: ['babel-preset-solid'],
+              },
+            },
+            {
+              loader: '@svgr/webpack',
+              options: {
+                babel: false,
+                jsxRuntime: 'automatic',
+                svgo: false,
+              },
+            }
+          ],
         },
       ]
     },
