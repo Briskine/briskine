@@ -211,7 +211,14 @@ function Dialog (originalProps) {
   }
 
   function stopPropagation (e, target) {
-    if (target && (element === target || element.contains(target))) {
+    if (
+      target
+      && (
+        dialogInstance
+        && dialogInstance === target
+        || dialogInstance.shadowRoot.contains(target)
+      )
+    ) {
       e.stopPropagation()
     }
   }
