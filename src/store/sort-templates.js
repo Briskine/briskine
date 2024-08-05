@@ -1,5 +1,5 @@
 export default function sortTemplates (list = [], sort = 'last_used', lastUsed = {}) {
-  // Chrome 109 (last version supported on Windows 7) don't support toSorted,
+  // Chrome 109 (last version supported on Windows 7) doesn't support toSorted,
   // so we clone the array and use regular sort.
   const templates = structuredClone(list)
   if (['title', 'shortcut'].includes(sort)) {
