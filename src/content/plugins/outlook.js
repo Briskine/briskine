@@ -7,7 +7,8 @@ import createContact from '../utils/create-contact.js';
 import {enableBubble} from '../bubble/bubble.js';
 import {addAttachments} from '../attachments/attachments.js'
 
-// names and emails are formatted as "full name <name@email.com>"
+// names and emails are sometimes formatted as "full name <name@email.com>".
+// eg. when saving as draft and re-opening.
 function parseNameAndEmail (nameAndEmail = '') {
   const index = nameAndEmail.lastIndexOf('<')
   const lastIndex = nameAndEmail.lastIndexOf('>')
@@ -25,15 +26,16 @@ function parseNameAndEmail (nameAndEmail = '') {
 }
 
 function getFieldData (field, $container) {
-  var $buttons = $container.querySelectorAll(`
-    [draggable="true"],
-    [data-lpc-hover-target-id]
-  `) || [];
+  var $buttons = $container.querySelectorAll(`[role=button]`)
   $buttons.forEach(function ($button) {
     let fullName = ''
-    const $fullNameContainer = $button.querySelector('span > span > span > span')
-    if ($fullNameContainer) {
-      fullName = $fullNameContainer.innerText
+    // get all nodes with no children,
+    // and sort them descending based on innerText length.
+    const $nodesWithText = Array.from($button.querySelectorAll('*'))
+      .filter((node) => node.children.length === 0)
+      .sort((a, b) => b.innerText.trim().length - a.innerText.trim().length)
+    if ($nodesWithText[0] && $nodesWithText[0].innerText) {
+      fullName = $nodesWithText[0].innerText.trim()
     }
 
     field.push(createContact(parseNameAndEmail(fullName)))
