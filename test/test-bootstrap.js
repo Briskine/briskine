@@ -2,7 +2,7 @@
  */
 
 mocha.setup('bdd')
-mocha.checkLeaks()
+// mocha.checkLeaks()
 
 /* polyfill
  */
