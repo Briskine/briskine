@@ -210,13 +210,16 @@ function getTopPosition (textfield, parent) {
   return top
 }
 
+const textfieldMinWidth = 100
+const textfieldMinHeight = 25
+
 function isValidTextfield (elem) {
   // if the element is a textfield
   if (elem.matches('textarea, [contenteditable]')) {
     // check if the element is big enough
     // to only show the bubble for large textfields
     const metrics = elem.getBoundingClientRect()
-    if (metrics.width > 100 && metrics.height > 34) {
+    if (metrics.width > textfieldMinWidth && metrics.height > textfieldMinHeight) {
       return true
     }
   }
