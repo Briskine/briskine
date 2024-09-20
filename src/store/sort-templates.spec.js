@@ -3,7 +3,7 @@ import {expect} from 'chai'
 
 import sortTemplates from './sort-templates.js'
 
-describe.only('sortTemplates', () => {
+describe('sortTemplates', () => {
   it('should sort templates by title', () => {
     expect(sortTemplates([
       {
@@ -51,4 +51,35 @@ describe.only('sortTemplates', () => {
       },
     ])
   })
+
+  it('should sort templates by shortcut', () => {
+    expect(sortTemplates([
+      {
+        shortcut: 'sa',
+      },
+      {
+        shortcut: 'sc',
+      },
+      {
+        shortcut: 's1',
+      },
+      {
+        shortcut: 'sb',
+      },
+    ], 'shortcut')).to.deep.equal([
+      {
+        shortcut: 's1',
+      },
+      {
+        shortcut: 'sa',
+      },
+      {
+        shortcut: 'sb',
+      },
+      {
+        shortcut: 'sc',
+      },
+    ])
+  })
+
 })
