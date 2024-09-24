@@ -1,3 +1,5 @@
+const collator = new Intl.Collator(undefined, {numeric: true, sensitivity: 'base'})
+
 export default function sortTemplates (list = [], sort = 'last_used', lastUsed = {}) {
   // Chrome 109 (last version supported on Windows 7) doesn't support toSorted,
   // so we clone the array and use regular sort.
@@ -5,7 +7,7 @@ export default function sortTemplates (list = [], sort = 'last_used', lastUsed =
   if (['title', 'shortcut'].includes(sort)) {
     return templates
       .sort((a, b) => {
-        return a[sort].localeCompare(b[sort])
+        return collator.compare(a[sort], b[sort])
       })
   }
 
