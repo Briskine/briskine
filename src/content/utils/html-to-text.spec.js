@@ -45,7 +45,7 @@ describe('htmlToText', () => {
         expect(htmlToText('<a href="https://briskine.com/">briskine</a>')).equal('briskine [https://briskine.com/]');
     });
 
-    it('should decorate links only with different urls', () => {
+    it('should only decorate links with different urls', () => {
         expect(htmlToText('<a href="https://briskine.com/">https://briskine.com/</a>')).equal('https://briskine.com/');
     });
 
@@ -57,9 +57,11 @@ describe('htmlToText', () => {
         expect(htmlToText('first<br /><br />second<br><br>third')).equal('first\n\nsecond\n\nthird');
     });
 
-    it('should convert unicode no-break space to normal space', () => {
-      const a = encodeURI(htmlToText('<div>Hello,  first  second</div>'))
-      const b = encodeURI('Hello,  first  second')
-      expect(htmlToText(a)).equal(b)
+    it('should convert &nbsp; to whitespace in div', () => {
+      expect(htmlToText('<div>Hello &nbsp;,</div>')).equal('Hello \u00a0,')
+    })
+
+    it('should convert &nbsp; to whitespace in plain text', () => {
+      expect(htmlToText('Hello &nbsp;,')).equal('Hello \u00a0,')
     })
 });
