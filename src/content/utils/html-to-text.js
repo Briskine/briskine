@@ -5,6 +5,10 @@ import {compile} from 'html-to-text'
 
 const parserOptions = {
   wordwrap: false,
+  // in addition to the default whitespace characters,
+  // also convert u00A0 (no-break space),
+  // used by tinymce for consecutive spaces.
+  whitespaceCharacters: '\t\r\n\f\u200b\u00a0',
   selectors: [
     {
       selector: 'a',

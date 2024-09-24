@@ -56,4 +56,10 @@ describe('htmlToText', () => {
     it('should add newlines for br tags', () => {
         expect(htmlToText('first<br /><br />second<br><br>third')).equal('first\n\nsecond\n\nthird');
     });
+
+    it('should convert unicode no-break space to normal space', () => {
+      const a = encodeURI(htmlToText('<div>Hello,  first  second</div>'))
+      const b = encodeURI('Hello,  first  second')
+      expect(htmlToText(a)).equal(b)
+    })
 });
