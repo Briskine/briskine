@@ -160,22 +160,24 @@ function run () {
 
   puppeteer
     .launch(options)
-    .then(browser => browser.pages()
-    .then(pages => pages.pop())
-    .then(page => {
-      page.on('console', handleConsole)
-      page.on('dialog', dialog => dialog.dismiss())
-      page.on('pageerror', err => console.error(err))
+    .then(browser => {
+      return browser.pages()
+        .then(pages => pages.pop())
+        .then(page => {
+          page.on('console', handleConsole)
+          page.on('dialog', dialog => dialog.dismiss())
+          page.on('pageerror', err => console.error(err))
 
-      return page.evaluateOnNewDocument(initMocha)
-        .then(() => page.goto(url))
-        .then(() => page.waitForFunction(() => window.__mochaResult__, { timeout }))
-        .then(() => page.evaluate(() => window.__mochaResult__))
-        .then(obj => {
-          browser.close()
-          return obj
+          return page.evaluateOnNewDocument(initMocha)
+            .then(() => page.goto(url))
+            .then(() => page.waitForFunction(() => window.__mochaResult__, { timeout }))
+            .then(() => page.evaluate(() => window.__mochaResult__))
+            .then(obj => {
+              browser.close()
+              return obj
+            })
         })
-    }))
+    })
 }
 
 run()
