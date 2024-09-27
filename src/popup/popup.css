@@ -352,7 +352,7 @@ a:hover,
  * (eg. on safari)
  */
 
-.popup-register-disabled .popup-logo,
+.popup-register-disabled .popup-logo a,
 .popup-register-disabled .popup-user {
   pointer-events: none;
 }
