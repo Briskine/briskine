@@ -127,7 +127,10 @@ function getSuggestionButton (email) {
 }
 
 function getSubjectField (editable) {
-  return getParent(editable).querySelector('input[type=text][autocomplete=off]')
+  // in case we find more fields
+  const inputs = Array.from(getParent(editable).querySelectorAll('input[type=text][autocomplete=off]'))
+  // get the last one
+  return inputs.pop()
 }
 
 function getContactField ($container) {
