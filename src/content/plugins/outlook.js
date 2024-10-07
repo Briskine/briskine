@@ -1,10 +1,10 @@
 /* Outlook plugin
  */
 
-import parseTemplate from '../utils/parse-template.js';
-import {insertTemplate} from '../editors/editor-universal.js';
-import createContact from '../utils/create-contact.js';
-import {enableBubble} from '../bubble/bubble.js';
+import parseTemplate from '../utils/parse-template.js'
+import {insertTemplate} from '../editors/editor-universal.js'
+import createContact from '../utils/create-contact.js'
+import {enableBubble} from '../bubble/bubble.js'
 import {addAttachments} from '../attachments/attachments.js'
 
 // names and emails are sometimes formatted as "full name <name@email.com>".
@@ -55,17 +55,13 @@ function getFieldData (field, $container) {
 function getContainers (editable) {
   // get the parent of each extra field input.
   return Array.from(getParent(editable).querySelectorAll('[role=textbox]:not([dir])'))
-  // return Array.from(document.querySelectorAll(`
-  //     [role=main] [role=textbox]:not([dir]),
-  //     [data-app-section="Form_Content"] [role=textbox]:not([dir])
-  //   `))
     .map((node) => {
       return node.parentElement
     })
 }
 
 function getToContainer (editable) {
-    return getContainers(editable)[0]
+  return getContainers(editable)[0]
 }
 
 function getFieldContainer (editable, length = 2) {
@@ -95,10 +91,6 @@ function getBccContainer (editable) {
 function getFieldButton (editable, length = 2) {
   // [data-app-section] for the compose popup view.
   return Array.from(getParent(editable).querySelectorAll('.ms-Button--command'))
-  // return Array.from(document.querySelectorAll(`
-  //   [role=main] .ms-Button--command,
-  //   [data-app-section="Form_Content"] .ms-Button--command
-  // `))
     .find(($node) => {
       return $node.innerText.length === length
     })
@@ -390,7 +382,7 @@ setTimeout(() => {
 
 export default async (params = {}) => {
   if (!isActive()) {
-    return false;
+    return false
   }
 
   // make the extra fields editable, so we can find them.
