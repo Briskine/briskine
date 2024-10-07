@@ -108,7 +108,7 @@ export function getDefaultTemplates () {
       <div>week number: {{moment week=''}}</div>
       <div>choice: {{choice 'Hello, Hi, Hey'}}</div>
       <div>domain: {{domain to.email}}</div>
-      <div><img src="https://www.briskine.com/images/briskine-promo.png" width="100" height="73"></div>
+      <div><img src="https://www.briskine.com/images/promo-large.png" width="100" height="73"></div>
     `
 
     defaultTemplates.push({
