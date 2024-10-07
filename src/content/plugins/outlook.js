@@ -127,7 +127,7 @@ function getSuggestionButton (email) {
 }
 
 function getSubjectField (editable) {
-  return getParent(editable).querySelector('.ms-TextField-field[maxlength="255"]')
+  return getParent(editable).querySelector('input[type=text][autocomplete=off]')
 }
 
 function getContactField ($container) {
