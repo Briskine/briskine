@@ -1,10 +1,10 @@
 /* Outlook plugin
  */
 
-import parseTemplate from '../utils/parse-template.js';
-import {insertTemplate} from '../editors/editor-universal.js';
-import createContact from '../utils/create-contact.js';
-import {enableBubble} from '../bubble/bubble.js';
+import parseTemplate from '../utils/parse-template.js'
+import {insertTemplate} from '../editors/editor-universal.js'
+import createContact from '../utils/create-contact.js'
+import {enableBubble} from '../bubble/bubble.js'
 import {addAttachments} from '../attachments/attachments.js'
 
 // names and emails are sometimes formatted as "full name <name@email.com>".
@@ -25,6 +25,15 @@ function parseNameAndEmail (nameAndEmail = '') {
   }
 }
 
+function getParent (editable) {
+  // [role=main] for the default outlook view.
+  // [data-app-section] for the compose popup view.
+  return editable.closest(`
+    [role=main],
+    [data-app-section="Form_Content"]
+  `)
+}
+
 function getFieldData (field, $container) {
   var $buttons = $container.querySelectorAll(`[role=button]`)
   $buttons.forEach(function ($button) {
@@ -43,30 +52,20 @@ function getFieldData (field, $container) {
 }
 
 // selector for to/cc/bcc containers
-function getContainers () {
+function getContainers (editable) {
   // get the parent of each extra field input.
-
-  // [role=main] for the default outlook view.
-  // [data-app-section] for the compose popup view.
-  return Array.from(document.querySelectorAll(`
-      [role=main] [role=textbox]:not([dir]),
-      [data-app-section="Form_Content"] [role=textbox]:not([dir])
-    `))
+  return Array.from(getParent(editable).querySelectorAll('[role=textbox]:not([dir])'))
     .map((node) => {
       return node.parentElement
     })
 }
 
-function getToContainer () {
-    return getContainers()[0]
+function getToContainer (editable) {
+  return getContainers(editable)[0]
 }
 
-function getCcContainer () {
-  return getFieldContainer(2)
-}
-
-function getFieldContainer (length = 2) {
-  const $containers = getContainers()
+function getFieldContainer (editable, length = 2) {
+  const $containers = getContainers(editable)
   return $containers
     // exclude the first (to) container
     .slice(1)
@@ -81,29 +80,30 @@ function getFieldContainer (length = 2) {
     })
 }
 
-function getBccContainer () {
-  return getFieldContainer(3)
+function getCcContainer (editable) {
+  return getFieldContainer(editable, 2)
 }
 
-function getFieldButton (length = 2) {
+function getBccContainer (editable) {
+  return getFieldContainer(editable, 3)
+}
+
+function getFieldButton (editable, length = 2) {
   // [data-app-section] for the compose popup view.
-  return Array.from(document.querySelectorAll(`
-    [role=main] .ms-Button--command,
-    [data-app-section="Form_Content"] .ms-Button--command
-  `))
+  return Array.from(getParent(editable).querySelectorAll('.ms-Button--command'))
     .find(($node) => {
       return $node.innerText.length === length
     })
 }
 
 // 2 chars in text
-function getCcButton () {
-  return getFieldButton(2)
+function getCcButton (editable) {
+  return getFieldButton(editable, 2)
 }
 
 // 3 chars in text
-function getBccButton () {
-  return getFieldButton(3)
+function getBccButton (editable) {
+  return getFieldButton(editable, 3)
 }
 
 function getSuggestionButton (email) {
@@ -126,8 +126,11 @@ function getSuggestionButton (email) {
   return null
 }
 
-function getSubjectField () {
-    return document.querySelector('.ms-TextField-field[maxlength="255"]');
+function getSubjectField (editable) {
+  // in case we find more fields
+  const inputs = Array.from(getParent(editable).querySelectorAll('input[type=text][autocomplete=off]'))
+  // get the last one
+  return inputs.pop()
 }
 
 function getContactField ($container) {
@@ -162,7 +165,7 @@ function waitForElement (getNode) {
     const timeout = setTimeout(() => {
       selectorObserver.disconnect()
       reject()
-    }, 1000)
+    }, 2000)
   })
 }
 
@@ -229,59 +232,62 @@ async function updateSection ($container, $button, getNode, value) {
 }
 
 // get all required data from the dom
-function getData () {
-    var vars = {
-        from: {},
-        to: [],
-        cc: [],
-        bcc: [],
-        subject: ''
-    };
+function getData (params) {
+  var vars = {
+    from: {},
+    to: [],
+    cc: [],
+    bcc: [],
+    subject: '',
+  }
 
-    const $from = document.querySelector('#O365_MainLink_Me > div > div:nth-child(1)');
-    let fullName = '';
-    if ($from) {
-        fullName = $from.textContent;
-    }
+  const $from = document.querySelector('#O365_MainLink_Me > div > div:nth-child(1)')
+  let fullName = ''
+  if ($from) {
+    fullName = $from.textContent
+  }
 
-    // BUG only works if "From" field is visible
-    let fromEmail = '';
-    // finds the From button, then the read-only from field after the button
-    const $fromEmailButton = document.querySelector('[role=complementary] [aria-haspopup=menu] + * [aria-haspopup=dialog]');
-    if ($fromEmailButton) {
-        fromEmail = $fromEmailButton.innerText;
-    }
+  // BUG only works if "From" field is visible
+  let fromEmail = ''
+  // finds the From button, then the read-only from field after the button
+  const $fromEmailButton = document.querySelector('[role=complementary] [aria-haspopup=menu] + * [aria-haspopup=dialog]')
+  if ($fromEmailButton) {
+    fromEmail = $fromEmailButton.innerText
+  }
 
-    vars.from = createContact({
-      name: fullName,
-      email: fromEmail,
-    })
+  vars.from = createContact({
+    name: fullName,
+    email: fromEmail,
+  })
 
-    var $to = getToContainer();
-    if ($to) {
-        getFieldData(vars.to, $to);
-    }
+  const editable = params.element
 
-    var $cc = getCcContainer();
-    if ($cc) {
-        getFieldData(vars.cc, $cc);
-    }
+  var $to = getToContainer(editable)
+  if ($to) {
+    getFieldData(vars.to, $to)
+  }
 
-    var $bcc = getBccContainer();
-    if ($bcc) {
-        getFieldData(vars.bcc, $bcc);
-    }
+  var $cc = getCcContainer(editable)
+  if ($cc) {
+    getFieldData(vars.cc, $cc)
+  }
 
-    const $subject = getSubjectField();
-    if ($subject) {
-        vars.subject = $subject.value;
-    }
+  var $bcc = getBccContainer(editable)
+  if ($bcc) {
+    getFieldData(vars.bcc, $bcc)
+  }
 
-    return vars;
+  const $subject = getSubjectField(editable)
+  if ($subject) {
+    vars.subject = $subject.value
+  }
+
+  return vars
 }
 
 async function after (params, data) {
-  var $subject = getSubjectField();
+  const editable = params.element
+  const $subject = getSubjectField(editable)
   if (params.quicktext.subject && $subject) {
     var parsedSubject = await parseTemplate(params.quicktext.subject, data)
     $subject.value = parsedSubject
@@ -298,7 +304,7 @@ async function after (params, data) {
   const anchorOffset = selection.anchorOffset
 
   if (params.quicktext.to) {
-    const $to = getToContainer()
+    const $to = getToContainer(editable)
     const parsedTo = await parseTemplate(params.quicktext.to, data)
     if ($to && !elementContains($to, parsedTo)) {
       const $toInput = await getContactField($to)
@@ -307,25 +313,25 @@ async function after (params, data) {
   }
 
   if (params.quicktext.cc) {
-    var $cc = getCcContainer();
+    var $cc = getCcContainer(editable)
     var parsedCc = await parseTemplate(params.quicktext.cc, data)
-    var $ccButton = getCcButton()
+    var $ccButton = getCcButton(editable)
     await updateSection(
       $cc,
       $ccButton,
-      getCcContainer,
+      () => getCcContainer(editable),
       parsedCc,
     )
   }
 
   if (params.quicktext.bcc) {
-    const $bcc = getBccContainer()
+    const $bcc = getBccContainer(editable)
     const parsedBcc = await parseTemplate(params.quicktext.bcc, data)
-    const $bccButton = getBccButton()
+    const $bccButton = getBccButton(editable)
     await updateSection(
       $bcc,
       $bccButton,
-      getBccContainer,
+      () => getBccContainer(editable),
       parsedBcc,
     )
   }
@@ -379,7 +385,7 @@ setTimeout(() => {
 
 export default async (params = {}) => {
   if (!isActive()) {
-    return false;
+    return false
   }
 
   // make the extra fields editable, so we can find them.
