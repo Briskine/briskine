@@ -40,6 +40,10 @@ function parseString (string = '') {
     return data;
 }
 
+function getFromField (container) {
+  return container.querySelector(fromFieldSelector)
+}
+
 // get all required data from the dom
 function getData (params) {
   const data = {
@@ -70,9 +74,9 @@ function getData (params) {
     if ($container) {
       // if we use multiple aliases,
       // get from details from the alias selector at the top of the compose box.
-      const $fromSelect = $container.querySelector(fromFieldSelector);
+      const $fromSelect = getFromField($container)
       if ($fromSelect) {
-        data.from = parseString($fromSelect.innerText);
+        data.from = parseString($fromSelect.innerText)
       }
 
       [ 'to', 'cc', 'bcc' ].forEach((fieldName) => {
@@ -106,21 +110,25 @@ function getData (params) {
 }
 
 // from field support for aliases
-function setFromField ($textfield, fromEmail = '') {
-    // get current compose container,
-    // in case we are in reply area.
-    const $container = $textfield.closest(textfieldContainerSelector);
+function setFromField ($textfield, aliasEmail = '') {
+  // get current compose container,
+  // in case we are in reply area.
+  const $container = $textfield.closest(textfieldContainerSelector)
 
-    if ($container) {
-        const $option = $container.querySelector(`[value="${fromEmail}"][role=menuitem]`);
-        if ($option) {
-            // select option
-            $option.dispatchEvent(new MouseEvent('mousedown', {bubbles: true}));
-            // HACK mouseup needs to be triggered twice for the option to be selected
-            $option.dispatchEvent(new MouseEvent('mouseup', {bubbles: true}));
-            $option.dispatchEvent(new MouseEvent('mouseup', {bubbles: true}));
-        }
+  if ($container) {
+    const selector = getFromField($container)
+    // check if the alias is already selected
+    if (selector?.innerText?.includes?.(aliasEmail)) {
+      return
     }
+
+    const $option = $container.querySelector(`[value="${aliasEmail}"][role=menuitem]`)
+    if ($option) {
+      // select option
+      $option.dispatchEvent(new MouseEvent('mousedown', {bubbles: true}))
+      $option.dispatchEvent(new MouseEvent('mouseup', {bubbles: true}))
+    }
+  }
 }
 
 function extraField ($parent, fieldName) {

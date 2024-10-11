@@ -66,7 +66,7 @@ export function getDefaultTemplates () {
       subject: '',
       tags: filterDefaultTags(['en', 'personal']),
       body: '<div>{{from.email}}</div>'
-    }
+    },
   ]
 
   if (ENV === 'development') {
@@ -119,7 +119,7 @@ export function getDefaultTemplates () {
       to: 'to@briskine.com',
       cc: 'cc@briskine.com, cc2@briskine.com',
       bcc: 'bcc@briskine.com',
-      from: 'contact@briskine.com'
+      from: 'support@briskine.com'
     })
 
     defaultTemplates.push({
