@@ -4,7 +4,7 @@ const blocklistPrivate = [
   // slack pdf viewer stops working (considering the pdf corrupt),
   // when the iframe dom is modified.
   // the pdf viewer is used for previewing multiple attachment types (pdf, docx, etc.).
-  '//app.slack.com/pdf-viewer?',
+  '//app.slack.com/pdf-viewer',
 ]
 
 function getBlocklist (settings = {}) {
