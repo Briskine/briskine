@@ -2,6 +2,7 @@
  */
 import {compileTemplate} from '../sandbox/sandbox-parent.js'
 import createContact from './create-contact.js'
+import templateFeatures from './template-features.js'
 import {getAccount as storeGetAccount} from  '../../store/store-content.js'
 
 let compileTemplateLegacy = async () => {}

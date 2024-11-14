@@ -4,14 +4,18 @@ import {expect} from 'chai'
 import templateFeatures from './template-features.js'
 
 describe.only('templateFeatures', () => {
-  it('should not find partials or account', () => {
+  it('should not find any features', () => {
     const template = `
       <div>
-        {{ from.first_name }}
+        {{ to.first_name }}
       </div>
       {{#each}}variable={{variable}}{{/each}}
     `
-    expect(templateFeatures(template)).to.not.include({partials: true, account: true})
+    expect(templateFeatures(template)).to.deep.equal({
+      partials: false,
+      account: false,
+      from: false,
+    })
   })
 
   it('should find partials', () => {
@@ -78,5 +82,12 @@ describe.only('templateFeatures', () => {
       <footer />
     `
     expect(templateFeatures(template)).to.include({account: true, partials: true})
+  })
+
+  it('should find from expression with nested property', () => {
+    const template = `
+      {{ from.first_name }}
+    `
+    expect(templateFeatures(template)).to.include({from: true})
   })
 })

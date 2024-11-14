@@ -1,11 +1,16 @@
 import {parseWithoutProcessing} from 'handlebars'
 
-function findFeaturesInAST (obj = {}, features = { partials: false, account: false }) {
+function findFeaturesInAST (obj = {}, features = {
+  partials: false,
+  account: false,
+  from: false,
+}) {
   for (const key of Object.keys(obj)) {
     // if we already found both features, return
     if (
       features.partials === true
       && features.account === true
+      && features.from === true
     ) {
       return features
     }
@@ -15,12 +20,15 @@ function findFeaturesInAST (obj = {}, features = { partials: false, account: fal
       features.partials = true
     }
 
-    // find account variable
-    if (
-      obj[key]?.type === 'PathExpression'
-      && obj[key]?.parts?.[0] === 'account'
-    ) {
-      features.account = true
+    // find from or account variables
+    if (obj[key]?.type === 'PathExpression') {
+      if (obj[key]?.parts?.[0] === 'account') {
+        features.account = true
+      }
+
+      if (obj[key]?.parts?.[0] === 'from') {
+        features.from = true
+      }
     }
 
     if (
