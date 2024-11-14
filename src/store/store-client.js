@@ -68,21 +68,15 @@ export const getSettings = createRequest('getSettings')
 export const getAccount = createRequest('getAccount')
 export const getCustomer = createRequest('getCustomer')
 export const setActiveCustomer = createRequest('setActiveCustomer')
-
 export const getTemplates = createRequest('getTemplates')
 export const updateTemplateStats = createRequest('updateTemplateStats')
 export const searchTemplates = createRequest('searchTemplates')
-
 export const getTags = createRequest('getTags')
-
 export const signin = createRequest('signin')
 export const logout = createRequest('logout')
-
 export const getSession = createRequest('getSession')
-
 export const getExtensionData = createRequest('getExtensionData')
 export const setExtensionData = createRequest('setExtensionData')
-
 export const openPopup = createRequest('openPopup')
 export const refetchCollections = createRequest('refetchCollections')
 export const autosync = createRequest('autosync')

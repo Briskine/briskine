@@ -1,6 +1,6 @@
 import {For, mergeProps} from 'solid-js'
 
-import store from '../../store/store-content.js'
+import {setExtensionData} from '../../store/store-content.js'
 import config from '../../config.js'
 
 const sortOptions = [
@@ -37,7 +37,7 @@ export default function DialogSettings (originalProps) {
       updatedData.dialogTags = e.target.checked
     }
 
-    store.setExtensionData(updatedData)
+    setExtensionData(updatedData)
   }
 
   return (

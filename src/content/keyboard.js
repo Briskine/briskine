@@ -3,7 +3,7 @@
  */
 import {autocomplete, getSelectedWord, getSelection, getEventTarget} from './autocomplete.js'
 import {isContentEditable} from './editors/editor-contenteditable.js'
-import store from '../store/store-content.js'
+import {getTemplates} from '../store/store-content.js'
 
 import {keybind, keyunbind} from './keybind.js'
 import {swipebind, swipeunbind} from './swipe.js'
@@ -14,7 +14,7 @@ function isTextfield (element) {
 }
 
 function getTemplateByShortcut (shortcut) {
-  return store.getTemplates()
+  return getTemplates()
     .then((templates) => {
       return templates.find((t) => {
         return t.shortcut === shortcut

@@ -2,7 +2,7 @@
  */
 import {compileTemplate} from '../sandbox/sandbox-parent.js'
 import createContact from './create-contact.js'
-import store from '../../store/store-content.js'
+import {getAccount as storeGetAccount} from  '../../store/store-content.js'
 
 let compileTemplateLegacy = async () => {}
 if (MANIFEST === '2') {
@@ -22,7 +22,7 @@ function mergeContacts (a = {}, b = {}) {
 async function getAccount (contextAccount = {}) {
   let accountCache = {}
   try {
-    const storeAccount = await store.getAccount()
+    const storeAccount = await storeGetAccount()
     // map response to contact format
     accountCache = {
       name: storeAccount.full_name,

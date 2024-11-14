@@ -3,7 +3,13 @@
 import '@webcomponents/custom-elements'
 import isEqual from 'lodash.isequal'
 
-import store from '../store/store-content.js'
+import {
+  getSettings,
+  on as storeOn,
+  off as storeOff,
+  destroy as storeDestroy,
+  setup as storeSetup,
+} from '../store/store-content.js'
 import config from '../config.js'
 import {isBlocklisted} from './blocklist.js'
 
@@ -39,7 +45,7 @@ function init (settings) {
     return false
   }
 
-  store.setup()
+  storeSetup()
 
   setupKeyboard(settings)
   setupBubble(settings)
@@ -52,7 +58,7 @@ function init (settings) {
 
   // update the content components if settings change
   settingsCache = Object.assign({}, settings)
-  store.on('users-updated', refreshContentScripts)
+  storeOn('users-updated', refreshContentScripts)
 
   return
 }
@@ -84,7 +90,7 @@ async function startup () {
   // to detect if the body was recreated (eg. in dynamically created iframes).
   document.body._briskineLoaded = true
 
-  const settings = await store.getSettings()
+  const settings = await getSettings()
   // check if we were destroyed while waiting for settings, or startupDelay
   if (destroyed === false) {
     init(settings)
@@ -100,8 +106,8 @@ async function startup () {
 }
 
 function destructor () {
-  store.off('users-updated', refreshContentScripts)
-  store.destroy()
+  storeOff('users-updated', refreshContentScripts)
+  storeDestroy()
 
   destroyKeyboard()
   destroyBubble()
@@ -132,7 +138,7 @@ function refreshContentScripts () {
   }
 
   // restart the content components if any of the settings changed
-  store.getSettings()
+  getSettings()
     .then((settings) => {
       const settingsChanged = !isEqual(settings, settingsCache)
       if (settingsChanged) {

@@ -1,14 +1,14 @@
 import {createSignal, createResource, Show} from 'solid-js'
 
 import config from '../config.js'
-import store from '../store/store-content.js'
+import {getSession as storeGetSession} from  '../store/store-content.js'
 import PopupLoginForm from './popup-login-form.js'
 
 export default function PopupLogin () {
   const [getSession, setGetSession] = createSignal(false)
   const [showLoginForm] = createResource(getSession, () => {
     // check session
-    return store.getSession()
+    return storeGetSession()
       .then(() => {
         return false
       })
