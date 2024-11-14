@@ -1,7 +1,7 @@
 /**
  * Sync Content Store
  */
-import store from './store-client.js'
+import * as store from './store-client.js'
 import methods from './store-methods.js'
 
 let cache = {}
