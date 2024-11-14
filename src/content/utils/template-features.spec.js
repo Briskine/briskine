@@ -3,7 +3,7 @@ import {expect} from 'chai'
 
 import templateFeatures from './template-features.js'
 
-describe.only('templateFeatures', () => {
+describe('templateFeatures', () => {
   it('should not find any features', () => {
     const template = `
       <div>

@@ -1,10 +1,12 @@
 import {parseWithoutProcessing} from 'handlebars'
 
-function findFeaturesInAST (obj = {}, features = {
+const defaultFeatures = {
   partials: false,
   account: false,
   from: false,
-}) {
+}
+
+function findFeaturesInAST (obj = {}, features = { ...defaultFeatures }) {
   for (const key of Object.keys(obj)) {
     // if we already found both features, return
     if (
@@ -50,6 +52,10 @@ function findFeaturesInAST (obj = {}, features = {
 }
 
 export default function templateFeatures (template = '') {
-  const ast = parseWithoutProcessing(template)
-  return findFeaturesInAST(ast.body)
+  try {
+    const ast = parseWithoutProcessing(template)
+    return findFeaturesInAST(ast.body)
+  } catch {
+    return defaultFeatures
+  }
 }
