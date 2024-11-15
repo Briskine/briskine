@@ -9,7 +9,7 @@ const year = now.getFullYear()
 const month = now.getMonth() + 1
 const day = now.getDate()
 
-describe('parseTemplate', async () => {
+describe.only('parseTemplate', async () => {
   beforeEach(() => {
     // sandbox needs a second to respond
     return new Promise((resolve) => {
@@ -88,6 +88,10 @@ Expecting 'CLOSE_RAW_BLOCK', 'CLOSE', 'CLOSE_UNESCAPED', 'OPEN_SEXPR', 'CLOSE_SE
 
   it('should parse template with utf8 characters', async () => {
     expect(await parseTemplate('{{moment format="YYYY年 MMM Do" locale="ja"}}', {})).to.equal(`${year}年 ${month}月 ${day}日`)
+  })
+
+  it('should parse template with partial', async () => {
+    expect(await parseTemplate('{{> kr}}', {from: {first_name:'Briskine'}})).to.equal(`<div>Kind regards,</div><div>Briskine.</div>`)
   })
 
   after(destroy)

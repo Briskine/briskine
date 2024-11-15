@@ -28,6 +28,15 @@ import '../helpers/random.js'
 
 export async function compileTemplate (template = '', context = {}) {
   try {
+    // TODO we need a new instance of handlebars on each run, in case the templates change
+    if (context._templates) {
+      context._templates.forEach((template) => {
+        Handlebars.registerPartial(template.shortcut, template.body)
+      })
+
+      delete context._templates
+    }
+
     return Handlebars.compile(template)(context)
   } catch (err) {
     return `<pre>${err.message || err}</pre>`

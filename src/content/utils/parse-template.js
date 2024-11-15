@@ -3,7 +3,7 @@
 import {compileTemplate} from '../sandbox/sandbox-parent.js'
 import createContact from './create-contact.js'
 import templateFeatures from './template-features.js'
-import {getAccount as storeGetAccount} from  '../../store/store-content.js'
+import {getAccount as storeGetAccount, getTemplates} from  '../../store/store-content.js'
 
 let compileTemplateLegacy = async () => {}
 if (MANIFEST === '2') {
@@ -65,6 +65,11 @@ async function parseContext (data = {}, features = {}) {
     context.account = createContact(await getAccount(context.account))
     // merge from details with account
     context.from = createContact(mergeContacts(context.account, context.from))
+  }
+
+  if (features.partials) {
+    const templates = await getTemplates()
+    context._templates = templates.filter((t) => t.shortcut)
   }
 
   return context
