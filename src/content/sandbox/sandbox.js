@@ -14,9 +14,10 @@ import config from '../../config.js'
 
 // legacy date helper
 import date from '../helpers/date.js'
+// legacy choice helper
+import choice from '../helpers/choice.js'
 
 import moment from '../helpers/moment.js'
-import choice from '../helpers/choice.js'
 import domain from '../helpers/domain.js'
 import text from '../helpers/text.js'
 import list from '../helpers/list.js'
@@ -29,9 +30,8 @@ import random from '../helpers/random.js'
 function getHandlebars (templates = []) {
   const hbs = Handlebars.create()
 
-  // legacy date helper
+  // legacy helpers
   hbs.registerHelper('date', date)
-  // legacy choice helper
   hbs.registerHelper('choice', choice)
 
   hbs.registerHelper('and', and)

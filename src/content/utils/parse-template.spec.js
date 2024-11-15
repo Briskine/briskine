@@ -1,4 +1,4 @@
-/* globals describe, it, after, beforeEach */
+/* globals describe, it, after, before */
 import {expect} from 'chai'
 
 import parseTemplate from './parse-template.js'
@@ -9,12 +9,46 @@ const year = now.getFullYear()
 const month = now.getMonth() + 1
 const day = now.getDate()
 
+const defaultTemplates = [
+  {
+    title: 'Say Hello',
+    shortcut: 'h',
+    subject: '',
+    tags: [],
+    body: '<div>Hello {{to.first_name}},</div><div></div>'
+  },
+  {
+    title: 'Nice talking to you',
+    shortcut: 'nic',
+    subject: '',
+    tags: [],
+    body: '<div>It was nice talking to you.</div>'
+  },
+  {
+    title: 'Kind Regards',
+    shortcut: 'kr',
+    subject: '',
+    tags: [],
+    body: '<div>Kind regards,</div><div>{{from.first_name}}.</div>'
+  },
+  {
+    title: 'My email',
+    shortcut: 'e',
+    subject: '',
+    tags: [],
+    body: '<div>{{from.email}}</div>'
+  },
+]
+
 describe('parseTemplate', async () => {
-  beforeEach(() => {
-    // sandbox needs a second to respond
-    return new Promise((resolve) => {
-      setTimeout(resolve, 100)
-    })
+  before(() => {
+    window.browser.runtime.sendMessage = async ({type}) => {
+      if (type === 'getTemplates') {
+        return defaultTemplates
+      }
+
+      return []
+    }
   })
 
   it('should parse template without variables', async () => {
@@ -94,5 +128,12 @@ Expecting 'CLOSE_RAW_BLOCK', 'CLOSE', 'CLOSE_UNESCAPED', 'OPEN_SEXPR', 'CLOSE_SE
     expect(await parseTemplate('{{> kr}}', {from: {first_name:'Briskine'}})).to.equal(`<div>Kind regards,</div><div>Briskine.</div>`)
   })
 
-  after(destroy)
+  it('should parse template with partial with context', async () => {
+    expect(await parseTemplate('{{> e custom}}', {custom: {from: {email:'contact@briskine.com'}}})).to.equal(`<div>contact@briskine.com</div>`)
+  })
+
+  after(() => {
+    destroy()
+    delete window.browser.runtime.sendMessage
+  })
 })
