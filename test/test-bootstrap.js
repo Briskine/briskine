@@ -2,7 +2,14 @@
  */
 
 mocha.setup('bdd')
-// mocha.checkLeaks()
+mocha.checkLeaks()
+mocha.globals([
+  // puppeteer globals
+  'puppeteer___ariaQuerySelector',
+  '__ariaQuerySelector',
+  'puppeteer___ariaQuerySelectorAll',
+  '__ariaQuerySelectorAll',
+])
 
 /* polyfill
  */
@@ -15,15 +22,5 @@ window.chrome = {
       addListener: () => {}
     },
     getURL: (str) => `bundle/${str}`,
-  }
-}
-
-// array toSorted polyfill for mocha-headless-chrome,
-// remove when mocha-headless-chrome uses a new version of puppeteer.
-if (!Array.prototype.toSorted) {
-  Array.prototype.toSorted = function () {
-    let arr = this
-    arr.sort()
-    return arr
   }
 }
