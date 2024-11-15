@@ -13,31 +13,55 @@ import {respond} from './sandbox-messenger-client.js'
 import config from '../../config.js'
 
 // legacy date helper
-import '../helpers/date.js'
+import date from '../helpers/date.js'
 
-import '../helpers/moment.js'
-import '../helpers/choice.js'
-import '../helpers/domain.js'
-import '../helpers/text.js'
-import '../helpers/list.js'
-import '../helpers/capitalize.js'
-import '../helpers/or.js'
-import '../helpers/and.js'
-import '../helpers/compare.js'
-import '../helpers/random.js'
+import moment from '../helpers/moment.js'
+import choice from '../helpers/choice.js'
+import domain from '../helpers/domain.js'
+import text from '../helpers/text.js'
+import list from '../helpers/list.js'
+import {capitalize, capitalizeAll} from '../helpers/capitalize.js'
+import or from '../helpers/or.js'
+import and from '../helpers/and.js'
+import compare from '../helpers/compare.js'
+import random from '../helpers/random.js'
+
+function getHandlebars (templates = []) {
+  const hbs = Handlebars.create()
+
+  // legacy date helper
+  hbs.registerHelper('date', date)
+  // legacy choice helper
+  hbs.registerHelper('choice', choice)
+
+  hbs.registerHelper('and', and)
+  hbs.registerHelper('moment', moment)
+  hbs.registerHelper('domain', domain)
+  hbs.registerHelper('text', text)
+  hbs.registerHelper('list', list)
+  hbs.registerHelper('capitalize', capitalize)
+  hbs.registerHelper('capitalizeAll', capitalizeAll)
+  hbs.registerHelper('or', or)
+  hbs.registerHelper('compare', compare)
+  hbs.registerHelper('random', random)
+
+  if (templates.length) {
+    templates.forEach((template) => {
+      hbs.registerPartial(template.shortcut, template.body)
+    })
+  }
+
+  return hbs
+}
 
 export async function compileTemplate (template = '', context = {}) {
   try {
-    // TODO we need a new instance of handlebars on each run, in case the templates change
+    const hbs = getHandlebars(context._templates)
     if (context._templates) {
-      context._templates.forEach((template) => {
-        Handlebars.registerPartial(template.shortcut, template.body)
-      })
-
       delete context._templates
     }
 
-    return Handlebars.compile(template)(context)
+    return hbs.compile(template)(context)
   } catch (err) {
     return `<pre>${err.message || err}</pre>`
   }

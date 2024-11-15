@@ -1,8 +1,6 @@
 // general purpose text helper
 // can use all methods on the String object
-import Handlebars from 'handlebars'
-
-function text (str = '', method, ...args) {
+export default function text (str = '', method, ...args) {
   if (
     typeof str !== 'string'
     || typeof method !== 'string'
@@ -15,6 +13,3 @@ function text (str = '', method, ...args) {
   const params = args.slice(0, args.length - 1)
   return String.prototype[method].apply(str, params)
 }
-
-Handlebars.registerHelper('text', text)
-

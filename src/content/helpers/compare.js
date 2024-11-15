@@ -1,7 +1,5 @@
 // compare helper
-import Handlebars from 'handlebars'
-
-function compare (operator = '', ...args) {
+export default function compare (operator = '', ...args) {
   // last argument is the handlebars options object
   const params = args.slice(0, args.length - 1)
 
@@ -37,6 +35,3 @@ function compare (operator = '', ...args) {
     }
   })
 }
-
-Handlebars.registerHelper('compare', compare)
-

@@ -1,7 +1,5 @@
 // conditional and helper
-import Handlebars from 'handlebars'
-
-function and (...args) {
+export default function and (...args) {
   // last argument is the handlebars options object
   const params = args.slice(0, args.length - 1)
   const valid = params.every((p) => Boolean(p))
@@ -11,5 +9,4 @@ function and (...args) {
   return valid ? params[params.length - 1] : undefined
 }
 
-Handlebars.registerHelper('and', and)
 

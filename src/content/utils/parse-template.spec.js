@@ -9,7 +9,7 @@ const year = now.getFullYear()
 const month = now.getMonth() + 1
 const day = now.getDate()
 
-describe.only('parseTemplate', async () => {
+describe('parseTemplate', async () => {
   beforeEach(() => {
     // sandbox needs a second to respond
     return new Promise((resolve) => {
