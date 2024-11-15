@@ -45,7 +45,7 @@ function getHandlebars (templates = []) {
   hbs.registerHelper('compare', compare)
   hbs.registerHelper('random', random)
 
-  if (templates.length) {
+  if (templates?.length) {
     templates.forEach((template) => {
       hbs.registerPartial(template.shortcut, template.body)
     })

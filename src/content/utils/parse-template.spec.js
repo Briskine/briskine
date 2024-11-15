@@ -38,6 +38,13 @@ const defaultTemplates = [
     tags: [],
     body: '<div>{{from.email}}</div>'
   },
+  {
+    title: 'Custom',
+    shortcut: 'c',
+    subject: '',
+    tags: [],
+    body: '{{custom}}'
+  },
 ]
 
 describe('parseTemplate', async () => {
@@ -130,6 +137,10 @@ Expecting 'CLOSE_RAW_BLOCK', 'CLOSE', 'CLOSE_UNESCAPED', 'OPEN_SEXPR', 'CLOSE_SE
 
   it('should parse template with partial with context', async () => {
     expect(await parseTemplate('{{> e custom}}', {custom: {from: {email:'contact@briskine.com'}}})).to.equal(`<div>contact@briskine.com</div>`)
+  })
+
+  it('should parse template with partial with parameter', async () => {
+    expect(await parseTemplate('{{> c custom="briskine"}}', {})).to.equal(`briskine`)
   })
 
   after(() => {
