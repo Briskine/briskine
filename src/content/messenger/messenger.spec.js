@@ -9,11 +9,7 @@ describe('Messenger', () => {
   before(async () => {
     await connect(self)
 
-    respond('test', async () => {
-      await new Promise((resolve) => {
-        setTimeout(resolve, 100)
-      })
-
+    respond('test', () => {
       return 'response'
     })
   })
