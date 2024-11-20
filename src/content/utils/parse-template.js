@@ -1,5 +1,7 @@
 /* globals MANIFEST
  */
+import {parse} from 'handlebars'
+
 import {compileTemplate} from '../sandbox/sandbox-parent.js'
 import createContact from './create-contact.js'
 import templateFeatures from './template-features.js'
@@ -53,7 +55,7 @@ function contactsArray (contacts = []) {
 }
 
 const contactLists = ['to', 'cc', 'bcc']
-async function parseContext (data = {}, features = {}, template = '') {
+async function parseContext (data = {}, features = {}) {
   const context = structuredClone(data)
   contactLists.forEach((p) => {
     const propData = Array.isArray(context[p] || []) ? context[p] : [context[p]]
@@ -67,22 +69,30 @@ async function parseContext (data = {}, features = {}, template = '') {
     context.from = createContact(mergeContacts(context.account, context.from))
   }
 
-  if (features.partials) {
-    const templates = await getTemplates()
-    context._templates = templates
-      .filter((t) => t.shortcut?.trim?.() && t.body !== template)
-      .map((t) => ({ shortcut: t.shortcut, body: t.body }))
-  }
-
   return context
 }
 
 export default async function parseTemplate (template = '', data = {}) {
-  const features = templateFeatures(template)
-  const context = await parseContext(data, features, template)
+  let ast = {}
+  try {
+    ast = parse(template)
+  } catch (err) {
+    // template syntax error
+    return `<pre>${err.message || err}</pre>`
+  }
+
+  const features = templateFeatures(ast)
+  const context = await parseContext(data, features)
+  let partials = []
+  if (features.partials) {
+    const templates = await getTemplates()
+    partials = templates
+      .filter((t) => t.shortcut?.trim?.() && t.body !== template)
+      .map((t) => ({ shortcut: t.shortcut, body: t.body }))
+  }
 
   if (MANIFEST === '2') {
-    return compileTemplateLegacy(template, context)
+    return compileTemplateLegacy(template, context, partials)
   }
-  return compileTemplate(template, context)
+  return compileTemplate(template, context, partials)
 }

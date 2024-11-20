@@ -27,7 +27,7 @@ import and from '../helpers/and.js'
 import compare from '../helpers/compare.js'
 import random from '../helpers/random.js'
 
-function getHandlebars (templates = []) {
+function getHandlebars (partials = []) {
   const hbs = Handlebars.create()
 
   // legacy helpers
@@ -45,28 +45,20 @@ function getHandlebars (templates = []) {
   hbs.registerHelper('compare', compare)
   hbs.registerHelper('random', random)
 
-  if (templates?.length) {
-    templates.forEach((template) => {
-      hbs.registerPartial(template.shortcut, template.body)
+  if (partials?.length) {
+    partials.forEach((p) => {
+      hbs.registerPartial(p.shortcut, p.body)
     })
   }
 
   return hbs
 }
 
-export async function compileTemplate (template = '', context = {}) {
-  try {
-    const hbs = getHandlebars(context._templates)
-    if (context._templates) {
-      delete context._templates
-    }
-
-    return hbs.compile(template)(context)
-  } catch (err) {
-    return `<pre>${err.message || err}</pre>`
-  }
+export async function compileTemplate (template = '', context = {}, partials = []) {
+  const hbs = getHandlebars(partials)
+  return hbs.compile(template)(context)
 }
 
-respond(config.eventSandboxCompile, ({template, context}) => {
-  return compileTemplate(template, context)
+respond(config.eventSandboxCompile, ({template, context, partials}) => {
+  return compileTemplate(template, context, partials)
 })

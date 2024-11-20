@@ -32,25 +32,26 @@ customElements.define(
   }
 )
 
-function sendCompileMessage (template, context) {
+function sendCompileMessage (template, context, partials) {
   return request(config.eventSandboxCompile, {
     template: template,
     context: context,
+    partials: partials,
   })
 }
 
-export async function compileTemplate (template = '', context = {}) {
+export async function compileTemplate (template = '', context = {}, partials = []) {
   if (!sandboxInstance) {
     // create the sandbox instance on first call
     sandboxInstance = document.createElement(sandboxTagName)
     return new Promise((resolve) => {
       sandboxInstance.onload = () => {
-        sendCompileMessage(template, context).then(resolve)
+        sendCompileMessage(template, context, partials).then(resolve)
       }
       document.documentElement.appendChild(sandboxInstance)
     })
   } else {
-    return sendCompileMessage(template, context)
+    return sendCompileMessage(template, context, partials)
   }
 }
 
