@@ -53,7 +53,7 @@ function contactsArray (contacts = []) {
 }
 
 const contactLists = ['to', 'cc', 'bcc']
-async function parseContext (data = {}, features = {}) {
+async function parseContext (data = {}, features = {}, template = '') {
   const context = structuredClone(data)
   contactLists.forEach((p) => {
     const propData = Array.isArray(context[p] || []) ? context[p] : [context[p]]
@@ -69,7 +69,9 @@ async function parseContext (data = {}, features = {}) {
 
   if (features.partials) {
     const templates = await getTemplates()
-    context._templates = templates.filter((t) => t.shortcut)
+    context._templates = templates
+      .filter((t) => t.shortcut?.trim?.() && t.body !== template)
+      .map((t) => ({ shortcut: t.shortcut, body: t.body }))
   }
 
   return context
@@ -77,7 +79,7 @@ async function parseContext (data = {}, features = {}) {
 
 export default async function parseTemplate (template = '', data = {}) {
   const features = templateFeatures(template)
-  const context = await parseContext(data, features)
+  const context = await parseContext(data, features, template)
 
   if (MANIFEST === '2') {
     return compileTemplateLegacy(template, context)
