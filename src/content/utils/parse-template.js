@@ -92,7 +92,7 @@ export default async function parseTemplate (template = '', data = {}) {
   }
 
   if (MANIFEST === '2') {
-    return compileTemplateLegacy(template, context, partials)
+    return compileTemplateLegacy(ast, context, partials)
   }
-  return compileTemplate(template, context, partials)
+  return compileTemplate(ast, context, partials)
 }
