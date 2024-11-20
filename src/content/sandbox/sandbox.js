@@ -7,7 +7,7 @@
 // to the sandbox context, compile the templates here, and send them back to the content script.
 // https://developer.mozilla.org/en-US/docs/Web/API/Channel_Messaging_API
 
-import Handlebars from 'handlebars'
+import {create  as handlebarsCreate} from 'handlebars'
 
 import {respond} from './sandbox-messenger-client.js'
 import config from '../../config.js'
@@ -28,7 +28,7 @@ import compare from '../helpers/compare.js'
 import random from '../helpers/random.js'
 
 function getHandlebars (partials = []) {
-  const hbs = Handlebars.create()
+  const hbs = handlebarsCreate()
 
   // legacy helpers
   hbs.registerHelper('date', date)

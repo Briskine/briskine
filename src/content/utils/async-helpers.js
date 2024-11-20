@@ -1,4 +1,4 @@
-import Handlebars from 'handlebars'
+import {SafeString} from 'handlebars'
 
 const asyncHelperAttr = 'data-briskine-async-helper'
 
@@ -28,6 +28,6 @@ export function helper (fn = () => {}) {
       args: arguments,
     })
 
-    return new Handlebars.SafeString(`<div ${asyncHelperAttr}>123</div>`)
+    return new SafeString(`<div ${asyncHelperAttr}>123</div>`)
   }
 }
