@@ -11,7 +11,7 @@
     "start:firefox:android": "web-ext run --source-dir ./ext/ -t firefox-android",
     "staging": "webpack -w --mode=production --env mode=staging",
     "build": "webpack --mode=production --env mode=production",
-    "sourcebuild": "git archive --format zip --output sourcebuild/sourcebuild-${npm_package_version}.zip HEAD; zip -u sourcebuild/sourcebuild-${npm_package_version}.zip .firebase-config.json",
+    "sourcebuild": "git archive --format zip --output sourcebuild/sourcebuild-${npm_package_version}.zip HEAD; zip -u sourcebuild/sourcebuild-${npm_package_version}.zip .firebase-config-production.json",
     "lint": "eslint 'src/**/*.js' test/test-server.js",
     "playwright:firefox": "npm run build -- manifest=2 && playwright test --project=firefox",
     "playwright:chrome": "npm run build && playwright test --project=chromium",

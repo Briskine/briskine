@@ -22,7 +22,7 @@ xcuserdata/
 test/bundle
 
 # firebase config, for firefox reviewers
-.firebase-config.json
+.firebase-config*.json
 
 # playwright
 /test-results/
