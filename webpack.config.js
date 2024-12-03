@@ -209,7 +209,7 @@ function extensionConfig (params = {}) {
     optimization: {
       minimizer: [
         '...',
-        new CssMinimizerPlugin()
+        new CssMinimizerPlugin(),
       ]
     }
   }
@@ -225,12 +225,18 @@ export default async function (env) {
     const firebaseConfigFile = `./.firebase-config-${env.mode}.json`
     try {
       firebaseConfig = JSON.parse(fs.readFileSync(firebaseConfigFile, 'utf8'))
-    } catch (err) {
-      await firebaseTools.use(`gorgias-templates-${env.mode}`)
-      const appConfig = await firebaseTools.apps.sdkconfig()
-      firebaseConfig = appConfig.sdkConfig
+    } catch {
+      // needed for ci
+      try {
+        await firebaseTools.use(`gorgias-templates-${env.mode}`)
+        const appConfig = await firebaseTools.apps.sdkconfig()
+        firebaseConfig = appConfig.sdkConfig
 
-      fs.writeFileSync(firebaseConfigFile, JSON.stringify(firebaseConfig))
+        fs.writeFileSync(firebaseConfigFile, JSON.stringify(firebaseConfig))
+      } catch (err) {
+        // eslint-disable-next-line
+        console.warn(err)
+      }
     }
   }
 
