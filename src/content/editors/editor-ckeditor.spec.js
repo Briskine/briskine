@@ -35,7 +35,9 @@ describe('editor CKEditor', function () {
     $script.textContent = `
       import ClassicEditor from 'https://cdn.jsdelivr.net/npm/@ckeditor/ckeditor5-build-classic/+esm'
 
-      await ClassicEditor.create(document.querySelector('#ckeditor'))
+      await ClassicEditor.create(document.querySelector('#ckeditor'), {
+        licenseKey: 'GPL',
+      })
       window.dispatchEvent(new Event('ckeditor-ready'))
     `
     document.body.appendChild($script)

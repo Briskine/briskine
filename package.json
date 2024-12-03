@@ -60,7 +60,7 @@
     "globals": "^15.1.0",
     "http-server": "^14.1.1",
     "mini-css-extract-plugin": "^2.0.0",
-    "mocha": "^10.0.0",
+    "mocha": "^11.0.0",
     "mockdate": "^3.0.2",
     "puppeteer": "^23.3.0",
     "purgecss-webpack-plugin": "^6.0.0",
