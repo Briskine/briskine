@@ -1,6 +1,5 @@
 // Legacy date helper,
 // will be deprecated in the future.
-import Handlebars from 'handlebars'
 import moment from 'moment'
 
 //  format a date using Moment.js
@@ -8,7 +7,7 @@ import moment from 'moment'
 //  moment syntax example: moment(Date("2011-07-18T15:50:52")).format("MMMM YYYY")
 //  usage: {{date '+7' 'days' "DD MMMM"}} -> 13 December
 //  usage: {{date '-7' 'days' "DD MMMM YYYY"}} -> 29 November 2015
-function date (literal, unit, format) {
+export default function date (literal, unit, format) {
   format = typeof(format) === 'string' ? format : 'YYYY-MM-DD'
   unit = typeof(unit) === 'string' ? unit : 'days'
 
@@ -20,6 +19,3 @@ function date (literal, unit, format) {
 
   return moment().add(literal, unit).format(format)
 }
-
-Handlebars.registerHelper('date', date)
-

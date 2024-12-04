@@ -1,3 +1,4 @@
+/* globals Buffer */
 /* eslint-env node */
 import fs from 'fs'
 import webpack from 'webpack'
@@ -209,7 +210,7 @@ function extensionConfig (params = {}) {
     optimization: {
       minimizer: [
         '...',
-        new CssMinimizerPlugin()
+        new CssMinimizerPlugin(),
       ]
     }
   }
@@ -222,18 +223,17 @@ export default async function (env) {
 
   let firebaseConfig = defaultFirebaseConfig
   if (env.mode !== 'development') {
-    const firebaseConfigFile = './.firebase-config.json'
+    const firebaseConfigFile = `./.firebase-config-${env.mode}.json`
     try {
-      await firebaseTools.use(`gorgias-templates-${env.mode}`)
-      const appConfig = await firebaseTools.apps.sdkconfig()
-      firebaseConfig = appConfig.sdkConfig
-
-      fs.writeFileSync(firebaseConfigFile, JSON.stringify(firebaseConfig))
-    } catch(err) {
-      // eslint-disable-next-line
-      console.warn('Reading Firebase credentials from file. This is only meant for the Firefox Add-On review process.')
+      firebaseConfig = JSON.parse(fs.readFileSync(firebaseConfigFile, 'utf8'))
+    } catch {
+      // needed for ci
       try {
-        firebaseConfig = JSON.parse(fs.readFileSync(firebaseConfigFile, 'utf8'))
+        await firebaseTools.use(`gorgias-templates-${env.mode}`)
+        const appConfig = await firebaseTools.apps.sdkconfig()
+        firebaseConfig = appConfig.sdkConfig
+
+        fs.writeFileSync(firebaseConfigFile, JSON.stringify(firebaseConfig))
       } catch (err) {
         // eslint-disable-next-line
         console.warn(err)

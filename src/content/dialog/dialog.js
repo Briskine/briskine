@@ -3,7 +3,16 @@ import {Show, onMount, onCleanup, createSignal, createEffect, mergeProps} from '
 import {render} from 'solid-js/web'
 
 import config from '../../config.js'
-import store from '../../store/store-content.js'
+import {
+  getTemplates,
+  getTags,
+  getAccount,
+  getExtensionData,
+  on as storeOn,
+  off as storeOff,
+  searchTemplates,
+  openPopup,
+} from '../../store/store-content.js'
 import {isContentEditable} from '../editors/editor-contenteditable.js'
 import {bubbleTagName} from '../bubble/bubble.js'
 import {getEditableCaret, getContentEditableCaret, getDialogPosition} from './dialog-position.js'
@@ -232,11 +241,11 @@ function Dialog (originalProps) {
   }
 
   async function templatesUpdated () {
-    setTemplates(await store.getTemplates())
+    setTemplates(await getTemplates())
   }
 
   async function tagsUpdated () {
-    setTags(await store.getTags())
+    setTags(await getTags())
   }
 
   function extensionDataUpdated (data) {
@@ -244,7 +253,7 @@ function Dialog (originalProps) {
   }
 
   async function loadData () {
-    const extensionData = await store.getExtensionData()
+    const extensionData = await getExtensionData()
     extensionDataUpdated(extensionData)
 
     await templatesUpdated()
@@ -254,7 +263,7 @@ function Dialog (originalProps) {
   }
 
   function setAuthState () {
-    store.getAccount()
+    getAccount()
     .then(() => {
       return true
     })
@@ -348,12 +357,12 @@ function Dialog (originalProps) {
   onMount(() => {
     // check authentication state
     setAuthState()
-    store.on('login', setAuthState)
-    store.on('logout', setAuthState)
+    storeOn('login', setAuthState)
+    storeOn('logout', setAuthState)
 
-    store.on('templates-updated', templatesUpdated)
-    store.on('tags-updated', tagsUpdated)
-    store.on('extension-data-updated', extensionDataUpdated)
+    storeOn('templates-updated', templatesUpdated)
+    storeOn('tags-updated', tagsUpdated)
+    storeOn('extension-data-updated', extensionDataUpdated)
 
     let searchDebouncer
     searchField = element.querySelector('input[type=search]')
@@ -367,7 +376,7 @@ function Dialog (originalProps) {
       const searchValue = e.target.value
       if (searchValue) {
         searchDebouncer = setTimeout(async () => {
-          const {query, results} = await store.searchTemplates(searchValue)
+          const {query, results} = await searchTemplates(searchValue)
           if (query === searchValue) {
             setSearchQuery(searchValue)
             setSearchResults(results)
@@ -411,7 +420,7 @@ function Dialog (originalProps) {
       // login button
       if (target.closest('.dialog-login-btn')) {
         e.preventDefault()
-        store.openPopup()
+        openPopup()
         setVisible(false)
       }
     })
@@ -442,12 +451,12 @@ function Dialog (originalProps) {
     window.removeEventListener('keydown', hideOnEsc, true)
     window.removeEventListener('keydown', handleSearchFieldShortcuts, true)
 
-    store.off('login', setAuthState)
-    store.off('logout', setAuthState)
+    storeOff('login', setAuthState)
+    storeOff('logout', setAuthState)
 
-    store.off('templates-updated', templatesUpdated)
-    store.off('tags-updated', tagsUpdated)
-    store.off('extension-data-updated', extensionDataUpdated)
+    storeOff('templates-updated', templatesUpdated)
+    storeOff('tags-updated', tagsUpdated)
+    storeOff('extension-data-updated', extensionDataUpdated)
 
     window.removeEventListener('keydown', stopTargetPropagation, true)
     window.removeEventListener('keypress', stopTargetPropagation, true)

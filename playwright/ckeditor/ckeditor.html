@@ -7,7 +7,9 @@
   <body>
     <textarea id="editor"></textarea>
     <script>
-      ClassicEditor.create(document.querySelector('#editor'))
+      ClassicEditor.create(document.querySelector('#editor'), {
+        licenseKey: 'GPL',
+      })
     </script>
   </body>
 </html>

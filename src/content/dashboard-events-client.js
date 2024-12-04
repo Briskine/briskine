@@ -1,4 +1,4 @@
-import store from '../store/store-content.js'
+import {refetchCollections} from '../store/store-content.js'
 import config from '../config.js'
 
 const prefix = 'briskine-dashboard'
@@ -30,7 +30,7 @@ function clearCache (collection) {
   clearCacheTimer = setTimeout(() => {
     const updates = batchedUpdates.slice()
     refetching.then(() => {
-      refetching = store.refetchCollections(updates)
+      refetching = refetchCollections(updates)
     })
 
     clearCacheTimer = null

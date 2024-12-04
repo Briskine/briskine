@@ -1,1 +1,2 @@
+/* globals mocha */
 mocha.run()

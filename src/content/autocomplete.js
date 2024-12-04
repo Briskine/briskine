@@ -12,7 +12,7 @@ import zendeskPlugin from './plugins/zendesk.js'
 import crmPlugin from './plugins/crm.js'
 import universalPlugin from './plugins/universal.js'
 
-import store from '../store/store-content.js'
+import {updateTemplateStats} from '../store/store-content.js'
 import {isContentEditable} from './editors/editor-contenteditable.js'
 
 // register plugins,
@@ -124,6 +124,6 @@ export function getSelectedWord (params) {
 
 export async function autocomplete (params) {
   await runPlugins(Object.assign({}, params))
-  await store.updateTemplateStats(params.quicktext)
+  await updateTemplateStats(params.quicktext)
   return params
 }

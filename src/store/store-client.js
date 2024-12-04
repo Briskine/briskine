@@ -1,7 +1,6 @@
 import browser from 'webextension-polyfill'
 
 import config from '../config.js'
-import methods from './store-methods.js'
 
 function createRequest (type) {
   return (params) => {
@@ -31,14 +30,14 @@ function createRequest (type) {
 }
 
 let events = []
-function on (name, callback) {
+export function on (name, callback) {
   events.push({
     name: name,
     callback: callback
   })
 }
 
-function off (name, callback) {
+export function off (name, callback) {
   events = events.filter((e) => {
     if (e.name === name && e.callback === callback) {
       return false
@@ -65,12 +64,20 @@ browser.runtime.onMessage.addListener((req) => {
   }
 })
 
-const clientStore = {}
-methods.forEach((method) => {
-  clientStore[method] = createRequest(method)
-})
-
-clientStore.on = on
-clientStore.off = off
-
-export default clientStore
+export const getSettings = createRequest('getSettings')
+export const getAccount = createRequest('getAccount')
+export const getCustomer = createRequest('getCustomer')
+export const setActiveCustomer = createRequest('setActiveCustomer')
+export const getTemplates = createRequest('getTemplates')
+export const updateTemplateStats = createRequest('updateTemplateStats')
+export const searchTemplates = createRequest('searchTemplates')
+export const getTags = createRequest('getTags')
+export const signin = createRequest('signin')
+export const logout = createRequest('logout')
+export const getSession = createRequest('getSession')
+export const getExtensionData = createRequest('getExtensionData')
+export const setExtensionData = createRequest('setExtensionData')
+export const openPopup = createRequest('openPopup')
+export const refetchCollections = createRequest('refetchCollections')
+export const autosync = createRequest('autosync')
+export const isCached = createRequest('isCached')

@@ -1,7 +1,15 @@
 import {createSignal, createResource, Show, Switch, Match, onMount, For, createMemo} from 'solid-js'
 
 import config from '../config.js'
-import store from '../store/store-content.js'
+import {
+  autosync,
+  getExtensionData,
+  setActiveCustomer,
+  getAccount,
+  getCustomer,
+  getSession,
+  logout,
+} from '../store/store-content.js'
 
 import ArrowRepeat from 'bootstrap-icons/icons/arrow-repeat.svg'
 import PlusSquareFill from 'bootstrap-icons/icons/plus-square-fill.svg'
@@ -61,8 +69,8 @@ export default function PopupDashboard () {
   const [lastSync, setLastSync] = createSignal(Date.now())
   const [sync, setSync] = createSignal({})
   const [syncRequest] = createResource(sync, async ({timeout}) => {
-    await store.autosync(timeout)
-    const data = await store.getExtensionData()
+    await autosync(timeout)
+    const data = await getExtensionData()
     setLastSync(new Date(data.lastSync))
 
     return refreshAccount()
@@ -85,7 +93,7 @@ export default function PopupDashboard () {
   const [customer, setCustomer] = createSignal()
   // eslint-disable-next-line solid/reactivity
   const [switchCustomerRequest] = createResource(customer, async (customerId) => {
-    await store.setActiveCustomer(customerId)
+    await setActiveCustomer(customerId)
     setUser({
       ...user(),
       ...{customer: customerId}
@@ -93,13 +101,13 @@ export default function PopupDashboard () {
   })
 
   async function refreshAccount () {
-    const account = await store.getAccount()
+    const account = await getAccount()
     setUser(account)
 
     await Promise.all(
       account.customers.map((customerId) => {
         // eslint-disable-next-line solid/reactivity
-        return store.getCustomer(customerId).then((customerData) => {
+        return getCustomer(customerId).then((customerData) => {
           const updatedCustomers = {...customers()}
           updatedCustomers[customerId] = customerData
           setCustomers(updatedCustomers)
@@ -122,7 +130,7 @@ export default function PopupDashboard () {
   }
 
   onMount(async () => {
-    const extensionData = await store.getExtensionData()
+    const extensionData = await getExtensionData()
     setLastSync(new Date(extensionData.lastSync))
     setStats(getStats(extensionData.words))
 
@@ -130,7 +138,7 @@ export default function PopupDashboard () {
     setSync({})
 
     // update session
-    store.getSession()
+    getSession()
   })
 
   return (
@@ -271,7 +279,7 @@ export default function PopupDashboard () {
           <button
             type="button"
             class="btn btn-link btn-logout"
-            onClick={() => store.logout()}
+            onClick={() => logout()}
             >
             Log out
           </button>

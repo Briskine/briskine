@@ -5,14 +5,18 @@ import './popup.css'
 
 import PopupLogin from './popup-login.js'
 import PopupDashboard from './popup-dashboard.js'
-import store from '../store/store-content.js'
+import {
+  getAccount,
+  setup as storeSetup,
+  on as storeOn,
+} from '../store/store-content.js'
 import setTheme from './popup-theme.js'
 
 export default function PopupContainer () {
   const [loggedIn, setLoggedIn] = createSignal(null)
 
   function checkLogin() {
-    return store.getAccount()
+    return getAccount()
     .then(() => {
       setLoggedIn(true)
       return
@@ -25,10 +29,10 @@ export default function PopupContainer () {
 
   onMount(() => {
     setTheme()
-    store.setup()
+    storeSetup()
     checkLogin()
 
-    store.on('login', () => {
+    storeOn('login', () => {
       // close window when the popup is opened as a new tab, not browser action.
       // eg. opened from the dialog
       const urlParams = new URLSearchParams(window.location.search)
@@ -39,7 +43,7 @@ export default function PopupContainer () {
       return checkLogin()
     })
 
-    store.on('logout', () => {
+    storeOn('logout', () => {
       checkLogin()
     })
   })

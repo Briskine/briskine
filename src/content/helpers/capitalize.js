@@ -1,7 +1,5 @@
 // capitalize string helper
-import Handlebars from 'handlebars'
-
-function capitalize (str = '') {
+export function capitalize (str = '') {
   if (typeof str !== 'string') {
     return ''
   }
@@ -9,9 +7,7 @@ function capitalize (str = '') {
   return str.charAt(0).toUpperCase() + str.slice(1)
 }
 
-Handlebars.registerHelper('capitalize', capitalize)
-
-function capitalizeAll (str = '') {
+export function capitalizeAll (str = '') {
   if (typeof str !== 'string') {
     return ''
   }
@@ -20,5 +16,3 @@ function capitalizeAll (str = '') {
     return capitalize(word)
   })
 }
-
-Handlebars.registerHelper('capitalizeAll', capitalizeAll)

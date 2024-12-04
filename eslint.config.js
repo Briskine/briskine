@@ -16,4 +16,11 @@ export default [
       'no-console': 'error',
     },
   },
+  {
+    ignores: [
+      'ext/*',
+      'test/bundle/*',
+      'safari/*',
+    ],
+  },
 ]

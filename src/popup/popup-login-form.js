@@ -1,12 +1,12 @@
 import {createSignal, createResource, Show} from 'solid-js'
 
 import config from '../config.js'
-import store from '../store/store-content.js'
+import {signin} from '../store/store-content.js'
 
 export default function PopupLoginForm ()  {
   const [credentials, setCredentials] = createSignal()
   const [signinRequest] = createResource(credentials, (data) => {
-    return store.signin({
+    return signin({
         email: data.email,
         password: data.password,
       })

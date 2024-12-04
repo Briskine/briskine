@@ -7,33 +7,58 @@
 // to the sandbox context, compile the templates here, and send them back to the content script.
 // https://developer.mozilla.org/en-US/docs/Web/API/Channel_Messaging_API
 
-import Handlebars from 'handlebars'
+import {create  as handlebarsCreate} from 'handlebars'
 
 import {respond} from './sandbox-messenger-client.js'
 import config from '../../config.js'
 
 // legacy date helper
-import '../helpers/date.js'
+import date from '../helpers/date.js'
+// legacy choice helper
+import choice from '../helpers/choice.js'
 
-import '../helpers/moment.js'
-import '../helpers/choice.js'
-import '../helpers/domain.js'
-import '../helpers/text.js'
-import '../helpers/list.js'
-import '../helpers/capitalize.js'
-import '../helpers/or.js'
-import '../helpers/and.js'
-import '../helpers/compare.js'
-import '../helpers/random.js'
+import moment from '../helpers/moment.js'
+import domain from '../helpers/domain.js'
+import text from '../helpers/text.js'
+import list from '../helpers/list.js'
+import {capitalize, capitalizeAll} from '../helpers/capitalize.js'
+import or from '../helpers/or.js'
+import and from '../helpers/and.js'
+import compare from '../helpers/compare.js'
+import random from '../helpers/random.js'
 
-export async function compileTemplate (template = '', context = {}) {
-  try {
-    return Handlebars.compile(template)(context)
-  } catch (err) {
-    return `<pre>${err.message || err}</pre>`
+function getHandlebars (partials = []) {
+  const hbs = handlebarsCreate()
+
+  // legacy helpers
+  hbs.registerHelper('date', date)
+  hbs.registerHelper('choice', choice)
+
+  hbs.registerHelper('and', and)
+  hbs.registerHelper('moment', moment)
+  hbs.registerHelper('domain', domain)
+  hbs.registerHelper('text', text)
+  hbs.registerHelper('list', list)
+  hbs.registerHelper('capitalize', capitalize)
+  hbs.registerHelper('capitalizeAll', capitalizeAll)
+  hbs.registerHelper('or', or)
+  hbs.registerHelper('compare', compare)
+  hbs.registerHelper('random', random)
+
+  if (partials?.length) {
+    partials.forEach((p) => {
+      hbs.registerPartial(p.shortcut, p.body)
+    })
   }
+
+  return hbs
 }
 
-respond(config.eventSandboxCompile, ({template, context}) => {
-  return compileTemplate(template, context)
+export async function compileTemplate (template = '', context = {}, partials = []) {
+  const hbs = getHandlebars(partials)
+  return hbs.compile(template)(context)
+}
+
+respond(config.eventSandboxCompile, ({template, context, partials}) => {
+  return compileTemplate(template, context, partials)
 })
