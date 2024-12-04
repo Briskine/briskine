@@ -1,3 +1,4 @@
+/* globals mocha */
 /* Mocha startup
  */
 

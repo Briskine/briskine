@@ -1,3 +1,4 @@
+/* globals Buffer */
 /* eslint-env node */
 import fs from 'fs'
 import webpack from 'webpack'
