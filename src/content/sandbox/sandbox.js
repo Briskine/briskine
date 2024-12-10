@@ -56,7 +56,12 @@ function getHandlebars (partials = []) {
 
 export async function compileTemplate (template = '', context = {}, partials = []) {
   const hbs = getHandlebars(partials)
-  return hbs.compile(template)(context)
+  try {
+    return hbs.compile(template)(context)
+  } catch (err) {
+    // catch compilation errors like "missing helper" or "missing partial"
+    return `<pre>${err.message || err}</pre>`
+  }
 }
 
 respond(config.eventSandboxCompile, ({template, context, partials}) => {
