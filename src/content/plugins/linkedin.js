@@ -5,6 +5,7 @@ import parseTemplate from '../utils/parse-template.js';
 import {isQuill} from '../editors/editor-quill.js';
 import {insertTemplate} from '../editors/editor-universal.js';
 import {insertContentEditableTemplate} from '../editors/editor-contenteditable.js';
+import {insertPasteTemplate} from '../editors/editor-paste.js'
 import htmlToText from '../utils/html-to-text.js';
 import createContact from '../utils/create-contact.js';
 import {enableBubble} from '../bubble/bubble.js';
@@ -241,36 +242,16 @@ export default async (params = {}) => {
     // separate handling required for multi-line templates.
     if (isMessageEditor(params.element)) {
         await before(parsedParams, data);
-        insertContentEditableTemplate(parsedParams);
 
-        // sends an empty paste event so the editor restructures the dom
-        // making it aware of the newlines.
-        // otherwise, when we press Enter, multi line templates will be
-        // compressed to one line.
-        try {
-            const clipboardData = new DataTransfer();
-            // zero-width no-break space
-            // required for multi-line templates.
-            // using the regular zero-width space causes links to include it in urls.
-            const zeroWidthNoBrakeSpace = '\ufeff';
-            clipboardData.setData('text/plain', zeroWidthNoBrakeSpace);
-            const customPasteEvent = new ClipboardEvent('paste', {
-                bubbles: true,
-                clipboardData: clipboardData
-            });
-            params.element.dispatchEvent(customPasteEvent);
-        } catch {
-            // will throw an error on Safari
-            // because it doesn't support the DataTransfer constructor
-            // or passing custom clipboard data in the Event constructor,
-            // required for clipboardData.
-            // Adding a fake clipboardData property to an existing event
-            // also doesn't work, because it strips the entire object
-            // by the time it reaches the event handler.
-            // Until it supports the DataTransfer constructor,
-            // multi-line templates will be inserted as one liners,
-            // in LinkedIn messaging on Safari.
-        }
+        const templateWithAttachments = addAttachments(
+          await parseTemplate(params.quicktext.body, data),
+          params.quicktext.attachments,
+        )
+
+        insertPasteTemplate({
+          text: templateWithAttachments,
+          ...params,
+        })
 
         return true;
     }
