@@ -168,11 +168,12 @@ function isActive () {
 }
 
 function isMessageEditor (element) {
-    return (
-        element &&
-        element.getAttribute('contenteditable') === 'true' &&
-        element.getAttribute('role') === 'textbox'
-    );
+  return (
+    element &&
+    element.getAttribute('contenteditable') === 'true' &&
+    element.getAttribute('role') === 'textbox' &&
+    !element.classList.contains('ql-editor')
+  )
 }
 
 function setup () {
@@ -190,19 +191,11 @@ export default async (params = {}) => {
         return false;
     }
 
-    var data = getData(params);
-    // insert only plain text on linkedin
-    const parsedTemplate = htmlToText(
-      addAttachments(
-        await parseTemplate(params.quicktext.body, data),
-        params.quicktext.attachments
-      )
+    const data = getData(params)
+    const templateWithAttachments = addAttachments(
+      await parseTemplate(params.quicktext.body, data),
+      params.quicktext.attachments,
     )
-
-
-    const parsedParams = Object.assign({
-        text: parsedTemplate
-    }, params);
 
     // Quill is used for posts and comments
     if (isQuill(params.element)) {
@@ -216,37 +209,28 @@ export default async (params = {}) => {
         // (at the end of the inserted template).
 
         // parsed template with special char
-        const updatedTemplate = `${parsedTemplate}${specialChar}`;
-        insertContentEditableTemplate(
-            Object.assign(
-                {},
-                parsedParams,
-                {
-                    text: updatedTemplate
-                }
-            )
-        );
+        const templateWithSpecialChar = `${htmlToText(templateWithAttachments)}${specialChar}`
+
+        insertContentEditableTemplate({
+          text: templateWithSpecialChar,
+          ...params,
+        })
 
         // wait for the LinkedIn editor to restructure the inserted template nodes.
         const editorUpdate = new MutationObserver((mutationsList, observer) => {
-            // find the previously-placed special character in the editor contents.
-            focusSpecialCharacter(params.element);
-            observer.disconnect();
-        });
-        editorUpdate.observe(params.element, {childList: true, subtree: true});
+          // find the previously-placed special character in the editor contents.
+          focusSpecialCharacter(params.element)
+          observer.disconnect()
+        })
+        editorUpdate.observe(params.element, {childList: true, subtree: true})
 
-        return true;
+        return true
     }
 
     // messaging, ember editor.
     // separate handling required for multi-line templates.
     if (isMessageEditor(params.element)) {
-        await before(parsedParams, data);
-
-        const templateWithAttachments = addAttachments(
-          await parseTemplate(params.quicktext.body, data),
-          params.quicktext.attachments,
-        )
+        await before(params, data);
 
         insertPasteTemplate({
           text: templateWithAttachments,
@@ -257,6 +241,9 @@ export default async (params = {}) => {
     }
 
     // generic editor, including textareas
-    insertTemplate(parsedParams);
-    return true;
+    insertTemplate({
+      text: templateWithAttachments,
+      ...params,
+    })
+    return true
 };
