@@ -162,13 +162,6 @@ function Dialog (originalProps) {
     e.stopPropagation()
     e.preventDefault()
 
-    // cache selection details, to restore later
-    const selection = getSelection(node)
-    anchorNode = selection.anchorNode
-    anchorOffset = selection.anchorOffset
-    focusNode = selection.focusNode
-    focusOffset = selection.focusOffset
-
     // cache editor,
     // to use for inserting templates or restoring later.
     editor = document.activeElement
@@ -176,6 +169,13 @@ function Dialog (originalProps) {
     if (editor.shadowRoot) {
       editor = editor.shadowRoot.activeElement
     }
+
+    // cache selection details, to restore later
+    const selection = getSelection(editor)
+    anchorNode = selection.anchorNode
+    anchorOffset = selection.anchorOffset
+    focusNode = selection.focusNode
+    focusOffset = selection.focusOffset
 
     word = getSelectedWord({
       element: editor
