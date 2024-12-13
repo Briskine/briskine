@@ -77,7 +77,7 @@ export default async function parseTemplate (template = '', data = {}) {
   try {
     ast = parse(template)
   } catch (err) {
-    // template syntax error
+    // catch syntax errors
     return `<pre>${err.message || err}</pre>`
   }
 
