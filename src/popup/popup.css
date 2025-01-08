@@ -266,7 +266,7 @@ a:hover,
   padding-bottom: .4em;
   padding-right: 0;
 
-  color: var(--bs-secondary);
+  color: var(--bs-secondary-color);
   font-size: inherit;
 }
 
