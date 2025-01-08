@@ -90,7 +90,7 @@ function getBccContainer (editable) {
 
 function getFieldButton (editable, length = 2) {
   // [data-app-section] for the compose popup view.
-  return Array.from(getParent(editable).querySelectorAll('.ms-Button--command'))
+  return Array.from(getParent(editable).querySelectorAll('.fui-Input button'))
     .find(($node) => {
       return $node.innerText.length === length
     })
@@ -108,7 +108,7 @@ function getBccButton (editable) {
 
 function getSuggestionButton (email) {
   // "use this address" not in contact list
-  const $nonContactList = document.querySelectorAll(`.ms-Suggestions-sectionButton`)
+  const $nonContactList = document.querySelectorAll(`.ms-Suggestions-headerContainer button`)
   if (
     $nonContactList.length
     && Array.from($nonContactList).find(($node) => $node.innerText.includes(email))
