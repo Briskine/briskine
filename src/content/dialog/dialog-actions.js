@@ -4,7 +4,7 @@ import {For} from 'solid-js'
 import IconPlusSquare from 'bootstrap-icons/icons/plus-square.svg'
 import IconArchive from 'bootstrap-icons/icons/archive.svg'
 import IconQuestionCircle from 'bootstrap-icons/icons/question-circle.svg'
-import IconTwitter from 'bootstrap-icons/icons/twitter.svg'
+import IconTwitterX from 'bootstrap-icons/icons/twitter-x.svg'
 import IconGlobe from 'bootstrap-icons/icons/globe.svg'
 
 import config from '../../config.js'
@@ -35,9 +35,9 @@ const actions = [
     class: 'dialog-safari-hide',
   },
   {
-    title: 'Follow us on Twitter',
-    icon: IconTwitter,
-    href: 'https://twitter.com/briskineapp',
+    title: 'Follow us on X',
+    icon: IconTwitterX,
+    href: 'https://x.com/briskineapp',
   },
 ]
 

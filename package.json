@@ -1,6 +1,6 @@
 {
   "name": "briskine",
-  "version": "7.14.1",
+  "version": "7.14.2",
   "description": "Write everything faster.",
   "private": true,
   "type": "module",
@@ -66,7 +66,7 @@
     "purgecss-webpack-plugin": "^7.0.0",
     "web-ext": "^8.0.0",
     "webpack": "^5.11.1",
-    "webpack-cli": "^5.0.0"
+    "webpack-cli": "^6.0.0"
   },
   "dependencies": {
     "@webcomponents/custom-elements": "^1.4.3",
