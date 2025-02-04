@@ -5,7 +5,7 @@ on:
     branches: [ master ]
 
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
 
     strategy:
@@ -13,12 +13,16 @@ jobs:
         node-version: [latest]
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v3
+      uses: actions/setup-node@v4
       with:
         node-version: ${{ matrix.node-version }}
+
+    # This is needed to run headless Chrome on Ubuntu 24.04.
+    - name: Disable AppArmor
+      run: echo 0 | sudo tee /proc/sys/kernel/apparmor_restrict_unprivileged_userns
 
     - name: npm install
       run: npm install
