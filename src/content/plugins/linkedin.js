@@ -233,7 +233,11 @@ export default async (params = {}) => {
     await before(params, data)
 
     insertPasteTemplate({
-      text: templateWithAttachments,
+      // send only plain text to the paste editor.
+      // if the template contains html comments,
+      // LinkedIn inserts the complete html markup.
+      // LinkedIn messages support only plain text anyway.
+      text: htmlToText(templateWithAttachments),
       ...params,
     })
 

@@ -70,7 +70,9 @@ export function getDefaultTemplates () {
   ]
 
   if (ENV === 'development') {
-    let allVarsBody = [ 'account', 'from' ].map((field) => {
+    let allVarsBody = '<!-- Comment -->'
+
+    allVarsBody += [ 'account', 'from' ].map((field) => {
       return `
         <div>
           <strong># ${field}</strong>
