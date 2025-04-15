@@ -67,7 +67,7 @@ function getData (params) {
   // message thread in Messaging interface
   const messagingUiThread = '.msg-thread'
   // thread in message bubble/dialog
-  const bubbleMessageThread = '.msg-overlay-conversation-bubble__content-wrapper'
+  const bubbleMessageThread = '[data-msg-overlay-conversation-bubble-open]'
   // post in feed
   const feedPost = '.feed-shared-update-v2'
   // select any
@@ -75,8 +75,7 @@ function getData (params) {
 
   // contact name in message threads
   const messageContactName = '.msg-s-event-listitem--other .msg-s-message-group__name'
-  // contact name in message threads, when contact hasn't replied - from thread title
-  const messageContentTitleName = '.artdeco-entity-lockup__title'
+  const messageContentTitleName = '.msg-overlay-bubble-header__title'
   // contact name is new message
   const newMessageContact = '.artdeco-pill'
   // contact name in feed post
