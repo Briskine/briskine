@@ -5,13 +5,24 @@
   </head>
   <body>
     <div id="lexical-container"></div>
+    <script type="importmap">
+      {
+        "imports": {
+          "react": "https://esm.sh/react@19/?dev",
+          "react-dom": "https://esm.sh/react-dom@19/client?dev",
+          "@lexical/react/LexicalComposer": "https://esm.sh/@lexical/react@0.30/LexicalComposer/?dev",
+          "@lexical/react/LexicalPlainTextPlugin": "https://esm.sh/@lexical/react@0.30/LexicalPlainTextPlugin/?dev",
+          "@lexical/react/LexicalContentEditable": "https://esm.sh/@lexical/react@0.30/LexicalContentEditable/?dev"
+        }
+      }
+    </script>
     <script type="module">
-      import {createElement} from 'https://cdn.jsdelivr.net/npm/react@18/+esm'
-      import {createRoot} from 'https://cdn.jsdelivr.net/npm/react-dom@18/client/+esm'
+      import {createElement} from 'react'
+      import {createRoot} from 'react-dom'
 
-      import {LexicalComposer} from 'https://cdn.jsdelivr.net/npm/@lexical/react@0.14.4/LexicalComposer/+esm'
-      import {PlainTextPlugin} from 'https://cdn.jsdelivr.net/npm/@lexical/react@0.14.4/LexicalPlainTextPlugin/+esm'
-      import {ContentEditable} from 'https://cdn.jsdelivr.net/npm/@lexical/react@0.14.4/LexicalContentEditable/+esm'
+      import {LexicalComposer} from '@lexical/react/LexicalComposer'
+      import {PlainTextPlugin} from '@lexical/react/LexicalPlainTextPlugin'
+      import {ContentEditable} from '@lexical/react/LexicalContentEditable'
 
       function Editor () {
         const initialConfig = {
