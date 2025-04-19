@@ -75,21 +75,25 @@ function getData (params) {
 
   // contact name in message threads
   const messageContactName = '.msg-s-event-listitem--other .msg-s-message-group__name'
-  // contact name in bubble/dialog title
-  const messageContentTitleName = '.msg-overlay-bubble-header__title'
-  // contact name from Messaging view title, when contact hasn't replied yet
+  // contact name from message header, in message dialogs/bubbles
+  // most used in inMail new messages (where the bubble title is "New message", not the contact name)
+  const messageHeaderContactName = '.profile-card-one-to-one__profile-link'
+  // contact name from full-page Messaging view title, when contact hasn't replied yet
   // (or last message is above fold and lazy loaded)
   const messagingViewTitleName = '.msg-entity-lockup__entity-title'
   // contact name in new message
   const newMessageContact = '.artdeco-pill'
   // contact name in feed post
   const feedContactName = '.feed-shared-actor__name'
+  // contact name in bubble/dialog title
+  const messageContentTitleName = '.msg-overlay-bubble-header__title'
   // select any
   const contactNameSelector = `
   ${messageContactName},
+  ${messageHeaderContactName},
   ${messagingViewTitleName},
-  ${feedContactName},
   ${newMessageContact},
+  ${feedContactName},
   ${messageContentTitleName}
   `
 
