@@ -36,9 +36,9 @@ function getToName (element) {
   }
 
   // inMail message
-  const $salesToName = element.parentNode.querySelector('.artdeco-entity-lockup__title')
-  if ($salesToName) {
-    return $salesToName.innerText
+  const $inMailName = element?.closest?.('.msg-inmail-compose-form-v2')?.querySelector?.('.artdeco-entity-lockup__title')
+  if ($inMailName) {
+    return $inMailName?.innerText
   }
 
   // message thread in Messaging interface
