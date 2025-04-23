@@ -41,45 +41,42 @@ function getToName (element) {
     return $inMailName?.innerText
   }
 
-  // message thread in Messaging interface
-  const messagingUiThread = '.msg-thread'
-  // thread in message bubble/dialog
-  const bubbleMessageThread = '[data-msg-overlay-conversation-bubble-open]'
-  // post in feed
-  const feedPost = '.feed-shared-update-v2'
-  // select any
-  const messageThreadSelector = `${messagingUiThread}, ${bubbleMessageThread}, ${feedPost}`
+  const messageThreadSelectors = [
+    // organization inbox thread
+    '.org-inbox-thread__container',
+    // message thread in Messaging interface
+    '.msg-thread',
+    // thread in message bubble/dialog
+    '[data-msg-overlay-conversation-bubble-open]',
+    // post in feed
+    '.feed-shared-update-v2',
+  ]
 
-  // contact name in message threads
-  const messageContactName = '.msg-s-event-listitem--other .msg-s-message-group__name'
-  // contact name from message header, in message dialogs/bubbles
-  // most used in inMail new messages (where the bubble title is "New message", not the contact name)
-  const messageHeaderContactName = '.profile-card-one-to-one__profile-link'
-  // contact name from full-page Messaging view title, when contact hasn't replied yet
-  // (or last message is above fold and lazy loaded)
-  const messagingViewTitleName = '.msg-entity-lockup__entity-title'
-  // contact name in new message
-  const newMessageContact = '.artdeco-pill'
-  // contact name in feed post
-  const feedContactName = '.feed-shared-actor__name'
-  // contact name in bubble/dialog title
-  const messageContentTitleName = '.msg-overlay-bubble-header__title'
-  // select any
-  const contactNameSelector = `
-  ${messageContactName},
-  ${messageHeaderContactName},
-  ${messagingViewTitleName},
-  ${newMessageContact},
-  ${feedContactName},
-  ${messageContentTitleName}
-  `
+  const contactNameSelectors = [
+    // contact name in organization inbox message threads
+    '.org-inbox-thread__link-to-profile',
+    // contact name in message threads
+    '.msg-s-event-listitem--other .msg-s-message-group__name',
+    // contact name from message header, in message dialogs/bubbles
+    // most used in inMail new messages (where the bubble title is "New message", not the contact name)
+    '.profile-card-one-to-one__profile-link',
+    // contact name from full-page Messaging view title, when contact hasn't replied yet
+    // (or last message is above fold and lazy loaded)
+    '.msg-entity-lockup__entity-title',
+    // contact name in new message
+    '.artdeco-pill',
+    // contact name in feed post
+    '.feed-shared-actor__name',
+    // contact name in bubble/dialog title
+    '.msg-overlay-bubble-header__title',
+  ]
 
-  const $thread = element.closest(messageThreadSelector)
+  const $thread = element.closest(messageThreadSelectors.join(','))
   // check if a message thread is visible,
   // otherwise we're in a non-messaging textfield.
   if ($thread) {
     // get the contacts from the thread, that is not ours
-    const $contacts = $thread.querySelectorAll(contactNameSelector)
+    const $contacts = $thread.querySelectorAll(contactNameSelectors.join(','))
     if ($contacts.length) {
       // get the current messaging contact
       const $contact = $contacts.item($contacts.length - 1)
