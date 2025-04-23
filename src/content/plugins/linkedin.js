@@ -35,7 +35,7 @@ function getToName (element) {
     return profilePictureAlt.replace(', #OPEN_TO_WORK', '')
   }
 
-  // Sales Navigator Connect
+  // inMail message
   const $salesToName = element.parentNode.querySelector('.artdeco-entity-lockup__title')
   if ($salesToName) {
     return $salesToName.innerText
