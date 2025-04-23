@@ -26,15 +26,7 @@ async function before (params, data) {
 }
 
 function getToName (element) {
-  // get the to field from the current viewed profile by default
-  // eg. for the connect > add note field.
-  const $currentProfilePicture = document.querySelector('img[width="200"][height="200"], img[class*="pv-top-card-profile-picture"]')
-  if ($currentProfilePicture && $currentProfilePicture.hasAttribute('alt')) {
-    const profilePictureAlt = $currentProfilePicture.getAttribute('alt') || ''
-    // remove open to work badge
-    return profilePictureAlt.replace(', #OPEN_TO_WORK', '')
-  }
-
+  // get the contact name from messages
   const messageThreadSelectors = [
     // inMail messsage thread
     '.msg-inmail-compose-form-v2',
@@ -92,6 +84,15 @@ function getToName (element) {
   if ($salesConversation) {
     const $salesName = $salesConversation.querySelector('.artdeco-entity-lockup__title span:first-child')
     return $salesName.innerText
+  }
+
+  // get the to field from the current viewed profile
+  // eg. for the connect > add note field.
+  const $currentProfilePicture = document.querySelector('img[width="200"][height="200"], img[class*="pv-top-card-profile-picture"]')
+  if ($currentProfilePicture && $currentProfilePicture.hasAttribute('alt')) {
+    const profilePictureAlt = $currentProfilePicture.getAttribute('alt') || ''
+    // remove open to work badge
+    return profilePictureAlt.replace(', #OPEN_TO_WORK', '')
   }
 
   return ''
