@@ -86,7 +86,7 @@ function getToName (element) {
     return $salesName.innerText
   }
 
-  // get the to field from the current viewed profile
+  // get the to field from the currently viewed profile
   // eg. for the connect > add note field.
   const $currentProfilePicture = document.querySelector('img[width="200"][height="200"], img[class*="pv-top-card-profile-picture"]')
   if ($currentProfilePicture && $currentProfilePicture.hasAttribute('alt')) {
