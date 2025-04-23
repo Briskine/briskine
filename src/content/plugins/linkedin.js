@@ -35,13 +35,9 @@ function getToName (element) {
     return profilePictureAlt.replace(', #OPEN_TO_WORK', '')
   }
 
-  // inMail message
-  const $inMailName = element?.closest?.('.msg-inmail-compose-form-v2')?.querySelector?.('.artdeco-entity-lockup__title')
-  if ($inMailName) {
-    return $inMailName?.innerText
-  }
-
   const messageThreadSelectors = [
+    // inMail messsage thread
+    '.msg-inmail-compose-form-v2',
     // organization inbox thread
     '.org-inbox-thread__container',
     // message thread in Messaging interface
@@ -60,6 +56,8 @@ function getToName (element) {
     // contact name from message header, in message dialogs/bubbles
     // most used in inMail new messages (where the bubble title is "New message", not the contact name)
     '.profile-card-one-to-one__profile-link',
+    // inMail message header
+    '.artdeco-entity-lockup__title',
     // contact name from full-page Messaging view title, when contact hasn't replied yet
     // (or last message is above fold and lazy loaded)
     '.msg-entity-lockup__entity-title',
