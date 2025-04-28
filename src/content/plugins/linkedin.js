@@ -25,6 +25,79 @@ async function before (params, data) {
   }
 }
 
+function getToName (element) {
+  // get the contact name from messages
+  const messageThreadSelectors = [
+    // inMail messsage thread
+    '.msg-inmail-compose-form-v2',
+    // organization inbox thread
+    '.org-inbox-thread__container',
+    // message thread in Messaging interface
+    '.msg-thread',
+    // thread in message bubble/dialog
+    '[data-msg-overlay-conversation-bubble-open]',
+    // post in feed
+    '.feed-shared-update-v2',
+  ]
+
+  const contactNameSelectors = [
+    // contact name in organization inbox message threads
+    '.org-inbox-thread__link-to-profile',
+    // contact name in message threads
+    '.msg-s-event-listitem--other .msg-s-message-group__name',
+    // contact name from message header, in message dialogs/bubbles
+    // most used in inMail new messages (where the bubble title is "New message", not the contact name)
+    '.profile-card-one-to-one__profile-link',
+    // inMail message header
+    '.artdeco-entity-lockup__title',
+    // contact name from full-page Messaging view title, when contact hasn't replied yet
+    // (or last message is above fold and lazy loaded)
+    '.msg-entity-lockup__entity-title',
+    // contact name in new message
+    '.artdeco-pill',
+    // contact name in feed post
+    '.feed-shared-actor__name',
+    // contact name in bubble/dialog title
+    '.msg-overlay-bubble-header__title',
+  ]
+
+  const $thread = element.closest(messageThreadSelectors.join(','))
+  // check if a message thread is visible,
+  // otherwise we're in a non-messaging textfield.
+  if ($thread) {
+    // get the contacts from the thread, that is not ours
+    const $contacts = $thread.querySelectorAll(contactNameSelectors.join(','))
+    if ($contacts.length) {
+      // get the current messaging contact
+      const $contact = $contacts.item($contacts.length - 1)
+      // make sure we're not getting "New message" from the message dialog title.
+      // in case the other selectors didn't match for new messages.
+      const contactText = $contact.innerText || ''
+      if (contactText.toLowerCase() !== 'new message') {
+        return contactText
+      }
+    }
+  }
+
+  // Sales Navigator message thread
+  const $salesConversation = document.querySelector('.conversation-insights')
+  if ($salesConversation) {
+    const $salesName = $salesConversation.querySelector('.artdeco-entity-lockup__title span:first-child')
+    return $salesName.innerText
+  }
+
+  // get the to field from the currently viewed profile
+  // eg. for the connect > add note field.
+  const $currentProfilePicture = document.querySelector('img[width="200"][height="200"], img[class*="pv-top-card-profile-picture"]')
+  if ($currentProfilePicture && $currentProfilePicture.hasAttribute('alt')) {
+    const profilePictureAlt = $currentProfilePicture.getAttribute('alt') || ''
+    // remove open to work badge
+    return profilePictureAlt.replace(', #OPEN_TO_WORK', '')
+  }
+
+  return ''
+}
+
 // get all required data from the dom
 function getData (params) {
   var vars = {
@@ -48,66 +121,7 @@ function getData (params) {
 
   vars.from = createContact({name: fromName})
 
-  let toName = ''
-  // get the to field from the current viewed profile by default
-  // eg. for the connect > add note field.
-  const $currentProfilePicture = document.querySelector('img[width="200"][height="200"], img[class*="pv-top-card-profile-picture"]')
-  if ($currentProfilePicture && $currentProfilePicture.hasAttribute('alt')) {
-    toName = $currentProfilePicture.getAttribute('alt') || ''
-    // remove open to work badge
-    toName = toName.replace(', #OPEN_TO_WORK', '')
-  }
-
-  // Sales Navigator Connect
-  const $salesToName = params.element.parentNode.querySelector('.artdeco-entity-lockup__title')
-  if ($salesToName) {
-    toName = $salesToName.innerText
-  }
-
-  // message thread in Messaging interface
-  const messagingUiThread = '.msg-thread'
-  // thread in message bubble/dialog
-  const bubbleMessageThread = '.msg-overlay-conversation-bubble__content-wrapper'
-  // post in feed
-  const feedPost = '.feed-shared-update-v2'
-  // select any
-  const messageThreadSelector = `${messagingUiThread}, ${bubbleMessageThread}, ${feedPost}`
-
-  // contact name in message threads
-  const messageContactName = '.msg-s-event-listitem--other .msg-s-message-group__name'
-  // contact name in message threads, when contact hasn't replied - from thread title
-  const messageContentTitleName = '.artdeco-entity-lockup__title'
-  // contact name is new message
-  const newMessageContact = '.artdeco-pill'
-  // contact name in feed post
-  const feedContactName = '.feed-shared-actor__name'
-  // select any
-  const contactNameSelector = `
-  ${messageContactName},
-  ${feedContactName},
-  ${newMessageContact},
-  ${messageContentTitleName}
-  `
-
-  const $thread = params.element.closest(messageThreadSelector)
-  // check if a message thread is visible,
-  // otherwise we're in a non-messaging textfield.
-  if ($thread) {
-    // get the contacts from the thread, that is not ours
-    const $contacts = $thread.querySelectorAll(contactNameSelector)
-    if ($contacts.length) {
-      // get the current messaging contact
-      const $contact = $contacts.item($contacts.length - 1)
-      toName = $contact.innerText
-    }
-  }
-
-  // Sales Navigator message thread
-  const $salesConversation = document.querySelector('.conversation-insights')
-  if ($salesConversation) {
-    const $salesName = $salesConversation.querySelector('.artdeco-entity-lockup__title span:first-child')
-    toName = $salesName.innerText
-  }
+  let toName = getToName(params.element)
 
   vars.to.push(createContact({name: toName}))
 
