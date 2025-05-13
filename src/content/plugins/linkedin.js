@@ -93,7 +93,7 @@ function getToName (element) {
 
 // get all required data from the dom
 export function getData (params) {
-  var vars = {
+  const vars = {
     from: {},
     to: [],
     subject: '',
@@ -114,8 +114,7 @@ export function getData (params) {
 
   vars.from = createContact({name: fromName})
 
-  let toName = getToName(params.element)
-
+  const toName = getToName(params.element)
   vars.to.push(createContact({name: toName}))
 
   return vars
