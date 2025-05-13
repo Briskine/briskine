@@ -28,14 +28,14 @@ async function before (params, data) {
 function getToName (element) {
   // get the contact name from messages
   const messageThreadSelectors = [
-    // inMail messsage thread
-    '.msg-inmail-compose-form-v2',
+    // 1. Sales Navigator Connect popup
+    // 2. Message thread in message bubble/dialog/popup
+    // 3. inMail message popup
+    '[role=dialog]',
     // organization inbox thread
     '.org-inbox-thread__container',
     // message thread in Messaging interface
     '.msg-thread',
-    // thread in message bubble/dialog
-    '[data-msg-overlay-conversation-bubble-open]',
     // post in feed
     '.feed-shared-update-v2',
   ]
@@ -45,13 +45,13 @@ function getToName (element) {
     '.org-inbox-thread__link-to-profile',
     // contact name in message threads
     '.msg-s-event-listitem--other .msg-s-message-group__name',
-    // contact name from message header, in message dialogs/bubbles
-    // most used in inMail new messages (where the bubble title is "New message", not the contact name)
-    '.profile-card-one-to-one__profile-link',
-    // inMail message header
+    // 1. inMail message header
+    // 2. Message header in messaging popup (at the top, when complete thread is loaded)
+    '.artdeco-entity-lockup__title > *:first-child',
+    // Sales Navigator Connect popup
     '.artdeco-entity-lockup__title',
-    // contact name from full-page Messaging view title, when contact hasn't replied yet
-    // (or last message is above fold and lazy loaded)
+    // Contact name from full-page Messaging view title, when contact hasn't replied yet
+    // (or first message is above fold and lazy loaded).
     '.msg-entity-lockup__entity-title',
     // contact name in new message
     '.artdeco-pill',
@@ -77,13 +77,6 @@ function getToName (element) {
         return contactText
       }
     }
-  }
-
-  // Sales Navigator message thread
-  const $salesConversation = document.querySelector('.conversation-insights')
-  if ($salesConversation) {
-    const $salesName = $salesConversation.querySelector('.artdeco-entity-lockup__title span:first-child')
-    return $salesName.innerText
   }
 
   // get the to field from the currently viewed profile
