@@ -92,7 +92,7 @@ function getToName (element) {
 }
 
 // get all required data from the dom
-function getData (params) {
+export function getData (params) {
   var vars = {
     from: {},
     to: [],

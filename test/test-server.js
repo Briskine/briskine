@@ -9,6 +9,8 @@
 
 import path from 'path'
 import util from 'node:util'
+import { readFile } from 'node:fs'
+import { createServer } from 'node:http'
 import puppeteer from 'puppeteer'
 
 function initMocha(reporter) {
@@ -148,10 +150,35 @@ async function handleConsole(msg) {
 
 const timeout = 60000
 
+
+function staticServer (port = 8000) {
+  const MIME_TYPES = {
+    html: 'text/html; charset=UTF-8',
+    js: 'text/javascript',
+    css: 'text/css',
+  }
+
+  const STATIC_PATH = process.cwd()
+
+  const server = createServer((req, res) => {
+    readFile(path.join(STATIC_PATH, req.url), (err, data) => {
+      const ext = path.extname(req.url).substring(1).toLowerCase()
+      if (err) {
+        res.writeHead(404, { 'Content-Type': 'text/html' })
+        res.end('404: File not found')
+      } else {
+        res.writeHead(200, { 'Content-Type': MIME_TYPES[ext] || 'application/octet-stream' })
+        res.end(data)
+      }
+    })
+  }).listen(port)
+
+  return server
+}
+
+
 function run () {
-  const file = 'test/index.html'
-  let resolvedPath = path.resolve(file)
-  const url = `file://${resolvedPath}`
+  const server = staticServer()
 
   const options = {
     ignoreHTTPSErrors: true,
@@ -169,12 +196,12 @@ function run () {
           page.on('pageerror', err => console.error(err))
 
           return page.evaluateOnNewDocument(initMocha)
-            .then(() => page.goto(url))
+            .then(() => page.goto('http://localhost:8000/test/index.html'))
             .then(() => page.waitForFunction(() => window.__mochaResult__, { timeout }))
             .then(() => page.evaluate(() => window.__mochaResult__))
-            .then(obj => {
+            .then(() => {
               browser.close()
-              return obj
+              server.close()
             })
         })
     })
