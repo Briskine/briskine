@@ -209,9 +209,6 @@ async function setupContextMenus () {
   }
 }
 
-browser.runtime.onInstalled.addListener(setupContextMenus)
-browser.contextMenus.onClicked.addListener(clickContextMenu)
-
 const watchedKeys = [
   'briskine',
   'firebaseUser',
@@ -236,5 +233,17 @@ function storageChange (changes = {}) {
   })
 }
 
-const debouncedStorageChange = debounce(storageChange, 1000)
-browser.storage.local.onChanged.addListener(debouncedStorageChange)
+function enableContextMenu () {
+  // context menus are not available on Firefox for Android
+  if (!browser.contextMenus) {
+    return
+  }
+
+  browser.runtime.onInstalled.addListener(setupContextMenus)
+  browser.contextMenus.onClicked.addListener(clickContextMenu)
+
+  const debouncedStorageChange = debounce(storageChange, 1000)
+  browser.storage.local.onChanged.addListener(debouncedStorageChange)
+}
+
+enableContextMenu()
