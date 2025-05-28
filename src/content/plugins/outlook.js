@@ -35,29 +35,16 @@ function getParent (editable) {
 }
 
 function getFieldData (field, $container) {
-  var $buttons = $container.querySelectorAll(`[role=button]`)
+  var $buttons = $container.querySelectorAll(`:scope > [contenteditable]`)
   $buttons.forEach(function ($button) {
-    let fullName = ''
-    // get all nodes with no children,
-    // and sort them descending based on innerText length.
-    const $nodesWithText = Array.from($button.querySelectorAll('*'))
-      .filter((node) => node.children.length === 0)
-      .sort((a, b) => b.innerText.trim().length - a.innerText.trim().length)
-    if ($nodesWithText[0] && $nodesWithText[0].innerText) {
-      fullName = $nodesWithText[0].innerText.trim()
-    }
-
+    const fullName = $button.getAttribute('aria-label')
     field.push(createContact(parseNameAndEmail(fullName)))
   })
 }
 
 // selector for to/cc/bcc containers
 function getContainers (editable) {
-  // get the parent of each extra field input.
   return Array.from(getParent(editable).querySelectorAll('[role=textbox]:not([dir])'))
-    .map((node) => {
-      return node.parentElement
-    })
 }
 
 function getToContainer (editable) {
