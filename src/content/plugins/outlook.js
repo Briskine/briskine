@@ -51,28 +51,12 @@ function getToContainer (editable) {
   return getContainers(editable)[0]
 }
 
-function getFieldContainer (editable, length = 2) {
-  const $containers = getContainers(editable)
-  return $containers
-    // exclude the first (to) container
-    .slice(1)
-    .find((node) => {
-      return Array.from(node.querySelectorAll('[aria-label'))
-        .find((node) => {
-          // HACK
-          // match containers by the length of the aria-label field.
-          // will not work for all languages.
-          return node.getAttribute('aria-label').length === length
-        })
-    })
-}
-
 function getCcContainer (editable) {
-  return getFieldContainer(editable, 2)
+  return getContainers(editable)[1]
 }
 
 function getBccContainer (editable) {
-  return getFieldContainer(editable, 3)
+  return getContainers(editable)[2]
 }
 
 function getFieldButton (editable, length = 2) {
