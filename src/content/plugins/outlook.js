@@ -77,37 +77,11 @@ function getBccButton (editable) {
   return getFieldButton(editable, 3)
 }
 
-function getSuggestionButton (email) {
-  // "use this address" not in contact list
-  const $nonContactList = document.querySelectorAll(`.ms-Suggestions-headerContainer button`)
-  if (
-    $nonContactList.length
-    && Array.from($nonContactList).find(($node) => $node.innerText.includes(email))
-  ) {
-    return $nonContactList
-  }
-
-  // contact list suggestion
-  // only when the suggestion contains the email and the item is first (is selected)
-  const $listSelector = document.querySelector(`.ms-FloatingSuggestionsList [aria-label*="${email}"]`)
-  if ($listSelector) {
-    return $listSelector
-  }
-
-  return null
-}
-
 function getSubjectField (editable) {
   // in case we find more fields
   const inputs = Array.from(getParent(editable).querySelectorAll('input[type=text][autocomplete=off]'))
   // get the last one
   return inputs.pop()
-}
-
-function getContactField ($container) {
-  return waitForElement(() => {
-    return $container.querySelector('[contenteditable]')
-  })
 }
 
 function waitForElement (getNode) {
@@ -160,28 +134,9 @@ async function addSingleContact ($field, value) {
   const templateNode = range.createContextualFragment(value)
   range.insertNode(templateNode)
   range.collapse()
-  $field.dispatchEvent(new Event('input', {bubbles: true}))
 
-  try {
-    await waitForElement(() => getSuggestionButton(value))
-    // give it a second to attach event listeners
-    await new Promise((resolve) => setTimeout(resolve))
-
-    $field.dispatchEvent(
-      new KeyboardEvent('keydown', {
-        keyCode: 13,
-        which: 13,
-        key: 'Enter',
-        code: 'Enter',
-        bubbles: true
-      })
-    )
-
-    // give it a second to clean up the suggestions dialog
-    await new Promise((resolve) => setTimeout(resolve))
-  } catch {
-    // continue if we couldn't find the element
-    return
+  if (document?.queryCommandEnabled?.('insertText')) {
+    document.execCommand('insertText', false, ',')
   }
 }
 
@@ -191,8 +146,7 @@ function elementContains ($element, value) {
 
 async function updateSection ($container, $button, getNode, value) {
   if ($container) {
-    var $input = await getContactField($container)
-    return updateContactField($input, value)
+    return updateContactField($container, value)
   } else if ($button) {
     // click CC/BCC button
     $button.click()
@@ -278,8 +232,7 @@ async function after (params, data) {
     const $to = getToContainer(editable)
     const parsedTo = await parseTemplate(params.quicktext.to, data)
     if ($to && !elementContains($to, parsedTo)) {
-      const $toInput = await getContactField($to)
-      await updateContactField($toInput, parsedTo)
+      await updateContactField($to, parsedTo)
     }
   }
 
