@@ -157,7 +157,7 @@ async function updateSection ($container, $button, getNode, value) {
 }
 
 // get all required data from the dom
-function getData (params) {
+export function getData (params) {
   var vars = {
     from: {},
     to: [],
