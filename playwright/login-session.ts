@@ -9,7 +9,7 @@ export default async function loginSession ({page, extensionId}) {
   await page.getByLabel('Password').fill(process.env.TEST_PASSWORD || 'MISSING PASSWORD')
   await page.getByLabel('Password').press('Enter')
   // wait for templates to load
-  const title = page.getByText('Write emails faster')
+  const title = page.getByRole('heading', { name: 'Write emails' })
   await title.waitFor()
 
   await page.goto(`${extensionId}/popup/popup.html`)
