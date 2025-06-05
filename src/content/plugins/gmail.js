@@ -16,28 +16,28 @@ var regExString = /"?([^ ]*)\s*(.*)"?\s*[(<]([^>)]+)[>)]/
 var regExEmail = /([\w!.%+\-])+@([\w\-])+(?:\.[\w\-]+)+/
 
 function parseString (string = '') {
-    var match = regExString.exec(string.trim());
+    var match = regExString.exec(string.trim())
     var data = {
         name: '',
         first_name: '',
         last_name: '',
         email: ''
-    };
+    }
 
     if (match && match.length >= 4) {
-        data.first_name = match[1].replace('"', '').trim();
-        data.last_name = match[2].replace('"', '').trim();
-        data.name = data.first_name + (data.first_name && data.last_name ? ' ' : '') + data.last_name;
-        data.email = match[3];
+        data.first_name = match[1].replace('"', '').trim()
+        data.last_name = match[2].replace('"', '').trim()
+        data.name = data.first_name + (data.first_name && data.last_name ? ' ' : '') + data.last_name
+        data.email = match[3]
     } else {
         // try to match the email
-        match = regExEmail.exec(string);
+        match = regExEmail.exec(string)
         if (match) {
-            data.email = match[0];
+            data.email = match[0]
         }
     }
 
-    return data;
+    return data
 }
 
 function getFromField (container) {
@@ -70,7 +70,7 @@ function getData (params) {
       email: email,
     })
 
-    const $container = params.element.closest(textfieldContainerSelector);
+    const $container = params.element.closest(textfieldContainerSelector)
     if ($container) {
       // if we use multiple aliases,
       // get from details from the alias selector at the top of the compose box.
@@ -97,11 +97,11 @@ function getData (params) {
 
           return {}
         })
-      });
+      })
 
-      const $subjectField = $container.querySelector('input[name=subjectbox]');
+      const $subjectField = $container.querySelector('input[name=subjectbox]')
       if ($subjectField) {
-        data.subject = ($subjectField.value || '').replace(/^Re: /, '');
+        data.subject = ($subjectField.value || '').replace(/^Re: /, '')
       }
     }
   }
@@ -230,10 +230,10 @@ setup()
 
 export default async (params = {}) => {
     if (!isActive()) {
-        return false;
+        return false
     }
 
-    var data = getData(params);
+    var data = getData(params)
     const parsedTemplate = addAttachments(
       await parseTemplate(params.quicktext.body, data),
       params.quicktext.attachments
@@ -249,8 +249,8 @@ export default async (params = {}) => {
     // set the from field before getting data,
     // to have up-to-date data.
     if (params.quicktext.from) {
-        setFromField(params.element, params.quicktext.from);
+        setFromField(params.element, params.quicktext.from)
     }
 
-    return true;
-};
+    return true
+}
