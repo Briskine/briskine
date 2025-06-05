@@ -174,7 +174,16 @@ function extensionConfig (params = {}) {
           use: {
             loader: 'babel-loader',
             options: {
-              presets: ['babel-preset-solid'],
+              presets: [
+                'babel-preset-solid',
+                [
+                  '@babel/preset-env',
+                  {
+                    corejs: '3.42',
+                    useBuiltIns: 'usage',
+                  },
+                ]
+              ],
             }
           }
         },
