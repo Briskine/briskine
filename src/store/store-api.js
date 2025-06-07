@@ -16,6 +16,8 @@ import {
   collection,
   query,
   where,
+  orderBy,
+  limit,
   getDocs,
   documentId,
   Timestamp,
@@ -80,12 +82,20 @@ async function clearDataCache () {
 
 const templatesCollection = collection(db, 'templates')
 
-function templatesOwnedQuery (user) {
-  return query(
-    templatesCollection,
+function templatesOwnedQuery (user, qlimit) {
+  const queryParams = [
     where('customer', '==', user.customer),
     where('deleted_datetime', '==', null),
-    where('owner', '==', user.id),
+    where('owner', '==', user.id),    
+  ];
+  if (qlimit) {
+    queryParams.push(orderBy('created_datetime', 'desc'));
+    queryParams.push(limit(qlimit));
+  }
+
+  return query(
+    templatesCollection,
+    ...queryParams
   )
 }
 
@@ -119,7 +129,7 @@ const allCollections = [
   'templatesEveryone',
 ]
 
-function getCollectionQuery (name, user) {
+function getCollectionQuery (name, user, limit) {
   const collectionQuery = {
     users: [documentId(), '==', user.id],
     customers: ['members', 'array-contains', user.id],
@@ -127,7 +137,7 @@ function getCollectionQuery (name, user) {
   }
 
   if (name === 'templatesOwned') {
-    return templatesOwnedQuery(user)
+    return templatesOwnedQuery(user, limit)
   }
 
   if (name === 'templatesShared') {
@@ -146,7 +156,7 @@ function getCollectionQuery (name, user) {
 
 const collectionRequestQueue = {}
 
-function getCollection (params = {}) {
+function getCollection (params = {}) {  
   // request is already in progress
   if (collectionRequestQueue[params.collection]) {
     return collectionRequestQueue[params.collection]
@@ -156,10 +166,10 @@ function getCollection (params = {}) {
   return browser.storage.local.get(params.collection)
     .then((res) => {
       if (res[params.collection]) {
-        return res[params.collection]
+        // return res[params.collection]
       }
 
-      const query = getCollectionQuery(params.collection, params.user)
+      const query = getCollectionQuery(params.collection, params.user, params.limit)
       collectionRequestQueue[params.collection] = getDocs(query).then((snapshot) => {
         collectionRequestQueue[params.collection] = null
         return refreshLocalData(params.collection, snapshot)
@@ -428,15 +438,22 @@ export function getTemplates () {
     })
     .then((res) => {
       const [user, freeCustomer] = res;
-      let templateCollections = [
-        getCollection({
-          user: user,
-          collection: 'templatesOwned'
-        })
-      ]
 
-      if (!freeCustomer) {
-        templateCollections = templateCollections.concat([
+      let templateCollections = []
+      if (freeCustomer) {
+        templateCollections = [
+          getCollection({
+            user: user,
+            collection: 'templatesOwned',
+            limit: templatesFreeLimit,
+          })
+        ]
+      } else {
+        templateCollections = [
+          getCollection({
+            user: user,
+            collection: 'templatesOwned'
+          }),          
           getCollection({
             user: user,
             collection: 'templatesShared'
@@ -445,7 +462,7 @@ export function getTemplates () {
             user: user,
             collection: 'templatesEveryone'
           })
-        ])
+        ]
       }
 
       return Promise.all(templateCollections)
@@ -468,7 +485,6 @@ export function getTemplates () {
               .sort((a, b) => {
                 return new Date(a.created_datetime || 0) - new Date(b.created_datetime || 0)
               })
-              .slice(0, templatesFreeLimit)
           }
           return templates
         })
@@ -505,7 +521,6 @@ export function signin (params = {}) {
       body: {
         email: params.email,
         password: params.password,
-        apiKey: FIREBASE_CONFIG.apiKey,
       }
     })
     .then((res) => {
