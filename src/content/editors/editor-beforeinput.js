@@ -8,7 +8,7 @@
  * https://lexical.dev/
  */
 
-import htmlToText from '../utils/html-to-text.js';
+import htmlToText from '../utils/html-to-text.js'
 import {getSelection} from '../autocomplete.js'
 
 export function isBeforeInputEditor (element) {

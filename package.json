@@ -1,6 +1,6 @@
 {
   "name": "briskine",
-  "version": "7.14.9",
+  "version": "7.14.10",
   "description": "Write everything faster.",
   "private": true,
   "type": "module",
@@ -41,8 +41,10 @@
   "license": "GPL-3.0-or-later",
   "devDependencies": {
     "@babel/core": "^7.24.7",
+    "@babel/preset-env": "^7.27.2",
     "@eslint/js": "^9.2.0",
     "@playwright/test": "^1.42.1",
+    "@stylistic/eslint-plugin": "^4.4.1",
     "@svgr/webpack": "^8.1.0",
     "@types/node": "^22.0.0",
     "archiver": "^7.0.0",
@@ -50,6 +52,7 @@
     "babel-preset-solid": "^1.8.18",
     "chai": "^5.0.0",
     "copy-webpack-plugin": "^13.0.0",
+    "core-js": "^3.42.0",
     "css-loader": "^7.0.0",
     "css-minimizer-webpack-plugin": "^7.0.0",
     "dotenv": "^16.4.5",

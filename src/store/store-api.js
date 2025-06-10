@@ -42,8 +42,8 @@ const db = initializeFirestore(firebaseApp, {})
 
 // development emulators
 if (ENV === 'development') {
-  connectAuthEmulator(firebaseAuth, 'http://localhost:9099', { disableWarnings: true });
-  connectFirestoreEmulator(db, 'localhost', 5002);
+  connectAuthEmulator(firebaseAuth, 'http://localhost:9099', { disableWarnings: true })
+  connectFirestoreEmulator(db, 'localhost', 5002)
 }
 
 // convert firestore timestamps to dates
@@ -427,7 +427,7 @@ export function getTemplates () {
       ])
     })
     .then((res) => {
-      const [user, freeCustomer] = res;
+      const [user, freeCustomer] = res
       let templateCollections = [
         getCollection({
           user: user,
@@ -478,8 +478,8 @@ export function getTemplates () {
         return getDefaultTemplates()
       }
 
-      throw err;
-    });
+      throw err
+    })
 }
 
 const networkError = 'There was an issue signing you in. Please disable your firewall or antivirus software and try again.'

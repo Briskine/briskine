@@ -51,7 +51,7 @@ export default function helperMoment (dateParam, options) {
       } else {
         displayParams = []
       }
-      continue;
+      continue
     }
 
     // only supported methods

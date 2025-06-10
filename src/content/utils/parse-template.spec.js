@@ -132,23 +132,23 @@ Expecting 'CLOSE_RAW_BLOCK', 'CLOSE', 'CLOSE_UNESCAPED', 'OPEN_SEXPR', 'CLOSE_SE
   })
 
   it('should parse template with partial', async () => {
-    expect(await parseTemplate('{{> kr}}', {from: {first_name:'Briskine'}})).to.equal(`<div>Kind regards,</div><div>Briskine.</div>`)
+    expect(await parseTemplate('{{> kr}}', {from: {first_name:'Briskine'}})).to.equal('<div>Kind regards,</div><div>Briskine.</div>')
   })
 
   it('should parse template with partial with context', async () => {
-    expect(await parseTemplate('{{> e custom}}', {custom: {from: {email:'contact@briskine.com'}}})).to.equal(`<div>contact@briskine.com</div>`)
+    expect(await parseTemplate('{{> e custom}}', {custom: {from: {email:'contact@briskine.com'}}})).to.equal('<div>contact@briskine.com</div>')
   })
 
   it('should parse template with partial with parameter', async () => {
-    expect(await parseTemplate('{{> c custom="briskine"}}')).to.equal(`briskine`)
+    expect(await parseTemplate('{{> c custom="briskine"}}')).to.equal('briskine')
   })
 
   it('should throw error when partial is not found', async () => {
-    expect(await parseTemplate('{{> not_found}}')).to.equal(`<pre>The partial not_found could not be found</pre>`)
+    expect(await parseTemplate('{{> not_found}}')).to.equal('<pre>The partial not_found could not be found</pre>')
   })
 
   it('should throw error when helper is not found', async () => {
-    expect(await parseTemplate('{{not_found true}}')).to.equal(`<pre>Missing helper: "not_found"</pre>`)
+    expect(await parseTemplate('{{not_found true}}')).to.equal('<pre>Missing helper: "not_found"</pre>')
   })
 
   after(() => {

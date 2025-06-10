@@ -35,10 +35,13 @@ function getParent (editable) {
 }
 
 function getFieldData (field, $container) {
-  var $buttons = $container.querySelectorAll(`:scope > [contenteditable]`)
+  var $buttons = $container.querySelectorAll(':scope > [contenteditable]')
   $buttons.forEach(function ($button) {
-    const fullName = $button.getAttribute('aria-label')
-    field.push(createContact(parseNameAndEmail(fullName)))
+    const $node = $button?.querySelector?.('[class*="textContainer-"], [class*="individualText-"]')
+    const fullName = $node?.innerText
+    if (fullName) {
+      field.push(createContact(parseNameAndEmail(fullName)))
+    }
   })
 }
 
