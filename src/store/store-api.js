@@ -166,7 +166,7 @@ function getCollection (params = {}) {
   return browser.storage.local.get(params.collection)
     .then((res) => {
       if (res[params.collection]) {
-        // return res[params.collection]
+        return res[params.collection]
       }
 
       const query = getCollectionQuery(params.collection, params.user, params.limit)
