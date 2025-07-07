@@ -63,7 +63,7 @@ async function parseContext (data = {}, features = {}) {
   })
 
   // add account and from to the context only if they're used in the template
-  if (features.account || features.from) {
+  if (features.account) {
     context.account = createContact(await getAccount(context.account))
     // merge from details with account
     context.from = createContact(mergeContacts(context.account, context.from))

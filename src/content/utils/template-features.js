@@ -1,7 +1,6 @@
 const defaultFeatures = {
   partials: false,
   account: false,
-  from: false,
 }
 
 function findFeaturesInAST (obj = {}, features = { ...defaultFeatures }) {
@@ -10,7 +9,6 @@ function findFeaturesInAST (obj = {}, features = { ...defaultFeatures }) {
     if (
       features.partials === true
       && features.account === true
-      && features.from === true
     ) {
       return features
     }
@@ -22,24 +20,19 @@ function findFeaturesInAST (obj = {}, features = { ...defaultFeatures }) {
 
     // find from or account variables
     if (obj[key]?.type === 'PathExpression') {
-      if (obj[key]?.parts?.[0] === 'account') {
+      const firstPart = obj[key]?.parts?.[0]
+      if (firstPart === 'account' || firstPart === 'from') {
         features.account = true
-      }
-
-      if (obj[key]?.parts?.[0] === 'from') {
-        features.from = true
       }
     }
 
     if (
       typeof obj[key] === 'object'
       && obj[key] !== null
+      // exclude loc and strip objects
       && (
-        Array.isArray(obj)
-        || key === 'program'
-        || key === 'body'
-        || key === 'path'
-        || key === 'params'
+        key !== 'loc'
+        && key !== 'strip'
       )
     ) {
       findFeaturesInAST(obj[key], features)

@@ -15,7 +15,6 @@ describe('templateFeatures', () => {
     expect(templateFeatures(template)).to.deep.equal({
       partials: false,
       account: false,
-      from: false,
     })
   })
 
@@ -89,6 +88,14 @@ describe('templateFeatures', () => {
     const template = parse(`
       {{ from.first_name }}
     `)
-    expect(templateFeatures(template)).to.include({from: true})
+    expect(templateFeatures(template)).to.include({account: true})
   })
+
+  it('should find account expression in partial subexpression', () => {
+    const template = parse(`
+      {{> (text 'test' 'concat' account.email)}}
+    `)
+    expect(templateFeatures(template)).to.include({account: true})
+  })
+
 })
