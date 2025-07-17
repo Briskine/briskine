@@ -155,14 +155,19 @@ function getCollection (params = {}) {
   // get from cache
   return browser.storage.local.get(params.collection)
     .then((res) => {
-      if (res[params.collection]) {
+      if (!params.forceRefresh && res[params.collection]) {
         return res[params.collection]
       }
 
       const query = getCollectionQuery(params.collection, params.user)
       collectionRequestQueue[params.collection] = getDocs(query).then((snapshot) => {
-        collectionRequestQueue[params.collection] = null
         return refreshLocalData(params.collection, snapshot)
+      })
+      .catch((err) => {
+        console.error('cannot refresh collection', params.collection, err)
+      })
+      .finally(() => {
+        collectionRequestQueue[params.collection] = null
       })
 
       return collectionRequestQueue[params.collection]
@@ -199,13 +204,6 @@ async function updateCache (params = {}) {
 
 export async function refetchCollections (collections = []) {
   const collectionsToClear = collections.length ? collections : allCollections
-  const cache = {}
-  collectionsToClear.forEach((c) => {
-    cache[c] = null
-  })
-
-  await browser.storage.local.set(cache)
-
   try {
     const user = await getSignedInUser()
     const free = await isFree(user)
@@ -219,6 +217,7 @@ export async function refetchCollections (collections = []) {
       collectionsToRefetch.map((c) => getCollection({
         collection: c,
         user: user,
+        forceRefresh: true
       }))
     )
   } catch (err) {
