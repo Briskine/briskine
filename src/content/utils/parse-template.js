@@ -55,7 +55,7 @@ function contactsArray (contacts = []) {
 }
 
 const contactLists = ['to', 'cc', 'bcc']
-async function parseContext (data = {}, features = {}) {
+async function parseContext (data = {}) {
   const context = structuredClone(data)
   contactLists.forEach((p) => {
     const propData = Array.isArray(context[p] || []) ? context[p] : [context[p]]
@@ -79,7 +79,7 @@ export default async function parseTemplate (template = '', data = {}) {
   }
 
   const features = templateFeatures(ast)
-  const context = await parseContext(data, features)
+  const context = await parseContext(data)
   let partials = []
   if (features.partials) {
     const templates = await getTemplates()
