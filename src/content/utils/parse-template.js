@@ -55,19 +55,16 @@ function contactsArray (contacts = []) {
 }
 
 const contactLists = ['to', 'cc', 'bcc']
-async function parseContext (data = {}, features = {}) {
+async function parseContext (data = {}) {
   const context = structuredClone(data)
   contactLists.forEach((p) => {
     const propData = Array.isArray(context[p] || []) ? context[p] : [context[p]]
     context[p] = contactsArray(propData)
   })
 
-  // add account and from to the context only if they're used in the template
-  if (features.account) {
-    context.account = createContact(await getAccount(context.account))
-    // merge from details with account
-    context.from = createContact(mergeContacts(context.account, context.from))
-  }
+  context.account = createContact(await getAccount(context.account))
+  // merge from details with account
+  context.from = createContact(mergeContacts(context.account, context.from))
 
   return context
 }
@@ -82,7 +79,7 @@ export default async function parseTemplate (template = '', data = {}) {
   }
 
   const features = templateFeatures(ast)
-  const context = await parseContext(data, features)
+  const context = await parseContext(data)
   let partials = []
   if (features.partials) {
     const templates = await getTemplates()

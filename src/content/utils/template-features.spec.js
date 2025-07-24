@@ -14,7 +14,6 @@ describe('templateFeatures', () => {
     `)
     expect(templateFeatures(template)).to.deep.equal({
       partials: false,
-      account: false,
     })
   })
 
@@ -24,78 +23,4 @@ describe('templateFeatures', () => {
     `)
     expect(templateFeatures(template)).to.include({partials: true})
   })
-
-  it('should find account expression', () => {
-    const template = parse(`
-      {{ account }}
-    `)
-    expect(templateFeatures(template)).to.include({account: true})
-  })
-
-  it('should find account expression with nested property', () => {
-    const template = parse(`
-      {{ account.first_name }}
-    `)
-    expect(templateFeatures(template)).to.include({account: true})
-  })
-
-  it('should find account expression in conditional', () => {
-    const template = parse(`
-      {{#if test}}
-        {{account.last_name}}
-      {{/if}}
-    `)
-    expect(templateFeatures(template)).to.include({account: true})
-  })
-
-  it('should find account expression in inline helper', () => {
-    const template = parse(`
-      {{inline_helper account.last_name}}
-    `)
-    expect(templateFeatures(template)).to.include({account: true})
-  })
-
-  it('should find account expression in complex template', () => {
-    const template = parse(`
-      <header>
-        {{#if test}}
-          <h1>
-          {{#each variable}}
-            {{#block_helper}}
-              {{inline_helper account.last_name}}
-            {{/block_helper}}
-          {{/each}}
-          </h1>
-        {{/if}}
-      </header>
-    `)
-    expect(templateFeatures(template)).to.include({account: true})
-  })
-
-
-  it('should find account expression and partials', () => {
-    const template = parse(`
-      {{> partial}}
-      {{#if test}}
-        {{account.last_name}}
-      {{/if}}
-      <footer />
-    `)
-    expect(templateFeatures(template)).to.include({account: true, partials: true})
-  })
-
-  it('should find from expression with nested property', () => {
-    const template = parse(`
-      {{ from.first_name }}
-    `)
-    expect(templateFeatures(template)).to.include({account: true})
-  })
-
-  it('should find account expression in partial subexpression', () => {
-    const template = parse(`
-      {{> (text 'test' 'concat' account.email)}}
-    `)
-    expect(templateFeatures(template)).to.include({account: true})
-  })
-
 })

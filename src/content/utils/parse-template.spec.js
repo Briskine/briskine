@@ -45,6 +45,17 @@ const defaultTemplates = [
     tags: [],
     body: '{{custom}}'
   },
+
+  {
+    title: 'Target partial',
+    shortcut: 'template-john@briskine.com',
+    body: 'template john',
+  },
+  {
+    title: 'Subexpression partial',
+    shortcut: 'subexpressionpartial',
+    body: '{{> (text "template-" "concat" account.email)}}',
+  },
 ]
 
 describe('parseTemplate', async () => {
@@ -52,6 +63,12 @@ describe('parseTemplate', async () => {
     window.browser.runtime.sendMessage = async ({type}) => {
       if (type === 'getTemplates') {
         return defaultTemplates
+      }
+
+      if (type === 'getAccount') {
+        return {
+          email: 'john@briskine.com',
+        }
       }
 
       return []
@@ -149,6 +166,14 @@ Expecting 'CLOSE_RAW_BLOCK', 'CLOSE', 'CLOSE_UNESCAPED', 'OPEN_SEXPR', 'CLOSE_SE
 
   it('should throw error when helper is not found', async () => {
     expect(await parseTemplate('{{not_found true}}')).to.equal('<pre>Missing helper: "not_found"</pre>')
+  })
+
+  it('should parse template with account variable', async () => {
+    expect(await parseTemplate('{{> (text "template-" "concat" account.email)}}')).to.equal('template john')
+  })
+
+  it('should parse template with nested partial that uses account variable', async () => {
+    expect(await parseTemplate('{{> subexpressionpartial}}')).to.equal('template john')
   })
 
   after(() => {
