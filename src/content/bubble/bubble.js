@@ -5,6 +5,7 @@
 
 import config from '../../config.js'
 import {dialogTagName} from '../dialog/dialog.js'
+import { getExtensionData } from '../../store/store-content.js'
 
 import getEventTarget from '../event-target.js'
 
@@ -15,7 +16,6 @@ let bubbleInstance = null
 let activeTextfield = null
 const domObservers = []
 
-const bubbleAttribute = 'data-briskine-bubble'
 export const bubbleTagName = `b-bubble-${Date.now().toString(36)}`
 
 customElements.define(
@@ -118,28 +118,38 @@ function scrollDocument (e) {
   }
 }
 
-export function setup (settings = {}) {
+function isOnPredefinedLocation (hostname) {
+  const urls = [
+    'mail.google.com',
+    'www.linkedin.com',
+    'outlook.live.com',
+    'outlook.office365.com',
+  ]
+
+  return (
+      urls.some((url) => hostname === url) ||
+      document.querySelector(`
+        head [href*="cdn.office.net"],
+        meta[content*="owamail"],
+        link[href*="/owamail/"],
+        script[src*="/owamail/"]
+      `)
+  )
+}
+
+export async function setup (settings = {}) {
   // check if bubble or dialog are disabled in settings
   if (settings.dialog_button === false || settings.dialog_enabled === false) {
     return
   }
 
-  // if bubble is enabled in dom
-  if (bubbleEnabled()) {
+  const { hostname } = window.location
+  const extensionData = await getExtensionData()
+  const { whitelistBubble = [] } = extensionData
+
+  if (isOnPredefinedLocation(hostname) || whitelistBubble.includes(hostname)) {
     return create(settings)
   }
-
-  const domObserver = new MutationObserver((records, observer) => {
-    if (bubbleEnabled()) {
-      observer.disconnect()
-      create(settings)
-    }
-  })
-  domObserver.observe(document.body, {
-    attributes: true
-  })
-
-  domObservers.push(domObserver)
 }
 
 let shadowRoots = []
@@ -359,15 +369,4 @@ function showBubble (textfield) {
 
 function hideBubble () {
   bubbleInstance.removeAttribute('visible')
-}
-
-export function enableBubble () {
-  document.body.setAttribute(bubbleAttribute, 'true')
-}
-
-function bubbleEnabled () {
-  return (
-    document.body &&
-    document.body.hasAttribute(bubbleAttribute)
-  )
 }

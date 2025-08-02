@@ -6,7 +6,6 @@ import parseTemplate from '../utils/parse-template.js'
 import {insertTemplate} from '../editors/editor-universal.js'
 import {isContentEditable} from '../editors/editor-contenteditable.js'
 import createContact from '../utils/create-contact.js'
-import {enableBubble} from '../bubble/bubble.js'
 import {addAttachments} from '../attachments/attachments.js'
 
 const fromFieldSelector = '.az2'
@@ -217,16 +216,6 @@ function isActive () {
 
   return activeCache
 }
-
-function setup () {
-  if (!isActive()) {
-    return false
-  }
-
-  enableBubble()
-}
-
-setup()
 
 export default async (params = {}) => {
     if (!isActive()) {

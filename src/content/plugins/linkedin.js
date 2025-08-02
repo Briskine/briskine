@@ -8,7 +8,6 @@ import {insertContentEditableTemplate} from '../editors/editor-contenteditable.j
 import {insertPasteTemplate} from '../editors/editor-paste.js'
 import htmlToText from '../utils/html-to-text.js'
 import createContact from '../utils/create-contact.js'
-import {enableBubble} from '../bubble/bubble.js'
 import {addAttachments} from '../attachments/attachments.js'
 import getSelection from '../selection.js'
 
@@ -182,16 +181,6 @@ function isMessageEditor (element) {
     !element.classList.contains('ql-editor')
   )
 }
-
-function setup () {
-  if (!isActive()) {
-    return
-  }
-
-  enableBubble()
-}
-
-setup()
 
 export default async (params = {}) => {
   if (!isActive()) {

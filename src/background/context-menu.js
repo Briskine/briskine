@@ -3,7 +3,7 @@ import isEqual from 'lodash.isequal'
 import debounce from 'lodash.debounce'
 
 import config from '../config.js'
-import {getAccount, getTemplates, getExtensionData} from '../store/store-api.js'
+import {getAccount, getTemplates, getExtensionData, setExtensionData} from '../store/store-api.js'
 import sortTemplates from '../store/sort-templates.js'
 import {openPopup} from '../store/open-popup.js'
 
@@ -13,6 +13,7 @@ const signInMenu = 'signIn'
 const parentMenu = 'briskineMenu'
 const separatorMenu = 'mainSeparator'
 const insertTemplatesMenu = 'insertTemplates'
+const toggleBubbleMenu = 'toggleBubble'
 
 const templatesLimit = 30
 // context menus will show up on blocklisted sites as well
@@ -100,6 +101,26 @@ function insertTemplateAction (info, tab, template) {
   })
 }
 
+async function toggleBubbleAction(info, tab) {
+  const { hostname } = new URL(tab.url)
+  const extensionData = await getExtensionData()
+  const { whitelistBubble = [] } = extensionData
+  const { checked } = info
+
+  if (checked && !whitelistBubble.includes(hostname)) {
+    whitelistBubble.push(hostname)
+  } else
+  if (!checked && whitelistBubble.includes(hostname)) {
+    whitelistBubble.splice(whitelistBubble.indexOf(hostname), 1)
+  } else {
+    return false
+  }
+
+  setExtensionData({
+    whitelistBubble: whitelistBubble,
+  })
+}
+
 async function clickContextMenu (info = {}, tab = {}) {
   if (info.menuItemId === saveAsTemplateMenu) {
     return saveAsTemplateAction(info, tab)
@@ -111,6 +132,10 @@ async function clickContextMenu (info = {}, tab = {}) {
 
   if (info.menuItemId === signInMenu) {
     return signInAction()
+  }
+
+  if (info.menuItemId == toggleBubbleMenu) {
+    return toggleBubbleAction(info, tab)
   }
 
   // insert template
@@ -161,6 +186,14 @@ async function setupContextMenus () {
     contexts: ['all'],
     title: 'Briskine',
     id: parentMenu,
+  })
+
+  menus.push({
+    contexts: ['all'],
+    title: 'show bubble on this site',
+    type: 'checkbox',
+    id: toggleBubbleMenu,
+    parentId: parentMenu,
   })
 
   if (signedIn) {
@@ -225,6 +258,50 @@ async function setupContextMenus () {
   }
 }
 
+function isOnPredefinedLocation (hostname) {
+  const urls = [
+    'mail.google.com',
+    'www.linkedin.com',
+    'outlook.live.com',
+    'outlook.office365.com',
+  ]
+
+  return (
+      urls.some((url) => hostname === url)
+  )
+}
+
+async function onTabSwitchHandler() {
+  const [tab] = await browser.tabs.query({active: true, lastFocusedWindow: true})
+
+  const { hostname } = new URL(tab.url)
+
+  if (isOnPredefinedLocation(hostname)) {
+    browser.contextMenus.update(
+      toggleBubbleMenu,
+      {
+        checked: true,
+        enabled: false
+      }
+    )
+
+    return
+  }
+
+  const extensionData = await getExtensionData()
+  const { whitelistBubble = [] } = extensionData
+  const bubbleActive = whitelistBubble.includes(hostname)
+
+  browser.contextMenus.update(
+    toggleBubbleMenu,
+    {
+      checked: bubbleActive,
+      enabled: true
+    }
+  )
+}
+
+
 const watchedKeys = [
   'briskine',
   'firebaseUser',
@@ -257,6 +334,7 @@ function enableContextMenu () {
 
   browser.runtime.onInstalled.addListener(setupContextMenus)
   browser.contextMenus.onClicked.addListener(clickContextMenu)
+  browser.tabs.onActivated.addListener(onTabSwitchHandler)
 
   const debouncedStorageChange = debounce(storageChange, 1000)
   browser.storage.local.onChanged.addListener(debouncedStorageChange)
