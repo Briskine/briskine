@@ -4,7 +4,6 @@
 import parseTemplate from '../utils/parse-template.js'
 import {insertTemplate} from '../editors/editor-universal.js'
 import createContact from '../utils/create-contact.js'
-import {enableBubble} from '../bubble/bubble.js'
 import {addAttachments} from '../attachments/attachments.js'
 
 // names and emails are sometimes formatted as "full name <name@email.com>".
@@ -301,14 +300,6 @@ function isActive () {
 
   return activeCache
 }
-
-// enable the bubble with a delay,
-// in case we're in the open-email-in-new-window dynamically created popup.
-setTimeout(() => {
-  if (isActive()) {
-    enableBubble()
-  }
-}, 500)
 
 export default async (params = {}) => {
   if (!isActive()) {
