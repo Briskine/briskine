@@ -505,7 +505,6 @@ export function signin (params = {}) {
       body: {
         email: params.email,
         password: params.password,
-        apiKey: FIREBASE_CONFIG.apiKey,
       }
     })
     .then((res) => {
