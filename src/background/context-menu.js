@@ -47,6 +47,15 @@ function insertTemplate (eventInsertTemplate, template) {
   }
 }
 
+function toggleBubble (eventToggleBubble, enable) {
+
+  document.activeElement.dispatchEvent(new CustomEvent(eventToggleBubble, {
+    bubbles: true,
+    composed: true,
+    detail: enable,
+  }))  
+}
+
 async function executeScript ({ info = {}, tab = {}, args = [], func = () => {} }) {
   return browser.scripting.executeScript({
     target: {
@@ -102,13 +111,18 @@ function insertTemplateAction (info, tab, template) {
 }
 
 async function toggleBubbleAction(info, tab) {
-  const { hostname } = new URL(tab.url)
+  const { hostname } = URL.parse(tab.url)
+  if (!hostname)
+    return
+
   const extensionData = await getExtensionData()
   const { whitelistBubble = [] } = extensionData
   const { checked } = info
 
+  let enableBubble = false
   if (checked && !whitelistBubble.includes(hostname)) {
     whitelistBubble.push(hostname)
+    enableBubble = true
   } else
   if (!checked && whitelistBubble.includes(hostname)) {
     whitelistBubble.splice(whitelistBubble.indexOf(hostname), 1)
@@ -116,8 +130,15 @@ async function toggleBubbleAction(info, tab) {
     return false
   }
 
-  setExtensionData({
+  await setExtensionData({
     whitelistBubble: whitelistBubble,
+  })
+
+  await executeScript({
+    info: info,
+    tab: tab,
+    func: toggleBubble,
+    args: [config.eventToggleBubble, enableBubble],
   })
 }
 
@@ -191,6 +212,7 @@ async function setupContextMenus () {
   menus.push({
     contexts: ['all'],
     title: 'show bubble on this site',
+    documentUrlPatterns: documentUrlPatterns,
     type: 'checkbox',
     id: toggleBubbleMenu,
     parentId: parentMenu,
@@ -271,11 +293,11 @@ function isOnPredefinedLocation (hostname) {
   )
 }
 
-async function onTabSwitchHandler() {
-  const [tab] = await browser.tabs.query({active: true, lastFocusedWindow: true})
-
-  const { hostname } = new URL(tab.url)
-
+async function enableBubbleForHostname(urlString) {
+  const { hostname } = URL.parse(urlString)
+  if (!hostname)
+    return
+  
   if (isOnPredefinedLocation(hostname)) {
     browser.contextMenus.update(
       toggleBubbleMenu,
@@ -301,6 +323,18 @@ async function onTabSwitchHandler() {
   )
 }
 
+async function onTabSwitchHandler() {
+  const [tab] = await browser.tabs.query({active: true, lastFocusedWindow: true})
+
+  enableBubbleForHostname(tab.url)
+}
+
+async function onTabUpdatehHandler(tabId, changeInfo, tab) {
+  if (!changeInfo.status === 'complete')
+    return
+ 
+  enableBubbleForHostname(tab.url)
+}
 
 const watchedKeys = [
   'briskine',
@@ -335,6 +369,7 @@ function enableContextMenu () {
   browser.runtime.onInstalled.addListener(setupContextMenus)
   browser.contextMenus.onClicked.addListener(clickContextMenu)
   browser.tabs.onActivated.addListener(onTabSwitchHandler)
+  browser.tabs.onUpdated.addListener(onTabUpdatehHandler)
 
   const debouncedStorageChange = debounce(storageChange, 1000)
   browser.storage.local.onChanged.addListener(debouncedStorageChange)

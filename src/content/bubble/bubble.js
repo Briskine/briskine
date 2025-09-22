@@ -137,18 +137,33 @@ function isOnPredefinedLocation (hostname) {
   )
 }
 
+let toggleBubbleHandler = () => {}
+
+function makeToggleBubbleHandler (settings) {
+  return ({detail}) =>{
+    if (detail)
+      create(settings)
+    else
+      destroy()
+  }
+}
+
 export async function setup (settings = {}) {
   // check if bubble or dialog are disabled in settings
   if (settings.dialog_button === false || settings.dialog_enabled === false) {
     return
   }
 
+  toggleBubbleHandler = makeToggleBubbleHandler(settings)
+
+  window.addEventListener(config.eventToggleBubble, toggleBubbleHandler)
+
   const { hostname } = window.location
   const extensionData = await getExtensionData()
   const { whitelistBubble = [] } = extensionData
 
   if (isOnPredefinedLocation(hostname) || whitelistBubble.includes(hostname)) {
-    return create(settings)
+    create(settings)
   }
 }
 
@@ -244,9 +259,13 @@ function create (settings = {}) {
   document.addEventListener('scroll', scrollDocument, true)
 
   enableShadowFocus()
+
+  if (document.activeElement) {
+    showBubble(document.activeElement)
+  }
 }
 
-export function destroy () {
+export function destroyInstance () {
   if (bubbleInstance) {
     bubbleInstance.remove()
     bubbleInstance = null
@@ -262,6 +281,11 @@ export function destroy () {
   })
 
   disableShadowFocus()
+}
+
+export function destroy () {
+  destroyInstance()
+  window.removeEventListener(config.eventToggleBubble, toggleBubbleHandler, true)
 }
 
 // top-right sticky positioning,
@@ -286,7 +310,7 @@ const textfieldMinHeight = 25
 
 function isValidTextfield (elem) {
   // if the element is a textfield
-  if (elem.matches('textarea, [contenteditable]')) {
+  if (elem instanceof Element && elem.matches('textarea, [contenteditable]')) {
     // check if the element is big enough
     // to only show the bubble for large textfields
     const metrics = elem.getBoundingClientRect()
