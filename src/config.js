@@ -11,6 +11,7 @@ var Config = {
   eventSandboxCompile: 'briskine-template-compile',
   eventShowDialog: 'briskine-dialog',
   eventInsertTemplate: 'briskine-insert-template',
+  eventToggleBubble: 'briskine-toggle-bubble',
 }
 
 // firebase staging
