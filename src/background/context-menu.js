@@ -116,22 +116,22 @@ async function toggleBubbleAction(info, tab) {
     return
 
   const extensionData = await getExtensionData()
-  const { whitelistBubble = [] } = extensionData
+  const { bubbleAllowlist = [] } = extensionData
   const { checked } = info
 
   let enableBubble = false
-  if (checked && !whitelistBubble.includes(hostname)) {
-    whitelistBubble.push(hostname)
+  if (checked && !bubbleAllowlist.includes(hostname)) {
+    bubbleAllowlist.push(hostname)
     enableBubble = true
   } else
-  if (!checked && whitelistBubble.includes(hostname)) {
-    whitelistBubble.splice(whitelistBubble.indexOf(hostname), 1)
+  if (!checked && bubbleAllowlist.includes(hostname)) {
+    bubbleAllowlist.splice(bubbleAllowlist.indexOf(hostname), 1)
   } else {
     return false
   }
 
   await setExtensionData({
-    whitelistBubble: whitelistBubble,
+    bubbleAllowlist: bubbleAllowlist,
   })
 
   await executeScript({
@@ -311,8 +311,8 @@ async function enableBubbleForHostname(urlString) {
   }
 
   const extensionData = await getExtensionData()
-  const { whitelistBubble = [] } = extensionData
-  const bubbleActive = whitelistBubble.includes(hostname)
+  const { bubbleAllowlist = [] } = extensionData
+  const bubbleActive = bubbleAllowlist.includes(hostname)
 
   browser.contextMenus.update(
     toggleBubbleMenu,

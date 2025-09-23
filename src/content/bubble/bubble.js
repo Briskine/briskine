@@ -160,9 +160,9 @@ export async function setup (settings = {}) {
 
   const { hostname } = window.location
   const extensionData = await getExtensionData()
-  const { whitelistBubble = [] } = extensionData
+  const { bubbleAllowlist = [] } = extensionData
 
-  if (isOnPredefinedLocation(hostname) || whitelistBubble.includes(hostname)) {
+  if (isOnPredefinedLocation(hostname) || bubbleAllowlist.includes(hostname)) {
     create(settings)
   }
 }
