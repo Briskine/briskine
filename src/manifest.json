@@ -58,7 +58,7 @@
       "https://*/*",
       "http://*/*"
     ],
-    "use_dynamic_url": true
+    "use_dynamic_url": false
   }],
   "sandbox": {
     "pages": ["sandbox/sandbox.html"]
