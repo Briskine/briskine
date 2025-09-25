@@ -11,6 +11,8 @@
 
 import htmlToText from '../utils/html-to-text.js'
 import {request} from '../page/page-parent.js'
+import getSelection from '../selection.js'
+import getActiveElement from '../active-element.js'
 
 export function isPasteEditor (element) {
   return (
@@ -33,10 +35,10 @@ export function insertPasteTemplate (params = {}) {
 // otherwise Firefox won't trigger the event.
 export async function pageInsertPasteTemplate (params = {}) {
   // we can't pass the element instance to the page script
-  const element = document.activeElement
+  const element = getActiveElement()
   // select shortcut
   if (params.word.text === params.quicktext.shortcut) {
-    const selection = window.getSelection()
+    const selection = getSelection()
     const range = selection.getRangeAt(0)
     const focusNode = selection.focusNode
     range.setStart(focusNode, params.word.start)
