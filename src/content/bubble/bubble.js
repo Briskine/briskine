@@ -6,8 +6,11 @@
 import config from '../../config.js'
 import {dialogTagName} from '../dialog/dialog.js'
 
+import getEventTarget from '../event-target.js'
+
 import bubbleStyles from './bubble.css'
 import bubbleIcon from '../../icons/briskine-logo-small-bare.svg?raw'
+import getActiveElement from '../active-element.js'
 
 let bubbleInstance = null
 let activeTextfield = null
@@ -99,12 +102,14 @@ customElements.define(
 
 function focusTextfield (e) {
   // used for showing the dialog completion
-  activeTextfield = e.target
+  activeTextfield = getEventTarget(e)
 
-  return showBubble(e.target)
+  return showBubble(activeTextfield)
 }
 
 function blurTextfield (e) {
+  // TODO buggy in shadow dom
+
   // don't hide the bubble if the newly focused node is in the dialog.
   // eg. when clicking the bubble.
   if (e.relatedTarget && e.relatedTarget.closest(dialogTagName)) {

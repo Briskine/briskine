@@ -118,6 +118,9 @@ function Dialog (originalProps) {
     focusNode = null
     focusOffset = 0
 
+    // when event was triggered in shadow dom (such as the bubble)
+    const hostNode = node?.getRootNode?.()?.host
+
     if (isTextfield(node)) {
       // input, textarea
       target = getEditableCaret(node)
@@ -148,9 +151,9 @@ function Dialog (originalProps) {
           placement = 'top-left'
         }
       }
-    } else if (e.target.tagName.toLowerCase() === bubbleTagName) {
+    } else if (hostNode?.tagName?.toLowerCase?.() === bubbleTagName) {
       // bubble
-      target = e.target
+      target = hostNode
       if (direction === 'rtl') {
         placement = 'bottom-left'
       } else {
