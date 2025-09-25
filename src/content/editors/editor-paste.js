@@ -38,7 +38,7 @@ export async function pageInsertPasteTemplate (params = {}) {
   const element = getActiveElement()
   // select shortcut
   if (params.word.text === params.quicktext.shortcut) {
-    const selection = getSelection()
+    const selection = getSelection(element)
     const range = selection.getRangeAt(0)
     const focusNode = selection.focusNode
     range.setStart(focusNode, params.word.start)
