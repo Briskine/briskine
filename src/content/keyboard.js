@@ -1,7 +1,8 @@
 /**
  * Keyboard Shortcut Autocomplete
  */
-import {autocomplete, getSelectedWord, getSelection, getEventTarget} from './autocomplete.js'
+import {autocomplete, getSelectedWord, getEventTarget} from './autocomplete.js'
+import getSelection from './selection.js'
 import {isContentEditable} from './editors/editor-contenteditable.js'
 import {getTemplates} from '../store/store-content.js'
 

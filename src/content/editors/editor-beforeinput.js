@@ -9,7 +9,7 @@
  */
 
 import htmlToText from '../utils/html-to-text.js'
-import {getSelection} from '../autocomplete.js'
+import getSelection from '../selection.js'
 
 export function isBeforeInputEditor (element) {
   return element.hasAttribute('data-lexical-editor') || element.hasAttribute('data-slate-editor')
