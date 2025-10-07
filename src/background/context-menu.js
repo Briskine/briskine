@@ -6,6 +6,8 @@ import config from '../config.js'
 import {getAccount, getTemplates, getExtensionData, setExtensionData} from '../store/store-api.js'
 import sortTemplates from '../store/sort-templates.js'
 import {openPopup} from '../store/open-popup.js'
+import {isBlocklisted} from '../content/blocklist.js'
+import {getSettings} from '../store/store-api.js'
 
 const saveAsTemplateMenu = 'saveAsTemplate'
 const openDialogMenu = 'openDialog'
@@ -21,6 +23,7 @@ const documentUrlPatterns = [
   'https://*/*',
   'http://*/*',
 ]
+let settingsCache = {}
 
 function getSelectedText () {
   return window.getSelection()?.toString?.()
@@ -297,6 +300,23 @@ async function enableBubbleForHostname(urlString) {
   const { hostname } = URL.parse(urlString)
   if (!hostname)
     return
+
+  if (!settingsCache.length) {
+    const settings = await getSettings()
+    settingsCache = Object.assign({}, settings)
+  }
+
+  if (isBlocklisted(settingsCache, urlString)) {
+    browser.contextMenus.update(
+      toggleBubbleMenu,
+      {
+        checked: false,
+        enabled: false
+      }
+    )
+
+    return
+  }
   
   if (isOnPredefinedLocation(hostname)) {
     browser.contextMenus.update(
