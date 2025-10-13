@@ -113,7 +113,11 @@ async function clickContextMenu (info = {}, tab = {}) {
 
   // insert template
   const templates = await getTemplates()
-  const selected = templates.find((t) => t.id === info.menuItemId)
+  // BUG WORKAROUND
+  // Safari turns id="3" into id=3 (Number), even if the id is a string (e.g., for the default templates).
+  // even if we force the menuItem to String(id), the menuItemId still gets converted to a number.
+  const menuItemId = String(info.menuItemId)
+  const selected = templates.find((t) => t.id === menuItemId)
   return insertTemplateAction(info, tab, selected)
 }
 
