@@ -113,8 +113,22 @@ async function clickContextMenu (info = {}, tab = {}) {
 
   // insert template
   const templates = await getTemplates()
-  const selected = templates.find((t) => t.id === info.menuItemId)
-  return insertTemplateAction(info, tab, selected)
+
+  // BUG WORKAROUND
+  // Safari turns id="3" into id=3 (Number), even if the id is a string (e.g., for the default templates).
+  // even if we force the menuItem to String(id), the menuItemId still gets converted to a number.
+  const menuItemId = String(info.menuItemId)
+  const selected = templates.find((t) => t.id === menuItemId)
+
+  // BUG WORKAROUND
+  // Safari will throw an error about the template being non JSON-serializable if it contains dates.
+  const cleanTemplate = {
+    ...selected,
+    created_datetime: null,
+    modified_datetime: null,
+  }
+
+  return insertTemplateAction(info, tab, cleanTemplate)
 }
 
 async function createContextMenus (menus = []) {
