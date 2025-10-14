@@ -67,7 +67,7 @@
     "mockdate": "^3.0.2",
     "puppeteer": "^24.0.0",
     "purgecss-webpack-plugin": "^7.0.0",
-    "web-ext": "^8.0.0",
+    "web-ext": "^9.0.0",
     "webpack": "^5.11.1",
     "webpack-cli": "^6.0.0"
   },
