@@ -21,6 +21,7 @@ customElements.define(
 
       const shadowRoot = this.attachShadow({mode: 'closed'})
       const iframe = document.createElement('iframe')
+      iframe.credentialless = true
       iframe.src = browser.runtime.getURL('sandbox/sandbox.html')
       iframe.style.display = 'none'
       iframe.onload = async () => {

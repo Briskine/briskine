@@ -1,6 +1,6 @@
 import {test, expect} from '../fixtures.ts'
 
-test.describe('CSP', () => {
+test.describe(`Content-Security-Policy="default-src self'`, () => {
   test.beforeEach(async ({page}) => {
     await page.goto('/csp/csp.html')
   })
