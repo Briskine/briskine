@@ -143,6 +143,69 @@ export function setup (settings = {}) {
   domObservers.push(domObserver)
 }
 
+const shadowRoots = []
+let shadowObserver = null
+
+function findAllShadowRoots (node, roots = []) {
+  // If the current node has a shadow root, add it to our list.
+  if (node.shadowRoot) {
+    roots.push(node.shadowRoot)
+    // Then, search for more shadow roots *inside* this one.
+    findAllShadowRoots(node.shadowRoot, roots)
+  }
+
+  // Traverse through all child elements of the current node.
+  for (const child of node.children) {
+    findAllShadowRoots(child, roots)
+  }
+
+  return roots
+}
+
+function addShadowFocusEvents (parent) {
+  const newShadowRoots = findAllShadowRoots(parent)
+  newShadowRoots.forEach((shadow) => {
+    if (!shadowRoots.includes(shadow)) {
+      shadowRoots.push(shadow)
+      shadow.addEventListener('focusin', focusTextfield, true)
+      shadow.addEventListener('focusout', blurTextfield, true)
+    }
+  })
+}
+
+// TODO explain why we need this
+function enableShadowFocus () {
+  addShadowFocusEvents(document.body)
+
+  shadowObserver = new MutationObserver((records) => {
+    records
+      .flatMap((record) => Array.from(record.addedNodes))
+      .forEach((node) => {
+        if (node.nodeType === Node.ELEMENT_NODE) {
+          addShadowFocusEvents(node)
+        }
+      })
+  })
+  shadowObserver.observe(document.body, {
+    childList: true,
+    subtree: true,
+  })
+}
+
+function disableShadowFocus () {
+  if (shadowObserver) {
+    shadowObserver.disconnect()
+    shadowRoots.forEach((shadow) => {
+      if (!shadow) {
+        return
+      }
+
+     shadow.removeEventListener('focusin', focusTextfield, true)
+     shadow.removeEventListener('focusout', blurTextfield, true)
+    })
+  }
+}
+
 function create (settings = {}) {
   // bubble is created outside the body.
   // when textfields are focused, move it to the offsetParent for positioning.
@@ -157,6 +220,8 @@ function create (settings = {}) {
 
   // reposition bubble on scroll
   document.addEventListener('scroll', scrollDocument, true)
+
+  enableShadowFocus()
 }
 
 export function destroy () {
@@ -173,6 +238,8 @@ export function destroy () {
   domObservers.forEach((observer) => {
     observer.disconnect()
   })
+
+  disableShadowFocus()
 }
 
 // top-right sticky positioning,
