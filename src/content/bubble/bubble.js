@@ -86,7 +86,6 @@ function focusTextfield (e) {
 }
 
 function blurTextfield (e) {
-  // TODO BUG relatedTarget won't work in shadow dom.
   // don't hide the bubble if the newly focused node is in the dialog.
   // eg. when clicking the bubble.
   if (e.relatedTarget && e.relatedTarget.closest(dialogTagName)) {
@@ -147,14 +146,14 @@ const shadowRoots = []
 let shadowObserver = null
 
 function findAllShadowRoots (node, roots = []) {
-  // If the current node has a shadow root, add it to our list.
+  // if the current node has a shadow root, add it to our list.
   if (node.shadowRoot) {
     roots.push(node.shadowRoot)
-    // Then, search for more shadow roots *inside* this one.
+    // search for more shadow roots *inside* this one.
     findAllShadowRoots(node.shadowRoot, roots)
   }
 
-  // Traverse through all child elements of the current node.
+  // traverse through all child elements of the current node.
   for (const child of node.children) {
     findAllShadowRoots(child, roots)
   }
@@ -173,7 +172,16 @@ function addShadowFocusEvents (parent) {
   })
 }
 
-// TODO explain why we need this
+// focusin and focusout events are *composed*, so they bubble out of the shadow dom.
+// but *only if the shadow root host loses or gains focus*.
+// if all of the focusing and blurring happens inside the same shadow root,
+// only the shadow root will be able to catch those events.
+// only when we focus outside of the shadow root (or when we focus inside the shadow root, from outside),
+// will our regular document handler catch the event.
+// that's why we need to get all shadow roots from the dom, and attach the focusin and focusout
+// events on each one.
+// when we first focus inside the shadow root, or focus outside the shadow root, from inside,
+// the events will trigger twice.
 function enableShadowFocus () {
   addShadowFocusEvents(document.body)
 
@@ -186,6 +194,7 @@ function enableShadowFocus () {
         }
       })
   })
+
   shadowObserver.observe(document.body, {
     childList: true,
     subtree: true,
