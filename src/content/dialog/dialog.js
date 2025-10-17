@@ -325,7 +325,7 @@ function Dialog (originalProps) {
       anchorNode &&
       focusNode
     ) {
-      window.getSelection().setBaseAndExtent(anchorNode, anchorOffset, focusNode, focusOffset)
+      getSelection().setBaseAndExtent(anchorNode, anchorOffset, focusNode, focusOffset)
     } else {
       editor.focus()
     }
