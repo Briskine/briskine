@@ -209,16 +209,18 @@ export function destroy () {
 // top-right sticky positioning,
 // considering scroll.
 function getTopPosition (textfield, parent) {
+  const offsetParent = textfield.offsetParent || document.documentElement
   const textfieldRect = textfield.getBoundingClientRect()
-  const parentRect = parent.getBoundingClientRect()
-  const distanceFromParent = textfieldRect.top - parentRect.top
+  const offsetParentRect = offsetParent.getBoundingClientRect()
 
-  let top = textfield.offsetTop
+  let stickyTopViewport = textfieldRect.top
 
-  // top position of textfield is scrolled out of view
-  if (distanceFromParent < 0) {
-    top = top + Math.abs(distanceFromParent)
-  }
+  const parentRect = parent.nodeType === Node.DOCUMENT_NODE ? { top: 0 } : parent.getBoundingClientRect()
+  // the bubble should not go above the visible area of the parent.
+  stickyTopViewport = Math.max(stickyTopViewport, parentRect.top)
+
+  // convert the viewport-relative sticky top position to be relative to the offsetParent's content area.
+  const top = stickyTopViewport - offsetParentRect.top + offsetParent.scrollTop
 
   return top
 }
@@ -240,14 +242,18 @@ function isValidTextfield (elem) {
   return false
 }
 
-// finds the first offsetParent that could be scrollable
+// finds the first parentElement that could be scrollable
 function findScrollParent (target) {
-  const parent = target.offsetParent
+  if (!target || target === document.body) {
+    return null
+  }
+
+  const parent = target.parentElement
   if (!parent) {
     return null
   }
-  const parentStyles = window.getComputedStyle(parent)
 
+  const parentStyles = window.getComputedStyle(parent)
   const scrollValues = [
     'scroll',
     'auto',
@@ -256,9 +262,10 @@ function findScrollParent (target) {
     // https://developer.mozilla.org/en-US/docs/Web/CSS/overflow
     'overlay',
   ]
+
   if (
-    scrollValues.includes(parentStyles.overflow) ||
-    scrollValues.includes(parentStyles.overflowY)
+    (scrollValues.includes(parentStyles.overflow) || scrollValues.includes(parentStyles.overflowY)) &&
+    parent.scrollHeight > parent.clientHeight
   ) {
     return parent
   }
