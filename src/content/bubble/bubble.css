@@ -7,7 +7,7 @@
 
 :host {
   position: absolute;
-  display: block;
+  display: none;
 
   --bubble-size: 28px;
   --bubble-margin: 5px;
@@ -18,14 +18,26 @@
   margin: var(--bubble-margin);
 
   font-family: sans-serif;
+
+  opacity: 0;
+  transition-property: opacity, display;
+  transition-duration: .2s;
+  transition-timing-function: ease-out;
+  transition-behavior: allow-discrete;
+  transition-delay: .2s;
+}
+
+:host([visible]) {
+  display: block;
+  opacity: 1;
+
+  @starting-style {
+    opacity: 0;
+  }
 }
 
 .b-bubble {
   position: relative;
-  opacity: 0;
-  visibility: hidden;
-  transition: opacity ease-out .2s;
-
   appearance: none;
   display: block;
   width: 100%;
@@ -59,11 +71,6 @@
   display: block;
   width: 100%;
   height: 100%;
-}
-
-.b-bubble-visible {
-  opacity: 1;
-  visibility: visible;
 }
 
 .b-bubble:hover + .b-bubble-tooltip {
@@ -111,9 +118,9 @@
 }
 
 /* RTL support
-  * BUG dialog positioning is broken in rtl mode,
-  * after clicking the button.
-  */
+ * BUG dialog positioning is broken in rtl mode,
+ * after clicking the button.
+ */
 :host([dir=rtl]) {
   right: auto !important;
   left: 0;
