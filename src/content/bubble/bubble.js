@@ -290,6 +290,7 @@ export function destroy () {
 
 // top-right sticky positioning,
 // considering scroll.
+// BUG when bubble is visible, and scrolling parent container, bubble gets placed on top-right of scrolled parent, instead of staying on top of editor.
 function getTopPosition (textfield, parent) {
   const offsetParent = textfield.offsetParent || document.documentElement
   const textfieldRect = textfield.getBoundingClientRect()
