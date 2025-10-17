@@ -26,6 +26,7 @@ function getSelectedText () {
 }
 
 function showDialog (eventShowDialog) {
+  // TODO won't work in shadow dom
   if (document.activeElement) {
     document.activeElement.dispatchEvent(new CustomEvent(eventShowDialog, {
       bubbles: true,
@@ -35,6 +36,7 @@ function showDialog (eventShowDialog) {
 }
 
 function insertTemplate (eventInsertTemplate, template) {
+  // TODO won't work in shadow dom
   if (document.activeElement) {
     document.activeElement.dispatchEvent(new CustomEvent(eventInsertTemplate, {
       bubbles: true,

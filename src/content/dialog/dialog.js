@@ -19,6 +19,7 @@ import {getEditableCaret, getContentEditableCaret, getDialogPosition} from './di
 import {autocomplete, getSelectedWord} from '../autocomplete.js'
 import getEventTarget from '../event-target.js'
 import getSelection from '../selection.js'
+import getActiveElement from '../active-element.js'
 import {keybind, keyunbind} from '../keybind.js'
 import IconSearch from 'bootstrap-icons/icons/search.svg'
 import IconBriskine from '../../icons/briskine-logo-small.svg'
@@ -169,11 +170,7 @@ function Dialog (originalProps) {
 
     // cache editor,
     // to use for inserting templates or restoring later.
-    editor = document.activeElement
-    // support having the activeElement inside a shadow root
-    if (editor.shadowRoot) {
-      editor = editor.shadowRoot.activeElement
-    }
+    editor = getActiveElement()
 
     // cache selection details, to restore later
     const selection = getSelection(editor)
