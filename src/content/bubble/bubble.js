@@ -25,7 +25,6 @@ customElements.define(
       super()
 
       this.ready = false
-      this.bubbleVisibilityTimer = null
     }
     connectedCallback () {
       // element was already created,
@@ -66,32 +65,12 @@ customElements.define(
       this.ready = true
     }
     attributeChangedCallback (name, oldValue, newValue) {
-      if (name === 'visible') {
-        const visibleClassName = 'b-bubble-visible'
-
-        if (this.bubbleVisibilityTimer) {
-          clearTimeout(this.bubbleVisibilityTimer)
-        }
-
-        // timer makes the visible/not-visible state to be less "flickery"
-        // when rapidly focusing and blurring textfields,
-        // and makes the transitions be visible.
-        this.bubbleVisibilityTimer = setTimeout(() => {
-          if (newValue === 'true') {
-            this.$button.classList.add(visibleClassName)
-          } else {
-            this.$button.classList.remove(visibleClassName)
-          }
-        }, 200)
-      }
-
       if (name === 'top' || name === 'right') {
         this.style[name] = `${newValue}px`
       }
     }
     static get observedAttributes() {
       return [
-        'visible',
         'top',
         'right',
       ]
@@ -288,7 +267,11 @@ function showBubble (textfield) {
       top = getTopPosition(textfield, scrollParent)
     }
 
-    offsetParent.appendChild(bubbleInstance)
+    // only move the bubble around in the dom,
+    // if it's not already where it needs to be.
+    if (!Array.from(offsetParent.childNodes).find((node) => node === bubbleInstance)) {
+      offsetParent.appendChild(bubbleInstance)
+    }
     bubbleInstance.setAttribute('right', offsetRight)
     bubbleInstance.setAttribute('top', top)
     bubbleInstance.setAttribute('visible', 'true')
