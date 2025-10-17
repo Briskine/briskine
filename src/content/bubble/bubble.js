@@ -10,7 +10,6 @@ import getEventTarget from '../event-target.js'
 
 import bubbleStyles from './bubble.css'
 import bubbleIcon from '../../icons/briskine-logo-small-bare.svg?raw'
-import getActiveElement from '../active-element.js'
 
 let bubbleInstance = null
 let activeTextfield = null
@@ -108,8 +107,7 @@ function focusTextfield (e) {
 }
 
 function blurTextfield (e) {
-  // TODO buggy in shadow dom
-
+  // TODO BUG relatedTarget won't work in shadow dom.
   // don't hide the bubble if the newly focused node is in the dialog.
   // eg. when clicking the bubble.
   if (e.relatedTarget && e.relatedTarget.closest(dialogTagName)) {
