@@ -142,7 +142,7 @@ export function setup (settings = {}) {
   domObservers.push(domObserver)
 }
 
-const shadowRoots = []
+let shadowRoots = []
 let shadowObserver = null
 
 function findAllShadowRoots (node, roots = []) {
@@ -204,6 +204,8 @@ function enableShadowFocus () {
 function disableShadowFocus () {
   if (shadowObserver) {
     shadowObserver.disconnect()
+    shadowObserver = null
+
     shadowRoots.forEach((shadow) => {
       if (!shadow) {
         return
@@ -212,6 +214,7 @@ function disableShadowFocus () {
      shadow.removeEventListener('focusin', focusTextfield, true)
      shadow.removeEventListener('focusout', blurTextfield, true)
     })
+    shadowRoots = []
   }
 }
 
