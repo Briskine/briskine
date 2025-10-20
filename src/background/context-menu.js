@@ -51,12 +51,12 @@ function insertTemplate (eventInsertTemplate, template) {
 }
 
 function toggleBubble (eventToggleBubble, enable) {
-
+  // TODO won't work in shadow dom
   document.activeElement.dispatchEvent(new CustomEvent(eventToggleBubble, {
     bubbles: true,
     composed: true,
     detail: enable,
-  }))  
+  }))
 }
 
 async function executeScript ({ info = {}, tab = {}, args = [], func = () => {} }) {
@@ -317,7 +317,7 @@ async function enableBubbleForHostname(urlString) {
 
     return
   }
-  
+
   if (isOnPredefinedLocation(hostname)) {
     browser.contextMenus.update(
       toggleBubbleMenu,
@@ -352,7 +352,7 @@ async function onTabSwitchHandler() {
 async function onTabUpdatehHandler(tabId, changeInfo, tab) {
   if (!changeInfo.status === 'complete')
     return
- 
+
   enableBubbleForHostname(tab.url)
 }
 

@@ -8,6 +8,7 @@ import {dialogTagName} from '../dialog/dialog.js'
 import { getExtensionData } from '../../store/store-content.js'
 
 import getEventTarget from '../event-target.js'
+import getActiveElement from '../active-element.js'
 
 import bubbleStyles from './bubble.css'
 import bubbleIcon from '../../icons/briskine-logo-small-bare.svg?raw'
@@ -260,8 +261,9 @@ function create (settings = {}) {
 
   enableShadowFocus()
 
-  if (document.activeElement) {
-    showBubble(document.activeElement)
+  const activeElement = getActiveElement()
+  if (activeElement) {
+    showBubble(activeElement)
   }
 }
 
