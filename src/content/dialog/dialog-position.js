@@ -1,5 +1,8 @@
 /* Dialog positioning and caret detection
  */
+
+import getSelection from '../selection.js'
+
 export function getDialogPosition (targetNode, instance, placement = 'top-left') {
   const pageHeight = window.innerHeight
   const scrollTop = window.scrollY
@@ -53,8 +56,8 @@ export function getDialogPosition (targetNode, instance, placement = 'top-left')
   }
 }
 
-export function getContentEditableCaret () {
-  const selection = window.getSelection()
+export function getContentEditableCaret (node) {
+  const selection = getSelection(node)
   if (selection.rangeCount !== 0) {
     const range = selection.getRangeAt(0)
     // when the caret is collapsed inside an empty element with no text,

@@ -10,6 +10,7 @@ import htmlToText from '../utils/html-to-text.js'
 import createContact from '../utils/create-contact.js'
 import {enableBubble} from '../bubble/bubble.js'
 import {addAttachments} from '../attachments/attachments.js'
+import getSelection from '../selection.js'
 
 async function before (params, data) {
   const $parent = params.element.closest('.msg-overlay-conversation-bubble')
@@ -150,7 +151,7 @@ function focusSpecialCharacter(editorNode) {
     range.selectNodeContents(lastSpecialCharNode)
     range.collapse()
 
-    const selection = window.getSelection()
+    const selection = getSelection()
     selection.removeAllRanges()
     selection.addRange(range)
   }

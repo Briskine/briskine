@@ -6,6 +6,8 @@
 import config from '../../config.js'
 import {dialogTagName} from '../dialog/dialog.js'
 
+import getEventTarget from '../event-target.js'
+
 import bubbleStyles from './bubble.css'
 import bubbleIcon from '../../icons/briskine-logo-small-bare.svg?raw'
 
@@ -23,7 +25,6 @@ customElements.define(
       super()
 
       this.ready = false
-      this.bubbleVisibilityTimer = null
     }
     connectedCallback () {
       // element was already created,
@@ -64,32 +65,12 @@ customElements.define(
       this.ready = true
     }
     attributeChangedCallback (name, oldValue, newValue) {
-      if (name === 'visible') {
-        const visibleClassName = 'b-bubble-visible'
-
-        if (this.bubbleVisibilityTimer) {
-          clearTimeout(this.bubbleVisibilityTimer)
-        }
-
-        // timer makes the visible/not-visible state to be less "flickery"
-        // when rapidly focusing and blurring textfields,
-        // and makes the transitions be visible.
-        this.bubbleVisibilityTimer = setTimeout(() => {
-          if (newValue === 'true') {
-            this.$button.classList.add(visibleClassName)
-          } else {
-            this.$button.classList.remove(visibleClassName)
-          }
-        }, 200)
-      }
-
       if (name === 'top' || name === 'right') {
         this.style[name] = `${newValue}px`
       }
     }
     static get observedAttributes() {
       return [
-        'visible',
         'top',
         'right',
       ]
@@ -99,9 +80,9 @@ customElements.define(
 
 function focusTextfield (e) {
   // used for showing the dialog completion
-  activeTextfield = e.target
+  activeTextfield = getEventTarget(e)
 
-  return showBubble(e.target)
+  return showBubble(activeTextfield)
 }
 
 function blurTextfield (e) {
@@ -161,6 +142,82 @@ export function setup (settings = {}) {
   domObservers.push(domObserver)
 }
 
+let shadowRoots = []
+let shadowObserver = null
+
+function findAllShadowRoots (node, roots = []) {
+  // if the current node has a shadow root, add it to our list.
+  if (node.shadowRoot) {
+    roots.push(node.shadowRoot)
+    // search for more shadow roots *inside* this one.
+    findAllShadowRoots(node.shadowRoot, roots)
+  }
+
+  // traverse through all child elements of the current node.
+  for (const child of node.children) {
+    findAllShadowRoots(child, roots)
+  }
+
+  return roots
+}
+
+function addShadowFocusEvents (parent) {
+  const newShadowRoots = findAllShadowRoots(parent)
+  newShadowRoots.forEach((shadow) => {
+    if (!shadowRoots.includes(shadow)) {
+      shadowRoots.push(shadow)
+      shadow.addEventListener('focusin', focusTextfield, true)
+      shadow.addEventListener('focusout', blurTextfield, true)
+    }
+  })
+}
+
+// focusin and focusout events are *composed*, so they bubble out of the shadow dom.
+// but *only if the shadow root host loses or gains focus*.
+// if all of the focusing and blurring happens inside the same shadow root,
+// only the shadow root will be able to catch those events.
+// only when we focus outside of the shadow root (or when we focus inside the shadow root, from outside),
+// will our regular document handler catch the event.
+// that's why we need to get all shadow roots from the dom, and attach the focusin and focusout
+// events on each one.
+// when we first focus inside the shadow root, or focus outside the shadow root, from inside,
+// the events will trigger twice.
+function enableShadowFocus () {
+  addShadowFocusEvents(document.body)
+
+  shadowObserver = new MutationObserver((records) => {
+    records
+      .flatMap((record) => Array.from(record.addedNodes))
+      .forEach((node) => {
+        if (node.nodeType === Node.ELEMENT_NODE) {
+          addShadowFocusEvents(node)
+        }
+      })
+  })
+
+  shadowObserver.observe(document.body, {
+    childList: true,
+    subtree: true,
+  })
+}
+
+function disableShadowFocus () {
+  if (shadowObserver) {
+    shadowObserver.disconnect()
+    shadowObserver = null
+
+    shadowRoots.forEach((shadow) => {
+      if (!shadow) {
+        return
+      }
+
+     shadow.removeEventListener('focusin', focusTextfield, true)
+     shadow.removeEventListener('focusout', blurTextfield, true)
+    })
+    shadowRoots = []
+  }
+}
+
 function create (settings = {}) {
   // bubble is created outside the body.
   // when textfields are focused, move it to the offsetParent for positioning.
@@ -175,6 +232,8 @@ function create (settings = {}) {
 
   // reposition bubble on scroll
   document.addEventListener('scroll', scrollDocument, true)
+
+  enableShadowFocus()
 }
 
 export function destroy () {
@@ -191,6 +250,8 @@ export function destroy () {
   domObservers.forEach((observer) => {
     observer.disconnect()
   })
+
+  disableShadowFocus()
 }
 
 // top-right sticky positioning,
@@ -285,7 +346,11 @@ function showBubble (textfield) {
       top = getTopPosition(textfield, scrollParent)
     }
 
-    offsetParent.appendChild(bubbleInstance)
+    // only move the bubble around in the dom,
+    // if it's not already where it needs to be.
+    if (!Array.from(offsetParent.childNodes).find((node) => node === bubbleInstance)) {
+      offsetParent.appendChild(bubbleInstance)
+    }
     bubbleInstance.setAttribute('right', offsetRight)
     bubbleInstance.setAttribute('top', top)
     bubbleInstance.setAttribute('visible', 'true')

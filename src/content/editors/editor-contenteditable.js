@@ -1,7 +1,7 @@
 /* ContentEditable
  */
 
-import {getSelection} from '../autocomplete.js'
+import getSelection from '../selection.js'
 
 export function isContentEditable (element) {
   return element && element.hasAttribute('contenteditable')

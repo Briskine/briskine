@@ -16,7 +16,10 @@ import {
 import {isContentEditable} from '../editors/editor-contenteditable.js'
 import {bubbleTagName} from '../bubble/bubble.js'
 import {getEditableCaret, getContentEditableCaret, getDialogPosition} from './dialog-position.js'
-import {autocomplete, getSelectedWord, getSelection, getEventTarget} from '../autocomplete.js'
+import {autocomplete, getSelectedWord} from '../autocomplete.js'
+import getEventTarget from '../event-target.js'
+import getSelection from '../selection.js'
+import getActiveElement from '../active-element.js'
 import {keybind, keyunbind} from '../keybind.js'
 import IconSearch from 'bootstrap-icons/icons/search.svg'
 import IconBriskine from '../../icons/briskine-logo-small.svg'
@@ -116,6 +119,9 @@ function Dialog (originalProps) {
     focusNode = null
     focusOffset = 0
 
+    // when event was triggered in shadow dom (such as the bubble)
+    const hostNode = node?.getRootNode?.()?.host
+
     if (isTextfield(node)) {
       // input, textarea
       target = getEditableCaret(node)
@@ -146,9 +152,9 @@ function Dialog (originalProps) {
           placement = 'top-left'
         }
       }
-    } else if (e.target.tagName.toLowerCase() === bubbleTagName) {
+    } else if (hostNode?.tagName?.toLowerCase?.() === bubbleTagName) {
       // bubble
-      target = e.target
+      target = hostNode
       if (direction === 'rtl') {
         placement = 'bottom-left'
       } else {
@@ -164,11 +170,7 @@ function Dialog (originalProps) {
 
     // cache editor,
     // to use for inserting templates or restoring later.
-    editor = document.activeElement
-    // support having the activeElement inside a shadow root
-    if (editor.shadowRoot) {
-      editor = editor.shadowRoot.activeElement
-    }
+    editor = getActiveElement()
 
     // cache selection details, to restore later
     const selection = getSelection(editor)
@@ -323,7 +325,7 @@ function Dialog (originalProps) {
       anchorNode &&
       focusNode
     ) {
-      window.getSelection().setBaseAndExtent(anchorNode, anchorOffset, focusNode, focusOffset)
+      getSelection().setBaseAndExtent(anchorNode, anchorOffset, focusNode, focusOffset)
     } else {
       editor.focus()
     }
