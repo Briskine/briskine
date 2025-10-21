@@ -6,20 +6,16 @@
 }
 
 :host {
+  --bubble-size: 28px;
+  --bubble-margin: 5px;
+  --color-background: 229, 229, 229;
+  --color-primary: #0d7af6;
+
   position: sticky;
   top: 0;
   height: 0;
 
-  /*position: absolute;*/
   display: none;
-
-  --bubble-size: 28px;
-  /*--bubble-margin: 5px;*/
-  --color-background: 229, 229, 229;
-  --color-primary: #0d7af6;
-  /*width: var(--bubble-size);
-  height: var(--bubble-size);*/
-  /*margin: var(--bubble-margin);*/
 
   font-family: sans-serif;
 
@@ -42,13 +38,11 @@
 
 .b-bubble {
   position: absolute;
-  top: 0;
-  right: 0;
+  top: var(--bubble-margin);
+  right: var(--bubble-margin);
 
   appearance: none;
   display: block;
-  /*width: 100%;
-  height: 100%;*/
   width: var(--bubble-size);
   height: var(--bubble-size);
   padding: 5px;
@@ -132,6 +126,7 @@
 /* RTL support
  * BUG dialog positioning is broken in rtl mode,
  * after clicking the button.
+ * BUG bubble rtl positioning is broken after css sticky positioning changes.
  */
 :host([dir=rtl]) {
   right: auto !important;
