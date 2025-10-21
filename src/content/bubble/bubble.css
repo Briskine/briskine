@@ -8,12 +8,14 @@
 :host {
   --bubble-size: 28px;
   --bubble-margin: 5px;
+  --max-host-width: auto;
   --color-background: 229, 229, 229;
   --color-primary: #0d7af6;
 
   position: sticky;
   top: 0;
   height: 0;
+  max-width: var(--max-host-width);
 
   display: none;
 

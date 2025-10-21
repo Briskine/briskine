@@ -15,7 +15,8 @@ import bubbleIcon from '../../icons/briskine-logo-small-bare.svg?raw'
 
 let bubbleInstance = null
 let activeTextfield = null
-const domObservers = []
+
+const maxHostWidthCssVar = '--max-host-width'
 
 export const bubbleTagName = `b-bubble-${Date.now().toString(36)}`
 
@@ -324,6 +325,10 @@ async function showBubble (textfield) {
   if (textfield.previousSibling !== bubbleInstance) {
     textfield.before(bubbleInstance)
   }
+
+  // set max-width to max width of textfield,
+  // in case the container of the textfield is larger than the text field.
+  bubbleInstance.style.setProperty(maxHostWidthCssVar, textfieldStyles.width)
 
   bubbleInstance.setAttribute('visible', 'true')
 }
