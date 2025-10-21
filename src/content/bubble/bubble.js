@@ -3,6 +3,8 @@
  * Floating action button.
  */
 
+import { computePosition, offset, autoUpdate, shift, limitShift } from '@floating-ui/dom'
+
 import config from '../../config.js'
 import {dialogTagName} from '../dialog/dialog.js'
 import { getExtensionData } from '../../store/store-content.js'
@@ -109,7 +111,7 @@ function scrollDocument (e) {
         bubbleInstance &&
         bubbleInstance.getAttribute('visible') === 'true'
       ) {
-        bubbleInstance.setAttribute('top', getTopPosition(activeTextfield, e.target))
+        // bubbleInstance.setAttribute('top', getTopPosition(activeTextfield, e.target))
       }
 
       scrollTick = false
@@ -283,6 +285,10 @@ export function destroyInstance () {
   })
 
   disableShadowFocus()
+
+  if (cleanup) {
+    cleanup()
+  }
 }
 
 export function destroy () {
@@ -358,13 +364,16 @@ function findScrollParent (target) {
   return findScrollParent(parent)
 }
 
-function showBubble (textfield) {
+let cleanup
+
+async function showBubble (textfield) {
   // only show it for valid elements
   if (!isValidTextfield(textfield)) {
     return false
   }
 
   // detect rtl
+  // TODO use floating-ui for rtl support, also check bubble.css
   const textfieldStyles = window.getComputedStyle(textfield)
   const direction = textfieldStyles.direction || 'ltr'
   bubbleInstance.setAttribute('dir', direction)
@@ -372,35 +381,83 @@ function showBubble (textfield) {
   const offsetParent = textfield.offsetParent
 
   if (offsetParent) {
-    const offsetStyles = window.getComputedStyle(offsetParent)
+    // const offsetStyles = window.getComputedStyle(offsetParent)
 
-    // in case the offsetParent is a unpositioned table element (td, th, table)
-    // make it relative, for the button to have the correct positioning.
-    // https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/offsetParent
-    if (offsetStyles.position === 'static') {
-      offsetParent.style.position = 'relative'
-    }
+    // // in case the offsetParent is a unpositioned table element (td, th, table)
+    // // make it relative, for the button to have the correct positioning.
+    // // https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/offsetParent
+    // if (offsetStyles.position === 'static') {
+    //   // offsetParent.style.position = 'relative'
+    // }
 
-    // position the element relative to it's offsetParent
-    const offsetRight = offsetParent.offsetWidth - textfield.offsetLeft - textfield.offsetWidth
+    // // position the element relative to it's offsetParent
+    // const offsetRight = offsetParent.offsetWidth - textfield.offsetLeft - textfield.offsetWidth
 
-    let top = textfield.offsetTop
-    const scrollParent = findScrollParent(textfield)
-    if (scrollParent) {
-      top = getTopPosition(textfield, scrollParent)
-    }
+    // let top = textfield.offsetTop
+    // const scrollParent = findScrollParent(textfield)
+    // if (scrollParent) {
+    //   top = getTopPosition(textfield, scrollParent)
+    // }
 
     // only move the bubble around in the dom,
     // if it's not already where it needs to be.
     if (!Array.from(offsetParent.childNodes).find((node) => node === bubbleInstance)) {
       offsetParent.appendChild(bubbleInstance)
     }
-    bubbleInstance.setAttribute('right', offsetRight)
-    bubbleInstance.setAttribute('top', top)
+
+    if (cleanup) {
+      cleanup()
+    }
+
+    cleanup = autoUpdate(textfield, bubbleInstance, async () => {
+      const scrollParent = findScrollParent(textfield)
+      console.log(scrollParent)
+
+      let boundry = 'clippingAncestors'
+      // TODO this is on jira
+      if (textfield?.offsetParent?.contains?.(scrollParent)) {
+        console.log('offset contains scroll')
+        // TODO wtf this doesn't work, but inputting the option directly in boundry works?
+        boundry = scrollParent
+      }
+
+      try {
+        const { x, y } = await computePosition(textfield, bubbleInstance, {
+          placement: 'top-end',
+          middleware: [
+            shift({
+              // boundary: scrollParent,
+              // boundry: textfield.offsetParent,
+              boundry: boundry,
+              crossAxis: true,
+              padding: 5,
+            }),
+            // offset({
+            //   mainAxis: -5,
+            //   crossAxis: -5,
+            // }),
+          ]
+        })
+
+        bubbleInstance.style.left = `${x}px`
+        bubbleInstance.style.top = `${y}px`
+      } catch (err) {
+        console.log(err)
+      }
+    })
+
+    // bubbleInstance.setAttribute('right', y)
+    // bubbleInstance.setAttribute('top', x)
+    // bubbleInstance.setAttribute('right', offsetRight)
+    // bubbleInstance.setAttribute('top', top)
     bubbleInstance.setAttribute('visible', 'true')
   }
 }
 
 function hideBubble () {
   bubbleInstance.removeAttribute('visible')
+
+  if (cleanup) {
+    cleanup()
+  }
 }

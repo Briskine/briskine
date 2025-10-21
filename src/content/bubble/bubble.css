@@ -10,12 +10,12 @@
   display: none;
 
   --bubble-size: 28px;
-  --bubble-margin: 5px;
+  /*--bubble-margin: 5px;*/
   --color-background: 229, 229, 229;
   --color-primary: #0d7af6;
   width: var(--bubble-size);
   height: var(--bubble-size);
-  margin: var(--bubble-margin);
+  /*margin: var(--bubble-margin);*/
 
   font-family: sans-serif;
 
