@@ -99,29 +99,6 @@ function blurTextfield (e) {
   return hideBubble()
 }
 
-// reposition the bubble on scroll
-let scrollTick = false
-function scrollDocument (e) {
-  if (!scrollTick) {
-    window.requestAnimationFrame(() => {
-      if (
-        e.target &&
-        // must be an element node (eg. not the document)
-        e.target.nodeType === Node.ELEMENT_NODE &&
-        e.target.contains(activeTextfield) &&
-        bubbleInstance &&
-        bubbleInstance.getAttribute('visible') === 'true'
-      ) {
-        // bubbleInstance.setAttribute('top', getTopPosition(activeTextfield, e.target))
-      }
-
-      scrollTick = false
-    })
-
-    scrollTick = true
-  }
-}
-
 function isOnPredefinedLocation (hostname) {
   const urls = [
     'mail.google.com',
@@ -259,9 +236,6 @@ function create (settings = {}) {
   document.addEventListener('focusin', focusTextfield, true)
   document.addEventListener('focusout', blurTextfield, true)
 
-  // reposition bubble on scroll
-  document.addEventListener('scroll', scrollDocument, true)
-
   enableShadowFocus()
 
   const activeElement = getActiveElement()
@@ -278,12 +252,6 @@ export function destroyInstance () {
 
   document.removeEventListener('focusin', focusTextfield, true)
   document.removeEventListener('focusout', blurTextfield, true)
-  document.removeEventListener('scroll', scrollDocument, true)
-
-  // disconnect all observers
-  domObservers.forEach((observer) => {
-    observer.disconnect()
-  })
 
   disableShadowFocus()
 }
