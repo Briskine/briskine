@@ -282,8 +282,8 @@ async function showBubble (textfield) {
     textfield.before(bubbleInstance)
   }
 
-  // set max-width to max width of textfield,
-  // in case the container of the textfield is larger than the text field.
+  // set max-width to the width of textfield,
+  // in case the container of the textfield is larger than the textfield.
   bubbleInstance.style.setProperty(maxHostWidthCssVar, textfieldStyles.width)
 
   bubbleInstance.setAttribute('visible', 'true')
@@ -291,6 +291,4 @@ async function showBubble (textfield) {
 
 function hideBubble () {
   bubbleInstance.removeAttribute('visible')
-
-  // TODO use a timer and move bubble back to the documentElement?
 }

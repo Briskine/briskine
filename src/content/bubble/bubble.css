@@ -86,14 +86,17 @@
 
 .b-bubble-tooltip {
   --tooltip-bg: #2a2a2a;
+  --tooltip-margin: 12px;
 
   visibility: hidden;
   opacity: 0;
   transition: opacity ease-in .1s;
 
+  width: max-content;
   position: absolute;
   top: 50%;
-  right: 0;
+  transform: translateY(-50%);
+  right: calc(var(--bubble-size) + var(--tooltip-margin));
   padding: 3px 5px;
   background: var(--tooltip-bg);
   border-radius: 2px;
@@ -103,9 +106,6 @@
   font-weight: bold;
   line-height: 1;
   white-space: nowrap;
-
-  transform: translateY(-50%);
-  margin-right: calc(var(--bubble-size) + 12px);
 
   pointer-events: none;
 }
@@ -126,18 +126,15 @@
 }
 
 /* RTL support
- * BUG dialog positioning is broken in rtl mode,
- * after clicking the button.
- * BUG bubble rtl positioning is broken after css sticky positioning changes.
  */
-:host([dir=rtl]) {
-  right: auto !important;
+:host([dir=rtl]) .b-bubble {
+  right: auto;
   left: 0;
 }
 
 :host([dir=rtl]) .b-bubble-tooltip {
-  transform: translate(var(--bubble-size), -50%);
-  margin-left: 12px;
+  right: unset;
+  left: calc(var(--bubble-size) + var(--tooltip-margin));
 }
 
 :host([dir=rtl]) .b-bubble-tooltip:after {
