@@ -59,12 +59,11 @@ customElements.define(
         e.stopPropagation()
 
         // trigger the event on the bubble, to position the dialog next to it.
-        e.target.dispatchEvent(new CustomEvent(config.eventShowDialog, {
+        this.$button.dispatchEvent(new CustomEvent(config.eventShowDialog, {
           bubbles: true,
           composed: true,
         }))
       })
-
 
       this.ready = true
     }
