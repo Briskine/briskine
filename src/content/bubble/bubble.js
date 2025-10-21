@@ -68,17 +68,6 @@ customElements.define(
 
       this.ready = true
     }
-    attributeChangedCallback (name, oldValue, newValue) {
-      if (name === 'top' || name === 'right') {
-        this.style[name] = `${newValue}px`
-      }
-    }
-    static get observedAttributes() {
-      return [
-        'top',
-        'right',
-      ]
-    }
   }
 )
 
