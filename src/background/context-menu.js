@@ -212,15 +212,6 @@ async function setupContextMenus () {
     id: parentMenu,
   })
 
-  menus.push({
-    contexts: ['all'],
-    title: 'show bubble on this site',
-    documentUrlPatterns: documentUrlPatterns,
-    type: 'checkbox',
-    id: toggleBubbleMenu,
-    parentId: parentMenu,
-  })
-
   if (signedIn) {
     menus.push({
       contexts: ['all'],
@@ -236,6 +227,15 @@ async function setupContextMenus () {
       parentId: parentMenu,
     })
   }
+
+  menus.push({
+    contexts: ['all'],
+    title: 'Show bubble on this site',
+    documentUrlPatterns: documentUrlPatterns,
+    type: 'checkbox',
+    id: toggleBubbleMenu,
+    parentId: parentMenu,
+  })
 
   menus.push({
     contexts: ['editable', 'selection'],

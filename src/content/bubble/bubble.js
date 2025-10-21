@@ -273,7 +273,6 @@ async function showBubble (textfield) {
   }
 
   // detect rtl
-  // TODO fix rtl support in css
   const textfieldStyles = window.getComputedStyle(textfield)
   const direction = textfieldStyles.direction || 'ltr'
   bubbleInstance.setAttribute('dir', direction)
