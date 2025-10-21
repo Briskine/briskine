@@ -6,15 +6,19 @@
 }
 
 :host {
-  position: absolute;
+  position: sticky;
+  top: 0;
+  height: 0;
+
+  /*position: absolute;*/
   display: none;
 
   --bubble-size: 28px;
   /*--bubble-margin: 5px;*/
   --color-background: 229, 229, 229;
   --color-primary: #0d7af6;
-  width: var(--bubble-size);
-  height: var(--bubble-size);
+  /*width: var(--bubble-size);
+  height: var(--bubble-size);*/
   /*margin: var(--bubble-margin);*/
 
   font-family: sans-serif;
@@ -37,11 +41,16 @@
 }
 
 .b-bubble {
-  position: relative;
+  position: absolute;
+  top: 0;
+  right: 0;
+
   appearance: none;
   display: block;
-  width: 100%;
-  height: 100%;
+  /*width: 100%;
+  height: 100%;*/
+  width: var(--bubble-size);
+  height: var(--bubble-size);
   padding: 5px;
   background-color: rgba(var(--color-background), .4);
   border: 0;
@@ -73,7 +82,7 @@
   height: 100%;
 }
 
-.b-bubble:hover + .b-bubble-tooltip {
+.b-bubble:hover .b-bubble-tooltip {
   opacity: 1;
   visibility: visible;
   transition-delay: 1s;
@@ -81,13 +90,14 @@
 
 .b-bubble-tooltip {
   --tooltip-bg: #2a2a2a;
+
   visibility: hidden;
   opacity: 0;
   transition: opacity ease-in .1s;
 
   position: absolute;
   top: 50%;
-  left: 0;
+  right: 0;
   padding: 3px 5px;
   background: var(--tooltip-bg);
   border-radius: 2px;
@@ -98,8 +108,10 @@
   line-height: 1;
   white-space: nowrap;
 
-  transform: translate(-100%, -50%);
-  margin-left: -12px;
+  transform: translateY(-50%);
+  margin-right: calc(var(--bubble-size) + 12px);
+
+  pointer-events: none;
 }
 
 .b-bubble-tooltip:after {

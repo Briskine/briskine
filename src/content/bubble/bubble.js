@@ -3,8 +3,6 @@
  * Floating action button.
  */
 
-import { computePosition, offset, autoUpdate, shift, limitShift } from '@floating-ui/dom'
-
 import config from '../../config.js'
 import {dialogTagName} from '../dialog/dialog.js'
 import { getExtensionData } from '../../store/store-content.js'
@@ -41,10 +39,12 @@ customElements.define(
 
       const template = `
         <style>${bubbleStyles}</style>
-        <button type="button" class="b-bubble" tabindex="-1">${bubbleIcon}</button>
-        <span class="b-bubble-tooltip">
-        Search templates (${shortcut})
-        </div>
+        <button type="button" class="b-bubble" tabindex="-1">
+          ${bubbleIcon}
+          <span class="b-bubble-tooltip">
+            Search templates (${shortcut})
+          </div>
+        </button>
       `
       const shadowRoot = this.attachShadow({mode: 'open'})
       shadowRoot.innerHTML = template
@@ -285,35 +285,11 @@ export function destroyInstance () {
   })
 
   disableShadowFocus()
-
-  if (cleanup) {
-    cleanup()
-  }
 }
 
 export function destroy () {
   destroyInstance()
   window.removeEventListener(config.eventToggleBubble, toggleBubbleHandler, true)
-}
-
-// top-right sticky positioning,
-// considering scroll.
-// BUG when bubble is visible, and scrolling parent container, bubble gets placed on top-right of scrolled parent, instead of staying on top of editor.
-function getTopPosition (textfield, parent) {
-  const offsetParent = textfield.offsetParent || document.documentElement
-  const textfieldRect = textfield.getBoundingClientRect()
-  const offsetParentRect = offsetParent.getBoundingClientRect()
-
-  let stickyTopViewport = textfieldRect.top
-
-  const parentRect = parent.nodeType === Node.DOCUMENT_NODE ? { top: 0 } : parent.getBoundingClientRect()
-  // the bubble should not go above the visible area of the parent.
-  stickyTopViewport = Math.max(stickyTopViewport, parentRect.top)
-
-  // convert the viewport-relative sticky top position to be relative to the offsetParent's content area.
-  const top = stickyTopViewport - offsetParentRect.top + offsetParent.scrollTop
-
-  return top
 }
 
 const textfieldMinWidth = 100
@@ -333,39 +309,6 @@ function isValidTextfield (elem) {
   return false
 }
 
-// finds the first parentElement that could be scrollable
-function findScrollParent (target) {
-  if (!target || target === document.body) {
-    return null
-  }
-
-  const parent = target.parentElement
-  if (!parent) {
-    return null
-  }
-
-  const parentStyles = window.getComputedStyle(parent)
-  const scrollValues = [
-    'scroll',
-    'auto',
-    // used by outlook.com, draws scrollbars on top of the content.
-    // deprecated form the spec and only supported in webkit-like browsers.
-    // https://developer.mozilla.org/en-US/docs/Web/CSS/overflow
-    'overlay',
-  ]
-
-  if (
-    (scrollValues.includes(parentStyles.overflow) || scrollValues.includes(parentStyles.overflowY)) &&
-    parent.scrollHeight > parent.clientHeight
-  ) {
-    return parent
-  }
-
-  return findScrollParent(parent)
-}
-
-let cleanup
-
 async function showBubble (textfield) {
   // only show it for valid elements
   if (!isValidTextfield(textfield)) {
@@ -373,91 +316,20 @@ async function showBubble (textfield) {
   }
 
   // detect rtl
-  // TODO use floating-ui for rtl support, also check bubble.css
+  // TODO fix rtl support in css
   const textfieldStyles = window.getComputedStyle(textfield)
   const direction = textfieldStyles.direction || 'ltr'
   bubbleInstance.setAttribute('dir', direction)
 
-  const offsetParent = textfield.offsetParent
-
-  if (offsetParent) {
-    // const offsetStyles = window.getComputedStyle(offsetParent)
-
-    // // in case the offsetParent is a unpositioned table element (td, th, table)
-    // // make it relative, for the button to have the correct positioning.
-    // // https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/offsetParent
-    // if (offsetStyles.position === 'static') {
-    //   // offsetParent.style.position = 'relative'
-    // }
-
-    // // position the element relative to it's offsetParent
-    // const offsetRight = offsetParent.offsetWidth - textfield.offsetLeft - textfield.offsetWidth
-
-    // let top = textfield.offsetTop
-    // const scrollParent = findScrollParent(textfield)
-    // if (scrollParent) {
-    //   top = getTopPosition(textfield, scrollParent)
-    // }
-
-    // only move the bubble around in the dom,
-    // if it's not already where it needs to be.
-    if (!Array.from(offsetParent.childNodes).find((node) => node === bubbleInstance)) {
-      offsetParent.appendChild(bubbleInstance)
-    }
-
-    if (cleanup) {
-      cleanup()
-    }
-
-    cleanup = autoUpdate(textfield, bubbleInstance, async () => {
-      const scrollParent = findScrollParent(textfield)
-      console.log(scrollParent)
-
-      let boundry = 'clippingAncestors'
-      // TODO this is on jira
-      if (textfield?.offsetParent?.contains?.(scrollParent)) {
-        console.log('offset contains scroll')
-        // TODO wtf this doesn't work, but inputting the option directly in boundry works?
-        boundry = scrollParent
-      }
-
-      try {
-        const { x, y } = await computePosition(textfield, bubbleInstance, {
-          placement: 'top-end',
-          middleware: [
-            shift({
-              // boundary: scrollParent,
-              // boundry: textfield.offsetParent,
-              boundry: boundry,
-              crossAxis: true,
-              padding: 5,
-            }),
-            // offset({
-            //   mainAxis: -5,
-            //   crossAxis: -5,
-            // }),
-          ]
-        })
-
-        bubbleInstance.style.left = `${x}px`
-        bubbleInstance.style.top = `${y}px`
-      } catch (err) {
-        console.log(err)
-      }
-    })
-
-    // bubbleInstance.setAttribute('right', y)
-    // bubbleInstance.setAttribute('top', x)
-    // bubbleInstance.setAttribute('right', offsetRight)
-    // bubbleInstance.setAttribute('top', top)
-    bubbleInstance.setAttribute('visible', 'true')
+  if (textfield.previousSibling !== bubbleInstance) {
+    textfield.before(bubbleInstance)
   }
+
+  bubbleInstance.setAttribute('visible', 'true')
 }
 
 function hideBubble () {
   bubbleInstance.removeAttribute('visible')
 
-  if (cleanup) {
-    cleanup()
-  }
+  // TODO use a timer and move bubble back to the documentElement?
 }
