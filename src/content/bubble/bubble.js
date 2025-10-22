@@ -253,8 +253,27 @@ const textfieldMinWidth = 100
 const textfieldMinHeight = 25
 
 function isValidTextfield (elem) {
-  // if the element is a textfield
-  if (elem instanceof Element && elem.matches('textarea, [contenteditable]')) {
+  if (
+    // is html element
+    elem instanceof HTMLElement
+    // is editable
+    && elem.matches('textarea, [contenteditable]')
+    // has a parent element node
+    && elem.parentElement
+    // the parent is not the body
+    && elem.parentElement !== document.body
+  ) {
+    // disable for flex and grid
+    const parentStyles = window.getComputedStyle(elem.parentElement)
+    if (
+      // parent is flex or grid
+      ['flex', 'grid'].includes(parentStyles.display)
+      // has more than 1 child, except the bubble (in case we already added it to the parent)
+      && Array.from(elem.parentElement.childNodes).filter((n) => n !== bubbleInstance).length > 1
+    ) {
+      return false
+    }
+
     // check if the element is big enough
     // to only show the bubble for large textfields
     const metrics = elem.getBoundingClientRect()
