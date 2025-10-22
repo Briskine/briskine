@@ -234,6 +234,9 @@ function create (settings = {}) {
 
 export function destroyInstance () {
   if (bubbleInstance) {
+    hideBubble()
+    resizeObserver = null
+
     bubbleInstance.remove()
     bubbleInstance = null
   }
@@ -285,6 +288,8 @@ function isValidTextfield (elem) {
   return false
 }
 
+let resizeObserver = null
+
 async function showBubble (textfield) {
   // only show it for valid elements
   if (!isValidTextfield(textfield)) {
@@ -300,13 +305,37 @@ async function showBubble (textfield) {
     textfield.before(bubbleInstance)
   }
 
+  bubbleInstance.setAttribute('visible', 'true')
+
   // set max-width to the width of textfield,
   // in case the container of the textfield is larger than the textfield.
   bubbleInstance.style.setProperty(maxHostWidthCssVar, textfieldStyles.width)
 
-  bubbleInstance.setAttribute('visible', 'true')
+  const maxWidthProperty = textfieldStyles.boxSizing === 'border-box' ? 'borderBoxSize' : 'contentBoxSize'
+
+  resizeObserver = new ResizeObserver((entries, observer) => {
+    if (!bubbleInstance) {
+      observer.disconnect()
+      return
+    }
+
+    for (const entry of entries) {
+      if (
+        entry.borderBoxSize
+        && entry[maxWidthProperty][0]
+      ) {
+        bubbleInstance.style.setProperty(maxHostWidthCssVar, `${entry[maxWidthProperty][0].inlineSize}px`)
+      }
+    }
+  })
+
+  resizeObserver.observe(textfield)
 }
 
 function hideBubble () {
   bubbleInstance.removeAttribute('visible')
+
+  if (resizeObserver) {
+    resizeObserver.disconnect()
+  }
 }
