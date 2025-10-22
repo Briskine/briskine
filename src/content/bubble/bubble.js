@@ -110,10 +110,11 @@ let toggleBubbleHandler = () => {}
 
 function makeToggleBubbleHandler (settings) {
   return ({detail}) =>{
-    if (detail)
+    if (detail) {
       create(settings)
-    else
-      destroy()
+    } else {
+      destroyInstance()
+    }
   }
 }
 
@@ -232,7 +233,7 @@ function create (settings = {}) {
   }
 }
 
-export function destroyInstance () {
+function destroyInstance () {
   if (bubbleInstance) {
     hideBubble()
     resizeObserver = null
@@ -249,7 +250,7 @@ export function destroyInstance () {
 
 export function destroy () {
   destroyInstance()
-  window.removeEventListener(config.eventToggleBubble, toggleBubbleHandler, true)
+  window.removeEventListener(config.eventToggleBubble, toggleBubbleHandler)
 }
 
 const textfieldMinWidth = 100
