@@ -22,6 +22,7 @@ const templatesLimit = 30
 const documentUrlPatterns = [
   'https://*/*',
   'http://*/*',
+  'about:blank',
 ]
 let settingsCache = {}
 
