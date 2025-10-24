@@ -114,11 +114,11 @@ function insertTemplateAction (info, tab, template) {
 }
 
 async function toggleBubbleAction(info, tab) {
-  // TODO can throw error on chrome store and others
-  const { hostname } = URL.parse(tab.url)
-  if (!hostname) {
+  if (!URL.canParse(tab.url)) {
     return
   }
+
+  const { hostname } = URL.parse(tab.url)
 
   const extensionData = await getExtensionData()
   const { bubbleAllowlist = [] } = extensionData
@@ -299,11 +299,11 @@ function isOnPredefinedLocation (hostname) {
 }
 
 async function enableBubbleForHostname(urlString) {
-  // TODO can throw error
-  const { hostname } = URL.parse(urlString)
-  if (!hostname) {
+  if (!URL.canParse(urlString)) {
     return
   }
+
+  const { hostname } = URL.parse(urlString)
 
   if (!settingsCache.length) {
     const settings = await getSettings()
