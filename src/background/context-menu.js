@@ -347,7 +347,7 @@ async function onTabSwitchHandler () {
   enableBubbleForHostname(tab.url)
 }
 
-async function onTabUpdatehHandler (tabId, changeInfo, tab) {
+async function onTabUpdateHandler (tabId, changeInfo, tab) {
   if (changeInfo?.status !== 'complete') {
     return
   }
@@ -388,7 +388,7 @@ function enableContextMenu () {
   browser.runtime.onInstalled.addListener(setupContextMenus)
   browser.contextMenus.onClicked.addListener(clickContextMenu)
   browser.tabs.onActivated.addListener(onTabSwitchHandler)
-  browser.tabs.onUpdated.addListener(onTabUpdatehHandler)
+  browser.tabs.onUpdated.addListener(onTabUpdateHandler)
 
   const debouncedStorageChange = debounce(storageChange, 1000)
   browser.storage.local.onChanged.addListener(debouncedStorageChange)
