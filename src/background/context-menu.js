@@ -3,11 +3,10 @@ import isEqual from 'lodash.isequal'
 import debounce from 'lodash.debounce'
 
 import config from '../config.js'
-import {getAccount, getTemplates, getExtensionData, setExtensionData} from '../store/store-api.js'
+import {getAccount, getTemplates, getExtensionData, setExtensionData, getSettings} from '../store/store-api.js'
 import sortTemplates from '../store/sort-templates.js'
 import {openPopup} from '../store/open-popup.js'
 import {isBlocklisted} from '../content/blocklist.js'
-import {getSettings} from '../store/store-api.js'
 
 const saveAsTemplateMenu = 'saveAsTemplate'
 const openDialogMenu = 'openDialog'
@@ -24,7 +23,6 @@ const documentUrlPatterns = [
   'http://*/*',
   'about:blank',
 ]
-let settingsCache = {}
 
 function getSelectedText () {
   return window.getSelection()?.toString?.()
@@ -305,12 +303,8 @@ async function enableBubbleForHostname (urlString) {
 
   const { hostname } = URL.parse(urlString)
 
-  if (!settingsCache.length) {
-    const settings = await getSettings()
-    settingsCache = Object.assign({}, settings)
-  }
-
-  if (isBlocklisted(settingsCache, urlString)) {
+  const settings = await getSettings()
+  if (isBlocklisted(settings, urlString)) {
     browser.contextMenus.update(
       toggleBubbleMenu,
       {
