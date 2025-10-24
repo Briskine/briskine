@@ -114,7 +114,7 @@ function insertTemplateAction (info, tab, template) {
   })
 }
 
-async function toggleBubbleAction(info, tab) {
+async function toggleBubbleAction (info, tab) {
   if (!URL.canParse(tab.url)) {
     return
   }
@@ -129,8 +129,7 @@ async function toggleBubbleAction(info, tab) {
   if (checked && !bubbleAllowlist.includes(hostname)) {
     bubbleAllowlist.push(hostname)
     enableBubble = true
-  } else
-  if (!checked && bubbleAllowlist.includes(hostname)) {
+  } else if (!checked && bubbleAllowlist.includes(hostname)) {
     bubbleAllowlist.splice(bubbleAllowlist.indexOf(hostname), 1)
   } else {
     return false
@@ -299,7 +298,7 @@ function isOnPredefinedLocation (hostname) {
   )
 }
 
-async function enableBubbleForHostname(urlString) {
+async function enableBubbleForHostname (urlString) {
   if (!URL.canParse(urlString)) {
     return
   }
@@ -348,14 +347,14 @@ async function enableBubbleForHostname(urlString) {
   )
 }
 
-async function onTabSwitchHandler() {
+async function onTabSwitchHandler () {
   const [tab] = await browser.tabs.query({active: true, lastFocusedWindow: true})
 
   enableBubbleForHostname(tab.url)
 }
 
-async function onTabUpdatehHandler(tabId, changeInfo, tab) {
-  if (!changeInfo.status === 'complete') {
+async function onTabUpdatehHandler (tabId, changeInfo, tab) {
+  if (changeInfo?.status !== 'complete') {
     return
   }
 
