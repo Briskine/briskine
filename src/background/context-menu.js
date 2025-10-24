@@ -114,9 +114,11 @@ function insertTemplateAction (info, tab, template) {
 }
 
 async function toggleBubbleAction(info, tab) {
+  // TODO can throw error on chrome store and others
   const { hostname } = URL.parse(tab.url)
-  if (!hostname)
+  if (!hostname) {
     return
+  }
 
   const extensionData = await getExtensionData()
   const { bubbleAllowlist = [] } = extensionData
@@ -297,9 +299,11 @@ function isOnPredefinedLocation (hostname) {
 }
 
 async function enableBubbleForHostname(urlString) {
+  // TODO can throw error
   const { hostname } = URL.parse(urlString)
-  if (!hostname)
+  if (!hostname) {
     return
+  }
 
   if (!settingsCache.length) {
     const settings = await getSettings()
@@ -350,8 +354,9 @@ async function onTabSwitchHandler() {
 }
 
 async function onTabUpdatehHandler(tabId, changeInfo, tab) {
-  if (!changeInfo.status === 'complete')
+  if (!changeInfo.status === 'complete') {
     return
+  }
 
   enableBubbleForHostname(tab.url)
 }
