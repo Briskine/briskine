@@ -184,9 +184,7 @@ async function clickContextMenu (info = {}, tab = {}) {
 
 async function createContextMenus (menus = []) {
   await browser.contextMenus.removeAll()
-  menus.forEach((m) => {
-    browser.contextMenus.create(m)
-  })
+  await Promise.all(menus.map((m) => browser.contextMenus.create(m)))
 }
 
 let existingMenus = []
@@ -305,34 +303,30 @@ async function enableBubbleForHostname (urlString) {
 
   const settings = await getSettings()
   if (isBlocklisted(settings, urlString)) {
-    browser.contextMenus.update(
+    return browser.contextMenus.update(
       toggleBubbleMenu,
       {
         checked: false,
         enabled: false
       }
     )
-
-    return
   }
 
   if (isOnPredefinedLocation(hostname)) {
-    browser.contextMenus.update(
+    return browser.contextMenus.update(
       toggleBubbleMenu,
       {
         checked: true,
         enabled: false
       }
     )
-
-    return
   }
 
   const extensionData = await getExtensionData()
   const { bubbleAllowlist = [] } = extensionData
   const bubbleActive = bubbleAllowlist.includes(hostname)
 
-  browser.contextMenus.update(
+  return browser.contextMenus.update(
     toggleBubbleMenu,
     {
       checked: bubbleActive,
@@ -344,7 +338,7 @@ async function enableBubbleForHostname (urlString) {
 async function onTabSwitchHandler () {
   const [tab] = await browser.tabs.query({active: true, lastFocusedWindow: true})
 
-  enableBubbleForHostname(tab.url)
+  await enableBubbleForHostname(tab.url)
 }
 
 async function onTabUpdateHandler (tabId, changeInfo, tab) {
@@ -352,7 +346,7 @@ async function onTabUpdateHandler (tabId, changeInfo, tab) {
     return
   }
 
-  enableBubbleForHostname(tab.url)
+  await enableBubbleForHostname(tab.url)
 }
 
 const watchedKeys = [
@@ -363,20 +357,23 @@ const watchedKeys = [
   'templatesEveryone',
 ]
 
-function storageChange (changes = {}) {
+async function storageChange (changes = {}) {
   const changedItems = Object.keys(changes)
-  changedItems.some((item) => {
+  const diff = changedItems.some((item) => {
     if (watchedKeys.includes(item)) {
       const oldValue = changes[item].oldValue
       const newValue = changes[item].newValue
       if (!isEqual(oldValue, newValue)) {
-        setupContextMenus()
         return true
       }
     }
 
     return false
   })
+
+  if (diff) {
+    await setupContextMenus()
+  }
 }
 
 function enableContextMenu () {
