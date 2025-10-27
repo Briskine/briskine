@@ -259,7 +259,7 @@ const textfieldMinHeight = 25
 function isValidTextfield (elem) {
   if (
     // is html element
-    elem instanceof HTMLElement
+    elem?.nodeType === Node.ELEMENT_NODE
     // is editable
     && elem.matches('textarea, [contenteditable]')
     // has a parent element node
