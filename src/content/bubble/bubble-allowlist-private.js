@@ -3,6 +3,7 @@ const urls = [
   'www.linkedin.com',
   'outlook.live.com',
   'outlook.office365.com',
+  'outlook.office.com',
 ]
 
 const selector = `
