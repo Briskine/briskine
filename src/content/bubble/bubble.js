@@ -320,5 +320,6 @@ function hideBubble () {
 
   if (resizeObserver) {
     resizeObserver.disconnect()
+    resizeObserver = null
   }
 }
