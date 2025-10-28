@@ -45,7 +45,7 @@ customElements.define(
           ${bubbleIcon}
           <span class="b-bubble-tooltip">
             Search templates (${shortcut})
-          </div>
+          </span>
         </button>
       `
       const shadowRoot = this.attachShadow({mode: 'open'})
