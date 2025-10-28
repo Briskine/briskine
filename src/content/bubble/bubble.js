@@ -9,6 +9,7 @@ import { getExtensionData } from '../../store/store-content.js'
 
 import getEventTarget from '../event-target.js'
 import getActiveElement from '../active-element.js'
+import bubbleAllowlistPrivate from './bubble-allowlist-private.js'
 
 import bubbleStyles from './bubble.css'
 import bubbleIcon from '../../icons/briskine-logo-small-bare.svg?raw'
@@ -87,25 +88,6 @@ function blurTextfield (e) {
   return hideBubble()
 }
 
-function isOnPredefinedLocation (hostname) {
-  const urls = [
-    'mail.google.com',
-    'www.linkedin.com',
-    'outlook.live.com',
-    'outlook.office365.com',
-  ]
-
-  return (
-      urls.some((url) => hostname === url) ||
-      document.querySelector(`
-        head [href*="cdn.office.net"],
-        meta[content*="owamail"],
-        link[href*="/owamail/"],
-        script[src*="/owamail/"]
-      `)
-  )
-}
-
 let toggleBubbleHandler = () => {}
 
 function makeToggleBubbleHandler (settings) {
@@ -132,7 +114,7 @@ export async function setup (settings = {}) {
   const extensionData = await getExtensionData()
   const { bubbleAllowlist = [] } = extensionData
 
-  if (isOnPredefinedLocation(hostname) || bubbleAllowlist.includes(hostname)) {
+  if (bubbleAllowlistPrivate(hostname, {content: true}) || bubbleAllowlist.includes(hostname)) {
     create(settings)
   }
 }

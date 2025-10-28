@@ -7,6 +7,7 @@ import {getAccount, getTemplates, getExtensionData, setExtensionData, getSetting
 import sortTemplates from '../store/sort-templates.js'
 import {openPopup} from '../store/open-popup.js'
 import {isBlocklisted} from '../content/blocklist.js'
+import bubbleAllowlistPrivate from '../content/bubble/bubble-allowlist-private.js'
 
 const saveAsTemplateMenu = 'saveAsTemplate'
 const openDialogMenu = 'openDialog'
@@ -281,20 +282,7 @@ async function setupContextMenus () {
   }
 }
 
-function isOnPredefinedLocation (hostname) {
-  const urls = [
-    'mail.google.com',
-    'www.linkedin.com',
-    'outlook.live.com',
-    'outlook.office365.com',
-  ]
-
-  return (
-      urls.some((url) => hostname === url)
-  )
-}
-
-async function enableBubbleForHostname (urlString) {
+async function updateBubbleContextMenu (urlString) {
   if (!URL.canParse(urlString)) {
     return
   }
@@ -312,7 +300,7 @@ async function enableBubbleForHostname (urlString) {
     )
   }
 
-  if (isOnPredefinedLocation(hostname)) {
+  if (bubbleAllowlistPrivate(hostname)) {
     return browser.contextMenus.update(
       toggleBubbleMenu,
       {
@@ -338,7 +326,7 @@ async function enableBubbleForHostname (urlString) {
 async function onTabSwitchHandler () {
   const [tab] = await browser.tabs.query({active: true, lastFocusedWindow: true})
 
-  await enableBubbleForHostname(tab.url)
+  await updateBubbleContextMenu(tab.url)
 }
 
 async function onTabUpdateHandler (tabId, changeInfo, tab) {
@@ -346,7 +334,7 @@ async function onTabUpdateHandler (tabId, changeInfo, tab) {
     return
   }
 
-  await enableBubbleForHostname(tab.url)
+  await updateBubbleContextMenu(tab.url)
 }
 
 const watchedKeys = [
