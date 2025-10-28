@@ -149,6 +149,11 @@ function addShadowFocusEvents (parent) {
   })
 }
 
+function removeShadowFocusEvents (shadow) {
+  shadow.removeEventListener('focusin', focusTextfield, true)
+  shadow.removeEventListener('focusout', blurTextfield, true)
+}
+
 // focusin and focusout events are *composed*, so they bubble out of the shadow dom.
 // but *only if the shadow root host loses or gains focus*.
 // if all of the focusing and blurring happens inside the same shadow root,
@@ -163,13 +168,26 @@ function enableShadowFocus () {
   addShadowFocusEvents(document.body)
 
   shadowObserver = new MutationObserver((records) => {
-    records
-      .flatMap((record) => Array.from(record.addedNodes))
-      .forEach((node) => {
+    for (const record of records) {
+      for (const node of Array.from(record.addedNodes)) {
         if (node.nodeType === Node.ELEMENT_NODE) {
           addShadowFocusEvents(node)
         }
-      })
+      }
+
+      for (const node of Array.from(record.removedNodes)) {
+        if (node.nodeType === Node.ELEMENT_NODE) {
+          const nodeShadowRoots = findAllShadowRoots(node)
+          shadowRoots = shadowRoots.filter((shadow) => {
+            if (nodeShadowRoots.includes(shadow)) {
+              removeShadowFocusEvents(shadow)
+              return false
+            }
+            return true
+          })
+        }
+      }
+    }
   })
 
   shadowObserver.observe(document.body, {
@@ -184,12 +202,9 @@ function disableShadowFocus () {
     shadowObserver = null
 
     shadowRoots.forEach((shadow) => {
-      if (!shadow) {
-        return
+      if (shadow) {
+        removeShadowFocusEvents(shadow)
       }
-
-     shadow.removeEventListener('focusin', focusTextfield, true)
-     shadow.removeEventListener('focusout', blurTextfield, true)
     })
     shadowRoots = []
   }
