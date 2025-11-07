@@ -6,16 +6,19 @@
 }
 
 :host {
-  position: absolute;
-  display: none;
-
   --bubble-size: 28px;
   --bubble-margin: 5px;
+  --max-host-width: auto;
   --color-background: 229, 229, 229;
   --color-primary: #0d7af6;
-  width: var(--bubble-size);
-  height: var(--bubble-size);
-  margin: var(--bubble-margin);
+
+  position: sticky;
+  top: 0;
+  height: 0;
+  max-width: var(--max-host-width);
+  z-index: 1;
+
+  display: none;
 
   font-family: sans-serif;
 
@@ -37,11 +40,14 @@
 }
 
 .b-bubble {
-  position: relative;
+  position: absolute;
+  top: var(--bubble-margin);
+  right: var(--bubble-margin);
+
   appearance: none;
   display: block;
-  width: 100%;
-  height: 100%;
+  width: var(--bubble-size);
+  height: var(--bubble-size);
   padding: 5px;
   background-color: rgba(var(--color-background), .4);
   border: 0;
@@ -73,7 +79,7 @@
   height: 100%;
 }
 
-.b-bubble:hover + .b-bubble-tooltip {
+.b-bubble:hover .b-bubble-tooltip {
   opacity: 1;
   visibility: visible;
   transition-delay: 1s;
@@ -81,13 +87,17 @@
 
 .b-bubble-tooltip {
   --tooltip-bg: #2a2a2a;
+  --tooltip-margin: 12px;
+
   visibility: hidden;
   opacity: 0;
   transition: opacity ease-in .1s;
 
+  width: max-content;
   position: absolute;
   top: 50%;
-  left: 0;
+  transform: translateY(-50%);
+  right: calc(var(--bubble-size) + var(--tooltip-margin));
   padding: 3px 5px;
   background: var(--tooltip-bg);
   border-radius: 2px;
@@ -98,8 +108,7 @@
   line-height: 1;
   white-space: nowrap;
 
-  transform: translate(-100%, -50%);
-  margin-left: -12px;
+  pointer-events: none;
 }
 
 .b-bubble-tooltip:after {
@@ -118,17 +127,15 @@
 }
 
 /* RTL support
- * BUG dialog positioning is broken in rtl mode,
- * after clicking the button.
  */
-:host([dir=rtl]) {
-  right: auto !important;
+:host([dir=rtl]) .b-bubble {
+  right: auto;
   left: 0;
 }
 
 :host([dir=rtl]) .b-bubble-tooltip {
-  transform: translate(var(--bubble-size), -50%);
-  margin-left: 12px;
+  right: unset;
+  left: calc(var(--bubble-size) + var(--tooltip-margin));
 }
 
 :host([dir=rtl]) .b-bubble-tooltip:after {

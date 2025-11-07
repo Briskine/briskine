@@ -24,6 +24,7 @@ export default [
     },
     rules: {
       'no-console': 'error',
+      'curly': 'error',
     },
   },
   {

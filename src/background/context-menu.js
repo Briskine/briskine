@@ -3,9 +3,11 @@ import isEqual from 'lodash.isequal'
 import debounce from 'lodash.debounce'
 
 import config from '../config.js'
-import {getAccount, getTemplates, getExtensionData} from '../store/store-api.js'
+import {getAccount, getTemplates, getExtensionData, setExtensionData, getSettings} from '../store/store-api.js'
 import sortTemplates from '../store/sort-templates.js'
 import {openPopup} from '../store/open-popup.js'
+import {isBlocklisted} from '../content/blocklist.js'
+import bubbleAllowlistPrivate from '../content/bubble/bubble-allowlist-private.js'
 
 const saveAsTemplateMenu = 'saveAsTemplate'
 const openDialogMenu = 'openDialog'
@@ -13,12 +15,14 @@ const signInMenu = 'signIn'
 const parentMenu = 'briskineMenu'
 const separatorMenu = 'mainSeparator'
 const insertTemplatesMenu = 'insertTemplates'
+const toggleBubbleMenu = 'toggleBubble'
 
 const templatesLimit = 30
 // context menus will show up on blocklisted sites as well
 const documentUrlPatterns = [
   'https://*/*',
   'http://*/*',
+  'about:blank',
 ]
 
 function getSelectedText () {
@@ -44,6 +48,15 @@ function insertTemplate (eventInsertTemplate, template) {
       detail: template,
     }))
   }
+}
+
+function toggleBubble (eventToggleBubble, enable) {
+  // TODO won't work in shadow dom
+  document.activeElement.dispatchEvent(new CustomEvent(eventToggleBubble, {
+    bubbles: true,
+    composed: true,
+    detail: enable,
+  }))
 }
 
 async function executeScript ({ info = {}, tab = {}, args = [], func = () => {} }) {
@@ -100,6 +113,39 @@ function insertTemplateAction (info, tab, template) {
   })
 }
 
+async function toggleBubbleAction (info, tab) {
+  if (!URL.canParse(tab.url)) {
+    return
+  }
+
+  const { hostname } = URL.parse(tab.url)
+
+  const extensionData = await getExtensionData()
+  const { bubbleAllowlist = [] } = extensionData
+  const { checked } = info
+
+  let enableBubble = false
+  if (checked && !bubbleAllowlist.includes(hostname)) {
+    bubbleAllowlist.push(hostname)
+    enableBubble = true
+  } else if (!checked && bubbleAllowlist.includes(hostname)) {
+    bubbleAllowlist.splice(bubbleAllowlist.indexOf(hostname), 1)
+  } else {
+    return false
+  }
+
+  await setExtensionData({
+    bubbleAllowlist: bubbleAllowlist,
+  })
+
+  await executeScript({
+    info: info,
+    tab: tab,
+    func: toggleBubble,
+    args: [config.eventToggleBubble, enableBubble],
+  })
+}
+
 async function clickContextMenu (info = {}, tab = {}) {
   if (info.menuItemId === saveAsTemplateMenu) {
     return saveAsTemplateAction(info, tab)
@@ -111,6 +157,10 @@ async function clickContextMenu (info = {}, tab = {}) {
 
   if (info.menuItemId === signInMenu) {
     return signInAction()
+  }
+
+  if (info.menuItemId == toggleBubbleMenu) {
+    return toggleBubbleAction(info, tab)
   }
 
   // insert template
@@ -135,9 +185,7 @@ async function clickContextMenu (info = {}, tab = {}) {
 
 async function createContextMenus (menus = []) {
   await browser.contextMenus.removeAll()
-  menus.forEach((m) => {
-    browser.contextMenus.create(m)
-  })
+  await Promise.all(menus.map((m) => browser.contextMenus.create(m)))
 }
 
 let existingMenus = []
@@ -178,6 +226,15 @@ async function setupContextMenus () {
       parentId: parentMenu,
     })
   }
+
+  menus.push({
+    contexts: ['all'],
+    title: 'Show bubble on this site',
+    documentUrlPatterns: documentUrlPatterns,
+    type: 'checkbox',
+    id: toggleBubbleMenu,
+    parentId: parentMenu,
+  })
 
   menus.push({
     contexts: ['editable', 'selection'],
@@ -225,6 +282,61 @@ async function setupContextMenus () {
   }
 }
 
+async function updateBubbleContextMenu (urlString) {
+  if (!URL.canParse(urlString)) {
+    return
+  }
+
+  const { hostname } = URL.parse(urlString)
+
+  const settings = await getSettings()
+  if (isBlocklisted(settings, urlString)) {
+    return browser.contextMenus.update(
+      toggleBubbleMenu,
+      {
+        checked: false,
+        enabled: false
+      }
+    )
+  }
+
+  if (bubbleAllowlistPrivate(hostname)) {
+    return browser.contextMenus.update(
+      toggleBubbleMenu,
+      {
+        checked: true,
+        enabled: false
+      }
+    )
+  }
+
+  const extensionData = await getExtensionData()
+  const { bubbleAllowlist = [] } = extensionData
+  const bubbleActive = bubbleAllowlist.includes(hostname)
+
+  return browser.contextMenus.update(
+    toggleBubbleMenu,
+    {
+      checked: bubbleActive,
+      enabled: true
+    }
+  )
+}
+
+async function onTabSwitchHandler () {
+  const [tab] = await browser.tabs.query({active: true, lastFocusedWindow: true})
+
+  await updateBubbleContextMenu(tab.url)
+}
+
+async function onTabUpdateHandler (tabId, changeInfo, tab) {
+  if (changeInfo?.status !== 'complete') {
+    return
+  }
+
+  await updateBubbleContextMenu(tab.url)
+}
+
 const watchedKeys = [
   'briskine',
   'firebaseUser',
@@ -233,20 +345,23 @@ const watchedKeys = [
   'templatesEveryone',
 ]
 
-function storageChange (changes = {}) {
+async function storageChange (changes = {}) {
   const changedItems = Object.keys(changes)
-  changedItems.some((item) => {
+  const diff = changedItems.some((item) => {
     if (watchedKeys.includes(item)) {
       const oldValue = changes[item].oldValue
       const newValue = changes[item].newValue
       if (!isEqual(oldValue, newValue)) {
-        setupContextMenus()
         return true
       }
     }
 
     return false
   })
+
+  if (diff) {
+    await setupContextMenus()
+  }
 }
 
 function enableContextMenu () {
@@ -257,6 +372,8 @@ function enableContextMenu () {
 
   browser.runtime.onInstalled.addListener(setupContextMenus)
   browser.contextMenus.onClicked.addListener(clickContextMenu)
+  browser.tabs.onActivated.addListener(onTabSwitchHandler)
+  browser.tabs.onUpdated.addListener(onTabUpdateHandler)
 
   const debouncedStorageChange = debounce(storageChange, 1000)
   browser.storage.local.onChanged.addListener(debouncedStorageChange)

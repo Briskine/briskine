@@ -154,7 +154,7 @@ function Dialog (originalProps) {
       }
     } else if (hostNode?.tagName?.toLowerCase?.() === bubbleTagName) {
       // bubble
-      target = hostNode
+      target = node
       if (direction === 'rtl') {
         placement = 'bottom-left'
       } else {

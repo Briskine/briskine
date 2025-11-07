@@ -5,17 +5,20 @@
 
 import config from '../../config.js'
 import {dialogTagName} from '../dialog/dialog.js'
+import { getExtensionData } from '../../store/store-content.js'
 
 import getEventTarget from '../event-target.js'
+import getActiveElement from '../active-element.js'
+import bubbleAllowlistPrivate from './bubble-allowlist-private.js'
 
 import bubbleStyles from './bubble.css'
 import bubbleIcon from '../../icons/briskine-logo-small-bare.svg?raw'
 
 let bubbleInstance = null
 let activeTextfield = null
-const domObservers = []
 
-const bubbleAttribute = 'data-briskine-bubble'
+const maxHostWidthCssVar = '--max-host-width'
+
 export const bubbleTagName = `b-bubble-${Date.now().toString(36)}`
 
 customElements.define(
@@ -38,10 +41,12 @@ customElements.define(
 
       const template = `
         <style>${bubbleStyles}</style>
-        <button type="button" class="b-bubble" tabindex="-1">${bubbleIcon}</button>
-        <span class="b-bubble-tooltip">
-        Search templates (${shortcut})
-        </div>
+        <button type="button" class="b-bubble" tabindex="-1">
+          ${bubbleIcon}
+          <span class="b-bubble-tooltip">
+            Search templates (${shortcut})
+          </span>
+        </button>
       `
       const shadowRoot = this.attachShadow({mode: 'open'})
       shadowRoot.innerHTML = template
@@ -55,25 +60,13 @@ customElements.define(
         e.stopPropagation()
 
         // trigger the event on the bubble, to position the dialog next to it.
-        e.target.dispatchEvent(new CustomEvent(config.eventShowDialog, {
+        this.$button.dispatchEvent(new CustomEvent(config.eventShowDialog, {
           bubbles: true,
           composed: true,
         }))
       })
 
-
       this.ready = true
-    }
-    attributeChangedCallback (name, oldValue, newValue) {
-      if (name === 'top' || name === 'right') {
-        this.style[name] = `${newValue}px`
-      }
-    }
-    static get observedAttributes() {
-      return [
-        'top',
-        'right',
-      ]
     }
   }
 )
@@ -95,51 +88,35 @@ function blurTextfield (e) {
   return hideBubble()
 }
 
-// reposition the bubble on scroll
-let scrollTick = false
-function scrollDocument (e) {
-  if (!scrollTick) {
-    window.requestAnimationFrame(() => {
-      if (
-        e.target &&
-        // must be an element node (eg. not the document)
-        e.target.nodeType === Node.ELEMENT_NODE &&
-        e.target.contains(activeTextfield) &&
-        bubbleInstance &&
-        bubbleInstance.getAttribute('visible') === 'true'
-      ) {
-        bubbleInstance.setAttribute('top', getTopPosition(activeTextfield, e.target))
-      }
+let toggleBubbleHandler = () => {}
 
-      scrollTick = false
-    })
-
-    scrollTick = true
+function makeToggleBubbleHandler (settings) {
+  return ({detail}) =>{
+    if (detail) {
+      create(settings)
+    } else {
+      destroyInstance()
+    }
   }
 }
 
-export function setup (settings = {}) {
+export async function setup (settings = {}) {
   // check if bubble or dialog are disabled in settings
   if (settings.dialog_button === false || settings.dialog_enabled === false) {
     return
   }
 
-  // if bubble is enabled in dom
-  if (bubbleEnabled()) {
-    return create(settings)
+  toggleBubbleHandler = makeToggleBubbleHandler(settings)
+
+  window.addEventListener(config.eventToggleBubble, toggleBubbleHandler)
+
+  const { hostname } = window.location
+  const extensionData = await getExtensionData()
+  const { bubbleAllowlist = [] } = extensionData
+
+  if (bubbleAllowlistPrivate(hostname, {content: true}) || bubbleAllowlist.includes(hostname)) {
+    create(settings)
   }
-
-  const domObserver = new MutationObserver((records, observer) => {
-    if (bubbleEnabled()) {
-      observer.disconnect()
-      create(settings)
-    }
-  })
-  domObserver.observe(document.body, {
-    attributes: true
-  })
-
-  domObservers.push(domObserver)
 }
 
 let shadowRoots = []
@@ -172,6 +149,11 @@ function addShadowFocusEvents (parent) {
   })
 }
 
+function removeShadowFocusEvents (shadow) {
+  shadow.removeEventListener('focusin', focusTextfield, true)
+  shadow.removeEventListener('focusout', blurTextfield, true)
+}
+
 // focusin and focusout events are *composed*, so they bubble out of the shadow dom.
 // but *only if the shadow root host loses or gains focus*.
 // if all of the focusing and blurring happens inside the same shadow root,
@@ -186,13 +168,26 @@ function enableShadowFocus () {
   addShadowFocusEvents(document.body)
 
   shadowObserver = new MutationObserver((records) => {
-    records
-      .flatMap((record) => Array.from(record.addedNodes))
-      .forEach((node) => {
+    for (const record of records) {
+      for (const node of Array.from(record.addedNodes)) {
         if (node.nodeType === Node.ELEMENT_NODE) {
           addShadowFocusEvents(node)
         }
-      })
+      }
+
+      for (const node of Array.from(record.removedNodes)) {
+        if (node.nodeType === Node.ELEMENT_NODE) {
+          const nodeShadowRoots = findAllShadowRoots(node)
+          shadowRoots = shadowRoots.filter((shadow) => {
+            if (nodeShadowRoots.includes(shadow)) {
+              removeShadowFocusEvents(shadow)
+              return false
+            }
+            return true
+          })
+        }
+      }
+    }
   })
 
   shadowObserver.observe(document.body, {
@@ -207,12 +202,9 @@ function disableShadowFocus () {
     shadowObserver = null
 
     shadowRoots.forEach((shadow) => {
-      if (!shadow) {
-        return
+      if (shadow) {
+        removeShadowFocusEvents(shadow)
       }
-
-     shadow.removeEventListener('focusin', focusTextfield, true)
-     shadow.removeEventListener('focusout', blurTextfield, true)
     })
     shadowRoots = []
   }
@@ -230,53 +222,59 @@ function create (settings = {}) {
   document.addEventListener('focusin', focusTextfield, true)
   document.addEventListener('focusout', blurTextfield, true)
 
-  // reposition bubble on scroll
-  document.addEventListener('scroll', scrollDocument, true)
-
   enableShadowFocus()
+
+  const activeElement = getActiveElement()
+  if (activeElement) {
+    showBubble(activeElement)
+  }
 }
 
-export function destroy () {
+function destroyInstance () {
   if (bubbleInstance) {
+    hideBubble()
+    resizeObserver = null
+
     bubbleInstance.remove()
     bubbleInstance = null
   }
 
   document.removeEventListener('focusin', focusTextfield, true)
   document.removeEventListener('focusout', blurTextfield, true)
-  document.removeEventListener('scroll', scrollDocument, true)
-
-  // disconnect all observers
-  domObservers.forEach((observer) => {
-    observer.disconnect()
-  })
 
   disableShadowFocus()
 }
 
-// top-right sticky positioning,
-// considering scroll.
-function getTopPosition (textfield, parent) {
-  const textfieldRect = textfield.getBoundingClientRect()
-  const parentRect = parent.getBoundingClientRect()
-  const distanceFromParent = textfieldRect.top - parentRect.top
-
-  let top = textfield.offsetTop
-
-  // top position of textfield is scrolled out of view
-  if (distanceFromParent < 0) {
-    top = top + Math.abs(distanceFromParent)
-  }
-
-  return top
+export function destroy () {
+  destroyInstance()
+  window.removeEventListener(config.eventToggleBubble, toggleBubbleHandler)
 }
 
 const textfieldMinWidth = 100
 const textfieldMinHeight = 25
 
 function isValidTextfield (elem) {
-  // if the element is a textfield
-  if (elem.matches('textarea, [contenteditable]')) {
+  if (
+    // is html element
+    elem?.nodeType === Node.ELEMENT_NODE
+    // is editable
+    && elem.matches('textarea, [contenteditable]')
+    // has a parent element node
+    && elem.parentElement
+    // the parent is not the body
+    && elem.parentElement !== document.body
+  ) {
+    // disable for flex and grid
+    const parentStyles = window.getComputedStyle(elem.parentElement)
+    if (
+      // parent is flex or grid
+      ['flex', 'grid'].includes(parentStyles.display)
+      // has more than 1 child, except the bubble (in case we already added it to the parent)
+      && Array.from(elem.parentElement.childNodes).filter((n) => n !== bubbleInstance).length > 1
+    ) {
+      return false
+    }
+
     // check if the element is big enough
     // to only show the bubble for large textfields
     const metrics = elem.getBoundingClientRect()
@@ -288,33 +286,9 @@ function isValidTextfield (elem) {
   return false
 }
 
-// finds the first offsetParent that could be scrollable
-function findScrollParent (target) {
-  const parent = target.offsetParent
-  if (!parent) {
-    return null
-  }
-  const parentStyles = window.getComputedStyle(parent)
+let resizeObserver = null
 
-  const scrollValues = [
-    'scroll',
-    'auto',
-    // used by outlook.com, draws scrollbars on top of the content.
-    // deprecated form the spec and only supported in webkit-like browsers.
-    // https://developer.mozilla.org/en-US/docs/Web/CSS/overflow
-    'overlay',
-  ]
-  if (
-    scrollValues.includes(parentStyles.overflow) ||
-    scrollValues.includes(parentStyles.overflowY)
-  ) {
-    return parent
-  }
-
-  return findScrollParent(parent)
-}
-
-function showBubble (textfield) {
+async function showBubble (textfield) {
   // only show it for valid elements
   if (!isValidTextfield(textfield)) {
     return false
@@ -325,49 +299,42 @@ function showBubble (textfield) {
   const direction = textfieldStyles.direction || 'ltr'
   bubbleInstance.setAttribute('dir', direction)
 
-  const offsetParent = textfield.offsetParent
-
-  if (offsetParent) {
-    const offsetStyles = window.getComputedStyle(offsetParent)
-
-    // in case the offsetParent is a unpositioned table element (td, th, table)
-    // make it relative, for the button to have the correct positioning.
-    // https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/offsetParent
-    if (offsetStyles.position === 'static') {
-      offsetParent.style.position = 'relative'
-    }
-
-    // position the element relative to it's offsetParent
-    const offsetRight = offsetParent.offsetWidth - textfield.offsetLeft - textfield.offsetWidth
-
-    let top = textfield.offsetTop
-    const scrollParent = findScrollParent(textfield)
-    if (scrollParent) {
-      top = getTopPosition(textfield, scrollParent)
-    }
-
-    // only move the bubble around in the dom,
-    // if it's not already where it needs to be.
-    if (!Array.from(offsetParent.childNodes).find((node) => node === bubbleInstance)) {
-      offsetParent.appendChild(bubbleInstance)
-    }
-    bubbleInstance.setAttribute('right', offsetRight)
-    bubbleInstance.setAttribute('top', top)
-    bubbleInstance.setAttribute('visible', 'true')
+  if (textfield.previousSibling !== bubbleInstance) {
+    textfield.before(bubbleInstance)
   }
+
+  bubbleInstance.setAttribute('visible', 'true')
+
+  // set max-width to the width of textfield,
+  // in case the container of the textfield is larger than the textfield.
+  bubbleInstance.style.setProperty(maxHostWidthCssVar, textfieldStyles.width)
+
+  const maxWidthProperty = textfieldStyles.boxSizing === 'border-box' ? 'borderBoxSize' : 'contentBoxSize'
+
+  resizeObserver = new ResizeObserver((entries, observer) => {
+    if (!bubbleInstance) {
+      observer.disconnect()
+      return
+    }
+
+    for (const entry of entries) {
+      if (
+        entry.borderBoxSize
+        && entry[maxWidthProperty][0]
+      ) {
+        bubbleInstance.style.setProperty(maxHostWidthCssVar, `${entry[maxWidthProperty][0].inlineSize}px`)
+      }
+    }
+  })
+
+  resizeObserver.observe(textfield)
 }
 
 function hideBubble () {
   bubbleInstance.removeAttribute('visible')
-}
 
-export function enableBubble () {
-  document.body.setAttribute(bubbleAttribute, 'true')
-}
-
-function bubbleEnabled () {
-  return (
-    document.body &&
-    document.body.hasAttribute(bubbleAttribute)
-  )
+  if (resizeObserver) {
+    resizeObserver.disconnect()
+    resizeObserver = null
+  }
 }

@@ -9,6 +9,7 @@ const defaultExtensionData = {
   dialogSort: 'last_used',
   dialogTags: true,
   lastSync: Date.now(),
+  bubbleAllowlist: [],
 }
 
 export function getExtensionData () {
