@@ -13,22 +13,23 @@ browser.runtime.onInstalled.addListener(async (details) => {
   const tabs = await browser.tabs.query({url: contentScripts.matches})
 
   await Promise.allSettled(tabs.map(async (tab) => {
-    const cssInjectParams = {
-      target: {
-        tabId: tab.id,
-        allFrames: true,
-      },
-      files: styles,
+    const target = {
+      tabId: tab.id,
+      allFrames: true,
     }
 
-    await browser.scripting.removeCSS(cssInjectParams)
-    await browser.scripting.insertCSS(cssInjectParams)
+    await browser.scripting.removeCSS({
+      target: target,
+      files: styles,
+    })
+    await browser.scripting.insertCSS({
+      target: target,
+      files: styles,
+    })
 
     await browser.scripting.executeScript({
-      target: {
-        tabId: tab.id,
-      },
-      files: scripts
+      target: target,
+      files: scripts,
     })
 
     return true
