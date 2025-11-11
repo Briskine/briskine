@@ -24,7 +24,7 @@ function sendEvent (data) {
           throw err
         }),
       // send message to content script
-      browser.tabs.query({}).then((tabs) => {
+      browser.tabs.query({discarded: false}).then((tabs) => {
         return tabs
           .filter((tab) => tab.url.includes('http://') || tab.url.includes('https://'))
           .map((tab) => browser.tabs.sendMessage(tab.id, params))

@@ -10,7 +10,10 @@ browser.runtime.onInstalled.addListener(async (details) => {
   const scripts = contentScripts.js
   const styles = contentScripts.css
 
-  const tabs = await browser.tabs.query({url: contentScripts.matches})
+  const tabs = await browser.tabs.query({
+    url: contentScripts.matches,
+    discarded: false,
+  })
 
   await Promise.allSettled(tabs.map(async (tab) => {
     const target = {
