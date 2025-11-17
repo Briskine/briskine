@@ -1,8 +1,9 @@
-import {test, expect} from '../fixtures.ts'
+import {test, expect, waitForExtension} from '../fixtures.ts'
 
 test.describe('Trusted Types CSP', () => {
   test.beforeEach(async ({page}) => {
     await page.goto('/trusted-types/trusted-types.html')
+    await waitForExtension(page);
   })
 
   test.afterEach(async ({page}) => {

@@ -106,6 +106,7 @@ function extensionConfig (params = {}) {
       FIREBASE_CONFIG: JSON.stringify(params.firebaseConfig),
       VERSION: JSON.stringify(packageFile.version),
       MANIFEST: JSON.stringify(params.manifest),
+      PLAYWRIGHT: JSON.stringify(params.playwright),
     }),
     new MiniCssExtractPlugin({
       filename: '[name]/[name].css'
