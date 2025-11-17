@@ -1,8 +1,8 @@
 import {test, expect, waitForExtension} from '../fixtures.ts'
 
-test.describe('Quill', () => {
+test.describe('Shadow', () => {
   test.beforeEach(async ({page}) => {
-    await page.goto('/quill/quill.html')
+    await page.goto('/shadow/shadow_prosemirror.html')
     await waitForExtension(page);
   })
 
@@ -14,7 +14,7 @@ test.describe('Quill', () => {
     const textbox = page.getByRole('textbox')
     await textbox.fill('kr')
     await textbox.press('Tab')
-    await expect(textbox).toHaveText('Kind regards,\n.')
+    await expect(textbox).toHaveText('Kind regards,.')
   })
 
   test('should insert template from dialog', async ({page}) => {

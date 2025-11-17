@@ -1,4 +1,4 @@
-import {test, expect} from '../fixtures.ts'
+import {test, expect, waitForExtension} from '../fixtures.ts'
 import login from '../login.js'
 
 test.describe('ContentEditable Authenticated', () => {
@@ -7,6 +7,7 @@ test.describe('ContentEditable Authenticated', () => {
   test.beforeEach(async ({page, extensionId}) => {
     await login({page, extensionId})
     await page.goto('/contenteditable-auth/contenteditable-auth.html')
+    await waitForExtension(page);
   })
 
   test.afterEach(async ({page}) => {

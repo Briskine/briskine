@@ -1,5 +1,6 @@
 // native custom elements are not supported in content scripts
 // https://bugs.chromium.org/p/chromium/issues/detail?id=390807
+/* globals PLAYWRIGHT */
 import '@webcomponents/custom-elements'
 import isEqual from 'lodash.isequal'
 
@@ -59,6 +60,11 @@ function init (settings) {
   // update the content components if settings change
   settingsCache = Object.assign({}, settings)
   storeOn('users-updated', refreshContentScripts)
+
+  if (PLAYWRIGHT) {
+    // eslint-disable-next-line no-console
+    console.log('BSKN inited')
+  }
 
   return
 }
