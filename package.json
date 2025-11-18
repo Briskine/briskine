@@ -63,7 +63,7 @@
     "eslint": "^9.0.0",
     "eslint-plugin-solid": "^0.14.1",
     "firebase-tools": "^14.0.0",
-    "glob": "^11.0.0",
+    "glob": "^11.1.0",
     "globals": "^16.0.0",
     "http-server": "^14.1.1",
     "mini-css-extract-plugin": "^2.0.0",
