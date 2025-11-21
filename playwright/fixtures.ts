@@ -70,8 +70,10 @@ export const test = base.extend<{
 export const expect = test.expect
 
 export const waitForExtension = (page) => page.evaluate(() => new Promise((resolve) => {
-    window.addEventListener("message", () => {
-      resolve(true);
+    window.addEventListener("message", (e) => {
+      if (e?.data?.type === 'briskine-messenger-connect-page') {
+        resolve(true)
+      }
     });
   })
 )
