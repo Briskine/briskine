@@ -2,9 +2,12 @@ import {test, expect, waitForExtension} from '../fixtures.ts'
 
 test.describe('CKEditor4', () => {
   test.beforeEach(async ({page}) => {
-    await page.goto('/ckeditor4/ckeditor4.html')
+    await page.goto('/ckeditor4/ckeditor4.html', {
+      waitUntil: 'commit',
+    })
     // TODO bug, message not received
     await waitForExtension(page)
+    await page.waitForTimeout(1000)
   })
 
   test.afterEach(async ({page}) => {
