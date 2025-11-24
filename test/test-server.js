@@ -74,12 +74,14 @@ function initMocha(reporter) {
       }
 
       function setResult() {
-        !window.__mochaResult__ && (window.__mochaResult__ = result(this.stats))
+        return (!window.__mochaResult__ && (window.__mochaResult__ = result(this.stats)))
       }
 
-      !reporterIsChanged && m.setup({
-        reporter: Mocha.reporters[reporter] || Mocha.reporters.spec
-      })
+      if (!reporterIsChanged) {
+        m.setup({
+          reporter: Mocha.reporters[reporter] || Mocha.reporters.spec
+        })
+      }
 
       const runner = run(() => setTimeout(() => setResult.call(runner), 0))
         .on('pass', test => {
@@ -102,8 +104,13 @@ function initMocha(reporter) {
 
   function shimMochaProcess(M) {
     // Mocha needs a process.stdout.write in order to change the cursor position.
-    !M.process && (M.process = {})
-    !M.process.stdout && (M.process.stdout = {})
+    if (!M.process) {
+      M.process = {}
+    }
+
+    if (!M.process.stdout) {
+      M.process.stdout = {}
+    }
 
     M.process.stdout.write = data => console.log('stdout:', data)
     M.reporters.Base.useColors = true
@@ -143,10 +150,15 @@ async function handleConsole(msg) {
   let values = await Promise.all(args.map(a => a.jsonValue().catch(() => '')))
   // process stdout stub
   let isStdout = values[0] === 'stdout:'
-  isStdout && (values = values.slice(1))
+  if (isStdout) {
+    values = values.slice(1)
+  }
 
   let out = util.format(...values)
-  !isStdout && out && (out += '\n')
+  if (!isStdout && out) {
+    out += '\n'
+  }
+
   process.stdout.write(out)
 }
 
