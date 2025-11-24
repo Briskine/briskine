@@ -7,7 +7,7 @@ test.skip(({browserName}) => browserName === 'firefox', 'Auth testing not suppor
   test.beforeEach(async ({page, extensionId}) => {
     await loginSession({page, extensionId})
     await page.goto('/contenteditable-auth-session/contenteditable-auth-session.html')
-    await waitForExtension(page);
+    await waitForExtension(page)
   })
 
   test.afterEach(async ({page}) => {

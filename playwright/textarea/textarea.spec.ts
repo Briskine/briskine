@@ -3,7 +3,7 @@ import {test, expect, waitForExtension} from '../fixtures.ts'
 test.describe('Textarea', () => {
   test.beforeEach(async ({page}) => {
     await page.goto('/textarea/textarea.html')
-    await waitForExtension(page);
+    await waitForExtension(page)
   })
 
   test.afterEach(async ({page}) => {
@@ -49,7 +49,7 @@ test.describe('Textarea', () => {
     await expect(input).toHaveValue(template)
   })
 
-  test(`should move focus to next field when template shortcut doesn't match`, async ({page}) => {
+  test('should move focus to next field when template shortcut doesn\'t match', async ({page}) => {
     const input = page.getByTestId('input')
     await input.fill('mock')
     await input.press('Tab')

@@ -3,7 +3,7 @@ import {test, expect, waitForExtension} from '../fixtures.ts'
 test.describe('ProseMirror in shadow', () => {
   test.beforeEach(async ({page}) => {
     await page.goto('/shadow-prosemirror/shadow-prosemirror.html')
-    await waitForExtension(page);
+    await waitForExtension(page)
   })
 
   test.afterEach(async ({page}) => {

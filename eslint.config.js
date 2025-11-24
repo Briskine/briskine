@@ -28,6 +28,7 @@ export default defineConfig(
     rules: {
       'no-console': 'error',
       'curly': 'error',
+      '@typescript-eslint/no-array-constructor': 'off',
     },
   },
   {

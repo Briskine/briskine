@@ -3,7 +3,7 @@ import {test, expect, waitForExtension} from '../fixtures.ts'
 test.describe('Slate', () => {
   test.beforeEach(async ({page}) => {
     await page.goto('/slate/slate.html')
-    await waitForExtension(page);
+    await waitForExtension(page)
   })
 
   test.afterEach(async ({page}) => {

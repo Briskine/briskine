@@ -7,7 +7,7 @@ test.describe('ContentEditable Authenticated', () => {
   test.beforeEach(async ({page, extensionId}) => {
     await login({page, extensionId})
     await page.goto('/contenteditable-auth/contenteditable-auth.html')
-    await waitForExtension(page);
+    await waitForExtension(page)
   })
 
   test.afterEach(async ({page}) => {

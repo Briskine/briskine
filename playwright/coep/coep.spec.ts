@@ -21,7 +21,7 @@ test.describe('Cross-Origin-Embedder-Policy=require-corp', () => {
 
     await page.goto('/coep/coep.html')
 
-    await waitForExtension(page);
+    await waitForExtension(page)
   })
 
   test.afterEach(async ({page}) => {

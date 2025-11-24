@@ -14,7 +14,7 @@ test.describe('ContentEditable Authenticated Service Worker suspend', () => {
     await page.goto('/contenteditable-auth-suspend/contenteditable-auth-suspend.html')
     // wait for the service worker to start
     // and briskine initialized
-    await waitForExtension(page);
+    await waitForExtension(page)
   })
 
   test.afterEach(async ({page}) => {

@@ -4,7 +4,7 @@ test.describe('CKEditor4', () => {
   test.beforeEach(async ({page}) => {
     await page.goto('/ckeditor4/ckeditor4.html')
     // wait for briskine to load in editor frame
-    await waitForExtension(page);
+    await waitForExtension(page)
   })
 
   test.afterEach(async ({page}) => {
