@@ -23,6 +23,7 @@ import {setup as setupAttachments, destroy as destroyAttachments} from './attach
 import {setup as setupDashboardEvents, destroy as destroyDashboardEvents} from './dashboard-events-client.js'
 import {setup as setupInsertEvent, destroy as destroyInsertEvent} from './insert-template-event.js'
 
+const readyMessage = 'briskine-ready'
 
 function getParentUrl () {
   let url = window.location.href
@@ -37,7 +38,7 @@ function getParentUrl () {
   return url
 }
 
-function init (settings) {
+async function init (settings) {
   setupStatus()
   setupDashboardEvents()
 
@@ -51,7 +52,7 @@ function init (settings) {
   setupBubble(settings)
   setupDialog(settings)
 
-  setupPage()
+  await setupPage()
   setupAttachments()
 
   setupInsertEvent()
@@ -59,6 +60,8 @@ function init (settings) {
   // update the content components if settings change
   settingsCache = Object.assign({}, settings)
   storeOn('users-updated', refreshContentScripts)
+
+  window.postMessage(readyMessage)
 
   return
 }

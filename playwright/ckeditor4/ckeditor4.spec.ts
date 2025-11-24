@@ -3,7 +3,7 @@ import {test, expect, waitForExtension} from '../fixtures.ts'
 test.describe('CKEditor4', () => {
   test.beforeEach(async ({page}) => {
     await page.goto('/ckeditor4/ckeditor4.html')
-    // wait for briskine to load in editor frame
+    // TODO bug, message not received
     await waitForExtension(page)
   })
 

@@ -71,7 +71,7 @@ export const expect = test.expect
 
 export const waitForExtension = (page) => page.evaluate(() => new Promise((resolve) => {
     window.addEventListener('message', (e) => {
-      if (e?.data?.type === 'briskine-messenger-connect-page') {
+      if (e?.data === 'briskine-ready') {
         resolve(true)
       }
     })
