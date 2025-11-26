@@ -7,7 +7,7 @@ test.describe('CKEditor4', () => {
     })
     // TODO bug, message not received
     await waitForExtension(page)
-    await page.waitForTimeout(1000)
+    // await page.waitForTimeout(1000)
   })
 
   test.afterEach(async ({page}) => {
