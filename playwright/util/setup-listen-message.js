@@ -1,15 +1,24 @@
 
+let counterListener = 0
+let listenerNr
+
 let messageListener = (e) => {
     if (e?.data === 'briskine-ready') {
-        // eslint-disable-next-line no-console
-        console.log('BSKN inited')
+        counterListener++
+
+        if (counterListener >= listenerNr) {
+            // eslint-disable-next-line no-console
+            console.log('BSKN inited')
+        }
     }
 }
 
-window.addEventListener('message', messageListener)
-
 let setupListenMessage = () => {
-    document.querySelectorAll("iframe").forEach((iframeElem) =>
+    listenerNr = 1 + document.querySelectorAll('iframe').length
+
+    window.addEventListener('message', messageListener)
+
+    document.querySelectorAll('iframe').forEach((iframeElem) =>
         iframeElem.contentWindow.addEventListener('message', messageListener)
     )
 }
@@ -20,4 +29,4 @@ document.onreadystatechange = function()
     {
         setupListenMessage()
     }
-};
+}
