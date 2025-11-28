@@ -13,6 +13,7 @@ let messageListener = (e) => {
     }
 }
 
+// eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
 let setupListenMessage = () => {
     listenerNr = 1 + document.querySelectorAll('iframe').length
 
@@ -21,11 +22,4 @@ let setupListenMessage = () => {
     document.querySelectorAll('iframe').forEach((iframeElem) =>
         iframeElem.contentWindow.addEventListener('message', messageListener)
     )
-}
-
-document.onreadystatechange = () => {
-    if (document.readyState === 'complete')
-    {
-        setupListenMessage()
-    }
 }
