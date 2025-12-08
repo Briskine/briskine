@@ -160,7 +160,7 @@ async function updateSection ($container, $button, getNode, value) {
 
 // get all required data from the dom
 export function getData (params) {
-  var vars = {
+  const vars = {
     from: {},
     to: [],
     cc: [],
@@ -168,7 +168,13 @@ export function getData (params) {
     subject: '',
   }
 
-  const $from = document.querySelector('#O365_MainLink_Me > div > div:nth-child(1)')
+  if (!params.element) {
+    return vars
+  }
+
+  const doc = params.element.ownerDocument
+
+  const $from = doc.querySelector('#O365_MainLink_Me > div > div:nth-child(1)')
   let fullName = ''
   if ($from) {
     fullName = $from.textContent
@@ -177,7 +183,7 @@ export function getData (params) {
   // BUG only works if "From" field is visible
   let fromEmail = ''
   // finds the From button, then the read-only from field after the button
-  const $fromEmailButton = document.querySelector('[role=complementary] [aria-haspopup=menu] + * [aria-haspopup=dialog]')
+  const $fromEmailButton = doc.querySelector('[role=complementary] [aria-haspopup=menu] + * [aria-haspopup=dialog]')
   if ($fromEmailButton) {
     fromEmail = $fromEmailButton.innerText
   }

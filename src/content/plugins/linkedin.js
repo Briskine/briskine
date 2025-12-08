@@ -81,7 +81,7 @@ function getToName (element) {
 
   // get the to field from the currently viewed profile
   // eg. for the connect > add note field.
-  const $currentProfilePicture = document.querySelector('img[width="200"][height="200"], img[class*="pv-top-card-profile-picture"]')
+  const $currentProfilePicture = element.ownerDocument.querySelector('img[width="200"][height="200"], img[class*="pv-top-card-profile-picture"]')
   if ($currentProfilePicture && $currentProfilePicture.hasAttribute('alt')) {
     const profilePictureAlt = $currentProfilePicture.getAttribute('alt') || ''
     // remove open to work badge
@@ -99,15 +99,21 @@ export function getData (params) {
     subject: '',
   }
 
+  if (!params?.element) {
+    return vars
+  }
+
+  const doc = params.element.ownerDocument
+
   let fromName = ''
   // global profile
-  const $fromContainer = document.querySelector('.global-nav__me-photo')
+  const $fromContainer = doc.querySelector('.global-nav__me-photo')
   if ($fromContainer && $fromContainer.getAttribute('alt')) {
     fromName = $fromContainer.getAttribute('alt')
   }
 
   // Sales Navigator global profile
-  const $salesFromContainer = document.querySelector('[data-control-name="view_user_menu_from_app_header"]')
+  const $salesFromContainer = doc.querySelector('[data-control-name="view_user_menu_from_app_header"]')
   if ($salesFromContainer) {
     fromName = $salesFromContainer.innerText
   }

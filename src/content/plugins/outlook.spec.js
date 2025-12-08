@@ -4,17 +4,24 @@ import {expect} from 'chai'
 import {getData} from './outlook.js'
 
 async function page (src = '') {
-  const response = await fetch(src)
-  const div = document.createElement('div')
-  div.innerHTML = await response.text()
-  document.body.appendChild(div)
-  return div
+  const iframe = document.createElement('iframe')
+  let resolve, reject
+  const promise = new Promise((res, rej) => {
+    [resolve, reject] = [res, rej]
+  })
+  iframe.onload = () => {
+    resolve(iframe)
+  }
+  iframe.onerror = reject
+  iframe.src = src
+  document.body.appendChild(iframe)
+  return promise
 }
 
 describe('outlook', () => {
   it('should get data in default compose', async () => {
-    const container = await page('pages/outlook/outlook-compose.html')
-    const element = container.querySelector('[aria-multiline]')
+    const iframe = await page('pages/outlook/outlook-compose.html')
+    const element = iframe.contentDocument.querySelector('[aria-multiline]')
     const data = getData({
       element: element,
     })
@@ -46,12 +53,12 @@ describe('outlook', () => {
       subject: '',
     })
 
-    container.remove()
+    iframe.remove()
   })
 
   it('should get data in compose popup', async () => {
-    const container = await page('pages/outlook/outlook-compose-popup.html')
-    const element = container.querySelector('[aria-multiline]')
+    const iframe = await page('pages/outlook/outlook-compose-popup.html')
+    const element = iframe.contentDocument.querySelector('[aria-multiline]')
     const data = getData({
       element: element,
     })
@@ -83,6 +90,6 @@ describe('outlook', () => {
       subject: '',
     })
 
-    container.remove()
+    iframe.remove()
   })
 })

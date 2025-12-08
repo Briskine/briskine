@@ -4,17 +4,24 @@ import {expect} from 'chai'
 import {getData} from './linkedin.js'
 
 async function page (src = '') {
-  const response = await fetch(src)
-  const div = document.createElement('div')
-  div.innerHTML = await response.text()
-  document.body.appendChild(div)
-  return div
+  const iframe = document.createElement('iframe')
+  let resolve, reject
+  const promise = new Promise((res, rej) => {
+    [resolve, reject] = [res, rej]
+  })
+  iframe.onload = () => {
+    resolve(iframe)
+  }
+  iframe.onerror = reject
+  iframe.src = src
+  document.body.appendChild(iframe)
+  return promise
 }
 
 describe('linkedin', () => {
   it('should get data in connect popup', async () => {
-    const container = await page('pages/linkedin/linkedin-connect.html')
-    const element = container.querySelector('textarea')
+    const iframe = await page('pages/linkedin/linkedin-connect.html')
+    const element = iframe.contentDocument.querySelector('textarea')
     const data = getData({
       element: element,
     })
@@ -37,12 +44,12 @@ describe('linkedin', () => {
       subject: ''
     })
 
-    container.remove()
+    iframe.remove()
   })
 
   it('should get data in inmail popup', async () => {
-    const container = await page('pages/linkedin/linkedin-inmail-popup.html')
-    const element = container.querySelector('[contenteditable]')
+    const iframe = await page('pages/linkedin/linkedin-inmail-popup.html')
+    const element = iframe.contentDocument.querySelector('[contenteditable]')
     const data = getData({
       element: element,
     })
@@ -65,12 +72,12 @@ describe('linkedin', () => {
       subject: ''
     })
 
-    container.remove()
+    iframe.remove()
   })
 
   it('should get data in message popup fully loaded', async () => {
-    const container = await page('pages/linkedin/linkedin-message-popup-full.html')
-    const element = container.querySelector('[contenteditable]')
+    const iframe = await page('pages/linkedin/linkedin-message-popup-full.html')
+    const element = iframe.contentDocument.querySelector('[contenteditable]')
     const data = getData({
       element: element,
     })
@@ -93,12 +100,12 @@ describe('linkedin', () => {
       subject: ''
     })
 
-    container.remove()
+    iframe.remove()
   })
 
   it('should get data in message popup lazy loaded', async () => {
-    const container = await page('pages/linkedin/linkedin-message-popup-lazy.html')
-    const element = container.querySelector('[contenteditable]')
+    const iframe = await page('pages/linkedin/linkedin-message-popup-lazy.html')
+    const element = iframe.contentDocument.querySelector('[contenteditable]')
     const data = getData({
       element: element,
     })
@@ -121,12 +128,12 @@ describe('linkedin', () => {
       subject: ''
     })
 
-    container.remove()
+    iframe.remove()
   })
 
   it('should get data in messaging thread fully loaded', async () => {
-    const container = await page('pages/linkedin/linkedin-messaging-full.html')
-    const element = container.querySelector('[contenteditable]')
+    const iframe = await page('pages/linkedin/linkedin-messaging-full.html')
+    const element = iframe.contentDocument.querySelector('[contenteditable]')
     const data = getData({
       element: element,
     })
@@ -149,12 +156,12 @@ describe('linkedin', () => {
       subject: ''
     })
 
-    container.remove()
+    iframe.remove()
   })
 
   it('should get data in messaging thread fully loaded', async () => {
-    const container = await page('pages/linkedin/linkedin-messaging-lazy.html')
-    const element = container.querySelector('[contenteditable]')
+    const iframe = await page('pages/linkedin/linkedin-messaging-lazy.html')
+    const element = iframe.contentDocument.querySelector('[contenteditable]')
     const data = getData({
       element: element,
     })
@@ -177,12 +184,12 @@ describe('linkedin', () => {
       subject: ''
     })
 
-    container.remove()
+    iframe.remove()
   })
 
   it('should get data in new inmail messaging thread', async () => {
-    const container = await page('pages/linkedin/linkedin-messaging-inmail.html')
-    const element = container.querySelector('[contenteditable]')
+    const iframe = await page('pages/linkedin/linkedin-messaging-inmail.html')
+    const element = iframe.contentDocument.querySelector('[contenteditable]')
     const data = getData({
       element: element,
     })
@@ -205,12 +212,12 @@ describe('linkedin', () => {
       subject: ''
     })
 
-    container.remove()
+    iframe.remove()
   })
 
   it('should get data in new sales navigator invite', async () => {
-    const container = await page('pages/linkedin/linkedin-sales-navigator-invite.html')
-    const element = container.querySelector('textarea')
+    const iframe = await page('pages/linkedin/linkedin-sales-navigator-invite.html')
+    const element = iframe.contentDocument.querySelector('textarea')
     const data = getData({
       element: element,
     })
@@ -233,12 +240,12 @@ describe('linkedin', () => {
       subject: ''
     })
 
-    container.remove()
+    iframe.remove()
   })
 
   it('should get data in new sales navigator message popup', async () => {
-    const container = await page('pages/linkedin/linkedin-sales-navigator-message-popup.html')
-    const element = container.querySelector('textarea')
+    const iframe = await page('pages/linkedin/linkedin-sales-navigator-message-popup.html')
+    const element = iframe.contentDocument.querySelector('textarea')
     const data = getData({
       element: element,
     })
@@ -261,6 +268,6 @@ describe('linkedin', () => {
       subject: ''
     })
 
-    container.remove()
+    iframe.remove()
   })
 })
