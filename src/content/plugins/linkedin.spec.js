@@ -187,7 +187,7 @@ describe('linkedin', () => {
     iframe.remove()
   })
 
-  it('should get data in new inmail messaging thread', async () => {
+  it('should get data in inmail new message thread', async () => {
     const iframe = await page('pages/linkedin/linkedin-messaging-inmail.html')
     const element = iframe.contentDocument.querySelector('[contenteditable]')
     const data = getData({
@@ -215,7 +215,7 @@ describe('linkedin', () => {
     iframe.remove()
   })
 
-  it('should get data in new sales navigator invite', async () => {
+  it('should get data in sales navigator invite', async () => {
     const iframe = await page('pages/linkedin/linkedin-sales-navigator-invite.html')
     const element = iframe.contentDocument.querySelector('textarea')
     const data = getData({
@@ -243,7 +243,7 @@ describe('linkedin', () => {
     iframe.remove()
   })
 
-  it('should get data in new sales navigator message popup', async () => {
+  it('should get data in sales navigator new message popup', async () => {
     const iframe = await page('pages/linkedin/linkedin-sales-navigator-message-popup.html')
     const element = iframe.contentDocument.querySelector('textarea')
     const data = getData({
@@ -262,6 +262,34 @@ describe('linkedin', () => {
           name: 'Michael J Briskine',
           first_name: 'Michael',
           last_name: 'J Briskine',
+          email: ''
+        }
+      ],
+      subject: ''
+    })
+
+    iframe.remove()
+  })
+
+  it('should get data in sales navigator new message thread', async () => {
+    const iframe = await page('pages/linkedin/linkedin-sales-navigator-message-thread.html')
+    const element = iframe.contentDocument.querySelector('textarea')
+    const data = getData({
+      element: element,
+    })
+
+    expect(data).to.deep.equal({
+      from: {
+        name: 'Jennifer Briskine',
+        first_name: 'Jennifer',
+        last_name: 'Briskine',
+        email: ''
+      },
+      to: [
+        {
+          name: 'Michael Briskine',
+          first_name: 'Michael',
+          last_name: 'Briskine',
           email: ''
         }
       ],
