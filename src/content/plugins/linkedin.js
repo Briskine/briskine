@@ -38,6 +38,8 @@ function getToName (element) {
     '.msg-thread',
     // post in feed
     '.feed-shared-update-v2',
+    // Sales Navigator message thread
+    '.thread-container',
   ]
 
   const contactNameSelectors = [
