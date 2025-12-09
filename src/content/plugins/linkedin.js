@@ -49,7 +49,8 @@ function getToName (element) {
     '.msg-s-event-listitem--other .msg-s-message-group__name',
     // 1. inMail message header
     // 2. Message header in messaging popup (at the top, when complete thread is loaded)
-    '.artdeco-entity-lockup__title > *:first-child',
+    // 3. Sales Navigator message popup (:not excludes shared connections in Sales Navigator)
+    '.artdeco-entity-lockup__title > *:first-child:not([aria-hidden])',
     // Sales Navigator Connect popup
     '.artdeco-entity-lockup__title',
     // Contact name from full-page Messaging view title, when contact hasn't replied yet
@@ -68,10 +69,13 @@ function getToName (element) {
   // otherwise we're in a non-messaging textfield.
   if ($thread) {
     // get the contacts from the thread, that is not ours
-    const $contacts = $thread.querySelectorAll(contactNameSelectors.join(','))
-    if ($contacts.length) {
-      // get the current messaging contact
-      const $contact = $contacts.item($contacts.length - 1)
+    let $contact
+    contactNameSelectors.some((selector) => {
+      $contact = $thread.querySelector(selector)
+      return $contact
+    })
+
+    if ($contact) {
       // make sure we're not getting "New message" from the message dialog title.
       // in case the other selectors didn't match for new messages.
       const contactText = $contact.innerText || ''
