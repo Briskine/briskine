@@ -69,10 +69,16 @@ export const test = base.extend<{
 
 export const expect = test.expect
 
-export const waitForExtension = (page) => new Promise((resolve) => {
+const waitForExtension = (page) => new Promise((resolve) => {
   page.on('console', msg => {
     if (msg.text().includes('BSKN inited')) {
       resolve(msg)
     }
   })
 })
+
+export const openPage = (page, pageUrl) =>
+  Promise.all([
+    waitForExtension(page),
+    page.goto(pageUrl)
+  ])

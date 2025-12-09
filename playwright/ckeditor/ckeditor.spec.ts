@@ -1,9 +1,8 @@
-import {test, expect, waitForExtension} from '../fixtures.ts'
+import {test, expect, openPage} from '../fixtures.ts'
 
 test.describe('CKEditor', () => {
   test.beforeEach(async ({page}) => {
-    await page.goto('/ckeditor/ckeditor.html')
-    await waitForExtension(page)
+    await openPage(page, '/ckeditor/ckeditor.html')
   })
 
   test.afterEach(async ({page}) => {

@@ -1,9 +1,8 @@
-import {test, expect, waitForExtension} from '../fixtures.ts'
+import {test, expect, openPage} from '../fixtures.ts'
 
 test.describe('Quill', () => {
   test.beforeEach(async ({page}) => {
-    await page.goto('/quill/quill.html')
-    await waitForExtension(page)
+    await openPage(page, '/quill/quill.html')
   })
 
   test.afterEach(async ({page}) => {

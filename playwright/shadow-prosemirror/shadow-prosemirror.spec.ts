@@ -1,9 +1,8 @@
-import {test, expect, waitForExtension} from '../fixtures.ts'
+import {test, expect, openPage} from '../fixtures.ts'
 
 test.describe('ProseMirror in Shadow DOM', () => {
   test.beforeEach(async ({page}) => {
-    await page.goto('/shadow-prosemirror/shadow-prosemirror.html')
-    await waitForExtension(page)
+    await openPage(page, '/shadow-prosemirror/shadow-prosemirror.html')
   })
 
   test.afterEach(async ({page}) => {

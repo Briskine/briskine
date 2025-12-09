@@ -1,31 +1,39 @@
 
-let counterListener = 0
-let listenerNr
+const promiseMainWindow = new Promise((resolve) => {
+    window.addEventListener('message', (e) => { 
+        if (e?.data === 'briskine-ready') {
+            resolve(true)
+        }
+    })
+})
 
-let messageListener = (e) => {
-    if (e?.data === 'briskine-ready') {
-        counterListener++
+const promiseDocumentReady = new Promise((resolve) => {
+    document.onreadystatechange = () => {
+        if (document.readyState === 'complete')
+        {
+            const iframes = document.querySelectorAll('iframe')
 
-        if (counterListener >= listenerNr) {
-            // eslint-disable-next-line no-console
-            console.log('BSKN inited')
+            if (iframes.length) {
+                Promise.all(
+                    [...iframes].map((iframeElem) => new Promise((resolve) => {
+                            iframeElem.contentWindow.addEventListener('message', (e) => {
+                                if (e?.data === 'briskine-ready') {
+                                    resolve(true)
+                                }
+                            })
+                        })
+                    )
+                ).then(() => { 
+                    resolve(true)
+                } )
+            } else {
+                resolve(true)
+            }
         }
     }
-}
+})
 
-let setupListenMessage = () => {
-    listenerNr = 1 + document.querySelectorAll('iframe').length
-
-    window.addEventListener('message', messageListener)
-
-    document.querySelectorAll('iframe').forEach((iframeElem) =>
-        iframeElem.contentWindow.addEventListener('message', messageListener)
-    )
-}
-
-document.onreadystatechange = () => {
-    if (document.readyState === 'complete')
-    {
-        setupListenMessage()
-    }
-}
+Promise.all([promiseMainWindow, promiseDocumentReady]).then(() => {
+    // eslint-disable-next-line no-console
+    console.log('BSKN inited')
+})

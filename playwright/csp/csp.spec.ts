@@ -1,9 +1,8 @@
-import {test, expect, waitForExtension} from '../fixtures.ts'
+import {test, expect, openPage} from '../fixtures.ts'
 
 test.describe('Content-Security-Policy="default-src self\'', () => {
   test.beforeEach(async ({page}) => {
-    await page.goto('/csp/csp.html')
-    await waitForExtension(page)
+    await openPage(page, '/csp/csp.html')
   })
 
   test.afterEach(async ({page}) => {

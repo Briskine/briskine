@@ -1,4 +1,4 @@
-import {test, expect, waitForExtension} from '../fixtures.ts'
+import {test, expect, openPage} from '../fixtures.ts'
 
 test.describe('Cross-Origin-Embedder-Policy=require-corp', () => {
   test.beforeEach(async ({page}) => {
@@ -19,9 +19,7 @@ test.describe('Cross-Origin-Embedder-Policy=require-corp', () => {
       })
     })
 
-    await page.goto('/coep/coep.html')
-
-    await waitForExtension(page)
+    await openPage(page, '/coep/coep.html')
   })
 
   test.afterEach(async ({page}) => {

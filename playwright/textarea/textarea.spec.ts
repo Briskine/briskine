@@ -1,9 +1,8 @@
-import {test, expect, waitForExtension} from '../fixtures.ts'
+import {test, expect, openPage} from '../fixtures.ts'
 
 test.describe('Textarea', () => {
   test.beforeEach(async ({page}) => {
-    await page.goto('/textarea/textarea.html')
-    await waitForExtension(page)
+    await openPage(page, '/textarea/textarea.html')
   })
 
   test.afterEach(async ({page}) => {

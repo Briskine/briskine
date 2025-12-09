@@ -1,4 +1,4 @@
-import {test, expect, waitForExtension} from '../fixtures.ts'
+import {test, expect, openPage} from '../fixtures.ts'
 import loginSession from '../login-session.js'
 
 test.describe('ContentEditable Session Authenticated', () => {
@@ -6,8 +6,7 @@ test.skip(({browserName}) => browserName === 'firefox', 'Auth testing not suppor
 
   test.beforeEach(async ({page, extensionId}) => {
     await loginSession({page, extensionId})
-    await page.goto('/contenteditable-auth-session/contenteditable-auth-session.html')
-    await waitForExtension(page)
+    await openPage(page, '/contenteditable-auth-session/contenteditable-auth-session.html')
   })
 
   test.afterEach(async ({page}) => {
