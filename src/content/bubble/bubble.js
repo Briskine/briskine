@@ -264,13 +264,46 @@ function isValidTextfield (elem) {
     // the parent is not the body
     && elem.parentElement !== document.body
   ) {
+
     // disable for flex and grid
     const parentStyles = window.getComputedStyle(elem.parentElement)
+
     if (
       // parent is flex or grid
       ['flex', 'grid'].includes(parentStyles.display)
-      // has more than 1 child, except the bubble (in case we already added it to the parent)
-      && Array.from(elem.parentElement.childNodes).filter((n) => n !== bubbleInstance).length > 1
+      // check all editable element siblings,
+      // because we might have a parent flex/grid container,
+      // but with the editable element filling the entire container.
+      && Array.from(elem.parentElement.childNodes).some((node) => {
+        // direct non-empty text nodes will trigger flex/grid layout
+        if (
+          node.nodeType === Node.TEXT_NODE
+          && node.nodeValue.trim() !== ''
+        ) {
+          return true
+        }
+
+        if (
+          // allow comments and other invisible node types
+          node.nodeType !== Node.ELEMENT_NODE
+          // exclude the editable node
+          || node === elem
+          // exclude the bubble, in case we already moved it to the parent
+          || node === bubbleInstance
+          // exclude hidden nodes
+          || node.checkVisibility() === false
+        ) {
+          return false
+        }
+
+        // exclude absolute/sticky/fixed positioned nodes
+        const nodeStyles = window.getComputedStyle(node)
+        if (!['static', 'relative'].includes(nodeStyles.position)) {
+          return false
+        }
+
+        return true
+      })
     ) {
       return false
     }
