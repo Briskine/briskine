@@ -18,6 +18,7 @@ let bubbleInstance = null
 let activeTextfield = null
 
 const maxHostWidthCssVar = '--max-host-width'
+const bubbleTopCssVar = '--bubble-top'
 
 export const bubbleTagName = `b-bubble-${Date.now().toString(36)}`
 
@@ -341,6 +342,9 @@ async function showBubble (textfield) {
   // set max-width to the width of textfield,
   // in case the container of the textfield is larger than the textfield.
   bubbleInstance.style.setProperty(maxHostWidthCssVar, textfieldStyles.width)
+
+  // move bubble further down, in case the textfield uses a top margin
+  bubbleInstance.style.setProperty(bubbleTopCssVar, textfieldStyles.marginTop)
 
   const maxWidthProperty = textfieldStyles.boxSizing === 'border-box' ? 'borderBoxSize' : 'contentBoxSize'
 
