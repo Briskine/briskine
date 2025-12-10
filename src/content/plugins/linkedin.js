@@ -176,7 +176,7 @@ function isActive () {
 
   activeCache = false
   if (
-    window.location.hostname === 'wwww.linkedin.com'
+    window.location.hostname === 'www.linkedin.com'
     // exclude LinkedIn Sales Navigator
     && !window.location.pathname.startsWith('/sales/')
   ) {
