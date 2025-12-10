@@ -70,7 +70,7 @@ describe('editor CKEditor', function () {
         end: 0,
         text: '',
       },
-      quicktext: {},
+      template: {},
     })
 
     cleanGlobals()
@@ -90,7 +90,7 @@ describe('editor CKEditor', function () {
         end: 0,
         text: '',
       },
-      quicktext: {},
+      template: {},
     })
 
     cleanGlobals()

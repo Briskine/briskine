@@ -59,7 +59,7 @@ async function keyboardAutocomplete (e) {
 
       autocomplete({
         element: element,
-        quicktext: template,
+        template: template,
         word: word,
       })
     }

@@ -17,7 +17,10 @@ export function insertContentEditableTemplate (params = {}) {
   // using a cloned range fixes the issue.
   let range = selection.getRangeAt(0).cloneRange()
 
-  if (params.word.text === params.quicktext.shortcut) {
+  if (
+    params.template.shortcut
+    && params.word.text === params.template.shortcut
+  ) {
     // delete matched shortcut
     range.setStart(selection.focusNode, params.word.start)
     range.setEnd(selection.focusNode, params.word.end)

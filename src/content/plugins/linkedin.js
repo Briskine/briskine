@@ -18,8 +18,8 @@ async function before (params, data) {
     // set subject field value.
     // subject is only available for inMail messaging.
     const $subjectField = $parent.querySelector('[name=subject]')
-    if (params.quicktext.subject && $subjectField) {
-      const parsedSubject = await parseTemplate(params.quicktext.subject, data)
+    if (params.template.subject && $subjectField) {
+      const parsedSubject = await parseTemplate(params.template.subject, data)
       $subjectField.value = parsedSubject
     }
   }
@@ -188,8 +188,8 @@ export default async (params = {}) => {
 
   const data = getData(params)
   const templateWithAttachments = addAttachments(
-    await parseTemplate(params.quicktext.body, data),
-    params.quicktext.attachments,
+    await parseTemplate(params.template.body, data),
+    params.template.attachments,
   )
 
   // Quill is used for posts and comments

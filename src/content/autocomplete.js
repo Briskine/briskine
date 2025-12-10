@@ -92,6 +92,6 @@ export function getSelectedWord (params) {
 
 export async function autocomplete (params) {
   await runPlugins(Object.assign({}, params))
-  await updateTemplateStats(params.quicktext)
+  await updateTemplateStats(params.template)
   return params
 }
