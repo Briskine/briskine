@@ -1,4 +1,4 @@
-/* LinkedIn plugin
+/* LinkedIn Sales Navigator plugin
  */
 
 import parseTemplate from '../utils/parse-template.js'
@@ -178,7 +178,7 @@ function isActive () {
   if (
     window.location.hostname === 'wwww.linkedin.com'
     // exclude LinkedIn Sales Navigator
-    && !window.location.pathname.startsWith('/sales/')
+    && window.location.pathname.startsWith('/sales/')
   ) {
     activeCache = true
   }
