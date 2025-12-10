@@ -12,7 +12,7 @@ import {addAttachments} from '../attachments/attachments.js'
 import getSelection from '../selection.js'
 
 async function before (params, data) {
-  const $parent = params.element.closest('.msg-overlay-conversation-bubble')
+  const $parent = params.element.closest('[role=dialog]')
 
   if ($parent) {
     // set subject field value.
@@ -28,9 +28,7 @@ async function before (params, data) {
 function getToName (element) {
   // get the contact name from messages
   const messageThreadSelectors = [
-    // 1. Sales Navigator Connect popup
-    // 2. Message thread in message bubble/dialog/popup
-    // 3. inMail message popup
+    // message popup
     '[role=dialog]',
     // organization inbox thread
     '.org-inbox-thread__container',
@@ -38,8 +36,6 @@ function getToName (element) {
     '.msg-thread',
     // post in feed
     '.feed-shared-update-v2',
-    // Sales Navigator message thread
-    '.thread-container',
   ]
 
   const contactNameSelectors = [
@@ -49,10 +45,7 @@ function getToName (element) {
     '.msg-s-event-listitem--other .msg-s-message-group__name',
     // 1. inMail message header
     // 2. Message header in messaging popup (at the top, when complete thread is loaded)
-    // 3. Sales Navigator message popup (:not excludes shared connections in Sales Navigator)
-    '.artdeco-entity-lockup__title > *:first-child:not([aria-hidden])',
-    // Sales Navigator Connect popup
-    '.artdeco-entity-lockup__title',
+    '.artdeco-entity-lockup__title > *:first-child',
     // Contact name from full-page Messaging view title, when contact hasn't replied yet
     // (or first message is above fold and lazy loaded).
     '.msg-entity-lockup__entity-title',
@@ -60,7 +53,7 @@ function getToName (element) {
     '.artdeco-pill',
     // contact name in feed post
     '.feed-shared-actor__name',
-    // contact name in bubble/dialog title
+    // contact name in message popup title
     '.msg-overlay-bubble-header__title',
   ]
 
@@ -68,7 +61,6 @@ function getToName (element) {
   // check if a message thread is visible,
   // otherwise we're in a non-messaging textfield.
   if ($thread) {
-    // get the contacts from the thread, that is not ours
     let $contact
     contactNameSelectors.some((selector) => {
       $contact = $thread.querySelector(selector)
@@ -116,12 +108,6 @@ export function getData (params) {
   const $fromContainer = doc.querySelector('.global-nav__me-photo')
   if ($fromContainer && $fromContainer.getAttribute('alt')) {
     fromName = $fromContainer.getAttribute('alt')
-  }
-
-  // Sales Navigator global profile
-  const $salesFromContainer = doc.querySelector('[data-control-name="view_user_menu_from_app_header"]')
-  if ($salesFromContainer) {
-    fromName = $salesFromContainer.innerText
   }
 
   vars.from = createContact({name: fromName})
