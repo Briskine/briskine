@@ -159,7 +159,7 @@ describe('linkedin', () => {
     iframe.remove()
   })
 
-  it('should get data in messaging thread fully loaded', async () => {
+  it('should get data in messaging thread lazy loaded', async () => {
     const iframe = await page('pages/linkedin/linkedin-messaging-lazy.html')
     const element = iframe.contentDocument.querySelector('[contenteditable]')
     const data = getData({

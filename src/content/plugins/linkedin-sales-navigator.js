@@ -28,12 +28,7 @@ function getToName (element) {
 
   const $thread = element.closest(messageThreadSelectors.join(','))
   if ($thread) {
-    let $contact
-    contactNameSelectors.some((selector) => {
-      $contact = $thread.querySelector(selector)
-      return $contact
-    })
-
+    const $contact = $thread.querySelector(contactNameSelectors.join(','))
     if ($contact) {
       return $contact.innerText || ''
     }
