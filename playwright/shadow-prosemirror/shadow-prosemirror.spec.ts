@@ -11,8 +11,10 @@ test.describe('ProseMirror in Shadow DOM', () => {
 
   test('should insert template with keyboard shortcut', async ({page}) => {
     const textbox = page.getByRole('textbox')
-    await textbox.fill('kr')
-    await textbox.press('Tab')
+    const keys = ['k', 'r', 'Tab']
+    keys.forEach(async(key) => {
+      await textbox.press(key)
+    })
     await expect(textbox).toHaveText('Kind regards,.')
   })
 
