@@ -72,7 +72,7 @@ export const expect = test.expect
 const waitForExtension = (page) => new Promise((resolve) => {
   page.on('console', msg => {
     if (msg.text().includes('BSKN inited')) {
-      resolve(msg)
+      resolve()
     }
   })
 })
