@@ -46,24 +46,23 @@ async function init (settings) {
     return false
   }
 
-  storeSetup()
+  await Promise.all([
+    storeSetup(),
+    setupKeyboard(settings),
+    setupBubble(settings),
+    setupDialog(settings),
 
-  setupKeyboard(settings)
-  setupBubble(settings)
-  setupDialog(settings)
+    setupPage(),
+    setupAttachments(),
 
-  await setupPage()
-  setupAttachments()
-
-  setupInsertEvent()
+    setupInsertEvent(),
+  ])
 
   // update the content components if settings change
-  settingsCache = Object.assign({}, settings)
+  settingsCache = {...settings}
   storeOn('users-updated', refreshContentScripts)
 
   window.postMessage(readyMessage)
-
-  return
 }
 
 let startupDelay = 500
