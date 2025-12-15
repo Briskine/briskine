@@ -191,7 +191,7 @@ function staticServer (port = 8000) {
 }
 
 
-function run () {
+async function run () {
   const server = staticServer()
 
   const options = {
@@ -199,26 +199,33 @@ function run () {
     headless: true,
   }
 
-  puppeteer
-    .launch(options)
-    .then(browser => {
-      return browser.pages()
-        .then(pages => pages.pop())
-        .then(page => {
-          page.on('console', handleConsole)
-          page.on('dialog', dialog => dialog.dismiss())
-          page.on('pageerror', err => console.error(err))
+  let browser
+  try {
+    browser = await puppeteer.launch(options)
+    const pages = await browser.pages()
+    const page = pages.pop()
 
-          return page.evaluateOnNewDocument(initMocha)
-            .then(() => page.goto('http://localhost:8000/test/index.html'))
-            .then(() => page.waitForFunction(() => window.__mochaResult__, { timeout }))
-            .then(() => page.evaluate(() => window.__mochaResult__))
-            .then(() => {
-              browser.close()
-              server.close()
-            })
-        })
-    })
+    page.on('console', handleConsole)
+    page.on('dialog', dialog => dialog.dismiss())
+    page.on('pageerror', () => process.exitCode = 1)
+
+    await page.evaluateOnNewDocument(initMocha)
+    await page.goto('http://localhost:8000/test/index.html')
+    await page.waitForFunction(() => window.__mochaResult__, { timeout })
+    const result = await page.evaluate(() => window.__mochaResult__)
+
+    if (result.result.stats.failures > 0) {
+      process.exitCode = 1
+    }
+  } catch (err) {
+    console.error(err)
+    process.exitCode = 1
+  } finally {
+    if (browser) {
+      await browser.close()
+    }
+    server.close()
+  }
 }
 
 run()
