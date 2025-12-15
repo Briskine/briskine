@@ -1,6 +1,6 @@
 ---
 name: Bug report
-about: Create a report to help us improve the helpdesk.
+about: Create a report to help us improve Briskine.
 title: ''
 labels: bug
 assignees: ''
@@ -14,6 +14,6 @@ assignees: ''
 
 -
 
-#### Related tickets/Sentry events:
+### Related GitHub issues:
 
 -
