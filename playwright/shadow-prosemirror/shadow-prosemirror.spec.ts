@@ -1,8 +1,8 @@
 import {test, expect, openPage} from '../fixtures.ts'
 
-test.describe('ProseMirror', () => {
+test.describe('ProseMirror in Shadow DOM', () => {
   test.beforeEach(async ({page}) => {
-    await openPage(page, '/prosemirror/prosemirror.html')
+    await openPage(page, '/shadow-prosemirror/shadow-prosemirror.html')
   })
 
   test.afterEach(async ({page}) => {

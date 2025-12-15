@@ -1,4 +1,4 @@
-import {test, expect} from '../fixtures.ts'
+import {test, expect, openPage} from '../fixtures.ts'
 import login from '../login.js'
 
 test.describe('ContentEditable Authenticated Service Worker suspend', () => {
@@ -11,10 +11,7 @@ test.describe('ContentEditable Authenticated Service Worker suspend', () => {
     await page.goto('chrome://serviceworker-internals/')
     await page.getByRole('button', {name: 'Stop'}).click()
 
-    await page.goto('/contenteditable-auth-suspend/contenteditable-auth-suspend.html')
-    // wait for the service worker to start
-    // and briskine initialized
-    await page.waitForTimeout(1000)
+    await openPage(page, '/contenteditable-auth-suspend/contenteditable-auth-suspend.html')
   })
 
   test.afterEach(async ({page}) => {

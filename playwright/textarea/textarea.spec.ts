@@ -1,8 +1,8 @@
-import {test, expect} from '../fixtures.ts'
+import {test, expect, openPage} from '../fixtures.ts'
 
 test.describe('Textarea', () => {
   test.beforeEach(async ({page}) => {
-    await page.goto('/textarea/textarea.html')
+    await openPage(page, '/textarea/textarea.html')
   })
 
   test.afterEach(async ({page}) => {
@@ -48,7 +48,7 @@ test.describe('Textarea', () => {
     await expect(input).toHaveValue(template)
   })
 
-  test(`should move focus to next field when template shortcut doesn't match`, async ({page}) => {
+  test('should move focus to next field when template shortcut doesn\'t match', async ({page}) => {
     const input = page.getByTestId('input')
     await input.fill('mock')
     await input.press('Tab')

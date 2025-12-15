@@ -1,8 +1,8 @@
-import {test, expect} from '../fixtures.ts'
+import {test, expect, openPage} from '../fixtures.ts'
 
 test.describe('Slate', () => {
   test.beforeEach(async ({page}) => {
-    await page.goto('/slate/slate.html')
+    await openPage(page, '/slate/slate.html')
   })
 
   test.afterEach(async ({page}) => {

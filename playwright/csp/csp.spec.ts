@@ -1,8 +1,8 @@
-import {test, expect} from '../fixtures.ts'
+import {test, expect, openPage} from '../fixtures.ts'
 
-test.describe(`Content-Security-Policy="default-src self'`, () => {
+test.describe('Content-Security-Policy="default-src self\'', () => {
   test.beforeEach(async ({page}) => {
-    await page.goto('/csp/csp.html')
+    await openPage(page, '/csp/csp.html')
   })
 
   test.afterEach(async ({page}) => {

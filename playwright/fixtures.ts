@@ -1,4 +1,4 @@
-import {test as base, chromium, firefox, type BrowserContext} from '@playwright/test'
+import {test as base, chromium, firefox, type Page, type BrowserContext} from '@playwright/test'
 import {fileURLToPath} from 'url'
 import path from 'path'
 import {connect} from '../node_modules/web-ext/lib/firefox/remote.js'
@@ -68,3 +68,17 @@ export const test = base.extend<{
 })
 
 export const expect = test.expect
+
+const waitForExtension = (page: Page) => new Promise<void>((resolve) => {
+  page.on('console', msg => {
+    if (msg.text().includes('BSKN inited')) {
+      resolve()
+    }
+  })
+})
+
+export const openPage = (page: Page, pageUrl: string) =>
+  Promise.all([
+    waitForExtension(page),
+    page.goto(pageUrl)
+  ])

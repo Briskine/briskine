@@ -1,8 +1,8 @@
-import {test, expect} from '../fixtures.ts'
+import {test, expect, openPage} from '../fixtures.ts'
 
 test.describe('Iframe', () => {
   test.beforeEach(async ({page}) => {
-    await page.goto('/iframe/iframe.html')
+    await openPage(page, '/iframe/iframe.html')
   })
 
   test.afterEach(async ({page}) => {

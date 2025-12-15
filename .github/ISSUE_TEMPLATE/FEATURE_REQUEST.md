@@ -14,6 +14,6 @@ assignees: ''
 
 -
 
-### Related ProductBoard/Github issues:
+### Related GitHub issues:
 
 -

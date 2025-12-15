@@ -1,10 +1,8 @@
-import {test, expect} from '../fixtures.ts'
+import {test, expect, openPage} from '../fixtures.ts'
 
-test.describe('CKEditor', () => {
+test.describe('CKEditor4', () => {
   test.beforeEach(async ({page}) => {
-    await page.goto('/ckeditor4/ckeditor4.html')
-    // wait for briskine to load in editor frame
-    await page.waitForTimeout(500)
+    await openPage(page, '/ckeditor4/ckeditor4.html')
   })
 
   test.afterEach(async ({page}) => {

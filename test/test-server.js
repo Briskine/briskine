@@ -74,12 +74,14 @@ function initMocha(reporter) {
       }
 
       function setResult() {
-        !window.__mochaResult__ && (window.__mochaResult__ = result(this.stats))
+        return (!window.__mochaResult__ && (window.__mochaResult__ = result(this.stats)))
       }
 
-      !reporterIsChanged && m.setup({
-        reporter: Mocha.reporters[reporter] || Mocha.reporters.spec
-      })
+      if (!reporterIsChanged) {
+        m.setup({
+          reporter: Mocha.reporters[reporter] || Mocha.reporters.spec
+        })
+      }
 
       const runner = run(() => setTimeout(() => setResult.call(runner), 0))
         .on('pass', test => {
@@ -102,8 +104,13 @@ function initMocha(reporter) {
 
   function shimMochaProcess(M) {
     // Mocha needs a process.stdout.write in order to change the cursor position.
-    !M.process && (M.process = {})
-    !M.process.stdout && (M.process.stdout = {})
+    if (!M.process) {
+      M.process = {}
+    }
+
+    if (!M.process.stdout) {
+      M.process.stdout = {}
+    }
 
     M.process.stdout.write = data => console.log('stdout:', data)
     M.reporters.Base.useColors = true
@@ -143,10 +150,15 @@ async function handleConsole(msg) {
   let values = await Promise.all(args.map(a => a.jsonValue().catch(() => '')))
   // process stdout stub
   let isStdout = values[0] === 'stdout:'
-  isStdout && (values = values.slice(1))
+  if (isStdout) {
+    values = values.slice(1)
+  }
 
   let out = util.format(...values)
-  !isStdout && out && (out += '\n')
+  if (!isStdout && out) {
+    out += '\n'
+  }
+
   process.stdout.write(out)
 }
 
@@ -179,7 +191,7 @@ function staticServer (port = 8000) {
 }
 
 
-function run () {
+async function run () {
   const server = staticServer()
 
   const options = {
@@ -187,26 +199,33 @@ function run () {
     headless: true,
   }
 
-  puppeteer
-    .launch(options)
-    .then(browser => {
-      return browser.pages()
-        .then(pages => pages.pop())
-        .then(page => {
-          page.on('console', handleConsole)
-          page.on('dialog', dialog => dialog.dismiss())
-          page.on('pageerror', err => console.error(err))
+  let browser
+  try {
+    browser = await puppeteer.launch(options)
+    const pages = await browser.pages()
+    const page = pages.pop()
 
-          return page.evaluateOnNewDocument(initMocha)
-            .then(() => page.goto('http://localhost:8000/test/index.html'))
-            .then(() => page.waitForFunction(() => window.__mochaResult__, { timeout }))
-            .then(() => page.evaluate(() => window.__mochaResult__))
-            .then(() => {
-              browser.close()
-              server.close()
-            })
-        })
-    })
+    page.on('console', handleConsole)
+    page.on('dialog', dialog => dialog.dismiss())
+    page.on('pageerror', () => process.exitCode = 1)
+
+    await page.evaluateOnNewDocument(initMocha)
+    await page.goto('http://localhost:8000/test/index.html')
+    await page.waitForFunction(() => window.__mochaResult__, { timeout })
+    const result = await page.evaluate(() => window.__mochaResult__)
+
+    if (result.result.stats.failures > 0) {
+      process.exitCode = 1
+    }
+  } catch (err) {
+    console.error(err)
+    process.exitCode = 1
+  } finally {
+    if (browser) {
+      await browser.close()
+    }
+    server.close()
+  }
 }
 
 run()

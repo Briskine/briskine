@@ -1,6 +1,6 @@
 ---
-name: Enhancement request.
-about: Request some improvements for an existing feature.
+name: Enhancement request
+about: Request improvements for an existing feature.
 title: ''
 labels: enhancement
 assignees: ''
@@ -14,6 +14,6 @@ assignees: ''
 
 -
 
-### Related ProductBoard/Github issues:
+### Related GitHub issues:
 
 -

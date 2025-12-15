@@ -1,0 +1,66 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <script src="/extension-ready.js"></script>
+  </head>
+  <body>
+    <script type="module">
+      import {EditorState} from 'https://cdn.jsdelivr.net/npm/prosemirror-state@1/+esm'
+      import {EditorView} from 'https://cdn.jsdelivr.net/npm/prosemirror-view@1/+esm'
+      import {Schema, DOMParser} from 'https://cdn.jsdelivr.net/npm/prosemirror-model@1/+esm'
+      import {schema} from 'https://cdn.jsdelivr.net/npm/prosemirror-schema-basic@1/+esm'
+      import {addListNodes} from 'https://cdn.jsdelivr.net/npm/prosemirror-schema-list@1/+esm'
+      import {exampleSetup} from 'https://cdn.jsdelivr.net/npm/prosemirror-example-setup@1/+esm'
+
+      // Mix the nodes from prosemirror-schema-list into the basic schema to
+      // create a schema with list support.
+      const mySchema = new Schema({
+        nodes: addListNodes(schema.spec.nodes, 'paragraph block*', 'block'),
+        marks: schema.spec.marks
+      })
+
+      customElements.define(
+        'editor-shadow-editor',
+        class extends HTMLElement {
+          constructor() {
+            super()
+          }
+          connectedCallback () {
+            const template = `
+              <style>
+                svg {
+                  height: 1em;
+                }
+
+                .ProseMirror-menubar * {
+                  display: inline;
+                }
+              </style>
+              <link rel="stylesheet" href="./prosemirror-editor.css">
+              <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prosemirror-view@1/style/prosemirror.css">
+              <div>
+                <div id="editor"></div>
+                <div id="content"></div>
+              </div>
+            `
+            const shadowRoot = this.attachShadow({mode: 'open'})
+            shadowRoot.innerHTML = template
+
+            window.view = new EditorView(shadowRoot.querySelector('#editor'), {
+              state: EditorState.create({
+                doc: DOMParser.fromSchema(mySchema).parse(shadowRoot.querySelector('#content')),
+                plugins: exampleSetup({schema: mySchema})
+              })
+            })
+
+            window.view.dom.setAttribute('role', 'textbox')
+          }
+        }
+      )
+
+      const $shadow_element = document.createElement('editor-shadow-editor')
+      document.body.appendChild($shadow_element)
+    </script>
+  </body>
+</html>

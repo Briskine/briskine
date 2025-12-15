@@ -1,8 +1,8 @@
-import {test, expect} from '../fixtures.ts'
+import {test, expect, openPage} from '../fixtures.ts'
 
 test.describe('ContentEditable', () => {
   test.beforeEach(async ({page}) => {
-    await page.goto('/contenteditable/contenteditable.html')
+    await openPage(page, '/contenteditable/contenteditable.html')
   })
 
   test.afterEach(async ({page}) => {
