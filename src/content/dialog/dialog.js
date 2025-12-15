@@ -212,7 +212,7 @@ function Dialog (originalProps) {
     const template = templates().find((t) => t.id === id)
 
     autocomplete({
-      quicktext: template,
+      template: template,
       element: editor,
       word: word,
     })

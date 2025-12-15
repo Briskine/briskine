@@ -19,7 +19,7 @@ describe('insertTextareaTemplate', () => {
     insertTextareaTemplate({
       element: textarea,
       text: 'test',
-      quicktext: {
+      template: {
         shortcut: 't'
       },
       word: {
@@ -38,7 +38,7 @@ describe('insertTextareaTemplate', () => {
     insertTextareaTemplate({
       element: textarea,
       text: 'test',
-      quicktext: {
+      template: {
         shortcut: 't'
       },
       word: {
@@ -58,7 +58,7 @@ describe('insertTextareaTemplate', () => {
     insertTextareaTemplate({
       element: textarea,
       text: 'test',
-      quicktext: {
+      template: {
         shortcut: 't'
       },
       word: {
@@ -80,7 +80,7 @@ describe('insertTextareaTemplate', () => {
     insertTextareaTemplate({
       element: textarea,
       text: 'test',
-      quicktext: {
+      template: {
         shortcut: 't'
       },
       word: {
@@ -102,7 +102,7 @@ describe('insertTextareaTemplate', () => {
     insertTextareaTemplate({
       element: textarea,
       text: 'test',
-      quicktext: {
+      template: {
         shortcut: 't'
       },
       word: {
@@ -124,7 +124,7 @@ describe('insertTextareaTemplate', () => {
     insertTextareaTemplate({
       element: textarea,
       text: 'test',
-      quicktext: {
+      template: {
         shortcut: 't'
       },
       word: {
@@ -147,7 +147,7 @@ describe('insertTextareaTemplate', () => {
     insertTextareaTemplate({
       element: input,
       text: 'test',
-      quicktext: {
+      template: {
         shortcut: 't'
       },
       word: {
@@ -170,7 +170,7 @@ describe('insertTextareaTemplate', () => {
     insertTextareaTemplate({
       element: input,
       text: 'test',
-      quicktext: {
+      template: {
         shortcut: 't'
       },
       word: {
@@ -193,7 +193,7 @@ describe('insertTextareaTemplate', () => {
     insertTextareaTemplate({
       element: input,
       text: 'test',
-      quicktext: {
+      template: {
         shortcut: 't'
       },
       word: {

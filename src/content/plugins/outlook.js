@@ -221,8 +221,8 @@ export function getData (params) {
 async function after (params, data) {
   const editable = params.element
   const $subject = getSubjectField(editable)
-  if (params.quicktext.subject && $subject) {
-    var parsedSubject = await parseTemplate(params.quicktext.subject, data)
+  if (params.template.subject && $subject) {
+    var parsedSubject = await parseTemplate(params.template.subject, data)
     $subject.value = parsedSubject
     $subject.dispatchEvent(new Event('input', {bubbles: true}))
   }
@@ -236,17 +236,17 @@ async function after (params, data) {
   const anchorNode = selection.anchorNode
   const anchorOffset = selection.anchorOffset
 
-  if (params.quicktext.to) {
+  if (params.template.to) {
     const $to = getToContainer(editable)
-    const parsedTo = await parseTemplate(params.quicktext.to, data)
+    const parsedTo = await parseTemplate(params.template.to, data)
     if ($to && !elementContains($to, parsedTo)) {
       await updateContactField($to, parsedTo)
     }
   }
 
-  if (params.quicktext.cc) {
+  if (params.template.cc) {
     var $cc = getCcContainer(editable)
-    var parsedCc = await parseTemplate(params.quicktext.cc, data)
+    var parsedCc = await parseTemplate(params.template.cc, data)
     var $ccButton = getCcButton(editable)
     await updateSection(
       $cc,
@@ -256,9 +256,9 @@ async function after (params, data) {
     )
   }
 
-  if (params.quicktext.bcc) {
+  if (params.template.bcc) {
     const $bcc = getBccContainer(editable)
-    const parsedBcc = await parseTemplate(params.quicktext.bcc, data)
+    const parsedBcc = await parseTemplate(params.template.bcc, data)
     const $bccButton = getBccButton(editable)
     await updateSection(
       $bcc,
@@ -339,8 +339,8 @@ export default async (params = {}) => {
 
   const data = getData(params)
   const parsedTemplate = addAttachments(
-    await parseTemplate(params.quicktext.body, data),
-    params.quicktext.attachments,
+    await parseTemplate(params.template.body, data),
+    params.template.attachments,
   )
 
   insertTemplate(Object.assign({

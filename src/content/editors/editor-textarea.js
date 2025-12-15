@@ -15,7 +15,7 @@ export function insertTextareaTemplate (params = {}) {
   // if the current word matches the shortcut then remove it
   // otherwise skip it (ex: from dialog)
   let wordStart = params.word.start
-  if (params.word.text === params.quicktext.shortcut) {
+  if (params.word.text === params.template.shortcut) {
     // decrease the cursor offset with the removed text length
     cursorOffset = cursorOffset - params.word.text.length
   } else {

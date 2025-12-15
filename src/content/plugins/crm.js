@@ -31,7 +31,7 @@ export default async (params = {}) => {
     }
 
     var data = getData(params.element)
-    var parsedTemplate = await parseTemplate(params.quicktext.body, data)
+    var parsedTemplate = await parseTemplate(params.template.body, data)
 
     insertTemplate(Object.assign({
         text: parsedTemplate

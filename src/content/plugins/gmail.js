@@ -148,20 +148,20 @@ async function after (params, data) {
   // set subject only when the subject field is visible.
   // makes sure we don't break threads when replying.
   if (
-    params.quicktext.subject
+    params.template.subject
     && $subject
     && $subject.getBoundingClientRect().width
   ) {
-    const parsedSubject = await parseTemplate(params.quicktext.subject, data)
+    const parsedSubject = await parseTemplate(params.template.subject, data)
     $subject.value = parsedSubject
   }
 
   const $recipients = $parent.querySelector('.aoD.hl')
   if (
     (
-      params.quicktext.to ||
-      params.quicktext.cc ||
-      params.quicktext.bcc
+      params.template.to ||
+      params.template.cc ||
+      params.template.bcc
     ) &&
     $recipients
   ) {
@@ -171,8 +171,8 @@ async function after (params, data) {
     $recipients.dispatchEvent(new MouseEvent('click', {bubbles: true}))
   }
 
-  if (params.quicktext.to) {
-    const parsedTo = await parseTemplate(params.quicktext.to, data)
+  if (params.template.to) {
+    const parsedTo = await parseTemplate(params.template.to, data)
     const $toField = extraField($parent, 'to')
     if ($toField) {
       $toField.value = parsedTo
@@ -186,8 +186,8 @@ async function after (params, data) {
   }
 
   for (const fieldName of ['cc', 'bcc']) {
-    if (params.quicktext[fieldName]) {
-      const parsedField = await parseTemplate(params.quicktext[fieldName], data)
+    if (params.template[fieldName]) {
+      const parsedField = await parseTemplate(params.template[fieldName], data)
       $parent.querySelector(buttonSelectors[fieldName]).dispatchEvent(new MouseEvent('click', {bubbles: true}))
       const $field = extraField($parent, fieldName)
       if ($field) {
@@ -224,8 +224,8 @@ export default async (params = {}) => {
 
     var data = getData(params)
     const parsedTemplate = addAttachments(
-      await parseTemplate(params.quicktext.body, data),
-      params.quicktext.attachments
+      await parseTemplate(params.template.body, data),
+      params.template.attachments
     )
 
     insertTemplate(Object.assign({
@@ -237,8 +237,8 @@ export default async (params = {}) => {
     // from field support, when using multiple aliases.
     // set the from field before getting data,
     // to have up-to-date data.
-    if (params.quicktext.from) {
-        setFromField(params.element, params.quicktext.from)
+    if (params.template.from) {
+        setFromField(params.element, params.template.from)
     }
 
     return true

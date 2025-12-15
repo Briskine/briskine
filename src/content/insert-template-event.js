@@ -9,7 +9,7 @@ function insertTemplate (e) {
   autocomplete({
     element: e.target,
     word: word,
-    quicktext: e.detail,
+    template: e.detail,
   })
 }
 

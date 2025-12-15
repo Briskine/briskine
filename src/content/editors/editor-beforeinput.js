@@ -24,7 +24,7 @@ export async function insertBeforeInputTemplate (params = {}) {
   // using custom synthetic beforeinput events.
   // Slate and Lexical handle beforeinput events with stadard inputType's
   // https://github.com/ianstormtaylor/slate/blob/16ff44d0566889a843a346215d3fb7621fc0ed8c/packages/slate-react/src/components/editable.tsx#L193
-  if (params.word.text === params.quicktext.shortcut) {
+  if (params.word.text === params.template.shortcut) {
     // select the shortcut
     const selection = getSelection(params.element)
     const range = selection.getRangeAt(0)

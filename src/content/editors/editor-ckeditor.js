@@ -11,7 +11,7 @@ export function isCkEditor (element) {
 export function insertCkEditorTemplate (params = {}) {
   let removeShortcut = false
   // delete shortcut
-  if (params.word.text === params.quicktext.shortcut) {
+  if (params.word.text === params.template.shortcut) {
     removeShortcut = true
   }
 

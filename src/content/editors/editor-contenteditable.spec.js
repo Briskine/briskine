@@ -24,8 +24,8 @@ describe('editor ContentEditable', () => {
         end: 0,
         text: ''
       },
-      quicktext: {
-        shorcut: ''
+      template: {
+        shortcut: ''
       }
     })
 
@@ -45,8 +45,8 @@ describe('editor ContentEditable', () => {
         end: 0,
         text: ''
       },
-      quicktext: {
-        shorcut: ''
+      template: {
+        shortcut: ''
       }
     })
 
@@ -57,4 +57,3 @@ describe('editor ContentEditable', () => {
     editable.remove()
   })
 })
-

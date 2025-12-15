@@ -18,6 +18,7 @@ let bubbleInstance = null
 let activeTextfield = null
 
 const maxHostWidthCssVar = '--max-host-width'
+const bubbleTopCssVar = '--bubble-top'
 
 export const bubbleTagName = `b-bubble-${Date.now().toString(36)}`
 
@@ -253,6 +254,40 @@ export function destroy () {
 const textfieldMinWidth = 100
 const textfieldMinHeight = 25
 
+// visible siblings that take up space
+function hasVisibleSiblings (elem) {
+  return Array.from(elem.parentElement.childNodes).some((node) => {
+    // direct non-empty text nodes will trigger flex/grid layout
+    if (
+      node.nodeType === Node.TEXT_NODE
+      && node.nodeValue.trim() !== ''
+    ) {
+      return true
+    }
+
+    if (
+      // allow comments and other invisible node types
+      node.nodeType !== Node.ELEMENT_NODE
+      // exclude the editable node
+      || node === elem
+      // exclude the bubble, in case we already moved it to the parent
+      || node === bubbleInstance
+      // exclude hidden nodes
+      || node.checkVisibility() === false
+    ) {
+      return false
+    }
+
+    // exclude absolute/sticky/fixed positioned nodes
+    const nodeStyles = window.getComputedStyle(node)
+    if (!['static', 'relative'].includes(nodeStyles.position)) {
+      return false
+    }
+
+    return true
+  })
+}
+
 function isValidTextfield (elem) {
   if (
     // is html element
@@ -264,15 +299,23 @@ function isValidTextfield (elem) {
     // the parent is not the body
     && elem.parentElement !== document.body
   ) {
-    // disable for flex and grid
+    // sometimes disable for flex and grid parent
     const parentStyles = window.getComputedStyle(elem.parentElement)
-    if (
-      // parent is flex or grid
-      ['flex', 'grid'].includes(parentStyles.display)
-      // has more than 1 child, except the bubble (in case we already added it to the parent)
-      && Array.from(elem.parentElement.childNodes).filter((n) => n !== bubbleInstance).length > 1
-    ) {
-      return false
+    if (['flex', 'grid'].includes(parentStyles.display)) {
+      // flex-direction=row is not supported
+      if (
+        parentStyles.display === 'flex'
+        && parentStyles.flexDirection === 'row'
+      ) {
+        return false
+      }
+
+      // check all editable element siblings,
+      // because we might have a parent flex/grid container,
+      // but with the editable element filling the entire container.
+      if (hasVisibleSiblings(elem)) {
+        return false
+      }
     }
 
     // check if the element is big enough
@@ -308,6 +351,9 @@ async function showBubble (textfield) {
   // set max-width to the width of textfield,
   // in case the container of the textfield is larger than the textfield.
   bubbleInstance.style.setProperty(maxHostWidthCssVar, textfieldStyles.width)
+
+  // move bubble further down, in case the textfield uses a top margin
+  bubbleInstance.style.setProperty(bubbleTopCssVar, textfieldStyles.marginTop)
 
   const maxWidthProperty = textfieldStyles.boxSizing === 'border-box' ? 'borderBoxSize' : 'contentBoxSize'
 

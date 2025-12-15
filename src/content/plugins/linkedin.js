@@ -1,4 +1,4 @@
-/* Linkedin plugin
+/* LinkedIn plugin
  */
 
 import parseTemplate from '../utils/parse-template.js'
@@ -12,14 +12,14 @@ import {addAttachments} from '../attachments/attachments.js'
 import getSelection from '../selection.js'
 
 async function before (params, data) {
-  const $parent = params.element.closest('.msg-overlay-conversation-bubble')
+  const $parent = params.element.closest('[role=dialog]')
 
   if ($parent) {
     // set subject field value.
     // subject is only available for inMail messaging.
     const $subjectField = $parent.querySelector('[name=subject]')
-    if (params.quicktext.subject && $subjectField) {
-      const parsedSubject = await parseTemplate(params.quicktext.subject, data)
+    if (params.template.subject && $subjectField) {
+      const parsedSubject = await parseTemplate(params.template.subject, data)
       $subjectField.value = parsedSubject
     }
   }
@@ -28,9 +28,7 @@ async function before (params, data) {
 function getToName (element) {
   // get the contact name from messages
   const messageThreadSelectors = [
-    // 1. Sales Navigator Connect popup
-    // 2. Message thread in message bubble/dialog/popup
-    // 3. inMail message popup
+    // message popup
     '[role=dialog]',
     // organization inbox thread
     '.org-inbox-thread__container',
@@ -48,8 +46,6 @@ function getToName (element) {
     // 1. inMail message header
     // 2. Message header in messaging popup (at the top, when complete thread is loaded)
     '.artdeco-entity-lockup__title > *:first-child',
-    // Sales Navigator Connect popup
-    '.artdeco-entity-lockup__title',
     // Contact name from full-page Messaging view title, when contact hasn't replied yet
     // (or first message is above fold and lazy loaded).
     '.msg-entity-lockup__entity-title',
@@ -57,7 +53,7 @@ function getToName (element) {
     '.artdeco-pill',
     // contact name in feed post
     '.feed-shared-actor__name',
-    // contact name in bubble/dialog title
+    // contact name in message popup title
     '.msg-overlay-bubble-header__title',
   ]
 
@@ -65,11 +61,8 @@ function getToName (element) {
   // check if a message thread is visible,
   // otherwise we're in a non-messaging textfield.
   if ($thread) {
-    // get the contacts from the thread, that is not ours
-    const $contacts = $thread.querySelectorAll(contactNameSelectors.join(','))
-    if ($contacts.length) {
-      // get the current messaging contact
-      const $contact = $contacts.item($contacts.length - 1)
+    const $contact = $thread.querySelector(contactNameSelectors.join(','))
+    if ($contact) {
       // make sure we're not getting "New message" from the message dialog title.
       // in case the other selectors didn't match for new messages.
       const contactText = $contact.innerText || ''
@@ -110,12 +103,6 @@ export function getData (params) {
   const $fromContainer = doc.querySelector('.global-nav__me-photo')
   if ($fromContainer && $fromContainer.getAttribute('alt')) {
     fromName = $fromContainer.getAttribute('alt')
-  }
-
-  // Sales Navigator global profile
-  const $salesFromContainer = doc.querySelector('[data-control-name="view_user_menu_from_app_header"]')
-  if ($salesFromContainer) {
-    fromName = $salesFromContainer.innerText
   }
 
   vars.from = createContact({name: fromName})
@@ -169,10 +156,11 @@ function isActive () {
   }
 
   activeCache = false
-  var linkedinUrl = 'www.linkedin.com'
-
-  // trigger the extension based on url
-  if (window.location.hostname === linkedinUrl) {
+  if (
+    window.location.hostname === 'www.linkedin.com'
+    // exclude LinkedIn Sales Navigator
+    && !window.location.pathname.startsWith('/sales/')
+  ) {
     activeCache = true
   }
 
@@ -195,8 +183,8 @@ export default async (params = {}) => {
 
   const data = getData(params)
   const templateWithAttachments = addAttachments(
-    await parseTemplate(params.quicktext.body, data),
-    params.quicktext.attachments,
+    await parseTemplate(params.template.body, data),
+    params.template.attachments,
   )
 
   // Quill is used for posts and comments

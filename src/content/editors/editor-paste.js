@@ -26,7 +26,7 @@ export function isPasteEditor (element) {
 export function insertPasteTemplate (params = {}) {
   return request('paste-insert', {
     word: params.word,
-    quicktext: params.quicktext,
+    template: params.template,
     text: params.text,
   })
 }
@@ -37,7 +37,7 @@ export async function pageInsertPasteTemplate (params = {}) {
   // we can't pass the element instance to the page script
   const element = getActiveElement()
   // select shortcut
-  if (params.word.text === params.quicktext.shortcut) {
+  if (params.word.text === params.template.shortcut) {
     const selection = getSelection(element)
     const range = selection.getRangeAt(0)
     const focusNode = selection.focusNode

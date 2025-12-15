@@ -92,8 +92,8 @@ export default async (params = {}) => {
 
   var data = getData(params)
   const parsedTemplate = addAttachments(
-    await parseTemplate(params.quicktext.body, data),
-    params.quicktext.attachments,
+    await parseTemplate(params.template.body, data),
+    params.template.attachments,
   )
 
   insertTemplate(Object.assign({

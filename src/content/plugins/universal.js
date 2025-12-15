@@ -8,8 +8,8 @@ import {addAttachments} from '../attachments/attachments.js'
 
 export default async (params = {}) => {
   const parsedTemplate = addAttachments(
-    await parseTemplate(params.quicktext.body, {}),
-    params.quicktext.attachments,
+    await parseTemplate(params.template.body, {}),
+    params.template.attachments,
   )
   const updatedParams = Object.assign({text: parsedTemplate}, params)
 

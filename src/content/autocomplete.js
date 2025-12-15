@@ -6,6 +6,7 @@ import {register, run as runPlugins} from './plugin.js'
 import gmailPlugin from './plugins/gmail.js'
 import gmailMobilePlugin from './plugins/gmail-mobile.js'
 import linkedinPlugin from './plugins/linkedin.js'
+import linkedinSalesNavigatorPlugin from './plugins/linkedin-sales-navigator.js'
 import outlookPlugin from './plugins/outlook.js'
 import facebookPlugin from './plugins/facebook.js'
 import zendeskPlugin from './plugins/zendesk.js'
@@ -21,6 +22,7 @@ import getSelection from './selection.js'
 register(gmailPlugin)
 register(gmailMobilePlugin)
 register(linkedinPlugin)
+register(linkedinSalesNavigatorPlugin)
 register(outlookPlugin)
 register(facebookPlugin)
 register(zendeskPlugin)
@@ -90,6 +92,6 @@ export function getSelectedWord (params) {
 
 export async function autocomplete (params) {
   await runPlugins(Object.assign({}, params))
-  await updateTemplateStats(params.quicktext)
+  await updateTemplateStats(params.template)
   return params
 }

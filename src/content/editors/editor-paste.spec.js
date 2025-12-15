@@ -80,7 +80,7 @@ describe('editor Paste', () => {
         end: 0,
         text: '',
       },
-      quicktext: {},
+      template: {},
     })
 
     // give it a second to parse the template
@@ -104,7 +104,7 @@ describe('editor Paste', () => {
         end: 0,
         text: '',
       },
-      quicktext: {},
+      template: {},
     })
 
     // give it a second to parse the template
@@ -128,7 +128,7 @@ describe('editor Paste', () => {
         end: 0,
         text: '',
       },
-      quicktext: {},
+      template: {},
     })
 
     // give it a second to parse the template
@@ -152,7 +152,7 @@ describe('editor Paste', () => {
         end: 0,
         text: '',
       },
-      quicktext: {},
+      template: {},
     })
 
     // give it a second to parse the template
@@ -176,7 +176,7 @@ describe('editor Paste', () => {
         end: 0,
         text: '',
       },
-      quicktext: {},
+      template: {},
     })
 
     // give it a second to parse the template

@@ -7,6 +7,7 @@
 
 :host {
   --bubble-size: 28px;
+  --bubble-top: 0px;
   --bubble-margin: 5px;
   --max-host-width: auto;
   --color-background: 229, 229, 229;
@@ -37,11 +38,19 @@
   @starting-style {
     opacity: 0;
   }
+
+  container-type: scroll-state;
+
+  @container scroll-state(stuck: top) {
+    .b-bubble {
+      top: var(--bubble-margin);
+    }
+  }
 }
 
 .b-bubble {
   position: absolute;
-  top: var(--bubble-margin);
+  top: calc(var(--bubble-top) + var(--bubble-margin));
   right: var(--bubble-margin);
 
   appearance: none;
