@@ -62,7 +62,13 @@ function getToName (element) {
   // check if a message thread is visible,
   // otherwise we're in a non-messaging textfield.
   if ($thread) {
-    const $contact = $thread.querySelector(contactNameSelectors.join(','))
+    let $contact
+    // find the first element that matches,
+    // where selector ordering in the array matters.
+    contactNameSelectors.find((selector) => {
+      $contact = $thread.querySelector(selector)
+      return $contact
+    })
 
     if ($contact) {
       // make sure we're not getting "New message" from the message dialog title.

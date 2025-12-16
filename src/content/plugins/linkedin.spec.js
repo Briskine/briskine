@@ -18,7 +18,7 @@ async function page (src = '') {
   return promise
 }
 
-describe.only('linkedin', () => {
+describe('linkedin', () => {
   it('should get data in connect popup', async () => {
     const iframe = await page('pages/linkedin/linkedin-connect.html')
     const element = iframe.contentDocument.querySelector('textarea')
