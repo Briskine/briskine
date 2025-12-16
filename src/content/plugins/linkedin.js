@@ -58,10 +58,12 @@ function getToName (element) {
   ]
 
   const $thread = element.closest(messageThreadSelectors.join(','))
+
   // check if a message thread is visible,
   // otherwise we're in a non-messaging textfield.
   if ($thread) {
     const $contact = $thread.querySelector(contactNameSelectors.join(','))
+
     if ($contact) {
       // make sure we're not getting "New message" from the message dialog title.
       // in case the other selectors didn't match for new messages.
@@ -96,11 +98,18 @@ export function getData (params) {
     return vars
   }
 
-  const doc = params.element.ownerDocument
+  // get document or shadowRoot
+  const parent = params.element.getRootNode()
 
   let fromName = ''
-  // global profile
-  const $fromContainer = doc.querySelector('.global-nav__me-photo')
+  const $profilePictureSelectors = [
+    // global menu
+    '.global-nav__me-photo',
+    // messaging list popup title
+    '.presence-entity__image',
+  ]
+
+  const $fromContainer = parent.querySelector($profilePictureSelectors.join(','))
   if ($fromContainer && $fromContainer.getAttribute('alt')) {
     fromName = $fromContainer.getAttribute('alt')
   }
