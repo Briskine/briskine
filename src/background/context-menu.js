@@ -259,8 +259,7 @@ async function setupContextMenus () {
   })
 
   menus.push({
-    contexts: ['editable'],
-    documentUrlPatterns: documentUrlPatterns,
+    contexts: ['all'],
     title: 'Insert template',
     parentId: parentMenu,
     id: insertTemplatesMenu,
