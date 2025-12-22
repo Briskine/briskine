@@ -22,7 +22,6 @@ const templatesLimit = 30
 const documentUrlPatterns = [
   'https://*/*',
   'http://*/*',
-  'about:blank',
 ]
 
 function getSelectedText () {
@@ -259,7 +258,8 @@ async function setupContextMenus () {
   })
 
   menus.push({
-    contexts: ['all'],
+    contexts: ['editable'],
+    documentUrlPatterns: documentUrlPatterns,
     title: 'Insert template',
     parentId: parentMenu,
     id: insertTemplatesMenu,
@@ -267,8 +267,6 @@ async function setupContextMenus () {
 
   templates.slice(0, templatesLimit).forEach((template) => {
     menus.push({
-      contexts: ['editable'],
-      documentUrlPatterns: documentUrlPatterns,
       title: `${template.title}${template.shortcut ? ` (${template.shortcut})` : ''}`,
       parentId: insertTemplatesMenu,
       id: template.id,
