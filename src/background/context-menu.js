@@ -20,8 +20,7 @@ const toggleBubbleMenu = 'toggleBubble'
 const templatesLimit = 30
 // context menus will show up on blocklisted sites as well
 const documentUrlPatterns = [
-  'https://*/*',
-  'http://*/*',
+  '<all_urls>',
 ]
 
 function getSelectedText () {
