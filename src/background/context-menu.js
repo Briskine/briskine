@@ -267,6 +267,8 @@ async function setupContextMenus () {
 
   templates.slice(0, templatesLimit).forEach((template) => {
     menus.push({
+      contexts: ['editable'],
+      documentUrlPatterns: documentUrlPatterns,
       title: `${template.title}${template.shortcut ? ` (${template.shortcut})` : ''}`,
       parentId: insertTemplatesMenu,
       id: template.id,
