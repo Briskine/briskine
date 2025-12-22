@@ -214,4 +214,32 @@ describe('linkedin', () => {
 
     iframe.remove()
   })
+
+  it('should get data in new message popup from connections page', async () => {
+    const iframe = await page('pages/linkedin/linkedin-connections-message.html')
+    const element = iframe.contentDocument.querySelector('#interop-outlet').shadowRoot.querySelector('[contenteditable]')
+    const data = getData({
+      element: element,
+    })
+
+    expect(data).to.deep.equal({
+      from: {
+        name: 'Jane Briskine',
+        first_name: 'Jane',
+        last_name: 'Briskine',
+        email: ''
+      },
+      to: [
+        {
+          name: 'Michael Briskine',
+          first_name: 'Michael',
+          last_name: 'Briskine',
+          email: ''
+        }
+      ],
+      subject: '',
+    })
+
+    iframe.remove()
+  })
 })
