@@ -2,14 +2,11 @@
  */
 
 import parseTemplate from '../utils/parse-template.js'
-import {isQuill} from '../editors/editor-quill.js'
 import {insertTemplate} from '../editors/editor-universal.js'
-import {insertContentEditableTemplate} from '../editors/editor-contenteditable.js'
 import {insertPasteTemplate} from '../editors/editor-paste.js'
 import htmlToText from '../utils/html-to-text.js'
 import createContact from '../utils/create-contact.js'
 import {addAttachments} from '../attachments/attachments.js'
-import getSelection from '../selection.js'
 
 async function before (params, data) {
   const $parent = params.element.closest('[role=dialog]')
@@ -128,42 +125,6 @@ export function getData (params) {
   return vars
 }
 
-// zero-width whitespace
-// required for multi-line templates in posts/comments/quill
-const specialChar = '\u200b'
-
-function focusSpecialCharacter(editorNode) {
-  const lastSpecialCharNode = Array.from(editorNode.children).reverse().find((node) => {
-    // trim textContent in case we add spaces after the template shortcut
-    const text = (node.textContent || '').trim()
-    const specialCharPosition = text.indexOf(specialChar)
-
-    // find the node where the special char is at the end
-    return (
-      specialCharPosition !== -1 &&
-      specialCharPosition === text.length - 1
-    )
-  })
-
-  // node should always be available,
-  // but in case we don't find it.
-  if (lastSpecialCharNode) {
-    // remove the special char from the node,
-    // so we don't have issues later with finding the newest inserted one
-    // (in case we insert multiple multi-line templates).
-    lastSpecialCharNode.textContent = lastSpecialCharNode.textContent.replace(new RegExp(specialChar, 'g'), '')
-
-    // place the focus at the node with the special character
-    const range = document.createRange()
-    range.selectNodeContents(lastSpecialCharNode)
-    range.collapse()
-
-    const selection = getSelection()
-    selection.removeAllRanges()
-    selection.addRange(range)
-  }
-}
-
 var activeCache = null
 function isActive () {
   if (activeCache !== null) {
@@ -202,36 +163,6 @@ export default async (params = {}) => {
     params.template.attachments,
   )
 
-  // Quill is used for posts and comments
-  if (isQuill(params.element)) {
-    // LinkedIn uses a customized Quill editor for posts.
-    // Inserting text with newlines causes each block/line to be split into
-    // multiple paragraph tags.
-    // This causes our range object to change after we insert the text,
-    // and places the focus at the start of the editor.
-    // Since the inserted dom is changed, we place a special character
-    // at the end of the template, so we can later find it and place focus there
-    // (at the end of the inserted template).
-
-    // parsed template with special char
-    const templateWithSpecialChar = `${htmlToText(templateWithAttachments)}${specialChar}`
-
-    insertContentEditableTemplate({
-      text: templateWithSpecialChar,
-      ...params,
-    })
-
-    // wait for the LinkedIn editor to restructure the inserted template nodes.
-    const editorUpdate = new MutationObserver((mutationsList, observer) => {
-      // find the previously-placed special character in the editor contents.
-      focusSpecialCharacter(params.element)
-      observer.disconnect()
-    })
-    editorUpdate.observe(params.element, {childList: true, subtree: true})
-
-    return true
-  }
-
   // messaging, ember editor.
   // separate handling required for multi-line templates.
   if (isMessageEditor(params.element)) {
@@ -254,5 +185,6 @@ export default async (params = {}) => {
     text: templateWithAttachments,
     ...params,
   })
+
   return true
 }
