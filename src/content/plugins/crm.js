@@ -1,4 +1,5 @@
 /* CRM plugin
+ * TODO DEPRECATED
  */
 
 import parseTemplate from '../utils/parse-template.js'
