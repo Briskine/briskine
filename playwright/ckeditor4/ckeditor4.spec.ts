@@ -14,7 +14,7 @@ test.describe('CKEditor4', () => {
     const textbox = frame.getByRole('textbox')
     await textbox.fill('kr')
     await textbox.press('Tab')
-    await expect(textbox).toHaveText('Kind regards,.')
+    await expect(textbox).toHaveText('Kind regards,\n.', {useInnerText: true})
   })
 
   test('should insert template from dialog', async ({page}) => {

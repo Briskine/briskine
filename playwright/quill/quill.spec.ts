@@ -1,6 +1,6 @@
 import {test, expect, openPage} from '../fixtures.ts'
 
-test.describe.only('Quill', () => {
+test.describe('Quill', () => {
   test.beforeEach(async ({page}) => {
     await openPage(page, '/quill/quill.html')
   })

@@ -13,7 +13,7 @@ test.describe('ProseMirror', () => {
     const textbox = page.getByRole('textbox')
     await textbox.pressSequentially('kr')
     await textbox.press('Tab')
-    await expect(textbox).toHaveText('Kind regards,.')
+    await expect(textbox).toHaveText('Kind regards,\n.', {useInnerText: true})
   })
 
   test('should insert template from dialog', async ({page}) => {
