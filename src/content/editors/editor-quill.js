@@ -1,6 +1,5 @@
-/* Quill rich text editor
- * TODO docs v1 - linkedin
- * v2 paste
+/* Quill rich text editor.
+ * Supports v1 (used by LinkedIn on posts and comments) and v2.
  * https://quilljs.com/
  */
 
@@ -15,11 +14,15 @@ export function isQuill (element) {
 export async function pageInsertQuillTemplate (params = {}) {
   // we can't pass the element instance to the page script
   const element = getActiveElement()
-  const container = element.closest('.ql-container')
+  // quill v1 exposes the quill instance on the container
+  const container = element?.closest?.('.ql-container')
   const quill = container?.__quill
 
-  // select shortcut
-  if (params.word.text === params.template.shortcut) {
+  // remove shortcut
+  if (
+    params.template.shortcut
+    && params.template.shortcut === params.word.text
+  ) {
     const selection = getSelection(element)
     const range = selection.getRangeAt(0)
     const focusNode = selection.focusNode
@@ -32,17 +35,21 @@ export async function pageInsertQuillTemplate (params = {}) {
     await new Promise((resolve) => setTimeout(resolve))
   }
 
+  // only support plain text
   const plainText = htmlToText(params.text)
 
   if (quill) {
-    // TODO quill v1
+    // quill v1,
+    // use quill instance methods.
     const quillRange = quill.getSelection()
     quill.insertText(quillRange.index, plainText)
   } else {
-    // TODO quill v2
+    // quill v2,
+    // use paste insert.
+    // needs to be run in page context,
+    // otherwise Firefox won't trigger the event.
     const e = new ClipboardEvent('paste', {
       clipboardData: new DataTransfer(),
-      // required for draft.js
       bubbles: true,
     })
     // set the data on the event, instead of a separate DataTransfer instance.
