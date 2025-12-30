@@ -41,7 +41,7 @@ export async function pageInsertQuillTemplate (params = {}) {
   if (quill) {
     // quill v1
     const quillRange = quill.getSelection()
-    if (trustedTypes?.defaultPolicy) {
+    if (window?.trustedTypes?.defaultPolicy) {
       // when we have a default trusted types policy (e.g., LinkedIn),
       // only insert plain text,
       // because the template html will most probably include invalid elements.
