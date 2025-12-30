@@ -54,8 +54,8 @@ export async function pageInsertQuillTemplate (params = {}) {
     })
     // set the data on the event, instead of a separate DataTransfer instance.
     // otherwise Firefox sends an empty DataTransfer object.
-    e.clipboardData.setData('text/html', params.text)
     e.clipboardData.setData('text/plain', plainText)
+    e.clipboardData.setData('text/html', params.text)
     element.dispatchEvent(e)
   }
 }

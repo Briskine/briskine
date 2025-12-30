@@ -64,4 +64,12 @@ describe('htmlToText', () => {
   it('should convert &nbsp; to whitespace in plain text', () => {
     expect(htmlToText('Hello &nbsp;,')).equal('Hello \u00a0,')
   })
+
+  it('should convert broken html to plain text', () => {
+    expect(htmlToText('</div>Hello,</div>')).equal('Hello,')
+  })
+
+  it('should convert html with single comment to plain text', () => {
+    expect(htmlToText('<!-- comment -->Hello,')).equal('Hello,')
+  })
 })

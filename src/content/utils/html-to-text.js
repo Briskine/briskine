@@ -17,22 +17,23 @@ const parserOptions = {
 
 const htmlToTextConverter = compile(parserOptions)
 
+// very naive html-in-string check,
+// so we can match broken html which doesn't result in any real nodes,
+// and also not use template or DOMParser,
+// because the LinkedIn sanitizer overwrites globals.
 function isHtml (html = '') {
-  // always true in service worker
-  if (typeof document === 'undefined') {
-    return true
+  if (
+    // if it contains the &nbsp; entity,
+    // used for consecutive spaces,
+    // we need to convert it to whitespace.
+    !html.includes('&nbsp;')
+    && !html.includes('<')
+    && !html.includes('>')
+  ) {
+    return false
   }
 
-  // if it contains the &nbsp; entity,
-  // used for consecutive spaces,
-  // we need to convert it to whitespace.
-  if (html.includes('&nbsp;')) {
-    return true
-  }
-
-  const template = document.createElement('template')
-  template.innerHTML = html
-  return Boolean(template.content.children.length)
+  return true
 }
 
 export default function htmlToText (html) {

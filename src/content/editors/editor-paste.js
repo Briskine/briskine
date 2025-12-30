@@ -7,6 +7,8 @@
  * Draft.js rich text editor framework
  * https://draftjs.org/
  *
+ * LinkedIn message editor
+ *
  */
 
 import htmlToText from '../utils/html-to-text.js'
@@ -20,6 +22,8 @@ export function isPasteEditor (element) {
     element.classList.contains('ProseMirror')
     // draft.js
     || element.querySelector('[data-contents]')
+    // linkedin message editor
+    || element.classList.contains('msg-form__contenteditable')
   )
 }
 
@@ -60,7 +64,7 @@ export async function pageInsertPasteTemplate (params = {}) {
   })
   // set the data on the event, instead of a separate DataTransfer instance.
   // otherwise Firefox sends an empty DataTransfer object.
-  e.clipboardData.setData('text/html', params.text)
   e.clipboardData.setData('text/plain', plainText)
+  e.clipboardData.setData('text/html', params.text)
   element.dispatchEvent(e)
 }

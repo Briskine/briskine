@@ -3,8 +3,6 @@
 
 import parseTemplate from '../utils/parse-template.js'
 import {insertTemplate} from '../editors/editor-universal.js'
-import {insertPasteTemplate} from '../editors/editor-paste.js'
-import htmlToText from '../utils/html-to-text.js'
 import createContact from '../utils/create-contact.js'
 import {addAttachments} from '../attachments/attachments.js'
 
@@ -143,15 +141,6 @@ function isActive () {
   return activeCache
 }
 
-function isMessageEditor (element) {
-  return (
-    element &&
-    element.getAttribute('contenteditable') === 'true' &&
-    element.getAttribute('role') === 'textbox' &&
-    !element.classList.contains('ql-editor')
-  )
-}
-
 export default async (params = {}) => {
   if (!isActive()) {
     return false
@@ -163,22 +152,7 @@ export default async (params = {}) => {
     params.template.attachments,
   )
 
-  // messaging, ember editor.
-  // separate handling required for multi-line templates.
-  if (isMessageEditor(params.element)) {
-    await before(params, data)
-
-    insertPasteTemplate({
-      // send only plain text to the paste editor.
-      // if the template contains html comments,
-      // LinkedIn inserts the complete html markup.
-      // LinkedIn messages support only plain text anyway.
-      text: htmlToText(templateWithAttachments),
-      ...params,
-    })
-
-    return true
-  }
+  await before(params, data)
 
   // generic editor, including textareas
   insertTemplate({
