@@ -19,8 +19,9 @@ const htmlToTextConverter = compile(parserOptions)
 
 // very naive html-in-string check,
 // so we can match broken html which doesn't result in any real nodes,
-// and also not use template or DOMParser,
-// because the LinkedIn sanitizer overwrites globals.
+// and also not parse the original html on the page
+// (in a virtual node, template element, or DOMParser)
+// because the LinkedIn sanitizer uses trusted types.
 function isHtml (html = '') {
   if (
     // if it contains the &nbsp; entity,
