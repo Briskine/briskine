@@ -16,6 +16,7 @@ export async function pageInsertQuillTemplate (params = {}) {
   const element = getActiveElement()
   // quill v1 exposes the quill instance on the container
   const container = element?.closest?.('.ql-container')
+  // private __quill property can only be accessed in a page script
   const quill = container?.__quill
 
   // remove shortcut
