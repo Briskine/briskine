@@ -4,43 +4,54 @@ import browser from 'webextension-polyfill'
 
 import debug from './store-debug.js'
 
-function sendEvent (data) {
+// send message to popup
+async function sendToPopup (params = {}) {
+  try {
+    await browser.runtime.sendMessage(params)
+  } catch (err) {
+    if (
+      err.message
+      && err.message === 'Could not establish connection. Receiving end does not exist.'
+    ) {
+      // popup is not loaded
+      return
+    }
+
+    throw err
+  }
+}
+
+// send message to content scripts in all tabs
+async function sendToContent (params = {}) {
+  const manifest = browser.runtime.getManifest()
+  const contentScripts = manifest.content_scripts[0]
+
+  const tabs = await browser.tabs.query({
+    url: contentScripts.matches,
+    discarded: false,
+  })
+
+  return tabs.map((tab) => browser.tabs.sendMessage(tab.id, params))
+}
+
+async function sendEvent (data) {
   const params = {
     type: 'trigger',
     data: data,
   }
 
   // send trigger message to client store
-  return Promise
-    .allSettled([
-      // send message to popup
-      browser.runtime.sendMessage(params)
-        .catch((err) => {
-          if (err.message && err.message === 'Could not establish connection. Receiving end does not exist.') {
-            // popup is not loaded
-            return
-          }
+  const results = await Promise.allSettled([
+    sendToPopup(params),
+    sendToContent(params),
+  ])
 
-          throw err
-        }),
-      // send message to content script
-      browser.tabs.query({discarded: false}).then((tabs) => {
-        return tabs
-          .filter((tab) => tab.url.includes('http://') || tab.url.includes('https://'))
-          .map((tab) => browser.tabs.sendMessage(tab.id, params))
-      })
-    ])
-    .then((results) => {
-      results.forEach((result) => {
-        if (result.status === 'rejected') {
-          debug(['trigger', params.data.name, result], 'error')
-        }
-      })
-
-      return
-    })
+  results.forEach((result) => {
+    if (result.status === 'rejected') {
+      debug(['trigger', params.data.name, result], 'error')
+    }
+  })
 }
-
 
 let queue = []
 let timer = null
