@@ -389,7 +389,7 @@ export async function getSignedInUser () {
       badgeUpdate(false)
       clearDataCache()
       await setSignedInUser({})
-      trigger('logout', {}, 0)
+      trigger('logout', {})
     }
   }
 
@@ -513,7 +513,7 @@ export function signin (params = {}) {
       return signinWithToken(res.token)
     })
     .then(() => {
-      return trigger('login', {}, 0)
+      return trigger('login', {})
     })
     .catch((err) => {
       return signinError(err)
@@ -544,7 +544,7 @@ export function getSession () {
         // auto-login if not logged-in
         return signinWithToken(res.token)
           .then(() => {
-            return trigger('login', {}, 0)
+            return trigger('login', {})
           })
       }
 
@@ -558,7 +558,7 @@ export async function logout () {
 
   badgeUpdate(false)
   clearDataCache()
-  trigger('logout', {}, 0)
+  trigger('logout', {})
 
   return request(`${config.functionsUrl}/api/1/logout`, {
       method: 'POST'
