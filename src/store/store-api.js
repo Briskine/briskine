@@ -188,6 +188,7 @@ async function updateCache (params = {}) {
   })
 
   const eventName = params.collection.includes('templates') ? 'templates-updated' : `${params.collection}-updated`
+  // TODO merge all templates in cache when triggering for templates
   trigger(eventName, params.data)
 
   await setExtensionData({
@@ -451,6 +452,7 @@ export function getTemplates () {
       return Promise.all(templateCollections)
         .then((res) => {
           // merge and de-duplication
+          // TODO de-duplication is no longer needed after query changes
           return Object.assign({}, ...res)
         })
         .then((templates) => {

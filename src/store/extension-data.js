@@ -20,6 +20,8 @@ export async function getExtensionData () {
   }
 }
 
+let debouncedTrigger
+
 export async function setExtensionData (params = {}) {
   const data = await browser.storage.local.get(extensionDataKey)
   // merge existing data with defaults and new data
@@ -33,5 +35,10 @@ export async function setExtensionData (params = {}) {
   dataWrap[extensionDataKey] = newData
   await browser.storage.local.set(dataWrap)
 
-  trigger('extension-data-updated', data)
+  // debounce the event trigger,
+  // to reduce the number of events we handle on the receiving end.
+  clearTimeout(debouncedTrigger)
+  debouncedTrigger = setTimeout(() => {
+    trigger('extension-data-updated', newData)
+  }, 1000)
 }
