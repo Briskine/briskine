@@ -12,29 +12,26 @@ const defaultExtensionData = {
   bubbleAllowlist: [],
 }
 
-export function getExtensionData () {
-  return browser.storage.local.get(extensionDataKey)
-    .then((data) => {
-      return Object.assign({}, defaultExtensionData, data[extensionDataKey])
-    })
+export async function getExtensionData () {
+  const data = await browser.storage.local.get(extensionDataKey)
+  return {
+    ...defaultExtensionData,
+    ...data[extensionDataKey],
+  }
 }
 
-export function setExtensionData (params = {}) {
-  return browser.storage.local.get(extensionDataKey)
-    .then((data) => {
-      // merge existing data with defaults and new data
-      return Object.assign({}, defaultExtensionData, data[extensionDataKey], params)
-    })
-    .then((newData) => {
-      const dataWrap = {}
-      dataWrap[extensionDataKey] = newData
-      return Promise.all([
-        newData,
-        browser.storage.local.set(dataWrap),
-      ])
-    })
-    .then(([data]) => {
-      trigger('extension-data-updated', data)
-      return
-    })
+export async function setExtensionData (params = {}) {
+  const data = await browser.storage.local.get(extensionDataKey)
+  // merge existing data with defaults and new data
+  const newData = {
+    ...defaultExtensionData,
+    ...data[extensionDataKey],
+    ...params,
+  }
+
+  const dataWrap = {}
+  dataWrap[extensionDataKey] = newData
+  await browser.storage.local.set(dataWrap)
+
+  trigger('extension-data-updated', data)
 }
