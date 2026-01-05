@@ -419,69 +419,60 @@ function isFree (user) {
 
 const templatesFreeLimit = 30
 
-export function getTemplates () {
-  return getSignedInUser()
-    .then((user) => {
-      return Promise.all([
-        user,
-        isFree(user)
-      ])
-    })
-    .then((res) => {
-      const [user, freeCustomer] = res
-      let templateCollections = [
-        getCollection({
-          user: user,
-          collection: 'templatesOwned'
-        })
-      ]
+export async function getTemplates () {
+  let user
+  try {
+    user = await getSignedInUser()
+  } catch (err) {
+    if (isLoggedOut(err)) {
+      return getDefaultTemplates()
+    }
 
-      if (!freeCustomer) {
-        templateCollections = templateCollections.concat([
-          getCollection({
-            user: user,
-            collection: 'templatesShared'
-          }),
-          getCollection({
-            user: user,
-            collection: 'templatesEveryone'
-          })
-        ])
-      }
+    throw err
+  }
 
-      return Promise.all(templateCollections)
-        .then((res) => {
-          // merge and de-duplication
-          // TODO de-duplication is no longer needed after query changes
-          return Object.assign({}, ...res)
-        })
-        .then((templates) => {
-          return Object.keys(templates).map((id) => {
-            const template = templates[id]
-            return Object.assign(convertToNativeDates(template), {
-              id: id,
-              _body_plaintext: htmlToText(template.body),
-            })
-          })
-        })
-        .then((templates) => {
-          if (freeCustomer) {
-            return templates
-              .sort((a, b) => {
-                return new Date(a.created_datetime || 0) - new Date(b.created_datetime || 0)
-              })
-              .slice(0, templatesFreeLimit)
-          }
-          return templates
-        })
+  const freeCustomer = await isFree(user)
+  let templateCollections = [
+    getCollection({
+      user: user,
+      collection: 'templatesOwned'
     })
-    .catch((err) => {
-      if (isLoggedOut(err)) {
-        return getDefaultTemplates()
-      }
+  ]
 
-      throw err
-    })
+  if (!freeCustomer) {
+    templateCollections = templateCollections.concat([
+      getCollection({
+        user: user,
+        collection: 'templatesShared'
+      }),
+      getCollection({
+        user: user,
+        collection: 'templatesEveryone'
+      })
+    ])
+  }
+
+  let results = await Promise.all(templateCollections)
+  let templates = Object.assign({}, ...results)
+
+  templates = Object.keys(templates).map((id) => {
+    const template = templates[id]
+    return {
+      ...convertToNativeDates(template),
+      id: id,
+      _body_plaintext: htmlToText(template.body),
+    }
+  })
+
+  if (freeCustomer) {
+    return templates
+      .sort((a, b) => {
+        return new Date(a.created_datetime || 0) - new Date(b.created_datetime || 0)
+      })
+      .slice(0, templatesFreeLimit)
+  }
+
+  return templates
 }
 
 const networkError = 'There was an issue signing you in. Please disable your firewall or antivirus software and try again.'
