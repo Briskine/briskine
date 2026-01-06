@@ -34,7 +34,7 @@ async function sendToContent(params = {}) {
   return tabs.map((tab) => browser.tabs.sendMessage(tab.id, params))
 }
 
-export default async function trigger (name, details) {
+export default async function trigger (name = '', details = {}) {
   const event = {
     type: 'trigger',
     data: {

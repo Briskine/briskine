@@ -242,9 +242,8 @@ function Dialog (originalProps) {
     stopPropagation(e, e.relatedTarget)
   }
 
-  async function templatesUpdated () {
-    // TODO
-    setTemplates(await getTemplates())
+  async function templatesUpdated (templates) {
+    setTemplates(templates)
   }
 
   async function tagsUpdated (tags) {
@@ -259,8 +258,7 @@ function Dialog (originalProps) {
     const extensionData = await getExtensionData()
     extensionDataUpdated(extensionData)
 
-    // TODO
-    await templatesUpdated()
+    setTemplates(await getTemplates())
     setTags(await getTags())
 
     setLoading(false)

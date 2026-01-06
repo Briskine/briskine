@@ -110,13 +110,17 @@ function templatesEveryoneQuery (user) {
   )
 }
 
+const templateCollections = [
+  'templatesOwned',
+  'templatesShared',
+  'templatesEveryone',
+]
+
 const allCollections = [
   'users',
   'customers',
   'tags',
-  'templatesOwned',
-  'templatesShared',
-  'templatesEveryone',
+  ...templateCollections,
 ]
 
 function getCollectionQuery (name, user) {
@@ -182,20 +186,43 @@ function refreshLocalData (collectionName, querySnapshot) {
   })
 }
 
+let debouncedTemplatesUpdateEvent
+
 async function updateCache ({collection, data}) {
   await browser.storage.local.set({
     [collection]: data
   })
 
-  const eventCollection = collection.includes('templates') ? 'templates' : collection
+  const eventCollection = templateCollections.includes(collection) ? 'templates' : collection
   const eventName = `${eventCollection}-updated`
   let eventData = data
 
-  if (eventCollection === 'tags') {
-    eventData = parseTagsCollection(data)
-  }
+  if (eventCollection === 'templates') {
+    const cachedTemplateCollections = await browser.storage.local.get(templateCollections)
 
-  trigger(eventName, eventData)
+    let cachedTemplates = {}
+    templateCollections.forEach((templateCollectionName) => {
+      cachedTemplates = {
+        ...cachedTemplates,
+        ...cachedTemplateCollections[templateCollectionName],
+      }
+    })
+
+    eventData = await parseTemplatesCollection(cachedTemplates)
+
+    // debounce templates trigger
+    // because we trigger it three times in a row (once for each templates collection)
+    // for premium customers.
+    clearTimeout(debouncedTemplatesUpdateEvent)
+    debouncedTemplatesUpdateEvent = setTimeout(() => {
+      trigger(eventName, eventData)
+    }, 500)
+  } else if (eventCollection === 'tags') {
+    eventData = parseTagsCollection(data)
+    trigger(eventName, eventData)
+  } else {
+    trigger(eventName, eventData)
+  }
 
   await setExtensionData({
     lastSync: Date.now(),
@@ -395,7 +422,7 @@ export async function getSignedInUser () {
       badgeUpdate(false)
       clearDataCache()
       await setSignedInUser({})
-      trigger('logout', {})
+      trigger('logout')
     }
   }
 
@@ -460,9 +487,15 @@ export async function getTemplates () {
 
   let results = await Promise.all(templateCollections)
   let templates = Object.assign({}, ...results)
+  return parseTemplatesCollection(templates)
+}
 
-  templates = Object.keys(templates).map((id) => {
-    const template = templates[id]
+async function parseTemplatesCollection (templatesCollection = {}) {
+  const user = await getSignedInUser()
+  const freeCustomer = await isFree(user)
+
+  const templates = Object.keys(templatesCollection).map((id) => {
+    const template = templatesCollection[id]
     return {
       ...convertToNativeDates(template),
       id: id,
@@ -510,7 +543,7 @@ export function signin (params = {}) {
       return signinWithToken(res.token)
     })
     .then(() => {
-      return trigger('login', {})
+      return trigger('login')
     })
     .catch((err) => {
       return signinError(err)
@@ -541,7 +574,7 @@ export function getSession () {
         // auto-login if not logged-in
         return signinWithToken(res.token)
           .then(() => {
-            return trigger('login', {})
+            return trigger('login')
           })
       }
 
@@ -555,7 +588,7 @@ export async function logout () {
 
   badgeUpdate(false)
   clearDataCache()
-  trigger('logout', {})
+  trigger('logout')
 
   return request(`${config.functionsUrl}/api/1/logout`, {
       method: 'POST'
