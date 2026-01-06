@@ -242,15 +242,15 @@ function Dialog (originalProps) {
     stopPropagation(e, e.relatedTarget)
   }
 
-  async function templatesUpdated (templates) {
+  async function templatesUpdated (templates = []) {
     setTemplates(templates)
   }
 
-  async function tagsUpdated (tags) {
+  async function tagsUpdated (tags = []) {
     setTags(tags)
   }
 
-  function extensionDataUpdated (data) {
+  function extensionDataUpdated (data = {}) {
     setExtensionData(data)
   }
 

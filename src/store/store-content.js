@@ -59,8 +59,8 @@ function usersUpdated () {
   cache.getAccount = null
 }
 
-function templatesUpdated () {
-  cache.getTemplates = null
+function templatesUpdated (templates = []) {
+  cache.getTemplates = templates
 }
 
 function tagsUpdated (tags = []) {
