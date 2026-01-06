@@ -63,8 +63,8 @@ function templatesUpdated () {
   cache.getTemplates = null
 }
 
-function tagsUpdated () {
-  cache.getTags = null
+function tagsUpdated (tags = []) {
+  cache.getTags = tags
 }
 
 function extensionDataUpdated (data = {}) {

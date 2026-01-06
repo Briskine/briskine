@@ -182,20 +182,26 @@ function refreshLocalData (collectionName, querySnapshot) {
   })
 }
 
-async function updateCache (params = {}) {
+async function updateCache ({collection, data}) {
   await browser.storage.local.set({
-    [params.collection]: params.data
+    [collection]: data
   })
 
-  const eventName = params.collection.includes('templates') ? 'templates-updated' : `${params.collection}-updated`
-  // TODO merge all templates in cache when triggering for templates
-  trigger(eventName, params.data)
+  const eventCollection = collection.includes('templates') ? 'templates' : collection
+  const eventName = `${eventCollection}-updated`
+  let eventData = data
+
+  if (eventCollection === 'tags') {
+    eventData = parseTagsCollection(data)
+  }
+
+  trigger(eventName, eventData)
 
   await setExtensionData({
     lastSync: Date.now(),
   })
 
-  return params.data
+  return data
 }
 
 export async function refetchCollections (collections = []) {
@@ -670,30 +676,37 @@ export function getAccount () {
     })
 }
 
-export function getTags () {
-  return getSignedInUser()
-    .then((user) => {
-      return getCollection({
-        collection: 'tags',
-        user: user
-      })
-    })
-    .then((tags) => {
-      return Object.keys(tags).map((id) => {
-        return Object.assign({id: id}, tags[id])
-      })
-    })
-    .catch((err) => {
-      if (isLoggedOut(err)) {
-        // logged-out
-        return defaultTags
-      }
+export async function getTags () {
+  let user
+  try {
+    user = await getSignedInUser()
+  } catch (err) {
+    if (isLoggedOut(err)) {
+      // logged-out
+      return defaultTags
+    }
 
-      throw err
-    })
+    throw err
+  }
+
+  const tags = await getCollection({
+    collection: 'tags',
+    user: user,
+  })
+
+  return parseTagsCollection(tags)
 }
 
-function parseTags (tagIds = [], allTags = []) {
+function parseTagsCollection (tags = {}) {
+  return Object.keys(tags).map((id) => {
+    return {
+      id: id,
+      ...tags[id],
+    }
+  })
+}
+
+function tagIdsToTitles (tagIds = [], allTags = []) {
   return tagIds
     .map((tagId) => {
       return allTags.find((t) => t.id === tagId)
@@ -705,7 +718,7 @@ function getSearchList (templates = [], allTags = []) {
   return templates.map((template) => {
     return Object.assign({}, template, {
       body: template._body_plaintext,
-      tags: parseTags(template.tags, allTags).map((t) => t?.title),
+      tags: tagIdsToTitles(template.tags, allTags).map((t) => t?.title),
     })
   })
 }

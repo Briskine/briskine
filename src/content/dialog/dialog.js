@@ -243,11 +243,12 @@ function Dialog (originalProps) {
   }
 
   async function templatesUpdated () {
+    // TODO
     setTemplates(await getTemplates())
   }
 
-  async function tagsUpdated () {
-    setTags(await getTags())
+  async function tagsUpdated (tags) {
+    setTags(tags)
   }
 
   function extensionDataUpdated (data) {
@@ -258,8 +259,9 @@ function Dialog (originalProps) {
     const extensionData = await getExtensionData()
     extensionDataUpdated(extensionData)
 
+    // TODO
     await templatesUpdated()
-    await tagsUpdated()
+    setTags(await getTags())
 
     setLoading(false)
   }
