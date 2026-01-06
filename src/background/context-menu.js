@@ -28,34 +28,19 @@ function getSelectedText () {
   return window.getSelection()?.toString?.()
 }
 
-function toggleBubble (eventToggleBubble, enable) {
-  // TODO won't work in shadow dom
-  document.activeElement.dispatchEvent(new CustomEvent(eventToggleBubble, {
-    bubbles: true,
-    composed: true,
-    detail: enable,
-  }))
-}
-
-async function executeScript ({ info = {}, tab = {}, args = [], func = () => {} }) {
-  return browser.scripting.executeScript({
-    target: {
-      tabId: tab.id,
-      frameIds: [info.frameId],
-    },
-    func: func,
-    args: args,
-  })
-}
-
 async function saveAsTemplateAction (info, tab) {
   let body = info.selectionText
   try {
-    const selection = await executeScript({
-      info: info,
-      tab: tab,
+    // executeScript workaround is required because of Chrome bug
+    // https://issues.chromium.org/issues/40740672
+    const selection = await browser.scripting.executeScript({
+      target: {
+        tabId: tab.id,
+        frameIds: [info.frameId],
+      },
       func: getSelectedText,
     })
+
     // replace newlines with brs
     if (selection[0].result) {
       body = selection[0].result.replace(/(?:\r\n|\r|\n)/g, '<br>')
@@ -98,12 +83,7 @@ async function toggleBubbleAction (info, tab) {
     bubbleAllowlist: bubbleAllowlist,
   })
 
-  await executeScript({
-    info: info,
-    tab: tab,
-    func: toggleBubble,
-    args: [config.eventToggleBubble, enableBubble],
-  })
+  return trigger(config.eventToggleBubble, {enabled: enableBubble}, tab.id, info.frameId)
 }
 
 async function clickContextMenu (info = {}, tab = {}) {

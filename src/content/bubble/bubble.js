@@ -5,7 +5,7 @@
 
 import config from '../../config.js'
 import {dialogTagName} from '../dialog/dialog.js'
-import { getExtensionData, trigger } from '../../store/store-content.js'
+import { getExtensionData, trigger, on, off } from '../../store/store-content.js'
 
 import getEventTarget from '../event-target.js'
 import getActiveElement from '../active-element.js'
@@ -92,12 +92,12 @@ function blurTextfield (e) {
 let toggleBubbleHandler = () => {}
 
 function makeToggleBubbleHandler (settings) {
-  return ({detail}) =>{
-    if (detail) {
-      create(settings)
-    } else {
-      destroyInstance()
+  return ({ enabled } = {}) => {
+    if (enabled) {
+      return create(settings)
     }
+
+    return destroyInstance()
   }
 }
 
@@ -109,7 +109,7 @@ export async function setup (settings = {}) {
 
   toggleBubbleHandler = makeToggleBubbleHandler(settings)
 
-  window.addEventListener(config.eventToggleBubble, toggleBubbleHandler)
+  on(config.eventToggleBubble, toggleBubbleHandler)
 
   const { hostname } = window.location
   const extensionData = await getExtensionData()
@@ -248,7 +248,7 @@ function destroyInstance () {
 
 export function destroy () {
   destroyInstance()
-  window.removeEventListener(config.eventToggleBubble, toggleBubbleHandler)
+  off(config.eventToggleBubble, toggleBubbleHandler)
 }
 
 const textfieldMinWidth = 100
