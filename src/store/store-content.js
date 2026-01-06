@@ -67,8 +67,8 @@ function tagsUpdated () {
   cache.getTags = null
 }
 
-function extensionDataUpdated () {
-  cache.getExtensionData = null
+function extensionDataUpdated (data = {}) {
+  cache.getExtensionData = data
 }
 
 export async function setup () {
