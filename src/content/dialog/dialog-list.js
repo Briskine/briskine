@@ -151,22 +151,20 @@ export default function DialogList (originalProps) {
                   <ul class="dialog-tags">
                     <For each={t.tags}>
                       {(tagId) => {
-                        const tag = props.tags.find((tag) => tag.id === tagId)
-                        if (!tag) {
-                          return (<></>)
-                        }
-
+                        const tag = () => props.tags.find((t) => t.id === tagId)
                         return (
-                          <li
-                            style={{
-                              '--tag-bg-color': `var(--tag-color-${tag.color})`
-                            }}
-                            classList={{
-                              'text-secondary': !tag.color || tag.color === 'transparent',
-                            }}
-                          >
-                            {tag.title}
-                          </li>
+                          <Show when={tag()}>
+                            <li
+                              style={{
+                                '--tag-bg-color': `var(--tag-color-${tag().color})`
+                              }}
+                              classList={{
+                                'text-secondary': !tag().color || tag().color === 'transparent',
+                              }}
+                            >
+                              {tag().title}
+                            </li>
+                          </Show>
                         )
                       }}
                     </For>
