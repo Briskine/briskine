@@ -28,16 +28,6 @@ function getSelectedText () {
   return window.getSelection()?.toString?.()
 }
 
-function showDialog (eventShowDialog) {
-  // TODO won't work in shadow dom
-  if (document.activeElement) {
-    document.activeElement.dispatchEvent(new CustomEvent(eventShowDialog, {
-      bubbles: true,
-      composed: true,
-    }))
-  }
-}
-
 function toggleBubble (eventToggleBubble, enable) {
   // TODO won't work in shadow dom
   document.activeElement.dispatchEvent(new CustomEvent(eventToggleBubble, {
@@ -76,15 +66,6 @@ async function saveAsTemplateAction (info, tab) {
 
   browser.tabs.create({
     url: `${config.functionsUrl}/template/new?body=${encodeURIComponent(body)}`
-  })
-}
-
-async function openDialogAction (info, tab) {
-  await executeScript({
-    info: info,
-    tab: tab,
-    func: showDialog,
-    args: [config.eventShowDialog],
   })
 }
 
@@ -131,7 +112,7 @@ async function clickContextMenu (info = {}, tab = {}) {
   }
 
   if (info.menuItemId === openDialogMenu) {
-    return openDialogAction(info, tab)
+    return trigger(config.eventShowDialog, {}, tab.id, info.frameId)
   }
 
   if (info.menuItemId === signInMenu) {

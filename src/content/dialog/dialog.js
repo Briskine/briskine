@@ -17,7 +17,6 @@ import {isContentEditable} from '../editors/editor-contenteditable.js'
 import {bubbleTagName} from '../bubble/bubble.js'
 import {getEditableCaret, getContentEditableCaret, getDialogPosition} from './dialog-position.js'
 import {autocomplete, getSelectedWord} from '../autocomplete.js'
-import getEventTarget from '../event-target.js'
 import getSelection from '../selection.js'
 import getActiveElement from '../active-element.js'
 import {keybind, keyunbind} from '../keybind.js'
@@ -97,17 +96,21 @@ function Dialog (originalProps) {
     }
   })
 
-  function show (e) {
+  function show (node) {
     // dialog is already visible
     if (visible()) {
       return
     }
 
+    // if not triggered on a specific element, get the active element.
+    // node is defined only when opened from the bubble.
+    if (!node) {
+      node = getActiveElement()
+    }
+
     let target
     let removeCaretParent = false
     let placement = 'top-left'
-
-    let node = getEventTarget(e)
 
     // detect rtl
     const targetStyle = window.getComputedStyle(node)
@@ -163,10 +166,6 @@ function Dialog (originalProps) {
     } else {
       return
     }
-
-    // prevent capturing keystrokes by the parent
-    e.stopPropagation()
-    e.preventDefault()
 
     // cache editor,
     // to use for inserting templates or restoring later.
@@ -541,8 +540,8 @@ customElements.define(dialogTagName, class extends HTMLElement {
     this.keyboardShortcut = ''
     this.disposer = () => {}
 
-    this.show = function (e) {
-      this.shadowRoot.querySelector(dialogSelector).show(e)
+    this.show = function (target) {
+      this.shadowRoot.querySelector(dialogSelector).show(target)
     }
   }
   connectedCallback () {
@@ -574,11 +573,19 @@ function createDialog (settings = {}) {
 }
 
 let settingsCache = {}
-function createAndShow (e) {
+function createAndShow ({ target } = {}) {
   if (!dialogInstance) {
     dialogInstance = createDialog(settingsCache)
   }
-  return dialogInstance.show(e)
+  return dialogInstance.show(target)
+}
+
+function keyboardCreateAndShow (e) {
+  // prevent capturing keystrokes by the parent
+  e.stopPropagation()
+  e.preventDefault()
+
+  createAndShow()
 }
 
 export function setup (settings = {}) {
@@ -587,13 +594,13 @@ export function setup (settings = {}) {
   }
 
   settingsCache = settings
-  keybind(settingsCache.dialog_shortcut, createAndShow)
-  window.addEventListener(config.eventShowDialog, createAndShow)
+  keybind(settingsCache.dialog_shortcut, keyboardCreateAndShow)
+  storeOn(config.eventShowDialog, createAndShow)
 }
 
 export function destroy () {
-  keyunbind(settingsCache.dialog_shortcut, createAndShow)
-  window.removeEventListener(config.eventShowDialog, createAndShow)
+  keyunbind(settingsCache.dialog_shortcut, keyboardCreateAndShow)
+  storeOff(config.eventShowDialog, createAndShow)
 
   if (dialogInstance) {
     dialogInstance.remove()

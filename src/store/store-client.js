@@ -46,10 +46,10 @@ export function off (name, callback) {
   })
 }
 
-function trigger (data = {}) {
-  events.filter((event) => event.name === data.name).forEach((event) => {
+export function trigger (name, details = {}) {
+  events.filter((event) => event.name === name).forEach((event) => {
     if (typeof event.callback === 'function') {
-      event.callback(data.details)
+      event.callback(details)
     }
   })
 }
@@ -60,7 +60,7 @@ browser.runtime.onMessage.addListener((req) => {
     req.type &&
     req.type === 'trigger'
   ) {
-    trigger(req.data)
+    trigger(req.data.name, req.data.details)
   }
 })
 

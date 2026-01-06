@@ -27,6 +27,7 @@ export {
   isCached,
   on,
   off,
+  trigger,
 } from './store-client.js'
 
 let cache = {}
