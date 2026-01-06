@@ -1,22 +1,25 @@
 import config from '../config.js'
 import {autocomplete, getSelectedWord} from './autocomplete.js'
+import { on, off } from '../store/store-content.js'
+import getActiveElement from './active-element.js'
 
-function insertTemplate (e) {
+function insertTemplate ({ template = {} }) {
+  const element = getActiveElement()
   const word = getSelectedWord({
-    element: e.target,
+    element: element,
   })
 
   autocomplete({
-    element: e.target,
+    element: element,
     word: word,
-    template: e.detail,
+    template: template,
   })
 }
 
 export function setup () {
-  window.addEventListener(config.eventInsertTemplate, insertTemplate)
+  on(config.eventInsertTemplate, insertTemplate)
 }
 
 export function destroy () {
-  window.removeEventListener(config.eventInsertTemplate, insertTemplate)
+  off(config.eventInsertTemplate, insertTemplate)
 }

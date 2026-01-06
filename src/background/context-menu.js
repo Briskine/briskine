@@ -5,6 +5,7 @@ import debounce from 'lodash.debounce'
 import config from '../config.js'
 import {getAccount, getTemplates, getExtensionData, setExtensionData, getSettings} from '../store/store-api.js'
 import sortTemplates from '../store/sort-templates.js'
+import trigger from '../store/store-trigger.js'
 import {openPopup} from '../store/open-popup.js'
 import {isBlocklisted} from '../content/blocklist.js'
 import bubbleAllowlistPrivate from '../content/bubble/bubble-allowlist-private.js'
@@ -33,17 +34,6 @@ function showDialog (eventShowDialog) {
     document.activeElement.dispatchEvent(new CustomEvent(eventShowDialog, {
       bubbles: true,
       composed: true,
-    }))
-  }
-}
-
-function insertTemplate (eventInsertTemplate, template) {
-  // TODO won't work in shadow dom
-  if (document.activeElement) {
-    document.activeElement.dispatchEvent(new CustomEvent(eventInsertTemplate, {
-      bubbles: true,
-      composed: true,
-      detail: template,
     }))
   }
 }
@@ -100,15 +90,6 @@ async function openDialogAction (info, tab) {
 
 async function signInAction () {
   return openPopup()
-}
-
-function insertTemplateAction (info, tab, template) {
-  return executeScript({
-    info: info,
-    tab: tab,
-    func: insertTemplate,
-    args: [config.eventInsertTemplate, template],
-  })
 }
 
 async function toggleBubbleAction (info, tab) {
@@ -178,7 +159,7 @@ async function clickContextMenu (info = {}, tab = {}) {
     modified_datetime: null,
   }
 
-  return insertTemplateAction(info, tab, cleanTemplate)
+  return trigger(config.eventInsertTemplate, {template: cleanTemplate}, tab.id, info.frameId)
 }
 
 async function createContextMenus (menus = []) {

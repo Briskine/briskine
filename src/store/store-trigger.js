@@ -21,8 +21,8 @@ async function sendToPopup (params = {}) {
   }
 }
 
-// send message to content scripts in all tabs
-async function sendToContent(params = {}) {
+// send message to all tabs
+async function sendToAllTabs (params = {}) {
   const manifest = browser.runtime.getManifest()
   const contentScripts = manifest.content_scripts[0]
 
@@ -31,10 +31,14 @@ async function sendToContent(params = {}) {
     discarded: false,
   })
 
-  return tabs.map((tab) => browser.tabs.sendMessage(tab.id, params))
+  return tabs.map((tab) => sendToTab(params, tab.id))
 }
 
-export default async function trigger (name = '', details = {}) {
+async function sendToTab (params = {}, tabId, frameId) {
+  return browser.tabs.sendMessage(tabId, params, {frameId: frameId})
+}
+
+export default async function trigger (name = '', details = {}, tabId, frameId) {
   const event = {
     type: 'trigger',
     data: {
@@ -43,14 +47,23 @@ export default async function trigger (name = '', details = {}) {
     },
   }
 
-  // send trigger message to client store
-  const results = await Promise.allSettled([
-    sendToPopup(event),
-    sendToContent(event),
-  ])
+  let results = []
+
+  if (tabId) {
+    results = [
+      sendToTab(event, tabId, frameId)
+    ]
+  } else {
+    results = [
+      sendToPopup(event),
+      sendToAllTabs(event),
+    ]
+  }
+
+  results = await Promise.allSettled(results)
 
   results.forEach((result) => {
-    if (result.status === 'rejected') {
+    if (result?.status === 'rejected') {
       debug(['trigger', event.data.name, result], 'error')
     }
   })
