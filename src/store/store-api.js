@@ -150,27 +150,25 @@ function getCollectionQuery (name, user) {
 
 const collectionRequestQueue = {}
 
-function getCollection (params = {}) {
+async function getCollection (params = {}) {
   // request is already in progress
   if (collectionRequestQueue[params.collection]) {
     return collectionRequestQueue[params.collection]
   }
 
   // get from cache
-  return browser.storage.local.get(params.collection)
-    .then((res) => {
-      if (res[params.collection]) {
-        return res[params.collection]
-      }
+  const cache = await browser.storage.local.get(params.collection)
+  if (cache[params.collection]) {
+    return cache[params.collection]
+  }
 
-      const query = getCollectionQuery(params.collection, params.user)
-      collectionRequestQueue[params.collection] = getDocs(query).then((snapshot) => {
-        collectionRequestQueue[params.collection] = null
-        return refreshLocalData(params.collection, snapshot)
-      })
+  const query = getCollectionQuery(params.collection, params.user)
+  collectionRequestQueue[params.collection] = getDocs(query).then((snapshot) => {
+    collectionRequestQueue[params.collection] = null
+    return refreshLocalData(params.collection, snapshot)
+  })
 
-      return collectionRequestQueue[params.collection]
-    })
+  return collectionRequestQueue[params.collection]
 }
 
 // refresh local data cache from snapshot listeners
