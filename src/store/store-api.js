@@ -389,15 +389,13 @@ async function setSignedInUser (user) {
   return user
 }
 
-function isFree (user) {
-  return getCollection({
-      user: user,
-      collection: 'customers'
-    })
-    .then((customers) => {
-      const customer = customers[user.customer]
-      return customer.subscription.plan === 'free'
-    })
+async function isFree (user) {
+  const customers = await getCollection({
+    user: user,
+    collection: 'customers'
+  })
+  const customer = customers[user.customer]
+  return customer.subscription.plan === 'free'
 }
 
 const templatesFreeLimit = 30
