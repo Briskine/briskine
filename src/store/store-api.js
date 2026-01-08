@@ -258,19 +258,8 @@ export async function autosync (timeout = defaultSyncTimeout) {
   return
 }
 
-// handle fetch errors
-function handleErrors (response) {
-  if (!response.ok) {
-    return response.clone().json().then((res) => {
-      return Promise.reject(res)
-    })
-  }
-  return response
-}
-
 // fetch wrapper
-// support authorization header, form submit, query params, error handling
-function request (url, params = {}) {
+async function request (url, params = {}) {
   const defaults = {
     authorization: false,
     method: 'GET',
@@ -280,35 +269,37 @@ function request (url, params = {}) {
     body: {},
   }
 
-  const data = Object.assign({}, defaults, params)
+  const data = {
+    ...defaults,
+    ...params,
+  }
   data.method = data.method.toUpperCase()
 
   // auth support
-  let auth = Promise.resolve()
   if (data.authorization) {
-    auth = getUserToken()
+    const auth = await getUserToken()
+    data.headers.Authorization = `Bearer ${auth.token}`
   }
 
-  return auth
-    .then((res) => {
-      if (res) {
-        data.headers.Authorization = `Bearer ${res.token}`
-      }
+  if (data.method !== 'GET') {
+    data.body = JSON.stringify(data.body)
+  } else {
+    delete data.body
+  }
 
-      if (data.method !== 'GET') {
-        data.body = JSON.stringify(data.body)
-      } else {
-        delete data.body
-      }
+  const response = await fetch(url, {
+    method: data.method,
+    headers: data.headers,
+    body: data.body,
+  })
 
-      return fetch(url, {
-          method: data.method,
-          headers: data.headers,
-          body: data.body,
-        })
-        .then(handleErrors)
-        .then((res) => res.json())
-    })
+  // handle errors
+  if (!response.ok) {
+    const responseJson = await response.clone().json()
+    return Promise.reject(responseJson)
+  }
+
+  return response.json()
 }
 
 // return user and token
