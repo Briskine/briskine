@@ -545,8 +545,8 @@ export async function logout () {
   trigger('logout')
 
   return request(`${config.functionsUrl}/api/1/logout`, {
-      method: 'POST'
-    })
+    method: 'POST',
+  })
 }
 
 async function signinWithToken (token = '') {
@@ -573,17 +573,13 @@ async function signinWithToken (token = '') {
   })
 }
 
-export function getCustomer (customerId) {
-  return getSignedInUser()
-    .then((user) => {
-      return getCollection({
-        user: user,
-        collection: 'customers'
-      })
-    })
-    .then((customers) => {
-      return customers[customerId]
-    })
+export async function getCustomer (customerId) {
+  const user = await getSignedInUser()
+  const customers = await getCollection({
+    user: user,
+    collection: 'customers'
+  })
+  return customers[customerId]
 }
 
 async function getActiveCustomer (user = {}) {
@@ -622,45 +618,36 @@ export async function setActiveCustomer (customerId) {
     })
 }
 
-export function updateTemplateStats ({id = '', _body_plaintext = ''}) {
-  return getExtensionData()
-    .then((data) => {
-      // last used cache
-      let lastuseCache = data.templatesLastUsed || {}
-      lastuseCache[id] = new Date().toISOString()
-      // time saved (words)
-      const wordCount = (_body_plaintext || '').split(' ').length
-      const words = data.words + wordCount
+export async function updateTemplateStats ({id = '', _body_plaintext = ''}) {
+  const data = await getExtensionData()
+  // last used cache
+  let lastuseCache = data.templatesLastUsed || {}
+  lastuseCache[id] = new Date().toISOString()
+  // time saved (words)
+  const wordCount = (_body_plaintext || '').split(' ').length
+  const words = data.words + wordCount
 
-      return setExtensionData({
-        templatesLastUsed: lastuseCache,
-        words: words,
-      })
-    })
+  return setExtensionData({
+    templatesLastUsed: lastuseCache,
+    words: words,
+  })
 }
 
-export function getAccount () {
-  return getSignedInUser()
-    .then((user) => {
-      return Promise.all([
-        user,
-        getCollection({
-          user: user,
-          collection: 'users'
-        })
-      ])
-    })
-    .then(([cachedUser, users]) => {
-      const userData = users[cachedUser.id]
-      return {
-        id: cachedUser.id,
-        customer: cachedUser.customer,
+export async function getAccount () {
+  const cachedUser = await getSignedInUser()
+  const users = await getCollection({
+    user: cachedUser,
+    collection: 'users'
+  })
+  const userData = users[cachedUser.id]
+  return {
+    id: cachedUser.id,
+    customer: cachedUser.customer,
 
-        customers: userData.customers,
-        email: userData.email,
-        full_name: userData.full_name,
-      }
-    })
+    customers: userData.customers,
+    email: userData.email,
+    full_name: userData.full_name,
+  }
 }
 
 export async function getTags () {
@@ -703,37 +690,37 @@ function tagIdsToTitles (tagIds = [], allTags = []) {
 
 function getSearchList (templates = [], allTags = []) {
   return templates.map((template) => {
-    return Object.assign({}, template, {
+    return {
+      ...template,
       body: template._body_plaintext,
       tags: tagIdsToTitles(template.tags, allTags).map((t) => t?.title),
-    })
+    }
   })
 }
 
 let lastSearchQuery = ''
-export function searchTemplates (query = '') {
+export async function searchTemplates (query = '') {
   lastSearchQuery = query
 
-  return Promise.all([
-      getTemplates(),
-      getTags(),
-    ])
-    .then(([templates, tags]) => {
-      // avoid triggering fuzzySearch
-      // if this is not the latest search query, for better performance.
-      if (query !== lastSearchQuery) {
-        return {
-          query: '_SEARCH_CANCELED',
-          results: [],
-        }
-      }
+  const [templates, tags] = Promise.all([
+    getTemplates(),
+    getTags(),
+  ])
 
-      const templateSearchList = getSearchList(templates, tags)
-      return {
-        query: query,
-        results: fuzzySearch(templates, templateSearchList, query),
-      }
-    })
+  // avoid triggering fuzzySearch
+  // if this is not the latest search query, for better performance.
+  if (query !== lastSearchQuery) {
+    return {
+      query: '_SEARCH_CANCELED',
+      results: [],
+    }
+  }
+
+  const templateSearchList = getSearchList(templates, tags)
+  return {
+    query: query,
+    results: fuzzySearch(templates, templateSearchList, query),
+  }
 }
 
 export async function isCached () {
