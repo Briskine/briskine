@@ -302,33 +302,27 @@ async function request (url, params = {}) {
   return response.json()
 }
 
-export function getSettings () {
-  return getSignedInUser()
-    .then((user) => {
-      return Promise.all([
-        user.id,
-        getCollection({
-          user: user,
-          collection: 'users'
-        })
-      ])
-    })
-    .then(([id, users]) => {
-      const userData = users[id]
-      if (userData) {
-        return Object.assign({}, defaultSettings, userData.settings)
-      }
-
+export async function getSettings () {
+  let user
+  try {
+    user = await getSignedInUser()
+  } catch (err) {
+    if (isLoggedOut(err)) {
       return defaultSettings
-    })
-    .catch((err) => {
-      if (isLoggedOut(err)) {
-        // logged-out
-        return defaultSettings
-      }
+    }
+    throw err
+  }
 
-      throw err
-    })
+  const users = await getCollection({
+    user: user,
+    collection: 'users',
+  })
+
+  const userData = users[user.id]
+  return {
+    ...defaultSettings,
+    ...userData?.settings,
+  }
 }
 
 var LOGGED_OUT_ERR = 'logged-out'
