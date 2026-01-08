@@ -46,23 +46,6 @@ if (ENV === 'development') {
   connectFirestoreEmulator(db, 'localhost', 5002)
 }
 
-// convert firestore timestamps to dates
-const timestamps = [
-  'created_datetime',
-  'modified_datetime',
-  'deleted_datetime',
-]
-
-function convertToNativeDates (obj = {}) {
-  const parsed = Object.assign({}, obj)
-  timestamps.forEach((prop) => {
-    if (obj[prop] && typeof obj[prop].seconds === 'number' && typeof obj[prop].nanoseconds === 'number') {
-      const d = new Timestamp(obj[prop].seconds, obj[prop].nanoseconds)
-      parsed[prop] = d.toDate()
-    }
-  })
-  return parsed
-}
 
 async function clearDataCache () {
   // cache stats,
@@ -488,6 +471,30 @@ export async function getTemplates () {
   return parseTemplatesCollection(templates)
 }
 
+// convert firestore timestamps to dates
+const timestamps = [
+  'created_datetime',
+  'modified_datetime',
+  'deleted_datetime',
+]
+
+function templateNativeDates (template = {}) {
+  const templateDates = {}
+
+  timestamps.forEach((prop) => {
+    if (
+      template[prop]
+      && typeof template[prop].seconds === 'number'
+      && typeof template[prop].nanoseconds === 'number'
+    ) {
+      const d = new Timestamp(template[prop].seconds, template[prop].nanoseconds)
+      templateDates[prop] = d.toDate()
+    }
+  })
+
+  return templateDates
+}
+
 async function parseTemplatesCollection (templatesCollection = {}) {
   const user = await getSignedInUser()
   const freeCustomer = await isFree(user)
@@ -495,7 +502,8 @@ async function parseTemplatesCollection (templatesCollection = {}) {
   const templates = Object.keys(templatesCollection).map((id) => {
     const template = templatesCollection[id]
     return {
-      ...convertToNativeDates(template),
+      ...template,
+      ...templateNativeDates(template),
       id: id,
       _body_plaintext: htmlToText(template.body),
     }
