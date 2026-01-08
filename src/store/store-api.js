@@ -330,7 +330,7 @@ function isLoggedOut (err) {
   return err === LOGGED_OUT_ERR
 }
 
-async function getFirebaseUser () {
+function getFirebaseUser () {
   // return faster if possible
   if (firebaseAuth.currentUser) {
     return firebaseAuth.currentUser
@@ -382,14 +382,11 @@ export async function getSignedInUser () {
   throw LOGGED_OUT_ERR
 }
 
-function setSignedInUser (user) {
-  return new Promise((resolve) => {
-    let globalUser = {}
-    globalUser[globalUserKey] = user
-    browser.storage.local.set(globalUser).then(() => {
-      resolve(user)
-    })
-  })
+async function setSignedInUser (user) {
+  let globalUser = {}
+  globalUser[globalUserKey] = user
+  await browser.storage.local.set(globalUser)
+  return user
 }
 
 function isFree (user) {
