@@ -277,8 +277,8 @@ async function request (url, params = {}) {
 
   // auth support
   if (data.authorization) {
-    const auth = await getUserToken()
-    data.headers.Authorization = `Bearer ${auth.token}`
+    const token = await firebaseAuth.currentUser.getIdToken(true)
+    data.headers.Authorization = `Bearer ${token}`
   }
 
   if (data.method !== 'GET') {
@@ -300,19 +300,6 @@ async function request (url, params = {}) {
   }
 
   return response.json()
-}
-
-// return user and token
-function getUserToken () {
-  return firebaseAuth.currentUser.getIdToken(true)
-    .then((token) => {
-      return getSignedInUser().then((user) => {
-        return {
-          user: user,
-          token: token
-        }
-      })
-    })
 }
 
 export function getSettings () {
