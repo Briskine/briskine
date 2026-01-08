@@ -398,8 +398,6 @@ async function isFree (user) {
   return customer.subscription.plan === 'free'
 }
 
-const templatesFreeLimit = 30
-
 export async function getTemplates () {
   let user
   try {
@@ -462,6 +460,8 @@ function templateNativeDates (template = {}) {
   return templateDates
 }
 
+const templatesFreeLimit = 30
+
 async function parseTemplatesCollection (templatesCollection = {}) {
   const user = await getSignedInUser()
   const freeCustomer = await isFree(user)
@@ -488,12 +488,13 @@ async function parseTemplatesCollection (templatesCollection = {}) {
 }
 
 const networkError = 'There was an issue signing you in. Please disable your firewall or antivirus software and try again.'
+const manyRequestsError = 'Too many unsuccessful login attempts. Please try again later.'
 
 function signinError (err) {
   if (err && err.code === 'auth/too-many-requests') {
     // recaptcha verifier is not supported in browser extensions
     // only http/https
-    throw 'Too many unsuccessful login attempts. Please try again later. '
+    throw manyRequestsError
   }
 
   // catch "TypeError: Failed to fetch" errors
@@ -504,55 +505,35 @@ function signinError (err) {
   throw err.message
 }
 
-export function signin (params = {}) {
-  return request(`${config.functionsUrl}/api/1/login`, {
+export async function signin (params = {}) {
+  try {
+    const loginResponse = await request(`${config.functionsUrl}/api/1/login`, {
       method: 'POST',
       body: {
         email: params.email,
         password: params.password,
       }
     })
-    .then((res) => {
-      return signinWithToken(res.token)
-    })
-    .then(() => {
-      return trigger('login')
-    })
-    .catch((err) => {
-      return signinError(err)
-    })
+    await signinWithToken(loginResponse.token)
+    return trigger('login')
+  } catch (err) {
+    return signinError(err)
+  }
 }
 
-export function getSession () {
-  return getSignedInUser()
-    .then(() => {
-      // create session
-      return true
+export async function getSession () {
+  try {
+    // create session
+    await getSignedInUser()
+    return request(`${config.functionsUrl}/api/1/session`, {
+      authorization: true,
     })
-    .catch(() => {
-      // try to auto login
-      return false
-    })
-    .then((loggedIn) => {
-      // create session
-      return Promise.all([
-        loggedIn,
-        request(`${config.functionsUrl}/api/1/session`, {
-          authorization: loggedIn,
-        })
-      ])
-    })
-    .then(([loggedIn, res]) => {
-      if (!loggedIn) {
-        // auto-login if not logged-in
-        return signinWithToken(res.token)
-          .then(() => {
-            return trigger('login')
-          })
-      }
-
-      return res
-    })
+  } catch {
+    // try to auto login
+    const session = await request(`${config.functionsUrl}/api/1/session`)
+    await signinWithToken(session.token)
+    return trigger('login')
+  }
 }
 
 export async function logout () {
