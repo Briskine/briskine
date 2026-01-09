@@ -4,21 +4,17 @@ import browser from 'webextension-polyfill'
 
 import debug from './debug.js'
 
-// send message to popup
-async function sendToPopup (params = {}) {
-  try {
-    await browser.runtime.sendMessage(params)
-  } catch (err) {
-    if (
-      err.message
-      && err.message === 'Could not establish connection. Receiving end does not exist.'
-    ) {
-      // popup is not loaded
-      return
-    }
+// expected error when
+// the popup is not loaded,
+// or when the extension is not loaded in certain opened tabs,
+// because the urls are blocklisted or restricted (like the chrome web store).
+function isNotAvailableError (err) {
+  return err?.message?.includes?.('Receiving end does not exist')
+}
 
-    throw err
-  }
+// send message to popup
+function sendToPopup (params = {}) {
+  return browser.runtime.sendMessage(params)
 }
 
 // send message to all tabs
@@ -35,7 +31,7 @@ async function sendToAllTabs (params = {}) {
 }
 
 async function sendToTab (params = {}, tabId, frameId) {
-  return browser.tabs.sendMessage(tabId, params, {frameId: frameId})
+  return browser.tabs.sendMessage(tabId, params, { frameId: frameId })
 }
 
 export default async function trigger (name = '', details = {}, tabId, frameId) {
@@ -51,19 +47,21 @@ export default async function trigger (name = '', details = {}, tabId, frameId) 
 
   if (tabId) {
     results = [
-      sendToTab(event, tabId, frameId)
+      sendToTab(event, tabId, frameId),
     ]
   } else {
     results = [
       sendToPopup(event),
-      sendToAllTabs(event),
+      ...await sendToAllTabs(event),
     ]
   }
 
   results = await Promise.allSettled(results)
-
   results.forEach((result) => {
-    if (result?.status === 'rejected') {
+    if (
+      result?.status === 'rejected'
+      && !isNotAvailableError(result?.reason)
+    ) {
       debug(['trigger', event.data.name, result], 'error')
     }
   })
