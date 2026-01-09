@@ -2,7 +2,7 @@
  */
 import browser from 'webextension-polyfill'
 
-import debug from './store-debug.js'
+import debug from '../background/debug.js'
 
 // send message to popup
 async function sendToPopup (params = {}) {
