@@ -702,7 +702,7 @@ let lastSearchQuery = ''
 export async function searchTemplates (query = '') {
   lastSearchQuery = query
 
-  const [templates, tags] = Promise.all([
+  const [templates, tags] = await Promise.all([
     getTemplates(),
     getTags(),
   ])
