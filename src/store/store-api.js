@@ -22,7 +22,7 @@ import {
 } from 'firebase/firestore/lite'
 
 import config from '../config.js'
-import trigger from './store-trigger.js'
+import trigger from '../background/background-trigger.js'
 import fuzzySearch from './search.js'
 import {badgeUpdate} from '../background/badge.js'
 import {getDefaultTemplates, defaultTags, defaultSettings} from './default-data.js'

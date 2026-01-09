@@ -1,6 +1,6 @@
 import browser from 'webextension-polyfill'
 
-import trigger from './store-trigger.js'
+import trigger from '../background/background-trigger.js'
 
 const extensionDataKey = 'briskine'
 const defaultExtensionData = {
