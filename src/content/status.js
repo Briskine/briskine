@@ -1,17 +1,17 @@
-import config from '../config.js'
+import { eventStatus, version, functionsUrl } from '../config.js'
 
 function respondToStatus () {
-  document.dispatchEvent(new CustomEvent(config.eventStatus, {
+  document.dispatchEvent(new CustomEvent(eventStatus, {
     detail: {
-      version: config.version
+      version: version
     }
   }))
 }
 
-const requestEvent = `${config.eventStatus}-request`
+const requestEvent = `${eventStatus}-request`
 
 export function setup () {
-  if (window.location.origin !== config.functionsUrl) {
+  if (window.location.origin !== functionsUrl) {
     return
   }
 

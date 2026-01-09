@@ -1,6 +1,6 @@
 import {createSignal, createResource, Show} from 'solid-js'
 
-import config from '../config.js'
+import { functionsUrl } from '../config.js'
 import {signin} from '../store/store-content.js'
 
 export default function PopupLoginForm ()  {
@@ -50,7 +50,7 @@ export default function PopupLoginForm ()  {
 
       <div class="mb-3">
         <a
-          href={config.functionsUrl}
+          href={functionsUrl}
           target="_blank"
           class="btn btn-link float-end btn-forgot"
           tabindex="-1"

@@ -10,7 +10,7 @@ import {
   destroy as storeDestroy,
   setup as storeSetup,
 } from '../store/store-content.js'
-import config from '../config.js'
+import { eventDestroy } from '../config.js'
 import {isBlocklisted} from './blocklist.js'
 
 import {setup as setupKeyboard, destroy as destroyKeyboard} from './keyboard.js'
@@ -126,10 +126,9 @@ function destructor () {
 }
 
 // destroy existing content script
-const destroyEvent = new CustomEvent(config.destroyEvent)
-document.dispatchEvent(destroyEvent)
+document.dispatchEvent(new CustomEvent(eventDestroy))
 
-document.addEventListener(config.destroyEvent, destructor, {once: true})
+document.addEventListener(eventDestroy, destructor, {once: true})
 
 let settingsCache = {}
 function refreshContentScripts () {

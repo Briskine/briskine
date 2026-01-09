@@ -2,7 +2,7 @@ import browser from 'webextension-polyfill'
 import isEqual from 'lodash.isequal'
 import debounce from 'lodash.debounce'
 
-import config from '../config.js'
+import {functionsUrl, eventToggleBubble, eventShowDialog, eventInsertTemplate} from '../config.js'
 import {getAccount, getTemplates, getExtensionData, setExtensionData, getSettings} from '../store/store-api.js'
 import sortTemplates from '../store/sort-templates.js'
 import trigger from './background-trigger.js'
@@ -50,7 +50,7 @@ async function saveAsTemplateAction (info, tab) {
   }
 
   browser.tabs.create({
-    url: `${config.functionsUrl}/template/new?body=${encodeURIComponent(body)}`
+    url: `${functionsUrl}/template/new?body=${encodeURIComponent(body)}`
   })
 }
 
@@ -83,7 +83,7 @@ async function toggleBubbleAction (info, tab) {
     bubbleAllowlist: bubbleAllowlist,
   })
 
-  return trigger(config.eventToggleBubble, {enabled: enableBubble}, tab.id, info.frameId)
+  return trigger(eventToggleBubble, {enabled: enableBubble}, tab.id, info.frameId)
 }
 
 async function clickContextMenu (info = {}, tab = {}) {
@@ -92,7 +92,7 @@ async function clickContextMenu (info = {}, tab = {}) {
   }
 
   if (info.menuItemId === openDialogMenu) {
-    return trigger(config.eventShowDialog, {}, tab.id, info.frameId)
+    return trigger(eventShowDialog, {}, tab.id, info.frameId)
   }
 
   if (info.menuItemId === signInMenu) {
@@ -120,7 +120,7 @@ async function clickContextMenu (info = {}, tab = {}) {
     modified_datetime: null,
   }
 
-  return trigger(config.eventInsertTemplate, {template: cleanTemplate}, tab.id, info.frameId)
+  return trigger(eventInsertTemplate, {template: cleanTemplate}, tab.id, info.frameId)
 }
 
 async function createContextMenus (menus = []) {

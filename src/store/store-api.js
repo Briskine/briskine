@@ -21,7 +21,7 @@ import {
   Timestamp,
 } from 'firebase/firestore/lite'
 
-import config from '../config.js'
+import { functionsUrl }  from '../config.js'
 import trigger from '../background/background-trigger.js'
 import fuzzySearch from './search.js'
 import {badgeUpdate} from '../background/badge.js'
@@ -507,7 +507,7 @@ function signinError (err) {
 
 export async function signin (params = {}) {
   try {
-    const loginResponse = await request(`${config.functionsUrl}/api/1/login`, {
+    const loginResponse = await request(`${functionsUrl}/api/1/login`, {
       method: 'POST',
       body: {
         email: params.email,
@@ -525,12 +525,12 @@ export async function getSession () {
   try {
     // create session
     await getSignedInUser()
-    return request(`${config.functionsUrl}/api/1/session`, {
+    return request(`${functionsUrl}/api/1/session`, {
       authorization: true,
     })
   } catch {
     // try to auto login
-    const session = await request(`${config.functionsUrl}/api/1/session`)
+    const session = await request(`${functionsUrl}/api/1/session`)
     await signinWithToken(session.token)
     return trigger('login')
   }
@@ -544,7 +544,7 @@ export async function logout () {
   clearDataCache()
   trigger('logout')
 
-  return request(`${config.functionsUrl}/api/1/logout`, {
+  return request(`${functionsUrl}/api/1/logout`, {
     method: 'POST',
   })
 }

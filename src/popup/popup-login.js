@@ -1,6 +1,6 @@
 import {createSignal, createResource, Show} from 'solid-js'
 
-import config from '../config.js'
+import { websiteUrl, functionsUrl }  from '../config.js'
 import {getSession as storeGetSession} from  '../store/store-content.js'
 import PopupLoginForm from './popup-login-form.js'
 
@@ -22,7 +22,7 @@ export default function PopupLogin () {
   return (
     <div class="popup-login text-center">
       <div class="popup-box popup-logo">
-        <a href={config.websiteUrl} target="_blank">
+        <a href={websiteUrl} target="_blank">
           <img src="../icons/briskine-combo.svg" width="160" alt="Briskine"/>
         </a>
       </div>
@@ -51,7 +51,7 @@ export default function PopupLogin () {
         <small>
           Don't have an account yet?
           <br />
-          <a href={`${config.functionsUrl}/signup/`} target="_blank">
+          <a href={`${functionsUrl}/signup/`} target="_blank">
             Create a free account
           </a>
         </small>

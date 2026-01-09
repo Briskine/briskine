@@ -1,31 +1,32 @@
 /* globals ENV, VERSION */
-var Config = {
-  version: VERSION,
-  websiteUrl: 'http://localhost:4000',
-  functionsUrl: 'http://localhost:5000',
-  helpUrl: 'https://help.briskine.com/',
-  dashboardTarget: 'gt-dashboard',
+export const version = VERSION
 
-  eventDestroy: 'briskine-destroy',
-  eventStatus: 'briskine-status',
-  eventSandboxCompile: 'briskine-template-compile',
-  eventShowDialog: 'briskine-dialog',
-  eventInsertTemplate: 'briskine-insert-template',
-  eventToggleBubble: 'briskine-toggle-bubble',
-}
+export const websiteUrl = (() => {
+  if (ENV === 'production') {
+    return 'https://www.briskine.com'
+  }
 
-// firebase staging
-if (ENV === 'staging') {
-  Config = Object.assign(Config, {
-    functionsUrl: 'https://staging.briskine.com'
-  })
-}
+  return 'http://localhost:4000'
+})()
 
-if (ENV === 'production') {
-  Config = Object.assign(Config, {
-    websiteUrl: 'https://www.briskine.com',
-    functionsUrl: 'https://app.briskine.com'
-  })
-}
+export const functionsUrl = (() => {
+  if (ENV === 'staging') {
+    return 'https://staging.briskine.com'
+  }
 
-export default Config
+  if (ENV === 'production') {
+    return 'https://app.briskine.com'
+  }
+
+  return 'http://localhost:5000'
+})()
+
+export const helpUrl = 'https://help.briskine.com/'
+export const dashboardTarget = 'gt-dashboard'
+
+export const eventDestroy = 'briskine-destroy'
+export const eventStatus = 'briskine-status'
+export const eventSandboxCompile = 'briskine-template-compile'
+export const eventShowDialog = 'briskine-dialog'
+export const eventInsertTemplate = 'briskine-insert-template'
+export const eventToggleBubble = 'briskine-toggle-bubble'

@@ -2,7 +2,7 @@ import {For, Show, createEffect, createSignal, onMount, mergeProps, createMemo} 
 
 import IconArrowUpRightSquare from 'bootstrap-icons/icons/arrow-up-right-square.svg'
 
-import config from '../../config.js'
+import { functionsUrl } from '../../config.js'
 
 const activeTemplateClass = 'active'
 const templateRenderLimit = 42
@@ -174,7 +174,7 @@ export default function DialogList (originalProps) {
                 <Show when={props.loggedIn}>
                   <div class="edit-container dialog-safari-hide">
                     <a
-                      href={`${config.functionsUrl}/template/${t.id}`}
+                      href={`${functionsUrl}/template/${t.id}`}
                       target="_blank"
                       class="btn btn-sm btn-edit"
                       title="Edit template"

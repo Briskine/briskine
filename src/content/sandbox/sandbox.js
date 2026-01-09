@@ -10,7 +10,7 @@
 import {create  as handlebarsCreate} from 'handlebars'
 
 import {respond} from './sandbox-messenger-client.js'
-import config from '../../config.js'
+import { eventSandboxCompile } from '../../config.js'
 
 // legacy date helper
 import date from '../helpers/date.js'
@@ -64,6 +64,6 @@ export async function compileTemplate (template = '', context = {}, partials = [
   }
 }
 
-respond(config.eventSandboxCompile, ({template, context, partials}) => {
+respond(eventSandboxCompile, ({template, context, partials}) => {
   return compileTemplate(template, context, partials)
 })

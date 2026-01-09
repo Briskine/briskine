@@ -1,6 +1,6 @@
 import browser from 'webextension-polyfill'
 
-import config from '../config.js'
+import { eventDestroy } from '../config.js'
 
 function createRequest (type) {
   return async function (params) {
@@ -21,7 +21,7 @@ function createRequest (type) {
       // extension context invalidated
       if (!browser.runtime.id) {
         // destroy existing content scripts
-        return document.dispatchEvent(new CustomEvent(config.destroyEvent))
+        return document.dispatchEvent(new CustomEvent(eventDestroy))
       }
 
       throw err

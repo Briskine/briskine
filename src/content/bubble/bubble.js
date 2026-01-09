@@ -3,7 +3,7 @@
  * Floating action button.
  */
 
-import config from '../../config.js'
+import { eventShowDialog, eventToggleBubble } from '../../config.js'
 import {dialogTagName} from '../dialog/dialog.js'
 import { getExtensionData, trigger, on, off } from '../../store/store-content.js'
 
@@ -62,7 +62,7 @@ customElements.define(
 
         // trigger the event on the bubble,
         // to position the dialog next to it.
-        trigger(config.eventShowDialog, {
+        trigger(eventShowDialog, {
           target: this.$button,
         })
       })
@@ -109,7 +109,7 @@ export async function setup (settings = {}) {
 
   toggleBubbleHandler = makeToggleBubbleHandler(settings)
 
-  on(config.eventToggleBubble, toggleBubbleHandler)
+  on(eventToggleBubble, toggleBubbleHandler)
 
   const { hostname } = window.location
   const extensionData = await getExtensionData()
@@ -248,7 +248,7 @@ function destroyInstance () {
 
 export function destroy () {
   destroyInstance()
-  off(config.eventToggleBubble, toggleBubbleHandler)
+  off(eventToggleBubble, toggleBubbleHandler)
 }
 
 const textfieldMinWidth = 100

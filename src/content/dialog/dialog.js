@@ -2,7 +2,7 @@
 import {Show, onMount, onCleanup, createSignal, createEffect, mergeProps} from 'solid-js'
 import {render} from 'solid-js/web'
 
-import config from '../../config.js'
+import { eventShowDialog } from '../../config.js'
 import {
   getTemplates,
   getTags,
@@ -595,12 +595,12 @@ export function setup (settings = {}) {
 
   settingsCache = settings
   keybind(settingsCache.dialog_shortcut, keyboardCreateAndShow)
-  storeOn(config.eventShowDialog, createAndShow)
+  storeOn(eventShowDialog, createAndShow)
 }
 
 export function destroy () {
   keyunbind(settingsCache.dialog_shortcut, keyboardCreateAndShow)
-  storeOff(config.eventShowDialog, createAndShow)
+  storeOff(eventShowDialog, createAndShow)
 
   if (dialogInstance) {
     dialogInstance.remove()
