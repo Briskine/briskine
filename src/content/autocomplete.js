@@ -10,7 +10,6 @@ import linkedinSalesNavigatorPlugin from './plugins/linkedin-sales-navigator.js'
 import outlookPlugin from './plugins/outlook.js'
 import facebookPlugin from './plugins/facebook.js'
 import zendeskPlugin from './plugins/zendesk.js'
-import crmPlugin from './plugins/crm.js'
 import universalPlugin from './plugins/universal.js'
 
 import {updateTemplateStats} from '../store/store-content.js'
@@ -26,7 +25,6 @@ register(linkedinSalesNavigatorPlugin)
 register(outlookPlugin)
 register(facebookPlugin)
 register(zendeskPlugin)
-register(crmPlugin)
 register(universalPlugin)
 
 export function getSelectedWord (params) {

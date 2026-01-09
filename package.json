@@ -1,6 +1,6 @@
 {
   "name": "briskine",
-  "version": "7.15.6",
+  "version": "7.15.7",
   "description": "Write everything faster.",
   "private": true,
   "type": "module",
@@ -64,7 +64,7 @@
     "eslint-plugin-solid": "^0.14.1",
     "firebase-tools": "^15.0.0",
     "glob": "^13.0.0",
-    "globals": "^16.0.0",
+    "globals": "^17.0.0",
     "http-server": "^14.1.1",
     "mini-css-extract-plugin": "^2.0.0",
     "mocha": "^11.0.0",
