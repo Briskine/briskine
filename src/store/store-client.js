@@ -3,29 +3,29 @@ import browser from 'webextension-polyfill'
 import config from '../config.js'
 
 function createRequest (type) {
-  return (params) => {
-    return new Promise((resolve, reject) => {
+  return async function (params) {
+    try {
       // get from background
-      browser.runtime.sendMessage({
+      const data = await browser.runtime.sendMessage({
         type: type,
-        data: params
-      }).then((data) => {
-        // handle errors
-        if (data && data.storeError) {
-          return reject(data.storeError)
-        }
-
-        return resolve(data)
-      }).catch((err) => {
-        // extension context invalidated
-        if (!browser.runtime.id) {
-          // destroy existing content scripts
-          return document.dispatchEvent(new CustomEvent(config.destroyEvent))
-        }
-
-        return reject(err)
+        data: params,
       })
-    })
+
+      // handle errors
+      if (data?.storeError) {
+        throw data.storeError
+      }
+
+      return data
+    } catch (err) {
+      // extension context invalidated
+      if (!browser.runtime.id) {
+        // destroy existing content scripts
+        return document.dispatchEvent(new CustomEvent(config.destroyEvent))
+      }
+
+      throw err
+    }
   }
 }
 
