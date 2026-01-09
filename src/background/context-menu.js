@@ -6,7 +6,7 @@ import config from '../config.js'
 import {getAccount, getTemplates, getExtensionData, setExtensionData, getSettings} from '../store/store-api.js'
 import sortTemplates from '../store/sort-templates.js'
 import trigger from '../store/store-trigger.js'
-import {openPopup} from '../store/open-popup.js'
+import {openPopup} from '../background/open-popup.js'
 import {isBlocklisted} from '../content/blocklist.js'
 import bubbleAllowlistPrivate from '../content/bubble/bubble-allowlist-private.js'
 

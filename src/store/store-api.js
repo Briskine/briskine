@@ -30,7 +30,7 @@ import htmlToText from '../content/utils/html-to-text.js'
 import {getExtensionData, setExtensionData} from './extension-data.js'
 
 export {getExtensionData, setExtensionData} from './extension-data.js'
-export {openPopup} from './open-popup.js'
+export {openPopup} from '../background/open-popup.js'
 
 const firebaseApp = initializeApp(FIREBASE_CONFIG)
 const firebaseAuth = initializeAuth(firebaseApp, {
