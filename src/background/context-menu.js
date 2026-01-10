@@ -1,6 +1,5 @@
 import browser from 'webextension-polyfill'
 import isEqual from 'lodash.isequal'
-import debounce from 'lodash.debounce'
 
 import {functionsUrl, eventToggleBubble, eventShowDialog, eventInsertTemplate} from '../config.js'
 import {getAccount, getTemplates, getExtensionData, setExtensionData, getSettings} from '../store/store-api.js'
@@ -315,7 +314,12 @@ function enableContextMenu () {
   browser.tabs.onActivated.addListener(onTabSwitchHandler)
   browser.tabs.onUpdated.addListener(onTabUpdateHandler)
 
-  const debouncedStorageChange = debounce(storageChange, 1000)
+  let timer
+  function debouncedStorageChange (changes = {}) {
+    clearTimeout(timer)
+    timer = setTimeout(() => storageChange(changes), 1000)
+  }
+
   browser.storage.local.onChanged.addListener(debouncedStorageChange)
 }
 
