@@ -83,7 +83,7 @@ async function toggleBubbleAction (info, tab) {
     bubbleAllowlist: bubbleAllowlist,
   })
 
-  return trigger(eventToggleBubble, {enabled: enableBubble}, tab.id, info.frameId)
+  return trigger(eventToggleBubble, {enabled: enableBubble}, tab, info.frameId)
 }
 
 async function clickContextMenu (info = {}, tab = {}) {
@@ -92,7 +92,7 @@ async function clickContextMenu (info = {}, tab = {}) {
   }
 
   if (info.menuItemId === openDialogMenu) {
-    return trigger(eventShowDialog, {}, tab.id, info.frameId)
+    return trigger(eventShowDialog, {}, tab, info.frameId)
   }
 
   if (info.menuItemId === signInMenu) {
@@ -120,7 +120,7 @@ async function clickContextMenu (info = {}, tab = {}) {
     modified_datetime: null,
   }
 
-  return trigger(eventInsertTemplate, {template: cleanTemplate}, tab.id, info.frameId)
+  return trigger(eventInsertTemplate, {template: cleanTemplate}, tab, info.frameId)
 }
 
 async function createContextMenus (menus = []) {

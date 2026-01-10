@@ -13,8 +13,14 @@ function isNotAvailableError (err) {
 }
 
 // send message to popup
-function sendToPopup (params = {}) {
-  return browser.runtime.sendMessage(params)
+async function sendToPopup (params = {}) {
+  try {
+    await browser.runtime.sendMessage(params)
+  } catch (err) {
+    if (!isNotAvailableError(err)) {
+      debug(['trigger', params, err], 'error')
+    }
+  }
 }
 
 // send message to all tabs
@@ -27,14 +33,19 @@ async function sendToAllTabs (params = {}) {
     discarded: false,
   })
 
-  return tabs.map((tab) => sendToTab(params, tab.id))
+  tabs.forEach((tab) => sendToTab(params, tab))
 }
 
-async function sendToTab (params = {}, tabId, frameId) {
-  return browser.tabs.sendMessage(tabId, params, { frameId: frameId })
+async function sendToTab (params = {}, tab, frameId) {
+  try {
+    await browser.tabs.sendMessage(tab.id, params, { frameId: frameId })
+  } catch (err) {
+    const errorType = isNotAvailableError(err) ? 'warn' : 'error'
+    debug(['trigger', params, tab, err], errorType)
+  }
 }
 
-export default async function trigger (name = '', details = {}, tabId, frameId) {
+export default function trigger (name = '', details = {}, tab, frameId) {
   const event = {
     type: 'trigger',
     data: {
@@ -43,26 +54,10 @@ export default async function trigger (name = '', details = {}, tabId, frameId) 
     },
   }
 
-  let results = []
-
-  if (tabId) {
-    results = [
-      sendToTab(event, tabId, frameId),
-    ]
+  if (tab) {
+    sendToTab(event, tab, frameId)
   } else {
-    results = [
-      sendToPopup(event),
-      ...await sendToAllTabs(event),
-    ]
+    sendToPopup(event)
+    sendToAllTabs(event)
   }
-
-  results = await Promise.allSettled(results)
-  results.forEach((result) => {
-    if (
-      result?.status === 'rejected'
-      && !isNotAvailableError(result?.reason)
-    ) {
-      debug(['trigger', event.data.name, result], 'error')
-    }
-  })
 }
