@@ -49,8 +49,16 @@ export async function pageInsertQuillTemplate (params = {}) {
       // use quill instance methods.
       quill.insertText(quillRange?.index, plainText)
     } else {
-      // insert html when trusted types are not used
-      quill.clipboard.dangerouslyPasteHTML(quillRange?.index, params.text)
+      try {
+        // when we don't have a default trusted types policy (e.g., Gemini),
+        // try to insert html.
+        quill.clipboard.dangerouslyPasteHTML(quillRange?.index, params.text)
+      } catch {
+        // if we catch an error (could be caused by trusted types only in the editor - e.g., Gemini),
+        // insert plain text.
+        // we can't catch the dangerouslyPasteHTML error on LinkedIn.
+        quill.insertText(quillRange?.index, plainText)
+      }
     }
   } else {
     // quill v2,
