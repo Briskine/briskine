@@ -514,8 +514,7 @@ export async function signin (params = {}) {
         password: params.password,
       }
     })
-    await signinWithToken(loginResponse.token)
-    return trigger('login')
+    return signinWithToken(loginResponse.token)
   } catch (err) {
     return signinError(err)
   }
@@ -531,8 +530,7 @@ export async function getSession () {
   } catch {
     // try to auto login
     const session = await request(`${functionsUrl}/api/1/session`)
-    await signinWithToken(session.token)
-    return trigger('login')
+    return signinWithToken(session.token)
   }
 }
 
@@ -567,10 +565,12 @@ async function signinWithToken (token = '') {
   // which in turn triggers getSignedInUser.
   const customer = await getActiveCustomer(user)
 
-  return setSignedInUser({
+  await setSignedInUser({
     id: user.id,
     customer: customer,
   })
+
+  trigger('login')
 }
 
 export async function getCustomer (customerId) {
