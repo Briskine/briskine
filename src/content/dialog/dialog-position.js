@@ -3,17 +3,49 @@
 
 import getSelection from '../selection.js'
 
-export function getDialogPosition (targetNode, instance, placement = 'top-left') {
+// moves up the tree finding the closest "rendered" element
+// which doesn't have display: none, so we can get its position.
+// we don't use checkVisibility because elements hidden without display: none (e.g., visibility)
+// are rendered and we can get their position.
+function closestRendered (target) {
+  // target can be a Node or Range
+  // start with the current element
+  let node = target
+
+  // if node is not an element node (range, text node)
+  if (node.nodeType !== Node.ELEMENT_NODE) {
+    return node
+  }
+
+  while (node && node !== document.body) {
+    // if it has an offsetParent, it is rendered.
+    if (node.offsetParent !== null) {
+      return node
+    }
+
+    // support position: fixed, offsetParent returns null for fixed elements.
+    // if offsetParent was null, but display: none is not set, it must be fixed.
+    if (window.getComputedStyle(node).display !== 'none') {
+      return node
+    }
+
+    node = node.parentElement
+  }
+
+  return node
+}
+
+export function getDialogPosition (target, instance, placement = 'top-left') {
   const pageHeight = window.innerHeight
   const scrollTop = window.scrollY
   const scrollLeft = window.scrollX
 
   const dialogMetrics = instance.getBoundingClientRect()
 
-  // in case we want to position the dialog next to
-  // another element,
-  // not next to the cursor.
-  // eg. when we position it next to the bubble.
+  // when we position the dialog next to
+  // another element - not next to the cursor (when we position it next to the bubble),
+  // or when the focused node is an element (most times when the editor is empty).
+  const targetNode = closestRendered(target)
   const targetMetrics = targetNode.getBoundingClientRect()
 
   // because we use getBoundingClientRect
