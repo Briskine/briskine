@@ -40,18 +40,28 @@ export async function pageInsertQuillTemplate (params = {}) {
   const plainText = htmlToText(params.text)
 
   if (quill) {
-    // quill v1
+    // quill v1,
+    // use quill instance methods.
     const quillRange = quill.getSelection()
-    if (window?.trustedTypes?.defaultPolicy) {
-      // when we have a default trusted types policy (e.g., LinkedIn),
-      // only insert plain text,
-      // because the template html will most probably include invalid elements.
-      // use quill instance methods.
-      quill.insertText(quillRange?.index, plainText)
-    } else {
-      // insert html when trusted types are not used
-      quill.clipboard.dangerouslyPasteHTML(quillRange?.index, params.text)
+
+    // when we don't have a default trusted types policy (e.g., Gemini),
+    // try to insert html.
+    if (!window?.trustedTypes?.defaultPolicy) {
+      try {
+        quill.clipboard.dangerouslyPasteHTML(quillRange?.index, params.text)
+        return
+      } catch {
+        // if we catch an error (could be caused by trusted types only in the editor - e.g., Gemini),
+        // insert plain text.
+        // we can't catch the dangerouslyPasteHTML error on LinkedIn.
+      }
     }
+
+    // when we have a default trusted types policy (e.g., LinkedIn),
+    // or when pasting html fails,
+    // only insert plain text,
+    // because the template html will most probably include invalid elements.
+    quill.insertText(quillRange?.index, plainText)
   } else {
     // quill v2,
     // use paste insert.
