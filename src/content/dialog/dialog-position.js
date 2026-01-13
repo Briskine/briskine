@@ -182,5 +182,9 @@ export function getEditableCaret (element) {
   // insert mirror
   document.body.appendChild($mirror)
 
-  return $virtualCaret
+  function cleanup () {
+    $mirror.remove()
+  }
+
+  return [$virtualCaret, cleanup]
 }
