@@ -1,31 +1,31 @@
 import browser from 'webextension-polyfill'
 
-import config from '../config.js'
+import { eventDestroy } from '../config.js'
 
 function createRequest (type) {
-  return (params) => {
-    return new Promise((resolve, reject) => {
+  return async function (params) {
+    try {
       // get from background
-      browser.runtime.sendMessage({
+      const data = await browser.runtime.sendMessage({
         type: type,
-        data: params
-      }).then((data) => {
-        // handle errors
-        if (data && data.storeError) {
-          return reject(data.storeError)
-        }
-
-        return resolve(data)
-      }).catch((err) => {
-        // extension context invalidated
-        if (!browser.runtime.id) {
-          // destroy existing content scripts
-          return document.dispatchEvent(new CustomEvent(config.destroyEvent))
-        }
-
-        return reject(err)
+        data: params,
       })
-    })
+
+      // handle errors
+      if (data?.storeError) {
+        throw data.storeError
+      }
+
+      return data
+    } catch (err) {
+      // extension context invalidated
+      if (!browser.runtime.id) {
+        // destroy existing content scripts
+        return document.dispatchEvent(new CustomEvent(eventDestroy))
+      }
+
+      throw err
+    }
   }
 }
 
@@ -46,10 +46,10 @@ export function off (name, callback) {
   })
 }
 
-function trigger (data = {}) {
-  events.filter((event) => event.name === data.name).forEach((event) => {
+export function trigger (name, details = {}) {
+  events.filter((event) => event.name === name).forEach((event) => {
     if (typeof event.callback === 'function') {
-      event.callback(data.details)
+      event.callback(details)
     }
   })
 }
@@ -60,7 +60,7 @@ browser.runtime.onMessage.addListener((req) => {
     req.type &&
     req.type === 'trigger'
   ) {
-    trigger(req.data)
+    trigger(req.data.name, req.data.details)
   }
 })
 

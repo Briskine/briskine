@@ -1,5 +1,5 @@
 import {refetchCollections} from '../store/store-content.js'
-import config from '../config.js'
+import { functionsUrl } from '../config.js'
 
 const prefix = 'briskine-dashboard'
 
@@ -58,7 +58,7 @@ function dashboardEvent (e) {
 }
 
 export function setup () {
-  if (window.location.origin !== config.functionsUrl) {
+  if (window.location.origin !== functionsUrl) {
     return
   }
 

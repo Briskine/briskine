@@ -1,6 +1,6 @@
 import {createSignal, createResource, Show, Switch, Match, onMount, For, createMemo} from 'solid-js'
 
-import config from '../config.js'
+import { websiteUrl, functionsUrl, dashboardTarget } from '../config.js'
 import {
   autosync,
   getExtensionData,
@@ -144,7 +144,7 @@ export default function PopupDashboard () {
   return (
     <div class="popup-dashboard">
       <div class="popup-box popup-logo d-flex justify-content-between">
-        <a href={config.websiteUrl} target="_blank">
+        <a href={websiteUrl} target="_blank">
           <img src="../icons/briskine-combo.svg" width="132" alt="Briskine"/>
         </a>
 
@@ -199,8 +199,8 @@ export default function PopupDashboard () {
         </Show>
         <li>
           <a
-            href={`${config.functionsUrl}/template/new`}
-            target={config.dashboardTarget}
+            href={`${functionsUrl}/template/new`}
+            target={dashboardTarget}
             >
             <span class="icon"><PlusSquareFill /></span>
             New template
@@ -208,8 +208,8 @@ export default function PopupDashboard () {
         </li>
         <li>
           <a
-            href={config.functionsUrl}
-            target={config.dashboardTarget}
+            href={functionsUrl}
+            target={dashboardTarget}
             >
             <span class="icon"><ArchiveFill /></span>
             Manage templates
@@ -217,8 +217,8 @@ export default function PopupDashboard () {
         </li>
         <li>
           <a
-            href={`${config.functionsUrl}/settings`}
-            target={config.dashboardTarget}
+            href={`${functionsUrl}/settings`}
+            target={dashboardTarget}
             >
             <span class="icon"><GearFill /></span>
             Settings
@@ -252,8 +252,8 @@ export default function PopupDashboard () {
             </p>
 
             <a
-              href={`${config.functionsUrl}/subscription`}
-              target={config.dashboardTarget}
+              href={`${functionsUrl}/subscription`}
+              target={dashboardTarget}
               class="btn btn-success btn-upgrade"
               >
               Upgrade to Premium
@@ -263,8 +263,8 @@ export default function PopupDashboard () {
 
       <div class="popup-box popup-status">
           <a
-            href={`${config.functionsUrl}/account`}
-            target={config.dashboardTarget}
+            href={`${functionsUrl}/account`}
+            target={dashboardTarget}
             class="popup-user btn btn-link"
             title={`Account settings for ${user().email}`}
             >

@@ -3,9 +3,9 @@
  * Floating action button.
  */
 
-import config from '../../config.js'
+import { eventShowDialog, eventToggleBubble } from '../../config.js'
 import {dialogTagName} from '../dialog/dialog.js'
-import { getExtensionData } from '../../store/store-content.js'
+import { getExtensionData, trigger, on, off } from '../../store/store-content.js'
 
 import getEventTarget from '../event-target.js'
 import getActiveElement from '../active-element.js'
@@ -60,11 +60,11 @@ customElements.define(
       this.$button.addEventListener('click', (e) => {
         e.stopPropagation()
 
-        // trigger the event on the bubble, to position the dialog next to it.
-        this.$button.dispatchEvent(new CustomEvent(config.eventShowDialog, {
-          bubbles: true,
-          composed: true,
-        }))
+        // trigger the event on the bubble,
+        // to position the dialog next to it.
+        trigger(eventShowDialog, {
+          target: this.$button,
+        })
       })
 
       this.ready = true
@@ -92,12 +92,12 @@ function blurTextfield (e) {
 let toggleBubbleHandler = () => {}
 
 function makeToggleBubbleHandler (settings) {
-  return ({detail}) =>{
-    if (detail) {
-      create(settings)
-    } else {
-      destroyInstance()
+  return ({ enabled } = {}) => {
+    if (enabled) {
+      return create(settings)
     }
+
+    return destroyInstance()
   }
 }
 
@@ -109,7 +109,7 @@ export async function setup (settings = {}) {
 
   toggleBubbleHandler = makeToggleBubbleHandler(settings)
 
-  window.addEventListener(config.eventToggleBubble, toggleBubbleHandler)
+  on(eventToggleBubble, toggleBubbleHandler)
 
   const { hostname } = window.location
   const extensionData = await getExtensionData()
@@ -248,7 +248,7 @@ function destroyInstance () {
 
 export function destroy () {
   destroyInstance()
-  window.removeEventListener(config.eventToggleBubble, toggleBubbleHandler)
+  off(eventToggleBubble, toggleBubbleHandler)
 }
 
 const textfieldMinWidth = 100

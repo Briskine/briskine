@@ -21,8 +21,8 @@ import {
   Timestamp,
 } from 'firebase/firestore/lite'
 
-import config from '../config.js'
-import trigger from './store-trigger.js'
+import { functionsUrl }  from '../config.js'
+import trigger from '../background/background-trigger.js'
 import fuzzySearch from './search.js'
 import {badgeUpdate} from '../background/badge.js'
 import {getDefaultTemplates, defaultTags, defaultSettings} from './default-data.js'
@@ -30,7 +30,7 @@ import htmlToText from '../content/utils/html-to-text.js'
 import {getExtensionData, setExtensionData} from './extension-data.js'
 
 export {getExtensionData, setExtensionData} from './extension-data.js'
-export {openPopup} from './open-popup.js'
+export {openPopup} from '../background/open-popup.js'
 
 const firebaseApp = initializeApp(FIREBASE_CONFIG)
 const firebaseAuth = initializeAuth(firebaseApp, {
@@ -46,23 +46,6 @@ if (ENV === 'development') {
   connectFirestoreEmulator(db, 'localhost', 5002)
 }
 
-// convert firestore timestamps to dates
-const timestamps = [
-  'created_datetime',
-  'modified_datetime',
-  'deleted_datetime',
-]
-
-function convertToNativeDates (obj = {}) {
-  const parsed = Object.assign({}, obj)
-  timestamps.forEach((prop) => {
-    if (obj[prop] && typeof obj[prop].seconds === 'number' && typeof obj[prop].nanoseconds === 'number') {
-      const d = new Timestamp(obj[prop].seconds, obj[prop].nanoseconds)
-      parsed[prop] = d.toDate()
-    }
-  })
-  return parsed
-}
 
 async function clearDataCache () {
   // cache stats,
@@ -110,13 +93,17 @@ function templatesEveryoneQuery (user) {
   )
 }
 
+const templateCollections = [
+  'templatesOwned',
+  'templatesShared',
+  'templatesEveryone',
+]
+
 const allCollections = [
   'users',
   'customers',
   'tags',
-  'templatesOwned',
-  'templatesShared',
-  'templatesEveryone',
+  ...templateCollections,
 ]
 
 function getCollectionQuery (name, user) {
@@ -146,27 +133,25 @@ function getCollectionQuery (name, user) {
 
 const collectionRequestQueue = {}
 
-function getCollection (params = {}) {
+async function getCollection (params = {}) {
   // request is already in progress
   if (collectionRequestQueue[params.collection]) {
     return collectionRequestQueue[params.collection]
   }
 
   // get from cache
-  return browser.storage.local.get(params.collection)
-    .then((res) => {
-      if (res[params.collection]) {
-        return res[params.collection]
-      }
+  const cache = await browser.storage.local.get(params.collection)
+  if (cache[params.collection]) {
+    return cache[params.collection]
+  }
 
-      const query = getCollectionQuery(params.collection, params.user)
-      collectionRequestQueue[params.collection] = getDocs(query).then((snapshot) => {
-        collectionRequestQueue[params.collection] = null
-        return refreshLocalData(params.collection, snapshot)
-      })
+  const query = getCollectionQuery(params.collection, params.user)
+  collectionRequestQueue[params.collection] = getDocs(query).then((snapshot) => {
+    collectionRequestQueue[params.collection] = null
+    return refreshLocalData(params.collection, snapshot)
+  })
 
-      return collectionRequestQueue[params.collection]
-    })
+  return collectionRequestQueue[params.collection]
 }
 
 // refresh local data cache from snapshot listeners
@@ -182,19 +167,49 @@ function refreshLocalData (collectionName, querySnapshot) {
   })
 }
 
-async function updateCache (params = {}) {
+let debouncedTemplatesUpdateEvent
+
+async function updateCache ({collection, data}) {
   await browser.storage.local.set({
-    [params.collection]: params.data
+    [collection]: data
   })
 
-  const eventName = params.collection.includes('templates') ? 'templates-updated' : `${params.collection}-updated`
-  trigger(eventName, params.data)
+  const eventCollection = templateCollections.includes(collection) ? 'templates' : collection
+  const eventName = `${eventCollection}-updated`
+  let eventData = data
+
+  if (eventCollection === 'templates') {
+    const cachedTemplateCollections = await browser.storage.local.get(templateCollections)
+
+    let cachedTemplates = {}
+    templateCollections.forEach((templateCollectionName) => {
+      cachedTemplates = {
+        ...cachedTemplates,
+        ...cachedTemplateCollections[templateCollectionName],
+      }
+    })
+
+    eventData = await parseTemplatesCollection(cachedTemplates)
+
+    // debounce templates trigger
+    // because we trigger it three times in a row (once for each templates collection)
+    // for premium customers.
+    clearTimeout(debouncedTemplatesUpdateEvent)
+    debouncedTemplatesUpdateEvent = setTimeout(() => {
+      trigger(eventName, eventData)
+    }, 500)
+  } else if (eventCollection === 'tags') {
+    eventData = parseTagsCollection(data)
+    trigger(eventName, eventData)
+  } else {
+    trigger(eventName, eventData)
+  }
 
   await setExtensionData({
     lastSync: Date.now(),
   })
 
-  return params.data
+  return data
 }
 
 export async function refetchCollections (collections = []) {
@@ -243,19 +258,8 @@ export async function autosync (timeout = defaultSyncTimeout) {
   return
 }
 
-// handle fetch errors
-function handleErrors (response) {
-  if (!response.ok) {
-    return response.clone().json().then((res) => {
-      return Promise.reject(res)
-    })
-  }
-  return response
-}
-
 // fetch wrapper
-// support authorization header, form submit, query params, error handling
-function request (url, params = {}) {
+async function request (url, params = {}) {
   const defaults = {
     authorization: false,
     method: 'GET',
@@ -265,77 +269,60 @@ function request (url, params = {}) {
     body: {},
   }
 
-  const data = Object.assign({}, defaults, params)
+  const data = {
+    ...defaults,
+    ...params,
+  }
   data.method = data.method.toUpperCase()
 
   // auth support
-  let auth = Promise.resolve()
   if (data.authorization) {
-    auth = getUserToken()
+    const token = await firebaseAuth.currentUser.getIdToken(true)
+    data.headers.Authorization = `Bearer ${token}`
   }
 
-  return auth
-    .then((res) => {
-      if (res) {
-        data.headers.Authorization = `Bearer ${res.token}`
-      }
+  if (data.method !== 'GET') {
+    data.body = JSON.stringify(data.body)
+  } else {
+    delete data.body
+  }
 
-      if (data.method !== 'GET') {
-        data.body = JSON.stringify(data.body)
-      } else {
-        delete data.body
-      }
+  const response = await fetch(url, {
+    method: data.method,
+    headers: data.headers,
+    body: data.body,
+  })
 
-      return fetch(url, {
-          method: data.method,
-          headers: data.headers,
-          body: data.body,
-        })
-        .then(handleErrors)
-        .then((res) => res.json())
-    })
+  // handle errors
+  if (!response.ok) {
+    const responseJson = await response.clone().json()
+    return Promise.reject(responseJson)
+  }
+
+  return response.json()
 }
 
-// return user and token
-function getUserToken () {
-  return firebaseAuth.currentUser.getIdToken(true)
-    .then((token) => {
-      return getSignedInUser().then((user) => {
-        return {
-          user: user,
-          token: token
-        }
-      })
-    })
-}
-
-export function getSettings () {
-  return getSignedInUser()
-    .then((user) => {
-      return Promise.all([
-        user.id,
-        getCollection({
-          user: user,
-          collection: 'users'
-        })
-      ])
-    })
-    .then(([id, users]) => {
-      const userData = users[id]
-      if (userData) {
-        return Object.assign({}, defaultSettings, userData.settings)
-      }
-
+export async function getSettings () {
+  let user
+  try {
+    user = await getSignedInUser()
+  } catch (err) {
+    if (isLoggedOut(err)) {
       return defaultSettings
-    })
-    .catch((err) => {
-      if (isLoggedOut(err)) {
-        // logged-out
-        return defaultSettings
-      }
+    }
+    throw err
+  }
 
-      throw err
-    })
+  const users = await getCollection({
+    user: user,
+    collection: 'users',
+  })
+
+  const userData = users[user.id]
+  return {
+    ...defaultSettings,
+    ...userData?.settings,
+  }
 }
 
 var LOGGED_OUT_ERR = 'logged-out'
@@ -343,7 +330,7 @@ function isLoggedOut (err) {
   return err === LOGGED_OUT_ERR
 }
 
-async function getFirebaseUser () {
+function getFirebaseUser () {
   // return faster if possible
   if (firebaseAuth.currentUser) {
     return firebaseAuth.currentUser
@@ -388,107 +375,126 @@ export async function getSignedInUser () {
       badgeUpdate(false)
       clearDataCache()
       await setSignedInUser({})
-      trigger('logout', {}, 0)
+      trigger('logout')
     }
   }
 
   throw LOGGED_OUT_ERR
 }
 
-function setSignedInUser (user) {
-  return new Promise((resolve) => {
-    let globalUser = {}
-    globalUser[globalUserKey] = user
-    browser.storage.local.set(globalUser).then(() => {
-      resolve(user)
-    })
-  })
+async function setSignedInUser (user) {
+  let globalUser = {}
+  globalUser[globalUserKey] = user
+  await browser.storage.local.set(globalUser)
+  return user
 }
 
-function isFree (user) {
-  return getCollection({
+async function isFree (user) {
+  const customers = await getCollection({
+    user: user,
+    collection: 'customers'
+  })
+  const customer = customers[user.customer]
+  return customer.subscription.plan === 'free'
+}
+
+export async function getTemplates () {
+  let user
+  try {
+    user = await getSignedInUser()
+  } catch (err) {
+    if (isLoggedOut(err)) {
+      return getDefaultTemplates()
+    }
+
+    throw err
+  }
+
+  const freeCustomer = await isFree(user)
+  let templateCollections = [
+    getCollection({
       user: user,
-      collection: 'customers'
+      collection: 'templatesOwned'
     })
-    .then((customers) => {
-      const customer = customers[user.customer]
-      return customer.subscription.plan === 'free'
-    })
+  ]
+
+  if (!freeCustomer) {
+    templateCollections = templateCollections.concat([
+      getCollection({
+        user: user,
+        collection: 'templatesShared'
+      }),
+      getCollection({
+        user: user,
+        collection: 'templatesEveryone'
+      })
+    ])
+  }
+
+  let results = await Promise.all(templateCollections)
+  let templates = Object.assign({}, ...results)
+  return parseTemplatesCollection(templates)
+}
+
+// convert firestore timestamps to dates
+const timestamps = [
+  'created_datetime',
+  'modified_datetime',
+  'deleted_datetime',
+]
+
+function templateNativeDates (template = {}) {
+  const templateDates = {}
+
+  timestamps.forEach((prop) => {
+    if (
+      template[prop]
+      && typeof template[prop].seconds === 'number'
+      && typeof template[prop].nanoseconds === 'number'
+    ) {
+      const d = new Timestamp(template[prop].seconds, template[prop].nanoseconds)
+      templateDates[prop] = d.toDate()
+    }
+  })
+
+  return templateDates
 }
 
 const templatesFreeLimit = 30
 
-export function getTemplates () {
-  return getSignedInUser()
-    .then((user) => {
-      return Promise.all([
-        user,
-        isFree(user)
-      ])
-    })
-    .then((res) => {
-      const [user, freeCustomer] = res
-      let templateCollections = [
-        getCollection({
-          user: user,
-          collection: 'templatesOwned'
-        })
-      ]
+async function parseTemplatesCollection (templatesCollection = {}) {
+  const user = await getSignedInUser()
+  const freeCustomer = await isFree(user)
 
-      if (!freeCustomer) {
-        templateCollections = templateCollections.concat([
-          getCollection({
-            user: user,
-            collection: 'templatesShared'
-          }),
-          getCollection({
-            user: user,
-            collection: 'templatesEveryone'
-          })
-        ])
-      }
+  const templates = Object.keys(templatesCollection).map((id) => {
+    const template = templatesCollection[id]
+    return {
+      ...template,
+      ...templateNativeDates(template),
+      id: id,
+      _body_plaintext: htmlToText(template.body),
+    }
+  })
 
-      return Promise.all(templateCollections)
-        .then((res) => {
-          // merge and de-duplication
-          return Object.assign({}, ...res)
-        })
-        .then((templates) => {
-          return Object.keys(templates).map((id) => {
-            const template = templates[id]
-            return Object.assign(convertToNativeDates(template), {
-              id: id,
-              _body_plaintext: htmlToText(template.body),
-            })
-          })
-        })
-        .then((templates) => {
-          if (freeCustomer) {
-            return templates
-              .sort((a, b) => {
-                return new Date(a.created_datetime || 0) - new Date(b.created_datetime || 0)
-              })
-              .slice(0, templatesFreeLimit)
-          }
-          return templates
-        })
-    })
-    .catch((err) => {
-      if (isLoggedOut(err)) {
-        return getDefaultTemplates()
-      }
+  if (freeCustomer) {
+    return templates
+      .sort((a, b) => {
+        return new Date(a.created_datetime || 0) - new Date(b.created_datetime || 0)
+      })
+      .slice(0, templatesFreeLimit)
+  }
 
-      throw err
-    })
+  return templates
 }
 
 const networkError = 'There was an issue signing you in. Please disable your firewall or antivirus software and try again.'
+const manyRequestsError = 'Too many unsuccessful login attempts. Please try again later.'
 
 function signinError (err) {
   if (err && err.code === 'auth/too-many-requests') {
     // recaptcha verifier is not supported in browser extensions
     // only http/https
-    throw 'Too many unsuccessful login attempts. Please try again later. '
+    throw manyRequestsError
   }
 
   // catch "TypeError: Failed to fetch" errors
@@ -499,55 +505,33 @@ function signinError (err) {
   throw err.message
 }
 
-export function signin (params = {}) {
-  return request(`${config.functionsUrl}/api/1/login`, {
+export async function signin (params = {}) {
+  try {
+    const loginResponse = await request(`${functionsUrl}/api/1/login`, {
       method: 'POST',
       body: {
         email: params.email,
         password: params.password,
       }
     })
-    .then((res) => {
-      return signinWithToken(res.token)
-    })
-    .then(() => {
-      return trigger('login', {}, 0)
-    })
-    .catch((err) => {
-      return signinError(err)
-    })
+    return signinWithToken(loginResponse.token)
+  } catch (err) {
+    return signinError(err)
+  }
 }
 
-export function getSession () {
-  return getSignedInUser()
-    .then(() => {
-      // create session
-      return true
+export async function getSession () {
+  try {
+    // create session
+    await getSignedInUser()
+    return request(`${functionsUrl}/api/1/session`, {
+      authorization: true,
     })
-    .catch(() => {
-      // try to auto login
-      return false
-    })
-    .then((loggedIn) => {
-      // create session
-      return Promise.all([
-        loggedIn,
-        request(`${config.functionsUrl}/api/1/session`, {
-          authorization: loggedIn,
-        })
-      ])
-    })
-    .then(([loggedIn, res]) => {
-      if (!loggedIn) {
-        // auto-login if not logged-in
-        return signinWithToken(res.token)
-          .then(() => {
-            return trigger('login', {}, 0)
-          })
-      }
-
-      return res
-    })
+  } catch {
+    // try to auto login
+    const session = await request(`${functionsUrl}/api/1/session`)
+    return signinWithToken(session.token)
+  }
 }
 
 export async function logout () {
@@ -556,11 +540,11 @@ export async function logout () {
 
   badgeUpdate(false)
   clearDataCache()
-  trigger('logout', {}, 0)
+  trigger('logout')
 
-  return request(`${config.functionsUrl}/api/1/logout`, {
-      method: 'POST'
-    })
+  return request(`${functionsUrl}/api/1/logout`, {
+    method: 'POST',
+  })
 }
 
 async function signinWithToken (token = '') {
@@ -581,23 +565,21 @@ async function signinWithToken (token = '') {
   // which in turn triggers getSignedInUser.
   const customer = await getActiveCustomer(user)
 
-  return setSignedInUser({
+  await setSignedInUser({
     id: user.id,
     customer: customer,
   })
+
+  trigger('login')
 }
 
-export function getCustomer (customerId) {
-  return getSignedInUser()
-    .then((user) => {
-      return getCollection({
-        user: user,
-        collection: 'customers'
-      })
-    })
-    .then((customers) => {
-      return customers[customerId]
-    })
+export async function getCustomer (customerId) {
+  const user = await getSignedInUser()
+  const customers = await getCollection({
+    user: user,
+    collection: 'customers'
+  })
+  return customers[customerId]
 }
 
 async function getActiveCustomer (user = {}) {
@@ -636,71 +618,69 @@ export async function setActiveCustomer (customerId) {
     })
 }
 
-export function updateTemplateStats ({id = '', _body_plaintext = ''}) {
-  return getExtensionData()
-    .then((data) => {
-      // last used cache
-      let lastuseCache = data.templatesLastUsed || {}
-      lastuseCache[id] = new Date().toISOString()
-      // time saved (words)
-      const wordCount = (_body_plaintext || '').split(' ').length
-      const words = data.words + wordCount
+export async function updateTemplateStats ({id = '', _body_plaintext = ''}) {
+  const data = await getExtensionData()
+  // last used cache
+  let lastuseCache = data.templatesLastUsed || {}
+  lastuseCache[id] = new Date().toISOString()
+  // time saved (words)
+  const wordCount = (_body_plaintext || '').split(' ').length
+  const words = data.words + wordCount
 
-      return setExtensionData({
-        templatesLastUsed: lastuseCache,
-        words: words,
-      })
-    })
+  return setExtensionData({
+    templatesLastUsed: lastuseCache,
+    words: words,
+  })
 }
 
-export function getAccount () {
-  return getSignedInUser()
-    .then((user) => {
-      return Promise.all([
-        user,
-        getCollection({
-          user: user,
-          collection: 'users'
-        })
-      ])
-    })
-    .then(([cachedUser, users]) => {
-      const userData = users[cachedUser.id]
-      return {
-        id: cachedUser.id,
-        customer: cachedUser.customer,
+export async function getAccount () {
+  const cachedUser = await getSignedInUser()
+  const users = await getCollection({
+    user: cachedUser,
+    collection: 'users'
+  })
+  const userData = users[cachedUser.id]
+  return {
+    id: cachedUser.id,
+    customer: cachedUser.customer,
 
-        customers: userData.customers,
-        email: userData.email,
-        full_name: userData.full_name,
-      }
-    })
+    customers: userData.customers,
+    email: userData.email,
+    full_name: userData.full_name,
+  }
 }
 
-export function getTags () {
-  return getSignedInUser()
-    .then((user) => {
-      return getCollection({
-        collection: 'tags',
-        user: user
-      })
-    })
-    .then((tags) => {
-      return Object.keys(tags).map((id) => {
-        return Object.assign({id: id}, tags[id])
-      })
-    })
-    .catch((err) => {
-      if (isLoggedOut(err)) {
-        // logged-out
-        return defaultTags
-      }
+export async function getTags () {
+  let user
+  try {
+    user = await getSignedInUser()
+  } catch (err) {
+    if (isLoggedOut(err)) {
+      // logged-out
+      return defaultTags
+    }
 
-      throw err
-    })
+    throw err
+  }
+
+  const tags = await getCollection({
+    collection: 'tags',
+    user: user,
+  })
+
+  return parseTagsCollection(tags)
 }
 
-function parseTags (tagIds = [], allTags = []) {
+function parseTagsCollection (tags = {}) {
+  return Object.keys(tags).map((id) => {
+    return {
+      id: id,
+      ...tags[id],
+    }
+  })
+}
+
+function tagIdsToTitles (tagIds = [], allTags = []) {
   return tagIds
     .map((tagId) => {
       return allTags.find((t) => t.id === tagId)
@@ -710,37 +690,37 @@ function parseTags (tagIds = [], allTags = []) {
 
 function getSearchList (templates = [], allTags = []) {
   return templates.map((template) => {
-    return Object.assign({}, template, {
+    return {
+      ...template,
       body: template._body_plaintext,
-      tags: parseTags(template.tags, allTags).map((t) => t?.title),
-    })
+      tags: tagIdsToTitles(template.tags, allTags).map((t) => t?.title),
+    }
   })
 }
 
 let lastSearchQuery = ''
-export function searchTemplates (query = '') {
+export async function searchTemplates (query = '') {
   lastSearchQuery = query
 
-  return Promise.all([
-      getTemplates(),
-      getTags(),
-    ])
-    .then(([templates, tags]) => {
-      // avoid triggering fuzzySearch
-      // if this is not the latest search query, for better performance.
-      if (query !== lastSearchQuery) {
-        return {
-          query: '_SEARCH_CANCELED',
-          results: [],
-        }
-      }
+  const [templates, tags] = await Promise.all([
+    getTemplates(),
+    getTags(),
+  ])
 
-      const templateSearchList = getSearchList(templates, tags)
-      return {
-        query: query,
-        results: fuzzySearch(templates, templateSearchList, query),
-      }
-    })
+  // avoid triggering fuzzySearch
+  // if this is not the latest search query, for better performance.
+  if (query !== lastSearchQuery) {
+    return {
+      query: '_SEARCH_CANCELED',
+      results: [],
+    }
+  }
+
+  const templateSearchList = getSearchList(templates, tags)
+  return {
+    query: query,
+    results: fuzzySearch(templates, templateSearchList, query),
+  }
 }
 
 export async function isCached () {

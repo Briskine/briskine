@@ -1,11 +1,11 @@
 import browser from 'webextension-polyfill'
 import isEqual from 'lodash.isequal'
-import debounce from 'lodash.debounce'
 
-import config from '../config.js'
+import {functionsUrl, eventToggleBubble, eventShowDialog, eventInsertTemplate} from '../config.js'
 import {getAccount, getTemplates, getExtensionData, setExtensionData, getSettings} from '../store/store-api.js'
 import sortTemplates from '../store/sort-templates.js'
-import {openPopup} from '../store/open-popup.js'
+import trigger from './background-trigger.js'
+import {openPopup} from '../background/open-popup.js'
 import {isBlocklisted} from '../content/blocklist.js'
 import bubbleAllowlistPrivate from '../content/bubble/bubble-allowlist-private.js'
 
@@ -27,55 +27,19 @@ function getSelectedText () {
   return window.getSelection()?.toString?.()
 }
 
-function showDialog (eventShowDialog) {
-  // TODO won't work in shadow dom
-  if (document.activeElement) {
-    document.activeElement.dispatchEvent(new CustomEvent(eventShowDialog, {
-      bubbles: true,
-      composed: true,
-    }))
-  }
-}
-
-function insertTemplate (eventInsertTemplate, template) {
-  // TODO won't work in shadow dom
-  if (document.activeElement) {
-    document.activeElement.dispatchEvent(new CustomEvent(eventInsertTemplate, {
-      bubbles: true,
-      composed: true,
-      detail: template,
-    }))
-  }
-}
-
-function toggleBubble (eventToggleBubble, enable) {
-  // TODO won't work in shadow dom
-  document.activeElement.dispatchEvent(new CustomEvent(eventToggleBubble, {
-    bubbles: true,
-    composed: true,
-    detail: enable,
-  }))
-}
-
-async function executeScript ({ info = {}, tab = {}, args = [], func = () => {} }) {
-  return browser.scripting.executeScript({
-    target: {
-      tabId: tab.id,
-      frameIds: [info.frameId],
-    },
-    func: func,
-    args: args,
-  })
-}
-
 async function saveAsTemplateAction (info, tab) {
   let body = info.selectionText
   try {
-    const selection = await executeScript({
-      info: info,
-      tab: tab,
+    // executeScript workaround is required because of Chrome bug
+    // https://issues.chromium.org/issues/40740672
+    const selection = await browser.scripting.executeScript({
+      target: {
+        tabId: tab.id,
+        frameIds: [info.frameId],
+      },
       func: getSelectedText,
     })
+
     // replace newlines with brs
     if (selection[0].result) {
       body = selection[0].result.replace(/(?:\r\n|\r|\n)/g, '<br>')
@@ -85,30 +49,12 @@ async function saveAsTemplateAction (info, tab) {
   }
 
   browser.tabs.create({
-    url: `${config.functionsUrl}/template/new?body=${encodeURIComponent(body)}`
-  })
-}
-
-async function openDialogAction (info, tab) {
-  await executeScript({
-    info: info,
-    tab: tab,
-    func: showDialog,
-    args: [config.eventShowDialog],
+    url: `${functionsUrl}/template/new?body=${encodeURIComponent(body)}`
   })
 }
 
 async function signInAction () {
   return openPopup()
-}
-
-function insertTemplateAction (info, tab, template) {
-  return executeScript({
-    info: info,
-    tab: tab,
-    func: insertTemplate,
-    args: [config.eventInsertTemplate, template],
-  })
 }
 
 async function toggleBubbleAction (info, tab) {
@@ -136,12 +82,7 @@ async function toggleBubbleAction (info, tab) {
     bubbleAllowlist: bubbleAllowlist,
   })
 
-  await executeScript({
-    info: info,
-    tab: tab,
-    func: toggleBubble,
-    args: [config.eventToggleBubble, enableBubble],
-  })
+  return trigger(eventToggleBubble, {enabled: enableBubble}, tab, info.frameId)
 }
 
 async function clickContextMenu (info = {}, tab = {}) {
@@ -150,7 +91,7 @@ async function clickContextMenu (info = {}, tab = {}) {
   }
 
   if (info.menuItemId === openDialogMenu) {
-    return openDialogAction(info, tab)
+    return trigger(eventShowDialog, {}, tab, info.frameId)
   }
 
   if (info.menuItemId === signInMenu) {
@@ -178,7 +119,7 @@ async function clickContextMenu (info = {}, tab = {}) {
     modified_datetime: null,
   }
 
-  return insertTemplateAction(info, tab, cleanTemplate)
+  return trigger(eventInsertTemplate, {template: cleanTemplate}, tab, info.frameId)
 }
 
 async function createContextMenus (menus = []) {
@@ -373,7 +314,12 @@ function enableContextMenu () {
   browser.tabs.onActivated.addListener(onTabSwitchHandler)
   browser.tabs.onUpdated.addListener(onTabUpdateHandler)
 
-  const debouncedStorageChange = debounce(storageChange, 1000)
+  let timer
+  function debouncedStorageChange (changes = {}) {
+    clearTimeout(timer)
+    timer = setTimeout(() => storageChange(changes), 1000)
+  }
+
   browser.storage.local.onChanged.addListener(debouncedStorageChange)
 }
 

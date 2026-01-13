@@ -1,7 +1,7 @@
 import {For, mergeProps} from 'solid-js'
 
 import {setExtensionData} from '../../store/store-content.js'
-import config from '../../config.js'
+import { functionsUrl } from '../../config.js'
 
 const sortOptions = [
   {
@@ -98,7 +98,7 @@ export default function DialogSettings (originalProps) {
                 Manage additional settings for Briskine in the Dashboard.
               </p>
               <a
-                href={`${config.functionsUrl}/settings`}
+                href={`${functionsUrl}/settings`}
                 target="_blank"
                 class="btn dialog-safari-hide"
                 >

@@ -2,7 +2,7 @@ import {For, Show, createEffect, createSignal, onMount, mergeProps, createMemo} 
 
 import IconArrowUpRightSquare from 'bootstrap-icons/icons/arrow-up-right-square.svg'
 
-import config from '../../config.js'
+import { functionsUrl } from '../../config.js'
 
 const activeTemplateClass = 'active'
 const templateRenderLimit = 42
@@ -151,22 +151,20 @@ export default function DialogList (originalProps) {
                   <ul class="dialog-tags">
                     <For each={t.tags}>
                       {(tagId) => {
-                        const tag = props.tags.find((tag) => tag.id === tagId)
-                        if (!tag) {
-                          return (<></>)
-                        }
-
+                        const tag = () => props.tags.find((t) => t.id === tagId)
                         return (
-                          <li
-                            style={{
-                              '--tag-bg-color': `var(--tag-color-${tag.color})`
-                            }}
-                            classList={{
-                              'text-secondary': !tag.color || tag.color === 'transparent',
-                            }}
-                          >
-                            {tag.title}
-                          </li>
+                          <Show when={tag()}>
+                            <li
+                              style={{
+                                '--tag-bg-color': `var(--tag-color-${tag().color})`
+                              }}
+                              classList={{
+                                'text-secondary': !tag().color || tag().color === 'transparent',
+                              }}
+                            >
+                              {tag().title}
+                            </li>
+                          </Show>
                         )
                       }}
                     </For>
@@ -176,7 +174,7 @@ export default function DialogList (originalProps) {
                 <Show when={props.loggedIn}>
                   <div class="edit-container dialog-safari-hide">
                     <a
-                      href={`${config.functionsUrl}/template/${t.id}`}
+                      href={`${functionsUrl}/template/${t.id}`}
                       target="_blank"
                       class="btn btn-sm btn-edit"
                       title="Edit template"

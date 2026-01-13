@@ -27,6 +27,7 @@ export {
   isCached,
   on,
   off,
+  trigger,
 } from './store-client.js'
 
 let cache = {}
@@ -59,16 +60,16 @@ function usersUpdated () {
   cache.getAccount = null
 }
 
-function templatesUpdated () {
-  cache.getTemplates = null
+function templatesUpdated (templates = []) {
+  cache.getTemplates = templates
 }
 
-function tagsUpdated () {
-  cache.getTags = null
+function tagsUpdated (tags = []) {
+  cache.getTags = tags
 }
 
-function extensionDataUpdated () {
-  cache.getExtensionData = null
+function extensionDataUpdated (data = {}) {
+  cache.getExtensionData = data
 }
 
 export async function setup () {

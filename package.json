@@ -85,7 +85,6 @@
     "fuse.js": "^7.0.0",
     "handlebars": "^4.5.3",
     "html-to-text": "^9.0.0",
-    "lodash.debounce": "^4.0.8",
     "lodash.isequal": "^4.5.0",
     "moment": "^2.29.1",
     "mousetrap": "github:briskine/mousetrap#master",

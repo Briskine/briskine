@@ -1,7 +1,7 @@
 import browser from 'webextension-polyfill'
 
 import {connect, request} from './sandbox-messenger-server.js'
-import config from '../../config.js'
+import { eventSandboxCompile } from '../../config.js'
 
 let sandboxInstance = null
 const sandboxTagName = `b-sandbox-${Date.now().toString(36)}`
@@ -34,7 +34,7 @@ customElements.define(
 )
 
 function sendCompileMessage (template, context, partials) {
-  return request(config.eventSandboxCompile, {
+  return request(eventSandboxCompile, {
     template: template,
     context: context,
     partials: partials,

@@ -7,31 +7,31 @@ import IconQuestionCircle from 'bootstrap-icons/icons/question-circle.svg'
 import IconTwitterX from 'bootstrap-icons/icons/twitter-x.svg'
 import IconGlobe from 'bootstrap-icons/icons/globe.svg'
 
-import config from '../../config.js'
+import { functionsUrl, helpUrl, websiteUrl } from '../../config.js'
 
 const actions = [
   {
     title: 'New template',
     icon: IconPlusSquare,
-    href: `${config.functionsUrl}/template/new`,
+    href: `${functionsUrl}/template/new`,
     class: 'dialog-safari-hide',
   },
   {
     title: 'Manage templates',
     icon: IconArchive,
-    href: config.functionsUrl,
+    href: functionsUrl,
     class: 'dialog-safari-hide',
   },
   {
     title: 'Help Center',
     icon: IconQuestionCircle,
-    href: config.helpUrl,
+    href: helpUrl,
     class: 'dialog-safari-hide',
   },
   {
     title: 'Briskine website',
     icon: IconGlobe,
-    href: config.websiteUrl,
+    href: websiteUrl,
     class: 'dialog-safari-hide',
   },
   {
