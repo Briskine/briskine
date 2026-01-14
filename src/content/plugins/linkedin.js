@@ -6,7 +6,7 @@ import {insertTemplate} from '../editors/editor-universal.js'
 import createContact from '../utils/create-contact.js'
 import {addAttachments} from '../attachments/attachments.js'
 
-async function before (params, data) {
+async function after (params, data) {
   const $parent = params.element.closest('[role=dialog]')
 
   if ($parent) {
@@ -152,13 +152,13 @@ export default async (params = {}) => {
     params.template.attachments,
   )
 
-  await before(params, data)
-
   // generic editor, including textareas
   insertTemplate({
     text: templateWithAttachments,
     ...params,
   })
+
+  await after(params, data)
 
   return true
 }
