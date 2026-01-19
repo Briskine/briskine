@@ -1,9 +1,9 @@
 /* globals describe, it, before, after */
 import {expect} from 'chai'
 
-import {getSelectedWord} from './autocomplete.js'
+import getWord from './word.js'
 
-describe('getSelectedWord', () => {
+describe('getWord', () => {
   let editable
   before(() => {
     editable = document.createElement('div')
@@ -11,14 +11,13 @@ describe('getSelectedWord', () => {
     document.body.appendChild(editable)
   })
 
-  it('should get contenteditable word position and text', () => {
+  it('should get contenteditable word position and text when editable is empty', () => {
     editable.innerHTML = ''
     editable.focus()
 
     expect(
-      getSelectedWord({
-        element: editable,
-      })
+      getWord(editable)
+
     ).to.eql({
       start: 0,
       end: 0,
@@ -34,9 +33,8 @@ describe('getSelectedWord', () => {
     window.getSelection().addRange(range)
 
     expect(
-      getSelectedWord({
-        element: editable,
-      })
+      getWord(editable)
+
     ).to.eql({
       start: 0,
       end: 3,
@@ -52,9 +50,7 @@ describe('getSelectedWord', () => {
     window.getSelection().addRange(range)
 
     expect(
-      getSelectedWord({
-        element: editable,
-      })
+      getWord(editable)
     ).to.eql({
       start: 3,
       end: 6,

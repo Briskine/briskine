@@ -16,8 +16,9 @@ import {
 import {isContentEditable} from '../editors/editor-contenteditable.js'
 import {bubbleTagName} from '../bubble/bubble.js'
 import {getEditableCaret, getContentEditableCaret, getDialogPosition} from './dialog-position.js'
-import {autocomplete, getSelectedWord} from '../autocomplete.js'
-import { getSelection } from '../selection.js'
+import {autocomplete} from '../autocomplete.js'
+import getSelection  from '../selection.js'
+import getWord from '../word.js'
 import getActiveElement from '../active-element.js'
 import {keybind, keyunbind} from '../keybind.js'
 import IconSearch from 'bootstrap-icons/icons/search.svg'
@@ -177,9 +178,8 @@ function Dialog (originalProps) {
     focusNode = selection.focusNode
     focusOffset = selection.focusOffset
 
-    word = getSelectedWord({
-      element: editor
-    })
+    word = getWord(editor)
+
 
     setVisible(true)
     const position = getDialogPosition(target, element, placement)

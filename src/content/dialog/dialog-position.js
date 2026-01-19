@@ -1,7 +1,7 @@
 /* Dialog positioning and caret detection
  */
 
-import { getSelection } from '../selection.js'
+import getSelection from '../selection.js'
 
 // moves up the tree finding the closest "rendered" element
 // which doesn't have display: none, so we can get its position.
