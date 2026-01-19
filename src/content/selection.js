@@ -7,7 +7,7 @@
 // so getting the selection from shadow dom is not possible there.
 // We'll have to refactor the selection handling after the upcoming getComposedRange method is implemented:
 // https://github.com/WICG/webcomponents/issues/79
-export default function getSelection (node) {
+export function getSelection (node) {
   if (node) {
     const rootNode = node.getRootNode()
     if (rootNode instanceof ShadowRoot && typeof rootNode.getSelection === 'function') {

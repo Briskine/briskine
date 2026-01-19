@@ -13,7 +13,7 @@ import universalPlugin from './plugins/universal.js'
 
 import {updateTemplateStats} from '../store/store-content.js'
 import {isContentEditable} from './editors/editor-contenteditable.js'
-import getSelection from './selection.js'
+import { getSelection } from './selection.js'
 
 // register plugins,
 // in execution order.

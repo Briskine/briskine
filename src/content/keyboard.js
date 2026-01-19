@@ -3,7 +3,7 @@
  */
 import {autocomplete, getSelectedWord} from './autocomplete.js'
 import getEventTarget from './event-target.js'
-import getSelection from './selection.js'
+import { getSelection } from './selection.js'
 import {isContentEditable} from './editors/editor-contenteditable.js'
 import {getTemplates} from '../store/store-content.js'
 

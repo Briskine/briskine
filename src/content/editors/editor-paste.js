@@ -13,7 +13,7 @@
 
 import htmlToText from '../utils/html-to-text.js'
 import {request} from '../page/page-parent.js'
-import getSelection from '../selection.js'
+import { getSelection } from '../selection.js'
 import getActiveElement from '../active-element.js'
 
 export function isPasteEditor (element) {
