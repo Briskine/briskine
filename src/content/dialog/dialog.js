@@ -16,7 +16,7 @@ import {
 import {isContentEditable} from '../editors/editor-contenteditable.js'
 import {bubbleTagName} from '../bubble/bubble.js'
 import {getEditableCaret, getContentEditableCaret, getDialogPosition} from './dialog-position.js'
-import {autocomplete} from '../autocomplete.js'
+import autocomplete from '../autocomplete.js'
 import getSelection  from '../selection.js'
 import getWord from '../word.js'
 import getActiveElement from '../active-element.js'

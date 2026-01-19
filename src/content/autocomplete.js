@@ -23,8 +23,7 @@ register(outlookPlugin)
 register(facebookPlugin)
 register(universalPlugin)
 
-// TODO export default
-export async function autocomplete (params) {
+export default async function autocomplete (params) {
   await runPlugins(Object.assign({}, params))
   await updateTemplateStats(params.template)
   return params

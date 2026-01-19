@@ -1,7 +1,7 @@
 /**
  * Keyboard Shortcut Autocomplete
  */
-import {autocomplete } from './autocomplete.js'
+import autocomplete from './autocomplete.js'
 import getEventTarget from './event-target.js'
 import getSelection from './selection.js'
 import getWord from './word.js'
