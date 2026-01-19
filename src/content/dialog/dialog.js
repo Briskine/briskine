@@ -109,7 +109,7 @@ function Dialog (originalProps) {
     }
 
     let target
-    let removeCaretParent = false
+    let removeCaretParent
     let placement = 'top-left'
 
     // detect rtl
@@ -127,8 +127,7 @@ function Dialog (originalProps) {
 
     if (isTextfield(node)) {
       // input, textarea
-      target = getEditableCaret(node)
-      removeCaretParent = true
+      [target, removeCaretParent] = getEditableCaret(node)
       if (direction === 'rtl') {
         placement = 'bottom-left-flip'
       } else {
@@ -190,7 +189,7 @@ function Dialog (originalProps) {
     // clean-up the virtual caret mirror,
     // used on input and textarea
     if (removeCaretParent) {
-      target.parentNode.remove()
+      removeCaretParent()
     }
 
     // give it a second before focusing.
