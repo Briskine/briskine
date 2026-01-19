@@ -2,32 +2,43 @@
  * Generic methods for autocompletion
  */
 
-import {register, run as runPlugins} from './plugin.js'
-import gmailPlugin from './plugins/gmail.js'
-import gmailMobilePlugin from './plugins/gmail-mobile.js'
-import linkedinPlugin from './plugins/linkedin.js'
-import linkedinSalesNavigatorPlugin from './plugins/linkedin-sales-navigator.js'
-import outlookPlugin from './plugins/outlook.js'
-import facebookPlugin from './plugins/facebook.js'
-import universalPlugin from './plugins/universal.js'
+import { run } from './plugin.js'
+import { addAttachments } from './attachments/attachments.js'
+import parseTemplate from './utils/parse-template.js'
+import { insertTemplate } from './editors/editor-universal.js'
 
-import {updateTemplateStats} from '../store/store-content.js'
+import './plugins/gmail.js'
+import './plugins/outlook.js'
 
-// register plugins,
-// in execution order.
-register(gmailPlugin)
-register(gmailMobilePlugin)
-register(linkedinPlugin)
-register(linkedinSalesNavigatorPlugin)
-register(outlookPlugin)
-register(facebookPlugin)
-register(universalPlugin)
+import './plugins/gmail-mobile.js'
+import './plugins/linkedin.js'
+import './plugins/linkedin-sales-navigator.js'
+import './plugins/facebook.js'
+
+// import './plugins/universal.js'
+
+import { updateTemplateStats } from '../store/store-content.js'
 
 export default async function autocomplete ({element, word, template}) {
-  await runPlugins({
+  const withAttachments = addAttachments(template.body, template.attachments)
+  const data = await run('data', { element })
+  const html = await parseTemplate(withAttachments, data)
+
+  insertTemplate({
     element: element,
     word: word,
     template: template,
+
+    // TODO rename
+    // send html and text params
+    text: html,
   })
+
+  await run('actions', {
+    element: element,
+    template: template,
+    data: data,
+  })
+
   await updateTemplateStats(template)
 }

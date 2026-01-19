@@ -2,7 +2,7 @@
  */
 import browser from 'webextension-polyfill'
 
-import debug from './debug.js'
+import debug from '../debug.js'
 
 // expected error when
 // the popup is not loaded,

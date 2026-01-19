@@ -18,11 +18,11 @@ async function page (src = '') {
   return promise
 }
 
-describe('outlook', () => {
+describe.only('outlook', () => {
   it('should get data in default compose', async () => {
     const iframe = await page('pages/outlook/outlook-compose.html')
     const element = iframe.contentDocument.querySelector('[aria-multiline]')
-    const data = getData({
+    const data = await getData({
       element: element,
     })
 
