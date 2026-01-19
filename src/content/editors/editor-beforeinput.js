@@ -9,7 +9,7 @@
  */
 
 import htmlToText from '../utils/html-to-text.js'
-import getSelection from '../selection.js'
+import getComposedSelection from '../selection.js'
 
 export function isBeforeInputEditor (element) {
   return element.hasAttribute('data-lexical-editor') || element.hasAttribute('data-slate-editor')
@@ -26,7 +26,7 @@ export async function insertBeforeInputTemplate (params = {}) {
   // https://github.com/ianstormtaylor/slate/blob/16ff44d0566889a843a346215d3fb7621fc0ed8c/packages/slate-react/src/components/editable.tsx#L193
   if (params.word.text === params.template.shortcut) {
     // select the shortcut
-    const selection = getSelection(params.element)
+    const selection = getComposedSelection(params.element)
     const range = selection.getRangeAt(0)
     range.setStart(selection.focusNode, params.word.start)
     range.setEnd(selection.focusNode, params.word.end)

@@ -6,6 +6,7 @@
 import htmlToText from '../utils/html-to-text.js'
 import getActiveElement from '../active-element.js'
 import {request} from '../page/page-parent.js'
+import getComposedSelection from '../selection.js'
 
 export function isQuill (element) {
   return element.classList.contains('ql-editor')
@@ -24,7 +25,7 @@ export async function pageInsertQuillTemplate (params = {}) {
     params.template.shortcut
     && params.template.shortcut === params.word.text
   ) {
-    const selection = getSelection(element)
+    const selection = getComposedSelection(element)
     const range = selection.getRangeAt(0)
     const focusNode = selection.focusNode
     range.setStart(focusNode, params.word.start)

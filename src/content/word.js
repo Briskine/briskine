@@ -1,5 +1,5 @@
 import {isContentEditable} from './editors/editor-contenteditable.js'
-import getSelection from './selection.js'
+import getComposedSelection from './selection.js'
 
 // all regular and special whitespace chars we want to find.
 // https://jkorpela.fi/chars/spaces.html
@@ -17,7 +17,7 @@ const spaces = [
 // and its start and end positions
 export default function getWord (element) {
   let beforeSelection = ''
-  const selection = getSelection(element)
+  const selection = getComposedSelection(element)
 
   if (isContentEditable(element)) {
     switch (selection.focusNode.nodeType) {

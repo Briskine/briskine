@@ -2,7 +2,7 @@
 import {expect} from 'chai'
 
 import getWord from './word.js'
-import getSelection from './selection.js'
+import getComposedSelection from './selection.js'
 
 describe('getWord', () => {
   let editable
@@ -81,7 +81,7 @@ describe('getWord', () => {
     const range = document.createRange()
     range.selectNodeContents(editableShadow.lastChild)
     range.collapse()
-    const selection = getSelection(editableShadow)
+    const selection = getComposedSelection(editableShadow)
     selection.addRange(range)
 
     expect(

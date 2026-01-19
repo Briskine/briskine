@@ -1,14 +1,14 @@
 /* ContentEditable
  */
 
-import getSelection from '../selection.js'
+import getComposedSelection from '../selection.js'
 
 export function isContentEditable (element) {
   return element && element.hasAttribute('contenteditable')
 }
 
 export function insertContentEditableTemplate (params = {}) {
-  const selection = getSelection(params.element)
+  const selection = getComposedSelection(params.element)
   // run operations on a cloned range, rather than the original range,
   // to fix issues with not correctly positioning the cursor on Safari.
   // using range.insertNode() doesn't select the inserted contents, *only on Safari*.

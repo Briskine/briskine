@@ -3,7 +3,7 @@
  */
 import autocomplete from './autocomplete.js'
 import getEventTarget from './event-target.js'
-import getSelection from './selection.js'
+import getComposedSelection from './selection.js'
 import getWord from './word.js'
 import {isContentEditable} from './editors/editor-contenteditable.js'
 import {getTemplates} from '../store/store-content.js'
@@ -39,7 +39,7 @@ async function keyboardAutocomplete (e) {
 
   if (word.text) {
     // cache selection details
-    const selection = getSelection(element)
+    const selection = getComposedSelection(element)
     const focusNode = selection.focusNode
     const focusOffset = selection.focusOffset
     const anchorNode = selection.anchorNode
@@ -54,7 +54,7 @@ async function keyboardAutocomplete (e) {
       // restore selection
       element.focus()
       if (anchorNode && focusNode) {
-        getSelection(element).setBaseAndExtent(anchorNode, anchorOffset, focusNode, focusOffset)
+        getComposedSelection(element).setBaseAndExtent(anchorNode, anchorOffset, focusNode, focusOffset)
       }
 
       autocomplete({

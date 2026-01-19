@@ -13,7 +13,7 @@
 
 import htmlToText from '../utils/html-to-text.js'
 import {request} from '../page/page-parent.js'
-import getSelection from '../selection.js'
+import getComposedSelection from '../selection.js'
 import getActiveElement from '../active-element.js'
 
 export function isPasteEditor (element) {
@@ -42,7 +42,7 @@ export async function pageInsertPasteTemplate (params = {}) {
   const element = getActiveElement()
   // select shortcut
   if (params.word.text === params.template.shortcut) {
-    const selection = getSelection(element)
+    const selection = getComposedSelection(element)
     const range = selection.getRangeAt(0)
     const focusNode = selection.focusNode
     range.setStart(focusNode, params.word.start)

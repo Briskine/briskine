@@ -1,7 +1,7 @@
 /* Dialog positioning and caret detection
  */
 
-import getSelection from '../selection.js'
+import getComposedSelection from '../selection.js'
 
 // moves up the tree finding the closest "rendered" element
 // which doesn't have display: none, so we can get its position.
@@ -89,7 +89,7 @@ export function getDialogPosition (target, instance, placement = 'top-left') {
 }
 
 export function getContentEditableCaret (node) {
-  const selection = getSelection(node)
+  const selection = getComposedSelection(node)
   if (selection.rangeCount !== 0) {
     const range = selection.getRangeAt(0)
     // when the caret is collapsed inside an empty element with no text,
