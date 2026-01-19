@@ -23,8 +23,11 @@ register(outlookPlugin)
 register(facebookPlugin)
 register(universalPlugin)
 
-export default async function autocomplete (params) {
-  await runPlugins(Object.assign({}, params))
-  await updateTemplateStats(params.template)
-  return params
+export default async function autocomplete ({element, word, template}) {
+  await runPlugins({
+    element: element,
+    word: word,
+    template: template,
+  })
+  await updateTemplateStats(template)
 }
