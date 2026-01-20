@@ -5,19 +5,19 @@
 import {request} from '../page/page-parent.js'
 
 export function isCkEditor (element) {
-  return element.classList.contains('ck-editor__editable')
+  return element?.classList?.contains?.('ck-editor__editable')
 }
 
-export function insertCkEditorTemplate (params = {}) {
+export function insertCkEditorTemplate({ word, template, html }) {
   let removeShortcut = false
   // delete shortcut
-  if (params.word.text === params.template.shortcut) {
+  if (word.text === template.shortcut) {
     removeShortcut = true
   }
 
   return request('ckeditor-insert', {
     removeShortcut: removeShortcut,
-    content: params.text,
+    content: html,
   })
 }
 

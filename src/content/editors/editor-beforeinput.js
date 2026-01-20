@@ -8,15 +8,17 @@
  * https://lexical.dev/
  */
 
-import htmlToText from '../utils/html-to-text.js'
 import getComposedSelection from '../selection.js'
 
 export function isBeforeInputEditor (element) {
-  return element.hasAttribute('data-lexical-editor') || element.hasAttribute('data-slate-editor')
+  return (
+    element?.hasAttribute?.('data-lexical-editor')
+    || element?.hasAttribute?.('data-slate-editor')
+  )
 }
 
-export async function insertBeforeInputTemplate (params = {}) {
-  params.element.focus()
+export async function insertBeforeInputTemplate ({ element, template, word, text}) {
+  element.focus()
 
   // Slate uses onbeforeinput exclusively, and does not notice content inserted from outside.
   // https://docs.slatejs.org/concepts/xx-migrating#beforeinput
@@ -24,24 +26,23 @@ export async function insertBeforeInputTemplate (params = {}) {
   // using custom synthetic beforeinput events.
   // Slate and Lexical handle beforeinput events with stadard inputType's
   // https://github.com/ianstormtaylor/slate/blob/16ff44d0566889a843a346215d3fb7621fc0ed8c/packages/slate-react/src/components/editable.tsx#L193
-  if (params.word.text === params.template.shortcut) {
+  if (word.text === template.shortcut) {
     // select the shortcut
-    const selection = getComposedSelection(params.element)
+    const selection = getComposedSelection(element)
     const range = selection.getRangeAt(0)
-    range.setStart(selection.focusNode, params.word.start)
-    range.setEnd(selection.focusNode, params.word.end)
+    range.setStart(selection.focusNode, word.start)
+    range.setEnd(selection.focusNode, word.end)
 
     // slate needs a second to notice the new selection
     await new Promise((resolve) => setTimeout(resolve))
   }
 
-  // only supports plain text
-  const content = htmlToText(params.text)
   // replace selected text
   const insertText = new InputEvent('beforeinput', {
     bubbles: true,
     inputType: 'insertReplacementText',
-    data: content
+    // only supports plain text
+    data: text,
   })
-  params.element.dispatchEvent(insertText)
+  element.dispatchEvent(insertText)
 }
