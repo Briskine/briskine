@@ -9,8 +9,8 @@ import { insertTemplate } from './editors/editor-universal.js'
 
 import './plugins/gmail.js'
 import './plugins/outlook.js'
-
 import './plugins/gmail-mobile.js'
+
 import './plugins/linkedin.js'
 import './plugins/linkedin-sales-navigator.js'
 import './plugins/facebook.js'
