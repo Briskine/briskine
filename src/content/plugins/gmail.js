@@ -33,28 +33,28 @@ function isActive () {
 }
 
 function parseString (string = '') {
-    var match = regExString.exec(string.trim())
-    var data = {
-        name: '',
-        first_name: '',
-        last_name: '',
-        email: ''
-    }
+  let match = regExString.exec(string.trim())
+  const data = {
+    name: '',
+    first_name: '',
+    last_name: '',
+    email: ''
+  }
 
-    if (match && match.length >= 4) {
-        data.first_name = match[1].replace('"', '').trim()
-        data.last_name = match[2].replace('"', '').trim()
-        data.name = data.first_name + (data.first_name && data.last_name ? ' ' : '') + data.last_name
-        data.email = match[3]
-    } else {
-        // try to match the email
-        match = regExEmail.exec(string)
-        if (match) {
-            data.email = match[0]
-        }
+  if (match && match.length >= 4) {
+    data.first_name = match[1].replace('"', '').trim()
+    data.last_name = match[2].replace('"', '').trim()
+    data.name = data.first_name + (data.first_name && data.last_name ? ' ' : '') + data.last_name
+    data.email = match[3]
+  } else {
+    // try to match the email
+    match = regExEmail.exec(string)
+    if (match) {
+      data.email = match[0]
     }
+  }
 
-    return data
+  return data
 }
 
 function getFromField (container) {
