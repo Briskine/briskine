@@ -14,8 +14,6 @@ import './plugins/linkedin.js'
 import './plugins/linkedin-sales-navigator.js'
 import './plugins/facebook.js'
 
-// import './plugins/universal.js'
-
 import { updateTemplateStats } from '../store/store-content.js'
 
 export default async function autocomplete ({element, word, template}) {
