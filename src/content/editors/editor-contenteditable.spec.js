@@ -16,7 +16,7 @@ describe('editor ContentEditable', () => {
     editable.focus()
 
     insertContentEditableTemplate({
-      text: '<div>test</div>',
+      html: '<div>test</div>',
       element: editable,
       focusNode: editable,
       word: {
@@ -37,7 +37,7 @@ describe('editor ContentEditable', () => {
     window.getSelection().setBaseAndExtent(editable.firstChild.firstChild, 3, editable.firstChild.firstChild, 3)
 
     insertContentEditableTemplate({
-      text: '<div>test</div>',
+      html: '<div>test</div>',
       element: editable,
       focusNode: window.getSelection().focusNode,
       word: {

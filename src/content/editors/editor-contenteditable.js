@@ -4,11 +4,11 @@
 import getComposedSelection from '../selection.js'
 
 export function isContentEditable (element) {
-  return element && element.hasAttribute('contenteditable')
+  return element?.isContentEditable
 }
 
-export function insertContentEditableTemplate (params = {}) {
-  const selection = getComposedSelection(params.element)
+export function insertContentEditableTemplate ({ element, template, word, html }) {
+  const selection = getComposedSelection(element)
   // run operations on a cloned range, rather than the original range,
   // to fix issues with not correctly positioning the cursor on Safari.
   // using range.insertNode() doesn't select the inserted contents, *only on Safari*.
@@ -18,12 +18,12 @@ export function insertContentEditableTemplate (params = {}) {
   let range = selection.getRangeAt(0).cloneRange()
 
   if (
-    params.template.shortcut
-    && params.word.text === params.template.shortcut
+    template.shortcut
+    && word.text === template.shortcut
   ) {
     // delete matched shortcut
-    range.setStart(selection.focusNode, params.word.start)
-    range.setEnd(selection.focusNode, params.word.end)
+    range.setStart(selection.focusNode, word.start)
+    range.setEnd(selection.focusNode, word.end)
     range.deleteContents()
   } else {
     // delete previous selection, if no shortcut match.
@@ -52,7 +52,7 @@ export function insertContentEditableTemplate (params = {}) {
     }
   }
 
-  const templateNode = range.createContextualFragment(params.text)
+  const templateNode = range.createContextualFragment(html)
   range.insertNode(templateNode)
   range.collapse()
 
@@ -62,8 +62,6 @@ export function insertContentEditableTemplate (params = {}) {
   // trigger multiple change events,
   // for frameworks and scripts to notice changes to the editable fields.
   Array('input', 'change').forEach((eventType) => {
-      params.element.dispatchEvent(new Event(eventType, {bubbles: true}))
+    element.dispatchEvent(new Event(eventType, {bubbles: true}))
   })
-
-  return
 }
