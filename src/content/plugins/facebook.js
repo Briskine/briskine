@@ -1,10 +1,28 @@
 /* Facebook plugin
  */
 
-import parseTemplate from '../utils/parse-template.js'
 import createContact from '../utils/create-contact.js'
-import {insertTemplate} from '../editors/editor-universal.js'
-import {addAttachments} from '../attachments/attachments.js'
+import { register } from '../plugin.js'
+
+let activeCache = null
+function isActive () {
+  if (activeCache !== null) {
+    return activeCache
+  }
+
+  activeCache = false
+  const urls = [
+    'www.facebook.com',
+    'www.messenger.com',
+  ]
+
+  // trigger the extension based on url
+  if (urls.find((url) => window.location.hostname === url)) {
+    activeCache = true
+  }
+
+  return activeCache
+}
 
 function getFromDetails () {
   var objectMatch = new RegExp('"NAME":.?".*?"')
@@ -28,7 +46,7 @@ function getFromDetails () {
 
   return createContact({
     name: fromName,
-    email: ''
+    email: '',
   })
 }
 
@@ -58,47 +76,15 @@ function getToDetails (editor) {
 }
 
 // get all required data from the dom
-function getData (params) {
-  return {
-    from: getFromDetails(),
-    to: getToDetails(params.element)
-  }
-}
-
-let activeCache = null
-function isActive () {
-  if (activeCache !== null) {
-    return activeCache
-  }
-
-  activeCache = false
-  const urls = [
-    'www.facebook.com',
-    'www.messenger.com',
-  ]
-
-  // trigger the extension based on url
-  if (urls.find((url) => window.location.hostname === url)) {
-    activeCache = true
-  }
-
-  return activeCache
-}
-
-export default async (params = {}) => {
+function getData ({ element }) {
   if (!isActive()) {
     return false
   }
 
-  var data = getData(params)
-  const parsedTemplate = addAttachments(
-    await parseTemplate(params.template.body, data),
-    params.template.attachments,
-  )
-
-  insertTemplate(Object.assign({
-    text: parsedTemplate
-  }, params))
-
-  return true
+  return {
+    from: getFromDetails(),
+    to: getToDetails(element),
+  }
 }
+
+register('data', getData)
