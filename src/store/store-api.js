@@ -133,25 +133,25 @@ function getCollectionQuery (name, user) {
 
 const collectionRequestQueue = {}
 
-async function getCollection (params = {}) {
+async function getCollection ({ collection, user }) {
   // request is already in progress
-  if (collectionRequestQueue[params.collection]) {
-    return collectionRequestQueue[params.collection]
+  if (collectionRequestQueue[collection]) {
+    return collectionRequestQueue[collection]
   }
 
   // get from cache
-  const cache = await browser.storage.local.get(params.collection)
-  if (cache[params.collection]) {
-    return cache[params.collection]
+  const cache = await browser.storage.local.get(collection)
+  if (cache[collection]) {
+    return cache[collection]
   }
 
-  const query = getCollectionQuery(params.collection, params.user)
-  collectionRequestQueue[params.collection] = getDocs(query).then((snapshot) => {
-    collectionRequestQueue[params.collection] = null
-    return refreshLocalData(params.collection, snapshot)
+  const query = getCollectionQuery(collection, user)
+  collectionRequestQueue[collection] = getDocs(query).then((snapshot) => {
+    collectionRequestQueue[collection] = null
+    return refreshLocalData(collection, snapshot)
   })
 
-  return collectionRequestQueue[params.collection]
+  return collectionRequestQueue[collection]
 }
 
 // refresh local data cache from snapshot listeners
@@ -505,13 +505,13 @@ function signinError (err) {
   throw err.message
 }
 
-export async function signin (params = {}) {
+export async function signin ({ email, password }) {
   try {
     const loginResponse = await request(`${functionsUrl}/api/1/login`, {
       method: 'POST',
       body: {
-        email: params.email,
-        password: params.password,
+        email: email,
+        password: password,
       }
     })
     return signinWithToken(loginResponse.token)

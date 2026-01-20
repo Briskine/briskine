@@ -26,26 +26,26 @@ const productionPath = path.resolve('build')
 // https://github.com/w3c/webextensions/issues/218
 const safariManifestDescription = 'Write emails faster! Increase your productivity with templates and shortcuts on Gmail, Outlook, or LinkedIn.'
 
-function generateManifest (params = {}) {
+function generateManifest ({ safari, mode, manifest }) {
   let updatedManifestFile = Object.assign({}, manifestFile)
   // get version from package
   updatedManifestFile.version = packageFile.version
 
   // safari manifest
-  if (params.safari) {
+  if (safari) {
     updatedManifestFile.description = safariManifestDescription
     updatedManifestFile.background.persistent = false
   }
 
   // source maps
-  if (params.mode === 'development') {
+  if (mode === 'development') {
     updatedManifestFile.web_accessible_resources[0].resources = updatedManifestFile.web_accessible_resources[0].resources.concat(
       Array('content', 'page', 'sandbox').map((script) => `${script}/${script}.js.map`)
     )
   }
 
   // manifest v2
-  if (params.manifest === '2') {
+  if (manifest === '2') {
     updatedManifestFile.manifest_version = 2
     updatedManifestFile.background.scripts = [updatedManifestFile.background.service_worker]
     delete updatedManifestFile.background.service_worker
@@ -88,9 +88,9 @@ class ZipPlugin {
   }
 }
 
-function extensionConfig (params = {}) {
+function extensionConfig ({ mode, safari, manifest, firebaseConfig}) {
   const plugins = [
-    generateManifest(params),
+    generateManifest({ mode, safari, manifest }),
     new CopyWebpackPlugin({
       patterns: [
         { from: 'src/popup/popup.html', to: 'popup/' },
@@ -100,11 +100,11 @@ function extensionConfig (params = {}) {
       ]
     }),
     new webpack.DefinePlugin({
-      ENV: JSON.stringify(params.mode),
-      REGISTER_DISABLED: params.safari,
-      FIREBASE_CONFIG: JSON.stringify(params.firebaseConfig),
+      ENV: JSON.stringify(mode),
+      REGISTER_DISABLED: safari,
+      FIREBASE_CONFIG: JSON.stringify(firebaseConfig),
       VERSION: JSON.stringify(packageFile.version),
-      MANIFEST: JSON.stringify(params.manifest),
+      MANIFEST: JSON.stringify(manifest),
     }),
     new MiniCssExtractPlugin({
       filename: '[name]/[name].css'
@@ -114,8 +114,8 @@ function extensionConfig (params = {}) {
     })
   ]
 
-  if (params.mode === 'production') {
-    const zipFilename = `${packageFile.name}-${packageFile.version}-manifest${params.manifest}.zip`
+  if (mode === 'production') {
+    const zipFilename = `${packageFile.name}-${packageFile.version}-manifest${manifest}.zip`
     const zipPath = path.join(productionPath, zipFilename)
     plugins.push(
       new ZipPlugin({
@@ -208,7 +208,7 @@ function extensionConfig (params = {}) {
         },
       ]
     },
-    devtool: params.mode === 'production' ? false : 'cheap-module-source-map',
+    devtool: mode === 'production' ? false : 'cheap-module-source-map',
     resolve: {
       alias: {
         'handlebars/runtime': 'handlebars/dist/cjs/handlebars.runtime',
@@ -249,12 +249,13 @@ export default async function (env) {
     }
   }
 
-  const params = Object.assign({
+  const params = {
     firebaseConfig: firebaseConfig,
     manifest: '3',
     safari: false,
     mode: 'production',
-  }, env)
+    ...env,
+  }
 
   return extensionConfig(params)
 }
