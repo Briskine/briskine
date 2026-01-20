@@ -57,7 +57,7 @@ describe('editor Quill', () => {
     $editor.focus()
     insertQuillTemplate({
       element: $editor,
-      text: template,
+      html: template,
       word: {
         start: 0,
         end: 0,
