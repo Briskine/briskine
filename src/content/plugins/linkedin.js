@@ -109,8 +109,8 @@ function getToName (element) {
 }
 
 // get all required data from the dom
-export function getData ({ element }) {
-  if (!isActive()) {
+export function getData ({ element, _active }) {
+  if (!isActive() && !_active) {
     return
   }
 

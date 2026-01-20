@@ -52,8 +52,8 @@ function getToName (element) {
   return ''
 }
 
-export function getData ({ element }) {
-  if (!isActive()) {
+export function getData ({ element, _active }) {
+  if (!isActive() && !_active) {
     return
   }
 

@@ -24,6 +24,7 @@ describe('linkedin sales navigator', () => {
     const element = iframe.contentDocument.querySelector('textarea')
     const data = getData({
       element: element,
+      _active: true,
     })
 
     expect(data).to.deep.equal({
@@ -52,6 +53,7 @@ describe('linkedin sales navigator', () => {
     const element = iframe.contentDocument.querySelector('textarea')
     const data = getData({
       element: element,
+      _active: true,
     })
 
     expect(data).to.deep.equal({
@@ -80,6 +82,7 @@ describe('linkedin sales navigator', () => {
     const element = iframe.contentDocument.querySelector('textarea')
     const data = getData({
       element: element,
+      _active: true,
     })
 
     expect(data).to.deep.equal({
@@ -108,6 +111,7 @@ describe('linkedin sales navigator', () => {
     const element = iframe.contentDocument.querySelector('textarea')
     const data = getData({
       element: element,
+      _active: true,
     })
 
     expect(data).to.deep.equal({
@@ -136,6 +140,7 @@ describe('linkedin sales navigator', () => {
     const element = iframe.contentDocument.querySelector('textarea')
     const data = getData({
       element: element,
+      _active: true,
     })
 
     expect(data).to.deep.equal({
