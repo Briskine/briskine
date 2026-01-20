@@ -6,18 +6,18 @@
 
 import Messenger from '../messenger/messenger.js'
 
-import {pageInsertCkEditorTemplate as insertCkEditorTemplate} from '../editors/editor-ckeditor.js'
-import {pageInsertPasteTemplate as insertPasteTemplate} from '../editors/editor-paste.js'
-import { pageInsertQuillTemplate} from '../editors/editor-quill.js'
+import { pageInsertCkEditorTemplate } from '../editors/editor-ckeditor.js'
+import { pageInsertPasteTemplate } from '../editors/editor-paste.js'
+import { pageInsertQuillTemplate } from '../editors/editor-quill.js'
 
 const pageMessengerClient = Messenger('page')
 
 pageMessengerClient.respond('ckeditor-insert', (options) => {
-  return insertCkEditorTemplate(options)
+  return pageInsertCkEditorTemplate(options)
 })
 
 pageMessengerClient.respond('paste-insert', (options) => {
-  return insertPasteTemplate(options)
+  return pageInsertPasteTemplate(options)
 })
 
 pageMessengerClient.respond('quill-insert', (options) => {
