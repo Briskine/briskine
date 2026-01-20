@@ -3,9 +3,8 @@
  */
 
 import { register } from '../plugin.js'
-
 import parseTemplate from '../utils/parse-template.js'
-import {isContentEditable} from '../editors/editor-contenteditable.js'
+import { isContentEditable } from '../editors/editor-contenteditable.js'
 import createContact from '../utils/create-contact.js'
 
 const fromFieldSelector = '.az2'

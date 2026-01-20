@@ -220,8 +220,9 @@ async function updateSection ($container, $button, getNode, value) {
 }
 
 // get all required data from the dom
-export async function getData ({ element }) {
-  if (!isActive()) {
+// TODO temporary _active prop, until we can mock location
+export async function getData ({ element, _active }) {
+  if (!isActive() && !_active) {
     return
   }
 

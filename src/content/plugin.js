@@ -27,9 +27,7 @@ export async function run (type = '', params) {
 
         return true
       })
-      .map((r) => {
-        return r.value
-      })
+      .map((r) => r.value)
 
     const data = merge({}, ...responses)
     return data
