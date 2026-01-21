@@ -61,7 +61,7 @@ export default async function autocomplete ({ element, word, template }) {
   const html = await parseTemplate(withAttachments, data)
   const text = htmlToText(html)
 
-  insertTemplate({
+  await insertTemplate({
     element,
     word,
     template,
