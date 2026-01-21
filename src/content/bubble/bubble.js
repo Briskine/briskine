@@ -294,7 +294,7 @@ function isValidTextfield (elem) {
     elem?.nodeType === Node.ELEMENT_NODE
     // is editable
     && (
-      elem.tagName === 'TEXTAREA'
+      elem.tagName.toLowerCase() === 'textarea'
       || elem.isContentEditable
     )
     // is not read-only

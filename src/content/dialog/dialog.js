@@ -126,7 +126,10 @@ function Dialog (originalProps) {
     // when event was triggered in shadow dom (such as the bubble)
     const hostNode = node?.getRootNode?.()?.host
 
-    if (isTextfield(node)) {
+    if (
+      isTextfield(node)
+      && !node.readOnly
+    ) {
       // input, textarea
       [target, removeCaretParent] = getEditableCaret(node)
       if (direction === 'rtl') {
