@@ -52,11 +52,15 @@ function getToName (element) {
   return ''
 }
 
-export function getData ({ element, _active }) {
-  if (!isActive() && !_active) {
+function getData({ element }) {
+  if (!isActive()) {
     return
   }
 
+  return getSalesNavigatorData({ element })
+}
+
+export function getSalesNavigatorData ({ element }) {
   const vars = {
     from: {},
     to: [],

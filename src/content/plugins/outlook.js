@@ -220,12 +220,15 @@ async function updateSection ($container, $button, getNode, value) {
 }
 
 // get all required data from the dom
-// TODO temporary _active prop, until we can mock location
-export async function getData ({ element, _active }) {
-  if (!isActive() && !_active) {
+function getData ({ element }) {
+  if (!isActive()) {
     return
   }
 
+  return getOutlookData({ element })
+}
+
+export async function getOutlookData ({ element }) {
   await makeFieldsEditable(element)
 
   const vars = {

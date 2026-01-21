@@ -109,11 +109,15 @@ function getToName (element) {
 }
 
 // get all required data from the dom
-export function getData ({ element, _active }) {
-  if (!isActive() && !_active) {
+function getData ({ element }) {
+  if (!isActive()) {
     return
   }
 
+  return getLinkedInData({ element })
+}
+
+export function getLinkedInData ({ element }) {
   const vars = {
     from: {},
     to: [],

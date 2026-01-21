@@ -1,7 +1,7 @@
 /* globals describe, it */
 import {expect} from 'chai'
 
-import {getData} from './outlook.js'
+import { getOutlookData } from './outlook.js'
 
 async function page (src = '') {
   const iframe = document.createElement('iframe')
@@ -22,10 +22,8 @@ describe('outlook', () => {
   it('should get data in default compose', async () => {
     const iframe = await page('pages/outlook/outlook-compose.html')
     const element = iframe.contentDocument.querySelector('[aria-multiline]')
-    const data = await getData({
+    const data = await getOutlookData({
       element: element,
-
-      _active: true,
     })
 
     expect(data).to.deep.equal({
@@ -61,10 +59,8 @@ describe('outlook', () => {
   it('should get data in compose popup', async () => {
     const iframe = await page('pages/outlook/outlook-compose-popup.html')
     const element = iframe.contentDocument.querySelector('[aria-multiline]')
-    const data = await getData({
+    const data = await getOutlookData({
       element: element,
-
-      _active: true,
     })
 
     expect(data).to.deep.equal({

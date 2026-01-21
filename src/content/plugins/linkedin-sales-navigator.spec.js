@@ -1,7 +1,7 @@
 /* globals describe, it */
 import {expect} from 'chai'
 
-import {getData} from './linkedin-sales-navigator.js'
+import {getSalesNavigatorData} from './linkedin-sales-navigator.js'
 
 async function page (src = '') {
   const iframe = document.createElement('iframe')
@@ -22,9 +22,8 @@ describe('linkedin sales navigator', () => {
   it('should get data in sales navigator invite', async () => {
     const iframe = await page('pages/linkedin-sales-navigator/linkedin-sales-navigator-invite.html')
     const element = iframe.contentDocument.querySelector('textarea')
-    const data = getData({
+    const data = getSalesNavigatorData({
       element: element,
-      _active: true,
     })
 
     expect(data).to.deep.equal({
@@ -51,9 +50,8 @@ describe('linkedin sales navigator', () => {
   it('should get data in sales navigator new message popup', async () => {
     const iframe = await page('pages/linkedin-sales-navigator/linkedin-sales-navigator-message-popup.html')
     const element = iframe.contentDocument.querySelector('textarea')
-    const data = getData({
+    const data = getSalesNavigatorData({
       element: element,
-      _active: true,
     })
 
     expect(data).to.deep.equal({
@@ -80,9 +78,8 @@ describe('linkedin sales navigator', () => {
   it('should get data in sales navigator new message popup, with 1 shared connection', async () => {
     const iframe = await page('pages/linkedin-sales-navigator/linkedin-sales-navigator-message-popup-1-connection.html')
     const element = iframe.contentDocument.querySelector('textarea')
-    const data = getData({
+    const data = getSalesNavigatorData({
       element: element,
-      _active: true,
     })
 
     expect(data).to.deep.equal({
@@ -109,9 +106,8 @@ describe('linkedin sales navigator', () => {
   it('should get data in sales navigator new message thread', async () => {
     const iframe = await page('pages/linkedin-sales-navigator/linkedin-sales-navigator-message-thread-new.html')
     const element = iframe.contentDocument.querySelector('textarea')
-    const data = getData({
+    const data = getSalesNavigatorData({
       element: element,
-      _active: true,
     })
 
     expect(data).to.deep.equal({
@@ -138,9 +134,8 @@ describe('linkedin sales navigator', () => {
   it('should get data in sales navigator existing message thread', async () => {
     const iframe = await page('pages/linkedin-sales-navigator/linkedin-sales-navigator-message-thread.html')
     const element = iframe.contentDocument.querySelector('textarea')
-    const data = getData({
+    const data = getSalesNavigatorData({
       element: element,
-      _active: true,
     })
 
     expect(data).to.deep.equal({
