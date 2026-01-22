@@ -1,12 +1,11 @@
-/* globals describe, it, before, after */
-import {expect} from 'chai'
+import { expect, describe, it, beforeAll, afterAll } from 'vitest'
 
 import {compileTemplate} from '../sandbox/sandbox.js'
 
 let originalRandom = window.Math.random
 
 describe('random handlebars helper', () => {
-  before(() => {
+  beforeAll(() => {
     // mock Math.random
     window.Math.random = function () {
       return 0.5
@@ -25,7 +24,7 @@ describe('random handlebars helper', () => {
     expect(await compileTemplate('{{random "one" 2}}')).to.equal('2')
   })
 
-  after(() => {
+  afterAll(() => {
     window.Math.random = originalRandom
   })
 })

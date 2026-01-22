@@ -1,2 +1,0 @@
-/* globals mocha */
-mocha.run()

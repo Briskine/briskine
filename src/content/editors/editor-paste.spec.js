@@ -1,5 +1,4 @@
-/* globals describe, it, before, after */
-import {expect} from 'chai'
+import { expect, describe, it, beforeAll, afterAll } from 'vitest'
 
 import {insertPasteTemplate} from './editor-paste.js'
 import {setup, destroy} from '../page/page-parent.js'
@@ -16,12 +15,22 @@ function cleanEditor () {
   })
 }
 
+function waitForEditor () {
+  return new Promise((resolve, reject) => {
+
+    window.addEventListener('prosemirror-ready', () => {
+      $editor = document.querySelector('[contenteditable]')
+      resolve()
+    }, {once: true})   
+
+  })
+}
+
 // paste is used for ProseMirror and Draft.js.
 // we're only testing ProseMirror here.
-describe('editor Paste', () => {
-  before(function (done) {
-    this.timeout(20000)
-    setup()
+describe('editor Paste', function () {
+  beforeAll(async function () {
+    await setup(chrome || browser)
 
     $link = document.createElement('link')
     $link.rel = 'stylesheet'
@@ -60,13 +69,10 @@ describe('editor Paste', () => {
       window.dispatchEvent(new Event('prosemirror-ready'))
     `
 
-    window.addEventListener('prosemirror-ready', () => {
-      $editor = document.querySelector('[contenteditable]')
-      done()
-    }, {once: true})
-
     document.body.appendChild($script)
-  })
+
+    await waitForEditor();
+  }, 20000)
 
   it('should insert template containing only anchor', function (done) {
     const template = '<a href="https://www.briskine.com">briskine-two</a>'
@@ -188,7 +194,7 @@ describe('editor Paste', () => {
     })
   })
 
-  after(() => {
+  afterAll(() => {
     $link.remove()
     $script.remove()
     document.querySelector(`#${containerId}`).remove()

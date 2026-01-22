@@ -6,7 +6,6 @@ import CopyWebpackPlugin from 'copy-webpack-plugin'
 export default {
   mode: 'development',
   entry: {
-    test: globSync('./src/**/*.spec.js', {dotRelative: true}),
     sandbox: './src/content/sandbox/sandbox.js',
     page: './src/content/page/page.js',
   },

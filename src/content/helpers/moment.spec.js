@@ -1,8 +1,10 @@
-/* globals describe, it */
-import {expect} from 'chai'
+import { expect, describe, it } from 'vitest'
+
 import MockDate from 'mockdate'
 
 import {compileTemplate} from '../sandbox/sandbox.js'
+import 'moment/dist/locale/fr'
+import 'moment/dist/locale/ja'
 
 MockDate.set('2020-07-01')
 

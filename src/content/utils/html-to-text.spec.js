@@ -1,5 +1,4 @@
-/* globals describe, it */
-import {expect} from 'chai'
+import { expect, describe, it, beforeAll, afterAll, afterEach } from 'vitest'
 
 import htmlToText from './html-to-text.js'
 

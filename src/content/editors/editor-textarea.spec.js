@@ -1,11 +1,10 @@
-/* globals describe, it, before, after, afterEach */
-import {expect} from 'chai'
+import { expect, describe, it, beforeAll, afterAll, afterEach } from 'vitest'
 
 import {insertTextareaTemplate} from './editor-textarea.js'
 
 describe('insertTextareaTemplate', () => {
   let textarea
-  before(() => {
+  beforeAll(() => {
     textarea = document.createElement('textarea')
     document.body.appendChild(textarea)
   })
@@ -208,7 +207,7 @@ describe('insertTextareaTemplate', () => {
     input.remove()
   })
 
-  after(() => {
+  afterAll(() => {
     textarea.remove()
   })
 })

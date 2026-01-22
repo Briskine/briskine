@@ -1,5 +1,4 @@
-/* globals describe, it, after, before */
-import {expect} from 'chai'
+import { expect, describe, it, beforeAll, afterAll, afterEach } from 'vitest'
 
 import parseTemplate from './parse-template.js'
 import {destroy} from '../sandbox/sandbox-parent.js'
@@ -59,7 +58,7 @@ const defaultTemplates = [
 ]
 
 describe('parseTemplate', async () => {
-  before(() => {
+  beforeAll(() => {
     window.browser.runtime.sendMessage = async ({type}) => {
       if (type === 'getTemplates') {
         return defaultTemplates
@@ -176,7 +175,7 @@ Expecting 'CLOSE_RAW_BLOCK', 'CLOSE', 'CLOSE_UNESCAPED', 'OPEN_SEXPR', 'CLOSE_SE
     expect(await parseTemplate('{{> subexpressionpartial}}')).to.equal('template john')
   })
 
-  after(() => {
+  afterAll(() => {
     destroy()
     delete window.browser.runtime.sendMessage
   })

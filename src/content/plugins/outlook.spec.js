@@ -1,5 +1,4 @@
-/* globals describe, it */
-import {expect} from 'chai'
+import { expect, describe, it } from 'vitest'
 
 import { getOutlookData } from './outlook.js'
 
@@ -20,7 +19,7 @@ async function page (src = '') {
 
 describe('outlook', () => {
   it('should get data in default compose', async () => {
-    const iframe = await page('pages/outlook/outlook-compose.html')
+    const iframe = await page('test/pages/outlook/outlook-compose.html')
     const element = iframe.contentDocument.querySelector('[aria-multiline]')
     const data = await getOutlookData({
       element: element,
@@ -57,7 +56,7 @@ describe('outlook', () => {
   })
 
   it('should get data in compose popup', async () => {
-    const iframe = await page('pages/outlook/outlook-compose-popup.html')
+    const iframe = await page('test/pages/outlook/outlook-compose-popup.html')
     const element = iframe.contentDocument.querySelector('[aria-multiline]')
     const data = await getOutlookData({
       element: element,
