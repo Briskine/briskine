@@ -16,13 +16,11 @@ function isTextfield (element) {
   return ['input', 'textarea'].includes(element.tagName.toLowerCase())
 }
 
-function getTemplateByShortcut (shortcut) {
-  return getTemplates()
-    .then((templates) => {
-      return templates.find((t) => {
-        return t.shortcut === shortcut
-      })
-    })
+async function getTemplateByShortcut (shortcut) {
+  const templates = await getTemplates()
+  return templates.find((t) => {
+    return t.shortcut === shortcut
+  })
 }
 
 async function keyboardAutocomplete (e) {

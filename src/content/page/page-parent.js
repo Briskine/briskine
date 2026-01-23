@@ -40,4 +40,5 @@ export function destroy () {
   }
 
   pageScript.remove()
+  pageScript = null
 }
