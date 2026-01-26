@@ -2,15 +2,18 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <script src="https://cdn.jsdelivr.net/npm/@ckeditor/ckeditor5-build-classic/build/ckeditor.js"></script>
+    <title>CKEditor 5</title>
+    <link rel="stylesheet" href="https://esm.sh/ckeditor5/dist/ckeditor5.css" />
     <script src="/extension-ready.js"></script>
   </head>
   <body>
     <textarea id="editor"></textarea>
-    <script>
+    <script type="module">
+      import { ClassicEditor, Essentials, Bold, Italic, Paragraph } from 'https://esm.sh/ckeditor5'
       ClassicEditor.create(document.querySelector('#editor'), {
-        licenseKey: 'GPL',
-      })
+    		plugins: [ Essentials, Bold, Italic, Paragraph ],
+    		licenseKey: 'GPL',
+     	})
     </script>
   </body>
 </html>

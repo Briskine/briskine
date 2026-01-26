@@ -66,9 +66,7 @@ export function getWord (element) {
 
 export async function selectWord (element, word) {
   let resolve
-  const promise = new Promise((res) => {
-    resolve = res
-  })
+  const promise = new Promise((res) => resolve = res)
 
   const selection = getComposedSelection(element)
   const range = selection.getRangeAt(0).cloneRange()
