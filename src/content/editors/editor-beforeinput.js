@@ -38,15 +38,15 @@ export async function pageInsertBeforeInputTemplate ({ template, word, text, htm
     selectWord(element, word)
   }
 
-  // needs to be run in page context, for firefox support
-  const insertTextEvent = new InputEvent('beforeinput', {
+  const e = new InputEvent('beforeinput', {
     bubbles: true,
     inputType: 'insertReplacementText',
     dataTransfer: new DataTransfer(),
   })
-
-  insertTextEvent.dataTransfer.setData('text/plain', text)
-  insertTextEvent.dataTransfer.setData('text/html', html)
-
-  element.dispatchEvent(insertTextEvent)
+  // set the data on the event, instead of a separate DataTransfer instance.
+  // otherwise Firefox sends an empty DataTransfer object.
+  // also needs to run in page context, for firefox support.
+  e.dataTransfer.setData('text/plain', text)
+  e.dataTransfer.setData('text/html', html)
+  element.dispatchEvent(e)
 }

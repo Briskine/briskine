@@ -11,8 +11,8 @@
  *
  */
 
-import {request} from '../page/page-parent.js'
-import getComposedSelection from '../selection.js'
+import { request } from '../page/page-parent.js'
+import { selectWord } from '../word.js'
 import getActiveElement from '../active-element.js'
 
 export function isPasteEditor (element) {
@@ -41,29 +41,20 @@ export async function pageInsertPasteTemplate ({ word, template, html, text }) {
   // we can't pass the element instance to the page script
   const element = getActiveElement()
 
-  // select shortcut
-  if (word.text === template.shortcut) {
-    const selection = getComposedSelection(element)
-    const range = selection.getRangeAt(0)
-    const focusNode = selection.focusNode
-    range.setStart(focusNode, word.start)
-    range.setEnd(focusNode, word.end)
-    // required for correct caret placement at the end in JIRA
-    range.deleteContents()
-    // required for draft.js
-    element.dispatchEvent(new Event('input', {bubbles: true}))
-
-    // give the editor a second to notice the change
-    await new Promise((resolve) => setTimeout(resolve))
+  if (
+    template.shortcut
+    && word.text === template.shortcut
+  ) {
+    selectWord(element, word)
   }
 
   const e = new ClipboardEvent('paste', {
     clipboardData: new DataTransfer(),
-    // required for draft.js
     bubbles: true,
   })
   // set the data on the event, instead of a separate DataTransfer instance.
   // otherwise Firefox sends an empty DataTransfer object.
+  // also needs to run in page context, for firefox support.
   e.clipboardData.setData('text/plain', text)
   e.clipboardData.setData('text/html', html)
   element.dispatchEvent(e)
