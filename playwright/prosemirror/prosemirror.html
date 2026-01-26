@@ -3,7 +3,6 @@
   <head>
     <meta charset="utf-8">
     <link rel="stylesheet" href="./prosemirror-editor.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prosemirror-view@1/style/prosemirror.css">
     <script src="/extension-ready.js"></script>
   </head>
   <body>
@@ -11,12 +10,12 @@
     <div id="content"></div>
 
     <script type="module">
-      import {EditorState} from 'https://cdn.jsdelivr.net/npm/prosemirror-state@1/+esm'
-      import {EditorView} from 'https://cdn.jsdelivr.net/npm/prosemirror-view@1/+esm'
-      import {Schema, DOMParser} from 'https://cdn.jsdelivr.net/npm/prosemirror-model@1/+esm'
-      import {schema} from 'https://cdn.jsdelivr.net/npm/prosemirror-schema-basic@1/+esm'
-      import {addListNodes} from 'https://cdn.jsdelivr.net/npm/prosemirror-schema-list@1/+esm'
-      import {exampleSetup} from 'https://cdn.jsdelivr.net/npm/prosemirror-example-setup@1/+esm'
+      import {EditorState} from 'https://esm.sh/prosemirror-state@1/'
+      import {EditorView} from 'https://esm.sh/prosemirror-view@1/'
+      import {Schema, DOMParser} from 'https://esm.sh/prosemirror-model@1/'
+      import {schema} from 'https://esm.sh/prosemirror-schema-basic@1/'
+      import {addListNodes} from 'https://esm.sh/prosemirror-schema-list@1/'
+      import {exampleSetup} from 'https://esm.sh/prosemirror-example-setup@1/'
 
       // Mix the nodes from prosemirror-schema-list into the basic schema to
       // create a schema with list support.
