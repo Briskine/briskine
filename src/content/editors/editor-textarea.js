@@ -2,16 +2,16 @@
  */
 
 export function insertTextareaTemplate ({ element, word, template, text }) {
-  // restore focus to the editable area
-  element.focus()
-
   const textfieldValue = element.value
   let cursorOffset = word.end + text.length
 
   // if the current word matches the shortcut then remove it
   // otherwise skip it (ex: from dialog)
   let wordStart = word.start
-  if (word.text === template.shortcut) {
+  if (
+    template.shortcut
+    && word.text === template.shortcut
+  ) {
     // decrease the cursor offset with the removed text length
     cursorOffset = cursorOffset - word.text.length
   } else {

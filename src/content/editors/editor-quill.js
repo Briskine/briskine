@@ -24,7 +24,7 @@ export async function pageInsertQuillTemplate ({ template, word, html, text }) {
   // remove shortcut
   if (
     template.shortcut
-    && template.shortcut === word.text
+    && word.text === template.shortcut
   ) {
     selectedWordRange = selectWord(element, word)
   }
