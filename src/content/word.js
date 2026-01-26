@@ -66,11 +66,17 @@ export function getWord (element) {
 
 export function selectWord (element, word) {
   const selection = getComposedSelection(element)
-  const range = selection.getRangeAt(0)
+  const range = selection.getRangeAt(0).cloneRange()
   range.setStart(selection.focusNode, word.start)
   range.setEnd(selection.focusNode, word.end)
 
-  element.dispatchEvent(new Event('selectionchange', {bubbles: true}))
+  selection.removeAllRanges()
+  selection.addRange(range)
+
+  element.dispatchEvent(new Event('selectionchange', {
+    bubbles: true,
+    composed: true,
+  }))
 
   return range
 }
