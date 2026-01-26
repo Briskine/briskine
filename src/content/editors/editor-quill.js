@@ -26,7 +26,7 @@ export async function pageInsertQuillTemplate ({ template, word, html, text }) {
     template.shortcut
     && word.text === template.shortcut
   ) {
-    selectedWordRange = selectWord(element, word)
+    selectedWordRange = await selectWord(element, word)
   }
 
   if (quill) {

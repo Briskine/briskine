@@ -64,19 +64,23 @@ export function getWord (element) {
   }
 }
 
-export function selectWord (element, word) {
+export async function selectWord (element, word) {
+  let resolve
+  const promise = new Promise((res) => {
+    resolve = res
+  })
+
   const selection = getComposedSelection(element)
   const range = selection.getRangeAt(0).cloneRange()
   range.setStart(selection.focusNode, word.start)
   range.setEnd(selection.focusNode, word.end)
 
   selection.removeAllRanges()
+
+  document.addEventListener('selectionchange', resolve, {once: true})
   selection.addRange(range)
 
-  element.dispatchEvent(new Event('selectionchange', {
-    bubbles: true,
-    composed: true,
-  }))
+  await promise
 
   return range
 }

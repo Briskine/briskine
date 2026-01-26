@@ -35,7 +35,7 @@ export async function pageInsertBeforeInputTemplate ({ template, word, text, htm
     template.shortcut
     && word.text === template.shortcut
   ) {
-    selectWord(element, word)
+    await selectWord(element, word)
   }
 
   const e = new InputEvent('beforeinput', {

@@ -45,7 +45,7 @@ export async function pageInsertPasteTemplate ({ word, template, html, text }) {
     template.shortcut
     && word.text === template.shortcut
   ) {
-    selectWord(element, word)
+    await selectWord(element, word)
   }
 
   const e = new ClipboardEvent('paste', {

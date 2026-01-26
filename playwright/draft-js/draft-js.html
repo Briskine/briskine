@@ -6,16 +6,10 @@
   </head>
   <body>
     <div id="editor"></div>
-    <script>
-      // HACK to avoid draft-js errors when changing content
-      window.setImmediate = (callback = () => {}) => {
-        callback()
-      }
-    </script>
     <script type="module">
-      import React from 'https://cdn.jsdelivr.net/npm/react@18/+esm'
-      import ReactDOM from 'https://cdn.jsdelivr.net/npm/react-dom@18/+esm'
-      import {Editor, EditorState} from 'https://cdn.jsdelivr.net/npm/draft-js@0/+esm'
+      import React from 'https://esm.sh/react@19/?dev'
+      import ReactDOM from 'https://esm.sh/react-dom@19/client/?dev'
+      import {Editor, EditorState} from 'https://esm.sh/draft-js@0/?dev'
 
       class MyEditor extends React.Component {
         constructor () {
