@@ -5,7 +5,7 @@
 
 import getActiveElement from '../active-element.js'
 import { request } from '../page/page-parent.js'
-import getComposedSelection from '../selection.js'
+import { selectWord } from '../word.js'
 
 export function isQuill (element) {
   return element?.classList?.contains?.('ql-editor')
@@ -19,24 +19,21 @@ export async function pageInsertQuillTemplate ({ template, word, html, text }) {
   // private __quill property can only be accessed in a page script
   const quill = container?.__quill
 
+  let selectedWordRange
+
   // remove shortcut
   if (
     template.shortcut
     && template.shortcut === word.text
   ) {
-    const selection = getComposedSelection(element)
-    const range = selection.getRangeAt(0)
-    const focusNode = selection.focusNode
-    range.setStart(focusNode, word.start)
-    range.setEnd(focusNode, word.end)
-    range.deleteContents()
-    element.dispatchEvent(new Event('input', {bubbles: true}))
-
-    // give the editor a second to notice the change
-    await new Promise((resolve) => setTimeout(resolve))
+    selectedWordRange = selectWord(element, word)
   }
 
   if (quill) {
+    if (selectedWordRange) {
+      selectedWordRange.deleteContents()
+    }
+
     // quill v1,
     // use quill instance methods.
     const quillRange = quill.getSelection()

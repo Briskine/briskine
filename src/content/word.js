@@ -71,4 +71,6 @@ export function selectWord (element, word) {
   range.setEnd(selection.focusNode, word.end)
 
   element.dispatchEvent(new Event('selectionchange', {bubbles: true}))
+
+  return range
 }
