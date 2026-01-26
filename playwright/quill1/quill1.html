@@ -2,14 +2,15 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <link href="https://cdn.jsdelivr.net/npm/quill@1/dist/quill.snow.min.css" rel="stylesheet">
+    <title>Quill 1</title>
+    <link href="https://esm.sh/quill@1/dist/quill.snow.css" rel="stylesheet">
     <script src="/extension-ready.js"></script>
   </head>
   <body>
     <div id="editor"></div>
 
     <script type="module">
-      import Quill from 'https://cdn.jsdelivr.net/npm/quill@1/+esm'
+      import Quill from 'https://esm.sh/quill@1/'
 
       const quill = new Quill('#editor', {
         theme: 'snow'

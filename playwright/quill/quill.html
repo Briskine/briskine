@@ -2,8 +2,9 @@
 <html>
   <head>
     <meta charset="utf-8">
+    <title>Quill</title>
     <link
-      href="https://cdn.jsdelivr.net/npm/quill@2/dist/quill.snow.css"
+      href="https://esm.sh/quill@2/dist/quill.snow.css"
       rel="stylesheet"
     >
     <script src="/extension-ready.js"></script>
@@ -12,7 +13,7 @@
     <div id="editor"></div>
 
     <script type="module">
-      import Quill from 'https://cdn.jsdelivr.net/npm/quill@2/+esm'
+      import Quill from 'https://esm.sh/quill@2/'
 
       const quill = new Quill('#editor', {
         theme: 'snow'
