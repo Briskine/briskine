@@ -254,7 +254,7 @@ export function destroy () {
 }
 
 const textfieldMinWidth = 100
-const textfieldMinHeight = 25
+const textfieldMinHeight = 32
 
 // visible siblings that take up space
 function hasVisibleSiblings (elem) {
@@ -296,7 +296,10 @@ function isValidTextfield (elem) {
     elem?.nodeType === Node.ELEMENT_NODE
     // is editable
     && (
-      isTextfieldEditor(elem)
+      (
+        isTextfieldEditor(elem)
+        && elem.tagName.toLowerCase() === 'textarea'
+      )
       || isContentEditable(elem)
     )
     // has a parent element node
