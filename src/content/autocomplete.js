@@ -2,94 +2,78 @@
  * Generic methods for autocompletion
  */
 
-import {register, run as runPlugins} from './plugin.js'
-import gmailPlugin from './plugins/gmail.js'
-import gmailMobilePlugin from './plugins/gmail-mobile.js'
-import linkedinPlugin from './plugins/linkedin.js'
-import linkedinSalesNavigatorPlugin from './plugins/linkedin-sales-navigator.js'
-import outlookPlugin from './plugins/outlook.js'
-import facebookPlugin from './plugins/facebook.js'
-import zendeskPlugin from './plugins/zendesk.js'
-import universalPlugin from './plugins/universal.js'
+import { run } from './plugin.js'
+import { addAttachments } from './attachments/attachments.js'
+import parseTemplate from './utils/parse-template.js'
+import htmlToText from './utils/html-to-text.js'
 
-import {updateTemplateStats} from '../store/store-content.js'
-import {isContentEditable} from './editors/editor-contenteditable.js'
-import getSelection from './selection.js'
+import {isContentEditable, insertContentEditableTemplate} from './editors/editor-contenteditable.js'
+import {isCkEditor, insertCkEditorTemplate} from './editors/editor-ckeditor.js'
+import {isPasteEditor, insertPasteTemplate} from './editors/editor-paste.js'
+import {isBeforeInputEditor, insertBeforeInputTemplate} from './editors/editor-beforeinput.js'
+import {isQuill, insertQuillTemplate} from './editors/editor-quill.js'
+import {insertTextareaTemplate} from './editors/editor-textarea.js'
 
-// register plugins,
-// in execution order.
-register(gmailPlugin)
-register(gmailMobilePlugin)
-register(linkedinPlugin)
-register(linkedinSalesNavigatorPlugin)
-register(outlookPlugin)
-register(facebookPlugin)
-register(zendeskPlugin)
-register(universalPlugin)
+import './plugins/gmail.js'
+import './plugins/outlook.js'
+import './plugins/gmail-mobile.js'
+import './plugins/linkedin.js'
+import './plugins/linkedin-sales-navigator.js'
+import './plugins/facebook.js'
 
-export function getSelectedWord (params) {
-  let beforeSelection = ''
-  const selection = getSelection(params.element)
+import { updateTemplateStats } from '../store/store-content.js'
 
-  if (isContentEditable(params.element)) {
-    switch (selection.focusNode.nodeType) {
-      // In most cases, the focusNode property refers to a Text Node.
-      case (document.TEXT_NODE):
-        // for text nodes take the text until the focusOffset
-        beforeSelection = selection.focusNode.textContent.substring(0, selection.focusOffset)
-        break
-      case (document.ELEMENT_NODE):
-        // when we have an element node,
-        // focusOffset returns the index in the childNodes collection of the focus node where the selection ends.
-        if (
-          // focusOffset is larger than childNodes length when editor is empty
-          selection.focusNode.childNodes[selection.focusOffset]
-        ) {
-          beforeSelection = selection.focusNode.childNodes[selection.focusOffset].textContent
-        }
-        break
-    }
-  } else {
-    // selectionEnd property applies only to inputs of types text, search, URL, tel, and password.
-    // returns null while accessing selectionEnd property on non-text input elements (e.g., email).
-    // https://developer.mozilla.org/en-US/docs/Web/API/HTMLInputElement/selectionEnd
-    if (params.element.selectionEnd !== null) {
-      beforeSelection = params.element.value.substring(0, params.element.selectionEnd)
-    } else {
-      beforeSelection = params.element.value
-    }
+function insertTemplate ({ element, word, template, html, text }) {
+  const params = {
+    element,
+    word,
+    template,
+    html,
+    text,
   }
 
-  // all regular and special whitespace chars we want to find.
-  // https://jkorpela.fi/chars/spaces.html
-  // we can't use regex \S to match the first non-whitespace character,
-  // because it also considers special chars like zero-width-whitespace as non-whitespace.
-  const spaces = [
-    '\n', //newline
-    '\u0020', // space
-    '\u00A0', // no-break space
-    '\u200B', // zero width whitespace
-    '\uFEFF', // zero width no-break space
-  ]
-
-  // will return -1 from lastIndexOf,
-  // if no whitespace is present before the word.
-  const lastWhitespace = Math.max(...spaces.map((char) => beforeSelection.lastIndexOf(char)))
-
-  // first character is one index away from the last whitespace
-  const start = 1 + lastWhitespace
-  const text = beforeSelection.substring(start)
-  const end = start + text.length
-
-  return {
-    start: start,
-    end: end,
-    text: text,
+  if (isCkEditor(element)) {
+    return insertCkEditorTemplate(params)
   }
+
+  if (isPasteEditor(element)) {
+    return insertPasteTemplate(params)
+  }
+
+  if (isBeforeInputEditor(element)) {
+    return insertBeforeInputTemplate(params)
+  }
+
+  if (isQuill(element)) {
+    return insertQuillTemplate(params)
+  }
+
+  if (isContentEditable(element)) {
+    return insertContentEditableTemplate(params)
+  }
+
+  return insertTextareaTemplate(params)
 }
 
-export async function autocomplete (params) {
-  await runPlugins(Object.assign({}, params))
-  await updateTemplateStats(params.template)
-  return params
+export default async function autocomplete ({ element, word, template }) {
+  const withAttachments = addAttachments(template.body, template.attachments)
+  const data = await run('data', { element })
+  const html = await parseTemplate(withAttachments, data)
+  const text = htmlToText(html)
+
+  await insertTemplate({
+    element,
+    word,
+    template,
+    text,
+    html,
+  })
+
+  await run('actions', {
+    element,
+    template,
+    data,
+  })
+
+  await updateTemplateStats(template)
 }

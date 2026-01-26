@@ -2,19 +2,40 @@
  */
 
 import parseTemplate from '../utils/parse-template.js'
-import {insertTemplate} from '../editors/editor-universal.js'
 import createContact from '../utils/create-contact.js'
-import {addAttachments} from '../attachments/attachments.js'
+import { register } from '../plugin.js'
 
-async function before (params, data) {
-  const $parent = params.element.closest('[role=dialog]')
+var activeCache = null
+function isActive () {
+  if (activeCache !== null) {
+    return activeCache
+  }
+
+  activeCache = false
+  if (
+    window.location.hostname === 'www.linkedin.com'
+    // exclude LinkedIn Sales Navigator
+    && !window.location.pathname.startsWith('/sales/')
+  ) {
+    activeCache = true
+  }
+
+  return activeCache
+}
+
+async function actions ({ element, template, data}) {
+  if (!isActive()) {
+    return
+  }
+
+  const $parent = element.closest('[role=dialog]')
 
   if ($parent) {
     // set subject field value.
     // subject is only available for inMail messaging.
     const $subjectField = $parent.querySelector('[name=subject]')
-    if (params.template.subject && $subjectField) {
-      const parsedSubject = await parseTemplate(params.template.subject, data)
+    if (template.subject && $subjectField) {
+      const parsedSubject = await parseTemplate(template.subject, data)
       $subjectField.value = parsedSubject
     }
   }
@@ -88,19 +109,27 @@ function getToName (element) {
 }
 
 // get all required data from the dom
-export function getData (params) {
+function getData ({ element }) {
+  if (!isActive()) {
+    return
+  }
+
+  return getLinkedInData({ element })
+}
+
+export function getLinkedInData ({ element }) {
   const vars = {
     from: {},
     to: [],
     subject: '',
   }
 
-  if (!params?.element) {
+  if (!element) {
     return vars
   }
 
   // get document or shadowRoot
-  const parent = params.element.getRootNode()
+  const parent = element.getRootNode()
 
   let fromName = ''
   const $profilePictureSelectors = [
@@ -117,48 +146,11 @@ export function getData (params) {
 
   vars.from = createContact({name: fromName})
 
-  const toName = getToName(params.element)
+  const toName = getToName(element)
   vars.to.push(createContact({name: toName}))
 
   return vars
 }
 
-var activeCache = null
-function isActive () {
-  if (activeCache !== null) {
-    return activeCache
-  }
-
-  activeCache = false
-  if (
-    window.location.hostname === 'www.linkedin.com'
-    // exclude LinkedIn Sales Navigator
-    && !window.location.pathname.startsWith('/sales/')
-  ) {
-    activeCache = true
-  }
-
-  return activeCache
-}
-
-export default async (params = {}) => {
-  if (!isActive()) {
-    return false
-  }
-
-  const data = getData(params)
-  const templateWithAttachments = addAttachments(
-    await parseTemplate(params.template.body, data),
-    params.template.attachments,
-  )
-
-  await before(params, data)
-
-  // generic editor, including textareas
-  insertTemplate({
-    text: templateWithAttachments,
-    ...params,
-  })
-
-  return true
-}
+register('data', getData)
+register('actions', actions)

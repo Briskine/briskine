@@ -2,22 +2,42 @@
  * Plugin
  */
 
-const plugins = []
-export function register (plugin) {
-  plugins.push(plugin)
+import merge from 'lodash.merge'
+
+import debug from '../debug.js'
+
+const plugins = {}
+export function register (type = '', func = () => { }) {
+  if (!plugins[type]) {
+    plugins[type] = []
+  }
+
+  plugins[type].push(func)
 }
 
-// sequentially run promises until one returns true, or we reach the end
-export async function run (params = {}, index = 0) {
-  const plugin = plugins[index]
-  if (!plugin) {
-    return true
+export async function run (type = '', params) {
+  // special handling for data
+  if (type === 'data') {
+    const responses = (await Promise.allSettled(plugins[type].map((f) => f(params))))
+      .filter((r) => {
+        if (r.status === 'rejected') {
+          debug(['plugin', type, params, r.reason], 'error')
+          return false
+        }
+
+        return true
+      })
+      .map((r) => r.value)
+
+    const data = merge({}, ...responses)
+    return data
   }
 
-  const done = await plugin(params)
-  if (done === true) {
-    return true
+  for (const func of plugins[type]) {
+    try {
+      await func(params)
+    } catch (err) {
+      debug(['plugin', type, params, err], 'error')
+    }
   }
-
-  return run(params, index + 1)
 }

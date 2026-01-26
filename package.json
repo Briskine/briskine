@@ -1,6 +1,6 @@
 {
   "name": "briskine",
-  "version": "7.15.9",
+  "version": "7.15.11",
   "description": "Write everything faster.",
   "private": true,
   "type": "module",
@@ -86,6 +86,7 @@
     "handlebars": "^4.5.3",
     "html-to-text": "^9.0.0",
     "lodash.isequal": "^4.5.0",
+    "lodash.merge": "^4.6.2",
     "moment": "^2.29.1",
     "mousetrap": "github:briskine/mousetrap#master",
     "solid-js": "^1.8.18",

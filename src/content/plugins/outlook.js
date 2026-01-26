@@ -2,9 +2,70 @@
  */
 
 import parseTemplate from '../utils/parse-template.js'
-import {insertTemplate} from '../editors/editor-universal.js'
 import createContact from '../utils/create-contact.js'
-import {addAttachments} from '../attachments/attachments.js'
+import { register } from '../plugin.js'
+
+const urls = [
+  'outlook.live.com',
+  'outlook.office365.com',
+]
+
+let activeCache = null
+function isActive () {
+  if (activeCache !== null) {
+    return activeCache
+  }
+  activeCache = false
+
+  // check for urls
+  const outlookUrl = urls.some((url) => window.location.hostname === url)
+  if (outlookUrl) {
+    activeCache = true
+    return activeCache
+  }
+
+  // or detect specific nodes
+  // to support custom domains and dynamically created frames,
+  // eg. the open-email-in-new-window popup.
+  const $owaNodes = document.querySelector(`
+    head [href*="cdn.office.net"],
+    meta[content*="owamail"],
+    link[href*="/owamail/"],
+    script[src*="/owamail/"]
+  `)
+  if ($owaNodes) {
+    activeCache = true
+  }
+
+  return activeCache
+}
+
+async function makeFieldsEditable (element) {
+  // make the extra fields editable, so we can find them.
+  const $main = element.closest('[id*="docking_InitVisiblePart"]')
+  if ($main) {
+    // specific selector to avoid triggering focus when the fields are already editable
+    const $to = $main.querySelector('div[tabindex]:nth-child(2):not([role="button"])')
+    if ($to) {
+      // cache selection
+      const selection = window.getSelection()
+      const focusNode = selection.focusNode
+      const focusOffset = selection.focusOffset
+      const anchorNode = selection.anchorNode
+      const anchorOffset = selection.anchorOffset
+
+      $to.dispatchEvent(new FocusEvent('focusin', {bubbles: true}))
+      // give it a second to show the editable from/to/cc/bcc fields
+      await new Promise((resolve) => setTimeout(resolve, 100))
+
+      // restore selection
+      element.focus()
+      if (anchorNode && focusNode) {
+        window.getSelection().setBaseAndExtent(anchorNode, anchorOffset, focusNode, focusOffset)
+      }
+    }
+  }
+}
 
 // names and emails are sometimes formatted as "full name <name@email.com>".
 // eg. when saving as draft and re-opening.
@@ -159,7 +220,17 @@ async function updateSection ($container, $button, getNode, value) {
 }
 
 // get all required data from the dom
-export function getData (params) {
+function getData ({ element }) {
+  if (!isActive()) {
+    return
+  }
+
+  return getOutlookData({ element })
+}
+
+export async function getOutlookData ({ element }) {
+  await makeFieldsEditable(element)
+
   const vars = {
     from: {},
     to: [],
@@ -168,11 +239,11 @@ export function getData (params) {
     subject: '',
   }
 
-  if (!params.element) {
+  if (!element) {
     return vars
   }
 
-  const doc = params.element.ownerDocument
+  const doc = element.ownerDocument
 
   const $from = doc.querySelector('#O365_MainLink_Me > div > div:nth-child(1)')
   let fullName = ''
@@ -193,7 +264,7 @@ export function getData (params) {
     email: fromEmail,
   })
 
-  const editable = params.element
+  const editable = element
 
   var $to = getToContainer(editable)
   if ($to) {
@@ -218,11 +289,17 @@ export function getData (params) {
   return vars
 }
 
-async function after (params, data) {
-  const editable = params.element
+async function actions ({ element, template, data }) {
+  if (!isActive()) {
+    return
+  }
+
+  await makeFieldsEditable(element)
+
+  const editable = element
   const $subject = getSubjectField(editable)
-  if (params.template.subject && $subject) {
-    var parsedSubject = await parseTemplate(params.template.subject, data)
+  if (template.subject && $subject) {
+    var parsedSubject = await parseTemplate(template.subject, data)
     $subject.value = parsedSubject
     $subject.dispatchEvent(new Event('input', {bubbles: true}))
   }
@@ -236,17 +313,17 @@ async function after (params, data) {
   const anchorNode = selection.anchorNode
   const anchorOffset = selection.anchorOffset
 
-  if (params.template.to) {
+  if (template.to) {
     const $to = getToContainer(editable)
-    const parsedTo = await parseTemplate(params.template.to, data)
+    const parsedTo = await parseTemplate(template.to, data)
     if ($to && !elementContains($to, parsedTo)) {
       await updateContactField($to, parsedTo)
     }
   }
 
-  if (params.template.cc) {
+  if (template.cc) {
     var $cc = getCcContainer(editable)
-    var parsedCc = await parseTemplate(params.template.cc, data)
+    var parsedCc = await parseTemplate(template.cc, data)
     var $ccButton = getCcButton(editable)
     await updateSection(
       $cc,
@@ -256,9 +333,9 @@ async function after (params, data) {
     )
   }
 
-  if (params.template.bcc) {
+  if (template.bcc) {
     const $bcc = getBccContainer(editable)
-    const parsedBcc = await parseTemplate(params.template.bcc, data)
+    const parsedBcc = await parseTemplate(template.bcc, data)
     const $bccButton = getBccButton(editable)
     await updateSection(
       $bcc,
@@ -272,82 +349,5 @@ async function after (params, data) {
   window.getSelection().setBaseAndExtent(anchorNode, anchorOffset, focusNode, focusOffset)
 }
 
-const urls = [
-  'outlook.live.com',
-  'outlook.office365.com',
-]
-
-var activeCache = null
-function isActive () {
-  if (activeCache !== null) {
-    return activeCache
-  }
-  activeCache = false
-
-  // check for urls
-  const outlookUrl = urls.some((url) => window.location.hostname === url)
-  if (outlookUrl) {
-    activeCache = true
-    return activeCache
-  }
-
-  // or detect specific nodes
-  // to support custom domains and dynamically created frames,
-  // eg. the open-email-in-new-window popup.
-  const $owaNodes = document.querySelector(`
-    head [href*="cdn.office.net"],
-    meta[content*="owamail"],
-    link[href*="/owamail/"],
-    script[src*="/owamail/"]
-  `)
-  if ($owaNodes) {
-    activeCache = true
-  }
-
-  return activeCache
-}
-
-export default async (params = {}) => {
-  if (!isActive()) {
-    return false
-  }
-
-  // make the extra fields editable, so we can find them.
-  const $main = params.element.closest('[id*="docking_InitVisiblePart"]')
-  if ($main) {
-    // specific selector to avoid triggering focus when the fields are already editable
-    const $to = $main.querySelector('div[tabindex]:nth-child(2):not([role="button"])')
-    if ($to) {
-      // cache selection
-      const selection = window.getSelection()
-      const focusNode = selection.focusNode
-      const focusOffset = selection.focusOffset
-      const anchorNode = selection.anchorNode
-      const anchorOffset = selection.anchorOffset
-
-      $to.dispatchEvent(new FocusEvent('focusin', {bubbles: true}))
-      // give it a second to show the editable from/to/cc/bcc fields
-      await new Promise((resolve) => setTimeout(resolve, 100))
-
-      // restore selection
-      params.element.focus()
-      if (anchorNode && focusNode) {
-        window.getSelection().setBaseAndExtent(anchorNode, anchorOffset, focusNode, focusOffset)
-      }
-    }
-  }
-
-  const data = getData(params)
-  const parsedTemplate = addAttachments(
-    await parseTemplate(params.template.body, data),
-    params.template.attachments,
-  )
-
-  insertTemplate(Object.assign({
-    text: parsedTemplate
-  }, params))
-
-  await after(params, data)
-
-  return true
-}
+register('data', getData)
+register('actions', actions)

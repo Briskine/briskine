@@ -74,7 +74,7 @@ describe('editor Paste', () => {
     $editor.focus()
     insertPasteTemplate({
       element: $editor,
-      text: template,
+      html: template,
       word: {
         start: 0,
         end: 0,
@@ -98,7 +98,7 @@ describe('editor Paste', () => {
     $editor.focus()
     insertPasteTemplate({
       element: $editor,
-      text: template,
+      html: template,
       word: {
         start: 0,
         end: 0,
@@ -122,7 +122,7 @@ describe('editor Paste', () => {
     $editor.focus()
     insertPasteTemplate({
       element: $editor,
-      text: template,
+      html: template,
       word: {
         start: 0,
         end: 0,
@@ -146,7 +146,7 @@ describe('editor Paste', () => {
     $editor.focus()
     insertPasteTemplate({
       element: $editor,
-      text: template,
+      html: template,
       word: {
         start: 0,
         end: 0,
@@ -170,7 +170,7 @@ describe('editor Paste', () => {
     $editor.focus()
     insertPasteTemplate({
       element: $editor,
-      text: template,
+      html: template,
       word: {
         start: 0,
         end: 0,

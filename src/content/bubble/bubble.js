@@ -293,7 +293,12 @@ function isValidTextfield (elem) {
     // is html element
     elem?.nodeType === Node.ELEMENT_NODE
     // is editable
-    && elem.matches('textarea, [contenteditable]')
+    && (
+      elem.tagName.toLowerCase() === 'textarea'
+      || elem.isContentEditable
+    )
+    // is not read-only
+    && !elem.readOnly
     // has a parent element node
     && elem.parentElement
     // the parent is not the body

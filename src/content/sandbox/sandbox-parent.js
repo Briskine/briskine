@@ -59,5 +59,6 @@ export async function compileTemplate (template = '', context = {}, partials = [
 export function destroy () {
   if (sandboxInstance) {
     sandboxInstance.remove()
+    sandboxInstance = null
   }
 }

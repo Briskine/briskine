@@ -16,8 +16,9 @@ import {
 import {isContentEditable} from '../editors/editor-contenteditable.js'
 import {bubbleTagName} from '../bubble/bubble.js'
 import {getEditableCaret, getContentEditableCaret, getDialogPosition} from './dialog-position.js'
-import {autocomplete, getSelectedWord} from '../autocomplete.js'
-import getSelection from '../selection.js'
+import autocomplete from '../autocomplete.js'
+import getComposedSelection  from '../selection.js'
+import getWord from '../word.js'
 import getActiveElement from '../active-element.js'
 import {keybind, keyunbind} from '../keybind.js'
 import IconSearch from 'bootstrap-icons/icons/search.svg'
@@ -125,7 +126,10 @@ function Dialog (originalProps) {
     // when event was triggered in shadow dom (such as the bubble)
     const hostNode = node?.getRootNode?.()?.host
 
-    if (isTextfield(node)) {
+    if (
+      isTextfield(node)
+      && !node.readOnly
+    ) {
       // input, textarea
       [target, removeCaretParent] = getEditableCaret(node)
       if (direction === 'rtl') {
@@ -171,15 +175,14 @@ function Dialog (originalProps) {
     editor = getActiveElement()
 
     // cache selection details, to restore later
-    const selection = getSelection(editor)
+    const selection = getComposedSelection(editor)
     anchorNode = selection.anchorNode
     anchorOffset = selection.anchorOffset
     focusNode = selection.focusNode
     focusOffset = selection.focusOffset
 
-    word = getSelectedWord({
-      element: editor
-    })
+    word = getWord(editor)
+
 
     setVisible(true)
     const position = getDialogPosition(target, element, placement)
@@ -323,7 +326,7 @@ function Dialog (originalProps) {
       anchorNode &&
       focusNode
     ) {
-      getSelection().setBaseAndExtent(anchorNode, anchorOffset, focusNode, focusOffset)
+      getComposedSelection().setBaseAndExtent(anchorNode, anchorOffset, focusNode, focusOffset)
     } else {
       editor.focus()
     }

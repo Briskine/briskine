@@ -2,11 +2,10 @@
 /* Gmail plugin
  */
 
+import { register } from '../plugin.js'
 import parseTemplate from '../utils/parse-template.js'
-import {insertTemplate} from '../editors/editor-universal.js'
-import {isContentEditable} from '../editors/editor-contenteditable.js'
+import { isContentEditable } from '../editors/editor-contenteditable.js'
 import createContact from '../utils/create-contact.js'
-import {addAttachments} from '../attachments/attachments.js'
 
 const fromFieldSelector = '.az2'
 const textfieldContainerSelector = '.M9'
@@ -14,29 +13,48 @@ const textfieldContainerSelector = '.M9'
 var regExString = /"?([^ ]*)\s*(.*)"?\s*[(<]([^>)]+)[>)]/
 var regExEmail = /([\w!.%+\-])+@([\w\-])+(?:\.[\w\-]+)+/
 
+let activeCache = null
+const gmailMobileToken = '/mu/'
+function isActive () {
+  if (activeCache !== null) {
+    return activeCache
+  }
+
+  activeCache = false
+  // trigger the extension based on url
+  if (
+    window.location.hostname === 'mail.google.com'
+    && !window.location.pathname.includes(gmailMobileToken)
+  ) {
+    activeCache = true
+  }
+
+  return activeCache
+}
+
 function parseString (string = '') {
-    var match = regExString.exec(string.trim())
-    var data = {
-        name: '',
-        first_name: '',
-        last_name: '',
-        email: ''
-    }
+  let match = regExString.exec(string.trim())
+  const data = {
+    name: '',
+    first_name: '',
+    last_name: '',
+    email: ''
+  }
 
-    if (match && match.length >= 4) {
-        data.first_name = match[1].replace('"', '').trim()
-        data.last_name = match[2].replace('"', '').trim()
-        data.name = data.first_name + (data.first_name && data.last_name ? ' ' : '') + data.last_name
-        data.email = match[3]
-    } else {
-        // try to match the email
-        match = regExEmail.exec(string)
-        if (match) {
-            data.email = match[0]
-        }
+  if (match && match.length >= 4) {
+    data.first_name = match[1].replace('"', '').trim()
+    data.last_name = match[2].replace('"', '').trim()
+    data.name = data.first_name + (data.first_name && data.last_name ? ' ' : '') + data.last_name
+    data.email = match[3]
+  } else {
+    // try to match the email
+    match = regExEmail.exec(string)
+    if (match) {
+      data.email = match[0]
     }
+  }
 
-    return data
+  return data
 }
 
 function getFromField (container) {
@@ -44,7 +62,11 @@ function getFromField (container) {
 }
 
 // get all required data from the dom
-function getData (params) {
+function getData ({ element }) {
+  if (!isActive()) {
+    return
+  }
+
   const data = {
     from: {},
     to: [],
@@ -53,7 +75,7 @@ function getData (params) {
     subject: '',
   }
 
-  if (isContentEditable(params.element)) {
+  if (isContentEditable(element)) {
     // get the email address from the title
     const email = (document.title || '').split(' ').find((part) => part.includes('@')) || ''
     // find the email node from the user details popup
@@ -69,7 +91,7 @@ function getData (params) {
       email: email,
     })
 
-    const $container = params.element.closest(textfieldContainerSelector)
+    const $container = element.closest(textfieldContainerSelector)
     if ($container) {
       // if we use multiple aliases,
       // get from details from the alias selector at the top of the compose box.
@@ -138,8 +160,12 @@ function extraField ($parent, fieldName) {
   return $parent.querySelector(`textarea[name=${fieldName}], [name=${fieldName}] input`)
 }
 
-async function after (params, data) {
-  const $parent = params.element.closest(textfieldContainerSelector)
+async function actions ({ element, template, data }) {
+  if (!isActive()) {
+    return
+  }
+
+  const $parent = element.closest(textfieldContainerSelector)
   if (!$parent) {
     return
   }
@@ -148,20 +174,20 @@ async function after (params, data) {
   // set subject only when the subject field is visible.
   // makes sure we don't break threads when replying.
   if (
-    params.template.subject
+    template.subject
     && $subject
     && $subject.getBoundingClientRect().width
   ) {
-    const parsedSubject = await parseTemplate(params.template.subject, data)
+    const parsedSubject = await parseTemplate(template.subject, data)
     $subject.value = parsedSubject
   }
 
   const $recipients = $parent.querySelector('.aoD.hl')
   if (
     (
-      params.template.to ||
-      params.template.cc ||
-      params.template.bcc
+      template.to ||
+      template.cc ||
+      template.bcc
     ) &&
     $recipients
   ) {
@@ -171,8 +197,8 @@ async function after (params, data) {
     $recipients.dispatchEvent(new MouseEvent('click', {bubbles: true}))
   }
 
-  if (params.template.to) {
-    const parsedTo = await parseTemplate(params.template.to, data)
+  if (template.to) {
+    const parsedTo = await parseTemplate(template.to, data)
     const $toField = extraField($parent, 'to')
     if ($toField) {
       $toField.value = parsedTo
@@ -186,8 +212,8 @@ async function after (params, data) {
   }
 
   for (const fieldName of ['cc', 'bcc']) {
-    if (params.template[fieldName]) {
-      const parsedField = await parseTemplate(params.template[fieldName], data)
+    if (template[fieldName]) {
+      const parsedField = await parseTemplate(template[fieldName], data)
       $parent.querySelector(buttonSelectors[fieldName]).dispatchEvent(new MouseEvent('click', {bubbles: true}))
       const $field = extraField($parent, fieldName)
       if ($field) {
@@ -196,50 +222,14 @@ async function after (params, data) {
       }
     }
   }
-}
 
-let activeCache = null
-const gmailMobileToken = '/mu/'
-function isActive () {
-  if (activeCache !== null) {
-    return activeCache
+  // from field support, when using multiple aliases.
+  // set the from field before getting data,
+  // to have up-to-date data.
+  if (template.from) {
+    setFromField(element, template.from)
   }
-
-  activeCache = false
-  // trigger the extension based on url
-  if (
-    window.location.hostname === 'mail.google.com'
-    && !window.location.pathname.includes(gmailMobileToken)
-  ) {
-    activeCache = true
-  }
-
-  return activeCache
 }
 
-export default async (params = {}) => {
-    if (!isActive()) {
-        return false
-    }
-
-    var data = getData(params)
-    const parsedTemplate = addAttachments(
-      await parseTemplate(params.template.body, data),
-      params.template.attachments
-    )
-
-    insertTemplate(Object.assign({
-        text: parsedTemplate
-    }, params))
-
-    await after(params, data)
-
-    // from field support, when using multiple aliases.
-    // set the from field before getting data,
-    // to have up-to-date data.
-    if (params.template.from) {
-        setFromField(params.element, params.template.from)
-    }
-
-    return true
-}
+register('data', getData)
+register('actions', actions)

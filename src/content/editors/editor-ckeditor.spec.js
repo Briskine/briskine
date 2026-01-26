@@ -64,7 +64,7 @@ describe('editor CKEditor', function () {
     const template = 'Kind regards'
     await insertCkEditorTemplate({
       element: $editor,
-      text: template,
+      html: template,
       word: {
         start: 0,
         end: 0,
@@ -84,7 +84,7 @@ describe('editor CKEditor', function () {
     const template = '<div><strong>Image</strong> <img src="#"></div>'
     await insertCkEditorTemplate({
       element: $editor,
-      text: template,
+      html: template,
       word: {
         start: 0,
         end: 0,

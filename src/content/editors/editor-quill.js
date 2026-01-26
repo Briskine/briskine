@@ -1,17 +1,17 @@
 /* Quill rich text editor.
- * Supports v1 (used by LinkedIn on posts and comments) and v2.
+ * Supports v1 (used by LinkedIn on posts and comments, Gemini) and v2.
  * https://quilljs.com/
  */
 
-import htmlToText from '../utils/html-to-text.js'
 import getActiveElement from '../active-element.js'
-import {request} from '../page/page-parent.js'
+import { request } from '../page/page-parent.js'
+import getComposedSelection from '../selection.js'
 
 export function isQuill (element) {
-  return element.classList.contains('ql-editor')
+  return element?.classList?.contains?.('ql-editor')
 }
 
-export async function pageInsertQuillTemplate (params = {}) {
+export async function pageInsertQuillTemplate ({ template, word, html, text }) {
   // we can't pass the element instance to the page script
   const element = getActiveElement()
   // quill v1 exposes the quill instance on the container
@@ -21,23 +21,20 @@ export async function pageInsertQuillTemplate (params = {}) {
 
   // remove shortcut
   if (
-    params.template.shortcut
-    && params.template.shortcut === params.word.text
+    template.shortcut
+    && template.shortcut === word.text
   ) {
-    const selection = getSelection(element)
+    const selection = getComposedSelection(element)
     const range = selection.getRangeAt(0)
     const focusNode = selection.focusNode
-    range.setStart(focusNode, params.word.start)
-    range.setEnd(focusNode, params.word.end)
+    range.setStart(focusNode, word.start)
+    range.setEnd(focusNode, word.end)
     range.deleteContents()
     element.dispatchEvent(new Event('input', {bubbles: true}))
 
     // give the editor a second to notice the change
     await new Promise((resolve) => setTimeout(resolve))
   }
-
-  // only support plain text
-  const plainText = htmlToText(params.text)
 
   if (quill) {
     // quill v1,
@@ -48,7 +45,7 @@ export async function pageInsertQuillTemplate (params = {}) {
     // try to insert html.
     if (!window?.trustedTypes?.defaultPolicy) {
       try {
-        quill.clipboard.dangerouslyPasteHTML(quillRange?.index, params.text)
+        quill.clipboard.dangerouslyPasteHTML(quillRange?.index, html)
         return
       } catch {
         // if we catch an error (could be caused by trusted types only in the editor - e.g., Gemini),
@@ -61,7 +58,7 @@ export async function pageInsertQuillTemplate (params = {}) {
     // or when pasting html fails,
     // only insert plain text,
     // because the template html will most probably include invalid elements.
-    quill.insertText(quillRange?.index, plainText)
+    quill.insertText(quillRange?.index, text)
   } else {
     // quill v2,
     // use paste insert.
@@ -73,16 +70,17 @@ export async function pageInsertQuillTemplate (params = {}) {
     })
     // set the data on the event, instead of a separate DataTransfer instance.
     // otherwise Firefox sends an empty DataTransfer object.
-    e.clipboardData.setData('text/plain', plainText)
-    e.clipboardData.setData('text/html', params.text)
+    e.clipboardData.setData('text/plain', text)
+    e.clipboardData.setData('text/html', html)
     element.dispatchEvent(e)
   }
 }
 
-export function insertQuillTemplate (params = {}) {
+export function insertQuillTemplate ({ word, template, text, html }) {
   return request('quill-insert', {
-    word: params.word,
-    text: params.text,
-    template: params.template,
+    word,
+    template,
+    text,
+    html,
   })
 }

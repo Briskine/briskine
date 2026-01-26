@@ -1,13 +1,34 @@
 /* Gmail mobile (small-screen) plugin
  */
 
-import parseTemplate from '../utils/parse-template.js'
-import {insertTemplate} from '../editors/editor-universal.js'
+ import { register } from '../plugin.js'
 import createContact from '../utils/create-contact.js'
-import {addAttachments} from '../attachments/attachments.js'
+
+let activeCache = null
+const gmailMobileToken = '/mu/'
+function isActive () {
+  if (activeCache !== null) {
+    return activeCache
+  }
+
+  activeCache = false
+  // trigger the extension based on url
+  if (
+    window.location.hostname === 'mail.google.com'
+    && window.location.pathname.includes(gmailMobileToken)
+  ) {
+    activeCache = true
+  }
+
+  return activeCache
+}
 
 // get all required data from the dom
 function getData () {
+  if (!isActive()) {
+    return false
+  }
+
   const data = {
     from: {},
     to: [],
@@ -48,39 +69,4 @@ function getData () {
   return data
 }
 
-let activeCache = null
-const gmailMobileToken = '/mu/'
-function isActive () {
-  if (activeCache !== null) {
-    return activeCache
-  }
-
-  activeCache = false
-  // trigger the extension based on url
-  if (
-    window.location.hostname === 'mail.google.com'
-    && window.location.pathname.includes(gmailMobileToken)
-  ) {
-    activeCache = true
-  }
-
-  return activeCache
-}
-
-export default async (params = {}) => {
-  if (!isActive()) {
-    return false
-  }
-
-  var data = getData(params)
-  const parsedTemplate = addAttachments(
-    await parseTemplate(params.template.body, data),
-    params.template.attachments
-  )
-
-  insertTemplate(Object.assign({
-    text: parsedTemplate
-  }, params))
-
-  return true
-}
+register('data', getData)
