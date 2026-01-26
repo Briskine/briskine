@@ -724,6 +724,13 @@ export async function searchTemplates (query = '') {
 }
 
 export async function isCached () {
+  // when private templates are cached
+  const key = 'templatesOwned'
+  const cache = await browser.storage.local.get(key)
+  if (cache[key]) {
+    return true
+  }
+
   // when logged-out
   try {
     await getSignedInUser()
@@ -731,13 +738,6 @@ export async function isCached () {
     if (isLoggedOut(err)) {
       return true
     }
-  }
-
-  // when private templates are cached
-  const key = 'templatesOwned'
-  const cache = await browser.storage.local.get(key)
-  if (cache[key]) {
-    return true
   }
 
   return false
