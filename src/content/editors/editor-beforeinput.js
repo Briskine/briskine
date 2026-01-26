@@ -9,6 +9,8 @@
  */
 
 import { selectWord } from '../word.js'
+import { request } from '../page/page-parent.js'
+import getActiveElement from '../active-element.js'
 
 export function isBeforeInputEditor (element) {
   return (
@@ -17,7 +19,18 @@ export function isBeforeInputEditor (element) {
   )
 }
 
-export async function insertBeforeInputTemplate ({ element, template, word, text}) {
+export function insertBeforeInputTemplate ({ word, template, html, text }) {
+  return request('beforeinput-insert', {
+    word,
+    template,
+    html,
+    text,
+  })
+}
+
+export async function pageInsertBeforeInputTemplate ({ template, word, text, html}) {
+  const element = getActiveElement()
+
   if (
     template.shortcut
     && word.text === template.shortcut
@@ -25,12 +38,15 @@ export async function insertBeforeInputTemplate ({ element, template, word, text
     selectWord(element, word)
   }
 
-  // replace selected text
-  const insertText = new InputEvent('beforeinput', {
+  // needs to be run in page context, for firefox support
+  const insertTextEvent = new InputEvent('beforeinput', {
     bubbles: true,
     inputType: 'insertReplacementText',
-    // only supports plain text
-    data: text,
+    dataTransfer: new DataTransfer(),
   })
-  element.dispatchEvent(insertText)
+
+  insertTextEvent.dataTransfer.setData('text/plain', text)
+  insertTextEvent.dataTransfer.setData('text/html', html)
+
+  element.dispatchEvent(insertTextEvent)
 }

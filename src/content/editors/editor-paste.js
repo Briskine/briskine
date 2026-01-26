@@ -40,6 +40,7 @@ export function insertPasteTemplate ({ word, template, html, text }) {
 export async function pageInsertPasteTemplate ({ word, template, html, text }) {
   // we can't pass the element instance to the page script
   const element = getActiveElement()
+
   // select shortcut
   if (word.text === template.shortcut) {
     const selection = getComposedSelection(element)
