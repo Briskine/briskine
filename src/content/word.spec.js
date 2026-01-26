@@ -1,6 +1,6 @@
 import { expect, describe, it, beforeEach, afterEach } from 'vitest'
 
-import getWord from './word.js'
+import { getWord } from './word.js'
 import getComposedSelection from './selection.js'
 
 describe('getWord', () => {

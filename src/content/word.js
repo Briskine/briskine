@@ -15,7 +15,7 @@ const spaces = [
 
 // gets the word before the cursor
 // and its start and end positions
-export default function getWord (element) {
+export function getWord (element) {
   let beforeSelection = ''
   const selection = getComposedSelection(element)
 
@@ -62,4 +62,13 @@ export default function getWord (element) {
     end: end,
     text: text,
   }
+}
+
+export function selectWord (element, word) {
+  const selection = getComposedSelection(element)
+  const range = selection.getRangeAt(0)
+  range.setStart(selection.focusNode, word.start)
+  range.setEnd(selection.focusNode, word.end)
+
+  element.dispatchEvent(new Event('selectionchange', {bubbles: true}))
 }

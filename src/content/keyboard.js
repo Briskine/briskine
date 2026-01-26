@@ -4,7 +4,7 @@
 import autocomplete from './autocomplete.js'
 import getEventTarget from './event-target.js'
 import getComposedSelection from './selection.js'
-import getWord from './word.js'
+import { getWord } from './word.js'
 import {isContentEditable} from './editors/editor-contenteditable.js'
 import {getTemplates} from '../store/store-content.js'
 
@@ -33,7 +33,6 @@ async function keyboardAutocomplete (e) {
   }
 
   const word = getWord(element)
-
 
   if (word.text) {
     // cache selection details
