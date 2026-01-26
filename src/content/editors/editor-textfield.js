@@ -1,7 +1,15 @@
 /* Textarea and Input
  */
 
-export function insertTextareaTemplate ({ element, word, template, text }) {
+export function isTextfieldEditor (element) {
+  return (
+    ['input', 'textarea'].includes(element.tagName.toLowerCase())
+    && element.readOnly !== true
+    && element.type !== 'password'
+  )
+}
+
+export function insertTextfieldTemplate ({ element, word, template, text }) {
   const textfieldValue = element.value
   let cursorOffset = word.end + text.length
 

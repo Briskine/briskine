@@ -6,6 +6,8 @@
 import { eventShowDialog, eventToggleBubble } from '../../config.js'
 import {dialogTagName} from '../dialog/dialog.js'
 import { getExtensionData, trigger, on, off } from '../../store/store-content.js'
+import { isContentEditable } from '../editors/editor-contenteditable.js'
+import { isTextfieldEditor } from '../editors/editor-textfield.js'
 
 import getEventTarget from '../event-target.js'
 import getActiveElement from '../active-element.js'
@@ -294,11 +296,9 @@ function isValidTextfield (elem) {
     elem?.nodeType === Node.ELEMENT_NODE
     // is editable
     && (
-      elem.tagName.toLowerCase() === 'textarea'
-      || elem.isContentEditable
+      isTextfieldEditor(elem)
+      || isContentEditable(elem)
     )
-    // is not read-only
-    && !elem.readOnly
     // has a parent element node
     && elem.parentElement
     // the parent is not the body

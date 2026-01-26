@@ -14,6 +14,7 @@ import {
   openPopup,
 } from '../../store/store-content.js'
 import {isContentEditable} from '../editors/editor-contenteditable.js'
+import { isTextfieldEditor } from '../editors/editor-textfield.js'
 import {bubbleTagName} from '../bubble/bubble.js'
 import {getEditableCaret, getContentEditableCaret, getDialogPosition} from './dialog-position.js'
 import autocomplete from '../autocomplete.js'
@@ -126,10 +127,7 @@ function Dialog (originalProps) {
     // when event was triggered in shadow dom (such as the bubble)
     const hostNode = node?.getRootNode?.()?.host
 
-    if (
-      isTextfield(node)
-      && !node.readOnly
-    ) {
+    if (isTextfieldEditor(node)) {
       // input, textarea
       [target, removeCaretParent] = getEditableCaret(node)
       if (direction === 'rtl') {
@@ -559,11 +557,6 @@ customElements.define(dialogTagName, class extends HTMLElement {
     this.disposer()
   }
 })
-
-// is input or textarea
-function isTextfield (element) {
-  return ['input', 'textarea'].includes(element.tagName.toLowerCase())
-}
 
 function createDialog (settings = {}) {
   const instance = document.createElement(dialogTagName)

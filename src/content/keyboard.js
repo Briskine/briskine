@@ -5,16 +5,12 @@ import autocomplete from './autocomplete.js'
 import getEventTarget from './event-target.js'
 import getComposedSelection from './selection.js'
 import { getWord } from './word.js'
-import {isContentEditable} from './editors/editor-contenteditable.js'
+import { isContentEditable } from './editors/editor-contenteditable.js'
+import { isTextfieldEditor } from './editors/editor-textfield.js'
 import {getTemplates} from '../store/store-content.js'
 
 import {keybind, keyunbind} from './keybind.js'
 import {swipebind, swipeunbind} from './swipe.js'
-
-// is input or textarea
-function isTextfield (element) {
-  return ['input', 'textarea'].includes(element.tagName.toLowerCase())
-}
 
 async function getTemplateByShortcut (shortcut) {
   const templates = await getTemplates()
@@ -28,7 +24,7 @@ async function keyboardAutocomplete (e) {
 
   // if it's not an editable element
   // don't trigger anything
-  if (!isTextfield(element) && !isContentEditable(element)) {
+  if (!isTextfieldEditor(element) && !isContentEditable(element)) {
     return
   }
 

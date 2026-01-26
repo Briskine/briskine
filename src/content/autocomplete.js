@@ -12,7 +12,7 @@ import {isCkEditor, insertCkEditorTemplate} from './editors/editor-ckeditor.js'
 import {isPasteEditor, insertPasteTemplate} from './editors/editor-paste.js'
 import {isBeforeInputEditor, insertBeforeInputTemplate} from './editors/editor-beforeinput.js'
 import {isQuill, insertQuillTemplate} from './editors/editor-quill.js'
-import {insertTextareaTemplate} from './editors/editor-textarea.js'
+import {isTextfieldEditor, insertTextfieldTemplate} from './editors/editor-textfield.js'
 
 import './plugins/gmail.js'
 import './plugins/outlook.js'
@@ -52,7 +52,9 @@ function insertTemplate ({ element, word, template, html, text }) {
     return insertContentEditableTemplate(params)
   }
 
-  return insertTextareaTemplate(params)
+  if (isTextfieldEditor(element)) {
+    return insertTextfieldTemplate(params)
+  }
 }
 
 export default async function autocomplete ({ element, word, template }) {
