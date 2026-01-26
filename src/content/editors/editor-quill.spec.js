@@ -1,4 +1,4 @@
-import { expect, describe, it, beforeAll, afterAll } from 'vitest'
+import { expect, describe, it, beforeAll, beforeEach, afterAll } from 'vitest'
 
 import {insertQuillTemplate} from './editor-quill.js'
 import {setup, destroy} from '../page/page-parent.js'
@@ -51,10 +51,13 @@ describe('editor Quill', () => {
     document.body.appendChild($script)
 
     await waitForEditor()
-
   }, 20000)
 
-  it('should insert template', async function () {
+  beforeEach(() => {
+    cleanEditor()
+  })
+
+  it('should insert template', async () => {
     const template = '<div>Kind regards,</div><div>.</div>'
 
     $editor.focus()
@@ -70,7 +73,6 @@ describe('editor Quill', () => {
     })
 
     expect($editor.innerHTML).to.include('<p>Kind regards,</p><p>.</p>')
-    cleanEditor()
   })
 
   afterAll(() => {
