@@ -8,13 +8,40 @@
 // We'll have to refactor the selection handling after the upcoming getComposedRange method is implemented:
 // https://github.com/WICG/webcomponents/issues/79
 export function getComposedSelection (node) {
-  if (node) {
-    const rootNode = node.getRootNode()
-    if (rootNode instanceof ShadowRoot && typeof rootNode.getSelection === 'function') {
-      // HACK non-standard Blink-only method
-      return rootNode.getSelection()
-    }
+  const selection = window.getSelection()
+
+  const root = node?.getRootNode?.()
+  if (
+      root instanceof ShadowRoot
+      && root.getSelection === 'function'
+      && typeof selection.getComposedRanges !== 'function'
+    ) {
+    // non-standard Blink-only method
+    return root.getSelection()
   }
 
-  return window.getSelection()
+  return selection
+}
+
+export function getSelectionRange (node) {
+  const root = node?.getRootNode?.()
+  const selection = getComposedSelection(node)
+
+  if (selection.rangeCount === 0) {
+    return null
+  }
+
+  if (
+    root instanceof ShadowRoot
+    && typeof selection.getComposedRanges === 'function'
+  ) {
+    const staticRange = selection.getComposedRanges({ shadowRoots: [root] })[0]
+    const range = new Range()
+    range.setStart(staticRange.startContainer, staticRange.startOffset)
+    range.setEnd(staticRange.endContainer, staticRange.endOffset)
+
+    return range
+  }
+
+  return selection.getRangeAt(0).cloneRange()
 }

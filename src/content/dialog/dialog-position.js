@@ -1,7 +1,7 @@
 /* Dialog positioning and caret detection
  */
 
-import { getComposedSelection } from '../utils/selection.js'
+import { getSelectionRange } from '../utils/selection.js'
 
 // moves up the tree finding the closest "rendered" element
 // which doesn't have display: none, so we can get its position.
@@ -89,35 +89,37 @@ export function getDialogPosition (target, instance, placement = 'top-left') {
 }
 
 export function getContentEditableCaret (node) {
-  const selection = getComposedSelection(node)
-  if (selection.rangeCount !== 0) {
-    const range = selection.getRangeAt(0)
-    // when the caret is collapsed inside an empty element with no text,
-    // getClientRects/getBoundingClientRect returns empty or with zero values.
-    // this is a spec issue:
-    // https://github.com/w3c/csswg-drafts/issues/2514
-    if (range.collapsed === true && range.endContainer.nodeType === Node.ELEMENT_NODE) {
-      // try to get element where the focus is
-      const focusNode = range.endContainer.childNodes[range.endOffset]
-      if (focusNode) {
-        if (focusNode.nodeType === Node.TEXT_NODE && focusNode.previousElementSibling) {
-          // Chrome adds a temporary empty text node on the endOffset,
-          // which gets removed before we get its clientRect,
-          // so we try to get the previous element sibling.
-          return focusNode.previousElementSibling
-        } else if (focusNode.nodeType === Node.ELEMENT_NODE) {
-          // Firefox adds a br tag
-          return focusNode
-        }
-      }
-
-      // in case we couldn't get an element closer to the focus,
-      // return the endContainer.
-      // firefox returns the contenteditable parent.
-      return range.endContainer
-    }
-    return range
+  const range = getSelectionRange(node)
+  if (!range) {
+    return null
   }
+
+  // when the caret is collapsed inside an empty element with no text,
+  // getClientRects/getBoundingClientRect returns empty or with zero values.
+  // this is a spec issue:
+  // https://github.com/w3c/csswg-drafts/issues/2514
+  if (range.collapsed === true && range.endContainer.nodeType === Node.ELEMENT_NODE) {
+    // try to get element where the focus is
+    const focusNode = range.endContainer.childNodes[range.endOffset]
+    if (focusNode) {
+      if (focusNode.nodeType === Node.TEXT_NODE && focusNode.previousElementSibling) {
+        // Chrome adds a temporary empty text node on the endOffset,
+        // which gets removed before we get its clientRect,
+        // so we try to get the previous element sibling.
+        return focusNode.previousElementSibling
+      } else if (focusNode.nodeType === Node.ELEMENT_NODE) {
+        // Firefox adds a br tag
+        return focusNode
+      }
+    }
+
+    // in case we couldn't get an element closer to the focus,
+    // return the endContainer.
+    // firefox returns the contenteditable parent.
+    return range.endContainer
+  }
+
+  return range
 }
 
 const mirrorStyles = [
