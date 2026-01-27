@@ -17,7 +17,7 @@ export function getComposedSelection (node) {
   const root = node?.getRootNode?.()
   if (
       root instanceof ShadowRoot
-      && root.getSelection === 'function'
+      && typeof root.getSelection === 'function'
       && typeof selection.getComposedRanges !== 'function'
     ) {
     // non-standard Blink-only method
