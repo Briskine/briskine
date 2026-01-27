@@ -4,6 +4,7 @@
 import parseTemplate from '../utils/parse-template.js'
 import createContact from '../utils/create-contact.js'
 import { register } from '../plugin.js'
+import { getComposedSelection, getSelectionRange } from '../utils/selection.js'
 
 const urls = [
   'outlook.live.com',
@@ -48,11 +49,8 @@ async function makeFieldsEditable (element) {
     const $to = $main.querySelector('div[tabindex]:nth-child(2):not([role="button"])')
     if ($to) {
       // cache selection
-      const selection = window.getSelection()
-      const focusNode = selection.focusNode
-      const focusOffset = selection.focusOffset
-      const anchorNode = selection.anchorNode
-      const anchorOffset = selection.anchorOffset
+      const selection = getComposedSelection(element)
+      const cachedRange = getSelectionRange(element, selection)
 
       $to.dispatchEvent(new FocusEvent('focusin', {bubbles: true}))
       // give it a second to show the editable from/to/cc/bcc fields
@@ -60,8 +58,9 @@ async function makeFieldsEditable (element) {
 
       // restore selection
       element.focus()
-      if (anchorNode && focusNode) {
-        window.getSelection().setBaseAndExtent(anchorNode, anchorOffset, focusNode, focusOffset)
+      if (cachedRange) {
+        selection.removeAllRanges()
+        selection.addRange(cachedRange)
       }
     }
   }
@@ -302,11 +301,8 @@ async function actions ({ element, template, data }) {
   // updating extra fields values will change the focus,
   // as the fields use contenteditable.
   // cache the focus here, to restore later.
-  const selection = window.getSelection()
-  const focusNode = selection.focusNode
-  const focusOffset = selection.focusOffset
-  const anchorNode = selection.anchorNode
-  const anchorOffset = selection.anchorOffset
+  const selection = getComposedSelection(element)
+  const cachedRange = getSelectionRange(element, selection)
 
   if (template.to) {
     const $to = getToContainer(editable)
@@ -341,7 +337,8 @@ async function actions ({ element, template, data }) {
   }
 
   // restore selection to where it was before changing extra fields
-  window.getSelection().setBaseAndExtent(anchorNode, anchorOffset, focusNode, focusOffset)
+  selection.removeAllRanges()
+  selection.addRange(cachedRange)
 }
 
 register('data', getData)
