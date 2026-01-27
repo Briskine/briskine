@@ -3,7 +3,7 @@
  */
 
 import { request } from '../page/page-parent.js'
-import getActiveElement from '../active-element.js'
+import getActiveElement from '../utils/active-element.js'
 
 export function isCkEditor (element) {
   return element?.classList?.contains?.('ck-editor__editable')

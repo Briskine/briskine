@@ -20,7 +20,7 @@ import {getEditableCaret, getContentEditableCaret, getDialogPosition} from './di
 import autocomplete from '../autocomplete.js'
 import { getComposedSelection, getSelectionRange }  from '../utils/selection.js'
 import { getWord } from '../word.js'
-import getActiveElement from '../active-element.js'
+import getActiveElement from '../utils/active-element.js'
 import {keybind, keyunbind} from '../keybind.js'
 import IconSearch from 'bootstrap-icons/icons/search.svg'
 import IconBriskine from '../../icons/briskine-logo-small.svg'

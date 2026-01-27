@@ -13,7 +13,7 @@
 
 import { request } from '../page/page-parent.js'
 import { selectWord } from '../word.js'
-import getActiveElement from '../active-element.js'
+import getActiveElement from '../utils/active-element.js'
 
 export function isPasteEditor (element) {
   return (

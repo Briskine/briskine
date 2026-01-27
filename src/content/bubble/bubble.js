@@ -10,7 +10,7 @@ import { isContentEditable } from '../editors/editor-contenteditable.js'
 import { isTextfieldEditor } from '../editors/editor-textfield.js'
 
 import getEventTarget from '../event-target.js'
-import getActiveElement from '../active-element.js'
+import getActiveElement from '../utils/active-element.js'
 import bubbleAllowlistPrivate from './bubble-allowlist-private.js'
 
 import bubbleStyles from './bubble.css'
