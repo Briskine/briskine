@@ -1,5 +1,5 @@
-import {isContentEditable} from './editors/editor-contenteditable.js'
-import { getComposedSelection } from './utils/selection.js'
+import { isContentEditable } from './editors/editor-contenteditable.js'
+import { getComposedSelection, getSelectionRange, getSelectionFocus } from './utils/selection.js'
 
 // all regular and special whitespace chars we want to find.
 // https://jkorpela.fi/chars/spaces.html
@@ -17,23 +17,23 @@ const spaces = [
 // and its start and end positions
 export function getWord (element) {
   let beforeSelection = ''
-  const selection = getComposedSelection(element)
 
   if (isContentEditable(element)) {
-    switch (selection.focusNode.nodeType) {
-      // In most cases, the focusNode property refers to a Text Node.
+    const [focusNode, focusOffset] = getSelectionFocus(element)
+    switch (focusNode.nodeType) {
+      // in most cases, the focusNode property refers to a Text Node.
       case (document.TEXT_NODE):
         // for text nodes take the text until the focusOffset
-        beforeSelection = selection.focusNode.textContent.substring(0, selection.focusOffset)
+        beforeSelection = focusNode.textContent.substring(0, focusOffset)
         break
       case (document.ELEMENT_NODE):
         // when we have an element node,
         // focusOffset returns the index in the childNodes collection of the focus node where the selection ends.
         if (
           // focusOffset is larger than childNodes length when editor is empty
-          selection.focusNode.childNodes[selection.focusOffset]
+          focusNode.childNodes[focusOffset]
         ) {
-          beforeSelection = selection.focusNode.childNodes[selection.focusOffset].textContent
+          beforeSelection = focusNode.childNodes[focusOffset].textContent
         }
         break
     }
@@ -69,9 +69,11 @@ export async function selectWord (element, word) {
   const promise = new Promise((res) => resolve = res)
 
   const selection = getComposedSelection(element)
-  const range = selection.getRangeAt(0).cloneRange()
-  range.setStart(selection.focusNode, word.start)
-  range.setEnd(selection.focusNode, word.end)
+  const range = getSelectionRange(element, selection)
+  const [focusNode] = getSelectionFocus(element, selection, range)
+
+  range.setStart(focusNode, word.start)
+  range.setEnd(focusNode, word.end)
 
   selection.removeAllRanges()
 

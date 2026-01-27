@@ -77,10 +77,11 @@ describe('getWord', () => {
     const editableShadow = shadow.shadowRoot.querySelector('[contenteditable]')
     editableShadow.innerHTML = '    shadow'
 
-    const range = document.createRange()
+    const range = new Range()
     range.selectNodeContents(editableShadow.lastChild)
     range.collapse()
     const selection = getComposedSelection(editableShadow)
+    selection.removeAllRanges()
     selection.addRange(range)
 
     expect(

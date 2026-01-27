@@ -3,7 +3,7 @@
  */
 import autocomplete from './autocomplete.js'
 import getEventTarget from './event-target.js'
-import { getComposedSelection } from './utils/selection.js'
+import { getComposedSelection, getSelectionRange } from './utils/selection.js'
 import { getWord } from './word.js'
 import { isContentEditable } from './editors/editor-contenteditable.js'
 import { isTextfieldEditor } from './editors/editor-textfield.js'
@@ -31,12 +31,8 @@ async function keyboardAutocomplete (e) {
   const word = getWord(element)
 
   if (word.text) {
-    // cache selection details
-    const selection = getComposedSelection(element)
-    const focusNode = selection.focusNode
-    const focusOffset = selection.focusOffset
-    const anchorNode = selection.anchorNode
-    const anchorOffset = selection.anchorOffset
+    // cache range
+    const range = getSelectionRange(element)
 
     const template = await getTemplateByShortcut(word.text)
     if (template) {
@@ -46,8 +42,10 @@ async function keyboardAutocomplete (e) {
 
       // restore selection
       element.focus()
-      if (anchorNode && focusNode) {
-        getComposedSelection(element).setBaseAndExtent(anchorNode, anchorOffset, focusNode, focusOffset)
+      if (range) {
+        const selection = getComposedSelection(element)
+        selection.removeAllRanges()
+        selection.addRange(range)
       }
 
       autocomplete({

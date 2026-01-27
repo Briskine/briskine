@@ -23,9 +23,8 @@ export function getComposedSelection (node) {
   return selection
 }
 
-export function getSelectionRange (node) {
+export function getSelectionRange (node, selection = getComposedSelection(node)) {
   const root = node?.getRootNode?.()
-  const selection = getComposedSelection(node)
 
   if (selection.rangeCount === 0) {
     return null
@@ -44,4 +43,35 @@ export function getSelectionRange (node) {
   }
 
   return selection.getRangeAt(0).cloneRange()
+}
+
+export function getSelectionFocus(
+  node,
+  selection = getComposedSelection(node),
+  range = getSelectionRange(node)
+) {
+  // default to values from selection,
+  // for browsers without support for selection.direction.
+  let focusNode = selection.focusNode
+  let focusOffset = selection.focusOffset
+
+  // find the focusNode from range,
+  // to support shadow dom.
+  if (range) {
+    if (
+      selection.direction === 'forward'
+      || selection.direction === 'none'
+    ) {
+      // when direction is "forward" or "none" (when range is collapsed),
+      // the caret is at the end.
+      focusNode = range.endContainer
+      focusOffset = range.endOffset
+    } else if (selection.direction === 'backward') {
+      // if backward, the caret is at the start of the range
+      focusNode = range.startContainer
+      focusOffset = range.startOffset
+    }
+  }
+
+  return [focusNode, focusOffset]
 }
