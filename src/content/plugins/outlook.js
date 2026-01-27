@@ -192,13 +192,8 @@ async function updateContactField ($field, value) {
 
 async function addSingleContact ($field, value) {
   $field.focus()
-  await new Promise((resolve) => setTimeout(resolve))
-  const range = window.getSelection().getRangeAt(0)
-  const templateNode = range.createContextualFragment(value)
-  range.insertNode(templateNode)
-  range.collapse()
-
   if (document?.queryCommandEnabled?.('insertText')) {
+    document.execCommand('insertText', false, value)
     document.execCommand('insertText', false, ',')
   }
 }
