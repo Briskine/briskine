@@ -9,7 +9,7 @@ import { getExtensionData, trigger, on, off } from '../../store/store-content.js
 import { isContentEditable } from '../editors/editor-contenteditable.js'
 import { isTextfieldEditor } from '../editors/editor-textfield.js'
 
-import getEventTarget from '../event-target.js'
+import getEventTarget from '../utils/event-target.js'
 import getActiveElement from '../utils/active-element.js'
 import bubbleAllowlistPrivate from './bubble-allowlist-private.js'
 

@@ -2,7 +2,7 @@
  * Keyboard Shortcut Autocomplete
  */
 import autocomplete from './autocomplete.js'
-import getEventTarget from './event-target.js'
+import getEventTarget from './utils/event-target.js'
 import { getComposedSelection, getSelectionRange } from './utils/selection.js'
 import { getWord } from './word.js'
 import { isContentEditable } from './editors/editor-contenteditable.js'
