@@ -5,7 +5,7 @@
 
 import getActiveElement from '../utils/active-element.js'
 import { request } from '../page/page-parent.js'
-import { selectWord } from '../word.js'
+import { selectWord } from '../utils/word.js'
 
 export function isQuill (element) {
   return element?.classList?.contains?.('ql-editor')

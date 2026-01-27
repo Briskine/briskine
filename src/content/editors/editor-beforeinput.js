@@ -8,7 +8,7 @@
  * https://lexical.dev/
  */
 
-import { selectWord } from '../word.js'
+import { selectWord } from '../utils/word.js'
 import { request } from '../page/page-parent.js'
 import getActiveElement from '../utils/active-element.js'
 

@@ -4,7 +4,7 @@
 import autocomplete from './autocomplete.js'
 import getEventTarget from './utils/event-target.js'
 import { getComposedSelection, getSelectionRange } from './utils/selection.js'
-import { getWord } from './word.js'
+import { getWord } from './utils/word.js'
 import { isContentEditable } from './editors/editor-contenteditable.js'
 import { isTextfieldEditor } from './editors/editor-textfield.js'
 import {getTemplates} from '../store/store-content.js'
