@@ -1,33 +1,27 @@
 /* ContentEditable
  */
 
-import { getComposedSelection } from '../utils/selection.js'
+import { getComposedSelection, getSelectionFocus, getSelectionRange } from '../utils/selection.js'
 
 export function isContentEditable (element) {
   return element?.isContentEditable
 }
 
-export function insertContentEditableTemplate ({ element, template, word, html }) {
+export function insertContentEditableTemplate ({ element, template, word, html, text }) {
   const selection = getComposedSelection(element)
-  // run operations on a cloned range, rather than the original range,
-  // to fix issues with not correctly positioning the cursor on Safari.
-  // using range.insertNode() doesn't select the inserted contents, *only on Safari*.
-  // the range object will mistakenly behave as if the contents are selected,
-  // while the selection object will reflect the real state.
-  // using a cloned range fixes the issue.
-  let range = selection.getRangeAt(0).cloneRange()
+  const range = getSelectionRange(element, selection)
 
   if (
     template.shortcut
     && word.text === template.shortcut
   ) {
     // delete matched shortcut
-    range.setStart(selection.focusNode, word.start)
-    range.setEnd(selection.focusNode, word.end)
+    const [focusNode] = getSelectionFocus(element, selection, range)
+    range.setStart(focusNode, word.start)
+    range.setEnd(focusNode, word.end)
     range.deleteContents()
   } else {
     // delete previous selection, if no shortcut match.
-    // we're most probably inserting from the dialog.
     range.deleteContents()
 
     // empty paragraphs usually contain a BR tag in contenteditable,
@@ -39,20 +33,24 @@ export function insertContentEditableTemplate ({ element, template, word, html }
 
     // detect if we're on an empty line containing only whitespace
     if (
-      selection.anchorNode.nodeType === document.ELEMENT_NODE &&
-      selection.focusNode === selection.anchorNode &&
-      selection.focusNode.innerText.trim() === ''
+      range.collapsed === true
+      && range.endContainer.nodeType === document.ELEMENT_NODE
+      && range.endContainer.innerText.trim() === ''
     ) {
       // select all nodes on the line
-      selection.setBaseAndExtent(selection.anchorNode, 0, selection.focusNode, selection.focusNode.childNodes.length)
-      // get an updated range reference
-      range = selection.getRangeAt(0).cloneRange()
+      range.selectNodeContents(range.endContainer)
       // delete all child nodes
       range.deleteContents()
     }
   }
 
-  const templateNode = range.createContextualFragment(html)
+  let templateNode
+  try {
+    templateNode = range.createContextualFragment(html)
+  } catch {
+    templateNode = range.createContextualFragment(text)
+  }
+
   range.insertNode(templateNode)
   range.collapse()
 

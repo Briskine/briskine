@@ -32,7 +32,7 @@ async function keyboardAutocomplete (e) {
 
   if (word.text) {
     // cache range
-    const range = getSelectionRange(element)
+    const cachedRange = getSelectionRange(element)
 
     const template = await getTemplateByShortcut(word.text)
     if (template) {
@@ -41,11 +41,15 @@ async function keyboardAutocomplete (e) {
       e.stopImmediatePropagation()
 
       // restore selection
-      element.focus()
-      if (range) {
+      if (
+        isContentEditable(element)
+        && cachedRange
+      ) {
         const selection = getComposedSelection(element)
         selection.removeAllRanges()
-        selection.addRange(range)
+        selection.addRange(cachedRange)
+      } else {
+        element.focus()
       }
 
       autocomplete({

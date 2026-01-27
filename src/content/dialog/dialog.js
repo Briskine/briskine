@@ -18,7 +18,7 @@ import { isTextfieldEditor } from '../editors/editor-textfield.js'
 import {bubbleTagName} from '../bubble/bubble.js'
 import {getEditableCaret, getContentEditableCaret, getDialogPosition} from './dialog-position.js'
 import autocomplete from '../autocomplete.js'
-import { getComposedSelection }  from '../utils/selection.js'
+import { getComposedSelection, getSelectionRange }  from '../utils/selection.js'
 import { getWord } from '../word.js'
 import getActiveElement from '../active-element.js'
 import {keybind, keyunbind} from '../keybind.js'
@@ -68,10 +68,7 @@ function Dialog (originalProps) {
   let word
   let searchField
 
-  let anchorNode = null
-  let anchorOffset = 0
-  let focusNode = null
-  let focusOffset = 0
+  let cachedRange
 
   createEffect(() => {
     if (visible() === true) {
@@ -119,10 +116,7 @@ function Dialog (originalProps) {
     const direction = targetStyle.direction || 'ltr'
     element.setAttribute('dir', direction)
 
-    anchorNode = null
-    anchorOffset = 0
-    focusNode = null
-    focusOffset = 0
+    cachedRange = null
 
     // when event was triggered in shadow dom (such as the bubble)
     const hostNode = node?.getRootNode?.()?.host
@@ -173,11 +167,7 @@ function Dialog (originalProps) {
     editor = getActiveElement()
 
     // cache selection details, to restore later
-    const selection = getComposedSelection(editor)
-    anchorNode = selection.anchorNode
-    anchorOffset = selection.anchorOffset
-    focusNode = selection.focusNode
-    focusOffset = selection.focusOffset
+    cachedRange = getSelectionRange(editor)
 
     word = getWord(editor)
 
@@ -319,11 +309,12 @@ function Dialog (originalProps) {
     // only try to restore the selection on contenteditable.
     // input and textarea will restore the correct range with focus().
     if (
-      isContentEditable(editor) &&
-      anchorNode &&
-      focusNode
+      isContentEditable(editor)
+      && cachedRange
     ) {
-      getComposedSelection().setBaseAndExtent(anchorNode, anchorOffset, focusNode, focusOffset)
+      const selection = getComposedSelection(editor)
+      selection.removeAllRanges()
+      selection.addRange(cachedRange)
     } else {
       editor.focus()
     }
