@@ -1,5 +1,5 @@
 import {isContentEditable} from './editors/editor-contenteditable.js'
-import getComposedSelection from './selection.js'
+import getComposedSelection from './utils/selection.js'
 
 // all regular and special whitespace chars we want to find.
 // https://jkorpela.fi/chars/spaces.html

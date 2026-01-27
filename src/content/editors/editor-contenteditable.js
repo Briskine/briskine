@@ -1,7 +1,7 @@
 /* ContentEditable
  */
 
-import getComposedSelection from '../selection.js'
+import getComposedSelection from '../utils/selection.js'
 
 export function isContentEditable (element) {
   return element?.isContentEditable
