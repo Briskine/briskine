@@ -1,7 +1,7 @@
 import { expect, describe, it, beforeEach, afterEach } from 'vitest'
 
 import { getWord } from './word.js'
-import getComposedSelection from './utils/selection.js'
+import { getComposedSelection } from './utils/selection.js'
 
 describe('getWord', () => {
   let editable

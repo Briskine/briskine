@@ -3,7 +3,7 @@
  */
 import autocomplete from './autocomplete.js'
 import getEventTarget from './event-target.js'
-import getComposedSelection from './utils/selection.js'
+import { getComposedSelection } from './utils/selection.js'
 import { getWord } from './word.js'
 import { isContentEditable } from './editors/editor-contenteditable.js'
 import { isTextfieldEditor } from './editors/editor-textfield.js'
