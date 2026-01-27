@@ -1,12 +1,16 @@
-// getSelection that pierces through shadow dom.
+// Collection of selection helper functions that pierce through shadow dom.
+//
 // Blink returns the shadow root when using window.getSelection, and the focus is a shadow dom,
 // but adds a non-standard getSelection method on the shadow root.
 // https://developer.mozilla.org/en-US/docs/Web/API/ShadowRoot#instance_methods
 // Firefox pierces through shadow dom by default, with window.getSelection.
-// Safari has the same behavior as Blink, but provides no workarounds,
-// so getting the selection from shadow dom is not possible there.
-// We'll have to refactor the selection handling after the upcoming getComposedRange method is implemented:
+// Safari has the same behavior as Blink, when using window.getSelection.
+// We use the new getComposedRanges method on Selection, to get a Range that pierces
+// the shadow dom, when possible.
+// Otherwise, use either the blink-proprietary shadowRoot.getSelection method
+// or the global window.getSelection.
 // https://github.com/WICG/webcomponents/issues/79
+
 export function getComposedSelection (node) {
   const selection = window.getSelection()
 
@@ -23,7 +27,10 @@ export function getComposedSelection (node) {
   return selection
 }
 
-export function getSelectionRange (node, selection = getComposedSelection(node)) {
+export function getSelectionRange (
+  node,
+  selection = getComposedSelection(node)
+) {
   const root = node?.getRootNode?.()
 
   if (selection.rangeCount === 0) {
@@ -45,7 +52,7 @@ export function getSelectionRange (node, selection = getComposedSelection(node))
   return selection.getRangeAt(0).cloneRange()
 }
 
-export function getSelectionFocus(
+export function getSelectionFocus (
   node,
   selection = getComposedSelection(node),
   range = getSelectionRange(node)
