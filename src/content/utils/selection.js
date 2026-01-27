@@ -55,7 +55,7 @@ export function getSelectionRange (
 export function getSelectionFocus (
   node,
   selection = getComposedSelection(node),
-  range = getSelectionRange(node)
+  range = getSelectionRange(node, selection)
 ) {
   // default to values from selection,
   // for browsers without support for selection.direction.
