@@ -6,7 +6,7 @@ import {getAccount, getTemplates, getExtensionData, setExtensionData, getSetting
 import sortTemplates from '../store/sort-templates.js'
 import trigger from './background-trigger.js'
 import {openPopup} from '../background/open-popup.js'
-import {isBlocklisted} from '../content/blocklist.js'
+import {isBlocklisted} from '../blocklist.js'
 import bubbleAllowlistPrivate from '../content/bubble/bubble-allowlist-private.js'
 
 const saveAsTemplateMenu = 'saveAsTemplate'
