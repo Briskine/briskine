@@ -65,18 +65,15 @@ export function getSelectionFocus (
   // find the focusNode from range,
   // to support shadow dom.
   if (range) {
-    if (
-      selection.direction === 'forward'
-      || selection.direction === 'none'
-    ) {
+    if (selection.direction === 'backward') {
+      // if backward, the caret is at the start of the range
+      focusNode = range.startContainer
+      focusOffset = range.startOffset
+    } else if (selection.direction) {
       // when direction is "forward" or "none" (when range is collapsed),
       // the caret is at the end.
       focusNode = range.endContainer
       focusOffset = range.endOffset
-    } else if (selection.direction === 'backward') {
-      // if backward, the caret is at the start of the range
-      focusNode = range.startContainer
-      focusOffset = range.startOffset
     }
   }
 
