@@ -1,5 +1,5 @@
 import { isContentEditable } from '../editors/editor-contenteditable.js'
-import { getComposedSelection, getSelectionRange, getSelectionFocus } from './selection.js'
+import { getSelectionFocus, getSelectionRange, setSelectionRange } from './selection.js'
 
 // all regular and special whitespace chars we want to find.
 // https://jkorpela.fi/chars/spaces.html
@@ -64,23 +64,12 @@ export function getWord (element) {
   }
 }
 
-export async function selectWord (element, word) {
-  let resolve
-  const promise = new Promise((res) => resolve = res)
-
-  const selection = getComposedSelection(element)
-  const range = getSelectionRange(element, selection)
-  const [focusNode] = getSelectionFocus(element, selection, range)
+export function selectWord (element, word) {
+  const range = getSelectionRange(element)
+  const [focusNode] = getSelectionFocus(element, range)
 
   range.setStart(focusNode, word.start)
   range.setEnd(focusNode, word.end)
 
-  selection.removeAllRanges()
-
-  document.addEventListener('selectionchange', resolve, {once: true})
-  selection.addRange(range)
-
-  await promise
-
-  return range
+  return setSelectionRange(element, range)
 }

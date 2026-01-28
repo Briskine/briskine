@@ -1,7 +1,7 @@
 import { expect, describe, it, beforeEach, afterEach } from 'vitest'
 
 import { getWord } from './word.js'
-import { getComposedSelection } from './selection.js'
+import { setSelectionRange } from './selection.js'
 
 describe('getWord', () => {
   let editable
@@ -80,9 +80,7 @@ describe('getWord', () => {
     const range = new Range()
     range.selectNodeContents(editableShadow.lastChild)
     range.collapse()
-    const selection = getComposedSelection(editableShadow)
-    selection.removeAllRanges()
-    selection.addRange(range)
+    setSelectionRange(editableShadow, range)
 
     expect(
       getWord(editableShadow)

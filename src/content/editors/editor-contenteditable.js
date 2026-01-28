@@ -1,22 +1,21 @@
 /* ContentEditable
  */
 
-import { getComposedSelection, getSelectionFocus, getSelectionRange } from '../utils/selection.js'
+import { getSelectionFocus, getSelectionRange, setSelectionRange } from '../utils/selection.js'
 
 export function isContentEditable (element) {
   return element?.isContentEditable
 }
 
 export function insertContentEditableTemplate ({ element, template, word, html, text }) {
-  const selection = getComposedSelection(element)
-  const range = getSelectionRange(element, selection)
+  const range = getSelectionRange(element)
 
   if (
     template.shortcut
     && word.text === template.shortcut
   ) {
     // delete matched shortcut
-    const [focusNode] = getSelectionFocus(element, selection, range)
+    const [focusNode] = getSelectionFocus(element, range)
     range.setStart(focusNode, word.start)
     range.setEnd(focusNode, word.end)
     range.deleteContents()
@@ -54,8 +53,7 @@ export function insertContentEditableTemplate ({ element, template, word, html, 
   range.insertNode(templateNode)
   range.collapse()
 
-  selection.removeAllRanges()
-  selection.addRange(range)
+  setSelectionRange(element, range)
 
   // trigger multiple change events,
   // for frameworks and scripts to notice changes to the editable fields.

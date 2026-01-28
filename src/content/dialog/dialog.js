@@ -18,7 +18,7 @@ import { isTextfieldEditor } from '../editors/editor-textfield.js'
 import {bubbleTagName} from '../bubble/bubble.js'
 import {getEditableCaret, getContentEditableCaret, getDialogPosition} from './dialog-position.js'
 import autocomplete from '../autocomplete.js'
-import { getComposedSelection, getSelectionRange }  from '../utils/selection.js'
+import { getSelectionRange, setSelectionRange }  from '../utils/selection.js'
 import { getWord } from '../utils/word.js'
 import getActiveElement from '../utils/active-element.js'
 import {keybind, keyunbind} from '../keybind.js'
@@ -312,9 +312,7 @@ function Dialog (originalProps) {
       isContentEditable(editor)
       && cachedRange
     ) {
-      const selection = getComposedSelection(editor)
-      selection.removeAllRanges()
-      selection.addRange(cachedRange)
+      setSelectionRange(editor, cachedRange)
     } else {
       editor.focus()
     }

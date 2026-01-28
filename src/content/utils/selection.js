@@ -11,26 +11,27 @@
 // or the global window.getSelection.
 // https://github.com/WICG/webcomponents/issues/79
 
-export function getComposedSelection (node) {
+function getComposedSelection (node) {
   const selection = window.getSelection()
+
+  if (typeof selection.getComposedRanges === 'function') {
+    return selection
+  }
 
   const root = node?.getRootNode?.()
   if (
       root instanceof ShadowRoot
       && typeof root.getSelection === 'function'
-      && typeof selection.getComposedRanges !== 'function'
-    ) {
-    // non-standard Blink-only method
+  ) {
+    // non-standard Blink-only method (before Chrome 137)
     return root.getSelection()
   }
 
   return selection
 }
 
-export function getSelectionRange (
-  node,
-  selection = getComposedSelection(node)
-) {
+export function getSelectionRange (node) {
+  const selection = getComposedSelection(node)
   const root = node?.getRootNode?.()
 
   if (selection.rangeCount === 0) {
@@ -54,9 +55,9 @@ export function getSelectionRange (
 
 export function getSelectionFocus (
   node,
-  selection = getComposedSelection(node),
-  range = getSelectionRange(node, selection)
+  range = getSelectionRange(node)
 ) {
+  const selection = getComposedSelection(node)
   // default to values from selection,
   // for browsers without support for selection.direction.
   let focusNode = selection.focusNode
@@ -78,4 +79,27 @@ export function getSelectionFocus (
   }
 
   return [focusNode, focusOffset]
+}
+
+export function setSelectionRange (node, range) {
+  return new Promise((resolve) => {
+    const selection = getComposedSelection(node)
+    // even if setBaseAndExtent is synchronous,
+    // some third part editors rely on selection change to notice the change,
+    // so that's when we consider it done.
+    // also, using selectionchange makes sure the selection was painted
+    // on screen, and we can use getBoundingClientRect on it.
+    // requestAnimationFrame would be enough for that, if we didn't need
+    // the third-party editor support.
+    document.addEventListener('selectionchange', () => resolve(range), { once: true })
+    // Safari doesn't support selection.addRange(),
+    // when the range is in shadow dom,
+    // that's why we use setBaseAndExtent.
+    selection.setBaseAndExtent(
+      range.startContainer,
+      range.startOffset,
+      range.endContainer,
+      range.endOffset
+    )
+  })
 }

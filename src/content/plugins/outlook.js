@@ -4,7 +4,7 @@
 import parseTemplate from '../utils/parse-template.js'
 import createContact from '../utils/create-contact.js'
 import { register } from '../plugin.js'
-import { getComposedSelection, getSelectionRange } from '../utils/selection.js'
+import { getSelectionRange, setSelectionRange } from '../utils/selection.js'
 
 const urls = [
   'outlook.live.com',
@@ -49,8 +49,7 @@ async function makeFieldsEditable (element) {
     const $to = $main.querySelector('div[tabindex]:nth-child(2):not([role="button"])')
     if ($to) {
       // cache selection
-      const selection = getComposedSelection(element)
-      const cachedRange = getSelectionRange(element, selection)
+      const cachedRange = getSelectionRange(element)
 
       $to.dispatchEvent(new FocusEvent('focusin', {bubbles: true}))
       // give it a second to show the editable from/to/cc/bcc fields
@@ -59,8 +58,7 @@ async function makeFieldsEditable (element) {
       // restore selection
       element.focus()
       if (cachedRange) {
-        selection.removeAllRanges()
-        selection.addRange(cachedRange)
+        setSelectionRange(element, cachedRange)
       }
     }
   }
@@ -301,8 +299,7 @@ async function actions ({ element, template, data }) {
   // updating extra fields values will change the focus,
   // as the fields use contenteditable.
   // cache the focus here, to restore later.
-  const selection = getComposedSelection(element)
-  const cachedRange = getSelectionRange(element, selection)
+  const cachedRange = getSelectionRange(element)
 
   if (template.to) {
     const $to = getToContainer(editable)
@@ -337,8 +334,7 @@ async function actions ({ element, template, data }) {
   }
 
   // restore selection to where it was before changing extra fields
-  selection.removeAllRanges()
-  selection.addRange(cachedRange)
+  setSelectionRange(element, cachedRange)
 }
 
 register('data', getData)

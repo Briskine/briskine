@@ -3,7 +3,7 @@
  */
 import autocomplete from './autocomplete.js'
 import getEventTarget from './utils/event-target.js'
-import { getComposedSelection, getSelectionRange } from './utils/selection.js'
+import { getSelectionRange, setSelectionRange } from './utils/selection.js'
 import { getWord } from './utils/word.js'
 import { isContentEditable } from './editors/editor-contenteditable.js'
 import { isTextfieldEditor } from './editors/editor-textfield.js'
@@ -45,9 +45,7 @@ async function keyboardAutocomplete (e) {
         isContentEditable(element)
         && cachedRange
       ) {
-        const selection = getComposedSelection(element)
-        selection.removeAllRanges()
-        selection.addRange(cachedRange)
+        setSelectionRange(element, cachedRange)
       } else {
         element.focus()
       }
