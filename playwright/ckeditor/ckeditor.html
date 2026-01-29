@@ -3,13 +3,13 @@
   <head>
     <meta charset="utf-8">
     <title>CKEditor</title>
-    <link rel="stylesheet" href="https://esm.sh/ckeditor5/dist/ckeditor5.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ckeditor5/dist/ckeditor5.css" />
     <script src="/extension-ready.js"></script>
   </head>
   <body>
-    <textarea id="editor"></textarea>
+    <div id="editor"></div>
     <script type="module">
-      import { ClassicEditor, Essentials, Bold, Italic, Paragraph } from 'https://esm.sh/ckeditor5'
+      import { ClassicEditor, Essentials, Bold, Italic, Paragraph } from 'https://cdn.jsdelivr.net/npm/ckeditor5/+esm'
       ClassicEditor.create(document.querySelector('#editor'), {
     		plugins: [ Essentials, Bold, Italic, Paragraph ],
     		licenseKey: 'GPL',

@@ -7,10 +7,9 @@
     <script src="/extension-ready.js"></script>
   </head>
   <body>
-    <textarea name="editor1"></textarea>
-    <input type="text">
+    <div id="editor"></div>
     <script>
-      CKEDITOR.replace('editor1')
+      CKEDITOR.replace(document.querySelector('#editor'))
     </script>
   </body>
 </html>
