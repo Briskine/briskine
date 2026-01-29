@@ -334,6 +334,7 @@ async function actions ({ element, template, data }) {
   }
 
   // restore selection to where it was before changing extra fields
+  element.focus({ preventScroll: true })
   setSelectionRange(element, cachedRange)
 }
 

@@ -41,13 +41,12 @@ async function keyboardAutocomplete (e) {
       e.stopImmediatePropagation()
 
       // restore selection
+      element.focus({ preventScroll: true })
       if (
         isContentEditable(element)
         && cachedRange
       ) {
         await setSelectionRange(element, cachedRange)
-      } else {
-        element.focus()
       }
 
       autocomplete({

@@ -81,7 +81,7 @@ export function getSelectionFocus (
   return [focusNode, focusOffset]
 }
 
-export function setSelectionRange (node, range) {
+export async function setSelectionRange (node, range) {
   const currentRange = getSelectionRange(node)
 
   // selectionchange doesn't fire is the selection stays the same,
@@ -110,7 +110,9 @@ export function setSelectionRange (node, range) {
     // on screen, and we can use getBoundingClientRect on it.
     // requestAnimationFrame would be enough for that,
     // if we didn't need to support third-party editors.
-    document.addEventListener('selectionchange', () => resolve(range), { once: true })
+    document.addEventListener('selectionchange', () => {
+      resolve(range)
+    }, { once: true })
 
     // Safari doesn't support selection.addRange(),
     // when the range is in shadow dom,

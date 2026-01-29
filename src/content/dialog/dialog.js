@@ -305,17 +305,14 @@ function Dialog (originalProps) {
     }
   }
 
-  function restoreSelection () {
-    // only try to restore the selection on contenteditable.
-    // input and textarea will restore the correct range with focus().
+  async function restoreSelection () {
+    editor.focus({ preventScroll: true })
     if (
       isContentEditable(editor)
       && cachedRange
     ) {
-      return setSelectionRange(editor, cachedRange)
+      await setSelectionRange(editor, cachedRange)
     }
-
-    editor.focus()
   }
 
   function hideOnClick (e) {
