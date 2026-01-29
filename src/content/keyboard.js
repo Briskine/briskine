@@ -45,7 +45,7 @@ async function keyboardAutocomplete (e) {
         isContentEditable(element)
         && cachedRange
       ) {
-        setSelectionRange(element, cachedRange)
+        await setSelectionRange(element, cachedRange)
       } else {
         element.focus()
       }

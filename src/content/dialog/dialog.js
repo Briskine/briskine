@@ -193,8 +193,8 @@ function Dialog (originalProps) {
     }
   }
 
-  function insertTemplate (id = '') {
-    restoreSelection()
+  async function insertTemplate (id = '') {
+    await restoreSelection()
 
     // get template from cache
     const template = templates().find((t) => t.id === id)
@@ -312,10 +312,10 @@ function Dialog (originalProps) {
       isContentEditable(editor)
       && cachedRange
     ) {
-      setSelectionRange(editor, cachedRange)
-    } else {
-      editor.focus()
+      return setSelectionRange(editor, cachedRange)
     }
+
+    editor.focus()
   }
 
   function hideOnClick (e) {

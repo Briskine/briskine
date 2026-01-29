@@ -1,26 +1,26 @@
 /* ContentEditable
  */
 
-import { getSelectionFocus, getSelectionRange, setSelectionRange } from '../utils/selection.js'
+import { getSelectionRange, setSelectionRange } from '../utils/selection.js'
+import { selectWord } from '../utils/word.js'
 
 export function isContentEditable (element) {
   return element?.isContentEditable
 }
 
-export function insertContentEditableTemplate ({ element, template, word, html, text }) {
-  const range = getSelectionRange(element)
+export async function insertContentEditableTemplate ({ element, template, word, html, text }) {
+  let range = getSelectionRange(element)
 
   if (
     template.shortcut
     && word.text === template.shortcut
   ) {
     // delete matched shortcut
-    const [focusNode] = getSelectionFocus(element, range)
-    range.setStart(focusNode, word.start)
-    range.setEnd(focusNode, word.end)
+    range = await selectWord(element, word)
     range.deleteContents()
   } else {
     // delete previous selection, if no shortcut match.
+    // we're inserting from the dialog or context menu.
     range.deleteContents()
 
     // empty paragraphs usually contain a BR tag in contenteditable,

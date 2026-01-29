@@ -82,19 +82,40 @@ export function getSelectionFocus (
 }
 
 export function setSelectionRange (node, range) {
+  const currentRange = getSelectionRange(node)
+
+  // selectionchange doesn't fire is the selection stays the same,
+  // so we return immediately if that's the case.
+  // we're comparing 2 directionless ranges,
+  // so we don't need to consider selection.direction.
+  if (
+    currentRange
+    && currentRange.startContainer === range.startContainer
+    && currentRange.startOffset === range.startOffset
+    && currentRange.endContainer === range.endContainer
+    && currentRange.endOffset === range.endOffset
+  ) {
+    // even if we're using a cloned range,
+    // if dom changes happen (changes in the editor)
+    // the cloned range will shift its offsets to stay attached to the dom.
+    // usually happens for our cached ranges used to restore focus.
+    return range
+  }
+
   return new Promise((resolve) => {
-    const selection = getComposedSelection(node)
     // even if setBaseAndExtent is synchronous,
-    // some third part editors rely on selection change to notice the change,
+    // some third-party editors rely on selection change to notice the change,
     // so that's when we consider it done.
     // also, using selectionchange makes sure the selection was painted
     // on screen, and we can use getBoundingClientRect on it.
-    // requestAnimationFrame would be enough for that, if we didn't need
-    // the third-party editor support.
+    // requestAnimationFrame would be enough for that,
+    // if we didn't need to support third-party editors.
     document.addEventListener('selectionchange', () => resolve(range), { once: true })
+
     // Safari doesn't support selection.addRange(),
     // when the range is in shadow dom,
     // that's why we use setBaseAndExtent.
+    const selection = getComposedSelection(node)
     selection.setBaseAndExtent(
       range.startContainer,
       range.startOffset,

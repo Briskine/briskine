@@ -731,14 +731,5 @@ export async function isCached () {
     return true
   }
 
-  // when logged-out
-  try {
-    await getSignedInUser()
-  } catch (err) {
-    if (isLoggedOut(err)) {
-      return true
-    }
-  }
-
   return false
 }

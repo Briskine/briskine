@@ -58,7 +58,7 @@ async function makeFieldsEditable (element) {
       // restore selection
       element.focus()
       if (cachedRange) {
-        setSelectionRange(element, cachedRange)
+        await setSelectionRange(element, cachedRange)
       }
     }
   }
