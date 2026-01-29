@@ -38,15 +38,30 @@ export async function pageInsertBeforeInputTemplate ({ template, word, text, htm
     await selectWord(element, word)
   }
 
-  const e = new InputEvent('beforeinput', {
+  let e
+  const eventProps = {
     bubbles: true,
     inputType: 'insertReplacementText',
-    dataTransfer: new DataTransfer(),
-  })
-  // set the data on the event, instead of a separate DataTransfer instance.
-  // otherwise Firefox sends an empty DataTransfer object.
-  // also needs to run in page context, for firefox support.
-  e.dataTransfer.setData('text/plain', text)
-  e.dataTransfer.setData('text/html', html)
+  }
+
+  try {
+    e = new InputEvent('beforeinput', {
+      ...eventProps,
+      dataTransfer: new DataTransfer(),
+    })
+
+    // set the data on the event, instead of a separate DataTransfer instance.
+    // otherwise Firefox sends an empty DataTransfer object.
+    // also needs to run in page context, for Firefox support.
+    e.dataTransfer.setData('text/plain', text)
+    e.dataTransfer.setData('text/html', html)
+  } catch {
+    // Safari does not support DataTransfer on our syntethic beforeinput event
+    e = new InputEvent('beforeinput', {
+      ...eventProps,
+      data: text,
+    })
+  }
+
   element.dispatchEvent(e)
 }
