@@ -7,7 +7,10 @@
  * Draft.js rich text editor framework
  * https://draftjs.org/
  *
- * LinkedIn message editor
+ * CKEditor5
+ * https://ckeditor.com/ckeditor-5/
+ *
+ * LinkedIn Message Editor
  *
  */
 
@@ -23,6 +26,8 @@ export function isPasteEditor (element) {
     || element?.querySelector?.('[data-contents]')
     // linkedin message editor
     || element?.classList?.contains?.('msg-form__contenteditable')
+    // ckeditor5
+    || element?.classList?.contains?.('ck-editor__editable')
   )
 }
 

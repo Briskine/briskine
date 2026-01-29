@@ -11,6 +11,7 @@
 import { selectWord } from '../utils/word.js'
 import { request } from '../page/page-parent.js'
 import getActiveElement from '../utils/active-element.js'
+import debug from '../../debug.js'
 
 export function isBeforeInputEditor (element) {
   return (
@@ -55,13 +56,15 @@ export async function pageInsertBeforeInputTemplate ({ template, word, text, htm
     // also needs to run in page context, for Firefox support.
     e.dataTransfer.setData('text/plain', text)
     e.dataTransfer.setData('text/html', html)
-  } catch {
+    element.dispatchEvent(e)
+  } catch (err) {
+    debug(['pageInsertBeforeInputTemplate', err], 'warn')
+
     // Safari does not support DataTransfer on our syntethic beforeinput event
     e = new InputEvent('beforeinput', {
       ...eventProps,
       data: text,
     })
+    element.dispatchEvent(e)
   }
-
-  element.dispatchEvent(e)
 }

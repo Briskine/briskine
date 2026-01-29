@@ -8,7 +8,6 @@ import parseTemplate from './utils/parse-template.js'
 import htmlToText from './utils/html-to-text.js'
 
 import {isContentEditable, insertContentEditableTemplate} from './editors/editor-contenteditable.js'
-import {isCkEditor, insertCkEditorTemplate} from './editors/editor-ckeditor.js'
 import {isPasteEditor, insertPasteTemplate} from './editors/editor-paste.js'
 import {isBeforeInputEditor, insertBeforeInputTemplate} from './editors/editor-beforeinput.js'
 import {isQuill, insertQuillTemplate} from './editors/editor-quill.js'
@@ -30,10 +29,6 @@ function insertTemplate ({ element, word, template, html, text }) {
     template,
     html,
     text,
-  }
-
-  if (isCkEditor(element)) {
-    return insertCkEditorTemplate(params)
   }
 
   if (isPasteEditor(element)) {

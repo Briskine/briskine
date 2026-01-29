@@ -1,4 +1,5 @@
-/* CKEditor 5 support.
+/*
+ * CKEditor 5 support.
  * https://ckeditor.com/ckeditor-5/
  */
 
