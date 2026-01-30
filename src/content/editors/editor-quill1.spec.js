@@ -24,7 +24,7 @@ function waitForEditor () {
   })
 }
 // only tests quill v1
-describe('editor Quill', () => {
+describe('editor Quill1', () => {
   beforeAll(async function () {
     await setup()
 
