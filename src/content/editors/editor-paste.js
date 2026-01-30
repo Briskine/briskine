@@ -62,7 +62,16 @@ export async function pageInsertPasteTemplate ({ word, template, html, text }) {
     template.shortcut
     && word.text === template.shortcut
   ) {
-    await selectWord(element, word)
+    const range = await selectWord(element, word)
+    // workaround for JIRA. without it:
+    // - the caret is placed at the start of template (only after removing shortcut)
+    // - the floating paste button duplicates the template when selecting a different
+    //   type (html, markdown, plain-text)
+    range.deleteContents()
+    await new Promise((resolve) => {
+      requestAnimationFrame(resolve)
+    })
+    // end workaround
   }
 
   const e = new ClipboardEvent('paste', {
