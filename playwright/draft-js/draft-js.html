@@ -7,10 +7,56 @@
   </head>
   <body>
     <div id="editor"></div>
+
+    <script type="importmap">
+    {
+      "imports": {
+        "draft-js": "https://ga.jspm.io/npm:draft-js@0.11.7/lib/dev.Draft.js",
+        "react": "https://ga.jspm.io/npm:react@19.2.4/dev.index.js",
+        "react-dom": "https://ga.jspm.io/npm:react-dom@19.2.4/dev.index.js",
+        "react-dom/client": "https://ga.jspm.io/npm:react-dom@19.2.4/dev.client.js"
+      },
+      "scopes": {
+        "https://ga.jspm.io/": {
+          "fbjs/lib/DataTransfer": "https://ga.jspm.io/npm:fbjs@2.0.0/lib/dev.DataTransfer.js",
+          "fbjs/lib/Keys": "https://ga.jspm.io/npm:fbjs@2.0.0/lib/Keys.js",
+          "fbjs/lib/Scroll": "https://ga.jspm.io/npm:fbjs@2.0.0/lib/Scroll.js",
+          "fbjs/lib/Style": "https://ga.jspm.io/npm:fbjs@2.0.0/lib/Style.js",
+          "fbjs/lib/TokenizeUtil": "https://ga.jspm.io/npm:fbjs@2.0.0/lib/TokenizeUtil.js",
+          "fbjs/lib/URI": "https://ga.jspm.io/npm:fbjs@2.0.0/lib/URI.js",
+          "fbjs/lib/UnicodeBidi": "https://ga.jspm.io/npm:fbjs@2.0.0/lib/dev.UnicodeBidi.js",
+          "fbjs/lib/UnicodeBidiDirection": "https://ga.jspm.io/npm:fbjs@2.0.0/lib/dev.UnicodeBidiDirection.js",
+          "fbjs/lib/UnicodeBidiService": "https://ga.jspm.io/npm:fbjs@2.0.0/lib/dev.UnicodeBidiService.js",
+          "fbjs/lib/UnicodeUtils": "https://ga.jspm.io/npm:fbjs@2.0.0/lib/dev.UnicodeUtils.js",
+          "fbjs/lib/UserAgent": "https://ga.jspm.io/npm:fbjs@2.0.0/lib/dev.UserAgent.js",
+          "fbjs/lib/containsNode": "https://ga.jspm.io/npm:fbjs@2.0.0/lib/containsNode.js",
+          "fbjs/lib/cx": "https://ga.jspm.io/npm:fbjs@2.0.0/lib/cx.js",
+          "fbjs/lib/getActiveElement": "https://ga.jspm.io/npm:fbjs@2.0.0/lib/getActiveElement.js",
+          "fbjs/lib/getElementPosition": "https://ga.jspm.io/npm:fbjs@2.0.0/lib/getElementPosition.js",
+          "fbjs/lib/getScrollPosition": "https://ga.jspm.io/npm:fbjs@2.0.0/lib/getScrollPosition.js",
+          "fbjs/lib/getViewportDimensions": "https://ga.jspm.io/npm:fbjs@2.0.0/lib/getViewportDimensions.js",
+          "fbjs/lib/invariant": "https://ga.jspm.io/npm:fbjs@2.0.0/lib/dev.invariant.js",
+          "fbjs/lib/joinClasses": "https://ga.jspm.io/npm:fbjs@2.0.0/lib/joinClasses.js",
+          "fbjs/lib/nullthrows": "https://ga.jspm.io/npm:fbjs@2.0.0/lib/nullthrows.js",
+          "fbjs/lib/setImmediate": "https://ga.jspm.io/npm:fbjs@2.0.0/lib/setImmediate.js",
+          "fbjs/lib/warning": "https://ga.jspm.io/npm:fbjs@2.0.0/lib/dev.warning.js",
+          "immutable": "https://ga.jspm.io/npm:immutable@3.7.6/dist/immutable.js",
+          "object-assign": "https://ga.jspm.io/npm:object-assign@4.1.1/index.js",
+          "process": "https://ga.jspm.io/npm:@jspm/core@2.1.0/nodelibs/browser/process.js",
+          "scheduler": "https://ga.jspm.io/npm:scheduler@0.27.0/dev.index.js",
+          "setimmediate": "https://ga.jspm.io/npm:setimmediate@1.0.5/setImmediate.js",
+          "ua-parser-js": "https://ga.jspm.io/npm:ua-parser-js@0.7.41/src/ua-parser.js"
+        }
+      }
+    }
+    </script>
     <script type="module">
-      import React from 'https://esm.sh/react@19/?dev'
-      import ReactDOM from 'https://esm.sh/react-dom@19/client/?dev'
-      import {Editor, EditorState} from 'https://esm.sh/draft-js@0/?dev'
+      import React from 'react'
+      import ReactDOM from 'react-dom/client'
+      import * as Draft from 'draft-js'
+
+      // workaround for incorrect export
+      const {Editor, EditorState} = Draft.default
 
       class MyEditor extends React.Component {
         constructor () {

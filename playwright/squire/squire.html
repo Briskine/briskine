@@ -8,8 +8,15 @@
   <body>
     <div id="editor" role="textbox"></div>
 
+    <script type="importmap">
+     {
+       "imports": {
+         "squire-rte": "https://ga.jspm.io/npm:squire-rte@2.4.2/dist/squire.mjs"
+       }
+     }
+     </script>
     <script type="module">
-      import Squire from 'https://esm.sh/squire-rte/'
+      import Squire from 'squire-rte'
       new Squire(document.querySelector('div'), {
         sanitizeToDOMFragment: (html) => {
           const template = document.createElement('template')
