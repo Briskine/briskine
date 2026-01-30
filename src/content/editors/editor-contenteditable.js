@@ -9,6 +9,10 @@ export function isContentEditable (element) {
 }
 
 export async function insertContentEditableTemplate ({ element, template, word, html, text }) {
+  if (!isContentEditable(element)) {
+    return false
+  }
+
   let range = getSelectionRange(element)
 
   if (
@@ -60,4 +64,6 @@ export async function insertContentEditableTemplate ({ element, template, word, 
   Array('input', 'change').forEach((eventType) => {
     element.dispatchEvent(new Event(eventType, {bubbles: true}))
   })
+
+  return true
 }

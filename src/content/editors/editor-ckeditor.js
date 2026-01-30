@@ -1,4 +1,6 @@
 /*
+ * TODO - DEPRECATED TO BE REMOVED.
+ *
  * CKEditor 5 support.
  * https://ckeditor.com/ckeditor-5/
  */

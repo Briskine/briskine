@@ -13,7 +13,7 @@ import { request } from '../page/page-parent.js'
 import getActiveElement from '../utils/active-element.js'
 import debug from '../../debug.js'
 
-export function isBeforeInputEditor (element) {
+function isBeforeInputEditor (element) {
   return (
     element?.hasAttribute?.('data-lexical-editor')
     || element?.hasAttribute?.('data-slate-editor')
@@ -31,6 +31,9 @@ export function insertBeforeInputTemplate ({ word, template, html, text }) {
 
 export async function pageInsertBeforeInputTemplate ({ template, word, text, html}) {
   const element = getActiveElement()
+  if (!isBeforeInputEditor(element)) {
+    return false
+  }
 
   if (
     template.shortcut
@@ -67,4 +70,6 @@ export async function pageInsertBeforeInputTemplate ({ template, word, text, htm
     })
     element.dispatchEvent(e)
   }
+
+  return true
 }

@@ -17,7 +17,6 @@ function cleanEditor () {
 
 function waitForEditor () {
   return new Promise((resolve) => {
-
     window.addEventListener('prosemirror-ready', () => {
       $editor = document.querySelector('[contenteditable]')
       resolve()

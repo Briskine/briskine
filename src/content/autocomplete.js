@@ -7,11 +7,11 @@ import { addAttachments } from './attachments/attachments.js'
 import parseTemplate from './utils/parse-template.js'
 import htmlToText from './utils/html-to-text.js'
 
-import {isContentEditable, insertContentEditableTemplate} from './editors/editor-contenteditable.js'
-import {isPasteEditor, insertPasteTemplate} from './editors/editor-paste.js'
-import {isBeforeInputEditor, insertBeforeInputTemplate} from './editors/editor-beforeinput.js'
-import {isQuill, insertQuillTemplate} from './editors/editor-quill.js'
-import {isTextfieldEditor, insertTextfieldTemplate} from './editors/editor-textfield.js'
+import {insertContentEditableTemplate} from './editors/editor-contenteditable.js'
+import {insertPasteTemplate} from './editors/editor-paste.js'
+import {insertBeforeInputTemplate} from './editors/editor-beforeinput.js'
+import {insertQuill1Template} from './editors/editor-quill1.js'
+import {insertTextfieldTemplate} from './editors/editor-textfield.js'
 
 import './plugins/gmail.js'
 import './plugins/outlook.js'
@@ -22,7 +22,16 @@ import './plugins/facebook.js'
 
 import { updateTemplateStats } from '../store/store-content.js'
 
-function insertTemplate ({ element, word, template, html, text }) {
+const editors = [
+  // order matters
+  insertPasteTemplate,
+  insertBeforeInputTemplate,
+  insertQuill1Template,
+  insertContentEditableTemplate,
+  insertTextfieldTemplate,
+]
+
+async function insertTemplate ({ element, word, template, html, text }) {
   const params = {
     element,
     word,
@@ -31,25 +40,14 @@ function insertTemplate ({ element, word, template, html, text }) {
     text,
   }
 
-  if (isPasteEditor(element)) {
-    return insertPasteTemplate(params)
+  for (const editor of editors) {
+    const result = await editor(params)
+    if (result === true) {
+      return true
+    }
   }
 
-  if (isBeforeInputEditor(element)) {
-    return insertBeforeInputTemplate(params)
-  }
-
-  if (isQuill(element)) {
-    return insertQuillTemplate(params)
-  }
-
-  if (isContentEditable(element)) {
-    return insertContentEditableTemplate(params)
-  }
-
-  if (isTextfieldEditor(element)) {
-    return insertTextfieldTemplate(params)
-  }
+  return false
 }
 
 export default async function autocomplete ({ element, word, template }) {

@@ -1,6 +1,6 @@
 import { expect, describe, it, beforeAll, beforeEach, afterAll } from 'vitest'
 
-import {insertQuillTemplate} from './editor-quill.js'
+import {insertQuill1Template} from './editor-quill1.js'
 import {setup, destroy} from '../page/page-parent.js'
 
 let $link
@@ -23,20 +23,20 @@ function waitForEditor () {
     }, {once: true})
   })
 }
-// only tests quill v2
+// only tests quill v1
 describe('editor Quill', () => {
   beforeAll(async function () {
     await setup()
 
     $link = document.createElement('link')
     $link.rel = 'stylesheet'
-    $link.href = 'https://cdn.jsdelivr.net/npm/quill@2/dist/quill.snow.css'
+    $link.href = 'https://esm.sh/quill@1/dist/quill.snow.css'
     document.head.appendChild($link)
 
     $script = document.createElement('script')
     $script.type = 'module'
     $script.textContent = `
-      import Quill from 'https://cdn.jsdelivr.net/npm/quill@2/+esm'
+      import Quill from 'https://esm.sh/quill@1/'
 
       const $editor = document.createElement('div')
       $editor.id = '${containerId}'
@@ -61,7 +61,7 @@ describe('editor Quill', () => {
     const template = '<div>Kind regards,</div><div>.</div>'
 
     $editor.focus()
-    await insertQuillTemplate({
+    await insertQuill1Template({
       element: $editor,
       html: template,
       word: {

@@ -10,6 +10,10 @@ export function isTextfieldEditor (element) {
 }
 
 export function insertTextfieldTemplate ({ element, word, template, text }) {
+  if (!isTextfieldEditor(element)) {
+    return false
+  }
+
   const textfieldValue = element.value
   let cursorOffset = word.end + text.length
 
@@ -44,4 +48,6 @@ export function insertTextfieldTemplate ({ element, word, template, text }) {
   Array('input', 'change').forEach((eventType) => {
     element.dispatchEvent(new Event(eventType, {bubbles: true}))
   })
+
+  return true
 }

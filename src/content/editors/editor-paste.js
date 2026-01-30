@@ -1,4 +1,5 @@
-/* Editors with Paste event support.
+/*
+ * Editors with Paste event support.
  *
  * ProseMirror
  * https://prosemirror.net/
@@ -10,6 +11,9 @@
  * CKEditor5
  * https://ckeditor.com/ckeditor-5/
  *
+ * Quill v2
+ * https://quilljs.com/
+ *
  * LinkedIn Message Editor
  *
  */
@@ -18,7 +22,7 @@ import { request } from '../page/page-parent.js'
 import { selectWord } from '../utils/word.js'
 import getActiveElement from '../utils/active-element.js'
 
-export function isPasteEditor (element) {
+function isPasteEditor (element) {
   return (
     // prosemirror
     element?.classList?.contains?.('ProseMirror')
@@ -28,6 +32,11 @@ export function isPasteEditor (element) {
     || element?.classList?.contains?.('msg-form__contenteditable')
     // ckeditor5
     || element?.classList?.contains?.('ck-editor__editable')
+    // quill v2
+    || (
+      element?.classList?.contains?.('ql-editor')
+      && !element?.closest?.('.ql-container')?.__quill
+    )
   )
 }
 
@@ -45,6 +54,9 @@ export function insertPasteTemplate ({ word, template, html, text }) {
 export async function pageInsertPasteTemplate ({ word, template, html, text }) {
   // we can't pass the element instance to the page script
   const element = getActiveElement()
+  if (!isPasteEditor(element)) {
+    return false
+  }
 
   if (
     template.shortcut
@@ -63,4 +75,6 @@ export async function pageInsertPasteTemplate ({ word, template, html, text }) {
   e.clipboardData.setData('text/plain', text)
   e.clipboardData.setData('text/html', html)
   element.dispatchEvent(e)
+
+  return true
 }
