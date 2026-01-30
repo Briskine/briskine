@@ -69,7 +69,7 @@ async function parseContext (data = {}) {
   return context
 }
 
-export default async function parseTemplate (template = '', data = {}) {
+export default async function parseTemplate (template = '', data = {}, doOutput) {
   let ast = {}
   try {
     ast = parse(template)
@@ -88,8 +88,22 @@ export default async function parseTemplate (template = '', data = {}) {
       .map((t) => ({ shortcut: t.shortcut, body: t.body }))
   }
 
+  console.log("WHAT MANIFEST", MANIFEST);
+
   if (MANIFEST === '2') {
     return compileTemplateLegacy(ast, context, partials)
   }
-  return compileTemplate(ast, context, partials)
+
+  let res = compileTemplate(ast, context, partials)
+
+  if (doOutput) {
+    console.log('do compile');
+    console.log("ast", ast);
+    console.log("context", context);
+    console.log("partials", partials);
+    console.log("res", res);
+  }
+
+  // return compileTemplate(ast, context, partials)
+  return res;
 }

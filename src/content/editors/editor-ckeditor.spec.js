@@ -14,7 +14,7 @@ function cleanEditor () {
 let translations
 
 function setGlobals () {
-  window.CKEDITOR_TRANSLATIONS = translations
+  // window.CKEDITOR_TRANSLATIONS = translations
 }
 
 function waitForEditor (p) {
@@ -76,7 +76,7 @@ describe('editor CKEditor', function () {
   })
 
   it('should insert rich text', async () => {
-    setGlobals()
+    // setGlobals()
 
     $editor.focus()
     const template = '<div><strong>Image</strong> <img src="#"></div>'

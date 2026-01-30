@@ -20,5 +20,6 @@ export default defineConfig({
     },
     // globals: true,
     setupFiles: './vitest.setup.ts',
+    globalSetup: './vitest.globalSetup.ts'
   }
 })
