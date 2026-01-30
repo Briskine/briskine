@@ -63,7 +63,7 @@ export async function pageInsertBeforeInputTemplate ({ template, word, text, htm
   } catch (err) {
     debug(['pageInsertBeforeInputTemplate', err], 'warn')
 
-    // Safari does not support DataTransfer on our syntethic beforeinput event
+    // Safari does not support DataTransfer on our synthetic beforeinput event
     e = new InputEvent('beforeinput', {
       ...eventProps,
       data: text,
