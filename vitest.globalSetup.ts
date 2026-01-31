@@ -28,7 +28,14 @@ export async function setup(project) {
           fileName: (format, entryName) => `${entryName}/${entryName}.js`,
           formats: ['iife'],
         },
-        outDir: '../test/dist/',        
+        outDir: '../test/dist/',
+      },
+      resolve: {
+        alias: {
+          // HACK
+          // Temporary alias, we'll switch directly to this import when migrating to Vite.
+          'moment': 'moment/min/moment-with-locales.js',
+        }
       },
       define: {
         VERSION: JSON.stringify(packageFile.version),

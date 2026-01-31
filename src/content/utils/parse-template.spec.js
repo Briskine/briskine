@@ -3,9 +3,6 @@ import { expect, describe, it, beforeAll, afterAll, afterEach } from 'vitest'
 import parseTemplate from './parse-template.js'
 import {destroy} from '../sandbox/sandbox-parent.js'
 
-import {compileTemplate} from '../sandbox/sandbox.js'
-import 'moment/dist/locale/ja'
-
 const now = new Date()
 const year = now.getFullYear()
 const month = now.getMonth() + 1
@@ -148,7 +145,6 @@ Expecting 'CLOSE_RAW_BLOCK', 'CLOSE', 'CLOSE_UNESCAPED', 'OPEN_SEXPR', 'CLOSE_SE
 
   it('should parse template with utf8 characters', async () => {
     expect(await parseTemplate('{{moment format="YYYY年 MMM Do" locale="ja"}}', {}, true)).to.equal(`${year}年 ${month}月 ${day}日`)
-    expect(await compileTemplate('{{moment format="YYYY年 MMM Do" locale="ja"}}', {})).to.equal(`${year}年 ${month}月 ${day}日`)
   })
 
   it('should parse template with partial', async () => {
