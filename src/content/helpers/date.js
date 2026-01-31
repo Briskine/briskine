@@ -1,5 +1,9 @@
-// Legacy date helper,
-// will be deprecated in the future.
+/*
+ * TODO - DEPRECATED TO BE REMOVED.
+ *
+ * Legacy date helper,
+ * will be deprecated in the future.
+ */
 import moment from 'moment'
 
 //  format a date using Moment.js
