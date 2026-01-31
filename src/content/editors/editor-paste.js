@@ -3,7 +3,7 @@
  *
  * ProseMirror
  * https://prosemirror.net/
- * Used by: JIRA
+ * Used by: JIRA, ChatGPT
  *
  * Draft.js rich text editor framework
  * https://draftjs.org/
