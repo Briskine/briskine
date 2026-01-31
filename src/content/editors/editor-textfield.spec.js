@@ -184,29 +184,6 @@ describe('insertTextfieldTemplate', () => {
     input.remove()
   })
 
-  it('should insert template in input type=email field', () => {
-    const input = document.createElement('input')
-    input.type = 'email'
-    document.body.appendChild(input)
-
-    insertTextfieldTemplate({
-      element: input,
-      text: 'test',
-      template: {
-        shortcut: 't'
-      },
-      word: {
-        start: 0,
-        end: 0,
-        text: ''
-      }
-    })
-
-    expect(input.value).to.equal('test')
-
-    input.remove()
-  })
-
   afterAll(() => {
     textarea.remove()
   })

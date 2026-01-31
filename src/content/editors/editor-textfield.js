@@ -34,7 +34,7 @@ export async function insertTextfieldTemplate ({ element, word, template, text }
     template.shortcut
     && word.text === template.shortcut
   ) {
-    await selectWord(element, word)
+    selectWord(element, word)
   }
 
   element.setRangeText(text, element.selectionStart, element.selectionEnd, 'end')
