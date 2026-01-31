@@ -5,7 +5,6 @@
 import { selectWord } from '../utils/word.js'
 import debug from '../../debug.js'
 import { isContentEditable } from './editor-contenteditable.js'
-import { isTextfieldEditor } from './editor-textfield.js'
 
 export async function insertExecCommandTemplate ({ element, template, word, html, text }) {
   if (
@@ -23,7 +22,9 @@ export async function insertExecCommandTemplate ({ element, template, word, html
       document?.execCommand?.('insertText', false, text)
       debug(['insertExecCommandTemplate', err])
     }
-  } else if (isTextfieldEditor(element)) {
-    document?.execCommand?.('insertText', false, text)
+
+    return
   }
+
+  document?.execCommand?.('insertText', false, text)
 }

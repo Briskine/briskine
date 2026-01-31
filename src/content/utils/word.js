@@ -40,11 +40,16 @@ export function getWord (element) {
         break
     }
   } else {
-    // selectionEnd property applies only to inputs of types text, search, URL, tel, and password.
-    // returns null while accessing selectionEnd property on non-text input elements (e.g., email).
+    // selectionEnd/selectionStart apply only to inputs of types text, search, URL, tel, and password.
+    // returns null while accessing them property on non-text input elements (e.g., email).
     // https://developer.mozilla.org/en-US/docs/Web/API/HTMLInputElement/selectionEnd
-    if (element.selectionEnd !== null) {
-      beforeSelection = element.value.substring(0, element.selectionEnd)
+    let caretIndex = element.selectionEnd
+    if (element.selectionDirection === 'backward') {
+      caretIndex = element.selectionStart
+    }
+
+    if (caretIndex !== null) {
+      beforeSelection = element.value.substring(0, caretIndex)
     } else {
       beforeSelection = element.value
     }
@@ -71,7 +76,8 @@ export function selectWord (element, word) {
     try {
       element.setSelectionRange(word.start, word.end)
     } catch (err) {
-      // probably unsupported input type
+      // only supported on inputs of types text, search, URL, tel and password.
+      // https://developer.mozilla.org/en-US/docs/Web/API/HTMLInputElement/setSelectionRange
       debug(['selectWord', err])
     }
 
