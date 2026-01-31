@@ -6,12 +6,14 @@ import { run } from './plugin.js'
 import { addAttachments } from './attachments/attachments.js'
 import parseTemplate from './utils/parse-template.js'
 import htmlToText from './utils/html-to-text.js'
+import debug from '../debug.js'
 
-import {insertContentEditableTemplate} from './editors/editor-contenteditable.js'
-import {insertPasteTemplate} from './editors/editor-paste.js'
-import {insertBeforeInputTemplate} from './editors/editor-beforeinput.js'
-import {insertQuill1Template} from './editors/editor-quill1.js'
-import {insertTextfieldTemplate} from './editors/editor-textfield.js'
+import { insertPasteTemplate } from './editors/editor-paste.js'
+import { insertContentEditableTemplate } from './editors/editor-contenteditable.js'
+import { insertBeforeInputTemplate } from './editors/editor-beforeinput.js'
+import { insertQuill1Template } from './editors/editor-quill1.js'
+import { insertTextfieldTemplate } from './editors/editor-textfield.js'
+import { insertExecCommandTemplate } from './editors/editor-execcommand.js'
 
 import './plugins/gmail.js'
 import './plugins/outlook.js'
@@ -41,8 +43,14 @@ async function insertTemplate ({ element, word, template, html, text }) {
   }
 
   for (const editor of editors) {
-    const result = await editor(params)
-    if (result === true) {
+    try {
+      const result = await editor(params)
+      if (result === true) {
+        return true
+      }
+    } catch (err) {
+      await insertExecCommandTemplate(params)
+      debug(['insertTemplate', editor.name, err])
       return true
     }
   }

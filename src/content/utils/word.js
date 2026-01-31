@@ -1,6 +1,7 @@
 import { isContentEditable } from '../editors/editor-contenteditable.js'
 import { getSelectionFocus, getSelectionRange, setSelectionRange } from './selection.js'
 import debug from '../../debug.js'
+import { isTextfieldEditor } from '../editors/editor-textfield.js'
 
 // all regular and special whitespace chars we want to find.
 // https://jkorpela.fi/chars/spaces.html
@@ -66,8 +67,18 @@ export function getWord (element) {
 }
 
 export function selectWord (element, word) {
-  const range = getSelectionRange(element)
+  if (isTextfieldEditor(element)) {
+    try {
+      element.setSelectionRange(word.start, word.end)
+    } catch (err) {
+      // probably unsupported input type
+      debug(['selectWord', err])
+    }
 
+    return
+  }
+
+  const range = getSelectionRange(element)
   try {
     const [focusNode] = getSelectionFocus(element, range)
 
@@ -78,7 +89,8 @@ export function selectWord (element, word) {
   } catch (err) {
     // when the word was removed from the editor before we managed to remove it.
     // this can happen if the editor content changes before we fetch the template.
-    debug(['selectWord', err], 'trace')
-    return range
+    debug(['selectWord', err])
   }
+
+  return range
 }
