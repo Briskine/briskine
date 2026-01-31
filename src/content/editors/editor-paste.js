@@ -62,16 +62,18 @@ export async function pageInsertPasteTemplate ({ word, template, html, text }) {
     template.shortcut
     && word.text === template.shortcut
   ) {
-    const range = await selectWord(element, word)
-    // workaround for JIRA. without it:
-    // - the caret is placed at the start of template (only after removing shortcut)
-    // - the floating paste button duplicates the template when selecting a different
-    //   type (html, markdown, plain-text)
-    range.deleteContents()
-    await new Promise((resolve) => {
-      requestAnimationFrame(resolve)
-    })
-    // end workaround
+    await selectWord(element, word)
+
+    // BUG Known bug in JIRA:
+    // when pasting formatted (html) content over an existing selection
+    // (e.g., after we select the shortcut)
+    // after the content is pasted the cursor is placed at the *start*, not at the end.
+    // also, their "floating paste button", that lets you customize the type of
+    // pasted content (html, plain, markdown), will sometimes duplicate content
+    // when selecting a different type.
+    // this is a bug on their end and also happens when manually performing the action
+    // (copy formatted - html text, select text in the editor, paste)
+    // not only with our synthetic paste event.
   }
 
   const e = new ClipboardEvent('paste', {
