@@ -19,7 +19,7 @@ export async function insertSiteTemplate ({ element, template, word, html, text 
   if (isLinkedInMessageEditor(element)) {
     // workaround for issues with inserting templates in the linkedin message editor.
     // we need to use execCommand instead of contenteditable insert to preserve newlines.
-    // KNOWN BUGS:
+    // KNOWN BUGS (only on firefox):
     // - when selecting the entire message content with ctrl+a,
     //   then inserting a template, text will appear in the placeholder color,
     //   because we remove the nested <p> node in the editor.
