@@ -59,17 +59,6 @@ export async function pageInsertPasteTemplate ({ word, template, html, text }) {
     && word.text === template.shortcut
   ) {
     await selectWord(element, word)
-
-    // BUG Known bug in JIRA:
-    // when pasting formatted (html) content over an existing selection
-    // (e.g., after we select the shortcut)
-    // after the content is pasted the cursor is placed at the *start*, not at the end.
-    // also, their "floating paste button", that lets you customize the type of
-    // pasted content (html, plain, markdown), will sometimes duplicate content
-    // when selecting a different type.
-    // this is a bug on their end and also happens when manually performing the action
-    // (copy formatted - html text, select text in the editor, paste)
-    // not only with our synthetic paste event.
   }
 
   const e = new ClipboardEvent('paste', {
