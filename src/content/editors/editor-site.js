@@ -38,6 +38,11 @@ export async function insertSiteTemplate ({ element, template, word, html, text 
     // - when inserting a template in a blank editor, with the dialog,
     //   there will be an empty space char before the template,
     //   because the editor keeps it there when it's empty.
+
+    // on firefox, the editor needs the extra input input event to notice we've
+    // focused/restored the selection.
+    element.dispatchEvent(new Event('input', {bubbles: true}))
+
     return insertExecCommandTemplate({
       element,
       template,
