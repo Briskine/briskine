@@ -1,11 +1,11 @@
 /* Editors with beforeinput event support.
  *
  * Slate
- * framework for building rich text editors.
- * https://github.com/ianstormtaylor/slate
+ * https://www.slatejs.org/
  *
  * Lexical editor from Facebook
  * https://lexical.dev/
+ * Used on WhatsApp Web, Facebook Messenger
  */
 
 import { selectWord } from '../utils/word.js'
