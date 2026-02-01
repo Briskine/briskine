@@ -184,6 +184,32 @@ describe('insertTextfieldTemplate', () => {
     input.remove()
   })
 
+  it('should insert template in input with maxlength', () => {
+    const input = document.createElement('input')
+    input.type = 'text'
+    input.value = 'pre t'
+    input.maxLength = 10
+    document.body.appendChild(input)
+    input.setSelectionRange(5, 5)
+
+    insertTextfieldTemplate({
+      element: input,
+      text: 'Insert templates.',
+      template: {
+        shortcut: 't'
+      },
+      word: {
+        start: 4,
+        end: 5,
+        text: 't'
+      }
+    })
+
+    expect(input.value).to.equal('pre Insert')
+
+    input.remove()
+  })
+
   afterAll(() => {
     textarea.remove()
   })

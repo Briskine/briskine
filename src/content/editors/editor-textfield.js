@@ -25,7 +25,7 @@ export function isTextfieldEditor (element) {
   )
 }
 
-export async function insertTextfieldTemplate ({ element, word, template, text }) {
+export function insertTextfieldTemplate ({ element, word, template, text }) {
   if (!isTextfieldEditor(element)) {
     return false
   }
@@ -35,6 +35,15 @@ export async function insertTextfieldTemplate ({ element, word, template, text }
     && word.text === template.shortcut
   ) {
     selectWord(element, word)
+  }
+
+  // respect maxlength
+  if (element.maxLength > 0) {
+    const currentLength = element.value.length
+    const selectionLength = element.selectionEnd - element.selectionStart
+    const remainingChars = element.maxLength - (currentLength - selectionLength)
+    // use max in case the selection is somehow already over limit
+    text = text.slice(0, Math.max(0, remainingChars))
   }
 
   element.setRangeText(text, element.selectionStart, element.selectionEnd, 'end')

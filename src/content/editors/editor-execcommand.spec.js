@@ -1,11 +1,10 @@
-/* globals describe, it, before, after */
-import {expect} from 'chai'
+import { expect, describe, it, beforeAll, afterAll } from 'vitest'
 
 import { insertExecCommandTemplate } from './editor-execcommand.js'
 
 describe('editor ExecCommand', () => {
   let editable
-  before(() => {
+  beforeAll(() => {
     editable = document.createElement('div')
     editable.setAttribute('contenteditable', 'true')
     document.body.appendChild(editable)
@@ -53,7 +52,7 @@ describe('editor ExecCommand', () => {
     expect(editable.innerHTML).to.equal('<div>pretemplate <img src="#" alt="image"></div>')
   })
 
-  after(() => {
+  afterAll(() => {
     editable.remove()
   })
 })
