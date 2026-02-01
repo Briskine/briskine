@@ -15,7 +15,10 @@ export async function insertExecCommandTemplate ({ element, template, word, html
     await selectWord(element, word)
   }
 
-  if (isContentEditable(element)) {
+  if (
+    isContentEditable(element)
+    && html !== text
+  ) {
     try {
       document?.execCommand?.('insertHTML', false, html)
     } catch (err) {
@@ -23,8 +26,10 @@ export async function insertExecCommandTemplate ({ element, template, word, html
       debug(['insertExecCommandTemplate', err])
     }
 
-    return
+    return true
   }
 
   document?.execCommand?.('insertText', false, text)
+
+  return true
 }

@@ -14,6 +14,7 @@ import { insertBeforeInputTemplate } from './editors/editor-beforeinput.js'
 import { insertQuill1Template } from './editors/editor-quill1.js'
 import { insertTextfieldTemplate } from './editors/editor-textfield.js'
 import { insertExecCommandTemplate } from './editors/editor-execcommand.js'
+import { insertSiteTemplate } from './editors/editor-site.js'
 
 import './plugins/gmail.js'
 import './plugins/outlook.js'
@@ -26,6 +27,7 @@ import { updateTemplateStats } from '../store/store-content.js'
 
 const editors = [
   // order matters
+  insertSiteTemplate,
   insertPasteTemplate,
   insertBeforeInputTemplate,
   insertQuill1Template,

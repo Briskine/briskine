@@ -14,8 +14,6 @@
  * Quill v2
  * https://quilljs.com/
  *
- * LinkedIn Message Editor
- *
  */
 
 import { request } from '../page/page-parent.js'
@@ -28,8 +26,6 @@ function isPasteEditor (element) {
     element?.classList?.contains?.('ProseMirror')
     // draft.js
     || element?.querySelector?.('[data-contents]')
-    // linkedin message editor
-    || element?.classList?.contains?.('msg-form__contenteditable')
     // ckeditor5
     || element?.classList?.contains?.('ck-editor__editable')
     // quill v2

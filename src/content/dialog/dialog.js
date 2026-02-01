@@ -312,6 +312,9 @@ function Dialog (originalProps) {
       && cachedRange
     ) {
       await setSelectionRange(editor, cachedRange)
+      // some third-party editors (e.g., linkedin message editor)
+      // need the extra input event to notice we've focused/restored the selection.
+      editor.dispatchEvent(new Event('input', {bubbles: true}))
     }
   }
 
