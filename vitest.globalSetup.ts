@@ -7,16 +7,11 @@ const packageFile = JSON.parse(fs.readFileSync('./package.json', 'utf8'))
 
 const __dirname = fileURLToPath(new URL('.', import.meta.url))
 
-export async function setup(project) {
-  console.log('--- setup ---');
-  console.log('>> ', path.resolve(__dirname, './src'));
-
-  // console.log('RRR', project);
-
+export async function setup() {
   const libraries = [
     { name: 'page', entry: './content/page/page.js' },
     { name: 'sandbox', entry: './content/sandbox/sandbox.js' },
-  ];
+  ]
 
   for (const lib of libraries) {
     await build({
@@ -39,17 +34,17 @@ export async function setup(project) {
       },
       define: {
         VERSION: JSON.stringify(packageFile.version),
-        ENV: "'test'",
+        ENV: '\'test\'',
       }
     })
   }
 
   await fs.copyFile('./src/content/sandbox/sandbox.html', './test/dist/sandbox/sandbox.html', (err) => {
-    if (err) throw err;
-  });
-
+    if (err) {
+      throw err
+    }
+  })
 }
 
 export function teardown() {
-  console.log('teardown')
 }

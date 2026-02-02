@@ -8,14 +8,14 @@ export function request (type, options) {
   return pageMessengerServer.request(type, options)
 }
 
-export function setup (browser) {
+export function setup () {
   let resolve, reject
   const promise = new Promise((res, rej) => {
     [resolve, reject] = [res, rej]
   })
 
   pageScript = document.createElement('script')
-  pageScript.src = browser.runtime.getURL('page/page.js')
+  pageScript.src = (chrome || browser).runtime.getURL('page/page.js')
   pageScript.onload = async function () {  
     // create the message channel when the iframe loads,
     // for subsequent startup retries (eg. in dynamically created iframes).

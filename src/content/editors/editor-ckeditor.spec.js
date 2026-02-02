@@ -10,15 +10,8 @@ let $editor
 function cleanEditor () {
   $editor.ckeditorInstance.setData('')
 }
-
-let translations
-
-function setGlobals () {
-  // window.CKEDITOR_TRANSLATIONS = translations
-}
-
-function waitForEditor (p) {
-  return new Promise((resolve, reject) => {
+function waitForEditor () {
+  return new Promise((resolve) => {
 
     window.addEventListener('ckeditor-ready', () => {
       $editor = document.querySelector('[contenteditable]')
@@ -30,7 +23,7 @@ function waitForEditor (p) {
 
 describe('editor CKEditor', function () {
   beforeAll(async () => {
-    await setup(chrome || browser)
+    await setup()
 
     $script = document.createElement('script')
     $script.type = 'module'
@@ -48,7 +41,7 @@ describe('editor CKEditor', function () {
     $container.id = 'ckeditor'
     document.body.appendChild($container)
 
-    await waitForEditor();
+    await waitForEditor()
     $editor = document.querySelector('[contenteditable]')
   })
 
@@ -57,8 +50,6 @@ describe('editor CKEditor', function () {
   })
 
   it('should insert plain text', async () => {
-    setGlobals()
-
     $editor.focus()
     const template = 'Kind regards'
     await insertCkEditorTemplate({
@@ -76,8 +67,6 @@ describe('editor CKEditor', function () {
   })
 
   it('should insert rich text', async () => {
-    // setGlobals()
-
     $editor.focus()
     const template = '<div><strong>Image</strong> <img src="#"></div>'
     await insertCkEditorTemplate({

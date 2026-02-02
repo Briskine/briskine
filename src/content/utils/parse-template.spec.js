@@ -1,4 +1,4 @@
-import { expect, describe, it, beforeAll, afterAll, afterEach } from 'vitest'
+import { expect, describe, it, beforeAll, afterAll } from 'vitest'
 
 import parseTemplate from './parse-template.js'
 import {destroy} from '../sandbox/sandbox-parent.js'

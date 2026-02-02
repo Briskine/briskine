@@ -5,7 +5,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "test": "webpack -c webpack.test.js && npx vitest",
+    "test": "npx vitest",
     "setup": "firebase login",
     "start": "webpack -w --mode=development --env mode=development",
     "start:firefox:android": "web-ext run --source-dir ./ext/ -t firefox-android",

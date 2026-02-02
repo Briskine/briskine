@@ -16,21 +16,17 @@ function cleanEditor () {
 }
 
 function waitForEditor () {
-  return new Promise((resolve, reject) => {
-
+  return new Promise((resolve) => {
     window.addEventListener('quill-ready', () => {
       $editor = document.querySelector('[contenteditable]')
       resolve()
     }, {once: true})
-
   })
 }
 // only tests quill v2
 describe('editor Quill', () => {
   beforeAll(async function () {
-    // this.timeout(20000)
-
-    await setup(chrome || browser)
+    await setup()
 
     $link = document.createElement('link')
     $link.rel = 'stylesheet'

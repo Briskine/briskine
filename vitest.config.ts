@@ -3,7 +3,7 @@ import { playwright } from '@vitest/browser-playwright'
 
 export default defineConfig({
   define: {
-    "process.env": JSON.stringify({}),
+    'process.env': JSON.stringify({}),
   },
   resolve: {
     alias: {
@@ -22,10 +22,9 @@ export default defineConfig({
       testerHtmlPath: 'test/custom-path.html',
       // at least one instance is required
       instances: [
-        { browser: 'chromium' },
+        { browser: 'chromium' }
       ],
     },
-    // globals: true,
     setupFiles: './vitest.setup.ts',
     globalSetup: './vitest.globalSetup.ts'
   }

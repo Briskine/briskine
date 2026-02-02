@@ -1,38 +1,22 @@
-// import {test, expect, openPage} from '../fixtures.ts'
-import { expect, test, describe } from 'vitest'
-// import { page } from '@vitest/browser/context'
-import { chromium } from 'playwright';
+import {test, expect, openPage} from '../fixtures.ts'
 
-let browser, context, page;
-
-describe('CKEditor', () => {
-  test.beforeEach(async () => {
-    // await openPage(page, '/ckeditor/ckeditor.html')
-    browser = await chromium.launch();
-    /*
-    context = await browser.newContext();
-    page = await context.newPage(); // This 'page' has the .goto() method
-
-    await page.goto('/ckeditor/ckeditor.html')
-    */
+test.describe('CKEditor', () => {
+  test.beforeEach(async ({page}) => {
+    await openPage(page, '/ckeditor/ckeditor.html')
   })
-/*
-  test.afterEach(async () => {
+
+  test.afterEach(async ({page}) => {
     await page.getByRole('textbox').fill('')
   })
-*/
-  test('should insert template with keyboard shortcut', async () => {
-    /*
+
+  test('should insert template with keyboard shortcut', async ({page}) => {
     const textbox = page.getByRole('textbox')
     await textbox.fill('kr')
     await textbox.press('Tab')
     await expect(textbox).toHaveText('Kind regards,\n.', {useInnerText: true})
-    */
-
-    expect(true).toBe(true);
   })
-/*
-  test('should insert template from dialog', async () => {
+
+  test('should insert template from dialog', async ({page}) => {
     const textbox = page.getByRole('textbox')
     await textbox.press('Control+ ')
     const search = page.getByPlaceholder('Search templates...')
@@ -44,5 +28,4 @@ describe('CKEditor', () => {
     await search.press('Enter')
     await expect(textbox).toHaveText(template)
   })
-*/    
 })

@@ -20,6 +20,7 @@ xcuserdata/
 
 # tests
 test/bundle
+test/dist
 test/pages
 
 # firebase config, for firefox reviewers

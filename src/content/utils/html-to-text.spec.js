@@ -1,4 +1,4 @@
-import { expect, describe, it, beforeAll, afterAll, afterEach } from 'vitest'
+import { expect, describe, it } from 'vitest'
 
 import htmlToText from './html-to-text.js'
 

@@ -16,7 +16,7 @@ function cleanEditor () {
 }
 
 function waitForEditor () {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
 
     window.addEventListener('prosemirror-ready', () => {
       $editor = document.querySelector('[contenteditable]')
@@ -30,7 +30,7 @@ function waitForEditor () {
 // we're only testing ProseMirror here.
 describe('editor Paste', function () {
   beforeAll(async function () {
-    await setup(chrome || browser)
+    await setup()
 
     $link = document.createElement('link')
     $link.rel = 'stylesheet'
@@ -71,7 +71,7 @@ describe('editor Paste', function () {
 
     document.body.appendChild($script)
 
-    await waitForEditor();
+    await waitForEditor()
   }, 20000)
 
   it('should insert template containing only anchor', function (done) {
