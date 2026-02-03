@@ -35,7 +35,6 @@ export default defineConfig(
     ignores: [
       'ext/*',
       'test/bundle/*',
-      'test/dist/*',
       'safari/*',
     ],
   },

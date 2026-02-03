@@ -23,7 +23,7 @@ export async function setup() {
           fileName: (format, entryName) => `${entryName}/${entryName}.js`,
           formats: ['iife'],
         },
-        outDir: '../test/dist/',
+        outDir: '../test/bundle/',
       },
       resolve: {
         alias: {
@@ -39,7 +39,7 @@ export async function setup() {
     })
   }
 
-  await fs.copyFile('./src/content/sandbox/sandbox.html', './test/dist/sandbox/sandbox.html', (err) => {
+  await fs.copyFile('./src/content/sandbox/sandbox.html', './test/bundle/sandbox/sandbox.html', (err) => {
     if (err) {
       throw err
     }

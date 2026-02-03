@@ -19,8 +19,7 @@ export default defineConfig({
     browser: {
       provider: playwright(),
       enabled: true,
-      testerHtmlPath: 'test/custom-path.html',
-      // at least one instance is required
+      headless: true,
       instances: [
         { browser: 'chromium' }
       ],
