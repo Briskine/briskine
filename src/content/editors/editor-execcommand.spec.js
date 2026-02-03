@@ -31,6 +31,50 @@ describe('editor ExecCommand', () => {
     expect(editable.innerHTML).to.equal('<div>test</div>')
   })
 
+  it('should insert template into contenteditable=plaintext-true', async () => {
+    editable.innerHTML = ''
+    editable.focus()
+    editable.setAttribute('contenteditable', 'plaintext-only')
+
+    await insertExecCommandTemplate({
+      text: 'test\ntest2\n[/image.png]',
+      element: editable,
+      focusNode: editable,
+      word: {
+        start: 0,
+        end: 0,
+        text: ''
+      },
+      template: {
+        shortcut: ''
+      }
+    })
+
+    expect(editable.innerHTML).to.equal('test<div>test2</div><div>[/image.png]</div>')
+    editable.setAttribute('contenteditable', 'true')
+  })
+
+  it('should insert template into contenteditable', async () => {
+    editable.innerHTML = ''
+    editable.focus()
+
+    await insertExecCommandTemplate({
+      html: '<div>test</div>',
+      element: editable,
+      focusNode: editable,
+      word: {
+        start: 0,
+        end: 0,
+        text: ''
+      },
+      template: {
+        shortcut: ''
+      }
+    })
+
+    expect(editable.innerHTML).to.equal('<div>test</div>')
+  })
+
   it('should insert template into contenteditable, with preceding text', async () => {
     editable.innerHTML = '<div>pre</div>'
     window.getSelection().setBaseAndExtent(editable.firstChild.firstChild, 3, editable.firstChild.firstChild, 3)

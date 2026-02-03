@@ -39,18 +39,20 @@ function insertText (text) {
     // insert each line separately
     return text
       .split('\n')
-      .forEach((line, index, lines) => {
+      .reduce((exec, line, index, lines) => {
         if (line) {
-          document.execCommand('insertText', false, line)
+          exec = document.execCommand('insertText', false, line)
         }
         // force line break, if not the last line
         if (index < lines.length - 1) {
-          document.execCommand('insertParagraph', false)
+          exec = document.execCommand('insertParagraph', false)
         }
-      })
+
+        return exec
+      }, true)
   }
 
-  document.execCommand('insertText', false, text)
+  return document.execCommand('insertText', false, text)
 }
 
 export async function insertExecCommandTemplate ({ element, template, word, html, text }) {
@@ -65,18 +67,14 @@ export async function insertExecCommandTemplate ({ element, template, word, html
   if (
     isContentEditable(element)
     && html !== text
+    && element.contentEditable !== 'plaintext-only'
   ) {
     try {
-      document.execCommand('insertHTML', false, minifyHtml(html))
+      return document.execCommand('insertHTML', false, minifyHtml(html))
     } catch (err) {
-      insertText(text)
       debug(['insertExecCommandTemplate', err])
     }
-
-    return true
   }
 
-  insertText(text)
-
-  return true
+  return insertText(text)
 }
