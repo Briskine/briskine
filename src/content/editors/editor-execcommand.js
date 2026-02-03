@@ -28,6 +28,31 @@ function minifyHtml (html) {
     .join('')
 }
 
+// firefox-compatible execCommand('insertText')
+// in contrast with other browser, when using insertText, firefox turns newlines
+// into br tags. other browsers turn each line into a separate paragraph (p or div).
+// this causes issues with some editors (e.g., linkedin message editor).
+// this method makes sure firefox has the same behavior as others.
+function insertText (text) {
+  // only true in firefox
+  if (document.queryCommandSupported('enableObjectResizing')) {
+    // insert each line separately
+    return text
+      .split('\n')
+      .forEach((line, index, lines) => {
+        if (line) {
+          document.execCommand('insertText', false, line)
+        }
+        // force line break, if not the last line
+        if (index < lines.length - 1) {
+          document.execCommand('insertParagraph', false)
+        }
+      })
+  }
+
+  document.execCommand('insertText', false, text)
+}
+
 export async function insertExecCommandTemplate ({ element, template, word, html, text }) {
   if (
     template.shortcut
@@ -42,16 +67,16 @@ export async function insertExecCommandTemplate ({ element, template, word, html
     && html !== text
   ) {
     try {
-      document?.execCommand?.('insertHTML', false, minifyHtml(html))
+      document.execCommand('insertHTML', false, minifyHtml(html))
     } catch (err) {
-      document?.execCommand?.('insertText', false, text)
+      insertText(text)
       debug(['insertExecCommandTemplate', err])
     }
 
     return true
   }
 
-  document?.execCommand?.('insertText', false, text)
+  insertText(text)
 
   return true
 }
