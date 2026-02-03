@@ -1,9 +1,9 @@
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { build } from 'vite'
-import * as fs from 'node:fs'
+import { readFile, copyFile } from 'node:fs/promises'
 
-const packageFile = JSON.parse(fs.readFileSync('./package.json', 'utf8'))
+const packageFile = JSON.parse(await readFile('./package.json', 'utf8'))
 
 const __dirname = fileURLToPath(new URL('.', import.meta.url))
 
@@ -39,12 +39,5 @@ export async function setup() {
     })
   }
 
-  await fs.copyFile('./src/content/sandbox/sandbox.html', './test/bundle/sandbox/sandbox.html', (err) => {
-    if (err) {
-      throw err
-    }
-  })
-}
-
-export function teardown() {
+  await copyFile('./src/content/sandbox/sandbox.html', './test/bundle/sandbox/sandbox.html')
 }
