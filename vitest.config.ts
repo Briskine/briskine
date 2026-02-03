@@ -3,7 +3,11 @@ import { playwright } from '@vitest/browser-playwright'
 
 export default defineConfig({
   define: {
-    'process.env': JSON.stringify({}),
+    ENV: JSON.stringify('development'),
+    REGISTER_DISABLED: false,
+    FIREBASE_CONFIG: {},
+    VERSION: 1,
+    MANIFEST: JSON.stringify('3'),
   },
   resolve: {
     alias: {

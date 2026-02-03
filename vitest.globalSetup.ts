@@ -1,9 +1,7 @@
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { build } from 'vite'
-import { readFile, copyFile } from 'node:fs/promises'
-
-const packageFile = JSON.parse(await readFile('./package.json', 'utf8'))
+import { copyFile } from 'node:fs/promises'
 
 const __dirname = fileURLToPath(new URL('.', import.meta.url))
 
@@ -33,8 +31,11 @@ export async function setup () {
         }
       },
       define: {
-        VERSION: JSON.stringify(packageFile.version),
-        ENV: '\'test\'',
+        ENV: JSON.stringify('development'),
+        REGISTER_DISABLED: false,
+        FIREBASE_CONFIG: {},
+        VERSION: 1,
+        MANIFEST: JSON.stringify('3'),
       }
     })
   }

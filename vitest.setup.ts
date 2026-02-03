@@ -1,8 +1,3 @@
-
-globalThis.VERSION = 3
-globalThis.ENV = 'test'
-globalThis.MANIFEST = 3
-
 // mock webextension api
 window.browser = {
   runtime: {
