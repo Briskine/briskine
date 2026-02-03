@@ -13,18 +13,24 @@ export default defineConfig({
     }
   },
   test: {
-    include: [
-        'src/**/**/*.{test,spec}.js'
-    ],
-    browser: {
-      provider: playwright(),
-      enabled: true,
-      headless: true,
-      instances: [
-        { browser: 'chromium' }
-      ],
-    },
-    setupFiles: './vitest.setup.ts',
-    globalSetup: './vitest.globalSetup.ts'
+    projects: [{
+      extends: true,
+      test: {
+        name: 'unit',
+        include: [
+          'src/**/**/*.spec.js'
+        ],
+        browser: {
+          provider: playwright(),
+          enabled: true,
+          headless: true,
+          instances: [
+            { browser: 'chromium' }
+          ],
+        },
+        setupFiles: './vitest.setup.ts',
+        globalSetup: './vitest.globalSetup.ts'
+      }
+    }]
   }
 })

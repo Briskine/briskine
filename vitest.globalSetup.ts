@@ -7,7 +7,7 @@ const packageFile = JSON.parse(await readFile('./package.json', 'utf8'))
 
 const __dirname = fileURLToPath(new URL('.', import.meta.url))
 
-export async function setup() {
+export async function setup () {
   const libraries = [
     { name: 'page', entry: './content/page/page.js' },
     { name: 'sandbox', entry: './content/sandbox/sandbox.js' },
