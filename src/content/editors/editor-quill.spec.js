@@ -54,11 +54,11 @@ describe('editor Quill', () => {
 
   }, 20000)
 
-  it('should insert template', function (done) {
+  it('should insert template', async function () {
     const template = '<div>Kind regards,</div><div>.</div>'
 
     $editor.focus()
-    insertQuillTemplate({
+    await insertQuillTemplate({
       element: $editor,
       html: template,
       word: {
@@ -69,13 +69,8 @@ describe('editor Quill', () => {
       template: {},
     })
 
-    // give it a second to parse the template
-    setTimeout(() => {
-      expect($editor.innerHTML).to.include('<p>Kind regards,</p><p>.</p>')
-
-      cleanEditor()
-      done()
-    })
+    expect($editor.innerHTML).to.include('<p>Kind regards,</p><p>.</p>')
+    cleanEditor()
   })
 
   afterAll(() => {
