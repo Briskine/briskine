@@ -1,5 +1,4 @@
-/* globals describe, it */
-import {expect} from 'chai'
+import { expect, describe, it } from 'vitest'
 
 import createContact from './create-contact.js'
 

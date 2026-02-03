@@ -1,5 +1,5 @@
-/* globals describe, it */
-import {expect} from 'chai'
+import { expect, describe, it } from 'vitest'
+
 import {parse} from 'handlebars'
 
 import templateFeatures from './template-features.js'

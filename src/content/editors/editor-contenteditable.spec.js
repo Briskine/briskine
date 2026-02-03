@@ -1,11 +1,10 @@
-/* globals describe, it, before, after */
-import {expect} from 'chai'
+import { expect, describe, it, beforeAll, afterAll } from 'vitest'
 
 import {insertContentEditableTemplate} from './editor-contenteditable.js'
 
 describe('editor ContentEditable', () => {
   let editable
-  before(() => {
+  beforeAll(() => {
     editable = document.createElement('div')
     editable.setAttribute('contenteditable', 'true')
     document.body.appendChild(editable)
@@ -53,7 +52,7 @@ describe('editor ContentEditable', () => {
     expect(editable.innerHTML).to.equal('<div>pre<div>test</div></div>')
   })
 
-  after(() => {
+  afterAll(() => {
     editable.remove()
   })
 })

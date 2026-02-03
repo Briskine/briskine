@@ -1,8 +1,7 @@
-/* globals describe, it, before, after, afterEach */
-import {expect} from 'chai'
+import { expect, describe, it, beforeAll, afterEach } from 'vitest'
 
 import {insertCkEditorTemplate} from './editor-ckeditor.js'
-import {setup, destroy} from '../page/page-parent.js'
+import {setup} from '../page/page-parent.js'
 
 let $script
 let $container
@@ -11,24 +10,20 @@ let $editor
 function cleanEditor () {
   $editor.ckeditorInstance.setData('')
 }
+function waitForEditor () {
+  return new Promise((resolve) => {
 
-let translations
+    window.addEventListener('ckeditor-ready', () => {
+      $editor = document.querySelector('[contenteditable]')
+      resolve()
+    }, {once: true})    
 
-function cleanGlobals () {
-  // HACK to be able to use mocha.checkLeaks() for the other tests
-  translations = window.CKEDITOR_TRANSLATIONS
-  delete window.CKEDITOR_TRANSLATIONS
-  delete window.CKEDITOR_VERSION
-  delete window['data-ck-expando']
-}
-
-function setGlobals () {
-  window.CKEDITOR_TRANSLATIONS = translations
+  })
 }
 
 describe('editor CKEditor', function () {
-  before(function (done) {
-    setup()
+  beforeAll(async () => {
+    await setup()
 
     $script = document.createElement('script')
     $script.type = 'module'
@@ -46,11 +41,8 @@ describe('editor CKEditor', function () {
     $container.id = 'ckeditor'
     document.body.appendChild($container)
 
-    window.addEventListener('ckeditor-ready', () => {
-      $editor = document.querySelector('[contenteditable]')
-      cleanGlobals()
-      done()
-    }, {once: true})
+    await waitForEditor()
+    $editor = document.querySelector('[contenteditable]')
   })
 
   afterEach(() => {
@@ -58,8 +50,6 @@ describe('editor CKEditor', function () {
   })
 
   it('should insert plain text', async () => {
-    setGlobals()
-
     $editor.focus()
     const template = 'Kind regards'
     await insertCkEditorTemplate({
@@ -73,13 +63,10 @@ describe('editor CKEditor', function () {
       template: {},
     })
 
-    cleanGlobals()
     expect($editor.innerHTML).to.include('<p>Kind regards</p>')
   })
 
   it('should insert rich text', async () => {
-    setGlobals()
-
     $editor.focus()
     const template = '<div><strong>Image</strong> <img src="#"></div>'
     await insertCkEditorTemplate({
@@ -93,16 +80,6 @@ describe('editor CKEditor', function () {
       template: {},
     })
 
-    cleanGlobals()
     expect($editor.innerHTML).to.include('<p><strong>Image</strong>&nbsp;<span class="image-inline ck-widget" contenteditable="false"><img src="#"></span>⁠⁠⁠⁠⁠⁠⁠</p>')
-  })
-
-  after(() => {
-    $script.remove()
-    $editor.ckeditorInstance.destroy()
-    $container.remove()
-
-    cleanGlobals()
-    destroy()
   })
 })

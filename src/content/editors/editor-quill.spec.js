@@ -1,5 +1,4 @@
-/* globals describe, it, before, after */
-import {expect} from 'chai'
+import { expect, describe, it, beforeAll, afterAll } from 'vitest'
 
 import {insertQuillTemplate} from './editor-quill.js'
 import {setup, destroy} from '../page/page-parent.js'
@@ -16,11 +15,18 @@ function cleanEditor () {
   })
 }
 
+function waitForEditor () {
+  return new Promise((resolve) => {
+    window.addEventListener('quill-ready', () => {
+      $editor = document.querySelector('[contenteditable]')
+      resolve()
+    }, {once: true})
+  })
+}
 // only tests quill v2
 describe('editor Quill', () => {
-  before(function (done) {
-    this.timeout(20000)
-    setup()
+  beforeAll(async function () {
+    await setup()
 
     $link = document.createElement('link')
     $link.rel = 'stylesheet'
@@ -42,20 +48,17 @@ describe('editor Quill', () => {
 
       window.dispatchEvent(new Event('quill-ready'))
     `
-
-    window.addEventListener('quill-ready', () => {
-      $editor = document.querySelector('[contenteditable]')
-      done()
-    }, {once: true})
-
     document.body.appendChild($script)
-  })
 
-  it('should insert template', function (done) {
+    await waitForEditor()
+
+  }, 20000)
+
+  it('should insert template', async function () {
     const template = '<div>Kind regards,</div><div>.</div>'
 
     $editor.focus()
-    insertQuillTemplate({
+    await insertQuillTemplate({
       element: $editor,
       html: template,
       word: {
@@ -66,16 +69,11 @@ describe('editor Quill', () => {
       template: {},
     })
 
-    // give it a second to parse the template
-    setTimeout(() => {
-      expect($editor.innerHTML).to.include('<p>Kind regards,</p><p>.</p>')
-
-      cleanEditor()
-      done()
-    })
+    expect($editor.innerHTML).to.include('<p>Kind regards,</p><p>.</p>')
+    cleanEditor()
   })
 
-  after(() => {
+  afterAll(() => {
     $link.remove()
     $script.remove()
     document.querySelector(`#${containerId}`).remove()

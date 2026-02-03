@@ -1,12 +1,11 @@
-/* globals describe, it, before */
-import {expect} from 'chai'
+import { expect, describe, it, beforeAll } from 'vitest'
 
 import Messenger from './messenger.js'
 
 describe('Messenger', () => {
   const {connect, request} = Messenger('test')
   const {respond} = Messenger('test')
-  before(async () => {
+  beforeAll(async () => {
     await connect(self)
 
     respond('test', () => {
