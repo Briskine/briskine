@@ -152,7 +152,9 @@ function clickAttachment (e) {
   }
 
   const $link = e.target.closest('a')
-  window.open($link.href, $link.target)
+  if ($link) {
+    window.open($link.href, $link.target)
+  }
 }
 
 export function setup () {
@@ -162,4 +164,3 @@ export function setup () {
 export function destroy () {
   document.removeEventListener('mousedown', clickAttachment, true)
 }
-

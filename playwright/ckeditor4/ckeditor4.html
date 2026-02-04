@@ -2,14 +2,15 @@
 <html>
   <head>
     <meta charset="utf-8">
+    <title>CKEditor 4</title>
     <script src="https://cdn.ckeditor.com/4.22.1/standard/ckeditor.js"></script>
     <script src="/extension-ready.js"></script>
   </head>
   <body>
-    <textarea name="editor1"></textarea>
+    <div id="editor" role="textbox"></div>
     <input type="text">
     <script>
-      CKEDITOR.replace('editor1')
+      CKEDITOR.replace(document.querySelector('#editor'))
     </script>
   </body>
 </html>

@@ -2,21 +2,49 @@
 <html>
   <head>
     <meta charset="utf-8">
+    <title>ProseMirror</title>
     <link rel="stylesheet" href="./prosemirror-editor.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prosemirror-view@1/style/prosemirror.css">
     <script src="/extension-ready.js"></script>
   </head>
   <body>
     <div id="editor"></div>
     <div id="content"></div>
 
+    <script type="importmap">
+    {
+      "imports": {
+        "prosemirror-example-setup": "https://ga.jspm.io/npm:prosemirror-example-setup@1.2.3/dist/index.js",
+        "prosemirror-model": "https://ga.jspm.io/npm:prosemirror-model@1.25.4/dist/index.js",
+        "prosemirror-schema-basic": "https://ga.jspm.io/npm:prosemirror-schema-basic@1.2.4/dist/index.js",
+        "prosemirror-schema-list": "https://ga.jspm.io/npm:prosemirror-schema-list@1.5.1/dist/index.js",
+        "prosemirror-state": "https://ga.jspm.io/npm:prosemirror-state@1.4.4/dist/index.js",
+        "prosemirror-view": "https://ga.jspm.io/npm:prosemirror-view@1.41.5/dist/index.js"
+      },
+      "scopes": {
+        "https://ga.jspm.io/": {
+          "crelt": "https://ga.jspm.io/npm:crelt@1.0.6/index.js",
+          "orderedmap": "https://ga.jspm.io/npm:orderedmap@2.1.1/dist/index.js",
+          "prosemirror-commands": "https://ga.jspm.io/npm:prosemirror-commands@1.7.1/dist/index.js",
+          "prosemirror-dropcursor": "https://ga.jspm.io/npm:prosemirror-dropcursor@1.8.2/dist/index.js",
+          "prosemirror-gapcursor": "https://ga.jspm.io/npm:prosemirror-gapcursor@1.4.0/dist/index.js",
+          "prosemirror-history": "https://ga.jspm.io/npm:prosemirror-history@1.5.0/dist/index.js",
+          "prosemirror-inputrules": "https://ga.jspm.io/npm:prosemirror-inputrules@1.5.1/dist/index.js",
+          "prosemirror-keymap": "https://ga.jspm.io/npm:prosemirror-keymap@1.2.3/dist/index.js",
+          "prosemirror-menu": "https://ga.jspm.io/npm:prosemirror-menu@1.2.5/dist/index.js",
+          "prosemirror-transform": "https://ga.jspm.io/npm:prosemirror-transform@1.11.0/dist/index.js",
+          "rope-sequence": "https://ga.jspm.io/npm:rope-sequence@1.3.4/dist/index.js",
+          "w3c-keyname": "https://ga.jspm.io/npm:w3c-keyname@2.2.8/index.js"
+        }
+      }
+    }
+    </script>
     <script type="module">
-      import {EditorState} from 'https://cdn.jsdelivr.net/npm/prosemirror-state@1/+esm'
-      import {EditorView} from 'https://cdn.jsdelivr.net/npm/prosemirror-view@1/+esm'
-      import {Schema, DOMParser} from 'https://cdn.jsdelivr.net/npm/prosemirror-model@1/+esm'
-      import {schema} from 'https://cdn.jsdelivr.net/npm/prosemirror-schema-basic@1/+esm'
-      import {addListNodes} from 'https://cdn.jsdelivr.net/npm/prosemirror-schema-list@1/+esm'
-      import {exampleSetup} from 'https://cdn.jsdelivr.net/npm/prosemirror-example-setup@1/+esm'
+      import {EditorState} from 'prosemirror-state'
+      import {EditorView} from 'prosemirror-view'
+      import {Schema, DOMParser} from 'prosemirror-model'
+      import {schema} from 'prosemirror-schema-basic'
+      import {addListNodes} from 'prosemirror-schema-list'
+      import {exampleSetup} from 'prosemirror-example-setup'
 
       // Mix the nodes from prosemirror-schema-list into the basic schema to
       // create a schema with list support.

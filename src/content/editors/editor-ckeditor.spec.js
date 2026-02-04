@@ -1,6 +1,6 @@
 import { expect, describe, it, beforeAll, afterEach } from 'vitest'
 
-import {insertCkEditorTemplate} from './editor-ckeditor.js'
+import {insertPasteTemplate} from './editor-paste.js'
 import {setup} from '../page/page-parent.js'
 
 let $script
@@ -16,7 +16,7 @@ function waitForEditor () {
     window.addEventListener('ckeditor-ready', () => {
       $editor = document.querySelector('[contenteditable]')
       resolve()
-    }, {once: true})    
+    }, {once: true})
 
   })
 }
@@ -52,7 +52,7 @@ describe('editor CKEditor', function () {
   it('should insert plain text', async () => {
     $editor.focus()
     const template = 'Kind regards'
-    await insertCkEditorTemplate({
+    await insertPasteTemplate({
       element: $editor,
       html: template,
       word: {
@@ -69,7 +69,7 @@ describe('editor CKEditor', function () {
   it('should insert rich text', async () => {
     $editor.focus()
     const template = '<div><strong>Image</strong> <img src="#"></div>'
-    await insertCkEditorTemplate({
+    await insertPasteTemplate({
       element: $editor,
       html: template,
       word: {

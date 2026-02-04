@@ -2,7 +2,7 @@
 
 let debug = () => {}
 if (ENV !== 'production') {
-  debug = (data = [], method = 'log') => {
+  debug = (data = [], method = 'trace') => {
     /* eslint-disable no-console */
     console.group(data.shift())
     data.forEach((item) => {

@@ -4,6 +4,7 @@
 import parseTemplate from '../utils/parse-template.js'
 import createContact from '../utils/create-contact.js'
 import { register } from '../plugin.js'
+import { getSelectionRange, setSelectionRange } from '../utils/selection.js'
 
 const urls = [
   'outlook.live.com',
@@ -48,11 +49,7 @@ async function makeFieldsEditable (element) {
     const $to = $main.querySelector('div[tabindex]:nth-child(2):not([role="button"])')
     if ($to) {
       // cache selection
-      const selection = window.getSelection()
-      const focusNode = selection.focusNode
-      const focusOffset = selection.focusOffset
-      const anchorNode = selection.anchorNode
-      const anchorOffset = selection.anchorOffset
+      const cachedRange = getSelectionRange(element)
 
       $to.dispatchEvent(new FocusEvent('focusin', {bubbles: true}))
       // give it a second to show the editable from/to/cc/bcc fields
@@ -60,8 +57,8 @@ async function makeFieldsEditable (element) {
 
       // restore selection
       element.focus()
-      if (anchorNode && focusNode) {
-        window.getSelection().setBaseAndExtent(anchorNode, anchorOffset, focusNode, focusOffset)
+      if (cachedRange) {
+        await setSelectionRange(element, cachedRange)
       }
     }
   }
@@ -192,13 +189,8 @@ async function updateContactField ($field, value) {
 
 async function addSingleContact ($field, value) {
   $field.focus()
-  await new Promise((resolve) => setTimeout(resolve))
-  const range = window.getSelection().getRangeAt(0)
-  const templateNode = range.createContextualFragment(value)
-  range.insertNode(templateNode)
-  range.collapse()
-
   if (document?.queryCommandEnabled?.('insertText')) {
+    document.execCommand('insertText', false, value)
     document.execCommand('insertText', false, ',')
   }
 }
@@ -307,11 +299,7 @@ async function actions ({ element, template, data }) {
   // updating extra fields values will change the focus,
   // as the fields use contenteditable.
   // cache the focus here, to restore later.
-  const selection = window.getSelection()
-  const focusNode = selection.focusNode
-  const focusOffset = selection.focusOffset
-  const anchorNode = selection.anchorNode
-  const anchorOffset = selection.anchorOffset
+  const cachedRange = getSelectionRange(element)
 
   if (template.to) {
     const $to = getToContainer(editable)
@@ -346,7 +334,8 @@ async function actions ({ element, template, data }) {
   }
 
   // restore selection to where it was before changing extra fields
-  window.getSelection().setBaseAndExtent(anchorNode, anchorOffset, focusNode, focusOffset)
+  element.focus({ preventScroll: true })
+  setSelectionRange(element, cachedRange)
 }
 
 register('data', getData)

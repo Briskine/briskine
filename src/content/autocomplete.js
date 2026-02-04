@@ -6,13 +6,15 @@ import { run } from './plugin.js'
 import { addAttachments } from './attachments/attachments.js'
 import parseTemplate from './utils/parse-template.js'
 import htmlToText from './utils/html-to-text.js'
+import debug from '../debug.js'
 
-import {isContentEditable, insertContentEditableTemplate} from './editors/editor-contenteditable.js'
-import {isCkEditor, insertCkEditorTemplate} from './editors/editor-ckeditor.js'
-import {isPasteEditor, insertPasteTemplate} from './editors/editor-paste.js'
-import {isBeforeInputEditor, insertBeforeInputTemplate} from './editors/editor-beforeinput.js'
-import {isQuill, insertQuillTemplate} from './editors/editor-quill.js'
-import {insertTextareaTemplate} from './editors/editor-textarea.js'
+import { insertPasteTemplate } from './editors/editor-paste.js'
+import { insertContentEditableTemplate } from './editors/editor-contenteditable.js'
+import { insertBeforeInputTemplate } from './editors/editor-beforeinput.js'
+import { insertQuill1Template } from './editors/editor-quill1.js'
+import { insertTextfieldTemplate } from './editors/editor-textfield.js'
+import { insertExecCommandTemplate } from './editors/editor-execcommand.js'
+import { insertSiteTemplate } from './editors/editor-site.js'
 
 import './plugins/gmail.js'
 import './plugins/outlook.js'
@@ -23,7 +25,17 @@ import './plugins/facebook.js'
 
 import { updateTemplateStats } from '../store/store-content.js'
 
-function insertTemplate ({ element, word, template, html, text }) {
+const editors = [
+  // order matters
+  insertSiteTemplate,
+  insertPasteTemplate,
+  insertBeforeInputTemplate,
+  insertQuill1Template,
+  insertContentEditableTemplate,
+  insertTextfieldTemplate,
+]
+
+async function insertTemplate ({ element, word, template, html, text }) {
   const params = {
     element,
     word,
@@ -32,27 +44,20 @@ function insertTemplate ({ element, word, template, html, text }) {
     text,
   }
 
-  if (isCkEditor(element)) {
-    return insertCkEditorTemplate(params)
+  for (const editor of editors) {
+    try {
+      const result = await editor(params)
+      if (result === true) {
+        return true
+      }
+    } catch (err) {
+      await insertExecCommandTemplate(params)
+      debug(['insertTemplate', editor.name, err])
+      return true
+    }
   }
 
-  if (isPasteEditor(element)) {
-    return insertPasteTemplate(params)
-  }
-
-  if (isBeforeInputEditor(element)) {
-    return insertBeforeInputTemplate(params)
-  }
-
-  if (isQuill(element)) {
-    return insertQuillTemplate(params)
-  }
-
-  if (isContentEditable(element)) {
-    return insertContentEditableTemplate(params)
-  }
-
-  return insertTextareaTemplate(params)
+  return false
 }
 
 export default async function autocomplete ({ element, word, template }) {

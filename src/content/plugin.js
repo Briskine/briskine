@@ -16,28 +16,17 @@ export function register (type = '', func = () => { }) {
 }
 
 export async function run (type = '', params) {
-  // special handling for data
-  if (type === 'data') {
-    const responses = (await Promise.allSettled(plugins[type].map((f) => f(params))))
-      .filter((r) => {
-        if (r.status === 'rejected') {
-          debug(['plugin', type, params, r.reason], 'error')
-          return false
-        }
+  const responses = (await Promise.allSettled(plugins[type].map((f) => f(params))))
+    .filter((r) => {
+      if (r.status === 'rejected') {
+        debug(['plugin', type, params, r.reason], 'error')
+        return false
+      }
 
-        return true
-      })
-      .map((r) => r.value)
+      return true
+    })
+    .map((r) => r.value)
 
-    const data = merge({}, ...responses)
-    return data
-  }
-
-  for (const func of plugins[type]) {
-    try {
-      await func(params)
-    } catch (err) {
-      debug(['plugin', type, params, err], 'error')
-    }
-  }
+  const data = merge({}, ...responses)
+  return data
 }

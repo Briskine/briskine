@@ -14,12 +14,13 @@ import {
   openPopup,
 } from '../../store/store-content.js'
 import {isContentEditable} from '../editors/editor-contenteditable.js'
+import { isTextfieldEditor } from '../editors/editor-textfield.js'
 import {bubbleTagName} from '../bubble/bubble.js'
 import {getEditableCaret, getContentEditableCaret, getDialogPosition} from './dialog-position.js'
 import autocomplete from '../autocomplete.js'
-import getComposedSelection  from '../selection.js'
-import getWord from '../word.js'
-import getActiveElement from '../active-element.js'
+import { getSelectionRange, setSelectionRange }  from '../utils/selection.js'
+import { getWord } from '../utils/word.js'
+import getActiveElement from '../utils/active-element.js'
 import {keybind, keyunbind} from '../keybind.js'
 import IconSearch from 'bootstrap-icons/icons/search.svg'
 import IconBriskine from '../../icons/briskine-logo-small.svg'
@@ -67,10 +68,7 @@ function Dialog (originalProps) {
   let word
   let searchField
 
-  let anchorNode = null
-  let anchorOffset = 0
-  let focusNode = null
-  let focusOffset = 0
+  let cachedRange
 
   createEffect(() => {
     if (visible() === true) {
@@ -118,18 +116,12 @@ function Dialog (originalProps) {
     const direction = targetStyle.direction || 'ltr'
     element.setAttribute('dir', direction)
 
-    anchorNode = null
-    anchorOffset = 0
-    focusNode = null
-    focusOffset = 0
+    cachedRange = null
 
     // when event was triggered in shadow dom (such as the bubble)
     const hostNode = node?.getRootNode?.()?.host
 
-    if (
-      isTextfield(node)
-      && !node.readOnly
-    ) {
+    if (isTextfieldEditor(node)) {
       // input, textarea
       [target, removeCaretParent] = getEditableCaret(node)
       if (direction === 'rtl') {
@@ -175,14 +167,9 @@ function Dialog (originalProps) {
     editor = getActiveElement()
 
     // cache selection details, to restore later
-    const selection = getComposedSelection(editor)
-    anchorNode = selection.anchorNode
-    anchorOffset = selection.anchorOffset
-    focusNode = selection.focusNode
-    focusOffset = selection.focusOffset
+    cachedRange = getSelectionRange(editor)
 
     word = getWord(editor)
-
 
     setVisible(true)
     const position = getDialogPosition(target, element, placement)
@@ -206,8 +193,8 @@ function Dialog (originalProps) {
     }
   }
 
-  function insertTemplate (id = '') {
-    restoreSelection()
+  async function insertTemplate (id = '') {
+    await restoreSelection()
 
     // get template from cache
     const template = templates().find((t) => t.id === id)
@@ -318,17 +305,13 @@ function Dialog (originalProps) {
     }
   }
 
-  function restoreSelection () {
-    // only try to restore the selection on contenteditable.
-    // input and textarea will restore the correct range with focus().
+  async function restoreSelection () {
+    editor.focus({ preventScroll: true })
     if (
-      isContentEditable(editor) &&
-      anchorNode &&
-      focusNode
+      isContentEditable(editor)
+      && cachedRange
     ) {
-      getComposedSelection().setBaseAndExtent(anchorNode, anchorOffset, focusNode, focusOffset)
-    } else {
-      editor.focus()
+      await setSelectionRange(editor, cachedRange)
     }
   }
 
@@ -560,11 +543,6 @@ customElements.define(dialogTagName, class extends HTMLElement {
     this.disposer()
   }
 })
-
-// is input or textarea
-function isTextfield (element) {
-  return ['input', 'textarea'].includes(element.tagName.toLowerCase())
-}
 
 function createDialog (settings = {}) {
   const instance = document.createElement(dialogTagName)

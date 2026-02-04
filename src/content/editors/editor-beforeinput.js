@@ -1,48 +1,75 @@
 /* Editors with beforeinput event support.
  *
  * Slate
- * framework for building rich text editors.
- * https://github.com/ianstormtaylor/slate
+ * https://www.slatejs.org/
  *
  * Lexical editor from Facebook
  * https://lexical.dev/
+ * Used on WhatsApp Web, Facebook Messenger
  */
 
-import getComposedSelection from '../selection.js'
+import { selectWord } from '../utils/word.js'
+import { request } from '../page/page-parent.js'
+import getActiveElement from '../utils/active-element.js'
+import debug from '../../debug.js'
 
-export function isBeforeInputEditor (element) {
+function isBeforeInputEditor (element) {
   return (
     element?.hasAttribute?.('data-lexical-editor')
     || element?.hasAttribute?.('data-slate-editor')
   )
 }
 
-export async function insertBeforeInputTemplate ({ element, template, word, text}) {
-  element.focus()
+export function insertBeforeInputTemplate ({ word, template, html, text }) {
+  return request('beforeinput-insert', {
+    word,
+    template,
+    html,
+    text,
+  })
+}
 
-  // Slate uses onbeforeinput exclusively, and does not notice content inserted from outside.
-  // https://docs.slatejs.org/concepts/xx-migrating#beforeinput
-  // Use the beforeinput-specific method to insert and remove text,
-  // using custom synthetic beforeinput events.
-  // Slate and Lexical handle beforeinput events with stadard inputType's
-  // https://github.com/ianstormtaylor/slate/blob/16ff44d0566889a843a346215d3fb7621fc0ed8c/packages/slate-react/src/components/editable.tsx#L193
-  if (word.text === template.shortcut) {
-    // select the shortcut
-    const selection = getComposedSelection(element)
-    const range = selection.getRangeAt(0)
-    range.setStart(selection.focusNode, word.start)
-    range.setEnd(selection.focusNode, word.end)
-
-    // slate needs a second to notice the new selection
-    await new Promise((resolve) => setTimeout(resolve))
+export async function pageInsertBeforeInputTemplate ({ template, word, text, html}) {
+  const element = getActiveElement()
+  if (!isBeforeInputEditor(element)) {
+    return false
   }
 
-  // replace selected text
-  const insertText = new InputEvent('beforeinput', {
+  if (
+    template.shortcut
+    && word.text === template.shortcut
+  ) {
+    await selectWord(element, word)
+  }
+
+  let e
+  const eventProps = {
     bubbles: true,
     inputType: 'insertReplacementText',
-    // only supports plain text
-    data: text,
-  })
-  element.dispatchEvent(insertText)
+  }
+
+  try {
+    e = new InputEvent('beforeinput', {
+      ...eventProps,
+      dataTransfer: new DataTransfer(),
+    })
+
+    // set the data on the event, instead of a separate DataTransfer instance.
+    // otherwise Firefox sends an empty DataTransfer object.
+    // also needs to run in page context, for Firefox support.
+    e.dataTransfer.setData('text/plain', text)
+    e.dataTransfer.setData('text/html', html)
+    element.dispatchEvent(e)
+  } catch (err) {
+    debug(['pageInsertBeforeInputTemplate', err], 'warn')
+
+    // Safari does not support DataTransfer on our synthetic beforeinput event
+    e = new InputEvent('beforeinput', {
+      ...eventProps,
+      data: text,
+    })
+    element.dispatchEvent(e)
+  }
+
+  return true
 }

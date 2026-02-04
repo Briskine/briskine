@@ -2,24 +2,46 @@
 <html>
   <head>
     <meta charset="utf-8">
+    <title>Lexical</title>
     <script src="/extension-ready.js"></script>
   </head>
   <body>
     <div id="lexical-container"></div>
+
     <script type="importmap">
-      {
-        "imports": {
-          "react": "https://esm.sh/react@19/?dev",
-          "react-dom": "https://esm.sh/react-dom@19/client?dev",
-          "@lexical/react/LexicalComposer": "https://esm.sh/@lexical/react@0.30/LexicalComposer/?dev",
-          "@lexical/react/LexicalPlainTextPlugin": "https://esm.sh/@lexical/react@0.30/LexicalPlainTextPlugin/?dev",
-          "@lexical/react/LexicalContentEditable": "https://esm.sh/@lexical/react@0.30/LexicalContentEditable/?dev"
+    {
+      "imports": {
+        "@lexical/react/LexicalComposer": "https://ga.jspm.io/npm:@lexical/react@0.39.0/LexicalComposer.dev.mjs",
+        "@lexical/react/LexicalContentEditable": "https://ga.jspm.io/npm:@lexical/react@0.39.0/LexicalContentEditable.dev.mjs",
+        "@lexical/react/LexicalPlainTextPlugin": "https://ga.jspm.io/npm:@lexical/react@0.39.0/LexicalPlainTextPlugin.dev.mjs",
+        "react": "https://ga.jspm.io/npm:react@19.2.4/dev.index.js",
+        "react-dom": "https://ga.jspm.io/npm:react-dom@19.2.4/dev.index.js",
+        "react-dom/client": "https://ga.jspm.io/npm:react-dom@19.2.4/dev.client.js"
+      },
+      "scopes": {
+        "https://ga.jspm.io/": {
+          "@lexical/clipboard": "https://ga.jspm.io/npm:@lexical/clipboard@0.39.0/LexicalClipboard.dev.mjs",
+          "@lexical/dragon": "https://ga.jspm.io/npm:@lexical/dragon@0.39.0/LexicalDragon.dev.mjs",
+          "@lexical/extension": "https://ga.jspm.io/npm:@lexical/extension@0.39.0/LexicalExtension.dev.mjs",
+          "@lexical/html": "https://ga.jspm.io/npm:@lexical/html@0.39.0/LexicalHtml.dev.mjs",
+          "@lexical/plain-text": "https://ga.jspm.io/npm:@lexical/plain-text@0.39.0/LexicalPlainText.dev.mjs",
+          "@lexical/react/LexicalComposerContext": "https://ga.jspm.io/npm:@lexical/react@0.39.0/LexicalComposerContext.dev.mjs",
+          "@lexical/react/ReactProviderExtension": "https://ga.jspm.io/npm:@lexical/react@0.39.0/LexicalReactProviderExtension.dev.mjs",
+          "@lexical/react/useLexicalEditable": "https://ga.jspm.io/npm:@lexical/react@0.39.0/useLexicalEditable.dev.mjs",
+          "@lexical/selection": "https://ga.jspm.io/npm:@lexical/selection@0.39.0/LexicalSelection.dev.mjs",
+          "@lexical/text": "https://ga.jspm.io/npm:@lexical/text@0.39.0/LexicalText.dev.mjs",
+          "@lexical/utils": "https://ga.jspm.io/npm:@lexical/utils@0.39.0/LexicalUtils.dev.mjs",
+          "lexical": "https://ga.jspm.io/npm:lexical@0.39.0/Lexical.dev.mjs",
+          "react/jsx-runtime": "https://ga.jspm.io/npm:react@19.2.4/dev.jsx-runtime.js",
+          "scheduler": "https://ga.jspm.io/npm:scheduler@0.27.0/dev.index.js"
         }
       }
+    }
     </script>
+
     <script type="module">
       import {createElement} from 'react'
-      import {createRoot} from 'react-dom'
+      import {createRoot} from 'react-dom/client'
 
       import {LexicalComposer} from '@lexical/react/LexicalComposer'
       import {PlainTextPlugin} from '@lexical/react/LexicalPlainTextPlugin'

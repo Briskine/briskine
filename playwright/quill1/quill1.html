@@ -2,14 +2,27 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <link href="https://cdn.jsdelivr.net/npm/quill@1/dist/quill.snow.min.css" rel="stylesheet">
+    <title>Quill 1</title>
+    <link href="https://ga.jspm.io/npm:quill@1.3.7/dist/quill.snow.css" rel="stylesheet">
     <script src="/extension-ready.js"></script>
   </head>
   <body>
     <div id="editor"></div>
 
+    <script type="importmap">
+    {
+      "imports": {
+        "quill": "https://ga.jspm.io/npm:quill@1.3.7/dist/quill.js"
+      },
+      "scopes": {
+        "https://ga.jspm.io/": {
+          "buffer": "https://ga.jspm.io/npm:@jspm/core@2.1.0/nodelibs/browser/buffer.js"
+        }
+      }
+    }
+    </script>
     <script type="module">
-      import Quill from 'https://cdn.jsdelivr.net/npm/quill@1/+esm'
+      import Quill from 'quill'
 
       const quill = new Quill('#editor', {
         theme: 'snow'

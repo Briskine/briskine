@@ -724,6 +724,7 @@ export async function searchTemplates (query = '') {
 }
 
 export async function isCached () {
+  // when private templates are cached
   const key = 'templatesOwned'
   const cache = await browser.storage.local.get(key)
   if (cache[key]) {

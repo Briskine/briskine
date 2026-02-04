@@ -1,10 +1,11 @@
-import { expect, describe, it, beforeAll, afterAll } from 'vitest'
+import { expect, describe, it, beforeAll, beforeEach, afterAll } from 'vitest'
 
-import {insertQuillTemplate} from './editor-quill.js'
+import {insertQuill1Template} from './editor-quill1.js'
 import {setup, destroy} from '../page/page-parent.js'
 
 let $link
 let $script
+let $importmap
 let $editor
 let containerId = 'quill-container'
 
@@ -23,20 +24,36 @@ function waitForEditor () {
     }, {once: true})
   })
 }
-// only tests quill v2
-describe('editor Quill', () => {
+// only tests quill v1
+describe('editor Quill1', () => {
   beforeAll(async function () {
     await setup()
 
     $link = document.createElement('link')
     $link.rel = 'stylesheet'
-    $link.href = 'https://cdn.jsdelivr.net/npm/quill@2/dist/quill.snow.css'
+    $link.href = 'https://ga.jspm.io/npm:quill@1.3.7/dist/quill.snow.css'
     document.head.appendChild($link)
+
+    $importmap = document.createElement('script')
+    $importmap.type = 'importmap'
+    $importmap.textContent = `
+      {
+        "imports": {
+          "quill": "https://ga.jspm.io/npm:quill@1.3.7/dist/quill.js"
+        },
+        "scopes": {
+          "https://ga.jspm.io/": {
+            "buffer": "https://ga.jspm.io/npm:@jspm/core@2.1.0/nodelibs/browser/buffer.js"
+          }
+        }
+      }
+    `
+    document.body.appendChild($importmap)
 
     $script = document.createElement('script')
     $script.type = 'module'
     $script.textContent = `
-      import Quill from 'https://cdn.jsdelivr.net/npm/quill@2/+esm'
+      import Quill from 'quill'
 
       const $editor = document.createElement('div')
       $editor.id = '${containerId}'
@@ -51,14 +68,17 @@ describe('editor Quill', () => {
     document.body.appendChild($script)
 
     await waitForEditor()
-
   }, 20000)
 
-  it('should insert template', async function () {
+  beforeEach(() => {
+    cleanEditor()
+  })
+
+  it('should insert template', async () => {
     const template = '<div>Kind regards,</div><div>.</div>'
 
     $editor.focus()
-    await insertQuillTemplate({
+    await insertQuill1Template({
       element: $editor,
       html: template,
       word: {
@@ -70,12 +90,12 @@ describe('editor Quill', () => {
     })
 
     expect($editor.innerHTML).to.include('<p>Kind regards,</p><p>.</p>')
-    cleanEditor()
   })
 
   afterAll(() => {
     $link.remove()
     $script.remove()
+    $importmap.remove()
     document.querySelector(`#${containerId}`).remove()
     destroy()
   })

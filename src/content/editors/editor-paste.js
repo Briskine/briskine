@@ -1,28 +1,38 @@
-/* Editors with Paste event support.
+/*
+ * Editors with Paste event support.
  *
  * ProseMirror
  * https://prosemirror.net/
- * Used by: JIRA
+ * Used by: JIRA, ChatGPT
  *
  * Draft.js rich text editor framework
  * https://draftjs.org/
  *
- * LinkedIn message editor
+ * CKEditor5
+ * https://ckeditor.com/ckeditor-5/
+ *
+ * Quill v2
+ * https://quilljs.com/
  *
  */
 
-import {request} from '../page/page-parent.js'
-import getComposedSelection from '../selection.js'
-import getActiveElement from '../active-element.js'
+import { request } from '../page/page-parent.js'
+import { selectWord } from '../utils/word.js'
+import getActiveElement from '../utils/active-element.js'
 
-export function isPasteEditor (element) {
+function isPasteEditor (element) {
   return (
     // prosemirror
     element?.classList?.contains?.('ProseMirror')
     // draft.js
     || element?.querySelector?.('[data-contents]')
-    // linkedin message editor
-    || element?.classList?.contains?.('msg-form__contenteditable')
+    // ckeditor5
+    || element?.classList?.contains?.('ck-editor__editable')
+    // quill v2
+    || (
+      element?.classList?.contains?.('ql-editor')
+      && !element?.closest?.('.ql-container')?.__quill
+    )
   )
 }
 
@@ -40,30 +50,27 @@ export function insertPasteTemplate ({ word, template, html, text }) {
 export async function pageInsertPasteTemplate ({ word, template, html, text }) {
   // we can't pass the element instance to the page script
   const element = getActiveElement()
-  // select shortcut
-  if (word.text === template.shortcut) {
-    const selection = getComposedSelection(element)
-    const range = selection.getRangeAt(0)
-    const focusNode = selection.focusNode
-    range.setStart(focusNode, word.start)
-    range.setEnd(focusNode, word.end)
-    // required for correct caret placement at the end in JIRA
-    range.deleteContents()
-    // required for draft.js
-    element.dispatchEvent(new Event('input', {bubbles: true}))
+  if (!isPasteEditor(element)) {
+    return false
+  }
 
-    // give the editor a second to notice the change
-    await new Promise((resolve) => setTimeout(resolve))
+  if (
+    template.shortcut
+    && word.text === template.shortcut
+  ) {
+    await selectWord(element, word)
   }
 
   const e = new ClipboardEvent('paste', {
     clipboardData: new DataTransfer(),
-    // required for draft.js
     bubbles: true,
   })
   // set the data on the event, instead of a separate DataTransfer instance.
   // otherwise Firefox sends an empty DataTransfer object.
+  // also needs to run in page context, for firefox support.
   e.clipboardData.setData('text/plain', text)
   e.clipboardData.setData('text/html', html)
   element.dispatchEvent(e)
+
+  return true
 }

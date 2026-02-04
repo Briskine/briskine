@@ -2,15 +2,28 @@
 <html>
   <head>
     <meta charset="utf-8">
+    <title>Squire</title>
     <script src="/extension-ready.js"></script>
   </head>
   <body>
     <div id="editor" role="textbox"></div>
 
-    <script src="https://cdn.jsdelivr.net/npm/dompurify/dist/purify.min.js"></script>
+    <script type="importmap">
+     {
+       "imports": {
+         "squire-rte": "https://ga.jspm.io/npm:squire-rte@2.4.2/dist/squire.mjs"
+       }
+     }
+     </script>
     <script type="module">
-      import Squire from 'https://cdn.jsdelivr.net/npm/squire-rte/+esm'
-      new Squire(document.querySelector('div'))
+      import Squire from 'squire-rte'
+      new Squire(document.querySelector('div'), {
+        sanitizeToDOMFragment: (html) => {
+          const template = document.createElement('template')
+          template.innerHTML = html
+          return template.content
+        }
+      })
     </script>
   </body>
 </html>
