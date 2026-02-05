@@ -76,6 +76,7 @@ describe('word', () => {
     const range = document.createRange()
     range.selectNodeContents(editable.lastChild)
     range.collapse()
+    window.getSelection().removeAllRanges()
     window.getSelection().addRange(range)
 
     expect(

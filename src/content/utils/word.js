@@ -22,6 +22,7 @@ export function getWord (element) {
 
   if (isContentEditable(element)) {
     const [focusNode, focusOffset] = getSelectionFocus(element)
+
     switch (focusNode.nodeType) {
       // in most cases, the focusNode property refers to a Text Node.
       case (document.TEXT_NODE): {
