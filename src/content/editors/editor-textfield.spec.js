@@ -1,4 +1,4 @@
-import { expect, describe, it, beforeAll, afterAll, afterEach } from 'vitest'
+import { expect, describe, it, beforeAll, afterAll, beforeEach } from 'vitest'
 
 import { insertTextfieldTemplate } from './editor-textfield.js'
 
@@ -7,44 +7,24 @@ describe('insertTextfieldTemplate', () => {
   beforeAll(() => {
     textarea = document.createElement('textarea')
     document.body.appendChild(textarea)
+    textarea.focus()
   })
-  afterEach(() => {
+
+  beforeEach(() => {
     textarea.value = ''
   })
 
   it('should insert template in textarea', () => {
-    textarea.value = ''
-
     insertTextfieldTemplate({
-      element: textarea,
       text: 'test',
-      template: {
-        shortcut: 't'
-      },
-      word: {
-        start: 0,
-        end: 0,
-        text: ''
-      }
     })
 
     expect(textarea.value).to.equal('test')
   })
 
   it('should place the cursor at the end of the inserted template', () => {
-    textarea.value = ''
-
     insertTextfieldTemplate({
-      element: textarea,
       text: 'test',
-      template: {
-        shortcut: 't'
-      },
-      word: {
-        start: 0,
-        end: 0,
-        text: ''
-      }
     })
 
     expect(textarea.selectionEnd).to.equal(4)
@@ -55,16 +35,7 @@ describe('insertTextfieldTemplate', () => {
     textarea.setSelectionRange(3, 3)
 
     insertTextfieldTemplate({
-      element: textarea,
       text: 'test',
-      template: {
-        shortcut: 't'
-      },
-      word: {
-        start: 0,
-        end: 3,
-        text: 'pre'
-      }
     })
 
     expect(textarea.value).to.equal('pretest')
@@ -72,21 +43,12 @@ describe('insertTextfieldTemplate', () => {
     expect(textarea.selectionEnd).to.equal(7)
   })
 
-  it('should place the cursor at the end, with preceding spaces and shortcut', () => {
-    textarea.value = '   t'
-    textarea.setSelectionRange(4, 4)
+  it('should place the cursor at the end, with preceding spaces', () => {
+    textarea.value = '   '
+    textarea.setSelectionRange(3, 3)
 
     insertTextfieldTemplate({
-      element: textarea,
       text: 'test',
-      template: {
-        shortcut: 't'
-      },
-      word: {
-        start: 3,
-        end: 4,
-        text: 't'
-      }
     })
 
     expect(textarea.value).to.equal('   test')
@@ -94,21 +56,12 @@ describe('insertTextfieldTemplate', () => {
     expect(textarea.selectionEnd).to.equal(7)
   })
 
-  it('should place the cursor at the end, with preceding shortcut', () => {
+  it('should place the cursor at the end, with preceding selection', () => {
     textarea.value = 't'
-    textarea.setSelectionRange(1, 1)
+    textarea.setSelectionRange(0, 1)
 
     insertTextfieldTemplate({
-      element: textarea,
       text: 'test',
-      template: {
-        shortcut: 't'
-      },
-      word: {
-        start: 0,
-        end: 1,
-        text: 't'
-      }
     })
 
     expect(textarea.value).to.equal('test')
@@ -116,21 +69,12 @@ describe('insertTextfieldTemplate', () => {
     expect(textarea.selectionEnd).to.equal(4)
   })
 
-  it('should place the cursor at the end, with preceding text and shortcut', () => {
+  it('should place the cursor at the end, with preceding text and selection', () => {
     textarea.value = 'pre t'
-    textarea.setSelectionRange(5, 5)
+    textarea.setSelectionRange(4, 5)
 
     insertTextfieldTemplate({
-      element: textarea,
       text: 'test',
-      template: {
-        shortcut: 't'
-      },
-      word: {
-        start: 4,
-        end: 5,
-        text: 't'
-      }
     })
 
     expect(textarea.value).to.equal('pre test')
@@ -142,22 +86,13 @@ describe('insertTextfieldTemplate', () => {
     const input = document.createElement('input')
     input.type = 'text'
     document.body.appendChild(input)
+    input.focus()
 
     insertTextfieldTemplate({
-      element: input,
       text: 'test',
-      template: {
-        shortcut: 't'
-      },
-      word: {
-        start: 0,
-        end: 0,
-        text: ''
-      }
     })
 
     expect(input.value).to.equal('test')
-
     input.remove()
   })
 
@@ -165,48 +100,30 @@ describe('insertTextfieldTemplate', () => {
     const input = document.createElement('input')
     input.type = 'search'
     document.body.appendChild(input)
+    input.focus()
 
     insertTextfieldTemplate({
-      element: input,
       text: 'test',
-      template: {
-        shortcut: 't'
-      },
-      word: {
-        start: 0,
-        end: 0,
-        text: ''
-      }
     })
 
     expect(input.value).to.equal('test')
-
     input.remove()
   })
 
-  it('should insert template in input with maxlength', () => {
+  it('should insert template in input with selection and maxlength', () => {
     const input = document.createElement('input')
     input.type = 'text'
     input.value = 'pre t'
     input.maxLength = 10
     document.body.appendChild(input)
-    input.setSelectionRange(5, 5)
+    input.focus()
+    input.setSelectionRange(4, 5)
 
     insertTextfieldTemplate({
-      element: input,
       text: 'Insert templates.',
-      template: {
-        shortcut: 't'
-      },
-      word: {
-        start: 4,
-        end: 5,
-        text: 't'
-      }
     })
 
     expect(input.value).to.equal('pre Insert')
-
     input.remove()
   })
 

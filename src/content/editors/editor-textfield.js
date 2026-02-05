@@ -1,7 +1,7 @@
 /* Textarea and Input
  */
 
-import { selectWord } from '../utils/word.js'
+import getActiveElement from '../utils/active-element.js'
 
 // only editable input types where can use selection methods and properties
 // https://developer.mozilla.org/en-US/docs/Web/API/HTMLInputElement/setSelectionRange
@@ -25,16 +25,10 @@ export function isTextfieldEditor (element) {
   )
 }
 
-export function insertTextfieldTemplate ({ element, word, template, text }) {
+export function insertTextfieldTemplate ({ text }) {
+  const element = getActiveElement()
   if (!isTextfieldEditor(element)) {
     return false
-  }
-
-  if (
-    template.shortcut
-    && word.text === template.shortcut
-  ) {
-    selectWord(element, word)
   }
 
   // respect maxlength
