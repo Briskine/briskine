@@ -36,55 +36,40 @@ function closestRendered (target) {
 }
 
 export function getDialogPosition (target, instance, placement = 'top-left') {
-  const pageHeight = window.innerHeight
-  const scrollTop = window.scrollY
-  const scrollLeft = window.scrollX
-
   const dialogMetrics = instance.getBoundingClientRect()
-
-  // when we position the dialog next to
-  // another element - not next to the cursor (when we position it next to the bubble),
-  // or when the focused node is an element (most times when the editor is empty).
   const targetNode = closestRendered(target)
   const targetMetrics = targetNode.getBoundingClientRect()
 
-  // because we use getBoundingClientRect
-  // we need to add the scroll position
-  // top-left
-  let topPos = targetMetrics.top + scrollTop
-  let leftPos = targetMetrics.left + scrollLeft
+  let top = targetMetrics.top
+  let left = targetMetrics.left
 
   if (placement.includes('right')) {
-    leftPos = leftPos + targetMetrics.width
+    left += targetMetrics.width
   }
-
   if (placement.includes('flip')) {
-    leftPos = leftPos - dialogMetrics.width
+    left -= dialogMetrics.width
   }
-
-  if (leftPos < 0) {
-    leftPos = 0
-  }
-
   if (placement.includes('bottom')) {
-    topPos = topPos + targetMetrics.height
+    top += targetMetrics.height
   }
 
-  const bottomSpace = pageHeight - topPos - scrollTop
-  const topSpace = topPos - scrollTop
+  const pageHeight = window.innerHeight
+  const spaceBelow = pageHeight - top
+  const spaceAbove = targetMetrics.top
+
   if (
     // check if we have enough space at the bottom
     // for the maximum dialog height
-    bottomSpace < dialogMetrics.height &&
+    spaceBelow < dialogMetrics.height
     // and we have enough space at the top
-    topSpace > dialogMetrics.height
+    && spaceAbove > dialogMetrics.height
   ) {
-    topPos = topPos - dialogMetrics.height
+    top = targetMetrics.top - dialogMetrics.height
   }
 
   return {
-    top: topPos,
-    left: leftPos,
+    top: top + window.scrollY,
+    left: Math.max(0, left + window.scrollX),
   }
 }
 
@@ -171,8 +156,8 @@ export function getEditableCaret (element) {
   })
 
   const sourceMetrics = element.getBoundingClientRect()
-  $mirror.style.top = `${sourceMetrics.top}px`
-  $mirror.style.left = `${sourceMetrics.left}px`
+  $mirror.style.top = `${sourceMetrics.top + window.scrollY}px`
+  $mirror.style.left = `${sourceMetrics.left + window.scrollX}px`
 
   // copy content
   $mirror.textContent = element.value.substring(0, element.selectionEnd)

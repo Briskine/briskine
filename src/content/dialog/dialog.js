@@ -181,7 +181,7 @@ function Dialog (originalProps) {
     // give it a second before focusing.
     // in production, the search field is not focused on some websites (eg. google sheets, salesforce).
     setTimeout(() => {
-      searchField.focus()
+      searchField.focus({ preventScroll: true })
     })
 
     if (loading() === true) {
@@ -390,7 +390,7 @@ function Dialog (originalProps) {
           // focus the search field when closing the modals,
           // and returning to the list view.
           if (searchField) {
-            searchField.focus()
+            searchField.focus({ preventScroll: true })
           }
         }
 
