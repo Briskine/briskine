@@ -3,6 +3,7 @@
 
 import getActiveElement from '../utils/active-element.js'
 import { getSelectionRange, setSelectionRange } from '../utils/selection.js'
+import { insertExecCommandTemplate } from './editor-execcommand.js'
 
 export function isContentEditable (element) {
   return element?.isContentEditable
@@ -14,8 +15,11 @@ export async function insertContentEditableTemplate ({ html, text }) {
     return false
   }
 
-  let range = getSelectionRange(element)
+  if (element.contentEditable === 'plaintext-only') {
+    return insertExecCommandTemplate({ text })
+  }
 
+  let range = getSelectionRange(element)
   // delete existing selection
   range.deleteContents()
 

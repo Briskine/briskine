@@ -58,8 +58,8 @@ function insertText (text) {
 export async function insertExecCommandTemplate ({ html, text }) {
   const element = getActiveElement()
   if (
-    isContentEditable(element)
-    && html !== text
+    html
+    && isContentEditable(element)
     && element.contentEditable !== 'plaintext-only'
   ) {
     try {

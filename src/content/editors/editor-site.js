@@ -45,11 +45,8 @@ export async function insertSiteTemplate ({ html, text }) {
     // focused/restored the selection.
     element.dispatchEvent(new Event('input', {bubbles: true}))
 
-    return insertExecCommandTemplate({
-      // plain text only
-      html: text,
-      text,
-    })
+    // plain text only
+    return insertExecCommandTemplate({ text })
   }
 
   if (isJiraRichTextEditor(element)) {

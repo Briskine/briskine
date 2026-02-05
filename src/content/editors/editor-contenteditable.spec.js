@@ -34,6 +34,17 @@ describe('editor ContentEditable', () => {
     expect(editable.innerHTML).to.equal('<div>pre<div>test</div></div>')
   })
 
+  it('should insert template into contenteditable=plaintext-only', async () => {
+    editable.setAttribute('contenteditable', 'plaintext-only')
+
+    await insertContentEditableTemplate({
+      text: 'test\ntest2\n[/image.png]',
+    })
+
+    expect(editable.innerHTML).to.equal('test<div>test2</div><div>[/image.png]</div>')
+    editable.setAttribute('contenteditable', 'true')
+  })
+
   afterAll(() => {
     editable.remove()
   })

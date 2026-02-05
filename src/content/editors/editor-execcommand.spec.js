@@ -23,7 +23,7 @@ describe('editor ExecCommand', () => {
     expect(editable.innerHTML).to.equal('<div>test</div>')
   })
 
-  it('should insert template into contenteditable=plaintext-true', async () => {
+  it('should insert template into contenteditable=plaintext-only', async () => {
     editable.setAttribute('contenteditable', 'plaintext-only')
 
     await insertExecCommandTemplate({
