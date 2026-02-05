@@ -3,18 +3,16 @@ import { expect, describe, it, beforeEach, afterEach } from 'vitest'
 import { getWord } from './word.js'
 import { setSelectionRange } from './selection.js'
 
-describe('getWord', () => {
+describe('word', () => {
   let editable
   beforeEach(() => {
     editable = document.createElement('div')
     editable.setAttribute('contenteditable', 'true')
     document.body.appendChild(editable)
+    editable.focus()
   })
 
   it('should get contenteditable word position and text when editable is empty', () => {
-    editable.innerHTML = ''
-    editable.focus()
-
     expect(
       getWord(editable)
     ).to.eql({
@@ -26,16 +24,49 @@ describe('getWord', () => {
 
   it('should get contenteditable word, with preceding text', () => {
     editable.innerHTML = 'pre'
-    const range = document.createRange()
-    range.selectNodeContents(editable.lastChild)
-    range.collapse()
-    window.getSelection().addRange(range)
+    const selection = window.getSelection()
+    selection.selectAllChildren(editable)
+    selection.collapseToEnd()
 
     expect(
       getWord(editable)
     ).to.eql({
       start: 0,
       end: 3,
+      text: 'pre',
+    })
+  })
+
+  it('should get contenteditable word, with preceding multi-line text', () => {
+    editable.innerHTML = 'text<br>pre'
+    const selection = window.getSelection()
+    selection.selectAllChildren(editable)
+    selection.collapseToEnd()
+
+    expect(
+      getWord(editable)
+    ).to.eql({
+      start: 0,
+      end: 3,
+      text: 'pre',
+    })
+  })
+
+  it('should get contenteditable word, with preceding multi-line text, on the second line', () => {
+    editable.innerHTML = 'text<br>text pre<br>text'
+    const selection = window.getSelection()
+    selection.setBaseAndExtent(
+      editable.childNodes[2],
+      8,
+      editable.childNodes[2],
+      8,
+    )
+
+    expect(
+      getWord(editable)
+    ).to.eql({
+      start: 5,
+      end: 8,
       text: 'pre',
     })
   })

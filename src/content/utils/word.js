@@ -24,20 +24,20 @@ export function getWord (element) {
     const [focusNode, focusOffset] = getSelectionFocus(element)
     switch (focusNode.nodeType) {
       // in most cases, the focusNode property refers to a Text Node.
-      case (document.TEXT_NODE):
+      case (document.TEXT_NODE): {
         // for text nodes take the text until the focusOffset
         beforeSelection = focusNode.textContent.substring(0, focusOffset)
         break
-      case (document.ELEMENT_NODE):
+      }
+      case (document.ELEMENT_NODE): {
         // when we have an element node,
-        // focusOffset returns the index in the childNodes collection of the focus node where the selection ends.
-        if (
-          // focusOffset is larger than childNodes length when editor is empty
-          focusNode.childNodes[focusOffset]
-        ) {
-          beforeSelection = focusNode.childNodes[focusOffset].textContent
+        // focusOffset returns the *number* of childNodes offset
+        const focusChild = focusNode.childNodes[focusOffset - 1]
+        if (focusChild) {
+          beforeSelection = focusChild.textContent
         }
         break
+      }
     }
   } else {
     // selectionEnd/selectionStart apply only to inputs of types text, search, URL, tel, and password.
