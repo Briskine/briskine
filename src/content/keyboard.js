@@ -29,32 +29,32 @@ async function keyboardAutocomplete (e) {
   }
 
   const word = getWord(element)
+  if (!word.text) {
+    return
+  }
 
-  if (word.text) {
-    // cache range
-    const cachedRange = getSelectionRange(element)
+  // cache range
+  const cachedRange = getSelectionRange(element)
 
-    const template = await getTemplateByShortcut(word.text)
-    if (template) {
-      // prevent default when getTemplateByShortcut returns immediately
-      e.preventDefault()
-      e.stopImmediatePropagation()
+  const template = await getTemplateByShortcut(word.text)
+  if (template) {
+    // prevent default when getTemplateByShortcut returns immediately
+    e.preventDefault()
+    e.stopImmediatePropagation()
 
-      // restore selection
-      element.focus({ preventScroll: true })
-      if (
-        isContentEditable(element)
-        && cachedRange
-      ) {
-        await setSelectionRange(element, cachedRange)
-      }
-
-      autocomplete({
-        element: element,
-        template: template,
-        word: word,
-      })
+    // restore selection
+    element.focus({ preventScroll: true })
+    if (
+      isContentEditable(element)
+      && cachedRange
+    ) {
+      await setSelectionRange(element, cachedRange)
     }
+
+    autocomplete({
+      element: element,
+      template: template,
+    })
   }
 }
 

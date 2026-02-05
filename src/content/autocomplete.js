@@ -7,6 +7,8 @@ import { addAttachments } from './attachments/attachments.js'
 import parseTemplate from './utils/parse-template.js'
 import htmlToText from './utils/html-to-text.js'
 import debug from '../debug.js'
+import { getWord, selectWord } from './utils/word.js'
+import { updateTemplateStats } from '../store/store-content.js'
 
 import { insertPasteTemplate } from './editors/editor-paste.js'
 import { insertContentEditableTemplate } from './editors/editor-contenteditable.js'
@@ -22,8 +24,6 @@ import './plugins/gmail-mobile.js'
 import './plugins/linkedin.js'
 import './plugins/linkedin-sales-navigator.js'
 import './plugins/facebook.js'
-
-import { updateTemplateStats } from '../store/store-content.js'
 
 const editors = [
   // order matters
@@ -60,16 +60,21 @@ async function insertTemplate ({ element, word, template, html, text }) {
   return false
 }
 
-export default async function autocomplete ({ element, word, template }) {
+export default async function autocomplete ({ element, template }) {
   const withAttachments = addAttachments(template.body, template.attachments)
   const data = await run('data', { element })
   const html = await parseTemplate(withAttachments, data)
   const text = htmlToText(html)
 
+  if (template.shortcut) {
+    const word = getWord(element)
+    if (word.text === template.shortcut) {
+      await selectWord(element, word)
+    }
+  }
+
   await insertTemplate({
     element,
-    word,
-    template,
     text,
     html,
   })

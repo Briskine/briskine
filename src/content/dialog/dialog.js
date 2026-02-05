@@ -19,7 +19,6 @@ import {bubbleTagName} from '../bubble/bubble.js'
 import {getEditableCaret, getContentEditableCaret, getDialogPosition} from './dialog-position.js'
 import autocomplete from '../autocomplete.js'
 import { getSelectionRange, setSelectionRange }  from '../utils/selection.js'
-import { getWord } from '../utils/word.js'
 import getActiveElement from '../utils/active-element.js'
 import {keybind, keyunbind} from '../keybind.js'
 import IconSearch from 'bootstrap-icons/icons/search.svg'
@@ -65,7 +64,6 @@ function Dialog (originalProps) {
   const [searchQuery, setSearchQuery] = createSignal('')
 
   let editor
-  let word
   let searchField
 
   let cachedRange
@@ -169,8 +167,6 @@ function Dialog (originalProps) {
     // cache selection details, to restore later
     cachedRange = getSelectionRange(editor)
 
-    word = getWord(editor)
-
     setVisible(true)
     const position = getDialogPosition(target, element, placement)
     element.style.top = `${position.top}px`
@@ -202,7 +198,6 @@ function Dialog (originalProps) {
     autocomplete({
       template: template,
       element: editor,
-      word: word,
     })
 
     // close dialog

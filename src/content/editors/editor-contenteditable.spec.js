@@ -17,15 +17,6 @@ describe('editor ContentEditable', () => {
     insertContentEditableTemplate({
       html: '<div>test</div>',
       element: editable,
-      focusNode: editable,
-      word: {
-        start: 0,
-        end: 0,
-        text: ''
-      },
-      template: {
-        shortcut: ''
-      }
     })
 
     expect(editable.innerHTML).to.equal('<div>test</div>')
@@ -38,15 +29,6 @@ describe('editor ContentEditable', () => {
     insertContentEditableTemplate({
       html: '<div>test</div>',
       element: editable,
-      focusNode: window.getSelection().focusNode,
-      word: {
-        start: 0,
-        end: 0,
-        text: ''
-      },
-      template: {
-        shortcut: ''
-      }
     })
 
     expect(editable.innerHTML).to.equal('<div>pre<div>test</div></div>')
