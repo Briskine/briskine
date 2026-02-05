@@ -1,176 +1,191 @@
-import { expect, describe, it, beforeAll, beforeEach, afterAll } from 'vitest'
+import { expect, describe, it } from 'vitest'
 
-import {insertPasteTemplate} from './editor-paste.js'
-import {setup, destroy} from '../page/page-parent.js'
+import {pageInsertPasteTemplate} from './editor-paste.js'
 
-let $link
-let $script
-let $editor
-let containerId = 'prosemirror-container'
+async function setupProseMirror () {
+  let containerId = 'prosemirror-container'
 
-function cleanEditor () {
-  $editor.innerHTML = ''
-  Array('input', 'change').forEach((eventType) => {
-    $editor.dispatchEvent(new Event(eventType, {bubbles: true}))
-  })
-}
+  const $link = document.createElement('link')
+  $link.rel = 'stylesheet'
+  $link.href = 'https://prosemirror.net/css/editor.css'
+  document.head.appendChild($link)
 
-function waitForEditor () {
-  return new Promise((resolve) => {
-    window.addEventListener('prosemirror-ready', () => {
-      $editor = document.querySelector('[contenteditable]')
-      resolve()
-    }, {once: true})
+  const $container = document.createElement('div')
+  $container.id = containerId
+  document.body.appendChild($container)
 
-  })
-}
+  const $script = document.createElement('script')
+  $script.type = 'module'
+  $script.textContent = `
+    import {EditorState} from 'https://cdn.jsdelivr.net/npm/prosemirror-state@1/+esm'
+    import {EditorView} from 'https://cdn.jsdelivr.net/npm/prosemirror-view@1/+esm'
+    import {Schema, DOMParser} from 'https://cdn.jsdelivr.net/npm/prosemirror-model@1/+esm'
+    import {schema} from 'https://cdn.jsdelivr.net/npm/prosemirror-schema-basic@1/+esm'
+    import {addListNodes} from 'https://cdn.jsdelivr.net/npm/prosemirror-schema-list@1/+esm'
+    import {exampleSetup} from 'https://cdn.jsdelivr.net/npm/prosemirror-example-setup@1/+esm'
 
-// paste is used for ProseMirror and Draft.js.
-// we're only testing ProseMirror here.
-describe('editor Paste', function () {
-  beforeAll(async function () {
-    await setup()
+    const $editor = document.getElementById('${containerId}')
+    const $content = document.createElement('div')
+    document.body.appendChild($editor)
 
-    $link = document.createElement('link')
-    $link.rel = 'stylesheet'
-    $link.href = 'https://prosemirror.net/css/editor.css'
-    document.head.appendChild($link)
+    // Mix the nodes from prosemirror-schema-list into the basic schema to
+    // create a schema with list support.
+    const mySchema = new Schema({
+      nodes: addListNodes(schema.spec.nodes, 'paragraph block*', 'block'),
+      marks: schema.spec.marks
+    })
 
-    $script = document.createElement('script')
-    $script.type = 'module'
-    $script.textContent = `
-      import {EditorState} from 'https://cdn.jsdelivr.net/npm/prosemirror-state@1/+esm'
-      import {EditorView} from 'https://cdn.jsdelivr.net/npm/prosemirror-view@1/+esm'
-      import {Schema, DOMParser} from 'https://cdn.jsdelivr.net/npm/prosemirror-model@1/+esm'
-      import {schema} from 'https://cdn.jsdelivr.net/npm/prosemirror-schema-basic@1/+esm'
-      import {addListNodes} from 'https://cdn.jsdelivr.net/npm/prosemirror-schema-list@1/+esm'
-      import {exampleSetup} from 'https://cdn.jsdelivr.net/npm/prosemirror-example-setup@1/+esm'
-
-      const $editor = document.createElement('div')
-      $editor.id = '${containerId}'
-      const $content = document.createElement('div')
-      document.body.appendChild($editor)
-
-      // Mix the nodes from prosemirror-schema-list into the basic schema to
-      // create a schema with list support.
-      const mySchema = new Schema({
-        nodes: addListNodes(schema.spec.nodes, 'paragraph block*', 'block'),
-        marks: schema.spec.marks
+    new EditorView($editor, {
+      state: EditorState.create({
+        doc: DOMParser.fromSchema(mySchema).parse($content),
+        plugins: exampleSetup({schema: mySchema})
       })
-
-      new EditorView($editor, {
-        state: EditorState.create({
-          doc: DOMParser.fromSchema(mySchema).parse($content),
-          plugins: exampleSetup({schema: mySchema})
-        })
-      })
-
-      window.dispatchEvent(new Event('prosemirror-ready'))
-    `
-
-    document.body.appendChild($script)
-
-    await waitForEditor()
-  }, 20000)
-
-  beforeEach(() => {
-    cleanEditor()
-  })
-
-  it('should insert template containing only anchor', async function () {
-    const template = '<a href="https://www.briskine.com">briskine-two</a>'
-
-    $editor.focus()
-    await insertPasteTemplate({
-      element: $editor,
-      html: template,
-      word: {
-        start: 0,
-        end: 0,
-        text: '',
-      },
-      template: {},
     })
 
-    expect($editor.innerHTML).to.include('<a href="https://www.briskine.com">briskine-two</a>')
-  })
+    window.dispatchEvent(new Event('prosemirror-ready'))
+  `
 
-  it('should insert template containing anchor with div container', async () => {
-    const template = '<div><a href="https://www.briskine.com">briskine-one</a></div>'
-
-    $editor.focus()
-    await insertPasteTemplate({
-      element: $editor,
-      html: template,
-      word: {
-        start: 0,
-        end: 0,
-        text: '',
-      },
-      template: {},
-    })
-
-    expect($editor.innerHTML).to.include('<a href="https://www.briskine.com">briskine-one</a>')
-  })
-
-  it('should insert template containing anchor with multiple containers', async () => {
-    const template = '<div><div><p><a href="https://www.briskine.com">briskine-one</a></p></div></div>'
-
-    $editor.focus()
-    await insertPasteTemplate({
-      element: $editor,
-      html: template,
-      word: {
-        start: 0,
-        end: 0,
-        text: '',
-      },
-      template: {},
-    })
-
-    expect($editor.innerHTML).to.include('<a href="https://www.briskine.com">briskine-one</a>')
-  })
-
-  it('should insert template containing heading', async () => {
-    const template = '<h1>heading 1</h1>'
-
-    $editor.focus()
-    await insertPasteTemplate({
-      element: $editor,
-      html: template,
-      word: {
-        start: 0,
-        end: 0,
-        text: '',
-      },
-      template: {},
-    })
-
-    expect($editor.innerHTML).to.include('<h1>heading 1</h1>')
-  })
-
-  it('should insert template containing list', async () => {
-    const template = '<ul><li>item</li></ul>'
-
-    $editor.focus()
-    await insertPasteTemplate({
-      element: $editor,
-      html: template,
-      word: {
-        start: 0,
-        end: 0,
-        text: '',
-      },
-      template: {},
-    })
-
-    expect($editor.innerHTML).to.include('<ul><li><p>item</p></li></ul>')
-  })
-
-  afterAll(() => {
+  function destroy() {
     $link.remove()
     $script.remove()
-    document.querySelector(`#${containerId}`).remove()
+    $container.remove()
+  }
+
+  const promise = new Promise((resolve) => {
+    window.addEventListener('prosemirror-ready', () => {
+      const $editor = document.querySelector('[contenteditable]')
+      $editor.focus()
+      resolve([$editor, destroy])
+    }, {once: true})
+  })
+
+  document.body.appendChild($script)
+
+  return promise
+}
+
+async function setupCkEditor () {
+  let containerId = 'ckeditor-container'
+
+  const $container = document.createElement('div')
+  $container.id = containerId
+  document.body.appendChild($container)
+
+  const $script = document.createElement('script')
+  $script.type = 'module'
+  $script.textContent = `
+    import ClassicEditor from 'https://cdn.jsdelivr.net/npm/@ckeditor/ckeditor5-build-classic/+esm'
+
+    await ClassicEditor.create(document.getElementById('${containerId}'), {
+      licenseKey: 'GPL',
+    })
+    window.dispatchEvent(new Event('ckeditor-ready'))
+  `
+
+  function destroy() {
+    $script.remove()
+    $container.remove()
+  }
+
+  const promise = new Promise((resolve) => {
+    window.addEventListener('ckeditor-ready', () => {
+      const $editor = document.querySelector('[contenteditable]')
+      $editor.focus()
+      resolve([$editor, destroy])
+    }, {once: true})
+  })
+
+  document.body.appendChild($script)
+
+  return promise
+}
+
+describe('editor Paste', function () {
+  it('should insert template containing only anchor in prosemirror', async function () {
+    const template = '<a href="https://www.briskine.com">briskine-two</a>'
+    const [editor, destroy] = await setupProseMirror()
+    await pageInsertPasteTemplate({
+      element: editor,
+      html: template,
+    })
+
+    expect(editor.innerHTML).to.equal('<p><a href="https://www.briskine.com">briskine-two</a></p>')
+    destroy()
+  })
+
+  it('should insert template containing anchor with div container in prosemirror', async () => {
+    const template = '<div><a href="https://www.briskine.com">briskine-one</a></div>'
+    const [editor, destroy] = await setupProseMirror()
+
+    await pageInsertPasteTemplate({
+      element: editor,
+      html: template,
+    })
+
+    expect(editor.innerHTML).to.equal('<p><a href="https://www.briskine.com">briskine-one</a></p>')
+    destroy()
+  })
+
+  it('should insert template containing anchor with multiple containers in prosemirror', async () => {
+    const template = '<div><div><p><a href="https://www.briskine.com">briskine-one</a></p></div></div>'
+    const [editor, destroy] = await setupProseMirror()
+
+    await pageInsertPasteTemplate({
+      element: editor,
+      html: template,
+    })
+
+    expect(editor.innerHTML).to.equal('<p><a href="https://www.briskine.com">briskine-one</a></p>')
+    destroy()
+  })
+
+  it('should insert template containing heading in prosemirror', async () => {
+    const template = '<h1>heading 1</h1>'
+    const [editor, destroy] = await setupProseMirror()
+
+    await pageInsertPasteTemplate({
+      element: editor,
+      html: template,
+    })
+
+    expect(editor.innerHTML).to.equal('<h1>heading 1</h1>')
+    destroy()
+  })
+
+  it('should insert template containing list in prosemirror', async () => {
+    const template = '<ul><li>item</li></ul>'
+    const [editor, destroy] = await setupProseMirror()
+
+    await pageInsertPasteTemplate({
+      element: editor,
+      html: template,
+    })
+
+    expect(editor.innerHTML).to.equal('<ul><li><p>item</p></li></ul>')
+    destroy()
+  })
+
+  it('should insert plain text in ckeditor', async () => {
+    const [editor, destroy] = await setupCkEditor()
+    const template = 'Kind regards'
+    await pageInsertPasteTemplate({
+      element: editor,
+      html: template,
+    })
+
+    expect(editor.innerHTML).to.equal('<p>Kind regards</p>')
+    destroy()
+  })
+
+  it('should insert rich text in ckeditor', async () => {
+    const [editor, destroy] = await setupCkEditor()
+    const template = '<div><strong>Image</strong> <img src="#"></div>'
+    await pageInsertPasteTemplate({
+      element: editor,
+      html: template,
+    })
+
+    expect(editor.innerHTML).to.equal('<p><strong>Image</strong>&nbsp;<span class="image-inline ck-widget" contenteditable="false"><img src="#"></span>Kind regards</p>')
     destroy()
   })
 })

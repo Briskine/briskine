@@ -17,7 +17,6 @@
  */
 
 import { request } from '../page/page-parent.js'
-import { selectWord } from '../utils/word.js'
 import getActiveElement from '../utils/active-element.js'
 
 function isPasteEditor (element) {
@@ -36,10 +35,8 @@ function isPasteEditor (element) {
   )
 }
 
-export function insertPasteTemplate ({ word, template, html, text }) {
+export function insertPasteTemplate ({ html, text }) {
   return request('paste-insert', {
-    word,
-    template,
     html,
     text,
   })
@@ -47,18 +44,11 @@ export function insertPasteTemplate ({ word, template, html, text }) {
 
 // runs in page context,
 // otherwise Firefox won't trigger the event.
-export async function pageInsertPasteTemplate ({ word, template, html, text }) {
+export async function pageInsertPasteTemplate ({ html, text }) {
   // we can't pass the element instance to the page script
   const element = getActiveElement()
   if (!isPasteEditor(element)) {
     return false
-  }
-
-  if (
-    template.shortcut
-    && word.text === template.shortcut
-  ) {
-    await selectWord(element, word)
   }
 
   const e = new ClipboardEvent('paste', {

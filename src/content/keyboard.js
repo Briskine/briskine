@@ -37,25 +37,27 @@ async function keyboardAutocomplete (e) {
   const cachedRange = getSelectionRange(element)
 
   const template = await getTemplateByShortcut(word.text)
-  if (template) {
-    // prevent default when getTemplateByShortcut returns immediately
-    e.preventDefault()
-    e.stopImmediatePropagation()
-
-    // restore selection
-    element.focus({ preventScroll: true })
-    if (
-      isContentEditable(element)
-      && cachedRange
-    ) {
-      await setSelectionRange(element, cachedRange)
-    }
-
-    autocomplete({
-      element: element,
-      template: template,
-    })
+  if (!template) {
+    return
   }
+
+  // prevent default when getTemplateByShortcut returns immediately
+  e.preventDefault()
+  e.stopImmediatePropagation()
+
+  // restore selection
+  element.focus({ preventScroll: true })
+  if (
+    isContentEditable(element)
+    && cachedRange
+  ) {
+    await setSelectionRange(element, cachedRange)
+  }
+
+  autocomplete({
+    element: element,
+    template: template,
+  })
 }
 
 let cachedKeyboardShortcut = ''

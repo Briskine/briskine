@@ -8,7 +8,6 @@
  * Used on WhatsApp Web, Facebook Messenger
  */
 
-import { selectWord } from '../utils/word.js'
 import { request } from '../page/page-parent.js'
 import getActiveElement from '../utils/active-element.js'
 import debug from '../../debug.js'
@@ -20,26 +19,17 @@ function isBeforeInputEditor (element) {
   )
 }
 
-export function insertBeforeInputTemplate ({ word, template, html, text }) {
+export function insertBeforeInputTemplate ({ html, text }) {
   return request('beforeinput-insert', {
-    word,
-    template,
     html,
     text,
   })
 }
 
-export async function pageInsertBeforeInputTemplate ({ template, word, text, html}) {
+export async function pageInsertBeforeInputTemplate ({ text, html}) {
   const element = getActiveElement()
   if (!isBeforeInputEditor(element)) {
     return false
-  }
-
-  if (
-    template.shortcut
-    && word.text === template.shortcut
-  ) {
-    await selectWord(element, word)
   }
 
   let e
