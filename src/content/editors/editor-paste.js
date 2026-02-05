@@ -45,7 +45,6 @@ export function insertPasteTemplate ({ html, text }) {
 // runs in page context,
 // otherwise Firefox won't trigger the event.
 export async function pageInsertPasteTemplate ({ html, text }) {
-  // we can't pass the element instance to the page script
   const element = getActiveElement()
   if (!isPasteEditor(element)) {
     return false

@@ -55,7 +55,6 @@ async function keyboardAutocomplete (e) {
   }
 
   autocomplete({
-    element: element,
     template: template,
   })
 }

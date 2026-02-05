@@ -105,7 +105,6 @@ describe('editor Paste', function () {
     const template = '<a href="https://www.briskine.com">briskine-two</a>'
     const [editor, destroy] = await setupProseMirror()
     await pageInsertPasteTemplate({
-      element: editor,
       html: template,
     })
 
@@ -118,7 +117,6 @@ describe('editor Paste', function () {
     const [editor, destroy] = await setupProseMirror()
 
     await pageInsertPasteTemplate({
-      element: editor,
       html: template,
     })
 
@@ -131,7 +129,6 @@ describe('editor Paste', function () {
     const [editor, destroy] = await setupProseMirror()
 
     await pageInsertPasteTemplate({
-      element: editor,
       html: template,
     })
 
@@ -144,7 +141,6 @@ describe('editor Paste', function () {
     const [editor, destroy] = await setupProseMirror()
 
     await pageInsertPasteTemplate({
-      element: editor,
       html: template,
     })
 
@@ -157,7 +153,6 @@ describe('editor Paste', function () {
     const [editor, destroy] = await setupProseMirror()
 
     await pageInsertPasteTemplate({
-      element: editor,
       html: template,
     })
 
@@ -169,7 +164,6 @@ describe('editor Paste', function () {
     const [editor, destroy] = await setupCkEditor()
     const template = 'Kind regards'
     await pageInsertPasteTemplate({
-      element: editor,
       html: template,
     })
 
@@ -181,7 +175,6 @@ describe('editor Paste', function () {
     const [editor, destroy] = await setupCkEditor()
     const template = '<div><strong>Image</strong> <img src="#"></div>'
     await pageInsertPasteTemplate({
-      element: editor,
       html: template,
     })
 

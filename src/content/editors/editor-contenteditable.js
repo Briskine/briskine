@@ -1,13 +1,15 @@
 /* ContentEditable
  */
 
+import getActiveElement from '../utils/active-element.js'
 import { getSelectionRange, setSelectionRange } from '../utils/selection.js'
 
 export function isContentEditable (element) {
   return element?.isContentEditable
 }
 
-export async function insertContentEditableTemplate ({ element, html, text }) {
+export async function insertContentEditableTemplate ({ html, text }) {
+  const element = getActiveElement()
   if (!isContentEditable(element)) {
     return false
   }

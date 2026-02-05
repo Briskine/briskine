@@ -24,6 +24,7 @@ import './plugins/gmail-mobile.js'
 import './plugins/linkedin.js'
 import './plugins/linkedin-sales-navigator.js'
 import './plugins/facebook.js'
+import getActiveElement from './utils/active-element.js'
 
 const editors = [
   // order matters
@@ -35,11 +36,8 @@ const editors = [
   insertTextfieldTemplate,
 ]
 
-async function insertTemplate ({ element, word, template, html, text }) {
+async function insertTemplate ({ html, text }) {
   const params = {
-    element,
-    word,
-    template,
     html,
     text,
   }
@@ -60,7 +58,8 @@ async function insertTemplate ({ element, word, template, html, text }) {
   return false
 }
 
-export default async function autocomplete ({ element, template }) {
+export default async function autocomplete ({ template }) {
+  const element = getActiveElement()
   const withAttachments = addAttachments(template.body, template.attachments)
   const data = await run('data', { element })
   const html = await parseTemplate(withAttachments, data)
@@ -74,7 +73,6 @@ export default async function autocomplete ({ element, template }) {
   }
 
   await insertTemplate({
-    element,
     text,
     html,
   })

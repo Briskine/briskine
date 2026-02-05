@@ -4,6 +4,7 @@
 
 import debug from '../../debug.js'
 import { isContentEditable } from './editor-contenteditable.js'
+import getActiveElement from '../utils/active-element.js'
 
 function minifyHtml (html) {
   // minifying the html makes execCommand(insertHTML) behave closer to how the
@@ -54,7 +55,8 @@ function insertText (text) {
   return document.execCommand('insertText', false, text)
 }
 
-export async function insertExecCommandTemplate ({ element, html, text }) {
+export async function insertExecCommandTemplate ({ html, text }) {
+  const element = getActiveElement()
   if (
     isContentEditable(element)
     && html !== text

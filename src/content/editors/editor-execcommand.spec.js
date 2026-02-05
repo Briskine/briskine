@@ -18,7 +18,6 @@ describe('editor ExecCommand', () => {
   it('should insert template into contenteditable', async () => {
     await insertExecCommandTemplate({
       html: '<div>test</div>',
-      element: editable,
     })
 
     expect(editable.innerHTML).to.equal('<div>test</div>')
@@ -29,7 +28,6 @@ describe('editor ExecCommand', () => {
 
     await insertExecCommandTemplate({
       text: 'test\ntest2\n[/image.png]',
-      element: editable,
     })
 
     expect(editable.innerHTML).to.equal('test<div>test2</div><div>[/image.png]</div>')
@@ -39,7 +37,6 @@ describe('editor ExecCommand', () => {
   it('should insert template into contenteditable', async () => {
     await insertExecCommandTemplate({
       html: '<div>test</div>',
-      element: editable,
     })
 
     expect(editable.innerHTML).to.equal('<div>test</div>')
@@ -51,7 +48,6 @@ describe('editor ExecCommand', () => {
 
     await insertExecCommandTemplate({
       html: '<div>template <img src="#" alt="image"></div>',
-      element: editable,
     })
 
     expect(editable.innerHTML).to.equal('<div>pretemplate <img src="#" alt="image"></div>')

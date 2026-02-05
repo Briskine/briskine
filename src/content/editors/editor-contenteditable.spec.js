@@ -1,4 +1,4 @@
-import { expect, describe, it, beforeAll, afterAll } from 'vitest'
+import { expect, describe, it, beforeAll, afterAll, beforeEach } from 'vitest'
 
 import {insertContentEditableTemplate} from './editor-contenteditable.js'
 
@@ -10,13 +10,14 @@ describe('editor ContentEditable', () => {
     document.body.appendChild(editable)
   })
 
-  it('should insert template into contenteditable', () => {
+  beforeEach(() => {
     editable.innerHTML = ''
     editable.focus()
+  })
 
+  it('should insert template into contenteditable', () => {
     insertContentEditableTemplate({
       html: '<div>test</div>',
-      element: editable,
     })
 
     expect(editable.innerHTML).to.equal('<div>test</div>')
@@ -28,7 +29,6 @@ describe('editor ContentEditable', () => {
 
     insertContentEditableTemplate({
       html: '<div>test</div>',
-      element: editable,
     })
 
     expect(editable.innerHTML).to.equal('<div>pre<div>test</div></div>')

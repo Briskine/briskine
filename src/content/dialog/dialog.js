@@ -197,7 +197,6 @@ function Dialog (originalProps) {
 
     autocomplete({
       template: template,
-      element: editor,
     })
 
     // close dialog
