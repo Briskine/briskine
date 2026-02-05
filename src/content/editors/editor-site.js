@@ -7,6 +7,7 @@
  *
  */
 
+import getActiveElement from '../utils/active-element.js'
 import { insertExecCommandTemplate } from './editor-execcommand.js'
 
 function isLinkedInMessageEditor (element) {
@@ -23,7 +24,8 @@ function isJiraRichTextEditor (element) {
   )
 }
 
-export async function insertSiteTemplate ({ element, template, word, html, text }) {
+export async function insertSiteTemplate ({ html, text }) {
+  const element = getActiveElement()
   if (isLinkedInMessageEditor(element)) {
     // workaround for issues with inserting templates in the linkedin message editor.
     // we can use the paste editor later if they fix their paste handler.
@@ -44,9 +46,6 @@ export async function insertSiteTemplate ({ element, template, word, html, text 
     element.dispatchEvent(new Event('input', {bubbles: true}))
 
     return insertExecCommandTemplate({
-      element,
-      template,
-      word,
       // plain text only
       html: text,
       text,
@@ -66,9 +65,6 @@ export async function insertSiteTemplate ({ element, template, word, html, text 
     // using execCommand disables their "floating paste button", but fixes the issues.
     // we can use the paste editor later if they fix their paste handler.
     return insertExecCommandTemplate({
-      element,
-      template,
-      word,
       html,
       text,
     })
