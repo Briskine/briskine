@@ -2,7 +2,6 @@
  * ExecCommand, used as fallback
  */
 
-import { selectWord } from '../utils/word.js'
 import debug from '../../debug.js'
 import { isContentEditable } from './editor-contenteditable.js'
 
@@ -55,15 +54,7 @@ function insertText (text) {
   return document.execCommand('insertText', false, text)
 }
 
-export async function insertExecCommandTemplate ({ element, template, word, html, text }) {
-  if (
-    template.shortcut
-    && word.text === template.shortcut
-  ) {
-    // delete matched shortcut
-    await selectWord(element, word)
-  }
-
+export async function insertExecCommandTemplate ({ element, html, text }) {
   if (
     isContentEditable(element)
     && html !== text

@@ -1,4 +1,4 @@
-import { expect, describe, it, beforeAll, afterAll } from 'vitest'
+import { expect, describe, it, beforeAll, afterAll, beforeEach } from 'vitest'
 
 import { insertExecCommandTemplate } from './editor-execcommand.js'
 
@@ -10,44 +10,26 @@ describe('editor ExecCommand', () => {
     document.body.appendChild(editable)
   })
 
-  it('should insert template into contenteditable', async () => {
+  beforeEach(() => {
     editable.innerHTML = ''
     editable.focus()
+  })
 
+  it('should insert template into contenteditable', async () => {
     await insertExecCommandTemplate({
       html: '<div>test</div>',
       element: editable,
-      focusNode: editable,
-      word: {
-        start: 0,
-        end: 0,
-        text: ''
-      },
-      template: {
-        shortcut: ''
-      }
     })
 
     expect(editable.innerHTML).to.equal('<div>test</div>')
   })
 
   it('should insert template into contenteditable=plaintext-true', async () => {
-    editable.innerHTML = ''
-    editable.focus()
     editable.setAttribute('contenteditable', 'plaintext-only')
 
     await insertExecCommandTemplate({
       text: 'test\ntest2\n[/image.png]',
       element: editable,
-      focusNode: editable,
-      word: {
-        start: 0,
-        end: 0,
-        text: ''
-      },
-      template: {
-        shortcut: ''
-      }
     })
 
     expect(editable.innerHTML).to.equal('test<div>test2</div><div>[/image.png]</div>')
@@ -55,21 +37,9 @@ describe('editor ExecCommand', () => {
   })
 
   it('should insert template into contenteditable', async () => {
-    editable.innerHTML = ''
-    editable.focus()
-
     await insertExecCommandTemplate({
       html: '<div>test</div>',
       element: editable,
-      focusNode: editable,
-      word: {
-        start: 0,
-        end: 0,
-        text: ''
-      },
-      template: {
-        shortcut: ''
-      }
     })
 
     expect(editable.innerHTML).to.equal('<div>test</div>')
@@ -82,15 +52,6 @@ describe('editor ExecCommand', () => {
     await insertExecCommandTemplate({
       html: '<div>template <img src="#" alt="image"></div>',
       element: editable,
-      focusNode: window.getSelection().focusNode,
-      word: {
-        start: 0,
-        end: 0,
-        text: ''
-      },
-      template: {
-        shortcut: ''
-      }
     })
 
     expect(editable.innerHTML).to.equal('<div>pretemplate <img src="#" alt="image"></div>')
