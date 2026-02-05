@@ -1,7 +1,6 @@
 import { expect, describe, it, beforeAll, beforeEach, afterAll } from 'vitest'
 
-import {insertQuill1Template} from './editor-quill1.js'
-import {setup, destroy} from '../page/page-parent.js'
+import {pageInsertQuill1Template} from './editor-quill1.js'
 
 let $link
 let $script
@@ -27,8 +26,6 @@ function waitForEditor () {
 // only tests quill v1
 describe('editor Quill1', () => {
   beforeAll(async function () {
-    await setup()
-
     $link = document.createElement('link')
     $link.rel = 'stylesheet'
     $link.href = 'https://ga.jspm.io/npm:quill@1.3.7/dist/quill.snow.css'
@@ -72,21 +69,13 @@ describe('editor Quill1', () => {
 
   beforeEach(() => {
     cleanEditor()
+    $editor.focus()
   })
 
   it('should insert template', async () => {
     const template = '<div>Kind regards,</div><div>.</div>'
-
-    $editor.focus()
-    await insertQuill1Template({
-      element: $editor,
+    await pageInsertQuill1Template({
       html: template,
-      word: {
-        start: 0,
-        end: 0,
-        text: '',
-      },
-      template: {},
     })
 
     expect($editor.innerHTML).to.include('<p>Kind regards,</p><p>.</p>')
@@ -97,6 +86,5 @@ describe('editor Quill1', () => {
     $script.remove()
     $importmap.remove()
     document.querySelector(`#${containerId}`).remove()
-    destroy()
   })
 })

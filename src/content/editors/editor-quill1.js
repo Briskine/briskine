@@ -5,13 +5,13 @@
 
 import getActiveElement from '../utils/active-element.js'
 import { request } from '../page/page-parent.js'
-import { selectWord } from '../utils/word.js'
+import { getSelectionRange } from '../utils/selection.js'
 
 function isQuill1 (element) {
   return element?.closest?.('.ql-container')?.__quill
 }
 
-export async function pageInsertQuill1Template ({ template, word, html, text }) {
+export async function pageInsertQuill1Template ({ html, text }) {
   // we can't pass the element instance to the page script
   const element = getActiveElement()
   if (!isQuill1(element)) {
@@ -22,14 +22,9 @@ export async function pageInsertQuill1Template ({ template, word, html, text }) 
   // private __quill property can only be accessed in a page script
   const quill = element.closest('.ql-container').__quill
 
-  // remove shortcut
-  if (
-    template.shortcut
-    && word.text === template.shortcut
-  ) {
-    const selectedWordRange = await selectWord(element, word)
-    selectedWordRange.deleteContents()
-  }
+  // needs manual selection delete
+  const range = getSelectionRange(element)
+  range.deleteContents()
 
   // use quill instance methods.
   const quillRange = quill.getSelection()
@@ -56,10 +51,8 @@ export async function pageInsertQuill1Template ({ template, word, html, text }) 
   return true
 }
 
-export function insertQuill1Template ({ word, template, text, html }) {
+export function insertQuill1Template ({ text, html }) {
   return request('quill1-insert', {
-    word,
-    template,
     text,
     html,
   })

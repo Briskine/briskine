@@ -35,6 +35,10 @@ async function keyboardAutocomplete (e) {
 
   // cache range
   const cachedRange = getSelectionRange(element)
+  // workaround for Quill v1 issues when restoring focus (only when not preventing default).
+  // if the editor adds a tab/space/character when pressing Tab, endOffset will change.
+  // cache and force restore it later.
+  const cachedEndOffset = cachedRange.endOffset
 
   const template = await getTemplateByShortcut(word.text)
   if (!template) {
@@ -51,11 +55,13 @@ async function keyboardAutocomplete (e) {
     isContentEditable(element)
     && cachedRange
   ) {
+    // force restore endOfsset in case other characters were added after the shortcut.
+    cachedRange.setEnd(cachedRange.endContainer, cachedEndOffset)
     await setSelectionRange(element, cachedRange)
   }
 
   autocomplete({
-    template: template,
+    template,
   })
 }
 

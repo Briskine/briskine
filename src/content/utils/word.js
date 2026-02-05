@@ -8,7 +8,8 @@ import { isTextfieldEditor } from '../editors/editor-textfield.js'
 // we can't use regex \S to match the first non-whitespace character,
 // because it also considers special chars like zero-width-whitespace as non-whitespace.
 const spaces = [
-  '\n', //newline
+  '\n', // newline
+  '\t', // tab
   '\u0020', // space
   '\u00A0', // no-break space
   '\u200B', // zero width whitespace
