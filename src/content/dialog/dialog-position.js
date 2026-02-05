@@ -45,7 +45,14 @@ export function getDialogPosition (target, instance, placement = 'top-left') {
 
   if (placement.includes('right')) {
     left += targetMetrics.width
+
+    const pageWidth = window.innerWidth
+    const spaceRight = pageWidth - left
+    if (spaceRight < dialogMetrics.width) {
+      placement = placement + '-flip'
+    }
   }
+
   if (placement.includes('flip')) {
     left -= dialogMetrics.width
   }
