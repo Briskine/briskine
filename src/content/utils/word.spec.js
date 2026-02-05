@@ -1,7 +1,6 @@
 import { expect, describe, it, beforeEach, afterEach } from 'vitest'
 
-import { getWord } from './word.js'
-import { setSelectionRange } from './selection.js'
+import { getWord, selectWord } from './word.js'
 
 describe('word', () => {
   let editable
@@ -71,6 +70,25 @@ describe('word', () => {
     })
   })
 
+  it('should select contenteditable word, with preceding multi-line text, on the second line', async () => {
+    editable.innerHTML = 'text<br>text pre<br>text'
+    const selection = window.getSelection()
+    selection.setBaseAndExtent(
+      editable.childNodes[2],
+      8,
+      editable.childNodes[2],
+      8,
+    )
+
+    const word = getWord(editable)
+    await selectWord(editable, word)
+
+    expect(selection.anchorNode).to.equal(editable.childNodes[2])
+    expect(selection.anchorOffset).to.equal(5)
+    expect(selection.focusNode).to.equal(editable.childNodes[2])
+    expect(selection.focusOffset).to.equal(8)
+  })
+
   it('should get contenteditable word, with preceding whitespace and text', () => {
     editable.innerHTML = '   pre'
     const range = document.createRange()
@@ -112,7 +130,9 @@ describe('word', () => {
     const range = new Range()
     range.selectNodeContents(editableShadow.lastChild)
     range.collapse()
-    setSelectionRange(editableShadow, range)
+    const selection = window.getSelection()
+    selection.removeAllRanges()
+    selection.addRange(range)
 
     expect(
       getWord(editableShadow)

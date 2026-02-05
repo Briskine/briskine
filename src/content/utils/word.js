@@ -21,6 +21,9 @@ export function getWord (element) {
   let beforeSelection = ''
 
   if (isContentEditable(element)) {
+    // get the text before the selection,
+    // only from the focusNode, not the entire
+    // contenteditable.
     const [focusNode, focusOffset] = getSelectionFocus(element)
 
     switch (focusNode.nodeType) {
