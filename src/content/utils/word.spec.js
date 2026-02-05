@@ -70,6 +70,28 @@ describe('word', () => {
     })
   })
 
+  it('should select contenteditable word', async () => {
+    editable.innerHTML = 'text'
+    const selection = window.getSelection()
+    selection.setBaseAndExtent(
+      editable.childNodes[0],
+      4,
+      editable.childNodes[0],
+      4,
+    )
+
+    await selectWord(editable, {
+      start: 0,
+      end: 4,
+      text: 'text',
+    })
+
+    expect(selection.anchorNode).to.equal(editable.childNodes[0])
+    expect(selection.anchorOffset).to.equal(0)
+    expect(selection.focusNode).to.equal(editable.childNodes[0])
+    expect(selection.focusOffset).to.equal(4)
+  })
+
   it('should select contenteditable word, with preceding multi-line text, on the second line', async () => {
     editable.innerHTML = 'text<br>text pre<br>text'
     const selection = window.getSelection()
@@ -80,8 +102,11 @@ describe('word', () => {
       8,
     )
 
-    const word = getWord(editable)
-    await selectWord(editable, word)
+    await selectWord(editable, {
+      start: 5,
+      end: 8,
+      text: 'pre'
+    })
 
     expect(selection.anchorNode).to.equal(editable.childNodes[2])
     expect(selection.anchorOffset).to.equal(5)
@@ -104,6 +129,39 @@ describe('word', () => {
       end: 6,
       text: 'pre',
     })
+  })
+
+  it('should get textarea word, with preceding whitespace and text', () => {
+    const textarea = document.createElement('textarea')
+    textarea.innerHTML = '   pre'
+    textarea.focus()
+    textarea.setSelectionRange(6, 6)
+
+    expect(
+      getWord(textarea)
+    ).to.eql({
+      start: 3,
+      end: 6,
+      text: 'pre',
+    })
+    textarea.remove()
+  })
+
+  it('should select textarea word', async () => {
+    const textarea = document.createElement('textarea')
+    textarea.innerHTML = '   pre'
+    textarea.focus()
+    textarea.setSelectionRange(6, 6)
+
+    await selectWord(textarea, {
+      start: 3,
+      end: 6,
+      text: 'pre'
+    })
+
+    expect(textarea.selectionStart).to.equal(3)
+    expect(textarea.selectionEnd).to.equal(6)
+    textarea.remove()
   })
 
   it('should get contenteditable word, with preceding whitespace and text, in shadow dom', () => {
@@ -143,6 +201,28 @@ describe('word', () => {
     })
 
     editableShadow.remove()
+  })
+
+  it('should select textarea word in shadow dom', async () => {
+    const host = document.createElement('div')
+    document.body.appendChild(host)
+    const template = '<textarea>shadow</textarea>'
+    const shadow = host.attachShadow({ mode: 'open' })
+    shadow.innerHTML = template
+
+    const textarea = shadow.querySelector('textarea')
+    textarea.focus()
+    textarea.setSelectionRange(6, 6)
+
+    await selectWord(textarea, {
+      start: 0,
+      end: 6,
+      text: 'shadow'
+    })
+
+    expect(textarea.selectionStart).to.equal(0)
+    expect(textarea.selectionEnd).to.equal(6)
+    host.remove()
   })
 
   afterEach(() => {
