@@ -12,8 +12,6 @@ import {create  as handlebarsCreate} from 'handlebars'
 import {respond} from './sandbox-messenger-client.js'
 import { eventSandboxCompile } from '../../config.js'
 
-// legacy date helper
-import date from '../helpers/date.js'
 // legacy choice helper
 import choice from '../helpers/choice.js'
 
@@ -31,7 +29,6 @@ function getHandlebars (partials = []) {
   const hbs = handlebarsCreate()
 
   // legacy helpers
-  hbs.registerHelper('date', date)
   hbs.registerHelper('choice', choice)
 
   hbs.registerHelper('and', and)

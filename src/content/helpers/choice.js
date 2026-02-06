@@ -1,5 +1,9 @@
-// legacy random choice helper
-// {{ choice 'one, two, three' }}
+/*
+ * TODO - DEPRECATED TO BE REMOVED
+ *
+ * Legacy random choice helper.
+ * {{ choice 'one, two, three' }}
+ */
 
 export default function choice (args) {
   // split by comma and trim
