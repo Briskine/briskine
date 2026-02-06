@@ -7,8 +7,8 @@ import {
   getSettings,
   on as storeOn,
   off as storeOff,
-  destroy as storeDestroy,
-  setup as storeSetup,
+  destroy as destroyStore,
+  setup as setupStore,
 } from '../store/store-content.js'
 import { eventDestroy } from '../config.js'
 import {isBlocklisted} from '../blocklist.js'
@@ -22,6 +22,9 @@ import {setup as setupPage, destroy as destroyPage} from './page/page-parent.js'
 import {setup as setupAttachments, destroy as destroyAttachments} from './attachments/attachments.js'
 import {setup as setupDashboardEvents, destroy as destroyDashboardEvents} from './dashboard-events-client.js'
 import {setup as setupInsertEvent, destroy as destroyInsertEvent} from './insert-template-event.js'
+import getEventTarget from './utils/event-target.js'
+import { isTextfieldEditor } from './editors/editor-textfield.js'
+import { isContentEditable } from './editors/editor-contenteditable.js'
 
 const readyMessage = 'briskine-ready'
 
@@ -38,91 +41,64 @@ function getParentUrl () {
   return url
 }
 
-async function init (settings) {
-  setupStatus()
-  setupDashboardEvents()
+async function init () {
+  const settings = await getSettings()
 
   if (isBlocklisted(settings, getParentUrl())) {
     return false
   }
 
-  await Promise.all([
-    storeSetup(),
+  await Promise.allSettled([
+    setupStore(),
     setupKeyboard(settings),
     setupBubble(settings),
     setupDialog(settings),
-
     setupPage(),
     setupAttachments(),
-
     setupInsertEvent(),
   ])
 
   // update the content components if settings change
   settingsCache = {...settings}
-  storeOn('users-updated', refreshContentScripts)
+  storeOn('users-updated', usersUpdated)
 
   window.postMessage(readyMessage)
 }
 
-let startupDelay = 500
-let startupRetries = 0
-const maxStartupRetries = 10
-let destroyed = false
-
-async function startup () {
-  startupRetries = startupRetries + 1
-
-  if (startupRetries > maxStartupRetries) {
-    return
-  }
-
-  // don't load on non html pages (json, xml, etc..)
-  if (document.contentType !== 'text/html') {
-    return
-  }
-
-  // try again later if we don't have a body yet,
-  // for dynamically created iframes.
-  if (!document.body) {
-    return setTimeout(startup, startupDelay)
-  }
-
-  // use a custom property on the body,
-  // to detect if the body was recreated (eg. in dynamically created iframes).
-  document.body._briskineLoaded = true
-
-  const settings = await getSettings()
-  // check if we were destroyed while waiting for settings, or startupDelay
-  if (destroyed === false) {
-    init(settings)
-
-    setTimeout(() => {
-      // if the body was recreated,
-      // we'll retry initializing.
-      if (!document.body._briskineLoaded) {
-        startup()
-      }
-    }, startupDelay)
+function initOnFocus (e) {
+  const target = getEventTarget(e)
+  if (isTextfieldEditor(target) || isContentEditable(target)) {
+    init()
+    document.removeEventListener('focusin', initOnFocus, true)
   }
 }
 
-function destructor () {
-  storeOff('users-updated', refreshContentScripts)
-  storeDestroy()
+async function startup () {
+  setupStatus()
+  setupDashboardEvents()
 
+  document.addEventListener('focusin', initOnFocus, true)
+  return
+}
+
+function destructor () {
+  destroyStatus()
+  destroyDashboardEvents()
+
+  storeOff('users-updated', usersUpdated)
+
+  destroyStore()
   destroyKeyboard()
   destroyBubble()
   destroyDialog()
-  destroyStatus()
-  destroySandbox()
   destroyPage()
   destroyAttachments()
-  destroyDashboardEvents()
   destroyInsertEvent()
 
+  destroySandbox()
+
+  document.removeEventListener('focusin', initOnFocus, true)
   settingsCache = {}
-  destroyed = true
 }
 
 // destroy existing content script
@@ -131,7 +107,7 @@ document.dispatchEvent(new CustomEvent(eventDestroy))
 document.addEventListener(eventDestroy, destructor, {once: true})
 
 let settingsCache = {}
-function refreshContentScripts () {
+async function usersUpdated () {
   // run only if we already have settings cached,
   // when content components were initialized.
   if (!Object.keys(settingsCache).length) {
@@ -139,14 +115,12 @@ function refreshContentScripts () {
   }
 
   // restart the content components if any of the settings changed
-  getSettings()
-    .then((settings) => {
-      const settingsChanged = !isEqual(settings, settingsCache)
-      if (settingsChanged) {
-        destructor()
-        init(settings)
-      }
-    })
+  const settings = await getSettings()
+  const settingsChanged = !isEqual(settings, settingsCache)
+  if (settingsChanged) {
+    destructor()
+    startup()
+  }
 }
 
 startup()
