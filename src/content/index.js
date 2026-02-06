@@ -25,6 +25,7 @@ import {setup as setupInsertEvent, destroy as destroyInsertEvent} from './insert
 import getEventTarget from './utils/event-target.js'
 import { isTextfieldEditor } from './editors/editor-textfield.js'
 import { isContentEditable } from './editors/editor-contenteditable.js'
+import getActiveElement from './utils/active-element.js'
 
 const readyMessage = 'briskine-ready'
 
@@ -73,12 +74,46 @@ function initOnFocus (e) {
   }
 }
 
+let startupRetries = 0
+const startupDelay = 500
+const maxStartupRetries = 10
+const loadedProp = '__briskineLoaded'
+
 async function startup () {
+  startupRetries = startupRetries + 1
+  if (startupRetries > maxStartupRetries) {
+    return
+  }
+
+  // try again later if we don't have a body yet,
+  // for dynamically created iframes.
+  if (!document.body) {
+    return setTimeout(startup, startupDelay)
+  }
+
+  // use a custom property on the body,
+  // to detect if the body was recreated (eg. in dynamically created iframes).
+  document.body[loadedProp] = true
+
   setupStatus()
   setupDashboardEvents()
-
   document.addEventListener('focusin', initOnFocus, true)
-  return
+  // in case an editable is already focused
+  const activeElement = getActiveElement()
+  if (activeElement) {
+    initOnFocus({target: activeElement})
+  }
+
+  setTimeout(() => {
+    // if the document was recreated (e.g., ckeditor4 dynamically crated iframe),
+    // we'll retry initializing.
+    if (!document.body[loadedProp]) {
+      return startup()
+    }
+
+    // cleanup
+    delete document.body[loadedProp]
+  }, startupDelay)
 }
 
 function destructor () {

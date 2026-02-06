@@ -1,39 +1,45 @@
-const promiseMainWindow = new Promise((resolve) => {
-  window.addEventListener('message', (e) => {
+function waitForReady (context) {
+  let resolve
+  const promise = new Promise((res) => resolve = res)
+
+  const doc = context.document
+
+  const focusEditable = () => {
+    const editable = doc.querySelector('[contenteditable], textarea, input')
+    if (!editable) {
+      return resolve()
+    }
+
+    editable.focus()
+  }
+
+  context.addEventListener('message', (e) => {
     if (e?.data === 'briskine-ready') {
       resolve()
     }
   })
-})
 
-const promiseDocumentReady = new Promise((resolve) => {
-  document.onreadystatechange = () => {
-    if (document.readyState === 'complete') {
-      const iframes = document.querySelectorAll('iframe')
-
-      if (iframes.length) {
-        Promise.all(
-          [...iframes].map(
-            (iframeElem) =>
-              new Promise((resolve) => {
-                iframeElem.contentWindow.addEventListener('message', (e) => {
-                  if (e?.data === 'briskine-ready') {
-                    resolve()
-                  }
-                })
-              }),
-          ),
-        ).then(() => {
-          resolve()
-        })
-      } else {
-        resolve(true)
-      }
-    }
+  if (doc.readyState === 'complete') {
+    focusEditable()
+  } else {
+    context.addEventListener('load', focusEditable)
   }
-})
 
-Promise.all([promiseMainWindow, promiseDocumentReady]).then(() => {
+  return promise
+}
+
+function waitForReadyFrames () {
+  const iframes = document.querySelectorAll('iframe')
+  return Promise
+    .all([...iframes]
+    .map((frame) => waitForReady(frame.contentWindow)))
+}
+
+async function ready () {
+  await waitForReady(window)
+  await waitForReadyFrames()
   // eslint-disable-next-line no-console
   console.log('BSKN inited')
-})
+}
+
+ready()

@@ -5,13 +5,10 @@ test.describe('CKEditor4', () => {
     await openPage(page, '/ckeditor4/ckeditor4.html')
   })
 
-  test.afterEach(async ({page}) => {
-    await page.getByRole('textbox').fill('')
-  })
-
   test('should insert template with keyboard shortcut', async ({page}) => {
     const frame = page.frameLocator('.cke_wysiwyg_frame')
     const textbox = frame.getByRole('textbox')
+    await textbox.fill('')
     await textbox.fill('kr')
     await textbox.press('Tab')
     await expect(textbox).toHaveText('Kind regards,\n.', {useInnerText: true})
@@ -20,6 +17,7 @@ test.describe('CKEditor4', () => {
   test('should insert template from dialog', async ({page}) => {
     const frame = page.frameLocator('.cke_wysiwyg_frame')
     const textbox = frame.getByRole('textbox')
+    await textbox.fill('')
     await textbox.press('Control+ ')
     const search = frame.getByPlaceholder('Search templates...')
     await expect(search).toBeVisible()

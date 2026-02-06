@@ -4,13 +4,16 @@
     <meta charset="utf-8">
     <title>CKEditor 4</title>
     <script src="https://cdn.ckeditor.com/4.22.1/standard/ckeditor.js"></script>
-    <script src="/extension-ready.js"></script>
   </head>
   <body>
     <div id="editor" role="textbox"></div>
-    <input type="text">
     <script>
       CKEDITOR.replace(document.querySelector('#editor'))
+      CKEDITOR.on('instanceReady', () => {
+        const script = document.createElement('script')
+        script.src = '/extension-ready.js'
+        document.body.appendChild(script)
+      })
     </script>
   </body>
 </html>
