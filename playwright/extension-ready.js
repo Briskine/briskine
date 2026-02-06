@@ -1,11 +1,33 @@
-function waitForReady (context) {
+function querySelectDeep (selector, root = document) {
+  const found = root.querySelector(selector)
+  if (found) {
+    return found
+  }
+
+  const walker = document.createTreeWalker(root, NodeFilter.SHOW_ELEMENT)
+  let el = walker.nextNode()
+
+  while (el) {
+    if (el.shadowRoot) {
+      const foundInShadow = querySelectDeep(selector, el.shadowRoot)
+      if (foundInShadow) {
+        return foundInShadow
+      }
+    }
+    el = walker.nextNode()
+  }
+
+  return null
+}
+
+function waitForReady(context) {
   let resolve
   const promise = new Promise((res) => resolve = res)
 
   const doc = context.document
 
   const focusEditable = () => {
-    const editable = doc.querySelector('[contenteditable], textarea, input')
+    const editable = querySelectDeep('[contenteditable], textarea, input', doc)
     if (!editable) {
       return resolve()
     }
