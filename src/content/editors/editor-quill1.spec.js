@@ -4,7 +4,6 @@ import {pageInsertQuill1Template} from './editor-quill1.js'
 
 let $link
 let $script
-let $importmap
 let $editor
 let containerId = 'quill-container'
 
@@ -31,26 +30,10 @@ describe('editor Quill1', () => {
     $link.href = 'https://ga.jspm.io/npm:quill@1.3.7/dist/quill.snow.css'
     document.head.appendChild($link)
 
-    $importmap = document.createElement('script')
-    $importmap.type = 'importmap'
-    $importmap.textContent = `
-      {
-        "imports": {
-          "quill": "https://ga.jspm.io/npm:quill@1.3.7/dist/quill.js"
-        },
-        "scopes": {
-          "https://ga.jspm.io/": {
-            "buffer": "https://ga.jspm.io/npm:@jspm/core@2.1.0/nodelibs/browser/buffer.js"
-          }
-        }
-      }
-    `
-    document.body.appendChild($importmap)
-
     $script = document.createElement('script')
     $script.type = 'module'
     $script.textContent = `
-      import Quill from 'quill'
+      import Quill from 'https://cdn.jsdelivr.net/npm/quill@1/+esm'
 
       const $editor = document.createElement('div')
       $editor.id = '${containerId}'
@@ -84,7 +67,6 @@ describe('editor Quill1', () => {
   afterAll(() => {
     $link.remove()
     $script.remove()
-    $importmap.remove()
     document.querySelector(`#${containerId}`).remove()
   })
 })

@@ -2,6 +2,10 @@ import { expect, describe, it, beforeAll, afterAll, beforeEach } from 'vitest'
 
 import {insertContentEditableTemplate} from './editor-contenteditable.js'
 
+function isFirefox (task) {
+  return task.file.projectName.includes('(firefox)')
+}
+
 describe('editor ContentEditable', () => {
   let editable
   beforeAll(() => {
@@ -34,14 +38,21 @@ describe('editor ContentEditable', () => {
     expect(editable.innerHTML).to.equal('<div>pre<div>test</div></div>')
   })
 
-  it('should insert template into contenteditable=plaintext-only', async () => {
+  it('should insert template into contenteditable=plaintext-only', async ({ task }) => {
     editable.setAttribute('contenteditable', 'plaintext-only')
 
     await insertContentEditableTemplate({
       text: 'test\ntest2\n[/image.png]',
     })
 
-    expect(editable.innerHTML).to.equal('test<div>test2</div><div>[/image.png]</div>')
+    const chromiumOutput = 'test<div>test2</div><div>[/image.png]</div>'
+    const firefoxOutput = '<div>test</div><div>test2</div><div>[/image.png]</div>'
+    if (isFirefox(task)) {
+      expect(editable.innerHTML).to.equal(firefoxOutput)
+    } else {
+      expect(editable.innerHTML).to.equal(chromiumOutput)
+    }
+
     editable.setAttribute('contenteditable', 'true')
   })
 
