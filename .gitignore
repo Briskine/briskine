@@ -19,7 +19,6 @@ ext/
 xcuserdata/
 
 # tests
-test/bundle
 test/pages
 
 # firebase config, for firefox reviewers
