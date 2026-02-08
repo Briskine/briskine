@@ -49,11 +49,7 @@ export function getDialogPosition (target, instance, placement = 'top-left') {
     // check if we have enough space on the right
     const pageWidth = window.innerWidth
     const spaceRight = pageWidth - left
-    const spaceLeft = targetMetrics.left
-    if (
-      spaceRight < dialogMetrics.width
-      && spaceLeft > dialogMetrics.width
-    ) {
+    if (spaceRight < dialogMetrics.width) {
       // flip it on the x-axis if we don't
       placement = placement + '-flip'
     }
@@ -75,7 +71,7 @@ export function getDialogPosition (target, instance, placement = 'top-left') {
       && spaceAbove > dialogMetrics.height
     ) {
       // flip it on the y-axis if we don't
-      top = targetMetrics.top - dialogMetrics.height
+      top -= dialogMetrics.height
     }
   }
 
