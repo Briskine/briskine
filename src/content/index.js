@@ -66,11 +66,13 @@ async function init () {
   window.postMessage(readyMessage)
 }
 
+const initAbortController = new AbortController()
+
 function initOnFocus (e) {
   const target = getEventTarget(e)
   if (isTextfieldEditor(target) || isContentEditable(target)) {
     init()
-    document.removeEventListener('focusin', initOnFocus, true)
+    initAbortController.abort()
   }
 }
 
@@ -97,11 +99,23 @@ async function startup () {
 
   setupStatus()
   setupDashboardEvents()
-  document.addEventListener('focusin', initOnFocus, true)
+
+  const options = {
+    capture: true,
+    signal: initAbortController.signal,
+  }
+  document.addEventListener('focusin', initOnFocus, options)
   // in case an editable is already focused
   const activeElement = getActiveElement()
   if (activeElement) {
-    initOnFocus({target: activeElement})
+    initOnFocus({ target: activeElement })
+
+    // in case the activeElement is non-editable inside a shadow.
+    // without this check, changing focus to an editable inside the same shadow
+    // root won't trigger focusin on document
+    if (document.activeElement?.shadowRoot) {
+      document.activeElement.shadowRoot.addEventListener('focusin', initOnFocus, options)
+    }
   }
 
   setTimeout(() => {
@@ -132,7 +146,7 @@ function destructor () {
 
   destroySandbox()
 
-  document.removeEventListener('focusin', initOnFocus, true)
+  initAbortController.abort()
   settingsCache = {}
 }
 
