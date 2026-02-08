@@ -16,6 +16,7 @@ export function setup () {
 
   pageScript = document.createElement('script')
   pageScript.src = (chrome || browser).runtime.getURL('page/page.js')
+  pageScript.type = 'module'
   pageScript.onload = async function () {
     // create the message channel when the iframe loads,
     // for subsequent startup retries (eg. in dynamically created iframes).

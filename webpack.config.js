@@ -129,14 +129,27 @@ function extensionConfig ({ mode, safari, manifest, firebaseConfig}) {
     entry: {
       background: './src/background/background.js',
       popup: './src/popup/popup.js',
-      content: './src/content/index.js',
-      page: './src/content/page/page.js',
-      sandbox: './src/content/sandbox/sandbox.js',
+      content: {
+        import: './src/content/index.js',
+        // force iife
+        chunkLoading: 'jsonp'
+      },
+      page: {
+        import: './src/content/page/page.js',
+        library: { type: 'module' }
+      },
+      sandbox: {
+        import: './src/content/sandbox/sandbox.js',
+        library: { type: 'module' }
+      },
     },
     output: {
       path: path.resolve(devPath),
       filename: '[name]/[name].js',
-      clean: true
+      clean: true,
+    },
+    experiments: {
+      outputModule: true,
     },
     plugins: plugins,
     module: {

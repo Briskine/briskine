@@ -5,7 +5,7 @@ window.browser = {
     onMessage: {
       addListener: () => {}
     },
-    getURL: (str) => `test/bundle/${str}`,
+    getURL: (str) => `src/content/${str}`,
   }
 }
 
