@@ -185,12 +185,7 @@ describe('word', () => {
     const editableShadow = shadow.shadowRoot.querySelector('[contenteditable]')
     editableShadow.innerHTML = '    shadow'
 
-    const range = new Range()
-    range.selectNodeContents(editableShadow.lastChild)
-    range.collapse()
-    const selection = window.getSelection()
-    selection.removeAllRanges()
-    selection.addRange(range)
+    window.getSelection().setBaseAndExtent(editableShadow.lastChild, 10, editableShadow.lastChild, 10)
 
     expect(
       getWord(editableShadow)

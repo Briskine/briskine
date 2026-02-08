@@ -89,7 +89,7 @@ function getToName (element) {
     if ($contact) {
       // make sure we're not getting "New message" from the message dialog title.
       // in case the other selectors didn't match for new messages.
-      const contactText = $contact.innerText || ''
+      const contactText = $contact.textContent || ''
       if (contactText.toLowerCase() !== 'new message') {
         return contactText
       }

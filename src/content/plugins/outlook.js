@@ -95,7 +95,7 @@ function getFieldData (field, $container) {
   var $buttons = $container.querySelectorAll(':scope > [contenteditable]')
   $buttons.forEach(function ($button) {
     const $node = $button?.querySelector?.('[class*="textContainer-"], [class*="individualText-"]')
-    const fullName = $node?.innerText
+    const fullName = $node?.textContent
     if (fullName) {
       field.push(createContact(parseNameAndEmail(fullName)))
     }

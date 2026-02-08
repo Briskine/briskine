@@ -45,7 +45,7 @@ function getToName (element) {
   if ($thread) {
     const $contact = $thread.querySelector(contactNameSelectors.join(','))
     if ($contact) {
-      return $contact.innerText || ''
+      return $contact.textContent || ''
     }
   }
 

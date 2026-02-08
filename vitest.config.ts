@@ -30,6 +30,7 @@ export default defineConfig({
           headless: true,
           screenshotFailures: false,
           instances: [
+            { browser: 'webkit' },
             { browser: 'chromium' },
             { browser: 'firefox' },
           ],

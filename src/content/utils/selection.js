@@ -114,7 +114,7 @@ export async function setSelectionRange (node, range) {
       resolve(range)
     }, { once: true })
 
-    // Safari doesn't support selection.addRange(),
+    // Safari/Webkit doesn't support selection.addRange(),
     // when the range is in shadow dom,
     // that's why we use setBaseAndExtent.
     const selection = getComposedSelection(node)
