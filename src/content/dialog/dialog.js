@@ -69,14 +69,16 @@ function Dialog (originalProps) {
     signal: globalAbortController.signal,
   }
 
-
   let editor
   let searchField
 
   let cachedRange
 
-  createEffect(() => {
-    if (visible() === true) {
+  createEffect((prev) => {
+    if (
+      visible() === true
+      && prev === false
+    ) {
       // activate the first item in the list
       const $list = element.querySelector(listSelector)
       if ($list) {
@@ -84,7 +86,10 @@ function Dialog (originalProps) {
       }
 
       element.classList.add(openAnimationClass)
-    } else {
+    } else if (
+      visible() === false
+      && prev == true
+    ) {
       element.classList.remove(openAnimationClass)
 
       window.requestAnimationFrame(() => {
@@ -98,7 +103,9 @@ function Dialog (originalProps) {
         element.removeAttribute(modalAttribute)
       })
     }
-  })
+
+    return visible()
+  }, false)
 
   function show (node) {
     // dialog is already visible

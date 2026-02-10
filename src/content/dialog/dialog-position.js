@@ -76,8 +76,8 @@ export function getDialogPosition (target, instance, placement = 'top-left') {
   }
 
   return {
-    top: top + window.scrollY,
-    left: Math.max(0, left + window.scrollX),
+    top: Math.max(0, top),
+    left: Math.max(0, left),
   }
 }
 
@@ -175,7 +175,7 @@ export function getEditableCaret (element) {
   $mirror.appendChild($virtualCaret)
 
   // insert mirror
-  document.body.appendChild($mirror)
+  document.documentElement.appendChild($mirror)
 
   function cleanup () {
     $mirror.remove()
