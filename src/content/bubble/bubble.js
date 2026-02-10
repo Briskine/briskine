@@ -85,8 +85,13 @@ function focusTextfield (e) {
 
 function blurTextfield (e) {
   // don't hide the bubble if the newly focused node is in the dialog.
-  // eg. when clicking the bubble.
-  if (e.relatedTarget && e.relatedTarget.closest(dialogTagName)) {
+  // when pressing the bubble, or when focusing inside the dialog.
+  const target = e.relatedTarget
+  const host = target?.getRootNode?.().host
+  if (
+    target?.tagName?.toLowerCase?.() === dialogTagName
+    || host?.tagName?.toLowerCase?.() === dialogTagName
+  ) {
     return
   }
 
@@ -133,7 +138,7 @@ function create (settings = {}) {
   document.documentElement.appendChild(bubbleInstance)
 
   // show the bubble on focus
-  document.addEventListener('focusin', (e) => {
+  window.addEventListener('focusin', (e) => {
     const target = getEventTarget(e)
     // only handle document-level events,
     // we'll attach different events for each shadowRoot.
@@ -142,7 +147,7 @@ function create (settings = {}) {
     }
   }, globalListenerOptions)
 
-  document.addEventListener('focusout', (e) => {
+  window.addEventListener('focusout', (e) => {
     const target = getEventTarget(e)
     // only handle document-level events,
     // we'll attach different events for each shadowRoot.
@@ -369,7 +374,7 @@ function hookOnFocus (event) {
 }
 
 function enableShadowFocus () {
-  document.addEventListener('focusin', hookOnFocus, globalListenerOptions)
+  window.addEventListener('focusin', hookOnFocus, globalListenerOptions)
 
   // if active element is already in shadow root
   if (document?.activeElement?.shadowRoot) {

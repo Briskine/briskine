@@ -420,6 +420,7 @@ function Dialog (originalProps) {
     // fix interaction with our dialog in some modals (LinkedIn).
     // prevent the page from handling the focusout event when switching focus to our dialog.
     window.addEventListener('focusout', stopRelatedTargetPropagation, true)
+    window.addEventListener('focusin', stopTargetPropagation, true)
 
     // expose show on element
     element.show = show
@@ -441,6 +442,7 @@ function Dialog (originalProps) {
     window.removeEventListener('keypress', stopTargetPropagation, true)
 
     window.removeEventListener('focusout', stopRelatedTargetPropagation, true)
+    window.removeEventListener('focusin', stopTargetPropagation, true)
   })
 
   return (

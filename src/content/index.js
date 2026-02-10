@@ -43,6 +43,8 @@ function getParentUrl () {
 }
 
 async function init () {
+  initAbortController.abort()
+
   const settings = await getSettings()
 
   if (isBlocklisted(settings, getParentUrl())) {
@@ -66,13 +68,12 @@ async function init () {
   window.postMessage(readyMessage)
 }
 
-const initAbortController = new AbortController()
+let initAbortController = new AbortController()
 
 function initOnFocus (e) {
   const target = getEventTarget(e)
   if (isTextfieldEditor(target) || isContentEditable(target)) {
     init()
-    initAbortController.abort()
   }
 }
 
@@ -104,7 +105,7 @@ async function startup () {
     capture: true,
     signal: initAbortController.signal,
   }
-  document.addEventListener('focusin', initOnFocus, options)
+  window.addEventListener('focusin', initOnFocus, options)
   // in case an editable is already focused
   const activeElement = getActiveElement()
   if (activeElement) {
@@ -147,6 +148,7 @@ function destructor () {
   destroySandbox()
 
   initAbortController.abort()
+  initAbortController = new AbortController()
   settingsCache = {}
 }
 
