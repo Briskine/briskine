@@ -309,14 +309,8 @@ function Dialog (originalProps) {
     }
   }
 
-  function hideOnClick (e) {
-    if (
-      // clicking inside the dialog
-      !element.contains(e.composedPath()[0])
-      && visible()
-      // clicking the bubble
-      && e.target.tagName.toLowerCase() !== bubbleTagName
-    ) {
+  function hideOnFocusout (e) {
+    if (e.target === dialogInstance) {
       setVisible(false)
     }
   }
@@ -405,7 +399,8 @@ function Dialog (originalProps) {
       }
     })
 
-    window.addEventListener('click', hideOnClick, true)
+    window.addEventListener('focusout', hideOnFocusout, true)
+
     window.addEventListener('keydown', hideOnEsc, true)
 
     // prevent Gmail from handling keydown.
@@ -427,7 +422,8 @@ function Dialog (originalProps) {
   })
 
   onCleanup(() => {
-    window.removeEventListener('click', hideOnClick, true)
+    window.removeEventListener('focusout', hideOnFocusout, true)
+
     window.removeEventListener('keydown', hideOnEsc, true)
     window.removeEventListener('keydown', handleSearchFieldShortcuts, true)
 
