@@ -9,7 +9,6 @@ import { getExtensionData, trigger, on, off } from '../../store/store-content.js
 import { isContentEditable } from '../editors/editor-contenteditable.js'
 import { isTextfieldEditor } from '../editors/editor-textfield.js'
 
-import getEventTarget from '../utils/event-target.js'
 import getActiveElement from '../utils/active-element.js'
 import bubbleAllowlistPrivate from './bubble-allowlist-private.js'
 
@@ -78,9 +77,26 @@ customElements.define(
   }
 )
 
-function focusTextfield (e) {
-  const target = getEventTarget(e)
-  return showBubble(target)
+function handleTextfieldFocus (event) {
+  const path = event.composedPath()
+  // find the inner most root, to support nested shadow roots
+  const innermostRoot = path.find(node => node instanceof ShadowRoot)
+  const isTop = event.currentTarget === window
+
+  if (
+    // if this listener is attached to the top,
+    // and doesn't originate in a shadow root.
+    (isTop && !innermostRoot)
+    // this listener is attached to the innermost shadow root.
+    // required for nested shadow roots.
+    || event.currentTarget === innermostRoot
+  ) {
+    if (event.type === 'focusin') {
+      showBubble(path[0])
+    } else if (event.type === 'focusout') {
+      blurTextfield(event)
+    }
+  }
 }
 
 function blurTextfield (e) {
@@ -137,29 +153,20 @@ function create (settings = {}) {
   bubbleInstance.setAttribute('shortcut', settings.dialog_shortcut)
   document.documentElement.appendChild(bubbleInstance)
 
-  // show the bubble on focus
-  window.addEventListener('focusin', (e) => {
-    const target = getEventTarget(e)
-    // only handle document-level events,
-    // we'll attach different events for each shadowRoot.
-    if (target.getRootNode() === document) {
-      focusTextfield(e)
-    }
-  }, globalListenerOptions)
+  window.addEventListener('focusin', handleTextfieldFocus, globalListenerOptions)
+  window.addEventListener('focusout', handleTextfieldFocus, globalListenerOptions)
 
-  window.addEventListener('focusout', (e) => {
-    const target = getEventTarget(e)
-    // only handle document-level events,
-    // we'll attach different events for each shadowRoot.
-    if (target.getRootNode() === document) {
-      blurTextfield(e)
-    }
-  }, globalListenerOptions)
-
-  enableShadowFocus()
+  // enable focus event support in shadow dom
+  window.addEventListener('focusin', hookShadowOnFocus, globalListenerOptions)
 
   const activeElement = getActiveElement()
   if (activeElement) {
+    // if active element is already in shadow root
+    const activeRoot = activeElement.getRootNode()
+    if (activeRoot instanceof ShadowRoot) {
+      hookShadowRoot(activeRoot)
+    }
+
     showBubble(activeElement)
   }
 }
@@ -180,6 +187,8 @@ function destroyInstance () {
     capture: true,
     signal: globalAbortController.signal,
   }
+
+  shadowRootsRegistry = new WeakMap()
 }
 
 export function destroy () {
@@ -335,49 +344,27 @@ function hideBubble () {
 // only when we focus outside of the shadow root (or when we focus inside the shadow root, from outside),
 // will our regular document handler catch the event.
 // that's why we need to also need to attach the focusin/out listeners to the shadow roots.
-const shadowRootsRegistry = new WeakSet()
+let shadowRootsRegistry = new WeakSet()
 
 function hookShadowRoot (shadow, event) {
   if (shadow instanceof ShadowRoot && !shadowRootsRegistry.has(shadow)) {
     shadowRootsRegistry.add(shadow)
 
-    shadow.addEventListener('focusin', (e) => {
-      const target = getEventTarget(e)
-      // only handle events from this shadow
-      if (target.getRootNode() === shadow) {
-        focusTextfield(e)
-      }
-    }, globalListenerOptions)
-
-    shadow.addEventListener('focusout', (e) => {
-      const target = getEventTarget(e)
-      // only handle events from this shadow
-      if (target.getRootNode() === shadow) {
-        blurTextfield(e)
-      }
-    }, globalListenerOptions)
+    shadow.addEventListener('focusin', handleTextfieldFocus, globalListenerOptions)
+    shadow.addEventListener('focusout', handleTextfieldFocus, globalListenerOptions)
 
     // if this is the first time we hook this shadow root,
     // the focusin event could already be in progress.
     // manually trigger it because the newly attached listener might miss it.
     if (event) {
-      focusTextfield(event)
+      handleTextfieldFocus(event)
     }
   }
 }
 
-function hookOnFocus (event) {
+function hookShadowOnFocus (event) {
   const path = event.composedPath()
   for (const node of path) {
     hookShadowRoot(node, event)
-  }
-}
-
-function enableShadowFocus () {
-  window.addEventListener('focusin', hookOnFocus, globalListenerOptions)
-
-  // if active element is already in shadow root
-  if (document?.activeElement?.shadowRoot) {
-    hookShadowRoot(document.activeElement.shadowRoot)
   }
 }
