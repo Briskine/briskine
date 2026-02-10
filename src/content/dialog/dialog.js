@@ -63,6 +63,13 @@ function Dialog (originalProps) {
   const [searchResults, setSearchResults] = createSignal([])
   const [searchQuery, setSearchQuery] = createSignal('')
 
+  let globalAbortController = new AbortController()
+  let globalListenerOptions = {
+    capture: true,
+    signal: globalAbortController.signal,
+  }
+
+
   let editor
   let searchField
 
@@ -362,7 +369,7 @@ function Dialog (originalProps) {
     })
 
     // keyboard navigation and insert for templates
-    window.addEventListener('keydown', handleSearchFieldShortcuts, true)
+    window.addEventListener('keydown', handleSearchFieldShortcuts, globalListenerOptions)
     element.addEventListener('b-dialog-insert', (e) => {
       insertTemplate(e.detail)
       e.stopImmediatePropagation()
@@ -399,34 +406,28 @@ function Dialog (originalProps) {
       }
     })
 
-    window.addEventListener('focusout', hideOnFocusout, true)
-
-    window.addEventListener('keydown', hideOnEsc, true)
+    window.addEventListener('focusout', hideOnFocusout, globalListenerOptions)
+    window.addEventListener('keydown', hideOnEsc, globalListenerOptions)
 
     // prevent Gmail from handling keydown.
     // any keys assigned to Gmail keyboard shortcuts are prevented
     // from being inserted in the search field.
-    window.addEventListener('keydown', stopTargetPropagation, true)
+    window.addEventListener('keydown', stopTargetPropagation, globalListenerOptions)
     // prevent Front from handling keyboard shortcuts
     // when we're typing in the search field.
-    window.addEventListener('keypress', stopTargetPropagation, true)
+    window.addEventListener('keypress', stopTargetPropagation, globalListenerOptions)
 
     // prevent parent page from handling focus events.
     // fix interaction with our dialog in some modals (LinkedIn).
     // prevent the page from handling the focusout event when switching focus to our dialog.
-    window.addEventListener('focusout', stopRelatedTargetPropagation, true)
-    window.addEventListener('focusin', stopTargetPropagation, true)
+    window.addEventListener('focusout', stopRelatedTargetPropagation, globalListenerOptions)
+    window.addEventListener('focusin', stopTargetPropagation, globalListenerOptions)
 
     // expose show on element
     element.show = show
   })
 
   onCleanup(() => {
-    window.removeEventListener('focusout', hideOnFocusout, true)
-
-    window.removeEventListener('keydown', hideOnEsc, true)
-    window.removeEventListener('keydown', handleSearchFieldShortcuts, true)
-
     storeOff('login', setAuthState)
     storeOff('logout', setAuthState)
 
@@ -434,11 +435,13 @@ function Dialog (originalProps) {
     storeOff('tags-updated', tagsUpdated)
     storeOff('extension-data-updated', extensionDataUpdated)
 
-    window.removeEventListener('keydown', stopTargetPropagation, true)
-    window.removeEventListener('keypress', stopTargetPropagation, true)
+    globalAbortController.abort()
 
-    window.removeEventListener('focusout', stopRelatedTargetPropagation, true)
-    window.removeEventListener('focusin', stopTargetPropagation, true)
+    globalAbortController = new AbortController()
+    globalListenerOptions = {
+      capture: true,
+      signal: globalAbortController.signal,
+    }
   })
 
   return (
