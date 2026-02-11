@@ -3,6 +3,7 @@
 
 import parseTemplate from '../utils/parse-template.js'
 import createContact from '../utils/create-contact.js'
+import { querySelectorDeep, closestDeep } from '../utils/selectors.js'
 import { register } from '../plugin.js'
 
 var activeCache = null
@@ -28,12 +29,12 @@ async function actions ({ element, template, data}) {
     return
   }
 
-  const $parent = element.closest('[role=dialog]')
+  const $parent = closestDeep('[role=dialog]', element)
 
   if ($parent) {
     // set subject field value.
     // subject is only available for inMail messaging.
-    const $subjectField = $parent.querySelector('[name=subject]')
+    const $subjectField = querySelectorDeep('[name=subject]', $parent)
     if (template.subject && $subjectField) {
       const parsedSubject = await parseTemplate(template.subject, data)
       $subjectField.value = parsedSubject
@@ -73,7 +74,7 @@ function getToName (element) {
     '.msg-overlay-bubble-header__title',
   ]
 
-  const $thread = element.closest(messageThreadSelectors.join(','))
+  const $thread = closestDeep(messageThreadSelectors.join(','), element)
 
   // check if a message thread is visible,
   // otherwise we're in a non-messaging textfield.
@@ -82,7 +83,7 @@ function getToName (element) {
     // find the first element that matches,
     // where selector ordering in the array matters.
     contactNameSelectors.find((selector) => {
-      $contact = $thread.querySelector(selector)
+      $contact = querySelectorDeep(selector, $thread)
       return $contact
     })
 
@@ -98,7 +99,10 @@ function getToName (element) {
 
   // get the to field from the currently viewed profile
   // eg. for the connect > add note field.
-  const $currentProfilePicture = element.ownerDocument.querySelector('img[width="200"][height="200"], img[class*="pv-top-card-profile-picture"]')
+  const $currentProfilePicture = querySelectorDeep(
+    'img[width="200"][height="200"], img[class*="pv-top-card-profile-picture"]',
+    element.ownerDocument
+  )
   if ($currentProfilePicture && $currentProfilePicture.hasAttribute('alt')) {
     const profilePictureAlt = $currentProfilePicture.getAttribute('alt') || ''
     // remove open to work badge
@@ -128,9 +132,6 @@ export function getLinkedInData ({ element }) {
     return vars
   }
 
-  // get document or shadowRoot
-  const parent = element.getRootNode()
-
   let fromName = ''
   const $profilePictureSelectors = [
     // global menu
@@ -139,7 +140,7 @@ export function getLinkedInData ({ element }) {
     '.presence-entity__image',
   ]
 
-  const $fromContainer = parent.querySelector($profilePictureSelectors.join(','))
+  const $fromContainer = querySelectorDeep($profilePictureSelectors.join(','), element.ownerDocument)
   if ($fromContainer && $fromContainer.getAttribute('alt')) {
     fromName = $fromContainer.getAttribute('alt')
   }
