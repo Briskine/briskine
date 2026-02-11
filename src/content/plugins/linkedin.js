@@ -101,7 +101,7 @@ function getToName (element) {
   // eg. for the connect > add note field.
   const $currentProfilePicture = querySelectorDeep(
     'img[width="200"][height="200"], img[class*="pv-top-card-profile-picture"]',
-    element.ownerDocument
+    element.ownerDocument.body
   )
   if ($currentProfilePicture && $currentProfilePicture.hasAttribute('alt')) {
     const profilePictureAlt = $currentProfilePicture.getAttribute('alt') || ''
@@ -140,7 +140,10 @@ export function getLinkedInData ({ element }) {
     '.presence-entity__image',
   ]
 
-  const $fromContainer = querySelectorDeep($profilePictureSelectors.join(','), element.ownerDocument)
+  const $fromContainer = querySelectorDeep(
+    $profilePictureSelectors.join(','),
+    element.ownerDocument.body
+  )
   if ($fromContainer && $fromContainer.getAttribute('alt')) {
     fromName = $fromContainer.getAttribute('alt')
   }
