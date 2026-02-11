@@ -1,7 +1,7 @@
 /*
  * Collection of query selector functions that pierce shadow dom.
  *
- * For better performance, they only support basic selectors.
+ * For better performance, they just look for the selector in each root.
  * Complex selectors like `body > shadow-dom > .custom` won't work.
  *
  */
