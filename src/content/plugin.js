@@ -6,18 +6,20 @@ import merge from 'lodash.merge'
 
 import debug from '../debug.js'
 
-const plugins = {}
+const plugins = new Map()
+
 export function register (type = '', func = () => { }) {
-  if (!plugins[type]) {
-    plugins[type] = []
+  if (!plugins.has(type)) {
+    plugins.set(type, new Set())
   }
 
-  plugins[type].push(func)
+  plugins.get(type).add(func)
 }
 
 export async function run (type = '', params) {
   if (type === 'data') {
-    const responses = (await Promise.allSettled(plugins[type].map((f) => f(params))))
+    const promises = [...plugins.get(type)].map((f) => f(params))
+    const responses = (await Promise.allSettled(promises))
       .filter((r) => {
         if (r.status === 'rejected') {
           debug(['plugin', type, params, r.reason], 'error')
@@ -32,7 +34,7 @@ export async function run (type = '', params) {
     return data
   }
 
-  for (const func of plugins[type]) {
+  for (const func of plugins.get(type)) {
     try {
       await func(params)
     } catch (err) {

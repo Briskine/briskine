@@ -6,7 +6,6 @@ import { isTextfieldEditor } from './editors/editor-textfield.js'
 import getActiveElement from './utils/active-element.js'
 import getEventTarget from './utils/event-target.js'
 import { getSelectionRange, setSelectionRange } from './utils/selection.js'
-import { register } from './plugin.js'
 
 const keyboardShortcut = 'tab'
 export const cursorMarker = '\u200B'
@@ -168,7 +167,7 @@ function selectCursor (e) {
 
 const parser = new DOMParser()
 
-function selectFirstCursor ({ html, text }) {
+export function selectFirstCursor ({ html, text }) {
   const el = getActiveElement()
   const state = getSelectionState(el)
   if (!state) {
@@ -197,7 +196,6 @@ function selectFirstCursor ({ html, text }) {
 
 export function setup () {
   document.addEventListener('keydown', selectCursor, true)
-  register('actions', selectFirstCursor)
 }
 
 export function destroy () {

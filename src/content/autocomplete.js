@@ -18,6 +18,7 @@ import { insertTextfieldTemplate } from './editors/editor-textfield.js'
 import { insertExecCommandTemplate } from './editors/editor-execcommand.js'
 import { insertSiteTemplate } from './editors/editor-site.js'
 import getActiveElement from './utils/active-element.js'
+import { selectFirstCursor } from './cursors.js'
 
 import './plugins/gmail.js'
 import './plugins/outlook.js'
@@ -73,6 +74,11 @@ export default async function autocomplete ({ template }) {
   }
 
   await insertTemplate({
+    text,
+    html,
+  })
+
+  await selectFirstCursor({
     text,
     html,
   })
