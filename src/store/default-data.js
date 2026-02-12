@@ -108,6 +108,7 @@ export function getDefaultTemplates () {
       <div>next week: {{moment add='7;days' format='DD MMMM'}}</div>
       <div>last week: {{moment subtract='7;days'}}</div>
       <div>week number: {{moment week=''}}</div>
+      <div>cursor: {{cursor}}</div>
       <div>choice: {{choice 'Hello, Hi, Hey'}}</div>
       <div>domain: {{domain to.email}}</div>
       <div><img src="https://www.briskine.com/images/promo-large.png" width="100" height="73"></div>
