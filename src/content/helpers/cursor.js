@@ -9,7 +9,7 @@
 
 import { escapeExpression, SafeString } from 'handlebars'
 
-import { cursorMarker } from '../cursors.js'
+import { cursorMarker } from '../cursors/cursors.js'
 
 export default function cursor (options) {
   // default to using the placeholder option

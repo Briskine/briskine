@@ -14,7 +14,7 @@ import { eventDestroy } from '../config.js'
 import {isBlocklisted} from '../blocklist.js'
 
 import {setup as setupKeyboard, destroy as destroyKeyboard} from './keyboard.js'
-import {setup as setupCursors, destroy as destroyCursors} from './cursors.js'
+import {setup as setupCursors, destroy as destroyCursors} from './cursors/cursors.js'
 import {setup as setupBubble, destroy as destroyBubble} from './bubble/bubble.js'
 import {setup as setupStatus, destroy as destroyStatus} from './status.js'
 import {setup as setupDialog, destroy as destroyDialog} from './dialog/dialog.js'
