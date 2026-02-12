@@ -3,14 +3,14 @@
  */
 import { isContentEditable } from './editors/editor-contenteditable.js'
 import { isTextfieldEditor } from './editors/editor-textfield.js'
+import getActiveElement from './utils/active-element.js'
 import getEventTarget from './utils/event-target.js'
 import { getSelectionRange, setSelectionRange } from './utils/selection.js'
 
 const keyboardShortcut = 'tab'
 export const cursorMarker = '\u200B'
 
-function getAllCursors (el) {
-  const text = isTextfieldEditor(el) ? el.value : el.textContent
+function getAllCursors (text) {
   const regex = new RegExp(`${cursorMarker}.*?${cursorMarker}`, 'g')
   const cursors = []
   let match
@@ -121,13 +121,14 @@ function setSelectionState (el, start, end) {
   }
 }
 
-function getNextCursor (cursors, currentStart, currentEnd, isShiftKey) {
-  const isSelectingCursor = cursors.some(s => s.start === currentStart && s.end === currentEnd)
-
+// TODO rename
+// works for both next and prev
+function getNextCursor(cursors, currentStart, currentEnd, isShiftKey) {
   if (isShiftKey) {
     return cursors.slice().reverse().find(s => s.start < currentStart)
   }
 
+  const isSelectingCursor = cursors.some(s => s.start === currentStart && s.end === currentEnd)
   if (isSelectingCursor) {
     return cursors.find(s => s.start > currentStart)
   }
@@ -150,7 +151,8 @@ function selectCursor (e) {
     return
   }
 
-  const cursors = getAllCursors(el)
+  const text = isTextfieldEditor(el) ? el.value : el.textContent
+  const cursors = getAllCursors(text)
   if (!cursors.length) {
     return
   }
@@ -165,14 +167,34 @@ function selectCursor (e) {
   }
 }
 
-export async function selectFirstCursor (el) {
-  const cursors = getAllCursors(el)
+const parser = new DOMParser()
+
+// selects the first cursor in the template
+export function selectFirstCursor ({ html, text }) {
+  const el = getActiveElement()
+  const state = getSelectionState(el)
+  if (!state) {
+    return
+  }
+
+  let template = text
+  if (isContentEditable(el)) {
+    const doc = parser.parseFromString(html, 'text/html')
+    template = doc.body.textContent
+  }
+
+  const cursors = getAllCursors(template)
   if (!cursors.length) {
     return
   }
 
+  // the cursor (and state.start) should be at the end of the newly inserted template
+  const templateStartOffset = state.start - template.length
   const firstCursor = cursors[0]
-  return setSelectionState(el, firstCursor.start, firstCursor.end)
+  const start = firstCursor.start + templateStartOffset
+  const end = firstCursor.end + templateStartOffset
+
+  return setSelectionState(el, start, end)
 }
 
 export function setup () {
