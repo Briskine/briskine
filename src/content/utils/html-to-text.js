@@ -5,6 +5,9 @@ import {compile} from 'html-to-text'
 
 const parserOptions = {
   wordwrap: false,
+  // exclude zero-width-whitespace (used by cursors),
+  // which is included in the default value
+  whitespaceCharacters: ' \t\r\n\f',
   selectors: [
     {
       selector: 'a',

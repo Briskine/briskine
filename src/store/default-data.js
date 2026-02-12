@@ -125,6 +125,23 @@ export function getDefaultTemplates () {
     })
 
     defaultTemplates.push({
+      title: 'cursors',
+      shortcut: 'cur',
+      body: `
+        <div>empty={{cursor}}</div>
+        <div>placeholder={{cursor placeholder="placeholder"}}</div>
+        <div>
+          styled placeholder=
+          <span style="color: red; font-weight: bold">{{cursor placeholder="red"}}</span>
+        </div>
+        <div>
+          block=
+          {{#cursor}}<strong>block</strong>{{/cursor}}
+        </div>
+      `,
+    })
+
+    defaultTemplates.push({
       title: 'broken',
       shortcut: 'broken',
       body: 'Hello {{to.first_name}'

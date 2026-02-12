@@ -14,7 +14,8 @@ const validInputTypes = [
 
 export function isTextfieldEditor (element) {
   return (
-    element.nodeType === Node.ELEMENT_NODE
+    element
+    && element.nodeType === Node.ELEMENT_NODE
     && element.readOnly !== true
     && (
       element.tagName.toLowerCase() === 'textarea'

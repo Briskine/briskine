@@ -47,6 +47,7 @@ async function keyboardAutocomplete (e) {
 
   // prevent default when getTemplateByShortcut returns immediately
   e.preventDefault()
+  // stopImmediatePropagation to have priority over cursors
   e.stopImmediatePropagation()
 
   // restore selection

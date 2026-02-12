@@ -24,23 +24,27 @@ import or from '../helpers/or.js'
 import and from '../helpers/and.js'
 import compare from '../helpers/compare.js'
 import random from '../helpers/random.js'
+import cursor from '../helpers/cursor.js'
 
 function getHandlebars (partials = []) {
   const hbs = handlebarsCreate()
 
-  // legacy helpers
-  hbs.registerHelper('choice', choice)
+  hbs.registerHelper({
+    // legacy choice helper
+    choice,
 
-  hbs.registerHelper('and', and)
-  hbs.registerHelper('moment', moment)
-  hbs.registerHelper('domain', domain)
-  hbs.registerHelper('text', text)
-  hbs.registerHelper('list', list)
-  hbs.registerHelper('capitalize', capitalize)
-  hbs.registerHelper('capitalizeAll', capitalizeAll)
-  hbs.registerHelper('or', or)
-  hbs.registerHelper('compare', compare)
-  hbs.registerHelper('random', random)
+    and,
+    moment,
+    domain,
+    text,
+    list,
+    capitalize,
+    capitalizeAll,
+    or,
+    compare,
+    random,
+    cursor,
+  })
 
   if (partials?.length) {
     partials.forEach((p) => {
