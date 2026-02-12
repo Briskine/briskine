@@ -17,6 +17,7 @@ import { insertQuill1Template } from './editors/editor-quill1.js'
 import { insertTextfieldTemplate } from './editors/editor-textfield.js'
 import { insertExecCommandTemplate } from './editors/editor-execcommand.js'
 import { insertSiteTemplate } from './editors/editor-site.js'
+import getActiveElement from './utils/active-element.js'
 
 import './plugins/gmail.js'
 import './plugins/outlook.js'
@@ -24,8 +25,6 @@ import './plugins/gmail-mobile.js'
 import './plugins/linkedin.js'
 import './plugins/linkedin-sales-navigator.js'
 import './plugins/facebook.js'
-import getActiveElement from './utils/active-element.js'
-import { selectFirstCursor } from './cursors.js'
 
 const editors = [
   // order matters
@@ -78,15 +77,12 @@ export default async function autocomplete ({ template }) {
     html,
   })
 
-  await selectFirstCursor({
-    html,
-    text,
-  })
-
   await run('actions', {
     element,
     template,
     data,
+    html,
+    text,
   })
 
   await updateTemplateStats(template)
