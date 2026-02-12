@@ -9,7 +9,8 @@ import { getSelectionRange, setSelectionRange } from './utils/selection.js'
 const keyboardShortcut = 'tab'
 export const cursorMarker = '\u200B'
 
-function getAllCursors (text) {
+function getAllCursors (el) {
+  const text = isTextfieldEditor(el) ? el.value : el.textContent
   const regex = new RegExp(`${cursorMarker}.*?${cursorMarker}`, 'g')
   const cursors = []
   let match
@@ -17,7 +18,6 @@ function getAllCursors (text) {
     cursors.push({
       start: match.index,
       end: match.index + match[0].length,
-      content: match[0]
     })
   }
 
@@ -86,7 +86,6 @@ function getSelectionState (el) {
     return {
       start: el.selectionStart,
       end: el.selectionEnd,
-      text: el.value,
     }
   }
 
@@ -95,12 +94,7 @@ function getSelectionState (el) {
     return null
   }
 
-  const { start, end } = getRangeOffsets(el, range)
-  return {
-    start,
-    end,
-    text: el.textContent,
-  }
+  return getRangeOffsets(el, range)
 }
 
 function setSelectionState (el, start, end) {
@@ -141,23 +135,23 @@ function getNextCursor (cursors, currentStart, currentEnd, isShiftKey) {
   return cursors.find(s => s.start >= currentStart)
 }
 
-async function selectCursor (e) {
+function selectCursor (e) {
   if (e?.key?.toLowerCase?.() !== keyboardShortcut) {
     return
   }
 
-  const element = getEventTarget(e)
-  if (!isTextfieldEditor(element) && !isContentEditable(element)) {
+  const el = getEventTarget(e)
+  if (!isTextfieldEditor(el) && !isContentEditable(el)) {
     return
   }
 
-  const state = getSelectionState(element)
+  const state = getSelectionState(el)
   if (!state) {
     return
   }
 
-  const cursors = getAllCursors(state.text)
-  if (cursors.length === 0) {
+  const cursors = getAllCursors(el)
+  if (!cursors.length) {
     return
   }
 
@@ -167,8 +161,18 @@ async function selectCursor (e) {
     e.preventDefault()
     e.stopPropagation()
 
-    setSelectionState(element, target.start, target.end)
+    setSelectionState(el, target.start, target.end)
   }
+}
+
+export async function selectFirstCursor (el) {
+  const cursors = getAllCursors(el)
+  if (!cursors.length) {
+    return
+  }
+
+  const firstCursor = cursors[0]
+  return setSelectionState(el, firstCursor.start, firstCursor.end)
 }
 
 export function setup () {

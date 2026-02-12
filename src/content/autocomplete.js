@@ -25,6 +25,7 @@ import './plugins/linkedin.js'
 import './plugins/linkedin-sales-navigator.js'
 import './plugins/facebook.js'
 import getActiveElement from './utils/active-element.js'
+import { selectFirstCursor } from './cursors.js'
 
 const editors = [
   // order matters
@@ -76,6 +77,8 @@ export default async function autocomplete ({ template }) {
     text,
     html,
   })
+
+  await selectFirstCursor(element)
 
   await run('actions', {
     element,
