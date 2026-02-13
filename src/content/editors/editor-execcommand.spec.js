@@ -61,8 +61,8 @@ describe('editor ExecCommand', () => {
       html: '<div>template <img src="#" alt="image"></div>',
     })
 
-    const chromiumOutput = '<div>pretemplate <img src="#" alt="image"></div>'
-    const firefoxOutput = '<div>pre<div>template <img src="#" alt="image"></div></div>'
+    const chromiumOutput = '<div>pretemplate<img src="#" alt="image"></div>'
+    const firefoxOutput = '<div>pre<div>template<img src="#" alt="image"></div></div>'
 
     if (isFirefox(task)) {
       expect(editable.innerHTML).to.equal(firefoxOutput)
