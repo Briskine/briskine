@@ -6,6 +6,7 @@ import debug from '../../debug.js'
 import { isContentEditable } from './editor-contenteditable.js'
 import getActiveElement from '../utils/active-element.js'
 
+// TODO refactor
 function minifyHtml (html) {
   // minifying the html makes execCommand(insertHTML) behave closer to how the
   // browser parses html, and how the contenteditable-editor works.

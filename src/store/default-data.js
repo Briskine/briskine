@@ -129,7 +129,9 @@ export function getDefaultTemplates () {
       title: 'cursors',
       shortcut: 'cur',
       body: `
+        <style>div {}</style>
         <div>empty={{cursor}}</div>
+        <!-- comment -->
         <div>placeholder={{cursor placeholder="placeholder"}}</div>
         <div>
           styled placeholder=

@@ -111,6 +111,30 @@ describe('Cursors', () => {
       expect(range.endOffset).to.equal(5)
     })
 
+    it('should jump to the first cursor in a newly inserted template, with pre-existing cursor and whitespace', () => {
+      const template = `
+        <div>cursor=${cursor('target')}</div>
+      `
+      const text = `<div>
+        Pre-existing cursor=
+        <div>${cursor()}</div>
+        ${template}
+      </div>`
+      editable.innerHTML = text
+
+      // focus is at the end
+      const cursorNode = editable.firstChild.children[1].firstChild
+      window.getSelection().setBaseAndExtent(cursorNode, 15, cursorNode, 15)
+
+      selectFirstCursor({ text: '', html: template })
+
+      const range = window.getSelection().getRangeAt(0)
+      expect(range.startContainer.textContent).to.equal(`cursor=${cursor('target')}`)
+      expect(range.endContainer.textContent).to.equal(`cursor=${cursor('target')}`)
+      expect(range.startOffset).to.equal(7)
+      expect(range.endOffset).to.equal(15)
+    })
+
     it('should navigate backwards when Shift+Tab is pressed', () => {
       const html = `<div>cursor1=${cursor('cursor1')} <div>cursor2=${cursor()}</div> <div>cursor3=${cursor('cursor3')}</div></div>`
       editable.innerHTML = html

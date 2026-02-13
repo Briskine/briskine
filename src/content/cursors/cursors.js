@@ -172,33 +172,33 @@ function selectCursor (e) {
   }
 }
 
-const parser = new DOMParser()
-
-export function selectFirstCursor ({ html, text }) {
+export function selectFirstCursor ({ text, html }) {
   const el = getActiveElement()
   const state = getSelectionState(el)
   if (!state) {
     return
   }
 
-  let template = text
-  if (isContentEditable(el)) {
-    const doc = parser.parseFromString(html, 'text/html')
-    template = doc.body.textContent
+  const template = isTextfieldEditor(el) ? text : html
+  const cursorsInTemplate = getAllCursors(template)
+  if (!cursorsInTemplate.length) {
+    return
   }
 
-  const cursors = getAllCursors(template)
+  const elementText = isTextfieldEditor(el) ? el.value : el.textContent
+  const cursors = getAllCursors(elementText)
   if (!cursors.length) {
     return
   }
 
-  // the cursor (and state.start) should be at the end of the newly inserted template
-  const templateStartOffset = state.start - template.length
-  const firstCursor = cursors[0]
-  const start = firstCursor.start + templateStartOffset
-  const end = firstCursor.end + templateStartOffset
-
-  return setSelectionState(el, start, end)
+  // the html in the editor will not match the template html when using
+  // third-party editors.
+  // find the index of the first cursor in the template, from the complete list
+  // of cursors in the entire editor.
+  const firstCursorInTemplate = cursors[cursors.length - cursorsInTemplate.length]
+  if (firstCursorInTemplate) {
+    return setSelectionState(el, firstCursorInTemplate.start, firstCursorInTemplate.end)
+  }
 }
 
 export function setup () {
