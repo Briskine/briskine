@@ -190,13 +190,14 @@ export function selectFirstCursor ({ text }) {
     return
   }
 
-  // TODO won't work correctly when inserting in between an existing template with cursors
-  //
   // the html in the editor will not match the template html when using
   // third-party editors.
   // find the index of the first cursor in the template, from the complete list
   // of cursors in the entire editor.
-  const firstCursorInTemplate = cursors[cursors.length - cursorsInTemplate.length]
+  const cursorsBeforeCaret = cursors.filter(c => c.end <= state.start)
+  const targetIndex = cursorsBeforeCaret.length - cursorsInTemplate.length
+  const firstCursorInTemplate = cursorsBeforeCaret[targetIndex]
+
   if (firstCursorInTemplate) {
     return setSelectionState(el, firstCursorInTemplate.start, firstCursorInTemplate.end)
   }
