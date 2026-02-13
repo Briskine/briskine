@@ -6,27 +6,30 @@ import debug from '../../debug.js'
 import { isContentEditable } from './editor-contenteditable.js'
 import getActiveElement from '../utils/active-element.js'
 
-// TODO refactor
+// naive html minifying that makes execCommand(insertHTML) behave closer to how the
+// browser parses html, and how the contenteditable-editor works.
+// otherwise a lot of the whitespace in the original html will end up
+// creating empty containers in the editor, or acting like pre in element nodes.
+// has edge cases where multiple spaces should be collapsed to one space,
+// but: when inside existing text - we don't remove it, when in white-only nodes,
+// we remove it completely.
 function minifyHtml (html) {
-  // minifying the html makes execCommand(insertHTML) behave closer to how the
-  // browser parses html, and how the contenteditable-editor works.
-  // otherwise a lot of the whitespace in the original html will end up
-  // creating empty containers in the editor, or acting like pre in element nodes.
   const range = new Range()
   const fragment = range.createContextualFragment(html)
-  return Array.from(fragment.childNodes)
-    .map((node) => {
-      if (node.nodeType === Node.TEXT_NODE) {
-        return node.textContent.trim()
-      } else if (node.nodeType === Node.ELEMENT_NODE) {
-        node.innerHTML = node.innerHTML.trim()
-        return node.outerHTML
-      }
+  const walker = document.createTreeWalker(fragment, NodeFilter.SHOW_TEXT)
 
-      // ignore comment and other types of nodes
-      return ''
-    })
-    .join('')
+  let node
+  while ((node = walker.nextNode()) !== null) {
+    if (node.parentElement?.closest?.('pre, code, textarea')) {
+      continue
+    }
+
+    node.textContent = node.textContent.trim()
+  }
+
+  const temp = document.createElement('div')
+  temp.appendChild(fragment)
+  return temp.innerHTML
 }
 
 // firefox-compatible execCommand('insertText')

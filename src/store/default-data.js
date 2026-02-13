@@ -107,7 +107,7 @@ export function getDefaultTemplates () {
       <div>subject: {{subject}}</div>
       <div>next week: {{moment add='7;days' format='DD MMMM'}}</div>
       <div>last week: {{moment subtract='7;days'}}</div>
-      <div>week number: {{moment week=''}}</div>
+      <div><span>we      ek number:</span>   <span>{{moment week=''}}</span></div>
       <div>cursor: {{cursor}}</div>
       <div>choice: {{choice 'Hello, Hi, Hey'}}</div>
       <div>domain: {{domain to.email}}</div>
