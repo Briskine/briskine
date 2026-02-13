@@ -137,6 +137,7 @@ export function getDefaultTemplates () {
           styled placeholder=
           <span style="color: red; font-weight: bold">{{cursor placeholder="red"}}</span>
         </div>
+        <div>empty2={{cursor}}</div>
         <div>
           block=
           {{#cursor}}<strong>block</strong>{{/cursor}}

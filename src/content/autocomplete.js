@@ -79,10 +79,7 @@ export default async function autocomplete ({ template }) {
   })
 
   try {
-    await selectFirstCursor({
-      text,
-      html,
-    })
+    await selectFirstCursor({ text })
   } catch (err) {
     debug(['selectFirstCursor', err])
   }

@@ -57,7 +57,7 @@ describe('Cursors', () => {
       textarea.selectionStart = text.length
       textarea.selectionEnd = text.length
 
-      selectFirstCursor({ text: template, html: '' })
+      selectFirstCursor({ text: template })
 
       // 7 is length of text before cursor
       const expectedStart = text.length - template.length + 7
@@ -126,7 +126,7 @@ describe('Cursors', () => {
       const cursorNode = editable.firstChild.children[1].firstChild
       window.getSelection().setBaseAndExtent(cursorNode, 15, cursorNode, 15)
 
-      selectFirstCursor({ text: '', html: template })
+      selectFirstCursor({ text: template })
 
       const range = window.getSelection().getRangeAt(0)
       expect(range.startContainer.textContent).to.equal(`cursor=${cursor('target')}`)
