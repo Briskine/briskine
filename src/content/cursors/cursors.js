@@ -122,6 +122,9 @@ function setSelectionState (el, start, end) {
   const range = createRangeFromOffsets(el, start, end)
   if (range) {
     if (isEmpty) {
+      // BUG
+      // ckeditor5 prevents direct dom manipulation, even from the range api.
+      // empty cursors are not currently supported on ckeditor5.
       range.deleteContents()
     }
 
@@ -204,9 +207,9 @@ export function selectFirstCursor ({ text }) {
 }
 
 export function setup () {
-  document.addEventListener('keydown', selectCursor, true)
+  window.addEventListener('keydown', selectCursor, true)
 }
 
 export function destroy () {
-  document.removeEventListener('keydown', selectCursor, true)
+  window.removeEventListener('keydown', selectCursor, true)
 }
