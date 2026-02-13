@@ -38,6 +38,23 @@ export async function pageInsertBeforeInputTemplate ({ text, html}) {
     inputType: 'insertReplacementText',
   }
 
+  let resolve, reject
+  const promise = new Promise((res, rej) => [resolve, reject] = [res, rej])
+
+  // timeout for inserting the template
+  const timeout = setTimeout(reject, 1000)
+  const observer = new MutationObserver((mutations, obs) => {
+    obs.disconnect()
+    clearTimeout(timeout)
+    resolve()
+  })
+
+  observer.observe(element, {
+    childList: true,
+    characterData: true,
+    subtree: true,
+  })
+
   try {
     e = new InputEvent('beforeinput', {
       ...eventProps,
@@ -60,6 +77,8 @@ export async function pageInsertBeforeInputTemplate ({ text, html}) {
     })
     element.dispatchEvent(e)
   }
+
+  await promise
 
   return true
 }
