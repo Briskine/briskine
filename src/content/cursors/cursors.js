@@ -121,10 +121,18 @@ function setSelectionState (el, start, end) {
 
   const range = createRangeFromOffsets(el, start, end)
   if (range) {
-    if (isEmpty) {
-      // BUG
+    if (
+      isEmpty
+      // BUG WORKAROUND
+      // don't delete empty cursors on ckeditor5.
       // ckeditor5 prevents direct dom manipulation, even from the range api.
-      // empty cursors are not currently supported on ckeditor5.
+      // when using range.deleteContents, empty cursors are not removed,
+      // and the caret doesn't move.
+      // not using range.deleteContents keeps the correct range selected,
+      // so we can start typing to remove the cursor, but the caret is invisible.
+      // the alternative would be to not support empty cursors on ckeditor5.
+      && !el?.matches?.('.ck-editor__editable')
+    ) {
       range.deleteContents()
     }
 
