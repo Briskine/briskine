@@ -117,9 +117,8 @@ export function getContentEditableCaret (node) {
 
 const mirrorStyles = [
   // box
-  'box-sizing',
-  'height',
-  'width',
+  'overflow',
+  'border',
   'padding',
   'padding-bottom',
   'padding-left',
@@ -148,9 +147,10 @@ const mirrorStyles = [
 export function getEditableCaret (element) {
   const $mirror = document.createElement('div')
   $mirror.style = `
-    overflow: auto;
-    position: absolute;
+    box-sizing: border-box;
+    position: fixed;
     visibility: hidden;
+    pointer-events: none;
 
     white-space: pre-wrap;
     word-wrap: break-word;
@@ -163,19 +163,30 @@ export function getEditableCaret (element) {
     $mirror.style.setProperty(property, sourceStyles.getPropertyValue(property))
   })
 
-  const sourceMetrics = element.getBoundingClientRect()
-  $mirror.style.top = `${sourceMetrics.top + window.scrollY}px`
-  $mirror.style.left = `${sourceMetrics.left + window.scrollX}px`
+  const { top, left, width, height } = element.getBoundingClientRect()
+  $mirror.style.width = `${width}px`
+  $mirror.style.height = `${height}px`
+  $mirror.style.top = `${top}px`
+  $mirror.style.left = `${left}px`
 
-  // copy content
-  $mirror.textContent = element.value.substring(0, element.selectionEnd)
+  const $textBefore = document.createElement('span')
+  $textBefore.textContent = element.value.substring(0, element.selectionEnd)
+  $mirror.appendChild($textBefore)
 
   const $virtualCaret = document.createElement('span')
-  $virtualCaret.textContent = '.'
+  $virtualCaret.textContent = '|'
   $mirror.appendChild($virtualCaret)
 
-  // insert mirror
+  // needed for correct positioning when the textarea is scrolled
+  const $textAfter = document.createElement('span')
+  $textAfter.textContent = element.value.substring(element.selectionEnd)
+  $mirror.appendChild($textAfter)
+
   document.documentElement.appendChild($mirror)
+
+  // scroll mirroring
+  $mirror.scrollTop = element.scrollTop
+  $mirror.scrollLeft = element.scrollLeft
 
   function cleanup () {
     $mirror.remove()
