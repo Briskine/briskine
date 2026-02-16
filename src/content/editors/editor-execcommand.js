@@ -4,7 +4,7 @@
 
 import debug from '../../debug.js'
 import { isContentEditable } from './editor-contenteditable.js'
-import getActiveElement from '../utils/active-element.js'
+import { getActiveElement } from '../utils/active-element.js'
 
 // naive html minifying that makes execCommand(insertHTML) behave closer to how the
 // browser parses html, and how the contenteditable-editor works.

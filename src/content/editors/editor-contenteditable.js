@@ -1,7 +1,7 @@
 /* ContentEditable
  */
 
-import getActiveElement from '../utils/active-element.js'
+import { getActiveElement } from '../utils/active-element.js'
 import { getSelectionRange, setSelectionRange } from '../utils/selection.js'
 import { insertExecCommandTemplate } from './editor-execcommand.js'
 

@@ -3,7 +3,7 @@
  */
 import { isContentEditable } from '../editors/editor-contenteditable.js'
 import { isTextfieldEditor } from '../editors/editor-textfield.js'
-import getActiveElement from '../utils/active-element.js'
+import { getActiveElement } from '../utils/active-element.js'
 import getEventTarget from '../utils/event-target.js'
 import { getSelectionRange, setSelectionRange } from '../utils/selection.js'
 

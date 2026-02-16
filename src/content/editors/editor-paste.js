@@ -17,7 +17,7 @@
  */
 
 import { request } from '../page/page-parent.js'
-import getActiveElement from '../utils/active-element.js'
+import { getActiveElement } from '../utils/active-element.js'
 
 function isPasteEditor (element) {
   return (

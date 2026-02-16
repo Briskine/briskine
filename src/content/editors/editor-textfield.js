@@ -1,7 +1,7 @@
 /* Textarea and Input
  */
 
-import getActiveElement from '../utils/active-element.js'
+import { getActiveElement } from '../utils/active-element.js'
 
 // only editable input types where can use selection methods and properties
 // https://developer.mozilla.org/en-US/docs/Web/API/HTMLInputElement/setSelectionRange

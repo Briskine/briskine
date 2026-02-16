@@ -7,7 +7,7 @@
  *
  */
 
-import getActiveElement from '../utils/active-element.js'
+import { getActiveElement } from '../utils/active-element.js'
 import { insertExecCommandTemplate } from './editor-execcommand.js'
 
 function isLinkedInMessageEditor (element) {

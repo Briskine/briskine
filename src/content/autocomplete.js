@@ -9,7 +9,7 @@ import htmlToText from './utils/html-to-text.js'
 import debug from '../debug.js'
 import { getWord, selectWord } from './utils/word.js'
 import { updateTemplateStats } from '../store/store-content.js'
-import getActiveElement from './utils/active-element.js'
+import { getActiveElement } from './utils/active-element.js'
 import { selectFirstCursor } from './cursors/cursors.js'
 
 import { insertPasteTemplate } from './editors/editor-paste.js'

@@ -1,10 +1,56 @@
 // returns the active element
 // with support for shadow dom.
-export default function getActiveElement () {
-  // support having the activeElement inside a shadow root
+
+import getEventTarget from './event-target.js'
+import { addFocusListeners } from './shadow-focus.js'
+import { isContentEditable } from '../editors/editor-contenteditable.js'
+import { isTextfieldEditor } from '../editors/editor-textfield.js'
+
+let removeFocusListeners = null
+let activeElement = null
+
+export function getActiveElement () {
+  if (activeElement) {
+    return activeElement
+  }
+
   if (document?.activeElement?.shadowRoot) {
     return document.activeElement.shadowRoot.activeElement
   }
 
   return document.activeElement
+}
+
+function setActiveElement (e) {
+  if (e.type !== 'focusin') {
+    return
+  }
+
+  const target = getEventTarget(e)
+  const root = target.getRootNode()
+  if (
+    root.host
+    && (
+      root.host.tagName.toLowerCase().includes('b-dialog')
+      || root.host.tagName.toLowerCase().includes('b-bubble')
+    )
+  ) {
+    return
+  }
+
+  if (isTextfieldEditor(target) || isContentEditable(target)) {
+    activeElement = target
+  }
+}
+
+export function setup () {
+  removeFocusListeners = addFocusListeners(setActiveElement)
+}
+
+export function destroy() {
+  if (removeFocusListeners) {
+    removeFocusListeners()
+    removeFocusListeners = null
+  }
+  activeElement = null
 }

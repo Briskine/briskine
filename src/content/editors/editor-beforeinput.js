@@ -9,7 +9,7 @@
  */
 
 import { request } from '../page/page-parent.js'
-import getActiveElement from '../utils/active-element.js'
+import { getActiveElement } from '../utils/active-element.js'
 import debug from '../../debug.js'
 
 function isBeforeInputEditor (element) {

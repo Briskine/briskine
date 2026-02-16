@@ -13,20 +13,27 @@ import {
 import { eventDestroy } from '../config.js'
 import {isBlocklisted} from '../blocklist.js'
 
-import {setup as setupKeyboard, destroy as destroyKeyboard} from './keyboard.js'
-import {setup as setupCursors, destroy as destroyCursors} from './cursors/cursors.js'
-import {setup as setupBubble, destroy as destroyBubble} from './bubble/bubble.js'
-import {setup as setupStatus, destroy as destroyStatus} from './status.js'
-import {setup as setupDialog, destroy as destroyDialog} from './dialog/dialog.js'
-import {destroy as destroySandbox} from './sandbox/sandbox-parent.js'
-import {setup as setupPage, destroy as destroyPage} from './page/page-parent.js'
-import {setup as setupAttachments, destroy as destroyAttachments} from './attachments/attachments.js'
-import {setup as setupDashboardEvents, destroy as destroyDashboardEvents} from './dashboard-events-client.js'
-import {setup as setupInsertEvent, destroy as destroyInsertEvent} from './insert-template-event.js'
+import { setup as setupKeyboard, destroy as destroyKeyboard } from './keyboard.js'
+import { setup as setupCursors, destroy as destroyCursors } from './cursors/cursors.js'
+import { setup as setupBubble, destroy as destroyBubble } from './bubble/bubble.js'
+import { setup as setupStatus, destroy as destroyStatus } from './status.js'
+import { setup as setupDialog, destroy as destroyDialog } from './dialog/dialog.js'
+import { destroy as destroySandbox} from './sandbox/sandbox-parent.js'
+import { setup as setupPage, destroy as destroyPage } from './page/page-parent.js'
+import { setup as setupAttachments, destroy as destroyAttachments } from './attachments/attachments.js'
+import {
+  setup as setupDashboardEvents,
+  destroy as destroyDashboardEvents
+} from './dashboard-events-client.js'
+import { setup as setupInsertEvent, destroy as destroyInsertEvent } from './insert-template-event.js'
+import {
+  setup as setupActiveElement,
+  destroy as destroyActiveElement,
+  getActiveElement
+} from './utils/active-element.js'
 import getEventTarget from './utils/event-target.js'
 import { isTextfieldEditor } from './editors/editor-textfield.js'
 import { isContentEditable } from './editors/editor-contenteditable.js'
-import getActiveElement from './utils/active-element.js'
 
 const readyMessage = 'briskine-ready'
 
@@ -61,6 +68,7 @@ async function init () {
     setupPage(),
     setupAttachments(),
     setupInsertEvent(),
+    setupActiveElement(),
   ])
 
   // update the content components if settings change
@@ -147,6 +155,7 @@ function destructor () {
   destroyPage()
   destroyAttachments()
   destroyInsertEvent()
+  destroyActiveElement()
 
   destroySandbox()
 
