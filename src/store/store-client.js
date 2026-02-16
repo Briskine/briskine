@@ -21,7 +21,7 @@ function createRequest (type) {
       // extension context invalidated
       if (!browser.runtime.id) {
         // destroy existing content scripts
-        return document.dispatchEvent(new CustomEvent(eventDestroy))
+        document.dispatchEvent(new CustomEvent(eventDestroy))
       }
 
       throw err

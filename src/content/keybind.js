@@ -5,7 +5,6 @@ import Mousetrap from 'mousetrap'
 import 'mousetrap/plugins/global-bind/mousetrap-global-bind.js'
 
 let mt
-let cachedTargetBody
 
 export function keybind (key = '', callback = () => {}) {
   if (
@@ -15,16 +14,11 @@ export function keybind (key = '', callback = () => {}) {
     // we need to be able to delay adding them
     // for websites which remove them on load (eg. salesforce).
     !mt
-    // when the document body was recreated (eg. can happen in a dynamic iframe
-    // that uses document write, in which we have multiple startup retries)
-    // we need to re-initialize mousetrap,
-    // to re-attach the event listeners.
-    || mt?.target?.body !== cachedTargetBody
   ) {
+    // TODO BUG binding mousetrap on window prevents keyunbind from working
     mt = new Mousetrap(window, {
       capture: true,
     })
-    cachedTargetBody = document.body
   }
 
   return mt.bindGlobal(key, callback)
