@@ -4,7 +4,7 @@
 import Mousetrap from 'mousetrap'
 import 'mousetrap/plugins/global-bind/mousetrap-global-bind.js'
 
-let keyboard
+let mt
 let cachedTargetBody
 
 export function keybind (key = '', callback = () => {}) {
@@ -14,26 +14,25 @@ export function keybind (key = '', callback = () => {}) {
     // mousetrap adds them immediately when it self-initializes.
     // we need to be able to delay adding them
     // for websites which remove them on load (eg. salesforce).
-    !keyboard ||
-    // when the document body was rewrote (eg. in an iframe, where we have multiple startup retries)
+    !mt
+    // when the document body was recreated (eg. can happen in a dynamic iframe
+    // that uses document write, in which we have multiple startup retries)
     // we need to re-initialize mousetrap,
     // to re-attach the event listeners.
-    (
-      keyboard.target &&
-      keyboard.target.body &&
-      keyboard.target.body !== cachedTargetBody
-    )
+    || mt?.target?.body !== cachedTargetBody
   ) {
-    keyboard = new Mousetrap(document, true)
+    mt = new Mousetrap(window, {
+      capture: true,
+    })
     cachedTargetBody = document.body
   }
 
-  return keyboard.bindGlobal(key, callback)
+  return mt.bindGlobal(key, callback)
 }
 
 export function keyunbind (key = '') {
-  if (keyboard) {
-    return keyboard.unbind(key)
+  if (mt) {
+    return mt.unbind(key)
   }
 
   return
