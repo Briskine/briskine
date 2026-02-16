@@ -127,21 +127,8 @@ async function createContextMenus (menus = []) {
   await Promise.all(menus.map((m) => browser.contextMenus.create(m)))
 }
 
-let existingMenus = []
+let existingTemplateList = []
 async function setupContextMenus () {
-  let signedIn = false
-  try {
-    await getAccount()
-    signedIn = true
-  } catch {
-    // logged-out
-  }
-
-  // same sorting and rendering settings like the dialog
-  const allTemplates = await getTemplates()
-  const extensionData = await getExtensionData()
-  const templates = sortTemplates(allTemplates, extensionData.dialogSort, extensionData.templatesLastUsed)
-
   const menus = []
 
   menus.push({
@@ -150,21 +137,12 @@ async function setupContextMenus () {
     id: parentMenu,
   })
 
-  if (signedIn) {
-    menus.push({
-      contexts: ['all'],
-      title: 'Open Briskine popup',
-      id: signInMenu,
-      parentId: parentMenu,
-    })
-  } else {
-    menus.push({
-      contexts: ['all'],
-      title: 'Sign in to access your templates',
-      id: signInMenu,
-      parentId: parentMenu,
-    })
-  }
+  menus.push({
+    contexts: ['all'],
+    title: 'Sign in to access your templates',
+    id: signInMenu,
+    parentId: parentMenu,
+  })
 
   menus.push({
     contexts: ['all'],
@@ -205,39 +183,57 @@ async function setupContextMenus () {
     id: insertTemplatesMenu,
   })
 
-  templates.slice(0, templatesLimit).forEach((template) => {
-    menus.push({
-      contexts: ['editable'],
-      documentUrlPatterns: documentUrlPatterns,
-      title: `${template.title}${template.shortcut ? ` (${template.shortcut})` : ''}`,
-      parentId: insertTemplatesMenu,
-      id: template.id,
-    })
-  })
 
-  if (!isEqual(existingMenus, menus)) {
-    existingMenus = menus
-    await createContextMenus(menus)
-  }
+
+  await createContextMenus(menus)
+
+  updateMenuSignin()
+
+  updateMenuTemplates()
+}
+
+function updateMenuSignin() {
+  getAccount()
+    .then(() => {
+      browser.contextMenus.update(signInMenu, { title: 'Open Briskine popup' })
+    })
+    .catch(() => {
+      browser.contextMenus.update(signInMenu, { title: 'Sign in to access your templates' })
+    })
+}
+
+function updateMenuTemplates() {
+  Promise.all([
+    getTemplates(),
+    getExtensionData()
+  ]).then(([allTemplates, extensionData]) => {
+    const templates = sortTemplates(allTemplates, extensionData.dialogSort, extensionData.templatesLastUsed)
+    const newTemplateList = templates.slice(0, templatesLimit)
+    const newTemplateListIds = newTemplateList.map(tpl => tpl.id)
+
+    if (!isEqual(existingTemplateList, newTemplateListIds)) {
+      // clear all existing intsert templates menus
+      existingTemplateList.forEach(async (menuTplId) => {
+        await browser.contextMenus.remove(menuTplId)
+      }) 
+
+      newTemplateList.forEach((template) => {
+        browser.contextMenus.create({
+          contexts: ['editable'],
+          documentUrlPatterns: documentUrlPatterns,
+          title: `${template.title}${template.shortcut ? ` (${template.shortcut})` : ''}`,
+          parentId: insertTemplatesMenu,
+          id: template.id,
+        })
+      })
+
+      existingTemplateList = newTemplateListIds
+    }
+  })
 }
 
 async function updateBubbleContextMenu (urlString) {
-  if (!URL.canParse(urlString)) {
-    return
-  }
-
   const { hostname } = URL.parse(urlString)
-
-  const settings = await getSettings()
-  if (isBlocklisted(settings, urlString)) {
-    return browser.contextMenus.update(
-      toggleBubbleMenu,
-      {
-        checked: false,
-        enabled: false
-      }
-    )
-  }
 
   if (bubbleAllowlistPrivate(hostname)) {
     return browser.contextMenus.update(
@@ -262,10 +258,48 @@ async function updateBubbleContextMenu (urlString) {
   )
 }
 
+async function isExtensionResponding(tabId) { 
+  return new Promise((resolve) => { 
+    browser.tabs.sendMessage(tabId, { type: 'STATUS', tabId: tabId })
+      .then(() => { 
+        resolve(true)
+      })
+      .catch(() => {
+        resolve(false)
+      })
+  }) 
+}
+
+async function shouldContextMenuShow(tabId, tabUrl) {
+  const isExtensionOn = await isExtensionResponding(tabId, tabUrl)
+
+  if (! isExtensionOn) {
+    return false
+  }
+
+  if (!URL.canParse(tabUrl)) {
+    return false
+  }
+
+  const settings = await getSettings()
+  if (isBlocklisted(settings, tabUrl)) {
+    return false
+  }
+
+  return true
+}
+
 async function onTabSwitchHandler () {
   const [tab] = await browser.tabs.query({active: true, lastFocusedWindow: true})
 
-  await updateBubbleContextMenu(tab.url)
+  if (await shouldContextMenuShow(tab.id, tab.url)) {
+    browser.contextMenus.update(parentMenu, { visible: true })
+
+    await updateBubbleContextMenu(tab.url)    
+  } else {
+
+    browser.contextMenus.update(parentMenu, { visible: false })
+  }
 }
 
 async function onTabUpdateHandler (tabId, changeInfo, tab) {
@@ -273,33 +307,33 @@ async function onTabUpdateHandler (tabId, changeInfo, tab) {
     return
   }
 
-  await updateBubbleContextMenu(tab.url)
+  if (await shouldContextMenuShow(tab.id, tab.url)) {
+    browser.contextMenus.update(parentMenu, { visible: true })
+
+    await updateBubbleContextMenu(tab.url)    
+  } else {
+
+    browser.contextMenus.update(parentMenu, { visible: false })
+  }
 }
 
-const watchedKeys = [
-  'briskine',
-  'firebaseUser',
-  'templatesOwned',
-  'templatesShared',
-  'templatesEveryone',
-]
+function isStorageChanged(...params) {
+  return params.some((param) => (param && !isEqual(param.oldValue, param.newValue)))
+} 
 
 async function storageChange (changes = {}) {
-  const changedItems = Object.keys(changes)
-  const diff = changedItems.some((item) => {
-    if (watchedKeys.includes(item)) {
-      const oldValue = changes[item].oldValue
-      const newValue = changes[item].newValue
-      if (!isEqual(oldValue, newValue)) {
-        return true
-      }
-    }
+  if (isStorageChanged(changes['firebaseUser'])) {
+    updateMenuSignin()
+  }
 
-    return false
-  })
+  if (isStorageChanged(changes['templatesOwned'], changes['templatesShared'], changes['templatesEveryone'])) {
+    updateMenuTemplates()
+  }
 
-  if (diff) {
-    await setupContextMenus()
+  if (isStorageChanged(changes['briskine']['bubbleAllowlist'])) {
+    const [tab] = await browser.tabs.query({active: true, lastFocusedWindow: true})
+
+    updateBubbleContextMenu(tab.url)
   }
 }
 
