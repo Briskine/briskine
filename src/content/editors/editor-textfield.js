@@ -3,15 +3,6 @@
 
 import { getActiveElement } from '../utils/active-element.js'
 
-// only editable input types where can use selection methods and properties
-// https://developer.mozilla.org/en-US/docs/Web/API/HTMLInputElement/setSelectionRange
-const validInputTypes = [
-  'text',
-  'search',
-  'tel',
-  'url',
-]
-
 export function isTextfieldEditor (element) {
   return (
     element
@@ -21,7 +12,11 @@ export function isTextfieldEditor (element) {
       element.tagName.toLowerCase() === 'textarea'
       || (
         element.tagName.toLowerCase() === 'input'
-        && validInputTypes.includes(element.type)
+        && element.type !== 'password'
+        // only editable input types where can use selection methods and properties
+        // https://developer.mozilla.org/en-US/docs/Web/API/HTMLInputElement/setSelectionRange
+        // https://html.spec.whatwg.org/multipage/input.html#do-not-apply
+        && element.selectionStart !== null
       )
     )
   )
