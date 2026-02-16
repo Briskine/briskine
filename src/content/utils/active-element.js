@@ -28,11 +28,12 @@ function setActiveElement (e) {
 
   const target = getEventTarget(e)
   const root = target.getRootNode()
+  const host = root.host
   if (
-    root.host
+    host
     && (
-      root.host.tagName.toLowerCase().includes('b-dialog')
-      || root.host.tagName.toLowerCase().includes('b-bubble')
+      host.tagName.toLowerCase().includes('b-dialog')
+      || host.tagName.toLowerCase().includes('b-bubble')
     )
   ) {
     return
