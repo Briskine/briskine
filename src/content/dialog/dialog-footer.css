@@ -41,7 +41,8 @@
 .briskine-dialog[modal=actions] .dialog-actions {
   visibility: visible;
   opacity: 1;
-  transform: translateY(0) scale(1);
+  translate: 0;
+  scale: 1;
 }
 
 .briskine-dialog[modal=settings] .btn-settings {

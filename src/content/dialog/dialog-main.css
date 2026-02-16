@@ -309,6 +309,15 @@ input[type=search]:focus {
 
   visibility: hidden;
   opacity: 0;
+  translate: 0 30%;
+  scale: 0.95;
+  transition: all .075s ease-in;
+}
+
+@media (prefers-reduced-motion) {
+  .dialog-modal {
+    transition: none;
+  }
 }
 
 .dialog-modal-header {
