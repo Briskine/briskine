@@ -2,32 +2,43 @@
  * Key bindings
  */
 import Mousetrap from 'mousetrap'
-import 'mousetrap/plugins/global-bind/mousetrap-global-bind.js'
+
+import { isTextfieldEditor } from './editors/editor-textfield.js'
+import { isContentEditable } from './editors/editor-contenteditable.js'
+import { getActiveElement } from './utils/active-element.js'
+
+Mousetrap.prototype.stopCallback = function () {
+  const element = getActiveElement()
+  if (isTextfieldEditor(element) || isContentEditable(element)) {
+    return false
+  }
+
+  return true
+}
 
 let mt
+const abortController = new AbortController()
 
 export function keybind (key = '', callback = () => {}) {
-  if (
-    // initialize mousetrap only on first keybind,
-    // to delay adding keydown/keyup/keypress event listeners.
-    // mousetrap adds them immediately when it self-initializes.
-    // we need to be able to delay adding them
-    // for websites which remove them on load (eg. salesforce).
-    !mt
-  ) {
-    // TODO BUG binding mousetrap on window prevents keyunbind from working
+  // initialize mousetrap only on first keybind,
+  // to delay adding keydown/keyup/keypress event listeners.
+  // mousetrap adds them immediately when it self-initializes.
+  if (!mt) {
     mt = new Mousetrap(window, {
       capture: true,
+      signal: abortController.signal,
     })
   }
 
-  return mt.bindGlobal(key, callback)
+  return mt.bind(key, callback)
 }
 
 export function keyunbind (key = '') {
   if (mt) {
     return mt.unbind(key)
   }
+}
 
-  return
+export function destroy () {
+  abortController.abort()
 }

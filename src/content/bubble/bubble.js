@@ -18,7 +18,7 @@ import bubbleIcon from '../../icons/briskine-logo-small-bare.svg?raw'
 import getEventTarget from '../utils/event-target.js'
 
 let bubbleInstance = null
-let removeFocusListeners = null
+let removeFocusListeners = () => {}
 
 const maxHostWidthCssVar = '--max-host-width'
 const bubbleTopCssVar = '--bubble-top'
@@ -156,10 +156,7 @@ function destroyInstance () {
     bubbleInstance = null
   }
 
-  if (removeFocusListeners) {
-    removeFocusListeners()
-    removeFocusListeners = null
-  }
+  removeFocusListeners()
 }
 
 export function destroy () {

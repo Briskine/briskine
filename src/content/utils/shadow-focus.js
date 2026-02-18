@@ -8,7 +8,7 @@
 // that's why we need to also need to attach the focusin/out listeners to the shadow roots.
 import { getActiveElement } from './active-element.js'
 
-export function addFocusListeners (callback = () => {}) {
+export function addFocusListeners (callback = () => {}, eventType = '') {
   const shadowRootsRegistry = new WeakSet()
 
   const abortController = new AbortController()
@@ -18,6 +18,10 @@ export function addFocusListeners (callback = () => {}) {
   }
 
   function callbackWrap (e) {
+    if (e.__handled === true) {
+      return
+    }
+
     const path = e.composedPath()
     // find the inner most root, to support nested shadow roots
     const innermostRoot = path.find(node => node instanceof ShadowRoot)
@@ -39,13 +43,18 @@ export function addFocusListeners (callback = () => {}) {
     if (shadow instanceof ShadowRoot && !shadowRootsRegistry.has(shadow)) {
       shadowRootsRegistry.add(shadow)
 
-      shadow.addEventListener('focusin', callbackWrap, listenerOptions)
-      shadow.addEventListener('focusout', callbackWrap, listenerOptions)
+      if (eventType) {
+        shadow.addEventListener(eventType, callbackWrap, listenerOptions)
+      } else {
+        shadow.addEventListener('focusin', callbackWrap, listenerOptions)
+        shadow.addEventListener('focusout', callbackWrap, listenerOptions)
+      }
 
       // if this is the first time we hook this shadow root,
       // the focusin event could already be in progress.
       // manually trigger it because the newly attached listener might miss it.
       if (event) {
+        event.__handled = true
         callback(event)
       }
     }
@@ -64,17 +73,31 @@ export function addFocusListeners (callback = () => {}) {
 
   window.addEventListener('focusin', hookShadowOnFocus, listenerOptions)
 
-  window.addEventListener('focusin', callbackWrap, listenerOptions)
-  window.addEventListener('focusout', callbackWrap, listenerOptions)
-
-  // if active element is already in shadow root
-  const activeElement = getActiveElement()
-  if (activeElement) {
-    const activeRoot = activeElement.getRootNode()
-    if (activeRoot instanceof ShadowRoot) {
-      hookShadowRoot(activeRoot)
-    }
+  if (eventType) {
+    window.addEventListener(eventType, callbackWrap, listenerOptions)
+  } else {
+    window.addEventListener('focusin', callbackWrap, listenerOptions)
+    window.addEventListener('focusout', callbackWrap, listenerOptions)
   }
+
+  // give it a second, in case listeners were called and destroyed.
+  // resolves issues with double-calling the callback.
+  setTimeout(() => {
+    const activeElement = getActiveElement()
+    if (activeElement && !abortController.signal.aborted) {
+      const activeRoot = activeElement.getRootNode()
+      const event = {
+        type: 'focusin',
+        target: activeElement,
+      }
+
+      if (activeRoot instanceof ShadowRoot) {
+        hookShadowRoot(activeRoot, event)
+      } else {
+        callback(event)
+      }
+    }
+  })
 
   return destroy
 }

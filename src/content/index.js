@@ -18,7 +18,6 @@ import { setup as setupCursors, destroy as destroyCursors } from './cursors/curs
 import { setup as setupBubble, destroy as destroyBubble } from './bubble/bubble.js'
 import { setup as setupStatus, destroy as destroyStatus } from './status.js'
 import { setup as setupDialog, destroy as destroyDialog } from './dialog/dialog.js'
-import { destroy as destroySandbox} from './sandbox/sandbox-parent.js'
 import { setup as setupPage, destroy as destroyPage } from './page/page-parent.js'
 import { setup as setupAttachments, destroy as destroyAttachments } from './attachments/attachments.js'
 import {
@@ -29,13 +28,16 @@ import { setup as setupInsertEvent, destroy as destroyInsertEvent } from './inse
 import {
   setup as setupActiveElement,
   destroy as destroyActiveElement,
-  getActiveElement
 } from './utils/active-element.js'
+import { destroy as destroySandbox} from './sandbox/sandbox-parent.js'
+import { destroy as destroyKeybind } from './keybind.js'
 import getEventTarget from './utils/event-target.js'
 import { isTextfieldEditor } from './editors/editor-textfield.js'
 import { isContentEditable } from './editors/editor-contenteditable.js'
+import { addFocusListeners } from './utils/shadow-focus.js'
 
 const readyMessage = 'briskine-ready'
+let removeFocusListeners = () => {}
 
 function getParentUrl () {
   let url = window.location.href
@@ -51,8 +53,6 @@ function getParentUrl () {
 }
 
 async function init () {
-  initAbortController.abort()
-
   const settings = await getSettings()
 
   if (isBlocklisted(settings, getParentUrl())) {
@@ -78,11 +78,10 @@ async function init () {
   window.postMessage(readyMessage)
 }
 
-let initAbortController = new AbortController()
-
 function initOnFocus (e) {
   const target = getEventTarget(e)
   if (isTextfieldEditor(target) || isContentEditable(target)) {
+    removeFocusListeners()
     init()
   }
 }
@@ -111,23 +110,7 @@ async function startup () {
   setupStatus()
   setupDashboardEvents()
 
-  const options = {
-    capture: true,
-    signal: initAbortController.signal,
-  }
-  window.addEventListener('focusin', initOnFocus, options)
-  // in case an editable is already focused
-  const activeElement = getActiveElement()
-  if (activeElement) {
-    initOnFocus({ target: activeElement })
-
-    // in case the activeElement is non-editable inside a shadow.
-    // without this check, changing focus to an editable inside the same shadow
-    // root won't trigger focusin on document
-    if (document.activeElement?.shadowRoot) {
-      document.activeElement.shadowRoot.addEventListener('focusin', initOnFocus, options)
-    }
-  }
+  removeFocusListeners = addFocusListeners(initOnFocus, 'focusin')
 
   setTimeout(() => {
     // if the document was recreated (e.g., ckeditor4 dynamically crated iframe),
@@ -157,10 +140,10 @@ function destructor () {
   destroyInsertEvent()
   destroyActiveElement()
 
+  destroyKeybind()
   destroySandbox()
 
-  initAbortController.abort()
-  initAbortController = new AbortController()
+  removeFocusListeners()
   settingsCache = {}
 }
 

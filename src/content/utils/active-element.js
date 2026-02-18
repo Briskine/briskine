@@ -6,7 +6,7 @@ import { addFocusListeners } from './shadow-focus.js'
 import { isContentEditable } from '../editors/editor-contenteditable.js'
 import { isTextfieldEditor } from '../editors/editor-textfield.js'
 
-let removeFocusListeners = null
+let removeFocusListeners = () => {}
 let activeElement = null
 
 export function getActiveElement () {
@@ -14,18 +14,15 @@ export function getActiveElement () {
     return activeElement
   }
 
-  if (document?.activeElement?.shadowRoot) {
-    return document.activeElement.shadowRoot.activeElement
+  let element = document.activeElement
+  while (element?.shadowRoot?.activeElement) {
+    element = element.shadowRoot.activeElement
   }
 
-  return document.activeElement
+  return element
 }
 
 function setActiveElement (e) {
-  if (e.type !== 'focusin') {
-    return
-  }
-
   const target = getEventTarget(e)
   const root = target.getRootNode()
   const host = root.host
@@ -45,13 +42,10 @@ function setActiveElement (e) {
 }
 
 export function setup () {
-  removeFocusListeners = addFocusListeners(setActiveElement)
+  removeFocusListeners = addFocusListeners(setActiveElement, 'focusin')
 }
 
 export function destroy() {
-  if (removeFocusListeners) {
-    removeFocusListeners()
-    removeFocusListeners = null
-  }
+  removeFocusListeners()
   activeElement = null
 }
