@@ -1,5 +1,5 @@
 /*
- * TODO - DEPRECATED TO BE REMOVED
+ * DEPRECATED
  *
  * Legacy random choice helper.
  * {{ choice 'one, two, three' }}

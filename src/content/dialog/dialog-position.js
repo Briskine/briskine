@@ -185,7 +185,6 @@ export function getEditableCaret (element) {
   document.documentElement.appendChild($mirror)
 
   // scroll mirroring
-  // BUG if the caret is scrolled out of view, the dialog ends up in a correct but weird position
   $mirror.scrollTop = element.scrollTop
   $mirror.scrollLeft = element.scrollLeft
 

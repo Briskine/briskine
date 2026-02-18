@@ -8,7 +8,7 @@ export function request (type, options) {
   return pageMessengerServer.request(type, options)
 }
 
-export async function setup() {
+export async function setup () {
   // script already loaded
   if (pageScript) {
     return
