@@ -88,5 +88,5 @@ export default function Messenger (scope = '') {
     }
   }
 
-  return {connect, request, respond}
+  return { connect, request, respond }
 }

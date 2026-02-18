@@ -8,7 +8,12 @@ export function request (type, options) {
   return pageMessengerServer.request(type, options)
 }
 
-export function setup () {
+export async function setup() {
+  // script already loaded
+  if (pageScript) {
+    return
+  }
+
   let resolve, reject
   const promise = new Promise((res, rej) => {
     [resolve, reject] = [res, rej]
@@ -22,7 +27,6 @@ export function setup () {
     // for subsequent startup retries (eg. in dynamically created iframes).
     pageMessengerServer = Messenger('page')
     await pageMessengerServer.connect(window)
-
     this.remove()
     resolve()
   }
@@ -33,13 +37,4 @@ export function setup () {
   document.documentElement.appendChild(pageScript)
 
   return promise
-}
-
-export function destroy () {
-  if (!pageScript) {
-    return
-  }
-
-  pageScript.remove()
-  pageScript = null
 }

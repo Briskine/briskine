@@ -18,7 +18,7 @@ import { setup as setupCursors, destroy as destroyCursors } from './cursors/curs
 import { setup as setupBubble, destroy as destroyBubble } from './bubble/bubble.js'
 import { setup as setupStatus, destroy as destroyStatus } from './status.js'
 import { setup as setupDialog, destroy as destroyDialog } from './dialog/dialog.js'
-import { setup as setupPage, destroy as destroyPage } from './page/page-parent.js'
+import { setup as setupPage } from './page/page-parent.js'
 import { setup as setupAttachments, destroy as destroyAttachments } from './attachments/attachments.js'
 import {
   setup as setupDashboardEvents,
@@ -35,6 +35,8 @@ import getEventTarget from './utils/event-target.js'
 import { isTextfieldEditor } from './editors/editor-textfield.js'
 import { isContentEditable } from './editors/editor-contenteditable.js'
 import { addFocusListeners } from './utils/shadow-focus.js'
+
+import debug from '../debug.js'
 
 const readyMessage = 'briskine-ready'
 let removeFocusListeners = () => {}
@@ -59,7 +61,7 @@ async function init () {
     return false
   }
 
-  await Promise.allSettled([
+  const components = await Promise.allSettled([
     setupStore(),
     setupKeyboard(settings),
     setupCursors(),
@@ -70,6 +72,12 @@ async function init () {
     setupInsertEvent(),
     setupActiveElement(),
   ])
+
+  components.forEach((c) => {
+    if (c.status === 'rejected') {
+      debug(['component', c, c.reason], 'error')
+    }
+  })
 
   // update the content components if settings change
   settingsCache = {...settings}
@@ -121,6 +129,8 @@ async function startup () {
 
     // cleanup
     delete document.body[loadedProp]
+    // reset retries
+    startupRetries = 0
   }, startupDelay)
 }
 
@@ -135,7 +145,6 @@ function destructor () {
   destroyCursors()
   destroyBubble()
   destroyDialog()
-  destroyPage()
   destroyAttachments()
   destroyInsertEvent()
   destroyActiveElement()
