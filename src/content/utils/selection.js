@@ -111,6 +111,12 @@ export async function setSelectionRange (node, range) {
     // requestAnimationFrame would be enough for that,
     // if we didn't need to support third-party editors.
     document.addEventListener('selectionchange', () => {
+      // scroll to caret, if needed
+      const parent = range?.commonAncestorContainer?.parentElement
+      if (parent) {
+        parent.scrollIntoView?.({ block: 'nearest' })
+      }
+
       resolve(range)
     }, { once: true })
 
