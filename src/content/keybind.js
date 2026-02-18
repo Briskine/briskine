@@ -17,7 +17,7 @@ Mousetrap.prototype.stopCallback = function () {
 }
 
 let mt
-const abortController = new AbortController()
+let abortController = new AbortController()
 
 export function keybind (key = '', callback = () => {}) {
   // initialize mousetrap only on first keybind,
@@ -41,4 +41,6 @@ export function keyunbind (key = '') {
 
 export function destroy () {
   abortController.abort()
+  abortController = new AbortController()
+  mt = null
 }
