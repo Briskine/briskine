@@ -131,6 +131,7 @@ export function getDefaultTemplates () {
       body: `
         <style>div {}</style>
         <div>empty={{cursor}}</div>
+        <div>empty with space= {{cursor}}</div>
         <!-- comment -->
         <div>placeholder={{cursor placeholder="placeholder"}}</div>
         <div>
