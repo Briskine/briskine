@@ -135,13 +135,15 @@ export function getDefaultTemplates () {
         <!-- comment -->
         <div>placeholder={{cursor placeholder="placeholder"}}</div>
         <div>
-          styled placeholder=
-          <span style="color: red; font-weight: bold">{{cursor placeholder="red"}}</span>
+          styled placeholder= <span style="color: red; font-weight: bold">{{cursor placeholder="red"}}</span>
         </div>
         <div>empty2={{cursor}}</div>
         <div>
           block=
           {{#cursor}}<strong>block</strong>{{/cursor}}
+        </div>
+        <div>
+          block2= <span style="color: hotpink"><strong>{{#cursor}}block{{/cursor}}</strong></style>
         </div>
       `,
     })
