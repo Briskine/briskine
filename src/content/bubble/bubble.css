@@ -58,7 +58,10 @@
   width: var(--bubble-size);
   height: var(--bubble-size);
   padding: 5px;
-  background-color: rgba(var(--color-background), .4);
+  background-color: rgba(var(--color-background), .6);
+  /* make the background lighter on dark backgrounds, to keep the icon visible */
+  background-image: linear-gradient(rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.3));
+
   border: 0;
   border-radius: 5px;
   cursor: pointer;
@@ -74,6 +77,7 @@
 
 .b-bubble:hover {
   background-color: rgba(var(--color-background), .8);
+  background-image: linear-gradient(rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.1));
   box-shadow: 0 0 12px rgba(0,0,0,.1);
 }
 
