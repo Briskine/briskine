@@ -105,6 +105,48 @@ function getSelectionState (el) {
   return getRangeOffsets(el, range)
 }
 
+// delete contents of range and preserve whitespace around it.
+// when using range.deleteContents for empty cursors, regular whitespace around the cursor would be collapsed.
+// replace regular whitespace around empty cursors with &nbsp;, to prevent them from collapsing,
+// and have contenteditable act more like textarea (in regards to whitespace around cursors).
+// after typing, the browser will convert the &nbsp;'s to regular whitespace chars.
+const nbsp = '\u00A0'
+function safeDeleteContents (range) {
+  const node = range.startContainer
+  const start = range.startOffset
+  const end = range.endOffset
+  const lengthToDelete = end - start
+
+  if (
+    node.nodeType !== Node.TEXT_NODE
+    || node !== range.endContainer
+  ) {
+    range.deleteContents()
+    return range
+  }
+
+  // in case the char before the cursor is space
+  if (
+    start > 0
+    && node.textContent[start - 1] === ' '
+  ) {
+    // convert to &nbsp;
+    node.replaceData(start - 1, 1, nbsp)
+  }
+
+  // in case the char after the cursor is space
+  if (
+    end < node.textContent.length
+    && node.textContent[end] === ' '
+  ) {
+    node.replaceData(end, 1, nbsp)
+  }
+
+  node.deleteData(start, lengthToDelete)
+  range.collapse()
+  return range
+}
+
 function setSelectionState (el, start, end) {
   // empty cursors (marker+marker) will be removed on first selection/focus
   const isEmpty = (end - start === 2)
@@ -120,6 +162,7 @@ function setSelectionState (el, start, end) {
   }
 
   const range = createRangeFromOffsets(el, start, end)
+
   if (range) {
     if (
       isEmpty
@@ -129,11 +172,11 @@ function setSelectionState (el, start, end) {
       // when using range.deleteContents, empty cursors are not removed,
       // and the caret doesn't move.
       // not using range.deleteContents keeps the correct range selected,
-      // so we can start typing to remove the cursor, but the caret is invisible.
+      // so we can start typing to remove the cursor, **but the caret is invisible**.
       // the alternative would be to not support empty cursors on ckeditor5.
       && !el?.matches?.('.ck-editor__editable')
     ) {
-      range.deleteContents()
+      safeDeleteContents(range)
     }
 
     return setSelectionRange(el, range)

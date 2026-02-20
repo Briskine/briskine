@@ -154,5 +154,46 @@ describe('Cursors', () => {
       expect(range.startOffset).to.equal(8)
       expect(range.endOffset).to.equal(8)
     })
+
+    it('should jump to the first cursor and preserve whitespace before the cursor', async () => {
+      const text = `pre-text ${cursor()}`
+      const html = `<div>${text}</div>`
+      editable.innerHTML = html
+
+      // focus is at the end
+      const cursorNode = editable.firstChild.firstChild
+      window.getSelection().setBaseAndExtent(cursorNode, 11, cursorNode, 11)
+
+      const range = window.getSelection().getRangeAt(0)
+
+      await selectFirstCursor({ text: text })
+      expect(range.startOffset).to.equal(9)
+      expect(range.endOffset).to.equal(9)
+
+      // simulate typing,
+      // to have the browser try to auto-collapse whitespace (without our workaround)
+      document.execCommand('insertText', false, 'post-text')
+      expect(range.startContainer.textContent).to.equal('pre-text post-text')
+    })
+
+    it('should jump to the first cursor and preserve whitespace before and after the cursor', async () => {
+      const text = `pre-text ${cursor()} post-text`
+      const html = `<div>${text}</div>`
+      editable.innerHTML = html
+
+      // focus is at the end
+      const cursorNode = editable.firstChild.firstChild
+      window.getSelection().setBaseAndExtent(cursorNode, 11, cursorNode, 11)
+
+      const range = window.getSelection().getRangeAt(0)
+
+      await selectFirstCursor({ text: text })
+      expect(range.startOffset).to.equal(9)
+      expect(range.endOffset).to.equal(9)
+
+      // simulate typing
+      document.execCommand('insertText', false, 'x')
+      expect(range.startContainer.textContent).to.equal('pre-text x post-text')
+    })
   })
 })
