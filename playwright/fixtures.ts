@@ -18,7 +18,7 @@ export const test = base.extend<{
 
     if (browserName === 'firefox') {
       context = await firefox.launchPersistentContext('', {
-        headless: false,
+        headless: true,
         args: ['-start-debugger-server', String(RDP_PORT)],
         firefoxUserPrefs: {
           'devtools.debugger.remote-enabled': true,
@@ -31,7 +31,8 @@ export const test = base.extend<{
       extensionId = resp.addon.id.split('@')[1]
     } else {
       context = await chromium.launchPersistentContext('', {
-        headless: false,
+        headless: true,
+        channel: 'chromium',
         args: [
           `--disable-extensions-except=${pathToExtension}`,
           `--load-extension=${pathToExtension}`,
