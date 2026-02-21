@@ -134,6 +134,7 @@ export function getDefaultTemplates () {
         <div>empty with space= {{cursor}}</div>
         <!-- comment -->
         <div>placeholder={{#cursor}}placeholder{{/cursor}}</div>
+        <div>placeholder from.first_name={{#cursor}}{{from.first_name}}{{/cursor}}</div>
         <div>
           styled placeholder= <span style="color: red; font-weight: bold">{{#cursor}}red{{/cursor}}</span>
         </div>
