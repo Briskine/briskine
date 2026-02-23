@@ -110,6 +110,21 @@ describe('insertTextfieldTemplate', () => {
     input.remove()
   })
 
+  it('should insert template in input type=email field', () => {
+    const input = document.createElement('input')
+    input.type = 'email'
+    document.body.appendChild(input)
+    input.value = 'pre'
+    input.focus()
+
+    insertTextfieldTemplate({
+      text: 'test',
+    })
+
+    expect(input.value).to.equal('pretest')
+    input.remove()
+  })
+
   it('should insert template in input with selection and maxlength', () => {
     const input = document.createElement('input')
     input.type = 'text'

@@ -164,6 +164,38 @@ describe('word', () => {
     textarea.remove()
   })
 
+  it('should get input type=email word', async () => {
+    const email = document.createElement('input')
+    email.type = 'email'
+    email.value = '   pre'
+    email.focus()
+
+    // type email value is automatically trimmed
+    expect(
+      getWord(email)
+    ).to.eql({
+      start: 0,
+      end: 3,
+      text: 'pre',
+    })
+
+    email.remove()
+  })
+
+  it('should remove word on input type=email', async () => {
+    const email = document.createElement('input')
+    email.type = 'email'
+    email.value = 'pre-text pre'
+    email.focus()
+
+    const word = getWord(email)
+    await selectWord(email, word)
+
+    // type email value is automatically trimmed
+    expect(email.value).to.equal('pre-text')
+    email.remove()
+  })
+
   it('should get contenteditable word, with preceding whitespace and text, in shadow dom', () => {
     customElements.define(
       'word-editable-shadow',

@@ -78,12 +78,14 @@ export function getWord (element) {
 
 export function selectWord (element, word) {
   if (isTextfieldEditor(element)) {
-    try {
-      element.setSelectionRange(word.start, word.end)
-    } catch (err) {
+    if (element.selectionStart !== null) {
       // only supported on inputs of types text, search, URL, tel and password.
       // https://developer.mozilla.org/en-US/docs/Web/API/HTMLInputElement/setSelectionRange
-      debug(['selectWord', err])
+      element.setSelectionRange(word.start, word.end)
+    } else {
+      // manually remove the word, for input type=email support
+      const value = element.value
+      element.value = value.substr(0, word.start) + value.substr(word.end)
     }
 
     return
