@@ -91,6 +91,11 @@ function createRangeFromOffsets (el, start, end) {
 
 function getSelectionState (el) {
   if (isTextfieldEditor(el)) {
+    // exclude input type=email, where selection is not supported
+    if (el.selectionStart === null) {
+      return null
+    }
+
     return {
       start: el.selectionStart,
       end: el.selectionEnd,
