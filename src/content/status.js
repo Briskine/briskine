@@ -11,13 +11,15 @@ function respondToStatus () {
 
 const requestEvent = `${eventStatus}-request`
 
-export function setup () {
-  browser.runtime.onMessage.addListener((request, sender, sendResponse) => { 
+function respondToIsAlive (request, sender, sendResponse) {
     if (request.type === 'STATUS') { 
       sendResponse({ response: true })
       return true
     } 
-  })  
+  }
+
+export function setup () {
+  browser.runtime.onMessage.addListener(respondToIsAlive)
 
   if (window.location.origin !== functionsUrl) {
     return
@@ -28,4 +30,5 @@ export function setup () {
 
 export function destroy () {
   document.removeEventListener(requestEvent, respondToStatus)
+  browser.runtime.onMessage.removeListener(respondToIsAlive)
 }

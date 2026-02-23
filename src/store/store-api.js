@@ -52,12 +52,14 @@ async function clearDataCache () {
   // to keep them between login sessions
   const extensionData = await getExtensionData()
   const words = extensionData.words
+  const bubbleAllowlist = extensionData.bubbleAllowlist
 
   await browser.storage.local.clear()
 
   // restore time-saved stats
   return setExtensionData({
     words: words,
+    bubbleAllowlist
   })
 }
 

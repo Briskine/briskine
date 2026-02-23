@@ -190,6 +190,8 @@ async function setupContextMenus () {
   updateMenuSignin()
 
   updateMenuTemplates()
+
+  updateBubbleContextMenu()
 }
 
 function updateMenuSignin() {
@@ -232,7 +234,13 @@ function updateMenuTemplates() {
   })
 }
 
-async function updateBubbleContextMenu (urlString) {
+async function updateBubbleContextMenu (pUrlString) {
+  let urlString = pUrlString
+  if (!urlString) {
+    const [tab] = await browser.tabs.query({active: true, lastFocusedWindow: true})
+    urlString = tab.url
+  }
+
   const { hostname } = URL.parse(urlString)
 
   if (bubbleAllowlistPrivate(hostname)) {
@@ -317,23 +325,45 @@ async function onTabUpdateHandler (tabId, changeInfo, tab) {
   }
 }
 
-function isStorageChanged(...params) {
-  return params.some((param) => (param && !isEqual(param.oldValue, param.newValue)))
+function isStorageChanged(changes, ...params) {
+  const values = params.map((param => {
+    if (Array.isArray(param)) {
+      const [mainKey, subKey] = param
+
+      return {
+        newValue: changes[mainKey].newValue[subKey],
+        oldValue: changes[mainKey].oldValue?.[subKey],
+      }
+    } else {
+
+      return changes[param]
+    }
+  }))
+
+  return values.some((val) => (val && !isEqual(val.oldValue, val.newValue)))
 } 
 
 async function storageChange (changes = {}) {
-  if (isStorageChanged(changes['firebaseUser'])) {
+  if (isStorageChanged(changes,
+    'firebaseUser',
+    ['briskine', 'lastSync']
+  )) {
     updateMenuSignin()
   }
 
-  if (isStorageChanged(changes['templatesOwned'], changes['templatesShared'], changes['templatesEveryone'])) {
+  if (isStorageChanged(changes,
+      'templatesOwned',
+      'templatesShared',
+      'templatesEveryone',
+      ['briskine', 'templatesLastUsed']
+  )) {
     updateMenuTemplates()
   }
 
-  if (isStorageChanged(changes['briskine']['bubbleAllowlist'])) {
-    const [tab] = await browser.tabs.query({active: true, lastFocusedWindow: true})
-
-    updateBubbleContextMenu(tab.url)
+  if (isStorageChanged(changes,
+    ['briskine', 'bubbleAllowlist']
+  )) {
+    updateBubbleContextMenu()
   }
 }
 
