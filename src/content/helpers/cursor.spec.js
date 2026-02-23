@@ -9,6 +9,16 @@ describe('cursor handlebars helper', () => {
     expect(await compileTemplate('{{cursor}}')).to.equal(cursorMarker + cursorMarker)
   })
 
+  it('should render placeholder markers when used inline', async () => {
+    expect(await compileTemplate('{{cursor "briskine"}}'))
+      .to.equal(cursorMarker + 'briskine' + cursorMarker)
+  })
+
+  it('should escape special characters in placeholders when used inline', async () => {
+    expect(await compileTemplate('{{cursor "& > briskine"}}'))
+      .to.equal(cursorMarker + '&amp; &gt; briskine' + cursorMarker)
+  })
+
   it('should render placeholder markers', async () => {
     expect(await compileTemplate('{{#cursor}}briskine{{/cursor}}'))
       .to.equal(cursorMarker + 'briskine' + cursorMarker)
