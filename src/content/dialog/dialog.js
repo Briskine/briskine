@@ -212,9 +212,6 @@ function Dialog (originalProps) {
     autocomplete({
       template: template,
     })
-
-    // close dialog
-    setVisible(false)
   }
 
   function stopPropagation (e, target) {
@@ -314,6 +311,7 @@ function Dialog (originalProps) {
   }
 
   async function restoreSelection () {
+    // will also hide dialog because of focusout
     editor.focus({ preventScroll: true })
     if (
       isContentEditable(editor)
@@ -321,6 +319,7 @@ function Dialog (originalProps) {
     ) {
       await setSelectionRange(editor, cachedRange)
     }
+
   }
 
   function hideOnFocusout (e) {
@@ -337,7 +336,6 @@ function Dialog (originalProps) {
       // when closing our dialog.
       window.addEventListener('keyup', (e) => { e.stopPropagation() }, { capture: true, once: true })
 
-      setVisible(false)
       restoreSelection()
     }
   }
@@ -409,7 +407,6 @@ function Dialog (originalProps) {
       if (target.closest('.dialog-login-btn')) {
         e.preventDefault()
         openPopup()
-        setVisible(false)
       }
     })
 
