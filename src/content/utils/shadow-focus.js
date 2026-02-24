@@ -83,7 +83,7 @@ export function addFocusListeners (callback = () => {}, eventType = '') {
   // give it a second, in case listeners were called and destroyed.
   // resolves issues with double-calling the callback.
   setTimeout(() => {
-    const activeElement = getActiveElement()
+    const activeElement = getActiveElement(true)
     if (activeElement && !abortController.signal.aborted) {
       const activeRoot = activeElement.getRootNode()
       const event = {

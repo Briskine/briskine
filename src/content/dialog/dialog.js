@@ -175,7 +175,7 @@ function Dialog (originalProps) {
     }
 
     // cache editor,
-    // to use for inserting templates or restoring later.
+    // to use for restoring selection and inserting templates later.
     editor = getActiveElement()
 
     // cache selection details, to restore later

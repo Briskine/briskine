@@ -8,7 +8,7 @@ import { isContentEditable } from './editors/editor-contenteditable.js'
 import { getActiveElement } from './utils/active-element.js'
 
 Mousetrap.prototype.stopCallback = function () {
-  const element = getActiveElement()
+  const element = getActiveElement(true)
   if (isTextfieldEditor(element) || isContentEditable(element)) {
     return false
   }

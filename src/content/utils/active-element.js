@@ -9,8 +9,13 @@ import { isTextfieldEditor } from '../editors/editor-textfield.js'
 let removeFocusListeners = () => {}
 let activeElement = null
 
-export function getActiveElement () {
-  if (activeElement) {
+export function getActiveElement (live = false) {
+  if (
+    // if live, we only return the current activeElement,
+    // not the cached one.
+    !live
+    && activeElement
+  ) {
     return activeElement
   }
 

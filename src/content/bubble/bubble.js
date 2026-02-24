@@ -141,7 +141,7 @@ function create (settings = {}) {
   // attach focusin and focusout events with support for shadow dom
   removeFocusListeners = addFocusListeners(handleTextfieldFocus)
 
-  const activeElement = getActiveElement()
+  const activeElement = getActiveElement(true)
   if (activeElement) {
     showBubble(activeElement)
   }

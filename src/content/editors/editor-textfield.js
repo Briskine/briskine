@@ -18,7 +18,7 @@ export function isTextfieldEditor (element) {
         // https://html.spec.whatwg.org/multipage/input.html#do-not-apply
         && (
           element.selectionStart !== null
-          // but also support type=email
+          // but still support type=email
           || element.type === 'email'
         )
       )
