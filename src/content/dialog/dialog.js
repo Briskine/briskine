@@ -313,13 +313,18 @@ function Dialog (originalProps) {
   async function restoreSelection () {
     // will also hide dialog because of focusout
     editor.focus({ preventScroll: true })
+
     if (
       isContentEditable(editor)
       && cachedRange
+      // if the nodes change in the editor, the range containers move to the top.
+      // (e.g., linkedin message editor in shadow dom likes to re-create the
+      // entire editor dom structure on focus)
+      // this will also be true when the editor is empty, when focus() is enough.
+      && cachedRange.startContainer !== editor
     ) {
       await setSelectionRange(editor, cachedRange)
     }
-
   }
 
   function hideOnFocusout (e) {
