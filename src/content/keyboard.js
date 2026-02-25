@@ -7,10 +7,10 @@ import { getSelectionRange, setSelectionRange } from './utils/selection.js'
 import { getWord } from './utils/word.js'
 import { isContentEditable } from './editors/editor-contenteditable.js'
 import { isTextfieldEditor } from './editors/editor-textfield.js'
-import {getTemplates} from '../store/store-content.js'
+import { getTemplates } from '../store/store-content.js'
 
-import {keybind, keyunbind} from './keybind.js'
-import {swipebind, swipeunbind} from './swipe.js'
+import { keybind, keyunbind } from './keybind.js'
+import { swipebind, swipeunbind } from './swipe.js'
 
 async function getTemplateByShortcut (shortcut) {
   const templates = await getTemplates()
@@ -21,7 +21,6 @@ async function getTemplateByShortcut (shortcut) {
 
 async function keyboardAutocomplete (e) {
   let element = getEventTarget(e)
-
   // if it's not an editable element
   // don't trigger anything
   if (!isTextfieldEditor(element) && !isContentEditable(element)) {
@@ -34,11 +33,17 @@ async function keyboardAutocomplete (e) {
   }
 
   // cache range
-  const cachedRange = getSelectionRange(element)
-  // workaround for Quill v1 issues when restoring focus (only when not preventing default).
-  // if the editor adds a tab/space/character when pressing Tab, endOffset will change.
-  // cache and force restore it later.
-  const cachedEndOffset = cachedRange.endOffset
+  let cachedRange
+  let cachedEndOffset
+  if (isContentEditable(element)) {
+    cachedRange = getSelectionRange(element)
+    // workaround for Quill v1 issues when restoring focus (only when not preventing default).
+    // if the editor adds a tab/space/character after pressing Tab, endOffset will change.
+    // cache and force restore it later.
+    if (cachedRange) {
+      cachedEndOffset = cachedRange.endOffset
+    }
+  }
 
   const template = await getTemplateByShortcut(word.text)
   if (!template) {
@@ -57,7 +62,10 @@ async function keyboardAutocomplete (e) {
     && cachedRange
   ) {
     // force restore endOfsset in case other characters were added after the shortcut.
-    cachedRange.setEnd(cachedRange.endContainer, cachedEndOffset)
+    if (cachedEndOffset) {
+      cachedRange.setEnd(cachedRange.endContainer, cachedEndOffset)
+    }
+
     await setSelectionRange(element, cachedRange)
   }
 

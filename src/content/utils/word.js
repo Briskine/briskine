@@ -53,11 +53,12 @@ export function getWord (element) {
       caretIndex = element.selectionStart
     }
 
-    if (caretIndex !== null) {
-      beforeSelection = element.value.substring(0, caretIndex)
-    } else {
-      beforeSelection = element.value
+    // for input type=email, consider the caret placed at the end
+    if (caretIndex === null) {
+      caretIndex = element.value?.length
     }
+
+    beforeSelection = element.value.substring(0, caretIndex)
   }
 
   // will return -1 from lastIndexOf,
