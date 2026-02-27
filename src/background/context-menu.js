@@ -204,34 +204,35 @@ function updateMenuSignin() {
     })
 }
 
-function updateMenuTemplates() {
-  Promise.all([
+async function updateMenuTemplates () {
+  const [allTemplates, extensionData] = await Promise.all([
     getTemplates(),
     getExtensionData()
-  ]).then(([allTemplates, extensionData]) => {
-    const templates = sortTemplates(allTemplates, extensionData.dialogSort, extensionData.templatesLastUsed)
-    const newTemplateList = templates.slice(0, templatesLimit)
-    const newTemplateListIds = newTemplateList.map(tpl => tpl.id)
+  ])
 
-    if (!isEqual(existingTemplateList, newTemplateListIds)) {
-      // clear all existing insert templates menus
-      existingTemplateList.forEach(async (menuTplId) => {
-        await browser.contextMenus.remove(menuTplId)
-      })
+  const templates = sortTemplates(allTemplates, extensionData.dialogSort, extensionData.templatesLastUsed)
+  const newTemplateList = templates.slice(0, templatesLimit)
+  const newTemplateListIds = newTemplateList.map(tpl => tpl.id)
 
-      newTemplateList.forEach((template) => {
-        browser.contextMenus.create({
-          contexts: ['editable'],
-          documentUrlPatterns: documentUrlPatterns,
-          title: `${template.title}${template.shortcut ? ` (${template.shortcut})` : ''}`,
-          parentId: insertTemplatesMenu,
-          id: template.id,
-        })
-      })
-
-      existingTemplateList = newTemplateListIds
+  if (!isEqual(existingTemplateList, newTemplateListIds)) {
+    // clear all existing insert templates menus
+    // existingTemplateList.forEach(async (menuTplId) => {
+    for (const menuTplId of existingTemplateList) {
+      await browser.contextMenus.remove(menuTplId)
     }
-  })
+
+    newTemplateList.forEach((template) => {
+      browser.contextMenus.create({
+        contexts: ['editable'],
+        documentUrlPatterns: documentUrlPatterns,
+        title: `${template.title}${template.shortcut ? ` (${template.shortcut})` : ''}`,
+        parentId: insertTemplatesMenu,
+        id: template.id,
+      })
+    })
+
+    existingTemplateList = newTemplateListIds
+  }
 }
 
 async function updateBubbleContextMenu (pUrlString) {
