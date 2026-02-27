@@ -42,7 +42,10 @@ async function saveAsTemplateAction (info, tab) {
 
     // replace newlines with brs
     if (selection[0].result) {
-      body = selection[0].result.replace(/(?:\r\n|\r|\n)/g, '<br>')
+      body = selection[0].result
+        .replace(/(?:\r\n|\r|\n)/g, '<br>')
+        // max 1500 chars
+        .substring(0, 1500)
     }
   } catch {
     // can't get multi-line selection
