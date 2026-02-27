@@ -317,11 +317,16 @@ function Dialog (originalProps) {
     if (
       isContentEditable(editor)
       && cachedRange
-      // if the nodes change in the editor, the range containers move to the top.
+      // if all the nodes are destroyed in the editor, the range resets and moves to the top.
       // (e.g., linkedin message editor in shadow dom likes to re-create the
       // entire editor dom structure on focus)
       // this will also be true when the editor is empty, when focus() is enough.
-      && cachedRange.startContainer !== editor
+      && !(
+        cachedRange.startContainer === editor
+        && cachedRange.startContainer === cachedRange.endContainer
+        && cachedRange.startOffset === 0
+        && cachedRange.collapsed === true
+      )
     ) {
       await setSelectionRange(editor, cachedRange)
     }
