@@ -12,11 +12,10 @@ function respondToStatus () {
 const requestEvent = `${eventStatus}-request`
 
 function respondToIsAlive (request, sender, sendResponse) {
-    if (request.type === 'STATUS') { 
-      sendResponse({ response: true })
-      return true
-    } 
+  if (request.type === 'STATUS') {
+    sendResponse({ response: true })
   }
+}
 
 export function setup () {
   browser.runtime.onMessage.addListener(respondToIsAlive)
