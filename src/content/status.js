@@ -16,15 +16,14 @@ function respondToIsAlive () {
 }
 
 export function setup () {
-  if (window.location.origin !== functionsUrl) {
-    return
-  }
-
-  document.addEventListener(requestEvent, respondToStatus)
   on(eventStatus, respondToIsAlive)
+
+  if (window.location.origin === functionsUrl) {
+    document.addEventListener(requestEvent, respondToStatus)
+  }
 }
 
 export function destroy () {
-  document.removeEventListener(requestEvent, respondToStatus)
   off(eventStatus, respondToIsAlive)
+  document.removeEventListener(requestEvent, respondToStatus)
 }

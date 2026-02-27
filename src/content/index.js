@@ -117,13 +117,16 @@ async function startup () {
 
   setupStatus()
   setupDashboardEvents()
-
   removeFocusListeners = addFocusListeners(initOnFocus, 'focusin')
 
   setTimeout(() => {
     // if the document was recreated (e.g., ckeditor4 dynamically crated iframe),
     // we'll retry initializing.
     if (!document.body[loadedProp]) {
+      destroyStatus()
+      destroyDashboardEvents()
+      removeFocusListeners()
+
       return startup()
     }
 
