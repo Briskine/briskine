@@ -48,18 +48,17 @@ if (ENV === 'development') {
 
 
 async function clearDataCache () {
-  // cache stats,
-  // to keep them between login sessions
+  // cache data that we want to keep between login sessions
   const extensionData = await getExtensionData()
   const words = extensionData.words
   const bubbleAllowlist = extensionData.bubbleAllowlist
 
   await browser.storage.local.clear()
 
-  // restore time-saved stats
+  // restore data between logins
   return setExtensionData({
     words: words,
-    bubbleAllowlist
+    bubbleAllowlist,
   })
 }
 
