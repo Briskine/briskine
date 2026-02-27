@@ -127,7 +127,25 @@ async function clickContextMenu (info = {}, tab = {}) {
 
 async function createContextMenus (menus = []) {
   await browser.contextMenus.removeAll()
-  await Promise.all(menus.map((m) => browser.contextMenus.create(m)))
+  return Promise.all(
+    menus.map((m) => {
+      return new Promise((resolve) => {
+        // browser.contextMenus.create does not return a promise,
+        // but uses a callback.
+        browser.contextMenus.create(m, resolve)
+      })
+    })
+  )
+}
+
+function getInsertTemplatesMenu () {
+  return {
+    contexts: ['editable'],
+    documentUrlPatterns: documentUrlPatterns,
+    title: 'Insert template',
+    parentId: parentMenu,
+    id: insertTemplatesMenu,
+  }
 }
 
 let existingTemplateList = []
@@ -178,13 +196,7 @@ async function setupContextMenus () {
     id: openDialogMenu,
   })
 
-  menus.push({
-    contexts: ['editable'],
-    documentUrlPatterns: documentUrlPatterns,
-    title: 'Insert template',
-    parentId: parentMenu,
-    id: insertTemplatesMenu,
-  })
+  menus.push(getInsertTemplatesMenu())
 
   await createContextMenus(menus)
 
@@ -214,23 +226,21 @@ async function updateMenuTemplates () {
   const newTemplateListIds = newTemplateList.map(tpl => tpl.id)
 
   if (!isEqual(existingTemplateList, newTemplateListIds)) {
-    // re-create the parent insert template menu
-    await browser.contextMenus.remove(insertTemplatesMenu)
-    browser.contextMenus.create({
-      contexts: ['editable'],
-      documentUrlPatterns: documentUrlPatterns,
-      title: 'Insert template',
-      parentId: parentMenu,
-      id: insertTemplatesMenu,
-    })
-
-    newTemplateList.forEach((template) => {
-      browser.contextMenus.create({
-        contexts: ['editable'],
-        documentUrlPatterns: documentUrlPatterns,
-        title: `${template.title}${template.shortcut ? ` (${template.shortcut})` : ''}`,
-        parentId: insertTemplatesMenu,
-        id: template.id,
+    // re-create the parent insert template menu,
+    // in case existingTemplateList has been re-initialized on service worker restart
+    const parent = getInsertTemplatesMenu()
+    await browser.contextMenus.remove(parent.id)
+    browser.contextMenus.create(parent, () => {
+      // browser.contextMenus.create does not return a promise,
+      // but uses a callback.
+      newTemplateList.forEach((template) => {
+        browser.contextMenus.create({
+          contexts: ['editable'],
+          documentUrlPatterns: documentUrlPatterns,
+          title: `${template.title}${template.shortcut ? ` (${template.shortcut})` : ''}`,
+          parentId: parent.id,
+          id: template.id,
+        })
       })
     })
 
