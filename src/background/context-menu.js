@@ -336,7 +336,6 @@ function isStorageChanged (changes, ...params) {
         oldValue: changes[mainKey].oldValue?.[subKey],
       }
     } else {
-
       return changes[param]
     }
   }))
@@ -380,9 +379,26 @@ function enableContextMenu () {
   browser.tabs.onUpdated.addListener(onTabUpdateHandler)
 
   let timer
+  let pendingChanges = {}
   function debouncedStorageChange (changes = {}) {
     clearTimeout(timer)
-    timer = setTimeout(() => storageChange(changes), 1000)
+
+    // merge changes into pending,
+    // to avoid losing changes because of debounce.
+    for (const [key, value] of Object.entries(changes)) {
+      pendingChanges[key] = {
+        oldValue: pendingChanges[key]?.oldValue ?? value.oldValue,
+        newValue: value.newValue,
+      }
+    }
+
+    timer = setTimeout(async () => {
+      // clone, in case pendingChanges changes while we await
+      const pendingChangesClone = { ...pendingChanges }
+      pendingChanges = {}
+
+      await storageChange(pendingChangesClone)
+    }, 1000)
   }
 
   browser.storage.local.onChanged.addListener(debouncedStorageChange)
