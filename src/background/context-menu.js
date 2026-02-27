@@ -183,14 +183,10 @@ async function setupContextMenus () {
     id: insertTemplatesMenu,
   })
 
-
-
   await createContextMenus(menus)
 
   updateMenuSignin()
-
   updateMenuTemplates()
-
   updateBubbleContextMenu()
 }
 
@@ -215,11 +211,15 @@ async function updateMenuTemplates () {
   const newTemplateListIds = newTemplateList.map(tpl => tpl.id)
 
   if (!isEqual(existingTemplateList, newTemplateListIds)) {
-    // clear all existing insert templates menus
-    // existingTemplateList.forEach(async (menuTplId) => {
-    for (const menuTplId of existingTemplateList) {
-      await browser.contextMenus.remove(menuTplId)
-    }
+    // re-create the parent insert template menu
+    await browser.contextMenus.remove(insertTemplatesMenu)
+    browser.contextMenus.create({
+      contexts: ['editable'],
+      documentUrlPatterns: documentUrlPatterns,
+      title: 'Insert template',
+      parentId: parentMenu,
+      id: insertTemplatesMenu,
+    })
 
     newTemplateList.forEach((template) => {
       browser.contextMenus.create({
