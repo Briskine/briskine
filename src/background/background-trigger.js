@@ -15,7 +15,8 @@ function isNotAvailableError (err) {
 // send message to popup
 async function sendToPopup (params = {}) {
   try {
-    await browser.runtime.sendMessage(params)
+    const response = await browser.runtime.sendMessage(params)
+    return response
   } catch (err) {
     if (!isNotAvailableError(err)) {
       debug(['trigger', params, err], 'error')
@@ -33,12 +34,13 @@ async function sendToAllTabs (params = {}) {
     discarded: false,
   })
 
-  tabs.forEach((tab) => sendToTab(params, tab))
+  return Promise.all(tabs.map((tab) => sendToTab(params, tab)))
 }
 
 async function sendToTab (params = {}, tab, frameId) {
   try {
-    await browser.tabs.sendMessage(tab.id, params, { frameId: frameId })
+    const response = await browser.tabs.sendMessage(tab.id, params, { frameId: frameId })
+    return response
   } catch (err) {
     const errorType = isNotAvailableError(err) ? 'warn' : 'error'
     debug(['trigger', params, tab, err], errorType)
@@ -55,9 +57,11 @@ export default function trigger (name = '', details = {}, tab, frameId) {
   }
 
   if (tab) {
-    sendToTab(event, tab, frameId)
-  } else {
-    sendToPopup(event)
-    sendToAllTabs(event)
+    return sendToTab(event, tab, frameId)
   }
+
+  return Promise.all([
+    sendToPopup(event),
+    sendToAllTabs(event),
+  ])
 }

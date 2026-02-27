@@ -8,6 +8,7 @@ import trigger from './background-trigger.js'
 import {openPopup} from '../background/open-popup.js'
 import {isBlocklisted} from '../blocklist.js'
 import bubbleAllowlistPrivate from '../content/bubble/bubble-allowlist-private.js'
+import { eventStatus } from '../config.js'
 
 const saveAsTemplateMenu = 'saveAsTemplate'
 const openDialogMenu = 'openDialog'
@@ -280,25 +281,17 @@ async function updateBubbleContextMenu (pUrlString) {
   )
 }
 
-async function isExtensionResponding (tabId) {
-  return new Promise((resolve) => {
-    browser.tabs.sendMessage(tabId, { type: 'STATUS', tabId: tabId })
-      .then(() => {
-        resolve(true)
-      })
-      .catch(() => {
-        resolve(false)
-      })
-  })
+async function isExtensionResponding (tab) {
+  return trigger(eventStatus, {}, tab)
 }
 
-async function shouldContextMenuShow(tabId, tabUrl) {
-  const isExtensionOn = await isExtensionResponding(tabId, tabUrl)
-
+async function shouldContextMenuShow (tab) {
+  const isExtensionOn = await isExtensionResponding(tab)
   if (!isExtensionOn) {
     return false
   }
 
+  const tabUrl = tab.url
   if (!URL.canParse(tabUrl)) {
     return false
   }
@@ -314,7 +307,7 @@ async function shouldContextMenuShow(tabId, tabUrl) {
 async function onTabSwitchHandler () {
   const [tab] = await browser.tabs.query({active: true, lastFocusedWindow: true})
 
-  if (await shouldContextMenuShow(tab.id, tab.url)) {
+  if (await shouldContextMenuShow(tab)) {
     browser.contextMenus.update(parentMenu, { visible: true })
 
     await updateBubbleContextMenu(tab.url)
@@ -329,7 +322,7 @@ async function onTabUpdateHandler (tabId, changeInfo, tab) {
     return
   }
 
-  if (await shouldContextMenuShow(tab.id, tab.url)) {
+  if (await shouldContextMenuShow(tab)) {
     browser.contextMenus.update(parentMenu, { visible: true })
 
     await updateBubbleContextMenu(tab.url)

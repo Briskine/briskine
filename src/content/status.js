@@ -1,5 +1,5 @@
 import { eventStatus, version, functionsUrl } from '../config.js'
-import browser from 'webextension-polyfill'
+import { on, off } from '../store/store-content.js'
 
 function respondToStatus () {
   document.dispatchEvent(new CustomEvent(eventStatus, {
@@ -11,23 +11,20 @@ function respondToStatus () {
 
 const requestEvent = `${eventStatus}-request`
 
-function respondToIsAlive (request, sender, sendResponse) {
-  if (request.type === 'STATUS') {
-    sendResponse({ response: true })
-  }
+function respondToIsAlive () {
+  return true
 }
 
 export function setup () {
-  browser.runtime.onMessage.addListener(respondToIsAlive)
-
   if (window.location.origin !== functionsUrl) {
     return
   }
 
   document.addEventListener(requestEvent, respondToStatus)
+  on(eventStatus, respondToIsAlive)
 }
 
 export function destroy () {
   document.removeEventListener(requestEvent, respondToStatus)
-  browser.runtime.onMessage.removeListener(respondToIsAlive)
+  off(eventStatus, respondToIsAlive)
 }
