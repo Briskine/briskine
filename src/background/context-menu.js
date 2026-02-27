@@ -42,14 +42,14 @@ async function saveAsTemplateAction (info, tab) {
 
     // replace newlines with brs
     if (selection[0].result) {
-      body = selection[0].result
-        .replace(/(?:\r\n|\r|\n)/g, '<br>')
-        // max 1500 chars
-        .substring(0, 1500)
+      body = selection[0].result.replace(/(?:\r\n|\r|\n)/g, '<br>')
     }
   } catch {
     // can't get multi-line selection
   }
+
+  // truncate for url safety
+  body = body?.substring?.(0, 1500)
 
   browser.tabs.create({
     url: `${functionsUrl}/template/new?body=${encodeURIComponent(body)}`
@@ -333,13 +333,12 @@ function isStorageChanged (changes, ...params) {
   const values = params.map((param => {
     if (Array.isArray(param)) {
       const [mainKey, subKey] = param
-
       return {
-        newValue: changes[mainKey].newValue[subKey],
-        oldValue: changes[mainKey].oldValue?.[subKey],
+        newValue: changes?.[mainKey].newValue?.[subKey],
+        oldValue: changes?.[mainKey].oldValue?.[subKey],
       }
     } else {
-      return changes[param]
+      return changes?.[param]
     }
   }))
 
@@ -355,10 +354,10 @@ async function storageChange (changes = {}) {
   }
 
   if (isStorageChanged(changes,
-      'templatesOwned',
-      'templatesShared',
-      'templatesEveryone',
-      ['briskine', 'templatesLastUsed']
+    'templatesOwned',
+    'templatesShared',
+    'templatesEveryone',
+    ['briskine', 'templatesLastUsed']
   )) {
     updateMenuTemplates()
   }
