@@ -297,11 +297,6 @@ async function isExtensionResponding (tab) {
 }
 
 async function shouldContextMenuShow (tab) {
-  const isExtensionOn = await isExtensionResponding(tab)
-  if (!isExtensionOn) {
-    return false
-  }
-
   const tabUrl = tab.url
   if (!URL.canParse(tabUrl)) {
     return false
@@ -309,6 +304,11 @@ async function shouldContextMenuShow (tab) {
 
   const settings = await getSettings()
   if (isBlocklisted(settings, tabUrl)) {
+    return false
+  }
+
+  const isExtensionOn = await isExtensionResponding(tab)
+  if (!isExtensionOn) {
     return false
   }
 
@@ -323,10 +323,8 @@ async function onTabSwitchHandler () {
 
   if (await shouldContextMenuShow(tab)) {
     browser.contextMenus.update(parentMenu, { visible: true })
-
     await updateBubbleContextMenu(tab.url)
   } else {
-
     browser.contextMenus.update(parentMenu, { visible: false })
   }
 }
@@ -338,10 +336,8 @@ async function onTabUpdateHandler (tabId, changeInfo, tab) {
 
   if (await shouldContextMenuShow(tab)) {
     browser.contextMenus.update(parentMenu, { visible: true })
-
     await updateBubbleContextMenu(tab.url)
   } else {
-
     browser.contextMenus.update(parentMenu, { visible: false })
   }
 }
