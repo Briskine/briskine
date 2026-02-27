@@ -9,6 +9,7 @@ import {openPopup} from '../background/open-popup.js'
 import {isBlocklisted} from '../blocklist.js'
 import bubbleAllowlistPrivate from '../content/bubble/bubble-allowlist-private.js'
 import { eventStatus } from '../config.js'
+import debug from '../debug.js'
 
 const saveAsTemplateMenu = 'saveAsTemplate'
 const openDialogMenu = 'openDialog'
@@ -230,7 +231,14 @@ async function updateMenuTemplates () {
     // re-create the parent insert template menu,
     // in case existingTemplateList has been re-initialized on service worker restart
     const parent = getInsertTemplatesMenu()
-    await browser.contextMenus.remove(parent.id)
+
+    // in case the menu isn't ready yet
+    try {
+      await browser.contextMenus.remove(parent.id)
+    } catch (err) {
+      debug(['updateMenuTemplates', err], 'warn')
+    }
+
     browser.contextMenus.create(parent, () => {
       // browser.contextMenus.create does not return a promise,
       // but uses a callback.
@@ -253,6 +261,9 @@ async function updateBubbleContextMenu (pUrlString) {
   let urlString = pUrlString
   if (!urlString) {
     const [tab] = await browser.tabs.query({active: true, lastFocusedWindow: true})
+    if (!tab) {
+      return
+    }
     urlString = tab.url
   }
 
@@ -306,6 +317,9 @@ async function shouldContextMenuShow (tab) {
 
 async function onTabSwitchHandler () {
   const [tab] = await browser.tabs.query({active: true, lastFocusedWindow: true})
+  if (!tab) {
+    return
+  }
 
   if (await shouldContextMenuShow(tab)) {
     browser.contextMenus.update(parentMenu, { visible: true })
