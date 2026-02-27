@@ -214,10 +214,10 @@ function updateMenuTemplates() {
     const newTemplateListIds = newTemplateList.map(tpl => tpl.id)
 
     if (!isEqual(existingTemplateList, newTemplateListIds)) {
-      // clear all existing intsert templates menus
+      // clear all existing insert templates menus
       existingTemplateList.forEach(async (menuTplId) => {
         await browser.contextMenus.remove(menuTplId)
-      }) 
+      })
 
       newTemplateList.forEach((template) => {
         browser.contextMenus.create({
@@ -266,22 +266,22 @@ async function updateBubbleContextMenu (pUrlString) {
   )
 }
 
-async function isExtensionResponding(tabId) { 
-  return new Promise((resolve) => { 
+async function isExtensionResponding (tabId) {
+  return new Promise((resolve) => {
     browser.tabs.sendMessage(tabId, { type: 'STATUS', tabId: tabId })
-      .then(() => { 
+      .then(() => {
         resolve(true)
       })
       .catch(() => {
         resolve(false)
       })
-  }) 
+  })
 }
 
 async function shouldContextMenuShow(tabId, tabUrl) {
   const isExtensionOn = await isExtensionResponding(tabId, tabUrl)
 
-  if (! isExtensionOn) {
+  if (!isExtensionOn) {
     return false
   }
 
@@ -303,7 +303,7 @@ async function onTabSwitchHandler () {
   if (await shouldContextMenuShow(tab.id, tab.url)) {
     browser.contextMenus.update(parentMenu, { visible: true })
 
-    await updateBubbleContextMenu(tab.url)    
+    await updateBubbleContextMenu(tab.url)
   } else {
 
     browser.contextMenus.update(parentMenu, { visible: false })
@@ -318,14 +318,14 @@ async function onTabUpdateHandler (tabId, changeInfo, tab) {
   if (await shouldContextMenuShow(tab.id, tab.url)) {
     browser.contextMenus.update(parentMenu, { visible: true })
 
-    await updateBubbleContextMenu(tab.url)    
+    await updateBubbleContextMenu(tab.url)
   } else {
 
     browser.contextMenus.update(parentMenu, { visible: false })
   }
 }
 
-function isStorageChanged(changes, ...params) {
+function isStorageChanged (changes, ...params) {
   const values = params.map((param => {
     if (Array.isArray(param)) {
       const [mainKey, subKey] = param
@@ -341,7 +341,7 @@ function isStorageChanged(changes, ...params) {
   }))
 
   return values.some((val) => (val && !isEqual(val.oldValue, val.newValue)))
-} 
+}
 
 async function storageChange (changes = {}) {
   if (isStorageChanged(changes,
