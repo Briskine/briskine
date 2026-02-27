@@ -344,8 +344,8 @@ function isStorageChanged (changes, ...params) {
     if (Array.isArray(param)) {
       const [mainKey, subKey] = param
       return {
-        newValue: changes?.[mainKey].newValue?.[subKey],
-        oldValue: changes?.[mainKey].oldValue?.[subKey],
+        newValue: changes?.[mainKey]?.newValue?.[subKey],
+        oldValue: changes?.[mainKey]?.oldValue?.[subKey],
       }
     } else {
       return changes?.[param]
