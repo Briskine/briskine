@@ -1,19 +1,21 @@
 import { expect, describe, it, vi, beforeEach, afterEach } from 'vitest'
 
-import MockDate from 'mockdate'
-
 import {compileTemplate} from '../sandbox/sandbox.js'
-
-MockDate.set('2020-07-01')
 
 describe('moment handlebars helper', () => {
   beforeEach(() => {
     const spy = vi.spyOn(navigator, 'language', 'get')
-    spy.mockImplementationOnce(() => 'en-US')
+    spy.mockImplementation(() => 'en-US')
+
+    vi.useFakeTimers()
+    const date = new Date(Date.UTC(2020, 6, 1, 0, 0, 0, 0))
+    vi.setSystemTime(date)
   })
 
   afterEach(() => {
     vi.resetAllMocks()
+
+    vi.useRealTimers()
   })
 
   it('should default format date', async () => {

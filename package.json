@@ -67,7 +67,6 @@
     "globals": "^17.0.0",
     "http-server": "^14.1.1",
     "mini-css-extract-plugin": "^2.0.0",
-    "mockdate": "^3.0.2",
     "purgecss-webpack-plugin": "^8.0.0",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.47.0",
