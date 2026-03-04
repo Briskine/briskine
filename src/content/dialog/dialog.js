@@ -323,9 +323,8 @@ function Dialog (originalProps) {
       // this will also be true when the editor is empty, when focus() is enough.
       && !(
         cachedRange.startContainer === editor
-        && cachedRange.startContainer === cachedRange.endContainer
-        && cachedRange.startOffset === 0
         && cachedRange.collapsed === true
+        && cachedRange.startOffset === 0
       )
     ) {
       await setSelectionRange(editor, cachedRange)
