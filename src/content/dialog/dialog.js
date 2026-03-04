@@ -220,7 +220,7 @@ function Dialog (originalProps) {
       && dialogInstance
       && (
         dialogInstance === target
-        || dialogInstance.shadowRoot.contains(target)
+        || dialogInstance === target?.getRootNode?.()
       )
     ) {
       e.stopPropagation()
@@ -432,10 +432,10 @@ function Dialog (originalProps) {
     window.addEventListener('keypress', stopTargetPropagation, globalListenerOptions)
 
     // prevent parent page from handling focus events.
-    // fix interaction with our dialog in some modals (LinkedIn).
-    // prevent the page from handling the focusout event when switching focus to our dialog.
+    // fix interaction with our dialog in some modals (LinkedIn new post, GitHub search).
     window.addEventListener('focusout', stopRelatedTargetPropagation, globalListenerOptions)
     window.addEventListener('focusin', stopTargetPropagation, globalListenerOptions)
+    window.addEventListener('focus', stopTargetPropagation, globalListenerOptions)
 
     // expose show on element
     element.show = show
