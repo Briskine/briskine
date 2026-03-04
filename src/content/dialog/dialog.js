@@ -423,19 +423,37 @@ function Dialog (originalProps) {
     window.addEventListener('focusout', hideOnFocusout, globalListenerOptions)
     window.addEventListener('keydown', hideOnEsc, globalListenerOptions)
 
-    // prevent Gmail from handling keydown.
-    // any keys assigned to Gmail keyboard shortcuts are prevented
-    // from being inserted in the search field.
-    window.addEventListener('keydown', stopTargetPropagation, globalListenerOptions)
-    // prevent Front from handling keyboard shortcuts
-    // when we're typing in the search field.
-    window.addEventListener('keypress', stopTargetPropagation, globalListenerOptions)
+    // prevent parent page from handling composed events.
+    // fix interaction with our dialog in some modals (Gmail, LinkedIn new post, GitHub search).
+    const stopTargetEvents = [
+      // stop Gmail from preventing keys assigned to Gmail shortcuts to be typed
+      // inside the dialog search field
+      'keydown',
+      'keyup',
+      // stop Front from catching keyboard shortcuts when typing in the dialog
+      'keypress',
+      // stop GitHub search from closing the dialog when clicking inside it
+      'mousedown',
+      'mouseup',
+      // stop GitHub search from preventing opening the dialog
+      // stop LinkedIn New Post from stealing focus when opening the dialog
+      'focus',
+      'focusin',
+    ]
 
-    // prevent parent page from handling focus events.
-    // fix interaction with our dialog in some modals (LinkedIn new post, GitHub search).
-    window.addEventListener('focusout', stopRelatedTargetPropagation, globalListenerOptions)
-    window.addEventListener('focusin', stopTargetPropagation, globalListenerOptions)
-    window.addEventListener('focus', stopTargetPropagation, globalListenerOptions)
+    const stopRelatedTargetEvents = [
+      // stop GitHub search and LinkedIn new post from handling blur
+      'blur',
+      'focusout',
+    ]
+
+    stopTargetEvents.forEach((event) => {
+      window.addEventListener(event, stopTargetPropagation, globalListenerOptions)
+    })
+
+    stopRelatedTargetEvents.forEach((event) => {
+      window.addEventListener(event, stopRelatedTargetPropagation, globalListenerOptions)
+    })
 
     // expose show on element
     element.show = show
