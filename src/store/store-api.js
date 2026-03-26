@@ -57,7 +57,7 @@ async function clearDataCache () {
 
   // restore data between logins
   return setExtensionData({
-    words: words,
+    words,
     bubbleAllowlist,
   })
 }
