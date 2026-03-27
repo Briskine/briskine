@@ -20,7 +20,7 @@ function querySelectDeep (selector, root = document) {
   return null
 }
 
-function waitForReady(context) {
+function waitForReady (context) {
   let resolve
   const promise = new Promise((res) => resolve = res)
 
