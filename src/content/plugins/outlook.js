@@ -110,7 +110,7 @@ function getFieldData (field, $container) {
 
 // selector for to/cc/bcc containers
 function getContainers (editable) {
-  return Array.from(getParent(editable).querySelectorAll('[role=presentation][contenteditable]'))
+  return Array.from(getParent(editable).querySelectorAll('[contenteditable=true]:not([aria-multiline=true])'))
 }
 
 function getToContainer (editable) {
