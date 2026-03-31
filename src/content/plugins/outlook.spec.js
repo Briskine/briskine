@@ -34,10 +34,16 @@ describe('outlook', () => {
       },
       to: [
         {
+          name: '',
+          first_name: '',
+          last_name: '',
+          email: 'john+2@briskine.com'
+        },
+        {
           name: 'Michael Briskine',
           first_name: 'Michael',
           last_name: 'Briskine',
-          email: 'michael@briskine.com'
+          email: ''
         }
       ],
       cc: [
@@ -71,10 +77,16 @@ describe('outlook', () => {
       },
       to: [
         {
+          name: '',
+          first_name: '',
+          last_name: '',
+          email: 'john+2@briskine.com'
+        },
+        {
           name: 'Michael Briskine',
           first_name: 'Michael',
           last_name: 'Briskine',
-          email: 'michael@briskine.com'
+          email: ''
         }
       ],
       cc: [
