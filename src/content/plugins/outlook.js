@@ -66,19 +66,25 @@ async function makeFieldsEditable (element) {
 
 // names and emails are sometimes formatted as "full name <name@email.com>".
 // eg. when saving as draft and re-opening.
+// otherwise they might only be the name, or only the email address.
 function parseNameAndEmail (nameAndEmail = '') {
+  let name = ''
+  let email = ''
+
   const index = nameAndEmail.lastIndexOf('<')
   const lastIndex = nameAndEmail.lastIndexOf('>')
   if (index > -1 && lastIndex > -1) {
-    return {
-      name: nameAndEmail.substring(0, index),
-      email: nameAndEmail.substring(index + 1, lastIndex),
-    }
+    name = nameAndEmail.substring(0, index)
+    email = nameAndEmail.substring(index + 1, lastIndex)
+  } else if (nameAndEmail.includes('@')) {
+    email = nameAndEmail
+  } else {
+    name = nameAndEmail
   }
 
   return {
-    name: nameAndEmail,
-    email: '',
+    name,
+    email,
   }
 }
 
