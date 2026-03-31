@@ -17,6 +17,10 @@ test.describe('CKEditor', () => {
   })
 
   test('should insert template from dialog', async ({page}) => {
+    // ckeditor5 restores focus to the editor, closing our dialog, if we open it
+    // too soon after initializing the editor
+    await new Promise((resolve) => setTimeout(resolve, 500))
+
     const textbox = page.getByRole('textbox')
     await textbox.press('Control+ ')
     const search = page.getByPlaceholder('Search templates...')

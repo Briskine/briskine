@@ -1,4 +1,5 @@
 import { eventStatus, version, functionsUrl } from '../config.js'
+import { on, off } from '../store/store-content.js'
 
 function respondToStatus () {
   document.dispatchEvent(new CustomEvent(eventStatus, {
@@ -10,14 +11,19 @@ function respondToStatus () {
 
 const requestEvent = `${eventStatus}-request`
 
-export function setup () {
-  if (window.location.origin !== functionsUrl) {
-    return
-  }
+function respondToIsAlive () {
+  return true
+}
 
-  document.addEventListener(requestEvent, respondToStatus)
+export function setup () {
+  on(eventStatus, respondToIsAlive)
+
+  if (window.location.origin === functionsUrl) {
+    document.addEventListener(requestEvent, respondToStatus)
+  }
 }
 
 export function destroy () {
+  off(eventStatus, respondToIsAlive)
   document.removeEventListener(requestEvent, respondToStatus)
 }

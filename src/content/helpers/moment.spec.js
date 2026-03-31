@@ -1,12 +1,23 @@
-import { expect, describe, it } from 'vitest'
-
-import MockDate from 'mockdate'
+import { expect, describe, it, vi, beforeEach, afterEach } from 'vitest'
 
 import {compileTemplate} from '../sandbox/sandbox.js'
 
-MockDate.set('2020-07-01')
-
 describe('moment handlebars helper', () => {
+  beforeEach(() => {
+    const spy = vi.spyOn(navigator, 'language', 'get')
+    spy.mockImplementation(() => 'en-US')
+
+    vi.useFakeTimers()
+    const date = new Date(Date.UTC(2020, 6, 1, 0, 0, 0, 0))
+    vi.setSystemTime(date)
+  })
+
+  afterEach(() => {
+    vi.resetAllMocks()
+
+    vi.useRealTimers()
+  })
+
   it('should default format date', async () => {
     expect(await compileTemplate('{{moment}}')).to.equal('July 01 2020')
   })
@@ -61,11 +72,18 @@ describe('moment handlebars helper', () => {
   })
 
   it('should use default browser locale', async () => {
-    // forcefully set navigator.language
-    Object.defineProperty(navigator, 'language', {
-      get: () => 'ja'
-    })
+    vi.resetAllMocks()
+    const spy = vi.spyOn(navigator, 'language', 'get')
+    spy.mockImplementationOnce(() => 'ja')
 
     expect(await compileTemplate('{{moment}}')).to.equal('7月 01 2020')
+  })
+
+  it('should set hour', async () => {
+    expect(await compileTemplate('{{moment hour=11 format="LT"}}')).to.equal('11:00 AM')
+  })
+
+  it('should set minutes', async () => {
+    expect(await compileTemplate('{{moment minutes=29 format="LT"}}')).to.equal('3:29 AM')
   })
 })

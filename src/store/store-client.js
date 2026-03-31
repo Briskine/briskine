@@ -47,20 +47,23 @@ export function off (name, callback) {
 }
 
 export function trigger (name, details = {}) {
-  events.filter((event) => event.name === name).forEach((event) => {
-    if (typeof event.callback === 'function') {
-      event.callback(details)
-    }
-  })
+  return Promise.all([
+    events
+      .filter((event) => event.name === name && typeof event.callback === 'function')
+      .map((event) => {
+        return event.callback(details)
+      })
+  ])
 }
 
 // handle trigger from background
-browser.runtime.onMessage.addListener((req) => {
+browser.runtime.onMessage.addListener((req, res, sendResponse) => {
   if (
     req.type &&
     req.type === 'trigger'
   ) {
-    trigger(req.data.name, req.data.details)
+    trigger(req.data.name, req.data.details).then(sendResponse)
+    return true
   }
 })
 

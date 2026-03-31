@@ -219,10 +219,10 @@ function isValidTextfield (elem) {
     if (elem.parentElement) {
       // sometimes disable for flex and grid parent
       const parentStyles = window.getComputedStyle(elem.parentElement)
-      if (['flex', 'grid'].includes(parentStyles.display)) {
+      if (['flex', 'inline-flex', 'grid', 'inline-grid'].includes(parentStyles.display)) {
         // flex-direction=row is not supported
         if (
-          parentStyles.display === 'flex'
+          ['flex', 'inline-flex'].includes(parentStyles.display)
           && parentStyles.flexDirection === 'row'
         ) {
           return false

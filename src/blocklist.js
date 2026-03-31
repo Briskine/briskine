@@ -1,5 +1,8 @@
+import { functionsUrl, websiteUrl } from './config.js'
+
 const blocklistPrivate = [
-  '.briskine.com',
+  websiteUrl,
+  functionsUrl,
 
   // slack pdf viewer stops working (considering the pdf corrupt),
   // when the iframe dom is modified.
@@ -16,4 +19,3 @@ export function isBlocklisted (settings = {}, currentUrl = '') {
     return url && currentUrl.includes(url)
   })
 }
-
