@@ -19,6 +19,7 @@ browser.runtime.onInstalled.addListener(async (details) => {
     const target = {
       tabId: tab.id,
       allFrames: true,
+      matchAboutBlank: true,
     }
 
     await browser.scripting.removeCSS({
