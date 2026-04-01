@@ -127,6 +127,10 @@ async function startup () {
       return startup()
     }
 
+    // destroy existing content script
+    document.dispatchEvent(new CustomEvent(eventDestroy))
+    document.addEventListener(eventDestroy, destructor, {once: true})
+
     // cleanup
     // delete document.body[loadedProp]
     delete document.documentElement[loadedProp]
@@ -138,6 +142,7 @@ async function startup () {
 function destructor () {
   destroyStatus()
   destroyDashboardEvents()
+  removeFocusListeners()
 
   storeOff('users-updated', usersUpdated)
 
@@ -154,14 +159,9 @@ function destructor () {
   destroyKeybind()
   destroySandbox()
 
-  removeFocusListeners()
   settingsCache = {}
 }
 
-// destroy existing content script
-document.dispatchEvent(new CustomEvent(eventDestroy))
-
-document.addEventListener(eventDestroy, destructor, {once: true})
 
 let settingsCache = {}
 async function usersUpdated () {
