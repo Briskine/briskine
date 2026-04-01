@@ -1,5 +1,7 @@
 import browser from 'webextension-polyfill'
 
+import debug from '../debug.js'
+
 browser.runtime.onInstalled.addListener(async (details) => {
   if (!['update', 'install'].includes(details.reason)) {
     return
@@ -15,27 +17,31 @@ browser.runtime.onInstalled.addListener(async (details) => {
     discarded: false,
   })
 
-  await Promise.allSettled(tabs.map(async (tab) => {
+  const updates = await Promise.allSettled(tabs.map(async (tab) => {
     const target = {
       tabId: tab.id,
       allFrames: true,
-      matchAboutBlank: true,
     }
 
-    await browser.scripting.removeCSS({
-      target: target,
-      files: styles,
-    })
-    await browser.scripting.insertCSS({
-      target: target,
-      files: styles,
-    })
-
-    await browser.scripting.executeScript({
-      target: target,
-      files: scripts,
-    })
-
-    return true
+    return Promise.allSettled([
+      browser.scripting.removeCSS({
+        target: target,
+        files: styles,
+      }),
+      browser.scripting.insertCSS({
+        target: target,
+        files: styles,
+      }),
+      browser.scripting.executeScript({
+        target: target,
+        files: scripts,
+      })
+    ])
   }))
+
+  updates.forEach((c) => {
+    if (c.status === 'rejected') {
+      debug(['update-content', c, c.reason], 'error')
+    }
+  })
 })
