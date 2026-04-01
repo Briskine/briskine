@@ -20,7 +20,9 @@ export async function setup () {
   })
 
   pageScript = document.createElement('script')
-  pageScript.src = (chrome || browser).runtime.getURL('page/page.js')
+  const path = (chrome || browser).runtime.getURL('page/page.js')
+  // cache bust to force the browser to reload the es module
+  pageScript.src = path + `?v=${Date.now()}`
   pageScript.type = 'module'
   pageScript.onload = async function () {
     // create the message channel when the iframe loads,
@@ -37,4 +39,8 @@ export async function setup () {
   document.documentElement.appendChild(pageScript)
 
   return promise
+}
+
+export function destroy () {
+  pageScript = null
 }
