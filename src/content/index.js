@@ -95,21 +95,11 @@ function initOnFocus (e) {
 }
 
 let startupRetries = 0
-let startupTimer = null
 const startupDelay = 500
 const maxStartupRetries = 10
 const loadedProp = '__briskineLoaded'
 
-function teardownStartup () {
-  destroyStatus()
-  destroyDashboardEvents()
-  removeFocusListeners()
-}
-
 async function startup () {
-  // clear any previous startup retries
-  clearTimeout(startupTimer)
-
   startupRetries = startupRetries + 1
   if (startupRetries > maxStartupRetries) {
     return
@@ -118,12 +108,8 @@ async function startup () {
   // try again later if we don't have a body yet,
   // for dynamically created iframes.
   if (!document.body) {
-    startupTimer = setTimeout(startup, startupDelay)
-    return
+    return setTimeout(startup, startupDelay)
   }
-
-  // clean up previous startup attempt components
-  teardownStartup()
 
   setupStatus()
   setupDashboardEvents()
@@ -133,11 +119,11 @@ async function startup () {
   // to detect if the body was recreated (eg. in dynamically created iframes).
   document.body[loadedProp] = true
 
-  startupTimer = setTimeout(() => {
+  setTimeout(() => {
     // if the document was recreated (e.g., ckeditor4 dynamically crated iframe),
     // we'll retry initializing.
     if (!document?.body?.[loadedProp]) {
-      teardownStartup()
+      destructor()
       return startup()
     }
 
