@@ -132,7 +132,6 @@ async function startup () {
     document.addEventListener(eventDestroy, destructor, {once: true})
 
     // cleanup
-    // delete document.body[loadedProp]
     delete document.documentElement[loadedProp]
     // reset retries
     startupRetries = 0
