@@ -9,15 +9,10 @@ export function request (type, options) {
 }
 
 export async function setup () {
-  // messenger already connected
-  if (pageMessengerServer) {
+  // script already loaded
+  if (pageScript) {
     return
   }
-
-  // pageScript may be set but stale (e.g. the element was removed by document.write
-  // before it could load, so onload never fired and pageMessengerServer was never set).
-  // Reset it so we reinject the script.
-  pageScript = null
 
   let resolve, reject
   const promise = new Promise((res, rej) => {
