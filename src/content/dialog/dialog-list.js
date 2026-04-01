@@ -116,8 +116,8 @@ export default function DialogList (originalProps) {
     <div
       ref={element}
       class="dialog-list"
+      on:click={onClick}
       on:mouseover={onMouseOver}
-      onClick={onClick}
       >
       <ul>
         <Show
