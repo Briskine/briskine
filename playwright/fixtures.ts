@@ -1,9 +1,10 @@
-import {test as base, chromium, firefox, type Page, type BrowserContext} from '@playwright/test'
+import {test as base, chromium, firefox, type Page, type BrowserContext, type WorkerInfo} from '@playwright/test'
 import {fileURLToPath} from 'url'
 import path from 'path'
+import os from 'os'
 import {connect} from '../node_modules/web-ext/lib/firefox/remote.js'
 
-const RDP_PORT = 12345
+const RDP_PORT_BASE = 12345
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const pathToExtension = path.join(__dirname, '../ext')
@@ -13,24 +14,26 @@ export const test = base.extend<{
   context: BrowserContext;
   extensionId: string;
 }>({
-  context: async ({browserName}, use) => {
+  context: async ({browserName}, use, workerInfo: WorkerInfo) => {
     let context
+    const userDataDir = path.join(os.tmpdir(), `briskine-test-${workerInfo.workerIndex}-${browserName}`)
 
     if (browserName === 'firefox') {
-      context = await firefox.launchPersistentContext('', {
+      const rdpPort = RDP_PORT_BASE + workerInfo.workerIndex
+      context = await firefox.launchPersistentContext(userDataDir, {
         headless: true,
-        args: ['-start-debugger-server', String(RDP_PORT)],
+        args: ['-start-debugger-server', String(rdpPort)],
         firefoxUserPrefs: {
           'devtools.debugger.remote-enabled': true,
           'devtools.debugger.prompt-connection': false,
         }
       })
 
-      const client = await connect(RDP_PORT)
+      const client = await connect(rdpPort)
       const resp = await client.installTemporaryAddon(pathToExtension)
       extensionId = resp.addon.id.split('@')[1]
     } else {
-      context = await chromium.launchPersistentContext('', {
+      context = await chromium.launchPersistentContext(userDataDir, {
         headless: true,
         channel: 'chromium',
         args: [
