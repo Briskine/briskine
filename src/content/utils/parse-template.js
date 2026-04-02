@@ -70,7 +70,7 @@ async function parseContext (data = {}) {
 }
 
 export default async function parseTemplate (template = '', data = {}) {
-  let ast = {}
+  let ast
   try {
     ast = parse(template)
   } catch (err) {

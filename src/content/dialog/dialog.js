@@ -51,6 +51,7 @@ function Dialog (originalProps) {
     visible: false,
   }, originalProps)
 
+  // eslint-disable-next-line no-unassigned-vars
   let element
 
   const [visible, setVisible] = createSignal(false)
@@ -158,8 +159,6 @@ function Dialog (originalProps) {
       } else {
         if (isRange) {
           placement = 'bottom-right'
-        } else {
-          placement = 'top-left'
         }
       }
     } else if (hostNode?.tagName?.toLowerCase?.() === bubbleTagName) {

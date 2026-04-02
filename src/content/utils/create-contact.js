@@ -24,8 +24,9 @@ function cleanFullName (fullname = '') {
 // supports "First Last" and "Last, First" formats
 function parseFullName (fullname = '') {
   const clean = cleanFullName(fullname)
-  let first = ''
-  let last = ''
+  let first
+  let last
+
   if (clean.includes(',')) {
     const parts = clean.split(',')
     last = parts.shift()
