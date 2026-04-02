@@ -2,6 +2,7 @@ import {test as base, chromium, firefox, type Page, type BrowserContext, type Wo
 import {fileURLToPath} from 'url'
 import path from 'path'
 import os from 'os'
+import fs from 'fs'
 import {connect} from '../node_modules/web-ext/lib/firefox/remote.js'
 
 const RDP_PORT_BASE = 12345
@@ -16,7 +17,7 @@ export const test = base.extend<{
 }>({
   context: async ({browserName}, use, workerInfo: WorkerInfo) => {
     let context
-    const userDataDir = path.join(os.tmpdir(), `briskine-test-${workerInfo.workerIndex}-${browserName}`)
+    const userDataDir = fs.mkdtempSync(path.join(os.tmpdir(), `briskine-test-${workerInfo.workerIndex}-${browserName}-`))
 
     if (browserName === 'firefox') {
       const rdpPort = RDP_PORT_BASE + workerInfo.workerIndex
@@ -52,6 +53,7 @@ export const test = base.extend<{
 
     await use(context)
     await context.close()
+    fs.rmSync(userDataDir, { recursive: true, force: true })
   },
   extensionId: async ({context, browserName}, use) => {
     if (browserName === 'firefox') {
