@@ -61,7 +61,6 @@
     "css-minimizer-webpack-plugin": "^8.0.0",
     "dotenv": "^17.0.0",
     "eslint": "^9.39.1",
-    "eslint-plugin-solid": "^0.14.1",
     "firebase-tools": "^15.0.0",
     "glob": "^13.0.0",
     "globals": "^17.0.0",

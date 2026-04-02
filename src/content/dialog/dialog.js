@@ -265,7 +265,6 @@ function Dialog (originalProps) {
     .catch(() => {
       return false
     })
-    // eslint-disable-next-line solid/reactivity
     .then((status) => {
       setLoggedIn(status)
       setLoading(true)
