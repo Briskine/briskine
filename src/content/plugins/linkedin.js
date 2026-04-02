@@ -99,6 +99,8 @@ function getToName (element) {
 
   // get the to field from the currently viewed profile
   // eg. for the connect > add note field.
+
+  // legacy profile page, with no web components
   const $currentProfilePicture = querySelectorDeep(
     'img[width="200"][height="200"], img[class*="pv-top-card-profile-picture"]',
     element.ownerDocument.body
@@ -107,6 +109,13 @@ function getToName (element) {
     const profilePictureAlt = $currentProfilePicture.getAttribute('alt') || ''
     // remove open to work badge
     return profilePictureAlt.replace(', #OPEN_TO_WORK', '')
+  }
+
+  // new profile page, with web components and #interop-outlet
+  // to get it from the page title (e.g., "First Name | LinkedIn").
+  const title = element.ownerDocument.title
+  if (title?.includes?.('|')) {
+    return title.split('|')[0].trim()
   }
 
   return ''
