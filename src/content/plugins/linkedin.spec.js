@@ -20,7 +20,7 @@ async function page (src = '') {
 describe('linkedin', () => {
   it('should get data in connect popup', async () => {
     const iframe = await page('test/pages/linkedin/linkedin-connect.html')
-    const element = iframe.contentDocument.querySelector('textarea')
+    const element = iframe.contentDocument.querySelector('#interop-outlet').shadowRoot.querySelector('textarea')
     const data = getLinkedInData({
       element: element,
     })

@@ -15,6 +15,12 @@ test.describe('CKEditor4', () => {
   })
 
   test('should insert template from dialog', async ({page}) => {
+    // ckeditor4 restores focus to the editor, closing our dialog, if we open it
+    // too soon after initializing the editor.
+    // could also be caused by firefox altering the ckeditor4 iframe load timing
+    // for compatibility with its browser detection.
+    await new Promise((resolve) => setTimeout(resolve, 500))
+
     const frame = page.frameLocator('.cke_wysiwyg_frame')
     const textbox = frame.getByRole('textbox')
     await textbox.fill('')

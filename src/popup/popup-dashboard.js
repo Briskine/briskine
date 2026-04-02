@@ -91,7 +91,6 @@ export default function PopupDashboard () {
   }
 
   const [customer, setCustomer] = createSignal()
-  // eslint-disable-next-line solid/reactivity
   const [switchCustomerRequest] = createResource(customer, async (customerId) => {
     await setActiveCustomer(customerId)
     setUser({
@@ -106,7 +105,6 @@ export default function PopupDashboard () {
 
     await Promise.all(
       account.customers.map((customerId) => {
-        // eslint-disable-next-line solid/reactivity
         return getCustomer(customerId).then((customerData) => {
           const updatedCustomers = {...customers()}
           updatedCustomers[customerId] = customerData

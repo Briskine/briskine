@@ -40,6 +40,13 @@ export function getSelectionRange (node) {
 
   if (
     root instanceof ShadowRoot
+    // SalesForce Lightning Web Components (LWC) v1 return a synthetic shadow root
+    // from getRootNode that is actually a document fragment, and won't work
+    // with getComposedRanges.
+    // But, they wrap the regular selection.getRangeAt() to support selection inside
+    // shadow roots, so we don't have to use getComposedRanges for them.
+    && Object.prototype.toString.call(root) === '[object ShadowRoot]'
+    && root.mode === 'open'
     && typeof selection.getComposedRanges === 'function'
   ) {
     const staticRange = selection.getComposedRanges({ shadowRoots: [root] })[0]
