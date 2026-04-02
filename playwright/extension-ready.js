@@ -22,7 +22,13 @@ function querySelectDeep (selector, root = document) {
 
 function waitForReady (context) {
   let resolve
-  const promise = new Promise((res) => resolve = res)
+  let isResolved = false
+  const promise = new Promise((res) => {
+    resolve = () => {
+      isResolved = true
+      res()
+    }
+  })
 
   const doc = context.document
 
@@ -32,7 +38,9 @@ function waitForReady (context) {
       return resolve()
     }
 
-    editable.focus()
+    if (!isResolved) {
+      editable.focus()
+    }
   }
 
   context.addEventListener('message', (e) => {
@@ -53,8 +61,9 @@ function waitForReady (context) {
 function waitForReadyFrames () {
   const iframes = document.querySelectorAll('iframe')
   return Promise
-    .all([...iframes]
-    .map((frame) => waitForReady(frame.contentWindow)))
+    .all(
+      [...iframes].map((frame) => waitForReady(frame.contentWindow))
+    )
 }
 
 async function ready () {

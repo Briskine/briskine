@@ -9,11 +9,15 @@
     <div id="editor" role="textbox"></div>
     <button type="button"></button>
     <script>
-      CKEDITOR.replace(document.querySelector('#editor'))
-      CKEDITOR.on('instanceReady', () => {
-        const script = document.createElement('script')
-        script.src = '/extension-ready.js'
-        document.body.appendChild(script)
+      CKEDITOR.replace(document.querySelector('#editor'), {
+        startupFocus: false,
+        on: {
+          instanceReady: function (evt) {
+            const script = document.createElement('script')
+            script.src = '/extension-ready.js'
+            document.body.appendChild(script)
+          }
+        }
       })
     </script>
   </body>
