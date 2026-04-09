@@ -13,6 +13,7 @@ export default function DialogList (originalProps) {
     showTags: true,
     tags: [],
     list: [],
+    callbackSelectItem: () => {},
   }, originalProps)
 
   let element = null
@@ -66,11 +67,7 @@ export default function DialogList (originalProps) {
     // prevent inserting templates when clicking the edit button
     const editButton = e.target.closest('.btn-edit')
     if (container && !editButton) {
-      element.dispatchEvent(new CustomEvent('b-dialog-insert', {
-        bubbles: true,
-        composed: true,
-        detail: container.dataset.id,
-      }))
+      props.callbackSelectItem(container.dataset.id);
     }
   }
 
@@ -96,10 +93,7 @@ export default function DialogList (originalProps) {
 
     // insert with enter
     element.addEventListener('b-dialog-select-active', () => {
-      element.dispatchEvent(new CustomEvent('b-dialog-insert', {
-        bubbles: true,
-        detail: active(),
-      }))
+      props.callbackSelectItem( active() );
     })
 
     // select first item
