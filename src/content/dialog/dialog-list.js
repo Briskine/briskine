@@ -67,7 +67,7 @@ export default function DialogList (originalProps) {
     // prevent inserting templates when clicking the edit button
     const editButton = e.target.closest('.btn-edit')
     if (container && !editButton) {
-      props.callbackSelectItem(container.dataset.id);
+      props.callbackSelectItem(container.dataset.id)
     }
   }
 
@@ -93,7 +93,7 @@ export default function DialogList (originalProps) {
 
     // insert with enter
     element.addEventListener('b-dialog-select-active', () => {
-      props.callbackSelectItem( active() );
+      props.callbackSelectItem( active() )
     })
 
     // select first item

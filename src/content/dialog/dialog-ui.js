@@ -1,3 +1,4 @@
+/* global REGISTER_DISABLED */
 import {Show, onMount, onCleanup, createSignal, createEffect, mergeProps} from 'solid-js'
 
 import {
@@ -30,9 +31,14 @@ export default function DialogUI (originalProps) {
     visible: false,
   }, originalProps)
 
+  // eslint-disable-next-line no-unassigned-vars
   let element
 
-  let elementDialogList;
+  // eslint-disable-next-line no-unassigned-vars  
+  let elementDialogList
+
+  // eslint-disable-next-line no-unassigned-vars
+  let searchField
 
   // duplicate
   let globalAbortController = new AbortController()
@@ -50,8 +56,6 @@ export default function DialogUI (originalProps) {
   const [searchResults, setSearchResults] = createSignal([])
   const [searchQuery, setSearchQuery] = createSignal('')
 
-  let editor
-  let searchField
 
   // duplicate
   const modalAttribute = 'modal'
@@ -78,7 +82,6 @@ export default function DialogUI (originalProps) {
         loadData()
       }
 
-      // element.classList.add(openAnimationClass)
     } else if (
       props.visible === false
       && prev == true
@@ -92,8 +95,6 @@ export default function DialogUI (originalProps) {
         }
 
         setSearchQuery('')
-        // close modals
-        // element.removeAttribute(modalAttribute)
       })
     }
 
@@ -130,7 +131,6 @@ export default function DialogUI (originalProps) {
     .catch(() => {
       return false
     })
-    // eslint-disable-next-line solid/reactivity
     .then((status) => {
       setLoggedIn(status)
       setLoading(true)

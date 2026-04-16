@@ -5,10 +5,17 @@ import browser from 'webextension-polyfill'
 import DialogUI from '../content/dialog/dialog-ui.js'
 import {eventInsertTemplate} from '../config.js'
 
-let keyboardShortcut = {};
+import debug from '../debug.js'
+
+function isNotAvailableError (err) {
+  return err?.message?.includes?.('Receiving end does not exist')
+}
+
+let keyboardShortcut = {}
 
 function App () {
-  let element;
+  // eslint-disable-next-line no-unassigned-vars
+  let element
 
   onMount(() => {
 
@@ -25,10 +32,10 @@ function App () {
         modified_datetime: null,
       }
 
-      const [tab] = await browser.tabs.query({ active: true, currentWindow: true });
+      const [tab] = await browser.tabs.query({ active: true, currentWindow: true })
 
       try {
-        const response = await browser.tabs.sendMessage(
+        await browser.tabs.sendMessage(
           tab.id, 
           {
             type: 'trigger',
@@ -40,7 +47,7 @@ function App () {
         )
       } catch (err) {
         const errorType = isNotAvailableError(err) ? 'warn' : 'error'
-        debug(['trigger', params, tab, err], errorType)
+        debug(['trigger', tab, err], errorType)
       }
 
     })

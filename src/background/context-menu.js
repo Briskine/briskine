@@ -96,7 +96,7 @@ async function clickContextMenu (info = {}, tab = {}) {
   }
 
   if (info.menuItemId === openDialogMenu) {
-    chrome.sidePanel.open({ tabId: tab.id });
+    browser.sidePanel.open({ tabId: tab.id })
     
     return trigger(eventShowDialog, {}, tab, info.frameId)
   }

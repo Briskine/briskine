@@ -1,6 +1,5 @@
-/* global REGISTER_DISABLED */
+import {onMount, onCleanup, createSignal, createEffect} from 'solid-js'
 import {render} from 'solid-js/web'
-import {onMount, createSignal, createEffect} from 'solid-js'
 
 import DialogUI from './dialog-ui.js'
 
@@ -9,13 +8,13 @@ import {
   on as storeOn,
   off as storeOff,
 } from '../../store/store-content.js'
-import autocomplete from '../autocomplete.js'
 import {isContentEditable} from '../editors/editor-contenteditable.js'
 import { isTextfieldEditor } from '../editors/editor-textfield.js'
-import { getActiveElement } from '../utils/active-element.js'
 import {bubbleTagName} from '../bubble/bubble.js'
 import {getEditableCaret, getContentEditableCaret, getDialogPosition} from './dialog-position.js'
+import autocomplete from '../autocomplete.js'
 import { getSelectionRange, setSelectionRange }  from '../utils/selection.js'
+import { getActiveElement } from '../utils/active-element.js'
 import {keybind, keyunbind} from '../keybind.js'
 
 function scopeElementName (name = '') {
@@ -24,26 +23,53 @@ function scopeElementName (name = '') {
 
 let dialogInstance = null
 
+export const dialogTagName = scopeElementName('b-dialog')
+
 const modalAttribute = 'modal'
 const openAnimationClass = 'b-dialog-open-animation'
 const listSelector = '.dialog-list'
-
-export const dialogTagName = scopeElementName('b-dialog')
-
 const dialogSelector = '.briskine-dialog'
 
-function Dialog (originalProps) {
+function Dialog () {
+  // eslint-disable-next-line no-unassigned-vars
+  let element
 
+  const [visible, setVisible] = createSignal(false)
   let globalAbortController = new AbortController()
   let globalListenerOptions = {
     capture: true,
     signal: globalAbortController.signal,
   }  
 
-  // eslint-disable-next-line no-unassigned-vars
-  let element
+  let editor
+  let cachedRange
 
-  const [visible, setVisible] = createSignal(false)
+  createEffect((prev) => {
+    if (
+      visible() === true
+      && prev === false
+    ) {
+      // activate the first item in the list
+      const $list = element.querySelector(listSelector)
+      if ($list) {
+        $list.dispatchEvent(new Event('b-dialog-select-first'))
+      }
+
+      element.classList.add(openAnimationClass)
+    } else if (
+      visible() === false
+      && prev == true
+    ) {
+      element.classList.remove(openAnimationClass)
+
+      window.requestAnimationFrame(() => {
+        // close modals
+        element.removeAttribute(modalAttribute)
+      })
+    }
+
+    return visible()
+  }, false)
 
   function show (node) {
     // dialog is already visible
@@ -128,29 +154,6 @@ function Dialog (originalProps) {
       removeCaretParent()
     }
   }
-
-  function hideOnFocusout (e) {
-    if (e.target === dialogInstance) {
-      setVisible(false)
-    }
-  }
-
-  async function restoreSelection () {
-    // will also hide dialog because of focusout
-    editor.focus({ preventScroll: true })
-
-    if (
-      isContentEditable(editor)
-      && cachedRange
-      // if the nodes change in the editor, the range containers move to the top.
-      // (e.g., linkedin message editor in shadow dom likes to re-create the
-      // entire editor dom structure on focus)
-      // this will also be true when the editor is empty, when focus() is enough.
-      && cachedRange.startContainer !== editor
-    ) {
-      await setSelectionRange(editor, cachedRange)
-    }
-  }
   
   function stopPropagation (e, target) {
     if (
@@ -158,7 +161,7 @@ function Dialog (originalProps) {
       && dialogInstance
       && (
         dialogInstance === target
-        || dialogInstance.shadowRoot.contains(target)
+        || dialogInstance === target?.getRootNode?.()
       )
     ) {
       e.stopPropagation()
@@ -171,6 +174,46 @@ function Dialog (originalProps) {
 
   function stopRelatedTargetPropagation (e) {
     stopPropagation(e, e.relatedTarget)
+  }
+
+
+    async function restoreSelection () {
+    // will also hide dialog because of focusout
+    editor.focus({ preventScroll: true })
+
+    if (
+      isContentEditable(editor)
+      && cachedRange
+      // if all the nodes are destroyed in the editor, the range resets and moves to the top.
+      // (e.g., linkedin message editor in shadow dom likes to re-create the
+      // entire editor dom structure on focus)
+      // this will also be true when the editor is empty, when focus() is enough.
+      && !(
+        cachedRange.startContainer === editor
+        && cachedRange.collapsed === true
+        && cachedRange.startOffset === 0
+      )
+    ) {
+      await setSelectionRange(editor, cachedRange)
+    }
+  }
+
+  function hideOnFocusout (e) {
+    if (e.target === dialogInstance) {
+      setVisible(false)
+    }
+  }
+
+  function hideOnEsc (e) {
+    if (e.key === 'Escape' && visible()) {
+      e.stopPropagation()
+      // prevent triggering the keyup event on the page.
+      // causes some websites (eg. linkedin) to also close the underlying modal
+      // when closing our dialog.
+      window.addEventListener('keyup', (e) => { e.stopPropagation() }, { capture: true, once: true })
+
+      restoreSelection()
+    }
   }
 
   onMount(() => {
@@ -188,72 +231,52 @@ function Dialog (originalProps) {
     window.addEventListener('focusout', hideOnFocusout, globalListenerOptions)
     window.addEventListener('keydown', hideOnEsc, globalListenerOptions)    
 
-    // prevent Gmail from handling keydown.
-    // any keys assigned to Gmail keyboard shortcuts are prevented
-    // from being inserted in the search field.
-    window.addEventListener('keydown', stopTargetPropagation, globalListenerOptions)
-    // prevent Front from handling keyboard shortcuts
-    // when we're typing in the search field.
-    window.addEventListener('keypress', stopTargetPropagation, globalListenerOptions)
+    // prevent parent page from handling composed events.
+    // fix interaction with our dialog in some modals (Gmail, LinkedIn new post, GitHub search).
+    const stopTargetEvents = [
+      // stop Gmail from preventing keys assigned to Gmail shortcuts to be typed
+      // inside the dialog search field
+      'keydown',
+      'keyup',
+      // stop Front from catching keyboard shortcuts when typing in the dialog
+      'keypress',
+      // stop GitHub search from closing the dialog when clicking inside it
+      'mousedown',
+      'mouseup',
+      // stop GitHub search from preventing opening the dialog
+      // stop LinkedIn New Post from stealing focus when opening the dialog
+      'focus',
+      'focusin',
+    ]
 
-    // prevent parent page from handling focus events.
-    // fix interaction with our dialog in some modals (LinkedIn).
-    // prevent the page from handling the focusout event when switching focus to our dialog.
-    window.addEventListener('focusout', stopRelatedTargetPropagation, globalListenerOptions)
-    window.addEventListener('focusin', stopTargetPropagation, globalListenerOptions)    
+    const stopRelatedTargetEvents = [
+      // stop GitHub search and LinkedIn new post from handling blur
+      'blur',
+      'focusout',
+    ]
 
-    
+    stopTargetEvents.forEach((event) => {
+      window.addEventListener(event, stopTargetPropagation, globalListenerOptions)
+    })
+
+    stopRelatedTargetEvents.forEach((event) => {
+      window.addEventListener(event, stopRelatedTargetPropagation, globalListenerOptions)
+    })
+
     // expose show on element
     element.show = show
   })
 
-  createEffect((prev) => {
-    if (
-      visible() === true
-      && prev === false
-    ) {
-      // activate the first item in the list
-      const $list = element.querySelector(listSelector)
-      if ($list) {
-        $list.dispatchEvent(new Event('b-dialog-select-first'))
-      }
+  onCleanup(() => {
 
-      element.classList.add(openAnimationClass)
-    } else if (
-      visible() === false
-      && prev == true
-    ) {
-      element.classList.remove(openAnimationClass)
+    globalAbortController.abort()
 
-      window.requestAnimationFrame(() => {
-        /*
-        // clear the search query
-        if (searchField) {
-          searchField.value = ''
-        }
-
-        setSearchQuery('') 
-        */
-
-        // close modals
-        element.removeAttribute(modalAttribute)
-      })
+    globalAbortController = new AbortController()
+    globalListenerOptions = {
+      capture: true,
+      signal: globalAbortController.signal,
     }
-
-    return visible()
-  }, false)
-
-  function hideOnEsc (e) {
-    if (e.key === 'Escape' && visible()) {
-      e.stopPropagation()
-      // prevent triggering the keyup event on the page.
-      // causes some websites (eg. linkedin) to also close the underlying modal
-      // when closing our dialog.
-      window.addEventListener('keyup', (e) => { e.stopPropagation() }, { capture: true, once: true })
-
-      restoreSelection()
-    }
-  }  
+  })
 
   return (
     <div
