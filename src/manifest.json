@@ -18,8 +18,7 @@
     "contextMenus",
     "storage",
     "scripting",
-    "unlimitedStorage",
-    "sidePanel"
+    "unlimitedStorage"
   ],
   "host_permissions": [
     "https://*/*",
@@ -53,8 +52,7 @@
       "icons/icon-32.png",
       "icons/icon-32-loggedout.png",
       "icons/icon-48.png",
-      "icons/icon-48-loggedout.png",
-      "sidepanel/main.html"
+      "icons/icon-48-loggedout.png"
     ],
     "matches": [
       "https://*/*",
@@ -72,9 +70,6 @@
       "32": "icons/icon-32.png"
     },
     "default_popup": "popup/popup.html"
-  },
-  "side_panel": {
-    "default_path": "sidepanel/main.html"
   },
   "content_security_policy": {
     "extension_pages": "script-src 'self'; object-src 'self'; frame-ancestors 'none'",
