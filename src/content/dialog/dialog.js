@@ -1,7 +1,7 @@
 import {onMount, onCleanup, createSignal, createEffect, mergeProps} from 'solid-js'
 import {render} from 'solid-js/web'
 
-import DialogUI from './dialog-ui.js'
+import DialogContent from './dialog-content.js'
 
 import { eventShowDialog } from '../../config.js'
 import {
@@ -277,7 +277,7 @@ function Dialog (originalProps) {
         'briskine-dialog-visible': visible(),
       }}
       >
-        <DialogUI 
+        <DialogContent
           keyboardShortcut={props.keyboardShortcut}
           visible={visible()} 
         />

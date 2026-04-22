@@ -25,7 +25,7 @@ import styles from './dialog.css'
 
 const listSelector = '.dialog-list'
 
-export default function DialogUI (originalProps) {
+export default function DialogContent (originalProps) {
   const props = mergeProps({
     keyboardShortcut: '',
     visible: false,
