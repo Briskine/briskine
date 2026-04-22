@@ -1,4 +1,4 @@
-import {onMount, onCleanup, createSignal, createEffect} from 'solid-js'
+import {onMount, onCleanup, createSignal, createEffect, mergeProps} from 'solid-js'
 import {render} from 'solid-js/web'
 
 import DialogUI from './dialog-ui.js'
@@ -30,7 +30,11 @@ const openAnimationClass = 'b-dialog-open-animation'
 const listSelector = '.dialog-list'
 const dialogSelector = '.briskine-dialog'
 
-function Dialog () {
+function Dialog (originalProps) {
+  const props = mergeProps({
+    keyboardShortcut: '',
+  }, originalProps)
+
   // eslint-disable-next-line no-unassigned-vars
   let element
 
@@ -287,7 +291,7 @@ function Dialog () {
       }}
       >
         <DialogUI 
-          keyboardShortcut={this.keyboardShortcut} 
+          keyboardShortcut={props.keyboardShortcut}
           visible={visible()} 
         />
     </div> 
