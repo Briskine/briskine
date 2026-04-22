@@ -56,8 +56,6 @@ export default function DialogUI (originalProps) {
   const [searchResults, setSearchResults] = createSignal([])
   const [searchQuery, setSearchQuery] = createSignal('')
 
-
-  // duplicate
   const modalAttribute = 'modal'
 
   createEffect((prev) => {
@@ -66,7 +64,6 @@ export default function DialogUI (originalProps) {
       && prev === false
     ) {
       // activate the first item in the list
-      // const $list = element.querySelector(listSelector)
       const $list = elementDialogList
       if ($list) {
         $list.dispatchEvent(new Event('b-dialog-select-first'))
@@ -81,12 +78,10 @@ export default function DialogUI (originalProps) {
       if (loading() === true) {
         loadData()
       }
-
     } else if (
       props.visible === false
       && prev == true
     ) {
-      // element.classList.remove(openAnimationClass)
 
       window.requestAnimationFrame(() => {
         // clear the search query
@@ -95,6 +90,9 @@ export default function DialogUI (originalProps) {
         }
 
         setSearchQuery('')
+
+        // close modals
+        element.removeAttribute(modalAttribute)
       })
     }
 

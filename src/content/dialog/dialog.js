@@ -25,9 +25,7 @@ let dialogInstance = null
 
 export const dialogTagName = scopeElementName('b-dialog')
 
-const modalAttribute = 'modal'
 const openAnimationClass = 'b-dialog-open-animation'
-const listSelector = '.dialog-list'
 const dialogSelector = '.briskine-dialog'
 
 function Dialog (originalProps) {
@@ -53,23 +51,12 @@ function Dialog (originalProps) {
       visible() === true
       && prev === false
     ) {
-      // activate the first item in the list
-      const $list = element.querySelector(listSelector)
-      if ($list) {
-        $list.dispatchEvent(new Event('b-dialog-select-first'))
-      }
-
       element.classList.add(openAnimationClass)
     } else if (
       visible() === false
       && prev == true
     ) {
       element.classList.remove(openAnimationClass)
-
-      window.requestAnimationFrame(() => {
-        // close modals
-        element.removeAttribute(modalAttribute)
-      })
     }
 
     return visible()
