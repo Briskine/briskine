@@ -14,6 +14,7 @@ export default function DialogList (originalProps) {
     tags: [],
     list: [],
     callbackSelectItem: () => {},
+    setRefDialogList: () => {},
   }, originalProps)
 
   let element = null
@@ -104,6 +105,8 @@ export default function DialogList (originalProps) {
         scrollToActive(newActive)
       }
     })
+
+    props.setRefDialogList?.(element)
   })
 
   return (

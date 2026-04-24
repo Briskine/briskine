@@ -37,10 +37,6 @@
 
 /* show modals
  */
-/* 
-.briskine-dialog[modal=settings] .dialog-settings,
-.briskine-dialog[modal=actions] .dialog-actions {
-*/
 .dialog-container[modal=settings] .dialog-settings,
 .dialog-container[modal=actions] .dialog-actions {
   visibility: visible;
@@ -49,12 +45,10 @@
   scale: 1;
 }
 
-/* .briskine-dialog[modal=settings] .btn-settings { */
 .dialog-container[modal=settings] .btn-settings {
   background: var(--border-color);
 }
 
-/* .briskine-dialog[modal=actions] .btn-actions { */
 .dialog-container[modal=actions] .btn-actions {
   background-color: var(--primary-color);
 }

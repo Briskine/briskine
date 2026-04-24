@@ -46,6 +46,7 @@ export default function DialogTemplates (originalProps) {
           showTags={props.extensionData.dialogTags}
           tags={props.tags}
           callbackSelectItem={props.callbackSelectItem}
+          setRefDialogList={props.setRefDialogList}
           />
       </Show>
     </>

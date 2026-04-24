@@ -23,8 +23,6 @@ import DialogActions from './dialog-actions.js'
 
 import styles from './dialog.css'
 
-const listSelector = '.dialog-list'
-
 export default function DialogContent (originalProps) {
   const props = mergeProps({
     keyboardShortcut: '',
@@ -34,7 +32,6 @@ export default function DialogContent (originalProps) {
   // eslint-disable-next-line no-unassigned-vars
   let element
 
-  // eslint-disable-next-line no-unassigned-vars  
   let elementDialogList
 
   // eslint-disable-next-line no-unassigned-vars
@@ -143,7 +140,7 @@ export default function DialogContent (originalProps) {
   function handleSearchFieldShortcuts (e) {
     // only handle events from the search field
     const target = e.composedPath()[0]
-    const $list = element.querySelector(listSelector)
+    const $list = elementDialogList
     if (
       target !== searchField ||
       !['Enter', 'ArrowDown', 'ArrowUp'].includes(e.key) ||
@@ -311,17 +308,18 @@ export default function DialogContent (originalProps) {
                 templates={templates()}
                 tags={tags()}
                 extensionData={extensionData()}
-                callbackSelectItem={callbackSelectItem}                
+                callbackSelectItem={callbackSelectItem}
+                setRefDialogList={el => (elementDialogList = el)}
                 />
             )}
             >
             <DialogList
-              ref={elementDialogList}
               loggedIn={loggedIn()}
               list={searchResults()}
               showTags={extensionData().dialogTags}
               tags={tags()}
               callbackSelectItem={callbackSelectItem}
+              setRefDialogList={el => (elementDialogList = el)}
               />
           </Show>
         </div>
