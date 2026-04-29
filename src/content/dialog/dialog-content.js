@@ -236,10 +236,6 @@ export default function DialogContent (originalProps) {
         openPopup()
       }
     })
-
-
-    // expose show on element
-    // element.show = show
   })
 
   onCleanup(() => {
