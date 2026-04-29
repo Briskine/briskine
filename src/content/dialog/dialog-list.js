@@ -39,7 +39,10 @@ export default function DialogList (originalProps) {
       shortlist().length
       && !shortlist().find((item) => item.id === active)
     ) {
-      return setActive(shortlist()[0].id)
+      const id = shortlist()[0].id
+      setActive(id)
+      scrollToActive(id)
+      return id
     }
 
     return active()
