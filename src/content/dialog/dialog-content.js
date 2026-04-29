@@ -38,13 +38,6 @@ export default function DialogContent (originalProps) {
   // eslint-disable-next-line no-unassigned-vars
   let searchField
 
-  // duplicate
-  let globalAbortController = new AbortController()
-  let globalListenerOptions = {
-    capture: true,
-    signal: globalAbortController.signal,
-  }
-
   const [loggedIn, setLoggedIn] = createSignal()
   const [loading, setLoading] = createSignal()
   const [templates, setTemplates] = createSignal([])
@@ -171,7 +164,14 @@ export default function DialogContent (originalProps) {
     }
   }
 
+  let globalAbortController
   onMount(() => {
+    globalAbortController = new AbortController()
+    const globalListenerOptions = {
+      capture: true,
+      signal: globalAbortController.signal,
+    }
+
     // check authentication state
     setAuthState()
     storeOn('login', setAuthState)
@@ -247,12 +247,6 @@ export default function DialogContent (originalProps) {
     storeOff('extension-data-updated', extensionDataUpdated)
 
     globalAbortController.abort()
-
-    globalAbortController = new AbortController()
-    globalListenerOptions = {
-      capture: true,
-      signal: globalAbortController.signal,
-    }
   })
 
   function callbackSelectItem (tplId) {

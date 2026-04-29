@@ -37,12 +37,6 @@ function Dialog (originalProps) {
   let element
 
   const [visible, setVisible] = createSignal(false)
-  let globalAbortController = new AbortController()
-  let globalListenerOptions = {
-    capture: true,
-    signal: globalAbortController.signal,
-  }  
-
   let editor
   let cachedRange
 
@@ -145,7 +139,7 @@ function Dialog (originalProps) {
       removeCaretParent()
     }
   }
-  
+
   function stopPropagation (e, target) {
     if (
       target
@@ -207,20 +201,26 @@ function Dialog (originalProps) {
     }
   }
 
+  let globalAbortController
   onMount(() => {
+    globalAbortController = new AbortController()
+    const globalListenerOptions = {
+      capture: true,
+      signal: globalAbortController.signal,
+    }
 
     element.addEventListener('b-dialog-insert', async (e) => {
       await restoreSelection()
 
       autocomplete({
         template: e.detail,
-      })      
+      })
 
       e.stopImmediatePropagation()
     })
-    
+
     window.addEventListener('focusout', hideOnFocusout, globalListenerOptions)
-    window.addEventListener('keydown', hideOnEsc, globalListenerOptions)    
+    window.addEventListener('keydown', hideOnEsc, globalListenerOptions)
 
     // prevent parent page from handling composed events.
     // fix interaction with our dialog in some modals (Gmail, LinkedIn new post, GitHub search).
@@ -259,14 +259,7 @@ function Dialog (originalProps) {
   })
 
   onCleanup(() => {
-
     globalAbortController.abort()
-
-    globalAbortController = new AbortController()
-    globalListenerOptions = {
-      capture: true,
-      signal: globalAbortController.signal,
-    }
   })
 
   return (
@@ -279,10 +272,10 @@ function Dialog (originalProps) {
       >
         <DialogContent
           keyboardShortcut={props.keyboardShortcut}
-          visible={visible()} 
+          visible={visible()}
         />
-    </div> 
-  ) 
+    </div>
+  )
 }
 
 customElements.define(dialogTagName, class extends HTMLElement {
