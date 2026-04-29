@@ -32,6 +32,7 @@ export default function DialogContent (originalProps) {
   // eslint-disable-next-line no-unassigned-vars
   let element
 
+  // eslint-disable-next-line no-unassigned-vars
   let elementDialogList
 
   // eslint-disable-next-line no-unassigned-vars
@@ -42,7 +43,7 @@ export default function DialogContent (originalProps) {
   let globalListenerOptions = {
     capture: true,
     signal: globalAbortController.signal,
-  }    
+  }
 
   const [loggedIn, setLoggedIn] = createSignal()
   const [loading, setLoading] = createSignal()
@@ -309,7 +310,7 @@ export default function DialogContent (originalProps) {
                 tags={tags()}
                 extensionData={extensionData()}
                 callbackSelectItem={callbackSelectItem}
-                setRefDialogList={el => (elementDialogList = el)}
+                ref={elementDialogList}
                 />
             )}
             >
@@ -319,7 +320,7 @@ export default function DialogContent (originalProps) {
               showTags={extensionData().dialogTags}
               tags={tags()}
               callbackSelectItem={callbackSelectItem}
-              setRefDialogList={el => (elementDialogList = el)}
+              ref={elementDialogList}
               />
           </Show>
         </div>

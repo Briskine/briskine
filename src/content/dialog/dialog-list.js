@@ -9,15 +9,21 @@ const templateRenderLimit = 42
 
 export default function DialogList (originalProps) {
   const props = mergeProps({
+    ref: null,
     loggedIn: null,
     showTags: true,
     tags: [],
     list: [],
     callbackSelectItem: () => {},
-    setRefDialogList: () => {},
   }, originalProps)
 
   let element = null
+  const elementRef = (el) => {
+    element = el
+    if (typeof props.ref === 'function') {
+      props.ref(el)
+    }
+  }
 
   const [active, setActive] = createSignal()
 
@@ -105,13 +111,11 @@ export default function DialogList (originalProps) {
         scrollToActive(newActive)
       }
     })
-
-    props.setRefDialogList?.(element)
   })
 
   return (
     <div
-      ref={element}
+      ref={elementRef}
       class="dialog-list"
       on:click={onClick}
       on:mouseover={onMouseOver}
