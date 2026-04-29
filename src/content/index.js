@@ -111,25 +111,27 @@ async function startup () {
     return setTimeout(startup, startupDelay)
   }
 
-  setupStatus()
-  setupDashboardEvents()
-  removeFocusListeners = addFocusListeners(initOnFocus, 'focusin')
-
   // use a custom property to detect if the document was recreated
   // (eg. in dynamically created iframes).
   document.documentElement[loadedProp] = true
 
   setTimeout(() => {
     // if the document was recreated (e.g., ckeditor4 dynamically crated iframe),
-    // we'll retry initializing.
+    // try again later.
     if (!document?.documentElement?.[loadedProp]) {
-      destructor()
       return startup()
     }
 
-    // destroy existing content script
+    // destroy existing content script:
+    // can be the current content script (when logging in/out),
+    // or an old version of the content script (when the extension updates),
+    // that's why we need to dispatch the event and not just call destructor().
     document.dispatchEvent(new CustomEvent(eventDestroy))
     document.addEventListener(eventDestroy, destructor, {once: true})
+
+    setupStatus()
+    setupDashboardEvents()
+    removeFocusListeners = addFocusListeners(initOnFocus, 'focusin')
 
     // cleanup
     delete document.documentElement[loadedProp]
@@ -139,6 +141,8 @@ async function startup () {
 }
 
 function destructor () {
+  document.removeEventListener(eventDestroy, destructor, {once: true})
+
   destroyStatus()
   destroyDashboardEvents()
   removeFocusListeners()
@@ -174,7 +178,6 @@ async function usersUpdated () {
   const settings = await getSettings()
   const settingsChanged = !isEqual(settings, settingsCache)
   if (settingsChanged) {
-    destructor()
     startup()
   }
 }

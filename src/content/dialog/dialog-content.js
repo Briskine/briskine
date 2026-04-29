@@ -112,23 +112,22 @@ export default function DialogContent (originalProps) {
     setLoading(false)
   }
 
-  function setAuthState () {
-    getAccount()
-    .then(() => {
-      return true
-    })
-    .catch(() => {
-      return false
-    })
-    .then((status) => {
-      setLoggedIn(status)
-      setLoading(true)
+  async function setAuthState () {
+    let status = false
+    try {
+      await getAccount()
+      status = true
+    } catch {
+      // logged-out
+    }
 
-      // only start loading data if the dialog is visible
-      if (props.visible) {
-        loadData()
-      }
-    })
+    setLoggedIn(status)
+    setLoading(true)
+
+    // only start loading data if the dialog is visible
+    if (props.visible) {
+      loadData()
+    }
   }
 
   function handleSearchFieldShortcuts (e) {
