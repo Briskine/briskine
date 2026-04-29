@@ -121,6 +121,7 @@ export default function search (list = [], searchList = [], text = '') {
   const options = {
     useExtendedSearch: true,
     ignoreLocation: true,
+    useTokenSearch: true,
     threshold: 0.3,
     keys: [
       {
