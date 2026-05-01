@@ -298,9 +298,9 @@ async function isExtensionResponding (tab) {
     return false
   }
 
-  // even if the extension hasn't been initialized yet,
-  // because of 500ms startup delay,
-  // and the status event isn't attached yet / won't respond,
+  // even if the extension hasn't ran startup() yet,
+  // because of the startup delay,
+  // and the status event isn't attached,
   // we'll still get an empty array if the content scripts are running,
   // because we attach the onMessage listener immediately in store-client.
   if (Array.isArray(res)) {
