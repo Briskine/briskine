@@ -63,10 +63,6 @@ async function signInAction () {
 }
 
 async function toggleBubbleAction (info, tab) {
-  if (!URL.canParse(tab.url)) {
-    return
-  }
-
   const { hostname } = URL.parse(tab.url)
 
   const extensionData = await getExtensionData()
@@ -204,17 +200,27 @@ async function setupContextMenus () {
 
   updateMenuSignin()
   updateMenuTemplates()
-  updateBubbleContextMenu()
+
+  const [tab] = await browser.tabs.query({active: true, lastFocusedWindow: true})
+  toggleContextMenu(tab)
 }
 
-function updateMenuSignin() {
-  getAccount()
-    .then(() => {
-      browser.contextMenus.update(signInMenu, { title: 'Open Briskine popup' })
-    })
-    .catch(() => {
-      browser.contextMenus.update(signInMenu, { title: 'Sign in to access your templates' })
-    })
+async function toggleContextMenu (tab) {
+  if (await shouldContextMenuShow(tab)) {
+    updateBubbleContextMenu(tab)
+    browser.contextMenus.update(parentMenu, { visible: true })
+  } else {
+    browser.contextMenus.update(parentMenu, { visible: false })
+  }
+}
+
+async function updateMenuSignin() {
+  try {
+    await getAccount()
+    browser.contextMenus.update(signInMenu, { title: 'Open Briskine popup' })
+  } catch {
+    browser.contextMenus.update(signInMenu, { title: 'Sign in to access your templates' })
+  }
 }
 
 async function updateMenuTemplates () {
@@ -257,47 +263,51 @@ async function updateMenuTemplates () {
   }
 }
 
-async function updateBubbleContextMenu (pUrlString) {
-  let urlString = pUrlString
-  if (!urlString) {
-    const [tab] = await browser.tabs.query({active: true, lastFocusedWindow: true})
-    if (!tab) {
-      return
+async function updateBubbleContextMenu (tab) {
+  let state = {
+    checked: false,
+    enabled: false,
+    visible: false,
+  }
+
+  if (URL.canParse(tab.url)) {
+    state.visible = true
+
+    const { hostname } = URL.parse(tab.url)
+
+    if (bubbleAllowlistPrivate(hostname)) {
+      state.checked = true
+    } else {
+      const extensionData = await getExtensionData()
+      const { bubbleAllowlist = [] } = extensionData
+      const bubbleActive = bubbleAllowlist.includes(hostname)
+      state.checked = bubbleActive
+      state.enabled = true
     }
-    urlString = tab.url
   }
 
-  if (!URL.canParse(urlString)) {
-    return
-  }
-
-  const { hostname } = URL.parse(urlString)
-
-  if (bubbleAllowlistPrivate(hostname)) {
-    return browser.contextMenus.update(
-      toggleBubbleMenu,
-      {
-        checked: true,
-        enabled: false
-      }
-    )
-  }
-
-  const extensionData = await getExtensionData()
-  const { bubbleAllowlist = [] } = extensionData
-  const bubbleActive = bubbleAllowlist.includes(hostname)
-
-  return browser.contextMenus.update(
-    toggleBubbleMenu,
-    {
-      checked: bubbleActive,
-      enabled: true
-    }
-  )
+  return browser.contextMenus.update(toggleBubbleMenu, state)
 }
 
 async function isExtensionResponding (tab) {
-  return trigger(eventStatus, {}, tab)
+  const res = await trigger(eventStatus, {}, tab)
+  // no permission to run on this url.
+  // internal browser page (e.g. chrome://)
+  // or blocked from browser native settings.
+  if (!res) {
+    return false
+  }
+
+  // even if the extension hasn't been initialized yet,
+  // because of 500ms startup delay,
+  // and the status event isn't attached yet / won't respond,
+  // we'll still get an empty array if the content scripts are running,
+  // because we attach the onMessage listener immediately in store-client.
+  if (Array.isArray(res)) {
+    return true
+  }
+
+  return false
 }
 
 async function shouldContextMenuShow (tab) {
@@ -319,31 +329,21 @@ async function shouldContextMenuShow (tab) {
   return true
 }
 
-async function onTabSwitchHandler () {
-  const [tab] = await browser.tabs.query({active: true, lastFocusedWindow: true})
-  if (!tab) {
+async function onTabSwitchHandler({ tabId }) {
+  const tab = await browser.tabs.get(tabId)
+  if (tab.status !== 'complete') {
     return
   }
 
-  if (await shouldContextMenuShow(tab)) {
-    browser.contextMenus.update(parentMenu, { visible: true })
-    await updateBubbleContextMenu(tab.url)
-  } else {
-    browser.contextMenus.update(parentMenu, { visible: false })
-  }
+  await toggleContextMenu(tab)
 }
 
-async function onTabUpdateHandler (tabId, changeInfo, tab) {
-  if (changeInfo?.status !== 'complete') {
+async function onTabUpdateHandler (tabId, { status }, tab) {
+  if (status !== 'complete') {
     return
   }
 
-  if (await shouldContextMenuShow(tab)) {
-    browser.contextMenus.update(parentMenu, { visible: true })
-    await updateBubbleContextMenu(tab.url)
-  } else {
-    browser.contextMenus.update(parentMenu, { visible: false })
-  }
+  await toggleContextMenu(tab)
 }
 
 function isStorageChanged (changes, ...params) {
@@ -382,7 +382,8 @@ async function storageChange (changes = {}) {
   if (isStorageChanged(changes,
     ['briskine', 'bubbleAllowlist']
   )) {
-    updateBubbleContextMenu()
+    const [tab] = await browser.tabs.query({active: true, lastFocusedWindow: true})
+    updateBubbleContextMenu(tab)
   }
 }
 
