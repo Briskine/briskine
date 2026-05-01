@@ -146,7 +146,7 @@ function Dialog (originalProps) {
       && dialogInstance
       && (
         dialogInstance === target
-        || dialogInstance === target?.getRootNode?.()
+        || dialogInstance === target?.getRootNode?.()?.host
       )
     ) {
       e.stopPropagation()

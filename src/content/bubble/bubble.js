@@ -88,7 +88,7 @@ function blurTextfield (e) {
   // don't hide the bubble if the newly focused node is in the dialog.
   // when pressing the bubble, or when focusing inside the dialog.
   const target = e.relatedTarget
-  const host = target?.getRootNode?.().host
+  const host = target?.getRootNode?.()?.host
   if (
     target?.tagName?.toLowerCase?.() === dialogTagName
     || host?.tagName?.toLowerCase?.() === dialogTagName
