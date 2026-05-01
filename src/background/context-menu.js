@@ -267,6 +267,10 @@ async function updateBubbleContextMenu (pUrlString) {
     urlString = tab.url
   }
 
+  if (!URL.canParse(urlString)) {
+    return
+  }
+
   const { hostname } = URL.parse(urlString)
 
   if (bubbleAllowlistPrivate(hostname)) {
