@@ -95,7 +95,8 @@ function initOnFocus (e) {
 }
 
 let startupRetries = 0
-const startupDelay = 500
+let startupDelay = 0
+const defaultStartupDelay = 500
 const maxStartupRetries = 10
 const loadedProp = '__briskineLoaded'
 
@@ -108,6 +109,7 @@ async function startup () {
   // try again later if the page is not ready yet,
   // for dynamically created iframes.
   if (!document.documentElement) {
+    startupDelay = defaultStartupDelay
     return setTimeout(startup, startupDelay)
   }
 
@@ -119,6 +121,7 @@ async function startup () {
     // if the document was recreated (e.g., ckeditor4 dynamically crated iframe),
     // try again later.
     if (!document?.documentElement?.[loadedProp]) {
+      startupDelay = defaultStartupDelay
       return startup()
     }
 
@@ -135,8 +138,9 @@ async function startup () {
 
     // cleanup
     delete document.documentElement[loadedProp]
-    // reset retries
+    // reset retries and delay
     startupRetries = 0
+    startupDelay = 0
   }, startupDelay)
 }
 
