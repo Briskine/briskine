@@ -95,7 +95,8 @@ function initOnFocus (e) {
 }
 
 let startupRetries = 0
-const startupDelay = 500
+let startupDelay = 0
+const defaultStartupDelay = 500
 const maxStartupRetries = 10
 const loadedProp = '__briskineLoaded'
 
@@ -108,12 +109,9 @@ async function startup () {
   // try again later if the page is not ready yet,
   // for dynamically created iframes.
   if (!document.documentElement) {
+    startupDelay = defaultStartupDelay
     return setTimeout(startup, startupDelay)
   }
-
-  setupStatus()
-  setupDashboardEvents()
-  removeFocusListeners = addFocusListeners(initOnFocus, 'focusin')
 
   // use a custom property to detect if the document was recreated
   // (eg. in dynamically created iframes).
@@ -121,24 +119,34 @@ async function startup () {
 
   setTimeout(() => {
     // if the document was recreated (e.g., ckeditor4 dynamically crated iframe),
-    // we'll retry initializing.
+    // try again later.
     if (!document?.documentElement?.[loadedProp]) {
-      destructor()
+      startupDelay = defaultStartupDelay
       return startup()
     }
 
-    // destroy existing content script
+    // destroy existing content script:
+    // can be the current content script (when logging in/out),
+    // or an old version of the content script (when the extension updates),
+    // that's why we need to dispatch the event and not just call destructor().
     document.dispatchEvent(new CustomEvent(eventDestroy))
     document.addEventListener(eventDestroy, destructor, {once: true})
 
+    setupStatus()
+    setupDashboardEvents()
+    removeFocusListeners = addFocusListeners(initOnFocus, 'focusin')
+
     // cleanup
     delete document.documentElement[loadedProp]
-    // reset retries
+    // reset retries and delay
     startupRetries = 0
+    startupDelay = 0
   }, startupDelay)
 }
 
 function destructor () {
+  document.removeEventListener(eventDestroy, destructor, {once: true})
+
   destroyStatus()
   destroyDashboardEvents()
   removeFocusListeners()
@@ -174,7 +182,6 @@ async function usersUpdated () {
   const settings = await getSettings()
   const settingsChanged = !isEqual(settings, settingsCache)
   if (settingsChanged) {
-    destructor()
     startup()
   }
 }

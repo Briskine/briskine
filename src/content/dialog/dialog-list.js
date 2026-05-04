@@ -9,13 +9,21 @@ const templateRenderLimit = 42
 
 export default function DialogList (originalProps) {
   const props = mergeProps({
+    ref: null,
     loggedIn: null,
     showTags: true,
     tags: [],
     list: [],
+    callbackSelectItem: () => {},
   }, originalProps)
 
   let element = null
+  const elementRef = (el) => {
+    element = el
+    if (typeof props.ref === 'function') {
+      props.ref(el)
+    }
+  }
 
   const [active, setActive] = createSignal()
 
@@ -31,7 +39,10 @@ export default function DialogList (originalProps) {
       shortlist().length
       && !shortlist().find((item) => item.id === active)
     ) {
-      return setActive(shortlist()[0].id)
+      const id = shortlist()[0].id
+      setActive(id)
+      scrollToActive(id)
+      return id
     }
 
     return active()
@@ -66,11 +77,7 @@ export default function DialogList (originalProps) {
     // prevent inserting templates when clicking the edit button
     const editButton = e.target.closest('.btn-edit')
     if (container && !editButton) {
-      element.dispatchEvent(new CustomEvent('b-dialog-insert', {
-        bubbles: true,
-        composed: true,
-        detail: container.dataset.id,
-      }))
+      props.callbackSelectItem(container.dataset.id)
     }
   }
 
@@ -96,10 +103,7 @@ export default function DialogList (originalProps) {
 
     // insert with enter
     element.addEventListener('b-dialog-select-active', () => {
-      element.dispatchEvent(new CustomEvent('b-dialog-insert', {
-        bubbles: true,
-        detail: active(),
-      }))
+      props.callbackSelectItem( active() )
     })
 
     // select first item
@@ -114,7 +118,7 @@ export default function DialogList (originalProps) {
 
   return (
     <div
-      ref={element}
+      ref={elementRef}
       class="dialog-list"
       on:click={onClick}
       on:mouseover={onMouseOver}

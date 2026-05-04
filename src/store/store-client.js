@@ -47,13 +47,13 @@ export function off (name, callback) {
 }
 
 export function trigger (name, details = {}) {
-  return Promise.all([
+  return Promise.all(
     events
       .filter((event) => event.name === name && typeof event.callback === 'function')
       .map((event) => {
         return event.callback(details)
       })
-  ])
+  )
 }
 
 // handle trigger from background

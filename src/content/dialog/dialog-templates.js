@@ -18,6 +18,7 @@ function Loader () {
 
 export default function DialogTemplates (originalProps) {
   const props = mergeProps({
+    ref: null,
     loggedIn: null,
     loading: null,
     tags: [],
@@ -45,6 +46,8 @@ export default function DialogTemplates (originalProps) {
           list={_templates()}
           showTags={props.extensionData.dialogTags}
           tags={props.tags}
+          callbackSelectItem={props.callbackSelectItem}
+          ref={props.ref}
           />
       </Show>
     </>

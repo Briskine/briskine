@@ -212,6 +212,10 @@ input[type=search]:focus {
 .dialog-content {
   flex: 1;
   padding: 3px;
+  /* improves scrollIntoView behaviour by including padding around the
+   * element scrolled into view.
+   */
+  scroll-padding: 3px;
   overflow: auto;
 
   /* improve performance for rendering large lists
