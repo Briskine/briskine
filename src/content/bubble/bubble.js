@@ -214,28 +214,28 @@ function isValidTextfield (elem) {
       || isContentEditable(elem)
     )
     // the parent is not the body
-    && elem?.parentElement !== document.body
+    // && elem?.parentElement !== document.body
   ) {
-    if (elem.parentElement) {
-      // sometimes disable for flex and grid parent
-      const parentStyles = window.getComputedStyle(elem.parentElement)
-      if (['flex', 'inline-flex', 'grid', 'inline-grid'].includes(parentStyles.display)) {
-        // flex-direction=row is not supported
-        if (
-          ['flex', 'inline-flex'].includes(parentStyles.display)
-          && parentStyles.flexDirection === 'row'
-        ) {
-          return false
-        }
+    // if (elem.parentElement) {
+    //   // sometimes disable for flex and grid parent
+    //   const parentStyles = window.getComputedStyle(elem.parentElement)
+    //   if (['flex', 'inline-flex', 'grid', 'inline-grid'].includes(parentStyles.display)) {
+    //     // flex-direction=row is not supported
+    //     if (
+    //       ['flex', 'inline-flex'].includes(parentStyles.display)
+    //       && parentStyles.flexDirection === 'row'
+    //     ) {
+    //       return false
+    //     }
 
-        // check all editable element siblings,
-        // because we might have a parent flex/grid container,
-        // but with the editable element filling the entire container.
-        if (hasVisibleSiblings(elem)) {
-          return false
-        }
-      }
-    }
+    //     // check all editable element siblings,
+    //     // because we might have a parent flex/grid container,
+    //     // but with the editable element filling the entire container.
+    //     if (hasVisibleSiblings(elem)) {
+    //       return false
+    //     }
+    //   }
+    // }
 
     // check if the element is big enough
     // to only show the bubble for large textfields
@@ -248,13 +248,31 @@ function isValidTextfield (elem) {
   return false
 }
 
+function getPositioningType (elem) {
+  if (elem.parentElement) {
+    // sometimes disable for flex and grid parent
+    const parentStyles = window.getComputedStyle(elem.parentElement)
+    if (['flex', 'inline-flex', 'grid', 'inline-grid'].includes(parentStyles.display)) {
+      return 'anchor'
+    }
+  } else {
+    return 'anchor'
+  }
+
+  return 'sticky'
+}
+
 let resizeObserver = null
+let cachedTextfield = null
+const anchorNameStart = '--b-bubble-anchor'
 
 async function showBubble (textfield) {
   // only show it for valid elements
   if (!isValidTextfield(textfield)) {
     return false
   }
+
+  cachedTextfield = textfield
 
   // detect rtl
   const textfieldStyles = window.getComputedStyle(textfield)
@@ -269,12 +287,26 @@ async function showBubble (textfield) {
 
   // set max-width to the width of textfield,
   // in case the container of the textfield is larger than the textfield.
-  bubbleInstance.style.setProperty(maxHostWidthCssVar, textfieldStyles.width)
+  bubbleInstance.style.setProperty(maxHostWidthCssVar, `${textfield.offsetWidth}px`)
 
   // move bubble further down, in case the textfield uses a top margin
   bubbleInstance.style.setProperty(bubbleTopCssVar, textfieldStyles.marginTop)
 
-  const maxWidthProperty = textfieldStyles.boxSizing === 'border-box' ? 'borderBoxSize' : 'contentBoxSize'
+  const position = getPositioningType(textfield)
+  if (position === 'anchor') {
+    const styles = window.getComputedStyle(textfield)
+    let positionAnchor = styles.positionAnchor
+    if (
+      !positionAnchor
+      || positionAnchor === 'none'
+    ) {
+      positionAnchor = `${anchorNameStart}-${Date.now()}`
+      textfield.style.anchorName = positionAnchor
+    }
+
+    bubbleInstance.style.positionAnchor = positionAnchor
+    bubbleInstance.setAttribute('anchor', 'true')
+  }
 
   resizeObserver = new ResizeObserver((entries, observer) => {
     if (!bubbleInstance) {
@@ -283,11 +315,8 @@ async function showBubble (textfield) {
     }
 
     for (const entry of entries) {
-      if (
-        entry.borderBoxSize
-        && entry[maxWidthProperty][0]
-      ) {
-        bubbleInstance.style.setProperty(maxHostWidthCssVar, `${entry[maxWidthProperty][0].inlineSize}px`)
+      if (entry.borderBoxSize) {
+        bubbleInstance.style.setProperty(maxHostWidthCssVar, `${textfield.offsetWidth}px`)
       }
     }
   })
@@ -296,6 +325,21 @@ async function showBubble (textfield) {
 }
 
 function hideBubble () {
+  if (bubbleInstance.hasAttribute('anchor')) {
+    // TODO fadeout transition looks bad when hiding the bubble
+    bubbleInstance.removeAttribute('anchor')
+    bubbleInstance.style.positionAnchor = null
+    if (cachedTextfield) {
+      const styles = window.getComputedStyle(cachedTextfield)
+      if (
+        styles.anchorName
+        && styles.anchorName.startsWith(anchorNameStart)
+      ) {
+        cachedTextfield.style.anchorName = null
+      }
+    }
+  }
+
   bubbleInstance.removeAttribute('visible')
 
   if (resizeObserver) {

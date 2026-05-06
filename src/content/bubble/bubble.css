@@ -31,6 +31,13 @@
   transition-delay: .2s;
 }
 
+:host([anchor]) {
+  position: absolute;
+  bottom: anchor(top);
+  left: anchor(left);
+  width: var(--max-host-width);
+}
+
 :host([visible]) {
   display: block;
   opacity: 1;
@@ -50,8 +57,9 @@
 
 .b-bubble {
   position: absolute;
-  top: calc(var(--bubble-top) + var(--bubble-margin));
-  right: var(--bubble-margin);
+  top: var(--bubble-top);
+  right: 0;
+  margin: var(--bubble-margin);
 
   appearance: none;
   display: block;
