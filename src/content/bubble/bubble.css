@@ -11,7 +11,7 @@
   --color-background: 229, 229, 229;
   --color-primary: #0d7af6;
 
-  position: fixed;
+  position: absolute;
   z-index: 1;
 
   display: none;

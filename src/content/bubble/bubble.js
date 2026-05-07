@@ -178,6 +178,7 @@ function getScrollParent (element) {
     }
     parent = parent.parentElement
   }
+
   return null
 }
 
@@ -219,13 +220,14 @@ async function showBubble (textfield) {
     textfield.before(bubbleInstance)
   }
 
+  const scrollParent = getScrollParent(textfield)
+
   cleanupFloatingUi()
   cleanupFloatingUi = autoUpdate(
     textfield,
     bubbleInstance,
     () => {
       computePosition(textfield, bubbleInstance, {
-        strategy: 'fixed',
         placement: 'top-end',
         middleware: [
           offset({
@@ -238,30 +240,24 @@ async function showBubble (textfield) {
               crossAxis: true,
               offset: ({rects}) => {
                 return {
+                  // prevent the bubble from being sticky scrolled
+                  // below textfield
                   crossAxis: rects.floating.height,
                 }
               },
             }),
             elementContext: 'reference',
           }),
-          hide(),
+          hide({
+            strategy: 'escaped',
+            ...(scrollParent && { boundary: scrollParent }),
+          }),
         ],
       }).then(({x, y, middlewareData}) => {
-        const bubbleSize = 28
-        let hidden = middlewareData.hide?.referenceHidden ?? false
-
-        if (!hidden) {
-          const scrollParent = getScrollParent(textfield)
-          if (scrollParent) {
-            const cr = scrollParent.getBoundingClientRect()
-            hidden = y < cr.top || y + bubbleSize > cr.bottom || x < cr.left || x + bubbleSize > cr.right
-          }
-        }
-
         Object.assign(bubbleInstance.style, {
           left: `${x}px`,
           top: `${y}px`,
-          visibility: hidden ? 'hidden' : 'visible',
+          visibility: middlewareData.hide.escaped ? 'hidden' : 'visible',
         })
       })
     })
