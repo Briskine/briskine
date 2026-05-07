@@ -188,6 +188,19 @@ function isValidTextfield (elem) {
   return false
 }
 
+function isComposedAncestor (ancestor, element) {
+  let node = element
+  while (node) {
+    if (node === ancestor) {
+      return true
+    }
+
+    const root = node.getRootNode()
+    node = root instanceof ShadowRoot ? root.host : node.parentElement
+  }
+  return false
+}
+
 // detect if something is covering the x,y coords where we want to place the bubble.
 // in case there's another element on the top-end side of the textfield
 // (e.g., gmail when we compose a new email while replying in an existing thread).
@@ -203,8 +216,8 @@ function occlusionHide (textfield) {
       const top = elements.find(el => el !== bubbleInstance)
       const hidden = (
         !!top
-        && top !== textfield
-        && !top.contains(textfield)
+        // if the textfield is in a shadow root
+        && !isComposedAncestor(top, textfield)
         && !textfield.contains(top)
       )
 
