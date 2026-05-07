@@ -15,22 +15,14 @@
   --color-background: 229, 229, 229;
   --color-primary: #0d7af6;
 
-  /*height: 0;*/
-  width: 0;
-
   position: absolute;
   inset-inline-start: anchor(self-end);
-  /*top: anchor(top);*/
   top: anchor(top);
-  bottom: anchor(bottom);
-
-  /*top: 0;
-  left: calc(var(--max-host-width) + var(--left));*/
-  /*max-width: var(--max-host-width);*/
-
+  bottom: calc(anchor(bottom) + var(--bubble-size) + var(--bubble-margin));
   z-index: 1;
 
   display: none;
+  width: 0;
 
   font-family: sans-serif;
 
@@ -133,11 +125,8 @@
   width: max-content;
   position: absolute;
   top: 50%;
-  transform: translateY(-50%);
-
-  /*right: calc(var(--bubble-size) + var(--tooltip-margin));*/
-
   inset-inline-end: calc(var(--bubble-size) + var(--tooltip-margin));
+  transform: translateY(-50%);
 
   padding: 3px 5px;
   background: var(--tooltip-bg);
