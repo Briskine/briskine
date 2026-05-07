@@ -3,6 +3,8 @@
  * Floating action button.
  */
 
+import { computePosition, autoUpdate, offset, shift, limitShift, hide } from '@floating-ui/dom'
+
 import { eventShowDialog, eventToggleBubble } from '../../config.js'
 import { dialogTagName } from '../dialog/dialog.js'
 import { getExtensionData, trigger, on, off } from '../../store/store-content.js'
@@ -18,10 +20,8 @@ import bubbleIcon from '../../icons/briskine-logo-small-bare.svg?raw'
 import getEventTarget from '../utils/event-target.js'
 
 let bubbleInstance = null
-let cachedTextfield = null
 let removeFocusListeners = () => {}
-
-const anchorNameStart = '--ba'
+let cleanupFloatingUi = () => {}
 
 export const bubbleTagName = `b-bubble-${Date.now().toString(36)}`
 
@@ -169,6 +169,18 @@ export function destroy () {
   off(eventToggleBubble, toggleBubbleHandler)
 }
 
+function getScrollParent (element) {
+  let parent = element.parentElement
+  while (parent && parent !== document.documentElement) {
+    const { overflow, overflowX, overflowY } = getComputedStyle(parent)
+    if (/auto|scroll|hidden/.test(`${overflow}${overflowX}${overflowY}`)) {
+      return parent
+    }
+    parent = parent.parentElement
+  }
+  return null
+}
+
 const textfieldMinWidth = 100
 const textfieldMinHeight = 32
 
@@ -203,37 +215,64 @@ async function showBubble (textfield) {
     return false
   }
 
-  cachedTextfield = textfield
-
   if (textfield.previousSibling !== bubbleInstance) {
     textfield.before(bubbleInstance)
   }
 
-  const textfieldStyles = window.getComputedStyle(textfield)
-  let positionAnchor = textfieldStyles.getPropertyValue('anchor-name')
-  if (
-    !positionAnchor
-    || positionAnchor === 'none'
-  ) {
-    positionAnchor = `${anchorNameStart}-${Date.now().toString(36)}`
-    textfield.style.setProperty('anchor-name', positionAnchor)
-  }
+  cleanupFloatingUi()
+  cleanupFloatingUi = autoUpdate(
+    textfield,
+    bubbleInstance,
+    () => {
+      computePosition(textfield, bubbleInstance, {
+        strategy: 'fixed',
+        placement: 'top-end',
+        middleware: [
+          offset({
+            mainAxis: -28
+          }),
+          shift({
+            mainAxis: false,
+            crossAxis: true,
+            limiter: limitShift({
+              crossAxis: true,
+              offset: ({rects}) => {
+                return {
+                  crossAxis: rects.floating.height,
+                }
+              },
+            }),
+            elementContext: 'reference',
+          }),
+          hide(),
+        ],
+      }).then(({x, y, middlewareData}) => {
+        const bubbleSize = 28
+        let hidden = middlewareData.hide?.referenceHidden ?? false
 
-  bubbleInstance.style.setProperty('position-anchor', positionAnchor)
+        if (!hidden) {
+          const scrollParent = getScrollParent(textfield)
+          if (scrollParent) {
+            const cr = scrollParent.getBoundingClientRect()
+            hidden = y < cr.top || y + bubbleSize > cr.bottom || x < cr.left || x + bubbleSize > cr.right
+          }
+        }
+
+        Object.assign(bubbleInstance.style, {
+          left: `${x}px`,
+          top: `${y}px`,
+          visibility: hidden ? 'hidden' : 'visible',
+        })
+      })
+    })
 
   bubbleInstance.setAttribute('visible', 'true')
 }
 
 function hideBubble () {
-  if (cachedTextfield) {
-    const styles = window.getComputedStyle(cachedTextfield)
-    if (
-      styles.anchorName
-      && styles.anchorName.startsWith(anchorNameStart)
-    ) {
-      cachedTextfield.style.removeProperty('anchor-name')
-    }
-  }
+  cleanupFloatingUi()
 
-  bubbleInstance.removeAttribute('visible')
+  if (bubbleInstance) {
+    bubbleInstance.removeAttribute('visible')
+  }
 }

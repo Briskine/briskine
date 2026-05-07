@@ -11,14 +11,14 @@
   --color-background: 229, 229, 229;
   --color-primary: #0d7af6;
 
-  position: absolute;
-  inset-inline-start: anchor(self-end);
-  top: anchor(top);
-  bottom: anchor(bottom);
+  position: fixed;
   z-index: 1;
 
   display: none;
-  width: 0;
+  width: var(--bubble-size);
+  height: var(--bubble-size);
+  top: 0;
+  left: 0;
 
   font-family: sans-serif;
 
@@ -31,10 +31,10 @@
 }
 
 div {
-  position: sticky;
+  /*position: sticky;
   top: 0;
   width: 0;
-  height: calc(var(--bubble-size) + var(--bubble-margin));
+  height: calc(var(--bubble-size) + var(--bubble-margin));*/
 }
 
 :host([visible]) {
@@ -47,9 +47,9 @@ div {
 }
 
 button {
-  position: absolute;
-  inset-block-start: var(--bubble-margin);
-  inset-inline-end: var(--bubble-margin);
+  /*position: absolute;*/
+  /*inset-block-start: var(--bubble-margin);*/
+  /*inset-inline-end: var(--bubble-margin);*/
 
   appearance: none;
   display: block;
