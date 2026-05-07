@@ -45,12 +45,14 @@ customElements.define(
 
       const template = `
         <style>${bubbleStyles}</style>
-        <button type="button" class="b-bubble" tabindex="-1">
-          ${bubbleIcon}
-          <span class="b-bubble-tooltip">
-            Search templates (${shortcut})
-          </span>
-        </button>
+        <div>
+          <button type="button" class="b-bubble" tabindex="-1">
+            ${bubbleIcon}
+            <span class="b-bubble-tooltip">
+              Search templates (${shortcut})
+            </span>
+          </button>
+        </div>
       `
       const shadowRoot = this.attachShadow({mode: 'open'})
       shadowRoot.innerHTML = template
@@ -279,6 +281,7 @@ async function showBubble (textfield) {
   const direction = textfieldStyles.direction || 'ltr'
   bubbleInstance.setAttribute('dir', direction)
 
+  // TODO move to offset parent
   if (textfield.previousSibling !== bubbleInstance) {
     textfield.before(bubbleInstance)
   }
@@ -292,8 +295,10 @@ async function showBubble (textfield) {
   // move bubble further down, in case the textfield uses a top margin
   bubbleInstance.style.setProperty(bubbleTopCssVar, textfieldStyles.marginTop)
 
-  const position = getPositioningType(textfield)
-  if (position === 'anchor') {
+  bubbleInstance.style.setProperty('--left', `${textfield.offsetLeft}px`)
+
+  // const position = getPositioningType(textfield)
+  // if (position === 'anchor') {
     const styles = window.getComputedStyle(textfield)
     let positionAnchor = styles.positionAnchor
     if (
@@ -304,9 +309,13 @@ async function showBubble (textfield) {
       textfield.style.anchorName = positionAnchor
     }
 
+    bubbleInstance.style.setProperty('--x-x', positionAnchor)
+
     bubbleInstance.style.positionAnchor = positionAnchor
-    bubbleInstance.setAttribute('anchor', 'true')
-  }
+
+    //
+    // bubbleInstance.setAttribute('anchor', 'true')
+  // }
 
   resizeObserver = new ResizeObserver((entries, observer) => {
     if (!bubbleInstance) {
@@ -316,7 +325,8 @@ async function showBubble (textfield) {
 
     for (const entry of entries) {
       if (entry.borderBoxSize) {
-        bubbleInstance.style.setProperty(maxHostWidthCssVar, `${textfield.offsetWidth}px`)
+        // bubbleInstance.style.setProperty(maxHostWidthCssVar, `${textfield.offsetWidth}px`)
+        // bubbleInstance.style.setProperty('--left', `${textfield.offsetLeft}px`)
       }
     }
   })
@@ -340,7 +350,7 @@ function hideBubble () {
     }
   }
 
-  bubbleInstance.removeAttribute('visible')
+  // bubbleInstance.removeAttribute('visible')
 
   if (resizeObserver) {
     resizeObserver.disconnect()

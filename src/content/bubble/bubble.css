@@ -6,6 +6,8 @@
 }
 
 :host {
+  --left: 0px;
+
   --bubble-size: 28px;
   --bubble-top: 0px;
   --bubble-margin: 5px;
@@ -13,10 +15,19 @@
   --color-background: 229, 229, 229;
   --color-primary: #0d7af6;
 
-  position: sticky;
-  top: 0;
-  height: 0;
-  max-width: var(--max-host-width);
+  /*height: 0;*/
+  width: 0;
+
+  position: absolute;
+  inset-inline-start: anchor(self-end);
+  /*top: anchor(top);*/
+  top: anchor(top);
+  bottom: anchor(bottom);
+
+  /*top: 0;
+  left: calc(var(--max-host-width) + var(--left));*/
+  /*max-width: var(--max-host-width);*/
+
   z-index: 1;
 
   display: none;
@@ -31,13 +42,14 @@
   transition-delay: .2s;
 }
 
-:host([anchor]) {
-  position: absolute;
-  bottom: anchor(top);
-  left: anchor(left);
-  width: var(--max-host-width);
+:host div {
+  position: sticky;
+  top: 0;
+  width: 0;
+  height: 0;
 }
 
+/*:host([anchor]) {*/
 :host([visible]) {
   display: block;
   opacity: 1;
@@ -50,16 +62,20 @@
 
   @container scroll-state(stuck: top) {
     .b-bubble {
-      top: var(--bubble-margin);
+      /*top: var(--bubble-margin);*/
     }
   }
 }
 
 .b-bubble {
   position: absolute;
-  top: var(--bubble-top);
-  right: 0;
-  margin: var(--bubble-margin);
+  /*top: var(--bubble-top);*/
+  /*top: 0;
+  right: 0;*/
+  /*margin: var(--bubble-margin);*/
+
+  inset-block-start: var(--bubble-margin);
+  inset-inline-end: var(--bubble-margin);
 
   appearance: none;
   display: block;
@@ -118,7 +134,11 @@
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  right: calc(var(--bubble-size) + var(--tooltip-margin));
+
+  /*right: calc(var(--bubble-size) + var(--tooltip-margin));*/
+
+  inset-inline-end: calc(var(--bubble-size) + var(--tooltip-margin));
+
   padding: 3px 5px;
   background: var(--tooltip-bg);
   border-radius: 2px;
@@ -134,22 +154,24 @@
 
 .b-bubble-tooltip:after {
   content: '';
+  display: block;
+  width: 0;
+
   position: absolute;
+  z-index: 1;
+  top: 50%;
+  inset-inline-end: -12px;
+  transform: translateY(-50%);
+
   border-style: solid;
   border-color: transparent;
   border-width: 6px;
-  border-left-color: var(--tooltip-bg);
-  display: block;
-  width: 0;
-  z-index: 1;
-  top: 0;
-  right: 1px;
-  transform: translate(100%, calc(50% - 3px));
+  border-inline-start-color: var(--tooltip-bg);
 }
 
 /* RTL support
  */
-:host([dir=rtl]) .b-bubble {
+/*:host([dir=rtl]) .b-bubble {
   right: auto;
   left: 0;
 }
@@ -165,4 +187,4 @@
   border-left-color: transparent;
   border-right-color: var(--tooltip-bg);
   transform: translate(-100%, calc(50% - 3px));
-}
+}*/
