@@ -45,14 +45,12 @@ customElements.define(
 
       const template = `
         <style>${bubbleStyles}</style>
-        <div>
-          <button type="button" tabindex="-1">
-            ${bubbleIcon}
-            <span>
-              Search templates (${shortcut})
-            </span>
-          </button>
-        </div>
+        <button type="button" tabindex="-1">
+          ${bubbleIcon}
+          <span>
+            Search templates (${shortcut})
+          </span>
+        </button>
       `
       const shadowRoot = this.attachShadow({mode: 'open'})
       shadowRoot.innerHTML = template
@@ -137,8 +135,6 @@ export async function setup (settings = {}) {
 }
 
 function create (settings = {}) {
-  // bubble is created outside the body.
-  // when textfields are focused, move it to the offsetParent for positioning.
   bubbleInstance = document.createElement(bubbleTagName)
   // custom dialog shortcut
   bubbleInstance.setAttribute('shortcut', settings.dialog_shortcut)
@@ -169,19 +165,7 @@ export function destroy () {
   off(eventToggleBubble, toggleBubbleHandler)
 }
 
-function getScrollParent (element) {
-  let parent = element.parentElement
-  while (parent && parent !== document.documentElement) {
-    const { overflow, overflowX, overflowY } = getComputedStyle(parent)
-    if (/auto|scroll|hidden/.test(`${overflow}${overflowX}${overflowY}`)) {
-      return parent
-    }
-    parent = parent.parentElement
-  }
-
-  return null
-}
-
+const bubbleSize = 28
 const textfieldMinWidth = 100
 const textfieldMinHeight = 32
 
@@ -209,18 +193,33 @@ function isValidTextfield (elem) {
   return false
 }
 
+// detect if something is covering the x,y coords where we want to place the bubble
+function occlusionHide (textfield) {
+  return {
+    name: 'occlusionHide',
+    fn ({ x, y, middlewareData }) {
+      if (middlewareData.hide?.referenceHidden) {
+        return { data: { hidden: true } }
+      }
+
+      const elements = document.elementsFromPoint(x + bubbleSize / 2, y + bubbleSize / 2)
+      const top = elements.find(el => el !== bubbleInstance)
+      const hidden = (
+        !!top
+        && top !== textfield
+        && !top.contains(textfield)
+        && !textfield.contains(top)
+      )
+
+      return { data: { hidden } }
+    },
+  }
+}
 
 async function showBubble (textfield) {
-  // only show it for valid elements
   if (!isValidTextfield(textfield)) {
     return false
   }
-
-  if (textfield.previousSibling !== bubbleInstance) {
-    textfield.before(bubbleInstance)
-  }
-
-  const scrollParent = getScrollParent(textfield)
 
   cleanupFloatingUi()
   cleanupFloatingUi = autoUpdate(
@@ -228,36 +227,32 @@ async function showBubble (textfield) {
     bubbleInstance,
     () => {
       computePosition(textfield, bubbleInstance, {
+        strategy: 'fixed',
         placement: 'top-end',
         middleware: [
           offset({
-            mainAxis: -28
+            mainAxis: -1 * bubbleSize,
           }),
           shift({
-            mainAxis: false,
             crossAxis: true,
             limiter: limitShift({
               crossAxis: true,
               offset: ({rects}) => {
                 return {
-                  // prevent the bubble from being sticky scrolled
-                  // below textfield
                   crossAxis: rects.floating.height,
                 }
               },
             }),
             elementContext: 'reference',
           }),
-          hide({
-            strategy: 'escaped',
-            ...(scrollParent && { boundary: scrollParent }),
-          }),
+          hide(),
+          occlusionHide(textfield),
         ],
       }).then(({x, y, middlewareData}) => {
         Object.assign(bubbleInstance.style, {
           left: `${x}px`,
           top: `${y}px`,
-          visibility: middlewareData.hide.escaped ? 'hidden' : 'visible',
+          visibility: middlewareData.occlusionHide.hidden ? 'hidden' : 'visible',
         })
       })
     })

@@ -11,8 +11,8 @@
   --color-background: 229, 229, 229;
   --color-primary: #0d7af6;
 
-  position: absolute;
-  z-index: 1;
+  position: fixed;
+  z-index: 999999;
 
   display: none;
   width: var(--bubble-size);
@@ -30,13 +30,6 @@
   transition-delay: .2s;
 }
 
-div {
-  /*position: sticky;
-  top: 0;
-  width: 0;
-  height: calc(var(--bubble-size) + var(--bubble-margin));*/
-}
-
 :host([visible]) {
   display: block;
   opacity: 1;
@@ -47,10 +40,6 @@ div {
 }
 
 button {
-  /*position: absolute;*/
-  /*inset-block-start: var(--bubble-margin);*/
-  /*inset-inline-end: var(--bubble-margin);*/
-
   appearance: none;
   display: block;
   width: var(--bubble-size);
