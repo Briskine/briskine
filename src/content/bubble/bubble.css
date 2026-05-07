@@ -14,7 +14,7 @@
   position: absolute;
   inset-inline-start: anchor(self-end);
   top: anchor(top);
-  bottom: calc(anchor(bottom) + var(--bubble-size) + var(--bubble-margin));
+  bottom: anchor(bottom);
   z-index: 1;
 
   display: none;
@@ -34,7 +34,7 @@
   position: sticky;
   top: 0;
   width: 0;
-  height: 0;
+  height: calc(var(--bubble-size) + var(--bubble-margin));
 }
 
 :host([visible]) {
@@ -50,6 +50,8 @@ button {
   position: absolute;
   inset-block-start: var(--bubble-margin);
   inset-inline-end: var(--bubble-margin);
+
+  /*position-visibility: no-overflow;*/
 
   appearance: none;
   display: block;

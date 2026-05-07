@@ -18,7 +18,10 @@ import bubbleIcon from '../../icons/briskine-logo-small-bare.svg?raw'
 import getEventTarget from '../utils/event-target.js'
 
 let bubbleInstance = null
+let cachedTextfield = null
 let removeFocusListeners = () => {}
+
+const anchorNameStart = '--ba'
 
 export const bubbleTagName = `b-bubble-${Date.now().toString(36)}`
 
@@ -193,8 +196,6 @@ function isValidTextfield (elem) {
   return false
 }
 
-let cachedTextfield = null
-const anchorNameStart = '--b-bubble-anchor'
 
 async function showBubble (textfield) {
   // only show it for valid elements
@@ -204,46 +205,35 @@ async function showBubble (textfield) {
 
   cachedTextfield = textfield
 
-  // detect rtl
-  // TODO remove rtl detection
-  const textfieldStyles = window.getComputedStyle(textfield)
-  const direction = textfieldStyles.direction || 'ltr'
-  bubbleInstance.setAttribute('dir', direction)
-
-  // TODO move to offset parent
   if (textfield.previousSibling !== bubbleInstance) {
     textfield.before(bubbleInstance)
   }
 
-  let positionAnchor = textfieldStyles.positionAnchor
+  const textfieldStyles = window.getComputedStyle(textfield)
+  let positionAnchor = textfieldStyles.getPropertyValue('anchor-name')
   if (
     !positionAnchor
     || positionAnchor === 'none'
   ) {
-    positionAnchor = `${anchorNameStart}-${Date.now()}`
-    textfield.style.anchorName = positionAnchor
+    positionAnchor = `${anchorNameStart}-${Date.now().toString(36)}`
+    textfield.style.setProperty('anchor-name', positionAnchor)
   }
 
-  bubbleInstance.style.positionAnchor = positionAnchor
+  bubbleInstance.style.setProperty('position-anchor', positionAnchor)
 
   bubbleInstance.setAttribute('visible', 'true')
 }
 
 function hideBubble () {
-  if (bubbleInstance.hasAttribute('anchor')) {
-    // TODO fadeout transition looks bad when hiding the bubble
-    bubbleInstance.removeAttribute('anchor')
-    bubbleInstance.style.positionAnchor = null
-    if (cachedTextfield) {
-      const styles = window.getComputedStyle(cachedTextfield)
-      if (
-        styles.anchorName
-        && styles.anchorName.startsWith(anchorNameStart)
-      ) {
-        cachedTextfield.style.anchorName = null
-      }
+  if (cachedTextfield) {
+    const styles = window.getComputedStyle(cachedTextfield)
+    if (
+      styles.anchorName
+      && styles.anchorName.startsWith(anchorNameStart)
+    ) {
+      cachedTextfield.style.removeProperty('anchor-name')
     }
   }
 
-  // bubbleInstance.removeAttribute('visible')
+  bubbleInstance.removeAttribute('visible')
 }
