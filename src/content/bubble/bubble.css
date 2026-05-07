@@ -6,12 +6,8 @@
 }
 
 :host {
-  --left: 0px;
-
   --bubble-size: 28px;
-  --bubble-top: 0px;
   --bubble-margin: 5px;
-  --max-host-width: auto;
   --color-background: 229, 229, 229;
   --color-primary: #0d7af6;
 

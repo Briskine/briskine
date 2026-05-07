@@ -20,9 +20,6 @@ import getEventTarget from '../utils/event-target.js'
 let bubbleInstance = null
 let removeFocusListeners = () => {}
 
-const maxHostWidthCssVar = '--max-host-width'
-const bubbleTopCssVar = '--bubble-top'
-
 export const bubbleTagName = `b-bubble-${Date.now().toString(36)}`
 
 customElements.define(
@@ -46,9 +43,9 @@ customElements.define(
       const template = `
         <style>${bubbleStyles}</style>
         <div>
-          <button type="button" class="b-bubble" tabindex="-1">
+          <button type="button" tabindex="-1">
             ${bubbleIcon}
-            <span class="b-bubble-tooltip">
+            <span>
               Search templates (${shortcut})
             </span>
           </button>
@@ -57,18 +54,22 @@ customElements.define(
       const shadowRoot = this.attachShadow({mode: 'open'})
       shadowRoot.innerHTML = template
 
-      this.$button = this.shadowRoot.querySelector('.b-bubble')
-      this.$button.addEventListener('mousedown', (e) => {
-        // prevent stealing focus when clicking the button
+      shadowRoot.addEventListener('mousedown', (e) => {
         e.preventDefault()
       })
-      this.$button.addEventListener('click', (e) => {
+
+      shadowRoot.addEventListener('click', (e) => {
+        const btn = e.target?.closest?.('button')
+        if (!btn) {
+          return
+        }
+
         e.stopPropagation()
 
         // trigger the event on the bubble,
         // to position the dialog next to it.
         trigger(eventShowDialog, {
-          target: this.$button,
+          target: btn,
         })
       })
 
@@ -152,7 +153,6 @@ function create (settings = {}) {
 function destroyInstance () {
   if (bubbleInstance) {
     hideBubble()
-    resizeObserver = null
 
     bubbleInstance.remove()
     bubbleInstance = null
@@ -169,45 +169,11 @@ export function destroy () {
 const textfieldMinWidth = 100
 const textfieldMinHeight = 32
 
-// visible siblings that take up space
-function hasVisibleSiblings (elem) {
-  return Array.from(elem.parentElement.childNodes).some((node) => {
-    // direct non-empty text nodes will trigger flex/grid layout
-    if (
-      node.nodeType === Node.TEXT_NODE
-      && node.nodeValue.trim() !== ''
-    ) {
-      return true
-    }
-
-    if (
-      // allow comments and other invisible node types
-      node.nodeType !== Node.ELEMENT_NODE
-      // exclude the editable node
-      || node === elem
-      // exclude the bubble, in case we already moved it to the parent
-      || node === bubbleInstance
-      // exclude hidden nodes
-      || node.checkVisibility() === false
-    ) {
-      return false
-    }
-
-    // exclude absolute/sticky/fixed positioned nodes
-    const nodeStyles = window.getComputedStyle(node)
-    if (!['static', 'relative'].includes(nodeStyles.position)) {
-      return false
-    }
-
-    return true
-  })
-}
-
 function isValidTextfield (elem) {
   if (
     // is html element
     elem?.nodeType === Node.ELEMENT_NODE
-    // is editable
+    // is textarea or contenteditable
     && (
       (
         isTextfieldEditor(elem)
@@ -215,30 +181,7 @@ function isValidTextfield (elem) {
       )
       || isContentEditable(elem)
     )
-    // the parent is not the body
-    // && elem?.parentElement !== document.body
   ) {
-    // if (elem.parentElement) {
-    //   // sometimes disable for flex and grid parent
-    //   const parentStyles = window.getComputedStyle(elem.parentElement)
-    //   if (['flex', 'inline-flex', 'grid', 'inline-grid'].includes(parentStyles.display)) {
-    //     // flex-direction=row is not supported
-    //     if (
-    //       ['flex', 'inline-flex'].includes(parentStyles.display)
-    //       && parentStyles.flexDirection === 'row'
-    //     ) {
-    //       return false
-    //     }
-
-    //     // check all editable element siblings,
-    //     // because we might have a parent flex/grid container,
-    //     // but with the editable element filling the entire container.
-    //     if (hasVisibleSiblings(elem)) {
-    //       return false
-    //     }
-    //   }
-    // }
-
     // check if the element is big enough
     // to only show the bubble for large textfields
     const metrics = elem.getBoundingClientRect()
@@ -250,21 +193,6 @@ function isValidTextfield (elem) {
   return false
 }
 
-function getPositioningType (elem) {
-  if (elem.parentElement) {
-    // sometimes disable for flex and grid parent
-    const parentStyles = window.getComputedStyle(elem.parentElement)
-    if (['flex', 'inline-flex', 'grid', 'inline-grid'].includes(parentStyles.display)) {
-      return 'anchor'
-    }
-  } else {
-    return 'anchor'
-  }
-
-  return 'sticky'
-}
-
-let resizeObserver = null
 let cachedTextfield = null
 const anchorNameStart = '--b-bubble-anchor'
 
@@ -277,6 +205,7 @@ async function showBubble (textfield) {
   cachedTextfield = textfield
 
   // detect rtl
+  // TODO remove rtl detection
   const textfieldStyles = window.getComputedStyle(textfield)
   const direction = textfieldStyles.direction || 'ltr'
   bubbleInstance.setAttribute('dir', direction)
@@ -286,52 +215,18 @@ async function showBubble (textfield) {
     textfield.before(bubbleInstance)
   }
 
+  let positionAnchor = textfieldStyles.positionAnchor
+  if (
+    !positionAnchor
+    || positionAnchor === 'none'
+  ) {
+    positionAnchor = `${anchorNameStart}-${Date.now()}`
+    textfield.style.anchorName = positionAnchor
+  }
+
+  bubbleInstance.style.positionAnchor = positionAnchor
+
   bubbleInstance.setAttribute('visible', 'true')
-
-  // set max-width to the width of textfield,
-  // in case the container of the textfield is larger than the textfield.
-  bubbleInstance.style.setProperty(maxHostWidthCssVar, `${textfield.offsetWidth}px`)
-
-  // move bubble further down, in case the textfield uses a top margin
-  bubbleInstance.style.setProperty(bubbleTopCssVar, textfieldStyles.marginTop)
-
-  bubbleInstance.style.setProperty('--left', `${textfield.offsetLeft}px`)
-
-  // const position = getPositioningType(textfield)
-  // if (position === 'anchor') {
-    const styles = window.getComputedStyle(textfield)
-    let positionAnchor = styles.positionAnchor
-    if (
-      !positionAnchor
-      || positionAnchor === 'none'
-    ) {
-      positionAnchor = `${anchorNameStart}-${Date.now()}`
-      textfield.style.anchorName = positionAnchor
-    }
-
-    bubbleInstance.style.setProperty('--x-x', positionAnchor)
-
-    bubbleInstance.style.positionAnchor = positionAnchor
-
-    //
-    // bubbleInstance.setAttribute('anchor', 'true')
-  // }
-
-  resizeObserver = new ResizeObserver((entries, observer) => {
-    if (!bubbleInstance) {
-      observer.disconnect()
-      return
-    }
-
-    for (const entry of entries) {
-      if (entry.borderBoxSize) {
-        // bubbleInstance.style.setProperty(maxHostWidthCssVar, `${textfield.offsetWidth}px`)
-        // bubbleInstance.style.setProperty('--left', `${textfield.offsetLeft}px`)
-      }
-    }
-  })
-
-  resizeObserver.observe(textfield)
 }
 
 function hideBubble () {
@@ -351,9 +246,4 @@ function hideBubble () {
   }
 
   // bubbleInstance.removeAttribute('visible')
-
-  if (resizeObserver) {
-    resizeObserver.disconnect()
-    resizeObserver = null
-  }
 }
