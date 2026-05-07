@@ -166,6 +166,7 @@ export function destroy () {
 }
 
 const bubbleSize = 28
+const bubbleMargin = 5
 const textfieldMinWidth = 100
 const textfieldMinHeight = 32
 
@@ -193,7 +194,9 @@ function isValidTextfield (elem) {
   return false
 }
 
-// detect if something is covering the x,y coords where we want to place the bubble
+// detect if something is covering the x,y coords where we want to place the bubble.
+// in case there's another element on the top-end side of the textfield
+// (e.g., gmail when we compose a new email while replying in an existing thread).
 function occlusionHide (textfield) {
   return {
     name: 'occlusionHide',
@@ -231,17 +234,16 @@ async function showBubble (textfield) {
         placement: 'top-end',
         middleware: [
           offset({
-            mainAxis: -1 * bubbleSize,
+            mainAxis: -1 * (bubbleSize + bubbleMargin),
+            crossAxis: -bubbleMargin,
           }),
           shift({
             crossAxis: true,
             limiter: limitShift({
               crossAxis: true,
-              offset: ({rects}) => {
-                return {
-                  crossAxis: rects.floating.height,
-                }
-              },
+              offset: ({rects}) => ({
+                crossAxis: rects.floating.height,
+              }),
             }),
             elementContext: 'reference',
           }),
