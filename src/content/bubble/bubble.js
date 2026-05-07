@@ -28,11 +28,8 @@ export const bubbleTagName = `b-bubble-${Date.now().toString(36)}`
 customElements.define(
   bubbleTagName,
   class extends HTMLElement {
-    constructor() {
-      super()
-    }
     connectedCallback () {
-      if (!this.isConnected) {
+      if (!this.isConnected || this.shadowRoot) {
         return
       }
 
