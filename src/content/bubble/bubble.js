@@ -231,6 +231,8 @@ function showBubble (textfield) {
     return false
   }
 
+  bubbleInstance.setAttribute('visible', 'true')
+
   const middleware = [
     offset({
       mainAxis: -1 * (bubbleSize + bubbleMargin),
@@ -267,8 +269,6 @@ function showBubble (textfield) {
         })
       })
     })
-
-  bubbleInstance.setAttribute('visible', 'true')
 }
 
 function hideBubble () {
