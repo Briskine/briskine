@@ -30,7 +30,7 @@
   transition-delay: .2s;
 }
 
-:host div {
+div {
   position: sticky;
   top: 0;
   width: 0;
@@ -50,8 +50,6 @@ button {
   position: absolute;
   inset-block-start: var(--bubble-margin);
   inset-inline-end: var(--bubble-margin);
-
-  /*position-visibility: no-overflow;*/
 
   appearance: none;
   display: block;
