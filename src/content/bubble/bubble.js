@@ -30,13 +30,9 @@ customElements.define(
   class extends HTMLElement {
     constructor() {
       super()
-
-      this.ready = false
     }
     connectedCallback () {
-      // element was already created,
-      // just moved around in the dom.
-      if (this.ready || !this.isConnected) {
+      if (!this.isConnected) {
         return
       }
 
@@ -73,8 +69,6 @@ customElements.define(
           target: btn,
         })
       })
-
-      this.ready = true
     }
   }
 )
@@ -219,10 +213,29 @@ function occlusionHide (textfield) {
   }
 }
 
-async function showBubble (textfield) {
+function showBubble (textfield) {
   if (!isValidTextfield(textfield)) {
     return false
   }
+
+  const middleware = [
+    offset({
+      mainAxis: -1 * (bubbleSize + bubbleMargin),
+      crossAxis: -bubbleMargin,
+    }),
+    shift({
+      crossAxis: true,
+      limiter: limitShift({
+        crossAxis: true,
+        offset: ({rects}) => ({
+          crossAxis: rects.floating.height,
+        }),
+      }),
+      elementContext: 'reference',
+    }),
+    hide(),
+    occlusionHide(textfield),
+  ]
 
   cleanupFloatingUi()
   cleanupFloatingUi = autoUpdate(
@@ -232,24 +245,7 @@ async function showBubble (textfield) {
       computePosition(textfield, bubbleInstance, {
         strategy: 'fixed',
         placement: 'top-end',
-        middleware: [
-          offset({
-            mainAxis: -1 * (bubbleSize + bubbleMargin),
-            crossAxis: -bubbleMargin,
-          }),
-          shift({
-            crossAxis: true,
-            limiter: limitShift({
-              crossAxis: true,
-              offset: ({rects}) => ({
-                crossAxis: rects.floating.height,
-              }),
-            }),
-            elementContext: 'reference',
-          }),
-          hide(),
-          occlusionHide(textfield),
-        ],
+        middleware,
       }).then(({x, y, middlewareData}) => {
         Object.assign(bubbleInstance.style, {
           left: `${x}px`,
