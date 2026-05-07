@@ -41,7 +41,6 @@
   height: 0;
 }
 
-/*:host([anchor]) {*/
 :host([visible]) {
   display: block;
   opacity: 1;
@@ -49,23 +48,10 @@
   @starting-style {
     opacity: 0;
   }
-
-  container-type: scroll-state;
-
-  @container scroll-state(stuck: top) {
-    .b-bubble {
-      /*top: var(--bubble-margin);*/
-    }
-  }
 }
 
-.b-bubble {
+button {
   position: absolute;
-  /*top: var(--bubble-top);*/
-  /*top: 0;
-  right: 0;*/
-  /*margin: var(--bubble-margin);*/
-
   inset-block-start: var(--bubble-margin);
   inset-inline-end: var(--bubble-margin);
 
@@ -86,35 +72,35 @@
 /* disable the fade transition
  */
 @media (prefers-reduced-motion) {
-  .b-bubble {
+  button {
     transition-duration: 0s;
   }
 }
 
-.b-bubble:hover {
+button:hover {
   background-color: rgba(var(--color-background), .8);
   background-image: linear-gradient(rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.1));
   box-shadow: 0 0 12px rgba(0,0,0,.1);
 }
 
-.b-bubble:active {
+button:active {
   box-shadow: none;
   cursor: pointer;
 }
 
-.b-bubble svg {
+button svg {
   display: block;
   width: 100%;
   height: 100%;
 }
 
-.b-bubble:hover .b-bubble-tooltip {
+button:hover span {
   opacity: 1;
   visibility: visible;
   transition-delay: 1s;
 }
 
-.b-bubble-tooltip {
+span {
   --tooltip-bg: #2a2a2a;
   --tooltip-margin: 12px;
 
@@ -141,7 +127,7 @@
   pointer-events: none;
 }
 
-.b-bubble-tooltip:after {
+span:after {
   content: '';
   display: block;
   width: 0;
@@ -157,23 +143,3 @@
   border-width: 6px;
   border-inline-start-color: var(--tooltip-bg);
 }
-
-/* RTL support
- */
-/*:host([dir=rtl]) .b-bubble {
-  right: auto;
-  left: 0;
-}
-
-:host([dir=rtl]) .b-bubble-tooltip {
-  right: unset;
-  left: calc(var(--bubble-size) + var(--tooltip-margin));
-}
-
-:host([dir=rtl]) .b-bubble-tooltip:after {
-  left: 1px;
-  right: auto;
-  border-left-color: transparent;
-  border-right-color: var(--tooltip-bg);
-  transform: translate(-100%, calc(50% - 3px));
-}*/
