@@ -250,22 +250,45 @@ function showBubble (textfield) {
   ]
 
   cleanupFloatingUi()
-  cleanupFloatingUi = autoUpdate(
-    textfield,
-    bubbleInstance,
-    () => {
-      computePosition(textfield, bubbleInstance, {
-        strategy: 'fixed',
-        placement: 'top-end',
-        middleware,
-      }).then(({x, y, middlewareData}) => {
-        Object.assign(bubbleInstance.style, {
-          left: `${x}px`,
-          top: `${y}px`,
-          visibility: middlewareData.occlusionHide.hidden ? 'hidden' : 'visible',
-        })
+
+  let pollingInterval = null
+
+  const stopPolling = () => {
+    clearInterval(pollingInterval)
+    pollingInterval = null
+  }
+
+  const updatePosition = () => {
+    computePosition(textfield, bubbleInstance, {
+      strategy: 'fixed',
+      placement: 'top-end',
+      middleware,
+    }).then(({x, y, middlewareData}) => {
+      const { hidden } = middlewareData.occlusionHide
+
+      Object.assign(bubbleInstance.style, {
+        left: `${x}px`,
+        top: `${y}px`,
+        visibility: hidden ? 'hidden' : 'visible',
       })
+
+      // in case the element was hidden by the occlusion middleware,
+      // because the xy coords were covered by another element,
+      // start polling to check if the covering element disappears.
+      if (hidden && !pollingInterval) {
+        pollingInterval = setInterval(updatePosition, 1000)
+      } else if (!hidden) {
+        stopPolling()
+      }
     })
+  }
+
+  const stopAutoUpdate = autoUpdate(textfield, bubbleInstance, updatePosition)
+
+  cleanupFloatingUi = () => {
+    stopPolling()
+    stopAutoUpdate()
+  }
 }
 
 function hideBubble () {
