@@ -3,6 +3,8 @@
  * Floating action button.
  */
 
+import { computePosition, autoUpdate, offset, shift, limitShift, hide } from '@floating-ui/dom'
+
 import { eventShowDialog, eventToggleBubble } from '../../config.js'
 import { dialogTagName } from '../dialog/dialog.js'
 import { getExtensionData, trigger, on, off } from '../../store/store-content.js'
@@ -19,24 +21,15 @@ import getEventTarget from '../utils/event-target.js'
 
 let bubbleInstance = null
 let removeFocusListeners = () => {}
-
-const maxHostWidthCssVar = '--max-host-width'
-const bubbleTopCssVar = '--bubble-top'
+let cleanupFloatingUi = () => {}
 
 export const bubbleTagName = `b-bubble-${Date.now().toString(36)}`
 
 customElements.define(
   bubbleTagName,
   class extends HTMLElement {
-    constructor() {
-      super()
-
-      this.ready = false
-    }
     connectedCallback () {
-      // element was already created,
-      // just moved around in the dom.
-      if (this.ready || !this.isConnected) {
+      if (!this.isConnected || this.shadowRoot) {
         return
       }
 
@@ -45,9 +38,9 @@ customElements.define(
 
       const template = `
         <style>${bubbleStyles}</style>
-        <button type="button" class="b-bubble" tabindex="-1">
+        <button type="button" tabindex="-1">
           ${bubbleIcon}
-          <span class="b-bubble-tooltip">
+          <span>
             Search templates (${shortcut})
           </span>
         </button>
@@ -55,22 +48,24 @@ customElements.define(
       const shadowRoot = this.attachShadow({mode: 'open'})
       shadowRoot.innerHTML = template
 
-      this.$button = this.shadowRoot.querySelector('.b-bubble')
-      this.$button.addEventListener('mousedown', (e) => {
-        // prevent stealing focus when clicking the button
+      shadowRoot.addEventListener('mousedown', (e) => {
         e.preventDefault()
       })
-      this.$button.addEventListener('click', (e) => {
+
+      shadowRoot.addEventListener('click', (e) => {
+        const btn = e.target?.closest?.('button')
+        if (!btn) {
+          return
+        }
+
         e.stopPropagation()
 
         // trigger the event on the bubble,
         // to position the dialog next to it.
         trigger(eventShowDialog, {
-          target: this.$button,
+          target: btn,
         })
       })
-
-      this.ready = true
     }
   }
 )
@@ -131,8 +126,6 @@ export async function setup (settings = {}) {
 }
 
 function create (settings = {}) {
-  // bubble is created outside the body.
-  // when textfields are focused, move it to the offsetParent for positioning.
   bubbleInstance = document.createElement(bubbleTagName)
   // custom dialog shortcut
   bubbleInstance.setAttribute('shortcut', settings.dialog_shortcut)
@@ -150,7 +143,6 @@ function create (settings = {}) {
 function destroyInstance () {
   if (bubbleInstance) {
     hideBubble()
-    resizeObserver = null
 
     bubbleInstance.remove()
     bubbleInstance = null
@@ -164,48 +156,16 @@ export function destroy () {
   off(eventToggleBubble, toggleBubbleHandler)
 }
 
+const bubbleSize = 28
+const bubbleMargin = 5
 const textfieldMinWidth = 100
 const textfieldMinHeight = 32
-
-// visible siblings that take up space
-function hasVisibleSiblings (elem) {
-  return Array.from(elem.parentElement.childNodes).some((node) => {
-    // direct non-empty text nodes will trigger flex/grid layout
-    if (
-      node.nodeType === Node.TEXT_NODE
-      && node.nodeValue.trim() !== ''
-    ) {
-      return true
-    }
-
-    if (
-      // allow comments and other invisible node types
-      node.nodeType !== Node.ELEMENT_NODE
-      // exclude the editable node
-      || node === elem
-      // exclude the bubble, in case we already moved it to the parent
-      || node === bubbleInstance
-      // exclude hidden nodes
-      || node.checkVisibility() === false
-    ) {
-      return false
-    }
-
-    // exclude absolute/sticky/fixed positioned nodes
-    const nodeStyles = window.getComputedStyle(node)
-    if (!['static', 'relative'].includes(nodeStyles.position)) {
-      return false
-    }
-
-    return true
-  })
-}
 
 function isValidTextfield (elem) {
   if (
     // is html element
     elem?.nodeType === Node.ELEMENT_NODE
-    // is editable
+    // is textarea or contenteditable
     && (
       (
         isTextfieldEditor(elem)
@@ -213,30 +173,7 @@ function isValidTextfield (elem) {
       )
       || isContentEditable(elem)
     )
-    // the parent is not the body
-    && elem?.parentElement !== document.body
   ) {
-    if (elem.parentElement) {
-      // sometimes disable for flex and grid parent
-      const parentStyles = window.getComputedStyle(elem.parentElement)
-      if (['flex', 'inline-flex', 'grid', 'inline-grid'].includes(parentStyles.display)) {
-        // flex-direction=row is not supported
-        if (
-          ['flex', 'inline-flex'].includes(parentStyles.display)
-          && parentStyles.flexDirection === 'row'
-        ) {
-          return false
-        }
-
-        // check all editable element siblings,
-        // because we might have a parent flex/grid container,
-        // but with the editable element filling the entire container.
-        if (hasVisibleSiblings(elem)) {
-          return false
-        }
-      }
-    }
-
     // check if the element is big enough
     // to only show the bubble for large textfields
     const metrics = elem.getBoundingClientRect()
@@ -248,58 +185,120 @@ function isValidTextfield (elem) {
   return false
 }
 
-let resizeObserver = null
+function isComposedAncestor (ancestor, element) {
+  let node = element
+  while (node) {
+    if (node === ancestor) {
+      return true
+    }
 
-async function showBubble (textfield) {
-  // only show it for valid elements
+    const root = node.getRootNode()
+    node = root instanceof ShadowRoot ? root.host : node.parentElement
+  }
+  return false
+}
+
+// detect if something is covering the x,y coords where we want to place the bubble.
+// in case there's another element on the top-end side of the textfield
+// (e.g., gmail when we compose a new email while replying in an existing thread).
+function occlusionHide (textfield) {
+  return {
+    name: 'occlusionHide',
+    fn ({ x, y, middlewareData }) {
+      if (middlewareData.hide?.referenceHidden) {
+        return { data: { hidden: true } }
+      }
+
+      const elements = document.elementsFromPoint(x + bubbleSize / 2, y + bubbleSize / 2)
+      const top = elements.find(el => el !== bubbleInstance)
+      const hidden = (
+        !!top
+        // if the textfield is in a shadow root
+        && !isComposedAncestor(top, textfield)
+        && !textfield.contains(top)
+      )
+
+      return { data: { hidden } }
+    },
+  }
+}
+
+function showBubble (textfield) {
   if (!isValidTextfield(textfield)) {
     return false
   }
 
-  // detect rtl
-  const textfieldStyles = window.getComputedStyle(textfield)
-  const direction = textfieldStyles.direction || 'ltr'
-  bubbleInstance.setAttribute('dir', direction)
-
-  if (textfield.previousSibling !== bubbleInstance) {
-    textfield.before(bubbleInstance)
-  }
-
   bubbleInstance.setAttribute('visible', 'true')
 
-  // set max-width to the width of textfield,
-  // in case the container of the textfield is larger than the textfield.
-  bubbleInstance.style.setProperty(maxHostWidthCssVar, textfieldStyles.width)
+  const middleware = [
+    offset({
+      mainAxis: -1 * (bubbleSize + bubbleMargin),
+      crossAxis: -bubbleMargin,
+    }),
+    shift({
+      crossAxis: true,
+      limiter: limitShift({
+        crossAxis: true,
+        offset: ({rects}) => ({
+          crossAxis: rects.floating.height,
+        }),
+      }),
+      elementContext: 'reference',
+    }),
+    hide(),
+    occlusionHide(textfield),
+  ]
 
-  // move bubble further down, in case the textfield uses a top margin
-  bubbleInstance.style.setProperty(bubbleTopCssVar, textfieldStyles.marginTop)
+  cleanupFloatingUi()
 
-  const maxWidthProperty = textfieldStyles.boxSizing === 'border-box' ? 'borderBoxSize' : 'contentBoxSize'
+  let pollingInterval = null
 
-  resizeObserver = new ResizeObserver((entries, observer) => {
-    if (!bubbleInstance) {
-      observer.disconnect()
-      return
-    }
+  const stopPolling = () => {
+    clearInterval(pollingInterval)
+    pollingInterval = null
+  }
 
-    for (const entry of entries) {
-      if (
-        entry.borderBoxSize
-        && entry[maxWidthProperty][0]
-      ) {
-        bubbleInstance.style.setProperty(maxHostWidthCssVar, `${entry[maxWidthProperty][0].inlineSize}px`)
+  const updatePosition = () => {
+    computePosition(textfield, bubbleInstance, {
+      strategy: 'fixed',
+      placement: 'top-end',
+      middleware,
+    }).then(({x, y, middlewareData}) => {
+      if (!bubbleInstance) {
+        return
       }
-    }
-  })
 
-  resizeObserver.observe(textfield)
+      const { hidden } = middlewareData.occlusionHide
+
+      Object.assign(bubbleInstance.style, {
+        left: `${x}px`,
+        top: `${y}px`,
+        visibility: hidden ? 'hidden' : 'visible',
+      })
+
+      // in case the element was hidden by the occlusion middleware,
+      // because the xy coords were covered by another element,
+      // start polling to check if the covering element disappears.
+      if (hidden && !pollingInterval) {
+        pollingInterval = setInterval(updatePosition, 1000)
+      } else if (!hidden) {
+        stopPolling()
+      }
+    })
+  }
+
+  const stopAutoUpdate = autoUpdate(textfield, bubbleInstance, updatePosition)
+
+  cleanupFloatingUi = () => {
+    stopPolling()
+    stopAutoUpdate()
+  }
 }
 
 function hideBubble () {
-  bubbleInstance.removeAttribute('visible')
+  cleanupFloatingUi()
 
-  if (resizeObserver) {
-    resizeObserver.disconnect()
-    resizeObserver = null
+  if (bubbleInstance) {
+    bubbleInstance.removeAttribute('visible')
   }
 }
