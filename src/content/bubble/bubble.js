@@ -264,6 +264,10 @@ function showBubble (textfield) {
       placement: 'top-end',
       middleware,
     }).then(({x, y, middlewareData}) => {
+      if (!bubbleInstance) {
+        return
+      }
+
       const { hidden } = middlewareData.occlusionHide
 
       Object.assign(bubbleInstance.style, {
