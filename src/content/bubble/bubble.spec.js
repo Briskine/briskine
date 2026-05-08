@@ -14,8 +14,13 @@ vi.mock('../dialog/dialog.js', () => ({
   dialogTagName: 'b-dialog-test',
 }))
 
-vi.mock('./bubble.css', () => ({ default: '' }))
-vi.mock('../../icons/briskine-logo-small-bare.svg?raw', () => ({ default: '' }))
+// webpack uses css-loader with exportType: 'string' for content css.
+// vite serves css files as text/css with no default export, so we have to mock
+// it until we replace webpack.
+vi.mock('./bubble.css', () => ({
+  default: ':host { position: fixed; display: none; width: 28px; height: 28px; } :host([visible]) { display: block; }',
+}))
+
 
 const dialogTagName = 'b-dialog-test'
 
@@ -63,6 +68,7 @@ describe('bubble', () => {
   })
 
   afterEach(() => {
+    vi.restoreAllMocks()
     destroy()
     document.querySelectorAll('textarea, [contenteditable]').forEach(el => el.remove())
   })
@@ -129,5 +135,67 @@ describe('bubble', () => {
     expect(getBubble().hasAttribute('visible')).toBe(true)
 
     dialog.remove()
+  })
+
+  describe('positioning', () => {
+    it('sets position styles after focus', async () => {
+      const textarea = createTextarea()
+      textarea.focus()
+
+      await vi.waitFor(() => {
+        const bubble = getBubble()
+        expect(bubble.style.left).toBeTruthy()
+        expect(bubble.style.top).toBeTruthy()
+      })
+    })
+
+    it('positions bubble near the top-end corner of the textarea', async () => {
+      const textarea = createTextarea(300, 150)
+      textarea.focus()
+
+      await vi.waitFor(() => {
+        const bubble = getBubble()
+        const rect = textarea.getBoundingClientRect()
+        const left = parseInt(bubble.style.left)
+        const top = parseInt(bubble.style.top)
+
+        expect(left).toBeGreaterThan(rect.left)
+        expect(left).toBeLessThanOrEqual(rect.right)
+        expect(top).toBeGreaterThanOrEqual(rect.top)
+        expect(top).toBeLessThan(rect.bottom)
+      })
+    })
+
+    it('sets visibility hidden when position is covered by an unrelated element', async () => {
+      const textarea = createTextarea()
+      const coveringElement = document.createElement('div')
+      document.body.appendChild(coveringElement)
+
+      vi.spyOn(document, 'elementsFromPoint').mockReturnValue([coveringElement, document.body, document.documentElement])
+
+      textarea.focus()
+
+      await vi.waitFor(() => {
+        const bubble = getBubble()
+        expect(bubble.hasAttribute('visible')).toBe(true)
+        expect(bubble.style.visibility).toBe('hidden')
+      })
+
+      coveringElement.remove()
+    })
+
+    it('sets visibility visible when covered only by the textarea or its ancestors', async () => {
+      const textarea = createTextarea()
+
+      vi.spyOn(document, 'elementsFromPoint').mockReturnValue([textarea, document.body, document.documentElement])
+
+      textarea.focus()
+
+      await vi.waitFor(() => {
+        const bubble = getBubble()
+        expect(bubble.hasAttribute('visible')).toBe(true)
+        expect(bubble.style.visibility).toBe('visible')
+      })
+    })
   })
 })
