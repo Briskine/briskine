@@ -197,5 +197,36 @@ describe('bubble', () => {
         expect(bubble.style.visibility).toBe('visible')
       })
     })
+
+    it('does not hide when covered by the shadow host of the textfield', async () => {
+      const host = document.createElement('div')
+      Object.assign(host.style, {
+        position: 'fixed',
+        top: '100px',
+        left: '100px',
+        width: '300px',
+        height: '150px',
+      })
+      document.body.appendChild(host)
+
+      const shadowRoot = host.attachShadow({ mode: 'open' })
+      const textarea = document.createElement('textarea')
+      Object.assign(textarea.style, { width: '100%', height: '100%' })
+      shadowRoot.appendChild(textarea)
+
+      // browsers return the shadow host from elementsFromPoint,
+      // not the inner textarea
+      vi.spyOn(document, 'elementsFromPoint').mockReturnValue([host, document.body, document.documentElement])
+
+      textarea.focus()
+
+      await vi.waitFor(() => {
+        const bubble = getBubble()
+        expect(bubble.hasAttribute('visible')).toBe(true)
+        expect(bubble.style.visibility).toBe('visible')
+      })
+
+      host.remove()
+    })
   })
 })
