@@ -173,6 +173,7 @@ function isValidTextfield (elem) {
       )
       || isContentEditable(elem)
     )
+    && (elem.getAttribute('inputmode') !== 'none')
   ) {
     // check if the element is big enough
     // to only show the bubble for large textfields
