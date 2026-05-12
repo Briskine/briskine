@@ -94,10 +94,6 @@ function Dialog (originalProps) {
       // contenteditable
       target = getContentEditableCaret(node)
 
-      if (target.collapsed === false && ! node.hasAttribute('g_editable')) {
-        return
-      }
-
       // only use the targetMetrics width when caret is a range.
       // workaround for when the contenteditable caret is the endContainer.
       const isRange = target instanceof Range

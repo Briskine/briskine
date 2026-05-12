@@ -32,6 +32,8 @@ function isPasteEditor (element) {
       element?.classList?.contains?.('ql-editor')
       && !element?.closest?.('.ql-container')?.__quill
     )
+    // google sheets
+    || element?.id === 'waffle-rich-text-editor'
   )
 }
 
