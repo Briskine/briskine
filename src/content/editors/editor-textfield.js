@@ -8,6 +8,7 @@ export function isTextfieldEditor (element) {
     element
     && element.nodeType === Node.ELEMENT_NODE
     && element.readOnly !== true
+    && element.ariaReadOnly !== 'true'
     && (
       element.tagName.toLowerCase() === 'textarea'
       || (

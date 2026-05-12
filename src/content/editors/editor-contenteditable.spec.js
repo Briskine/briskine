@@ -56,6 +56,24 @@ describe('editor ContentEditable', () => {
     editable.setAttribute('contenteditable', 'true')
   })
 
+  it('should reject contenteditable=false', async () => {
+    editable.setAttribute('contenteditable', 'false')
+
+    expect(await insertContentEditableTemplate({ html: 'template' })).to.equal(false)
+    expect(editable.innerHTML).to.equal('')
+
+    editable.setAttribute('contenteditable', 'true')
+  })
+
+  it('should reject contenteditable with aria-readonly', async () => {
+    editable.setAttribute('aria-readonly', 'true')
+
+    expect(await insertContentEditableTemplate({ html: 'template' })).to.equal(false)
+    expect(editable.innerHTML).to.equal('')
+
+    editable.removeAttribute('aria-readonly')
+  })
+
   afterAll(() => {
     editable.remove()
   })
