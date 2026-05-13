@@ -1,6 +1,6 @@
 import './attachments.css'
 
-const attachmentClassName = 'briskine-attachment'
+const attachmentClassName = 'briskine-attachment-container'
 const iconUrl = 'https://static.briskine.com/attachments/1'
 
 function getIcon (name = '') {
@@ -136,7 +136,7 @@ export function addAttachments (template = '', attachments = []) {
 }
 
 function clickAttachment (e) {
-  const $attachment = e.target.closest(`.${attachmentClassName}`)
+  const $attachment = e?.target?.closest?.(`.${attachmentClassName}`)
   // allow right-click
   if (!$attachment || e.button !== 0) {
     return
