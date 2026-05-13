@@ -14,6 +14,9 @@
  * Quill v2
  * https://quilljs.com/
  *
+ * Google Sheets
+ * https://docs.google.com/spreadsheets/
+ *
  */
 
 import { request } from '../page/page-parent.js'
