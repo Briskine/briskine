@@ -40,6 +40,23 @@ export function getDialogPosition (target, instance, placement = 'top-left') {
   const targetNode = closestRendered(target)
   const targetMetrics = targetNode.getBoundingClientRect()
 
+  // target is offscreen
+  // (e.g. hidden iframe caret - google sheets, or caret is scrolled out of main
+  // page viewport)
+  const targetInViewport = (
+    targetMetrics.bottom > 0
+    && targetMetrics.right > 0
+    && targetMetrics.top < window.innerHeight
+    && targetMetrics.left < window.innerWidth
+  )
+  if (!targetInViewport) {
+    // center the dialog
+    return {
+      top: Math.max(0, (window.innerHeight - dialogMetrics.height) / 2),
+      left: Math.max(0, (window.innerWidth - dialogMetrics.width) / 2),
+    }
+  }
+
   let top = targetMetrics.top
   let left = targetMetrics.left
 

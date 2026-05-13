@@ -6,7 +6,10 @@ import { getSelectionRange, setSelectionRange } from '../utils/selection.js'
 import { insertExecCommandTemplate } from './editor-execcommand.js'
 
 export function isContentEditable (element) {
-  return element?.isContentEditable
+  return (
+    element?.isContentEditable === true
+    && element?.ariaReadOnly !== 'true'
+  )
 }
 
 export async function insertContentEditableTemplate ({ html, text }) {
@@ -52,7 +55,7 @@ export async function insertContentEditableTemplate ({ html, text }) {
   range.insertNode(templateNode)
   range.collapse()
 
-  setSelectionRange(element, range)
+  await setSelectionRange(element, range)
 
   // trigger multiple change events,
   // for frameworks and scripts to notice changes to the editable fields.

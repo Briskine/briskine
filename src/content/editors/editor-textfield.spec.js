@@ -142,6 +142,30 @@ describe('insertTextfieldTemplate', () => {
     input.remove()
   })
 
+  it('should reject readonly input', () => {
+    const input = document.createElement('input')
+    input.type = 'text'
+    input.readOnly = true
+    document.body.appendChild(input)
+
+    input.focus()
+    expect(insertTextfieldTemplate({ text: 'template' })).to.equal(false)
+    expect(input.value).to.equal('')
+    input.remove()
+  })
+
+  it('should reject aria-readonly input', () => {
+    const input = document.createElement('input')
+    input.type = 'text'
+    input.ariaReadOnly = 'true'
+    document.body.appendChild(input)
+
+    input.focus()
+    expect(insertTextfieldTemplate({ text: 'template' })).to.equal(false)
+    expect(input.value).to.equal('')
+    input.remove()
+  })
+
   afterAll(() => {
     textarea.remove()
   })

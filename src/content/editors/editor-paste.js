@@ -14,6 +14,9 @@
  * Quill v2
  * https://quilljs.com/
  *
+ * Google Sheets
+ * https://docs.google.com/spreadsheets/
+ *
  */
 
 import { request } from '../page/page-parent.js'
@@ -32,6 +35,8 @@ function isPasteEditor (element) {
       element?.classList?.contains?.('ql-editor')
       && !element?.closest?.('.ql-container')?.__quill
     )
+    // google sheets
+    || element?.id === 'waffle-rich-text-editor'
   )
 }
 

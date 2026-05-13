@@ -488,7 +488,11 @@ async function parseTemplatesCollection (templatesCollection = {}) {
   return templates
 }
 
-const networkError = 'There was an issue signing you in. Please disable your firewall or antivirus software and try again.'
+// can't reach api because:
+// - extension is only running "on specific sites" and the api url is not added
+// - api is blocked by firewall
+// - api is down
+const networkError = 'There was an issue signing you in. Check that the extension is set to run on all sites, or that your firewall or antivirus isn\'t blocking the connection.'
 const manyRequestsError = 'Too many unsuccessful login attempts. Please try again later.'
 
 function signinError (err) {
