@@ -3,7 +3,7 @@ import fs from 'fs'
 import webpack from 'webpack'
 import path from 'path'
 import {globSync} from 'glob'
-import archiver from 'archiver'
+import { ZipArchive }  from 'archiver'
 import CopyWebpackPlugin from 'copy-webpack-plugin'
 import MiniCssExtractPlugin from 'mini-css-extract-plugin'
 import {PurgeCSSPlugin} from 'purgecss-webpack-plugin'
@@ -79,7 +79,7 @@ class ZipPlugin {
   apply(compiler) {
     compiler.hooks.done.tapAsync('ZipPlugin', (params, callback) => {
       const output = fs.createWriteStream(this.options.output)
-      const zipArchive = archiver('zip')
+      const zipArchive = new ZipArchive()
       output.on('close', callback)
       zipArchive.pipe(output)
       zipArchive.directory(this.options.entry, false)

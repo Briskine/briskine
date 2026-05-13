@@ -40,7 +40,9 @@ export function getDialogPosition (target, instance, placement = 'top-left') {
   const targetNode = closestRendered(target)
   const targetMetrics = targetNode.getBoundingClientRect()
 
-  // target is offscreen (e.g. hidden iframe caret - google sheets)
+  // target is offscreen
+  // (e.g. hidden iframe caret - google sheets, or caret is scrolled out of main
+  // page viewport)
   const targetInViewport = (
     targetMetrics.bottom > 0
     && targetMetrics.right > 0
