@@ -202,10 +202,10 @@ function isComposedAncestor (ancestor, element) {
 // in case there's another element on the top-end side of the textfield
 // (e.g., gmail when we compose a new email while replying in an existing thread).
 // if covered, shifts the bubble toward the center of the textfield until a clear spot is found.
-function occlusionHide (textfield) {
+function occlusionHide (textfield, isRtl) {
   return {
     name: 'occlusionHide',
-    fn ({ x, y, middlewareData }) {
+    fn ({ x, y, rects, middlewareData }) {
       if (middlewareData.hide?.referenceHidden) {
         return {
           data: { hidden: true },
@@ -214,15 +214,15 @@ function occlusionHide (textfield) {
 
       // top-end is on the right in ltr and on the left in rtl,
       // so shift toward center in each case.
-      const isRtl = getComputedStyle(textfield).direction === 'rtl'
       const stepDirection = isRtl ? 1 : -1
-      const textfieldRect = textfield.getBoundingClientRect()
+      const textfieldLeft = rects.reference.x
+      const textfieldRight = rects.reference.x + rects.reference.width
 
       let currentX = x
       let shifted = false
 
       // when shifting, the bubble must stay within the bounds of the textfield
-      while (isRtl ? currentX + bubbleSize <= textfieldRect.right : currentX >= textfieldRect.left) {
+      while (isRtl ? currentX + bubbleSize <= textfieldRight : currentX >= textfieldLeft) {
         const elements = document.elementsFromPoint(currentX + bubbleSize / 2, y + bubbleSize / 2)
         const top = elements.find(el => el !== bubbleInstance)
         const occluded = (
@@ -258,6 +258,8 @@ function showBubble (textfield) {
 
   bubbleInstance.setAttribute('visible', 'true')
 
+  const isRtl = getComputedStyle(textfield).direction === 'rtl'
+
   const middleware = [
     offset({
       mainAxis: -1 * (bubbleSize + bubbleMargin),
@@ -274,7 +276,7 @@ function showBubble (textfield) {
       elementContext: 'reference',
     }),
     hide(),
-    occlusionHide(textfield),
+    occlusionHide(textfield, isRtl),
   ]
 
   cleanupFloatingUi()
