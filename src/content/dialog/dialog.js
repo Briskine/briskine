@@ -130,8 +130,10 @@ function Dialog (originalProps) {
 
     setVisible(true)
     const position = getDialogPosition(target, element, placement)
-    element.style.top = `${position.top}px`
-    element.style.left = `${position.left}px`
+    Object.assign(element.style, {
+      top: `${position.top}px`,
+      left: `${position.left}px`,
+    })
 
     // clean-up the virtual caret mirror,
     // used on input and textarea

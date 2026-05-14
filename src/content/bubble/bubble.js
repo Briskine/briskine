@@ -201,24 +201,52 @@ function isComposedAncestor (ancestor, element) {
 // detect if something is covering the x,y coords where we want to place the bubble.
 // in case there's another element on the top-end side of the textfield
 // (e.g., gmail when we compose a new email while replying in an existing thread).
-function occlusionHide (textfield) {
+// if covered, shifts the bubble toward the center of the textfield until a clear spot is found.
+function occlusionHide (textfield, isRtl) {
   return {
     name: 'occlusionHide',
-    fn ({ x, y, middlewareData }) {
+    fn ({ x, y, rects, middlewareData }) {
       if (middlewareData.hide?.referenceHidden) {
-        return { data: { hidden: true } }
+        return {
+          data: { hidden: true },
+        }
       }
 
-      const elements = document.elementsFromPoint(x + bubbleSize / 2, y + bubbleSize / 2)
-      const top = elements.find(el => el !== bubbleInstance)
-      const hidden = (
-        !!top
-        // if the textfield is in a shadow root
-        && !isComposedAncestor(top, textfield)
-        && !textfield.contains(top)
-      )
+      // top-end is on the right in ltr and on the left in rtl,
+      // so shift toward center in each case.
+      const stepDirection = isRtl ? 1 : -1
+      const textfieldLeft = rects.reference.x
+      const textfieldRight = rects.reference.x + rects.reference.width
 
-      return { data: { hidden } }
+      let currentX = x
+      let shifted = false
+
+      // when shifting, the bubble must stay within the bounds of the textfield
+      while (isRtl ? currentX + bubbleSize <= textfieldRight : currentX >= textfieldLeft) {
+        const elements = document.elementsFromPoint(currentX + bubbleSize / 2, y + bubbleSize / 2)
+        const top = elements.find(el => el !== bubbleInstance)
+        const occluded = (
+          !!top
+          // if the textfield is in a shadow root
+          && !isComposedAncestor(top, textfield)
+          && !textfield.contains(top)
+        )
+
+        if (!occluded) {
+          // when shifted, offset() margin no longer applies on the trailing side,
+          // so add it back manually to keep the gap from the occluding element.
+          const finalX = shifted ? currentX + stepDirection * bubbleMargin : currentX
+          return {
+            x: finalX,
+            data: { hidden: false },
+          }
+        }
+
+        currentX += stepDirection * bubbleSize
+        shifted = true
+      }
+
+      return { data: { hidden: true } }
     },
   }
 }
@@ -229,6 +257,8 @@ function showBubble (textfield) {
   }
 
   bubbleInstance.setAttribute('visible', 'true')
+
+  const isRtl = getComputedStyle(textfield).direction === 'rtl'
 
   const middleware = [
     offset({
@@ -246,7 +276,7 @@ function showBubble (textfield) {
       elementContext: 'reference',
     }),
     hide(),
-    occlusionHide(textfield),
+    occlusionHide(textfield, isRtl),
   ]
 
   cleanupFloatingUi()
