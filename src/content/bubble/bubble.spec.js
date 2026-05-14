@@ -198,6 +198,55 @@ describe('bubble', () => {
       })
     })
 
+    it('shifts left in ltr and stays visible when initial position is covered', async () => {
+      const textarea = createTextarea()
+      const coveringElement = document.createElement('div')
+      document.body.appendChild(coveringElement)
+
+      vi.spyOn(document, 'elementsFromPoint')
+        .mockImplementationOnce(() => [coveringElement, document.body, document.documentElement])
+        .mockImplementation(() => [textarea, document.body, document.documentElement])
+
+      textarea.focus()
+
+      await vi.waitFor(() => {
+        const bubble = getBubble()
+        const textareaRect = textarea.getBoundingClientRect()
+        const bubbleLeft = parseInt(bubble.style.left)
+        expect(bubble.hasAttribute('visible')).toBe(true)
+        expect(bubble.style.visibility).toBe('visible')
+        expect(bubbleLeft).toBeGreaterThanOrEqual(textareaRect.left)
+        expect(bubbleLeft).toBeLessThan(textareaRect.right)
+      })
+
+      coveringElement.remove()
+    })
+
+    it('shifts right in rtl and stays visible when initial position is covered', async () => {
+      const textarea = createTextarea()
+      textarea.style.direction = 'rtl'
+      const coveringElement = document.createElement('div')
+      document.body.appendChild(coveringElement)
+
+      vi.spyOn(document, 'elementsFromPoint')
+        .mockImplementationOnce(() => [coveringElement, document.body, document.documentElement])
+        .mockImplementation(() => [textarea, document.body, document.documentElement])
+
+      textarea.focus()
+
+      await vi.waitFor(() => {
+        const bubble = getBubble()
+        const textareaRect = textarea.getBoundingClientRect()
+        const bubbleLeft = parseInt(bubble.style.left)
+        expect(bubble.hasAttribute('visible')).toBe(true)
+        expect(bubble.style.visibility).toBe('visible')
+        expect(bubbleLeft).toBeGreaterThanOrEqual(textareaRect.left)
+        expect(bubbleLeft).toBeLessThan(textareaRect.right)
+      })
+
+      coveringElement.remove()
+    })
+
     it('does not hide when covered by the shadow host of the textfield', async () => {
       const host = document.createElement('div')
       Object.assign(host.style, {
