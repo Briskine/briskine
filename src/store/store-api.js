@@ -188,7 +188,7 @@ async function updateCache ({collection, data}) {
   let eventData = data
 
   if (collection === 'templates') {
-    eventData = await parseTemplatesCollection(data)
+    eventData = parseTemplatesCollection(data)
     trigger(eventName, eventData)
   } else if (collection === 'tags') {
     eventData = parseTagsCollection(data)
