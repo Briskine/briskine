@@ -402,7 +402,7 @@ export async function getTemplates () {
   return parseTemplatesCollection(templates)
 }
 
-async function parseTemplatesCollection (templatesCollection = {}) {
+function parseTemplatesCollection (templatesCollection = {}) {
   return Object.entries(templatesCollection)
     .map(([id, template]) => {
       return {
