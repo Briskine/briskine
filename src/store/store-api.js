@@ -18,9 +18,10 @@ import {
   where,
   getDocs,
   documentId,
-  Timestamp,
   and,
   or,
+  limit,
+  orderBy,
 } from 'firebase/firestore/lite'
 
 import { functionsUrl }  from '../config.js'
@@ -79,6 +80,8 @@ const templateConverter = {
 }
 const templatesCollection = collection(db, 'templates').withConverter(templateConverter)
 
+const templatesFreeLimit = 30
+
 async function templatesQuery (user) {
   // isFree will load the customers collection
   const free = await isFree(user)
@@ -89,6 +92,9 @@ async function templatesQuery (user) {
       where('customer', '==', user.customer),
       where('deleted_datetime', '==', null),
       where('owner', '==', user.id),
+
+      orderBy('created_datetime'),
+      limit(templatesFreeLimit),
     )
   }
 
@@ -396,31 +402,15 @@ export async function getTemplates () {
   return parseTemplatesCollection(templates)
 }
 
-// TODO move to query limit
-const templatesFreeLimit = 30
-
 async function parseTemplatesCollection (templatesCollection = {}) {
-  const user = await getSignedInUser()
-  const freeCustomer = await isFree(user)
-
-  const templates = Object.keys(templatesCollection).map((id) => {
-    const template = templatesCollection[id]
-    return {
-      ...template,
-      id: id,
-      _body_plaintext: htmlToText(template.body),
-    }
-  })
-
-  if (freeCustomer) {
-    return templates
-      .sort((a, b) => {
-        return new Date(a.created_datetime || 0) - new Date(b.created_datetime || 0)
-      })
-      .slice(0, templatesFreeLimit)
-  }
-
-  return templates
+  return Object.entries(templatesCollection)
+    .map(([id, template]) => {
+      return {
+        ...template,
+        id: id,
+        _body_plaintext: htmlToText(template.body),
+      }
+    })
 }
 
 // can't reach api because:
