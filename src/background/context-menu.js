@@ -371,9 +371,7 @@ async function storageChange (changes = {}) {
   }
 
   if (isStorageChanged(changes,
-    'templatesOwned',
-    'templatesShared',
-    'templatesEveryone',
+    'templates',
     ['briskine', 'templatesLastUsed']
   )) {
     updateMenuTemplates()

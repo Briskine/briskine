@@ -19,6 +19,8 @@ import {
   getDocs,
   documentId,
   Timestamp,
+  and,
+  or,
 } from 'firebase/firestore/lite'
 
 import { functionsUrl }  from '../config.js'
@@ -62,49 +64,60 @@ async function clearDataCache () {
   })
 }
 
-const templatesCollection = collection(db, 'templates')
-
-function templatesOwnedQuery (user) {
-  return query(
-    templatesCollection,
-    where('customer', '==', user.customer),
-    where('deleted_datetime', '==', null),
-    where('owner', '==', user.id),
+function convertToNativeDates (obj = {}) {
+  return Object.fromEntries(
+    Object.entries(obj).map(([key, value]) => [
+      key,
+      value?.toDate?.() ?? value,
+    ])
   )
 }
 
-function templatesSharedQuery (user) {
-  return query(
-    templatesCollection,
-    where('customer', '==', user.customer),
-    where('deleted_datetime', '==', null),
-    where('sharing', '==', 'custom'),
-    where('shared_with', 'array-contains', user.id),
-    where('owner', '!=', user.id),
-  )
+const templateConverter = {
+  fromFirestore: (snapshot) => convertToNativeDates(snapshot.data()),
+  toFirestore: (data) => data,
 }
+const templatesCollection = collection(db, 'templates').withConverter(templateConverter)
 
-function templatesEveryoneQuery (user) {
+async function templatesQuery (user) {
+  // isFree will load the customers collection
+  const free = await isFree(user)
+
+  if (free) {
+    return query(
+      templatesCollection,
+      where('customer', '==', user.customer),
+      where('deleted_datetime', '==', null),
+      where('owner', '==', user.id),
+    )
+  }
+
   return query(
-    templatesCollection,
-    where('customer', '==', user.customer),
-    where('deleted_datetime', '==', null),
-    where('sharing', '==', 'everyone'),
-    where('owner', '!=', user.id),
-  )
+      templatesCollection,
+      and(
+        where('customer', '==', user.customer),
+        where('deleted_datetime', '==', null),
+        or(
+          where('owner', '==', user.id),
+          // this will also match owned templates,
+          // but firestore handles deduplication.
+          or(
+            where('sharing', '==', 'everyone'),
+            and(
+              where('sharing', '==', 'custom'),
+              where('shared_with', 'array-contains', user.id),
+            )
+          )
+        )
+      )
+    )
 }
-
-const templateCollections = [
-  'templatesOwned',
-  'templatesShared',
-  'templatesEveryone',
-]
 
 const allCollections = [
   'users',
   'customers',
   'tags',
-  ...templateCollections,
+  'templates',
 ]
 
 function getCollectionQuery (name, user) {
@@ -114,16 +127,8 @@ function getCollectionQuery (name, user) {
     tags: ['customer', '==', user.customer]
   }
 
-  if (name === 'templatesOwned') {
-    return templatesOwnedQuery(user)
-  }
-
-  if (name === 'templatesShared') {
-    return templatesSharedQuery(user)
-  }
-
-  if (name === 'templatesEveryone') {
-    return templatesEveryoneQuery(user)
+  if (name === 'templates') {
+    return templatesQuery(user)
   }
 
   return query(
@@ -146,7 +151,7 @@ async function getCollection ({ collection, user }) {
     return cache[collection]
   }
 
-  const query = getCollectionQuery(collection, user)
+  const query = await getCollectionQuery(collection, user)
   collectionRequestQueue[collection] = getDocs(query).then((snapshot) => {
     collectionRequestQueue[collection] = null
     return refreshLocalData(collection, snapshot)
@@ -168,38 +173,18 @@ function refreshLocalData (collectionName, querySnapshot) {
   })
 }
 
-let debouncedTemplatesUpdateEvent
-
 async function updateCache ({collection, data}) {
   await browser.storage.local.set({
     [collection]: data
   })
 
-  const eventCollection = templateCollections.includes(collection) ? 'templates' : collection
-  const eventName = `${eventCollection}-updated`
+  const eventName = `${collection}-updated`
   let eventData = data
 
-  if (eventCollection === 'templates') {
-    const cachedTemplateCollections = await browser.storage.local.get(templateCollections)
-
-    let cachedTemplates = {}
-    templateCollections.forEach((templateCollectionName) => {
-      cachedTemplates = {
-        ...cachedTemplates,
-        ...cachedTemplateCollections[templateCollectionName],
-      }
-    })
-
-    eventData = await parseTemplatesCollection(cachedTemplates)
-
-    // debounce templates trigger
-    // because we trigger it three times in a row (once for each templates collection)
-    // for premium customers.
-    clearTimeout(debouncedTemplatesUpdateEvent)
-    debouncedTemplatesUpdateEvent = setTimeout(() => {
-      trigger(eventName, eventData)
-    }, 500)
-  } else if (eventCollection === 'tags') {
+  if (collection === 'templates') {
+    eventData = await parseTemplatesCollection(data)
+    trigger(eventName, eventData)
+  } else if (collection === 'tags') {
     eventData = parseTagsCollection(data)
     trigger(eventName, eventData)
   } else {
@@ -224,15 +209,8 @@ export async function refetchCollections (collections = []) {
 
   try {
     const user = await getSignedInUser()
-    const free = await isFree(user)
-    let collectionsToRefetch = collectionsToClear
-    // don't refetch shared templates for free users
-    if (free) {
-      collectionsToRefetch = collectionsToClear.filter((c) => !['templatesShared', 'templatesEveryone'].includes(c))
-    }
-
     return Promise.all(
-      collectionsToRefetch.map((c) => getCollection({
+      collectionsToClear.map((c) => getCollection({
         collection: c,
         user: user,
       }))
@@ -411,56 +389,14 @@ export async function getTemplates () {
     throw err
   }
 
-  const freeCustomer = await isFree(user)
-  let templateCollections = [
-    getCollection({
-      user: user,
-      collection: 'templatesOwned'
-    })
-  ]
-
-  if (!freeCustomer) {
-    templateCollections = templateCollections.concat([
-      getCollection({
-        user: user,
-        collection: 'templatesShared'
-      }),
-      getCollection({
-        user: user,
-        collection: 'templatesEveryone'
-      })
-    ])
-  }
-
-  let results = await Promise.all(templateCollections)
-  let templates = Object.assign({}, ...results)
+  const templates = await getCollection({
+    user: user,
+    collection: 'templates',
+  })
   return parseTemplatesCollection(templates)
 }
 
-// convert firestore timestamps to dates
-const timestamps = [
-  'created_datetime',
-  'modified_datetime',
-  'deleted_datetime',
-]
-
-function templateNativeDates (template = {}) {
-  const templateDates = {}
-
-  timestamps.forEach((prop) => {
-    if (
-      template[prop]
-      && typeof template[prop].seconds === 'number'
-      && typeof template[prop].nanoseconds === 'number'
-    ) {
-      const d = new Timestamp(template[prop].seconds, template[prop].nanoseconds)
-      templateDates[prop] = d.toDate()
-    }
-  })
-
-  return templateDates
-}
-
+// TODO move to query limit
 const templatesFreeLimit = 30
 
 async function parseTemplatesCollection (templatesCollection = {}) {
@@ -471,7 +407,6 @@ async function parseTemplatesCollection (templatesCollection = {}) {
     const template = templatesCollection[id]
     return {
       ...template,
-      ...templateNativeDates(template),
       id: id,
       _body_plaintext: htmlToText(template.body),
     }
@@ -614,9 +549,7 @@ export async function setActiveCustomer (customerId) {
     .then(() => {
       // update data when customer changes
       refetchCollections([
-        'templatesOwned',
-        'templatesShared',
-        'templatesEveryone',
+        'templates',
         'tags',
       ])
       return
@@ -729,8 +662,8 @@ export async function searchTemplates (query = '') {
 }
 
 export async function isCached () {
-  // when private templates are cached
-  const key = 'templatesOwned'
+  // when templates are cached
+  const key = 'templates'
   const cache = await browser.storage.local.get(key)
   if (cache[key]) {
     return true
