@@ -90,7 +90,8 @@
   --tag-color-pink: #ff78cb;
   --tag-color-black: #344563;
 
-  display: block;
+  display: flex;
+  gap: .4rem;
   overflow: hidden;
   padding: 0;
   margin-top: .2rem;
@@ -103,11 +104,14 @@
 .dialog-tags li {
   display: inline-block;
   padding: .2em .4em;
-  margin-right: .2em;
   border-radius: var(--radius-small);
   background-color: var(--tag-bg-color, transparent);
 
   color: #fff;
   font-size: .75em;
   font-weight: 700;
+}
+
+.dialog-tags li.text-secondary {
+  padding-inline: 0;
 }
