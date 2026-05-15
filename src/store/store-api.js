@@ -600,12 +600,13 @@ export async function getTags () {
 }
 
 function parseTagsCollection (tags = {}) {
-  return Object.keys(tags).map((id) => {
-    return {
-      id: id,
-      ...tags[id],
-    }
-  })
+  return Object.entries(tags)
+    .map(([id, tag]) => {
+      return {
+        id: id,
+        ...tag,
+      }
+    })
 }
 
 function tagIdsToTitles (tagIds = [], allTags = []) {
