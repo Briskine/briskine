@@ -107,12 +107,10 @@ async function templatesQuery (user) {
           where('owner', '==', user.id),
           // this will also match owned templates,
           // but firestore handles deduplication.
-          or(
-            where('sharing', '==', 'everyone'),
-            and(
-              where('sharing', '==', 'custom'),
-              where('shared_with', 'array-contains', user.id),
-            )
+          where('sharing', '==', 'everyone'),
+          and(
+            where('sharing', '==', 'custom'),
+            where('shared_with', 'array-contains', user.id),
           )
         )
       )
