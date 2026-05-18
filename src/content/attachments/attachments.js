@@ -1,6 +1,6 @@
 import './attachments.css'
 
-const attachmentClassName = 'briskine-attachment-container'
+const attachmentClassName = 'briskine-attachment'
 const iconUrl = 'https://static.briskine.com/attachments/1'
 
 function getIcon (name = '') {
@@ -69,56 +69,79 @@ function getIcon (name = '') {
   return 'file-earmark-fill'
 }
 
+function getSafeUrl (url) {
+  try {
+    const {protocol} = new URL(url)
+    return (protocol === 'https:' || protocol === 'http:') ? url : ''
+  } catch {
+    return ''
+  }
+}
+
 function getAttachmentMarkup (attachment = {}) {
-  return `
-    <table
-      cellspacing="5"
-      width="70%"
-      contenteditable="false"
-      class="${attachmentClassName}"
-      style="table-layout: fixed; background-color: #f6f5f4; border-radius: 3px; max-width: 400px; margin-bottom: 5px;"
-      >
-        <tr>
-        <td
-          style="
-            overflow: hidden;
-            vertical-align: middle;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-          "
-          >
-          <a
-            href="${attachment.url}"
-            target="_blank"
-            style="
-              font-weight: bold;
-              font-size: 13px;
-            "
-            >
-            <span
-              style="
-                display: inline-block;
-                width: 12px;
-                height: 16px;
-                background-image: url('${iconUrl}/${getIcon(attachment.name)}.png');
-                background-repeat: no-repeat;
-                background-size: 100%;
-                background-position: center;
-                vertical-align: middle;
-                margin-right: 5px;
-              "></span>${attachment.name}
-          </a>
-        </td>
-        <td width="16">
-          <button
-            type="button"
-            title="Remove Briskine attachment"
-            style="display: none;"
-            ></button>
-        </td>
-      </tr>
-    </table>
+  const table = document.createElement('table')
+  table.setAttribute('contenteditable', 'false')
+  table.className = attachmentClassName
+  table.style.cssText = `
+    table-layout: fixed;
+    width: 70%;
+    max-width: 400px;
+    margin-bottom: 5px;
+    background-color: #f6f5f4;
+    border-radius: 3px;
+    border-collapse: separate;
+    border-spacing: 5px;
   `
+
+  const tr = document.createElement('tr')
+
+  const tdName = document.createElement('td')
+  tdName.style.cssText = `
+    overflow: hidden;
+    vertical-align: middle;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  `
+
+  const a = document.createElement('a')
+  a.href = getSafeUrl(attachment.url)
+  a.target = '_blank'
+  a.style.cssText = `
+    font-weight: bold;
+    font-size: 13px;
+  `
+
+  const span = document.createElement('span')
+  span.style.cssText = `
+    display: inline-block;
+    width: 12px;
+    height: 16px;
+    margin-right: 5px;
+    background-image: url('${iconUrl}/${getIcon(attachment.name)}.png');
+    background-repeat: no-repeat;
+    background-size: 100%;
+    background-position: center;
+    vertical-align: middle;
+  `
+
+  a.appendChild(span)
+  a.appendChild(document.createTextNode(attachment.name))
+  tdName.appendChild(a)
+
+  const tdBtn = document.createElement('td')
+  tdBtn.style.width = '16px'
+
+  const button = document.createElement('button')
+  button.type = 'button'
+  button.title = 'Remove Briskine attachment'
+  button.style.display = 'none'
+
+  tdBtn.appendChild(button)
+  tr.appendChild(tdName)
+  tr.appendChild(tdBtn)
+  table.appendChild(tr)
+
+  return table.outerHTML
 }
 
 export function addAttachments (template = '', attachments = []) {
