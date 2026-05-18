@@ -38,22 +38,10 @@ function clearCache (collection) {
   }, 1000)
 }
 
-const templateCollections = [
-  'templatesOwned',
-  'templatesShared',
-  'templatesEveryone',
-]
-
 function dashboardEvent (e) {
   const dashboardEvent = dashboardEvents.find((dEvent) => dEvent.type === e?.data?.type)
   if (dashboardEvent) {
-    if (dashboardEvent.collection === 'templates') {
-      templateCollections.forEach((tc) => {
-        clearCache(tc)
-      })
-    } else {
-      clearCache(dashboardEvent.collection)
-    }
+    clearCache(dashboardEvent.collection)
   }
 }
 

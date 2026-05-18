@@ -1,6 +1,6 @@
 import './attachments.css'
 
-const attachmentClassName = 'briskine-attachment-container'
+const attachmentClassName = 'briskine-attachment'
 const iconUrl = 'https://static.briskine.com/attachments/1'
 
 function getIcon (name = '') {
@@ -69,56 +69,70 @@ function getIcon (name = '') {
   return 'file-earmark-fill'
 }
 
+function getSafeUrl (url) {
+  try {
+    const {protocol} = new URL(url)
+    return (protocol === 'https:' || protocol === 'http:') ? url : ''
+  } catch {
+    return ''
+  }
+}
+
 function getAttachmentMarkup (attachment = {}) {
-  return `
-    <table
-      cellspacing="5"
-      width="70%"
-      contenteditable="false"
-      class="${attachmentClassName}"
-      style="table-layout: fixed; background-color: #f6f5f4; border-radius: 3px; max-width: 400px; margin-bottom: 5px;"
-      >
-        <tr>
-        <td
-          style="
-            overflow: hidden;
-            vertical-align: middle;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-          "
-          >
-          <a
-            href="${attachment.url}"
-            target="_blank"
-            style="
-              font-weight: bold;
-              font-size: 13px;
-            "
-            >
-            <span
-              style="
-                display: inline-block;
-                width: 12px;
-                height: 16px;
-                background-image: url('${iconUrl}/${getIcon(attachment.name)}.png');
-                background-repeat: no-repeat;
-                background-size: 100%;
-                background-position: center;
-                vertical-align: middle;
-                margin-right: 5px;
-              "></span>${attachment.name}
-          </a>
-        </td>
-        <td width="16">
-          <button
-            type="button"
-            title="Remove Briskine attachment"
-            style="display: none;"
-            ></button>
-        </td>
-      </tr>
-    </table>
+  const container = document.createElement('div')
+  container.setAttribute('contenteditable', 'false')
+  container.className = attachmentClassName
+  container.style.cssText = `
+    display: flex;
+    align-items: center;
+    width: 70%;
+    max-width: 400px;
+    padding: 5px;
+    margin-bottom: 5px;
+    background-color: #f6f5f4;
+    border-radius: 3px;
   `
+
+  const a = document.createElement('a')
+  a.href = getSafeUrl(attachment.url)
+  a.target = '_blank'
+  a.rel = 'noopener noreferrer'
+  a.style.cssText = `
+    font-weight: bold;
+    font-size: 13px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  `
+
+  const icon = document.createElement('span')
+  icon.style.cssText = `
+    display: inline-block;
+    vertical-align: middle;
+    width: 12px;
+    height: 16px;
+    margin-right: 5px;
+    background-image: url('${iconUrl}/${getIcon(attachment.name)}.png');
+    background-repeat: no-repeat;
+    background-size: 100%;
+    background-position: center;
+  `
+
+  a.appendChild(icon)
+  a.appendChild(document.createTextNode(attachment.name))
+  container.appendChild(a)
+
+  const button = document.createElement('button')
+  button.type = 'button'
+  button.title = 'Remove Briskine attachment'
+  button.style.cssText = `
+    display: none;
+    margin-left: auto;
+  `
+
+  container.appendChild(button)
+
+  return container.outerHTML
 }
 
 export function addAttachments (template = '', attachments = []) {
@@ -127,9 +141,7 @@ export function addAttachments (template = '', attachments = []) {
   }
 
   const attachmentsMarkup = attachments
-    .map((attachment) => {
-      return getAttachmentMarkup(attachment)
-    })
+    .map(getAttachmentMarkup)
     .join('')
 
   return `${template}<br>${attachmentsMarkup}<br>`
@@ -137,8 +149,11 @@ export function addAttachments (template = '', attachments = []) {
 
 function clickAttachment (e) {
   const $attachment = e?.target?.closest?.(`.${attachmentClassName}`)
-  // allow right-click
-  if (!$attachment || e.button !== 0) {
+  if (
+    !$attachment
+    // allow right-click
+    || e.button !== 0
+  ) {
     return
   }
 

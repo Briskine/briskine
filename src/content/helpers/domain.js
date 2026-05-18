@@ -1,4 +1,11 @@
-// domain handlebars helper
+/*
+ * DEPRECATED
+ * Legacy {{domain}} helper
+ *
+ * extracts and prettifies the domain name from an email address
+ *
+ */
+
 function underscored (str) {
   return str.replace(/([a-z\d])([A-Z]+)/g, '$1_$2').replace(/[-\s]+/g, '_').toLowerCase().trim()
 }

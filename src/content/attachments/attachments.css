@@ -1,10 +1,6 @@
 /* global styles for attachments
  */
 
-[contenteditable=true] .briskine-attachment:hover {
-  background-color: #e9eceb !important;
-}
-
 .briskine-attachment button {
   padding: 0 5px;
   height: 16px;
@@ -20,6 +16,10 @@
 
   color: #333;
   vertical-align: middle;
+}
+
+[contenteditable=true] .briskine-attachment:hover {
+  background-color: #e9eceb !important;
 }
 
 [contenteditable=true] .briskine-attachment:hover button {

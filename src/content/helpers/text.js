@@ -4,12 +4,13 @@ export default function text (str = '', method, ...args) {
   if (
     typeof str !== 'string'
     || typeof method !== 'string'
+    || !Object.hasOwn(String.prototype, method)
     || !(String.prototype[method] instanceof Function)
   ) {
     return ''
   }
 
   // last argument is the handlebars options object
-  const params = args.slice(0, args.length - 1)
+  const params = args.slice(0, -1)
   return String.prototype[method].apply(str, params)
 }
