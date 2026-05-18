@@ -79,28 +79,18 @@ function getSafeUrl (url) {
 }
 
 function getAttachmentMarkup (attachment = {}) {
-  const table = document.createElement('table')
-  table.setAttribute('contenteditable', 'false')
-  table.className = attachmentClassName
-  table.style.cssText = `
-    table-layout: fixed;
+  const container = document.createElement('div')
+  container.setAttribute('contenteditable', 'false')
+  container.className = attachmentClassName
+  container.style.cssText = `
+    display: flex;
+    align-items: center;
     width: 70%;
     max-width: 400px;
+    padding: 5px;
     margin-bottom: 5px;
     background-color: #f6f5f4;
     border-radius: 3px;
-    border-collapse: separate;
-    border-spacing: 5px;
-  `
-
-  const tr = document.createElement('tr')
-
-  const tdName = document.createElement('td')
-  tdName.style.cssText = `
-    overflow: hidden;
-    vertical-align: middle;
-    text-overflow: ellipsis;
-    white-space: nowrap;
   `
 
   const a = document.createElement('a')
@@ -109,10 +99,13 @@ function getAttachmentMarkup (attachment = {}) {
   a.style.cssText = `
     font-weight: bold;
     font-size: 13px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   `
 
-  const span = document.createElement('span')
-  span.style.cssText = `
+  const icon = document.createElement('span')
+  icon.style.cssText = `
     display: inline-block;
     width: 12px;
     height: 16px;
@@ -124,24 +117,21 @@ function getAttachmentMarkup (attachment = {}) {
     vertical-align: middle;
   `
 
-  a.appendChild(span)
+  a.appendChild(icon)
   a.appendChild(document.createTextNode(attachment.name))
-  tdName.appendChild(a)
-
-  const tdBtn = document.createElement('td')
-  tdBtn.style.width = '16px'
+  container.appendChild(a)
 
   const button = document.createElement('button')
   button.type = 'button'
   button.title = 'Remove Briskine attachment'
-  button.style.display = 'none'
+  button.style.cssText = `
+    display: none;
+    margin-left: auto;
+  `
 
-  tdBtn.appendChild(button)
-  tr.appendChild(tdName)
-  tr.appendChild(tdBtn)
-  table.appendChild(tr)
+  container.appendChild(button)
 
-  return table.outerHTML
+  return container.outerHTML
 }
 
 export function addAttachments (template = '', attachments = []) {
@@ -160,8 +150,11 @@ export function addAttachments (template = '', attachments = []) {
 
 function clickAttachment (e) {
   const $attachment = e?.target?.closest?.(`.${attachmentClassName}`)
-  // allow right-click
-  if (!$attachment || e.button !== 0) {
+  if (
+    !$attachment
+    // allow right-click
+    || e.button !== 0
+  ) {
     return
   }
 
