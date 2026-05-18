@@ -96,6 +96,7 @@ function getAttachmentMarkup (attachment = {}) {
   const a = document.createElement('a')
   a.href = getSafeUrl(attachment.url)
   a.target = '_blank'
+  a.rel = 'noopener noreferrer'
   a.style.cssText = `
     font-weight: bold;
     font-size: 13px;
@@ -107,6 +108,7 @@ function getAttachmentMarkup (attachment = {}) {
   const icon = document.createElement('span')
   icon.style.cssText = `
     display: inline-block;
+    vertical-align: middle;
     width: 12px;
     height: 16px;
     margin-right: 5px;
@@ -114,7 +116,6 @@ function getAttachmentMarkup (attachment = {}) {
     background-repeat: no-repeat;
     background-size: 100%;
     background-position: center;
-    vertical-align: middle;
   `
 
   a.appendChild(icon)
@@ -140,9 +141,7 @@ export function addAttachments (template = '', attachments = []) {
   }
 
   const attachmentsMarkup = attachments
-    .map((attachment) => {
-      return getAttachmentMarkup(attachment)
-    })
+    .map(getAttachmentMarkup)
     .join('')
 
   return `${template}<br>${attachmentsMarkup}<br>`
