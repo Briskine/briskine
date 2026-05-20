@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Briskine: Email templates for Gmail™",
-  "version": "",
+  "version": "1.0.0",
   "description": "Write emails faster! Increase your productivity with templates and keyboard shortcuts on Gmail™, Outlook, or LinkedIn.",
   "short_name": "Briskine",
   "icons": {
@@ -18,7 +18,8 @@
     "contextMenus",
     "storage",
     "scripting",
-    "unlimitedStorage"
+    "unlimitedStorage",
+    "sidePanel"
   ],
   "host_permissions": [
     "https://*/*",
@@ -52,7 +53,9 @@
       "icons/icon-32.png",
       "icons/icon-32-loggedout.png",
       "icons/icon-48.png",
-      "icons/icon-48-loggedout.png"
+      "icons/icon-48-loggedout.png",
+      "sidepanel/main.html",
+      "sidepanel/sidepanel.js"
     ],
     "matches": [
       "https://*/*",
@@ -60,6 +63,9 @@
     ],
     "use_dynamic_url": true
   }],
+  "side_panel": {
+    "default_path": "sidepanel/main.html"
+  },
   "sandbox": {
     "pages": ["sandbox/sandbox.html"]
   },

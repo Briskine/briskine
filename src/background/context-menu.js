@@ -13,6 +13,7 @@ import debug from '../debug.js'
 
 const saveAsTemplateMenu = 'saveAsTemplate'
 const openDialogMenu = 'openDialog'
+const openSidebar = 'openSidebar'
 const signInMenu = 'signIn'
 const parentMenu = 'briskineMenu'
 const separatorMenu = 'mainSeparator'
@@ -93,6 +94,12 @@ async function clickContextMenu (info = {}, tab = {}) {
 
   if (info.menuItemId === openDialogMenu) {
     return trigger(eventShowDialog, {}, tab, info.frameId)
+  }
+
+  if (info.menuItemId === openSidebar) {
+    browser.sidePanel.open({ tabId: tab.id })
+
+    // return trigger(eventShowDialog, {}, tab, info.frameId)
   }
 
   if (info.menuItemId === signInMenu) {
@@ -192,6 +199,14 @@ async function setupContextMenus () {
     title: 'Open Briskine dialog',
     parentId: parentMenu,
     id: openDialogMenu,
+  })
+
+  menus.push({
+    contexts: ['editable'],
+    documentUrlPatterns: documentUrlPatterns,
+    title: 'Open Side-bar',
+    parentId: parentMenu,
+    id: openSidebar,
   })
 
   menus.push(getInsertTemplatesMenu())

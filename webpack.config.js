@@ -97,6 +97,8 @@ function extensionConfig ({ mode, safari, manifest, firebaseConfig}) {
         { from: 'src/popup/popup.html', to: 'popup/' },
         { from: 'src/icons/', to: 'icons/' },
         { from: 'src/content/sandbox/sandbox.html', to: 'sandbox/' },
+        { from: 'src/content/sandbox/sandbox.html', to: 'sandbox/' },
+        { from: 'src/sidepanel/main.html', to: 'sidepanel/' },
         { from: 'LICENSE', to: '' }
       ]
     }),
@@ -130,6 +132,7 @@ function extensionConfig ({ mode, safari, manifest, firebaseConfig}) {
     entry: {
       background: './src/background/background.js',
       popup: './src/popup/popup.js',
+      sidepanel: './src/sidepanel/sidepanel.js',
       content: {
         import: './src/content/index.js',
         // force iife
