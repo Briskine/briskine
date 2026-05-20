@@ -95,8 +95,10 @@ function initOnFocus (e) {
 }
 
 let startupRetries = 0
-let startupDelay = 0
-const defaultStartupDelay = 500
+const defaultStartupDelay = 1000
+// delay loading in iframes,
+// in case they document.write after we start.
+let startupDelay = window !== window.top ? defaultStartupDelay : 0
 const maxStartupRetries = 10
 const loadedProp = '__briskineLoaded'
 
