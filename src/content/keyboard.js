@@ -71,6 +71,9 @@ async function keyboardAutocomplete (e) {
 
   autocomplete({
     template,
+  }).catch((err) => {
+    // eslint-disable-next-line no-console
+    console.warn('[Briskine] autocomplete (keyboard) threw:', err)
   })
 }
 

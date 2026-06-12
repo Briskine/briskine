@@ -88,9 +88,18 @@ export default async function parseTemplate (template = '', data = {}) {
       .map((t) => ({ shortcut: t.shortcut, body: t.body }))
   }
 
-  if (MANIFEST === '2') {
-    return compileTemplateLegacy(ast, context, partials)
+  try {
+    if (MANIFEST === '2') {
+      return await compileTemplateLegacy(ast, context, partials)
+    }
+    return await compileTemplate(ast, context, partials)
+  } catch (err) {
+    // sandbox is unreachable (eg. Brave/Chromium 149 cannot load the sandbox
+    // iframe). returning the raw template body so the template at least
+    // renders into the editor — variables will appear as raw {{...}} text,
+    // which is preferable to silently dropping the insert.
+    // eslint-disable-next-line no-console
+    console.warn('[Briskine] template compilation failed, returning raw body:', err.message || err)
+    return template
   }
-
-  return compileTemplate(ast, context, partials)
 }

@@ -6,40 +6,137 @@ function Deferred () {
   return {promise, reject, resolve}
 }
 
-export default function Messenger (scope = '') {
-  const handshakeEvent = `briskine-messenger-connect-${scope}`
+function createId () {
+  return Math.random().toString(36).slice(2) + Date.now().toString(36)
+}
 
-  let channel
-  let port
-  const deferreds = {}
+export default function Messenger (scope = '') {
+  const instanceId = createId()
+  let targetWindow = null
+  let remoteInstanceId = null
+  let connected = false
+  let connectedDeferred = Deferred()
+  const pending = new Map()
   const actions = {}
 
-  // client-only
-  const handleHandshake = async function (e) {
-    if (e?.data?.type === handshakeEvent) {
-      port = e.ports[0]
-      port.onmessage = onMessage
-      port.postMessage({ type: handshakeEvent })
-      self.removeEventListener('message', handleHandshake)
+  function onMessage (e) {
+    const data = e.data
+    if (!data || data._briskine !== true) {
+      return
+    }
+    if (data.scope !== scope) {
+      return
+    }
+    if (data.from === instanceId) {
+      return
+    }
+
+    if (data.kind === 'handshake') {
+      targetWindow = e.source || self
+      remoteInstanceId = data.from
+      targetWindow.postMessage({
+        _briskine: true,
+        scope,
+        from: instanceId,
+        to: data.from,
+        kind: 'handshake-ack',
+      }, '*')
+      return
+    }
+
+    if (data.kind === 'handshake-ack') {
+      if (data.to !== instanceId) {
+        return
+      }
+      remoteInstanceId = data.from
+      connected = true
+      connectedDeferred.resolve()
+      return
+    }
+
+    if (data.to !== instanceId) {
+      return
+    }
+
+    if (data.kind === 'request') {
+      handleRequest(data)
+      return
+    }
+
+    if (data.kind === 'response') {
+      handleResponse(data)
+      return
     }
   }
 
-  self.addEventListener('message', handleHandshake)
+  async function handleRequest (data) {
+    const {id, type, options} = data
+    const message = {id}
+    if (actions[type]) {
+      try {
+        message.response = await actions[type](options)
+      } catch (err) {
+        message.error = (err && err.message) ? err.message : String(err)
+      }
+    }
 
-  // server-only
-  const connect = function (client) {
-    self.removeEventListener('message', handleHandshake)
+    targetWindow.postMessage({
+      _briskine: true,
+      scope,
+      from: instanceId,
+      to: data.from,
+      kind: 'response',
+      ...message,
+    }, '*')
+  }
 
-    channel = new MessageChannel()
-    port = channel.port1
-    port.onmessage = onMessage
+  function handleResponse (data) {
+    const {id, response, error} = data
+    const deferred = pending.get(id)
+    if (!deferred) {
+      return
+    }
 
-    const res = Deferred()
-    deferreds[handshakeEvent] = [res]
+    pending.delete(id)
+    if (error !== undefined && error !== null) {
+      deferred.reject(error)
+    } else {
+      deferred.resolve(response)
+    }
+  }
 
-    client.postMessage({type: handshakeEvent}, '*', [channel.port2])
+  self.addEventListener('message', onMessage)
 
-    return res.promise
+  const connect = function (clientWindow) {
+    targetWindow = clientWindow
+    connectedDeferred = Deferred()
+
+    let retries = 20
+    function sendHandshake () {
+      targetWindow.postMessage({
+        _briskine: true,
+        scope,
+        from: instanceId,
+        kind: 'handshake',
+      }, '*')
+    }
+
+    sendHandshake()
+
+    const interval = setInterval(() => {
+      if (connected) {
+        clearInterval(interval)
+        return
+      }
+      if (--retries <= 0) {
+        clearInterval(interval)
+        connectedDeferred.reject(new Error(`Messenger "${scope}" handshake timeout`))
+        return
+      }
+      sendHandshake()
+    }, 50)
+
+    return connectedDeferred.promise
   }
 
   const respond = function (type = '', fn = () => {}) {
@@ -47,46 +144,27 @@ export default function Messenger (scope = '') {
   }
 
   const request = function (type = '', options = {}) {
-    port.postMessage({
-      type: type,
-      options: options,
-    })
-
-    const res = Deferred()
-    deferreds[type] = deferreds[type] || []
-    deferreds[type].push(res)
-
-    return res.promise
-  }
-
-  async function onMessage (e) {
-    const {type} = e.data
-    if (actions[type]) {
-      const message = {}
-      try {
-        message.response = await actions[type](e.data.options)
-      } catch (err) {
-        message.error = err
-      }
-
-      // send response
-      return port.postMessage({
-        type: type,
-        ...message
-      })
+    if (!connected) {
+      return Promise.reject(new Error(`Messenger "${scope}" not connected`))
     }
 
-    // resolve local response
-    if (deferreds[type]?.length) {
-      const {response, error} = e.data
-      if (error) {
-        return deferreds[type].forEach((d) => d.reject(error))
-      }
+    const id = createId()
+    const deferred = Deferred()
+    pending.set(id, deferred)
 
-      deferreds[type].forEach((d) => d.resolve(response))
-      deferreds[type] = null
-    }
+    targetWindow.postMessage({
+      _briskine: true,
+      scope,
+      from: instanceId,
+      to: remoteInstanceId,
+      kind: 'request',
+      id,
+      type,
+      options,
+    }, '*')
+
+    return deferred.promise
   }
 
-  return { connect, request, respond }
+  return {connect, request, respond}
 }

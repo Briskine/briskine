@@ -25,10 +25,15 @@ export async function setup () {
   pageScript.src = path + `?v=${Date.now()}`
   pageScript.type = 'module'
   pageScript.onload = async function () {
-    // create the message channel when the iframe loads,
+    // create the message channel when the script loads,
     // for subsequent startup retries (eg. in dynamically created iframes).
     pageMessengerServer = Messenger('page')
-    await pageMessengerServer.connect(window)
+    try {
+      await pageMessengerServer.connect(window)
+    } catch (err) {
+      reject(err)
+      return
+    }
     this.remove()
     resolve()
   }

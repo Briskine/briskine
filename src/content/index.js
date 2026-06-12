@@ -61,6 +61,9 @@ async function init () {
     return false
   }
 
+  // eslint-disable-next-line no-console
+  console.info('[Briskine] init starting on', window.location.href)
+
   const components = await Promise.allSettled([
     setupStore(),
     setupKeyboard(settings),
@@ -75,9 +78,14 @@ async function init () {
 
   components.forEach((c) => {
     if (c.status === 'rejected') {
+      // eslint-disable-next-line no-console
+      console.warn('[Briskine] component setup rejected:', c.reason)
       debug(['component', c, c.reason], 'error')
     }
   })
+
+  // eslint-disable-next-line no-console
+  console.info('[Briskine] init complete. components:', components.map((c) => c.status))
 
   // update the content components if settings change
   settingsCache = {...settings}

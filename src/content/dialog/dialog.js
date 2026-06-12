@@ -212,11 +212,18 @@ function Dialog (originalProps) {
     }
 
     element.addEventListener('b-dialog-insert', async (e) => {
+      // eslint-disable-next-line no-console
+      console.info('[Briskine] b-dialog-insert event received', e.detail?.shortcut, e.detail?.title)
       await restoreSelection()
 
-      autocomplete({
-        template: e.detail,
-      })
+      try {
+        await autocomplete({
+          template: e.detail,
+        })
+      } catch (err) {
+        // eslint-disable-next-line no-console
+        console.warn('[Briskine] autocomplete threw:', err)
+      }
 
       e.stopImmediatePropagation()
     })

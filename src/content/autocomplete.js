@@ -46,24 +46,51 @@ async function insertTemplate ({ html, text }) {
   for (const editor of editors) {
     try {
       const result = await editor(params)
+      // eslint-disable-next-line no-console
+      console.info('[Briskine] editor:', editor.name, '=>', result)
       if (result === true) {
         return true
       }
     } catch (err) {
-      await insertExecCommandTemplate(params)
+      // eslint-disable-next-line no-console
+      console.warn('[Briskine] editor error:', editor.name, err)
       debug(['insertTemplate', editor.name, err])
-      return true
+      // continue to next editor — don't stop the chain.
+      // this ensures that if a messenger-based editor (paste, beforeinput, quill1)
+      // fails because the page messenger is not connected, the chain still reaches
+      // direct-DOM editors (contentEditable, textfield) which don't need the messenger.
     }
+  }
+
+  // no editor matched or succeeded. try execCommand as last resort.
+  // eslint-disable-next-line no-console
+  console.warn('[Briskine] no editor matched, falling back to execCommand')
+  try {
+    await insertExecCommandTemplate(params)
+  } catch (err) {
+    // eslint-disable-next-line no-console
+    console.warn('[Briskine] execCommand fallback failed', err)
+    debug(['insertExecCommandTemplate', err])
   }
 
   return false
 }
 
 export default async function autocomplete ({ template }) {
+  // eslint-disable-next-line no-console
+  console.info('[Briskine] autocomplete start', {shortcut: template?.shortcut, title: template?.title})
+
   const element = getActiveElement()
+  // eslint-disable-next-line no-console
+  console.info('[Briskine] active element:', element?.tagName, element?.className, 'isContentEditable=', element?.isContentEditable)
+
   const withAttachments = addAttachments(template.body, template.attachments)
   const data = await run('data', { element })
+  // eslint-disable-next-line no-console
+  console.info('[Briskine] before parseTemplate')
   const html = await parseTemplate(withAttachments, data)
+  // eslint-disable-next-line no-console
+  console.info('[Briskine] parseTemplate done. html length=', html?.length)
   const text = htmlToText(html)
 
   if (template.shortcut) {
@@ -77,6 +104,8 @@ export default async function autocomplete ({ template }) {
     text,
     html,
   })
+  // eslint-disable-next-line no-console
+  console.info('[Briskine] insertTemplate done')
 
   try {
     await selectFirstCursor({ text })
@@ -93,4 +122,6 @@ export default async function autocomplete ({ template }) {
   })
 
   await updateTemplateStats(template)
+  // eslint-disable-next-line no-console
+  console.info('[Briskine] autocomplete complete')
 }
