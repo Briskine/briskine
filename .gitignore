@@ -23,6 +23,8 @@ test/pages
 
 # firebase config, for firefox reviewers
 .firebase-config*.json
+.firebaserc
+.firebase/
 
 # playwright
 /test-results/

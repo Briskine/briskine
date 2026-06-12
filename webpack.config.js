@@ -243,11 +243,13 @@ export default async function (env) {
   }
 
   let firebaseConfig = defaultFirebaseConfig
-  if (env.mode !== 'development') {
-    const firebaseConfigFile = `./.firebase-config-${env.mode}.json`
-    try {
-      firebaseConfig = JSON.parse(fs.readFileSync(firebaseConfigFile, 'utf8'))
-    } catch {
+
+  const firebaseConfigFile = `./.firebase-config-${env.mode}.json`
+
+  try {
+    firebaseConfig = JSON.parse(fs.readFileSync(firebaseConfigFile, 'utf8'))
+  } catch {
+    if (env.mode !== 'development') {
       // needed for ci
       try {
         await firebaseTools.use(`gorgias-templates-${env.mode}`)
@@ -260,6 +262,7 @@ export default async function (env) {
         console.warn(err)
       }
     }
+    // in development mode, fall back to demo config if no staging config file exists
   }
 
   const params = {

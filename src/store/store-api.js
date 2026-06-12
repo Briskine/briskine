@@ -12,7 +12,6 @@ import {
 } from 'firebase/auth/web-extension'
 import {
   initializeFirestore,
-  connectFirestoreEmulator,
   collection,
   query,
   where,
@@ -22,6 +21,7 @@ import {
   or,
   limit,
   orderBy,
+  connectFirestoreEmulator,
 } from 'firebase/firestore/lite'
 
 import { functionsUrl }  from '../config.js'
@@ -43,7 +43,6 @@ const firebaseAuth = initializeAuth(firebaseApp, {
 })
 const db = initializeFirestore(firebaseApp, {})
 
-// development emulators
 if (ENV === 'development') {
   connectAuthEmulator(firebaseAuth, 'http://localhost:9099', { disableWarnings: true })
   connectFirestoreEmulator(db, 'localhost', 5002)

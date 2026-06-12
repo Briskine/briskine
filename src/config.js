@@ -10,10 +10,6 @@ export const websiteUrl = (() => {
 })()
 
 export const functionsUrl = (() => {
-  if (ENV === 'staging') {
-    return 'https://staging.briskine.com'
-  }
-
   if (ENV === 'production') {
     return 'https://app.briskine.com'
   }
