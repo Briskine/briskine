@@ -6,45 +6,25 @@
 // We use Channel Messaging to pass data from the content script context
 // to the sandbox context, compile the templates here, and send them back to the content script.
 // https://developer.mozilla.org/en-US/docs/Web/API/Channel_Messaging_API
+//
+// The Handlebars helpers (e.g. moment, cursor, text) are shared with the
+// in-content AST renderer via `../helpers/index.js`. This keeps the two
+// compilation paths behaviourally identical; the AST renderer is the new
+// default in `parse-template.js`, and this sandbox is only invoked as a
+// fallback when the template uses a feature the AST renderer does not yet
+// support.
 
 import {create  as handlebarsCreate} from 'handlebars'
 
 import {respond} from './sandbox-messenger-client.js'
 import { eventSandboxCompile } from '../../config.js'
 
-// legacy choice helper
-import choice from '../helpers/choice.js'
-
-import moment from '../helpers/moment.js'
-import domain from '../helpers/domain.js'
-import text from '../helpers/text.js'
-import list from '../helpers/list.js'
-import {capitalize, capitalizeAll} from '../helpers/capitalize.js'
-import or from '../helpers/or.js'
-import and from '../helpers/and.js'
-import compare from '../helpers/compare.js'
-import random from '../helpers/random.js'
-import cursor from '../helpers/cursor.js'
+import { sharedHelpers } from '../helpers/index.js'
 
 function getHandlebars (partials = []) {
   const hbs = handlebarsCreate()
 
-  hbs.registerHelper({
-    // legacy choice helper
-    choice,
-
-    and,
-    moment,
-    domain,
-    text,
-    list,
-    capitalize,
-    capitalizeAll,
-    or,
-    compare,
-    random,
-    cursor,
-  })
+  hbs.registerHelper(sharedHelpers)
 
   if (partials?.length) {
     partials.forEach((p) => {
