@@ -97,7 +97,17 @@ async function clickContextMenu (info = {}, tab = {}) {
   }
 
   if (info.menuItemId === openSidebar) {
-    browser.sidePanel.open({ tabId: tab.id })
+    if (browser.sidePanel) {
+      browser.sidePanel.open({ tabId: tab.id })
+    }
+
+    if (browser.sidebarAction) {
+      browser.sidebarAction.open()
+    }
+
+    if (browser.sidebar) {
+      browser.sidebar.open()
+    }
 
     // return trigger(eventShowDialog, {}, tab, info.frameId)
   }
@@ -201,13 +211,15 @@ async function setupContextMenus () {
     id: openDialogMenu,
   })
 
-  menus.push({
-    contexts: ['editable'],
-    documentUrlPatterns: documentUrlPatterns,
-    title: 'Open Side-bar',
-    parentId: parentMenu,
-    id: openSidebar,
-  })
+  if ((browser.sidePanel) || (browser.sidebarAction) || (browser.sidebar)) {
+    menus.push({
+      contexts: ['editable'],
+      documentUrlPatterns: documentUrlPatterns,
+      title: 'Open Side-bar',
+      parentId: parentMenu,
+      id: openSidebar,
+    })
+  }
 
   menus.push(getInsertTemplatesMenu())
 

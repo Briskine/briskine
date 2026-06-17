@@ -19,7 +19,8 @@
     "storage",
     "scripting",
     "unlimitedStorage",
-    "sidePanel"
+    "sidePanel",
+    "activeTab"
   ],
   "host_permissions": [
     "https://*/*",
@@ -65,6 +66,10 @@
   }],
   "side_panel": {
     "default_path": "sidepanel/main.html"
+  },
+  "sidebar_action": {
+    "default_title": "Briskine sidebar",
+    "default_panel": "sidepanel/main.html"
   },
   "sandbox": {
     "pages": ["sandbox/sandbox.html"]

@@ -59,6 +59,7 @@ function generateManifest ({ safari, mode, manifest }) {
     updatedManifestFile.browser_action = updatedManifestFile.action
     delete updatedManifestFile.action
     updatedManifestFile.content_security_policy = updatedManifestFile.content_security_policy.extension_pages
+    delete updatedManifestFile.side_panel
   }
 
   return new CopyWebpackPlugin({
