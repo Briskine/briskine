@@ -1,6 +1,13 @@
 import { expect, describe, it } from 'vitest'
+import { server } from 'vitest/browser'
 
 import {pageInsertPasteTemplate} from './editor-paste.js'
+
+// ckeditor5's core EmitterMixin recurses infinitely on Playwright's
+// webkit (WebKitGTK on Linux), even with a minimal plugin set and
+// regardless of how ckeditor5 is loaded/bundled. Not reproducible on
+// chromium, firefox, or real macOS Safari.
+const isWebkit = server.browser === 'webkit'
 
 async function setupProseMirror () {
   let containerId = 'prosemirror-container'
@@ -160,7 +167,7 @@ describe('editor Paste', function () {
     destroy()
   })
 
-  it('should insert plain text in ckeditor', async () => {
+  it.skipIf(isWebkit)('should insert plain text in ckeditor', async () => {
     const [editor, destroy] = await setupCkEditor()
     const template = 'Kind regards'
     await pageInsertPasteTemplate({
@@ -171,7 +178,7 @@ describe('editor Paste', function () {
     destroy()
   })
 
-  it('should insert rich text in ckeditor', async () => {
+  it.skipIf(isWebkit)('should insert rich text in ckeditor', async () => {
     const [editor, destroy] = await setupCkEditor()
     const template = '<div><strong>Image</strong> <img src="#"></div>'
     await pageInsertPasteTemplate({
