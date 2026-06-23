@@ -60,6 +60,11 @@ function generateManifest ({ safari, mode, manifest }) {
     delete updatedManifestFile.action
     updatedManifestFile.content_security_policy = updatedManifestFile.content_security_policy.extension_pages
     delete updatedManifestFile.side_panel
+    updatedManifestFile.permissions = updatedManifestFile.permissions.filter(permissionItem => permissionItem !== "sidePanel")
+  } else 
+  if (manifest === '3') {
+    delete updatedManifestFile.sidebar_action
+    updatedManifestFile.permissions = updatedManifestFile.permissions.filter(permissionItem => permissionItem !== "activeTab")
   }
 
   return new CopyWebpackPlugin({
