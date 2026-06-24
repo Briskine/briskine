@@ -14,7 +14,7 @@ function isNotAvailableError (err) {
 
 let keyboardShortcut = ''
 
-function App () {
+function Sidepanel () {
   // eslint-disable-next-line no-unassigned-vars
   let element
 
@@ -56,4 +56,4 @@ function App () {
   )
 }
 
-render(() => (<App />), document.getElementById('sidepanel'))
+render(() => (<Sidepanel />), document.getElementById('sidepanel'))
