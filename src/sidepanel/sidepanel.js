@@ -11,7 +11,7 @@ function isNotAvailableError (err) {
   return err?.message?.includes?.('Receiving end does not exist')
 }
 
-let keyboardShortcut = {}
+let keyboardShortcut = ''
 
 function App () {
   // eslint-disable-next-line no-unassigned-vars
