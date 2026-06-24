@@ -106,7 +106,7 @@ function extensionConfig ({ mode, safari, manifest, firebaseConfig}) {
         { from: 'src/popup/popup.html', to: 'popup/' },
         { from: 'src/icons/', to: 'icons/' },
         { from: 'src/content/sandbox/sandbox.html', to: 'sandbox/' },
-        { from: 'src/sidepanel/main.html', to: 'sidepanel/' },
+        { from: 'src/sidepanel/sidepanel.html', to: 'sidepanel/' },
         { from: 'LICENSE', to: '' }
       ]
     }),

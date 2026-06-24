@@ -54,7 +54,7 @@
       "icons/icon-32-loggedout.png",
       "icons/icon-48.png",
       "icons/icon-48-loggedout.png",
-      "sidepanel/main.html",
+      "sidepanel/sidepanel.html",
       "sidepanel/sidepanel.js"
     ],
     "matches": [
@@ -64,7 +64,7 @@
     "use_dynamic_url": true
   }],
   "side_panel": {
-    "default_path": "sidepanel/main.html"
+    "default_path": "sidepanel/sidepanel.html"
   },
   "sandbox": {
     "pages": ["sandbox/sandbox.html"]
