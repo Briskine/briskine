@@ -3,6 +3,7 @@ import {onMount} from 'solid-js'
 import browser from 'webextension-polyfill'
 
 import DialogContent from '../content/dialog/dialog-content.js'
+import {setup as setupStore} from '../store/store-content.js'
 import {eventInsertTemplate} from '../config.js'
 
 import debug from '../debug.js'
@@ -18,6 +19,8 @@ function App () {
   let element
 
   onMount(() => {
+    setupStore()
+
     element.addEventListener('b-dialog-insert', async (e) => {
       e.stopImmediatePropagation()
 
