@@ -317,9 +317,16 @@ input[type=search]:focus {
   border-radius: var(--radius) var(--radius) 0 0;
 
   visibility: hidden;
-  opacity: 0;
+}
+
+/*
+ * transition only when used in popover,
+ * to avoid issue with extra bottom margin caused by translate in sidebar.
+ */
+.briskine-dialog-popover .dialog-modal {
   translate: 0 30%;
   scale: 0.95;
+  opacity: 0;
   transition: all .075s ease-in;
 }
 
