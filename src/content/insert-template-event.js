@@ -13,6 +13,11 @@ function insertTemplate ({ template = {} }) {
     return
   }
 
+  // restore focus to the cached element,
+  // since it may not be the currently focused one
+  // (eg. when triggered from the sidebar).
+  element.focus({ preventScroll: true })
+
   autocomplete({
     template: template,
   })

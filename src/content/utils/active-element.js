@@ -15,6 +15,9 @@ export function getActiveElement (live = false) {
     // not the cached one.
     !live
     && activeElement
+    // the cached element might have been removed from the dom
+    // since it was last focused.
+    && activeElement.isConnected
   ) {
     return activeElement
   }
