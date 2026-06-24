@@ -32,12 +32,6 @@ function generateManifest ({ safari, mode, manifest }) {
   // get version from package
   updatedManifestFile.version = packageFile.version
 
-  // safari manifest
-  if (safari) {
-    updatedManifestFile.description = safariManifestDescription
-    updatedManifestFile.background.persistent = false
-  }
-
   // source maps
   if (mode === 'development') {
     updatedManifestFile.web_accessible_resources[0].resources = updatedManifestFile.web_accessible_resources[0].resources.concat(
@@ -59,12 +53,21 @@ function generateManifest ({ safari, mode, manifest }) {
     updatedManifestFile.browser_action = updatedManifestFile.action
     delete updatedManifestFile.action
     updatedManifestFile.content_security_policy = updatedManifestFile.content_security_policy.extension_pages
+
+    // sidebar
+    updatedManifestFile.sidebar_action = {
+      'default_title': 'Briskine',
+      'default_panel': updatedManifestFile.side_panel.default_path,
+    }
     delete updatedManifestFile.side_panel
-    updatedManifestFile.permissions = updatedManifestFile.permissions.filter(permissionItem => permissionItem !== "sidePanel")
-  } else 
-  if (manifest === '3') {
-    delete updatedManifestFile.sidebar_action
-    updatedManifestFile.permissions = updatedManifestFile.permissions.filter(permissionItem => permissionItem !== "activeTab")
+    updatedManifestFile.permissions = updatedManifestFile.permissions.filter(permissionItem => permissionItem !== 'sidePanel')
+
+    // safari manifest
+    if (safari) {
+      updatedManifestFile.description = safariManifestDescription
+      // disable sidebar
+      delete updatedManifestFile.sidebar_action
+    }
   }
 
   return new CopyWebpackPlugin({
@@ -102,7 +105,6 @@ function extensionConfig ({ mode, safari, manifest, firebaseConfig}) {
       patterns: [
         { from: 'src/popup/popup.html', to: 'popup/' },
         { from: 'src/icons/', to: 'icons/' },
-        { from: 'src/content/sandbox/sandbox.html', to: 'sandbox/' },
         { from: 'src/content/sandbox/sandbox.html', to: 'sandbox/' },
         { from: 'src/sidepanel/main.html', to: 'sidepanel/' },
         { from: 'LICENSE', to: '' }
