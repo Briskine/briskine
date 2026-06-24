@@ -4,19 +4,21 @@
     <meta charset="utf-8">
     <title>Briskine</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <style type="text/css" >
-      .briskine-dialog {
-        /* height: 100% !important; */
-        display: block !important;
+    <style type="text/css">
+      body {
+        margin: 0;
       }
-      #app, #app-body {
+
+      html,
+      body,
+      #sidepanel,
+      #sidepanel .briskine-dialog {
         height: 100%;
-        width: 100%;
       }
     </style>
   </head>
   <body>
-    <div id="app" class="briskine-dialog"></div>
-    <script src="sidepanel.js" type="module"></script>    
+    <div id="sidepanel"></div>
+    <script src="sidepanel.js" type="module"></script>
   </body>
 </html>

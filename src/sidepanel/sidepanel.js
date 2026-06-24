@@ -44,7 +44,7 @@ function App () {
   })
 
   return (
-    <div id="app-body" ref={element}>
+    <div class="briskine-dialog" ref={element}>
       <DialogContent
         keyboardShortcut={keyboardShortcut}
         visible={true}
@@ -53,4 +53,4 @@ function App () {
   )
 }
 
-render(() => (<App />), document.getElementById('app'))
+render(() => (<App />), document.getElementById('sidepanel'))
