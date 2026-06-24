@@ -19,8 +19,7 @@
     "storage",
     "scripting",
     "unlimitedStorage",
-    "sidePanel",
-    "activeTab"
+    "sidePanel"
   ],
   "host_permissions": [
     "https://*/*",
