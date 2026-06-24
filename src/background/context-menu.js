@@ -104,12 +104,6 @@ async function clickContextMenu (info = {}, tab = {}) {
     if (browser.sidebarAction) {
       browser.sidebarAction.open()
     }
-
-    if (browser.sidebar) {
-      browser.sidebar.open()
-    }
-
-    // return trigger(eventShowDialog, {}, tab, info.frameId)
   }
 
   if (info.menuItemId === signInMenu) {
