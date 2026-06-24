@@ -295,6 +295,7 @@ export default function DialogContent (originalProps) {
               <DialogTemplates
                 loggedIn={loggedIn()}
                 loading={loading()}
+                visible={props.visible}
                 templates={templates()}
                 tags={tags()}
                 extensionData={extensionData()}
