@@ -28,6 +28,9 @@ function Sidepanel () {
 
       const template =  e.detail
       const [tab] = await browser.tabs.query({ active: true, currentWindow: true })
+      if (!tab) {
+        return
+      }
 
       try {
         await browser.tabs.sendMessage(
