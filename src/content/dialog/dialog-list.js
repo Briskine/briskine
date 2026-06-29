@@ -37,7 +37,7 @@ export default function DialogList (originalProps) {
     // and current item not in list.
     if (
       shortlist().length
-      && !shortlist().find((item) => item.id === active)
+      && !shortlist().find((item) => item.id === active())
     ) {
       const id = shortlist()[0].id
       setActive(id)
