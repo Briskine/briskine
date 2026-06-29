@@ -104,6 +104,8 @@ async function clickContextMenu (info = {}, tab = {}) {
     if (browser.sidebarAction) {
       browser.sidebarAction.open()
     }
+
+    return
   }
 
   if (info.menuItemId === signInMenu) {
