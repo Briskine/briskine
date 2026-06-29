@@ -16,7 +16,7 @@ function Loader () {
   )
 }
 
-export default function DialogTemplates (originalProps) {
+export default function DialogListFull (originalProps) {
   const props = mergeProps({
     ref: null,
     loggedIn: null,
