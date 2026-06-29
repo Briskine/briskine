@@ -27,42 +27,31 @@ export default function DialogListFull (originalProps) {
     extensionData: {},
   }, originalProps)
 
-  // sort templates only on show, so the list doesn't
-  // re-order itself while visible.
-  // (after inserting a template, which doesn't look great in the sidebar).
-  const [sortCriteria, setSortCriteria] = createSignal({})
-  let captured = false
+  // memo dialogSort so _templates only reruns when the sort settings change,
+  // not on every extensionData update (eg. after inserts).
+  const dialogSort = createMemo(() => props.extensionData.dialogSort)
+
+  // cache lastUsed so the list doesn't re-order after inserts.
+  const [cachedLastUsed, setCachedLastUsed] = createSignal(undefined)
 
   createEffect(() => {
-    // read both, so a logout/login cycle resets the capture too.
+    // read both, so a logout/login cycle resets the cache too.
     const shown = (
       props.visible === true
       && props.loading === false
     )
 
-    // reset when hidden
     if (!shown) {
-      captured = false
+      setCachedLastUsed(undefined)
       return
     }
 
-    if (captured) {
-      return
-    }
-
-    captured = true
-    setSortCriteria({
-      sort: props.extensionData.dialogSort,
-      lastUsed: props.extensionData.templatesLastUsed,
-    })
+    // setter callback is outside reactive tracking
+    setCachedLastUsed(prev => prev || props.extensionData.templatesLastUsed)
   })
 
   const _templates = createMemo(() => {
-    return sortTemplates(
-      props.list,
-      sortCriteria().sort,
-      sortCriteria().lastUsed,
-    )
+    return sortTemplates(props.list, dialogSort(), cachedLastUsed())
   })
 
   return (
