@@ -207,9 +207,9 @@ async function setupContextMenus () {
 
   if (browser.sidePanel || browser.sidebarAction) {
     menus.push({
-      contexts: ['editable'],
+      contexts: ['all'],
       documentUrlPatterns: documentUrlPatterns,
-      title: 'Open Sidebar',
+      title: 'Open sidebar',
       parentId: parentMenu,
       id: openSidebar,
     })
