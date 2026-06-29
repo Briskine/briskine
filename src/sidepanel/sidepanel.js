@@ -8,6 +8,8 @@ import {eventInsertTemplate} from '../config.js'
 
 import debug from '../debug.js'
 
+import './sidepanel.css'
+
 function isNotAvailableError (err) {
   return err?.message?.includes?.('Receiving end does not exist')
 }

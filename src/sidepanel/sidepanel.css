@@ -1,0 +1,27 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+}
+
+html,
+body,
+#sidepanel,
+#sidepanel .briskine-dialog {
+  height: 100%;
+}
+
+#sidepanel .dialog-search {
+  padding: 3px;
+}
+
+#sidepanel .dialog-search input {
+  border-radius: var(--radius-small);
+  border: 2px solid transparent;
+}
+
+#sidepanel .dialog-search input:focus {
+  border-color: var(--primary-color);
+}

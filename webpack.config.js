@@ -178,7 +178,7 @@ function extensionConfig ({ mode, safari, manifest, firebaseConfig}) {
           ]
         },
         {
-          test: /(\/popup\/|\/content\/attachments\/).+.(css)$/i,
+          test: /(\/sidepanel\/|\/popup\/|\/content\/attachments\/).+.(css)$/i,
           use: [
               MiniCssExtractPlugin.loader,
               'css-loader'
