@@ -11,7 +11,7 @@ export default function DialogList (originalProps) {
   const props = mergeProps({
     ref: null,
     loggedIn: null,
-    showTags: true,
+    extensionData: {},
     tags: [],
     list: [],
     callbackSelectItem: () => {},
@@ -153,7 +153,7 @@ export default function DialogList (originalProps) {
                 <p class="text-secondary">
                   {t._body_plaintext.slice(0, 100)}
                 </p>
-                <Show when={props.showTags && t.tags && t.tags.length}>
+                <Show when={props.extensionData.dialogTags && t.tags && t.tags.length}>
                   <ul class="dialog-tags">
                     <For each={t.tags}>
                       {(tagId) => {

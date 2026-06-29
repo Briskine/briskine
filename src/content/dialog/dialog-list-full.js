@@ -23,7 +23,7 @@ export default function DialogListFull (originalProps) {
     loading: null,
     visible: true,
     tags: [],
-    templates: [],
+    list: [],
     extensionData: {},
   }, originalProps)
 
@@ -59,7 +59,7 @@ export default function DialogListFull (originalProps) {
 
   const _templates = createMemo(() => {
     return sortTemplates(
-      props.templates,
+      props.list,
       sortCriteria().sort,
       sortCriteria().lastUsed,
     )
@@ -75,7 +75,7 @@ export default function DialogListFull (originalProps) {
         <DialogList
           loggedIn={props.loggedIn}
           list={_templates()}
-          showTags={props.extensionData.dialogTags}
+          extensionData={props.extensionData}
           tags={props.tags}
           callbackSelectItem={props.callbackSelectItem}
           ref={props.ref}

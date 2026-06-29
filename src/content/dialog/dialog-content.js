@@ -294,20 +294,21 @@ export default function DialogContent (originalProps) {
             fallback={(
               <DialogListFull
                 loggedIn={loggedIn()}
-                loading={loading()}
-                visible={props.visible}
-                templates={templates()}
-                tags={tags()}
+                list={templates()}
                 extensionData={extensionData()}
+                tags={tags()}
                 callbackSelectItem={callbackSelectItem}
                 ref={elementDialogList}
+
+                loading={loading()}
+                visible={props.visible}
                 />
             )}
             >
             <DialogList
               loggedIn={loggedIn()}
               list={searchResults()}
-              showTags={extensionData().dialogTags}
+              extensionData={extensionData()}
               tags={tags()}
               callbackSelectItem={callbackSelectItem}
               ref={elementDialogList}
