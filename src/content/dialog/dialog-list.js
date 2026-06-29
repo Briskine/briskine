@@ -49,10 +49,12 @@ export default function DialogList (originalProps) {
   })
 
   function scrollToActive (id = '') {
-    const newActive = element.querySelector(`[data-id="${id}"]`)
-    if (newActive) {
-      newActive.scrollIntoView({block: 'nearest'})
-    }
+    requestAnimationFrame(() => {
+      const newActive = element?.querySelector(`[data-id="${id}"]`)
+      if (newActive) {
+        newActive.scrollIntoView({block: 'nearest'})
+      }
+    })
   }
 
   let lastX = 0
