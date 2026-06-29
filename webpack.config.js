@@ -7,8 +7,7 @@ import { ZipArchive }  from 'archiver'
 import CopyWebpackPlugin from 'copy-webpack-plugin'
 import MiniCssExtractPlugin from 'mini-css-extract-plugin'
 import {PurgeCSSPlugin} from 'purgecss-webpack-plugin'
-import CssMinimizerPlugin from 'css-minimizer-webpack-plugin'
-import TerserPlugin from 'terser-webpack-plugin'
+import MinimizerPlugin from 'minimizer-webpack-plugin'
 import firebaseTools from 'firebase-tools'
 
 const packageFile = JSON.parse(fs.readFileSync('./package.json', 'utf8'))
@@ -243,14 +242,17 @@ function extensionConfig ({ mode, safari, manifest, firebaseConfig}) {
     optimization: {
       minimizer: [
         // workaround for SyntaxError: Invalid character '\u201a' in Safari
-        safari ? new TerserPlugin({
-          terserOptions: {
+        safari ? new MinimizerPlugin({
+          minimizerOptions: {
             format: {
               ascii_only: true,
             },
           },
         }) : '...',
-        new CssMinimizerPlugin(),
+        new MinimizerPlugin({
+          test: /\.css$/i,
+          minify: MinimizerPlugin.cssnanoMinify
+        }),
       ]
     }
   }
