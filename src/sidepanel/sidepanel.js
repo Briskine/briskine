@@ -5,14 +5,9 @@ import browser from 'webextension-polyfill'
 import DialogContent from '../content/dialog/dialog-content.js'
 import {setup as setupStore} from '../store/store-content.js'
 import {eventInsertTemplate} from '../config.js'
-
-import debug from '../debug.js'
+import trigger from '../background/background-trigger.js'
 
 import './sidepanel.css'
-
-function isNotAvailableError (err) {
-  return err?.message?.includes?.('Receiving end does not exist')
-}
 
 let keyboardShortcut = ''
 
@@ -26,28 +21,13 @@ function Sidepanel () {
     element.addEventListener('b-dialog-insert', async (e) => {
       e.stopImmediatePropagation()
 
-      const template =  e.detail
+      const template = e.detail
       const [tab] = await browser.tabs.query({ active: true, currentWindow: true })
       if (!tab) {
         return
       }
 
-      try {
-        await browser.tabs.sendMessage(
-          tab.id,
-          {
-            type: 'trigger',
-            data: {
-              name: eventInsertTemplate,
-              details: {template: template},
-            },
-          }
-        )
-      } catch (err) {
-        const errorType = isNotAvailableError(err) ? 'warn' : 'error'
-        debug(['trigger', tab, err], errorType)
-      }
-
+      trigger(eventInsertTemplate, {template: template}, tab)
     })
   })
 
