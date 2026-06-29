@@ -50,7 +50,7 @@
     "@playwright/test": "^1.42.1",
     "@stylistic/eslint-plugin": "^5.0.0",
     "@svgr/webpack": "^8.1.0",
-    "@types/node": "^25.0.0",
+    "@types/node": "^26.0.0",
     "@vitest/browser-playwright": "^4.0.17",
     "archiver": "^8.0.0",
     "babel-loader": "^10.0.0",
