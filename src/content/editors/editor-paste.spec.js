@@ -33,7 +33,7 @@ async function setupProseMirror () {
     })
 
     // no extra plugins: avoids prosemirror-keymap's mismatched prosemirror-state
-    // version on the CDN (@^1.0.0 vs @1.4.3) which causes duplicate PluginKey strings.
+    // version which causes duplicate PluginKey strings.
     window._prosemirrorView = new EditorView($editor, {
       state: EditorState.create({
         doc: DOMParser.fromSchema(mySchema).parse($content),
@@ -81,9 +81,10 @@ async function setupCkEditor () {
   const $script = document.createElement('script')
   $script.type = 'module'
   $script.textContent = `
-    import ClassicEditor from '/vendor/ckeditor5.js'
+    import {ClassicEditor, Essentials, Bold, Italic, Paragraph, Image} from '/vendor/ckeditor5.js'
 
     window._ckeditorInstance = await ClassicEditor.create(document.getElementById('${containerId}'), {
+      plugins: [Essentials, Bold, Italic, Paragraph, Image],
       licenseKey: 'GPL',
     })
 

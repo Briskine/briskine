@@ -1,4 +1,4 @@
-// ../../../../../tmp/tmp.FfryG4A9ZS/node_modules/orderedmap/dist/index.js
+// ../../../../../tmp/tmp.kX58bTH6dn/node_modules/orderedmap/dist/index.js
 function OrderedMap(content) {
   this.content = content;
 }
@@ -117,7 +117,7 @@ OrderedMap.from = function(value) {
 };
 var dist_default = OrderedMap;
 
-// ../../../../../tmp/tmp.FfryG4A9ZS/node_modules/prosemirror-model/dist/index.js
+// ../../../../../tmp/tmp.kX58bTH6dn/node_modules/prosemirror-model/dist/index.js
 function findDiffStart(a, b, pos) {
   for (let i = 0; ; i++) {
     if (i == a.childCount || i == b.childCount)
@@ -130,11 +130,8 @@ function findDiffStart(a, b, pos) {
     if (!childA.sameMarkup(childB))
       return pos;
     if (childA.isText && childA.text != childB.text) {
-      let tA = childA.text, tB = childB.text, j = 0;
-      for (; tA[j] == tB[j]; j++)
+      for (let j = 0; childA.text[j] == childB.text[j]; j++)
         pos++;
-      if (j && j < tA.length && j < tB.length && surrogateHigh(tA.charCodeAt(j - 1)) && surrogateLow(tA.charCodeAt(j)))
-        pos--;
       return pos;
     }
     if (childA.content.size || childB.content.size) {
@@ -158,16 +155,11 @@ function findDiffEnd(a, b, posA, posB) {
     if (!childA.sameMarkup(childB))
       return { a: posA, b: posB };
     if (childA.isText && childA.text != childB.text) {
-      let tA = childA.text, tB = childB.text, iA2 = tA.length, iB2 = tB.length;
-      while (iA2 > 0 && iB2 > 0 && tA[iA2 - 1] == tB[iB2 - 1]) {
-        iA2--;
-        iB2--;
+      let same = 0, minSize = Math.min(childA.text.length, childB.text.length);
+      while (same < minSize && childA.text[childA.text.length - same - 1] == childB.text[childB.text.length - same - 1]) {
+        same++;
         posA--;
         posB--;
-      }
-      if (iA2 && iB2 && iA2 < tA.length && surrogateHigh(tA.charCodeAt(iA2 - 1)) && surrogateLow(tA.charCodeAt(iA2))) {
-        posA++;
-        posB++;
       }
       return { a: posA, b: posB };
     }
@@ -179,12 +171,6 @@ function findDiffEnd(a, b, posA, posB) {
     posA -= size;
     posB -= size;
   }
-}
-function surrogateLow(ch) {
-  return ch >= 56320 && ch < 57344;
-}
-function surrogateHigh(ch) {
-  return ch >= 55296 && ch < 56320;
 }
 var Fragment = class _Fragment {
   /**
@@ -437,7 +423,7 @@ var Fragment = class _Fragment {
       return _Fragment.empty;
     if (!Array.isArray(value))
       throw new RangeError("Invalid input for Fragment.fromJSON");
-    return _Fragment.fromArray(value.map(schema2.nodeFromJSON));
+    return new _Fragment(value.map(schema2.nodeFromJSON));
   }
   /**
   Build a fragment from an array of nodes. Ensures that adjacent
@@ -660,7 +646,7 @@ var Slice = class _Slice {
   @internal
   */
   insertAt(pos, fragment) {
-    let content = insertInto(this.content, pos + this.openStart, fragment, this.openStart + 1, this.openEnd + 1);
+    let content = insertInto(this.content, pos + this.openStart, fragment);
     return content && new _Slice(content, this.openStart, this.openEnd);
   }
   /**
@@ -731,14 +717,14 @@ function removeRange(content, from, to) {
     throw new RangeError("Removing non-flat range");
   return content.replaceChild(index, child.copy(removeRange(child.content, from - offset - 1, to - offset - 1)));
 }
-function insertInto(content, dist, insert, openStart, openEnd, parent) {
+function insertInto(content, dist, insert, parent) {
   let { index, offset } = content.findIndex(dist), child = content.maybeChild(index);
   if (offset == dist || child.isText) {
-    if (parent && openStart <= 0 && openEnd <= 0 && !parent.canReplace(index, index, insert))
+    if (parent && !parent.canReplace(index, index, insert))
       return null;
     return content.cut(0, dist).append(insert).append(content.cut(dist));
   }
-  let inner = insertInto(child.content, dist - offset - 1, insert, index == 0 ? openStart - 1 : 0, index == content.childCount - 1 ? openEnd - 1 : 0, child);
+  let inner = insertInto(child.content, dist - offset - 1, insert, child);
   return inner && content.replaceChild(index, child.copy(inner));
 }
 function replace($from, $to, slice) {
@@ -797,8 +783,7 @@ function addRange($start, $end, depth, target) {
     addNode($end.nodeBefore, target);
 }
 function close(node, content) {
-  if (!node.type.validContent(content))
-    throw new ReplaceError("Invalid content for node " + node.type.name);
+  node.type.checkContent(content);
   return node.copy(content);
 }
 function replaceThreeWay($from, $start, $end, $to, depth) {
@@ -1217,11 +1202,10 @@ var Node = class _Node {
     this.content.forEach(f);
   }
   /**
-  Invoke a callback for all descendant nodes recursively overlapping
+  Invoke a callback for all descendant nodes recursively between
   the given two positions that are relative to start of this
-  node's content. This includes all ancestors of the nodes
-  containing the two positions. The callback is invoked with the
-  node, its position relative to the original node (method receiver),
+  node's content. The callback is invoked with the node, its
+  position relative to the original node (method receiver),
   its parent node, and its child index. When the callback returns
   false for a given node, that node's children will not be
   recursed over. The last parameter can be used to specify a
@@ -2046,12 +2030,13 @@ function computeAttrs(attrs, value) {
   return built;
 }
 function checkAttrs(attrs, values, type, name) {
-  for (let attr in values)
-    if (!(attr in attrs))
-      throw new RangeError(`Unsupported attribute ${attr} for ${type} of type ${name}`);
-  for (let attr in attrs) {
-    if (attrs[attr].validate)
-      attrs[attr].validate(values[attr]);
+  for (let name2 in values)
+    if (!(name2 in attrs))
+      throw new RangeError(`Unsupported attribute ${name2} for ${type} of type ${name2}`);
+  for (let name2 in attrs) {
+    let attr = attrs[name2];
+    if (attr.validate)
+      attr.validate(values[name2]);
   }
 }
 function initAttrs(typeName, attrs) {
@@ -3176,8 +3161,6 @@ var DOMSerializer = class _DOMSerializer {
   @internal
   */
   serializeNodeInner(node, options) {
-    if (node.isText)
-      return doc(options).createTextNode(node.text);
     let { dom, contentDOM } = renderSpec(doc(options), this.nodes[node.type.name](node), null, node.attrs);
     if (contentDOM) {
       if (node.isLeaf)
@@ -3212,8 +3195,6 @@ var DOMSerializer = class _DOMSerializer {
     return toDOM && renderSpec(doc(options), toDOM(mark, inline), null, mark.attrs);
   }
   static renderSpec(doc3, structure, xmlNS = null, blockArraysIn) {
-    if (typeof structure == "string")
-      return { dom: doc3.createTextNode(structure) };
     return renderSpec(doc3, structure, xmlNS, blockArraysIn);
   }
   /**
@@ -3282,9 +3263,11 @@ function suspiciousAttributesInner(attrs) {
   return result;
 }
 function renderSpec(doc3, structure, xmlNS, blockArraysIn) {
-  if (structure.nodeType == 1)
+  if (typeof structure == "string")
+    return { dom: doc3.createTextNode(structure) };
+  if (structure.nodeType != null)
     return { dom: structure };
-  if (structure.dom && structure.dom.nodeType == 1)
+  if (structure.dom && structure.dom.nodeType != null)
     return structure;
   let tagName = structure[0], suspicious;
   if (typeof tagName != "string")
@@ -3318,8 +3301,6 @@ function renderSpec(doc3, structure, xmlNS, blockArraysIn) {
       if (i < structure.length - 1 || i > start)
         throw new RangeError("Content hole must be the only child of its parent node");
       return { dom, contentDOM: dom };
-    } else if (typeof child == "string") {
-      dom.appendChild(doc3.createTextNode(child));
     } else {
       let { dom: inner, contentDOM: innerContent } = renderSpec(doc3, child, xmlNS, blockArraysIn);
       dom.appendChild(inner);
@@ -3333,7 +3314,7 @@ function renderSpec(doc3, structure, xmlNS, blockArraysIn) {
   return { dom, contentDOM };
 }
 
-// ../../../../../tmp/tmp.FfryG4A9ZS/node_modules/prosemirror-transform/dist/index.js
+// ../../../../../tmp/tmp.kX58bTH6dn/node_modules/prosemirror-transform/dist/index.js
 var lower16 = 65535;
 var factor16 = Math.pow(2, 16);
 function makeRecover(index, offset) {
@@ -5074,7 +5055,7 @@ var Transform = class {
   }
 };
 
-// ../../../../../tmp/tmp.FfryG4A9ZS/node_modules/prosemirror-state/dist/index.js
+// ../../../../../tmp/tmp.kX58bTH6dn/node_modules/prosemirror-state/dist/index.js
 var classesById = /* @__PURE__ */ Object.create(null);
 var Selection = class {
   /**
@@ -5652,7 +5633,6 @@ var Transaction = class extends Transform {
     } else {
       if (to == null)
         to = from;
-      to = to == null ? from : to;
       if (!text)
         return this.deleteRange(from, to);
       let marks2 = this.storedMarks;
@@ -5661,7 +5641,7 @@ var Transaction = class extends Transform {
         marks2 = to == from ? $from.marks() : $from.marksAcross(this.doc.resolve(to));
       }
       this.replaceRangeWith(from, to, schema2.text(text, marks2));
-      if (!this.selection.empty)
+      if (!this.selection.empty && this.selection.to == from + text.length)
         this.setSelection(Selection.near(this.selection.$to));
       return this;
     }
@@ -5853,7 +5833,7 @@ var EditorState = class _EditorState {
     return newInstance;
   }
   /**
-  Start a [transaction](https://prosemirror.net/docs/ref/#state.Transaction) from this state.
+  Accessor that constructs and returns a new [transaction](https://prosemirror.net/docs/ref/#state.Transaction) from this state.
   */
   get tr() {
     return new Transaction(this);
@@ -5944,7 +5924,7 @@ var EditorState = class _EditorState {
   }
 };
 
-// ../../../../../tmp/tmp.FfryG4A9ZS/node_modules/prosemirror-view/dist/index.js
+// ../../../../../tmp/tmp.kX58bTH6dn/node_modules/prosemirror-view/dist/index.js
 var domIndex = function(node) {
   for (var index = 0; ; index++) {
     node = node.previousSibling;
@@ -7967,10 +7947,10 @@ function selectionToDOM(view, force = false) {
   syncNodeSelection(view, sel);
   if (!editorOwnsSelection(view))
     return;
-  let mouseDown = view.input.mouseDown;
-  if (!force && chrome && mouseDown) {
+  if (!force && view.input.mouseDown && view.input.mouseDown.allowDefault && chrome) {
     let domSel = view.domSelectionRange(), curSel = view.domObserver.currentSelection;
-    if (domSel.anchorNode && curSel.anchorNode && isEquivalentPosition(domSel.anchorNode, domSel.anchorOffset, curSel.anchorNode, curSel.anchorOffset) && mouseDown.delaySelUpdate()) {
+    if (domSel.anchorNode && curSel.anchorNode && isEquivalentPosition(domSel.anchorNode, domSel.anchorOffset, curSel.anchorNode, curSel.anchorOffset)) {
+      view.input.mouseDown.delayedSelectionSync = true;
       view.domObserver.setCurSelection();
       return;
     }
@@ -8722,8 +8702,6 @@ function setSelectionOrigin(view, origin) {
   view.input.lastSelectionTime = Date.now();
 }
 function destroyInput(view) {
-  if (view.input.mouseDown)
-    view.input.mouseDown.done();
   view.domObserver.stop();
   for (let type in view.input.eventHandlers)
     view.dom.removeEventListener(type, view.input.eventHandlers[type]);
@@ -8760,7 +8738,7 @@ function dispatchEvent(view, event) {
 editHandlers.keydown = (view, _event) => {
   let event = _event;
   view.input.shiftKey = event.keyCode == 16 || event.shiftKey;
-  if (inOrNearComposition(view))
+  if (inOrNearComposition(view, event))
     return;
   view.input.lastKeyCode = event.keyCode;
   view.input.lastKeyCodeTime = Date.now();
@@ -8789,7 +8767,7 @@ editHandlers.keyup = (view, event) => {
 };
 editHandlers.keypress = (view, _event) => {
   let event = _event;
-  if (inOrNearComposition(view) || !event.charCode || event.ctrlKey && !event.altKey || mac && event.metaKey)
+  if (inOrNearComposition(view, event) || !event.charCode || event.ctrlKey && !event.altKey || mac && event.metaKey)
     return;
   if (view.someProp("handleKeyPress", (f) => f(view, event))) {
     event.preventDefault();
@@ -8877,28 +8855,26 @@ function handleTripleClick(view, pos, inside, event) {
 function defaultTripleClick(view, inside, event) {
   if (event.button != 0)
     return false;
-  let selection = selectionForTripleClick(view, inside, true), doc3 = view.state.doc;
-  if (!selection)
-    return false;
-  updateSelection(view, selection, "pointer");
-  if (selection instanceof TextSelection && doc3.eq(view.state.doc))
-    view.input.mouseDown = new TripleClickDrag(view, selection);
-  return true;
-}
-function selectionForTripleClick(view, inside, selectNodes) {
   let doc3 = view.state.doc;
-  if (inside == -1)
-    return doc3.inlineContent ? TextSelection.create(doc3, 0, doc3.content.size) : null;
+  if (inside == -1) {
+    if (doc3.inlineContent) {
+      updateSelection(view, TextSelection.create(doc3, 0, doc3.content.size), "pointer");
+      return true;
+    }
+    return false;
+  }
   let $pos = doc3.resolve(inside);
   for (let i = $pos.depth + 1; i > 0; i--) {
     let node = i > $pos.depth ? $pos.nodeAfter : $pos.node(i);
     let nodePos = $pos.before(i);
     if (node.inlineContent)
-      return TextSelection.create(doc3, nodePos + 1, nodePos + 1 + node.content.size);
-    else if (selectNodes && NodeSelection.isSelectable(node))
-      return NodeSelection.create(doc3, nodePos);
+      updateSelection(view, TextSelection.create(doc3, nodePos + 1, nodePos + 1 + node.content.size), "pointer");
+    else if (NodeSelection.isSelectable(node))
+      updateSelection(view, NodeSelection.create(doc3, nodePos), "pointer");
+    else
+      continue;
+    return true;
   }
-  return null;
 }
 function forceDOMFlush(view) {
   return endComposition(view);
@@ -8916,13 +8892,13 @@ handlers.mousedown = (view, _event) => {
       type = "tripleClick";
   }
   view.input.lastClick = { time: now, x: event.clientX, y: event.clientY, type, button: event.button };
-  if (view.input.mouseDown)
-    view.input.mouseDown.done();
   let pos = view.posAtCoords(eventCoords(event));
   if (!pos)
     return;
   if (type == "singleClick") {
-    view.input.mouseDown = new LeftMouseDown(view, pos, event, !!flushed);
+    if (view.input.mouseDown)
+      view.input.mouseDown.done();
+    view.input.mouseDown = new MouseDown(view, pos, event, !!flushed);
   } else if ((type == "doubleClick" ? handleDoubleClick : handleTripleClick)(view, pos.pos, pos.inside, event)) {
     event.preventDefault();
   } else {
@@ -8930,36 +8906,13 @@ handlers.mousedown = (view, _event) => {
   }
 };
 var MouseDown = class {
-  constructor(view) {
-    this.view = view;
-    this.mightDrag = null;
-    view.root.addEventListener("mouseup", this.up = this.up.bind(this));
-    view.root.addEventListener("mousemove", this.move = this.move.bind(this));
-  }
-  up(event) {
-    this.done();
-  }
-  move(event) {
-    if (event.buttons == 0)
-      this.done();
-  }
-  done() {
-    this.view.root.removeEventListener("mouseup", this.up);
-    this.view.root.removeEventListener("mousemove", this.move);
-    if (this.view.input.mouseDown == this)
-      this.view.input.mouseDown = null;
-  }
-  delaySelUpdate() {
-    return false;
-  }
-};
-var LeftMouseDown = class extends MouseDown {
   constructor(view, pos, event, flushed) {
-    super(view);
+    this.view = view;
     this.pos = pos;
     this.event = event;
     this.flushed = flushed;
     this.delayedSelectionSync = false;
+    this.mightDrag = null;
     this.startDoc = view.state.doc;
     this.selectNode = !!event[selectNodeModifier];
     this.allowDefault = event.shiftKey;
@@ -8976,7 +8929,7 @@ var LeftMouseDown = class extends MouseDown {
     const targetDesc = target ? view.docView.nearestDesc(target, true) : null;
     this.target = targetDesc && targetDesc.nodeDOM.nodeType == 1 ? targetDesc.nodeDOM : null;
     let { selection } = view.state;
-    if (event.button == 0 && (targetNode.type.spec.draggable && targetNode.type.spec.selectable !== false || selection instanceof NodeSelection && selection.from <= targetPos && selection.to > targetPos))
+    if (event.button == 0 && targetNode.type.spec.draggable && targetNode.type.spec.selectable !== false || selection instanceof NodeSelection && selection.from <= targetPos && selection.to > targetPos)
       this.mightDrag = {
         node: targetNode,
         pos: targetPos,
@@ -8994,10 +8947,13 @@ var LeftMouseDown = class extends MouseDown {
         }, 20);
       this.view.domObserver.start();
     }
+    view.root.addEventListener("mouseup", this.up = this.up.bind(this));
+    view.root.addEventListener("mousemove", this.move = this.move.bind(this));
     setSelectionOrigin(view, "pointer");
   }
   done() {
-    super.done();
+    this.view.root.removeEventListener("mouseup", this.up);
+    this.view.root.removeEventListener("mousemove", this.move);
     if (this.mightDrag && this.target) {
       this.view.domObserver.stop();
       if (this.mightDrag.addAttr)
@@ -9007,10 +8963,8 @@ var LeftMouseDown = class extends MouseDown {
       this.view.domObserver.start();
     }
     if (this.delayedSelectionSync)
-      setTimeout(() => {
-        if (!this.view.isDestroyed)
-          selectionToDOM(this.view);
-      });
+      setTimeout(() => selectionToDOM(this.view));
+    this.view.input.mouseDown = null;
   }
   up(event) {
     this.done();
@@ -9042,39 +8996,12 @@ var LeftMouseDown = class extends MouseDown {
   move(event) {
     this.updateAllowDefault(event);
     setSelectionOrigin(this.view, "pointer");
-    super.move(event);
+    if (event.buttons == 0)
+      this.done();
   }
   updateAllowDefault(event) {
     if (!this.allowDefault && (Math.abs(this.event.x - event.clientX) > 4 || Math.abs(this.event.y - event.clientY) > 4))
       this.allowDefault = true;
-  }
-  delaySelUpdate() {
-    if (!this.allowDefault)
-      return false;
-    this.delayedSelectionSync = true;
-    return true;
-  }
-};
-var TripleClickDrag = class extends MouseDown {
-  constructor(view, startSelection) {
-    super(view);
-    this.startSelection = startSelection;
-    this.startDoc = view.state.doc;
-  }
-  move(event) {
-    if (event.buttons == 0 || this.view.isDestroyed || !this.view.state.doc.eq(this.startDoc)) {
-      this.done();
-      return;
-    }
-    event.preventDefault();
-    setSelectionOrigin(this.view, "pointer");
-    let pos = this.view.posAtCoords(eventCoords(event));
-    let target = pos && selectionForTripleClick(this.view, pos.inside, false);
-    if (!target)
-      return;
-    let { doc: doc3 } = this.view.state, start = this.startSelection;
-    let [anchor, head] = target.from < start.from ? [start.to, target.from] : [start.from, target.to];
-    updateSelection(this.view, TextSelection.create(doc3, anchor, head), "pointer");
   }
 };
 handlers.touchstart = (view) => {
@@ -9090,7 +9017,7 @@ handlers.contextmenu = (view) => forceDOMFlush(view);
 function inOrNearComposition(view, event) {
   if (view.composing)
     return true;
-  if (safari && Math.abs(Date.now() - view.input.compositionEndedAt) < 500) {
+  if (safari && Math.abs(event.timeStamp - view.input.compositionEndedAt) < 500) {
     view.input.compositionEndedAt = -2e8;
     return true;
   }
@@ -9139,7 +9066,7 @@ function selectionBeforeUneditable(view) {
 editHandlers.compositionend = (view, event) => {
   if (view.composing) {
     view.input.composing = false;
-    view.input.compositionEndedAt = Date.now();
+    view.input.compositionEndedAt = event.timeStamp;
     view.input.compositionPendingChanges = view.domObserver.pendingRecords().length ? view.input.compositionID : 0;
     view.input.compositionNode = null;
     if (view.input.badSafariComposition)
@@ -9158,7 +9085,7 @@ function scheduleComposeEnd(view, delay) {
 function clearComposition(view) {
   if (view.composing) {
     view.input.composing = false;
-    view.input.compositionEndedAt = Date.now();
+    view.input.compositionEndedAt = timestampFromCustomEvent();
   }
   while (view.input.compositionNodes.length > 0)
     view.input.compositionNodes.pop().markParentsDirty();
@@ -9182,6 +9109,11 @@ function findCompositionNode(view) {
     }
   }
   return textBefore || textAfter;
+}
+function timestampFromCustomEvent() {
+  let event = document.createEvent("Event");
+  event.initEvent("event", true, true);
+  return event.timeStamp;
 }
 function endComposition(view, restarting = false) {
   if (android && view.domObserver.flushingSoon >= 0)
@@ -9297,11 +9229,8 @@ var Dragging = class {
 };
 var dragCopyModifier = mac ? "altKey" : "ctrlKey";
 function dragMoves(view, event) {
-  let copy2;
-  view.someProp("dragCopies", (test) => {
-    copy2 = copy2 || test(event);
-  });
-  return copy2 != null ? !copy2 : !event[dragCopyModifier];
+  let moves = view.someProp("dragCopies", (test) => !test(event));
+  return moves != null ? moves : !event[dragCopyModifier];
 }
 handlers.dragstart = (view, _event) => {
   let event = _event;
@@ -10238,19 +10167,7 @@ var DOMObserver = class {
         }
       }
     }
-    if (added.some((n) => n.nodeName == "BR") && (view.input.lastKeyCode == 8 || view.input.lastKeyCode == 46 || chrome && (view.composing || view.input.compositionEndedAt > Date.now() - 50) && mutations.some((m) => m.type == "childList" && m.removedNodes.length))) {
-      for (let node of added)
-        if (node.nodeName == "BR" && node.parentNode) {
-          let after = node.nextSibling;
-          while (after && after.nodeType == 1) {
-            if (after.contentEditable == "false") {
-              node.parentNode.removeChild(node);
-              break;
-            }
-            after = after.firstChild;
-          }
-        }
-    } else if (gecko && added.length) {
+    if (gecko && added.length) {
       let brs = added.filter((n) => n.nodeName == "BR");
       if (brs.length == 2) {
         let [a, b] = brs;
@@ -10266,6 +10183,13 @@ var DOMObserver = class {
             br.remove();
         }
       }
+    } else if ((chrome || safari) && added.some((n) => n.nodeName == "BR") && (view.input.lastKeyCode == 8 || view.input.lastKeyCode == 46)) {
+      for (let node of added)
+        if (node.nodeName == "BR" && node.parentNode) {
+          let after = node.nextSibling;
+          if (after && after.nodeType == 1 && after.contentEditable == "false")
+            node.parentNode.removeChild(node);
+        }
     }
     let readSel = null;
     if (from < 0 && newSel && view.input.lastFocus > Date.now() - 200 && Math.max(view.input.lastTouch, view.input.lastClick.time) < Date.now() - 300 && selectionCollapsed(sel) && (readSel = selectionFromDOM(view)) && readSel.eq(Selection.near(view.state.doc.resolve(0), 1))) {
@@ -10679,26 +10603,36 @@ function skipClosingAndOpening($pos, fromEnd, mayOpen) {
   return end;
 }
 function findDiff(a, b, pos, preferredPos, preferredSide) {
-  let start = a.findDiffStart(b, pos), lenA = pos + a.size, lenB = pos + b.size;
+  let start = a.findDiffStart(b, pos);
   if (start == null)
     return null;
-  let { a: endA, b: endB } = a.findDiffEnd(b, lenA, lenB);
+  let { a: endA, b: endB } = a.findDiffEnd(b, pos + a.size, pos + b.size);
   if (preferredSide == "end") {
     let adjust = Math.max(0, start - Math.min(endA, endB));
     preferredPos -= endA + adjust - start;
   }
-  if (endA < start && lenA < lenB) {
+  if (endA < start && a.size < b.size) {
     let move = preferredPos <= start && preferredPos >= endA ? start - preferredPos : 0;
     start -= move;
+    if (start && start < b.size && isSurrogatePair(b.textBetween(start - 1, start + 1)))
+      start += move ? 1 : -1;
     endB = start + (endB - endA);
     endA = start;
   } else if (endB < start) {
     let move = preferredPos <= start && preferredPos >= endB ? start - preferredPos : 0;
     start -= move;
+    if (start && start < a.size && isSurrogatePair(a.textBetween(start - 1, start + 1)))
+      start += move ? 1 : -1;
     endA = start + (endA - endB);
     endB = start;
   }
   return { start, endA, endB };
+}
+function isSurrogatePair(str) {
+  if (str.length != 2)
+    return false;
+  let a = str.charCodeAt(0), b = str.charCodeAt(1);
+  return a >= 56320 && a <= 57343 && b >= 55296 && b <= 56319;
 }
 var EditorView = class {
   /**
@@ -10843,8 +10777,7 @@ var EditorView = class {
         if (chromeKludge && (!this.trackWrites || !this.dom.contains(this.trackWrites)))
           forceSelUpdate = true;
       }
-      let mouseDown = this.input.mouseDown;
-      if (forceSelUpdate || !(mouseDown && this.domObserver.currentSelection.eq(this.domSelectionRange()) && anchorInRightPlace(this) && mouseDown.delaySelUpdate())) {
+      if (forceSelUpdate || !(this.input.mouseDown && this.domObserver.currentSelection.eq(this.domSelectionRange()) && anchorInRightPlace(this))) {
         selectionToDOM(this, forceSelUpdate);
       } else {
         syncNodeSelection(this, state.selection);
@@ -10908,11 +10841,11 @@ var EditorView = class {
   }
   updateDraggedNode(dragging, prev) {
     let sel = dragging.node, found2 = -1;
-    if (sel.from < this.state.doc.content.size && this.state.doc.nodeAt(sel.from) == sel.node) {
+    if (this.state.doc.nodeAt(sel.from) == sel.node) {
       found2 = sel.from;
     } else {
       let movedPos = sel.from + (this.state.doc.content.size - prev.doc.content.size);
-      let moved = movedPos > 0 && movedPos < this.state.doc.content.size && this.state.doc.nodeAt(movedPos);
+      let moved = movedPos > 0 && this.state.doc.nodeAt(movedPos);
       if (moved == sel.node)
         found2 = movedPos;
     }
@@ -11213,7 +11146,7 @@ function checkStateComponent(plugin) {
     throw new RangeError("Plugins passed directly to the view must not have a state component");
 }
 
-// ../../../../../tmp/tmp.FfryG4A9ZS/node_modules/prosemirror-schema-basic/dist/index.js
+// ../../../../../tmp/tmp.kX58bTH6dn/node_modules/prosemirror-schema-basic/dist/index.js
 var pDOM = ["p", 0];
 var blockquoteDOM = ["blockquote", 0];
 var hrDOM = ["hr"];
@@ -11412,7 +11345,7 @@ var marks = {
 };
 var schema = new Schema({ nodes, marks });
 
-// ../../../../../tmp/tmp.FfryG4A9ZS/node_modules/prosemirror-schema-list/dist/index.js
+// ../../../../../tmp/tmp.kX58bTH6dn/node_modules/prosemirror-schema-list/dist/index.js
 var olDOM = ["ol", 0];
 var ulDOM = ["ul", 0];
 var liDOM = ["li", 0];
