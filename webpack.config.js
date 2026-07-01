@@ -55,8 +55,9 @@ function generateManifest ({ safari, mode, manifest }) {
 
     // sidebar
     updatedManifestFile.sidebar_action = {
-      'default_title': 'Briskine',
-      'default_panel': updatedManifestFile.side_panel.default_path,
+      default_title: 'Briskine',
+      default_panel: updatedManifestFile.side_panel.default_path,
+      default_icon: updatedManifestFile.browser_action.default_icon,
     }
     delete updatedManifestFile.side_panel
     updatedManifestFile.permissions = updatedManifestFile.permissions.filter(permissionItem => permissionItem !== 'sidePanel')
