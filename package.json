@@ -6,6 +6,7 @@
   "type": "module",
   "scripts": {
     "test": "vitest run",
+    "test:vendor": "test/scripts/vendor-test-deps.sh",
     "setup": "firebase login",
     "start": "webpack -w --mode=development --env mode=development",
     "start:firefox:android": "web-ext run --source-dir ./ext/ -t firefox-android",

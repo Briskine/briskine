@@ -19,7 +19,7 @@ async function page (src = '') {
 
 describe('linkedin', () => {
   it('should get data in connect popup', async () => {
-    const iframe = await page('test/pages/linkedin/linkedin-connect.html')
+    const iframe = await page('/pages/linkedin/linkedin-connect.html')
     const element = iframe.contentDocument.querySelector('#interop-outlet').shadowRoot.querySelector('textarea')
     const data = getLinkedInData({
       element: element,
@@ -47,7 +47,7 @@ describe('linkedin', () => {
   })
 
   it('should get data in inmail popup', async () => {
-    const iframe = await page('test/pages/linkedin/linkedin-inmail-popup.html')
+    const iframe = await page('/pages/linkedin/linkedin-inmail-popup.html')
     const element = iframe.contentDocument.querySelector('[contenteditable]')
     const data = getLinkedInData({
       element: element,
@@ -75,7 +75,7 @@ describe('linkedin', () => {
   })
 
   it('should get data in message popup fully loaded', async () => {
-    const iframe = await page('test/pages/linkedin/linkedin-message-popup-full.html')
+    const iframe = await page('/pages/linkedin/linkedin-message-popup-full.html')
     const element = iframe.contentDocument.querySelector('[contenteditable]')
     const data = getLinkedInData({
       element: element,
@@ -103,7 +103,7 @@ describe('linkedin', () => {
   })
 
   it('should get data in message popup lazy loaded', async () => {
-    const iframe = await page('test/pages/linkedin/linkedin-message-popup-lazy.html')
+    const iframe = await page('/pages/linkedin/linkedin-message-popup-lazy.html')
     const element = iframe.contentDocument.querySelector('[contenteditable]')
     const data = getLinkedInData({
       element: element,
@@ -131,7 +131,7 @@ describe('linkedin', () => {
   })
 
   it('should get data in messaging thread fully loaded', async () => {
-    const iframe = await page('test/pages/linkedin/linkedin-messaging-full.html')
+    const iframe = await page('/pages/linkedin/linkedin-messaging-full.html')
     const element = iframe.contentDocument.querySelector('[contenteditable]')
     const data = getLinkedInData({
       element: element,
@@ -159,7 +159,7 @@ describe('linkedin', () => {
   })
 
   it('should get data in messaging thread lazy loaded', async () => {
-    const iframe = await page('test/pages/linkedin/linkedin-messaging-lazy.html')
+    const iframe = await page('/pages/linkedin/linkedin-messaging-lazy.html')
     const element = iframe.contentDocument.querySelector('[contenteditable]')
     const data = getLinkedInData({
       element: element,
@@ -187,7 +187,7 @@ describe('linkedin', () => {
   })
 
   it('should get data in inmail new message thread', async () => {
-    const iframe = await page('test/pages/linkedin/linkedin-messaging-inmail.html')
+    const iframe = await page('/pages/linkedin/linkedin-messaging-inmail.html')
     const element = iframe.contentDocument.querySelector('[contenteditable]')
     const data = getLinkedInData({
       element: element,
@@ -215,7 +215,7 @@ describe('linkedin', () => {
   })
 
   it('should get data in new message popup from connections page', async () => {
-    const iframe = await page('test/pages/linkedin/linkedin-connections-message.html')
+    const iframe = await page('/pages/linkedin/linkedin-connections-message.html')
     const element = iframe.contentDocument.querySelector('#interop-outlet').shadowRoot.querySelector('[contenteditable]')
     const data = getLinkedInData({
       element: element,

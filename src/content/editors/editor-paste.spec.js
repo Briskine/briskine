@@ -12,11 +12,6 @@ const isWebkit = server.browser === 'webkit'
 async function setupProseMirror () {
   let containerId = 'prosemirror-container'
 
-  const $link = document.createElement('link')
-  $link.rel = 'stylesheet'
-  $link.href = 'https://prosemirror.net/css/editor.css'
-  document.head.appendChild($link)
-
   const $container = document.createElement('div')
   $container.id = containerId
   document.body.appendChild($container)
@@ -24,11 +19,7 @@ async function setupProseMirror () {
   const $script = document.createElement('script')
   $script.type = 'module'
   $script.textContent = `
-    import {EditorState} from 'https://cdn.jsdelivr.net/npm/prosemirror-state@1.4.3/+esm'
-    import {EditorView} from 'https://cdn.jsdelivr.net/npm/prosemirror-view@1/+esm'
-    import {Schema, DOMParser} from 'https://cdn.jsdelivr.net/npm/prosemirror-model@1/+esm'
-    import {schema} from 'https://cdn.jsdelivr.net/npm/prosemirror-schema-basic@1/+esm'
-    import {addListNodes} from 'https://cdn.jsdelivr.net/npm/prosemirror-schema-list@1.4.1/+esm'
+    import {EditorState, EditorView, Schema, DOMParser, schema, addListNodes} from '/vendor/prosemirror.js'
 
     const $editor = document.getElementById('${containerId}')
     const $content = document.createElement('div')
@@ -63,7 +54,6 @@ async function setupProseMirror () {
     window._prosemirrorView?.destroy()
     window._prosemirrorView = null
     window._prosemirrorReset = null
-    $link.remove()
     $script.remove()
     $container.remove()
   }
@@ -91,7 +81,7 @@ async function setupCkEditor () {
   const $script = document.createElement('script')
   $script.type = 'module'
   $script.textContent = `
-    import ClassicEditor from 'https://cdn.jsdelivr.net/npm/@ckeditor/ckeditor5-build-classic/+esm'
+    import ClassicEditor from '/vendor/ckeditor5.js'
 
     window._ckeditorInstance = await ClassicEditor.create(document.getElementById('${containerId}'), {
       licenseKey: 'GPL',
