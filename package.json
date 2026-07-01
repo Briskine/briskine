@@ -96,8 +96,8 @@
     "@firebase/util@1.15.1": true,
     "core-js@3.49.0": true,
     "protobufjs@7.6.4": true,
-    "re2@1.24.1": true,
     "fsevents@2.3.3": true,
-    "fsevents@2.3.2": true
+    "fsevents@2.3.2": true,
+    "re2@1.25.0": true
   }
 }
