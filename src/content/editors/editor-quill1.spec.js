@@ -27,13 +27,13 @@ describe('editor Quill1', () => {
   beforeAll(async function () {
     $link = document.createElement('link')
     $link.rel = 'stylesheet'
-    $link.href = 'https://ga.jspm.io/npm:quill@1.3.7/dist/quill.snow.css'
+    $link.href = '/vendor/quill1.snow.css'
     document.head.appendChild($link)
 
     $script = document.createElement('script')
     $script.type = 'module'
     $script.textContent = `
-      import Quill from 'https://cdn.jsdelivr.net/npm/quill@1/+esm'
+      import Quill from '/vendor/quill1.js'
 
       const $editor = document.createElement('div')
       $editor.id = '${containerId}'

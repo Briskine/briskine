@@ -7,8 +7,7 @@ import { ZipArchive }  from 'archiver'
 import CopyWebpackPlugin from 'copy-webpack-plugin'
 import MiniCssExtractPlugin from 'mini-css-extract-plugin'
 import {PurgeCSSPlugin} from 'purgecss-webpack-plugin'
-import CssMinimizerPlugin from 'css-minimizer-webpack-plugin'
-import TerserPlugin from 'terser-webpack-plugin'
+import MinimizerPlugin from 'minimizer-webpack-plugin'
 import firebaseTools from 'firebase-tools'
 
 const packageFile = JSON.parse(fs.readFileSync('./package.json', 'utf8'))
@@ -32,12 +31,6 @@ function generateManifest ({ safari, mode, manifest }) {
   // get version from package
   updatedManifestFile.version = packageFile.version
 
-  // safari manifest
-  if (safari) {
-    updatedManifestFile.description = safariManifestDescription
-    updatedManifestFile.background.persistent = false
-  }
-
   // source maps
   if (mode === 'development') {
     updatedManifestFile.web_accessible_resources[0].resources = updatedManifestFile.web_accessible_resources[0].resources.concat(
@@ -59,6 +52,22 @@ function generateManifest ({ safari, mode, manifest }) {
     updatedManifestFile.browser_action = updatedManifestFile.action
     delete updatedManifestFile.action
     updatedManifestFile.content_security_policy = updatedManifestFile.content_security_policy.extension_pages
+
+    // sidebar
+    updatedManifestFile.sidebar_action = {
+      default_title: 'Briskine',
+      default_panel: updatedManifestFile.side_panel.default_path,
+      default_icon: updatedManifestFile.browser_action.default_icon,
+    }
+    delete updatedManifestFile.side_panel
+    updatedManifestFile.permissions = updatedManifestFile.permissions.filter(permissionItem => permissionItem !== 'sidePanel')
+
+    // safari manifest
+    if (safari) {
+      updatedManifestFile.description = safariManifestDescription
+      // disable sidebar
+      delete updatedManifestFile.sidebar_action
+    }
   }
 
   return new CopyWebpackPlugin({
@@ -97,6 +106,7 @@ function extensionConfig ({ mode, safari, manifest, firebaseConfig}) {
         { from: 'src/popup/popup.html', to: 'popup/' },
         { from: 'src/icons/', to: 'icons/' },
         { from: 'src/content/sandbox/sandbox.html', to: 'sandbox/' },
+        { from: 'src/sidepanel/sidepanel.html', to: 'sidepanel/' },
         { from: 'LICENSE', to: '' }
       ]
     }),
@@ -130,6 +140,7 @@ function extensionConfig ({ mode, safari, manifest, firebaseConfig}) {
     entry: {
       background: './src/background/background.js',
       popup: './src/popup/popup.js',
+      sidepanel: './src/sidepanel/sidepanel.js',
       content: {
         import: './src/content/index.js',
         // force iife
@@ -167,7 +178,7 @@ function extensionConfig ({ mode, safari, manifest, firebaseConfig}) {
           ]
         },
         {
-          test: /(\/popup\/|\/content\/attachments\/).+.(css)$/i,
+          test: /(\/sidepanel\/|\/popup\/|\/content\/attachments\/).+.(css)$/i,
           use: [
               MiniCssExtractPlugin.loader,
               'css-loader'
@@ -232,14 +243,17 @@ function extensionConfig ({ mode, safari, manifest, firebaseConfig}) {
     optimization: {
       minimizer: [
         // workaround for SyntaxError: Invalid character '\u201a' in Safari
-        safari ? new TerserPlugin({
-          terserOptions: {
+        safari ? new MinimizerPlugin({
+          minimizerOptions: {
             format: {
               ascii_only: true,
             },
           },
         }) : '...',
-        new CssMinimizerPlugin(),
+        new MinimizerPlugin({
+          test: /\.css$/i,
+          minify: MinimizerPlugin.cssnanoMinify
+        }),
       ]
     }
   }

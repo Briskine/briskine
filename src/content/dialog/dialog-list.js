@@ -11,7 +11,7 @@ export default function DialogList (originalProps) {
   const props = mergeProps({
     ref: null,
     loggedIn: null,
-    showTags: true,
+    extensionData: {},
     tags: [],
     list: [],
     callbackSelectItem: () => {},
@@ -37,7 +37,7 @@ export default function DialogList (originalProps) {
     // and current item not in list.
     if (
       shortlist().length
-      && !shortlist().find((item) => item.id === active)
+      && !shortlist().find((item) => item.id === active())
     ) {
       const id = shortlist()[0].id
       setActive(id)
@@ -49,10 +49,12 @@ export default function DialogList (originalProps) {
   })
 
   function scrollToActive (id = '') {
-    const newActive = element.querySelector(`[data-id="${id}"]`)
-    if (newActive) {
-      newActive.scrollIntoView({block: 'nearest'})
-    }
+    requestAnimationFrame(() => {
+      const newActive = element?.querySelector(`[data-id="${id}"]`)
+      if (newActive) {
+        newActive.scrollIntoView({block: 'nearest'})
+      }
+    })
   }
 
   let lastX = 0
@@ -151,7 +153,7 @@ export default function DialogList (originalProps) {
                 <p class="text-secondary">
                   {t._body_plaintext.slice(0, 100)}
                 </p>
-                <Show when={props.showTags && t.tags && t.tags.length}>
+                <Show when={props.extensionData.dialogTags && t.tags && t.tags.length}>
                   <ul class="dialog-tags">
                     <For each={t.tags}>
                       {(tagId) => {

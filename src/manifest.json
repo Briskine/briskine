@@ -18,7 +18,8 @@
     "contextMenus",
     "storage",
     "scripting",
-    "unlimitedStorage"
+    "unlimitedStorage",
+    "sidePanel"
   ],
   "host_permissions": [
     "https://*/*",
@@ -52,7 +53,9 @@
       "icons/icon-32.png",
       "icons/icon-32-loggedout.png",
       "icons/icon-48.png",
-      "icons/icon-48-loggedout.png"
+      "icons/icon-48-loggedout.png",
+      "sidepanel/sidepanel.html",
+      "sidepanel/sidepanel.js"
     ],
     "matches": [
       "https://*/*",
@@ -60,6 +63,9 @@
     ],
     "use_dynamic_url": true
   }],
+  "side_panel": {
+    "default_path": "sidepanel/sidepanel.html"
+  },
   "sandbox": {
     "pages": ["sandbox/sandbox.html"]
   },

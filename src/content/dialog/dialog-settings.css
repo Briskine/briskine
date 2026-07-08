@@ -22,6 +22,8 @@
   background-size: 16px 12px;
   border: 0;
   border-radius: var(--radius-small);
+
+  color: var(--text-color);
 }
 
 .form-check {

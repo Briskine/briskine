@@ -26,11 +26,8 @@
   --padding-x: 12px;
   --padding-y: 8px;
 
-  position: fixed;
-
-  width: 360px;
-  height: var(--dialog-height);
-  z-index: 2147483646;
+  position: relative;
+  display: block;
   overflow: hidden;
 
   color: var(--text-color);
@@ -40,20 +37,28 @@
 
   border-radius: var(--radius);
   background: var(--background-color);
+}
+
+.briskine-dialog-popover .briskine-dialog {
+  display: none;
+  position: fixed;
+
+  width: 360px;
+  height: var(--dialog-height);
+  z-index: 2147483646;
+
+  will-change: top, left;
+  contain: layout;
+  top: 0;
+  left: 0;
 
   box-shadow: 0 0 2px rgba(0,0,0,.1),
     0 2px 4px rgba(0,0,0,0.07),
     0 4px 8px rgba(0,0,0,0.07),
     0 8px 16px rgba(0,0,0,0.07);
-
-  display: none;
-  will-change: top, left;
-  contain: layout;
-  top: 0;
-  left: 0;
 }
 
-.briskine-dialog-visible {
+.briskine-dialog-popover .briskine-dialog.briskine-dialog-visible {
   display: block;
   opacity: 0;
 }
@@ -179,6 +184,8 @@ input[type=search] {
   height: var(--footer-height);
   padding: var(--padding-y) var(--padding-x);
   background: var(--background-color-highlight);
+
+  color: var(--text-color);
 }
 
 input[type=search] {
@@ -312,9 +319,16 @@ input[type=search]:focus {
   border-radius: var(--radius) var(--radius) 0 0;
 
   visibility: hidden;
-  opacity: 0;
+}
+
+/*
+ * transition only when used in popover,
+ * to avoid issue with extra bottom margin caused by translate in sidebar.
+ */
+.briskine-dialog-popover .dialog-modal {
   translate: 0 30%;
   scale: 0.95;
+  opacity: 0;
   transition: all .075s ease-in;
 }
 

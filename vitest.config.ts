@@ -2,6 +2,7 @@ import { defineConfig } from 'vitest/config'
 import { playwright } from '@vitest/browser-playwright'
 
 export default defineConfig({
+  publicDir: 'test',
   define: {
     ENV: JSON.stringify('development'),
     REGISTER_DISABLED: false,

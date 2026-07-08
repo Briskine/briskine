@@ -19,7 +19,7 @@ async function page (src = '') {
 
 describe('linkedin sales navigator', () => {
   it('should get data in sales navigator invite', async () => {
-    const iframe = await page('test/pages/linkedin-sales-navigator/linkedin-sales-navigator-invite.html')
+    const iframe = await page('/pages/linkedin-sales-navigator/linkedin-sales-navigator-invite.html')
     const element = iframe.contentDocument.querySelector('textarea')
     const data = getSalesNavigatorData({
       element: element,
@@ -47,7 +47,7 @@ describe('linkedin sales navigator', () => {
   })
 
   it('should get data in sales navigator new message popup', async () => {
-    const iframe = await page('test/pages/linkedin-sales-navigator/linkedin-sales-navigator-message-popup.html')
+    const iframe = await page('/pages/linkedin-sales-navigator/linkedin-sales-navigator-message-popup.html')
     const element = iframe.contentDocument.querySelector('textarea')
     const data = getSalesNavigatorData({
       element: element,
@@ -75,7 +75,7 @@ describe('linkedin sales navigator', () => {
   })
 
   it('should get data in sales navigator new message popup, with 1 shared connection', async () => {
-    const iframe = await page('test/pages/linkedin-sales-navigator/linkedin-sales-navigator-message-popup-1-connection.html')
+    const iframe = await page('/pages/linkedin-sales-navigator/linkedin-sales-navigator-message-popup-1-connection.html')
     const element = iframe.contentDocument.querySelector('textarea')
     const data = getSalesNavigatorData({
       element: element,
@@ -103,7 +103,7 @@ describe('linkedin sales navigator', () => {
   })
 
   it('should get data in sales navigator new message thread', async () => {
-    const iframe = await page('test/pages/linkedin-sales-navigator/linkedin-sales-navigator-message-thread-new.html')
+    const iframe = await page('/pages/linkedin-sales-navigator/linkedin-sales-navigator-message-thread-new.html')
     const element = iframe.contentDocument.querySelector('textarea')
     const data = getSalesNavigatorData({
       element: element,
@@ -131,7 +131,7 @@ describe('linkedin sales navigator', () => {
   })
 
   it('should get data in sales navigator existing message thread', async () => {
-    const iframe = await page('test/pages/linkedin-sales-navigator/linkedin-sales-navigator-message-thread.html')
+    const iframe = await page('/pages/linkedin-sales-navigator/linkedin-sales-navigator-message-thread.html')
     const element = iframe.contentDocument.querySelector('textarea')
     const data = getSalesNavigatorData({
       element: element,

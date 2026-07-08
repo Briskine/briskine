@@ -17,7 +17,7 @@ import IconBriskine from '../../icons/briskine-logo-small.svg'
 
 import DialogFooter from './dialog-footer.js'
 import DialogList from './dialog-list.js'
-import DialogTemplates from './dialog-templates.js'
+import DialogListFull from './dialog-list-full.js'
 import DialogSettings from './dialog-settings.js'
 import DialogActions from './dialog-actions.js'
 
@@ -292,21 +292,23 @@ export default function DialogContent (originalProps) {
           <Show
             when={searchQuery()}
             fallback={(
-              <DialogTemplates
+              <DialogListFull
                 loggedIn={loggedIn()}
-                loading={loading()}
-                templates={templates()}
-                tags={tags()}
+                list={templates()}
                 extensionData={extensionData()}
+                tags={tags()}
                 callbackSelectItem={callbackSelectItem}
                 ref={elementDialogList}
+
+                loading={loading()}
+                visible={props.visible}
                 />
             )}
             >
             <DialogList
               loggedIn={loggedIn()}
               list={searchResults()}
-              showTags={extensionData().dialogTags}
+              extensionData={extensionData()}
               tags={tags()}
               callbackSelectItem={callbackSelectItem}
               ref={elementDialogList}

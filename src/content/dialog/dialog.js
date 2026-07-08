@@ -298,7 +298,9 @@ customElements.define(dialogTagName, class extends HTMLElement {
 
     this.attachShadow({mode: 'open'})
     this.disposer = render(() => (
-      <Dialog keyboardShortcut={this.keyboardShortcut} />
+      <div class="briskine-dialog-popover">
+        <Dialog keyboardShortcut={this.keyboardShortcut} />
+      </div>
     ), this.shadowRoot)
   }
   disconnectedCallback () {

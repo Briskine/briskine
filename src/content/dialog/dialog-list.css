@@ -14,6 +14,8 @@
   cursor: pointer;
   white-space: nowrap;
   line-height: 1.2;
+
+  transition: scale .075s ease-in;
 }
 
 .dialog-list-item h1 {
@@ -68,6 +70,11 @@
 
 .dialog-list-item.active {
   background: hsl(var(--border-color-hsl) / 60%);
+}
+
+.dialog-list-item.active:active {
+  background: var(--border-color);
+  scale: 0.98;
 }
 
 .list-no-results {
