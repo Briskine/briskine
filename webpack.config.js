@@ -172,7 +172,8 @@ function extensionConfig ({ mode, safari, manifest, firebaseConfig}) {
             {
               loader: 'css-loader',
               options: {
-                exportType: 'string'
+                exportType: 'string',
+                url: false,
               }
             }
           ]
