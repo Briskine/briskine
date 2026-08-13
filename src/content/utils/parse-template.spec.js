@@ -140,7 +140,7 @@ describe('parseTemplate', async () => {
     expect(await parseTemplate('Hello {{to.first_name}')).to.equal(`<pre>Parse error on line 1:
 ...ello {{to.first_name}
 -----------------------^
-Expecting 'CLOSE_RAW_BLOCK', 'CLOSE', 'CLOSE_UNESCAPED', 'OPEN_SEXPR', 'CLOSE_SEXPR', 'ID', 'OPEN_BLOCK_PARAMS', 'STRING', 'NUMBER', 'BOOLEAN', 'UNDEFINED', 'NULL', 'DATA', 'SEP', got 'INVALID'</pre>`)
+Expecting 'CLOSE_RAW_BLOCK', 'CLOSE', 'CLOSE_UNESCAPED', 'OPEN_SEXPR', 'CLOSE_SEXPR', 'ID', 'OPEN_ARRAY', 'CLOSE_ARRAY', 'OPEN_BLOCK_PARAMS', 'STRING', 'NUMBER', 'BOOLEAN', 'UNDEFINED', 'NULL', 'DATA', 'SEP', 'PRIVATE_SEP', got 'INVALID'</pre>`)
   })
 
   it('should parse template with utf8 characters', async () => {
@@ -160,7 +160,7 @@ Expecting 'CLOSE_RAW_BLOCK', 'CLOSE', 'CLOSE_UNESCAPED', 'OPEN_SEXPR', 'CLOSE_SE
   })
 
   it('should throw error when partial is not found', async () => {
-    expect(await parseTemplate('{{> not_found}}')).to.equal('<pre>The partial not_found could not be found</pre>')
+    expect(await parseTemplate('{{> not_found}}')).to.equal('<pre>The partial "not_found" could not be found</pre>')
   })
 
   it('should throw error when helper is not found', async () => {
