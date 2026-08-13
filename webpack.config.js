@@ -234,12 +234,6 @@ function extensionConfig ({ mode, safari, manifest, firebaseConfig}) {
       ]
     },
     devtool: mode === 'production' ? false : 'cheap-module-source-map',
-    resolve: {
-      alias: {
-        'handlebars/runtime': 'handlebars/dist/cjs/handlebars.runtime',
-        'handlebars': 'handlebars/dist/cjs/handlebars'
-      }
-    },
     optimization: {
       minimizer: [
         // workaround for SyntaxError: Invalid character '\u201a' in Safari
