@@ -8,12 +8,13 @@ import parseTemplate from './utils/parse-template.js'
 import htmlToText from './utils/html-to-text.js'
 import debug from '../debug.js'
 import { getWord, selectWord } from './utils/word.js'
+import { getSelectionRange } from './utils/selection.js'
 import { updateTemplateStats } from '../store/store-content.js'
 import { getActiveElement } from './utils/active-element.js'
 import { selectFirstCursor } from './cursors/cursors.js'
 
 import { insertPasteTemplate } from './editors/editor-paste.js'
-import { insertContentEditableTemplate } from './editors/editor-contenteditable.js'
+import { insertContentEditableTemplate, isContentEditable } from './editors/editor-contenteditable.js'
 import { insertBeforeInputTemplate } from './editors/editor-beforeinput.js'
 import { insertQuill1Template } from './editors/editor-quill1.js'
 import { insertTextfieldTemplate } from './editors/editor-textfield.js'
@@ -59,6 +60,35 @@ async function insertTemplate ({ html, text }) {
   return false
 }
 
+const maxSelectShortcutRetries = 3
+
+// select the shortcut, so inserting the template replaces it.
+//
+// third-party editors (e.g., prosemirror) can still have pending dom changes
+// from typing the shortcut, by the time we select it.
+// they re-render and reset our selection while applying those changes,
+// and we would insert the template without removing the shortcut.
+// check the shortcut is still selected, and select it again if it's not.
+async function selectShortcut (element, shortcut = '') {
+  for (let attempt = 0; attempt < maxSelectShortcutRetries; attempt++) {
+    const word = getWord(element)
+    if (word.text !== shortcut) {
+      return false
+    }
+
+    await selectWord(element, word)
+
+    if (
+      !isContentEditable(element)
+      || getSelectionRange(element)?.toString() === shortcut
+    ) {
+      return true
+    }
+  }
+
+  return false
+}
+
 export default async function autocomplete ({ template }) {
   const element = getActiveElement()
   const withAttachments = addAttachments(template.body, template.attachments)
@@ -67,10 +97,7 @@ export default async function autocomplete ({ template }) {
   const text = htmlToText(html)
 
   if (template.shortcut) {
-    const word = getWord(element)
-    if (word.text === template.shortcut) {
-      await selectWord(element, word)
-    }
+    await selectShortcut(element, template.shortcut)
   }
 
   await insertTemplate({
