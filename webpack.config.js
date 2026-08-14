@@ -24,6 +24,7 @@ const productionPath = path.resolve('build')
 
 // the manifest description is limited to 112 characters on Safari
 // https://github.com/w3c/webextensions/issues/218
+// TODO reduce manifest length for all builds, so we don't need a separate description for safari
 const safariManifestDescription = 'Write emails faster! Increase your productivity with templates and shortcuts on Gmail, Outlook, or LinkedIn.'
 
 function generateManifest ({ safari, mode, manifest }) {
