@@ -29,7 +29,6 @@ import {
   setup as setupActiveElement,
   destroy as destroyActiveElement,
 } from './utils/active-element.js'
-import { destroy as destroySandbox} from './sandbox/sandbox-parent.js'
 import { destroy as destroyKeybind } from './keybind.js'
 import getEventTarget from './utils/event-target.js'
 import { isTextfieldEditor } from './editors/editor-textfield.js'
@@ -166,7 +165,6 @@ function destructor () {
   destroyActiveElement()
 
   destroyKeybind()
-  destroySandbox()
 
   settingsCache = {}
 }

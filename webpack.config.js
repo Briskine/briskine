@@ -34,7 +34,7 @@ function generateManifest ({ safari, mode, manifest }) {
   // source maps
   if (mode === 'development') {
     updatedManifestFile.web_accessible_resources[0].resources = updatedManifestFile.web_accessible_resources[0].resources.concat(
-      Array('content', 'page', 'sandbox').map((script) => `${script}/${script}.js.map`)
+      Array('content', 'page').map((script) => `${script}/${script}.js.map`)
     )
   }
 
@@ -48,7 +48,6 @@ function generateManifest ({ safari, mode, manifest }) {
       .concat(updatedManifestFile.host_permissions)
     delete updatedManifestFile.host_permissions
     updatedManifestFile.web_accessible_resources = updatedManifestFile.web_accessible_resources[0].resources
-    delete updatedManifestFile.sandbox
     updatedManifestFile.browser_action = updatedManifestFile.action
     delete updatedManifestFile.action
     updatedManifestFile.content_security_policy = updatedManifestFile.content_security_policy.extension_pages
@@ -105,7 +104,6 @@ function extensionConfig ({ mode, safari, manifest, firebaseConfig}) {
       patterns: [
         { from: 'src/popup/popup.html', to: 'popup/' },
         { from: 'src/icons/', to: 'icons/' },
-        { from: 'src/content/sandbox/sandbox.html', to: 'sandbox/' },
         { from: 'src/sidepanel/sidepanel.html', to: 'sidepanel/' },
         { from: 'LICENSE', to: '' }
       ]
@@ -148,10 +146,6 @@ function extensionConfig ({ mode, safari, manifest, firebaseConfig}) {
       },
       page: {
         import: './src/content/page/page.js',
-        library: { type: 'module' }
-      },
-      sandbox: {
-        import: './src/content/sandbox/sandbox.js',
         library: { type: 'module' }
       },
     },

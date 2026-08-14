@@ -1,4 +1,4 @@
-import { expect, describe, it, beforeAll, afterAll } from 'vitest'
+import { expect, describe, it, beforeAll } from 'vitest'
 
 import parseTemplate from './parse-template.js'
 
