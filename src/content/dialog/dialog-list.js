@@ -18,12 +18,6 @@ export default function DialogList (originalProps) {
   }, originalProps)
 
   let element = null
-  const elementRef = (el) => {
-    element = el
-    if (typeof props.ref === 'function') {
-      props.ref(el)
-    }
-  }
 
   const [active, setActive] = createSignal()
 
@@ -120,7 +114,12 @@ export default function DialogList (originalProps) {
 
   return (
     <div
-      ref={elementRef}
+      ref={(el) => {
+        element = el
+        if (typeof props.ref === 'function') {
+          props.ref(el)
+        }
+      }}
       class="dialog-list"
       on:click={onClick}
       on:mouseover={onMouseOver}

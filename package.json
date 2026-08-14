@@ -62,6 +62,7 @@
     "cssnano": "^8.0.2",
     "dotenv": "^17.0.0",
     "eslint": "^10.0.0",
+    "eslint-plugin-solid": "^0.15.0",
     "firebase-tools": "^15.0.0",
     "glob": "^13.0.0",
     "globals": "^17.0.0",

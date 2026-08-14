@@ -29,14 +29,9 @@ export default function DialogContent (originalProps) {
     visible: false,
   }, originalProps)
 
-  // eslint-disable-next-line no-unassigned-vars
-  let element
-
-  // eslint-disable-next-line no-unassigned-vars
-  let elementDialogList
-
-  // eslint-disable-next-line no-unassigned-vars
-  let searchField
+  let element = null
+  let elementDialogList = null
+  let searchField = null
 
   const [loggedIn, setLoggedIn] = createSignal()
   const [loading, setLoading] = createSignal()

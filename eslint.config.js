@@ -3,6 +3,7 @@ import { defineConfig } from 'eslint/config'
 import globals from 'globals'
 import stylistic from '@stylistic/eslint-plugin'
 import tseslint from 'typescript-eslint'
+import solid from 'eslint-plugin-solid/configs/recommended'
 
 export default defineConfig(
   {
@@ -16,6 +17,7 @@ export default defineConfig(
   },
   tseslint.configs.recommended,
   js.configs.recommended,
+  solid,
   {
     languageOptions: {
       globals: {
