@@ -24,11 +24,6 @@ const productionPath = path.resolve('build')
 
 const browsers = ['chrome', 'firefox', 'safari']
 
-// the manifest description is limited to 112 characters on Safari
-// https://github.com/w3c/webextensions/issues/218
-// TODO reduce manifest length for all builds, so we don't need a separate description for safari
-const safariManifestDescription = 'Write emails faster! Increase your productivity with templates and shortcuts on Gmail, Outlook, or LinkedIn.'
-
 // manifest v3 on firefox needs add-on id
 const firefoxAddonId = '{ee8d72b5-656f-40f2-8247-bfae87a235b8}'
 const firefoxDataCollection = {
@@ -77,7 +72,9 @@ function generateManifest ({ browser, mode }) {
   }
 
   if (browser === 'safari') {
-    updatedManifestFile.description = safariManifestDescription
+    // make sure the manifest description is under 112 characters for Safari
+    // https://github.com/w3c/webextensions/issues/218
+
     // safari doesn't support the sidepanel
     removeSidePanel(updatedManifestFile)
     // same as firefox
