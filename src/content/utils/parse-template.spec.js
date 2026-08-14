@@ -1,7 +1,6 @@
 import { expect, describe, it, beforeAll, afterAll } from 'vitest'
 
 import parseTemplate from './parse-template.js'
-import {destroy} from '../sandbox/sandbox-parent.js'
 
 const now = new Date()
 const year = now.getFullYear()
@@ -173,10 +172,5 @@ Expecting 'CLOSE_RAW_BLOCK', 'CLOSE', 'CLOSE_UNESCAPED', 'OPEN_SEXPR', 'CLOSE_SE
 
   it('should parse template with nested partial that uses account variable', async () => {
     expect(await parseTemplate('{{> subexpressionpartial}}')).to.equal('template john')
-  })
-
-  afterAll(() => {
-    destroy()
-    delete window.browser.runtime.sendMessage
   })
 })

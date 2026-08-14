@@ -1,19 +1,48 @@
-/* globals MANIFEST
- */
-import {parse} from '../../briskbars/briskbars.js'
-
-import {compileTemplate} from '../sandbox/sandbox-parent.js'
 import createContact from './create-contact.js'
 import templateFeatures from './template-features.js'
 import {getAccount as storeGetAccount, getTemplates} from  '../../store/store-content.js'
 
-let compileTemplateLegacy = async () => {}
-if (MANIFEST === '2') {
-  const sandbox = await import(
-    /* webpackMode: "eager" */
-    '../sandbox/sandbox.js'
-  )
-  compileTemplateLegacy = sandbox.compileTemplate
+import briskbars, {parse} from '../../briskbars/briskbars.js'
+
+// legacy choice helper
+import choice from '../helpers/choice.js'
+
+import moment from '../helpers/moment.js'
+import domain from '../helpers/domain.js'
+import text from '../helpers/text.js'
+import list from '../helpers/list.js'
+import {capitalize, capitalizeAll} from '../helpers/capitalize.js'
+import or from '../helpers/or.js'
+import and from '../helpers/and.js'
+import compare from '../helpers/compare.js'
+import random from '../helpers/random.js'
+import cursor from '../helpers/cursor.js'
+
+const helpers = {
+  choice,
+
+  moment,
+  domain,
+  text,
+  list,
+  capitalize,
+  capitalizeAll,
+  or,
+  and,
+  compare,
+  random,
+  cursor,
+}
+
+async function compileTemplate (template = '', context = {}, partials = []) {
+  try {
+    const partialsMap = Object.fromEntries(partials.map((p) => [p.shortcut, p.body]))
+    const output = await briskbars(template, context, { helpers, partials: partialsMap })
+    return output
+  } catch (err) {
+    // catch compilation errors like "missing helper" or "missing partial"
+    return `<pre>${err.message || err}</pre>`
+  }
 }
 
 function mergeContacts (a = {}, b = {}) {
@@ -86,10 +115,6 @@ export default async function parseTemplate (template = '', data = {}) {
     partials = templates
       .filter((t) => t.shortcut?.trim?.() && t.body !== template)
       .map((t) => ({ shortcut: t.shortcut, body: t.body }))
-  }
-
-  if (MANIFEST === '2') {
-    return compileTemplateLegacy(ast, context, partials)
   }
 
   return compileTemplate(ast, context, partials)

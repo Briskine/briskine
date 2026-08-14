@@ -1,9 +1,9 @@
 import { expect, describe, it } from 'vitest'
 
-import {compileTemplate} from '../sandbox/sandbox.js'
+import parseTemplate from '../utils/parse-template.js'
 
 describe('domain handlebars helper', () => {
   it('should extract and capitalize domain name', async () => {
-    expect(await compileTemplate('{{domain "contact@AWESOME-sweet-bakery.co.uk"}}')).to.equal('Awesome Sweet Bakery')
+    expect(await parseTemplate('{{domain "contact@AWESOME-sweet-bakery.co.uk"}}')).to.equal('Awesome Sweet Bakery')
   })
 })

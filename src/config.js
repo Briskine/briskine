@@ -26,7 +26,6 @@ export const dashboardTarget = 'gt-dashboard'
 
 export const eventDestroy = 'briskine-destroy'
 export const eventStatus = 'briskine-status'
-export const eventSandboxCompile = 'briskine-template-compile'
 export const eventShowDialog = 'briskine-dialog'
 export const eventInsertTemplate = 'briskine-insert-template'
 export const eventToggleBubble = 'briskine-toggle-bubble'

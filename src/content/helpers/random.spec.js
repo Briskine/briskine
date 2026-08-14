@@ -1,6 +1,6 @@
 import { expect, describe, it, beforeAll, afterAll } from 'vitest'
 
-import {compileTemplate} from '../sandbox/sandbox.js'
+import parseTemplate from '../utils/parse-template.js'
 
 let originalRandom = window.Math.random
 
@@ -13,15 +13,15 @@ describe('random handlebars helper', () => {
   })
 
   it('should print last item', async () => {
-    expect(await compileTemplate('{{random "one"}}')).to.equal('one')
+    expect(await parseTemplate('{{random "one"}}')).to.equal('one')
   })
 
   it('should print second item', async () => {
-    expect(await compileTemplate('{{random "one" "two" "three"}}')).to.equal('two')
+    expect(await parseTemplate('{{random "one" "two" "three"}}')).to.equal('two')
   })
 
   it('should print last item', async () => {
-    expect(await compileTemplate('{{random "one" 2}}')).to.equal('2')
+    expect(await parseTemplate('{{random "one" 2}}')).to.equal('2')
   })
 
   afterAll(() => {
