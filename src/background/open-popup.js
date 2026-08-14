@@ -1,13 +1,10 @@
-/* globals MANIFEST */
 import browser from 'webextension-polyfill'
-
-const actionNamespace = (MANIFEST === '2') ? 'browserAction' : 'action'
 
 export async function openPopup () {
   try {
-    await browser[actionNamespace].openPopup()
+    await browser.action.openPopup()
   } catch {
-    // browserAction.openPopup is not supported in all browsers yet.
+    // action.openPopup is not supported in all browsers yet.
     // https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/action/openPopup
     // Open the action popup in a new tab.
     const popupUrl = browser.runtime.getURL('popup/popup.html')

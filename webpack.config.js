@@ -22,13 +22,26 @@ const defaultFirebaseConfig = {
 const devPath = path.resolve('ext')
 const productionPath = path.resolve('build')
 
+const browsers = ['chrome', 'firefox', 'safari']
+
 // the manifest description is limited to 112 characters on Safari
 // https://github.com/w3c/webextensions/issues/218
 // TODO reduce manifest length for all builds, so we don't need a separate description for safari
 const safariManifestDescription = 'Write emails faster! Increase your productivity with templates and shortcuts on Gmail, Outlook, or LinkedIn.'
 
-function generateManifest ({ safari, mode, manifest }) {
-  let updatedManifestFile = Object.assign({}, manifestFile)
+// manifest v3 on firefox needs add-on id
+const firefoxAddonId = '{ee8d72b5-656f-40f2-8247-bfae87a235b8}'
+const firefoxDataCollection = {
+  required: ['authenticationInfo'],
+}
+
+function removeSidePanel (manifest) {
+  delete manifest.side_panel
+  manifest.permissions = manifest.permissions.filter((permissionItem) => permissionItem !== 'sidePanel')
+}
+
+function generateManifest ({ browser, mode }) {
+  const updatedManifestFile = structuredClone(manifestFile)
   // get version from package
   updatedManifestFile.version = packageFile.version
 
@@ -39,34 +52,37 @@ function generateManifest ({ safari, mode, manifest }) {
     )
   }
 
-  // manifest v2
-  if (manifest === '2') {
-    updatedManifestFile.manifest_version = 2
-    updatedManifestFile.background.scripts = [updatedManifestFile.background.service_worker]
-    delete updatedManifestFile.background.service_worker
-    updatedManifestFile.background.persistent = false
-    updatedManifestFile.permissions = updatedManifestFile.permissions
-      .concat(updatedManifestFile.host_permissions)
-    delete updatedManifestFile.host_permissions
-    updatedManifestFile.web_accessible_resources = updatedManifestFile.web_accessible_resources[0].resources
-    updatedManifestFile.browser_action = updatedManifestFile.action
-    delete updatedManifestFile.action
-    updatedManifestFile.content_security_policy = updatedManifestFile.content_security_policy.extension_pages
+  if (browser === 'firefox') {
+    // firefox doesn't support background.service_worker in manifest v3,
+    // and runs the background as a non-persistent event page instead.
+    // https://bugzil.la/1573659
+    updatedManifestFile.background = {
+      scripts: [manifestFile.background.service_worker],
+    }
 
-    // sidebar
+    // firefox uses sidebar_action, instead of the side_panel key and sidePanel permission
     updatedManifestFile.sidebar_action = {
       default_title: 'Briskine',
-      default_panel: updatedManifestFile.side_panel.default_path,
-      default_icon: updatedManifestFile.browser_action.default_icon,
+      default_panel: manifestFile.side_panel.default_path,
+      default_icon: manifestFile.action.default_icon,
     }
-    delete updatedManifestFile.side_panel
-    updatedManifestFile.permissions = updatedManifestFile.permissions.filter(permissionItem => permissionItem !== 'sidePanel')
+    removeSidePanel(updatedManifestFile)
 
-    // safari manifest
-    if (safari) {
-      updatedManifestFile.description = safariManifestDescription
-      // disable sidebar
-      delete updatedManifestFile.sidebar_action
+    updatedManifestFile.browser_specific_settings = {
+      gecko: {
+        id: firefoxAddonId,
+        data_collection_permissions: firefoxDataCollection,
+      },
+    }
+  }
+
+  if (browser === 'safari') {
+    updatedManifestFile.description = safariManifestDescription
+    // safari doesn't support the sidepanel
+    removeSidePanel(updatedManifestFile)
+    // same as firefox
+    updatedManifestFile.background = {
+      scripts: [manifestFile.background.service_worker],
     }
   }
 
@@ -88,6 +104,7 @@ class ZipPlugin {
   }
   apply(compiler) {
     compiler.hooks.done.tapAsync('ZipPlugin', (params, callback) => {
+      fs.mkdirSync(path.dirname(this.options.output), {recursive: true})
       const output = fs.createWriteStream(this.options.output)
       const zipArchive = new ZipArchive()
       output.on('close', callback)
@@ -98,9 +115,10 @@ class ZipPlugin {
   }
 }
 
-function extensionConfig ({ mode, safari, manifest, firebaseConfig}) {
+function extensionConfig ({ mode, browser, firebaseConfig}) {
+  const safari = browser === 'safari'
   const plugins = [
-    generateManifest({ mode, safari, manifest }),
+    generateManifest({ mode, browser }),
     new CopyWebpackPlugin({
       patterns: [
         { from: 'src/popup/popup.html', to: 'popup/' },
@@ -114,7 +132,6 @@ function extensionConfig ({ mode, safari, manifest, firebaseConfig}) {
       REGISTER_DISABLED: safari,
       FIREBASE_CONFIG: JSON.stringify(firebaseConfig),
       VERSION: JSON.stringify(packageFile.version),
-      MANIFEST: JSON.stringify(manifest),
     }),
     new MiniCssExtractPlugin({
       filename: '[name]/[name].css'
@@ -125,7 +142,7 @@ function extensionConfig ({ mode, safari, manifest, firebaseConfig}) {
   ]
 
   if (mode === 'production') {
-    const zipFilename = `${packageFile.name}-${packageFile.version}-manifest${manifest}.zip`
+    const zipFilename = `${packageFile.name}-${packageFile.version}-${browser}.zip`
     const zipPath = path.join(productionPath, zipFilename)
     plugins.push(
       new ZipPlugin({
@@ -276,10 +293,13 @@ export default async function (env) {
 
   const params = {
     firebaseConfig: firebaseConfig,
-    manifest: '3',
-    safari: false,
+    browser: 'chrome',
     mode: 'production',
     ...env,
+  }
+
+  if (!browsers.includes(params.browser)) {
+    throw new Error(`Unknown browser "${params.browser}". Expected one of: ${browsers.join(', ')}.`)
   }
 
   return extensionConfig(params)

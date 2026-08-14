@@ -1,9 +1,6 @@
-/* globals MANIFEST */
 import browser from 'webextension-polyfill'
 
 import {getSignedInUser} from '../store/store-api.js'
-
-const actionNamespace = (MANIFEST === '2') ? 'browserAction' : 'action'
 
 export function badgeUpdate(signedIn = false) {
   const suffix = signedIn ? '' : '-loggedout'
@@ -14,7 +11,7 @@ export function badgeUpdate(signedIn = false) {
     icons[size] = `/icons/icon-${size}${suffix}.png`
   })
 
-  browser[actionNamespace].setIcon({
+  browser.action.setIcon({
     path: icons
   })
 }
