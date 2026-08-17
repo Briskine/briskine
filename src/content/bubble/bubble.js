@@ -15,7 +15,7 @@ import { getActiveElement } from '../utils/active-element.js'
 import bubbleAllowlistPrivate from './bubble-allowlist-private.js'
 import { addFocusListeners } from '../utils/shadow-focus.js'
 
-import bubbleStyles from './bubble.css'
+import bubbleStyles from './bubble.css?inline'
 import bubbleIcon from '../../icons/briskine-logo-small-bare.svg?raw'
 import getEventTarget from '../utils/event-target.js'
 

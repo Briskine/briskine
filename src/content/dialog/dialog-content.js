@@ -21,7 +21,7 @@ import DialogListFull from './dialog-list-full.js'
 import DialogSettings from './dialog-settings.js'
 import DialogActions from './dialog-actions.js'
 
-import styles from './dialog.css'
+import styles from './dialog.css?inline'
 
 export default function DialogContent (originalProps) {
   const props = mergeProps({

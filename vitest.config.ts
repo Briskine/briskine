@@ -1,5 +1,7 @@
 import { defineConfig } from 'vitest/config'
 import { playwright } from '@vitest/browser-playwright'
+import solid from 'vite-plugin-solid'
+import solidSvg from 'vite-plugin-solid-svg'
 
 export default defineConfig({
   publicDir: 'test',
@@ -9,16 +11,24 @@ export default defineConfig({
     FIREBASE_CONFIG: {},
     VERSION: 1,
   },
-  resolve: {
-    alias: {
-      // HACK
-      // Temporary alias, we'll switch directly to this import when migrating to Vite.
-      'moment': 'moment/min/moment-with-locales.js',
-    }
-  },
   test: {
     projects: [{
       extends: true,
+      plugins: [
+        solid({
+          extensions: ['.js'],
+          exclude: /node_modules\/.*\.js$/,
+          hot: false,
+        }),
+        solidSvg(),
+      ],
+      optimizeDeps: {
+        rolldownOptions: {
+          moduleTypes: {
+            '.js': 'jsx',
+          },
+        },
+      },
       test: {
         name: 'unit',
         include: [

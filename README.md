@@ -23,7 +23,7 @@ The build is placed in `/ext`.
 Build the extension for all browsers and compress each one as a zip file.
 
 * Use `npm run build:chrome`, `npm run build:firefox`, or `npm run build:safari` to build a single browser.
-* Add `browser=firefox` (or `chrome`/`safari`) to any command to pick the browser. (eg. `npm start -- browser=firefox`). Defaults to `chrome`.
+* Set the `BROWSER` environment variable to `chrome`, `firefox`, or `safari` to pick the browser (eg. `BROWSER=firefox npm start`). Defaults to `chrome`.
 
 ## Help Center
 

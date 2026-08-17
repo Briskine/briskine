@@ -1,7 +1,7 @@
 /* Browser Action Popup
  */
 
-@import "~bootstrap/dist/css/bootstrap.css";
+@import "bootstrap/dist/css/bootstrap.css";
 
 :root {
   --bs-border-radius: 3px;
