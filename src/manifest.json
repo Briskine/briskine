@@ -44,16 +44,7 @@
   ],
   "web_accessible_resources": [{
     "resources": [
-      "popup/popup.html",
-      "page/page.js",
-      "icons/icon-16.png",
-      "icons/icon-16-loggedout.png",
-      "icons/icon-32.png",
-      "icons/icon-32-loggedout.png",
-      "icons/icon-48.png",
-      "icons/icon-48-loggedout.png",
-      "sidepanel/sidepanel.html",
-      "sidepanel/sidepanel.js"
+      "page/page.js"
     ],
     "matches": [
       "https://*/*",
