@@ -191,9 +191,6 @@ export default defineConfig(async ({ mode }) => {
     publicDir: false,
 
     define: {
-      // TODO HACK required to prevent lodash from calling Function('return this')
-      global: 'globalThis',
-
       ENV: JSON.stringify(mode),
       REGISTER_DISABLED: JSON.stringify(browser === 'safari'),
       FIREBASE_CONFIG: JSON.stringify(firebaseConfig),

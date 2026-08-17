@@ -1,7 +1,7 @@
 // native custom elements are not supported in content scripts
 // https://bugs.chromium.org/p/chromium/issues/detail?id=390807
 import '@webcomponents/custom-elements'
-import isEqual from 'lodash.isequal'
+import { isEqual } from 'es-toolkit'
 
 import {
   getSettings,

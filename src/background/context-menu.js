@@ -1,5 +1,5 @@
 import browser from 'webextension-polyfill'
-import isEqual from 'lodash.isequal'
+import { isEqual } from 'es-toolkit'
 
 import {functionsUrl, eventToggleBubble, eventShowDialog, eventInsertTemplate} from '../config.js'
 import {getAccount, getTemplates, getExtensionData, setExtensionData, getSettings} from '../store/store-api.js'

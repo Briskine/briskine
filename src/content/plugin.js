@@ -2,7 +2,7 @@
  * Plugin
  */
 
-import merge from 'lodash.merge'
+import { merge } from 'es-toolkit'
 
 import debug from '../debug.js'
 
@@ -30,7 +30,9 @@ export async function run (type = '', params) {
       })
       .map((r) => r.value)
 
-    const data = merge({}, ...responses)
+    const data = responses
+      .filter((response) => response != null)
+      .reduce((result, response) => merge(result, response), {})
     return data
   }
 
