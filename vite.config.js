@@ -213,7 +213,7 @@ export default defineConfig(async ({ mode }) => {
       modulePreload: false,
       chunkSizeWarningLimit: 1000,
       emptyOutDir: false,
-      target: ['chrome109', 'firefox140', 'safari16.4'],
+      target: ['chrome109', 'firefox142', 'safari16.4'],
       minify: !development,
       sourcemap: development,
     },
