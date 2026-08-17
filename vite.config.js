@@ -56,6 +56,7 @@ function generateManifest ({ browser, mode }) {
     // https://bugzil.la/1573659
     updatedManifestFile.background = {
       scripts: [manifestFile.background.service_worker],
+      type: manifestFile.background.type,
     }
 
     // firefox uses sidebar_action, instead of the side_panel key and sidePanel permission
@@ -83,6 +84,7 @@ function generateManifest ({ browser, mode }) {
     // same as firefox
     updatedManifestFile.background = {
       scripts: [manifestFile.background.service_worker],
+      type: manifestFile.background.type,
     }
   }
 
@@ -280,7 +282,7 @@ export default defineConfig(async ({ mode }) => {
       background: singleEntry({
         input: path.join('background', 'background.js'),
         fileName: 'background/background.js',
-        format: 'iife',
+        format: 'es',
       }),
 
       page: singleEntry({
