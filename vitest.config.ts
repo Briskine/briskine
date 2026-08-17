@@ -1,7 +1,6 @@
 import { defineConfig } from 'vitest/config'
 import { playwright } from '@vitest/browser-playwright'
-import solid from 'vite-plugin-solid'
-import solidSvg from 'vite-plugin-solid-svg'
+import solidPlugins from './vite.plugins.js'
 
 export default defineConfig({
   publicDir: 'test',
@@ -14,14 +13,7 @@ export default defineConfig({
   test: {
     projects: [{
       extends: true,
-      plugins: [
-        solid({
-          extensions: ['.js'],
-          exclude: /node_modules\/.*\.js$/,
-          hot: false,
-        }),
-        solidSvg(),
-      ],
+      plugins: solidPlugins(),
       optimizeDeps: {
         rolldownOptions: {
           moduleTypes: {

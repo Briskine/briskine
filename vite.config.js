@@ -4,12 +4,12 @@ import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 import { defineConfig } from 'vite'
-import solid from 'vite-plugin-solid'
-import solidSvg from 'vite-plugin-solid-svg'
 import purgecss from '@fullhuman/postcss-purgecss'
 import { globSync } from 'glob'
 import { ZipArchive } from 'archiver'
 import firebaseTools from 'firebase-tools'
+
+import solidPlugins from './vite.plugins.js'
 
 const rootPath = path.dirname(fileURLToPath(import.meta.url))
 const srcPath = path.join(rootPath, 'src')
@@ -32,12 +32,15 @@ const firefoxAddonId = '{ee8d72b5-656f-40f2-8247-bfae87a235b8}'
 const firefoxDataCollection = {
   required: ['authenticationInfo'],
 }
+const firefoxMinVersion = '140.0'
 
 function removeSidePanel (manifest) {
   delete manifest.side_panel
   manifest.permissions = manifest.permissions.filter((permissionItem) => permissionItem !== 'sidePanel')
 }
 
+// keep the manifest description under 112 characters, for safari
+// https://github.com/w3c/webextensions/issues/218
 function generateManifest ({ browser, mode }) {
   const updatedManifestFile = structuredClone(manifestFile)
   // get version from package
@@ -50,41 +53,33 @@ function generateManifest ({ browser, mode }) {
     )
   }
 
-  if (browser === 'firefox') {
-    // firefox doesn't support background.service_worker in manifest v3,
-    // and runs the background as a non-persistent event page instead.
-    // https://bugzil.la/1573659
+  // chrome is the only target that supports background.service_worker in
+  // manifest v3. firefox and safari both run the background as a
+  // non-persistent event page, and neither supports the side_panel key.
+  // https://bugzil.la/1573659
+  if (browser !== 'chrome') {
     updatedManifestFile.background = {
       scripts: [manifestFile.background.service_worker],
       type: manifestFile.background.type,
     }
+    removeSidePanel(updatedManifestFile)
+  }
 
-    // firefox uses sidebar_action, instead of the side_panel key and sidePanel permission
+  if (browser === 'firefox') {
+    // firefox uses sidebar_action, instead of the side_panel key and
+    // sidePanel permission
     updatedManifestFile.sidebar_action = {
       default_title: 'Briskine',
       default_panel: manifestFile.side_panel.default_path,
       default_icon: manifestFile.action.default_icon,
     }
-    removeSidePanel(updatedManifestFile)
 
     updatedManifestFile.browser_specific_settings = {
       gecko: {
         id: firefoxAddonId,
+        strict_min_version: firefoxMinVersion,
         data_collection_permissions: firefoxDataCollection,
       },
-    }
-  }
-
-  if (browser === 'safari') {
-    // make sure the manifest description is under 112 characters for Safari
-    // https://github.com/w3c/webextensions/issues/218
-
-    // safari doesn't support the sidepanel
-    removeSidePanel(updatedManifestFile)
-    // same as firefox
-    updatedManifestFile.background = {
-      scripts: [manifestFile.background.service_worker],
-      type: manifestFile.background.type,
     }
   }
 
@@ -199,36 +194,13 @@ export default defineConfig(async ({ mode }) => {
       VERSION: JSON.stringify(packageFile.version),
     },
 
-    plugins: [
-      solid({
-        extensions: ['.js'],
-        exclude: /node_modules\/.*\.js$/,
-      }),
-      solidSvg({
-        svgo: {
-          enabled: true,
-          svgoConfig: {
-            plugins: [
-              {
-                name: 'preset-default',
-                params: {
-                  overrides: {
-                    removeViewBox: false,
-                    cleanupIds: false,
-                  },
-                },
-              },
-            ],
-          },
-        },
-      }),
-    ],
+    plugins: solidPlugins(),
 
     css: {
       postcss: {
         plugins: [
           purgeExtractedCss({
-            content: globSync('src/**/*', {nodir: true, dotRelative: true}),
+            content: globSync(path.join(srcPath, '**/*'), {nodir: true}),
           }),
         ],
       },
@@ -239,7 +211,7 @@ export default defineConfig(async ({ mode }) => {
       modulePreload: false,
       chunkSizeWarningLimit: 1000,
       emptyOutDir: false,
-      target: ['chrome109', 'firefox115', 'safari16.4'],
+      target: ['chrome109', 'firefox140', 'safari16.4'],
       minify: !development,
       sourcemap: development,
     },
