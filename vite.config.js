@@ -235,6 +235,7 @@ export default defineConfig(async ({ mode }) => {
     build: {
       outDir: devPath,
       modulePreload: false,
+      chunkSizeWarningLimit: 1000,
       emptyOutDir: false,
       target: ['chrome109', 'firefox115', 'safari16.4'],
       minify: !development,
