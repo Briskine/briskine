@@ -17,6 +17,7 @@
     "build:safari": "BROWSER=safari vite build --mode production",
     "sourcebuild": "git archive --format zip --output sourcebuild/sourcebuild-${npm_package_version}.zip HEAD; zip -u sourcebuild/sourcebuild-${npm_package_version}.zip .firebase-config-production.json",
     "lint": "eslint",
+    "lint:firefox": "npm run build:firefox && web-ext lint --source-dir ./ext",
     "playwright:firefox": "npm run build:firefox && playwright test --project=firefox",
     "playwright:chrome": "npm run build:chrome && playwright test --project=chromium",
     "playwright:run": "npm run playwright:firefox && npm run playwright:chrome",

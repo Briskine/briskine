@@ -32,7 +32,7 @@ const firefoxAddonId = '{ee8d72b5-656f-40f2-8247-bfae87a235b8}'
 const firefoxDataCollection = {
   required: ['authenticationInfo'],
 }
-const firefoxMinVersion = '140.0'
+const firefoxMinVersion = '142.0'
 
 function removeSidePanel (manifest) {
   delete manifest.side_panel
@@ -66,6 +66,8 @@ function generateManifest ({ browser, mode }) {
   }
 
   if (browser === 'firefox') {
+    delete updatedManifestFile.web_accessible_resources[0].use_dynamic_url
+
     // firefox uses sidebar_action, instead of the side_panel key and
     // sidePanel permission
     updatedManifestFile.sidebar_action = {
