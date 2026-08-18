@@ -39,8 +39,6 @@ function removeSidePanel (manifest) {
   manifest.permissions = manifest.permissions.filter((permissionItem) => permissionItem !== 'sidePanel')
 }
 
-// keep the manifest description under 112 characters, for safari
-// https://github.com/w3c/webextensions/issues/218
 function generateManifest ({ browser, mode }) {
   const updatedManifestFile = structuredClone(manifestFile)
   // get version from package
@@ -53,21 +51,19 @@ function generateManifest ({ browser, mode }) {
     )
   }
 
-  // chrome is the only target that supports background.service_worker in
-  // manifest v3. firefox and safari both run the background as a
-  // non-persistent event page, and neither supports the side_panel key.
-  // https://bugzil.la/1573659
+  // matching manifest setup for firefox and safari
   if (browser !== 'chrome') {
     updatedManifestFile.background = {
       scripts: [manifestFile.background.service_worker],
       type: manifestFile.background.type,
     }
+
     removeSidePanel(updatedManifestFile)
+
+    delete updatedManifestFile.web_accessible_resources[0].use_dynamic_url
   }
 
   if (browser === 'firefox') {
-    delete updatedManifestFile.web_accessible_resources[0].use_dynamic_url
-
     // firefox uses sidebar_action, instead of the side_panel key and
     // sidePanel permission
     updatedManifestFile.sidebar_action = {
@@ -83,6 +79,14 @@ function generateManifest ({ browser, mode }) {
         data_collection_permissions: firefoxDataCollection,
       },
     }
+  }
+
+  if (browser === 'safari') {
+    // match current appstore name
+    updatedManifestFile.name = 'Briskine'
+
+    // keep the manifest description under 112 characters, for safari
+    // https://github.com/w3c/webextensions/issues/218
   }
 
   return updatedManifestFile
