@@ -32,7 +32,8 @@ const firefoxAddonId = '{ee8d72b5-656f-40f2-8247-bfae87a235b8}'
 const firefoxDataCollection = {
   required: ['authenticationInfo'],
 }
-const firefoxMinVersion = '142.0'
+// last firefox esr on windows 7
+const firefoxMinVersion = '115.0'
 
 function removeSidePanel (manifest) {
   delete manifest.side_panel
@@ -212,7 +213,7 @@ export default defineConfig(async ({ mode }) => {
       modulePreload: false,
       chunkSizeWarningLimit: 1000,
       emptyOutDir: false,
-      target: ['chrome109', 'firefox142', 'safari16.4'],
+      target: ['chrome109', 'firefox115', 'safari16.4'],
       minify: !development,
       sourcemap: development,
     },
