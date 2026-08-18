@@ -82,9 +82,6 @@ function generateManifest ({ browser, mode }) {
   }
 
   if (browser === 'safari') {
-    // match current appstore name
-    updatedManifestFile.name = 'Briskine'
-
     // keep the manifest description under 112 characters, for safari
     // https://github.com/w3c/webextensions/issues/218
   }
