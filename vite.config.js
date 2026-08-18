@@ -81,10 +81,8 @@ function generateManifest ({ browser, mode }) {
     }
   }
 
-  if (browser === 'safari') {
-    // keep the manifest description under 112 characters, for safari
-    // https://github.com/w3c/webextensions/issues/218
-  }
+  // for safari, keep the manifest description under 112 characters
+  // https://github.com/w3c/webextensions/issues/218
 
   return updatedManifestFile
 }
