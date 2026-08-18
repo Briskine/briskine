@@ -57,6 +57,7 @@ function generateManifest ({ browser, mode }) {
     updatedManifestFile.background = {
       scripts: [manifestFile.background.service_worker],
       type: manifestFile.background.type,
+      persistent: false,
     }
 
     removeSidePanel(updatedManifestFile)
