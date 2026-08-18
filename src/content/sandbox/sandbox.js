@@ -7,7 +7,7 @@
 // to the sandbox context, compile the templates here, and send them back to the content script.
 // https://developer.mozilla.org/en-US/docs/Web/API/Channel_Messaging_API
 
-import {create  as handlebarsCreate} from 'handlebars'
+import briskbars from '../../briskbars/briskbars.js'
 
 import {respond} from './sandbox-messenger-client.js'
 import { eventSandboxCompile } from '../../config.js'
@@ -26,39 +26,26 @@ import compare from '../helpers/compare.js'
 import random from '../helpers/random.js'
 import cursor from '../helpers/cursor.js'
 
-function getHandlebars (partials = []) {
-  const hbs = handlebarsCreate()
+const helpers = {
+  choice,
 
-  hbs.registerHelper({
-    // legacy choice helper
-    choice,
-
-    and,
-    moment,
-    domain,
-    text,
-    list,
-    capitalize,
-    capitalizeAll,
-    or,
-    compare,
-    random,
-    cursor,
-  })
-
-  if (partials?.length) {
-    partials.forEach((p) => {
-      hbs.registerPartial(p.shortcut, p.body)
-    })
-  }
-
-  return hbs
+  moment,
+  domain,
+  text,
+  list,
+  capitalize,
+  capitalizeAll,
+  or,
+  and,
+  compare,
+  random,
+  cursor,
 }
 
 export async function compileTemplate (template = '', context = {}, partials = []) {
-  const hbs = getHandlebars(partials)
   try {
-    return hbs.compile(template)(context)
+    const partialsMap = Object.fromEntries(partials.map((p) => [p.shortcut, p.body]))
+    return briskbars(template, context, { helpers, partials: partialsMap })
   } catch (err) {
     // catch compilation errors like "missing helper" or "missing partial"
     return `<pre>${err.message || err}</pre>`

@@ -34,6 +34,7 @@ export default defineConfig(
       'ext/*',
       'test/vendor/*',
       'safari/*',
+      '**/briskbars/',
     ],
   },
 )

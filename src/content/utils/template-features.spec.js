@@ -1,6 +1,6 @@
 import { expect, describe, it } from 'vitest'
 
-import {parse} from 'handlebars'
+import {parse} from '../../briskbars/briskbars.js'
 
 import templateFeatures from './template-features.js'
 

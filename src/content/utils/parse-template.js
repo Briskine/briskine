@@ -1,6 +1,6 @@
 /* globals MANIFEST
  */
-import {parse} from 'handlebars'
+import {parse} from '../../briskbars/briskbars.js'
 
 import {compileTemplate} from '../sandbox/sandbox-parent.js'
 import createContact from './create-contact.js'

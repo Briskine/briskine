@@ -7,7 +7,7 @@
  *
  */
 
-import { escapeExpression, SafeString } from 'handlebars'
+import { escapeExpression, SafeString } from '../../briskbars/briskbars.js'
 
 import { cursorMarker } from '../cursors/cursors.js'
 
