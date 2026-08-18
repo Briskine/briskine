@@ -26,7 +26,7 @@ function touchstart (e) {
 
   const touch = e.changedTouches[0]
   touchId = touch.identifier
-  touchTime = Date.now()
+  touchTime = e.timeStamp
   xstart = touch.clientX
   ystart = touch.clientY
 }
@@ -44,7 +44,7 @@ function touchend (e) {
 
   const xdiff = touch.clientX - xstart
   const ydiff = Math.abs(touch.clientY - ystart)
-  const timeDiff = Date.now() - touchTime
+  const timeDiff = e.timeStamp - touchTime
 
   reset()
 
