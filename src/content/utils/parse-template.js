@@ -33,20 +33,35 @@ const helpers = {
   cursor,
 }
 
-async function getPartials (template = '') {
+// cache partials because lots of templates can get expensive
+let partialsSource = null
+let partialsMap = {}
+function cachePartials (templates = []) {
+  partialsSource = templates
+  partialsMap = {}
+
+  for (const t of templates) {
+    // skip templates with no shortcut
+    if (t.shortcut?.trim?.()) {
+      partialsMap[t.shortcut] = t.body
+    }
+  }
+}
+
+async function getPartials () {
   let templates = []
   try {
     templates = await getTemplates()
   } catch {
-    // logged-out, or templates not available
+    // can't get templates for some reason,
+    // logged-out will still return default templates.
   }
 
-  return Object.fromEntries(
-    templates
-      // exclude the current template, and templates with no shortcut
-      .filter((t) => t.shortcut?.trim?.() && t.body !== template)
-      .map((t) => [t.shortcut, t.body])
-  )
+  if (templates !== partialsSource) {
+    cachePartials(templates)
+  }
+
+  return partialsMap
 }
 
 function mergeContacts (a = {}, b = {}) {
@@ -104,7 +119,7 @@ async function parseContext (data = {}) {
 
 export default async function parseTemplate (template = '', data = {}) {
   const context = await parseContext(data)
-  const partials = await getPartials(template)
+  const partials = await getPartials()
 
   try {
     return await briskbars(template, context, { helpers, partials })
