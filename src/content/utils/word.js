@@ -27,7 +27,9 @@ export function getWord (element) {
     // contenteditable.
     const [focusNode, focusOffset] = getSelectionFocus(element)
 
-    switch (focusNode.nodeType) {
+    // the editor can re-render and reset the selection while we fetch the template,
+    // leaving us without a focusNode. treat it as an empty word.
+    switch (focusNode?.nodeType) {
       // in most cases, the focusNode property refers to a Text Node.
       case (document.TEXT_NODE): {
         // for text nodes take the text until the focusOffset

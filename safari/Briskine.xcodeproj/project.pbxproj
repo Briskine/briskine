@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 56;
+	objectVersion = 70;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -29,22 +29,6 @@
 		A6A5D70729C88DE400BE4AC5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A6A5D6C529C88DE400BE4AC5 /* Assets.xcassets */; };
 		A6A5D70829C88DE400BE4AC5 /* SafariWebExtensionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6A5D6C729C88DE400BE4AC5 /* SafariWebExtensionHandler.swift */; };
 		A6A5D70929C88DE400BE4AC5 /* SafariWebExtensionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6A5D6C729C88DE400BE4AC5 /* SafariWebExtensionHandler.swift */; };
-		A6A5D72329C88DE400BE4AC5 /* background in Resources */ = {isa = PBXBuildFile; fileRef = A6A5D71B29C88DE400BE4AC5 /* background */; };
-		A6A5D72429C88DE400BE4AC5 /* page in Resources */ = {isa = PBXBuildFile; fileRef = A6A5D71C29C88DE400BE4AC5 /* page */; };
-		A6A5D72529C88DE400BE4AC5 /* popup in Resources */ = {isa = PBXBuildFile; fileRef = A6A5D71D29C88DE400BE4AC5 /* popup */; };
-		A6A5D72629C88DE400BE4AC5 /* LICENSE in Resources */ = {isa = PBXBuildFile; fileRef = A6A5D71E29C88DE400BE4AC5 /* LICENSE */; };
-		A6A5D72729C88DE400BE4AC5 /* content in Resources */ = {isa = PBXBuildFile; fileRef = A6A5D71F29C88DE400BE4AC5 /* content */; };
-		A6A5D72829C88DE400BE4AC5 /* sandbox in Resources */ = {isa = PBXBuildFile; fileRef = A6A5D72029C88DE400BE4AC5 /* sandbox */; };
-		A6A5D72929C88DE400BE4AC5 /* icons in Resources */ = {isa = PBXBuildFile; fileRef = A6A5D72129C88DE400BE4AC5 /* icons */; };
-		A6A5D72A29C88DE400BE4AC5 /* manifest.json in Resources */ = {isa = PBXBuildFile; fileRef = A6A5D72229C88DE400BE4AC5 /* manifest.json */; };
-		A6A5D72B29C88DE400BE4AC5 /* background in Resources */ = {isa = PBXBuildFile; fileRef = A6A5D71B29C88DE400BE4AC5 /* background */; };
-		A6A5D72C29C88DE400BE4AC5 /* page in Resources */ = {isa = PBXBuildFile; fileRef = A6A5D71C29C88DE400BE4AC5 /* page */; };
-		A6A5D72D29C88DE400BE4AC5 /* popup in Resources */ = {isa = PBXBuildFile; fileRef = A6A5D71D29C88DE400BE4AC5 /* popup */; };
-		A6A5D72E29C88DE400BE4AC5 /* LICENSE in Resources */ = {isa = PBXBuildFile; fileRef = A6A5D71E29C88DE400BE4AC5 /* LICENSE */; };
-		A6A5D72F29C88DE400BE4AC5 /* content in Resources */ = {isa = PBXBuildFile; fileRef = A6A5D71F29C88DE400BE4AC5 /* content */; };
-		A6A5D73029C88DE400BE4AC5 /* sandbox in Resources */ = {isa = PBXBuildFile; fileRef = A6A5D72029C88DE400BE4AC5 /* sandbox */; };
-		A6A5D73129C88DE400BE4AC5 /* icons in Resources */ = {isa = PBXBuildFile; fileRef = A6A5D72129C88DE400BE4AC5 /* icons */; };
-		A6A5D73229C88DE400BE4AC5 /* manifest.json in Resources */ = {isa = PBXBuildFile; fileRef = A6A5D72229C88DE400BE4AC5 /* manifest.json */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -113,15 +97,11 @@
 		A6A5D6F529C88DE400BE4AC5 /* Briskine Extension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "Briskine Extension.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
 		A6A5D6FA29C88DE400BE4AC5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A6A5D6FB29C88DE400BE4AC5 /* Briskine.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Briskine.entitlements; sourceTree = "<group>"; };
-		A6A5D71B29C88DE400BE4AC5 /* background */ = {isa = PBXFileReference; lastKnownFileType = folder; path = background; sourceTree = "<group>"; };
-		A6A5D71C29C88DE400BE4AC5 /* page */ = {isa = PBXFileReference; lastKnownFileType = folder; path = page; sourceTree = "<group>"; };
-		A6A5D71D29C88DE400BE4AC5 /* popup */ = {isa = PBXFileReference; lastKnownFileType = folder; path = popup; sourceTree = "<group>"; };
-		A6A5D71E29C88DE400BE4AC5 /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
-		A6A5D71F29C88DE400BE4AC5 /* content */ = {isa = PBXFileReference; lastKnownFileType = folder; path = content; sourceTree = "<group>"; };
-		A6A5D72029C88DE400BE4AC5 /* sandbox */ = {isa = PBXFileReference; lastKnownFileType = folder; path = sandbox; sourceTree = "<group>"; };
-		A6A5D72129C88DE400BE4AC5 /* icons */ = {isa = PBXFileReference; lastKnownFileType = folder; path = icons; sourceTree = "<group>"; };
-		A6A5D72229C88DE400BE4AC5 /* manifest.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = manifest.json; sourceTree = "<group>"; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		A6EBF1283034646B00D6A327 /* Resources */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (background, chunks, content, icons, page, popup, sidepanel, ); name = Resources; path = ../ext; sourceTree = SOURCE_ROOT; };
+/* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		A6A5D6C929C88DE400BE4AC5 /* Frameworks */ = {
@@ -192,7 +172,7 @@
 		A6A5D6C629C88DE400BE4AC5 /* Shared (Extension) */ = {
 			isa = PBXGroup;
 			children = (
-				A6A5D71A29C88DE400BE4AC5 /* Resources */,
+				A6EBF1283034646B00D6A327 /* Resources */,
 				A6A5D6C729C88DE400BE4AC5 /* SafariWebExtensionHandler.swift */,
 			);
 			path = "Shared (Extension)";
@@ -249,22 +229,6 @@
 			path = "macOS (Extension)";
 			sourceTree = "<group>";
 		};
-		A6A5D71A29C88DE400BE4AC5 /* Resources */ = {
-			isa = PBXGroup;
-			children = (
-				A6A5D71B29C88DE400BE4AC5 /* background */,
-				A6A5D71C29C88DE400BE4AC5 /* page */,
-				A6A5D71D29C88DE400BE4AC5 /* popup */,
-				A6A5D71E29C88DE400BE4AC5 /* LICENSE */,
-				A6A5D71F29C88DE400BE4AC5 /* content */,
-				A6A5D72029C88DE400BE4AC5 /* sandbox */,
-				A6A5D72129C88DE400BE4AC5 /* icons */,
-				A6A5D72229C88DE400BE4AC5 /* manifest.json */,
-			);
-			name = Resources;
-			path = ../ext;
-			sourceTree = SOURCE_ROOT;
-		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -318,6 +282,9 @@
 			);
 			dependencies = (
 			);
+			fileSystemSynchronizedGroups = (
+				A6EBF1283034646B00D6A327 /* Resources */,
+			);
 			name = "Briskine Extension (iOS)";
 			productName = "Briskine Extension (iOS)";
 			productReference = A6A5D6EB29C88DE400BE4AC5 /* Briskine Extension.appex */;
@@ -334,6 +301,9 @@
 			buildRules = (
 			);
 			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				A6EBF1283034646B00D6A327 /* Resources */,
 			);
 			name = "Briskine Extension (macOS)";
 			productName = "Briskine Extension (macOS)";
@@ -417,14 +387,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A6A5D73029C88DE400BE4AC5 /* sandbox in Resources */,
-				A6A5D72D29C88DE400BE4AC5 /* popup in Resources */,
-				A6A5D72B29C88DE400BE4AC5 /* background in Resources */,
-				A6A5D72E29C88DE400BE4AC5 /* LICENSE in Resources */,
-				A6A5D73229C88DE400BE4AC5 /* manifest.json in Resources */,
-				A6A5D72C29C88DE400BE4AC5 /* page in Resources */,
-				A6A5D73129C88DE400BE4AC5 /* icons in Resources */,
-				A6A5D72F29C88DE400BE4AC5 /* content in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -432,14 +394,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A6A5D72829C88DE400BE4AC5 /* sandbox in Resources */,
-				A6A5D72529C88DE400BE4AC5 /* popup in Resources */,
-				A6A5D72329C88DE400BE4AC5 /* background in Resources */,
-				A6A5D72629C88DE400BE4AC5 /* LICENSE in Resources */,
-				A6A5D72A29C88DE400BE4AC5 /* manifest.json in Resources */,
-				A6A5D72429C88DE400BE4AC5 /* page in Resources */,
-				A6A5D72929C88DE400BE4AC5 /* icons in Resources */,
-				A6A5D72729C88DE400BE4AC5 /* content in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -566,7 +520,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 15;
+				CURRENT_PROJECT_VERSION = 17;
 				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = 4B763U4LDR;
@@ -587,7 +541,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MARKETING_VERSION = 7.7;
+				MARKETING_VERSION = 7.8;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -632,7 +586,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 15;
+				CURRENT_PROJECT_VERSION = 17;
 				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 4B763U4LDR;
@@ -647,7 +601,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MARKETING_VERSION = 7.7;
+				MARKETING_VERSION = 7.8;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
@@ -665,7 +619,7 @@
 				INFOPLIST_FILE = "iOS (Extension)/Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "Briskine Extension";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -693,7 +647,7 @@
 				INFOPLIST_FILE = "iOS (Extension)/Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "Briskine Extension";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -720,7 +674,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 15;
+				CURRENT_PROJECT_VERSION = 17;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "iOS (App)/Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = Briskine;
@@ -730,12 +684,12 @@
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 7.7;
+				MARKETING_VERSION = 7.8;
 				OTHER_LDFLAGS = (
 					"-framework",
 					SafariServices,
@@ -757,7 +711,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 15;
+				CURRENT_PROJECT_VERSION = 17;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "iOS (App)/Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = Briskine;
@@ -767,12 +721,12 @@
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 7.7;
+				MARKETING_VERSION = 7.8;
 				OTHER_LDFLAGS = (
 					"-framework",
 					SafariServices,

@@ -21,6 +21,19 @@ describe('word', () => {
     })
   })
 
+  it('should get an empty contenteditable word when the editor dropped the selection', () => {
+    editable.innerHTML = 'pre'
+    window.getSelection().removeAllRanges()
+
+    expect(
+      getWord(editable)
+    ).to.eql({
+      start: 0,
+      end: 0,
+      text: '',
+    })
+  })
+
   it('should get contenteditable word, with preceding text', () => {
     editable.innerHTML = 'pre'
     const selection = window.getSelection()

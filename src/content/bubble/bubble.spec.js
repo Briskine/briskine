@@ -14,14 +14,6 @@ vi.mock('../dialog/dialog.js', () => ({
   dialogTagName: 'b-dialog-test',
 }))
 
-// webpack uses css-loader with exportType: 'string' for content css.
-// vite serves css files as text/css with no default export, so we have to mock
-// it until we replace webpack.
-vi.mock('./bubble.css', () => ({
-  default: ':host { position: fixed; display: none; width: 28px; height: 28px; } :host([visible]) { display: block; }',
-}))
-
-
 const dialogTagName = 'b-dialog-test'
 
 function createTextarea (width = 300, height = 100) {

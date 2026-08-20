@@ -33,8 +33,7 @@ function Dialog (originalProps) {
     keyboardShortcut: '',
   }, originalProps)
 
-  // eslint-disable-next-line no-unassigned-vars
-  let element
+  let element = null
 
   const [visible, setVisible] = createSignal(false)
   let editor

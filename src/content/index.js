@@ -1,7 +1,7 @@
 // native custom elements are not supported in content scripts
 // https://bugs.chromium.org/p/chromium/issues/detail?id=390807
 import '@webcomponents/custom-elements'
-import isEqual from 'lodash.isequal'
+import { isEqual } from 'es-toolkit'
 
 import {
   getSettings,
@@ -29,7 +29,6 @@ import {
   setup as setupActiveElement,
   destroy as destroyActiveElement,
 } from './utils/active-element.js'
-import { destroy as destroySandbox} from './sandbox/sandbox-parent.js'
 import { destroy as destroyKeybind } from './keybind.js'
 import getEventTarget from './utils/event-target.js'
 import { isTextfieldEditor } from './editors/editor-textfield.js'
@@ -166,7 +165,6 @@ function destructor () {
   destroyActiveElement()
 
   destroyKeybind()
-  destroySandbox()
 
   settingsCache = {}
 }

@@ -12,8 +12,7 @@ import './sidepanel.css'
 let keyboardShortcut = ''
 
 function Sidepanel () {
-  // eslint-disable-next-line no-unassigned-vars
-  let element
+  let element = null
 
   onMount(() => {
     setupStore()

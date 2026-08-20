@@ -93,10 +93,10 @@ export default function PopupDashboard () {
   const [customer, setCustomer] = createSignal()
   const [switchCustomerRequest] = createResource(customer, async (customerId) => {
     await setActiveCustomer(customerId)
-    setUser({
-      ...user(),
+    setUser((prevUser) => ({
+      ...prevUser,
       ...{customer: customerId}
-    })
+    }))
   })
 
   async function refreshAccount () {
@@ -106,9 +106,10 @@ export default function PopupDashboard () {
     await Promise.all(
       account.customers.map((customerId) => {
         return getCustomer(customerId).then((customerData) => {
-          const updatedCustomers = {...customers()}
-          updatedCustomers[customerId] = customerData
-          setCustomers(updatedCustomers)
+          setCustomers((prevCustomers) => ({
+            ...prevCustomers,
+            [customerId]: customerData,
+          }))
         })
       })
     )

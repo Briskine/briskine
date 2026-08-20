@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Briskine: Email templates for Gmail™",
   "version": "",
-  "description": "Write emails faster! Increase your productivity with templates and keyboard shortcuts on Gmail™, Outlook, or LinkedIn.",
+  "description": "Write emails faster! Increase your productivity with templates and shortcuts on Gmail™, Outlook, or LinkedIn.",
   "short_name": "Briskine",
   "icons": {
     "16": "icons/icon-16.png",
@@ -11,7 +11,8 @@
     "128": "icons/icon-128.png"
   },
   "background": {
-    "service_worker": "background/background.js"
+    "service_worker": "background/background.js",
+    "type": "module"
   },
   "permissions": [
     "tabs",
@@ -44,18 +45,7 @@
   ],
   "web_accessible_resources": [{
     "resources": [
-      "popup/popup.html",
-      "page/page.js",
-      "sandbox/sandbox.html",
-      "sandbox/sandbox.js",
-      "icons/icon-16.png",
-      "icons/icon-16-loggedout.png",
-      "icons/icon-32.png",
-      "icons/icon-32-loggedout.png",
-      "icons/icon-48.png",
-      "icons/icon-48-loggedout.png",
-      "sidepanel/sidepanel.html",
-      "sidepanel/sidepanel.js"
+      "page/page.js"
     ],
     "matches": [
       "https://*/*",
@@ -66,9 +56,6 @@
   "side_panel": {
     "default_path": "sidepanel/sidepanel.html"
   },
-  "sandbox": {
-    "pages": ["sandbox/sandbox.html"]
-  },
   "action": {
     "default_title": "Briskine",
     "default_icon": {
@@ -78,7 +65,6 @@
     "default_popup": "popup/popup.html"
   },
   "content_security_policy": {
-    "extension_pages": "script-src 'self'; object-src 'self'; frame-ancestors 'none'",
-    "sandbox": "sandbox allow-scripts; script-src 'self' 'unsafe-eval'; child-src 'self';"
+    "extension_pages": "script-src 'self'; object-src 'self'; frame-ancestors 'none'"
   }
 }

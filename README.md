@@ -20,10 +20,10 @@ The build is placed in `/ext`.
 
 * `npm run build`
 
-Build extension and compress it as a zip file. The built extension is in `/ext`, and the zip file is in `/build`.
+Build the extension for all browsers and compress each one as a zip file.
 
-* Use `-- manifest=2` to any command to build the Manifest v2 version. (eg. `npm run build -- manifest=2`).
-* Use `-- manifest=2 safari` to build the Safari version. 
+* Use `npm run build:chrome`, `npm run build:firefox`, or `npm run build:safari` to build a single browser.
+* Set the `BROWSER` environment variable to `chrome`, `firefox`, or `safari` to pick the browser (eg. `BROWSER=firefox npm start`). Defaults to `chrome`.
 
 ## Help Center
 

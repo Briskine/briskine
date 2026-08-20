@@ -6,6 +6,7 @@ import { functionsUrl } from '../../config.js'
 
 const activeTemplateClass = 'active'
 const templateRenderLimit = 42
+const bodyCharacterRenderLimit = 200
 
 export default function DialogList (originalProps) {
   const props = mergeProps({
@@ -18,12 +19,6 @@ export default function DialogList (originalProps) {
   }, originalProps)
 
   let element = null
-  const elementRef = (el) => {
-    element = el
-    if (typeof props.ref === 'function') {
-      props.ref(el)
-    }
-  }
 
   const [active, setActive] = createSignal()
 
@@ -120,7 +115,12 @@ export default function DialogList (originalProps) {
 
   return (
     <div
-      ref={elementRef}
+      ref={(el) => {
+        element = el
+        if (typeof props.ref === 'function') {
+          props.ref(el)
+        }
+      }}
       class="dialog-list"
       on:click={onClick}
       on:mouseover={onMouseOver}
@@ -151,7 +151,7 @@ export default function DialogList (originalProps) {
                   </Show>
                 </div>
                 <p class="text-secondary">
-                  {t._body_plaintext.slice(0, 100)}
+                  {t._body_plaintext.slice(0, bodyCharacterRenderLimit)}
                 </p>
                 <Show when={props.extensionData.dialogTags && t.tags && t.tags.length}>
                   <ul class="dialog-tags">
