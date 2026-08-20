@@ -158,6 +158,14 @@ Expecting 'CLOSE_RAW_BLOCK', 'CLOSE', 'CLOSE_UNESCAPED', 'OPEN_SEXPR', 'CLOSE_SE
     expect(await parseTemplate('{{> c custom="briskine"}}')).to.equal('briskine')
   })
 
+  it('should parse template with partial block', async () => {
+    expect(await parseTemplate('{{#> kr}}fallback{{/kr}}', {from: {first_name: 'Briskine'}})).to.equal('<div>Kind regards,</div><div>Briskine.</div>')
+  })
+
+  it('should parse partial block fallback when partial is not found', async () => {
+    expect(await parseTemplate('{{#> not_found}}fallback{{/not_found}}')).to.equal('fallback')
+  })
+
   it('should throw error when partial is not found', async () => {
     expect(await parseTemplate('{{> not_found}}')).to.equal('<pre>The partial "not_found" could not be found</pre>')
   })

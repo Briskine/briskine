@@ -1,8 +1,7 @@
 import createContact from './create-contact.js'
-import templateFeatures from './template-features.js'
 import {getAccount as storeGetAccount, getTemplates} from  '../../store/store-content.js'
 
-import briskbars, {parse} from '../../briskbars/briskbars.js'
+import briskbars from '../../briskbars/briskbars.js'
 
 // legacy choice helper
 import choice from '../helpers/choice.js'
@@ -34,15 +33,20 @@ const helpers = {
   cursor,
 }
 
-async function compileTemplate (template = '', context = {}, partials = []) {
+async function getPartials (template = '') {
+  let templates = []
   try {
-    const partialsMap = Object.fromEntries(partials.map((p) => [p.shortcut, p.body]))
-    const output = await briskbars(template, context, { helpers, partials: partialsMap })
-    return output
-  } catch (err) {
-    // catch compilation errors like "missing helper" or "missing partial"
-    return `<pre>${err.message || err}</pre>`
+    templates = await getTemplates()
+  } catch {
+    // logged-out, or templates not available
   }
+
+  return Object.fromEntries(
+    templates
+      // exclude the current template, and templates with no shortcut
+      .filter((t) => t.shortcut?.trim?.() && t.body !== template)
+      .map((t) => [t.shortcut, t.body])
+  )
 }
 
 function mergeContacts (a = {}, b = {}) {
@@ -85,7 +89,7 @@ function contactsArray (contacts = []) {
 
 const contactLists = ['to', 'cc', 'bcc']
 async function parseContext (data = {}) {
-  const context = structuredClone(data)
+  const context = {...data}
   contactLists.forEach((p) => {
     const propData = Array.isArray(context[p] || []) ? context[p] : [context[p]]
     context[p] = contactsArray(propData)
@@ -99,23 +103,13 @@ async function parseContext (data = {}) {
 }
 
 export default async function parseTemplate (template = '', data = {}) {
-  let ast
+  const context = await parseContext(data)
+  const partials = await getPartials(template)
+
   try {
-    ast = parse(template)
+    return await briskbars(template, context, { helpers, partials })
   } catch (err) {
-    // catch syntax errors
+    // catch handlebars errors
     return `<pre>${err.message || err}</pre>`
   }
-
-  const features = templateFeatures(ast)
-  const context = await parseContext(data)
-  let partials = []
-  if (features.partials) {
-    const templates = await getTemplates()
-    partials = templates
-      .filter((t) => t.shortcut?.trim?.() && t.body !== template)
-      .map((t) => ({ shortcut: t.shortcut, body: t.body }))
-  }
-
-  return compileTemplate(ast, context, partials)
 }
