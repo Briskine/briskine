@@ -1,4 +1,4 @@
-// briskbars 1.0.0
+// briskbars 1.1.0
 var __defProp = Object.defineProperty;
 var __export = (target, all) => {
   for (var name in all)
@@ -2666,21 +2666,33 @@ function eachOver(context, self, parentData, fn, inverse) {
   });
   return pending ? new Pending(pending.promise.then(() => ret)) : ret;
 }
-function cachePartial(frame, name, partial) {
-  const registered = frame.options.partials;
-  try {
-    if (frame.partials !== emptyPartials) {
-      frame.partials[name] = partial;
-    }
-    if (registered && registered !== frame.partials && typeof registered[name] === "string") {
-      registered[name] = partial;
-    }
-  } catch {
+var sourceCacheLimit = 64 * 1024;
+var sourceCache = /* @__PURE__ */ new Map();
+var sourceCacheChars = 0;
+function cachedParse(source) {
+  const cached = sourceCache.get(source);
+  if (cached) {
+    sourceCache.delete(source);
+    sourceCache.set(source, cached);
+    return cached;
   }
+  const entry = { ast: parse(source) };
+  sourceCache.set(source, entry);
+  sourceCacheChars += source.length;
+  while (sourceCacheChars > sourceCacheLimit && sourceCache.size > 1) {
+    const oldest = sourceCache.keys().next().value;
+    sourceCache.delete(oldest);
+    sourceCacheChars -= oldest.length;
+  }
+  return entry;
 }
 function compileStringPartial(source) {
-  const ast = parse(source);
-  return (context, options = {}) => briskbars(ast, context, options);
+  const entry = cachedParse(source);
+  if (!entry.fn) {
+    const ast = entry.ast;
+    entry.fn = (context, options = {}) => briskbars(ast, context, options);
+  }
+  return entry.fn;
 }
 function planPartial(node, scopes) {
   const nameNode = node.name;
@@ -2712,9 +2724,6 @@ function resolvePartialFn(frame, partialName) {
       );
       exception.cause = err;
       throw exception;
-    }
-    if (partialName !== "@partial-block") {
-      cachePartial(frame, partialName, partial);
     }
   }
   if (!partial) {
@@ -2808,7 +2817,7 @@ function briskbars(template, context, runtimeOptions = {}) {
       "You must pass a string or Handlebars AST. You passed " + template
     );
   }
-  const ast = typeof template === "string" ? parse(template) : template;
+  const ast = typeof template === "string" ? cachedParse(template).ast : template;
   const built = buildProgram(ast, emptyScopes);
   const data = initData(context, runtimeOptions.data);
   const helpers = runtimeOptions.helpers || emptyHelpers;
