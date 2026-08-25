@@ -55,7 +55,7 @@ async function saveAsTemplateAction (info, tab) {
   // truncate for url safety
   body = body?.substring?.(0, 1500)
 
-  browser.tabs.create({
+  return browser.tabs.create({
     url: `${functionsUrl}/template/new?body=${encodeURIComponent(body)}`
   })
 }
@@ -99,11 +99,11 @@ async function clickContextMenu (info = {}, tab = {}) {
 
   if (info.menuItemId === openSidebar) {
     if (browser.sidePanel) {
-      browser.sidePanel.open({ tabId: tab.id })
+      await browser.sidePanel.open({ tabId: tab.id })
     }
 
     if (browser.sidebarAction) {
-      browser.sidebarAction.open()
+      await browser.sidebarAction.open()
     }
 
     return
@@ -149,6 +149,15 @@ async function createContextMenus (menus = []) {
       })
     })
   )
+}
+
+async function updateMenu (id, state) {
+  // the menus might not be created yet
+  try {
+    await browser.contextMenus.update(id, state)
+  } catch (err) {
+    debug(['updateMenu', id, err], 'warn')
+  }
 }
 
 function getTemplateSlotId (index) {
@@ -247,31 +256,40 @@ async function setupContextMenus () {
   updateMenuTemplates()
 
   const [tab] = await browser.tabs.query({active: true, lastFocusedWindow: true})
-  toggleContextMenu(tab)
+  await toggleContextMenu(tab)
 }
 
 async function toggleContextMenu (tab) {
   if (await shouldContextMenuShow(tab)) {
-    updateBubbleContextMenu(tab)
-    browser.contextMenus.update(parentMenu, { visible: true })
-  } else {
-    browser.contextMenus.update(parentMenu, { visible: false })
+    await updateBubbleContextMenu(tab)
+    return updateMenu(parentMenu, { visible: true })
   }
+
+  return updateMenu(parentMenu, { visible: false })
 }
 
 async function updateMenuSignin() {
   try {
     await getAccount()
-    browser.contextMenus.update(signInMenu, { title: 'Open Briskine popup' })
   } catch {
-    browser.contextMenus.update(signInMenu, { title: 'Sign in to access your templates' })
+    return updateMenu(signInMenu, { title: 'Sign in to access your templates' })
   }
+
+  return updateMenu(signInMenu, { title: 'Open Briskine popup' })
 }
 
 // slot index to template id, only used to resolve clicks
 let templateSlots = []
 async function updateMenuTemplates () {
-  const templates = await getMenuTemplates(await getTemplates())
+  // called without awaiting, keep the templates we already have on failure
+  let templates = []
+  try {
+    templates = await getMenuTemplates(await getTemplates())
+  } catch (err) {
+    debug(['updateMenuTemplates', err], 'warn')
+    return
+  }
+
   templateSlots = templates.map((template) => template.id)
 
   return Promise.all(
@@ -284,12 +302,7 @@ async function updateMenuTemplates () {
         visible: false,
       }
 
-      // in case the menus aren't ready yet
-      try {
-        await browser.contextMenus.update(getTemplateSlotId(index), state)
-      } catch (err) {
-        debug(['updateMenuTemplates', err], 'warn')
-      }
+      return updateMenu(getTemplateSlotId(index), state)
     })
   )
 }
@@ -317,7 +330,7 @@ async function updateBubbleContextMenu (tab) {
     }
   }
 
-  return browser.contextMenus.update(toggleBubbleMenu, state)
+  return updateMenu(toggleBubbleMenu, state)
 }
 
 async function isExtensionResponding (tab) {
@@ -412,8 +425,12 @@ async function storageChange (changes = {}) {
     ['briskine', 'bubbleAllowlist']
   )) {
     const [tab] = await browser.tabs.query({active: true, lastFocusedWindow: true})
-    updateBubbleContextMenu(tab)
+    await updateBubbleContextMenu(tab)
   }
+}
+
+function catchErrors (fn) {
+  return (...args) => fn(...args).catch((err) => debug([fn.name, err], 'warn'))
 }
 
 function enableContextMenu () {
@@ -422,11 +439,12 @@ function enableContextMenu () {
     return
   }
 
-  browser.runtime.onInstalled.addListener(setupContextMenus)
-  browser.contextMenus.onClicked.addListener(clickContextMenu)
-  browser.tabs.onActivated.addListener(onTabSwitchHandler)
-  browser.tabs.onUpdated.addListener(onTabUpdateHandler)
+  browser.runtime.onInstalled.addListener(catchErrors(setupContextMenus))
+  browser.contextMenus.onClicked.addListener(catchErrors(clickContextMenu))
+  browser.tabs.onActivated.addListener(catchErrors(onTabSwitchHandler))
+  browser.tabs.onUpdated.addListener(catchErrors(onTabUpdateHandler))
 
+  const onStorageChange = catchErrors(storageChange)
   let timer
   let pendingChanges = {}
   function debouncedStorageChange (changes = {}) {
@@ -441,12 +459,12 @@ function enableContextMenu () {
       }
     }
 
-    timer = setTimeout(async () => {
+    timer = setTimeout(() => {
       // clone, in case pendingChanges changes while we await
       const pendingChangesClone = { ...pendingChanges }
       pendingChanges = {}
 
-      await storageChange(pendingChangesClone)
+      onStorageChange(pendingChangesClone)
     }, 1000)
   }
 
