@@ -19,6 +19,7 @@ const parentMenu = 'briskineMenu'
 const separatorMenu = 'mainSeparator'
 const insertTemplatesMenu = 'insertTemplates'
 const toggleBubbleMenu = 'toggleBubble'
+const templateSlotPrefix = 'template-'
 
 const templatesLimit = 30
 // context menus will show up on blocklisted sites as well
@@ -117,13 +118,14 @@ async function clickContextMenu (info = {}, tab = {}) {
   }
 
   // insert template
+  const slot = Number(String(info.menuItemId).replace(templateSlotPrefix, ''))
+  // templateSlots is empty after a background restart, derive the same list again
   const templates = await getTemplates()
-
-  // BUG WORKAROUND
-  // Safari turns id="3" into id=3 (Number), even if the id is a string (e.g., for the default templates).
-  // even if we force the menuItem to String(id), the menuItemId still gets converted to a number.
-  const menuItemId = String(info.menuItemId)
-  const selected = templates.find((t) => t.id === menuItemId)
+  const templateId = templateSlots[slot] ?? (await getMenuTemplates(templates))[slot]?.id
+  const selected = templates.find((t) => t.id === templateId)
+  if (!selected) {
+    return
+  }
 
   // BUG WORKAROUND
   // Safari will throw an error about the template being non JSON-serializable if it contains dates.
@@ -149,17 +151,18 @@ async function createContextMenus (menus = []) {
   )
 }
 
-function getInsertTemplatesMenu () {
-  return {
-    contexts: ['editable'],
-    documentUrlPatterns: documentUrlPatterns,
-    title: 'Insert template',
-    parentId: parentMenu,
-    id: insertTemplatesMenu,
-  }
+function getTemplateSlotId (index) {
+  return `${templateSlotPrefix}${index}`
 }
 
-let existingTemplateList = []
+// deterministic, so a slot can be mapped back to a template when it's clicked
+async function getMenuTemplates (templates = []) {
+  const extensionData = await getExtensionData()
+
+  return sortTemplates(templates, extensionData.dialogSort, extensionData.templatesLastUsed)
+    .slice(0, templatesLimit)
+}
+
 async function setupContextMenus () {
   const menus = []
 
@@ -217,7 +220,26 @@ async function setupContextMenus () {
     })
   }
 
-  menus.push(getInsertTemplatesMenu())
+  menus.push({
+    contexts: ['editable'],
+    documentUrlPatterns: documentUrlPatterns,
+    title: 'Insert template',
+    parentId: parentMenu,
+    id: insertTemplatesMenu,
+  })
+
+  // fixed pool of template menus, created once and only updated afterwards.
+  // re-creating them duplicates the menus on Safari, which doesn't reject duplicate ids.
+  for (let index = 0; index < templatesLimit; index++) {
+    menus.push({
+      contexts: ['editable'],
+      documentUrlPatterns: documentUrlPatterns,
+      title: '…',
+      parentId: insertTemplatesMenu,
+      id: getTemplateSlotId(index),
+      visible: false,
+    })
+  }
 
   await createContextMenus(menus)
 
@@ -246,44 +268,30 @@ async function updateMenuSignin() {
   }
 }
 
+// slot index to template id, only used to resolve clicks
+let templateSlots = []
 async function updateMenuTemplates () {
-  const [allTemplates, extensionData] = await Promise.all([
-    getTemplates(),
-    getExtensionData()
-  ])
+  const templates = await getMenuTemplates(await getTemplates())
+  templateSlots = templates.map((template) => template.id)
 
-  const templates = sortTemplates(allTemplates, extensionData.dialogSort, extensionData.templatesLastUsed)
-  const newTemplateList = templates.slice(0, templatesLimit)
-  const newTemplateListIds = newTemplateList.map(tpl => tpl.id)
+  return Promise.all(
+    Array.from({length: templatesLimit}, async (item, index) => {
+      const template = templates[index]
+      const state = template ? {
+        title: `${template.title}${template.shortcut ? ` (${template.shortcut})` : ''}`,
+        visible: true,
+      } : {
+        visible: false,
+      }
 
-  if (!isEqual(existingTemplateList, newTemplateListIds)) {
-    // re-create the parent insert template menu,
-    // in case existingTemplateList has been re-initialized on service worker restart
-    const parent = getInsertTemplatesMenu()
-
-    // in case the menu isn't ready yet
-    try {
-      await browser.contextMenus.remove(parent.id)
-    } catch (err) {
-      debug(['updateMenuTemplates', err], 'warn')
-    }
-
-    browser.contextMenus.create(parent, () => {
-      // browser.contextMenus.create does not return a promise,
-      // but uses a callback.
-      newTemplateList.forEach((template) => {
-        browser.contextMenus.create({
-          contexts: ['editable'],
-          documentUrlPatterns: documentUrlPatterns,
-          title: `${template.title}${template.shortcut ? ` (${template.shortcut})` : ''}`,
-          parentId: parent.id,
-          id: template.id,
-        })
-      })
+      // in case the menus aren't ready yet
+      try {
+        await browser.contextMenus.update(getTemplateSlotId(index), state)
+      } catch (err) {
+        debug(['updateMenuTemplates', err], 'warn')
+      }
     })
-
-    existingTemplateList = newTemplateListIds
-  }
+  )
 }
 
 async function updateBubbleContextMenu (tab) {
