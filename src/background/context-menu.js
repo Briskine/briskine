@@ -113,7 +113,7 @@ async function clickContextMenu (info = {}, tab = {}) {
     return signInAction()
   }
 
-  if (info.menuItemId == toggleBubbleMenu) {
+  if (info.menuItemId === toggleBubbleMenu) {
     return toggleBubbleAction(info, tab)
   }
 
@@ -256,7 +256,9 @@ async function setupContextMenus () {
   updateMenuTemplates()
 
   const [tab] = await browser.tabs.query({active: true, lastFocusedWindow: true})
-  await toggleContextMenu(tab)
+  if (tab) {
+    await toggleContextMenu(tab)
+  }
 }
 
 async function toggleContextMenu (tab) {
@@ -285,7 +287,7 @@ async function updateMenuSignin() {
 let templateSlots = []
 async function updateMenuTemplates () {
   // called without awaiting, keep the templates we already have on failure
-  let templates = []
+  let templates
   try {
     templates = await getMenuTemplates(await getTemplates())
   } catch (err) {
@@ -296,7 +298,7 @@ async function updateMenuTemplates () {
   templateSlots = templates.map((template) => template.id)
 
   return Promise.all(
-    Array.from({length: templatesLimit}, async (item, index) => {
+    Array.from({length: templatesLimit}, (item, index) => {
       const template = templates[index]
       const state = template ? {
         title: `${template.title}${template.shortcut ? ` (${template.shortcut})` : ''}`,
@@ -310,7 +312,12 @@ async function updateMenuTemplates () {
   )
 }
 
-async function updateBubbleContextMenu (tab = {}) {
+async function updateBubbleContextMenu (tab) {
+  // tabs.query returns no tabs when the popup has focus
+  if (!tab) {
+    return
+  }
+
   let state = {
     checked: false,
     enabled: false,
