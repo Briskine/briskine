@@ -260,12 +260,15 @@ async function setupContextMenus () {
 }
 
 async function toggleContextMenu (tab) {
-  if (await shouldContextMenuShow(tab)) {
-    await updateBubbleContextMenu(tab)
-    return updateMenu(parentMenu, { visible: true })
+  if (!await shouldContextMenuShow(tab)) {
+    return updateMenu(parentMenu, { visible: false })
   }
 
-  return updateMenu(parentMenu, { visible: false })
+  // the bubble menu state is independent, it shouldn't block the parent menu
+  return Promise.all([
+    updateBubbleContextMenu(tab),
+    updateMenu(parentMenu, { visible: true }),
+  ])
 }
 
 async function updateMenuSignin() {
@@ -307,7 +310,7 @@ async function updateMenuTemplates () {
   )
 }
 
-async function updateBubbleContextMenu (tab) {
+async function updateBubbleContextMenu (tab = {}) {
   let state = {
     checked: false,
     enabled: false,
@@ -354,7 +357,7 @@ async function isExtensionResponding (tab) {
   return false
 }
 
-async function shouldContextMenuShow (tab) {
+async function shouldContextMenuShow (tab = {}) {
   const tabUrl = tab.url
   if (!URL.canParse(tabUrl)) {
     return false
