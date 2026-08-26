@@ -71,6 +71,11 @@ async function signInAction () {
 async function toggleBubbleAction (info, tab) {
   const { hostname } = URL.parse(tab.url)
 
+  // the menu is disabled for these, but Safari ignores the disabled state
+  if (bubbleAllowlistPrivate(hostname)) {
+    return updateMenu(toggleBubbleMenu, {checked: true})
+  }
+
   const extensionData = await getExtensionData()
   const { bubbleAllowlist = [] } = extensionData
   const { checked } = info
