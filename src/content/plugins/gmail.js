@@ -67,6 +67,10 @@ function getData ({ element }) {
     return
   }
 
+  return getGmailData({ element })
+}
+
+export function getGmailData ({ element }) {
   const data = {
     from: {},
     to: [],
@@ -76,16 +80,20 @@ function getData ({ element }) {
   }
 
   if (isContentEditable(element)) {
+    const doc = element.ownerDocument
     // get the email address from the title
-    const email = (document.title || '').split(' ').find((part) => part.includes('@')) || ''
+    const email = (doc.title || '').split(' ').find((part) => part.includes('@')) || ''
     // find the email node from the user details popup
     // visible on hovering the google account on the top-right
-    const emailNode = Array.from(document.querySelectorAll('div')).reverse().find((node) => {
-      return node.innerText === email
-    })
+    let emailNode = null
+    if (email) {
+      emailNode = Array.from(doc.querySelectorAll('div')).reverse().find((node) => {
+        return node.textContent.trim() === email
+      })
+    }
     // the full name node is before the email node
     const fullNameNode = emailNode ? emailNode.previousElementSibling : null
-    const fullName = fullNameNode ? fullNameNode.innerText : ''
+    const fullName = fullNameNode ? fullNameNode.textContent.trim() : ''
     data.from = createContact({
       name: fullName,
       email: email,

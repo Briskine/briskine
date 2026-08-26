@@ -54,6 +54,11 @@ const defaultTemplates = [
     shortcut: 'subexpressionpartial',
     body: '{{> (text "template-" "concat" account.email)}}',
   },
+  {
+    title: 'Self partial',
+    shortcut: 'selfpartial',
+    body: '{{> selfpartial}}',
+  },
 ]
 
 describe('parseTemplate', async () => {
@@ -156,6 +161,19 @@ Expecting 'CLOSE_RAW_BLOCK', 'CLOSE', 'CLOSE_UNESCAPED', 'OPEN_SEXPR', 'CLOSE_SE
 
   it('should parse template with partial with parameter', async () => {
     expect(await parseTemplate('{{> c custom="briskine"}}')).to.equal('briskine')
+  })
+
+  it('should parse template with partial block', async () => {
+    expect(await parseTemplate('{{#> kr}}fallback{{/kr}}', {from: {first_name: 'Briskine'}})).to.equal('<div>Kind regards,</div><div>Briskine.</div>')
+  })
+
+  it('should parse partial block fallback when partial is not found', async () => {
+    expect(await parseTemplate('{{#> not_found}}fallback{{/not_found}}')).to.equal('fallback')
+  })
+
+  it('should return an error for a template that includes itself', async () => {
+    // the error is engine-specific, we only check the template doesn't hang
+    expect(await parseTemplate('{{> selfpartial}}')).to.match(/^<pre>/)
   })
 
   it('should throw error when partial is not found', async () => {

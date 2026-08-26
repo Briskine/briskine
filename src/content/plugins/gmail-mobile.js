@@ -23,12 +23,43 @@ function isActive () {
   return activeCache
 }
 
+const regExEmail = /([\w!.%+-])+@([\w-])+(?:\.[\w-]+)+/
+
+const fromSelector = '#cmcfrom'
+const subjectSelector = '#cmcsubj'
+const fieldSelector = (field) => `#cmae_compose${field}`
+const contactSelector = (field) => `[id^="compose${field}_"]`
+
+function text ($node) {
+  return $node?.textContent?.trim() || ''
+}
+
+// leaf nodes, skipping decorative ones, like the avatar initial
+function contactStrings ($container) {
+  return Array.from($container.querySelectorAll('*'))
+    .filter(($node) => !$node.firstElementChild && !$node.closest('[aria-hidden=true]'))
+    .map(text)
+    .filter(Boolean)
+}
+
+function parseContact ($container) {
+  const strings = contactStrings($container)
+  return createContact({
+    email: strings.find((string) => regExEmail.test(string)) || '',
+    name: strings.find((string) => !regExEmail.test(string)) || '',
+  })
+}
+
 // get all required data from the dom
-function getData () {
+function getData ({ element }) {
   if (!isActive()) {
     return false
   }
 
+  return getGmailMobileData({ element })
+}
+
+export function getGmailMobileData ({ element }) {
   const data = {
     from: {},
     to: [],
@@ -37,34 +68,35 @@ function getData () {
     subject: '',
   }
 
-  const fromName = document.querySelector('.Bu')?.innerText
-  const fromEmail = document.querySelector('.Cu')?.innerText
-  if (fromName && fromEmail) {
+  if (!element) {
+    return data
+  }
+
+  const doc = element.ownerDocument
+
+  const fromEmail = text(doc.querySelector(fromSelector))
+  if (fromEmail) {
+    // in the alias list, the name is right before the matching email
+    const $aliasEmail = Array.from(doc.querySelectorAll('div')).reverse().find(($node) => {
+      return text($node) === fromEmail
+    })
     data.from = createContact({
       email: fromEmail,
-      name: fromName,
+      name: text($aliasEmail?.previousElementSibling),
     })
   }
 
   const fields = [ 'to', 'cc', 'bcc' ]
-  fields.forEach((f) => {
-    const $container = document.querySelector(`#cmae_compose${f}`)
+  fields.forEach((field) => {
+    const $container = doc.querySelector(fieldSelector(field))
     if ($container) {
-      data[f] = Array.from(
-          $container.querySelectorAll(`[id^="compose${f}_"]`)
-        ).map(($person) => {
-          const name = $person.querySelector('.Uf')?.innerText || ''
-          const email = $person.querySelector('.Sf')?.innerText || ''
-
-          return createContact({
-            email: email,
-            name: name,
-          })
-        })
+      data[field] = Array.from(
+        $container.querySelectorAll(contactSelector(field))
+      ).map(parseContact)
     }
   })
 
-  data.subject = document.querySelector('#cmcsubj')?.value
+  data.subject = doc.querySelector(subjectSelector)?.value || ''
 
   return data
 }

@@ -1,6 +1,6 @@
 {
   "name": "briskine",
-  "version": "8.0.0",
+  "version": "8.0.1",
   "description": "Write everything faster.",
   "private": true,
   "type": "module",
@@ -58,7 +58,7 @@
     "archiver": "^8.0.0",
     "dotenv": "^17.0.0",
     "eslint": "^10.0.0",
-    "eslint-plugin-solid": "^0.15.0",
+    "eslint-plugin-solid": "^0.16.0",
     "firebase-tools": "^15.0.0",
     "glob": "^13.0.0",
     "globals": "^17.0.0",

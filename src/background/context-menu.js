@@ -3,7 +3,13 @@ import { isEqual } from 'es-toolkit'
 
 import {functionsUrl, eventToggleBubble, eventShowDialog, eventInsertTemplate} from '../config.js'
 import {getAccount, getTemplates, getExtensionData, setExtensionData, getSettings} from '../store/store-api.js'
-import sortTemplates from '../store/sort-templates.js'
+import {
+  templatesLimit,
+  getTemplateSlotId,
+  getTemplateSlot,
+  getSlotTemplates,
+  getSlotState,
+} from './context-menu-slots.js'
 import trigger from './background-trigger.js'
 import {openPopup} from '../background/open-popup.js'
 import {isBlocklisted} from '../blocklist.js'
@@ -20,7 +26,6 @@ const separatorMenu = 'mainSeparator'
 const insertTemplatesMenu = 'insertTemplates'
 const toggleBubbleMenu = 'toggleBubble'
 
-const templatesLimit = 30
 // context menus will show up on blocklisted sites as well
 const documentUrlPatterns = [
   '<all_urls>',
@@ -54,7 +59,7 @@ async function saveAsTemplateAction (info, tab) {
   // truncate for url safety
   body = body?.substring?.(0, 1500)
 
-  browser.tabs.create({
+  return browser.tabs.create({
     url: `${functionsUrl}/template/new?body=${encodeURIComponent(body)}`
   })
 }
@@ -65,6 +70,11 @@ async function signInAction () {
 
 async function toggleBubbleAction (info, tab) {
   const { hostname } = URL.parse(tab.url)
+
+  // the menu is disabled for these, but Safari ignores the disabled state
+  if (bubbleAllowlistPrivate(hostname)) {
+    return updateMenu(toggleBubbleMenu, {checked: true})
+  }
 
   const extensionData = await getExtensionData()
   const { bubbleAllowlist = [] } = extensionData
@@ -98,11 +108,11 @@ async function clickContextMenu (info = {}, tab = {}) {
 
   if (info.menuItemId === openSidebar) {
     if (browser.sidePanel) {
-      browser.sidePanel.open({ tabId: tab.id })
+      await browser.sidePanel.open({ tabId: tab.id })
     }
 
     if (browser.sidebarAction) {
-      browser.sidebarAction.open()
+      await browser.sidebarAction.open()
     }
 
     return
@@ -112,18 +122,19 @@ async function clickContextMenu (info = {}, tab = {}) {
     return signInAction()
   }
 
-  if (info.menuItemId == toggleBubbleMenu) {
+  if (info.menuItemId === toggleBubbleMenu) {
     return toggleBubbleAction(info, tab)
   }
 
   // insert template
+  const slot = getTemplateSlot(info.menuItemId)
+  // templateSlots is empty after a background restart
   const templates = await getTemplates()
-
-  // BUG WORKAROUND
-  // Safari turns id="3" into id=3 (Number), even if the id is a string (e.g., for the default templates).
-  // even if we force the menuItem to String(id), the menuItemId still gets converted to a number.
-  const menuItemId = String(info.menuItemId)
-  const selected = templates.find((t) => t.id === menuItemId)
+  const templateId = templateSlots[slot] ?? (await getMenuTemplates(templates))[slot]?.id
+  const selected = templates.find((t) => t.id === templateId)
+  if (!selected) {
+    return
+  }
 
   // BUG WORKAROUND
   // Safari will throw an error about the template being non JSON-serializable if it contains dates.
@@ -149,17 +160,20 @@ async function createContextMenus (menus = []) {
   )
 }
 
-function getInsertTemplatesMenu () {
-  return {
-    contexts: ['editable'],
-    documentUrlPatterns: documentUrlPatterns,
-    title: 'Insert template',
-    parentId: parentMenu,
-    id: insertTemplatesMenu,
+async function updateMenu (id, state) {
+  try {
+    await browser.contextMenus.update(id, state)
+  } catch (err) {
+    debug(['updateMenu', id, err], 'warn')
   }
 }
 
-let existingTemplateList = []
+async function getMenuTemplates (templates = []) {
+  const extensionData = await getExtensionData()
+
+  return getSlotTemplates(templates, extensionData.dialogSort, extensionData.templatesLastUsed)
+}
+
 async function setupContextMenus () {
   const menus = []
 
@@ -217,7 +231,25 @@ async function setupContextMenus () {
     })
   }
 
-  menus.push(getInsertTemplatesMenu())
+  menus.push({
+    contexts: ['editable'],
+    documentUrlPatterns: documentUrlPatterns,
+    title: 'Insert template',
+    parentId: parentMenu,
+    id: insertTemplatesMenu,
+  })
+
+  // re-creating these duplicates them on Safari, which doesn't reject duplicate ids
+  for (let index = 0; index < templatesLimit; index++) {
+    menus.push({
+      contexts: ['editable'],
+      documentUrlPatterns: documentUrlPatterns,
+      title: '…',
+      parentId: insertTemplatesMenu,
+      id: getTemplateSlotId(index),
+      visible: false,
+    })
+  }
 
   await createContextMenus(menus)
 
@@ -225,68 +257,85 @@ async function setupContextMenus () {
   updateMenuTemplates()
 
   const [tab] = await browser.tabs.query({active: true, lastFocusedWindow: true})
-  toggleContextMenu(tab)
+  if (tab) {
+    await toggleContextMenu(tab)
+  }
+}
+
+// onInstalled and the startup check can both ask for the menus at the same time
+let pendingSetup = null
+function setupContextMenusOnce () {
+  if (!pendingSetup) {
+    pendingSetup = setupContextMenus().finally(() => {
+      pendingSetup = null
+    })
+  }
+
+  return pendingSetup
+}
+
+// Safari drops the context menus when it restarts, and onInstalled doesn't fire again
+async function restoreContextMenus () {
+  try {
+    // the last menu we create, so a half-created set counts as missing too
+    await browser.contextMenus.update(getTemplateSlotId(templatesLimit - 1), {})
+    return
+  } catch (err) {
+    debug(['restoreContextMenus', err], 'warn')
+  }
+
+  return setupContextMenusOnce()
 }
 
 async function toggleContextMenu (tab) {
-  if (await shouldContextMenuShow(tab)) {
-    updateBubbleContextMenu(tab)
-    browser.contextMenus.update(parentMenu, { visible: true })
-  } else {
-    browser.contextMenus.update(parentMenu, { visible: false })
+  if (!await shouldContextMenuShow(tab)) {
+    return updateMenu(parentMenu, { visible: false })
   }
+
+  // the bubble menu shouldn't block the parent menu
+  return Promise.all([
+    updateBubbleContextMenu(tab),
+    updateMenu(parentMenu, { visible: true }),
+  ])
 }
 
 async function updateMenuSignin() {
   try {
     await getAccount()
-    browser.contextMenus.update(signInMenu, { title: 'Open Briskine popup' })
   } catch {
-    browser.contextMenus.update(signInMenu, { title: 'Sign in to access your templates' })
+    return updateMenu(signInMenu, { title: 'Sign in to access your templates' })
   }
+
+  return updateMenu(signInMenu, { title: 'Open Briskine popup' })
 }
 
+// slot index to template id, only used to resolve clicks
+let templateSlots = []
 async function updateMenuTemplates () {
-  const [allTemplates, extensionData] = await Promise.all([
-    getTemplates(),
-    getExtensionData()
-  ])
-
-  const templates = sortTemplates(allTemplates, extensionData.dialogSort, extensionData.templatesLastUsed)
-  const newTemplateList = templates.slice(0, templatesLimit)
-  const newTemplateListIds = newTemplateList.map(tpl => tpl.id)
-
-  if (!isEqual(existingTemplateList, newTemplateListIds)) {
-    // re-create the parent insert template menu,
-    // in case existingTemplateList has been re-initialized on service worker restart
-    const parent = getInsertTemplatesMenu()
-
-    // in case the menu isn't ready yet
-    try {
-      await browser.contextMenus.remove(parent.id)
-    } catch (err) {
-      debug(['updateMenuTemplates', err], 'warn')
-    }
-
-    browser.contextMenus.create(parent, () => {
-      // browser.contextMenus.create does not return a promise,
-      // but uses a callback.
-      newTemplateList.forEach((template) => {
-        browser.contextMenus.create({
-          contexts: ['editable'],
-          documentUrlPatterns: documentUrlPatterns,
-          title: `${template.title}${template.shortcut ? ` (${template.shortcut})` : ''}`,
-          parentId: parent.id,
-          id: template.id,
-        })
-      })
-    })
-
-    existingTemplateList = newTemplateListIds
+  // called without awaiting, keep the menus we have on failure
+  let templates
+  try {
+    templates = await getMenuTemplates(await getTemplates())
+  } catch (err) {
+    debug(['updateMenuTemplates', err], 'warn')
+    return
   }
+
+  templateSlots = templates.map((template) => template.id)
+
+  return Promise.all(
+    Array.from({length: templatesLimit}, (item, index) => {
+      return updateMenu(getTemplateSlotId(index), getSlotState(templates[index]))
+    })
+  )
 }
 
 async function updateBubbleContextMenu (tab) {
+  // tabs.query returns no tabs when the popup has focus
+  if (!tab) {
+    return
+  }
+
   let state = {
     checked: false,
     enabled: false,
@@ -309,7 +358,7 @@ async function updateBubbleContextMenu (tab) {
     }
   }
 
-  return browser.contextMenus.update(toggleBubbleMenu, state)
+  return updateMenu(toggleBubbleMenu, state)
 }
 
 async function isExtensionResponding (tab) {
@@ -333,7 +382,7 @@ async function isExtensionResponding (tab) {
   return false
 }
 
-async function shouldContextMenuShow (tab) {
+async function shouldContextMenuShow (tab = {}) {
   const tabUrl = tab.url
   if (!URL.canParse(tabUrl)) {
     return false
@@ -404,8 +453,12 @@ async function storageChange (changes = {}) {
     ['briskine', 'bubbleAllowlist']
   )) {
     const [tab] = await browser.tabs.query({active: true, lastFocusedWindow: true})
-    updateBubbleContextMenu(tab)
+    await updateBubbleContextMenu(tab)
   }
+}
+
+function catchErrors (fn) {
+  return (...args) => fn(...args).catch((err) => debug([fn.name, err], 'warn'))
 }
 
 function enableContextMenu () {
@@ -414,11 +467,13 @@ function enableContextMenu () {
     return
   }
 
-  browser.runtime.onInstalled.addListener(setupContextMenus)
-  browser.contextMenus.onClicked.addListener(clickContextMenu)
-  browser.tabs.onActivated.addListener(onTabSwitchHandler)
-  browser.tabs.onUpdated.addListener(onTabUpdateHandler)
+  browser.runtime.onInstalled.addListener(catchErrors(setupContextMenusOnce))
+  browser.runtime.onStartup.addListener(catchErrors(restoreContextMenus))
+  browser.contextMenus.onClicked.addListener(catchErrors(clickContextMenu))
+  browser.tabs.onActivated.addListener(catchErrors(onTabSwitchHandler))
+  browser.tabs.onUpdated.addListener(catchErrors(onTabUpdateHandler))
 
+  const onStorageChange = catchErrors(storageChange)
   let timer
   let pendingChanges = {}
   function debouncedStorageChange (changes = {}) {
@@ -433,16 +488,18 @@ function enableContextMenu () {
       }
     }
 
-    timer = setTimeout(async () => {
+    timer = setTimeout(() => {
       // clone, in case pendingChanges changes while we await
       const pendingChangesClone = { ...pendingChanges }
       pendingChanges = {}
 
-      await storageChange(pendingChangesClone)
+      onStorageChange(pendingChangesClone)
     }, 1000)
   }
 
   browser.storage.local.onChanged.addListener(debouncedStorageChange)
+
+  catchErrors(restoreContextMenus)()
 }
 
 enableContextMenu()
