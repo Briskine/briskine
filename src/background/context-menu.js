@@ -3,7 +3,13 @@ import { isEqual } from 'es-toolkit'
 
 import {functionsUrl, eventToggleBubble, eventShowDialog, eventInsertTemplate} from '../config.js'
 import {getAccount, getTemplates, getExtensionData, setExtensionData, getSettings} from '../store/store-api.js'
-import sortTemplates from '../store/sort-templates.js'
+import {
+  templatesLimit,
+  getTemplateSlotId,
+  getTemplateSlot,
+  getSlotTemplates,
+  getSlotState,
+} from './context-menu-slots.js'
 import trigger from './background-trigger.js'
 import {openPopup} from '../background/open-popup.js'
 import {isBlocklisted} from '../blocklist.js'
@@ -19,9 +25,7 @@ const parentMenu = 'briskineMenu'
 const separatorMenu = 'mainSeparator'
 const insertTemplatesMenu = 'insertTemplates'
 const toggleBubbleMenu = 'toggleBubble'
-const templateSlotPrefix = 'template-'
 
-const templatesLimit = 30
 // context menus will show up on blocklisted sites as well
 const documentUrlPatterns = [
   '<all_urls>',
@@ -118,8 +122,8 @@ async function clickContextMenu (info = {}, tab = {}) {
   }
 
   // insert template
-  const slot = Number(String(info.menuItemId).replace(templateSlotPrefix, ''))
-  // templateSlots is empty after a background restart, derive the same list again
+  const slot = getTemplateSlot(info.menuItemId)
+  // templateSlots is empty after a background restart
   const templates = await getTemplates()
   const templateId = templateSlots[slot] ?? (await getMenuTemplates(templates))[slot]?.id
   const selected = templates.find((t) => t.id === templateId)
@@ -152,7 +156,6 @@ async function createContextMenus (menus = []) {
 }
 
 async function updateMenu (id, state) {
-  // the menus might not be created yet
   try {
     await browser.contextMenus.update(id, state)
   } catch (err) {
@@ -160,16 +163,10 @@ async function updateMenu (id, state) {
   }
 }
 
-function getTemplateSlotId (index) {
-  return `${templateSlotPrefix}${index}`
-}
-
-// deterministic, so a slot can be mapped back to a template when it's clicked
 async function getMenuTemplates (templates = []) {
   const extensionData = await getExtensionData()
 
-  return sortTemplates(templates, extensionData.dialogSort, extensionData.templatesLastUsed)
-    .slice(0, templatesLimit)
+  return getSlotTemplates(templates, extensionData.dialogSort, extensionData.templatesLastUsed)
 }
 
 async function setupContextMenus () {
@@ -237,8 +234,7 @@ async function setupContextMenus () {
     id: insertTemplatesMenu,
   })
 
-  // fixed pool of template menus, created once and only updated afterwards.
-  // re-creating them duplicates the menus on Safari, which doesn't reject duplicate ids.
+  // re-creating these duplicates them on Safari, which doesn't reject duplicate ids
   for (let index = 0; index < templatesLimit; index++) {
     menus.push({
       contexts: ['editable'],
@@ -261,12 +257,37 @@ async function setupContextMenus () {
   }
 }
 
+// onInstalled and the startup check can both ask for the menus at the same time
+let pendingSetup = null
+function setupContextMenusOnce () {
+  if (!pendingSetup) {
+    pendingSetup = setupContextMenus().finally(() => {
+      pendingSetup = null
+    })
+  }
+
+  return pendingSetup
+}
+
+// Safari drops the context menus when it restarts, and onInstalled doesn't fire again
+async function restoreContextMenus () {
+  try {
+    // the last menu we create, so a half-created set counts as missing too
+    await browser.contextMenus.update(getTemplateSlotId(templatesLimit - 1), {})
+    return
+  } catch (err) {
+    debug(['restoreContextMenus', err], 'warn')
+  }
+
+  return setupContextMenusOnce()
+}
+
 async function toggleContextMenu (tab) {
   if (!await shouldContextMenuShow(tab)) {
     return updateMenu(parentMenu, { visible: false })
   }
 
-  // the bubble menu state is independent, it shouldn't block the parent menu
+  // the bubble menu shouldn't block the parent menu
   return Promise.all([
     updateBubbleContextMenu(tab),
     updateMenu(parentMenu, { visible: true }),
@@ -286,7 +307,7 @@ async function updateMenuSignin() {
 // slot index to template id, only used to resolve clicks
 let templateSlots = []
 async function updateMenuTemplates () {
-  // called without awaiting, keep the templates we already have on failure
+  // called without awaiting, keep the menus we have on failure
   let templates
   try {
     templates = await getMenuTemplates(await getTemplates())
@@ -299,15 +320,7 @@ async function updateMenuTemplates () {
 
   return Promise.all(
     Array.from({length: templatesLimit}, (item, index) => {
-      const template = templates[index]
-      const state = template ? {
-        title: `${template.title}${template.shortcut ? ` (${template.shortcut})` : ''}`,
-        visible: true,
-      } : {
-        visible: false,
-      }
-
-      return updateMenu(getTemplateSlotId(index), state)
+      return updateMenu(getTemplateSlotId(index), getSlotState(templates[index]))
     })
   )
 }
@@ -449,7 +462,8 @@ function enableContextMenu () {
     return
   }
 
-  browser.runtime.onInstalled.addListener(catchErrors(setupContextMenus))
+  browser.runtime.onInstalled.addListener(catchErrors(setupContextMenusOnce))
+  browser.runtime.onStartup.addListener(catchErrors(restoreContextMenus))
   browser.contextMenus.onClicked.addListener(catchErrors(clickContextMenu))
   browser.tabs.onActivated.addListener(catchErrors(onTabSwitchHandler))
   browser.tabs.onUpdated.addListener(catchErrors(onTabUpdateHandler))
@@ -479,6 +493,8 @@ function enableContextMenu () {
   }
 
   browser.storage.local.onChanged.addListener(debouncedStorageChange)
+
+  catchErrors(restoreContextMenus)()
 }
 
 enableContextMenu()
