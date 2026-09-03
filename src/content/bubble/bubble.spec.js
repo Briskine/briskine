@@ -238,6 +238,45 @@ describe('bubble', () => {
     button.remove()
   })
 
+  it('stops polling for an occluded textfield after moving to another one', async () => {
+    // overlapping textareas, so the second one covers
+    // the position where the bubble is placed for the first one.
+    // this makes the occlusion middleware hide the bubble,
+    // which starts polling for the covering element to disappear.
+    const first = createTextarea()
+    const second = createTextarea()
+
+    first.focus()
+    // move to the other textfield right away,
+    // while the position update for the first one is still in flight.
+    second.focus()
+
+    // let the pending position update for the first textfield resolve.
+    // it runs after the first textfield was already cleaned up,
+    // and re-creates the polling interval that the clean-up just stopped.
+    await new Promise(resolve => setTimeout(resolve, 100))
+
+    expect(getBubble().hasAttribute('visible')).toBe(true)
+
+    destroy()
+
+    // an orphaned polling interval keeps calling computePosition
+    // with a bubble that no longer exists, which rejects.
+    const rejections = []
+    const onRejection = (e) => {
+      rejections.push(String(e.reason))
+      // don't fail the test run with an unhandled rejection
+      e.preventDefault()
+    }
+    window.addEventListener('unhandledrejection', onRejection)
+
+    // wait for more than the polling interval
+    await new Promise(resolve => setTimeout(resolve, 2000))
+    window.removeEventListener('unhandledrejection', onRejection)
+
+    expect(rejections).toEqual([])
+  })
+
   describe('positioning', () => {
     it('sets position styles after focus', async () => {
       const textarea = createTextarea()

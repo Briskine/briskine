@@ -296,6 +296,10 @@ function showBubble (textfield) {
 
   cleanupFloatingUi()
 
+  // track when we cleaned up the floating-ui positioning,
+  // to prevent it from running when we stopped tracking for a textfield.
+  let cancelled = false
+
   let pollingInterval = null
 
   const stopPolling = () => {
@@ -304,12 +308,16 @@ function showBubble (textfield) {
   }
 
   const updatePosition = () => {
+    if (cancelled) {
+      return
+    }
+
     computePosition(textfield, bubbleInstance, {
       strategy: 'fixed',
       placement: 'top-end',
       middleware,
     }).then(({x, y, middlewareData}) => {
-      if (!bubbleInstance) {
+      if (cancelled || !bubbleInstance) {
         return
       }
 
@@ -335,6 +343,7 @@ function showBubble (textfield) {
   const stopAutoUpdate = autoUpdate(textfield, bubbleInstance, updatePosition)
 
   cleanupFloatingUi = () => {
+    cancelled = true
     stopPolling()
     stopAutoUpdate()
   }
