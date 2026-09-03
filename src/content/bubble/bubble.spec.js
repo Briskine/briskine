@@ -10,10 +10,6 @@ vi.mock('../../store/store-content.js', () => ({
   off: vi.fn(),
 }))
 
-vi.mock('../dialog/dialog.js', () => ({
-  dialogTagName: 'b-dialog-test',
-}))
-
 const dialogTagName = 'b-dialog-test'
 
 function createTextarea (width = 300, height = 100) {
@@ -127,6 +123,159 @@ describe('bubble', () => {
     expect(getBubble().hasAttribute('visible')).toBe(true)
 
     dialog.remove()
+  })
+
+  it('stays visible without toggling when focus returns from the dialog to the textfield', async () => {
+    const textarea = createTextarea()
+    textarea.focus()
+
+    await vi.waitFor(() => {
+      expect(getBubble().hasAttribute('visible')).toBe(true)
+    })
+
+    const dialog = document.createElement(dialogTagName)
+    dialog.tabIndex = 0
+    document.body.appendChild(dialog)
+    dialog.focus()
+
+    await new Promise(resolve => setTimeout(resolve, 50))
+    expect(getBubble().hasAttribute('visible')).toBe(true)
+
+    // watch for the visible attribute being removed and re-added,
+    // which restarts the fade-out/fade-in animation.
+    const mutations = []
+    const observer = new MutationObserver((records) => {
+      records.forEach((record) => {
+        mutations.push(record.target.hasAttribute('visible'))
+      })
+    })
+    observer.observe(getBubble(), { attributes: true, attributeFilter: ['visible'] })
+
+    // focus returns to the textfield,
+    // like when inserting a template or closing the dialog with escape.
+    textarea.focus()
+
+    await new Promise(resolve => setTimeout(resolve, 50))
+    observer.disconnect()
+
+    expect(mutations).toEqual([])
+    expect(getBubble().hasAttribute('visible')).toBe(true)
+
+    dialog.remove()
+  })
+
+  it('stays visible when focus moves between two textfields', async () => {
+    const first = createTextarea()
+    const second = createTextarea()
+    // move the second textarea, so the two don't overlap.
+    // overlapping textareas cover the bubble position,
+    // which makes the occlusion middleware hide it.
+    second.style.top = '300px'
+
+    first.focus()
+
+    await vi.waitFor(() => {
+      expect(getBubble().hasAttribute('visible')).toBe(true)
+    })
+
+    // record the value of the visible attribute before every change.
+    // oldValue is captured when the mutation happens,
+    // unlike the attribute itself, which we can only read
+    // after the observer microtask runs.
+    // the bubble should never be hidden while moving to another textfield,
+    // it should only be repositioned.
+    const oldValues = []
+    const observer = new MutationObserver((records) => {
+      records.forEach((record) => {
+        oldValues.push(record.oldValue)
+      })
+    })
+    observer.observe(getBubble(), {
+      attributes: true,
+      attributeFilter: ['visible'],
+      attributeOldValue: true,
+    })
+
+    second.focus()
+
+    await new Promise(resolve => setTimeout(resolve, 50))
+    observer.disconnect()
+
+    // a null oldValue means the bubble was hidden right before the change
+    expect(oldValues).not.toContain(null)
+    expect(getBubble().hasAttribute('visible')).toBe(true)
+  })
+
+  it('hides when focus moves from the dialog to a non-textfield', async () => {
+    const textarea = createTextarea()
+    textarea.focus()
+
+    await vi.waitFor(() => {
+      expect(getBubble().hasAttribute('visible')).toBe(true)
+    })
+
+    const dialog = document.createElement(dialogTagName)
+    dialog.tabIndex = 0
+    document.body.appendChild(dialog)
+    dialog.focus()
+
+    await new Promise(resolve => setTimeout(resolve, 50))
+    expect(getBubble().hasAttribute('visible')).toBe(true)
+
+    const button = document.createElement('button')
+    document.body.appendChild(button)
+    button.focus()
+
+    await vi.waitFor(() => {
+      expect(getBubble().hasAttribute('visible')).toBe(false)
+    })
+
+    dialog.remove()
+    button.remove()
+  })
+
+  it('does not reposition to a textfield it no longer tracks', async () => {
+    const first = createTextarea()
+    const second = createTextarea()
+    second.style.top = '400px'
+
+    // cover the first textarea, so the position where the bubble
+    // is placed for it is occluded.
+    // this makes the occlusion middleware hide the bubble,
+    // and start polling for the covering element to disappear.
+    const overlay = document.createElement('div')
+    Object.assign(overlay.style, {
+      position: 'fixed',
+      top: '90px',
+      left: '90px',
+      width: '330px',
+      height: '130px',
+    })
+    document.body.appendChild(overlay)
+
+    first.focus()
+    // move to the other textfield right away,
+    // while the position update for the first one is still in flight.
+    second.focus()
+
+    // the position update for the first textfield resolves
+    // after it was already cleaned up, and re-creates the polling interval
+    // that the clean-up just stopped.
+    // the orphaned interval keeps positioning the bubble
+    // for the textfield we stopped tracking.
+    await vi.waitFor(() => {
+      expect(getBubble().style.visibility).toBe('visible')
+    })
+
+    const position = getBubble().style.top
+
+    // wait for more than the polling interval
+    await new Promise(resolve => setTimeout(resolve, 1300))
+
+    expect(getBubble().style.top).toBe(position)
+    expect(getBubble().style.visibility).toBe('visible')
+
+    overlay.remove()
   })
 
   describe('positioning', () => {

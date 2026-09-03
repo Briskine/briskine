@@ -3,27 +3,23 @@ import {render} from 'solid-js/web'
 
 import DialogContent from './dialog-content.js'
 
-import { eventShowDialog } from '../../config.js'
+import { eventShowDialog, dialogTagPrefix } from '../../config.js'
 import {
   on as storeOn,
   off as storeOff,
 } from '../../store/store-content.js'
 import {isContentEditable} from '../editors/editor-contenteditable.js'
 import { isTextfieldEditor } from '../editors/editor-textfield.js'
-import {bubbleTagName} from '../bubble/bubble.js'
 import {getEditableCaret, getContentEditableCaret, getDialogPosition} from './dialog-position.js'
 import autocomplete from '../autocomplete.js'
 import { getSelectionRange, setSelectionRange }  from '../utils/selection.js'
 import { getActiveElement } from '../utils/active-element.js'
+import { isBubbleElement, scopeTagName } from '../utils/extension-element.js'
 import {keybind, keyunbind} from '../keybind.js'
-
-function scopeElementName (name = '') {
-  return `${name.toLowerCase()}-${Date.now().toString(36)}`
-}
 
 let dialogInstance = null
 
-export const dialogTagName = scopeElementName('b-dialog')
+const dialogTagName = scopeTagName(dialogTagPrefix)
 
 const openAnimationClass = 'b-dialog-open-animation'
 const dialogSelector = '.briskine-dialog'
@@ -78,9 +74,6 @@ function Dialog (originalProps) {
 
     cachedRange = null
 
-    // when event was triggered in shadow dom (such as the bubble)
-    const hostNode = node?.getRootNode?.()?.host
-
     if (isTextfieldEditor(node)) {
       // input, textarea
       [target, removeCaretParent] = getEditableCaret(node)
@@ -108,8 +101,8 @@ function Dialog (originalProps) {
           placement = 'bottom-right'
         }
       }
-    } else if (hostNode?.tagName?.toLowerCase?.() === bubbleTagName) {
-      // bubble
+    } else if (isBubbleElement(node)) {
+      // bubble, when the dialog is opened from the bubble button
       target = node
       if (direction === 'rtl') {
         placement = 'bottom-left'

@@ -3,6 +3,7 @@
 
 import getEventTarget from './event-target.js'
 import { addFocusListeners } from './shadow-focus.js'
+import { isExtensionElement } from './extension-element.js'
 import { isContentEditable } from '../editors/editor-contenteditable.js'
 import { isTextfieldEditor } from '../editors/editor-textfield.js'
 
@@ -32,15 +33,8 @@ export function getActiveElement (live = false) {
 
 function setActiveElement (e) {
   const target = getEventTarget(e)
-  const root = target.getRootNode()
-  const host = root.host
-  if (
-    host
-    && (
-      host.tagName.toLowerCase().includes('b-dialog')
-      || host.tagName.toLowerCase().includes('b-bubble')
-    )
-  ) {
+  // keep pointing at the editor when focus moves into our own ui
+  if (isExtensionElement(target)) {
     return
   }
 

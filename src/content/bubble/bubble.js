@@ -5,8 +5,7 @@
 
 import { computePosition, autoUpdate, offset, shift, limitShift, hide } from '@floating-ui/dom'
 
-import { eventShowDialog, eventToggleBubble } from '../../config.js'
-import { dialogTagName } from '../dialog/dialog.js'
+import { eventShowDialog, eventToggleBubble, bubbleTagPrefix } from '../../config.js'
 import { getExtensionData, trigger, on, off } from '../../store/store-content.js'
 import { isContentEditable } from '../editors/editor-contenteditable.js'
 import { isTextfieldEditor } from '../editors/editor-textfield.js'
@@ -14,6 +13,7 @@ import { isTextfieldEditor } from '../editors/editor-textfield.js'
 import { getActiveElement } from '../utils/active-element.js'
 import bubbleAllowlistPrivate from './bubble-allowlist-private.js'
 import { addFocusListeners } from '../utils/shadow-focus.js'
+import { isExtensionElement, scopeTagName } from '../utils/extension-element.js'
 
 import bubbleStyles from './bubble.css?inline'
 import bubbleIcon from '../../icons/briskine-logo-small-bare.svg?raw'
@@ -22,8 +22,10 @@ import getEventTarget from '../utils/event-target.js'
 let bubbleInstance = null
 let removeFocusListeners = () => {}
 let cleanupFloatingUi = () => {}
+let currentTextfield = null
+let hideTimeout = null
 
-export const bubbleTagName = `b-bubble-${Date.now().toString(36)}`
+export const bubbleTagName = scopeTagName(bubbleTagPrefix)
 
 customElements.define(
   bubbleTagName,
@@ -80,18 +82,13 @@ function handleTextfieldFocus (event) {
 }
 
 function blurTextfield (e) {
-  // don't hide the bubble if the newly focused node is in the dialog.
+  // don't hide the bubble if the newly focused node is in our own ui.
   // when pressing the bubble, or when focusing inside the dialog.
-  const target = e.relatedTarget
-  const host = target?.getRootNode?.()?.host
-  if (
-    target?.tagName?.toLowerCase?.() === dialogTagName
-    || host?.tagName?.toLowerCase?.() === dialogTagName
-  ) {
+  if (isExtensionElement(e.relatedTarget)) {
     return
   }
 
-  return hideBubble()
+  return deferHideBubble()
 }
 
 let toggleBubbleHandler = () => {}
@@ -256,6 +253,19 @@ function showBubble (textfield) {
     return false
   }
 
+  // focus moved back to a valid textfield,
+  // don't hide the bubble.
+  cancelHideBubble()
+
+  // the bubble is already shown for this textfield,
+  // don't restart the fade-in animation and the position tracking.
+  // happens when focus returns from the dialog to the textfield,
+  // after inserting a template or closing the dialog.
+  if (currentTextfield === textfield && bubbleInstance.hasAttribute('visible')) {
+    return
+  }
+
+  currentTextfield = textfield
   bubbleInstance.setAttribute('visible', 'true')
 
   const isRtl = getComputedStyle(textfield).direction === 'rtl'
@@ -281,6 +291,10 @@ function showBubble (textfield) {
 
   cleanupFloatingUi()
 
+  // track when we cleaned up the floating-ui positioning,
+  // to prevent it from running when we stopped tracking for a textfield.
+  let cancelled = false
+
   let pollingInterval = null
 
   const stopPolling = () => {
@@ -289,12 +303,16 @@ function showBubble (textfield) {
   }
 
   const updatePosition = () => {
+    if (cancelled) {
+      return
+    }
+
     computePosition(textfield, bubbleInstance, {
       strategy: 'fixed',
       placement: 'top-end',
       middleware,
     }).then(({x, y, middlewareData}) => {
-      if (!bubbleInstance) {
+      if (cancelled || !bubbleInstance) {
         return
       }
 
@@ -320,13 +338,29 @@ function showBubble (textfield) {
   const stopAutoUpdate = autoUpdate(textfield, bubbleInstance, updatePosition)
 
   cleanupFloatingUi = () => {
+    cancelled = true
     stopPolling()
     stopAutoUpdate()
   }
 }
 
+function cancelHideBubble () {
+  clearTimeout(hideTimeout)
+  hideTimeout = null
+}
+
+// defer hiding the bubble, to prevent it from fading out and back in when
+// restoring focus to the same text field we showed the bubble for
+// (e.g., when inserting a template or closing the dialog).
+function deferHideBubble () {
+  cancelHideBubble()
+  hideTimeout = setTimeout(hideBubble)
+}
+
 function hideBubble () {
+  cancelHideBubble()
   cleanupFloatingUi()
+  currentTextfield = null
 
   if (bubbleInstance) {
     bubbleInstance.removeAttribute('visible')
