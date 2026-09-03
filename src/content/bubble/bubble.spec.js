@@ -10,10 +10,6 @@ vi.mock('../../store/store-content.js', () => ({
   off: vi.fn(),
 }))
 
-vi.mock('../dialog/dialog.js', () => ({
-  dialogTagName: 'b-dialog-test',
-}))
-
 const dialogTagName = 'b-dialog-test'
 
 function createTextarea (width = 300, height = 100) {
@@ -238,43 +234,48 @@ describe('bubble', () => {
     button.remove()
   })
 
-  it('stops polling for an occluded textfield after moving to another one', async () => {
-    // overlapping textareas, so the second one covers
-    // the position where the bubble is placed for the first one.
-    // this makes the occlusion middleware hide the bubble,
-    // which starts polling for the covering element to disappear.
+  it('does not reposition to a textfield it no longer tracks', async () => {
     const first = createTextarea()
     const second = createTextarea()
+    second.style.top = '400px'
+
+    // cover the first textarea, so the position where the bubble
+    // is placed for it is occluded.
+    // this makes the occlusion middleware hide the bubble,
+    // and start polling for the covering element to disappear.
+    const overlay = document.createElement('div')
+    Object.assign(overlay.style, {
+      position: 'fixed',
+      top: '90px',
+      left: '90px',
+      width: '330px',
+      height: '130px',
+    })
+    document.body.appendChild(overlay)
 
     first.focus()
     // move to the other textfield right away,
     // while the position update for the first one is still in flight.
     second.focus()
 
-    // let the pending position update for the first textfield resolve.
-    // it runs after the first textfield was already cleaned up,
-    // and re-creates the polling interval that the clean-up just stopped.
-    await new Promise(resolve => setTimeout(resolve, 100))
+    // the position update for the first textfield resolves
+    // after it was already cleaned up, and re-creates the polling interval
+    // that the clean-up just stopped.
+    // the orphaned interval keeps positioning the bubble
+    // for the textfield we stopped tracking.
+    await vi.waitFor(() => {
+      expect(getBubble().style.visibility).toBe('visible')
+    })
 
-    expect(getBubble().hasAttribute('visible')).toBe(true)
-
-    destroy()
-
-    // an orphaned polling interval keeps calling computePosition
-    // with a bubble that no longer exists, which rejects.
-    const rejections = []
-    const onRejection = (e) => {
-      rejections.push(String(e.reason))
-      // don't fail the test run with an unhandled rejection
-      e.preventDefault()
-    }
-    window.addEventListener('unhandledrejection', onRejection)
+    const position = getBubble().style.top
 
     // wait for more than the polling interval
-    await new Promise(resolve => setTimeout(resolve, 2000))
-    window.removeEventListener('unhandledrejection', onRejection)
+    await new Promise(resolve => setTimeout(resolve, 1300))
 
-    expect(rejections).toEqual([])
+    expect(getBubble().style.top).toBe(position)
+    expect(getBubble().style.visibility).toBe('visible')
+
+    overlay.remove()
   })
 
   describe('positioning', () => {

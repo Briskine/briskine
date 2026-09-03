@@ -5,8 +5,7 @@
 
 import { computePosition, autoUpdate, offset, shift, limitShift, hide } from '@floating-ui/dom'
 
-import { eventShowDialog, eventToggleBubble } from '../../config.js'
-import { dialogTagName } from '../dialog/dialog.js'
+import { eventShowDialog, eventToggleBubble, bubbleTagPrefix } from '../../config.js'
 import { getExtensionData, trigger, on, off } from '../../store/store-content.js'
 import { isContentEditable } from '../editors/editor-contenteditable.js'
 import { isTextfieldEditor } from '../editors/editor-textfield.js'
@@ -14,6 +13,7 @@ import { isTextfieldEditor } from '../editors/editor-textfield.js'
 import { getActiveElement } from '../utils/active-element.js'
 import bubbleAllowlistPrivate from './bubble-allowlist-private.js'
 import { addFocusListeners } from '../utils/shadow-focus.js'
+import { isExtensionElement, scopeTagName } from '../utils/extension-element.js'
 
 import bubbleStyles from './bubble.css?inline'
 import bubbleIcon from '../../icons/briskine-logo-small-bare.svg?raw'
@@ -25,7 +25,7 @@ let cleanupFloatingUi = () => {}
 let currentTextfield = null
 let hideTimeout = null
 
-export const bubbleTagName = `b-bubble-${Date.now().toString(36)}`
+export const bubbleTagName = scopeTagName(bubbleTagPrefix)
 
 customElements.define(
   bubbleTagName,
@@ -82,14 +82,9 @@ function handleTextfieldFocus (event) {
 }
 
 function blurTextfield (e) {
-  // don't hide the bubble if the newly focused node is in the dialog.
+  // don't hide the bubble if the newly focused node is in our own ui.
   // when pressing the bubble, or when focusing inside the dialog.
-  const target = e.relatedTarget
-  const host = target?.getRootNode?.()?.host
-  if (
-    target?.tagName?.toLowerCase?.() === dialogTagName
-    || host?.tagName?.toLowerCase?.() === dialogTagName
-  ) {
+  if (isExtensionElement(e.relatedTarget)) {
     return
   }
 
