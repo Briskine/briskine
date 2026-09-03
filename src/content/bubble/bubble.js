@@ -22,6 +22,8 @@ import getEventTarget from '../utils/event-target.js'
 let bubbleInstance = null
 let removeFocusListeners = () => {}
 let cleanupFloatingUi = () => {}
+let currentTextfield = null
+let hideTimeout = null
 
 export const bubbleTagName = `b-bubble-${Date.now().toString(36)}`
 
@@ -91,7 +93,7 @@ function blurTextfield (e) {
     return
   }
 
-  return hideBubble()
+  return deferHideBubble()
 }
 
 let toggleBubbleHandler = () => {}
@@ -256,6 +258,19 @@ function showBubble (textfield) {
     return false
   }
 
+  // focus moved back to a valid textfield,
+  // don't hide the bubble.
+  cancelHideBubble()
+
+  // the bubble is already shown for this textfield,
+  // don't restart the fade-in animation and the position tracking.
+  // happens when focus returns from the dialog to the textfield,
+  // after inserting a template or closing the dialog.
+  if (currentTextfield === textfield && bubbleInstance.hasAttribute('visible')) {
+    return
+  }
+
+  currentTextfield = textfield
   bubbleInstance.setAttribute('visible', 'true')
 
   const isRtl = getComputedStyle(textfield).direction === 'rtl'
@@ -325,8 +340,23 @@ function showBubble (textfield) {
   }
 }
 
+function cancelHideBubble () {
+  clearTimeout(hideTimeout)
+  hideTimeout = null
+}
+
+// defer hiding the bubble, to prevent it from fading out and back in when
+// restoring focus to the same text field we showed the bubble for
+// (e.g., when inserting a template or closing the dialog).
+function deferHideBubble () {
+  cancelHideBubble()
+  hideTimeout = setTimeout(hideBubble)
+}
+
 function hideBubble () {
+  cancelHideBubble()
   cleanupFloatingUi()
+  currentTextfield = null
 
   if (bubbleInstance) {
     bubbleInstance.removeAttribute('visible')
