@@ -6,7 +6,6 @@ vi.mock('../utils/current-url.js', () => ({
 
 import { run } from '../plugin.js'
 import loadIframe from '../../test-utils/iframe.js'
-import './outlook.js'
 
 describe('outlook', () => {
   it('should get data in default compose', async () => {

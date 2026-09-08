@@ -1,7 +1,6 @@
 /* Gmail mobile (small-screen) plugin
  */
 
- import { register } from '../plugin.js'
 import currentUrl from '../utils/current-url.js'
 import createContact from '../utils/create-contact.js'
 
@@ -108,4 +107,6 @@ function getGmailMobileData ({ element }) {
   return data
 }
 
-register('data', getData)
+export default {
+  data: getData,
+}

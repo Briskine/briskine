@@ -3,7 +3,6 @@
 
 import parseTemplate from '../utils/parse-template.js'
 import createContact from '../utils/create-contact.js'
-import { register } from '../plugin.js'
 import currentUrl from '../utils/current-url.js'
 import { getSelectionRange, setSelectionRange } from '../utils/selection.js'
 
@@ -354,5 +353,7 @@ async function actions ({ element, template, data }) {
   setSelectionRange(element, cachedRange)
 }
 
-register('data', getData)
-register('actions', actions)
+export default {
+  data: getData,
+  actions,
+}

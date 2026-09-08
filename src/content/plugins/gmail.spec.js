@@ -6,7 +6,6 @@ vi.mock('../utils/current-url.js', () => ({
 
 import { run } from '../plugin.js'
 import loadIframe from '../../test-utils/iframe.js'
-import './gmail.js'
 
 const composeData = {
   from: {

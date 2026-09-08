@@ -6,7 +6,6 @@ vi.mock('../utils/current-url.js', () => ({
 
 import { run } from '../plugin.js'
 import loadIframe from '../../test-utils/iframe.js'
-import './linkedin-sales-navigator.js'
 
 describe('linkedin sales navigator', () => {
   it('should get data in sales navigator invite', async () => {

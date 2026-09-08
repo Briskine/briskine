@@ -2,7 +2,6 @@
  */
 
 import createContact from '../utils/create-contact.js'
-import { register } from '../plugin.js'
 import currentUrl from '../utils/current-url.js'
 
 let activeCache = null
@@ -121,4 +120,6 @@ function getData ({ element, document: doc = document } = {}) {
   }
 }
 
-register('data', getData)
+export default {
+  data: getData,
+}

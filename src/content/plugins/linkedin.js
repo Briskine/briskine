@@ -4,7 +4,6 @@
 import parseTemplate from '../utils/parse-template.js'
 import createContact from '../utils/create-contact.js'
 import { querySelectorDeep, closestDeep } from '../utils/selectors.js'
-import { register } from '../plugin.js'
 import currentUrl from '../utils/current-url.js'
 
 var activeCache = null
@@ -178,5 +177,7 @@ function getLinkedInData ({ element }) {
   return vars
 }
 
-register('data', getData)
-register('actions', actions)
+export default {
+  data: getData,
+  actions,
+}

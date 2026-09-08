@@ -21,13 +21,6 @@ import { insertTextfieldTemplate } from './editors/editor-textfield.js'
 import { insertExecCommandTemplate } from './editors/editor-execcommand.js'
 import { insertSiteTemplate } from './editors/editor-site.js'
 
-import './plugins/gmail.js'
-import './plugins/outlook.js'
-import './plugins/gmail-mobile.js'
-import './plugins/linkedin.js'
-import './plugins/linkedin-sales-navigator.js'
-import './plugins/facebook.js'
-
 const editors = [
   // order matters
   insertSiteTemplate,

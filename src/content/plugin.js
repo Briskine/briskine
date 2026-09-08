@@ -4,21 +4,16 @@
 
 import { merge } from 'es-toolkit'
 
+import plugins from './plugins/index.js'
 import debug from '../debug.js'
 
-const plugins = new Map()
-
-export function register (type = '', func = () => { }) {
-  if (!plugins.has(type)) {
-    plugins.set(type, new Set())
-  }
-
-  plugins.get(type).add(func)
-}
-
 export async function run (type = '', params) {
+  const funcs = plugins
+    .map((plugin) => plugin[type])
+    .filter((func) => typeof func === 'function')
+
   if (type === 'data') {
-    const promises = [...plugins.get(type)].map((f) => f(params))
+    const promises = funcs.map((f) => f(params))
     const responses = (await Promise.allSettled(promises))
       .filter((r) => {
         if (r.status === 'rejected') {
@@ -36,7 +31,7 @@ export async function run (type = '', params) {
     return data
   }
 
-  for (const func of plugins.get(type)) {
+  for (const func of funcs) {
     try {
       await func(params)
     } catch (err) {

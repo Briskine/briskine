@@ -2,7 +2,6 @@
 /* Gmail plugin
  */
 
-import { register } from '../plugin.js'
 import currentUrl from '../utils/current-url.js'
 import parseTemplate from '../utils/parse-template.js'
 import { isContentEditable } from '../editors/editor-contenteditable.js'
@@ -247,5 +246,7 @@ async function actions ({ element, template, data }) {
   }
 }
 
-register('data', getData)
-register('actions', actions)
+export default {
+  data: getData,
+  actions,
+}

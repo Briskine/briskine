@@ -6,7 +6,6 @@ vi.mock('../utils/current-url.js', () => ({
 
 import { run } from '../plugin.js'
 import loadIframe from '../../test-utils/iframe.js'
-import './facebook.js'
 
 describe('facebook', () => {
   it('should get data when composing a new message', async () => {
