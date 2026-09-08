@@ -11,8 +11,8 @@ import { escapeExpression, SafeString } from '../../briskbars/briskbars.js'
 
 import { cursorMarker } from '../cursors/cursors.js'
 
-export default function cursor (...args) {
+export default async function cursor (...args) {
   const options = args.pop()
-  const placeholder = options.fn ? options.fn(this) : escapeExpression(args[0])
+  const placeholder = options.fn ? await options.fn(this) : escapeExpression(args[0])
   return new SafeString(`${cursorMarker}${placeholder}${cursorMarker}`)
 }

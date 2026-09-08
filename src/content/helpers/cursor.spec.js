@@ -1,4 +1,4 @@
-import { expect, describe, it } from 'vitest'
+import { expect, describe, it, beforeAll } from 'vitest'
 
 import parseTemplate from '../utils/parse-template.js'
 import { cursorMarker } from '../cursors/cursors.js'
@@ -58,5 +58,44 @@ describe('cursor handlebars helper', () => {
       first_name: 'First'
     }))
       .to.equal(cursor('0 placeholder First'))
+  })
+
+  describe('async block body', () => {
+    beforeAll(() => {
+      window.browser.runtime.sendMessage = async ({type}) => {
+        if (type === 'getTemplates') {
+          return [
+            {
+              title: 'Async partial',
+              shortcut: 'asyncpartial',
+              body: '{{asyncValue}}',
+            },
+          ]
+        }
+
+        return []
+      }
+    })
+
+    it('should await async values in the placeholder', async () => {
+      expect(await parseTemplate('{{#cursor}}{{asyncValue}}{{/cursor}}', {
+        asyncValue: async () => 'placeholder'
+      }))
+        .to.equal(cursor('placeholder'))
+    })
+
+    it('should await async values in a partial in the placeholder', async () => {
+      expect(await parseTemplate('{{#cursor}}{{> asyncpartial}}{{/cursor}}', {
+        asyncValue: async () => 'placeholder'
+      }))
+        .to.equal(cursor('placeholder'))
+    })
+
+    it('should escape async values in the placeholder', async () => {
+      expect(await parseTemplate('{{#cursor}}{{asyncValue}}{{/cursor}}', {
+        asyncValue: async () => '& > placeholder'
+      }))
+        .to.equal(cursor('&amp; &gt; placeholder'))
+    })
   })
 })
