@@ -1,6 +1,6 @@
 import { expect, describe, it } from 'vitest'
 
-import { getGmailMobileData } from './gmail-mobile.js'
+import { getGmailMobileData, getGmailMobileEditor } from './gmail-mobile.js'
 
 const composeData = {
   from: {
@@ -54,7 +54,7 @@ async function page (src = '') {
 describe('gmail-mobile', () => {
   it('should get data in compose', async () => {
     const iframe = await page('/pages/gmail-mobile/gmail-mobile.html')
-    const element = iframe.contentDocument.querySelector('#cmcbody')
+    const element = getGmailMobileEditor({document: iframe.contentDocument})
     const data = getGmailMobileData({
       element: element,
     })
@@ -71,7 +71,7 @@ describe('gmail-mobile', () => {
     iframe.contentDocument.querySelectorAll('[class]').forEach(($node) => {
       $node.removeAttribute('class')
     })
-    const element = iframe.contentDocument.querySelector('#cmcbody')
+    const element = getGmailMobileEditor({document: iframe.contentDocument})
     const data = getGmailMobileData({
       element: element,
     })

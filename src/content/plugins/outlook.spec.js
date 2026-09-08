@@ -1,6 +1,6 @@
 import { expect, describe, it } from 'vitest'
 
-import { getOutlookData } from './outlook.js'
+import { getOutlookData, getOutlookEditor } from './outlook.js'
 
 async function page (src = '') {
   const iframe = document.createElement('iframe')
@@ -20,7 +20,7 @@ async function page (src = '') {
 describe('outlook', () => {
   it('should get data in default compose', async () => {
     const iframe = await page('/pages/outlook/outlook-compose.html')
-    const element = iframe.contentDocument.querySelector('[aria-multiline]')
+    const element = getOutlookEditor({document: iframe.contentDocument})
     const data = await getOutlookData({
       element: element,
     })
@@ -63,7 +63,7 @@ describe('outlook', () => {
 
   it('should get data in compose popup', async () => {
     const iframe = await page('/pages/outlook/outlook-compose-popup.html')
-    const element = iframe.contentDocument.querySelector('[aria-multiline]')
+    const element = getOutlookEditor({document: iframe.contentDocument})
     const data = await getOutlookData({
       element: element,
     })
@@ -103,4 +103,17 @@ describe('outlook', () => {
 
     iframe.remove()
   })
+
+  it('should not get data without an element', async () => {
+    const data = await getOutlookData({})
+
+    expect(data).to.deep.equal({
+      from: {},
+      to: [],
+      cc: [],
+      bcc: [],
+      subject: '',
+    })
+  })
+
 })

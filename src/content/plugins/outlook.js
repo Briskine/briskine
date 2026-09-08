@@ -217,18 +217,22 @@ async function updateSection ($container, $button, getNode, value) {
   }
 }
 
+// the message body is the only multiline textbox,
+// which is also how getRecipientContainers tells it apart from the recipient fields.
+export function getOutlookEditor ({ document: doc }) {
+  return doc.querySelector('[role=textbox][aria-multiline=true]')
+}
+
 // get all required data from the dom
-function getData ({ element }) {
+function getData ({ element } = {}) {
   if (!isActive()) {
     return
   }
 
-  return getOutlookData({ element })
+  return getOutlookData({ element: element || getOutlookEditor({ document }) })
 }
 
 export async function getOutlookData ({ element }) {
-  await makeFieldsEditable(element)
-
   const vars = {
     from: {},
     to: [],
@@ -237,9 +241,13 @@ export async function getOutlookData ({ element }) {
     subject: '',
   }
 
+  // makeFieldsEditable walks up from the element,
+  // so the guard has to come first.
   if (!element) {
     return vars
   }
+
+  await makeFieldsEditable(element)
 
   const doc = element.ownerDocument
 

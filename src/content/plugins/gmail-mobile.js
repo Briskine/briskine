@@ -25,6 +25,7 @@ function isActive () {
 
 const regExEmail = /([\w!.%+-])+@([\w-])+(?:\.[\w-]+)+/
 
+const bodySelector = '#cmcbody'
 const fromSelector = '#cmcfrom'
 const subjectSelector = '#cmcsubj'
 const fieldSelector = (field) => `#cmae_compose${field}`
@@ -50,13 +51,17 @@ function parseContact ($container) {
   })
 }
 
+export function getGmailMobileEditor ({ document: doc }) {
+  return doc.querySelector(bodySelector)
+}
+
 // get all required data from the dom
-function getData ({ element }) {
+function getData ({ element } = {}) {
   if (!isActive()) {
     return false
   }
 
-  return getGmailMobileData({ element })
+  return getGmailMobileData({ element: element || getGmailMobileEditor({ document }) })
 }
 
 export function getGmailMobileData ({ element }) {

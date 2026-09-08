@@ -1,6 +1,6 @@
 import { expect, describe, it } from 'vitest'
 
-import { getGmailData } from './gmail.js'
+import { getGmailData, getGmailEditor } from './gmail.js'
 
 async function page (src = '') {
   const iframe = document.createElement('iframe')
@@ -54,7 +54,7 @@ const composeData = {
 describe('gmail', () => {
   it('should get data in compose dialog', async () => {
     const iframe = await page('/pages/gmail/gmail-compose-dialog.html')
-    const element = iframe.contentDocument.querySelector('[aria-label="Message Body"][contenteditable="true"]')
+    const element = getGmailEditor({document: iframe.contentDocument})
     const data = getGmailData({
       element: element,
     })
@@ -66,7 +66,7 @@ describe('gmail', () => {
 
   it('should get data in maximized compose', async () => {
     const iframe = await page('/pages/gmail/gmail-compose-maximized.html')
-    const element = iframe.contentDocument.querySelector('[aria-label="Message Body"][contenteditable="true"]')
+    const element = getGmailEditor({document: iframe.contentDocument})
     const data = getGmailData({
       element: element,
     })
@@ -93,4 +93,17 @@ describe('gmail', () => {
 
     iframe.remove()
   })
+
+  it('should not get data without an element', async () => {
+    const data = getGmailData({})
+
+    expect(data).to.deep.equal({
+      from: {},
+      to: [],
+      cc: [],
+      bcc: [],
+      subject: '',
+    })
+  })
+
 })

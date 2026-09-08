@@ -75,15 +75,25 @@ function getToDetails (editor) {
   return []
 }
 
+function getFacebookEditor ({ document: doc }) {
+  return doc.querySelector('[contenteditable=true][role=textbox]')
+}
+
 // get all required data from the dom
-function getData ({ element }) {
+function getData ({ element } = {}) {
   if (!isActive()) {
+    return false
+  }
+
+  // find the editor ourselves when nothing is focused,
+  const editor = element || getFacebookEditor({ document })
+  if (!editor) {
     return false
   }
 
   return {
     from: getFromDetails(),
-    to: getToDetails(element),
+    to: getToDetails(editor),
   }
 }
 

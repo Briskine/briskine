@@ -61,13 +61,19 @@ function getFromField (container) {
   return container.querySelector(fromFieldSelector)
 }
 
+// the compose body, scoped to the compose container getGmailData walks up to.
+export function getGmailEditor ({ document: doc }) {
+  return doc.querySelector(`${textfieldContainerSelector} [role=textbox][aria-multiline=true]`)
+}
+
 // get all required data from the dom
-function getData ({ element }) {
+function getData ({ element } = {}) {
   if (!isActive()) {
     return
   }
 
-  return getGmailData({ element })
+  // find the editor ourselves when nothing is focused
+  return getGmailData({ element: element || getGmailEditor({ document }) })
 }
 
 export function getGmailData ({ element }) {

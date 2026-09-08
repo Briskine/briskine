@@ -21,15 +21,15 @@ function isActive () {
   return activeCache
 }
 
-function getToName (element) {
-  const messageThreadSelectors = [
-    // message popup
-    // connect popup
-    '[role=dialog]',
-    // message inbox
-    '.thread-container',
-  ]
+const messageThreadSelectors = [
+  // message popup
+  // connect popup
+  '[role=dialog]',
+  // message inbox
+  '.thread-container',
+]
 
+function getToName (element) {
   const contactNameSelectors = [
     // message popup (:not excludes shared connections in Sales Navigator)
     '.artdeco-entity-lockup__title > *:first-child:not([aria-hidden])',
@@ -52,12 +52,18 @@ function getToName (element) {
   return ''
 }
 
-function getData({ element }) {
+export function getSalesNavigatorEditor ({ document: doc }) {
+  return doc.querySelector(
+    messageThreadSelectors.map((selector) => `${selector} textarea`).join(',')
+  )
+}
+
+function getData ({ element } = {}) {
   if (!isActive()) {
     return
   }
 
-  return getSalesNavigatorData({ element })
+  return getSalesNavigatorData({ element: element || getSalesNavigatorEditor({ document }) })
 }
 
 export function getSalesNavigatorData ({ element }) {

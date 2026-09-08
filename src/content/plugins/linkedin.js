@@ -121,13 +121,24 @@ function getToName (element) {
   return ''
 }
 
+// message boxes are contenteditable, the connect invite note is a textarea.
+// both can be inside #interop-outlet's shadow root.
+const editorSelectors = [
+  '[contenteditable=true][role=textbox]',
+  'textarea#custom-message',
+]
+
+export function getLinkedInEditor ({ document: doc }) {
+  return querySelectorDeep(editorSelectors.join(','), doc.body)
+}
+
 // get all required data from the dom
-function getData ({ element }) {
+function getData ({ element } = {}) {
   if (!isActive()) {
     return
   }
 
-  return getLinkedInData({ element })
+  return getLinkedInData({ element: element || getLinkedInEditor({ document }) })
 }
 
 export function getLinkedInData ({ element }) {
