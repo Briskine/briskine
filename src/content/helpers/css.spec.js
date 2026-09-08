@@ -111,4 +111,32 @@ describe('css handlebars helper', () => {
     expect(await parseTemplate('{{#each (css ".field")}}[{{value}}]{{/each}}'))
       .to.equal('[one][two]')
   })
+
+  it('should tell the field value apart from the value attribute', async () => {
+    const $container = markup('<input class="field" value="from-attribute">')
+    $container.querySelector('.field').value = 'what the user typed'
+
+    expect(await parseTemplate('{{lookup (css ".field") "value"}}'))
+      .to.equal('what the user typed')
+    expect(await parseTemplate('{{css ".field" "value"}}'))
+      .to.equal('from-attribute')
+  })
+
+  it('should work inside the cursor helper', async () => {
+    markup('<div class="price">10 EUR</div>')
+    expect(await parseTemplate('{{#cursor}}{{css ".price"}}{{/cursor}}'))
+      .to.contain('10 EUR')
+  })
+
+  // querySelectorAllDeep collects light dom matches before shadow ones,
+  // so "the first match" is not always the first in document order.
+  it('should return light dom matches before shadow dom ones', async () => {
+    const $container = markup('<div class="host"></div><div class="item">light</div>')
+    const shadow = $container.querySelector('.host').attachShadow({mode: 'open'})
+    shadow.innerHTML = '<div class="item">shadow</div>'
+
+    expect(await parseTemplate('{{#each (css ".item")}}[{{this}}]{{/each}}'))
+      .to.equal('[light][shadow]')
+  })
+
 })
