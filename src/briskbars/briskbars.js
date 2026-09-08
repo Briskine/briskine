@@ -1,4 +1,4 @@
-// briskbars 1.1.0
+// briskbars 1.2.0
 var __defProp = Object.defineProperty;
 var __export = (target, all) => {
   for (var name in all)
@@ -1568,6 +1568,50 @@ function parse(input, options) {
   return strip.accept(ast);
 }
 
+// src/cache.ts
+var sourceCacheLimit = 64 * 1024;
+var sourceCache = /* @__PURE__ */ new Map();
+var sourceCacheChars = 0;
+function cachedParse(source) {
+  const cached = sourceCache.get(source);
+  if (cached) {
+    sourceCache.delete(source);
+    sourceCache.set(source, cached);
+    return cached;
+  }
+  const entry = { ast: parse(source) };
+  sourceCache.set(source, entry);
+  sourceCacheChars += source.length;
+  while (sourceCacheChars > sourceCacheLimit && sourceCache.size > 1) {
+    const oldest = sourceCache.keys().next().value;
+    sourceCache.delete(oldest);
+    sourceCacheChars -= oldest.length;
+  }
+  return entry;
+}
+
+// lib/handlebars/compiler/ast.js
+var AST = {
+  // Public API used to evaluate derived attributes regarding AST nodes
+  helpers: {
+    // a mustache is definitely a helper if:
+    // * it is an eligible helper, and
+    // * it has at least one parameter or hash segment
+    helperExpression: function(node) {
+      return node.type === "SubExpression" || (node.type === "MustacheStatement" || node.type === "BlockStatement") && !!(node.params && node.params.length || node.hash);
+    },
+    scopedId: function(path) {
+      return /^\.|this\b/.test(path.original);
+    },
+    // an ID is simple if it only has one part, and that part is not
+    // `..` or `this`.
+    simpleId: function(path) {
+      return path.parts.length === 1 && !AST.helpers.scopedId(path) && !path.depth;
+    }
+  }
+};
+var ast_default = AST;
+
 // lib/handlebars/utils.js
 var escape = {
   "&": "&amp;",
@@ -1645,86 +1689,47 @@ function createFrame(object) {
   return frame;
 }
 
-// lib/handlebars/logger.js
-var logger = {
-  methodMap: ["debug", "info", "warn", "error"],
-  level: "info",
-  // Maps a given level value to the `methodMap` indexes above.
-  lookupLevel: function(level) {
-    if (typeof level === "string") {
-      let levelMap = indexOf(logger.methodMap, level.toLowerCase());
-      if (levelMap >= 0) {
-        level = levelMap;
-      } else {
-        level = parseInt(level, 10);
-      }
-    }
-    return level;
-  },
-  // Can be overridden in the host environment
-  log: function(level, ...message) {
-    level = logger.lookupLevel(level);
-    if (typeof console !== "undefined" && logger.lookupLevel(logger.level) <= level) {
-      let method = logger.methodMap[level];
-      if (!console[method]) {
-        method = "log";
-      }
-      console[method](...message);
-    }
+// src/vendor.ts
+var escapeExpression2 = escapeExpression;
+var extend2 = extend;
+var isMap2 = isMap;
+var isSet2 = isSet;
+
+// src/pending.ts
+var Pending = class {
+  promise;
+  constructor(promise) {
+    this.promise = promise;
   }
 };
-var logger_default = logger;
-
-// lib/handlebars/internal/proto-access.js
-var loggedProperties = /* @__PURE__ */ Object.create(null);
-function createProtoAccessControl(runtimeOptions) {
-  const propertyWhiteList = /* @__PURE__ */ Object.create(null);
-  propertyWhiteList["__proto__"] = false;
-  extend(propertyWhiteList, runtimeOptions.allowedProtoProperties);
-  const methodWhiteList = /* @__PURE__ */ Object.create(null);
-  methodWhiteList["constructor"] = false;
-  methodWhiteList["__defineGetter__"] = false;
-  methodWhiteList["__defineSetter__"] = false;
-  methodWhiteList["__lookupGetter__"] = false;
-  extend(methodWhiteList, runtimeOptions.allowedProtoMethods);
-  return {
-    properties: {
-      whitelist: propertyWhiteList,
-      defaultValue: runtimeOptions.allowProtoPropertiesByDefault
-    },
-    methods: {
-      whitelist: methodWhiteList,
-      defaultValue: runtimeOptions.allowProtoMethodsByDefault
+function invoked(result) {
+  return result != null && typeof result.then === "function" ? new Pending(Promise.resolve(result)) : result;
+}
+function unwrap(value) {
+  return value instanceof Pending ? value.promise : value;
+}
+function chain(value, then) {
+  if (value instanceof Pending) {
+    return new Pending(value.promise.then((resolved) => unwrap(then(resolved))));
+  }
+  return then(value);
+}
+function runFrom(start, count, step, onValue) {
+  for (let i = start; i < count; i++) {
+    const value = step(i);
+    if (value instanceof Pending) {
+      const at = i;
+      return new Pending(value.promise.then((resolved) => {
+        onValue(at, resolved);
+        return unwrap(runFrom(at + 1, count, step, onValue));
+      }));
     }
-  };
+    onValue(i, value);
+  }
+  return void 0;
 }
-function resultIsAllowed(result, protoAccessControl, propertyName) {
-  if (typeof result === "function") {
-    return checkWhiteList(protoAccessControl.methods, propertyName);
-  } else {
-    return checkWhiteList(protoAccessControl.properties, propertyName);
-  }
-}
-function checkWhiteList(protoAccessControlForType, propertyName) {
-  if (protoAccessControlForType.whitelist[propertyName] !== void 0) {
-    return protoAccessControlForType.whitelist[propertyName] === true;
-  }
-  if (protoAccessControlForType.defaultValue !== void 0) {
-    return protoAccessControlForType.defaultValue;
-  }
-  logUnexpectedPropertyAccessOnce(propertyName);
-  return false;
-}
-function logUnexpectedPropertyAccessOnce(propertyName) {
-  if (loggedProperties[propertyName] !== true) {
-    loggedProperties[propertyName] = true;
-    logger_default.log(
-      "error",
-      `Handlebars: Access has been denied to resolve the property "${propertyName}" because it is not an "own property" of its parent.
-You can add a runtime option to disable the check or this warning:
-See https://handlebarsjs.com/api-reference/runtime-options.html#options-to-control-prototype-access for details`
-    );
-  }
+function settle(value) {
+  return value instanceof Pending ? value.promise : value;
 }
 
 // lib/handlebars/helpers/block-helper-missing.js
@@ -1921,123 +1926,102 @@ function registerDefaultHelpers(instance) {
   with_default(instance);
 }
 
+// lib/handlebars/logger.js
+var logger = {
+  methodMap: ["debug", "info", "warn", "error"],
+  level: "info",
+  // Maps a given level value to the `methodMap` indexes above.
+  lookupLevel: function(level) {
+    if (typeof level === "string") {
+      let levelMap = indexOf(logger.methodMap, level.toLowerCase());
+      if (levelMap >= 0) {
+        level = levelMap;
+      } else {
+        level = parseInt(level, 10);
+      }
+    }
+    return level;
+  },
+  // Can be overridden in the host environment
+  log: function(level, ...message) {
+    level = logger.lookupLevel(level);
+    if (typeof console !== "undefined" && logger.lookupLevel(logger.level) <= level) {
+      let method = logger.methodMap[level];
+      if (!console[method]) {
+        method = "log";
+      }
+      console[method](...message);
+    }
+  }
+};
+var logger_default = logger;
+
+// lib/handlebars/internal/proto-access.js
+var loggedProperties = /* @__PURE__ */ Object.create(null);
+function createProtoAccessControl(runtimeOptions) {
+  const propertyWhiteList = /* @__PURE__ */ Object.create(null);
+  propertyWhiteList["__proto__"] = false;
+  extend(propertyWhiteList, runtimeOptions.allowedProtoProperties);
+  const methodWhiteList = /* @__PURE__ */ Object.create(null);
+  methodWhiteList["constructor"] = false;
+  methodWhiteList["__defineGetter__"] = false;
+  methodWhiteList["__defineSetter__"] = false;
+  methodWhiteList["__lookupGetter__"] = false;
+  extend(methodWhiteList, runtimeOptions.allowedProtoMethods);
+  return {
+    properties: {
+      whitelist: propertyWhiteList,
+      defaultValue: runtimeOptions.allowProtoPropertiesByDefault
+    },
+    methods: {
+      whitelist: methodWhiteList,
+      defaultValue: runtimeOptions.allowProtoMethodsByDefault
+    }
+  };
+}
+function resultIsAllowed(result, protoAccessControl, propertyName) {
+  if (typeof result === "function") {
+    return checkWhiteList(protoAccessControl.methods, propertyName);
+  } else {
+    return checkWhiteList(protoAccessControl.properties, propertyName);
+  }
+}
+function checkWhiteList(protoAccessControlForType, propertyName) {
+  if (protoAccessControlForType.whitelist[propertyName] !== void 0) {
+    return protoAccessControlForType.whitelist[propertyName] === true;
+  }
+  if (protoAccessControlForType.defaultValue !== void 0) {
+    return protoAccessControlForType.defaultValue;
+  }
+  logUnexpectedPropertyAccessOnce(propertyName);
+  return false;
+}
+function logUnexpectedPropertyAccessOnce(propertyName) {
+  if (loggedProperties[propertyName] !== true) {
+    loggedProperties[propertyName] = true;
+    logger_default.log(
+      "error",
+      `Handlebars: Access has been denied to resolve the property "${propertyName}" because it is not an "own property" of its parent.
+You can add a runtime option to disable the check or this warning:
+See https://handlebarsjs.com/api-reference/runtime-options.html#options-to-control-prototype-access for details`
+    );
+  }
+}
+
 // lib/handlebars/runtime.js
 function noop() {
   return "";
 }
 
-// lib/handlebars/compiler/ast.js
-var AST = {
-  // Public API used to evaluate derived attributes regarding AST nodes
-  helpers: {
-    // a mustache is definitely a helper if:
-    // * it is an eligible helper, and
-    // * it has at least one parameter or hash segment
-    helperExpression: function(node) {
-      return node.type === "SubExpression" || (node.type === "MustacheStatement" || node.type === "BlockStatement") && !!(node.params && node.params.length || node.hash);
-    },
-    scopedId: function(path) {
-      return /^\.|this\b/.test(path.original);
-    },
-    // an ID is simple if it only has one part, and that part is not
-    // `..` or `this`.
-    simpleId: function(path) {
-      return path.parts.length === 1 && !AST.helpers.scopedId(path) && !path.depth;
-    }
-  }
-};
-var ast_default = AST;
-
-// lib/handlebars/safe-string.js
-function SafeString(string) {
-  this.string = string;
-}
-SafeString.prototype.toString = SafeString.prototype.toHTML = function() {
-  return "" + this.string;
-};
-var safe_string_default = SafeString;
-
-// src/briskbars.ts
-var escapeExpression2 = escapeExpression;
-var extend2 = extend;
-var isFunction2 = isFunction;
-var isMap2 = isMap;
-var isSet2 = isSet;
+// src/frame.ts
 var noopProgram = noop;
-var Pending = class {
-  promise;
-  constructor(promise) {
-    this.promise = promise;
-  }
-};
-function invoked(result) {
-  return result != null && typeof result.then === "function" ? new Pending(Promise.resolve(result)) : result;
-}
-function unwrap(value) {
-  return value instanceof Pending ? value.promise : value;
-}
-function chain(value, then) {
-  if (value instanceof Pending) {
-    return new Pending(value.promise.then((resolved) => unwrap(then(resolved))));
-  }
-  return then(value);
-}
-function runFrom(start, count, step, onValue) {
-  for (let i = start; i < count; i++) {
-    const value = step(i);
-    if (value instanceof Pending) {
-      const at = i;
-      return new Pending(value.promise.then((resolved) => {
-        onValue(at, resolved);
-        return unwrap(runFrom(at + 1, count, step, onValue));
-      }));
-    }
-    onValue(i, value);
-  }
-  return void 0;
-}
-function renderAll(nodes, frame) {
-  const count = nodes.length;
-  let out = "";
-  for (let i = 0; i < count; i++) {
-    const value = nodes[i](frame);
-    if (value instanceof Pending) {
-      const at = i;
-      return new Pending(value.promise.then((resolved) => {
-        out += resolved || "";
-        const rest = runFrom(
-          at + 1,
-          count,
-          (j) => nodes[j](frame),
-          (_j, v) => {
-            out += v || "";
-          }
-        );
-        return rest ? rest.promise.then(() => out) : out;
-      }));
-    }
-    out += value || "";
-  }
-  return out;
-}
-function settle(value) {
-  return value instanceof Pending ? value.promise : value;
-}
+var isFunction2 = isFunction;
 function asCallable(value) {
   return isFunction2(value) ? value : void 0;
 }
 function asHelperOptions(value) {
   return value != null && typeof value === "object" ? value : void 0;
 }
-var defaultHelpers = {};
-registerDefaultHelpers({
-  helpers: defaultHelpers,
-  registerHelper(name, fn) {
-    defaultHelpers[name] = fn;
-  },
-  log: logger_default.log
-});
-defaultHelpers.each = nativeEach;
 function derive(frame, context, data, depths, partials, blockParamValues) {
   return {
     context,
@@ -2054,12 +2038,17 @@ var emptyHelpers = {};
 var emptyPartials = {};
 var emptyValues = [];
 var emptyScopes = [];
+function stringify(value) {
+  return value != null ? String(value) : "";
+}
+
+// src/lookup.ts
 var defaultProtoAccess = createProtoAccessControl({});
 function defaultLookupProperty(parent, name) {
   if (parent == null) {
     return void 0;
   }
-  if (isMap2(parent)) {
+  if (typeof parent.get === "function" && isMap2(parent)) {
     return parent.get(name);
   }
   const result = parent[name];
@@ -2101,7 +2090,7 @@ function planPath(path, scopes) {
   const parts = path.parts || [];
   const name = parts[0];
   if (path.depth) {
-    sawDepthedPath = true;
+    depthUse.saw = true;
   }
   const scoped = ast_default.helpers.scopedId(path);
   const simple = path.type === "PathExpression" && !path.data && ast_default.helpers.simpleId(path);
@@ -2116,36 +2105,30 @@ function planPath(path, scopes) {
     blockParam: eligible ? findBlockParamSlot(scopes, name) : null
   };
 }
-function resolvePlan(plan, frame) {
-  if (plan.data) {
-    return lookupData(frame, plan.parts, plan.depth);
-  }
-  const parts = plan.parts;
-  if (plan.blockParam) {
-    let result2 = frame.blockParamValues[plan.blockParam.depth][plan.blockParam.idx];
-    for (let i = 1; i < parts.length; i++) {
-      if (result2 == null) {
-        return void 0;
-      }
-      result2 = frame.lookupProperty(result2, parts[i]);
+function walkParts(frame, root, parts, from) {
+  let result = root;
+  for (let i = from; i < parts.length; i++) {
+    if (result == null) {
+      return void 0;
     }
-    return result2;
+    result = frame.lookupProperty(result, parts[i]);
+  }
+  return result;
+}
+function resolvePlan(plan, frame) {
+  const parts = plan.parts;
+  if (plan.data) {
+    return lookupData(frame, parts, plan.depth);
+  }
+  if (plan.blockParam) {
+    const bound = frame.blockParamValues[plan.blockParam.depth][plan.blockParam.idx];
+    return walkParts(frame, bound, parts, 1);
   }
   const ctx = plan.depth ? frame.depths[plan.depth] ?? null : frame.context;
   if (!parts.length || parts[0] === ".") {
     return ctx;
   }
-  if (ctx == null) {
-    return void 0;
-  }
-  let result = ctx;
-  for (const part of parts) {
-    if (result == null) {
-      return void 0;
-    }
-    result = frame.lookupProperty(result, part);
-  }
-  return result;
+  return walkParts(frame, ctx, parts, 0);
 }
 function lookupData(frame, parts, depth) {
   let d = frame.data;
@@ -2155,40 +2138,131 @@ function lookupData(frame, parts, depth) {
   if (!parts.length) {
     return d;
   }
-  let result = d;
-  for (const part of parts) {
-    if (result == null) {
-      return void 0;
-    }
-    result = frame.lookupProperty(result, part);
+  return walkParts(frame, d, parts, 0);
+}
+var depthUse = { saw: false };
+
+// src/helpers.ts
+var defaultHelpers = {};
+registerDefaultHelpers({
+  helpers: defaultHelpers,
+  registerHelper(name, fn) {
+    defaultHelpers[name] = fn;
+  },
+  log: logger_default.log
+});
+defaultHelpers.each = nativeEach;
+function missingHelper(frame, name) {
+  const helper2 = Object.prototype.hasOwnProperty.call(frame.helpers, name) ? frame.helpers[name] : defaultHelpers[name];
+  if (!helper2) {
+    throw new TypeError('The "' + name + '" helper is not a function');
   }
-  return result;
+  return helper2;
 }
 function findHelper(frame, name) {
+  if (name === "helperMissing" || name === "blockHelperMissing") {
+    throw new exception_default('Missing helper: "' + name + '"');
+  }
   if (name === "each") {
     return defaultHelpers.each;
   }
   if (Object.prototype.hasOwnProperty.call(frame.helpers, name)) {
     return frame.helpers[name];
   }
-  if (Object.prototype.hasOwnProperty.call(defaultHelpers, name)) {
-    return defaultHelpers[name];
-  }
-  return void 0;
+  return Object.prototype.hasOwnProperty.call(defaultHelpers, name) ? defaultHelpers[name] : void 0;
 }
-function missingHelper(frame, name) {
-  const helper2 = findHelper(frame, name);
-  if (!helper2) {
-    throw new TypeError('The "' + name + '" helper is not a function');
+function nativeEach(...args) {
+  const context = args[0];
+  const options = asHelperOptions(args[1]);
+  if (!options) {
+    throw new exception_default("Must pass iterator to #each");
   }
-  return helper2;
+  const fn = options.fn || noopProgram;
+  const inverse = options.inverse || noopProgram;
+  const iterable = asCallable(context);
+  return chain(
+    iterable ? invoked(iterable.call(this)) : context,
+    (resolved) => eachOver(resolved, this, options.data, fn, inverse)
+  );
 }
-function lookupHelper(frame, name) {
-  if (name === "helperMissing" || name === "blockHelperMissing") {
-    throw new exception_default('Missing helper: "' + name + '"');
+function walkerFor(context) {
+  if (!context || typeof context !== "object") {
+    return null;
   }
-  return name ? findHelper(frame, name) : void 0;
+  if (isMap2(context)) {
+    const entries = [...context];
+    return {
+      context,
+      count: entries.length,
+      fieldAt: (i) => entries[i][0],
+      valueAt: (i) => entries[i][1],
+      sparse: false
+    };
+  }
+  if (isSet2(context)) {
+    const values = [...context];
+    return {
+      context,
+      count: values.length,
+      fieldAt: (i) => i,
+      valueAt: (i) => values[i],
+      sparse: false
+    };
+  }
+  if (isArray(context) || context[Symbol.iterator]) {
+    const arr = isArray(context) ? context : Array.from(context);
+    return {
+      context: arr,
+      count: arr.length,
+      fieldAt: (i) => i,
+      valueAt: (i) => arr[i],
+      sparse: true
+    };
+  }
+  const obj = context;
+  const keys = Object.keys(obj);
+  return {
+    context,
+    count: keys.length,
+    fieldAt: (i) => keys[i],
+    valueAt: (i) => obj[keys[i]],
+    sparse: false
+  };
 }
+function eachOver(context, self, parentData, fn, inverse) {
+  const walker = walkerFor(context);
+  if (!walker || walker.count === 0) {
+    return chain(invoked(inverse(self)), stringify);
+  }
+  const count = walker.count;
+  const data = createFrame(parentData);
+  const wantsBlockParams = !!fn.blockParams;
+  const iterOptions = wantsBlockParams ? { data, blockParams: void 0 } : { data };
+  let ret = "";
+  const step = (i) => {
+    if (walker.sparse && !(i in walker.context)) {
+      return "";
+    }
+    const field = walker.fieldAt(i);
+    data.key = field;
+    data.index = i;
+    data.first = i === 0;
+    data.last = i === count - 1;
+    if (wantsBlockParams) {
+      iterOptions.blockParams = [
+        walker.context[field],
+        field
+      ];
+    }
+    return invoked(fn(walker.valueAt(i), iterOptions));
+  };
+  const pending = runFrom(0, count, step, (_i, piece) => {
+    ret += piece || "";
+  });
+  return pending ? new Pending(pending.promise.then(() => ret)) : ret;
+}
+
+// src/calls.ts
 function planCall(params, hash, scopes) {
   const pairs = hash ? hash.pairs : [];
   return {
@@ -2197,20 +2271,20 @@ function planCall(params, hash, scopes) {
     hashValues: pairs.map((pair) => buildValue(pair.value, scopes))
   };
 }
-function buildHelperOptions(name, hash, frame, fn, inverse) {
-  const options = {
+function helperOptions(name, hash, frame, fn, inverse) {
+  return fn ? {
+    name,
+    hash,
+    data: frame.data,
+    lookupProperty: frame.lookupProperty,
+    fn,
+    inverse
+  } : {
     name,
     hash,
     data: frame.data,
     lookupProperty: frame.lookupProperty
   };
-  if (fn) {
-    options.fn = fn;
-  }
-  if (inverse) {
-    options.inverse = inverse;
-  }
-  return options;
 }
 function runHash(plan, frame) {
   const hash = {};
@@ -2255,11 +2329,11 @@ function runCall(plan, helper2, name, frame, fn, inverse) {
 }
 function applyCall(plan, helper2, name, frame, args, count, fn, inverse) {
   if (!plan.hashKeys.length) {
-    args[count] = buildHelperOptions(name, {}, frame, fn, inverse);
+    args[count] = helperOptions(name, {}, frame, fn, inverse);
     return invoked(helper2.apply(frame.context, args));
   }
   return chain(runHash(plan, frame), (hash) => {
-    args[count] = buildHelperOptions(name, hash, frame, fn, inverse);
+    args[count] = helperOptions(name, hash, frame, fn, inverse);
     return invoked(helper2.apply(frame.context, args));
   });
 }
@@ -2309,7 +2383,7 @@ function buildSubExpressionCall(path, call, scopes) {
 function buildCall(plan, call, name) {
   return (frame) => {
     if (name) {
-      const helper2 = lookupHelper(frame, name);
+      const helper2 = findHelper(frame, name);
       if (helper2) {
         return runCall(call, helper2, name, frame);
       }
@@ -2335,14 +2409,14 @@ function buildCall(plan, call, name) {
 }
 function buildAmbiguous(plan, name) {
   return (frame) => {
-    const helper2 = lookupHelper(frame, name);
+    const helper2 = findHelper(frame, name);
     if (helper2) {
       return runCall(noArgs, helper2, name, frame);
     }
     const value = resolvePlan(plan, frame);
     const lambda = asCallable(value);
     if (lambda) {
-      return invoked(lambda.call(frame.context, buildHelperOptions(name, {}, frame)));
+      return invoked(lambda.call(frame.context, helperOptions(name, {}, frame)));
     }
     if (value == null) {
       return runCall(noArgs, missingHelper(frame, "helperMissing"), name, frame);
@@ -2363,12 +2437,37 @@ function buildExpression(node, scopes) {
     return buildCall(plan, call, name);
   }
   if (plan.simple && !isBlockParam) {
-    return buildAmbiguous(plan, name);
+    return buildAmbiguous(plan, plan.parts[0]);
   }
   return buildLookup(plan);
 }
 var noArgs = { params: [], hashKeys: [], hashValues: [] };
-var sawDepthedPath = false;
+
+// src/render.ts
+function renderAll(nodes, frame) {
+  const count = nodes.length;
+  let out = "";
+  for (let i = 0; i < count; i++) {
+    const value = nodes[i](frame);
+    if (value instanceof Pending) {
+      const at = i;
+      return new Pending(value.promise.then((resolved) => {
+        out += resolved || "";
+        const rest = runFrom(
+          at + 1,
+          count,
+          (j) => nodes[j](frame),
+          (_j, v) => {
+            out += v || "";
+          }
+        );
+        return rest ? rest.promise.then(() => out) : out;
+      }));
+    }
+    out += value || "";
+  }
+  return out;
+}
 var builtPrograms = /* @__PURE__ */ new WeakMap();
 function foldContent(body) {
   let text = "";
@@ -2410,18 +2509,18 @@ function buildRender(body, scopes, inlines) {
 function buildProgram(program, outerScopes) {
   const cached = builtPrograms.get(program);
   if (cached) {
-    sawDepthedPath = sawDepthedPath || cached.usesDepths;
+    depthUse.saw = depthUse.saw || cached.usesDepths;
     return cached;
   }
-  const outerSaw = sawDepthedPath;
-  sawDepthedPath = false;
+  const outerSaw = depthUse.saw;
+  depthUse.saw = false;
   const scopes = program.blockParams && program.blockParams.length ? [program.blockParams, ...outerScopes] : outerScopes;
   const inlines = buildInlineDefinitions(program, scopes);
   const body = program.body || [];
   const folded = inlines.length ? null : foldContent(body);
   const render = folded !== null ? () => folded : buildRender(body, scopes, inlines);
-  const usesDepths = sawDepthedPath;
-  sawDepthedPath = outerSaw || usesDepths;
+  const usesDepths = depthUse.saw;
+  depthUse.saw = outerSaw || usesDepths;
   const built = { render, inlines, usesDepths };
   builtPrograms.set(program, built);
   return built;
@@ -2482,22 +2581,25 @@ function buildProgramFn(program, scopes) {
   const declared = program.blockParams ? program.blockParams.length : 0;
   const usesDepths = built.usesDepths;
   return (frame) => {
-    const fn = ((context, fnOptions = {}) => {
-      const blockParamValues = declared ? [fnOptions.blockParams || emptyValues, ...frame.blockParamValues] : frame.blockParamValues;
-      const data = restorePartialBlock(fnOptions.data || frame.data, frame);
+    const fn = ((context, fnOptions) => {
+      const blockParamValues = declared ? [fnOptions?.blockParams || emptyValues, ...frame.blockParamValues] : frame.blockParamValues;
+      const data = restorePartialBlock(fnOptions?.data || frame.data, frame);
+      const depths = usesDepths && context != frame.depths[0] ? [context, ...frame.depths] : frame.depths;
+      if (context === frame.context && data === frame.data && depths === frame.depths && blockParamValues === frame.blockParamValues) {
+        return settle(built.render(frame));
+      }
       return settle(built.render(derive(
         frame,
         context,
         data,
-        // loose, matching wrapProgram upstream. It matters: iterating a one
-        // element array binds the item, and `1 != [1]` is false, so upstream
-        // pushes no level there and every `../` below counts one less.
-        usesDepths && context != frame.depths[0] ? [context, ...frame.depths] : frame.depths,
+        depths,
         frame.partials,
         blockParamValues
       )));
     });
-    fn.blockParams = declared;
+    if (declared) {
+      fn.blockParams = declared;
+    }
     return fn;
   };
 }
@@ -2528,23 +2630,12 @@ function buildStatement(node, scopes) {
 }
 function buildMustache(node, scopes) {
   const value = buildExpression(node, scopes);
-  if (node.escaped) {
-    return (frame) => {
-      const result = value(frame);
-      return result instanceof Pending ? new Pending(result.promise.then(escapeExpression2)) : escapeExpression2(result);
-    };
-  }
-  return (frame) => {
-    const result = value(frame);
-    return result instanceof Pending ? new Pending(result.promise.then(stringify)) : stringify(result);
-  };
-}
-function stringify(value) {
-  return value != null ? String(value) : "";
+  const render = node.escaped ? escapeExpression2 : stringify;
+  return (frame) => chain(value(frame), render);
 }
 function runImplicitBlock(block, frame, resolved, fn, inverse) {
   return chain(runHash(block.call, frame), (hash) => {
-    const options = buildHelperOptions(
+    const options = helperOptions(
       block.name,
       hash,
       frame,
@@ -2578,7 +2669,7 @@ function buildBlock(node, scopes) {
   return (frame) => {
     const fn = makeFn ? makeFn(frame) : noopProgram;
     const inverse = makeInverse ? makeInverse(frame) : noopProgram;
-    const helper2 = block.ambiguous ? lookupHelper(frame, block.name) : void 0;
+    const helper2 = block.ambiguous ? findHelper(frame, block.name) : void 0;
     let result;
     if (helper2) {
       result = runCall(block.call, helper2, block.name, frame, fn, inverse);
@@ -2593,104 +2684,14 @@ function buildBlock(node, scopes) {
         inverse
       ) : runImplicitBlock(block, frame, resolved, fn, inverse);
     }
-    return result instanceof Pending ? new Pending(result.promise.then(stringify)) : stringify(result);
+    return chain(result, stringify);
   };
-}
-function nativeEach(...args) {
-  const context = args[0];
-  const options = asHelperOptions(args[1]);
-  if (!options) {
-    throw new exception_default("Must pass iterator to #each");
-  }
-  const fn = options.fn || noopProgram;
-  const inverse = options.inverse || noopProgram;
-  const iterable = asCallable(context);
-  return chain(
-    iterable ? invoked(iterable.call(this)) : context,
-    (resolved) => eachOver(resolved, this, options.data, fn, inverse)
-  );
-}
-var alwaysPresent = () => true;
-function walker(context, count, fieldAt, valueAt, present = alwaysPresent) {
-  return { context, count, fieldAt, valueAt, present };
-}
-function walkerFor(context) {
-  if (!context || typeof context !== "object") {
-    return null;
-  }
-  if (isMap2(context)) {
-    const entries = [...context];
-    return walker(context, entries.length, (i) => entries[i][0], (i) => entries[i][1]);
-  }
-  if (isSet2(context)) {
-    const values = [...context];
-    return walker(context, values.length, (i) => i, (i) => values[i]);
-  }
-  if (isArray(context) || context[Symbol.iterator]) {
-    const arr = isArray(context) ? context : Array.from(context);
-    return walker(arr, arr.length, (i) => i, (i) => arr[i], (i) => i in arr);
-  }
-  const obj = context;
-  const keys = Object.keys(obj);
-  return walker(context, keys.length, (i) => keys[i], (i) => obj[keys[i]]);
-}
-function eachOver(context, self, parentData, fn, inverse) {
-  const walker2 = walkerFor(context);
-  if (!walker2 || walker2.count === 0) {
-    return chain(invoked(inverse(self)), stringify);
-  }
-  const count = walker2.count;
-  const data = createFrame(parentData);
-  const wantsBlockParams = !!fn.blockParams;
-  const iterOptions = wantsBlockParams ? { data, blockParams: void 0 } : { data };
-  let ret = "";
-  const step = (i) => {
-    if (!walker2.present(i)) {
-      return "";
-    }
-    const field = walker2.fieldAt(i);
-    data.key = field;
-    data.index = i;
-    data.first = i === 0;
-    data.last = i === count - 1;
-    if (wantsBlockParams) {
-      iterOptions.blockParams = [
-        walker2.context[field],
-        field
-      ];
-    }
-    return invoked(fn(walker2.valueAt(i), iterOptions));
-  };
-  const pending = runFrom(0, count, step, (_i, piece) => {
-    ret += piece || "";
-  });
-  return pending ? new Pending(pending.promise.then(() => ret)) : ret;
-}
-var sourceCacheLimit = 64 * 1024;
-var sourceCache = /* @__PURE__ */ new Map();
-var sourceCacheChars = 0;
-function cachedParse(source) {
-  const cached = sourceCache.get(source);
-  if (cached) {
-    sourceCache.delete(source);
-    sourceCache.set(source, cached);
-    return cached;
-  }
-  const entry = { ast: parse(source) };
-  sourceCache.set(source, entry);
-  sourceCacheChars += source.length;
-  while (sourceCacheChars > sourceCacheLimit && sourceCache.size > 1) {
-    const oldest = sourceCache.keys().next().value;
-    sourceCache.delete(oldest);
-    sourceCacheChars -= oldest.length;
-  }
-  return entry;
 }
 function compileStringPartial(source) {
   const entry = cachedParse(source);
   if (!entry.fn) {
     const ast = entry.ast;
-    entry.fn = (context, options = {}) => briskbars(ast, context, options);
+    entry.fn = (context, options = {}) => renderAst(ast, context, options);
   }
   return entry.fn;
 }
@@ -2811,13 +2812,7 @@ function initData(context, data) {
   }
   return data;
 }
-function briskbars(template, context, runtimeOptions = {}) {
-  if (template == null || typeof template !== "string" && template.type !== "Program") {
-    throw new exception_default(
-      "You must pass a string or Handlebars AST. You passed " + template
-    );
-  }
-  const ast = typeof template === "string" ? cachedParse(template).ast : template;
+function renderAst(ast, context, runtimeOptions) {
   const built = buildProgram(ast, emptyScopes);
   const data = initData(context, runtimeOptions.data);
   const helpers = runtimeOptions.helpers || emptyHelpers;
@@ -2833,8 +2828,32 @@ function briskbars(template, context, runtimeOptions = {}) {
     options: runtimeOptions
   }));
 }
+
+// lib/handlebars/safe-string.js
+function SafeString(string) {
+  this.string = string;
+}
+SafeString.prototype.toString = SafeString.prototype.toHTML = function() {
+  return "" + this.string;
+};
+var safe_string_default = SafeString;
+
+// src/briskbars.ts
+function briskbars(template, context, runtimeOptions = {}) {
+  if (template == null || typeof template !== "string" && template.type !== "Program") {
+    throw new exception_default(
+      "You must pass a string or Handlebars AST. You passed " + template
+    );
+  }
+  return renderAst(
+    typeof template === "string" ? cachedParse(template).ast : template,
+    context,
+    runtimeOptions
+  );
+}
 export {
   safe_string_default as SafeString,
+  createFrame,
   briskbars as default,
   escapeExpression2 as escapeExpression,
   parse
