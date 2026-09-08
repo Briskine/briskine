@@ -5,26 +5,12 @@ vi.mock('../utils/current-url.js', () => ({
 }))
 
 import { run } from '../plugin.js'
+import loadIframe from '../../test-utils/iframe.js'
 import './facebook.js'
-
-async function page (src = '') {
-  const iframe = document.createElement('iframe')
-  let resolve, reject
-  const promise = new Promise((res, rej) => {
-    [resolve, reject] = [res, rej]
-  })
-  iframe.onload = () => {
-    resolve(iframe)
-  }
-  iframe.onerror = reject
-  iframe.src = src
-  document.body.appendChild(iframe)
-  return promise
-}
 
 describe('facebook', () => {
   it('should get data when composing a new message', async () => {
-    const iframe = await page('/pages/facebook/facebook-messenger-full-page-thread-new.html')
+    const iframe = await loadIframe('/pages/facebook/facebook-messenger-full-page-thread-new.html')
     const data = await run('data', {document: iframe.contentDocument})
 
     expect(data).to.deep.equal({
@@ -49,7 +35,7 @@ describe('facebook', () => {
   })
 
   it('should get data when replying in a thread', async () => {
-    const iframe = await page('/pages/facebook/facebook-messenger-full-page-thread-reply.html')
+    const iframe = await loadIframe('/pages/facebook/facebook-messenger-full-page-thread-reply.html')
     const data = await run('data', {document: iframe.contentDocument})
 
     expect(data).to.deep.equal({

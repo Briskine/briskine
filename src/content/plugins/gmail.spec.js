@@ -5,22 +5,8 @@ vi.mock('../utils/current-url.js', () => ({
 }))
 
 import { run } from '../plugin.js'
+import loadIframe from '../../test-utils/iframe.js'
 import './gmail.js'
-
-async function page (src = '') {
-  const iframe = document.createElement('iframe')
-  let resolve, reject
-  const promise = new Promise((res, rej) => {
-    [resolve, reject] = [res, rej]
-  })
-  iframe.onload = () => {
-    resolve(iframe)
-  }
-  iframe.onerror = reject
-  iframe.src = src
-  document.body.appendChild(iframe)
-  return promise
-}
 
 const composeData = {
   from: {
@@ -58,7 +44,7 @@ const composeData = {
 
 describe('gmail', () => {
   it('should get data in compose dialog', async () => {
-    const iframe = await page('/pages/gmail/gmail-compose-dialog.html')
+    const iframe = await loadIframe('/pages/gmail/gmail-compose-dialog.html')
     const data = await run('data', {document: iframe.contentDocument})
 
     expect(data).to.deep.equal(composeData)
@@ -67,7 +53,7 @@ describe('gmail', () => {
   })
 
   it('should get data in maximized compose', async () => {
-    const iframe = await page('/pages/gmail/gmail-compose-maximized.html')
+    const iframe = await loadIframe('/pages/gmail/gmail-compose-maximized.html')
     const data = await run('data', {document: iframe.contentDocument})
 
     expect(data).to.deep.equal(composeData)
@@ -76,7 +62,7 @@ describe('gmail', () => {
   })
 
   it('should not get data outside a compose textfield', async () => {
-    const iframe = await page('/pages/gmail/gmail-compose-dialog.html')
+    const iframe = await loadIframe('/pages/gmail/gmail-compose-dialog.html')
     const element = iframe.contentDocument.querySelector('[aria-label="Search mail"]')
     const data = await run('data', {element: element})
 

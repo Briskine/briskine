@@ -5,26 +5,12 @@ vi.mock('../utils/current-url.js', () => ({
 }))
 
 import { run } from '../plugin.js'
+import loadIframe from '../../test-utils/iframe.js'
 import './outlook.js'
-
-async function page (src = '') {
-  const iframe = document.createElement('iframe')
-  let resolve, reject
-  const promise = new Promise((res, rej) => {
-    [resolve, reject] = [res, rej]
-  })
-  iframe.onload = () => {
-    resolve(iframe)
-  }
-  iframe.onerror = reject
-  iframe.src = src
-  document.body.appendChild(iframe)
-  return promise
-}
 
 describe('outlook', () => {
   it('should get data in default compose', async () => {
-    const iframe = await page('/pages/outlook/outlook-compose.html')
+    const iframe = await loadIframe('/pages/outlook/outlook-compose.html')
     const data = await run('data', {document: iframe.contentDocument})
 
     expect(data).to.deep.equal({
@@ -64,7 +50,7 @@ describe('outlook', () => {
   })
 
   it('should get data in compose popup', async () => {
-    const iframe = await page('/pages/outlook/outlook-compose-popup.html')
+    const iframe = await loadIframe('/pages/outlook/outlook-compose-popup.html')
     const data = await run('data', {document: iframe.contentDocument})
 
     expect(data).to.deep.equal({

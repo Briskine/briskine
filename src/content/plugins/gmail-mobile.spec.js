@@ -5,6 +5,7 @@ vi.mock('../utils/current-url.js', () => ({
 }))
 
 import { run } from '../plugin.js'
+import loadIframe from '../../test-utils/iframe.js'
 import './gmail-mobile.js'
 
 const composeData = {
@@ -41,24 +42,9 @@ const composeData = {
   subject: 'subject',
 }
 
-async function page (src = '') {
-  const iframe = document.createElement('iframe')
-  let resolve, reject
-  const promise = new Promise((res, rej) => {
-    [resolve, reject] = [res, rej]
-  })
-  iframe.onload = () => {
-    resolve(iframe)
-  }
-  iframe.onerror = reject
-  iframe.src = src
-  document.body.appendChild(iframe)
-  return promise
-}
-
 describe('gmail-mobile', () => {
   it('should get data in compose', async () => {
-    const iframe = await page('/pages/gmail-mobile/gmail-mobile.html')
+    const iframe = await loadIframe('/pages/gmail-mobile/gmail-mobile.html')
     const data = await run('data', {document: iframe.contentDocument})
 
     expect(data).to.deep.equal(composeData)
@@ -67,7 +53,7 @@ describe('gmail-mobile', () => {
   })
 
   it('should get data without the generated class names', async () => {
-    const iframe = await page('/pages/gmail-mobile/gmail-mobile.html')
+    const iframe = await loadIframe('/pages/gmail-mobile/gmail-mobile.html')
     // gmail's class names are generated and change often,
     // make sure we don't depend on any of them.
     iframe.contentDocument.querySelectorAll('[class]').forEach(($node) => {

@@ -5,26 +5,12 @@ vi.mock('../utils/current-url.js', () => ({
 }))
 
 import { run } from '../plugin.js'
+import loadIframe from '../../test-utils/iframe.js'
 import './linkedin.js'
-
-async function page (src = '') {
-  const iframe = document.createElement('iframe')
-  let resolve, reject
-  const promise = new Promise((res, rej) => {
-    [resolve, reject] = [res, rej]
-  })
-  iframe.onload = () => {
-    resolve(iframe)
-  }
-  iframe.onerror = reject
-  iframe.src = src
-  document.body.appendChild(iframe)
-  return promise
-}
 
 describe('linkedin', () => {
   it('should get data in connect popup', async () => {
-    const iframe = await page('/pages/linkedin/linkedin-connect.html')
+    const iframe = await loadIframe('/pages/linkedin/linkedin-connect.html')
     const data = await run('data', {document: iframe.contentDocument})
 
     expect(data).to.deep.equal({
@@ -49,7 +35,7 @@ describe('linkedin', () => {
   })
 
   it('should get data in inmail popup', async () => {
-    const iframe = await page('/pages/linkedin/linkedin-inmail-popup.html')
+    const iframe = await loadIframe('/pages/linkedin/linkedin-inmail-popup.html')
     const data = await run('data', {document: iframe.contentDocument})
 
     expect(data).to.deep.equal({
@@ -74,7 +60,7 @@ describe('linkedin', () => {
   })
 
   it('should get data in message popup fully loaded', async () => {
-    const iframe = await page('/pages/linkedin/linkedin-message-popup-full.html')
+    const iframe = await loadIframe('/pages/linkedin/linkedin-message-popup-full.html')
     const data = await run('data', {document: iframe.contentDocument})
 
     expect(data).to.deep.equal({
@@ -99,7 +85,7 @@ describe('linkedin', () => {
   })
 
   it('should get data in message popup lazy loaded', async () => {
-    const iframe = await page('/pages/linkedin/linkedin-message-popup-lazy.html')
+    const iframe = await loadIframe('/pages/linkedin/linkedin-message-popup-lazy.html')
     const data = await run('data', {document: iframe.contentDocument})
 
     expect(data).to.deep.equal({
@@ -124,7 +110,7 @@ describe('linkedin', () => {
   })
 
   it('should get data in messaging thread fully loaded', async () => {
-    const iframe = await page('/pages/linkedin/linkedin-messaging-full.html')
+    const iframe = await loadIframe('/pages/linkedin/linkedin-messaging-full.html')
     const data = await run('data', {document: iframe.contentDocument})
 
     expect(data).to.deep.equal({
@@ -149,7 +135,7 @@ describe('linkedin', () => {
   })
 
   it('should get data in messaging thread lazy loaded', async () => {
-    const iframe = await page('/pages/linkedin/linkedin-messaging-lazy.html')
+    const iframe = await loadIframe('/pages/linkedin/linkedin-messaging-lazy.html')
     const data = await run('data', {document: iframe.contentDocument})
 
     expect(data).to.deep.equal({
@@ -174,7 +160,7 @@ describe('linkedin', () => {
   })
 
   it('should get data in inmail new message thread', async () => {
-    const iframe = await page('/pages/linkedin/linkedin-messaging-inmail.html')
+    const iframe = await loadIframe('/pages/linkedin/linkedin-messaging-inmail.html')
     const data = await run('data', {document: iframe.contentDocument})
 
     expect(data).to.deep.equal({
@@ -199,7 +185,7 @@ describe('linkedin', () => {
   })
 
   it('should get data in new message popup from connections page', async () => {
-    const iframe = await page('/pages/linkedin/linkedin-connections-message.html')
+    const iframe = await loadIframe('/pages/linkedin/linkedin-connections-message.html')
     const data = await run('data', {document: iframe.contentDocument})
 
     expect(data).to.deep.equal({
