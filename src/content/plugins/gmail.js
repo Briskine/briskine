@@ -3,6 +3,7 @@
  */
 
 import { register } from '../plugin.js'
+import currentUrl from '../utils/current-url.js'
 import parseTemplate from '../utils/parse-template.js'
 import { isContentEditable } from '../editors/editor-contenteditable.js'
 import createContact from '../utils/create-contact.js'
@@ -21,10 +22,11 @@ function isActive () {
   }
 
   activeCache = false
+  const url = currentUrl()
   // trigger the extension based on url
   if (
-    window.location.hostname === 'mail.google.com'
-    && !window.location.pathname.includes(gmailMobileToken)
+    url.hostname === 'mail.google.com'
+    && !url.pathname.includes(gmailMobileToken)
   ) {
     activeCache = true
   }
@@ -62,21 +64,21 @@ function getFromField (container) {
 }
 
 // the compose body, scoped to the compose container getGmailData walks up to.
-export function getGmailEditor ({ document: doc }) {
+function getGmailEditor ({ document: doc }) {
   return doc.querySelector(`${textfieldContainerSelector} [role=textbox][aria-multiline=true]`)
 }
 
 // get all required data from the dom
-function getData ({ element } = {}) {
+function getData ({ element, document: doc = document } = {}) {
   if (!isActive()) {
     return
   }
 
   // find the editor ourselves when nothing is focused
-  return getGmailData({ element: element || getGmailEditor({ document }) })
+  return getGmailData({ element: element || getGmailEditor({ document: doc }) })
 }
 
-export function getGmailData ({ element }) {
+function getGmailData ({ element }) {
   const data = {
     from: {},
     to: [],

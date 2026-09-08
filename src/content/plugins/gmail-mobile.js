@@ -2,6 +2,7 @@
  */
 
  import { register } from '../plugin.js'
+import currentUrl from '../utils/current-url.js'
 import createContact from '../utils/create-contact.js'
 
 let activeCache = null
@@ -12,10 +13,11 @@ function isActive () {
   }
 
   activeCache = false
+  const url = currentUrl()
   // trigger the extension based on url
   if (
-    window.location.hostname === 'mail.google.com'
-    && window.location.pathname.includes(gmailMobileToken)
+    url.hostname === 'mail.google.com'
+    && url.pathname.includes(gmailMobileToken)
   ) {
     activeCache = true
   }
@@ -51,20 +53,20 @@ function parseContact ($container) {
   })
 }
 
-export function getGmailMobileEditor ({ document: doc }) {
+function getGmailMobileEditor ({ document: doc }) {
   return doc.querySelector(bodySelector)
 }
 
 // get all required data from the dom
-function getData ({ element } = {}) {
+function getData ({ element, document: doc = document } = {}) {
   if (!isActive()) {
     return false
   }
 
-  return getGmailMobileData({ element: element || getGmailMobileEditor({ document }) })
+  return getGmailMobileData({ element: element || getGmailMobileEditor({ document: doc }) })
 }
 
-export function getGmailMobileData ({ element }) {
+function getGmailMobileData ({ element }) {
   const data = {
     from: {},
     to: [],

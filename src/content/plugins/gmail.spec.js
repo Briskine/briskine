@@ -1,6 +1,11 @@
-import { expect, describe, it } from 'vitest'
+import { expect, describe, it, vi } from 'vitest'
 
-import { getGmailData, getGmailEditor } from './gmail.js'
+vi.mock('../utils/current-url.js', () => ({
+  default: () => new URL('https://mail.google.com/mail/u/0/'),
+}))
+
+import { run } from '../plugin.js'
+import './gmail.js'
 
 async function page (src = '') {
   const iframe = document.createElement('iframe')
@@ -54,10 +59,7 @@ const composeData = {
 describe('gmail', () => {
   it('should get data in compose dialog', async () => {
     const iframe = await page('/pages/gmail/gmail-compose-dialog.html')
-    const element = getGmailEditor({document: iframe.contentDocument})
-    const data = getGmailData({
-      element: element,
-    })
+    const data = await run('data', {document: iframe.contentDocument})
 
     expect(data).to.deep.equal(composeData)
 
@@ -66,10 +68,7 @@ describe('gmail', () => {
 
   it('should get data in maximized compose', async () => {
     const iframe = await page('/pages/gmail/gmail-compose-maximized.html')
-    const element = getGmailEditor({document: iframe.contentDocument})
-    const data = getGmailData({
-      element: element,
-    })
+    const data = await run('data', {document: iframe.contentDocument})
 
     expect(data).to.deep.equal(composeData)
 
@@ -79,9 +78,7 @@ describe('gmail', () => {
   it('should not get data outside a compose textfield', async () => {
     const iframe = await page('/pages/gmail/gmail-compose-dialog.html')
     const element = iframe.contentDocument.querySelector('[aria-label="Search mail"]')
-    const data = getGmailData({
-      element: element,
-    })
+    const data = await run('data', {element: element})
 
     expect(data).to.deep.equal({
       from: {},
@@ -94,8 +91,8 @@ describe('gmail', () => {
     iframe.remove()
   })
 
-  it('should not get data without an element', async () => {
-    const data = getGmailData({})
+  it('should not get data without an editor on the page', async () => {
+    const data = await run('data', {document: document.implementation.createHTMLDocument()})
 
     expect(data).to.deep.equal({
       from: {},

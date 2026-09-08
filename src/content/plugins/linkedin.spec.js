@@ -1,6 +1,11 @@
-import { expect, describe, it } from 'vitest'
+import { expect, describe, it, vi } from 'vitest'
 
-import {getLinkedInData, getLinkedInEditor} from './linkedin.js'
+vi.mock('../utils/current-url.js', () => ({
+  default: () => new URL('https://www.linkedin.com/messaging/'),
+}))
+
+import { run } from '../plugin.js'
+import './linkedin.js'
 
 async function page (src = '') {
   const iframe = document.createElement('iframe')
@@ -20,10 +25,7 @@ async function page (src = '') {
 describe('linkedin', () => {
   it('should get data in connect popup', async () => {
     const iframe = await page('/pages/linkedin/linkedin-connect.html')
-    const element = getLinkedInEditor({document: iframe.contentDocument})
-    const data = getLinkedInData({
-      element: element,
-    })
+    const data = await run('data', {document: iframe.contentDocument})
 
     expect(data).to.deep.equal({
       from: {
@@ -48,10 +50,7 @@ describe('linkedin', () => {
 
   it('should get data in inmail popup', async () => {
     const iframe = await page('/pages/linkedin/linkedin-inmail-popup.html')
-    const element = getLinkedInEditor({document: iframe.contentDocument})
-    const data = getLinkedInData({
-      element: element,
-    })
+    const data = await run('data', {document: iframe.contentDocument})
 
     expect(data).to.deep.equal({
       from: {
@@ -76,10 +75,7 @@ describe('linkedin', () => {
 
   it('should get data in message popup fully loaded', async () => {
     const iframe = await page('/pages/linkedin/linkedin-message-popup-full.html')
-    const element = getLinkedInEditor({document: iframe.contentDocument})
-    const data = getLinkedInData({
-      element: element,
-    })
+    const data = await run('data', {document: iframe.contentDocument})
 
     expect(data).to.deep.equal({
       from: {
@@ -104,10 +100,7 @@ describe('linkedin', () => {
 
   it('should get data in message popup lazy loaded', async () => {
     const iframe = await page('/pages/linkedin/linkedin-message-popup-lazy.html')
-    const element = getLinkedInEditor({document: iframe.contentDocument})
-    const data = getLinkedInData({
-      element: element,
-    })
+    const data = await run('data', {document: iframe.contentDocument})
 
     expect(data).to.deep.equal({
       from: {
@@ -132,10 +125,7 @@ describe('linkedin', () => {
 
   it('should get data in messaging thread fully loaded', async () => {
     const iframe = await page('/pages/linkedin/linkedin-messaging-full.html')
-    const element = getLinkedInEditor({document: iframe.contentDocument})
-    const data = getLinkedInData({
-      element: element,
-    })
+    const data = await run('data', {document: iframe.contentDocument})
 
     expect(data).to.deep.equal({
       from: {
@@ -160,10 +150,7 @@ describe('linkedin', () => {
 
   it('should get data in messaging thread lazy loaded', async () => {
     const iframe = await page('/pages/linkedin/linkedin-messaging-lazy.html')
-    const element = getLinkedInEditor({document: iframe.contentDocument})
-    const data = getLinkedInData({
-      element: element,
-    })
+    const data = await run('data', {document: iframe.contentDocument})
 
     expect(data).to.deep.equal({
       from: {
@@ -188,10 +175,7 @@ describe('linkedin', () => {
 
   it('should get data in inmail new message thread', async () => {
     const iframe = await page('/pages/linkedin/linkedin-messaging-inmail.html')
-    const element = getLinkedInEditor({document: iframe.contentDocument})
-    const data = getLinkedInData({
-      element: element,
-    })
+    const data = await run('data', {document: iframe.contentDocument})
 
     expect(data).to.deep.equal({
       from: {
@@ -216,10 +200,7 @@ describe('linkedin', () => {
 
   it('should get data in new message popup from connections page', async () => {
     const iframe = await page('/pages/linkedin/linkedin-connections-message.html')
-    const element = getLinkedInEditor({document: iframe.contentDocument})
-    const data = getLinkedInData({
-      element: element,
-    })
+    const data = await run('data', {document: iframe.contentDocument})
 
     expect(data).to.deep.equal({
       from: {
@@ -242,8 +223,8 @@ describe('linkedin', () => {
     iframe.remove()
   })
 
-  it('should not get data without an element', async () => {
-    const data = getLinkedInData({})
+  it('should not get data without an editor on the page', async () => {
+    const data = await run('data', {document: document.implementation.createHTMLDocument()})
 
     expect(data).to.deep.equal({
       from: {},

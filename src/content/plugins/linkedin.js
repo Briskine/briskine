@@ -5,6 +5,7 @@ import parseTemplate from '../utils/parse-template.js'
 import createContact from '../utils/create-contact.js'
 import { querySelectorDeep, closestDeep } from '../utils/selectors.js'
 import { register } from '../plugin.js'
+import currentUrl from '../utils/current-url.js'
 
 var activeCache = null
 function isActive () {
@@ -13,10 +14,11 @@ function isActive () {
   }
 
   activeCache = false
+  const url = currentUrl()
   if (
-    window.location.hostname === 'www.linkedin.com'
+    url.hostname === 'www.linkedin.com'
     // exclude LinkedIn Sales Navigator
-    && !window.location.pathname.startsWith('/sales/')
+    && !url.pathname.startsWith('/sales/')
   ) {
     activeCache = true
   }
@@ -128,20 +130,20 @@ const editorSelectors = [
   'textarea#custom-message',
 ]
 
-export function getLinkedInEditor ({ document: doc }) {
+function getLinkedInEditor ({ document: doc }) {
   return querySelectorDeep(editorSelectors.join(','), doc.body)
 }
 
 // get all required data from the dom
-function getData ({ element } = {}) {
+function getData ({ element, document: doc = document } = {}) {
   if (!isActive()) {
     return
   }
 
-  return getLinkedInData({ element: element || getLinkedInEditor({ document }) })
+  return getLinkedInData({ element: element || getLinkedInEditor({ document: doc }) })
 }
 
-export function getLinkedInData ({ element }) {
+function getLinkedInData ({ element }) {
   const vars = {
     from: {},
     to: [],

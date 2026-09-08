@@ -4,6 +4,7 @@
 import parseTemplate from '../utils/parse-template.js'
 import createContact from '../utils/create-contact.js'
 import { register } from '../plugin.js'
+import currentUrl from '../utils/current-url.js'
 import { getSelectionRange, setSelectionRange } from '../utils/selection.js'
 
 const urls = [
@@ -19,7 +20,8 @@ function isActive () {
   activeCache = false
 
   // check for urls
-  const outlookUrl = urls.some((url) => window.location.hostname === url)
+  const { hostname } = currentUrl()
+  const outlookUrl = urls.some((url) => hostname === url)
   if (outlookUrl) {
     activeCache = true
     return activeCache
@@ -219,20 +221,20 @@ async function updateSection ($container, $button, getNode, value) {
 
 // the message body is the only multiline textbox,
 // which is also how getRecipientContainers tells it apart from the recipient fields.
-export function getOutlookEditor ({ document: doc }) {
+function getOutlookEditor ({ document: doc }) {
   return doc.querySelector('[role=textbox][aria-multiline=true]')
 }
 
 // get all required data from the dom
-function getData ({ element } = {}) {
+function getData ({ element, document: doc = document } = {}) {
   if (!isActive()) {
     return
   }
 
-  return getOutlookData({ element: element || getOutlookEditor({ document }) })
+  return getOutlookData({ element: element || getOutlookEditor({ document: doc }) })
 }
 
-export async function getOutlookData ({ element }) {
+async function getOutlookData ({ element }) {
   const vars = {
     from: {},
     to: [],

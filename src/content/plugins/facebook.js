@@ -3,6 +3,7 @@
 
 import createContact from '../utils/create-contact.js'
 import { register } from '../plugin.js'
+import currentUrl from '../utils/current-url.js'
 
 let activeCache = null
 function isActive () {
@@ -17,7 +18,8 @@ function isActive () {
   ]
 
   // trigger the extension based on url
-  if (urls.find((url) => window.location.hostname === url)) {
+  const { hostname } = currentUrl()
+  if (urls.find((url) => hostname === url)) {
     activeCache = true
   }
 
@@ -80,13 +82,13 @@ function getFacebookEditor ({ document: doc }) {
 }
 
 // get all required data from the dom
-function getData ({ element } = {}) {
+function getData ({ element, document: doc = document } = {}) {
   if (!isActive()) {
     return false
   }
 
   // find the editor ourselves when nothing is focused,
-  const editor = element || getFacebookEditor({ document })
+  const editor = element || getFacebookEditor({ document: doc })
   if (!editor) {
     return false
   }

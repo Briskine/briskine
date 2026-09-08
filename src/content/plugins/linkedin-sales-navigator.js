@@ -3,6 +3,7 @@
 
 import createContact from '../utils/create-contact.js'
 import { register } from '../plugin.js'
+import currentUrl from '../utils/current-url.js'
 
 let activeCache = null
 function isActive () {
@@ -11,9 +12,10 @@ function isActive () {
   }
 
   activeCache = false
+  const url = currentUrl()
   if (
-    window.location.hostname === 'www.linkedin.com'
-    && window.location.pathname.startsWith('/sales/')
+    url.hostname === 'www.linkedin.com'
+    && url.pathname.startsWith('/sales/')
   ) {
     activeCache = true
   }
@@ -52,21 +54,21 @@ function getToName (element) {
   return ''
 }
 
-export function getSalesNavigatorEditor ({ document: doc }) {
+function getSalesNavigatorEditor ({ document: doc }) {
   return doc.querySelector(
     messageThreadSelectors.map((selector) => `${selector} textarea`).join(',')
   )
 }
 
-function getData ({ element } = {}) {
+function getData ({ element, document: doc = document } = {}) {
   if (!isActive()) {
     return
   }
 
-  return getSalesNavigatorData({ element: element || getSalesNavigatorEditor({ document }) })
+  return getSalesNavigatorData({ element: element || getSalesNavigatorEditor({ document: doc }) })
 }
 
-export function getSalesNavigatorData ({ element }) {
+function getSalesNavigatorData ({ element }) {
   const vars = {
     from: {},
     to: [],

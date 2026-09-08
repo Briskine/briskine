@@ -1,6 +1,11 @@
-import { expect, describe, it } from 'vitest'
+import { expect, describe, it, vi } from 'vitest'
 
-import {getSalesNavigatorData, getSalesNavigatorEditor} from './linkedin-sales-navigator.js'
+vi.mock('../utils/current-url.js', () => ({
+  default: () => new URL('https://www.linkedin.com/sales/inbox/'),
+}))
+
+import { run } from '../plugin.js'
+import './linkedin-sales-navigator.js'
 
 async function page (src = '') {
   const iframe = document.createElement('iframe')
@@ -20,10 +25,7 @@ async function page (src = '') {
 describe('linkedin sales navigator', () => {
   it('should get data in sales navigator invite', async () => {
     const iframe = await page('/pages/linkedin-sales-navigator/linkedin-sales-navigator-invite.html')
-    const element = getSalesNavigatorEditor({document: iframe.contentDocument})
-    const data = getSalesNavigatorData({
-      element: element,
-    })
+    const data = await run('data', {document: iframe.contentDocument})
 
     expect(data).to.deep.equal({
       from: {
@@ -48,10 +50,7 @@ describe('linkedin sales navigator', () => {
 
   it('should get data in sales navigator new message popup', async () => {
     const iframe = await page('/pages/linkedin-sales-navigator/linkedin-sales-navigator-message-popup.html')
-    const element = getSalesNavigatorEditor({document: iframe.contentDocument})
-    const data = getSalesNavigatorData({
-      element: element,
-    })
+    const data = await run('data', {document: iframe.contentDocument})
 
     expect(data).to.deep.equal({
       from: {
@@ -76,10 +75,7 @@ describe('linkedin sales navigator', () => {
 
   it('should get data in sales navigator new message popup, with 1 shared connection', async () => {
     const iframe = await page('/pages/linkedin-sales-navigator/linkedin-sales-navigator-message-popup-1-connection.html')
-    const element = getSalesNavigatorEditor({document: iframe.contentDocument})
-    const data = getSalesNavigatorData({
-      element: element,
-    })
+    const data = await run('data', {document: iframe.contentDocument})
 
     expect(data).to.deep.equal({
       from: {
@@ -104,10 +100,7 @@ describe('linkedin sales navigator', () => {
 
   it('should get data in sales navigator new message thread', async () => {
     const iframe = await page('/pages/linkedin-sales-navigator/linkedin-sales-navigator-message-thread-new.html')
-    const element = getSalesNavigatorEditor({document: iframe.contentDocument})
-    const data = getSalesNavigatorData({
-      element: element,
-    })
+    const data = await run('data', {document: iframe.contentDocument})
 
     expect(data).to.deep.equal({
       from: {
@@ -132,10 +125,7 @@ describe('linkedin sales navigator', () => {
 
   it('should get data in sales navigator existing message thread', async () => {
     const iframe = await page('/pages/linkedin-sales-navigator/linkedin-sales-navigator-message-thread.html')
-    const element = getSalesNavigatorEditor({document: iframe.contentDocument})
-    const data = getSalesNavigatorData({
-      element: element,
-    })
+    const data = await run('data', {document: iframe.contentDocument})
 
     expect(data).to.deep.equal({
       from: {
@@ -158,8 +148,8 @@ describe('linkedin sales navigator', () => {
     iframe.remove()
   })
 
-  it('should not get data without an element', async () => {
-    const data = getSalesNavigatorData({})
+  it('should not get data without an editor on the page', async () => {
+    const data = await run('data', {document: document.implementation.createHTMLDocument()})
 
     expect(data).to.deep.equal({
       from: {},

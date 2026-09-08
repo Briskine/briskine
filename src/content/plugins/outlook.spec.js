@@ -1,6 +1,11 @@
-import { expect, describe, it } from 'vitest'
+import { expect, describe, it, vi } from 'vitest'
 
-import { getOutlookData, getOutlookEditor } from './outlook.js'
+vi.mock('../utils/current-url.js', () => ({
+  default: () => new URL('https://outlook.live.com/mail/0/'),
+}))
+
+import { run } from '../plugin.js'
+import './outlook.js'
 
 async function page (src = '') {
   const iframe = document.createElement('iframe')
@@ -20,10 +25,7 @@ async function page (src = '') {
 describe('outlook', () => {
   it('should get data in default compose', async () => {
     const iframe = await page('/pages/outlook/outlook-compose.html')
-    const element = getOutlookEditor({document: iframe.contentDocument})
-    const data = await getOutlookData({
-      element: element,
-    })
+    const data = await run('data', {document: iframe.contentDocument})
 
     expect(data).to.deep.equal({
       from: {
@@ -63,10 +65,7 @@ describe('outlook', () => {
 
   it('should get data in compose popup', async () => {
     const iframe = await page('/pages/outlook/outlook-compose-popup.html')
-    const element = getOutlookEditor({document: iframe.contentDocument})
-    const data = await getOutlookData({
-      element: element,
-    })
+    const data = await run('data', {document: iframe.contentDocument})
 
     expect(data).to.deep.equal({
       from: {
@@ -104,8 +103,8 @@ describe('outlook', () => {
     iframe.remove()
   })
 
-  it('should not get data without an element', async () => {
-    const data = await getOutlookData({})
+  it('should not get data without an editor on the page', async () => {
+    const data = await run('data', {document: document.implementation.createHTMLDocument()})
 
     expect(data).to.deep.equal({
       from: {},
