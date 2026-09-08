@@ -16,6 +16,7 @@ import and from '../helpers/and.js'
 import compare from '../helpers/compare.js'
 import random from '../helpers/random.js'
 import cursor from '../helpers/cursor.js'
+import css from '../helpers/css.js'
 
 const helpers = {
   choice,
@@ -31,6 +32,7 @@ const helpers = {
   compare,
   random,
   cursor,
+  css,
 }
 
 // cache partials because lots of templates can get expensive

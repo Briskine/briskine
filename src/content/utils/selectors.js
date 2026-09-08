@@ -33,6 +33,27 @@ export function querySelectorDeep (selector, root = document) {
   return null
 }
 
+export function querySelectorAllDeep (selector, root = document) {
+  const found = [...root.querySelectorAll(selector)]
+
+  const walker = document.createTreeWalker(root, NodeFilter.SHOW_ELEMENT, {
+    acceptNode(node) {
+      if (node.shadowRoot) {
+        return NodeFilter.FILTER_ACCEPT
+      }
+      return NodeFilter.FILTER_SKIP
+    },
+  })
+
+  let host = walker.nextNode()
+  while (host) {
+    found.push(...querySelectorAllDeep(selector, host.shadowRoot))
+    host = walker.nextNode()
+  }
+
+  return found
+}
+
 export function closestDeep (selector, el) {
   if (!el || el === document || el === window) {
     return null
