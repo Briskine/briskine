@@ -26,11 +26,12 @@ function isActive () {
   return activeCache
 }
 
-function getFromDetails () {
+// facebook.com ships the logged-in user in an inline script.
+function nameFromScripts (doc) {
   var objectMatch = new RegExp('"NAME":.?".*?"')
   var plainUserObject = ''
   // get full name from inline script
-  Array.from(document.scripts).some((script) => {
+  Array.from(doc.scripts).some((script) => {
     var match = (script.textContent || '').match(objectMatch)
     if (!script.src && match) {
       plainUserObject = match[0] || ''
@@ -38,16 +39,29 @@ function getFromDetails () {
     }
   })
 
-  var fromName = ''
   try {
-    var parsedUserObject = JSON.parse(`{${plainUserObject}}`)
-    fromName = parsedUserObject.NAME || ''
+    return JSON.parse(`{${plainUserObject}}`).NAME || ''
   } catch {
     // can't parse the user object
+    return ''
   }
+}
 
+// messenger ships no user object, and exposes the name nowhere structural.
+// get it from the manage notifications settings button instead, english only.
+const manageNotificationsPattern = /^Manage (.+) notification settings$/i
+function nameFromNotifications (doc) {
+  const $manage = doc.querySelector(
+    '[aria-label^="Manage " i][aria-label$=" notification settings" i]'
+  )
+  const match = $manage?.getAttribute('aria-label').match(manageNotificationsPattern)
+
+  return match?.[1] || ''
+}
+
+function getFromDetails (doc) {
   return createContact({
-    name: fromName,
+    name: nameFromScripts(doc) || nameFromNotifications(doc),
     email: '',
   })
 }
@@ -61,20 +75,28 @@ function getToDetails (editor) {
     $chat = editor.closest('[tabindex="-1"]')
   }
 
-  if ($chat) {
-    const contactNameAttribute = 'aria-label'
-    const $to = $chat.querySelector(`a[${contactNameAttribute}]`)
-    if ($to) {
-      return [
-        createContact({
-          name: $to.getAttribute(contactNameAttribute) || '',
-          email: ''
-        })
-      ]
-    }
+  if (!$chat) {
+    return []
   }
 
-  return []
+  // in an open thread the contact is a profile link in the conversation heading.
+  const $heading = $chat.querySelector('h3 a[href]')
+  if ($heading) {
+    return [
+      createContact({
+        name: $heading.textContent.trim(),
+        email: '',
+      })
+    ]
+  }
+
+  // composing a new message where recipients are chips in the to field
+  const $recipients = Array.from($chat.querySelectorAll('[role=list][aria-label] [role=listitem]'))
+
+  return $recipients.map(($recipient) => createContact({
+    name: $recipient.textContent.trim(),
+    email: '',
+  }))
 }
 
 function getFacebookEditor ({ document: doc }) {
@@ -94,7 +116,7 @@ function getData ({ element, document: doc = document } = {}) {
   }
 
   return {
-    from: getFromDetails(),
+    from: getFromDetails(editor.ownerDocument),
     to: getToDetails(editor),
   }
 }
