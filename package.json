@@ -54,7 +54,7 @@
     "@playwright/test": "^1.42.1",
     "@stylistic/eslint-plugin": "^5.0.0",
     "@types/node": "^26.0.0",
-    "@vitest/browser-playwright": "^4.0.17",
+    "@vitest/browser-playwright": "^5.0.0",
     "archiver": "^8.0.0",
     "dotenv": "^17.0.0",
     "eslint": "^10.0.0",
@@ -68,7 +68,7 @@
     "vite": "^8.2.1",
     "vite-plugin-solid": "^2.11.14",
     "vite-plugin-solid-svg": "^0.8.1",
-    "vitest": "^4.0.17",
+    "vitest": "^5.0.0",
     "web-ext": "^10.0.0"
   },
   "dependencies": {
