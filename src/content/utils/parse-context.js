@@ -1,8 +1,7 @@
 /*
  * Normalize plugin data into the context templates are rendered with.
  *
- * Turns to/cc/bcc into contact arrays, so {{to.first_name}} and {{#each to}}
- * both work, and merges the from details with the signed-in account.
+ * Separate from parse-template so helpers can import it without a cycle.
  *
  */
 

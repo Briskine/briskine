@@ -62,7 +62,7 @@ function getFromField (container) {
   return container.querySelector(fromFieldSelector)
 }
 
-// the compose body, scoped to the compose container getGmailData walks up to.
+// scoped to the compose container, gmail has hidden decoys outside it
 function getGmailEditor ({ document: doc }) {
   return doc.querySelector(`${textfieldContainerSelector} [role=textbox][aria-multiline=true]`)
 }
@@ -73,7 +73,7 @@ function getData ({ element, document: doc = document } = {}) {
     return
   }
 
-  // find the editor ourselves when nothing is focused
+  // find the editor when nothing is focused
   return getGmailData({ element: element || getGmailEditor({ document: doc }) })
 }
 

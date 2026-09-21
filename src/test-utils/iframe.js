@@ -1,9 +1,5 @@
 /*
  * Load a fixture page from test/pages into an iframe.
- *
- * Resolves with the iframe once it has loaded,
- * so specs can reach its contentDocument and remove it when done.
- *
  */
 
 export default async function loadIframe (src = '') {

@@ -19,7 +19,6 @@ describe('facebook', () => {
         last_name: 'Briskine',
         email: '',
       },
-      // the recipient is a chip in the to field
       to: [
         {
           name: 'Jane Briskine',
@@ -44,7 +43,7 @@ describe('facebook', () => {
         last_name: 'Briskine',
         email: '',
       },
-      // no chip here, the contact is the profile link in the conversation heading
+      // no chip, the contact is the profile link
       to: [
         {
           name: 'Emma Briskine',

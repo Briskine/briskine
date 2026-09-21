@@ -28,6 +28,7 @@ export {
   on,
   off,
   trigger,
+  createRequest,
 } from './store-client.js'
 
 let cache = {}

@@ -1,5 +1,5 @@
 /*
- * CSS query selector helper
+ * Css helper
  *
  * {{css ".price"}} - text of the first match
  * {{css ".link" "href"}} - attribute of the first match
@@ -10,7 +10,6 @@
 
 import { querySelectorAllDeep } from '../utils/selectors.js'
 
-// renders either the match text or an attribute
 function render (record, attribute = '') {
   if (attribute) {
     return record.attributes?.[attribute] || ''
@@ -19,7 +18,7 @@ function render (record, attribute = '') {
   return record.text || ''
 }
 
-// element snapshot that survives structuredClone
+// plain and serializable, so it survives structuredClone from another tab
 function snapshot (element) {
   const attributes = {}
   for (const attribute of element.attributes) {
@@ -28,23 +27,18 @@ function snapshot (element) {
 
   return {
     text: (element.textContent || '').trim(),
-    // expose value for form fields
-    // {{lookup (css "input") "value"}}
     value: element.value || '',
     attributes: attributes,
   }
 }
 
-// return the matches as an array, with the first match's properties
-// exposed directly on it, the same way contactsArray does for to/cc/bcc.
-// {{css ".x"}} renders the first match, {{#each (css ".x")}} loops over all of them.
+// first match exposed on the array, the same way contactsArray does for to/cc/bcc
 function cssArray (records = [], attribute = '') {
   const context = []
   records.forEach((record) => {
     context.push({
       value: record.value,
       attributes: record.attributes,
-      // default render
       toString: () => render(record, attribute),
     })
   })
@@ -65,8 +59,6 @@ export default function css (...args) {
     return cssArray()
   }
 
-  // invalid selectors throw, and parseTemplate renders the error
-  const elements = querySelectorAllDeep(selector, document)
-
-  return cssArray(elements.map(snapshot), attribute)
+  // an invalid selector throws, and parseTemplate renders the error
+  return cssArray(querySelectorAllDeep(selector, document).map(snapshot), attribute)
 }

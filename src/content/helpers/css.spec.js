@@ -128,8 +128,6 @@ describe('css handlebars helper', () => {
       .to.contain('10 EUR')
   })
 
-  // querySelectorAllDeep collects light dom matches before shadow ones,
-  // so "the first match" is not always the first in document order.
   it('should return light dom matches before shadow dom ones', async () => {
     const $container = markup('<div class="host"></div><div class="item">light</div>')
     const shadow = $container.querySelector('.host').attachShadow({mode: 'open'})

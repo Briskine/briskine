@@ -122,8 +122,7 @@ function getToName (element) {
   return ''
 }
 
-// message boxes are contenteditable, the connect invite note is a textarea.
-// both can be inside #interop-outlet's shadow root.
+// message boxes and the connect invite note, either can be in a shadow root
 const editorSelectors = [
   '[contenteditable=true][role=textbox]',
   'textarea#custom-message',

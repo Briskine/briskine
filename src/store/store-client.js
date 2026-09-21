@@ -2,7 +2,7 @@ import browser from 'webextension-polyfill'
 
 import { eventDestroy } from '../config.js'
 
-function createRequest (type) {
+export function createRequest (type) {
   return async function (params) {
     try {
       // get from background

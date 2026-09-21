@@ -25,7 +25,7 @@ function isActive () {
   return activeCache
 }
 
-// facebook.com ships the logged-in user in an inline script.
+// facebook.com ships the user in an inline script
 function nameFromScripts (doc) {
   var objectMatch = new RegExp('"NAME":.?".*?"')
   var plainUserObject = ''
@@ -46,8 +46,7 @@ function nameFromScripts (doc) {
   }
 }
 
-// messenger ships no user object, and exposes the name nowhere structural.
-// get it from the manage notifications settings button instead, english only.
+// messenger has it nowhere else, english only
 const manageNotificationsPattern = /^Manage (.+) notification settings$/i
 function nameFromNotifications (doc) {
   const $manage = doc.querySelector(
@@ -78,7 +77,7 @@ function getToDetails (editor) {
     return []
   }
 
-  // in an open thread the contact is a profile link in the conversation heading.
+  // open thread, the contact is a profile link in the heading
   const $heading = $chat.querySelector('h3 a[href]')
   if ($heading) {
     return [
@@ -89,7 +88,7 @@ function getToDetails (editor) {
     ]
   }
 
-  // composing a new message where recipients are chips in the to field
+  // new message, the recipients are chips in the to field
   const $recipients = Array.from($chat.querySelectorAll('[role=list][aria-label] [role=listitem]'))
 
   return $recipients.map(($recipient) => createContact({
@@ -108,7 +107,7 @@ function getData ({ element, document: doc = document } = {}) {
     return false
   }
 
-  // find the editor ourselves when nothing is focused,
+  // find the editor when nothing is focused
   const editor = element || getFacebookEditor({ document: doc })
   if (!editor) {
     return false
