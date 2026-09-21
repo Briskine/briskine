@@ -50,7 +50,7 @@ export default function PopupLoginForm ()  {
 
       <div class="mb-3">
         <a
-          href={functionsUrl}
+          href={`${functionsUrl}/forgot-password/`}
           target="_blank"
           class="btn btn-link float-end btn-forgot"
           tabindex="-1"
