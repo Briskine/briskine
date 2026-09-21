@@ -17,7 +17,7 @@ import { setup as setupKeyboard, destroy as destroyKeyboard } from './keyboard.j
 import { setup as setupCursors, destroy as destroyCursors } from './cursors/cursors.js'
 import { setup as setupBubble, destroy as destroyBubble } from './bubble/bubble.js'
 import { setup as setupStatus, destroy as destroyStatus } from './status.js'
-import { setup as setupSiteData, destroy as destroySiteData } from './site-data.js'
+import { setup as setupSiteData, destroy as destroySiteData } from './site/site-data.js'
 import { setup as setupDialog, destroy as destroyDialog } from './dialog/dialog.js'
 import { setup as setupPage, destroy as destroyPage } from './page/page-parent.js'
 import { setup as setupAttachments, destroy as destroyAttachments } from './attachments/attachments.js'

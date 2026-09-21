@@ -1,5 +1,5 @@
 /*
- * Css helper
+ * css helper
  *
  * {{css ".price"}} - text of the first match
  * {{css ".link" "href"}} - attribute of the first match
@@ -11,7 +11,7 @@
  */
 
 import cssMatches from '../utils/css-matches.js'
-import { getSiteMatches } from '../utils/site-context.js'
+import { getSiteMatches } from '../site/site-context.js'
 import cached from '../utils/cached.js'
 
 function render (record, attribute = '') {

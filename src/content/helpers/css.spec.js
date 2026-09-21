@@ -1,12 +1,12 @@
 import { expect, describe, it, afterEach, beforeAll, beforeEach, vi } from 'vitest'
 
-vi.mock('../utils/site-context.js', () => ({
+vi.mock('../site/site-context.js', () => ({
   getSiteContext: vi.fn(),
   getSiteMatches: vi.fn(),
 }))
 
 import parseTemplate from '../utils/parse-template.js'
-import { getSiteContext, getSiteMatches } from '../utils/site-context.js'
+import { getSiteContext, getSiteMatches } from '../site/site-context.js'
 
 let container = null
 function markup (html = '') {

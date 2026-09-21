@@ -1,12 +1,12 @@
 import { expect, describe, it, beforeAll, beforeEach, vi } from 'vitest'
 
-vi.mock('../utils/site-context.js', () => ({
+vi.mock('../site/site-context.js', () => ({
   getSiteContext: vi.fn(),
   getSiteMatches: vi.fn(),
 }))
 
 import parseTemplate from '../utils/parse-template.js'
-import { getSiteContext } from '../utils/site-context.js'
+import { getSiteContext } from '../site/site-context.js'
 
 const linkedinTab = {
   tabId: 7,
