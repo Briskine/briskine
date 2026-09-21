@@ -22,11 +22,10 @@
   font-family: sans-serif;
 
   opacity: 0;
-  transition-property: opacity, display;
-  transition-duration: .2s;
-  transition-timing-function: ease-out;
-  transition-behavior: allow-discrete;
-  transition-delay: .2s;
+  /* must be shorthand to prevent minifier from collapsing it
+   */
+  transition: opacity .2s ease-out .2s allow-discrete,
+              display .2s ease-out .2s allow-discrete;
 }
 
 :host([visible]) {
