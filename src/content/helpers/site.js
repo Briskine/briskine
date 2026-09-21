@@ -11,7 +11,7 @@
 
 import { createFrame } from '../../briskbars/briskbars.js'
 
-import getSiteContext from '../utils/site-context.js'
+import { getSiteContext } from '../utils/site-context.js'
 import parseContext from '../utils/parse-context.js'
 
 // a new cache per render, so a second insert gets fresh data

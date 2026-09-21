@@ -218,4 +218,37 @@ describe('linkedin', () => {
     })
   })
 
+
+  it('should ignore the notification count in the page title', async () => {
+    const iframe = await loadIframe('/pages/linkedin/linkedin-connect.html')
+    const doc = iframe.contentDocument
+    doc.querySelector('#interop-outlet').shadowRoot.querySelector('textarea').remove()
+    doc.title = `(14) ${doc.title}`
+
+    const data = await run('data', {document: doc})
+
+    expect(data.to[0].first_name).to.equal('Michael')
+
+    iframe.remove()
+  })
+
+  it('should get the contact from a profile page with no editor', async () => {
+    const iframe = await loadIframe('/pages/linkedin/linkedin-connect.html')
+    const doc = iframe.contentDocument
+    doc.querySelector('#interop-outlet').shadowRoot.querySelector('textarea').remove()
+
+    const data = await run('data', {document: doc})
+
+    expect(data.to).to.deep.equal([
+      {
+        name: 'Michael Briskine',
+        first_name: 'Michael',
+        last_name: 'Briskine',
+        email: '',
+      },
+    ])
+
+    iframe.remove()
+  })
+
 })

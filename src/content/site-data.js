@@ -1,11 +1,12 @@
 /*
- * Answer another tab asking for this page's plugin data.
+ * Answer another tab asking about this page.
  */
 
-import { eventSiteData } from '../config.js'
+import { eventSiteData, eventSiteMatches } from '../config.js'
 import { on, off } from '../store/store-content.js'
 
 import { run } from './plugin.js'
+import cssMatches from './utils/css-matches.js'
 import { getActiveElement } from './utils/active-element.js'
 import { isContentEditable } from './editors/editor-contenteditable.js'
 import { isTextfieldEditor } from './editors/editor-textfield.js'
@@ -32,10 +33,21 @@ async function respondToSiteData () {
   }
 }
 
+function respondToSiteMatches ({selector} = {}) {
+  try {
+    return cssMatches(selector)
+  } catch (err) {
+    debug([eventSiteMatches, selector, err], 'warn')
+    return []
+  }
+}
+
 export function setup () {
   on(eventSiteData, respondToSiteData)
+  on(eventSiteMatches, respondToSiteMatches)
 }
 
 export function destroy () {
   off(eventSiteData, respondToSiteData)
+  off(eventSiteMatches, respondToSiteMatches)
 }

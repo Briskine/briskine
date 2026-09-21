@@ -6,9 +6,12 @@
  * {{#each (css ".item")}}{{this}}{{/each}} - all matches
  * {{lookup (css ".field") "value"}} - field value of the first match
  *
+ * Reads the tab of the {{#site}} block it's in, or this page outside one.
+ *
  */
 
-import { querySelectorAllDeep } from '../utils/selectors.js'
+import cssMatches from '../utils/css-matches.js'
+import { getSiteMatches } from '../utils/site-context.js'
 
 function render (record, attribute = '') {
   if (attribute) {
@@ -16,20 +19,6 @@ function render (record, attribute = '') {
   }
 
   return record.text || ''
-}
-
-// plain and serializable, so it survives structuredClone from another tab
-function snapshot (element) {
-  const attributes = {}
-  for (const attribute of element.attributes) {
-    attributes[attribute.name] = attribute.value
-  }
-
-  return {
-    text: (element.textContent || '').trim(),
-    value: element.value || '',
-    attributes: attributes,
-  }
 }
 
 // first match exposed on the array, the same way contactsArray does for to/cc/bcc
@@ -50,15 +39,29 @@ function cssArray (records = [], attribute = '') {
   return context
 }
 
-export default function css (...args) {
-  // last argument is the handlebars options object
-  args.pop()
-  const [selector = '', attribute = ''] = args
+// a new cache per render, so a second insert gets fresh data
+export default function createCss (cache = new Map()) {
+  return async function css (...args) {
+    // last argument is the handlebars options object
+    const options = args.pop()
+    const [selector = '', attribute = ''] = args
+    // set by the {{#site}} block we're in, if any
+    const pattern = options.data?.site?.pattern
 
-  if (!selector) {
-    return cssArray()
+    if (!selector) {
+      return cssArray()
+    }
+
+    if (!pattern) {
+      // an invalid selector throws, and parseTemplate renders the error
+      return cssArray(cssMatches(selector), attribute)
+    }
+
+    const key = `${pattern}\u0000${selector}`
+    if (!cache.has(key)) {
+      cache.set(key, getSiteMatches(pattern, selector))
+    }
+
+    return cssArray(await cache.get(key), attribute)
   }
-
-  // an invalid selector throws, and parseTemplate renders the error
-  return cssArray(querySelectorAllDeep(selector, document).map(snapshot), attribute)
 }

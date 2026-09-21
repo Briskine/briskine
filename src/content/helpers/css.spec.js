@@ -1,6 +1,12 @@
-import { expect, describe, it, afterEach } from 'vitest'
+import { expect, describe, it, afterEach, beforeAll, beforeEach, vi } from 'vitest'
+
+vi.mock('../utils/site-context.js', () => ({
+  getSiteContext: vi.fn(),
+  getSiteMatches: vi.fn(),
+}))
 
 import parseTemplate from '../utils/parse-template.js'
+import { getSiteContext, getSiteMatches } from '../utils/site-context.js'
 
 let container = null
 function markup (html = '') {
@@ -137,4 +143,75 @@ describe('css handlebars helper', () => {
       .to.equal('[light][shadow]')
   })
 
+})
+
+describe('css handlebars helper in a site block', () => {
+  beforeAll(() => {
+    window.browser.runtime.sendMessage = async ({type}) => {
+      if (type === 'getAccount') {
+        return {email: 'john@briskine.com'}
+      }
+
+      return []
+    }
+  })
+
+  beforeEach(() => {
+    getSiteContext.mockReset()
+    getSiteMatches.mockReset()
+    getSiteContext.mockResolvedValue({
+      tabId: 7,
+      url: 'https://www.linkedin.com/',
+      title: 'LinkedIn',
+      data: {},
+    })
+    getSiteMatches.mockResolvedValue([
+      {text: 'remote one', value: '', attributes: {href: '/one'}},
+      {text: 'remote two', value: '', attributes: {href: '/two'}},
+    ])
+  })
+
+  it('should read from the other tab', async () => {
+    markup('<div class="item">local</div>')
+
+    expect(await parseTemplate('{{#site "linkedin.com"}}{{css ".item"}}{{/site}}'))
+      .to.equal('remote one')
+    expect(getSiteMatches).toHaveBeenCalledWith('linkedin.com', '.item')
+  })
+
+  it('should read this page outside a site block', async () => {
+    markup('<div class="item">local</div>')
+
+    expect(await parseTemplate('{{css ".item"}}')).to.equal('local')
+    expect(getSiteMatches).not.toHaveBeenCalled()
+  })
+
+  it('should read this page again after the site block closes', async () => {
+    markup('<div class="item">local</div>')
+
+    expect(await parseTemplate('{{#site "linkedin.com"}}{{css ".item"}}{{/site}}|{{css ".item"}}'))
+      .to.equal('remote one|local')
+  })
+
+  it('should build the same shape as a local read', async () => {
+    expect(await parseTemplate('{{#site "linkedin.com"}}{{#each (css ".item")}}[{{this}}:{{lookup attributes "href"}}]{{/each}}{{/site}}'))
+      .to.equal('[remote one:/one][remote two:/two]')
+  })
+
+  it('should render an attribute', async () => {
+    expect(await parseTemplate('{{#site "linkedin.com"}}{{css ".item" "href"}}{{/site}}'))
+      .to.equal('/one')
+  })
+
+  it('should read each selector once per render', async () => {
+    await parseTemplate('{{#site "linkedin.com"}}{{css ".item"}}{{css ".item"}}{{css ".other"}}{{/site}}')
+
+    expect(getSiteMatches).toHaveBeenCalledTimes(2)
+  })
+
+  it('should render nothing when the other tab has no match', async () => {
+    getSiteMatches.mockResolvedValue([])
+
+    expect(await parseTemplate('[{{#site "linkedin.com"}}{{css ".item"}}{{/site}}]')).to.equal('[]')
+  })
 })

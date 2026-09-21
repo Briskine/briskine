@@ -43,7 +43,7 @@ async function actions ({ element, template, data}) {
   }
 }
 
-function getToName (element) {
+function getToName (element, doc) {
   // get the contact name from messages
   const messageThreadSelectors = [
     // message popup
@@ -75,7 +75,7 @@ function getToName (element) {
     '.msg-overlay-bubble-header__title',
   ]
 
-  const $thread = closestDeep(messageThreadSelectors.join(','), element)
+  const $thread = element && closestDeep(messageThreadSelectors.join(','), element)
 
   // check if a message thread is visible,
   // otherwise we're in a non-messaging textfield.
@@ -104,7 +104,7 @@ function getToName (element) {
   // legacy profile page, with no web components
   const $currentProfilePicture = querySelectorDeep(
     'img[width="200"][height="200"], img[class*="pv-top-card-profile-picture"]',
-    element.ownerDocument.body
+    doc.body
   )
   if ($currentProfilePicture && $currentProfilePicture.hasAttribute('alt')) {
     const profilePictureAlt = $currentProfilePicture.getAttribute('alt') || ''
@@ -113,9 +113,10 @@ function getToName (element) {
   }
 
   // new profile page, with web components and #interop-outlet
-  // to get it from the page title (e.g., "First Name | LinkedIn").
-  const title = element.ownerDocument.title
-  if (title?.includes?.('|')) {
+  // to get it from the page title (e.g., "($NOTIFICATION_COUNT) First Name | LinkedIn"),
+  // which is prefixed with the notification count when there are any.
+  const title = (doc.title || '').replace(/^\(\d+\)\s*/, '')
+  if (title.includes('|')) {
     return title.split('|')[0].trim()
   }
 
@@ -138,17 +139,19 @@ function getData ({ element, document: doc = document } = {}) {
     return
   }
 
-  return getLinkedInData({ element: element || getLinkedInEditor({ document: doc }) })
+  return getLinkedInData({ element: element || getLinkedInEditor({ document: doc }), document: doc })
 }
 
-function getLinkedInData ({ element }) {
+// a profile page has no editor, but still has a contact,
+// so only the message thread lookup needs the element
+function getLinkedInData ({ element, document: doc = element?.ownerDocument }) {
   const vars = {
     from: {},
     to: [],
     subject: '',
   }
 
-  if (!element) {
+  if (!doc) {
     return vars
   }
 
@@ -162,16 +165,20 @@ function getLinkedInData ({ element }) {
 
   const $fromContainer = querySelectorDeep(
     $profilePictureSelectors.join(','),
-    element.ownerDocument.body
+    doc.body
   )
   if ($fromContainer && $fromContainer.getAttribute('alt')) {
     fromName = $fromContainer.getAttribute('alt')
   }
 
-  vars.from = createContact({name: fromName})
+  if (fromName) {
+    vars.from = createContact({name: fromName})
+  }
 
-  const toName = getToName(element)
-  vars.to.push(createContact({name: toName}))
+  const toName = getToName(element, doc)
+  if (toName) {
+    vars.to.push(createContact({name: toName}))
+  }
 
   return vars
 }
