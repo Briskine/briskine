@@ -165,10 +165,17 @@ describe('css handlebars helper in a site block', () => {
       title: 'LinkedIn',
       data: {},
     })
-    getSiteMatches.mockResolvedValue([
-      {text: 'remote one', value: '', attributes: {href: '/one'}},
-      {text: 'remote two', value: '', attributes: {href: '/two'}},
-    ])
+    // the real one returns nothing without a selector
+    getSiteMatches.mockImplementation(async (pattern, selector) => {
+      if (!selector) {
+        return []
+      }
+
+      return [
+        {text: 'remote one', value: '', attributes: {href: '/one'}},
+        {text: 'remote two', value: '', attributes: {href: '/two'}},
+      ]
+    })
   })
 
   it('should read from the other tab', async () => {
@@ -207,6 +214,16 @@ describe('css handlebars helper in a site block', () => {
     await parseTemplate('{{#site "linkedin.com"}}{{css ".item"}}{{css ".item"}}{{css ".other"}}{{/site}}')
 
     expect(getSiteMatches).toHaveBeenCalledTimes(2)
+  })
+
+  it('should render the error for an invalid selector', async () => {
+    expect(await parseTemplate('{{#site "linkedin.com"}}{{css "!!!"}}{{/site}}'))
+      .to.match(/^<pre>/)
+    expect(getSiteMatches).not.toHaveBeenCalled()
+  })
+
+  it('should render nothing without a selector', async () => {
+    expect(await parseTemplate('[{{#site "linkedin.com"}}{{css}}{{/site}}]')).to.equal('[]')
   })
 
   it('should render nothing when the other tab has no match', async () => {

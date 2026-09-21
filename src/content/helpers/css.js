@@ -48,13 +48,14 @@ export default function createCss (cache = new Map()) {
     // set by the {{#site}} block we're in, if any
     const pattern = options.data?.site?.pattern
 
-    if (!selector) {
-      return cssArray()
+    if (!pattern) {
+      return cssArray(cssMatches(selector), attribute)
     }
 
-    if (!pattern) {
-      // an invalid selector throws, and parseTemplate renders the error
-      return cssArray(cssMatches(selector), attribute)
+    // throws for an invalid selector, so a typo shows up the same way
+    // as it does reading this page, instead of silently matching nothing
+    if (selector) {
+      document.createDocumentFragment().querySelector(selector)
     }
 
     const key = `${pattern}\u0000${selector}`

@@ -55,7 +55,6 @@ async function getTabContext (pattern, windowId) {
   }
 
   return {
-    tabId: tab.id,
     url: tab.url || '',
     title: tab.title || '',
     // a tab with no plugin still reports itself, for {{css}} and @site
