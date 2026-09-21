@@ -5,6 +5,7 @@
 import { getPluginData, runPluginActions } from './plugin.js'
 import { addAttachments } from './attachments/attachments.js'
 import parseTemplate from './utils/parse-template.js'
+import sanitize from './utils/sanitize.js'
 import htmlToText from './utils/html-to-text.js'
 import debug from '../debug.js'
 import { getWord, selectWord } from './utils/word.js'
@@ -86,7 +87,7 @@ export default async function autocomplete ({ template }) {
   const element = getActiveElement()
   const withAttachments = addAttachments(template.body, template.attachments)
   const data = await getPluginData({ element })
-  const html = await parseTemplate(withAttachments, data)
+  const html = sanitize(await parseTemplate(withAttachments, data))
   const text = htmlToText(html)
 
   if (template.shortcut) {
