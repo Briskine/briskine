@@ -19,7 +19,7 @@ export function createRequest (type) {
       return data
     } catch (err) {
       // extension context invalidated
-      if (!browser.runtime.id) {
+      if (!browser.runtime?.id) {
         // destroy existing content scripts
         document.dispatchEvent(new CustomEvent(eventDestroy))
       }

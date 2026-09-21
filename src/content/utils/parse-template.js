@@ -17,6 +17,7 @@ import compare from '../helpers/compare.js'
 import random from '../helpers/random.js'
 import cursor from '../helpers/cursor.js'
 import css from '../helpers/css.js'
+import createSite from '../helpers/site.js'
 
 const helpers = {
   choice,
@@ -69,9 +70,10 @@ async function getPartials () {
 export default async function parseTemplate (template = '', data = {}) {
   const context = await parseContext(data)
   const partials = await getPartials()
+  const renderHelpers = {...helpers, site: createSite()}
 
   try {
-    return await briskbars(template, context, { helpers, partials })
+    return await briskbars(template, context, { helpers: renderHelpers, partials })
   } catch (err) {
     // catch handlebars errors
     return `<pre>${err.message || err}</pre>`
