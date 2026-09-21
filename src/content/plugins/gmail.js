@@ -175,6 +175,29 @@ function extraField ($parent, fieldName) {
   return $parent.querySelector(`textarea[name=${fieldName}], [name=${fieldName}] input`)
 }
 
+/* comma separated addresses, quoted display names can contain commas:
+ * to@briskine.com
+ * to@briskine.com, cc@briskine.com
+ * John Briskine <john@briskine.com>
+ * "Briskine, John" <john@briskine.com>, cc@briskine.com
+ */
+function setRecipients ($field, value = '') {
+  const addresses = value.match(/(?:[^,"]|"[^"]*")+/g) || []
+
+  for (const [index, address] of addresses.entries()) {
+    $field.value = address.trim()
+    // enter transforms address into chip
+    $field.dispatchEvent(new KeyboardEvent('keydown', {bubbles: true, key: 'Enter', keyCode: 13, which: 13}))
+
+    if ($field.value) {
+      // enter didn't take it, let gmail parse the rest
+      $field.value = addresses.slice(index).join(',')
+      $field.dispatchEvent(new FocusEvent('blur'))
+      return
+    }
+  }
+}
+
 async function actions ({ element, template, data }) {
   if (!isActive()) {
     return
@@ -216,8 +239,7 @@ async function actions ({ element, template, data }) {
     const parsedTo = await parseTemplate(template.to, data)
     const $toField = extraField($parent, 'to')
     if ($toField) {
-      $toField.value = parsedTo
-      $toField.dispatchEvent(new FocusEvent('blur'))
+      setRecipients($toField, parsedTo)
     }
   }
 
@@ -232,8 +254,7 @@ async function actions ({ element, template, data }) {
       $parent.querySelector(buttonSelectors[fieldName]).dispatchEvent(new MouseEvent('click', {bubbles: true}))
       const $field = extraField($parent, fieldName)
       if ($field) {
-        $field.value = parsedField
-        $field.dispatchEvent(new FocusEvent('blur'))
+        setRecipients($field, parsedField)
       }
     }
   }
