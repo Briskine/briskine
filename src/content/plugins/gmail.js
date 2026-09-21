@@ -193,6 +193,10 @@ function setRecipients ($field, value = '') {
       // enter didn't take it, let gmail parse the rest
       $field.value = addresses.slice(index).join(',')
       $field.dispatchEvent(new FocusEvent('blur'))
+
+      // expand the collapsed recipients row, so the raw value is visible.
+      // only focus opens it, click doesn't.
+      $field.closest(textfieldContainerSelector)?.querySelector('.aoD.hl')?.focus()
       return
     }
   }
@@ -218,21 +222,6 @@ async function actions ({ element, template, data }) {
   ) {
     const parsedSubject = await parseTemplate(template.subject, data)
     $subject.value = parsedSubject
-  }
-
-  const $recipients = $parent.querySelector('.aoD.hl')
-  if (
-    (
-      template.to ||
-      template.cc ||
-      template.bcc
-    ) &&
-    $recipients
-  ) {
-    // click the receipients row.
-    // a little jumpy,
-    // but the only to way to show the new value.
-    $recipients.dispatchEvent(new MouseEvent('click', {bubbles: true}))
   }
 
   if (template.to) {
