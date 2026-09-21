@@ -14,7 +14,7 @@ import cssMatches from '../utils/css-matches.js'
 import { getSiteMatches } from '../site/site-context.js'
 import cached from '../utils/cached.js'
 
-function render (record, attribute = '') {
+function getValue (record, attribute = '') {
   if (attribute) {
     return record.attributes?.[attribute] || ''
   }
@@ -29,7 +29,7 @@ function cssArray (records = [], attribute = '') {
     context.push({
       value: record.value,
       attributes: record.attributes,
-      toString: () => render(record, attribute),
+      toString: () => getValue(record, attribute),
     })
   })
 

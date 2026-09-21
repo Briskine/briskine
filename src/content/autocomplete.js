@@ -2,7 +2,7 @@
  * Generic methods for autocompletion
  */
 
-import { run } from './plugin.js'
+import { getPluginData, runPluginActions } from './plugin.js'
 import { addAttachments } from './attachments/attachments.js'
 import parseTemplate from './utils/parse-template.js'
 import htmlToText from './utils/html-to-text.js'
@@ -85,7 +85,7 @@ async function selectShortcut (element, shortcut = '') {
 export default async function autocomplete ({ template }) {
   const element = getActiveElement()
   const withAttachments = addAttachments(template.body, template.attachments)
-  const data = await run('data', { element })
+  const data = await getPluginData({ element })
   const html = await parseTemplate(withAttachments, data)
   const text = htmlToText(html)
 
@@ -104,7 +104,7 @@ export default async function autocomplete ({ template }) {
     debug(['selectFirstCursor', err])
   }
 
-  await run('actions', {
+  await runPluginActions({
     element,
     template,
     data,

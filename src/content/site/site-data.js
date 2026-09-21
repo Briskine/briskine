@@ -5,7 +5,7 @@
 import { eventSiteData, eventSiteMatches } from '../../config.js'
 import { on, off } from '../../store/store-content.js'
 
-import { run } from '../plugin.js'
+import { getPluginData } from '../plugin.js'
 import cssMatches from '../utils/css-matches.js'
 import { getActiveElement } from '../utils/active-element.js'
 import debug from '../../debug.js'
@@ -25,7 +25,7 @@ function focusedEditor () {
 async function respondToSiteData () {
   try {
     const element = focusedEditor()
-    return await run('data', element ? {element: element} : {})
+    return await getPluginData(element ? {element: element} : {})
   } catch (err) {
     debug([eventSiteData, err], 'error')
     return {}

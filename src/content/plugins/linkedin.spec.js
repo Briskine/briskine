@@ -4,13 +4,13 @@ vi.mock('../utils/current-url.js', () => ({
   default: () => new URL('https://www.linkedin.com/messaging/'),
 }))
 
-import { run } from '../plugin.js'
+import { getPluginData } from '../plugin.js'
 import loadIframe from '../../test-utils/iframe.js'
 
 describe('linkedin', () => {
   it('should get data in connect popup', async () => {
     const iframe = await loadIframe('/pages/linkedin/linkedin-connect.html')
-    const data = await run('data', {document: iframe.contentDocument})
+    const data = await getPluginData({document: iframe.contentDocument})
 
     expect(data).to.deep.equal({
       from: {
@@ -35,7 +35,7 @@ describe('linkedin', () => {
 
   it('should get data in inmail popup', async () => {
     const iframe = await loadIframe('/pages/linkedin/linkedin-inmail-popup.html')
-    const data = await run('data', {document: iframe.contentDocument})
+    const data = await getPluginData({document: iframe.contentDocument})
 
     expect(data).to.deep.equal({
       from: {
@@ -60,7 +60,7 @@ describe('linkedin', () => {
 
   it('should get data in message popup fully loaded', async () => {
     const iframe = await loadIframe('/pages/linkedin/linkedin-message-popup-full.html')
-    const data = await run('data', {document: iframe.contentDocument})
+    const data = await getPluginData({document: iframe.contentDocument})
 
     expect(data).to.deep.equal({
       from: {
@@ -85,7 +85,7 @@ describe('linkedin', () => {
 
   it('should get data in message popup lazy loaded', async () => {
     const iframe = await loadIframe('/pages/linkedin/linkedin-message-popup-lazy.html')
-    const data = await run('data', {document: iframe.contentDocument})
+    const data = await getPluginData({document: iframe.contentDocument})
 
     expect(data).to.deep.equal({
       from: {
@@ -110,7 +110,7 @@ describe('linkedin', () => {
 
   it('should get data in messaging thread fully loaded', async () => {
     const iframe = await loadIframe('/pages/linkedin/linkedin-messaging-full.html')
-    const data = await run('data', {document: iframe.contentDocument})
+    const data = await getPluginData({document: iframe.contentDocument})
 
     expect(data).to.deep.equal({
       from: {
@@ -135,7 +135,7 @@ describe('linkedin', () => {
 
   it('should get data in messaging thread lazy loaded', async () => {
     const iframe = await loadIframe('/pages/linkedin/linkedin-messaging-lazy.html')
-    const data = await run('data', {document: iframe.contentDocument})
+    const data = await getPluginData({document: iframe.contentDocument})
 
     expect(data).to.deep.equal({
       from: {
@@ -160,7 +160,7 @@ describe('linkedin', () => {
 
   it('should get data in inmail new message thread', async () => {
     const iframe = await loadIframe('/pages/linkedin/linkedin-messaging-inmail.html')
-    const data = await run('data', {document: iframe.contentDocument})
+    const data = await getPluginData({document: iframe.contentDocument})
 
     expect(data).to.deep.equal({
       from: {
@@ -185,7 +185,7 @@ describe('linkedin', () => {
 
   it('should get data in new message popup from connections page', async () => {
     const iframe = await loadIframe('/pages/linkedin/linkedin-connections-message.html')
-    const data = await run('data', {document: iframe.contentDocument})
+    const data = await getPluginData({document: iframe.contentDocument})
 
     expect(data).to.deep.equal({
       from: {
@@ -209,7 +209,7 @@ describe('linkedin', () => {
   })
 
   it('should not get data without an editor on the page', async () => {
-    const data = await run('data', {document: document.implementation.createHTMLDocument()})
+    const data = await getPluginData({document: document.implementation.createHTMLDocument()})
 
     expect(data).to.deep.equal({
       from: {},
@@ -225,7 +225,7 @@ describe('linkedin', () => {
     doc.querySelector('#interop-outlet').shadowRoot.querySelector('textarea').remove()
     doc.title = `(14) ${doc.title}`
 
-    const data = await run('data', {document: doc})
+    const data = await getPluginData({document: doc})
 
     expect(data.to[0].first_name).to.equal('Michael')
 
@@ -237,7 +237,7 @@ describe('linkedin', () => {
     const doc = iframe.contentDocument
     doc.querySelector('#interop-outlet').shadowRoot.querySelector('textarea').remove()
 
-    const data = await run('data', {document: doc})
+    const data = await getPluginData({document: doc})
 
     expect(data.to).to.deep.equal([
       {

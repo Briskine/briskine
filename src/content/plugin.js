@@ -7,35 +7,37 @@ import { merge } from 'es-toolkit'
 import plugins from './plugins/index.js'
 import debug from '../debug.js'
 
-export async function run (type = '', params) {
-  const funcs = plugins
+function pluginFunctions (type) {
+  return plugins
     .map((plugin) => plugin[type])
     .filter((func) => typeof func === 'function')
+}
 
-  if (type === 'data') {
-    const promises = funcs.map((f) => f(params))
-    const responses = (await Promise.allSettled(promises))
-      .filter((r) => {
-        if (r.status === 'rejected') {
-          debug(['plugin', type, params, r.reason], 'error')
-          return false
-        }
+export async function getPluginData (params) {
+  const responses = await Promise.allSettled(
+    pluginFunctions('data').map((getData) => getData(params))
+  )
 
-        return true
-      })
-      .map((r) => r.value)
+  return responses
+    .filter((response) => {
+      if (response.status === 'rejected') {
+        debug(['plugin', 'data', params, response.reason], 'error')
+        return false
+      }
 
-    const data = responses
-      .filter((response) => response != null)
-      .reduce((result, response) => merge(result, response), {})
-    return data
-  }
+      return true
+    })
+    .map((response) => response.value)
+    .filter((data) => data != null)
+    .reduce((result, data) => merge(result, data), {})
+}
 
-  for (const func of funcs) {
+export async function runPluginActions (params) {
+  for (const actions of pluginFunctions('actions')) {
     try {
-      await func(params)
+      await actions(params)
     } catch (err) {
-      debug(['plugin', type, params, err], 'error')
+      debug(['plugin', 'actions', params, err], 'error')
     }
   }
 }

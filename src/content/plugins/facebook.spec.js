@@ -4,13 +4,13 @@ vi.mock('../utils/current-url.js', () => ({
   default: () => new URL('https://www.messenger.com/'),
 }))
 
-import { run } from '../plugin.js'
+import { getPluginData } from '../plugin.js'
 import loadIframe from '../../test-utils/iframe.js'
 
 describe('facebook', () => {
   it('should get data when composing a new message', async () => {
     const iframe = await loadIframe('/pages/facebook/facebook-messenger-full-page-thread-new.html')
-    const data = await run('data', {document: iframe.contentDocument})
+    const data = await getPluginData({document: iframe.contentDocument})
 
     expect(data).to.deep.equal({
       from: {
@@ -34,7 +34,7 @@ describe('facebook', () => {
 
   it('should get data when replying in a thread', async () => {
     const iframe = await loadIframe('/pages/facebook/facebook-messenger-full-page-thread-reply.html')
-    const data = await run('data', {document: iframe.contentDocument})
+    const data = await getPluginData({document: iframe.contentDocument})
 
     expect(data).to.deep.equal({
       from: {

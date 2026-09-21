@@ -4,13 +4,13 @@ vi.mock('../utils/current-url.js', () => ({
   default: () => new URL('https://outlook.live.com/mail/0/'),
 }))
 
-import { run } from '../plugin.js'
+import { getPluginData } from '../plugin.js'
 import loadIframe from '../../test-utils/iframe.js'
 
 describe('outlook', () => {
   it('should get data in default compose', async () => {
     const iframe = await loadIframe('/pages/outlook/outlook-compose.html')
-    const data = await run('data', {document: iframe.contentDocument})
+    const data = await getPluginData({document: iframe.contentDocument})
 
     expect(data).to.deep.equal({
       from: {
@@ -50,7 +50,7 @@ describe('outlook', () => {
 
   it('should get data in compose popup', async () => {
     const iframe = await loadIframe('/pages/outlook/outlook-compose-popup.html')
-    const data = await run('data', {document: iframe.contentDocument})
+    const data = await getPluginData({document: iframe.contentDocument})
 
     expect(data).to.deep.equal({
       from: {
@@ -89,7 +89,7 @@ describe('outlook', () => {
   })
 
   it('should not get data without an editor on the page', async () => {
-    const data = await run('data', {document: document.implementation.createHTMLDocument()})
+    const data = await getPluginData({document: document.implementation.createHTMLDocument()})
 
     expect(data).to.deep.equal({
       from: {},

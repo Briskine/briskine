@@ -4,7 +4,7 @@ vi.mock('../utils/current-url.js', () => ({
   default: () => new URL('https://mail.google.com/mail/mu/0/'),
 }))
 
-import { run } from '../plugin.js'
+import { getPluginData } from '../plugin.js'
 import loadIframe from '../../test-utils/iframe.js'
 
 const composeData = {
@@ -44,7 +44,7 @@ const composeData = {
 describe('gmail-mobile', () => {
   it('should get data in compose', async () => {
     const iframe = await loadIframe('/pages/gmail-mobile/gmail-mobile.html')
-    const data = await run('data', {document: iframe.contentDocument})
+    const data = await getPluginData({document: iframe.contentDocument})
 
     expect(data).to.deep.equal(composeData)
 
@@ -58,7 +58,7 @@ describe('gmail-mobile', () => {
     iframe.contentDocument.querySelectorAll('[class]').forEach(($node) => {
       $node.removeAttribute('class')
     })
-    const data = await run('data', {document: iframe.contentDocument})
+    const data = await getPluginData({document: iframe.contentDocument})
 
     expect(data).to.deep.equal(composeData)
 
@@ -66,7 +66,7 @@ describe('gmail-mobile', () => {
   })
 
   it('should not get data without an editor on the page', async () => {
-    const data = await run('data', {document: document.implementation.createHTMLDocument()})
+    const data = await getPluginData({document: document.implementation.createHTMLDocument()})
 
     expect(data).to.deep.equal({
       from: {},

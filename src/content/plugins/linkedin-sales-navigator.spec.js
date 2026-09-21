@@ -4,13 +4,13 @@ vi.mock('../utils/current-url.js', () => ({
   default: () => new URL('https://www.linkedin.com/sales/inbox/'),
 }))
 
-import { run } from '../plugin.js'
+import { getPluginData } from '../plugin.js'
 import loadIframe from '../../test-utils/iframe.js'
 
 describe('linkedin sales navigator', () => {
   it('should get data in sales navigator invite', async () => {
     const iframe = await loadIframe('/pages/linkedin-sales-navigator/linkedin-sales-navigator-invite.html')
-    const data = await run('data', {document: iframe.contentDocument})
+    const data = await getPluginData({document: iframe.contentDocument})
 
     expect(data).to.deep.equal({
       from: {
@@ -35,7 +35,7 @@ describe('linkedin sales navigator', () => {
 
   it('should get data in sales navigator new message popup', async () => {
     const iframe = await loadIframe('/pages/linkedin-sales-navigator/linkedin-sales-navigator-message-popup.html')
-    const data = await run('data', {document: iframe.contentDocument})
+    const data = await getPluginData({document: iframe.contentDocument})
 
     expect(data).to.deep.equal({
       from: {
@@ -60,7 +60,7 @@ describe('linkedin sales navigator', () => {
 
   it('should get data in sales navigator new message popup, with 1 shared connection', async () => {
     const iframe = await loadIframe('/pages/linkedin-sales-navigator/linkedin-sales-navigator-message-popup-1-connection.html')
-    const data = await run('data', {document: iframe.contentDocument})
+    const data = await getPluginData({document: iframe.contentDocument})
 
     expect(data).to.deep.equal({
       from: {
@@ -85,7 +85,7 @@ describe('linkedin sales navigator', () => {
 
   it('should get data in sales navigator new message thread', async () => {
     const iframe = await loadIframe('/pages/linkedin-sales-navigator/linkedin-sales-navigator-message-thread-new.html')
-    const data = await run('data', {document: iframe.contentDocument})
+    const data = await getPluginData({document: iframe.contentDocument})
 
     expect(data).to.deep.equal({
       from: {
@@ -110,7 +110,7 @@ describe('linkedin sales navigator', () => {
 
   it('should get data in sales navigator existing message thread', async () => {
     const iframe = await loadIframe('/pages/linkedin-sales-navigator/linkedin-sales-navigator-message-thread.html')
-    const data = await run('data', {document: iframe.contentDocument})
+    const data = await getPluginData({document: iframe.contentDocument})
 
     expect(data).to.deep.equal({
       from: {
@@ -134,7 +134,7 @@ describe('linkedin sales navigator', () => {
   })
 
   it('should not get data without an editor on the page', async () => {
-    const data = await run('data', {document: document.implementation.createHTMLDocument()})
+    const data = await getPluginData({document: document.implementation.createHTMLDocument()})
 
     expect(data).to.deep.equal({
       from: {},
