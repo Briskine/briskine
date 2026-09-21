@@ -1,5 +1,5 @@
 /*
- * DEPRECATED
+ * TODO DEPRECATED
  * Legacy {{domain}} helper
  *
  * extracts and prettifies the domain name from an email address

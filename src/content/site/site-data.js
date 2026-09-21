@@ -36,7 +36,7 @@ function respondToSiteMatches ({selector} = {}) {
   try {
     return cssMatches(selector)
   } catch (err) {
-    debug([eventSiteMatches, selector, err], 'warn')
+    debug([eventSiteMatches, selector, err], 'error')
     return []
   }
 }
