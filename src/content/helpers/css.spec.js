@@ -226,6 +226,19 @@ describe('css handlebars helper in a site block', () => {
     expect(await parseTemplate('[{{#site "linkedin.com"}}{{css}}{{/site}}]')).to.equal('[]')
   })
 
+  it('should not share a selector between different site blocks', async () => {
+    getSiteMatches.mockImplementation(async (pattern) => {
+      return [{text: `from ${pattern}`, value: '', attributes: {}}]
+    })
+
+    const parsed = await parseTemplate(
+      '{{#site "linkedin.com"}}{{css ".item"}}{{/site}}|{{#site "gmail.com"}}{{css ".item"}}{{/site}}'
+    )
+
+    expect(parsed).to.equal('from linkedin.com|from gmail.com')
+    expect(getSiteMatches).toHaveBeenCalledTimes(2)
+  })
+
   it('should render nothing when the other tab has no match', async () => {
     getSiteMatches.mockResolvedValue([])
 

@@ -59,7 +59,7 @@ export default function createCss (cache = new Map()) {
       document.createDocumentFragment().querySelector(selector)
     }
 
-    const key = `${pattern}\u0000${selector}`
+    const key = JSON.stringify([pattern, selector])
 
     return cssArray(await cached(cache, key, () => getSiteMatches(pattern, selector)), attribute)
   }
