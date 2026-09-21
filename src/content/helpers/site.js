@@ -13,6 +13,7 @@ import { createFrame } from '../../briskbars/briskbars.js'
 
 import { getSiteContext } from '../utils/site-context.js'
 import parseContext from '../utils/parse-context.js'
+import cached from '../utils/cached.js'
 
 // a new cache per render, so a second insert gets fresh data
 export default function createSite (cache = new Map()) {
@@ -20,12 +21,7 @@ export default function createSite (cache = new Map()) {
     const options = args.pop()
     const [pattern = ''] = args
 
-    // cache the promise, so one render only resolves a tab once
-    if (!cache.has(pattern)) {
-      cache.set(pattern, getSiteContext(pattern))
-    }
-
-    const context = await cache.get(pattern)
+    const context = await cached(cache, pattern, () => getSiteContext(pattern))
     if (!context) {
       return options.inverse(this)
     }

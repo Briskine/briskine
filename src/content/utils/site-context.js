@@ -7,17 +7,21 @@ import { createRequest } from '../../store/store-content.js'
 const requestTabContext = createRequest('getTabContext')
 const requestSiteMatches = createRequest('getSiteMatches')
 
+async function ask (request, data, fallback) {
+  try {
+    return await request(data) || fallback
+  } catch {
+    // no tab matched, or the extension was updated under us
+    return fallback
+  }
+}
+
 export async function getSiteContext (pattern = '') {
   if (!pattern) {
     return null
   }
 
-  try {
-    return await requestTabContext(pattern) || null
-  } catch {
-    // no tab matched, or the extension was updated under us
-    return null
-  }
+  return ask(requestTabContext, {pattern: pattern}, null)
 }
 
 export async function getSiteMatches (pattern = '', selector = '') {
@@ -25,9 +29,5 @@ export async function getSiteMatches (pattern = '', selector = '') {
     return []
   }
 
-  try {
-    return await requestSiteMatches({pattern: pattern, selector: selector}) || []
-  } catch {
-    return []
-  }
+  return ask(requestSiteMatches, {pattern: pattern, selector: selector}, [])
 }

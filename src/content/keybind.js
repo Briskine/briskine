@@ -3,13 +3,12 @@
  */
 import Mousetrap from 'mousetrap'
 
-import { isTextfieldEditor } from './editors/editor-textfield.js'
-import { isContentEditable } from './editors/editor-contenteditable.js'
 import { getActiveElement } from './utils/active-element.js'
+import isEditor from './utils/editor.js'
 
 Mousetrap.prototype.stopCallback = function () {
   const element = getActiveElement(true)
-  if (isTextfieldEditor(element) || isContentEditable(element)) {
+  if (isEditor(element)) {
     return false
   }
 

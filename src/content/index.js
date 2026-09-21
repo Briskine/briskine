@@ -32,11 +32,10 @@ import {
 } from './utils/active-element.js'
 import { destroy as destroyKeybind } from './keybind.js'
 import getEventTarget from './utils/event-target.js'
-import { isTextfieldEditor } from './editors/editor-textfield.js'
-import { isContentEditable } from './editors/editor-contenteditable.js'
 import { addFocusListeners } from './utils/shadow-focus.js'
 
 import debug from '../debug.js'
+import isEditor from './utils/editor.js'
 
 const readyMessage = 'briskine-ready'
 let removeFocusListeners = () => {}
@@ -88,7 +87,7 @@ async function init () {
 
 function initOnFocus (e) {
   const target = getEventTarget(e)
-  if (isTextfieldEditor(target) || isContentEditable(target)) {
+  if (isEditor(target)) {
     removeFocusListeners()
     init()
   }

@@ -34,9 +34,14 @@ async function findTab (pattern = '', windowId) {
   return pickTab(candidates, windowId)
 }
 
+// works for both an object of plugin data and an array of matches
+function hasResult (result) {
+  return Object.keys(result || {}).length > 0
+}
+
 // without a frameId every frame answers and the first one wins,
 // so try the top frame before falling back to the whole tab
-async function askTab (tab, event, details, hasResult) {
+async function askTab (tab, event, details) {
   for (const frameId of [0, undefined]) {
     const [result] = await trigger(event, details, tab, frameId) || []
     if (hasResult(result)) {
@@ -47,7 +52,7 @@ async function askTab (tab, event, details, hasResult) {
   return null
 }
 
-async function getTabContext (pattern, windowId) {
+async function getTabContext ({pattern} = {}, windowId) {
   const tab = await findTab(pattern, windowId)
   if (!tab) {
     // no tab matched, {{#site}} renders its else branch
@@ -58,7 +63,7 @@ async function getTabContext (pattern, windowId) {
     url: tab.url || '',
     title: tab.title || '',
     // a tab with no plugin still reports itself, for {{css}} and @site
-    data: await askTab(tab, eventSiteData, {}, (data) => Object.keys(data || {}).length) || {},
+    data: await askTab(tab, eventSiteData, {}) || {},
   }
 }
 
@@ -68,7 +73,7 @@ async function getSiteMatches ({pattern, selector} = {}, windowId) {
     return []
   }
 
-  return await askTab(tab, eventSiteMatches, {selector: selector}, (matches) => matches?.length) || []
+  return await askTab(tab, eventSiteMatches, {selector: selector}) || []
 }
 
 browser.runtime.onMessage.addListener((req, sender, sendResponse) => {

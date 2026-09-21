@@ -12,6 +12,7 @@
 
 import cssMatches from '../utils/css-matches.js'
 import { getSiteMatches } from '../utils/site-context.js'
+import cached from '../utils/cached.js'
 
 function render (record, attribute = '') {
   if (attribute) {
@@ -59,10 +60,7 @@ export default function createCss (cache = new Map()) {
     }
 
     const key = `${pattern}\u0000${selector}`
-    if (!cache.has(key)) {
-      cache.set(key, getSiteMatches(pattern, selector))
-    }
 
-    return cssArray(await cache.get(key), attribute)
+    return cssArray(await cached(cache, key, () => getSiteMatches(pattern, selector)), attribute)
   }
 }
