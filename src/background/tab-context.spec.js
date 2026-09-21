@@ -1,8 +1,9 @@
 import { expect, describe, it, vi, beforeEach } from 'vitest'
 
-const { listeners, tabsQuery, getSettings, trigger } = vi.hoisted(() => ({
+const { listeners, tabsQuery, tabsGet, getSettings, trigger } = vi.hoisted(() => ({
   listeners: [],
   tabsQuery: vi.fn(),
+  tabsGet: vi.fn(),
   getSettings: vi.fn(),
   trigger: vi.fn(),
 }))
@@ -10,7 +11,7 @@ const { listeners, tabsQuery, getSettings, trigger } = vi.hoisted(() => ({
 // the bundled dep resolves the factory as the namespace, so no default key
 vi.mock('webextension-polyfill', () => ({
   runtime: {onMessage: {addListener: (listener) => listeners.push(listener)}},
-  tabs: {query: tabsQuery},
+  tabs: {query: tabsQuery, get: tabsGet},
 }))
 vi.mock('../store/store-api.js', () => ({getSettings: getSettings}))
 vi.mock('./background-trigger.js', () => ({default: trigger}))
@@ -33,6 +34,7 @@ describe('tab-context', () => {
   beforeEach(() => {
     getSettings.mockReset().mockResolvedValue({blacklist: []})
     tabsQuery.mockReset().mockResolvedValue([linkedinTab])
+    tabsGet.mockReset().mockResolvedValue(linkedinTab)
     trigger.mockReset().mockResolvedValue([{}])
   })
 
@@ -45,16 +47,11 @@ describe('tab-context', () => {
       trigger.mockResolvedValue([{subject: 'hello'}])
 
       expect(await request('getTabContext', {pattern: 'linkedin.com'})).to.deep.equal({
+        tabId: 7,
         url: 'https://www.linkedin.com/messaging/',
         title: 'LinkedIn',
         data: {subject: 'hello'},
       })
-    })
-
-    it('should not report the tab id', async () => {
-      const context = await request('getTabContext', {pattern: 'linkedin.com'})
-
-      expect(context).to.not.have.property('tabId')
     })
 
     it('should answer null when no tab matches', async () => {
@@ -100,17 +97,36 @@ describe('tab-context', () => {
   })
 
   describe('getSiteMatches', () => {
-    it('should return the matches of the tab it found', async () => {
+    it('should read the tab {{#site}} already resolved', async () => {
       trigger.mockResolvedValue([[{text: 'one'}]])
 
-      expect(await request('getSiteMatches', {pattern: 'linkedin.com', selector: '.item'}))
+      expect(await request('getSiteMatches', {tabId: 7, selector: '.item'}))
         .to.deep.equal([{text: 'one'}])
+      expect(tabsGet).toHaveBeenCalledWith(7)
       expect(trigger).toHaveBeenCalledWith(eventSiteMatches, {selector: '.item'}, linkedinTab, 0)
     })
 
-    it('should return no matches when no tab matches', async () => {
-      expect(await request('getSiteMatches', {pattern: 'gmail.com', selector: '.item'}))
-        .to.deep.equal([])
+    it('should not query every tab', async () => {
+      await request('getSiteMatches', {tabId: 7, selector: '.item'})
+
+      expect(tabsQuery).not.toHaveBeenCalled()
+    })
+
+    it('should return no matches when the tab is gone', async () => {
+      trigger.mockResolvedValue([[{text: 'one'}]])
+      tabsGet.mockRejectedValue(new Error('No tab with id'))
+
+      expect(await request('getSiteMatches', {tabId: 7, selector: '.item'})).to.deep.equal([])
+      expect(trigger).not.toHaveBeenCalled()
+    })
+
+    it('should return no matches when the tab is blocklisted', async () => {
+      // the tab would answer, the blocklist is what stops us
+      trigger.mockResolvedValue([[{text: 'one'}]])
+      getSettings.mockResolvedValue({blacklist: ['linkedin.com']})
+
+      expect(await request('getSiteMatches', {tabId: 7, selector: '.item'})).to.deep.equal([])
+      expect(trigger).not.toHaveBeenCalled()
     })
 
     it('should fall back to every frame when the top frame has none', async () => {
@@ -118,7 +134,7 @@ describe('tab-context', () => {
         .mockResolvedValueOnce([[]])
         .mockResolvedValueOnce([[{text: 'from an iframe'}]])
 
-      expect(await request('getSiteMatches', {pattern: 'linkedin.com', selector: '.item'}))
+      expect(await request('getSiteMatches', {tabId: 7, selector: '.item'}))
         .to.deep.equal([{text: 'from an iframe'}])
     })
   })

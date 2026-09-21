@@ -47,9 +47,9 @@ export default function createCss (cache = new Map()) {
     const options = args.pop()
     const [selector = '', attribute = ''] = args
     // set by the {{#site}} block we're in, if any
-    const pattern = options.data?.site?.pattern
+    const tabId = options.data?.site?.tabId
 
-    if (!pattern) {
+    if (!tabId) {
       return cssArray(cssMatches(selector), attribute)
     }
 
@@ -59,8 +59,8 @@ export default function createCss (cache = new Map()) {
       document.createDocumentFragment().querySelector(selector)
     }
 
-    const key = JSON.stringify([pattern, selector])
+    const key = JSON.stringify([tabId, selector])
 
-    return cssArray(await cached(cache, key, () => getSiteMatches(pattern, selector)), attribute)
+    return cssArray(await cached(cache, key, () => getSiteMatches(tabId, selector)), attribute)
   }
 }

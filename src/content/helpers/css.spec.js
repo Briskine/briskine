@@ -166,7 +166,7 @@ describe('css handlebars helper in a site block', () => {
       data: {},
     })
     // the real one returns nothing without a selector
-    getSiteMatches.mockImplementation(async (pattern, selector) => {
+    getSiteMatches.mockImplementation(async (tabId, selector) => {
       if (!selector) {
         return []
       }
@@ -183,7 +183,7 @@ describe('css handlebars helper in a site block', () => {
 
     expect(await parseTemplate('{{#site "linkedin.com"}}{{css ".item"}}{{/site}}'))
       .to.equal('remote one')
-    expect(getSiteMatches).toHaveBeenCalledWith('linkedin.com', '.item')
+    expect(getSiteMatches).toHaveBeenCalledWith(7, '.item')
   })
 
   it('should read this page outside a site block', async () => {
@@ -226,16 +226,22 @@ describe('css handlebars helper in a site block', () => {
     expect(await parseTemplate('[{{#site "linkedin.com"}}{{css}}{{/site}}]')).to.equal('[]')
   })
 
-  it('should not share a selector between different site blocks', async () => {
-    getSiteMatches.mockImplementation(async (pattern) => {
-      return [{text: `from ${pattern}`, value: '', attributes: {}}]
+  it('should not share a selector between different tabs', async () => {
+    getSiteContext.mockImplementation(async (pattern) => ({
+      tabId: pattern === 'linkedin.com' ? 7 : 9,
+      url: `https://${pattern}/`,
+      title: pattern,
+      data: {},
+    }))
+    getSiteMatches.mockImplementation(async (tabId) => {
+      return [{text: `from tab ${tabId}`, value: '', attributes: {}}]
     })
 
     const parsed = await parseTemplate(
       '{{#site "linkedin.com"}}{{css ".item"}}{{/site}}|{{#site "gmail.com"}}{{css ".item"}}{{/site}}'
     )
 
-    expect(parsed).to.equal('from linkedin.com|from gmail.com')
+    expect(parsed).to.equal('from tab 7|from tab 9')
     expect(getSiteMatches).toHaveBeenCalledTimes(2)
   })
 

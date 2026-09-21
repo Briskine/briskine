@@ -10,13 +10,17 @@ import debug from '../debug.js'
 const contextRequest = 'getTabContext'
 const matchesRequest = 'getSiteMatches'
 
-async function findTab (pattern = '', windowId) {
-  let settings = {}
+async function allowedSettings () {
   try {
-    settings = await getSettings()
+    return await getSettings()
   } catch {
     // logged-out, the private blocklist still applies
+    return {}
   }
+}
+
+async function findTab (pattern = '', windowId) {
+  const settings = await allowedSettings()
 
   // compile once, then test every tab
   const urlPattern = toUrlPattern(pattern)
@@ -60,6 +64,7 @@ async function getTabContext ({pattern} = {}, windowId) {
   }
 
   return {
+    tabId: tab.id,
     url: tab.url || '',
     title: tab.title || '',
     // a tab with no plugin still reports itself, for {{css}} and @site
@@ -67,9 +72,14 @@ async function getTabContext ({pattern} = {}, windowId) {
   }
 }
 
-async function getSiteMatches ({pattern, selector} = {}, windowId) {
-  const tab = await findTab(pattern, windowId)
-  if (!tab) {
+async function getSiteMatches ({tabId, selector} = {}) {
+  const [settings, tab] = await Promise.all([
+    allowedSettings(),
+    // rejects when the tab is gone
+    browser.tabs.get(tabId).catch(() => null),
+  ])
+
+  if (!tab || isBlocklisted(settings, tab.url)) {
     return []
   }
 

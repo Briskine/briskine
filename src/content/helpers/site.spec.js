@@ -66,8 +66,8 @@ describe('site handlebars helper', () => {
   })
 
   it('should expose the tab on @site', async () => {
-    expect(await parseTemplate('{{#site "linkedin.com"}}{{@site.url}} {{@site.title}} {{@site.pattern}}{{/site}}'))
-      .to.equal('https://www.linkedin.com/messaging/ Messaging | LinkedIn linkedin.com')
+    expect(await parseTemplate('{{#site "linkedin.com"}}{{@site.url}} {{@site.title}}{{/site}}'))
+      .to.equal('https://www.linkedin.com/messaging/ Messaging | LinkedIn')
   })
 
   it('should reach the composing tab with ../', async () => {

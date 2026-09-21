@@ -27,11 +27,11 @@ export default function createSite (cache = new Map()) {
     }
 
     const frame = createFrame(options.data)
-    // the pattern is the cache key nested helpers look the tab up with
+    // nested helpers read the tab from here
     frame.site = {
+      tabId: context.tabId,
       url: context.url,
       title: context.title,
-      pattern: pattern,
     }
 
     return options.fn(await parseContext(context.data), {data: frame})

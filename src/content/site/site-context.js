@@ -24,10 +24,10 @@ export async function getSiteContext (pattern = '') {
   return ask(requestTabContext, {pattern: pattern}, null)
 }
 
-export async function getSiteMatches (pattern = '', selector = '') {
-  if (!pattern || !selector) {
+export async function getSiteMatches (tabId, selector = '') {
+  if (!tabId || !selector) {
     return []
   }
 
-  return ask(requestSiteMatches, {pattern: pattern, selector: selector}, [])
+  return ask(requestSiteMatches, {tabId: tabId, selector: selector}, [])
 }
