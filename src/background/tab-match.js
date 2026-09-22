@@ -2,12 +2,14 @@
  * Pick the tab a {{#site}} block reads from.
  */
 
-// linkedin.com, linkedin.com/sales, linkedin.com/*/sales, linkedin.com/in/:profile
+// briskine.com, briskine.com/sales, briskine.com/*/sales, briskine.com/in/:profile
 function normalize (pattern = '') {
   return pattern
     .trim()
     .replace(/^[a-z]+:\/\//i, '')
-    .replace(/[?#].*$/, '')
+    // a ? before a / or the end is a modifier, anything else starts the query
+    .replace(/\?(?![/]|$).*$/, '')
+    .replace(/#.*$/, '')
     .replace(/^\*\./, '')
     .replace(/^www\./, '')
     .replace(/\/+$/, '')

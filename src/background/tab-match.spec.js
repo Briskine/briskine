@@ -10,30 +10,37 @@ describe('tab-match', () => {
   describe('matchesUrl', () => {
     const matches = [
       // host, with and without subdomains
-      ['https://linkedin.com/feed/', 'linkedin.com'],
-      ['https://www.linkedin.com/messaging/', 'linkedin.com'],
+      ['https://briskine.com/feed/', 'briskine.com'],
+      ['https://www.briskine.com/messaging/', 'briskine.com'],
       ['https://mail.google.com/mail/u/0/', 'google.com'],
       // path prefixes
-      ['https://www.linkedin.com/sales/inbox/', 'linkedin.com/sales'],
+      ['https://www.briskine.com/sales/inbox/', 'briskine.com/sales'],
       ['https://mail.google.com/mail/u/0/', 'mail.google.com/mail/u/0'],
       // wildcards
-      ['https://www.linkedin.com/messaging/', 'linkedin.com/*'],
-      ['https://www.linkedin.com/sales/inbox/', 'linkedin.com/*'],
+      ['https://www.briskine.com/messaging/', 'briskine.com/*'],
+      ['https://www.briskine.com/sales/inbox/', 'briskine.com/*'],
       // /* matches the bare root too
-      ['https://www.linkedin.com/', 'linkedin.com/*'],
-      ['https://www.linkedin.com/a/sales/', 'linkedin.com/*/sales'],
-      ['https://www.linkedin.com/a/b/sales/', 'linkedin.com/*/sales'],
-      ['https://www.linkedin.com/in/someone/', 'linkedin.com/in/*'],
+      ['https://www.briskine.com/', 'briskine.com/*'],
+      ['https://www.briskine.com/a/sales/', 'briskine.com/*/sales'],
+      ['https://www.briskine.com/a/b/sales/', 'briskine.com/*/sales'],
+      ['https://www.briskine.com/in/someone/', 'briskine.com/in/*'],
       ['https://mail.google.com/mail/u/0/', 'mail.google.com/mail/*/0'],
       // scheme, www. and *. are insignificant
-      ['https://linkedin.com/feed/', 'www.linkedin.com'],
-      ['https://www.linkedin.com/feed/', 'https://www.linkedin.com'],
-      ['https://www.linkedin.com/feed/', '*.linkedin.com'],
-      ['https://www.linkedin.com/messaging/', 'linkedin.com/'],
+      ['https://briskine.com/feed/', 'www.briskine.com'],
+      ['https://www.briskine.com/feed/', 'https://www.briskine.com'],
+      ['https://www.briskine.com/feed/', '*.briskine.com'],
+      ['https://www.briskine.com/messaging/', 'briskine.com/'],
       // subdomains at any depth
-      ['https://a.b.linkedin.com/feed/', 'linkedin.com'],
+      ['https://a.b.briskine.com/feed/', 'briskine.com'],
       // URLPattern named groups
-      ['https://www.linkedin.com/in/someone/', 'linkedin.com/in/:profile'],
+      ['https://www.briskine.com/in/someone/', 'briskine.com/in/:profile'],
+      // optional modifiers
+      ['https://www.briskine.com/in/', 'briskine.com/in/:profile?'],
+      ['https://www.briskine.com/in/someone/', 'briskine.com/in/:profile?'],
+      ['https://www.briskine.com/sales/', 'briskine.com/sales{/inbox}?'],
+      ['https://www.briskine.com/sales/inbox/', 'briskine.com/sales{/inbox}?'],
+      // query strings are still dropped
+      ['https://www.briskine.com/sales/', 'briskine.com/sales?foo=1'],
     ]
 
     for (const [url, pattern] of matches) {
@@ -44,35 +51,40 @@ describe('tab-match', () => {
 
     const rejects = [
       // paths break on a slash
-      ['https://www.linkedin.com/messaging/', 'linkedin.com/sales'],
-      ['https://www.linkedin.com/salesforce/', 'linkedin.com/sales'],
+      ['https://www.briskine.com/messaging/', 'briskine.com/sales'],
+      ['https://www.briskine.com/salesforce/', 'briskine.com/sales'],
       // * has to match something
-      ['https://www.linkedin.com/sales/', 'linkedin.com/*/sales'],
+      ['https://www.briskine.com/sales/', 'briskine.com/*/sales'],
       // lookalike hosts
-      ['https://mylinkedin.com/', 'linkedin.com'],
-      ['https://linkedin.com.evil.test/', 'linkedin.com'],
-      ['https://linkedin.com.evil.test/sales', 'linkedin.com/sales'],
+      ['https://mybriskine.com/', 'briskine.com'],
+      ['https://briskine.com.evil.test/', 'briskine.com'],
+      ['https://briskine.com.evil.test/sales', 'briskine.com/sales'],
       // anywhere other than host + path
-      ['https://evil.test/linkedin.com', 'linkedin.com'],
-      ['https://evil.test/?next=linkedin.com', 'linkedin.com'],
-      ['https://evil.test/#linkedin.com', 'linkedin.com'],
-      ['https://linkedin.com@evil.test/', 'linkedin.com'],
+      ['https://evil.test/briskine.com', 'briskine.com'],
+      ['https://evil.test/?next=briskine.com', 'briskine.com'],
+      ['https://evil.test/#briskine.com', 'briskine.com'],
+      ['https://briskine.com@evil.test/', 'briskine.com'],
       // the host is literal, and names a domain
-      ['https://www.linkedin.com/', 'com'],
-      ['https://www.linkedin.com/', 'linkedin'],
-      ['https://www.linkedin.com/', '*'],
-      ['https://www.linkedin.com/', '*.com'],
-      ['https://www.linkedin.com/', '*.*'],
+      ['https://www.briskine.com/', 'com'],
+      ['https://www.briskine.com/', 'briskine'],
+      ['https://www.briskine.com/', '*'],
+      ['https://www.briskine.com/', '*.com'],
+      ['https://www.briskine.com/', '*.*'],
+      // a modifier only reaches a group, not a literal
+      ['https://www.briskine.com/sales/', 'briskine.com/sales?'],
+      // the query is dropped, it never widens the path
+      ['https://www.briskine.com/sales/', 'briskine.com/messaging?next=/sales'],
+      ['https://www.briskine.com/salesforce/', 'briskine.com/sales{/inbox}?'],
       // regex groups would hang the service worker
-      ['https://www.linkedin.com/aaaa/', 'linkedin.com/(a+)+b'],
+      ['https://www.briskine.com/aaaa/', 'briskine.com/(a+)+b'],
       // malformed
-      ['https://www.linkedin.com/a/', 'linkedin.com/{unclosed'],
-      ['https://www.linkedin.com/', '{*.}?linkedin.com'],
-      ['https://www.linkedin.com/', ':host.com'],
+      ['https://www.briskine.com/a/', 'briskine.com/{unclosed'],
+      ['https://www.briskine.com/', '{*.}?briskine.com'],
+      ['https://www.briskine.com/', ':host.com'],
       // unparseable, or nothing to match
-      ['about:blank', 'linkedin.com'],
-      ['', 'linkedin.com'],
-      ['https://linkedin.com/', ''],
+      ['about:blank', 'briskine.com'],
+      ['', 'briskine.com'],
+      ['https://briskine.com/', ''],
     ]
 
     for (const [url, pattern] of rejects) {
