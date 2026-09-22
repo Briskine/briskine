@@ -9,18 +9,14 @@ export default function helperMoment (...args) {
 
   // a value that renders as text, like the css helper's matches, can be a date
   const dateText = toText(dateParam)
-
-  // check if str is a valid date
-  let dateString
-  if (dateText && moment(dateText).isValid()) {
-    dateString = dateText
-  }
-  const date = moment(dateString)
+  const parsed = dateText ? moment(dateText) : null
+  // anything we can't read as a date falls back to now
+  const date = parsed?.isValid() ? parsed : moment()
 
   // get the default locale from the browser
   let defaultLocale = 'en'
   if (typeof navigator !== 'undefined') {
-      defaultLocale = navigator.language
+    defaultLocale = navigator.language
   }
 
   const opts = Object.assign(
@@ -57,10 +53,7 @@ export default function helperMoment (...args) {
     }
 
     // only supported methods
-    if (
-      typeof date[key] === 'function' &&
-      !displayMethods.includes(key)
-    ) {
+    if (typeof date[key] === 'function') {
       // support multiple function params with ;
       const params = typeof opts[key] === 'string' ? opts[key].split(';').map((s) => s.trim()) : [opts[key]]
 
