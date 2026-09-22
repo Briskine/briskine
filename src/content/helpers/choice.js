@@ -1,6 +1,5 @@
 /*
  * TODO DEPRECATED
- *
  * Legacy random choice helper.
  * {{ choice 'one, two, three' }}
  */

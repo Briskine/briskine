@@ -20,10 +20,7 @@ import createCss from '../helpers/css.js'
 import createSite from '../helpers/site.js'
 
 const helpers = {
-  choice,
-
   moment,
-  domain,
   text,
   list,
   capitalize,
@@ -33,6 +30,10 @@ const helpers = {
   compare,
   random,
   cursor,
+
+  // TODO deprecated legacy helpers
+  choice,
+  domain,
 }
 
 // cache partials because lots of templates can get expensive
