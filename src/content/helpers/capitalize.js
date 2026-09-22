@@ -1,18 +1,13 @@
 // capitalize string helper
-export function capitalize (str = '') {
-  if (typeof str !== 'string') {
-    return ''
-  }
+import toText from '../utils/to-text.js'
 
-  return str.charAt(0).toUpperCase() + str.slice(1)
+export function capitalize (str = '') {
+  const text = toText(str)
+  return text.charAt(0).toUpperCase() + text.slice(1)
 }
 
 export function capitalizeAll (str = '') {
-  if (typeof str !== 'string') {
-    return ''
-  }
-
-  return str.replace(/\w\S*/g, function(word) {
+  return toText(str).replace(/\w\S*/g, function(word) {
     return capitalize(word)
   })
 }

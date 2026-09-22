@@ -134,6 +134,24 @@ describe('css handlebars helper', () => {
       .to.contain('10 EUR')
   })
 
+  it('should work with the string helpers', async () => {
+    markup('<span class="name">john</span>')
+    expect(await parseTemplate('{{capitalize (css ".name")}}')).to.equal('John')
+    expect(await parseTemplate('{{text (css ".name") "toUpperCase"}}')).to.equal('JOHN')
+  })
+
+  it('should work with the string helpers inside each', async () => {
+    markup('<span class="name">john</span><span class="name">jane</span>')
+    expect(await parseTemplate('{{#each (css ".name")}}[{{capitalize this}}]{{/each}}'))
+      .to.equal('[John][Jane]')
+  })
+
+  it('should work with the string helpers on an attribute', async () => {
+    markup('<a class="link" title="briskine dashboard">x</a>')
+    expect(await parseTemplate('{{capitalizeAll (css ".link" "title")}}'))
+      .to.equal('Briskine Dashboard')
+  })
+
   it('should return light dom matches before shadow dom ones', async () => {
     const $container = markup('<div class="host"></div><div class="item">light</div>')
     const shadow = $container.querySelector('.host').attachShadow({mode: 'open'})
