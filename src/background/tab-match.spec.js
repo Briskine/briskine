@@ -1,6 +1,6 @@
 import { expect, describe, it } from 'vitest'
 
-import { toUrlPattern, testUrl, pickTab } from './tab-match.js'
+import { toUrlPattern, testUrl, sortTabs } from './tab-match.js'
 
 function matchesUrl (url, pattern) {
   return testUrl(toUrlPattern(pattern), url)
@@ -94,29 +94,31 @@ describe('tab-match', () => {
     }
   })
 
-  describe('pickTab', () => {
+  describe('sortTabs', () => {
     const tabs = [
       {id: 1, active: false, windowId: 1, lastAccessed: 30},
       {id: 2, active: true, windowId: 2, lastAccessed: 10},
       {id: 3, active: false, windowId: 1, lastAccessed: 20},
     ]
 
-    it('should prefer the active tab in the current window', () => {
-      expect(pickTab(tabs, 2)?.id).to.equal(2)
+    const ids = (sorted) => sorted.map((tab) => tab.id)
+
+    it('should put the active tab in the current window first', () => {
+      expect(ids(sortTabs(tabs, 2))).to.deep.equal([2, 1, 3])
     })
 
-    it('should fall back to the most recently accessed tab', () => {
-      expect(pickTab(tabs, 1)?.id).to.equal(1)
+    it('should order the rest by last accessed', () => {
+      expect(ids(sortTabs(tabs, 1))).to.deep.equal([1, 3, 2])
     })
 
     it('should not mutate the tabs it was given', () => {
-      const original = tabs.map((tab) => tab.id)
-      pickTab(tabs, 99)
-      expect(tabs.map((tab) => tab.id)).to.deep.equal(original)
+      const original = ids(tabs)
+      sortTabs(tabs, 99)
+      expect(ids(tabs)).to.deep.equal(original)
     })
 
-    it('should return null when there are no tabs', () => {
-      expect(pickTab([], 1)).to.equal(null)
+    it('should return nothing when there are no tabs', () => {
+      expect(sortTabs([], 1)).to.deep.equal([])
     })
   })
 })

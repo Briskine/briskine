@@ -56,13 +56,14 @@ export function testUrl (urlPattern, url = '') {
   }
 }
 
-export function pickTab (tabs = [], windowId) {
-  const active = tabs.find((tab) => tab.active && tab.windowId === windowId)
-  if (active) {
-    return active
-  }
+export function sortTabs (tabs = [], windowId) {
+  const inView = (tab) => tab.active && tab.windowId === windowId
 
-  return [...tabs]
-    .sort((a, b) => (b.lastAccessed || 0) - (a.lastAccessed || 0))
-    .at(0) || null
+  return [...tabs].sort((a, b) => {
+    if (inView(a) !== inView(b)) {
+      return inView(a) ? -1 : 1
+    }
+
+    return (b.lastAccessed || 0) - (a.lastAccessed || 0)
+  })
 }

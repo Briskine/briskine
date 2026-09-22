@@ -10,7 +10,10 @@ const { listeners, tabsQuery, tabsGet, getSettings, trigger } = vi.hoisted(() =>
 
 // the bundled dep resolves the factory as the namespace, so no default key
 vi.mock('webextension-polyfill', () => ({
-  runtime: {onMessage: {addListener: (listener) => listeners.push(listener)}},
+  runtime: {
+    onMessage: {addListener: (listener) => listeners.push(listener)},
+    getManifest: () => ({content_scripts: [{matches: ['https://*/*', 'http://*/*']}]}),
+  },
   tabs: {query: tabsQuery, get: tabsGet},
 }))
 vi.mock('../store/store-api.js', () => ({getSettings: getSettings}))
@@ -20,6 +23,7 @@ import { eventSiteData, eventSiteMatches } from '../config.js'
 import './tab-context.js'
 
 const briskineTab = {id: 7, url: 'https://www.briskine.com/messaging/', title: 'Briskine', active: true, windowId: 1}
+const olderTab = {id: 8, url: 'https://www.briskine.com/feed/', title: 'Feed', active: false, windowId: 1, lastAccessed: 1}
 
 function request (type, data) {
   return new Promise((resolve) => {
@@ -72,6 +76,52 @@ describe('tab-context', () => {
       const context = await request('getTabContext', {pattern: 'briskine.com'})
 
       expect(context.url).to.equal('https://www.briskine.com/messaging/')
+      expect(context.data).to.deep.equal({})
+    })
+
+    it('should only look at tabs a content script could run in', async () => {
+      await request('getTabContext', {pattern: 'briskine.com'})
+
+      expect(tabsQuery).toHaveBeenCalledWith({
+        url: ['https://*/*', 'http://*/*'],
+        discarded: false,
+      })
+    })
+
+    it('should move on to the next match when a tab never answers', async () => {
+      tabsQuery.mockResolvedValue([briskineTab, olderTab])
+      // the restricted tab answers nothing at all, on either frame
+      trigger
+        .mockResolvedValueOnce(undefined)
+        .mockResolvedValueOnce(undefined)
+        .mockResolvedValue([{subject: 'from the next tab'}])
+
+      const context = await request('getTabContext', {pattern: 'briskine.com'})
+
+      expect(context.tabId).to.equal(8)
+      expect(context.data).to.deep.equal({subject: 'from the next tab'})
+    })
+
+    it('should keep the first tab that answers, even with no plugin data', async () => {
+      tabsQuery.mockResolvedValue([briskineTab, olderTab])
+      trigger
+        .mockResolvedValueOnce([{}])
+        .mockResolvedValueOnce([{}])
+        .mockResolvedValue([{subject: 'from the next tab'}])
+
+      const context = await request('getTabContext', {pattern: 'briskine.com'})
+
+      expect(context.tabId).to.equal(7)
+      expect(context.data).to.deep.equal({})
+    })
+
+    it('should report the best match when no tab answers', async () => {
+      tabsQuery.mockResolvedValue([briskineTab, olderTab])
+      trigger.mockResolvedValue(undefined)
+
+      const context = await request('getTabContext', {pattern: 'briskine.com'})
+
+      expect(context.tabId).to.equal(7)
       expect(context.data).to.deep.equal({})
     })
 
