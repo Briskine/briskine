@@ -146,6 +146,11 @@ describe('css handlebars helper', () => {
       .to.equal('[John][Jane]')
   })
 
+  it('should work as a date', async () => {
+    markup('<span class="date">2020-01-02</span>')
+    expect(await parseTemplate('{{moment (css ".date") format="YYYY MMM"}}')).to.equal('2020 Jan')
+  })
+
   it('should work with the string helpers on an attribute', async () => {
     markup('<a class="link" title="briskine dashboard">x</a>')
     expect(await parseTemplate('{{capitalizeAll (css ".link" "title")}}'))
