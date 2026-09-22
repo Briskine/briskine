@@ -184,16 +184,13 @@ async function updateCache ({collection, data}) {
 
   const eventName = `${collection}-updated`
   let eventData = data
-
   if (collection === 'templates') {
     eventData = parseTemplatesCollection(data)
-    trigger(eventName, eventData)
   } else if (collection === 'tags') {
     eventData = parseTagsCollection(data)
-    trigger(eventName, eventData)
-  } else {
-    trigger(eventName, eventData)
   }
+
+  trigger(eventName, eventData)
 
   await setExtensionData({
     lastSync: Date.now(),
