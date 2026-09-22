@@ -161,8 +161,8 @@ describe('css handlebars helper in a site block', () => {
     getSiteMatches.mockReset()
     getSiteContext.mockResolvedValue({
       tabId: 7,
-      url: 'https://www.linkedin.com/',
-      title: 'LinkedIn',
+      url: 'https://www.briskine.com/',
+      title: 'Briskine',
       data: {},
     })
     // the real one returns nothing without a selector
@@ -181,7 +181,7 @@ describe('css handlebars helper in a site block', () => {
   it('should read from the other tab', async () => {
     markup('<div class="item">local</div>')
 
-    expect(await parseTemplate('{{#site "linkedin.com"}}{{css ".item"}}{{/site}}'))
+    expect(await parseTemplate('{{#site "briskine.com"}}{{css ".item"}}{{/site}}'))
       .to.equal('remote one')
     expect(getSiteMatches).toHaveBeenCalledWith(7, '.item')
   })
@@ -196,39 +196,39 @@ describe('css handlebars helper in a site block', () => {
   it('should read this page again after the site block closes', async () => {
     markup('<div class="item">local</div>')
 
-    expect(await parseTemplate('{{#site "linkedin.com"}}{{css ".item"}}{{/site}}|{{css ".item"}}'))
+    expect(await parseTemplate('{{#site "briskine.com"}}{{css ".item"}}{{/site}}|{{css ".item"}}'))
       .to.equal('remote one|local')
   })
 
   it('should build the same shape as a local read', async () => {
-    expect(await parseTemplate('{{#site "linkedin.com"}}{{#each (css ".item")}}[{{this}}:{{lookup attributes "href"}}]{{/each}}{{/site}}'))
+    expect(await parseTemplate('{{#site "briskine.com"}}{{#each (css ".item")}}[{{this}}:{{lookup attributes "href"}}]{{/each}}{{/site}}'))
       .to.equal('[remote one:/one][remote two:/two]')
   })
 
   it('should render an attribute', async () => {
-    expect(await parseTemplate('{{#site "linkedin.com"}}{{css ".item" "href"}}{{/site}}'))
+    expect(await parseTemplate('{{#site "briskine.com"}}{{css ".item" "href"}}{{/site}}'))
       .to.equal('/one')
   })
 
   it('should read each selector once per render', async () => {
-    await parseTemplate('{{#site "linkedin.com"}}{{css ".item"}}{{css ".item"}}{{css ".other"}}{{/site}}')
+    await parseTemplate('{{#site "briskine.com"}}{{css ".item"}}{{css ".item"}}{{css ".other"}}{{/site}}')
 
     expect(getSiteMatches).toHaveBeenCalledTimes(2)
   })
 
   it('should render the error for an invalid selector', async () => {
-    expect(await parseTemplate('{{#site "linkedin.com"}}{{css "!!!"}}{{/site}}'))
+    expect(await parseTemplate('{{#site "briskine.com"}}{{css "!!!"}}{{/site}}'))
       .to.match(/^<pre>/)
     expect(getSiteMatches).not.toHaveBeenCalled()
   })
 
   it('should render nothing without a selector', async () => {
-    expect(await parseTemplate('[{{#site "linkedin.com"}}{{css}}{{/site}}]')).to.equal('[]')
+    expect(await parseTemplate('[{{#site "briskine.com"}}{{css}}{{/site}}]')).to.equal('[]')
   })
 
   it('should not share a selector between different tabs', async () => {
     getSiteContext.mockImplementation(async (pattern) => ({
-      tabId: pattern === 'linkedin.com' ? 7 : 9,
+      tabId: pattern === 'briskine.com' ? 7 : 9,
       url: `https://${pattern}/`,
       title: pattern,
       data: {},
@@ -238,7 +238,7 @@ describe('css handlebars helper in a site block', () => {
     })
 
     const parsed = await parseTemplate(
-      '{{#site "linkedin.com"}}{{css ".item"}}{{/site}}|{{#site "gmail.com"}}{{css ".item"}}{{/site}}'
+      '{{#site "briskine.com"}}{{css ".item"}}{{/site}}|{{#site "gmail.com"}}{{css ".item"}}{{/site}}'
     )
 
     expect(parsed).to.equal('from tab 7|from tab 9')
@@ -248,6 +248,6 @@ describe('css handlebars helper in a site block', () => {
   it('should render nothing when the other tab has no match', async () => {
     getSiteMatches.mockResolvedValue([])
 
-    expect(await parseTemplate('[{{#site "linkedin.com"}}{{css ".item"}}{{/site}}]')).to.equal('[]')
+    expect(await parseTemplate('[{{#site "briskine.com"}}{{css ".item"}}{{/site}}]')).to.equal('[]')
   })
 })

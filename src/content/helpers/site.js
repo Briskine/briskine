@@ -1,8 +1,8 @@
 /*
  * Site helper
  *
- * {{#site "linkedin.com"}}Hi {{to.first_name}}{{else}}Hi there{{/site}}
- * {{#site "linkedin.com"}}{{to.email}} / {{../to.email}} / {{@site.url}}{{/site}}
+ * {{#site "briskine.com"}}Hi {{to.first_name}}{{else}}Hi there{{/site}}
+ * {{#site "briskine.com"}}{{to.email}} / {{../to.email}} / {{@site.url}}{{/site}}
  *
  * Switches the block context to the plugin data of another open tab.
  * Renders the else branch only when no tab matched.

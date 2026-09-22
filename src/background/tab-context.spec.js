@@ -19,7 +19,7 @@ vi.mock('./background-trigger.js', () => ({default: trigger}))
 import { eventSiteData, eventSiteMatches } from '../config.js'
 import './tab-context.js'
 
-const linkedinTab = {id: 7, url: 'https://www.linkedin.com/messaging/', title: 'LinkedIn', active: true, windowId: 1}
+const briskineTab = {id: 7, url: 'https://www.briskine.com/messaging/', title: 'Briskine', active: true, windowId: 1}
 
 function request (type, data) {
   return new Promise((resolve) => {
@@ -33,8 +33,8 @@ function request (type, data) {
 describe('tab-context', () => {
   beforeEach(() => {
     getSettings.mockReset().mockResolvedValue({blacklist: []})
-    tabsQuery.mockReset().mockResolvedValue([linkedinTab])
-    tabsGet.mockReset().mockResolvedValue(linkedinTab)
+    tabsQuery.mockReset().mockResolvedValue([briskineTab])
+    tabsGet.mockReset().mockResolvedValue(briskineTab)
     trigger.mockReset().mockResolvedValue([{}])
   })
 
@@ -46,10 +46,10 @@ describe('tab-context', () => {
     it('should report the tab it matched', async () => {
       trigger.mockResolvedValue([{subject: 'hello'}])
 
-      expect(await request('getTabContext', {pattern: 'linkedin.com'})).to.deep.equal({
+      expect(await request('getTabContext', {pattern: 'briskine.com'})).to.deep.equal({
         tabId: 7,
-        url: 'https://www.linkedin.com/messaging/',
-        title: 'LinkedIn',
+        url: 'https://www.briskine.com/messaging/',
+        title: 'Briskine',
         data: {subject: 'hello'},
       })
     })
@@ -63,24 +63,24 @@ describe('tab-context', () => {
     })
 
     it('should skip blocklisted tabs', async () => {
-      getSettings.mockResolvedValue({blacklist: ['linkedin.com']})
+      getSettings.mockResolvedValue({blacklist: ['briskine.com']})
 
-      expect(await request('getTabContext', {pattern: 'linkedin.com'})).to.equal(null)
+      expect(await request('getTabContext', {pattern: 'briskine.com'})).to.equal(null)
     })
 
     it('should still report a tab with no plugin data', async () => {
-      const context = await request('getTabContext', {pattern: 'linkedin.com'})
+      const context = await request('getTabContext', {pattern: 'briskine.com'})
 
-      expect(context.url).to.equal('https://www.linkedin.com/messaging/')
+      expect(context.url).to.equal('https://www.briskine.com/messaging/')
       expect(context.data).to.deep.equal({})
     })
 
     it('should ask the top frame first', async () => {
       trigger.mockResolvedValue([{subject: 'hello'}])
-      await request('getTabContext', {pattern: 'linkedin.com'})
+      await request('getTabContext', {pattern: 'briskine.com'})
 
       expect(trigger).toHaveBeenCalledTimes(1)
-      expect(trigger).toHaveBeenCalledWith(eventSiteData, {}, linkedinTab, 0)
+      expect(trigger).toHaveBeenCalledWith(eventSiteData, {}, briskineTab, 0)
     })
 
     it('should fall back to every frame when the top frame has nothing', async () => {
@@ -88,10 +88,10 @@ describe('tab-context', () => {
         .mockResolvedValueOnce([{}])
         .mockResolvedValueOnce([{subject: 'from an iframe'}])
 
-      const context = await request('getTabContext', {pattern: 'linkedin.com'})
+      const context = await request('getTabContext', {pattern: 'briskine.com'})
 
       expect(trigger).toHaveBeenCalledTimes(2)
-      expect(trigger).toHaveBeenLastCalledWith(eventSiteData, {}, linkedinTab, undefined)
+      expect(trigger).toHaveBeenLastCalledWith(eventSiteData, {}, briskineTab, undefined)
       expect(context.data).to.deep.equal({subject: 'from an iframe'})
     })
   })
@@ -103,7 +103,7 @@ describe('tab-context', () => {
       expect(await request('getSiteMatches', {tabId: 7, selector: '.item'}))
         .to.deep.equal([{text: 'one'}])
       expect(tabsGet).toHaveBeenCalledWith(7)
-      expect(trigger).toHaveBeenCalledWith(eventSiteMatches, {selector: '.item'}, linkedinTab, 0)
+      expect(trigger).toHaveBeenCalledWith(eventSiteMatches, {selector: '.item'}, briskineTab, 0)
     })
 
     it('should not query every tab', async () => {
@@ -123,7 +123,7 @@ describe('tab-context', () => {
     it('should return no matches when the tab is blocklisted', async () => {
       // the tab would answer, the blocklist is what stops us
       trigger.mockResolvedValue([[{text: 'one'}]])
-      getSettings.mockResolvedValue({blacklist: ['linkedin.com']})
+      getSettings.mockResolvedValue({blacklist: ['briskine.com']})
 
       expect(await request('getSiteMatches', {tabId: 7, selector: '.item'})).to.deep.equal([])
       expect(trigger).not.toHaveBeenCalled()
