@@ -82,10 +82,8 @@ describe('tab-context', () => {
     it('should only look at tabs a content script could run in', async () => {
       await request('getTabContext', {pattern: 'briskine.com'})
 
-      expect(tabsQuery).toHaveBeenCalledWith({
-        url: ['https://*/*', 'http://*/*'],
-        discarded: false,
-      })
+      // a discarded tab still matched, it just won't answer
+      expect(tabsQuery).toHaveBeenCalledWith({url: ['https://*/*', 'http://*/*']})
     })
 
     it('should move on to the next match when a tab never answers', async () => {

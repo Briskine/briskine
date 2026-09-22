@@ -29,7 +29,7 @@ async function findTabs (pattern = '', windowId) {
 
   // only the tabs a content script could run in
   const [contentScripts] = browser.runtime.getManifest().content_scripts
-  const tabs = await browser.tabs.query({url: contentScripts.matches, discarded: false})
+  const tabs = await browser.tabs.query({url: contentScripts.matches})
   const candidates = tabs.filter((tab) => {
     return tab.id
       && testUrl(urlPattern, tab.url)
