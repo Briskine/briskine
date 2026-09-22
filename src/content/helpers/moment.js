@@ -19,15 +19,11 @@ export default function helperMoment (...args) {
     defaultLocale = navigator.language
   }
 
-  const opts = Object.assign(
-    {
-      locale: defaultLocale,
-      format: 'MMMM DD YYYY'
-    },
-    options?.hash,
-  )
-
-  date.locale(opts.locale)
+  const opts = {
+    locale: defaultLocale,
+    format: 'MMMM DD YYYY',
+    ...options?.hash,
+  }
 
   let display = 'format'
   let displayParams = []
@@ -41,6 +37,12 @@ export default function helperMoment (...args) {
   ]
 
   for (const key in opts) {
+    // applied after the methods, to always use en values for properties, and
+    // values like isoWeekday="Thursday" still parse.
+    if (key === 'locale') {
+      continue
+    }
+
     // handle only last display method
     if (displayMethods.includes(key)) {
       display = key
@@ -60,6 +62,8 @@ export default function helperMoment (...args) {
       date[key].apply(date, params)
     }
   }
+
+  date.locale(opts.locale)
 
   return date[display].apply(date, displayParams)
 }

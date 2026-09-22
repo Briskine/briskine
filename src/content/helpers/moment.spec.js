@@ -26,6 +26,15 @@ describe('moment handlebars helper', () => {
     expect(await parseTemplate('{{moment format="YYYY"}}')).to.equal('2020')
   })
 
+  it('should parse english option values under another locale', async () => {
+    expect(await parseTemplate('{{moment locale="fr" isoWeekday="Thursday" format="YYYY-MM-DD"}}'))
+      .to.equal('2020-07-02')
+  })
+
+  it('should still render output in the requested locale', async () => {
+    expect(await parseTemplate('{{moment locale="fr" format="dddd"}}')).to.equal('mercredi')
+  })
+
   it('should keep the hash params after an extra argument', async () => {
     expect(await parseTemplate('{{moment "2020-01-01" "ignored" format="YYYY"}}')).to.equal('2020')
   })
