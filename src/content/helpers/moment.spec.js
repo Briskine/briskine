@@ -26,6 +26,10 @@ describe('moment handlebars helper', () => {
     expect(await parseTemplate('{{moment format="YYYY"}}')).to.equal('2020')
   })
 
+  it('should keep the hash params after an extra argument', async () => {
+    expect(await parseTemplate('{{moment "2020-01-01" "ignored" format="YYYY"}}')).to.equal('2020')
+  })
+
   it('should default format custom date value', async () => {
     expect(await parseTemplate('{{moment "2020-01-01"}}')).to.equal('January 01 2020')
   })

@@ -2,7 +2,11 @@ import moment from 'moment/min/moment-with-locales.js'
 
 import toText from '../utils/to-text.js'
 
-export default function helperMoment (dateParam, options) {
+export default function helperMoment (...args) {
+  // last argument is the handlebars options object
+  const options = args.pop()
+  const [dateParam] = args
+
   // a value that renders as text, like the css helper's matches, can be a date
   const dateText = toText(dateParam)
 
@@ -13,26 +17,18 @@ export default function helperMoment (dateParam, options) {
   }
   const date = moment(dateString)
 
-  let opts = {}
-  // without text of its own, the first argument is the options hash
-  if (!dateText && typeof dateParam === 'object') {
-    opts = dateParam
-  } else if (typeof options === 'object') {
-    opts = options
-  }
-
   // get the default locale from the browser
   let defaultLocale = 'en'
   if (typeof navigator !== 'undefined') {
       defaultLocale = navigator.language
   }
 
-  opts = Object.assign(
+  const opts = Object.assign(
     {
       locale: defaultLocale,
       format: 'MMMM DD YYYY'
     },
-    opts.hash,
+    options?.hash,
   )
 
   date.locale(opts.locale)
