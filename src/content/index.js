@@ -133,11 +133,12 @@ async function startup () {
     document.dispatchEvent(new CustomEvent(eventDestroy))
     document.addEventListener(eventDestroy, destructor, {once: true})
 
+    // components needed on all sites,
+    // even blocklisted or before an editor was focused.
     setupStatus()
     setupDashboardEvents()
-    // answers other tabs even when nothing here was ever focused,
-    // so it can't go in init()
     setupSiteData()
+
     removeFocusListeners = addFocusListeners(initOnFocus, 'focusin')
 
     // cleanup

@@ -14,7 +14,6 @@ async function allowedSettings () {
   try {
     return await getSettings()
   } catch {
-    // logged-out, the private blocklist still applies
     return {}
   }
 }
