@@ -49,17 +49,21 @@ async function makeFieldsEditable (element) {
     // specific selector to avoid triggering focus when the fields are already editable
     const $to = $main.querySelector('div[tabindex]:nth-child(2):not([role="button"])')
     if ($to) {
-      // cache selection
-      const cachedRange = getSelectionRange(element)
+      // when reading another tab nothing is focused,
+      // so there's nothing to restore
+      const hadFocus = element.ownerDocument.activeElement === element
+      const cachedRange = hadFocus ? getSelectionRange(element) : null
 
       $to.dispatchEvent(new FocusEvent('focusin', {bubbles: true}))
-      // give it a second to show the editable from/to/cc/bcc fields
-      await new Promise((resolve) => setTimeout(resolve, 100))
+      // wait for the fields
+      await waitForElement(() => getToContainer(element), {root: element.ownerDocument.body, settle: false})
+        .catch(() => {})
 
-      // restore selection
-      element.focus()
-      if (cachedRange) {
-        await setSelectionRange(element, cachedRange)
+      if (hadFocus) {
+        element.focus()
+        if (cachedRange) {
+          await setSelectionRange(element, cachedRange)
+        }
       }
     }
   }
@@ -109,49 +113,58 @@ function getFieldData (field, $container) {
   })
 }
 
-// selector for to/cc/bcc containers
-function getContainers (editable) {
-  return Array.from(getParent(editable).querySelectorAll('[contenteditable=true]:not([aria-multiline=true])'))
+// the compose form, docked or in the popup.
+// the reading pane has its own MSG_*_TO and MSG_*_FROM, so stay inside it.
+function getCompose (editable) {
+  return editable.closest('[id^="docking_InitVisiblePart"], [data-app-section="Form_Content"]')
+    || getParent(editable)
+}
+
+// eg. MSG_74cda7ce35c_TO
+function getField (editable, name) {
+  return getCompose(editable).querySelector(`[id^="MSG_"][id$="_${name}"]`)
+}
+
+function getRecipients (editable, name) {
+  return getField(editable, name)?.querySelector('[contenteditable=true]')
 }
 
 function getToContainer (editable) {
-  return getContainers(editable)[0]
+  return getRecipients(editable, 'TO')
 }
 
 function getCcContainer (editable) {
-  return getContainers(editable)[1]
+  return getRecipients(editable, 'CC')
 }
 
 function getBccContainer (editable) {
-  return getContainers(editable)[2]
+  return getRecipients(editable, 'BCC')
 }
 
-function getFieldButton (editable, length = 2) {
-  // [data-app-section] for the compose popup view.
-  return Array.from(getParent(editable).querySelectorAll('.fui-Input button'))
-    .find(($node) => {
-      return $node.innerText.length === length
-    })
+// the buttons have no attributes and translated labels,
+// but they're always the fields not shown yet, in this order.
+function getFieldButton (editable, name) {
+  const hidden = ['CC', 'BCC'].filter((field) => !getField(editable, field))
+  const buttons = Array.from(getCompose(editable).querySelectorAll('.fui-Input button'))
+  return buttons[hidden.indexOf(name)]
 }
 
-// 2 chars in text
 function getCcButton (editable) {
-  return getFieldButton(editable, 2)
+  return getFieldButton(editable, 'CC')
 }
 
-// 3 chars in text
 function getBccButton (editable) {
-  return getFieldButton(editable, 3)
+  return getFieldButton(editable, 'BCC')
 }
 
 function getSubjectField (editable) {
-  // in case we find more fields
-  const inputs = Array.from(getParent(editable).querySelectorAll('input[type=text][autocomplete=off]'))
-  // get the last one
-  return inputs.pop()
+  const $subject = getField(editable, 'SUBJECT')
+  return $subject?.matches('input') ? $subject : $subject?.querySelector('input')
 }
 
-function waitForElement (getNode) {
+// settle waits one more tick,
+// so we don't type into a field outlook is still setting up
+function waitForElement (getNode, {root = document.body, settle = true} = {}) {
   return new Promise((resolve, reject) => {
     let $element = getNode()
     if ($element) {
@@ -163,13 +176,15 @@ function waitForElement (getNode) {
       if ($element) {
         clearTimeout(timeout)
         observer.disconnect()
-        setTimeout(() => {
+        if (settle) {
+          setTimeout(() => resolve($element))
+        } else {
           resolve($element)
-        })
+        }
       }
     })
 
-    selectorObserver.observe(document.body, {
+    selectorObserver.observe(root, {
       childList: true,
       subtree: true
     })
@@ -218,6 +233,18 @@ async function updateSection ($container, $button, getNode, value) {
   }
 }
 
+// the account menu
+function getFromName (doc) {
+  return doc.querySelector('#owa-me-control-container button[aria-label]')?.getAttribute('aria-label') || ''
+}
+
+// the label is localized ("From: ..."), so take the address out of it
+function getFromEmail (editable) {
+  const $from = getField(editable, 'FROM')
+  const label = $from?.getAttribute('aria-label') || $from?.textContent || ''
+  return label.match(/[^\s:<>]+@[^\s:<>]+\.[^\s:<>]+/)?.[0] || ''
+}
+
 // the message body is the only multiline textbox
 function getOutlookEditor ({ document: doc }) {
   return doc.querySelector('[role=textbox][aria-multiline=true]')
@@ -248,25 +275,9 @@ async function getOutlookData ({ element }) {
 
   await makeFieldsEditable(element)
 
-  const doc = element.ownerDocument
-
-  const $from = doc.querySelector('#O365_MainLink_Me > div > div:nth-child(1)')
-  let fullName = ''
-  if ($from) {
-    fullName = $from.textContent
-  }
-
-  // BUG only works if "From" field is visible
-  let fromEmail = ''
-  // finds the From button, then the read-only from field after the button
-  const $fromEmailButton = doc.querySelector('[role=complementary] [aria-haspopup=menu] + * [aria-haspopup=dialog]')
-  if ($fromEmailButton) {
-    fromEmail = $fromEmailButton.innerText
-  }
-
   vars.from = createContact({
-    name: fullName,
-    email: fromEmail,
+    name: getFromName(element.ownerDocument),
+    email: getFromEmail(element),
   })
 
   const editable = element
@@ -348,7 +359,9 @@ async function actions ({ element, template, data }) {
 
   // restore selection to where it was before changing extra fields
   element.focus({ preventScroll: true })
-  setSelectionRange(element, cachedRange)
+  if (cachedRange) {
+    setSelectionRange(element, cachedRange)
+  }
 }
 
 export default {
