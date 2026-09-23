@@ -1,11 +1,12 @@
-import { expect, describe, it, vi, beforeEach } from 'vitest'
+import { expect, describe, it, vi, beforeEach, afterEach } from 'vitest'
 
-const { listeners, tabsQuery, tabsGet, getSettings, trigger } = vi.hoisted(() => ({
+const { listeners, tabsQuery, tabsGet, getSettings, trigger, debug } = vi.hoisted(() => ({
   listeners: [],
   tabsQuery: vi.fn(),
   tabsGet: vi.fn(),
   getSettings: vi.fn(),
   trigger: vi.fn(),
+  debug: vi.fn(),
 }))
 
 // the bundled dep resolves the factory as the namespace, so no default key
@@ -18,6 +19,7 @@ vi.mock('webextension-polyfill', () => ({
 }))
 vi.mock('../store/store-api.js', () => ({getSettings: getSettings}))
 vi.mock('./background-trigger.js', () => ({default: trigger}))
+vi.mock('../debug.js', () => ({default: debug}))
 
 import { eventSiteData, eventSiteMatches } from '../config.js'
 import './tab-context.js'
@@ -40,6 +42,7 @@ describe('tab-context', () => {
     tabsQuery.mockReset().mockResolvedValue([briskineTab])
     tabsGet.mockReset().mockResolvedValue(briskineTab)
     trigger.mockReset().mockResolvedValue([{}])
+    debug.mockReset()
   })
 
   it('should ignore messages it does not handle', async () => {
@@ -277,6 +280,87 @@ describe('tab-context', () => {
 
       expect(await request('getSiteMatches', {tabId: 7, selector: '.item'}))
         .to.deep.equal([{text: 'from an iframe'}])
+    })
+  })
+
+  describe('a tab that never answers', () => {
+    const never = () => new Promise(() => {})
+    const stuckTab = {id: 9, url: 'https://www.briskine.com/stuck/', title: 'Stuck', active: true, windowId: 1, index: 0}
+    const liveTab = {id: 10, url: 'https://www.briskine.com/live/', title: 'Live', active: false, windowId: 1, index: 1}
+
+    // answers for the tabs that do answer, the rest hang
+    const answerOnly = (answers) => (event, details, tab, frameId) => {
+      const answer = answers[`${tab.id}/${frameId}`]
+      return answer ? Promise.resolve(answer) : never()
+    }
+
+    beforeEach(() => {
+      vi.useFakeTimers({toFake: ['setTimeout', 'clearTimeout']})
+    })
+
+    afterEach(() => {
+      vi.useRealTimers()
+    })
+
+    async function timedOut (pending) {
+      await vi.advanceTimersByTimeAsync(3000)
+      return pending
+    }
+
+    it('should fall back to every frame when the top frame never answers', async () => {
+      trigger.mockImplementation(answerOnly({'7/undefined': [{subject: 'from an iframe'}]}))
+
+      const context = await timedOut(request('getTabContext', {pattern: 'briskine.com'}))
+
+      expect(context.data).to.deep.equal({subject: 'from an iframe'})
+    })
+
+    it('should move {{#site}} on to the next match', async () => {
+      tabsQuery.mockResolvedValue([stuckTab, liveTab])
+      trigger.mockImplementation(answerOnly({'10/0': [{subject: 'live'}]}))
+
+      const context = await timedOut(request('getTabContext', {pattern: 'briskine.com'}))
+
+      expect(context.tabId).to.equal(10)
+      expect(context.data).to.deep.equal({subject: 'live'})
+    })
+
+    it('should still list the other tabs for {{#eachSite}}', async () => {
+      tabsQuery.mockResolvedValue([stuckTab, liveTab])
+      trigger.mockImplementation(answerOnly({'10/0': [{subject: 'live'}]}))
+
+      const contexts = await timedOut(request('getTabContexts', {pattern: 'briskine.com'}))
+
+      expect(contexts.map((context) => [context.tabId, context.data])).to.deep.equal([
+        [9, {}],
+        [10, {subject: 'live'}],
+      ])
+    })
+
+    it('should return no matches for {{css}}', async () => {
+      trigger.mockImplementation(never)
+
+      expect(await timedOut(request('getSiteMatches', {tabId: 7, selector: '.item'}))).to.deep.equal([])
+    })
+
+    it('should not give up on a tab that answers in time', async () => {
+      trigger.mockImplementation((event, details, tab, frameId) => {
+        return frameId === 0
+          ? new Promise((resolve) => setTimeout(() => resolve([{subject: 'slow'}]), 2900))
+          : never()
+      })
+
+      const context = await timedOut(request('getTabContext', {pattern: 'briskine.com'}))
+
+      expect(context.data).to.deep.equal({subject: 'slow'})
+    })
+
+    it('should log the tab that did not answer', async () => {
+      trigger.mockImplementation(never)
+
+      await timedOut(request('getSiteMatches', {tabId: 7, selector: '.item'}))
+
+      expect(debug).toHaveBeenCalledWith(['tab did not answer', eventSiteMatches, briskineTab.url], 'warn')
     })
   })
 })

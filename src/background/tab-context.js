@@ -43,14 +43,30 @@ function hasResult (result) {
   return Object.keys(result || {}).length > 0
 }
 
+// a frozen tab, or a plugin that never finishes, would otherwise hold up the insert.
+// longer than the plugins' own waits, eg. outlook showing the recipient fields.
+const answerTimeout = 3000
+
+function askFrame (tab, event, details, frameId) {
+  let timer
+  const timeout = new Promise((resolve) => {
+    timer = setTimeout(() => {
+      debug(['tab did not answer', event, tab.url], 'warn')
+      resolve()
+    }, answerTimeout)
+  })
+
+  return Promise.race([trigger(event, details, tab, frameId), timeout])
+    .then((response) => response?.[0])
+    .finally(() => clearTimeout(timer))
+}
+
 // without a frameId every frame answers and the first one wins,
 // so prefer the top frame over the whole tab.
 // both are asked at once, a tab with nothing in its top frame shouldn't wait twice.
 // null only when the tab never answered, so callers can try the next one.
 async function askTab (tab, event, details) {
-  const [top, all] = [0, undefined].map((frameId) => {
-    return trigger(event, details, tab, frameId).then((response) => response?.[0])
-  })
+  const [top, all] = [0, undefined].map((frameId) => askFrame(tab, event, details, frameId))
 
   const topResult = await top
   if (hasResult(topResult)) {
