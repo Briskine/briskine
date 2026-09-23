@@ -2,6 +2,7 @@ import { expect, describe, it, afterEach, beforeAll, beforeEach, vi } from 'vite
 
 vi.mock('../site/site-context.js', () => ({
   getSiteContext: vi.fn(),
+  getSiteContexts: vi.fn(),
   getSiteMatches: vi.fn(),
 }))
 

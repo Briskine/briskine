@@ -18,6 +18,7 @@ import random from '../helpers/random.js'
 import cursor from '../helpers/cursor.js'
 import createCss from '../helpers/css.js'
 import createSite from '../helpers/site.js'
+import createEachSite from '../helpers/each-site.js'
 
 const helpers = {
   moment,
@@ -70,7 +71,7 @@ async function getPartials () {
 export default async function parseTemplate (template = '', data = {}) {
   const context = await parseContext(data)
   const partials = await getPartials()
-  const renderHelpers = {...helpers, site: createSite(), css: createCss()}
+  const renderHelpers = {...helpers, site: createSite(), eachSite: createEachSite(), css: createCss()}
 
   try {
     return await briskbars(template, context, { helpers: renderHelpers, partials })
