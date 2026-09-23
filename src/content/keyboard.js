@@ -35,6 +35,7 @@ async function keyboardAutocomplete (e) {
   // cache range
   let cachedRange
   let cachedEndOffset
+  let cachedEndContainer
   if (isContentEditable(element)) {
     cachedRange = getSelectionRange(element)
     // workaround for Quill v1 issues when restoring focus (only when not preventing default).
@@ -42,11 +43,19 @@ async function keyboardAutocomplete (e) {
     // cache and force restore it later.
     if (cachedRange) {
       cachedEndOffset = cachedRange.endOffset
+      cachedEndContainer = cachedRange.endContainer
     }
   }
 
   const template = await getTemplateByShortcut(word.text)
   if (!template) {
+    return
+  }
+
+  // the range is live, so when the editor replaced the text while we looked up the template,
+  // it moved to the parent and the cached offset points nowhere.
+  // eg. outlook handles tab itself when the templates aren't loaded yet.
+  if (cachedRange && cachedRange.endContainer !== cachedEndContainer) {
     return
   }
 
@@ -62,8 +71,12 @@ async function keyboardAutocomplete (e) {
     && cachedRange
   ) {
     // force restore endOfsset in case other characters were added after the shortcut.
-    if (cachedEndOffset) {
-      cachedRange.setEnd(cachedRange.endContainer, cachedEndOffset)
+    // setEnd throws past the end, eg. when the editor removed characters instead.
+    const endLength = cachedEndContainer.nodeType === Node.TEXT_NODE
+      ? cachedEndContainer.length
+      : cachedEndContainer.childNodes.length
+    if (cachedEndOffset && cachedEndOffset <= endLength) {
+      cachedRange.setEnd(cachedEndContainer, cachedEndOffset)
     }
 
     await setSelectionRange(element, cachedRange)

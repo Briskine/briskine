@@ -126,4 +126,46 @@ describe('keyboard', () => {
 
     editable.remove()
   })
+
+  describe('editor re-rendering during the template lookup', () => {
+    // the templates aren't loaded yet, so the lookup takes a while
+    function slowTemplates () {
+      vi.mocked(store.getTemplates).mockImplementation(() => {
+        return new Promise((resolve) => setTimeout(() => resolve([{shortcut: 'test'}]), 20))
+      })
+    }
+
+    const settle = () => new Promise((resolve) => setTimeout(resolve, 50))
+
+    it('should not expand when the editor replaced the text', async () => {
+      slowTemplates()
+      const editable = createContentEditable()
+      editable.innerHTML = 'test'
+      window.getSelection().setBaseAndExtent(editable.firstChild, 4, editable.firstChild, 4)
+
+      editable.dispatchEvent(eventKeyTab())
+      // eg. outlook inserting its own tab
+      editable.replaceChildren(document.createTextNode('test    '))
+      await settle()
+
+      expect(autocomplete).not.toHaveBeenCalled()
+
+      editable.remove()
+    })
+
+    it('should still expand when the editor removed characters', async () => {
+      slowTemplates()
+      const editable = createContentEditable()
+      editable.innerHTML = 'test'
+      window.getSelection().setBaseAndExtent(editable.firstChild, 4, editable.firstChild, 4)
+
+      editable.dispatchEvent(eventKeyTab())
+      editable.firstChild.data = 'tes'
+      await settle()
+
+      expect(autocomplete).toHaveBeenCalled()
+
+      editable.remove()
+    })
+  })
 })
