@@ -5,6 +5,7 @@
 import { createRequest } from '../../store/store-content.js'
 
 const requestTabContext = createRequest('getTabContext')
+const requestTabContexts = createRequest('getTabContexts')
 const requestSiteMatches = createRequest('getSiteMatches')
 
 async function ask (request, data, fallback) {
@@ -22,6 +23,14 @@ export async function getSiteContext (pattern = '') {
   }
 
   return ask(requestTabContext, {pattern: pattern}, null)
+}
+
+export async function getSiteContexts (pattern = '') {
+  if (!pattern) {
+    return []
+  }
+
+  return ask(requestTabContexts, {pattern: pattern}, [])
 }
 
 export async function getSiteMatches (tabId, selector = '') {
