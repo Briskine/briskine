@@ -1,29 +1,16 @@
-import { expect, describe, it } from 'vitest'
+import { expect, describe, it, vi } from 'vitest'
 
-import {getLinkedInData} from './linkedin.js'
+vi.mock('../utils/current-url.js', () => ({
+  default: () => new URL('https://www.linkedin.com/messaging/'),
+}))
 
-async function page (src = '') {
-  const iframe = document.createElement('iframe')
-  let resolve, reject
-  const promise = new Promise((res, rej) => {
-    [resolve, reject] = [res, rej]
-  })
-  iframe.onload = () => {
-    resolve(iframe)
-  }
-  iframe.onerror = reject
-  iframe.src = src
-  document.body.appendChild(iframe)
-  return promise
-}
+import { getPluginData } from '../plugin.js'
+import loadIframe from '../../test-utils/iframe.js'
 
 describe('linkedin', () => {
   it('should get data in connect popup', async () => {
-    const iframe = await page('/pages/linkedin/linkedin-connect.html')
-    const element = iframe.contentDocument.querySelector('#interop-outlet').shadowRoot.querySelector('textarea')
-    const data = getLinkedInData({
-      element: element,
-    })
+    const iframe = await loadIframe('/pages/linkedin/linkedin-connect.html')
+    const data = await getPluginData({document: iframe.contentDocument})
 
     expect(data).to.deep.equal({
       from: {
@@ -47,11 +34,8 @@ describe('linkedin', () => {
   })
 
   it('should get data in inmail popup', async () => {
-    const iframe = await page('/pages/linkedin/linkedin-inmail-popup.html')
-    const element = iframe.contentDocument.querySelector('[contenteditable]')
-    const data = getLinkedInData({
-      element: element,
-    })
+    const iframe = await loadIframe('/pages/linkedin/linkedin-inmail-popup.html')
+    const data = await getPluginData({document: iframe.contentDocument})
 
     expect(data).to.deep.equal({
       from: {
@@ -75,11 +59,8 @@ describe('linkedin', () => {
   })
 
   it('should get data in message popup fully loaded', async () => {
-    const iframe = await page('/pages/linkedin/linkedin-message-popup-full.html')
-    const element = iframe.contentDocument.querySelector('[contenteditable]')
-    const data = getLinkedInData({
-      element: element,
-    })
+    const iframe = await loadIframe('/pages/linkedin/linkedin-message-popup-full.html')
+    const data = await getPluginData({document: iframe.contentDocument})
 
     expect(data).to.deep.equal({
       from: {
@@ -103,11 +84,8 @@ describe('linkedin', () => {
   })
 
   it('should get data in message popup lazy loaded', async () => {
-    const iframe = await page('/pages/linkedin/linkedin-message-popup-lazy.html')
-    const element = iframe.contentDocument.querySelector('[contenteditable]')
-    const data = getLinkedInData({
-      element: element,
-    })
+    const iframe = await loadIframe('/pages/linkedin/linkedin-message-popup-lazy.html')
+    const data = await getPluginData({document: iframe.contentDocument})
 
     expect(data).to.deep.equal({
       from: {
@@ -131,11 +109,8 @@ describe('linkedin', () => {
   })
 
   it('should get data in messaging thread fully loaded', async () => {
-    const iframe = await page('/pages/linkedin/linkedin-messaging-full.html')
-    const element = iframe.contentDocument.querySelector('[contenteditable]')
-    const data = getLinkedInData({
-      element: element,
-    })
+    const iframe = await loadIframe('/pages/linkedin/linkedin-messaging-full.html')
+    const data = await getPluginData({document: iframe.contentDocument})
 
     expect(data).to.deep.equal({
       from: {
@@ -159,11 +134,8 @@ describe('linkedin', () => {
   })
 
   it('should get data in messaging thread lazy loaded', async () => {
-    const iframe = await page('/pages/linkedin/linkedin-messaging-lazy.html')
-    const element = iframe.contentDocument.querySelector('[contenteditable]')
-    const data = getLinkedInData({
-      element: element,
-    })
+    const iframe = await loadIframe('/pages/linkedin/linkedin-messaging-lazy.html')
+    const data = await getPluginData({document: iframe.contentDocument})
 
     expect(data).to.deep.equal({
       from: {
@@ -187,11 +159,8 @@ describe('linkedin', () => {
   })
 
   it('should get data in inmail new message thread', async () => {
-    const iframe = await page('/pages/linkedin/linkedin-messaging-inmail.html')
-    const element = iframe.contentDocument.querySelector('[contenteditable]')
-    const data = getLinkedInData({
-      element: element,
-    })
+    const iframe = await loadIframe('/pages/linkedin/linkedin-messaging-inmail.html')
+    const data = await getPluginData({document: iframe.contentDocument})
 
     expect(data).to.deep.equal({
       from: {
@@ -215,11 +184,8 @@ describe('linkedin', () => {
   })
 
   it('should get data in new message popup from connections page', async () => {
-    const iframe = await page('/pages/linkedin/linkedin-connections-message.html')
-    const element = iframe.contentDocument.querySelector('#interop-outlet').shadowRoot.querySelector('[contenteditable]')
-    const data = getLinkedInData({
-      element: element,
-    })
+    const iframe = await loadIframe('/pages/linkedin/linkedin-connections-message.html')
+    const data = await getPluginData({document: iframe.contentDocument})
 
     expect(data).to.deep.equal({
       from: {
@@ -241,4 +207,48 @@ describe('linkedin', () => {
 
     iframe.remove()
   })
+
+  it('should not get data without an editor on the page', async () => {
+    const data = await getPluginData({document: document.implementation.createHTMLDocument()})
+
+    expect(data).to.deep.equal({
+      from: {},
+      to: [],
+      subject: '',
+    })
+  })
+
+
+  it('should ignore the notification count in the page title', async () => {
+    const iframe = await loadIframe('/pages/linkedin/linkedin-connect.html')
+    const doc = iframe.contentDocument
+    doc.querySelector('#interop-outlet').shadowRoot.querySelector('textarea').remove()
+    doc.title = `(14) ${doc.title}`
+
+    const data = await getPluginData({document: doc})
+
+    expect(data.to[0].first_name).to.equal('Michael')
+
+    iframe.remove()
+  })
+
+  it('should get the contact from a profile page with no editor', async () => {
+    const iframe = await loadIframe('/pages/linkedin/linkedin-connect.html')
+    const doc = iframe.contentDocument
+    doc.querySelector('#interop-outlet').shadowRoot.querySelector('textarea').remove()
+
+    const data = await getPluginData({document: doc})
+
+    expect(data.to).to.deep.equal([
+      {
+        name: 'Michael Briskine',
+        first_name: 'Michael',
+        last_name: 'Briskine',
+        email: '',
+      },
+    ])
+
+    iframe.remove()
+  })
+
 })

@@ -1,7 +1,7 @@
 /* Gmail mobile (small-screen) plugin
  */
 
- import { register } from '../plugin.js'
+import currentUrl from '../utils/current-url.js'
 import createContact from '../utils/create-contact.js'
 
 let activeCache = null
@@ -12,10 +12,11 @@ function isActive () {
   }
 
   activeCache = false
+  const url = currentUrl()
   // trigger the extension based on url
   if (
-    window.location.hostname === 'mail.google.com'
-    && window.location.pathname.includes(gmailMobileToken)
+    url.hostname === 'mail.google.com'
+    && url.pathname.includes(gmailMobileToken)
   ) {
     activeCache = true
   }
@@ -25,6 +26,7 @@ function isActive () {
 
 const regExEmail = /([\w!.%+-])+@([\w-])+(?:\.[\w-]+)+/
 
+const bodySelector = '#cmcbody'
 const fromSelector = '#cmcfrom'
 const subjectSelector = '#cmcsubj'
 const fieldSelector = (field) => `#cmae_compose${field}`
@@ -50,16 +52,20 @@ function parseContact ($container) {
   })
 }
 
+function getGmailMobileEditor ({ document: doc }) {
+  return doc.querySelector(bodySelector)
+}
+
 // get all required data from the dom
-function getData ({ element }) {
+function getData ({ element, document: doc = document } = {}) {
   if (!isActive()) {
     return false
   }
 
-  return getGmailMobileData({ element })
+  return getGmailMobileData({ element: element || getGmailMobileEditor({ document: doc }) })
 }
 
-export function getGmailMobileData ({ element }) {
+function getGmailMobileData ({ element }) {
   const data = {
     from: {},
     to: [],
@@ -101,4 +107,6 @@ export function getGmailMobileData ({ element }) {
   return data
 }
 
-register('data', getData)
+export default {
+  data: getData,
+}

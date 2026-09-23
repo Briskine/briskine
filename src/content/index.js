@@ -17,6 +17,7 @@ import { setup as setupKeyboard, destroy as destroyKeyboard } from './keyboard.j
 import { setup as setupCursors, destroy as destroyCursors } from './cursors/cursors.js'
 import { setup as setupBubble, destroy as destroyBubble } from './bubble/bubble.js'
 import { setup as setupStatus, destroy as destroyStatus } from './status.js'
+import { setup as setupSiteData, destroy as destroySiteData } from './site/site-data.js'
 import { setup as setupDialog, destroy as destroyDialog } from './dialog/dialog.js'
 import { setup as setupPage, destroy as destroyPage } from './page/page-parent.js'
 import { setup as setupAttachments, destroy as destroyAttachments } from './attachments/attachments.js'
@@ -31,11 +32,10 @@ import {
 } from './utils/active-element.js'
 import { destroy as destroyKeybind } from './keybind.js'
 import getEventTarget from './utils/event-target.js'
-import { isTextfieldEditor } from './editors/editor-textfield.js'
-import { isContentEditable } from './editors/editor-contenteditable.js'
 import { addFocusListeners } from './utils/shadow-focus.js'
 
 import debug from '../debug.js'
+import isEditor from './utils/editor.js'
 
 const readyMessage = 'briskine-ready'
 let removeFocusListeners = () => {}
@@ -87,7 +87,7 @@ async function init () {
 
 function initOnFocus (e) {
   const target = getEventTarget(e)
-  if (isTextfieldEditor(target) || isContentEditable(target)) {
+  if (isEditor(target)) {
     removeFocusListeners()
     init()
   }
@@ -133,8 +133,12 @@ async function startup () {
     document.dispatchEvent(new CustomEvent(eventDestroy))
     document.addEventListener(eventDestroy, destructor, {once: true})
 
+    // components needed on all sites,
+    // even blocklisted or before an editor was focused.
     setupStatus()
     setupDashboardEvents()
+    setupSiteData()
+
     removeFocusListeners = addFocusListeners(initOnFocus, 'focusin')
 
     // cleanup
@@ -150,6 +154,7 @@ function destructor () {
 
   destroyStatus()
   destroyDashboardEvents()
+  destroySiteData()
   removeFocusListeners()
 
   storeOff('users-updated', usersUpdated)

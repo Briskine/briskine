@@ -1,9 +1,10 @@
 // general purpose text helper
 // can use all methods on the String object
+import toText from '../utils/to-text.js'
+
 export default function text (str = '', method, ...args) {
   if (
-    typeof str !== 'string'
-    || typeof method !== 'string'
+    typeof method !== 'string'
     || !Object.hasOwn(String.prototype, method)
     || !(String.prototype[method] instanceof Function)
   ) {
@@ -12,5 +13,5 @@ export default function text (str = '', method, ...args) {
 
   // last argument is the handlebars options object
   const params = args.slice(0, -1)
-  return String.prototype[method].apply(str, params)
+  return String.prototype[method].apply(toText(str), params)
 }

@@ -111,6 +111,11 @@ export function getDefaultTemplates () {
       <div>cursor: {{cursor}}</div>
       <div>choice: {{choice 'Hello, Hi, Hey'}}</div>
       <div>domain: {{domain to.email}}</div>
+      <div>css title: {{css "title"}}</div>
+      <div>css first link: {{css "a" "href"}}</div>
+      <div>css text helper: {{text (css "title") "toUpperCase"}}</div>
+      <div>css moment helper: {{css "time" "datetime"}} -> {{moment (css "time" "datetime") format="DD MMMM YYYY"}}</div>
+      <div>site: {{#site "linkedin.com"}}{{to.first_name}} / {{@site.url}} / {{css "title"}}{{else}}no linkedin tab{{/site}}</div>
       <div><img src="https://www.briskine.com/images/promo-large.png" width="100" height="73"></div>
     `
 

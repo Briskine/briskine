@@ -2,7 +2,7 @@
  */
 
 import createContact from '../utils/create-contact.js'
-import { register } from '../plugin.js'
+import currentUrl from '../utils/current-url.js'
 
 let activeCache = null
 function isActive () {
@@ -11,9 +11,10 @@ function isActive () {
   }
 
   activeCache = false
+  const url = currentUrl()
   if (
-    window.location.hostname === 'www.linkedin.com'
-    && window.location.pathname.startsWith('/sales/')
+    url.hostname === 'www.linkedin.com'
+    && url.pathname.startsWith('/sales/')
   ) {
     activeCache = true
   }
@@ -21,15 +22,15 @@ function isActive () {
   return activeCache
 }
 
-function getToName (element) {
-  const messageThreadSelectors = [
-    // message popup
-    // connect popup
-    '[role=dialog]',
-    // message inbox
-    '.thread-container',
-  ]
+const messageThreadSelectors = [
+  // message popup
+  // connect popup
+  '[role=dialog]',
+  // message inbox
+  '.thread-container',
+]
 
+function getToName (element) {
   const contactNameSelectors = [
     // message popup (:not excludes shared connections in Sales Navigator)
     '.artdeco-entity-lockup__title > *:first-child:not([aria-hidden])',
@@ -52,15 +53,21 @@ function getToName (element) {
   return ''
 }
 
-function getData({ element }) {
+function getSalesNavigatorEditor ({ document: doc }) {
+  return doc.querySelector(
+    messageThreadSelectors.map((selector) => `${selector} textarea`).join(',')
+  )
+}
+
+function getData ({ element, document: doc = document } = {}) {
   if (!isActive()) {
     return
   }
 
-  return getSalesNavigatorData({ element })
+  return getSalesNavigatorData({ element: element || getSalesNavigatorEditor({ document: doc }) })
 }
 
-export function getSalesNavigatorData ({ element }) {
+function getSalesNavigatorData ({ element }) {
   const vars = {
     from: {},
     to: [],
@@ -87,4 +94,6 @@ export function getSalesNavigatorData ({ element }) {
   return vars
 }
 
-register('data', getData)
+export default {
+  data: getData,
+}

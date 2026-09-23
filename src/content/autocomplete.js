@@ -2,9 +2,10 @@
  * Generic methods for autocompletion
  */
 
-import { run } from './plugin.js'
+import { getPluginData, runPluginActions } from './plugin.js'
 import { addAttachments } from './attachments/attachments.js'
 import parseTemplate from './utils/parse-template.js'
+import sanitize from './utils/sanitize.js'
 import htmlToText from './utils/html-to-text.js'
 import debug from '../debug.js'
 import { getWord, selectWord } from './utils/word.js'
@@ -20,13 +21,6 @@ import { insertQuill1Template } from './editors/editor-quill1.js'
 import { insertTextfieldTemplate } from './editors/editor-textfield.js'
 import { insertExecCommandTemplate } from './editors/editor-execcommand.js'
 import { insertSiteTemplate } from './editors/editor-site.js'
-
-import './plugins/gmail.js'
-import './plugins/outlook.js'
-import './plugins/gmail-mobile.js'
-import './plugins/linkedin.js'
-import './plugins/linkedin-sales-navigator.js'
-import './plugins/facebook.js'
 
 const editors = [
   // order matters
@@ -92,8 +86,8 @@ async function selectShortcut (element, shortcut = '') {
 export default async function autocomplete ({ template }) {
   const element = getActiveElement()
   const withAttachments = addAttachments(template.body, template.attachments)
-  const data = await run('data', { element })
-  const html = await parseTemplate(withAttachments, data)
+  const data = await getPluginData({ element })
+  const html = sanitize(await parseTemplate(withAttachments, data))
   const text = htmlToText(html)
 
   if (template.shortcut) {
@@ -111,7 +105,7 @@ export default async function autocomplete ({ template }) {
     debug(['selectFirstCursor', err])
   }
 
-  await run('actions', {
+  await runPluginActions({
     element,
     template,
     data,

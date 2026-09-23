@@ -1,4 +1,4 @@
-import {Show, createEffect, createSignal, createMemo, For, mergeProps} from 'solid-js'
+import {Show, createMemo, For, mergeProps} from 'solid-js'
 
 import sortTemplates from '../../store/sort-templates.js'
 import DialogList from './dialog-list.js'
@@ -32,9 +32,8 @@ export default function DialogListFull (originalProps) {
   const dialogSort = createMemo(() => props.extensionData.dialogSort)
 
   // cache lastUsed so the list doesn't re-order after inserts.
-  const [cachedLastUsed, setCachedLastUsed] = createSignal(undefined)
-
-  createEffect(() => {
+  let lastUsedCache
+  const cachedLastUsed = createMemo(() => {
     // read both, so a logout/login cycle resets the cache too.
     const shown = (
       props.visible === true
@@ -42,12 +41,12 @@ export default function DialogListFull (originalProps) {
     )
 
     if (!shown) {
-      setCachedLastUsed(undefined)
+      lastUsedCache = undefined
       return
     }
 
-    // setter callback is outside reactive tracking
-    setCachedLastUsed(prev => prev || props.extensionData.templatesLastUsed)
+    lastUsedCache = lastUsedCache || props.extensionData.templatesLastUsed
+    return lastUsedCache
   })
 
   const _templates = createMemo(() => {

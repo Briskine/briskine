@@ -1,29 +1,16 @@
-import { expect, describe, it } from 'vitest'
+import { expect, describe, it, vi } from 'vitest'
 
-import {getSalesNavigatorData} from './linkedin-sales-navigator.js'
+vi.mock('../utils/current-url.js', () => ({
+  default: () => new URL('https://www.linkedin.com/sales/inbox/'),
+}))
 
-async function page (src = '') {
-  const iframe = document.createElement('iframe')
-  let resolve, reject
-  const promise = new Promise((res, rej) => {
-    [resolve, reject] = [res, rej]
-  })
-  iframe.onload = () => {
-    resolve(iframe)
-  }
-  iframe.onerror = reject
-  iframe.src = src
-  document.body.appendChild(iframe)
-  return promise
-}
+import { getPluginData } from '../plugin.js'
+import loadIframe from '../../test-utils/iframe.js'
 
 describe('linkedin sales navigator', () => {
   it('should get data in sales navigator invite', async () => {
-    const iframe = await page('/pages/linkedin-sales-navigator/linkedin-sales-navigator-invite.html')
-    const element = iframe.contentDocument.querySelector('textarea')
-    const data = getSalesNavigatorData({
-      element: element,
-    })
+    const iframe = await loadIframe('/pages/linkedin-sales-navigator/linkedin-sales-navigator-invite.html')
+    const data = await getPluginData({document: iframe.contentDocument})
 
     expect(data).to.deep.equal({
       from: {
@@ -47,11 +34,8 @@ describe('linkedin sales navigator', () => {
   })
 
   it('should get data in sales navigator new message popup', async () => {
-    const iframe = await page('/pages/linkedin-sales-navigator/linkedin-sales-navigator-message-popup.html')
-    const element = iframe.contentDocument.querySelector('textarea')
-    const data = getSalesNavigatorData({
-      element: element,
-    })
+    const iframe = await loadIframe('/pages/linkedin-sales-navigator/linkedin-sales-navigator-message-popup.html')
+    const data = await getPluginData({document: iframe.contentDocument})
 
     expect(data).to.deep.equal({
       from: {
@@ -75,11 +59,8 @@ describe('linkedin sales navigator', () => {
   })
 
   it('should get data in sales navigator new message popup, with 1 shared connection', async () => {
-    const iframe = await page('/pages/linkedin-sales-navigator/linkedin-sales-navigator-message-popup-1-connection.html')
-    const element = iframe.contentDocument.querySelector('textarea')
-    const data = getSalesNavigatorData({
-      element: element,
-    })
+    const iframe = await loadIframe('/pages/linkedin-sales-navigator/linkedin-sales-navigator-message-popup-1-connection.html')
+    const data = await getPluginData({document: iframe.contentDocument})
 
     expect(data).to.deep.equal({
       from: {
@@ -103,11 +84,8 @@ describe('linkedin sales navigator', () => {
   })
 
   it('should get data in sales navigator new message thread', async () => {
-    const iframe = await page('/pages/linkedin-sales-navigator/linkedin-sales-navigator-message-thread-new.html')
-    const element = iframe.contentDocument.querySelector('textarea')
-    const data = getSalesNavigatorData({
-      element: element,
-    })
+    const iframe = await loadIframe('/pages/linkedin-sales-navigator/linkedin-sales-navigator-message-thread-new.html')
+    const data = await getPluginData({document: iframe.contentDocument})
 
     expect(data).to.deep.equal({
       from: {
@@ -131,11 +109,8 @@ describe('linkedin sales navigator', () => {
   })
 
   it('should get data in sales navigator existing message thread', async () => {
-    const iframe = await page('/pages/linkedin-sales-navigator/linkedin-sales-navigator-message-thread.html')
-    const element = iframe.contentDocument.querySelector('textarea')
-    const data = getSalesNavigatorData({
-      element: element,
-    })
+    const iframe = await loadIframe('/pages/linkedin-sales-navigator/linkedin-sales-navigator-message-thread.html')
+    const data = await getPluginData({document: iframe.contentDocument})
 
     expect(data).to.deep.equal({
       from: {
@@ -157,4 +132,15 @@ describe('linkedin sales navigator', () => {
 
     iframe.remove()
   })
+
+  it('should not get data without an editor on the page', async () => {
+    const data = await getPluginData({document: document.implementation.createHTMLDocument()})
+
+    expect(data).to.deep.equal({
+      from: {},
+      to: [],
+      subject: '',
+    })
+  })
+
 })

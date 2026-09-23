@@ -4,8 +4,7 @@
 import getEventTarget from './event-target.js'
 import { addFocusListeners } from './shadow-focus.js'
 import { isExtensionElement } from './extension-element.js'
-import { isContentEditable } from '../editors/editor-contenteditable.js'
-import { isTextfieldEditor } from '../editors/editor-textfield.js'
+import isEditor from './editor.js'
 
 let removeFocusListeners = () => {}
 let activeElement = null
@@ -38,7 +37,7 @@ function setActiveElement (e) {
     return
   }
 
-  if (isTextfieldEditor(target) || isContentEditable(target)) {
+  if (isEditor(target)) {
     activeElement = target
   }
 }

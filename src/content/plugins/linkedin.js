@@ -4,7 +4,7 @@
 import parseTemplate from '../utils/parse-template.js'
 import createContact from '../utils/create-contact.js'
 import { querySelectorDeep, closestDeep } from '../utils/selectors.js'
-import { register } from '../plugin.js'
+import currentUrl from '../utils/current-url.js'
 
 var activeCache = null
 function isActive () {
@@ -13,10 +13,11 @@ function isActive () {
   }
 
   activeCache = false
+  const url = currentUrl()
   if (
-    window.location.hostname === 'www.linkedin.com'
+    url.hostname === 'www.linkedin.com'
     // exclude LinkedIn Sales Navigator
-    && !window.location.pathname.startsWith('/sales/')
+    && !url.pathname.startsWith('/sales/')
   ) {
     activeCache = true
   }
@@ -42,7 +43,7 @@ async function actions ({ element, template, data}) {
   }
 }
 
-function getToName (element) {
+function getToName (element, doc) {
   // get the contact name from messages
   const messageThreadSelectors = [
     // message popup
@@ -74,7 +75,7 @@ function getToName (element) {
     '.msg-overlay-bubble-header__title',
   ]
 
-  const $thread = closestDeep(messageThreadSelectors.join(','), element)
+  const $thread = element && closestDeep(messageThreadSelectors.join(','), element)
 
   // check if a message thread is visible,
   // otherwise we're in a non-messaging textfield.
@@ -103,7 +104,7 @@ function getToName (element) {
   // legacy profile page, with no web components
   const $currentProfilePicture = querySelectorDeep(
     'img[width="200"][height="200"], img[class*="pv-top-card-profile-picture"]',
-    element.ownerDocument.body
+    doc.body
   )
   if ($currentProfilePicture && $currentProfilePicture.hasAttribute('alt')) {
     const profilePictureAlt = $currentProfilePicture.getAttribute('alt') || ''
@@ -112,32 +113,45 @@ function getToName (element) {
   }
 
   // new profile page, with web components and #interop-outlet
-  // to get it from the page title (e.g., "First Name | LinkedIn").
-  const title = element.ownerDocument.title
-  if (title?.includes?.('|')) {
+  // to get it from the page title (e.g., "($NOTIFICATION_COUNT) First Name | LinkedIn"),
+  // which is prefixed with the notification count when there are any.
+  const title = (doc.title || '').replace(/^\(\d+\)\s*/, '')
+  if (title.includes('|')) {
     return title.split('|')[0].trim()
   }
 
   return ''
 }
 
+// message boxes and the connect invite note, either can be in a shadow root
+const editorSelectors = [
+  '[contenteditable=true][role=textbox]',
+  'textarea#custom-message',
+]
+
+function getLinkedInEditor ({ document: doc }) {
+  return querySelectorDeep(editorSelectors.join(','), doc.body)
+}
+
 // get all required data from the dom
-function getData ({ element }) {
+function getData ({ element, document: doc = document } = {}) {
   if (!isActive()) {
     return
   }
 
-  return getLinkedInData({ element })
+  return getLinkedInData({ element: element || getLinkedInEditor({ document: doc }), document: doc })
 }
 
-export function getLinkedInData ({ element }) {
+// a profile page has no editor, but still has a contact,
+// so only the message thread lookup needs the element
+function getLinkedInData ({ element, document: doc = element?.ownerDocument }) {
   const vars = {
     from: {},
     to: [],
     subject: '',
   }
 
-  if (!element) {
+  if (!doc) {
     return vars
   }
 
@@ -151,19 +165,25 @@ export function getLinkedInData ({ element }) {
 
   const $fromContainer = querySelectorDeep(
     $profilePictureSelectors.join(','),
-    element.ownerDocument.body
+    doc.body
   )
   if ($fromContainer && $fromContainer.getAttribute('alt')) {
     fromName = $fromContainer.getAttribute('alt')
   }
 
-  vars.from = createContact({name: fromName})
+  if (fromName) {
+    vars.from = createContact({name: fromName})
+  }
 
-  const toName = getToName(element)
-  vars.to.push(createContact({name: toName}))
+  const toName = getToName(element, doc)
+  if (toName) {
+    vars.to.push(createContact({name: toName}))
+  }
 
   return vars
 }
 
-register('data', getData)
-register('actions', actions)
+export default {
+  data: getData,
+  actions,
+}

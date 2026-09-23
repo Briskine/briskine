@@ -3,7 +3,7 @@
 
 import parseTemplate from '../utils/parse-template.js'
 import createContact from '../utils/create-contact.js'
-import { register } from '../plugin.js'
+import currentUrl from '../utils/current-url.js'
 import { getSelectionRange, setSelectionRange } from '../utils/selection.js'
 
 const urls = [
@@ -19,7 +19,8 @@ function isActive () {
   activeCache = false
 
   // check for urls
-  const outlookUrl = urls.some((url) => window.location.hostname === url)
+  const { hostname } = currentUrl()
+  const outlookUrl = urls.some((url) => hostname === url)
   if (outlookUrl) {
     activeCache = true
     return activeCache
@@ -217,18 +218,21 @@ async function updateSection ($container, $button, getNode, value) {
   }
 }
 
+// the message body is the only multiline textbox
+function getOutlookEditor ({ document: doc }) {
+  return doc.querySelector('[role=textbox][aria-multiline=true]')
+}
+
 // get all required data from the dom
-function getData ({ element }) {
+function getData ({ element, document: doc = document } = {}) {
   if (!isActive()) {
     return
   }
 
-  return getOutlookData({ element })
+  return getOutlookData({ element: element || getOutlookEditor({ document: doc }) })
 }
 
-export async function getOutlookData ({ element }) {
-  await makeFieldsEditable(element)
-
+async function getOutlookData ({ element }) {
   const vars = {
     from: {},
     to: [],
@@ -237,9 +241,12 @@ export async function getOutlookData ({ element }) {
     subject: '',
   }
 
+  // makeFieldsEditable walks up from the element
   if (!element) {
     return vars
   }
+
+  await makeFieldsEditable(element)
 
   const doc = element.ownerDocument
 
@@ -344,5 +351,7 @@ async function actions ({ element, template, data }) {
   setSelectionRange(element, cachedRange)
 }
 
-register('data', getData)
-register('actions', actions)
+export default {
+  data: getData,
+  actions,
+}

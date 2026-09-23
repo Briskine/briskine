@@ -6,12 +6,7 @@
  *
  */
 
-export function querySelectorDeep (selector, root = document) {
-  const found = root.querySelector(selector)
-  if (found) {
-    return found
-  }
-
+function* shadowHosts (root) {
   const walker = document.createTreeWalker(root, NodeFilter.SHOW_ELEMENT, {
     acceptNode(node) {
       if (node.shadowRoot) {
@@ -23,14 +18,35 @@ export function querySelectorDeep (selector, root = document) {
 
   let host = walker.nextNode()
   while (host) {
+    yield host
+    host = walker.nextNode()
+  }
+}
+
+export function querySelectorDeep (selector, root = document) {
+  const found = root.querySelector(selector)
+  if (found) {
+    return found
+  }
+
+  for (const host of shadowHosts(root)) {
     const result = querySelectorDeep(selector, host.shadowRoot)
     if (result) {
       return result
     }
-    host = walker.nextNode()
   }
 
   return null
+}
+
+export function querySelectorAllDeep (selector, root = document) {
+  const found = [...root.querySelectorAll(selector)]
+
+  for (const host of shadowHosts(root)) {
+    found.push(...querySelectorAllDeep(selector, host.shadowRoot))
+  }
+
+  return found
 }
 
 export function closestDeep (selector, el) {

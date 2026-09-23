@@ -2,7 +2,7 @@
 /* Gmail plugin
  */
 
-import { register } from '../plugin.js'
+import currentUrl from '../utils/current-url.js'
 import parseTemplate from '../utils/parse-template.js'
 import { isContentEditable } from '../editors/editor-contenteditable.js'
 import createContact from '../utils/create-contact.js'
@@ -21,10 +21,11 @@ function isActive () {
   }
 
   activeCache = false
+  const url = currentUrl()
   // trigger the extension based on url
   if (
-    window.location.hostname === 'mail.google.com'
-    && !window.location.pathname.includes(gmailMobileToken)
+    url.hostname === 'mail.google.com'
+    && !url.pathname.includes(gmailMobileToken)
   ) {
     activeCache = true
   }
@@ -61,16 +62,22 @@ function getFromField (container) {
   return container.querySelector(fromFieldSelector)
 }
 
+// scoped to the compose container, gmail has hidden decoys outside it
+function getGmailEditor ({ document: doc }) {
+  return doc.querySelector(`${textfieldContainerSelector} [role=textbox][aria-multiline=true]`)
+}
+
 // get all required data from the dom
-function getData ({ element }) {
+function getData ({ element, document: doc = document } = {}) {
   if (!isActive()) {
     return
   }
 
-  return getGmailData({ element })
+  // find the editor when nothing is focused
+  return getGmailData({ element: element || getGmailEditor({ document: doc }) })
 }
 
-export function getGmailData ({ element }) {
+function getGmailData ({ element }) {
   const data = {
     from: {},
     to: [],
@@ -168,6 +175,33 @@ function extraField ($parent, fieldName) {
   return $parent.querySelector(`textarea[name=${fieldName}], [name=${fieldName}] input`)
 }
 
+/* comma separated addresses, quoted display names can contain commas:
+ * to@briskine.com
+ * to@briskine.com, cc@briskine.com
+ * John Briskine <john@briskine.com>
+ * "Briskine, John" <john@briskine.com>, cc@briskine.com
+ */
+function setRecipients ($field, value = '') {
+  const addresses = value.match(/(?:[^,"]|"[^"]*")+/g) || []
+
+  for (const [index, address] of addresses.entries()) {
+    $field.value = address.trim()
+    // enter transforms address into chip
+    $field.dispatchEvent(new KeyboardEvent('keydown', {bubbles: true, key: 'Enter', keyCode: 13, which: 13}))
+
+    if ($field.value) {
+      // enter didn't take it, let gmail parse the rest
+      $field.value = addresses.slice(index).join(',')
+      $field.dispatchEvent(new FocusEvent('blur'))
+
+      // expand the collapsed recipients row, so the raw value is visible.
+      // only focus opens it, click doesn't.
+      $field.closest(textfieldContainerSelector)?.querySelector('.aoD.hl')?.focus()
+      return
+    }
+  }
+}
+
 async function actions ({ element, template, data }) {
   if (!isActive()) {
     return
@@ -190,27 +224,11 @@ async function actions ({ element, template, data }) {
     $subject.value = parsedSubject
   }
 
-  const $recipients = $parent.querySelector('.aoD.hl')
-  if (
-    (
-      template.to ||
-      template.cc ||
-      template.bcc
-    ) &&
-    $recipients
-  ) {
-    // click the receipients row.
-    // a little jumpy,
-    // but the only to way to show the new value.
-    $recipients.dispatchEvent(new MouseEvent('click', {bubbles: true}))
-  }
-
   if (template.to) {
     const parsedTo = await parseTemplate(template.to, data)
     const $toField = extraField($parent, 'to')
     if ($toField) {
-      $toField.value = parsedTo
-      $toField.dispatchEvent(new FocusEvent('blur'))
+      setRecipients($toField, parsedTo)
     }
   }
 
@@ -225,8 +243,7 @@ async function actions ({ element, template, data }) {
       $parent.querySelector(buttonSelectors[fieldName]).dispatchEvent(new MouseEvent('click', {bubbles: true}))
       const $field = extraField($parent, fieldName)
       if ($field) {
-        $field.value = parsedField
-        $field.dispatchEvent(new FocusEvent('blur'))
+        setRecipients($field, parsedField)
       }
     }
   }
@@ -239,5 +256,7 @@ async function actions ({ element, template, data }) {
   }
 }
 
-register('data', getData)
-register('actions', actions)
+export default {
+  data: getData,
+  actions,
+}

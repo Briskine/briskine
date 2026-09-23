@@ -1,35 +1,29 @@
 import moment from 'moment/min/moment-with-locales.js'
 
-export default function helperMoment (dateParam, options) {
-  // check if str is a valid date
-  let dateString
-  if (typeof dateParam === 'string' && moment(dateParam).isValid()) {
-    dateString = dateParam
-  }
-  const date = moment(dateString)
+import toText from '../utils/to-text.js'
 
-  let opts = {}
-  if (typeof dateParam === 'object') {
-    opts = dateParam
-  } else if (typeof options === 'object') {
-    opts = options
-  }
+export default function helperMoment (...args) {
+  // last argument is the handlebars options object
+  const options = args.pop()
+  const [dateParam] = args
+
+  // a value that renders as text, like the css helper's matches, can be a date
+  const dateText = toText(dateParam)
+  const parsed = dateText ? moment(dateText) : null
+  // anything we can't read as a date falls back to now
+  const date = parsed?.isValid() ? parsed : moment()
 
   // get the default locale from the browser
   let defaultLocale = 'en'
   if (typeof navigator !== 'undefined') {
-      defaultLocale = navigator.language
+    defaultLocale = navigator.language
   }
 
-  opts = Object.assign(
-    {
-      locale: defaultLocale,
-      format: 'MMMM DD YYYY'
-    },
-    opts.hash,
-  )
-
-  date.locale(opts.locale)
+  const opts = {
+    locale: defaultLocale,
+    format: 'MMMM DD YYYY',
+    ...options?.hash,
+  }
 
   let display = 'format'
   let displayParams = []
@@ -43,6 +37,12 @@ export default function helperMoment (dateParam, options) {
   ]
 
   for (const key in opts) {
+    // applied after the methods, to always use en values for properties, and
+    // values like isoWeekday="Thursday" still parse.
+    if (key === 'locale') {
+      continue
+    }
+
     // handle only last display method
     if (displayMethods.includes(key)) {
       display = key
@@ -55,16 +55,15 @@ export default function helperMoment (dateParam, options) {
     }
 
     // only supported methods
-    if (
-      typeof date[key] === 'function' &&
-      !displayMethods.includes(key)
-    ) {
+    if (typeof date[key] === 'function') {
       // support multiple function params with ;
       const params = typeof opts[key] === 'string' ? opts[key].split(';').map((s) => s.trim()) : [opts[key]]
 
       date[key].apply(date, params)
     }
   }
+
+  date.locale(opts.locale)
 
   return date[display].apply(date, displayParams)
 }

@@ -2,7 +2,7 @@
  */
 
 import createContact from '../utils/create-contact.js'
-import { register } from '../plugin.js'
+import currentUrl from '../utils/current-url.js'
 
 let activeCache = null
 function isActive () {
@@ -17,18 +17,20 @@ function isActive () {
   ]
 
   // trigger the extension based on url
-  if (urls.find((url) => window.location.hostname === url)) {
+  const { hostname } = currentUrl()
+  if (urls.find((url) => hostname === url)) {
     activeCache = true
   }
 
   return activeCache
 }
 
-function getFromDetails () {
+// facebook.com ships the user in an inline script
+function nameFromScripts (doc) {
   var objectMatch = new RegExp('"NAME":.?".*?"')
   var plainUserObject = ''
   // get full name from inline script
-  Array.from(document.scripts).some((script) => {
+  Array.from(doc.scripts).some((script) => {
     var match = (script.textContent || '').match(objectMatch)
     if (!script.src && match) {
       plainUserObject = match[0] || ''
@@ -36,16 +38,28 @@ function getFromDetails () {
     }
   })
 
-  var fromName = ''
   try {
-    var parsedUserObject = JSON.parse(`{${plainUserObject}}`)
-    fromName = parsedUserObject.NAME || ''
+    return JSON.parse(`{${plainUserObject}}`).NAME || ''
   } catch {
     // can't parse the user object
+    return ''
   }
+}
 
+// messenger has it nowhere else, english only
+const manageNotificationsPattern = /^Manage (.+) notification settings$/i
+function nameFromNotifications (doc) {
+  const $manage = doc.querySelector(
+    '[aria-label^="Manage " i][aria-label$=" notification settings" i]'
+  )
+  const match = $manage?.getAttribute('aria-label').match(manageNotificationsPattern)
+
+  return match?.[1] || ''
+}
+
+function getFromDetails (doc) {
   return createContact({
-    name: fromName,
+    name: nameFromScripts(doc) || nameFromNotifications(doc),
     email: '',
   })
 }
@@ -59,32 +73,52 @@ function getToDetails (editor) {
     $chat = editor.closest('[tabindex="-1"]')
   }
 
-  if ($chat) {
-    const contactNameAttribute = 'aria-label'
-    const $to = $chat.querySelector(`a[${contactNameAttribute}]`)
-    if ($to) {
-      return [
-        createContact({
-          name: $to.getAttribute(contactNameAttribute) || '',
-          email: ''
-        })
-      ]
-    }
+  if (!$chat) {
+    return []
   }
 
-  return []
+  // open thread, the contact is a profile link in the heading
+  const $heading = $chat.querySelector('h3 a[href]')
+  if ($heading) {
+    return [
+      createContact({
+        name: $heading.textContent.trim(),
+        email: '',
+      })
+    ]
+  }
+
+  // new message, the recipients are chips in the to field
+  const $recipients = Array.from($chat.querySelectorAll('[role=list][aria-label] [role=listitem]'))
+
+  return $recipients.map(($recipient) => createContact({
+    name: $recipient.textContent.trim(),
+    email: '',
+  }))
+}
+
+function getFacebookEditor ({ document: doc }) {
+  return doc.querySelector('[contenteditable=true][role=textbox]')
 }
 
 // get all required data from the dom
-function getData ({ element }) {
+function getData ({ element, document: doc = document } = {}) {
   if (!isActive()) {
     return false
   }
 
+  // find the editor when nothing is focused
+  const editor = element || getFacebookEditor({ document: doc })
+  if (!editor) {
+    return false
+  }
+
   return {
-    from: getFromDetails(),
-    to: getToDetails(element),
+    from: getFromDetails(editor.ownerDocument),
+    to: getToDetails(editor),
   }
 }
 
-register('data', getData)
+export default {
+  data: getData,
+}

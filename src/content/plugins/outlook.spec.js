@@ -1,29 +1,16 @@
-import { expect, describe, it } from 'vitest'
+import { expect, describe, it, vi } from 'vitest'
 
-import { getOutlookData } from './outlook.js'
+vi.mock('../utils/current-url.js', () => ({
+  default: () => new URL('https://outlook.live.com/mail/0/'),
+}))
 
-async function page (src = '') {
-  const iframe = document.createElement('iframe')
-  let resolve, reject
-  const promise = new Promise((res, rej) => {
-    [resolve, reject] = [res, rej]
-  })
-  iframe.onload = () => {
-    resolve(iframe)
-  }
-  iframe.onerror = reject
-  iframe.src = src
-  document.body.appendChild(iframe)
-  return promise
-}
+import { getPluginData } from '../plugin.js'
+import loadIframe from '../../test-utils/iframe.js'
 
 describe('outlook', () => {
   it('should get data in default compose', async () => {
-    const iframe = await page('/pages/outlook/outlook-compose.html')
-    const element = iframe.contentDocument.querySelector('[aria-multiline]')
-    const data = await getOutlookData({
-      element: element,
-    })
+    const iframe = await loadIframe('/pages/outlook/outlook-compose.html')
+    const data = await getPluginData({document: iframe.contentDocument})
 
     expect(data).to.deep.equal({
       from: {
@@ -62,11 +49,8 @@ describe('outlook', () => {
   })
 
   it('should get data in compose popup', async () => {
-    const iframe = await page('/pages/outlook/outlook-compose-popup.html')
-    const element = iframe.contentDocument.querySelector('[aria-multiline]')
-    const data = await getOutlookData({
-      element: element,
-    })
+    const iframe = await loadIframe('/pages/outlook/outlook-compose-popup.html')
+    const data = await getPluginData({document: iframe.contentDocument})
 
     expect(data).to.deep.equal({
       from: {
@@ -103,4 +87,17 @@ describe('outlook', () => {
 
     iframe.remove()
   })
+
+  it('should not get data without an editor on the page', async () => {
+    const data = await getPluginData({document: document.implementation.createHTMLDocument()})
+
+    expect(data).to.deep.equal({
+      from: {},
+      to: [],
+      cc: [],
+      bcc: [],
+      subject: '',
+    })
+  })
+
 })
