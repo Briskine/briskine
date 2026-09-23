@@ -116,6 +116,7 @@ export function getDefaultTemplates () {
       <div>css text helper: {{text (css "title") "toUpperCase"}}</div>
       <div>css moment helper: {{css "time" "datetime"}} -> {{moment (css "time" "datetime") format="DD MMMM YYYY"}}</div>
       <div>site: {{#site "linkedin.com"}}{{to.first_name}} / {{@site.url}} / {{css "title"}}{{else}}no linkedin tab{{/site}}</div>
+      <div>eachSite: {{#eachSite "linkedin.com"}}[{{@site.title}} / {{css "title"}} / {{to.first_name}} ]{{else}}no linkedin tabs{{/eachSite}}</div>
       <div><img src="https://www.briskine.com/images/promo-large.png" width="100" height="73"></div>
     `
 
