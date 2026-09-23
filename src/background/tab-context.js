@@ -45,26 +45,25 @@ function hasResult (result) {
 }
 
 // without a frameId every frame answers and the first one wins,
-// so try the top frame before falling back to the whole tab.
+// so prefer the top frame over the whole tab.
+// both are asked at once, a tab with nothing in its top frame shouldn't wait twice.
 // null only when the tab never answered, so callers can try the next one.
 async function askTab (tab, event, details) {
-  let answer = null
+  const [top, all] = [0, undefined].map((frameId) => {
+    return trigger(event, details, tab, frameId).then((response) => response?.[0])
+  })
 
-  for (const frameId of [0, undefined]) {
-    const response = await trigger(event, details, tab, frameId)
-    if (!response) {
-      continue
-    }
-
-    const [result] = response
-    if (hasResult(result)) {
-      return result
-    }
-
-    answer = result || answer
+  const topResult = await top
+  if (hasResult(topResult)) {
+    return topResult
   }
 
-  return answer
+  const allResult = await all
+  if (hasResult(allResult)) {
+    return allResult
+  }
+
+  return allResult || topResult || null
 }
 
 function tabContext (tab, data) {

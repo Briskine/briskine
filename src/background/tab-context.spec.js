@@ -123,24 +123,41 @@ describe('tab-context', () => {
       expect(context.data).to.deep.equal({})
     })
 
-    it('should ask the top frame first', async () => {
-      trigger.mockResolvedValue([{subject: 'hello'}])
-      await request('getTabContext', {pattern: 'briskine.com'})
+    it('should prefer the top frame', async () => {
+      // every frame answers first, and has data too
+      trigger.mockImplementation((event, details, tab, frameId) => {
+        if (frameId === 0) {
+          return new Promise((resolve) => setTimeout(() => resolve([{subject: 'from the top frame'}])))
+        }
 
-      expect(trigger).toHaveBeenCalledTimes(1)
-      expect(trigger).toHaveBeenCalledWith(eventSiteData, {}, briskineTab, 0)
-    })
-
-    it('should fall back to every frame when the top frame has nothing', async () => {
-      trigger
-        .mockResolvedValueOnce([{}])
-        .mockResolvedValueOnce([{subject: 'from an iframe'}])
+        return Promise.resolve([{subject: 'from an iframe'}])
+      })
 
       const context = await request('getTabContext', {pattern: 'briskine.com'})
 
-      expect(trigger).toHaveBeenCalledTimes(2)
-      expect(trigger).toHaveBeenLastCalledWith(eventSiteData, {}, briskineTab, undefined)
-      expect(context.data).to.deep.equal({subject: 'from an iframe'})
+      expect(context.data).to.deep.equal({subject: 'from the top frame'})
+    })
+
+    it('should ask every frame without waiting for the top one', async () => {
+      let answerTop = () => {}
+      trigger.mockImplementation((event, details, tab, frameId) => {
+        if (frameId === 0) {
+          return new Promise((resolve) => {
+            answerTop = resolve
+          })
+        }
+
+        return Promise.resolve([{subject: 'from an iframe'}])
+      })
+
+      const context = request('getTabContext', {pattern: 'briskine.com'})
+      await vi.waitFor(() => expect(trigger).toHaveBeenCalledTimes(2))
+      expect(trigger).toHaveBeenCalledWith(eventSiteData, {}, briskineTab, 0)
+      expect(trigger).toHaveBeenCalledWith(eventSiteData, {}, briskineTab, undefined)
+
+      // the top frame has nothing
+      answerTop([{}])
+      expect((await context).data).to.deep.equal({subject: 'from an iframe'})
     })
   })
 
