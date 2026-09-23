@@ -4,10 +4,11 @@ import { eventSiteData, eventSiteMatches } from '../config.js'
 import { getSettings } from '../store/store-api.js'
 import trigger from './background-trigger.js'
 import { isBlocklisted } from '../blocklist.js'
-import { toUrlPattern, testUrl, sortTabs } from './tab-match.js'
+import { toUrlPattern, testUrl, sortTabs, sortTabsByStrip } from './tab-match.js'
 import debug from '../debug.js'
 
 const contextRequest = 'getTabContext'
+const contextsRequest = 'getTabContexts'
 const matchesRequest = 'getSiteMatches'
 
 async function allowedSettings () {
@@ -92,6 +93,15 @@ async function getTabContext ({pattern} = {}, windowId) {
   return tabContext(tabs[0], {})
 }
 
+async function getTabContexts ({pattern} = {}, windowId) {
+  const tabs = sortTabsByStrip(await findTabs(pattern), windowId)
+
+  return Promise.all(tabs.map(async (tab) => {
+    const data = await askTab(tab, eventSiteData, {})
+    return tabContext(tab, data || {})
+  }))
+}
+
 async function getSiteMatches ({tabId, selector} = {}) {
   const [settings, tab] = await Promise.all([
     allowedSettings(),
@@ -109,6 +119,7 @@ async function getSiteMatches ({tabId, selector} = {}) {
 browser.runtime.onMessage.addListener((req, sender, sendResponse) => {
   const handlers = {
     [contextRequest]: getTabContext,
+    [contextsRequest]: getTabContexts,
     [matchesRequest]: getSiteMatches,
   }
 

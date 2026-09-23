@@ -170,6 +170,73 @@ describe('tab-context', () => {
     })
   })
 
+  describe('getTabContexts', () => {
+    // the request comes from window 1
+    const otherWindowTab = {id: 1, url: 'https://briskine.com/a/', title: 'A', windowId: 2, index: 0, active: true}
+    const laterTab = {id: 2, url: 'https://briskine.com/b/', title: 'B', windowId: 1, index: 3}
+    const firstTab = {id: 3, url: 'https://briskine.com/c/', title: 'C', windowId: 1, index: 1}
+
+    const answerByTab = (answers) => (event, details, tab) => Promise.resolve(answers[tab.id])
+
+    beforeEach(() => {
+      tabsQuery.mockResolvedValue([otherWindowTab, laterTab, firstTab])
+    })
+
+    it('should list every match in tab strip order', async () => {
+      trigger.mockImplementation(answerByTab({
+        1: [{subject: 'a'}],
+        2: [{subject: 'b'}],
+        3: [{subject: 'c'}],
+      }))
+
+      expect(await request('getTabContexts', {pattern: 'briskine.com'})).to.deep.equal([
+        {tabId: 3, url: 'https://briskine.com/c/', title: 'C', data: {subject: 'c'}},
+        {tabId: 2, url: 'https://briskine.com/b/', title: 'B', data: {subject: 'b'}},
+        {tabId: 1, url: 'https://briskine.com/a/', title: 'A', data: {subject: 'a'}},
+      ])
+    })
+
+    it('should list a tab that never answers, with no data', async () => {
+      trigger.mockImplementation(answerByTab({
+        1: [{subject: 'a'}],
+        3: [{subject: 'c'}],
+      }))
+
+      const contexts = await request('getTabContexts', {pattern: 'briskine.com'})
+
+      expect(contexts.map((context) => context.tabId)).to.deep.equal([3, 2, 1])
+      expect(contexts[1].data).to.deep.equal({})
+    })
+
+    it('should ask every tab without waiting for the others', async () => {
+      // the first tab never answers
+      trigger.mockImplementation((event, details, tab) => {
+        return tab.id === 3 ? new Promise(() => {}) : Promise.resolve([{}])
+      })
+
+      request('getTabContexts', {pattern: 'briskine.com'})
+
+      await vi.waitFor(() => {
+        const asked = trigger.mock.calls.map(([, , tab]) => tab.id)
+        expect(new Set(asked)).to.deep.equal(new Set([1, 2, 3]))
+      })
+    })
+
+    it('should answer an empty list when no tab matches', async () => {
+      expect(await request('getTabContexts', {pattern: 'gmail.com'})).to.deep.equal([])
+    })
+
+    it('should answer an empty list for a pattern it refuses', async () => {
+      expect(await request('getTabContexts', {pattern: '*'})).to.deep.equal([])
+    })
+
+    it('should skip blocklisted tabs', async () => {
+      getSettings.mockResolvedValue({blacklist: ['briskine.com']})
+
+      expect(await request('getTabContexts', {pattern: 'briskine.com'})).to.deep.equal([])
+    })
+  })
+
   describe('getSiteMatches', () => {
     it('should read the tab {{#site}} already resolved', async () => {
       trigger.mockResolvedValue([[{text: 'one'}]])
