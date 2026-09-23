@@ -1,6 +1,6 @@
 import { expect, describe, it } from 'vitest'
 
-import { toUrlPattern, testUrl, sortTabs } from './tab-match.js'
+import { toUrlPattern, testUrl, sortTabs, sortTabsByStrip } from './tab-match.js'
 
 function matchesUrl (url, pattern) {
   return testUrl(toUrlPattern(pattern), url)
@@ -119,6 +119,36 @@ describe('tab-match', () => {
 
     it('should return nothing when there are no tabs', () => {
       expect(sortTabs([], 1)).to.deep.equal([])
+    })
+  })
+
+  describe('sortTabsByStrip', () => {
+    const tabs = [
+      {id: 1, windowId: 3, index: 0},
+      {id: 2, windowId: 2, index: 1},
+      {id: 3, windowId: 1, index: 4},
+      {id: 4, windowId: 2, index: 0, active: true, lastAccessed: 50},
+      {id: 5, windowId: 1, index: 2},
+    ]
+
+    const ids = (sorted) => sorted.map((tab) => tab.id)
+
+    it('should put the current window first, in strip order', () => {
+      expect(ids(sortTabsByStrip(tabs, 2))).to.deep.equal([4, 2, 5, 3, 1])
+    })
+
+    it('should order the other windows by id', () => {
+      expect(ids(sortTabsByStrip(tabs, 3))).to.deep.equal([1, 5, 3, 4, 2])
+    })
+
+    it('should not mutate the tabs it was given', () => {
+      const original = ids(tabs)
+      sortTabsByStrip(tabs, 1)
+      expect(ids(tabs)).to.deep.equal(original)
+    })
+
+    it('should return nothing when there are no tabs', () => {
+      expect(sortTabsByStrip([], 1)).to.deep.equal([])
     })
   })
 })
