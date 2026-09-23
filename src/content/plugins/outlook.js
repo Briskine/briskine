@@ -210,15 +210,25 @@ async function updateContactField ($field, value) {
 }
 
 async function addSingleContact ($field, value) {
+  const doc = $field.ownerDocument
   $field.focus()
-  if (document?.queryCommandEnabled?.('insertText')) {
-    document.execCommand('insertText', false, value)
-    document.execCommand('insertText', false, ',')
+  if (doc?.queryCommandEnabled?.('insertText')) {
+    doc.execCommand('insertText', false, value)
+    doc.execCommand('insertText', false, ',')
   }
 }
 
 function elementContains ($element, value) {
-  return ($element.innerText || '').includes(value)
+  const { name, email } = createContact(parseNameAndEmail(value))
+  const contacts = []
+  getFieldData(contacts, $element)
+  return contacts.some((contact) => {
+    if (email) {
+      return contact.email.toLowerCase() === email.toLowerCase()
+    }
+
+    return contact.name === name
+  })
 }
 
 async function updateSection ($container, $button, getNode, value) {
@@ -328,7 +338,7 @@ async function actions ({ element, template, data }) {
   if (template.to) {
     const $to = getToContainer(editable)
     const parsedTo = await parseTemplate(template.to, data)
-    if ($to && !elementContains($to, parsedTo)) {
+    if ($to) {
       await updateContactField($to, parsedTo)
     }
   }

@@ -206,6 +206,20 @@ describe('outlook', () => {
     iframe.remove()
   })
 
+  it('should only add the recipients missing from a field', async () => {
+    // bcc@briskine.com is already in bcc, and includes c@briskine.com
+    const iframe = await loadIframe('/pages/outlook/outlook-compose-bcc.html')
+    const doc = iframe.contentDocument
+    const inserted = []
+    vi.spyOn(doc, 'queryCommandEnabled').mockReturnValue(true)
+    vi.spyOn(doc, 'execCommand').mockImplementation((command, ui, value) => inserted.push(value))
+
+    await runActionsInFixture(doc, {bcc: 'bcc@briskine.com, c@briskine.com'})
+    expect(inserted).to.deep.equal(['c@briskine.com', ','])
+
+    iframe.remove()
+  })
+
   it('should not get data without an editor on the page', async () => {
     const data = await getPluginData({document: document.implementation.createHTMLDocument()})
 
