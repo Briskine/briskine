@@ -14,20 +14,20 @@ npm install \
   --no-save \
   --silent \
   prosemirror-state@1.4.4 \
-  prosemirror-view@1.41.5 \
-  prosemirror-model@1.25.4 \
+  prosemirror-view@1.42.4 \
+  prosemirror-model@1.25.11 \
   prosemirror-schema-basic@1.2.4 \
   prosemirror-schema-list@1.5.1 \
-  'ckeditor5@47.5.0' \
+  'ckeditor5@48.5.1' \
   'quill1@npm:quill@1.3.7' \
   'quill2@npm:quill@2.0.3' \
-  'squire-rte@2.4.2' \
+  'squire-rte@2.4.9' \
   'draft-js@0.11.7' \
-  'react@19.2.4' \
-  'react-dom@19.2.4' \
-  '@lexical/react@0.39.0' \
-  'slate@0.123.0' \
-  'slate-react@0.123.0'
+  'react@19.3.0' \
+  'react-dom@19.3.0' \
+  '@lexical/react@0.51.0' \
+  'slate@0.126.2' \
+  'slate-react@0.126.4'
 
 # --- Entry files ---
 
