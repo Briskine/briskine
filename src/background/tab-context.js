@@ -18,7 +18,7 @@ async function allowedSettings () {
   }
 }
 
-async function findTabs (pattern = '', windowId) {
+async function findTabs (pattern = '') {
   const settings = await allowedSettings()
 
   // compile once, then test every tab
@@ -30,13 +30,11 @@ async function findTabs (pattern = '', windowId) {
   // only the tabs a content script could run in
   const [contentScripts] = browser.runtime.getManifest().content_scripts
   const tabs = await browser.tabs.query({url: contentScripts.matches})
-  const candidates = tabs.filter((tab) => {
+  return tabs.filter((tab) => {
     return tab.id
       && testUrl(urlPattern, tab.url)
       && !isBlocklisted(settings, tab.url)
   })
-
-  return sortTabs(candidates, windowId)
 }
 
 // works for both an object of plugin data and an array of matches
@@ -76,7 +74,7 @@ function tabContext (tab, data) {
 }
 
 async function getTabContext ({pattern} = {}, windowId) {
-  const tabs = await findTabs(pattern, windowId)
+  const tabs = sortTabs(await findTabs(pattern), windowId)
   if (!tabs.length) {
     // no tab matched, {{#site}} renders its else branch
     return null

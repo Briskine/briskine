@@ -86,6 +86,15 @@ describe('tab-context', () => {
       expect(tabsQuery).toHaveBeenCalledWith({url: ['https://*/*', 'http://*/*']})
     })
 
+    it('should pick the tab in view over the order tabs come in', async () => {
+      tabsQuery.mockResolvedValue([olderTab, briskineTab])
+      trigger.mockResolvedValue([{subject: 'hello'}])
+
+      const context = await request('getTabContext', {pattern: 'briskine.com'})
+
+      expect(context.tabId).to.equal(7)
+    })
+
     it('should move on to the next match when a tab never answers', async () => {
       tabsQuery.mockResolvedValue([briskineTab, olderTab])
       // the restricted tab answers nothing at all, on either frame
