@@ -1,4 +1,4 @@
-// ../../../../../tmp/tmp.3aB95HS7Ua/node_modules/orderedmap/dist/index.js
+// ../../../../../tmp/tmp.py9TsyCKPw/node_modules/orderedmap/dist/index.js
 function OrderedMap(content) {
   this.content = content;
 }
@@ -117,7 +117,7 @@ OrderedMap.from = function(value) {
 };
 var dist_default = OrderedMap;
 
-// ../../../../../tmp/tmp.3aB95HS7Ua/node_modules/prosemirror-model/dist/index.js
+// ../../../../../tmp/tmp.py9TsyCKPw/node_modules/prosemirror-model/dist/index.js
 function findDiffStart(a, b, pos) {
   for (let i = 0; ; i++) {
     if (i == a.childCount || i == b.childCount)
@@ -599,7 +599,6 @@ var Mark = class _Mark {
     if (!type)
       throw new RangeError(`There is no mark type ${json.type} in this schema`);
     let mark = type.create(json.attrs);
-    type.checkAttrs(mark.attrs);
     return mark;
   }
   /**
@@ -1517,11 +1516,11 @@ var Node = class _Node {
   */
   check() {
     this.type.checkContent(this.content);
-    this.type.checkAttrs(this.attrs);
+    checkAttrs(this.type.attrs, this.attrs, "node", this.type.name);
     let copy2 = Mark.none;
     for (let i = 0; i < this.marks.length; i++) {
       let mark = this.marks[i];
-      mark.type.checkAttrs(mark.attrs);
+      checkAttrs(mark.type.attrs, mark.attrs, "mark", mark.type.name);
       copy2 = mark.addToSet(copy2);
     }
     if (!Mark.sameSet(copy2, this.marks))
@@ -1562,7 +1561,6 @@ var Node = class _Node {
     }
     let content = Fragment.fromJSON(schema2, json.content);
     let node = schema2.nodeType(json.type).create(json.attrs, content, marks2);
-    node.type.checkAttrs(node.attrs);
     return node;
   }
 };
@@ -1617,6 +1615,15 @@ function wrapMarks(marks2, str) {
   for (let i = marks2.length - 1; i >= 0; i--)
     str = marks2[i].type.name + "(" + str + ")";
   return str;
+}
+function checkAttrs(attrs, values, type, name) {
+  for (let attr in values)
+    if (!(attr in attrs))
+      throw new RangeError(`Unsupported attribute ${attr} for ${type} of type ${name}`);
+  for (let attr in attrs) {
+    if (attrs[attr].validate)
+      attrs[attr].validate(values[attr]);
+  }
 }
 var ContentMatch = class _ContentMatch {
   /**
@@ -2033,26 +2040,19 @@ function defaultAttrs(attrs) {
 function computeAttrs(attrs, value) {
   let built = /* @__PURE__ */ Object.create(null);
   for (let name in attrs) {
+    let attr = attrs[name];
     let given = value && value[name];
     if (given === void 0) {
-      let attr = attrs[name];
       if (attr.hasDefault)
         given = attr.default;
       else
         throw new RangeError("No value supplied for attribute " + name);
+    } else if (attr.validate) {
+      attr.validate(given);
     }
     built[name] = given;
   }
   return built;
-}
-function checkAttrs(attrs, values, type, name) {
-  for (let attr in values)
-    if (!(attr in attrs))
-      throw new RangeError(`Unsupported attribute ${attr} for ${type} of type ${name}`);
-  for (let attr in attrs) {
-    if (attrs[attr].validate)
-      attrs[attr].validate(values[attr]);
-  }
 }
 function initAttrs(typeName, attrs) {
   let result = /* @__PURE__ */ Object.create(null);
@@ -2211,10 +2211,9 @@ var NodeType = class _NodeType {
       throw new RangeError(`Invalid content for node ${this.name}: ${content.toString().slice(0, 50)}`);
   }
   /**
-  @internal
+  @internal no longer useful, but called by old prosemirror-view versions
   */
   checkAttrs(attrs) {
-    checkAttrs(this.attrs, attrs, "node", this.name);
   }
   /**
   Check whether the given mark type is allowed in this node.
@@ -2335,12 +2334,6 @@ var MarkType = class _MarkType {
     for (let i = 0; i < set.length; i++)
       if (set[i].type == this)
         return set[i];
-  }
-  /**
-  @internal
-  */
-  checkAttrs(attrs) {
-    checkAttrs(this.attrs, attrs, "mark", this.name);
   }
   /**
   Queries whether a given mark type is
@@ -3334,7 +3327,7 @@ function renderSpec(doc3, structure, xmlNS, blockArraysIn) {
   return { dom, contentDOM };
 }
 
-// ../../../../../tmp/tmp.3aB95HS7Ua/node_modules/prosemirror-transform/dist/index.js
+// ../../../../../tmp/tmp.py9TsyCKPw/node_modules/prosemirror-transform/dist/index.js
 var lower16 = 65535;
 var factor16 = Math.pow(2, 16);
 function makeRecover(index, offset) {
@@ -5084,7 +5077,7 @@ var Transform = class {
   }
 };
 
-// ../../../../../tmp/tmp.3aB95HS7Ua/node_modules/prosemirror-state/dist/index.js
+// ../../../../../tmp/tmp.py9TsyCKPw/node_modules/prosemirror-state/dist/index.js
 var classesById = /* @__PURE__ */ Object.create(null);
 var Selection = class {
   /**
@@ -5953,7 +5946,7 @@ var EditorState = class _EditorState {
   }
 };
 
-// ../../../../../tmp/tmp.3aB95HS7Ua/node_modules/prosemirror-view/dist/index.js
+// ../../../../../tmp/tmp.py9TsyCKPw/node_modules/prosemirror-view/dist/index.js
 var domIndex = function(node) {
   for (var index = 0; ; index++) {
     node = node.previousSibling;
@@ -8711,11 +8704,10 @@ function addContext(slice, context) {
     if (!type || type.hasRequiredAttrs())
       break;
     try {
-      type.checkAttrs(array[i + 1]);
+      content = Fragment.from(type.create(array[i + 1], content));
     } catch (e) {
       break;
     }
-    content = Fragment.from(type.create(array[i + 1], content));
     openStart++;
     openEnd++;
   }
@@ -10594,7 +10586,7 @@ function readDOMChange(view, from, to, typeOver, addedNodes) {
   let $to = parse.doc.resolveNoCache(change.endB - parse.from);
   let $fromA = doc3.resolve(change.start);
   let inlineChange = $from.sameParent($to) && $from.parent.inlineContent && $fromA.end() >= change.endA;
-  if ((ios && view.input.lastIOSEnter > Date.now() - 225 && (!inlineChange || addedNodes.some((n) => n.nodeName == "DIV" || n.nodeName == "P")) || !inlineChange && $from.pos < parse.doc.content.size && (!$from.sameParent($to) || !$from.parent.inlineContent) && $from.pos < $to.pos && !/\S/.test(parse.doc.textBetween($from.pos, $to.pos, "", ""))) && view.someProp("handleKeyDown", (f) => f(view, keyEvent(13, "Enter")))) {
+  if ((ios && view.input.lastIOSEnter > Date.now() - 225 && (!inlineChange || addedNodes.some((n) => n.nodeName == "DIV" || n.nodeName == "P")) || !inlineChange && looksLikeEnter(parse.doc, $from.pos, $to.pos)) && view.someProp("handleKeyDown", (f) => f(view, keyEvent(13, "Enter")))) {
     view.input.lastIOSEnter = 0;
     return;
   }
@@ -10707,6 +10699,16 @@ function looksLikeBackspace(old, start, end, $newStart, $newEnd) {
   if (!$next.parent.isTextblock || $next.pos > end || skipClosingAndOpening($next, true, false) < end)
     return false;
   return $newStart.parent.content.cut($newStart.parentOffset).eq($next.parent.content);
+}
+function looksLikeEnter(content, from, to) {
+  let newTextlines = 0, newLeaves = 0;
+  content.nodesBetween(from, to, (node, pos) => {
+    if (node.isTextblock && pos >= from && pos < to)
+      newTextlines++;
+    else if (node.isText ? /\S/.test(node.text.slice(Math.max(0, from - pos), Math.min(node.nodeSize, to - pos))) : node.isLeaf)
+      newLeaves++;
+  });
+  return newLeaves == 0 && newTextlines == 1;
 }
 function skipClosingAndOpening($pos, fromEnd, mayOpen) {
   let depth = $pos.depth, end = fromEnd ? $pos.end() : $pos.pos;
@@ -11259,7 +11261,7 @@ function checkStateComponent(plugin) {
     throw new RangeError("Plugins passed directly to the view must not have a state component");
 }
 
-// ../../../../../tmp/tmp.3aB95HS7Ua/node_modules/prosemirror-schema-basic/dist/index.js
+// ../../../../../tmp/tmp.py9TsyCKPw/node_modules/prosemirror-schema-basic/dist/index.js
 var pDOM = ["p", 0];
 var blockquoteDOM = ["blockquote", 0];
 var hrDOM = ["hr"];
@@ -11458,7 +11460,7 @@ var marks = {
 };
 var schema = new Schema({ nodes, marks });
 
-// ../../../../../tmp/tmp.3aB95HS7Ua/node_modules/prosemirror-schema-list/dist/index.js
+// ../../../../../tmp/tmp.py9TsyCKPw/node_modules/prosemirror-schema-list/dist/index.js
 var olDOM = ["ol", 0];
 var ulDOM = ["ul", 0];
 var liDOM = ["li", 0];

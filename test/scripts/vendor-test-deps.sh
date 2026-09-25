@@ -14,11 +14,11 @@ npm install \
   --no-save \
   --silent \
   prosemirror-state@1.4.4 \
-  prosemirror-view@1.42.4 \
-  prosemirror-model@1.25.11 \
+  prosemirror-view@1.42.5 \
+  prosemirror-model@1.25.12 \
   prosemirror-schema-basic@1.2.4 \
   prosemirror-schema-list@1.5.1 \
-  'ckeditor5@48.5.1' \
+  'ckeditor5@48.5.2' \
   'quill1@npm:quill@1.3.7' \
   'quill2@npm:quill@2.0.3' \
   'squire-rte@2.4.9' \
