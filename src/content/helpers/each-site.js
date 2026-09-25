@@ -2,9 +2,11 @@
  * eachSite helper
  *
  * {{#eachSite "briskine.com"}}{{css ".person"}} - {{@site.title}}{{else}}no tabs{{/eachSite}}
+ * {{#eachSite "briskine.com"}}{{#unless @first}}, {{/unless}}{{@site.title}}{{/eachSite}}
  *
  * Renders the block once for every open tab that matches, in tab strip order,
- * each with that tab's plugin data and @site, the same way {{#site}} does.
+ * each with that tab's plugin data and @site, the same way {{#site}} does,
+ * and @index, @first and @last, the same way {{#each}} does.
  * Renders the else branch only when no tab matched.
  *
  */
@@ -27,8 +29,11 @@ export default function createEachSite (cache = new Map()) {
     }
 
     let output = ''
-    for (const context of contexts) {
+    for (const [index, context] of contexts.entries()) {
       const frame = createFrame(options.data)
+      frame.index = index
+      frame.first = index === 0
+      frame.last = index === contexts.length - 1
       // nested helpers read the tab from here
       frame.site = {
         tabId: context.tabId,

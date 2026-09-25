@@ -71,6 +71,30 @@ describe('eachSite handlebars helper', () => {
       .to.equal('[7 Messaging | Briskine][8 Feed | Briskine]')
   })
 
+  it('should expose @index, @first and @last', async () => {
+    expect(await parseTemplate('{{#eachSite "briskine.com"}}[{{@index}} {{@first}} {{@last}}]{{/eachSite}}'))
+      .to.equal('[0 true false][1 false true]')
+  })
+
+  it('should mark a single tab as both first and last', async () => {
+    getSiteContexts.mockResolvedValue([tabs[0]])
+
+    expect(await parseTemplate('{{#eachSite "briskine.com"}}[{{@index}} {{@first}} {{@last}}]{{/eachSite}}'))
+      .to.equal('[0 true true]')
+  })
+
+  it('should count a tab that did not answer', async () => {
+    getSiteContexts.mockResolvedValue([{...tabs[0], data: {}}, tabs[1]])
+
+    expect(await parseTemplate('{{#eachSite "briskine.com"}}{{#if @last}}[{{@index}} {{to.first_name}}]{{/if}}{{/eachSite}}'))
+      .to.equal('[1 John]')
+  })
+
+  it('should reach the tab index from a nested {{#each}}', async () => {
+    expect(await parseTemplate('{{#eachSite "briskine.com"}}{{#each to}}[{{@../index}} {{@index}}]{{/each}}{{/eachSite}}'))
+      .to.equal('[0 0][1 0]')
+  })
+
   it('should normalize the data of every tab', async () => {
     expect(await parseTemplate('{{#eachSite "briskine.com"}}{{#each to}}[{{this.email}}]{{/each}}{{/eachSite}}'))
       .to.equal('[michael@briskine.com][john@briskine.com]')
