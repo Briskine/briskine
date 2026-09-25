@@ -14,6 +14,7 @@
 import { createFrame } from '../../briskbars/briskbars.js'
 
 import { getSiteContexts } from '../site/site-context.js'
+import siteFrame from '../site/site-frame.js'
 import parseContext from '../utils/parse-context.js'
 import cached from '../utils/cached.js'
 
@@ -34,12 +35,7 @@ export default function createEachSite (cache = new Map()) {
       frame.index = index
       frame.first = index === 0
       frame.last = index === contexts.length - 1
-      // nested helpers read the tab from here
-      frame.site = {
-        tabId: context.tabId,
-        url: context.url,
-        title: context.title,
-      }
+      frame.site = siteFrame(context)
 
       output += await options.fn(await parseContext(context.data), {data: frame})
     }

@@ -71,6 +71,11 @@ describe('eachSite handlebars helper', () => {
       .to.equal('[7 Messaging | Briskine][8 Feed | Briskine]')
   })
 
+  it('should expose the url parts of each tab on @site', async () => {
+    expect(await parseTemplate('{{#eachSite "briskine.com"}}[{{@site.domain}} {{@site.path}}]{{/eachSite}}'))
+      .to.equal('[www.briskine.com /messaging/][www.briskine.com /feed/]')
+  })
+
   it('should expose @index, @first and @last', async () => {
     expect(await parseTemplate('{{#eachSite "briskine.com"}}[{{@index}} {{@first}} {{@last}}]{{/eachSite}}'))
       .to.equal('[0 true false][1 false true]')

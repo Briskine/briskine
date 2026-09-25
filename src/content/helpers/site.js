@@ -3,6 +3,7 @@
  *
  * {{#site "briskine.com"}}Hi {{to.first_name}}{{else}}Hi there{{/site}}
  * {{#site "briskine.com"}}{{to.email}} / {{../to.email}} / {{@site.url}}{{/site}}
+ * {{#site "briskine.com"}}{{@site.domain}}{{@site.path}}{{@site.query}}{{/site}}
  *
  * Switches the block context to the plugin data of another open tab.
  * Renders the else branch only when no tab matched.
@@ -12,6 +13,7 @@
 import { createFrame } from '../../briskbars/briskbars.js'
 
 import { getSiteContext } from '../site/site-context.js'
+import siteFrame from '../site/site-frame.js'
 import parseContext from '../utils/parse-context.js'
 import cached from '../utils/cached.js'
 
@@ -27,12 +29,7 @@ export default function createSite (cache = new Map()) {
     }
 
     const frame = createFrame(options.data)
-    // nested helpers read the tab from here
-    frame.site = {
-      tabId: context.tabId,
-      url: context.url,
-      title: context.title,
-    }
+    frame.site = siteFrame(context)
 
     return options.fn(await parseContext(context.data), {data: frame})
   }
