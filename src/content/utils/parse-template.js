@@ -3,11 +3,7 @@ import parseContext from './parse-context.js'
 
 import briskbars from '../../briskbars/briskbars.js'
 
-// legacy choice helper
-import choice from '../helpers/choice.js'
-
 import moment from '../helpers/moment.js'
-import domain from '../helpers/domain.js'
 import text from '../helpers/text.js'
 import list from '../helpers/list.js'
 import {capitalize, capitalizeAll} from '../helpers/capitalize.js'
@@ -31,10 +27,6 @@ const helpers = {
   compare,
   random,
   cursor,
-
-  // TODO deprecated legacy helpers
-  choice,
-  domain,
 }
 
 // cache partials because lots of templates can get expensive

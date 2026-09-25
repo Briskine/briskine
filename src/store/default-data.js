@@ -109,8 +109,8 @@ export function getDefaultTemplates () {
       <div>last week: {{moment subtract='7;days'}}</div>
       <div><span>we      ek number:</span>   <span>{{moment week=''}}</span></div>
       <div>cursor: {{cursor}}</div>
-      <div>choice: {{choice 'Hello, Hi, Hey'}}</div>
-      <div>domain: {{domain to.email}}</div>
+      <div>random: {{random 'Hello' 'Hi' 'Hey'}}</div>
+      <div>domain: {{capitalizeAll (text (text (lookup (text (lookup (text to.email "split" "@") 1) "split" ".") 0) "replaceAll" "-" " ") "toLowerCase")}}</div>
       <div>css title: {{css "title"}}</div>
       <div>css first link: {{css "a" "href"}}</div>
       <div>css text helper: {{text (css "title") "toUpperCase"}}</div>

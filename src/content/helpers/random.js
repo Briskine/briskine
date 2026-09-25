@@ -1,4 +1,4 @@
-// new random choice helper
+// random choice helper
 export default function random (...args) {
   // last argument is the handlebars options object
   const params = args.slice(0, args.length - 1)
