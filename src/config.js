@@ -2,7 +2,7 @@
 export const version = VERSION
 
 export const websiteUrl = (() => {
-  if (ENV === 'production') {
+  if (ENV === 'production' || ENV === 'staging') {
     return 'https://www.briskine.com'
   }
 
