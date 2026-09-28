@@ -6,7 +6,7 @@ export const websiteUrl = (() => {
     return 'https://www.briskine.com'
   }
 
-  return 'http://localhost:4000'
+  return 'http://localhost:8080'
 })()
 
 export const functionsUrl = (() => {
