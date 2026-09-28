@@ -6,7 +6,7 @@
  * {{#each (css ".item")}}{{this}}{{/each}} - all matches
  * {{lookup (css ".field") "value"}} - field value of the first match
  *
- * Reads the tab of the {{#site}} block it's in, or this page outside one.
+ * Reads the tab of the {{#site}} or {{#eachSite}} block it's in, or this page outside one.
  *
  */
 
@@ -46,7 +46,7 @@ export default function createCss (cache = new Map()) {
     // last argument is the handlebars options object
     const options = args.pop()
     const [selector = '', attribute = ''] = args
-    // set by the {{#site}} block we're in, if any
+    // set by the {{#site}} or {{#eachSite}} block we're in, if any
     const tabId = options.data?.site?.tabId
 
     if (!tabId) {
