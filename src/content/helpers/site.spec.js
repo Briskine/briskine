@@ -84,6 +84,12 @@ describe('site handlebars helper', () => {
       .to.equal('michael@briskine.com local@briskine.com')
   })
 
+  it('should explain a missing block', async () => {
+    expect(await parseTemplate('{{site "briskine.com"}}'))
+      .to.equal('<pre>Must pass a block to #site</pre>')
+    expect(getSiteContext).not.toHaveBeenCalled()
+  })
+
   it('should render the else branch when no tab matched', async () => {
     getSiteContext.mockResolvedValue(null)
     expect(await parseTemplate('{{#site "briskine.com"}}Hi {{to.first_name}}{{else}}Hi there{{/site}}'))

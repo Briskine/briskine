@@ -22,6 +22,10 @@ import cached from '../utils/cached.js'
 export default function createEachSite (cache = new Map()) {
   return async function eachSite (...args) {
     const options = args.pop()
+    if (!options.fn) {
+      throw new Error('Must pass a block to #eachSite')
+    }
+
     const [pattern = ''] = args
 
     const contexts = await cached(cache, pattern, () => getSiteContexts(pattern))

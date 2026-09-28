@@ -137,6 +137,12 @@ describe('eachSite handlebars helper', () => {
     expect(getSiteMatches).not.toHaveBeenCalled()
   })
 
+  it('should explain a missing block', async () => {
+    expect(await parseTemplate('{{eachSite "briskine.com"}}'))
+      .to.equal('<pre>Must pass a block to #eachSite</pre>')
+    expect(getSiteContexts).not.toHaveBeenCalled()
+  })
+
   it('should render the else branch when no tab matched', async () => {
     getSiteContexts.mockResolvedValue([])
     expect(await parseTemplate('{{#eachSite "briskine.com"}}[{{to.first_name}}]{{else}}no tabs{{/eachSite}}'))
