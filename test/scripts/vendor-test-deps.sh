@@ -27,7 +27,7 @@ npm install \
   'react-dom@19.3.0' \
   '@lexical/react@0.51.0' \
   'slate@0.126.2' \
-  'slate-react@0.126.4'
+  'slate-react@0.127.1'
 
 # --- Entry files ---
 
