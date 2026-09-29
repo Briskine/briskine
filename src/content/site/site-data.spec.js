@@ -7,6 +7,11 @@ vi.mock('../plugin.js', () => ({
   runPluginActions: vi.fn(),
 }))
 
+// the failing plugins and selectors below get logged
+vi.mock('../../debug.js', () => ({
+  default: () => {},
+}))
+
 import { eventSiteData, eventSiteMatches } from '../../config.js'
 import { trigger } from '../../store/store-content.js'
 import { setup, destroy } from './site-data.js'

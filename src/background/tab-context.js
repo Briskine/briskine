@@ -4,10 +4,11 @@ import { eventSiteData, eventSiteMatches } from '../config.js'
 import { getSettings } from '../store/store-api.js'
 import trigger from './background-trigger.js'
 import { isBlocklisted } from '../blocklist.js'
-import { toUrlPattern, testUrl, sortTabs } from './tab-match.js'
+import { toUrlPattern, testUrl, sortTabs, sortTabsByStrip } from './tab-match.js'
 import debug from '../debug.js'
 
 const contextRequest = 'getTabContext'
+const contextsRequest = 'getTabContexts'
 const matchesRequest = 'getSiteMatches'
 
 async function allowedSettings () {
@@ -18,7 +19,7 @@ async function allowedSettings () {
   }
 }
 
-async function findTabs (pattern = '', windowId) {
+async function findTabs (pattern = '') {
   const settings = await allowedSettings()
 
   // compile once, then test every tab
@@ -30,13 +31,11 @@ async function findTabs (pattern = '', windowId) {
   // only the tabs a content script could run in
   const [contentScripts] = browser.runtime.getManifest().content_scripts
   const tabs = await browser.tabs.query({url: contentScripts.matches})
-  const candidates = tabs.filter((tab) => {
+  return tabs.filter((tab) => {
     return tab.id
       && testUrl(urlPattern, tab.url)
       && !isBlocklisted(settings, tab.url)
   })
-
-  return sortTabs(candidates, windowId)
 }
 
 // works for both an object of plugin data and an array of matches
@@ -44,27 +43,42 @@ function hasResult (result) {
   return Object.keys(result || {}).length > 0
 }
 
+// a frozen tab, or a plugin that never finishes, would otherwise hold up the insert.
+// longer than the plugins' own waits, eg. outlook showing the recipient fields.
+const answerTimeout = 3000
+
+function askFrame (tab, event, details, frameId) {
+  let timer
+  const timeout = new Promise((resolve) => {
+    timer = setTimeout(() => {
+      debug(['tab did not answer', event, tab.url], 'warn')
+      resolve()
+    }, answerTimeout)
+  })
+
+  return Promise.race([trigger(event, details, tab, frameId), timeout])
+    .then((response) => response?.[0])
+    .finally(() => clearTimeout(timer))
+}
+
 // without a frameId every frame answers and the first one wins,
-// so try the top frame before falling back to the whole tab.
+// so prefer the top frame over the whole tab.
+// both are asked at once, a tab with nothing in its top frame shouldn't wait twice.
 // null only when the tab never answered, so callers can try the next one.
 async function askTab (tab, event, details) {
-  let answer = null
+  const [top, all] = [0, undefined].map((frameId) => askFrame(tab, event, details, frameId))
 
-  for (const frameId of [0, undefined]) {
-    const response = await trigger(event, details, tab, frameId)
-    if (!response) {
-      continue
-    }
-
-    const [result] = response
-    if (hasResult(result)) {
-      return result
-    }
-
-    answer = result || answer
+  const topResult = await top
+  if (hasResult(topResult)) {
+    return topResult
   }
 
-  return answer
+  const allResult = await all
+  if (hasResult(allResult)) {
+    return allResult
+  }
+
+  return allResult || topResult || null
 }
 
 function tabContext (tab, data) {
@@ -77,7 +91,7 @@ function tabContext (tab, data) {
 }
 
 async function getTabContext ({pattern} = {}, windowId) {
-  const tabs = await findTabs(pattern, windowId)
+  const tabs = sortTabs(await findTabs(pattern), windowId)
   if (!tabs.length) {
     // no tab matched, {{#site}} renders its else branch
     return null
@@ -93,6 +107,15 @@ async function getTabContext ({pattern} = {}, windowId) {
 
   // nothing answered, still report the best match for {{css}} and @site
   return tabContext(tabs[0], {})
+}
+
+async function getTabContexts ({pattern} = {}, windowId) {
+  const tabs = sortTabsByStrip(await findTabs(pattern), windowId)
+
+  return Promise.all(tabs.map(async (tab) => {
+    const data = await askTab(tab, eventSiteData, {})
+    return tabContext(tab, data || {})
+  }))
 }
 
 async function getSiteMatches ({tabId, selector} = {}) {
@@ -112,6 +135,7 @@ async function getSiteMatches ({tabId, selector} = {}) {
 browser.runtime.onMessage.addListener((req, sender, sendResponse) => {
   const handlers = {
     [contextRequest]: getTabContext,
+    [contextsRequest]: getTabContexts,
     [matchesRequest]: getSiteMatches,
   }
 

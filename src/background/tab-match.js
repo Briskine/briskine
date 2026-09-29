@@ -67,3 +67,18 @@ export function sortTabs (tabs = [], windowId) {
     return (b.lastAccessed || 0) - (a.lastAccessed || 0)
   })
 }
+
+// the way the tab strip reads, the current window first, then the others
+export function sortTabsByStrip (tabs = [], windowId) {
+  return [...tabs].sort((a, b) => {
+    if (a.windowId !== b.windowId) {
+      if (a.windowId === windowId || b.windowId === windowId) {
+        return a.windowId === windowId ? -1 : 1
+      }
+
+      return a.windowId - b.windowId
+    }
+
+    return a.index - b.index
+  })
+}

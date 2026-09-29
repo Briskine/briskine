@@ -2,6 +2,7 @@ import { expect, describe, it, beforeAll, beforeEach, vi } from 'vitest'
 
 vi.mock('../site/site-context.js', () => ({
   getSiteContext: vi.fn(),
+  getSiteContexts: vi.fn(),
   getSiteMatches: vi.fn(),
 }))
 
@@ -70,10 +71,23 @@ describe('site handlebars helper', () => {
       .to.equal('https://www.briskine.com/messaging/ Messaging | Briskine')
   })
 
+  it('should expose the url parts on @site', async () => {
+    getSiteContext.mockResolvedValue({...briskineTab, url: 'https://www.briskine.com/messaging/?id=1#top'})
+    expect(await parseTemplate('{{#site "briskine.com"}}{{@site.protocol}} {{@site.domain}} {{@site.path}} {{@site.query}} {{@site.hash}}{{/site}}'))
+      // escaped like any other value
+      .to.equal('https www.briskine.com /messaging/ ?id&#x3D;1 #top')
+  })
+
   it('should reach the composing tab with ../', async () => {
     const local = {to: [{email: 'local@briskine.com'}]}
     expect(await parseTemplate('{{#site "briskine.com"}}{{to.email}} {{../to.email}}{{/site}}', local))
       .to.equal('michael@briskine.com local@briskine.com')
+  })
+
+  it('should explain a missing block', async () => {
+    expect(await parseTemplate('{{site "briskine.com"}}'))
+      .to.equal('<pre>Must pass a block to #site</pre>')
+    expect(getSiteContext).not.toHaveBeenCalled()
   })
 
   it('should render the else branch when no tab matched', async () => {

@@ -3,11 +3,7 @@ import parseContext from './parse-context.js'
 
 import briskbars from '../../briskbars/briskbars.js'
 
-// legacy choice helper
-import choice from '../helpers/choice.js'
-
 import moment from '../helpers/moment.js'
-import domain from '../helpers/domain.js'
 import text from '../helpers/text.js'
 import list from '../helpers/list.js'
 import {capitalize, capitalizeAll} from '../helpers/capitalize.js'
@@ -18,6 +14,7 @@ import random from '../helpers/random.js'
 import cursor from '../helpers/cursor.js'
 import createCss from '../helpers/css.js'
 import createSite from '../helpers/site.js'
+import createEachSite from '../helpers/each-site.js'
 
 const helpers = {
   moment,
@@ -30,10 +27,6 @@ const helpers = {
   compare,
   random,
   cursor,
-
-  // TODO deprecated legacy helpers
-  choice,
-  domain,
 }
 
 // cache partials because lots of templates can get expensive
@@ -70,7 +63,7 @@ async function getPartials () {
 export default async function parseTemplate (template = '', data = {}) {
   const context = await parseContext(data)
   const partials = await getPartials()
-  const renderHelpers = {...helpers, site: createSite(), css: createCss()}
+  const renderHelpers = {...helpers, site: createSite(), eachSite: createEachSite(), css: createCss()}
 
   try {
     return await briskbars(template, context, { helpers: renderHelpers, partials })
