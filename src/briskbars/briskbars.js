@@ -1,4 +1,4 @@
-// briskbars 1.2.0
+// briskbars 1.3.0
 var __defProp = Object.defineProperty;
 var __export = (target, all) => {
   for (var name in all)
@@ -1689,49 +1689,6 @@ function createFrame(object) {
   return frame;
 }
 
-// src/vendor.ts
-var escapeExpression2 = escapeExpression;
-var extend2 = extend;
-var isMap2 = isMap;
-var isSet2 = isSet;
-
-// src/pending.ts
-var Pending = class {
-  promise;
-  constructor(promise) {
-    this.promise = promise;
-  }
-};
-function invoked(result) {
-  return result != null && typeof result.then === "function" ? new Pending(Promise.resolve(result)) : result;
-}
-function unwrap(value) {
-  return value instanceof Pending ? value.promise : value;
-}
-function chain(value, then) {
-  if (value instanceof Pending) {
-    return new Pending(value.promise.then((resolved) => unwrap(then(resolved))));
-  }
-  return then(value);
-}
-function runFrom(start, count, step, onValue) {
-  for (let i = start; i < count; i++) {
-    const value = step(i);
-    if (value instanceof Pending) {
-      const at = i;
-      return new Pending(value.promise.then((resolved) => {
-        onValue(at, resolved);
-        return unwrap(runFrom(at + 1, count, step, onValue));
-      }));
-    }
-    onValue(i, value);
-  }
-  return void 0;
-}
-function settle(value) {
-  return value instanceof Pending ? value.promise : value;
-}
-
 // lib/handlebars/helpers/block-helper-missing.js
 function block_helper_missing_default(instance) {
   instance.registerHelper("blockHelperMissing", function(context, options) {
@@ -1926,6 +1883,33 @@ function registerDefaultHelpers(instance) {
   with_default(instance);
 }
 
+// lib/handlebars/decorators/inline.js
+function inline_default(instance) {
+  instance.registerDecorator(
+    "inline",
+    function(fn, props, container, options) {
+      let ret = fn;
+      if (!props.partials) {
+        props.partials = {};
+        ret = function(context, options2) {
+          let original = container.partials;
+          container.partials = extend({}, original, props.partials);
+          let ret2 = fn(context, options2);
+          container.partials = original;
+          return ret2;
+        };
+      }
+      props.partials[options.args[0]] = options.fn;
+      return ret;
+    }
+  );
+}
+
+// lib/handlebars/decorators.js
+function registerDefaultDecorators(instance) {
+  inline_default(instance);
+}
+
 // lib/handlebars/logger.js
 var logger = {
   methodMap: ["debug", "info", "warn", "error"],
@@ -2007,10 +1991,167 @@ See https://handlebarsjs.com/api-reference/runtime-options.html#options-to-contr
     );
   }
 }
+function resetLoggedProperties() {
+  Object.keys(loggedProperties).forEach((propertyName) => {
+    delete loggedProperties[propertyName];
+  });
+}
+
+// lib/handlebars/base.js
+var objectType = "[object Object]";
+function HandlebarsEnvironment(helpers, partials, decorators) {
+  this.helpers = helpers || {};
+  this.partials = partials || {};
+  this.decorators = decorators || {};
+  registerDefaultHelpers(this);
+  registerDefaultDecorators(this);
+}
+HandlebarsEnvironment.prototype = {
+  constructor: HandlebarsEnvironment,
+  logger: logger_default,
+  log: logger_default.log,
+  registerHelper: function(name, fn) {
+    if (toString.call(name) === objectType) {
+      if (fn) {
+        throw new exception_default("Arg not supported with multiple helpers");
+      }
+      extend(this.helpers, name);
+    } else {
+      this.helpers[name] = fn;
+    }
+  },
+  unregisterHelper: function(name) {
+    delete this.helpers[name];
+  },
+  registerPartial: function(name, partial) {
+    if (toString.call(name) === objectType) {
+      extend(this.partials, name);
+    } else {
+      if (typeof partial === "undefined") {
+        throw new exception_default(
+          `Attempting to register a partial called "${name}" as undefined`
+        );
+      }
+      this.partials[name] = partial;
+    }
+  },
+  unregisterPartial: function(name) {
+    delete this.partials[name];
+  },
+  registerDecorator: function(name, fn) {
+    if (toString.call(name) === objectType) {
+      if (fn) {
+        throw new exception_default("Arg not supported with multiple decorators");
+      }
+      extend(this.decorators, name);
+    } else {
+      this.decorators[name] = fn;
+    }
+  },
+  unregisterDecorator: function(name) {
+    delete this.decorators[name];
+  },
+  /**
+   * Reset the memory of illegal property accesses that have already been logged.
+   * @deprecated should only be used in handlebars test-cases
+   */
+  resetLoggedPropertyAccesses() {
+    resetLoggedProperties();
+  }
+};
+var log = logger_default.log;
 
 // lib/handlebars/runtime.js
+function invokePartial(partial, context, options) {
+  const currentPartialBlock = options.data && options.data["partial-block"];
+  options.partial = true;
+  let partialBlock;
+  if (options.fn && options.fn !== noop) {
+    options.data = createFrame(options.data);
+    let fn = options.fn;
+    partialBlock = options.data["partial-block"] = function partialBlockWrapper(context2, options2 = {}) {
+      options2.data = createFrame(options2.data);
+      options2.data["partial-block"] = currentPartialBlock;
+      return fn(context2, options2);
+    };
+    if (fn.partials) {
+      options.partials = extend({}, options.partials, fn.partials);
+    }
+  }
+  if (partial === void 0 && partialBlock) {
+    partial = partialBlock;
+  }
+  if (partial === void 0) {
+    throw new exception_default(
+      'The partial "' + options.name + '" could not be found'
+    );
+  } else if (partial instanceof Function) {
+    return partial(context, options);
+  }
+}
 function noop() {
   return "";
+}
+
+// src/vendor.ts
+var escapeExpression2 = escapeExpression;
+var extend2 = extend;
+var isMap2 = isMap;
+var invokePartial2 = invokePartial;
+
+// src/pending.ts
+var Pending = class {
+  promise;
+  constructor(promise) {
+    this.promise = promise;
+  }
+};
+function invoked(result) {
+  return result != null && typeof result.then === "function" ? new Pending(Promise.resolve(result)) : result;
+}
+function unwrap(value) {
+  return value instanceof Pending ? value.promise : value;
+}
+function chain(value, then) {
+  if (value instanceof Pending) {
+    return new Pending(value.promise.then((resolved) => unwrap(then(resolved))));
+  }
+  return then(value);
+}
+function settleInOrder(values) {
+  const promises = values.map((value) => value instanceof Pending ? value.promise : value);
+  return Promise.all(promises).catch(() => promises.reduce(
+    (earlier, promise) => earlier.then(() => promise),
+    Promise.resolve()
+  ));
+}
+function continueAll(values, from, count, step, then) {
+  for (let i = from; i < count; i++) {
+    try {
+      values.push(step(i));
+    } catch (err) {
+      values.push(new Pending(Promise.reject(err)));
+      break;
+    }
+  }
+  return new Pending(settleInOrder(values).then((settled) => unwrap(then(settled))));
+}
+function runAll(count, step, onValue) {
+  for (let i = 0; i < count; i++) {
+    const value = step(i);
+    if (value instanceof Pending) {
+      return continueAll([value], i + 1, count, step, (settled) => {
+        for (let k = 0; k < settled.length; k++) {
+          onValue(i + k, settled[k]);
+        }
+      });
+    }
+    onValue(i, value);
+  }
+  return void 0;
+}
+function settle(value) {
+  return value instanceof Pending ? value.promise : value;
 }
 
 // src/frame.ts
@@ -2089,11 +2230,8 @@ function normalizePath(path) {
 function planPath(path, scopes) {
   const parts = path.parts || [];
   const name = parts[0];
-  if (path.depth) {
-    depthUse.saw = true;
-  }
   const scoped = ast_default.helpers.scopedId(path);
-  const simple = path.type === "PathExpression" && !path.data && ast_default.helpers.simpleId(path);
+  const simple = !path.data && ast_default.helpers.simpleId(path);
   const eligible = !path.data && !path.depth && !!name && name !== "this" && name !== "." && !scoped;
   return {
     node: path,
@@ -2140,7 +2278,19 @@ function lookupData(frame, parts, depth) {
   }
   return walkParts(frame, d, parts, 0);
 }
-var depthUse = { saw: false };
+var DepthScan = class extends visitor_default {
+  found = false;
+  PathExpression(path) {
+    if (path.depth) {
+      this.found = true;
+    }
+  }
+};
+function usesDepths(program) {
+  const scan = new DepthScan();
+  scan.accept(program);
+  return scan.found;
+}
 
 // src/helpers.ts
 var defaultHelpers = {};
@@ -2192,41 +2342,28 @@ function walkerFor(context) {
   if (isMap2(context)) {
     const entries = [...context];
     return {
-      context,
       count: entries.length,
       fieldAt: (i) => entries[i][0],
       valueAt: (i) => entries[i][1],
-      sparse: false
-    };
-  }
-  if (isSet2(context)) {
-    const values = [...context];
-    return {
-      context,
-      count: values.length,
-      fieldAt: (i) => i,
-      valueAt: (i) => values[i],
-      sparse: false
+      maybeSparse: null
     };
   }
   if (isArray(context) || context[Symbol.iterator]) {
     const arr = isArray(context) ? context : Array.from(context);
     return {
-      context: arr,
       count: arr.length,
       fieldAt: (i) => i,
       valueAt: (i) => arr[i],
-      sparse: true
+      maybeSparse: arr
     };
   }
   const obj = context;
   const keys = Object.keys(obj);
   return {
-    context,
     count: keys.length,
     fieldAt: (i) => keys[i],
     valueAt: (i) => obj[keys[i]],
-    sparse: false
+    maybeSparse: null
   };
 }
 function eachOver(context, self, parentData, fn, inverse) {
@@ -2235,12 +2372,17 @@ function eachOver(context, self, parentData, fn, inverse) {
     return chain(invoked(inverse(self)), stringify);
   }
   const count = walker.count;
-  const data = createFrame(parentData);
   const wantsBlockParams = !!fn.blockParams;
-  const iterOptions = wantsBlockParams ? { data, blockParams: void 0 } : { data };
+  let data;
+  let iterOptions;
+  const freshFrame = () => {
+    data = createFrame(parentData);
+    iterOptions = wantsBlockParams ? { data, blockParams: void 0 } : { data };
+  };
+  freshFrame();
   let ret = "";
   const step = (i) => {
-    if (walker.sparse && !(i in walker.context)) {
+    if (walker.maybeSparse && !(i in walker.maybeSparse)) {
       return "";
     }
     const field = walker.fieldAt(i);
@@ -2248,15 +2390,17 @@ function eachOver(context, self, parentData, fn, inverse) {
     data.index = i;
     data.first = i === 0;
     data.last = i === count - 1;
+    const value = walker.valueAt(i);
     if (wantsBlockParams) {
-      iterOptions.blockParams = [
-        walker.context[field],
-        field
-      ];
+      iterOptions.blockParams = [value, field];
     }
-    return invoked(fn(walker.valueAt(i), iterOptions));
+    const piece = invoked(fn(value, iterOptions));
+    if (piece instanceof Pending) {
+      freshFrame();
+    }
+    return piece;
   };
-  const pending = runFrom(0, count, step, (_i, piece) => {
+  const pending = runAll(count, step, (_i, piece) => {
     ret += piece || "";
   });
   return pending ? new Pending(pending.promise.then(() => ret)) : ret;
@@ -2272,18 +2416,13 @@ function planCall(params, hash, scopes) {
   };
 }
 function helperOptions(name, hash, frame, fn, inverse) {
-  return fn ? {
+  return {
     name,
     hash,
     data: frame.data,
     lookupProperty: frame.lookupProperty,
     fn,
     inverse
-  } : {
-    name,
-    hash,
-    data: frame.data,
-    lookupProperty: frame.lookupProperty
   };
 }
 function runHash(plan, frame) {
@@ -2291,8 +2430,7 @@ function runHash(plan, frame) {
   if (!plan.hashKeys.length) {
     return hash;
   }
-  const pending = runFrom(
-    0,
+  const pending = runAll(
     plan.hashValues.length,
     (i) => plan.hashValues[i](frame),
     (i, value) => {
@@ -2308,20 +2446,12 @@ function runCall(plan, helper2, name, frame, fn, inverse) {
   for (let i = 0; i < count; i++) {
     const value = params[i](frame);
     if (value instanceof Pending) {
-      const at = i;
-      return new Pending(value.promise.then((resolved) => {
-        args[at] = resolved;
-        const rest = runFrom(
-          at + 1,
-          count,
-          (j) => params[j](frame),
-          (j, v) => {
-            args[j] = v;
-          }
-        );
-        const done = () => unwrap(applyCall(plan, helper2, name, frame, args, count, fn, inverse));
-        return rest ? rest.promise.then(done) : done();
-      }));
+      return continueAll([value], i + 1, count, (j) => params[j](frame), (settled) => {
+        for (let k = 0; k < settled.length; k++) {
+          args[i + k] = settled[k];
+        }
+        return applyCall(plan, helper2, name, frame, args, count, fn, inverse);
+      });
     }
     args[i] = value;
   }
@@ -2436,8 +2566,8 @@ function buildExpression(node, scopes) {
   if (ast_default.helpers.helperExpression(node) && !isBlockParam) {
     return buildCall(plan, call, name);
   }
-  if (plan.simple && !isBlockParam) {
-    return buildAmbiguous(plan, plan.parts[0]);
+  if (name !== null && !isBlockParam) {
+    return buildAmbiguous(plan, name);
   }
   return buildLookup(plan);
 }
@@ -2445,44 +2575,27 @@ var noArgs = { params: [], hashKeys: [], hashValues: [] };
 
 // src/render.ts
 function renderAll(nodes, frame) {
-  const count = nodes.length;
   let out = "";
-  for (let i = 0; i < count; i++) {
+  for (let i = 0; i < nodes.length; i++) {
     const value = nodes[i](frame);
     if (value instanceof Pending) {
-      const at = i;
-      return new Pending(value.promise.then((resolved) => {
-        out += resolved || "";
-        const rest = runFrom(
-          at + 1,
-          count,
-          (j) => nodes[j](frame),
-          (_j, v) => {
-            out += v || "";
-          }
-        );
-        return rest ? rest.promise.then(() => out) : out;
-      }));
+      return continueAll(
+        [out, value],
+        i + 1,
+        nodes.length,
+        (j) => nodes[j](frame),
+        (parts) => parts.join("")
+      );
     }
     out += value || "";
   }
   return out;
 }
 var builtPrograms = /* @__PURE__ */ new WeakMap();
-function foldContent(body) {
-  let text = "";
-  for (const node of body) {
-    if (node.type === "ContentStatement") {
-      text += node.value;
-    } else if (node.type !== "CommentStatement") {
-      return null;
-    }
-  }
-  return text;
-}
 function buildRender(body, scopes, inlines) {
   const children = [];
   let text = "";
+  let onlyText = true;
   const flushText = () => {
     if (text) {
       const value = text;
@@ -2501,32 +2614,28 @@ function buildRender(body, scopes, inlines) {
     }
     flushText();
     children.push(child);
+    onlyText = false;
   }
   flushText();
+  if (onlyText) {
+    return children[0] || (() => "");
+  }
   const renderBody = (frame) => renderAll(children, frame);
   return inlines.length ? (frame) => renderBody(withInlinePartials(frame, inlines)) : renderBody;
 }
 function buildProgram(program, outerScopes) {
   const cached = builtPrograms.get(program);
   if (cached) {
-    depthUse.saw = depthUse.saw || cached.usesDepths;
     return cached;
   }
-  const outerSaw = depthUse.saw;
-  depthUse.saw = false;
   const scopes = program.blockParams && program.blockParams.length ? [program.blockParams, ...outerScopes] : outerScopes;
   const inlines = buildInlineDefinitions(program, scopes);
-  const body = program.body || [];
-  const folded = inlines.length ? null : foldContent(body);
-  const render = folded !== null ? () => folded : buildRender(body, scopes, inlines);
-  const usesDepths = depthUse.saw;
-  depthUse.saw = outerSaw || usesDepths;
-  const built = { render, inlines, usesDepths };
-  builtPrograms.set(program, built);
-  return built;
+  const render = buildRender(program.body || [], scopes, inlines);
+  builtPrograms.set(program, render);
+  return render;
 }
 function buildInlineDefinitions(program, scopes) {
-  if (!program || !program.body) {
+  if (!program.body) {
     return [];
   }
   const definitions = [];
@@ -2541,7 +2650,7 @@ function buildInlineDefinitions(program, scopes) {
     }
     definitions.push({
       name: nameNode.value,
-      body: buildProgram(decorator.program, scopes).render
+      body: buildProgram(decorator.program, scopes)
     });
   }
   return definitions;
@@ -2549,14 +2658,18 @@ function buildInlineDefinitions(program, scopes) {
 function withInlinePartials(frame, inlines) {
   const partials = { ...frame.partials };
   for (const inline of inlines) {
-    partials[inline.name] = ((ctx, opts = {}) => settle(inline.body(derive(
-      frame,
-      ctx,
-      opts.data || frame.data,
-      frame.depths,
-      opts.partials ? { ...partials, ...opts.partials } : partials,
-      frame.blockParamValues
-    ))));
+    partials[inline.name] = ((ctx, opts = {}) => {
+      const inner = derive(
+        frame,
+        ctx,
+        opts.data || frame.data,
+        frame.depths,
+        opts.partials || partials,
+        frame.blockParamValues
+      );
+      inner.options = opts;
+      return settle(inline.body(inner));
+    });
   }
   return derive(
     frame,
@@ -2567,28 +2680,16 @@ function withInlinePartials(frame, inlines) {
     frame.blockParamValues
   );
 }
-function restorePartialBlock(data, frame) {
-  const captured = frame.data ? frame.data["partial-block"] : void 0;
-  if (data === frame.data || !data || data["partial-block"] === captured) {
-    return data;
-  }
-  const restored = createFrame(data);
-  restored["partial-block"] = captured;
-  return restored;
-}
 function buildProgramFn(program, scopes) {
-  const built = buildProgram(program, scopes);
+  const render = buildProgram(program, scopes);
   const declared = program.blockParams ? program.blockParams.length : 0;
-  const usesDepths = built.usesDepths;
+  const pushesDepth = usesDepths(program);
   return (frame) => {
     const fn = ((context, fnOptions) => {
       const blockParamValues = declared ? [fnOptions?.blockParams || emptyValues, ...frame.blockParamValues] : frame.blockParamValues;
-      const data = restorePartialBlock(fnOptions?.data || frame.data, frame);
-      const depths = usesDepths && context != frame.depths[0] ? [context, ...frame.depths] : frame.depths;
-      if (context === frame.context && data === frame.data && depths === frame.depths && blockParamValues === frame.blockParamValues) {
-        return settle(built.render(frame));
-      }
-      return settle(built.render(derive(
+      const data = fnOptions?.data || frame.data;
+      const depths = pushesDepth && context != frame.depths[0] ? [context, ...frame.depths] : frame.depths;
+      return settle(render(derive(
         frame,
         context,
         data,
@@ -2609,12 +2710,11 @@ function buildStatement(node, scopes) {
       return buildMustache(node, scopes);
     case "BlockStatement":
       return buildBlock(node, scopes);
-    case "PartialStatement": {
+    case "PartialStatement":
+    case "PartialBlockStatement": {
       const plan = planPartial(node, scopes);
       return (frame) => runPartial(plan, frame);
     }
-    case "PartialBlockStatement":
-      return buildPartialBlock(node, scopes);
     case "DecoratorBlock":
     case "Decorator":
     case "CommentStatement":
@@ -2657,7 +2757,6 @@ function buildBlock(node, scopes) {
   const isBlockParam = plan.simple && plan.blockParam !== null;
   const hasParams = !isBlockParam && ast_default.helpers.helperExpression(node);
   const block = {
-    plan,
     call: planCall(node.params, node.hash, scopes),
     // the grammar rejects a subexpression here and normalizePath rewrote any
     // literal, so the path is always a PathExpression and always has a name
@@ -2691,33 +2790,37 @@ function compileStringPartial(source) {
   const entry = cachedParse(source);
   if (!entry.fn) {
     const ast = entry.ast;
-    entry.fn = (context, options = {}) => renderAst(ast, context, options);
+    entry.fn = (context, options) => renderAst(ast, context, options);
   }
   return entry.fn;
 }
 function planPartial(node, scopes) {
   const nameNode = node.name;
   const params = node.params || [];
+  if (params.length > 1) {
+    throw new exception_default("Unsupported number of partial arguments: " + params.length, node);
+  }
   const dynamic = nameNode.type === "SubExpression";
+  const program = node.program;
   return {
     node,
     nameFn: dynamic ? buildExpression(nameNode, scopes) : null,
     staticName: dynamic ? "" : String(nameNode.original),
-    paramCount: params.length,
     contextFn: params.length > 0 ? buildValue(params[0], scopes) : null,
-    hash: planCall(void 0, node.hash, scopes),
-    hasHash: !!node.hash,
-    indent: node.indent || ""
+    hash: node.hash ? planCall(void 0, node.hash, scopes) : null,
+    indent: node.indent || "",
+    makeFn: program ? buildProgramFn(program, scopes) : null,
+    inlines: program ? buildInlineDefinitions(program, scopes) : []
   };
 }
 function findPartial(partials, name) {
   return Object.prototype.hasOwnProperty.call(partials, name) ? partials[name] : void 0;
 }
 function resolvePartialFn(frame, partialName) {
-  let partial = partialName === "@partial-block" ? frame.data && frame.data["partial-block"] : findPartial(frame.partials, partialName);
+  const partial = partialName === "@partial-block" ? frame.data && frame.data["partial-block"] : findPartial(frame.partials, partialName);
   if (typeof partial === "string") {
     try {
-      partial = compileStringPartial(partial);
+      return compileStringPartial(partial);
     } catch (err) {
       const detail = err instanceof Error ? err.message : String(err);
       const exception = new exception_default(
@@ -2727,43 +2830,51 @@ function resolvePartialFn(frame, partialName) {
       throw exception;
     }
   }
-  if (!partial) {
-    throw new exception_default('The partial "' + partialName + '" could not be found');
-  }
-  return partial;
+  return partial || void 0;
 }
-function callPartial(plan, frame, partialFn) {
+var partialDepthLimit = 1e3;
+function callPartial(plan, frame, name) {
+  const partialDepth = (frame.options.partialDepth || 0) + 1;
+  if (partialDepth > partialDepthLimit) {
+    throw new exception_default(
+      "Partials nested more than " + partialDepthLimit + " deep. Does a partial include itself?",
+      plan.node
+    );
+  }
+  const partial = resolvePartialFn(frame, name);
+  const fn = plan.makeFn ? plan.makeFn(frame) : void 0;
+  if (!partial && !fn) {
+    throw new exception_default('The partial "' + name + '" could not be found');
+  }
   return chain(
     plan.contextFn ? plan.contextFn(frame) : frame.context,
-    (context) => chain(plan.hasHash ? runHash(plan.hash, frame) : null, (hash) => {
+    (context) => chain(plan.hash ? runHash(plan.hash, frame) : null, (hash) => {
       const target = hash ? extend2({}, context, hash) : context;
       const callOpts = {
         ...frame.options,
         helpers: frame.helpers,
-        partials: frame.partials,
-        data: frame.data
+        partials: plan.inlines.length ? withInlinePartials(frame, plan.inlines).partials : frame.partials,
+        data: frame.data,
+        partialDepth
       };
-      return chain(invoked(partialFn(target, callOpts)), (result) => indentResult(result || "", plan.indent));
+      let result;
+      if (!partial) {
+        result = fn(target, { data: frame.data });
+      } else if (fn) {
+        callOpts.fn = fn;
+        result = invokePartial2(partial, target, callOpts);
+      } else {
+        result = partial(target, callOpts);
+      }
+      return chain(invoked(result), (rendered) => indentResult(rendered || "", plan.indent));
     })
   );
 }
-function runPartial(plan, frame, resolvedName) {
-  const named = (partialName) => {
-    if (plan.paramCount > 1) {
-      throw new exception_default(
-        "Unsupported number of partial arguments: " + plan.paramCount,
-        plan.node
-      );
-    }
-    return callPartial(plan, frame, resolvePartialFn(frame, partialName));
-  };
-  if (resolvedName !== void 0) {
-    return named(resolvedName);
-  }
+function runPartial(plan, frame) {
   if (!plan.nameFn) {
-    return named(plan.staticName);
+    return callPartial(plan, frame, plan.staticName);
   }
-  return chain(plan.nameFn(frame), (name) => named(name));
+  return chain(plan.nameFn(frame), (name) => callPartial(plan, frame, name));
 }
 function indentResult(result, indent) {
   if (!indent || !result) {
@@ -2771,53 +2882,20 @@ function indentResult(result, indent) {
   }
   return indent + result.replace(/\n(?!$)/g, "\n" + indent);
 }
-function partialBlockFrame(frame, fn, inlines) {
-  const data = createFrame(frame.data);
-  data["partial-block"] = fn;
-  const partials = inlines.length ? withInlinePartials(frame, inlines).partials : frame.partials;
-  return derive(
-    frame,
-    frame.context,
-    data,
-    frame.depths,
-    partials,
-    frame.blockParamValues
-  );
-}
-function renderDefaultBlock(plan, frame, fn) {
-  return chain(
-    plan.contextFn ? plan.contextFn(frame) : frame.context,
-    (context) => chain(
-      invoked(fn(context, { data: frame.data })),
-      (result) => result || ""
-    )
-  );
-}
-function buildPartialBlock(node, scopes) {
-  const plan = planPartial(node, scopes);
-  const makeFn = node.program ? buildProgramFn(node.program, scopes) : null;
-  const blockInlines = node.program ? buildInlineDefinitions(node.program, scopes) : [];
-  const partialName = plan.staticName;
-  return (frame) => {
-    const fn = makeFn ? makeFn(frame) : noopProgram;
-    const childFrame = partialBlockFrame(frame, fn, blockInlines);
-    const exists = partialName !== "@partial-block" && findPartial(childFrame.partials, partialName) !== void 0;
-    return exists ? runPartial(plan, childFrame, partialName) : renderDefaultBlock(plan, frame, fn);
-  };
-}
 function initData(context, data) {
-  if (!data || typeof data !== "object" || !("root" in data)) {
-    data = data && typeof data === "object" ? createFrame(data) : {};
-    data.root = context;
+  if (data && typeof data === "object" && "root" in data) {
+    return data;
   }
-  return data;
+  const frame = data && typeof data === "object" ? createFrame(data) : {};
+  frame.root = context;
+  return frame;
 }
 function renderAst(ast, context, runtimeOptions) {
-  const built = buildProgram(ast, emptyScopes);
+  const render = buildProgram(ast, emptyScopes);
   const data = initData(context, runtimeOptions.data);
   const helpers = runtimeOptions.helpers || emptyHelpers;
   const partials = runtimeOptions.partials || emptyPartials;
-  return settle(built.render({
+  return settle(render({
     context,
     data,
     depths: [context],
