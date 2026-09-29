@@ -220,6 +220,21 @@ describe('outlook', () => {
     iframe.remove()
   })
 
+  it('should not add anything for an empty recipient', async () => {
+    const iframe = await loadIframe('/pages/outlook/outlook-compose-bcc.html')
+    const doc = iframe.contentDocument
+    const inserted = []
+    vi.spyOn(doc, 'queryCommandEnabled').mockReturnValue(true)
+    vi.spyOn(doc, 'execCommand').mockImplementation((command, ui, value) => inserted.push(value))
+
+    // an empty variable, and a trailing comma
+    await runActionsInFixture(doc, {to: '{{to.email}}'})
+    await runActionsInFixture(doc, {to: 'new@briskine.com,'})
+    expect(inserted).to.deep.equal(['new@briskine.com', ','])
+
+    iframe.remove()
+  })
+
   it('should not get data without an editor on the page', async () => {
     const data = await getPluginData({document: document.implementation.createHTMLDocument()})
 

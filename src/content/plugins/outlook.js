@@ -200,8 +200,9 @@ async function updateContactField ($field, value) {
   const splitValues = value.split(',')
   for (const v of splitValues) {
     const cleanValue = v.trim()
-    if (elementContains($field, cleanValue)) {
-      // value already added
+    // nothing to add from an empty variable or a trailing comma,
+    // or the value was already added
+    if (!cleanValue || elementContains($field, cleanValue)) {
       continue
     }
 
