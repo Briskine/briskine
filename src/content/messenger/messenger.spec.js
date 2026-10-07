@@ -11,6 +11,10 @@ describe('Messenger', () => {
     respond('test', () => {
       return 'response'
     })
+
+    respond('test-error', () => {
+      throw new Error('failed')
+    })
   })
 
   it('should respond to single message', async () => {
@@ -32,5 +36,17 @@ describe('Messenger', () => {
     ])
 
     expect(res).to.deep.equal(['response', 'response'])
+  })
+
+  it('should reject with the error thrown by the responder', async () => {
+    let error
+    try {
+      await request('test-error')
+    } catch (err) {
+      error = err
+    }
+
+    expect(error).to.be.an('error')
+    expect(error.message).to.equal('failed')
   })
 })
