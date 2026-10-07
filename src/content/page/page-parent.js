@@ -29,8 +29,9 @@ export async function setup () {
     return
   }
 
+  // page.js is blocked, editors fall back to execCommand
   if (isScriptlessSandbox()) {
-    throw new Error('page.js can not run in a sandboxed frame without allow-scripts')
+    return
   }
 
   let resolve, reject
