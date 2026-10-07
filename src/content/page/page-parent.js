@@ -10,6 +10,10 @@ const connectTimeout = 3000
 // throws when page.js is not available,
 // so the editors fall back to execCommand.
 export function request (type, options) {
+  if (!pageMessengerServer) {
+    throw new Error('page.js is not available')
+  }
+
   return pageMessengerServer.request(type, options)
 }
 
