@@ -1,4 +1,4 @@
-import {test, expect, openPage} from '../fixtures.ts'
+import {test, expect, openPage, insertFromDialog} from '../fixtures.ts'
 
 test.describe('Textarea', () => {
   test.beforeEach(async ({page}) => {
@@ -18,14 +18,8 @@ test.describe('Textarea', () => {
 
   test('should insert template from dialog in textarea', async ({page}) => {
     const textarea = page.getByTestId('textarea')
-    await textarea.press('Control+ ')
-    const search = page.getByPlaceholder('Search templates...')
-    await expect(search).toBeVisible()
-    await search.pressSequentially('nic', {delay: 100})
+    await insertFromDialog(page, textarea)
     const template = 'It was nice talking to you.'
-    const list = page.getByText(template)
-    await list.waitFor()
-    await search.press('Enter')
     await expect(textarea).toHaveValue(template)
   })
 
@@ -38,13 +32,8 @@ test.describe('Textarea', () => {
 
   test('should insert template from dialog in input', async ({page}) => {
     const input = page.getByTestId('input')
-    await input.press('Control+ ')
-    const search = page.getByPlaceholder('Search templates...')
-    await search.pressSequentially('nic', {delay: 100})
+    await insertFromDialog(page, input)
     const template = 'It was nice talking to you.'
-    const list = page.getByText(template)
-    await list.waitFor()
-    await search.press('Enter')
     await expect(input).toHaveValue(template)
   })
 
