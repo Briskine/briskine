@@ -184,7 +184,8 @@ export default function DialogContent (originalProps) {
       if (searchValue) {
         searchDebouncer = setTimeout(async () => {
           const {query, results} = await searchTemplates(searchValue)
-          if (query === searchValue) {
+          // the field could have changed while searching
+          if (query === searchField.value) {
             setSearchQuery(searchValue)
             setSearchResults(results)
             // the list keeps its active template while it's in the results,

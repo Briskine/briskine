@@ -67,4 +67,32 @@ describe('DialogContent', () => {
 
     expect(activeTemplate(container)).to.equal('kr')
   })
+
+  it('should ignore search results that arrive after clearing the search', async () => {
+    const container = mount()
+    const searchField = container.querySelector('input[type=search]')
+
+    await vi.waitFor(() => {
+      expect(container.querySelectorAll('.dialog-list-item').length).to.equal(2)
+    })
+
+    let respond
+    vi.mocked(store.searchTemplates).mockImplementationOnce((query) => {
+      return new Promise((resolve) => {
+        respond = () => resolve({query, results: searchResults[query]})
+      })
+    })
+
+    await userEvent.fill(searchField, 'nic')
+    await vi.waitFor(() => {
+      expect(respond).to.be.a('function')
+    })
+
+    await userEvent.clear(searchField)
+    respond()
+    await new Promise((resolve) => setTimeout(resolve, 100))
+
+    // the full list
+    expect(container.querySelectorAll('.dialog-list-item').length).to.equal(2)
+  })
 })
