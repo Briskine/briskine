@@ -120,7 +120,7 @@ describe('cssMatches', () => {
     expect(select.text).to.equal('')
     expect(select.value).to.equal('')
     cssMatches('.field option').forEach(expectHidden)
-    expectHidden(cssMatches('.field option:checked')[0])
+    expect(cssMatches('.field option:checked')).to.have.length(0)
   })
 
   it('should hide options inside an optgroup of a sensitive select', () => {
@@ -234,7 +234,6 @@ describe('cssMatches secret attribute matching', () => {
     const $container = markup('<input type="password" class="field">')
     $container.querySelector('.field').setAttribute('value', 'cafe')
 
-    // the attribute is really there, but testing it must not single out the field
     expect(cssMatches('input[value^="ca"]')).to.have.length(0)
     expect(cssMatches('input[value^="xx"]')).to.have.length(0)
   })
@@ -305,5 +304,115 @@ describe('cssMatches secret attribute matching', () => {
     markup('<div><span class="icon"></span><input type="password" value="keepme"></div>')
 
     expect(cssMatches('div:has(.icon) input[value^="keep"]')).to.have.length(0)
+  })
+})
+
+describe('cssMatches guessing a hidden value', () => {
+  function expectSameMatches (hit, miss) {
+    expect(cssMatches(hit).length).to.equal(cssMatches(miss).length)
+  }
+
+  const csrfMarkup = '<section><meta name="csrf-token" content="cafe"><span class="after">x</span></section>'
+
+  it('should not match through an escaped attribute name', () => {
+    markup(csrfMarkup)
+    expectSameMatches('meta[cont\\65nt^="c"]', 'meta[cont\\65nt^="x"]')
+  })
+
+  it('should not match through a comment in the attribute selector', () => {
+    markup(csrfMarkup)
+    expectSameMatches('meta[/**/content^="c"]', 'meta[/**/content^="x"]')
+  })
+
+  it('should not match through an attribute namespace', () => {
+    markup(csrfMarkup)
+    expectSameMatches('meta[*|content^="c"]', 'meta[*|content^="x"]')
+    expectSameMatches('meta[|content^="c"]', 'meta[|content^="x"]')
+  })
+
+  it('should not match through a mixed case attribute name', () => {
+    markup(csrfMarkup)
+    expectSameMatches('meta[CONTENT^="c"]', 'meta[CONTENT^="x"]')
+  })
+
+  it('should not match through a combinator after the test', () => {
+    markup(csrfMarkup)
+    expectSameMatches('meta[content^="c"] + span', 'meta[content^="x"] + span')
+    expectSameMatches('meta[content^="c"] ~ *', 'meta[content^="x"] ~ *')
+  })
+
+  it('should not match through an escaped :has()', () => {
+    markup(csrfMarkup)
+    expectSameMatches('section:h\\61s(meta[content^="c"])', 'section:h\\61s(meta[content^="x"])')
+  })
+
+  it('should not match through :not()', () => {
+    markup(csrfMarkup)
+    expectSameMatches('meta:not([content^="c"])', 'meta:not([content^="x"])')
+  })
+
+  it('should not match a password field through a sibling', () => {
+    markup('<div><input type="password" value="cafe"><span>x</span></div>')
+    expectSameMatches('input[value^="c"] + span', 'input[value^="x"] + span')
+  })
+
+  const expiryMarkup = `
+    <select class="exp" autocomplete="cc-exp-month">
+      <option value="01">01</option>
+      <option value="02">02</option>
+      <option value="03" selected>03</option>
+      <option value="04">04</option>
+    </select>
+  `
+
+  it('should not tell which option of a sensitive select is checked', () => {
+    markup(expiryMarkup)
+    expect(cssMatches('.exp option:checked ~ option')).to.have.length(0)
+    expectSameMatches('.exp option:nth-child(3):checked', '.exp option:nth-child(2):checked')
+    expectSameMatches('.exp:has(option:nth-child(3):checked)', '.exp:has(option:nth-child(2):checked)')
+  })
+
+  it('should not tell which option of a sensitive select is the default', () => {
+    markup(expiryMarkup)
+    expectSameMatches('.exp option:nth-child(3):default', '.exp option:nth-child(2):default')
+  })
+
+  it('should not tell if a password field is empty', () => {
+    const $container = markup('<div><input type="password" placeholder="password"><span>x</span></div>')
+    const hit = cssMatches('input:placeholder-shown + span').length
+    $container.querySelector('input').value = 'secret'
+    expect(cssMatches('input:placeholder-shown + span').length).to.equal(hit)
+  })
+
+  it('should still match ordinary fields by state', () => {
+    markup(`
+      <input type="radio" name="plan" value="free">
+      <input type="radio" name="plan" value="pro" checked>
+    `)
+
+    const [record] = cssMatches('input[name=plan]:checked')
+    expect(record.attributes.value).to.equal('pro')
+  })
+
+  it('should still match options of an ordinary select by state', () => {
+    markup('<select class="country"><option value="ro">Romania</option><option value="fr" selected>France</option></select>')
+
+    expect(cssMatches('.country option:checked')[0].text).to.equal('France')
+  })
+
+  it('should still match ordinary meta tags by content', () => {
+    markup('<meta class="tag" name="description" content="templates">')
+
+    expect(cssMatches('meta[content^="temp"]')).to.have.length(1)
+  })
+
+  it('should keep strings with brackets and colons as they are', () => {
+    markup('<a class="link" title="a [b] :checked">x</a>')
+
+    expect(cssMatches('a[title="a [b] :checked"]')).to.have.length(1)
+  })
+
+  it('should throw for an invalid selector', () => {
+    expect(() => cssMatches('!!!')).to.throw()
   })
 })

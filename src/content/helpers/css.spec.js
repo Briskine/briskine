@@ -196,7 +196,6 @@ describe('css handlebars helper', () => {
   it('should not reveal a secret attribute through a value selector', async () => {
     markup('<meta name="csrf-token" content="token">')
 
-    // a selector testing the hidden value must match the same way either way
     const match = await parseTemplate('{{#if (css "meta[content^=t]")}}yes{{else}}no{{/if}}')
     const miss = await parseTemplate('{{#if (css "meta[content^=x]")}}yes{{else}}no{{/if}}')
     expect(match).to.equal('no')

@@ -5,85 +5,13 @@
  * whether they came from this document or another tab.
  *
  * Password, card and one-time code fields, and csrf meta tags,
- * always read as empty, so a template can't send them out
- * (eg. in an image url). Matches are kept, so indexes don't shift.
+ * always read as empty. Matches are kept, so indexes don't shift.
  *
- * A selector that tests the value of a secret attribute is also not
- * allowed to single out those elements, so matching them stays
- * independent of the hidden value.
+ * Selectors can't match those elements by their value or state.
  *
  */
 
 import { querySelectorAllDeep } from './selectors.js'
-
-// a `value` or `content` attribute compared to a value,
-// eg. [value=x] [content^='ab'] [ns|value*="x" i].
-// presence alone ([value]) is fine, it doesn't depend on the value.
-const secretAttributeTest = /^\s*(?:[\w-]+\|)?(?:value|content)\s*[~|^$*]?=/i
-
-function readsSecretAttribute (selector = '') {
-  let tested = false
-  // true for each open paren that belongs to a :has(), so a test inside one
-  // is flagged separately: :has() can match an outer element by this attribute
-  const relative = []
-
-  let i = 0
-  while (i < selector.length) {
-    const char = selector[i]
-
-    if (char === '(') {
-      relative.push(selector.slice(Math.max(0, i - 4), i).toLowerCase() === ':has')
-      i += 1
-      continue
-    }
-
-    if (char === ')') {
-      relative.pop()
-      i += 1
-      continue
-    }
-
-    if (char !== '[') {
-      i += 1
-      continue
-    }
-
-    // read the [...] block, skipping over quoted values that may contain ] or [
-    let block = ''
-    let quote = null
-    let j = i + 1
-    while (j < selector.length) {
-      const inner = selector[j]
-      if (quote) {
-        if (inner === '\\') {
-          block += inner + (selector[j + 1] || '')
-          j += 2
-          continue
-        }
-        if (inner === quote) {
-          quote = null
-        }
-      } else if (inner === '"' || inner === "'") {
-        quote = inner
-      } else if (inner === ']') {
-        break
-      }
-      block += inner
-      j += 1
-    }
-
-    if (secretAttributeTest.test(block)) {
-      tested = true
-      if (relative.includes(true)) {
-        return { tested: true, hasRelative: true }
-      }
-    }
-
-    i = j + 1
-  }
-
-  return { tested: tested, hasRelative: false }
-}
 
 const sensitiveAutocomplete = [
   'current-password',
@@ -96,25 +24,111 @@ const sensitiveAutocomplete = [
   'cc-exp-year',
 ]
 
+const sensitiveFields = [
+  // any element, so custom elements wrapping a password input are caught too.
+  // i ignores case, eg. TYPE="PASSWORD"
+  '[type="password" i]',
+  // ~= matches one of several tokens, eg. "section-pay billing cc-number"
+  ...sensitiveAutocomplete.map((token) => `[autocomplete~="${token}" i]`),
+].join(',')
+
+// and the options of a sensitive select
+const sensitiveSelector = `${sensitiveFields},select:is(${sensitiveFields}) option`
+
+const tokenMetaSelector = 'meta:is([name*="csrf" i],[name*="xsrf" i],[name*="nonce" i])'
+
+// pseudo-classes that depend on what's in a field
+const statePseudoClasses = [
+  'checked',
+  'default',
+  'indeterminate',
+  'placeholder-shown',
+  'valid',
+  'invalid',
+  'user-valid',
+  'user-invalid',
+  'in-range',
+  'out-of-range',
+  'autofill',
+  '-webkit-autofill',
+  'blank',
+]
+
+// an attribute compared to a value, with an optional namespace
+const attributeTest = /^(?:(?:\*|[\w-]*)\|)?([\w-]+)\s*[~|^$*]?=/
+
+// the way the browser reads the selector
+function normalizeSelector (selector) {
+  const sheet = new CSSStyleSheet()
+  sheet.insertRule(`${selector} {}`)
+  return sheet.cssRules[0].selectorText
+}
+
+// end of the string starting at index, a normalized selector only uses double quotes
+function stringEnd (selector, index) {
+  let i = index + 1
+  while (i < selector.length && selector[i] !== '"') {
+    i += selector[i] === '\\' ? 2 : 1
+  }
+  return i + 1
+}
+
+function guardSelector (selector) {
+  let guarded = ''
+  let i = 0
+  while (i < selector.length) {
+    const char = selector[i]
+
+    if (char === '"') {
+      const end = stringEnd(selector, i)
+      guarded += selector.slice(i, end)
+      i = end
+      continue
+    }
+
+    if (char === '[') {
+      let end = i + 1
+      while (end < selector.length && selector[end] !== ']') {
+        end = selector[end] === '"' ? stringEnd(selector, end) : end + 1
+      }
+      end += 1
+
+      const block = selector.slice(i, end)
+      guarded += block
+      const name = block.slice(1).match(attributeTest)?.[1]?.toLowerCase()
+      if (name === 'value') {
+        guarded += `:not(${sensitiveSelector})`
+      } else if (name === 'content') {
+        guarded += `:not(${tokenMetaSelector})`
+      }
+
+      i = end
+      continue
+    }
+
+    if (char === ':' && selector[i + 1] !== ':') {
+      const name = selector.slice(i + 1).match(/^[\w-]+/)?.[0] || ''
+      guarded += char + name
+      i += 1 + name.length
+      if (statePseudoClasses.includes(name.toLowerCase()) && selector[i] !== '(') {
+        guarded += `:not(${sensitiveSelector})`
+      }
+      continue
+    }
+
+    guarded += char
+    i += 1
+  }
+
+  return guarded
+}
+
 function isSensitiveField (element) {
-  // option:checked would read the selected value of a sensitive select
-  if (element.localName === 'option') {
-    const select = element.closest('select')
-    return select ? isSensitiveField(select) : false
-  }
-
-  // any element, so custom elements wrapping a password input are caught too
-  if ((element.getAttribute('type') || '').toLowerCase() === 'password') {
-    return true
-  }
-
-  // can have multiple tokens, eg. "section-pay billing cc-number"
-  const tokens = (element.getAttribute('autocomplete') || '').toLowerCase().split(/\s+/)
-  return tokens.some((token) => sensitiveAutocomplete.includes(token))
+  return element.matches(sensitiveSelector)
 }
 
 function isTokenMeta (element) {
-  return element.localName === 'meta' && /csrf|xsrf|nonce/i.test(element.getAttribute('name') || '')
+  return element.matches(tokenMetaSelector)
 }
 
 function snapshot (element) {
@@ -139,21 +153,8 @@ export default function cssMatches (selector = '') {
     return []
   }
 
-  const secret = readsSecretAttribute(selector)
+  // throw the native error for an invalid selector
+  document.createDocumentFragment().querySelector(selector)
 
-  // can't tell which element the value matched, so return nothing
-  if (secret.tested && secret.hasRelative) {
-    return []
-  }
-
-  const matches = querySelectorAllDeep(selector, document)
-
-  // drop sensitive matches, keep the rest (eg. a normal input[value^=...])
-  if (secret.tested) {
-    return matches
-      .filter((element) => !isSensitiveField(element) && !isTokenMeta(element))
-      .map(snapshot)
-  }
-
-  return matches.map(snapshot)
+  return querySelectorAllDeep(guardSelector(normalizeSelector(selector)), document).map(snapshot)
 }
