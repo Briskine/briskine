@@ -200,7 +200,8 @@ async function updateCache ({collection, data}) {
 }
 
 export async function refetchCollections (collections = []) {
-  const collectionsToClear = collections.length ? collections : allCollections
+  const known = collections.filter((c) => allCollections.includes(c))
+  const collectionsToClear = known.length ? known : allCollections
   const cache = {}
   collectionsToClear.forEach((c) => {
     cache[c] = null
