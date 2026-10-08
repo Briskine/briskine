@@ -79,12 +79,14 @@ export default function Messenger (scope = '') {
     // resolve local response
     if (deferreds[type]?.length) {
       const {response, error} = e.data
+      const pending = deferreds[type]
+      deferreds[type] = null
+
       if (error) {
-        return deferreds[type].forEach((d) => d.reject(error))
+        return pending.forEach((d) => d.reject(error))
       }
 
-      deferreds[type].forEach((d) => d.resolve(response))
-      deferreds[type] = null
+      pending.forEach((d) => d.resolve(response))
     }
   }
 

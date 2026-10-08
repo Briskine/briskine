@@ -20,7 +20,8 @@ export function request (type, options) {
 // eg. the proton mail composer
 function isScriptlessSandbox () {
   const frame = window.frameElement
-  return Boolean(frame?.hasAttribute('sandbox') && !frame.sandbox.contains('allow-scripts'))
+  // frame elements don't support sandbox
+  return Boolean(frame?.sandbox && frame.hasAttribute('sandbox') && !frame.sandbox.contains('allow-scripts'))
 }
 
 export async function setup () {
