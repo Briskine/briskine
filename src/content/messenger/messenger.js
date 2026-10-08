@@ -66,14 +66,24 @@ export default function Messenger (scope = '') {
       try {
         message.response = await actions[type](e.data.options)
       } catch (err) {
-        message.error = err
+        // throw undefined would otherwise read as a response
+        message.error = err || new Error(`${type} failed`)
       }
 
       // send response
-      return port.postMessage({
-        type: type,
-        ...message
-      })
+      try {
+        return port.postMessage({
+          type: type,
+          ...message
+        })
+      } catch (err) {
+        // the response or error can't be cloned, still answer so the request doesn't hang
+        const reason = typeof message.error?.message === 'string' ? message.error.message : err.message
+        return port.postMessage({
+          type: type,
+          error: new Error(reason),
+        })
+      }
     }
 
     // resolve local response
