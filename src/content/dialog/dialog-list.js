@@ -1,4 +1,4 @@
-import {For, Show, createEffect, createSignal, onMount, mergeProps, createMemo} from 'solid-js'
+import {For, Show, createEffect, createSignal, onMount, onCleanup, mergeProps, createMemo} from 'solid-js'
 
 import IconArrowUpRightSquare from 'bootstrap-icons/icons/arrow-up-right-square.svg'
 
@@ -98,7 +98,9 @@ export default function DialogList (originalProps) {
 
   // insert with enter
   function selectActive () {
-    props.callbackSelectItem(active())
+    if (shortlist().some((t) => t.id === active())) {
+      props.callbackSelectItem(active())
+    }
   }
 
   function selectFirst () {
@@ -111,6 +113,11 @@ export default function DialogList (originalProps) {
 
   onMount(() => {
     props.controls({ move, selectActive, selectFirst })
+  })
+
+  // eg. replaced by the loader
+  onCleanup(() => {
+    props.controls(null)
   })
 
   return (

@@ -242,6 +242,9 @@ export default function DialogContent (originalProps) {
   function callbackSelectItem (tplId) {
     // get template from cache
     const template = templates().find((t) => t.id === tplId)
+    if (!template) {
+      return
+    }
 
     props.onInsert(template)
   }
