@@ -9,6 +9,7 @@
     "test:vendor": "test/scripts/vendor-test-deps.sh",
     "setup": "firebase login",
     "start": "vite build --watch --mode development",
+    "start:firefox": "web-ext run --source-dir ./ext/ -t firefox-desktop",
     "start:firefox:android": "web-ext run --source-dir ./ext/ -t firefox-android",
     "staging": "vite build --watch --mode staging",
     "build": "npm run build:chrome && npm run build:firefox && npm run build:safari",
