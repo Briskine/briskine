@@ -87,5 +87,24 @@ describe('gmail', () => {
       subject: '',
     })
   })
+})
 
+describe('gmail legacy', () => {
+  it('should get data in compose dialog', async () => {
+    const iframe = await loadIframe('/pages/gmail/gmail-compose-dialog_legacy.html')
+    const data = await getPluginData({document: iframe.contentDocument})
+
+    expect(data).to.deep.equal(composeData)
+
+    iframe.remove()
+  })
+
+  it('should get data in maximized compose', async () => {
+    const iframe = await loadIframe('/pages/gmail/gmail-compose-maximized_legacy.html')
+    const data = await getPluginData({document: iframe.contentDocument})
+
+    expect(data).to.deep.equal(composeData)
+
+    iframe.remove()
+  })
 })
