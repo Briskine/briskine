@@ -18,7 +18,7 @@ afterEach(() => {
 // stands in for custom elements that wrap a password input, eg. <sl-input>
 class FakeInput extends HTMLElement {
   get value () {
-    return 'secret'
+    return 'from-getter'
   }
 }
 
@@ -29,7 +29,7 @@ if (!customElements.get('fake-input')) {
 function expectHidden (record) {
   expect(record.text).to.equal('')
   expect(record.value).to.equal('')
-  expect(record.attributes.value ?? '').to.equal('')
+  expect(record.attributes.value).to.equal('')
 }
 
 describe('cssMatches', () => {
@@ -39,11 +39,10 @@ describe('cssMatches', () => {
 
     const [record] = cssMatches('.field')
     expectHidden(record)
-    expect(record.attributes.value).to.equal('')
   })
 
   it('should hide password fields with an uppercase type', () => {
-    const $container = markup('<input TYPE="PASSWORD" class="field">')
+    const $container = markup('<input TYPE="PASSWORD" class="field" value="default">')
     $container.querySelector('.field').value = 'secret'
 
     expectHidden(cssMatches('.field')[0])
@@ -59,7 +58,7 @@ describe('cssMatches', () => {
     markup('<fake-input type="text" class="field" value="visible"></fake-input>')
 
     const [record] = cssMatches('.field')
-    expect(record.value).to.equal('secret')
+    expect(record.value).to.equal('from-getter')
     expect(record.attributes.value).to.equal('visible')
   })
 
@@ -116,7 +115,10 @@ describe('cssMatches', () => {
       </select>
     `)
 
-    expectHidden(cssMatches('.field')[0])
+    // a select has no value attribute
+    const [select] = cssMatches('.field')
+    expect(select.text).to.equal('')
+    expect(select.value).to.equal('')
     cssMatches('.field option').forEach(expectHidden)
     expectHidden(cssMatches('.field option:checked')[0])
   })
@@ -181,7 +183,7 @@ describe('cssMatches', () => {
   it('should hide sensitive fields in shadow dom', () => {
     const $container = markup('<div class="host"></div>')
     const shadow = $container.querySelector('.host').attachShadow({mode: 'open'})
-    shadow.innerHTML = '<input type="password" class="field">'
+    shadow.innerHTML = '<input type="password" class="field" value="default">'
     shadow.querySelector('.field').value = 'secret'
 
     expectHidden(cssMatches('.field')[0])
