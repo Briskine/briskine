@@ -31,7 +31,7 @@ export default function DialogContent (originalProps) {
   }, originalProps)
 
   let element = null
-  let elementDialogList = null
+  let listControls = null
   let searchField = null
 
   const [loggedIn, setLoggedIn] = createSignal()
@@ -51,10 +51,7 @@ export default function DialogContent (originalProps) {
       && prev === false
     ) {
       // activate the first item in the list
-      const $list = elementDialogList
-      if ($list) {
-        $list.dispatchEvent(new Event('b-dialog-select-first'))
-      }
+      listControls?.selectFirst()
 
       // give it a second before focusing.
       // in production, the search field is not focused on some websites (eg. google sheets, salesforce).
@@ -129,18 +126,17 @@ export default function DialogContent (originalProps) {
   function handleSearchFieldShortcuts (e) {
     // only handle keys typed in the search field.
     // the shadow root is closed, so the event target is the dialog element.
-    const $list = elementDialogList
     if (
       !e.isTrusted ||
       !searchField?.matches(':focus') ||
       !['Enter', 'ArrowDown', 'ArrowUp'].includes(e.key) ||
-      !$list
+      !listControls
     ) {
       return
     }
 
     if (e.key === 'Enter') {
-      $list.dispatchEvent(new Event('b-dialog-select-active'))
+      listControls.selectActive()
       return e.preventDefault()
     }
 
@@ -152,9 +148,7 @@ export default function DialogContent (originalProps) {
     }
 
     if (move) {
-      $list.dispatchEvent(new CustomEvent('b-dialog-select', {
-        detail: move,
-      }))
+      listControls.move(move)
       // prevent moving the cursor to the start/end of the search field
       e.preventDefault()
     }
@@ -291,7 +285,7 @@ export default function DialogContent (originalProps) {
                 extensionData={extensionData()}
                 tags={tags()}
                 callbackSelectItem={callbackSelectItem}
-                ref={elementDialogList}
+                controls={(controls) => listControls = controls}
 
                 loading={loading()}
                 visible={props.visible}
@@ -304,7 +298,7 @@ export default function DialogContent (originalProps) {
               extensionData={extensionData()}
               tags={tags()}
               callbackSelectItem={callbackSelectItem}
-              ref={elementDialogList}
+              controls={(controls) => listControls = controls}
               />
           </Show>
         </div>

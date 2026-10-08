@@ -10,7 +10,7 @@ const bodyCharacterRenderLimit = 200
 
 export default function DialogList (originalProps) {
   const props = mergeProps({
-    ref: null,
+    controls: () => {},
     loggedIn: null,
     extensionData: {},
     tags: [],
@@ -78,49 +78,44 @@ export default function DialogList (originalProps) {
     }
   }
 
+  // keyboard navigation
+  function move (direction) {
+    const index = shortlist().findIndex((t) => t.id === active())
+    let nextIndex
+
+    if (direction === 'next' && index !== shortlist().length - 1) {
+      nextIndex = index + 1
+    } else if (direction === 'previous' && index !== 0) {
+      nextIndex = index - 1
+    }
+
+    if (typeof nextIndex !== 'undefined' && shortlist()[nextIndex]) {
+      const newActive = shortlist()[nextIndex].id
+      setActive(newActive)
+      scrollToActive(newActive)
+    }
+  }
+
+  // insert with enter
+  function selectActive () {
+    props.callbackSelectItem(active())
+  }
+
+  function selectFirst () {
+    if (shortlist().length) {
+      const newActive = shortlist()[0].id
+      setActive(newActive)
+      scrollToActive(newActive)
+    }
+  }
+
   onMount(() => {
-    // keyboard navigation
-    element.addEventListener('b-dialog-select', (e) => {
-      const index = shortlist().findIndex((t) => t.id === active())
-      const move = e.detail
-      let nextIndex
-
-      if (move === 'next' && index !== shortlist().length - 1) {
-        nextIndex = index + 1
-      } else if (move === 'previous' && index !== 0) {
-        nextIndex = index - 1
-      }
-
-      if (typeof nextIndex !== 'undefined' && shortlist()[nextIndex]) {
-        const newActive = shortlist()[nextIndex].id
-        setActive(newActive)
-        scrollToActive(newActive)
-      }
-    })
-
-    // insert with enter
-    element.addEventListener('b-dialog-select-active', () => {
-      props.callbackSelectItem( active() )
-    })
-
-    // select first item
-    element.addEventListener('b-dialog-select-first', () => {
-      if (shortlist().length) {
-        const newActive = shortlist()[0].id
-        setActive(newActive)
-        scrollToActive(newActive)
-      }
-    })
+    props.controls({ move, selectActive, selectFirst })
   })
 
   return (
     <div
-      ref={(el) => {
-        element = el
-        if (typeof props.ref === 'function') {
-          props.ref(el)
-        }
-      }}
+      ref={element}
       class="dialog-list"
       on:click={onClick}
       on:mouseover={onMouseOver}
