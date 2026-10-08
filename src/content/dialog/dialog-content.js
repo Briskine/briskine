@@ -27,6 +27,7 @@ export default function DialogContent (originalProps) {
   const props = mergeProps({
     keyboardShortcut: '',
     visible: false,
+    onInsert: () => {},
   }, originalProps)
 
   let element = null
@@ -126,11 +127,12 @@ export default function DialogContent (originalProps) {
   }
 
   function handleSearchFieldShortcuts (e) {
-    // only handle events from the search field
-    const target = e.composedPath()[0]
+    // only handle keys typed in the search field.
+    // the shadow root is closed, so the event target is the dialog element.
     const $list = elementDialogList
     if (
-      target !== searchField ||
+      !e.isTrusted ||
+      !searchField?.matches(':focus') ||
       !['Enter', 'ArrowDown', 'ArrowUp'].includes(e.key) ||
       !$list
     ) {
@@ -247,11 +249,7 @@ export default function DialogContent (originalProps) {
     // get template from cache
     const template = templates().find((t) => t.id === tplId)
 
-    element.dispatchEvent(new CustomEvent('b-dialog-insert', {
-      bubbles: true,
-      composed: true,
-      detail: template,
-    }))
+    props.onInsert(template)
   }
 
   return (<>
