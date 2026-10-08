@@ -1,7 +1,9 @@
 import { expect, describe, it, beforeEach, afterEach, vi } from 'vitest'
+import { userEvent } from 'vitest/browser'
 
 import { setup, destroy, bubbleTagName } from './bubble.js'
 import * as store from '../../store/store-content.js'
+import { eventShowDialog } from '../../config.js'
 
 vi.mock('../../store/store-content.js', () => ({
   getExtensionData: vi.fn(),
@@ -276,6 +278,38 @@ describe('bubble', () => {
     expect(getBubble().style.visibility).toBe('visible')
 
     overlay.remove()
+  })
+
+  it('does not expose its shadow root', () => {
+    expect(getBubble().shadowRoot).toBe(null)
+  })
+
+  it('opens the dialog when clicked', async () => {
+    const textarea = createTextarea()
+    textarea.focus()
+
+    await vi.waitFor(() => {
+      expect(getBubble().style.visibility).toBe('visible')
+    })
+
+    await userEvent.click(getBubble())
+
+    expect(store.trigger).toHaveBeenCalledWith(eventShowDialog, expect.objectContaining({
+      target: expect.any(HTMLButtonElement),
+    }))
+  })
+
+  it('does not open the dialog for a click dispatched on the bubble', async () => {
+    const textarea = createTextarea()
+    textarea.focus()
+
+    await vi.waitFor(() => {
+      expect(getBubble().style.visibility).toBe('visible')
+    })
+
+    getBubble().click()
+
+    expect(store.trigger).not.toHaveBeenCalled()
   })
 
   describe('positioning', () => {
