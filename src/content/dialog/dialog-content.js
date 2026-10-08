@@ -187,6 +187,9 @@ export default function DialogContent (originalProps) {
           if (query === searchValue) {
             setSearchQuery(searchValue)
             setSearchResults(results)
+            // the list keeps its active template while it's in the results,
+            // a new search starts on the top result.
+            listControls?.selectFirst()
           }
         }, 50)
       } else {
