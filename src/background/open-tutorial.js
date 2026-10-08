@@ -12,7 +12,7 @@ browser.runtime.onInstalled.addListener((details) => {
   if (!REGISTER_DISABLED) {
     // open the getting-started tutorial page on install
     browser.tabs.create({
-      url: `${functionsUrl}/getting-started`
+      url: `${functionsUrl}/getting-started/`
     })
   }
 })

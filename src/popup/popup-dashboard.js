@@ -198,7 +198,7 @@ export default function PopupDashboard () {
         </Show>
         <li>
           <a
-            href={`${functionsUrl}/template/new`}
+            href={`${functionsUrl}/template/new/`}
             target={dashboardTarget}
             >
             <span class="icon"><PlusSquareFill /></span>
@@ -207,7 +207,7 @@ export default function PopupDashboard () {
         </li>
         <li>
           <a
-            href={functionsUrl}
+            href={`${functionsUrl}/`}
             target={dashboardTarget}
             >
             <span class="icon"><ArchiveFill /></span>
@@ -216,7 +216,7 @@ export default function PopupDashboard () {
         </li>
         <li>
           <a
-            href={`${functionsUrl}/settings`}
+            href={`${functionsUrl}/settings/`}
             target={dashboardTarget}
             >
             <span class="icon"><GearFill /></span>
@@ -251,7 +251,7 @@ export default function PopupDashboard () {
             </p>
 
             <a
-              href={`${functionsUrl}/subscription`}
+              href={`${functionsUrl}/subscription/`}
               target={dashboardTarget}
               class="btn btn-success btn-upgrade"
               >
@@ -262,7 +262,7 @@ export default function PopupDashboard () {
 
       <div class="popup-box popup-status">
           <a
-            href={`${functionsUrl}/account`}
+            href={`${functionsUrl}/account/`}
             target={dashboardTarget}
             class="popup-user btn btn-link"
             title={`Account settings for ${user().email}`}

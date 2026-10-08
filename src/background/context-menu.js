@@ -60,7 +60,7 @@ async function saveAsTemplateAction (info, tab) {
   body = body?.substring?.(0, 1500)
 
   return browser.tabs.create({
-    url: `${functionsUrl}/template/new?body=${encodeURIComponent(body)}`
+    url: `${functionsUrl}/template/new/?body=${encodeURIComponent(body)}`
   })
 }
 

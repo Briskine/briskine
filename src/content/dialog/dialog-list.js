@@ -182,7 +182,7 @@ export default function DialogList (originalProps) {
                 <Show when={props.loggedIn}>
                   <div class="edit-container dialog-safari-hide">
                     <a
-                      href={`${functionsUrl}/template/${t.id}`}
+                      href={`${functionsUrl}/template/${t.id}/`}
                       target="_blank"
                       class="btn btn-sm btn-edit"
                       title="Edit template"
