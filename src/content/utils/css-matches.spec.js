@@ -228,3 +228,82 @@ describe('cssMatches', () => {
     expect(records.map((record) => record.value)).to.deep.equal(['one', '', 'three'])
   })
 })
+
+describe('cssMatches secret attribute matching', () => {
+  it('should not match a sensitive field by a value prefix', () => {
+    const $container = markup('<input type="password" class="field">')
+    $container.querySelector('.field').setAttribute('value', 'cafe')
+
+    // the attribute is really there, but testing it must not single out the field
+    expect(cssMatches('input[value^="ca"]')).to.have.length(0)
+    expect(cssMatches('input[value^="xx"]')).to.have.length(0)
+  })
+
+  it('should not match a csrf meta by a content prefix', () => {
+    markup('<meta name="csrf-token" content="cafe">')
+
+    expect(cssMatches('meta[content^="ca"]')).to.have.length(0)
+    expect(cssMatches('meta[content^="xx"]')).to.have.length(0)
+  })
+
+  it('should match the same way for every prefix', () => {
+    markup('<meta name="csrf-token" content="cafe">')
+
+    const counts = ['a', 'b', 'c', 'd', 'e', 'f'].map((char) => cssMatches(`meta[content^="${char}"]`).length)
+    expect(new Set(counts).size).to.equal(1)
+  })
+
+  it('should still match non-sensitive elements by value or content', () => {
+    markup(`
+      <input class="field" value="draft-1">
+      <input type="password" class="field" value="draft-2">
+    `)
+
+    const records = cssMatches('input[value^="draft"]')
+    expect(records).to.have.length(1)
+    expect(records[0].attributes.value).to.equal('draft-1')
+  })
+
+  it('should still return a sensitive match when the value is not tested', () => {
+    markup('<meta name="csrf-token" content="cafe">')
+
+    // selecting by name is fine, the content is already blanked
+    const [record] = cssMatches('meta[name="csrf-token"]')
+    expect(record.attributes.content).to.equal('')
+  })
+
+  it('should keep combinators and type selectors working', () => {
+    markup('<div><input type="password" class="field"></div>')
+
+    expect(cssMatches('div input[type="password"]')).to.have.length(1)
+  })
+
+  it('should ignore bare attribute presence, which leaks nothing', () => {
+    markup('<input type="password" class="field" value="cafe">')
+
+    // [value] is presence only, not a value test, so the match (blanked) stays
+    const [record] = cssMatches('input[value]')
+    expect(record.attributes.value).to.equal('')
+  })
+
+  it('should not match through :has() on a secret attribute', () => {
+    markup('<section><meta name="csrf-token" content="cafe"></section>')
+
+    expect(cssMatches('section:has(meta[content^="ca"])')).to.have.length(0)
+    expect(cssMatches('section:has(meta[content^="xx"])')).to.have.length(0)
+  })
+
+  it('should allow a value test outside a :has()', () => {
+    markup('<div><span class="icon"></span><input value="keepme"></div>')
+
+    const records = cssMatches('div:has(.icon) input[value^="keep"]')
+    expect(records).to.have.length(1)
+    expect(records[0].attributes.value).to.equal('keepme')
+  })
+
+  it('should still drop a sensitive match outside a :has()', () => {
+    markup('<div><span class="icon"></span><input type="password" value="keepme"></div>')
+
+    expect(cssMatches('div:has(.icon) input[value^="keep"]')).to.have.length(0)
+  })
+})
