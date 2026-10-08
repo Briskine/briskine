@@ -6,7 +6,12 @@ import Mousetrap from 'mousetrap'
 import { getActiveElement } from './utils/active-element.js'
 import isEditor from './utils/editor.js'
 
-Mousetrap.prototype.stopCallback = function () {
+Mousetrap.prototype.stopCallback = function (e) {
+  // ignore keys dispatched by the page
+  if (!e.isTrusted) {
+    return true
+  }
+
   const element = getActiveElement(true)
   if (isEditor(element)) {
     return false

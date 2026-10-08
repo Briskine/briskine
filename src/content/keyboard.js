@@ -20,10 +20,6 @@ async function getTemplateByShortcut (shortcut) {
 }
 
 async function keyboardAutocomplete (e) {
-  if (!e.isTrusted) {
-    return
-  }
-
   let element = getEventTarget(e)
   // if it's not an editable element
   // don't trigger anything
