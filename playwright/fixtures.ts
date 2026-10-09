@@ -1,4 +1,4 @@
-import {test as base, chromium, firefox, type Page, type BrowserContext, type WorkerInfo} from '@playwright/test'
+import {test as base, chromium, firefox, type Page, type Locator, type BrowserContext, type WorkerInfo} from '@playwright/test'
 import {fileURLToPath} from 'url'
 import path from 'path'
 import os from 'os'
@@ -88,3 +88,14 @@ export const openPage = (page: Page, pageUrl: string) =>
     waitForExtension(page),
     page.goto(pageUrl)
   ])
+
+// the dialog's shadow root is closed, so tests can't find its elements.
+// use the keyboard instead, the dialog focuses its search field when it opens.
+export async function insertFromDialog (page: Page, editor: Locator, search = 'nic') {
+  await editor.press('Control+ ')
+  await expect(editor).not.toBeFocused()
+  await page.keyboard.type(search, {delay: 100})
+  // we can't see the list, give the search time to show its results
+  await page.waitForTimeout(500)
+  await page.keyboard.press('Enter')
+}

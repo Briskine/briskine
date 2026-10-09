@@ -167,6 +167,41 @@ describe('css handlebars helper', () => {
       .to.equal('[light][shadow]')
   })
 
+  it('should render nothing for a password field', async () => {
+    const $container = markup('<input type="password" class="field" value="default">')
+    $container.querySelector('.field').value = 'secret'
+
+    expect(await parseTemplate('[{{lookup (css "input[type=password]") "value"}}]')).to.equal('[]')
+    expect(await parseTemplate('[{{css "input[type=password]" "value"}}]')).to.equal('[]')
+  })
+
+  it('should render nothing for the selected option of a card expiry', async () => {
+    markup('<select autocomplete="cc-exp-month"><option value="02" selected>02</option></select>')
+
+    expect(await parseTemplate('[{{css "select[autocomplete=cc-exp-month] option:checked"}}]')).to.equal('[]')
+  })
+
+  it('should render the value of a hidden input', async () => {
+    markup('<input type="hidden" name="ticket" value="1234">')
+
+    expect(await parseTemplate('{{css "input[type=hidden]" "value"}}')).to.equal('1234')
+  })
+
+  it('should render nothing for a csrf meta tag', async () => {
+    markup('<meta name="csrf-token" content="token">')
+
+    expect(await parseTemplate('[{{css "meta[name=csrf-token]" "content"}}]')).to.equal('[]')
+  })
+
+  it('should not reveal a secret attribute through a value selector', async () => {
+    markup('<meta name="csrf-token" content="token">')
+
+    const match = await parseTemplate('{{#if (css "meta[content^=t]")}}yes{{else}}no{{/if}}')
+    const miss = await parseTemplate('{{#if (css "meta[content^=x]")}}yes{{else}}no{{/if}}')
+    expect(match).to.equal('no')
+    expect(miss).to.equal('no')
+  })
+
 })
 
 describe('css handlebars helper in a site block', () => {

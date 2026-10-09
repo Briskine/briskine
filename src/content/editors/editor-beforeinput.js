@@ -41,13 +41,17 @@ export async function pageInsertBeforeInputTemplate ({ text, html}) {
   let resolve, reject
   const promise = new Promise((res, rej) => [resolve, reject] = [res, rej])
 
-  // timeout for inserting the template
-  const timeout = setTimeout(reject, 1000)
-  const observer = new MutationObserver((mutations, obs) => {
-    obs.disconnect()
+  const observer = new MutationObserver(() => {
+    observer.disconnect()
     clearTimeout(timeout)
     resolve()
   })
+
+  // timeout for inserting the template
+  const timeout = setTimeout(() => {
+    observer.disconnect()
+    reject(new Error('beforeinput editor did not insert the template'))
+  }, 1000)
 
   observer.observe(element, {
     childList: true,

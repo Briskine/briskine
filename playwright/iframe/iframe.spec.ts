@@ -1,4 +1,4 @@
-import {test, expect, openPage} from '../fixtures.ts'
+import {test, expect, openPage, insertFromDialog} from '../fixtures.ts'
 
 test.describe('Iframe', () => {
   test.beforeEach(async ({page}) => {
@@ -19,14 +19,8 @@ test.describe('Iframe', () => {
   test('should insert template from dialog', async ({page}) => {
     const frame = page.frameLocator('#iframe')
     const textbox = frame.getByRole('textbox')
-    await textbox.press('Control+ ')
-    const search = frame.getByPlaceholder('Search templates...')
-    await expect(search).toBeVisible()
-    await search.pressSequentially('nic', {delay: 100})
+    await insertFromDialog(page, textbox)
     const template = 'It was nice talking to you.'
-    const list = frame.getByText(template)
-    await list.waitFor()
-    await search.press('Enter')
-    await expect(textbox).toHaveText('It was nice talking to you.')
+    await expect(textbox).toHaveText(template)
   })
 })

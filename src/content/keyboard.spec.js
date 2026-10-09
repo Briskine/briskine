@@ -1,4 +1,5 @@
 import { expect, describe, it, beforeEach, vi } from 'vitest'
+import { userEvent } from 'vitest/browser'
 
 import { setup, destroy } from './keyboard.js'
 
@@ -58,13 +59,24 @@ describe('keyboard', () => {
     })
   })
 
+  it('should not run autocomplete for a tab the page dispatches', async () => {
+    const editable = createInput()
+    editable.value = 'test'
+    editable.setSelectionRange(4, 4)
+
+    editable.dispatchEvent(eventKeyTab())
+
+    await new Promise((resolve) => setTimeout(resolve, 100))
+    expect(autocomplete).not.toHaveBeenCalled()
+  })
+
   it('should run autocomplete in contenteditable', async () => {
     const editable = createContentEditable()
     editable.innerHTML = 'test'
     const selection = window.getSelection()
     selection.setBaseAndExtent(editable.firstChild, 4, editable.firstChild, 4)
 
-    editable.dispatchEvent(eventKeyTab())
+    await userEvent.keyboard('{Tab}')
 
     await vi.waitFor(() => {
       expect(autocomplete).toHaveBeenCalled()
@@ -78,7 +90,7 @@ describe('keyboard', () => {
     editable.value = 'test'
     editable.setSelectionRange(4, 4)
 
-    editable.dispatchEvent(eventKeyTab())
+    await userEvent.keyboard('{Tab}')
 
     await vi.waitFor(() => {
       expect(autocomplete).toHaveBeenCalled()
@@ -91,7 +103,7 @@ describe('keyboard', () => {
     const editable = createInput('email')
     editable.value = 'test'
 
-    editable.dispatchEvent(eventKeyTab())
+    await userEvent.keyboard('{Tab}')
 
     await vi.waitFor(() => {
       expect(autocomplete).toHaveBeenCalled()
@@ -118,7 +130,7 @@ describe('keyboard', () => {
     // before the cursor, regardless of the global Selection.
     editable.setSelectionRange(4, 4)
 
-    editable.dispatchEvent(eventKeyTab())
+    await userEvent.keyboard('{Tab}')
 
     await vi.waitFor(() => {
       expect(autocomplete).toHaveBeenCalled()
@@ -129,23 +141,28 @@ describe('keyboard', () => {
 
   describe('editor re-rendering during the template lookup', () => {
     // the templates aren't loaded yet, so the lookup takes a while
+    // the lookup waits until release(), so the editor can change the text meanwhile
     function slowTemplates () {
-      vi.mocked(store.getTemplates).mockImplementation(() => {
-        return new Promise((resolve) => setTimeout(() => resolve([{shortcut: 'test'}]), 20))
+      let release
+      const templates = new Promise((resolve) => {
+        release = () => resolve([{shortcut: 'test'}])
       })
+      vi.mocked(store.getTemplates).mockImplementation(() => templates)
+      return release
     }
 
     const settle = () => new Promise((resolve) => setTimeout(resolve, 50))
 
     it('should not expand when the editor replaced the text', async () => {
-      slowTemplates()
+      const release = slowTemplates()
       const editable = createContentEditable()
       editable.innerHTML = 'test'
       window.getSelection().setBaseAndExtent(editable.firstChild, 4, editable.firstChild, 4)
 
-      editable.dispatchEvent(eventKeyTab())
+      await userEvent.keyboard('{Tab}')
       // eg. outlook inserting its own tab
       editable.replaceChildren(document.createTextNode('test    '))
+      release()
       await settle()
 
       expect(autocomplete).not.toHaveBeenCalled()
@@ -154,13 +171,14 @@ describe('keyboard', () => {
     })
 
     it('should still expand when the editor removed characters', async () => {
-      slowTemplates()
+      const release = slowTemplates()
       const editable = createContentEditable()
       editable.innerHTML = 'test'
       window.getSelection().setBaseAndExtent(editable.firstChild, 4, editable.firstChild, 4)
 
-      editable.dispatchEvent(eventKeyTab())
+      await userEvent.keyboard('{Tab}')
       editable.firstChild.data = 'tes'
+      release()
       await settle()
 
       expect(autocomplete).toHaveBeenCalled()

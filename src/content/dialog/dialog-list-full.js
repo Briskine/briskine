@@ -18,7 +18,7 @@ function Loader () {
 
 export default function DialogListFull (originalProps) {
   const props = mergeProps({
-    ref: null,
+    controls: () => {},
     loggedIn: null,
     loading: null,
     visible: true,
@@ -66,7 +66,7 @@ export default function DialogListFull (originalProps) {
           extensionData={props.extensionData}
           tags={props.tags}
           callbackSelectItem={props.callbackSelectItem}
-          ref={props.ref}
+          controls={props.controls}
           />
       </Show>
     </>

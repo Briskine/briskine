@@ -30,8 +30,10 @@ export const bubbleTagName = scopeTagName(bubbleTagPrefix)
 customElements.define(
   bubbleTagName,
   class extends HTMLElement {
+    #shadowRoot = null
+
     connectedCallback () {
-      if (!this.isConnected || this.shadowRoot) {
+      if (!this.isConnected || this.#shadowRoot) {
         return
       }
 
@@ -47,16 +49,16 @@ customElements.define(
           </span>
         </button>
       `
-      const shadowRoot = this.attachShadow({mode: 'open'})
-      shadowRoot.innerHTML = template
+      this.#shadowRoot = this.attachShadow({mode: 'closed'})
+      this.#shadowRoot.innerHTML = template
 
-      shadowRoot.addEventListener('mousedown', (e) => {
+      this.#shadowRoot.addEventListener('mousedown', (e) => {
         e.preventDefault()
       })
 
-      shadowRoot.addEventListener('click', (e) => {
+      this.#shadowRoot.addEventListener('click', (e) => {
         const btn = e.target?.closest?.('button')
-        if (!btn) {
+        if (!e.isTrusted || !btn) {
           return
         }
 

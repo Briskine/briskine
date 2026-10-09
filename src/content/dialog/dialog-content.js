@@ -27,10 +27,11 @@ export default function DialogContent (originalProps) {
   const props = mergeProps({
     keyboardShortcut: '',
     visible: false,
+    onInsert: () => {},
   }, originalProps)
 
   let element = null
-  let elementDialogList = null
+  let listControls = null
   let searchField = null
 
   const [loggedIn, setLoggedIn] = createSignal()
@@ -50,10 +51,7 @@ export default function DialogContent (originalProps) {
       && prev === false
     ) {
       // activate the first item in the list
-      const $list = elementDialogList
-      if ($list) {
-        $list.dispatchEvent(new Event('b-dialog-select-first'))
-      }
+      listControls?.selectFirst()
 
       // give it a second before focusing.
       // in production, the search field is not focused on some websites (eg. google sheets, salesforce).
@@ -126,19 +124,19 @@ export default function DialogContent (originalProps) {
   }
 
   function handleSearchFieldShortcuts (e) {
-    // only handle events from the search field
-    const target = e.composedPath()[0]
-    const $list = elementDialogList
+    // only handle keys typed in the search field.
+    // the shadow root is closed, so the event target is the dialog element.
     if (
-      target !== searchField ||
+      !e.isTrusted ||
+      !searchField?.matches(':focus') ||
       !['Enter', 'ArrowDown', 'ArrowUp'].includes(e.key) ||
-      !$list
+      !listControls
     ) {
       return
     }
 
     if (e.key === 'Enter') {
-      $list.dispatchEvent(new Event('b-dialog-select-active'))
+      listControls.selectActive()
       return e.preventDefault()
     }
 
@@ -150,9 +148,7 @@ export default function DialogContent (originalProps) {
     }
 
     if (move) {
-      $list.dispatchEvent(new CustomEvent('b-dialog-select', {
-        detail: move,
-      }))
+      listControls.move(move)
       // prevent moving the cursor to the start/end of the search field
       e.preventDefault()
     }
@@ -188,9 +184,13 @@ export default function DialogContent (originalProps) {
       if (searchValue) {
         searchDebouncer = setTimeout(async () => {
           const {query, results} = await searchTemplates(searchValue)
-          if (query === searchValue) {
+          // the field could have changed while searching
+          if (query === searchField.value) {
             setSearchQuery(searchValue)
             setSearchResults(results)
+            // the list keeps its active template while it's in the results,
+            // a new search starts on the top result.
+            listControls?.selectFirst()
           }
         }, 50)
       } else {
@@ -246,12 +246,11 @@ export default function DialogContent (originalProps) {
   function callbackSelectItem (tplId) {
     // get template from cache
     const template = templates().find((t) => t.id === tplId)
+    if (!template) {
+      return
+    }
 
-    element.dispatchEvent(new CustomEvent('b-dialog-insert', {
-      bubbles: true,
-      composed: true,
-      detail: template,
-    }))
+    props.onInsert(template)
   }
 
   return (<>
@@ -293,7 +292,7 @@ export default function DialogContent (originalProps) {
                 extensionData={extensionData()}
                 tags={tags()}
                 callbackSelectItem={callbackSelectItem}
-                ref={elementDialogList}
+                controls={(controls) => listControls = controls}
 
                 loading={loading()}
                 visible={props.visible}
@@ -306,7 +305,7 @@ export default function DialogContent (originalProps) {
               extensionData={extensionData()}
               tags={tags()}
               callbackSelectItem={callbackSelectItem}
-              ref={elementDialogList}
+              controls={(controls) => listControls = controls}
               />
           </Show>
         </div>

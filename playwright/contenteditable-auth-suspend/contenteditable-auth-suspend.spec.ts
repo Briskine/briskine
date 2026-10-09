@@ -1,4 +1,4 @@
-import {test, expect, openPage} from '../fixtures.ts'
+import {test, expect, openPage, insertFromDialog} from '../fixtures.ts'
 import login from '../login.js'
 
 test.describe('ContentEditable Authenticated Service Worker suspend', () => {
@@ -27,14 +27,8 @@ test.describe('ContentEditable Authenticated Service Worker suspend', () => {
 
   test('should insert template from dialog', async ({page}) => {
     const textbox = page.getByRole('textbox')
-    await textbox.press('Control+ ')
-    const search = page.getByRole('searchbox')
-    await expect(search).toBeVisible()
-    await search.fill('create')
+    await insertFromDialog(page, textbox, 'create')
     const template = 'Create text templates and insert them with shortcuts.'
-    const list = page.getByText(template)
-    await list.waitFor()
-    await search.press('Enter')
     await expect(textbox).toHaveText(template)
   })
 })

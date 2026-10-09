@@ -13,13 +13,13 @@ const actions = [
   {
     title: 'New template',
     icon: IconPlusSquare,
-    href: `${functionsUrl}/template/new`,
+    href: `${functionsUrl}/template/new/`,
     class: 'dialog-safari-hide',
   },
   {
     title: 'Manage templates',
     icon: IconArchive,
-    href: functionsUrl,
+    href: `${functionsUrl}/`,
     class: 'dialog-safari-hide',
   },
   {

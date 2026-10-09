@@ -11,30 +11,26 @@ import './sidepanel.css'
 
 let keyboardShortcut = ''
 
-function Sidepanel () {
-  let element = null
+async function insertTemplate (template) {
+  const [tab] = await browser.tabs.query({ active: true, currentWindow: true })
+  if (!tab) {
+    return
+  }
 
+  trigger(eventInsertTemplate, {template: template}, tab)
+}
+
+function Sidepanel () {
   onMount(() => {
     setupStore()
-
-    element.addEventListener('b-dialog-insert', async (e) => {
-      e.stopImmediatePropagation()
-
-      const template = e.detail
-      const [tab] = await browser.tabs.query({ active: true, currentWindow: true })
-      if (!tab) {
-        return
-      }
-
-      trigger(eventInsertTemplate, {template: template}, tab)
-    })
   })
 
   return (
-    <div class="briskine-dialog" ref={element}>
+    <div class="briskine-dialog">
       <DialogContent
         keyboardShortcut={keyboardShortcut}
         visible={true}
+        onInsert={insertTemplate}
       />
     </div>
   )

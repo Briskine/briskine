@@ -67,6 +67,31 @@ function getGmailEditor ({ document: doc }) {
   return doc.querySelector(`${textfieldContainerSelector} [role=textbox][aria-multiline=true]`)
 }
 
+// name of the signed-in google account
+function getAccountName (doc, email = '') {
+  if (!email) {
+    return ''
+  }
+
+  // the account button on the top-right, eg. "Google Account: John Briskine (john@briskine.com)".
+  // the label is translated, so only rely on the email and the first colon.
+  const label = Array.from(doc.querySelectorAll('a[aria-label]'))
+    .map((node) => node.getAttribute('aria-label'))
+    .find((text) => text.includes(`(${email})`))
+  if (label) {
+    const name = label.slice(0, label.lastIndexOf(`(${email})`))
+    return name.slice(name.indexOf(':') + 1).trim()
+  }
+
+  // older layout: the user details popup,
+  // visible on hovering the google account on the top-right.
+  // the full name node is before the email node.
+  const emailNode = Array.from(doc.querySelectorAll('div')).reverse().find((node) => {
+    return node.textContent.trim() === email
+  })
+  return emailNode?.previousElementSibling?.textContent?.trim() || ''
+}
+
 // get all required data from the dom
 function getData ({ element, document: doc = document } = {}) {
   if (!isActive()) {
@@ -90,19 +115,8 @@ function getGmailData ({ element }) {
     const doc = element.ownerDocument
     // get the email address from the title
     const email = (doc.title || '').split(' ').find((part) => part.includes('@')) || ''
-    // find the email node from the user details popup
-    // visible on hovering the google account on the top-right
-    let emailNode = null
-    if (email) {
-      emailNode = Array.from(doc.querySelectorAll('div')).reverse().find((node) => {
-        return node.textContent.trim() === email
-      })
-    }
-    // the full name node is before the email node
-    const fullNameNode = emailNode ? emailNode.previousElementSibling : null
-    const fullName = fullNameNode ? fullNameNode.textContent.trim() : ''
     data.from = createContact({
-      name: fullName,
+      name: getAccountName(doc, email),
       email: email,
     })
 

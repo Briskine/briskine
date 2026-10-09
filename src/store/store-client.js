@@ -56,11 +56,13 @@ export function trigger (name, details = {}) {
   )
 }
 
-// handle trigger from background
-browser.runtime.onMessage.addListener((req, res, sendResponse) => {
+// handle trigger from background.
+// content scripts' messages also reach extension pages, they come with a tab.
+browser.runtime.onMessage.addListener((req, sender, sendResponse) => {
   if (
     req.type &&
-    req.type === 'trigger'
+    req.type === 'trigger' &&
+    !sender.tab
   ) {
     trigger(req.data.name, req.data.details).then(sendResponse)
     return true

@@ -140,7 +140,7 @@ browser.runtime.onMessage.addListener((req, sender, sendResponse) => {
   }
 
   const handler = handlers[req?.type]
-  if (!handler) {
+  if (!handler || sender.id !== browser.runtime.id) {
     return false
   }
 

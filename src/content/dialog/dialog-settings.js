@@ -98,7 +98,7 @@ export default function DialogSettings (originalProps) {
                 Manage additional settings for Briskine in the Dashboard.
               </p>
               <a
-                href={`${functionsUrl}/settings`}
+                href={`${functionsUrl}/settings/`}
                 target="_blank"
                 class="btn dialog-safari-hide"
                 >

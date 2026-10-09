@@ -7,6 +7,7 @@
  * {{lookup (css ".field") "value"}} - field value of the first match
  *
  * Reads the tab of the {{#site}} or {{#eachSite}} block it's in, or this page outside one.
+ * Password, card and one-time code fields always read as empty.
  *
  */
 

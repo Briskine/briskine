@@ -203,16 +203,6 @@ function Dialog (originalProps) {
       signal: globalAbortController.signal,
     }
 
-    element.addEventListener('b-dialog-insert', async (e) => {
-      await restoreSelection()
-
-      autocomplete({
-        template: e.detail,
-      })
-
-      e.stopImmediatePropagation()
-    })
-
     window.addEventListener('focusout', hideOnFocusout, globalListenerOptions)
     window.addEventListener('keydown', hideOnEsc, globalListenerOptions)
 
@@ -256,6 +246,14 @@ function Dialog (originalProps) {
     globalAbortController.abort()
   })
 
+  async function insertTemplate (template) {
+    await restoreSelection()
+
+    autocomplete({
+      template: template,
+    })
+  }
+
   return (
     <div
       ref={element}
@@ -267,12 +265,15 @@ function Dialog (originalProps) {
         <DialogContent
           keyboardShortcut={props.keyboardShortcut}
           visible={visible()}
+          onInsert={insertTemplate}
         />
     </div>
   )
 }
 
 customElements.define(dialogTagName, class extends HTMLElement {
+  #shadowRoot = null
+
   constructor () {
     super()
 
@@ -280,7 +281,7 @@ customElements.define(dialogTagName, class extends HTMLElement {
     this.disposer = () => {}
 
     this.show = function (target) {
-      this.shadowRoot.querySelector(dialogSelector).show(target)
+      this.#shadowRoot.querySelector(dialogSelector).show(target)
     }
   }
   connectedCallback () {
@@ -288,12 +289,12 @@ customElements.define(dialogTagName, class extends HTMLElement {
       return
     }
 
-    this.attachShadow({mode: 'open'})
+    this.#shadowRoot = this.attachShadow({mode: 'closed'})
     this.disposer = render(() => (
       <div class="briskine-dialog-popover">
         <Dialog keyboardShortcut={this.keyboardShortcut} />
       </div>
-    ), this.shadowRoot)
+    ), this.#shadowRoot)
   }
   disconnectedCallback () {
     this.disposer()
