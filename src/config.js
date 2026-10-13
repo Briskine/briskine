@@ -31,7 +31,11 @@ export const eventInsertTemplate = 'briskine-insert-template'
 export const eventToggleBubble = 'briskine-toggle-bubble'
 export const eventSiteData = 'briskine-site-data'
 export const eventSiteMatches = 'briskine-site-matches'
+export const eventFormShow = 'briskine-form-show'
+export const eventFormRender = 'briskine-form-render'
+export const eventFormClose = 'briskine-form-close'
 
 // tag name prefixes for the custom elements of our own ui
 export const dialogTagPrefix = 'b-dialog-'
 export const bubbleTagPrefix = 'b-bubble-'
+export const formTagPrefix = 'b-form-'

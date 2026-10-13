@@ -132,6 +132,58 @@ export function getDefaultTemplates () {
     })
 
     defaultTemplates.push({
+      title: 'allforms',
+      shortcut: 'allforms',
+      subject: 'Order #{{@form.order}} ({{@form.tone}})',
+      to: '{{@form.email}}',
+      body: `
+        {{~#hidden}}
+          <div><strong>Hidden: shown in the form, not inserted.</strong></div>
+          <div>Tone: {{#select id="tone"}}{{option "Formal"}}{{option "Friendly" value="friendly"}}{{/select}}</div>
+          <div>{{input type="checkbox" id="refund" label="Include refund"}} Include refund</div>
+          <div>{{input type="checkbox" id="ps" checked=true}} Add P.S.</div>
+          <div>Highlight: {{input type="color" id="highlight" value="#ffcc00"}}</div>
+        {{/hidden~}}
+        <div>{{#if (compare "===" @form.tone "Formal")}}Dear{{else}}Hi{{/if}} {{input id="first-name" placeholder="First name" required=true}},</div>
+        <div>first name again (same id, kept in sync): {{input id="first-name"}}</div>
+        <div>first name from @form: {{capitalize @form.[first-name]}}</div>
+        <div>order: #{{input type="number" id="order" placeholder="Order" min=1 required=true}}</div>
+        <div>email: {{input type="email" id="email" placeholder="Email"}}</div>
+        <div>url: {{input type="url" id="url" value="https://www.briskine.com"}}</div>
+        <div>tel: {{input type="tel" id="tel" pattern="[0-9 +]+" placeholder="Digits, spaces, +"}}</div>
+        <div>date: {{input type="date" id="date"}} -> {{moment @form.date format="dddd, MMMM D"}}</div>
+        <div>time: {{input type="time" id="time" value="09:30"}}</div>
+        <div>datetime-local: {{input type="datetime-local" id="when"}} -> {{moment @form.when format="LLLL"}}</div>
+        <div>month: {{input type="month" id="month"}} -> {{moment @form.month format="MMMM YYYY"}}</div>
+        <div>week: {{input type="week" id="week"}} -> {{moment @form.week format="[week of] MMMM D"}}</div>
+        <div>color: <span style="background: {{@form.highlight}}">highlighted with {{@form.highlight}}</span></div>
+        <div>cause: {{#select id="cause"}}
+          {{option "a delay at our warehouse" value="a warehouse delay"}}
+          {{option "Carrier issue" value="an issue with the carrier"}}
+        {{/select}}</div>
+        <div>intro (block options): {{#select id="intro"}}
+          {{#option label="Short"}}<em>Thanks!</em>{{/option}}
+          {{#option label="Long"}}<strong>Thank you for {{#if @form.[first-name]}}your message, {{@form.[first-name]}}{{else}}reaching out{{/if}}.</strong>{{/option}}
+        {{/select}}</div>
+        <div>tools (multiple): {{#select id="tools" multiple=true value="Gmail"}}{{option "Gmail"}}{{option "Outlook"}}{{option "LinkedIn"}}{{/select}} -> {{list @form.tools "join" " + "}}</div>
+        {{#if @form.refund}}
+          <div>refund: {{input type="number" id="amount" placeholder="Amount" min=0 step="0.01" required=true}} USD
+            {{#if (compare ">=" @form.amount 100)}}(needs approval){{/if}}
+          </div>
+          <div>{{input type="checkbox" id="partial"}} partial refund</div>
+          {{#if @form.partial}}
+            <div>reason: {{input id="reason" placeholder="Reason"}}</div>
+          {{/if}}
+        {{/if}}
+        <div>notes: {{textarea id="notes" rows=3 placeholder="Newlines become line breaks"}}</div>
+        <div>random (same in the form and the template): {{random "one" "two" "three" "four" "five"}}</div>
+        <div>now (same in the form and the template): {{moment format="HH:mm:ss"}}</div>
+        <div>cursor: {{cursor}}</div>
+        {{#if @form.ps}}<div>P.S. {{input id="ps-text" value="See you soon!"}}</div>{{/if}}
+      `,
+    })
+
+    defaultTemplates.push({
       title: 'cursors',
       shortcut: 'cur',
       body: `

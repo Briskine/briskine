@@ -82,6 +82,7 @@
     "firebase": "^13.0.0",
     "fuse.js": "^7.0.0",
     "html-to-text": "^10.0.0",
+    "idiomorph": "^0.8.0",
     "moment": "^2.29.1",
     "mousetrap": "github:briskine/mousetrap#master",
     "solid-js": "^1.8.18",

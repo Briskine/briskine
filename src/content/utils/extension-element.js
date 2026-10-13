@@ -1,4 +1,4 @@
-import { dialogTagPrefix, bubbleTagPrefix } from '../../config.js'
+import { dialogTagPrefix, bubbleTagPrefix, formTagPrefix } from '../../config.js'
 
 export function scopeTagName (prefix = '') {
   return `${prefix}${Date.now().toString(36)}`
@@ -29,7 +29,7 @@ function hasAncestorTag (node, prefixes) {
 }
 
 export function isExtensionElement (node) {
-  return hasAncestorTag(node, [dialogTagPrefix, bubbleTagPrefix])
+  return hasAncestorTag(node, [dialogTagPrefix, bubbleTagPrefix, formTagPrefix])
 }
 
 export function isBubbleElement (node) {

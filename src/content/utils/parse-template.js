@@ -1,6 +1,8 @@
-import {getTemplates, getAccount, getCustomer} from '../../store/store-content.js'
+/* globals ENV */
+import {getTemplates, getPlan} from '../../store/store-content.js'
 import parseContext from './parse-context.js'
 import PremiumError from './premium-error.js'
+import debug from '../../debug.js'
 
 import briskbars from '../../briskbars/briskbars.js'
 
@@ -65,13 +67,15 @@ async function getPartials () {
 
 async function checkFree () {
   try {
-    const account = await getAccount()
-    const customer = await getCustomer(account.customer)
-    const plan = customer?.subscription?.plan
+    const plan = await getPlan()
     return !plan || plan === 'free'
-  } catch {
-    // logged-out
-    return true
+  } catch (err) {
+    if (err !== 'logged-out') {
+      debug(['checkFree', err], 'warn')
+    }
+
+    // logged-out is premium in development
+    return ENV !== 'development'
   }
 }
 

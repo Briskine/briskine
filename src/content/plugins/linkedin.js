@@ -25,7 +25,7 @@ function isActive () {
   return activeCache
 }
 
-async function actions ({ element, template, data}) {
+async function actions ({ element, template, data, session }) {
   if (!isActive()) {
     return
   }
@@ -37,7 +37,7 @@ async function actions ({ element, template, data}) {
     // subject is only available for inMail messaging.
     const $subjectField = querySelectorDeep('[name=subject]', $parent)
     if (template.subject && $subjectField) {
-      const parsedSubject = await parseTemplate(template.subject, data)
+      const parsedSubject = await parseTemplate(template.subject, data, session)
       $subjectField.value = parsedSubject
     }
   }

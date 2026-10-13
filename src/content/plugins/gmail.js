@@ -216,7 +216,7 @@ function setRecipients ($field, value = '') {
   }
 }
 
-async function actions ({ element, template, data }) {
+async function actions ({ element, template, data, session }) {
   if (!isActive()) {
     return
   }
@@ -234,12 +234,12 @@ async function actions ({ element, template, data }) {
     && $subject
     && $subject.getBoundingClientRect().width
   ) {
-    const parsedSubject = await parseTemplate(template.subject, data)
+    const parsedSubject = await parseTemplate(template.subject, data, session)
     $subject.value = parsedSubject
   }
 
   if (template.to) {
-    const parsedTo = await parseTemplate(template.to, data)
+    const parsedTo = await parseTemplate(template.to, data, session)
     const $toField = extraField($parent, 'to')
     if ($toField) {
       setRecipients($toField, parsedTo)
@@ -253,7 +253,7 @@ async function actions ({ element, template, data }) {
 
   for (const fieldName of ['cc', 'bcc']) {
     if (template[fieldName]) {
-      const parsedField = await parseTemplate(template[fieldName], data)
+      const parsedField = await parseTemplate(template[fieldName], data, session)
       $parent.querySelector(buttonSelectors[fieldName]).dispatchEvent(new MouseEvent('click', {bubbles: true}))
       const $field = extraField($parent, fieldName)
       if ($field) {

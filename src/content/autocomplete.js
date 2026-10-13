@@ -4,12 +4,13 @@
 
 import { getPluginData, runPluginActions } from './plugin.js'
 import { addAttachments } from './attachments/attachments.js'
-import parseTemplate from './utils/parse-template.js'
+import parseTemplate, { createSession } from './utils/parse-template.js'
+import fillForm from './form/form.js'
 import sanitize from './utils/sanitize.js'
 import htmlToText from './utils/html-to-text.js'
 import debug from '../debug.js'
 import { getWord, selectWord } from './utils/word.js'
-import { getSelectionRange } from './utils/selection.js'
+import { getSelectionRange, setSelectionRange } from './utils/selection.js'
 import { updateTemplateStats } from '../store/store-content.js'
 import { getActiveElement } from './utils/active-element.js'
 import { selectFirstCursor } from './cursors/cursors.js'
@@ -83,11 +84,38 @@ async function selectShortcut (element, shortcut = '') {
   return false
 }
 
+// give focus back to the editor, after the form
+async function restoreSelection (element, range) {
+  element.focus({ preventScroll: true })
+  if (isContentEditable(element) && range) {
+    await setSelectionRange(element, range)
+  }
+}
+
 export default async function autocomplete ({ template }) {
   const element = getActiveElement()
+  const range = getSelectionRange(element)
   const withAttachments = addAttachments(template.body, template.attachments)
   const data = await getPluginData({ element })
-  const html = sanitize(await parseTemplate(withAttachments, data))
+  const session = await createSession(data)
+  let parsed = await parseTemplate(withAttachments, data, session)
+
+  // templates with form fields are filled in before inserting
+  if (session.fields.size) {
+    const insert = await fillForm({
+      template: withAttachments,
+      session,
+      title: template.title,
+    })
+    await restoreSelection(element, range)
+    if (!insert) {
+      return
+    }
+
+    parsed = await parseTemplate(withAttachments, data, session)
+  }
+
+  const html = sanitize(parsed)
   const text = htmlToText(html)
 
   if (template.shortcut) {
@@ -109,6 +137,7 @@ export default async function autocomplete ({ template }) {
     element,
     template,
     data,
+    session,
     html,
     text,
   })

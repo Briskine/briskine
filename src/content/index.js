@@ -19,6 +19,8 @@ import { setup as setupBubble, destroy as destroyBubble } from './bubble/bubble.
 import { setup as setupStatus, destroy as destroyStatus } from './status.js'
 import { setup as setupSiteData, destroy as destroySiteData } from './site/site-data.js'
 import { setup as setupDialog, destroy as destroyDialog } from './dialog/dialog.js'
+import { setup as setupForm, destroy as destroyForm } from './form/form.js'
+import { setup as setupFormDialog, destroy as destroyFormDialog } from './form/form-dialog.js'
 import { setup as setupPage, destroy as destroyPage } from './page/page-parent.js'
 import { setup as setupAttachments, destroy as destroyAttachments } from './attachments/attachments.js'
 import {
@@ -66,6 +68,7 @@ async function init () {
     setupCursors(),
     setupBubble(settings),
     setupDialog(settings),
+    setupForm(),
     setupPage(),
     setupAttachments(),
     setupInsertEvent(),
@@ -138,6 +141,8 @@ async function startup () {
     setupStatus()
     setupDashboardEvents()
     setupSiteData()
+    // the form dialog shows in the top frame, even when it has no editor
+    setupFormDialog()
 
     removeFocusListeners = addFocusListeners(initOnFocus, 'focusin')
 
@@ -155,6 +160,7 @@ function destructor () {
   destroyStatus()
   destroyDashboardEvents()
   destroySiteData()
+  destroyFormDialog()
   removeFocusListeners()
 
   storeOff('users-updated', usersUpdated)
@@ -164,6 +170,7 @@ function destructor () {
   destroyCursors()
   destroyBubble()
   destroyDialog()
+  destroyForm()
   destroyPage()
   destroyAttachments()
   destroyInsertEvent()

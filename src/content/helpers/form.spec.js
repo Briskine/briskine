@@ -1,4 +1,4 @@
-import { expect, describe, it, beforeAll, afterAll } from 'vitest'
+import { expect, describe, it, beforeAll, afterAll, vi } from 'vitest'
 
 import parseTemplate, { createSession, renderTemplate } from '../utils/parse-template.js'
 import { escapeExpression } from '../../briskbars/briskbars.js'
@@ -6,14 +6,11 @@ import { escapeExpression } from '../../briskbars/briskbars.js'
 function premium () {
   window.browser.runtime.sendMessage = async ({type}) => {
     if (type === 'getAccount') {
-      return {
-        email: 'john@briskine.com',
-        customer: 'customer',
-      }
+      return {email: 'john@briskine.com'}
     }
 
-    if (type === 'getCustomer') {
-      return {subscription: {plan: 'team'}}
+    if (type === 'getPlan') {
+      return 'team'
     }
 
     return []
@@ -255,14 +252,11 @@ describe('form handlebars helpers on the free plan', () => {
   beforeAll(() => {
     window.browser.runtime.sendMessage = async ({type}) => {
       if (type === 'getAccount') {
-        return {
-        email: 'john@briskine.com',
-        customer: 'customer',
-      }
+        return {email: 'john@briskine.com'}
       }
 
-      if (type === 'getCustomer') {
-        return {subscription: {plan: 'free'}}
+      if (type === 'getPlan') {
+        return 'free'
       }
 
       return []
@@ -276,6 +270,32 @@ describe('form handlebars helpers on the free plan', () => {
 
   it('should not need premium for hidden', async () => {
     expect(await parseTemplate('a{{#hidden}}note{{/hidden}}b')).to.equal('ab')
+  })
+
+  afterAll(() => {
+    delete window.browser.runtime.sendMessage
+  })
+})
+
+describe('form handlebars helpers when logged-out', () => {
+  beforeAll(() => {
+    window.browser.runtime.sendMessage = async ({type}) => {
+      if (type === 'getPlan') {
+        return {storeError: 'logged-out'}
+      }
+
+      return []
+    }
+  })
+
+  it('should render fields in development', async () => {
+    expect(await parseTemplate('Hi {{input id="name" value="there"}}')).to.equal('Hi there')
+  })
+
+  it('should return the upgrade message in production', async () => {
+    vi.stubGlobal('ENV', 'production')
+    expect(await parseTemplate('Hi {{input id="name"}}')).to.match(/^<div>Forms are only available/)
+    vi.unstubAllGlobals()
   })
 
   afterAll(() => {

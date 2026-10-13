@@ -508,6 +508,14 @@ export async function getCustomer (customerId) {
   return customers[customerId]
 }
 
+// the active customer's plan, for content scripts,
+// without exposing the rest of the customer data.
+export async function getPlan () {
+  const user = await getSignedInUser()
+  const customer = await getCustomer(user.customer)
+  return customer?.subscription?.plan || ''
+}
+
 async function getActiveCustomer (user = {}) {
   const users = await getCollection({
       user: {id: user.id},
