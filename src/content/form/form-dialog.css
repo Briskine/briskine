@@ -1,6 +1,8 @@
 /* form dialog styles
  */
 
+@import url("../styles/variables.css");
+
 .briskine-form,
 .briskine-form * {
   box-sizing: border-box;
@@ -11,14 +13,8 @@
    */
   all: initial;
 
-  --primary-color-hsl: 212 93% 51%;
-  --primary-color: hsl(var(--primary-color-hsl));
-  --background-color: hsl(0 0% 100%);
-  --border-color: hsl(0 0% 88%);
-  --text-color-hsl: 240 96% 10%;
-  --text-color: hsl(var(--text-color-hsl));
+  --field-border-color: hsl(var(--text-color-hsl) / 20%);
   --error-color: hsl(354 70% 46%);
-  --radius: 5px;
   --padding-x: 16px;
   --padding-y: 12px;
 
@@ -89,8 +85,8 @@
   font: inherit;
   vertical-align: baseline;
 
-  border: 1px solid var(--border-color);
-  border-radius: 3px;
+  border: 1px solid var(--field-border-color);
+  border-radius: var(--radius-small);
   background: var(--background-color);
 }
 

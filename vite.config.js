@@ -92,6 +92,7 @@ function generateManifest ({ browser, mode }) {
 const unpurgedStyles = [
   path.join(srcPath, 'content', 'dialog'),
   path.join(srcPath, 'content', 'bubble'),
+  path.join(srcPath, 'content', 'form'),
 ]
 
 function purgeExtractedCss (options) {

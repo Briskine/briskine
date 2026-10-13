@@ -1,0 +1,17 @@
+/* variables shared by our ui
+ */
+:host {
+  --primary-color-hsl: 212 93% 51%;
+  --primary-color: hsl(var(--primary-color-hsl));
+
+  --background-color: hsl(0 0% 100%);
+  --background-color-highlight: hsl(0 0% 98%);
+  --border-color-hsl: 0 0% 94%;
+  --border-color: hsl(var(--border-color-hsl));
+
+  --text-color-hsl: 240 96% 10%;
+  --text-color: hsl(var(--text-color-hsl));
+
+  --radius: 5px;
+  --radius-small: 3px;
+}
