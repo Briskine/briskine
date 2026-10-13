@@ -80,7 +80,7 @@ function FormDialog () {
     }
     setTitle(title)
     setError('')
-    update(html)
+    content.innerHTML = sanitize(html, sanitizeOptions)
 
     dialog.showModal()
     content.querySelector('[data-form-id]')?.focus()
@@ -134,6 +134,7 @@ function FormDialog () {
     current = null
     // gives focus back to the page, or the iframe of the editor
     dialog.close()
+    content.replaceChildren()
 
     relay({
       event: eventFormClose,
