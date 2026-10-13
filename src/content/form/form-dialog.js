@@ -230,7 +230,7 @@ customElements.define(formTagName, class extends HTMLElement {
   }
 })
 
-function respondToShow (details = {}) {
+export function respondToShow (details = {}) {
   if (!formInstance) {
     formInstance = document.createElement(formTagName)
     document.documentElement.appendChild(formInstance)
