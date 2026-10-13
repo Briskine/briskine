@@ -1,6 +1,8 @@
-/* variables shared by our ui
+/* variables shared by our ui,
+ * in shadow roots and on extension pages, like the sidepanel.
  */
-:host {
+:host,
+:root {
   --primary-color-hsl: 212 93% 51%;
   --primary-color: hsl(var(--primary-color-hsl));
 

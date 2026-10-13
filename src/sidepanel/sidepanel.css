@@ -27,7 +27,10 @@ body,
 }
 
 @media (prefers-color-scheme: dark) {
-  #sidepanel .briskine-dialog {
+  /* on the root, where the shared colors are computed from these.
+   * more specific than the shared :root, which loads after this.
+   */
+  html:root {
     --background-color: hsl(210 11% 15%);
     --background-color-highlight: hsl(210 10% 26%);
     --border-color-hsl: 210 9% 22%;
