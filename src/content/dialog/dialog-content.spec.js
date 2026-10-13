@@ -59,13 +59,14 @@ describe('DialogContent', () => {
       expect(activeTemplate(container)).to.equal('nic')
     })
 
-    // replace the query, without going back to the full list
+    // replace the query, without going back to the full list.
+    // clearing the field can show the full list first, with the same length,
+    // wait for the new results instead.
     await userEvent.fill(searchField, 'kind')
     await vi.waitFor(() => {
-      expect(container.querySelectorAll('.dialog-list-item').length).to.equal(2)
+      expect(activeTemplate(container)).to.equal('kr')
     })
-
-    expect(activeTemplate(container)).to.equal('kr')
+    expect(container.querySelectorAll('.dialog-list-item').length).to.equal(2)
   })
 
   it('should ignore search results that arrive after clearing the search', async () => {
