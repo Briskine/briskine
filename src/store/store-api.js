@@ -370,13 +370,18 @@ async function setSignedInUser (user) {
   return user
 }
 
-async function isFree (user) {
+// the plan of the user's active customer
+async function getUserPlan (user) {
   const customers = await getCollection({
     user: user,
     collection: 'customers'
   })
-  const customer = customers[user.customer]
-  return customer.subscription.plan === 'free'
+  return customers[user.customer]?.subscription?.plan || ''
+}
+
+async function isFree (user) {
+  const plan = await getUserPlan(user)
+  return !plan || plan === 'free'
 }
 
 export async function getTemplates () {
@@ -508,12 +513,8 @@ export async function getCustomer (customerId) {
   return customers[customerId]
 }
 
-// the active customer's plan, for content scripts,
-// without exposing the rest of the customer data.
 export async function getPlan () {
-  const user = await getSignedInUser()
-  const customer = await getCustomer(user.customer)
-  return customer?.subscription?.plan || ''
+  return getUserPlan(await getSignedInUser())
 }
 
 async function getActiveCustomer (user = {}) {
