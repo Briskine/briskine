@@ -215,7 +215,7 @@ describe('form handlebars helpers', () => {
 
     it('should render in form mode', async () => {
       const {html} = await render(template, {}, 'form')
-      expect(html).to.equal('a<b>note</b><input type="checkbox" id="field-ps-0" data-form-id="ps" aria-label="ps" checked>b')
+      expect(html).to.equal('a<span data-briskine-hidden="start"></span><b>note</b><input type="checkbox" id="field-ps-0" data-form-id="ps" aria-label="ps" checked><span data-briskine-hidden="end"></span>b')
     })
 
     it('should strip whitespace with ~', async () => {

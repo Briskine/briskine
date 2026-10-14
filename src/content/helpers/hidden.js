@@ -7,6 +7,8 @@
  *
  */
 
+import { hiddenAttribute } from '../../config.js'
+
 export default function createHidden (mode = 'final') {
   return async function hidden (...args) {
     const options = args.pop()
@@ -16,6 +18,11 @@ export default function createHidden (mode = 'final') {
 
     // always render, so form fields inside still register
     const content = await options.fn(this)
-    return mode === 'form' ? content : ''
+    if (mode !== 'form') {
+      return ''
+    }
+
+    // markers instead of a wrapper, the block can start and end in different elements
+    return `<span ${hiddenAttribute}="start"></span>${content}<span ${hiddenAttribute}="end"></span>`
   }
 }

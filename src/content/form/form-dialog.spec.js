@@ -88,6 +88,58 @@ describe('form dialog', () => {
     expect(content.innerHTML).to.equal('b<img src="x">ok')
   })
 
+  describe('hidden blocks', () => {
+    const start = '<span data-briskine-hidden="start"></span>'
+    const end = '<span data-briskine-hidden="end"></span>'
+
+    function content () {
+      return root.querySelector('.briskine-form-content').innerHTML
+    }
+
+    it('should highlight hidden blocks', () => {
+      respondToShow({
+        ...form,
+        html: `a${start}<b>note</b>${end}b`,
+      })
+
+      expect(content()).to.equal('a<div class="briskine-form-hidden"><b>note</b></div>b')
+    })
+
+    it('should highlight hidden blocks over several lines', () => {
+      respondToShow({
+        ...form,
+        html: `<div>${start}</div><div>note</div><div>${end}</div><div>text</div>`,
+      })
+
+      // the lines the block starts and ends in are left empty
+      expect(content()).to.equal('<div></div><div class="briskine-form-hidden"><div></div><div>note</div><div></div></div><div></div><div>text</div>')
+    })
+
+    it('should highlight nested hidden blocks', () => {
+      respondToShow({
+        ...form,
+        html: `${start}a${start}b${end}c${end}`,
+      })
+
+      expect(content()).to.equal('<div class="briskine-form-hidden">a<div class="briskine-form-hidden">b</div>c</div>')
+    })
+
+    it('should keep the fields in hidden blocks when rendering again', async () => {
+      const html = `${start}<input type="checkbox" id="field-ps-0" data-form-id="ps">${end}`
+      respond = async () => ({html: html})
+      respondToShow({...form, html})
+      const checkbox = field('ps')
+
+      checkbox.checked = true
+      checkbox.dispatchEvent(new Event('input', {bubbles: true, composed: true}))
+      await vi.waitFor(() => expect(relayed(eventFormRender).length).to.equal(1))
+      await new Promise((resolve) => setTimeout(resolve))
+
+      expect(field('ps')).to.equal(checkbox)
+      expect(checkbox.parentElement.className).to.equal('briskine-form-hidden')
+    })
+  })
+
   it('should render again when a field changes', async () => {
     respond = async () => ({html: 'Hi <input type="text" id="field-name-0" data-form-id="name" value="Jane"> Jane'})
     respondToShow(form)

@@ -9,7 +9,7 @@ import {createSignal, onMount, onCleanup} from 'solid-js'
 import {render} from 'solid-js/web'
 import { Idiomorph } from 'idiomorph'
 
-import { eventFormShow, eventFormRender, eventFormClose, formTagPrefix } from '../../config.js'
+import { eventFormShow, eventFormRender, eventFormClose, formTagPrefix, hiddenAttribute } from '../../config.js'
 import { on, off, createRequest } from '../../store/store-content.js'
 import sanitize from '../utils/sanitize.js'
 import { scopeTagName } from '../utils/extension-element.js'
@@ -27,6 +27,43 @@ const sanitizeOptions = {
 
 let formInstance = null
 let showForm = () => false
+
+// wrap {{#hidden}} blocks, to highlight them.
+// extracting a range splits the elements it starts or ends in,
+// so the wrapper is valid even when the block spans several lines.
+function wrapHidden (root) {
+  const starts = []
+  root.querySelectorAll(`[${hiddenAttribute}]`).forEach((marker) => {
+    if (marker.getAttribute(hiddenAttribute) === 'start') {
+      starts.push(marker)
+      return
+    }
+
+    const start = starts.pop()
+    if (!start) {
+      return
+    }
+
+    const range = document.createRange()
+    range.setStartAfter(start)
+    range.setEndBefore(marker)
+
+    const wrapper = document.createElement('div')
+    wrapper.className = 'briskine-form-hidden'
+    wrapper.append(range.extractContents())
+    range.insertNode(wrapper)
+
+    start.remove()
+    marker.remove()
+  })
+}
+
+function prepare (html = '') {
+  const template = document.createElement('template')
+  template.innerHTML = sanitize(html, sanitizeOptions)
+  wrapHidden(template.content)
+  return template.innerHTML
+}
 
 function readValue (field) {
   if (field.type === 'checkbox') {
@@ -57,7 +94,7 @@ function FormDialog () {
   let renderCount = 0
 
   function update (html) {
-    Idiomorph.morph(content, sanitize(html, sanitizeOptions), {
+    Idiomorph.morph(content, prepare(html), {
       morphStyle: 'innerHTML',
       callbacks: {
         // keep what's being typed in the focused field
@@ -80,7 +117,7 @@ function FormDialog () {
     }
     setTitle(title)
     setError('')
-    content.innerHTML = sanitize(html, sanitizeOptions)
+    content.innerHTML = prepare(html)
 
     dialog.showModal()
     content.querySelector('[data-form-id]')?.focus()
