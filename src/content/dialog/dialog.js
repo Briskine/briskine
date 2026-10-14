@@ -257,7 +257,7 @@ function Dialog (originalProps) {
   return (
     <div
       ref={element}
-      class="briskine-dialog"
+      class="briskine-dialog briskine-ui"
       classList={{
         'briskine-dialog-visible': visible(),
       }}

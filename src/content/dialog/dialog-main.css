@@ -1,13 +1,4 @@
-.briskine-dialog,
-.briskine-dialog * {
-  box-sizing: border-box;
-}
-
 .briskine-dialog {
-  /* reset inherited html and body styles
-   */
-  all: initial;
-
   --dialog-height: 250px;
   --footer-height: 40px;
   --padding-x: 12px;
@@ -16,11 +7,6 @@
   position: relative;
   display: block;
   overflow: hidden;
-
-  color: var(--text-color);
-  font-size: 13px;
-  font-family: sans-serif;
-  line-height: 1.5;
 
   border-radius: var(--radius);
   background: var(--background-color);
@@ -74,12 +60,6 @@
   .briskine-dialog.b-dialog-open-animation {
     animation-duration: 0s;
   }
-}
-
-/* general
- */
-p {
-  margin: 0  0 .5rem 0;
 }
 
 /* utilities

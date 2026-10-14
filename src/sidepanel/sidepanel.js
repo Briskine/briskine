@@ -26,7 +26,7 @@ function Sidepanel () {
   })
 
   return (
-    <div class="briskine-dialog">
+    <div class="briskine-dialog briskine-ui">
       <DialogContent
         keyboardShortcut={keyboardShortcut}
         visible={true}
