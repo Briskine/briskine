@@ -59,3 +59,19 @@
   --duration: .1s;
   --duration-slow: .2s;
 }
+
+/* dark mode only on extension pages, like the popup and sidepanel.
+ * the ui in web pages stays light, the page under it can be light in dark mode.
+ */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background-color: hsl(210 11% 15%);
+    --background-color-highlight: hsl(210 10% 26%);
+    /* colors computed from other variables are redeclared, to use the dark values */
+    --border-color-hsl: 210 9% 22%;
+    --border-color: hsl(var(--border-color-hsl));
+    --text-color-hsl: 210 14% 89%;
+    --text-color: hsl(var(--text-color-hsl));
+    --text-color-secondary: hsl(var(--text-color-hsl) / 60%);
+  }
+}
