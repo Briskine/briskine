@@ -23,6 +23,10 @@
     font: inherit;
   }
 
+  .briskine-ui button:not(:disabled) {
+    cursor: pointer;
+  }
+
   .briskine-ui p {
     margin: 0 0 .5em 0;
   }
