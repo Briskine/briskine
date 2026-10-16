@@ -34,7 +34,7 @@
   --input-background-color: #fff;
   --input-border-color: #dee2e6;
   --input-focus-border-color: #86b7fe;
-  --input-focus-ring: 0 0 0 .25rem rgb(13 110 253 / 25%);
+  --input-focus-ring: 0 0 0 .25em rgb(13 110 253 / 25%);
   --danger-color: #58151c;
   --danger-background-color: #f8d7da;
 
@@ -61,7 +61,7 @@
     0 8px 16px rgba(0,0,0,0.07);
   --shadow-small: 0 0 12px rgba(0,0,0,.1);
 
-  --focus-ring: 0 0 0 .25rem hsl(var(--primary-color-hsl) / 25%);
+  --focus-ring: 0 0 0 .25em hsl(var(--primary-color-hsl) / 25%);
   --focus-outline: 2px solid hsl(var(--primary-color-hsl) / 40%);
 
   --duration-fast: .075s;

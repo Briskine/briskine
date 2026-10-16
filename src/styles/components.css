@@ -20,7 +20,7 @@
   }
 
   .briskine-ui p {
-    margin: 0 0 .5rem 0;
+    margin: 0 0 .5em 0;
   }
 }
 
@@ -162,11 +162,11 @@
     display: block;
     width: 100%;
     margin-bottom: 0;
-    padding: .375rem 2.25rem .375rem .75rem;
+    padding: .375em 2.25em .375em .75em;
     background-color: var(--border-color);
     background-image: var(--form-select-bg-img);
     background-repeat: no-repeat;
-    background-position: right .75rem center;
+    background-position: right .75em center;
     background-size: 16px 12px;
     border: 0;
     border-radius: var(--radius-small);
@@ -175,14 +175,14 @@
   }
 
   .form-select[multiple] {
-    padding-right: .75rem;
+    padding-right: .75em;
     background-image: none;
   }
 
   .form-check {
     display: block;
     padding-left: 1.5em;
-    margin-bottom: 0.125rem;
+    margin-bottom: 0.125em;
   }
 
   .form-check-input {
