@@ -77,12 +77,6 @@
   color: hsl(var(--text-color-hsl) / 60%) !important;
 }
 
-.list-group {
-  list-style-type: none;
-  margin: 0;
-  padding: 0;
-}
-
 .list-group-icon {
   padding-right: var(--padding-x);
 }

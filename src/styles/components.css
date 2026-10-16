@@ -208,6 +208,12 @@
     color: var(--danger-color);
   }
 
+  .list-unstyled {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
   .badge {
     display: inline-block;
     padding: .2em .4em;

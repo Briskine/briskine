@@ -127,7 +127,7 @@ export default function DialogList (originalProps) {
       on:click={onClick}
       on:mouseover={onMouseOver}
       >
-      <ul>
+      <ul class="list-unstyled">
         <Show
           when={shortlist().length}
           fallback={(
@@ -156,7 +156,7 @@ export default function DialogList (originalProps) {
                   {t._body_plaintext.slice(0, bodyCharacterRenderLimit)}
                 </p>
                 <Show when={props.extensionData.dialogTags && t.tags && t.tags.length}>
-                  <ul class="dialog-tags">
+                  <ul class="dialog-tags list-unstyled">
                     <For each={t.tags}>
                       {(tagId) => {
                         const tag = () => props.tags.find((t) => t.id === tagId)

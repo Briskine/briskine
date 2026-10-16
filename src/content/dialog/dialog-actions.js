@@ -57,7 +57,7 @@ export default function DialogActions () {
           />
       </div>
       <div class="dialog-modal-body">
-        <ul class="list-group">
+        <ul class="list-unstyled">
           <For each={actions}>
             {(action) => (
               <li>
