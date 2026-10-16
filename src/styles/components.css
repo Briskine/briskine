@@ -104,6 +104,39 @@
     font-weight: bold;
   }
 
+  .form-control {
+    appearance: none;
+    display: block;
+    width: 100%;
+    padding: .375em .75em;
+    background-color: var(--input-background-color);
+    background-clip: padding-box;
+    border: 1px solid var(--input-border-color);
+    border-radius: var(--radius-small);
+    transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+
+    color: var(--input-color);
+    font: inherit;
+  }
+
+  .form-control::placeholder {
+    color: var(--text-color-muted);
+    opacity: 1;
+  }
+
+  .form-control:focus {
+    outline: 0;
+    border-color: var(--input-focus-border-color);
+    box-shadow: var(--input-focus-ring);
+  }
+
+  .form-text {
+    margin-top: .25em;
+
+    color: var(--text-color-muted);
+    font-size: .875em;
+  }
+
   .form-select {
     --form-select-bg-img: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
 
