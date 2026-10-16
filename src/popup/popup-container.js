@@ -10,7 +10,6 @@ import {
   setup as storeSetup,
   on as storeOn,
 } from '../store/store-content.js'
-import setTheme from './popup-theme.js'
 
 export default function PopupContainer () {
   const [loggedIn, setLoggedIn] = createSignal(null)
@@ -28,7 +27,6 @@ export default function PopupContainer () {
   }
 
   onMount(() => {
-    setTheme()
     storeSetup()
     checkLogin()
 
