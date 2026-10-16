@@ -261,10 +261,6 @@ input[type=search]:focus {
 }
 
 .dialog-modal-header {
-  display: flex;
-  flex-shrink: 0;
-  align-items: center;
-  justify-content: space-between;
   padding: var(--padding-x);
 }
 
@@ -276,7 +272,3 @@ input[type=search]:focus {
   font-weight: bold;
 }
 
-.dialog-modal-body {
-  overflow: auto;
-  padding: var(--padding-y) var(--padding-x);
-}
