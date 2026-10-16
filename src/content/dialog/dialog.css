@@ -1,7 +1,6 @@
 /* dialog styles
  */
 
-@import url("../../styles/variables.css");
 @import url("../../styles/components.css");
 @import url("./dialog-main.css") layer(local);
 @import url("./dialog-list.css") layer(local);

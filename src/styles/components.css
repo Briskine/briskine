@@ -1,5 +1,7 @@
 @layer base, components, local, utilities;
 
+@import url("./variables.css");
+
 @layer base {
   .briskine-ui {
     all: initial;
