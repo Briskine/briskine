@@ -237,10 +237,10 @@ function FormDialog () {
     <dialog ref={dialog} class="briskine-form" on:cancel={cancel}>
       <style>{styles}</style>
       <form ref={form} method="dialog" on:submit={submit} on:input={change}>
-        <header class="briskine-form-header">{title()}</header>
-        <div ref={content} class="briskine-form-content" />
+        <header class="briskine-form-header modal-header">{title()}</header>
+        <div ref={content} class="briskine-form-content modal-body" />
         <div class="briskine-form-error alert alert-danger" hidden={!error()}>{error()}</div>
-        <footer class="briskine-form-footer">
+        <footer class="briskine-form-footer modal-footer">
           <button type="button" class="briskine-form-cancel" on:click={() => close(false)}>
             Cancel
           </button>
