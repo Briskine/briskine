@@ -51,7 +51,7 @@ export default function PopupContainer () {
 
   return (
     <div
-      class={`popup-container ${REGISTER_DISABLED ? 'popup-register-disabled' : ''}`}
+      class={`popup-container briskine-ui ${REGISTER_DISABLED ? 'popup-register-disabled' : ''}`}
       >
         <Show when={loggedIn() === true}>
           <PopupDashboard />

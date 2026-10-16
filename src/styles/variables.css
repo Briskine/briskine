@@ -8,6 +8,7 @@
 
   --background-color: hsl(0 0% 100%);
   --background-color-highlight: hsl(0 0% 98%);
+  --background-color-tertiary: #f8f9fa;
   --border-color-hsl: 0 0% 94%;
   --border-color: hsl(var(--border-color-hsl));
 
@@ -76,6 +77,7 @@
   :root {
     --background-color: hsl(210 11% 15%);
     --background-color-highlight: hsl(210 10% 26%);
+    --background-color-tertiary: #2b3035;
     /* colors computed from other variables are redeclared, to use the dark values */
     --border-color-hsl: 210 9% 22%;
     --border-color: hsl(var(--border-color-hsl));

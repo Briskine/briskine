@@ -19,6 +19,10 @@
     box-sizing: border-box;
   }
 
+  .briskine-ui :is(button, input, select, textarea) {
+    font: inherit;
+  }
+
   .briskine-ui p {
     margin: 0 0 .5em 0;
   }
@@ -172,6 +176,12 @@
     border-radius: var(--radius-small);
 
     color: var(--text-color);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root .form-select {
+      --form-select-bg-img: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23dee2e6' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
+    }
   }
 
   .form-select[multiple] {
