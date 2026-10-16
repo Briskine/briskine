@@ -270,3 +270,11 @@
     }
   }
 }
+
+@layer utilities {
+  .text-bg-warning {
+    background-color: var(--yellow-color);
+
+    color: var(--yellow-text-color);
+  }
+}
