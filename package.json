@@ -51,7 +51,6 @@
   "license": "GPL-3.0-or-later",
   "devDependencies": {
     "@eslint/js": "^10.0.0",
-    "@fullhuman/postcss-purgecss": "^8.0.0",
     "@playwright/test": "^1.42.1",
     "@stylistic/eslint-plugin": "^5.0.0",
     "@types/node": "^26.0.0",
@@ -61,7 +60,6 @@
     "eslint": "^10.0.0",
     "eslint-plugin-solid": "^0.18.0",
     "firebase-tools": "^15.0.0",
-    "glob": "^13.0.0",
     "globals": "^17.0.0",
     "http-server": "^14.1.1",
     "typescript": "^6.0.0",
