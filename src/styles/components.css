@@ -126,6 +126,22 @@
     opacity: 1;
   }
 
+  .form-control-color {
+    width: 3em;
+    height: calc(1.5em + .75em + 2px);
+    padding: .375em;
+  }
+
+  .form-control-color::-webkit-color-swatch {
+    border: 0;
+    border-radius: var(--radius-small);
+  }
+
+  .form-control-color::-moz-color-swatch {
+    border: 0;
+    border-radius: var(--radius-small);
+  }
+
   .form-control:focus {
     outline: 0;
     border-color: var(--input-focus-border-color);
@@ -156,6 +172,11 @@
     border-radius: var(--radius-small);
 
     color: var(--text-color);
+  }
+
+  .form-select[multiple] {
+    padding-right: .75rem;
+    background-image: none;
   }
 
   .form-check {

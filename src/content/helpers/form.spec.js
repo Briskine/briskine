@@ -30,7 +30,7 @@ describe('form handlebars helpers', () => {
   describe('input', () => {
     it('should render a text field in form mode', async () => {
       const {html} = await render('Hi {{input id="name" placeholder="Name" required=true}}', {}, 'form')
-      expect(html).to.equal('Hi <input type="text" id="field-name-0" data-form-id="name" aria-label="Name" placeholder="Name" required value="">')
+      expect(html).to.equal('Hi <input type="text" class="form-control" id="field-name-0" data-form-id="name" aria-label="Name" placeholder="Name" required value="">')
     })
 
     it('should render the value in final mode', async () => {
@@ -60,7 +60,7 @@ describe('form handlebars helpers', () => {
 
     it('should render a checked checkbox in form mode', async () => {
       const {html} = await render('{{input type="checkbox" id="ps" label="Add P.S."}}', {ps: true}, 'form')
-      expect(html).to.equal('<input type="checkbox" id="field-ps-0" data-form-id="ps" aria-label="Add P.S." checked>')
+      expect(html).to.equal('<input type="checkbox" class="form-check-input" id="field-ps-0" data-form-id="ps" aria-label="Add P.S." checked>')
     })
 
     it('should not render checkboxes in final mode', async () => {
@@ -70,7 +70,7 @@ describe('form handlebars helpers', () => {
 
     it('should render a color field', async () => {
       const {html} = await render('{{input type="color" id="highlight" value="#ffcc00"}}', {}, 'form')
-      expect(html).to.equal('<input type="color" id="field-highlight-0" data-form-id="highlight" aria-label="highlight" value="#ffcc00">')
+      expect(html).to.equal('<input type="color" class="form-control form-control-color" id="field-highlight-0" data-form-id="highlight" aria-label="highlight" value="#ffcc00">')
       expect((await render('<span style="color: {{@form.highlight}}">a</span>', {highlight: '#ff0000'})).html).to.equal('<span style="color: #ff0000">a</span>')
     })
 
@@ -87,7 +87,7 @@ describe('form handlebars helpers', () => {
 
       for (const [type, value] of Object.entries(types)) {
         const template = `{{input type="${type}" id="field"}}`
-        expect((await render(template, {field: value}, 'form')).html).to.contain(`<input type="${type}" id="field-field-0"`)
+        expect((await render(template, {field: value}, 'form')).html).to.contain(`<input type="${type}" class="form-control" id="field-field-0"`)
         expect((await render(template, {field: value})).html).to.equal(escapeExpression(value))
       }
     })
@@ -143,7 +143,7 @@ describe('form handlebars helpers', () => {
   describe('textarea', () => {
     it('should render a textarea in form mode', async () => {
       const {html} = await render('{{textarea id="notes" rows=3}}', {notes: 'a < b'}, 'form')
-      expect(html).to.equal('<textarea id="field-notes-0" data-form-id="notes" aria-label="notes" rows="3">\na &lt; b</textarea>')
+      expect(html).to.equal('<textarea class="form-control" id="field-notes-0" data-form-id="notes" aria-label="notes" rows="3">\na &lt; b</textarea>')
     })
 
     it('should convert newlines to line breaks in final mode', async () => {
@@ -157,7 +157,7 @@ describe('form handlebars helpers', () => {
 
     it('should render a select in form mode', async () => {
       const {html} = await render(template, {tone: 'casual'}, 'form')
-      expect(html).to.equal('<select id="field-tone-0" data-form-id="tone" aria-label="tone"><option value="Formal">Formal</option><option value="casual" selected>Casual</option></select>')
+      expect(html).to.equal('<select class="form-select" id="field-tone-0" data-form-id="tone" aria-label="tone"><option value="Formal">Formal</option><option value="casual" selected>Casual</option></select>')
     })
 
     it('should default to the first option', async () => {
@@ -179,7 +179,7 @@ describe('form handlebars helpers', () => {
     it('should support multiple values', async () => {
       const multiple = '{{#select id="tools" multiple=true}}{{option "A"}}{{option "B"}}{{option "C"}}{{/select}}'
       const form = await render(multiple, {tools: ['A', 'C']}, 'form')
-      expect(form.html).to.contain('<select id="field-tools-0" data-form-id="tools" aria-label="tools" multiple>')
+      expect(form.html).to.contain('<select class="form-select" id="field-tools-0" data-form-id="tools" aria-label="tools" multiple>')
       expect(form.html).to.contain('<option value="A" selected>A</option><option value="B">B</option><option value="C" selected>C</option>')
 
       const final = await render(multiple, {tools: ['A', 'C']})
@@ -215,7 +215,7 @@ describe('form handlebars helpers', () => {
 
     it('should render in form mode', async () => {
       const {html} = await render(template, {}, 'form')
-      expect(html).to.equal('a<span data-briskine-hidden="start"></span><b>note</b><input type="checkbox" id="field-ps-0" data-form-id="ps" aria-label="ps" checked><span data-briskine-hidden="end"></span>b')
+      expect(html).to.equal('a<span data-briskine-hidden="start"></span><b>note</b><input type="checkbox" class="form-check-input" id="field-ps-0" data-form-id="ps" aria-label="ps" checked><span data-briskine-hidden="end"></span>b')
     })
 
     it('should strip whitespace with ~', async () => {

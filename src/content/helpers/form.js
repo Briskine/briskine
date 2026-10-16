@@ -19,6 +19,11 @@
 import { escapeExpression, SafeString, createFrame } from '../../briskbars/briskbars.js'
 import PremiumError from '../utils/premium-error.js'
 
+const fieldClasses = {
+  checkbox: 'form-check-input',
+  color: 'form-control form-control-color',
+}
+
 const inputTypes = ['text', 'number', 'email', 'url', 'tel', 'date', 'time', 'datetime-local', 'month', 'week', 'color', 'checkbox']
 const attributeNames = ['placeholder', 'required', 'min', 'max', 'step', 'pattern', 'rows', 'cols']
 
@@ -115,6 +120,7 @@ export default function createForm ({
       const state = type === 'checkbox' ? {checked: Boolean(value)} : {value}
       const inputAttributes = renderAttributes({
         type,
+        class: fieldClasses[type] || 'form-control',
         ...attributes,
         ...state,
       })
@@ -135,7 +141,11 @@ export default function createForm ({
 
     if (mode === 'form') {
       // the leading newline is dropped by the html parser, keeps one in the value
-      return new SafeString(`<textarea${renderAttributes(attributes)}>\n${escapeExpression(value)}</textarea>`)
+      const textareaAttributes = renderAttributes({
+        class: 'form-control',
+        ...attributes,
+      })
+      return new SafeString(`<textarea${textareaAttributes}>\n${escapeExpression(value)}</textarea>`)
     }
 
     return new SafeString(escapeExpression(value).replace(/\r?\n/g, '<br>'))
@@ -173,6 +183,7 @@ export default function createForm ({
         })
         .join('')
       const selectAttributes = renderAttributes({
+        class: 'form-select',
         ...attributes,
         multiple,
       })

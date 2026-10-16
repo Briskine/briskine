@@ -73,7 +73,7 @@ describe('form', () => {
     expect(request.frameId).to.equal(0)
     expect(request.details.title).to.equal('Title')
     expect(request.details.id).to.be.a('string')
-    expect(request.details.html).to.equal('Hi <input type="text" id="field-name-0" data-form-id="name" aria-label="name" value="there">')
+    expect(request.details.html).to.equal('Hi <input type="text" class="form-control" id="field-name-0" data-form-id="name" aria-label="name" value="there">')
   })
 
   it('should strip cursor markers from the form', async () => {

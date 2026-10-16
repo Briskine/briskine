@@ -8,7 +8,6 @@
    */
   all: initial;
 
-  --field-border-color: hsl(var(--text-color-hsl) / 20%);
   --error-color: hsl(354 70% 46%);
   --padding-x: 16px;
   --padding-y: 12px;
@@ -65,37 +64,35 @@
   max-width: 100%;
 }
 
-.briskine-form-content input,
-.briskine-form-content select,
-.briskine-form-content textarea {
+.briskine-form-content :is(.form-control, .form-select) {
+  display: inline-block;
   max-width: 100%;
-  padding: 2px 6px;
 
-  color: inherit;
   font: inherit;
   vertical-align: baseline;
-
-  border: 1px solid var(--field-border-color);
-  border-radius: var(--radius-small);
-  background: var(--background-color);
 }
 
-.briskine-form-content input[type=checkbox] {
-  padding: 0;
-  vertical-align: middle;
+.briskine-form-content :is(input.form-control:not(.form-control-color), .form-select) {
+  width: auto;
 }
 
-.briskine-form-content textarea {
+.briskine-form-content textarea.form-control {
   display: block;
   width: 100%;
 }
 
-.briskine-form-content :is(input, select, textarea):focus {
-  outline: 2px solid hsl(var(--primary-color-hsl) / 40%);
-  border-color: var(--primary-color);
+.briskine-form-content .form-check-input {
+  float: none;
+  margin: 0;
+
+  vertical-align: middle;
 }
 
-.briskine-form-content :is(input, select, textarea):user-invalid {
+.briskine-form-hidden :is(.form-select, .form-check-input:not(:checked)) {
+  background-color: var(--background-color);
+}
+
+.briskine-form-content .form-control:user-invalid {
   border-color: var(--error-color);
 }
 
