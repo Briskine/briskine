@@ -10,7 +10,7 @@
 }
 
 .form-block:not(:last-of-type) {
-  margin-bottom: .75rem;
+  margin-bottom: .75em;
 }
 
 form .btn {

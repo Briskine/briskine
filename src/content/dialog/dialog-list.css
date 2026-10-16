@@ -45,9 +45,9 @@
   position: absolute;
   top: 0;
   right: 0;
-  width: 5rem;
+  width: 5em;
   height: 100%;
-  padding-right: 0.5rem;
+  padding-right: 0.5em;
   display: flex;
   align-items: center;
   justify-content: end;
@@ -90,7 +90,7 @@
   --tag-color-black: #344563;
 
   display: flex;
-  gap: .4rem;
+  gap: .4em;
   overflow: hidden;
 
   white-space: nowrap;
