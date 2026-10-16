@@ -241,10 +241,10 @@ function FormDialog () {
         <div ref={content} class="briskine-form-content modal-body" />
         <div class="briskine-form-error alert alert-danger" hidden={!error()}>{error()}</div>
         <footer class="briskine-form-footer modal-footer">
-          <button type="button" class="briskine-form-cancel" on:click={() => close(false)}>
+          <button type="button" class="btn briskine-form-cancel" on:click={() => close(false)}>
             Cancel
           </button>
-          <button type="submit" class="briskine-form-insert">
+          <button type="submit" class="btn btn-primary briskine-form-insert">
             Insert
           </button>
         </footer>

@@ -120,20 +120,9 @@
   border-top: 1px solid var(--border-color);
 }
 
-.briskine-form-footer button {
+.briskine-form-footer .btn {
   padding: 6px 14px;
-
-  color: var(--text-color);
-  font: inherit;
-
-  cursor: pointer;
-  border: 1px solid var(--border-color);
   border-radius: var(--radius);
-  background: var(--background-color);
-}
 
-.briskine-form-footer .briskine-form-insert {
-  color: #fff;
-  border-color: var(--primary-color);
-  background: var(--primary-color);
+  font: inherit;
 }

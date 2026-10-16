@@ -38,7 +38,7 @@
 
   a.btn:hover,
   button.btn:hover {
-    background: var(--background-color-highlight);
+    background: var(--border-color);
 
     cursor: pointer;
   }
