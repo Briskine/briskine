@@ -208,6 +208,14 @@
     color: var(--danger-color);
   }
 
+  .badge {
+    display: inline-block;
+    padding: .2em .4em;
+    border-radius: var(--radius-small);
+
+    font-weight: bold;
+  }
+
   .btn-loading,
   .block-loading {
     --loader: #fff;

@@ -149,7 +149,7 @@ export default function DialogList (originalProps) {
                 <div class="d-flex">
                   <h1>{t.title}</h1>
                   <Show when={t.shortcut}>
-                    <abbr>{t.shortcut}</abbr>
+                    <abbr class="badge">{t.shortcut}</abbr>
                   </Show>
                 </div>
                 <p class="text-secondary">
@@ -163,6 +163,7 @@ export default function DialogList (originalProps) {
                         return (
                           <Show when={tag()}>
                             <li
+                              class="badge"
                               style={{
                                 '--tag-bg-color': `var(--tag-color-${tag().color})`
                               }}

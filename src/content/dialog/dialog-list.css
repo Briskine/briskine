@@ -37,10 +37,8 @@
   padding: 0 4px;
   background: var(--background-color-highlight);
   border: 1px solid var(--primary-color);
-  border-radius: var(--radius-small);
 
   font-size: .9em;
-  font-weight: bold;
   vertical-align: top;
   text-overflow: ellipsis;
 }
@@ -109,14 +107,10 @@
 }
 
 .dialog-tags li {
-  display: inline-block;
-  padding: .2em .4em;
-  border-radius: var(--radius-small);
   background-color: var(--tag-bg-color, transparent);
 
   color: #fff;
   font-size: .75em;
-  font-weight: 700;
 }
 
 .dialog-tags li.text-secondary {
