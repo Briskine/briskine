@@ -62,21 +62,6 @@
   }
 }
 
-/* utilities
- */
-.d-flex {
-  display: flex !important;
-  align-items: center;
-}
-
-.flex-fill {
-  flex: 1;
-}
-
-.text-secondary {
-  color: hsl(var(--text-color-hsl) / 60%) !important;
-}
-
 .list-group-icon {
   padding-right: var(--padding-x);
 }
