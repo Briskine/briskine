@@ -28,6 +28,7 @@
   --success-color-hover: #06d79c;
   --success-color-active: #00a576;
   --icon-color: #918992;
+  --link-color: #0d6efd;
 
   --font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", "Noto Sans", "Liberation Sans", Arial, sans-serif;
   --font-size: 13px;
@@ -73,5 +74,6 @@
     --text-color-hsl: 210 14% 89%;
     --text-color: hsl(var(--text-color-hsl));
     --text-color-secondary: hsl(var(--text-color-hsl) / 60%);
+    --link-color: #6ea8fe;
   }
 }

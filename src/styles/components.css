@@ -57,4 +57,100 @@
   .btn-close:hover {
     opacity: .75;
   }
+
+  .btn-primary {
+    background: var(--button-primary-color);
+
+    color: #fff;
+  }
+
+  :is(a, button).btn-primary:hover {
+    background: var(--button-primary-color-hover);
+  }
+
+  .btn-success {
+    background: var(--success-color);
+    box-shadow: 0 4px 6px 0 rgba(50,50,93,0.11), 1px 1px 3px 0 rgba(0,0,0,0.08);
+
+    color: #fff;
+    text-shadow: 1px 1px 0 rgba(0,0,0,0.2);
+  }
+
+  :is(a, button).btn-success:hover {
+    background: var(--success-color-hover);
+  }
+
+  :is(a, button).btn-success:is(:active, :focus) {
+    background: var(--success-color-active);
+  }
+
+  .btn-link {
+    color: var(--link-color);
+  }
+
+  :is(a, button).btn-link:hover {
+    background: transparent;
+
+    text-decoration: underline;
+  }
+
+  .btn-lg {
+    padding: .5em 2em;
+
+    font-size: 1.25em;
+  }
+
+  .btn-loading,
+  .block-loading {
+    --loader: #fff;
+    --loader-background: rgba(0,0,0,.6);
+
+    overflow: hidden;
+    position: relative;
+    pointer-events: none;
+  }
+
+  .block-loading {
+    --loader: #777;
+    --loader-background: rgba(255,255,255,.9);
+  }
+
+  .btn-loading::before,
+  .block-loading::before {
+    content: '';
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+    background: var(--loader-background);
+  }
+
+  .btn-loading::after,
+  .block-loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    translate: -50% -50%;
+    z-index: 3;
+    display: block;
+    width: 12px;
+    height: 12px;
+    border: 2px solid;
+    border-color: var(--loader) var(--loader) var(--loader) transparent;
+    border-radius: var(--radius-pill);
+    animation: spin .8s linear infinite;
+  }
+
+  @keyframes spin {
+    0% {
+      rotate: 0;
+    }
+    100% {
+      rotate: 360deg;
+    }
+  }
 }
