@@ -74,3 +74,7 @@
 form .btn {
   background-color: var(--border-color);
 }
+
+form .btn:hover {
+  background-color: var(--background-color-highlight);
+}
