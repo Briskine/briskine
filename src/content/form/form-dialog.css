@@ -2,6 +2,7 @@
  */
 
 @import url("../../styles/variables.css");
+@import url("../../styles/components.css");
 
 .briskine-form,
 .briskine-form * {
@@ -117,11 +118,9 @@
 }
 
 .briskine-form-error {
-  padding: var(--padding-y) var(--padding-x);
-  color: var(--error-color);
+  margin: 0 var(--padding-x) var(--padding-y);
   white-space: pre-wrap;
   font-family: monospace;
-  border-top: 1px solid var(--border-color);
 }
 
 .briskine-form-error[hidden] {

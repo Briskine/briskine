@@ -193,6 +193,21 @@
     box-shadow: var(--focus-ring);
   }
 
+  .alert {
+    position: relative;
+    margin-bottom: 1em;
+    padding: 1em;
+    border-radius: var(--radius-small);
+
+    font-weight: bold;
+  }
+
+  .alert-danger {
+    background-color: var(--danger-background-color);
+
+    color: var(--danger-color);
+  }
+
   .btn-loading,
   .block-loading {
     --loader: #fff;
