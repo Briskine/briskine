@@ -14,7 +14,7 @@ body {
   }
 }
 
-p {
+.popup-login p {
   margin-bottom: .8rem;
 }
 
@@ -80,6 +80,14 @@ a:not(.btn):hover {
   border-bottom: 1px solid var(--background-color-highlight);
 }
 
+.popup-dashboard .popup-logo {
+  padding: var(--space-3) var(--space-3) var(--space-2);
+}
+
+.popup-dashboard .popup-logo img {
+  display: block;
+}
+
 .popup-menu {
   display: grid;
   gap: var(--space-1);
@@ -117,8 +125,24 @@ a:not(.btn):hover {
   color: var(--primary-color);
 }
 
+.popup-stats {
+  display: grid;
+  gap: var(--space-2);
+  margin: var(--space-1) var(--space-3) var(--space-2);
+  padding: var(--space-3);
+}
+
+.popup-stats p {
+  margin: 0;
+}
+
 .popup-free.popup-stats {
   border-top: 1px solid var(--border-color);
+}
+
+.popup-premium.popup-stats {
+  gap: var(--space-1);
+  padding-top: var(--space-1);
 }
 
 .popup-saved {
@@ -129,25 +153,21 @@ a:not(.btn):hover {
   color: var(--text-color);
 }
 
-.popup-premium .popup-saved {
-  margin-bottom: var(--space-1);
-}
-
 .popup-motivation {
-  margin: 0;
-
   color: var(--text-color-secondary);
 }
 
-.popup-meter-label {
-  margin-bottom: var(--space-1);
+.popup-meter-group {
+  display: grid;
+  gap: var(--space-1);
+}
 
+.popup-meter-label {
   font-size: var(--font-size-small);
 }
 
 .popup-meter {
   height: 6px;
-  margin-bottom: var(--space-2);
   overflow: hidden;
   border-radius: 3px;
   background: var(--border-color);
@@ -183,6 +203,8 @@ a:not(.btn):hover {
 
 .popup-status {
   display: flex;
+  align-items: center;
+  padding: var(--space-2) var(--space-3);
   border-top: 1px solid var(--border-color);
   overflow: hidden;
 
@@ -191,9 +213,7 @@ a:not(.btn):hover {
 
 .popup-user,
 .btn-logout {
-  padding-top: .4em;
-  padding-bottom: .4em;
-  padding-right: 0;
+  padding: 0;
 
   color: var(--text-color-secondary);
   font-size: inherit;
@@ -206,7 +226,6 @@ a:not(.btn):hover {
 
 .btn-logout {
   min-width: 5em;
-  border: 0;
   margin-left: auto;
 
   white-space: nowrap;
@@ -228,17 +247,15 @@ a:not(.btn):hover {
   left: 0;
   transform: translateY(-50%);
 
-  display: inline-block;
   width: 6px;
   height: 6px;
-  margin-right: .4em;
   background-color: var(--success-color);
   border-radius: 100%;
 }
 
 .label-premium {
   padding: .1em .4em;
-  margin: .3em 0 .3em .4em;
+  margin-left: .4em;
 
   cursor: default;
 }
@@ -275,7 +292,8 @@ a:not(.btn):hover {
 
 .popup-premium .popup-stats-premium,
 .popup-free .popup-stats-free {
-  display: block;
+  display: grid;
+  gap: var(--space-2);
 }
 
 /* hide website and registration links
@@ -301,5 +319,5 @@ a:not(.btn):hover {
 }
 
 .popup-register-disabled .popup-stats-premium {
-  display: block;
+  display: grid;
 }

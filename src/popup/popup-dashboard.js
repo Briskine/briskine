@@ -150,7 +150,7 @@ export default function PopupDashboard () {
 
   return (
     <div class="popup-dashboard">
-      <div class="popup-box popup-logo d-flex justify-content-between">
+      <div class="popup-logo d-flex justify-content-between">
         <a href={websiteUrl} target="_blank">
           <img src="../icons/briskine-combo.svg" width="132" alt="Briskine"/>
         </a>
@@ -234,7 +234,7 @@ export default function PopupDashboard () {
       </ul>
 
       <div
-        class="popup-box popup-stats"
+        class="popup-stats"
         classList={{
           'popup-premium': isFree() === false,
           'popup-free': isFree() === true,
@@ -253,23 +253,25 @@ export default function PopupDashboard () {
           </div>
 
           <div class="popup-stats-details popup-stats-free">
-            <div class="popup-meter-label d-flex justify-content-between">
-              <strong>Free plan</strong>
-              <span>{templatesCount()} of {freeTemplatesLimit} templates</span>
-            </div>
-            <div
-              class="popup-meter"
-              classList={{
-                'popup-meter-near': nearLimit(),
-                'popup-meter-full': atLimit(),
-              }}
-              role="progressbar"
-              aria-label="Templates used"
-              aria-valuemin="0"
-              aria-valuemax={freeTemplatesLimit}
-              aria-valuenow={templatesCount()}
-              >
-              <span style={{width: `${Math.min(templatesCount() / freeTemplatesLimit, 1) * 100}%`}} />
+            <div class="popup-meter-group">
+              <div class="popup-meter-label d-flex justify-content-between">
+                <strong>Free plan</strong>
+                <span>{templatesCount()} of {freeTemplatesLimit} templates</span>
+              </div>
+              <div
+                class="popup-meter"
+                classList={{
+                  'popup-meter-near': nearLimit(),
+                  'popup-meter-full': atLimit(),
+                }}
+                role="progressbar"
+                aria-label="Templates used"
+                aria-valuemin="0"
+                aria-valuemax={freeTemplatesLimit}
+                aria-valuenow={templatesCount()}
+                >
+                <span style={{width: `${Math.min(templatesCount() / freeTemplatesLimit, 1) * 100}%`}} />
+              </div>
             </div>
             <p class="popup-upgrade-reason">
               <Switch fallback="Upgrade for unlimited templates and template sharing.">
@@ -292,7 +294,7 @@ export default function PopupDashboard () {
           </div>
       </div>
 
-      <div class="popup-box popup-status">
+      <div class="popup-status">
           <a
             href={`${functionsUrl}/account/`}
             target={dashboardTarget}

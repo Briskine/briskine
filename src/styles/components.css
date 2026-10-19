@@ -86,10 +86,8 @@
 
   .btn-success {
     background: var(--success-color);
-    box-shadow: 0 4px 6px 0 rgba(50,50,93,0.11), 1px 1px 3px 0 rgba(0,0,0,0.08);
 
     color: #fff;
-    text-shadow: 1px 1px 0 rgba(0,0,0,0.2);
   }
 
   :is(a, button).btn-success:hover {
