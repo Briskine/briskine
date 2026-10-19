@@ -35,7 +35,7 @@
 @layer components {
   .btn {
     display: inline-block;
-    padding: 4px 10px;
+    padding: .3em .75em;
     border: 0;
     border-radius: var(--radius-small);
     background: transparent;
@@ -52,7 +52,7 @@
   }
 
   .btn-sm {
-    padding: 4px;
+    padding: .3em;
   }
 
   .btn-close {
@@ -130,7 +130,7 @@
     background-clip: padding-box;
     border: 1px solid var(--input-border-color);
     border-radius: var(--radius-small);
-    transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+    transition: border-color var(--duration) ease-in-out, box-shadow var(--duration) ease-in-out;
 
     color: var(--text-color);
     font: inherit;
