@@ -164,6 +164,10 @@ a:not(.btn):hover {
   background: var(--yellow-color);
 }
 
+.popup-meter-full span {
+  background: var(--danger-color);
+}
+
 .popup-upgrade-reason {
   color: var(--text-color-secondary);
   font-size: var(--font-size-small);

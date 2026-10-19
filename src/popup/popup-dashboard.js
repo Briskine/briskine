@@ -79,7 +79,8 @@ export default function PopupDashboard () {
 
   const [stats, setStats] = createSignal(getStats(0))
   const [templatesCount, setTemplatesCount] = createSignal(0)
-  const nearLimit = () => templatesCount() >= freeTemplatesLimit * .9
+  const atLimit = () => templatesCount() >= freeTemplatesLimit
+  const nearLimit = () => !atLimit() && templatesCount() >= freeTemplatesLimit * .9
 
   const [user, setUser] = createSignal({})
   const [customers, setCustomers] = createSignal({})
@@ -260,6 +261,7 @@ export default function PopupDashboard () {
               class="popup-meter"
               classList={{
                 'popup-meter-near': nearLimit(),
+                'popup-meter-full': atLimit(),
               }}
               role="progressbar"
               aria-label="Templates used"
@@ -270,8 +272,14 @@ export default function PopupDashboard () {
               <span style={{width: `${Math.min(templatesCount() / freeTemplatesLimit, 1) * 100}%`}} />
             </div>
             <p class="popup-upgrade-reason">
-              <Show when={nearLimit()}>You're close to the limit. </Show>
-              Upgrade for unlimited templates and template sharing.
+              <Switch fallback="Upgrade for unlimited templates and template sharing.">
+                <Match when={atLimit()}>
+                  You've reached the free plan's limit. Upgrade to add more templates and share them.
+                </Match>
+                <Match when={nearLimit()}>
+                  You're close to the limit. Upgrade for unlimited templates and template sharing.
+                </Match>
+              </Switch>
             </p>
 
             <a
