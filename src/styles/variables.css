@@ -8,7 +8,6 @@
 
   --background-color: hsl(0 0% 100%);
   --background-color-highlight: hsl(0 0% 98%);
-  --background-color-tertiary: #f8f9fa;
   --border-color-hsl: 0 0% 94%;
   --border-color: hsl(var(--border-color-hsl));
 
@@ -19,7 +18,6 @@
   --error-color: hsl(354 70% 46%);
 
   /* popup colors */
-  --blue-color: #0d7af6;
   --green-color: #37c837;
   --yellow-color: #ffcc00;
   --yellow-text-color: #3c3000;
@@ -31,12 +29,8 @@
   --icon-color: #918992;
   --link-color: #0d6efd;
   --link-color-hover: #0a58ca;
-  --text-color-muted: rgb(33 37 41 / 75%);
-  --input-color: #212529;
-  --input-background-color: #fff;
   --input-border-color: #dee2e6;
   --input-focus-border-color: #86b7fe;
-  --input-focus-ring: 0 0 0 .25em rgb(13 110 253 / 25%);
   --danger-color: #58151c;
   --danger-background-color: #f8d7da;
 
@@ -46,16 +40,11 @@
   --font-size-xs: 11px;
   --line-height: 1.5;
 
-  --space-1: 4px;
   --space-2: 8px;
   --space-3: 12px;
-  --space-4: 16px;
 
   --radius: 5px;
   --radius-small: 3px;
-  --radius-pill: 999px;
-
-  --control-height: 40px;
 
   --shadow: 0 0 2px rgba(0,0,0,.1),
     0 2px 4px rgba(0,0,0,0.07),
@@ -64,7 +53,6 @@
   --shadow-small: 0 0 12px rgba(0,0,0,.1);
 
   --focus-ring: 0 0 0 .25em hsl(var(--primary-color-hsl) / 25%);
-  --focus-outline: 2px solid hsl(var(--primary-color-hsl) / 40%);
 
   --duration-fast: .075s;
   --duration: .1s;
@@ -77,8 +65,7 @@
 @media (prefers-color-scheme: dark) {
   :root {
     --background-color: hsl(210 11% 15%);
-    --background-color-highlight: hsl(210 10% 26%);
-    --background-color-tertiary: #2b3035;
+    --background-color-highlight: #2b3035;
     /* colors computed from other variables are redeclared, to use the dark values */
     --border-color-hsl: 210 9% 22%;
     --border-color: hsl(var(--border-color-hsl));
@@ -87,9 +74,6 @@
     --text-color-secondary: hsl(var(--text-color-hsl) / 60%);
     --link-color: #6ea8fe;
     --link-color-hover: #8bb9fe;
-    --text-color-muted: rgb(222 226 230 / 75%);
-    --input-color: #dee2e6;
-    --input-background-color: #212529;
     --input-border-color: #495057;
     --danger-color: #ea868f;
     --danger-background-color: #2c0b0e;

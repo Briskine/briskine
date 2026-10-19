@@ -4,7 +4,7 @@ html {
 
 body {
   margin: 0;
-  background-color: var(--background-color-tertiary);
+  background-color: var(--background-color-highlight);
 }
 
 @media (min-width: 42em) {
@@ -77,7 +77,7 @@ a:not(.btn):hover {
 /* popup-dashboard
  */
 .popup-logo {
-  border-bottom: 1px solid var(--background-color-tertiary);
+  border-bottom: 1px solid var(--background-color-highlight);
 }
 
 .popup-menu {
@@ -99,7 +99,7 @@ a:not(.btn):hover {
 }
 
 .popup-menu a:hover {
-  background-color: var(--background-color-tertiary);
+  background-color: var(--background-color-highlight);
 
   text-decoration: none;
 }
@@ -114,7 +114,7 @@ a:not(.btn):hover {
 
 .popup-menu a:hover .icon {
   transform: scale(1.4);
-  color: var(--blue-color);
+  color: var(--primary-color);
 }
 
 .popup-stats {
@@ -149,7 +149,7 @@ a:not(.btn):hover {
   padding-bottom: .4em;
   padding-right: 0;
 
-  color: var(--text-color-muted);
+  color: var(--text-color-secondary);
   font-size: inherit;
 }
 

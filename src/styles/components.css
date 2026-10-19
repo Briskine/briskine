@@ -126,18 +126,18 @@
     display: block;
     width: 100%;
     padding: .375em .75em;
-    background-color: var(--input-background-color);
+    background-color: var(--background-color);
     background-clip: padding-box;
     border: 1px solid var(--input-border-color);
     border-radius: var(--radius-small);
     transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
 
-    color: var(--input-color);
+    color: var(--text-color);
     font: inherit;
   }
 
   .form-control::placeholder {
-    color: var(--text-color-muted);
+    color: var(--text-color-secondary);
     opacity: 1;
   }
 
@@ -160,13 +160,13 @@
   .form-control:focus {
     outline: 0;
     border-color: var(--input-focus-border-color);
-    box-shadow: var(--input-focus-ring);
+    box-shadow: var(--focus-ring);
   }
 
   .form-text {
     margin-top: .25em;
 
-    color: var(--text-color-muted);
+    color: var(--text-color-secondary);
     font-size: .875em;
   }
 
@@ -331,7 +331,7 @@
     height: 12px;
     border: 2px solid;
     border-color: var(--loader) var(--loader) var(--loader) transparent;
-    border-radius: var(--radius-pill);
+    border-radius: 50%;
     animation: spin .8s linear infinite;
   }
 
@@ -376,7 +376,7 @@
   }
 
   .text-muted {
-    color: var(--text-color-muted);
+    color: var(--text-color-secondary);
   }
 
   .fst-italic {
