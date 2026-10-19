@@ -55,6 +55,12 @@ a:not(.btn):hover {
   display: block;
 }
 
+/* align the logo box with the menu icons
+ */
+.popup-dashboard .popup-logo {
+  padding-left: calc(var(--space-3) + 6px);
+}
+
 /* popup-login
  */
 .popup-login {
