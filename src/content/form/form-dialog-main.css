@@ -83,6 +83,10 @@
   padding-block: .125em;
 }
 
+.briskine-form-content .form-select[multiple] {
+  margin-block: .25em;
+}
+
 .briskine-form-content .form-control-color {
   padding: .125em;
 }
