@@ -187,11 +187,7 @@ a:not(.btn):hover {
 .label-premium {
   padding: .1em .4em;
   margin: .3em 0 .3em .4em;
-  background-color: var(--yellow-color);
-  border-radius: 3px;
 
-  color: #3c3000;
-  font-weight: bold;
   cursor: default;
 }
 

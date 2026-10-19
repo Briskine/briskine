@@ -270,7 +270,7 @@ export default function PopupDashboard () {
             {user().email}
           </a>
           <Show when={isFree() === false}>
-            <span class="label-premium">
+            <span class="badge text-bg-warning label-premium">
               Premium
             </span>
           </Show>
