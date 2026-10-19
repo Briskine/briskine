@@ -176,7 +176,7 @@ export default function PopupDashboard () {
               <div class="form-text mb-2">
                 You're signed in to <strong>{getCustomerTitle(user().customer)}</strong>
               </div>
-              <label for="team-select" class="mb-1">
+              <label for="team-select" class="form-label mb-1">
                 Switch to a different team:
               </label>
               <div

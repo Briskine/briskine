@@ -105,12 +105,6 @@
     text-decoration: underline;
   }
 
-  .btn-lg {
-    padding: .5em 2em;
-
-    font-size: 1.25em;
-  }
-
   .form-label {
     font-weight: bold;
   }
@@ -353,23 +347,7 @@
     justify-content: space-between;
   }
 
-  .float-end {
-    float: right;
-  }
-
-  .text-start {
-    text-align: left;
-  }
-
-  .text-center {
-    text-align: center;
-  }
-
   .text-secondary {
-    color: var(--text-color-secondary);
-  }
-
-  .text-muted {
     color: var(--text-color-secondary);
   }
 
@@ -383,10 +361,6 @@
 
   .mb-2 {
     margin-bottom: .5em;
-  }
-
-  .mb-3 {
-    margin-bottom: 1em;
   }
 
   .text-bg-warning {

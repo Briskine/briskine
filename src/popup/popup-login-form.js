@@ -36,7 +36,7 @@ export default function PopupLoginForm ()  {
       </Show>
 
       <div class="popup-field">
-        <label for="login-email">
+        <label for="login-email" class="form-label">
           Email
         </label>
         <input
@@ -50,7 +50,7 @@ export default function PopupLoginForm ()  {
 
       <div class="popup-field">
         <div class="popup-field-label">
-          <label for="login-password">
+          <label for="login-password" class="form-label">
             Password
           </label>
           <a

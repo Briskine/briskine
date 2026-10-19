@@ -1,7 +1,3 @@
-html {
-  font-size: 14px;
-}
-
 body {
   margin: 0;
   background-color: var(--background-color-highlight);
@@ -9,13 +5,9 @@ body {
 
 @media (min-width: 42em) {
   body {
-    padding: 2em;
+    padding: calc(var(--space-4) * 2);
     min-height: 100%;
   }
-}
-
-label {
-  font-weight: 700;
 }
 
 .popup-container {
