@@ -14,6 +14,9 @@
   border-radius: var(--radius);
   background: var(--background-color);
   box-shadow: var(--shadow);
+
+  /* restore the modal dialog default, reset by .briskine-ui */
+  user-select: text;
 }
 
 .briskine-form[open] {
