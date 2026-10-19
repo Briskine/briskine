@@ -25,7 +25,8 @@ const fieldClasses = {
 }
 
 const inputTypes = ['text', 'number', 'email', 'url', 'tel', 'date', 'time', 'datetime-local', 'month', 'week', 'color', 'checkbox']
-const attributeNames = ['placeholder', 'required', 'min', 'max', 'step', 'pattern', 'rows', 'cols']
+const attributeNames = ['placeholder', 'required', 'min', 'max', 'step', 'pattern', 'rows', 'cols', 'size']
+const maxVisibleOptions = 6
 
 function renderAttributes (attributes = {}) {
   return Object.entries(attributes)
@@ -186,6 +187,7 @@ export default function createForm ({
         class: 'form-select',
         ...attributes,
         multiple,
+        size: attributes.size ?? (multiple && Math.min(choices.length, maxVisibleOptions) || undefined),
       })
       return new SafeString(`<select${selectAttributes}>${optionsHtml}</select>`)
     }

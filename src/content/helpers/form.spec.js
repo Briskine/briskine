@@ -179,12 +179,28 @@ describe('form handlebars helpers', () => {
     it('should support multiple values', async () => {
       const multiple = '{{#select id="tools" multiple=true}}{{option "A"}}{{option "B"}}{{option "C"}}{{/select}}'
       const form = await render(multiple, {tools: ['A', 'C']}, 'form')
-      expect(form.html).to.contain('<select class="form-select" id="field-tools-0" data-form-id="tools" aria-label="tools" multiple>')
+      expect(form.html).to.contain('<select class="form-select" id="field-tools-0" data-form-id="tools" aria-label="tools" size="3" multiple>')
       expect(form.html).to.contain('<option value="A" selected>A</option><option value="B">B</option><option value="C" selected>C</option>')
 
       const final = await render(multiple, {tools: ['A', 'C']})
       expect(final.html).to.equal('A, C')
       expect((await render(multiple)).session.values.tools).to.deep.equal([])
+    })
+
+    it('should show at most six options in multiple selects', async () => {
+      const options = Array.from({length: 10}, (_, i) => `{{option "${i}"}}`).join('')
+      const {html} = await render(`{{#select id="many" multiple=true}}${options}{{/select}}`, {}, 'form')
+      expect(html).to.contain(' size="6" multiple>')
+    })
+
+    it('should use the size parameter', async () => {
+      const {html} = await render('{{#select id="tools" multiple=true size=2}}{{option "A"}}{{option "B"}}{{option "C"}}{{/select}}', {}, 'form')
+      expect(html).to.contain(' size="2" multiple>')
+    })
+
+    it('should not set a size on single selects', async () => {
+      const {html} = await render('{{#select id="tone"}}{{option "Formal"}}{{option "Casual"}}{{/select}}', {}, 'form')
+      expect(html).not.to.contain('size=')
     })
 
     it('should render html from block options', async () => {
