@@ -1,27 +1,28 @@
-/* variables shared by our ui,
- * in shadow roots and on extension pages, like the sidepanel.
+/*
+ * variables used in both shadow roots and extension pages, like the sidepanel.
  */
 :host,
 :root {
-  --primary-color-hsl: 211.9 92.8% 50.8%;
-  --primary-color: hsl(var(--primary-color-hsl));
+  --primary-color: #0d7af6;
   --primary-color-hover: #086ad8;
 
-  --background-color: hsl(0 0% 100%);
-  --background-color-highlight: hsl(0 0% 98%);
-  --border-color-hsl: 0 0% 94%;
-  --border-color: hsl(var(--border-color-hsl));
+  --background-color: #ffffff;
+  --background-color-highlight: #fafafa;
+  --border-color: #f0f0f0;
+  --item-background-color: color-mix(in srgb, var(--border-color) 60%, transparent);
+  --info-background-color: color-mix(in srgb, var(--primary-color) 8%, transparent);
+  --backdrop-color: color-mix(in srgb, var(--text-color) 20%, transparent);
 
-  --text-color-hsl: 240 96% 10%;
-  --text-color: hsl(var(--text-color-hsl));
-  --text-color-secondary: hsl(var(--text-color-hsl) / 60%);
+  --text-color: #010132;
+  --text-color-secondary: color-mix(in srgb, var(--text-color) 60%, transparent);
 
   --link-color: var(--primary-color-hover);
   --link-color-hover: #0760c5;
 
   --input-border-color: #dee2e6;
+  --input-focus-border-color: color-mix(in srgb, var(--primary-color) 50%, transparent);
 
-  --danger-color: hsl(354 70% 46%);
+  --danger-color: #c72334;
   --danger-text-color: #58151c;
   --danger-background-color: #f8d7da;
 
@@ -49,30 +50,48 @@
     0 4px 8px rgba(0,0,0,0.07),
     0 8px 16px rgba(0,0,0,0.07);
 
-  --focus-ring: 0 0 0 .25em hsl(var(--primary-color-hsl) / 25%);
+  --focus-ring-color: color-mix(in srgb, var(--primary-color) 25%, transparent);
+  --focus-ring: 0 0 0 .25em var(--focus-ring-color);
 
   --duration-fast: .075s;
   --duration: .1s;
   --duration-slow: .2s;
 }
 
-/* dark mode only on extension pages, like the popup and sidepanel.
- * the ui in web pages stays light, the page under it can be light in dark mode.
+/* auto dark mode only on extension pages, like the popup and sidepanel.
  */
 @media (prefers-color-scheme: dark) {
   :root {
-    --background-color: hsl(210 11% 15%);
+    --background-color: #22262a;
     --background-color-highlight: #2b3035;
-    /* colors computed from other variables are redeclared, to use the dark values */
-    --border-color-hsl: 210 9% 22%;
-    --border-color: hsl(var(--border-color-hsl));
-    --text-color-hsl: 210 14% 89%;
-    --text-color: hsl(var(--text-color-hsl));
-    --text-color-secondary: hsl(var(--text-color-hsl) / 60%);
+    --border-color: #33383d;
+    --text-color: #dfe3e7;
     --link-color: #62a9f9;
     --link-color-hover: #89befb;
     --input-border-color: #495057;
     --danger-text-color: #ea868f;
     --danger-background-color: #2c0b0e;
+  }
+}
+
+/* chrome 109 and 110 don't support color-mix().
+ * 109 is the last version on windows 7 and 8.
+ */
+@supports not (color: color-mix(in srgb, red, red)) {
+  :host,
+  :root {
+    --item-background-color: #f0f0f099;
+    --info-background-color: #0d7af614;
+    --backdrop-color: #01013233;
+    --text-color-secondary: #01013299;
+    --input-focus-border-color: #0d7af680;
+    --focus-ring-color: #0d7af640;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --item-background-color: #33383d99;
+      --text-color-secondary: #dfe3e799;
+    }
   }
 }

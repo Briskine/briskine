@@ -132,7 +132,7 @@ a:not(.btn):hover {
   align-items: center;
   padding: var(--space-2) var(--space-3);
   border-radius: var(--radius-small);
-  background-color: hsl(var(--border-color-hsl) / 60%);
+  background-color: var(--item-background-color);
 
   color: var(--text-color);
   font-weight: 600;

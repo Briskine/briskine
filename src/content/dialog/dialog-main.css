@@ -139,7 +139,7 @@ input[type=search]:focus {
  */
 .dialog-info {
   padding: var(--padding-y) var(--padding-x);
-  background: hsl(var(--primary-color-hsl) / 8%);
+  background: var(--info-background-color);
   border-radius: var(--radius-small);
   margin-bottom: var(--space-1);
 }

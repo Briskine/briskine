@@ -51,7 +51,7 @@
   display: flex;
   align-items: center;
   justify-content: end;
-  background: linear-gradient(to right, transparent, hsl(var(--border-color-hsl) / 98%) 60%);
+  background: linear-gradient(to right, transparent, var(--border-color) 60%);
 
   visibility: hidden;
 }
@@ -66,12 +66,12 @@
 
 @media (prefers-color-scheme: dark) {
   :root .edit-container .btn:hover {
-    background: hsl(210 10% 26%);
+    background: #3c4249;
   }
 }
 
 .dialog-list-item.active {
-  background: hsl(var(--border-color-hsl) / 60%);
+  background: var(--item-background-color);
 }
 
 .dialog-list-item.active:active {

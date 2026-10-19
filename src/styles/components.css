@@ -152,7 +152,7 @@
 
   .form-control:focus {
     outline: 0;
-    border-color: hsl(var(--primary-color-hsl) / 50%);
+    border-color: var(--input-focus-border-color);
     box-shadow: var(--focus-ring);
   }
 

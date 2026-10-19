@@ -23,6 +23,6 @@ form .btn:hover {
 
 @media (prefers-color-scheme: dark) {
   :root form .btn:hover {
-    background-color: hsl(210 10% 26%);
+    background-color: #3c4249;
   }
 }
