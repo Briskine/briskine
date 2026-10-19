@@ -60,6 +60,10 @@
   visibility: visible;
 }
 
+.edit-container .btn:hover {
+  background: var(--background-color-highlight);
+}
+
 .dialog-list-item.active {
   background: hsl(var(--border-color-hsl) / 60%);
 }
