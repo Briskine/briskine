@@ -23,7 +23,7 @@ export default function PopupLogin () {
     <div class="popup-login">
       <div class="popup-logo">
         <a href={websiteUrl} target="_blank">
-          <img src="../icons/briskine-combo.svg" width="132" alt="Briskine"/>
+          <img src="../icons/briskine-combo.svg" width="120" alt="Briskine"/>
         </a>
       </div>
 

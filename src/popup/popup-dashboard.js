@@ -152,7 +152,7 @@ export default function PopupDashboard () {
     <div class="popup-dashboard">
       <div class="popup-logo d-flex justify-content-between">
         <a href={websiteUrl} target="_blank">
-          <img src="../icons/briskine-combo.svg" width="132" alt="Briskine"/>
+          <img src="../icons/briskine-combo.svg" width="120" alt="Briskine"/>
         </a>
 
         <button
