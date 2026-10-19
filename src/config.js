@@ -23,6 +23,7 @@ export const functionsUrl = (() => {
 
 export const helpUrl = 'https://help.briskine.com/'
 export const dashboardTarget = 'gt-dashboard'
+export const freeTemplatesLimit = 30
 
 export const eventDestroy = 'briskine-destroy'
 export const eventStatus = 'briskine-status'

@@ -1,6 +1,6 @@
 import {createSignal, createResource, Show, Switch, Match, onMount, For, createMemo} from 'solid-js'
 
-import { websiteUrl, functionsUrl, dashboardTarget } from '../config.js'
+import { websiteUrl, functionsUrl, dashboardTarget, freeTemplatesLimit } from '../config.js'
 import {
   autosync,
   getExtensionData,
@@ -8,6 +8,7 @@ import {
   getAccount,
   getCustomer,
   getSession,
+  getTemplates,
   logout,
 } from '../store/store-content.js'
 
@@ -77,6 +78,8 @@ export default function PopupDashboard () {
   })
 
   const [stats, setStats] = createSignal(getStats(0))
+  const [templatesCount, setTemplatesCount] = createSignal(0)
+  const nearLimit = () => templatesCount() >= freeTemplatesLimit * .9
 
   const [user, setUser] = createSignal({})
   const [customers, setCustomers] = createSignal({})
@@ -102,6 +105,10 @@ export default function PopupDashboard () {
   async function refreshAccount () {
     const account = await getAccount()
     setUser(account)
+
+    getTemplates()
+      .then((templates) => setTemplatesCount(templates.length))
+      .catch(() => {})
 
     await Promise.all(
       account.customers.map((customerId) => {
@@ -233,21 +240,38 @@ export default function PopupDashboard () {
         }}
         >
           <Show when={stats().time !== '0min'}>
-            <p>
-              You saved <strong>{stats().time}</strong> using Briskine!
+            <p class="popup-saved">
+              You saved <strong>{stats().time}</strong> with Briskine.
             </p>
           </Show>
 
           <div class="popup-stats-details popup-stats-premium">
-            <MotivationalMessage words={stats().words} />
+            <p class="popup-motivation">
+              <MotivationalMessage words={stats().words} />
+            </p>
           </div>
 
           <div class="popup-stats-details popup-stats-free">
-            <p class="label-upgrade">
-              Go Premium to get
-              Unlimited Templates
-              and
-              Template Sharing.
+            <div class="popup-meter-label d-flex justify-content-between">
+              <strong>Free plan</strong>
+              <span>{templatesCount()} of {freeTemplatesLimit} templates</span>
+            </div>
+            <div
+              class="popup-meter"
+              classList={{
+                'popup-meter-near': nearLimit(),
+              }}
+              role="progressbar"
+              aria-label="Templates used"
+              aria-valuemin="0"
+              aria-valuemax={freeTemplatesLimit}
+              aria-valuenow={templatesCount()}
+              >
+              <span style={{width: `${Math.min(templatesCount() / freeTemplatesLimit, 1) * 100}%`}} />
+            </div>
+            <p class="popup-upgrade-reason">
+              <Show when={nearLimit()}>You're close to the limit. </Show>
+              Upgrade for unlimited templates and template sharing.
             </p>
 
             <a
