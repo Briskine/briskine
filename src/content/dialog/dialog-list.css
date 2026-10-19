@@ -64,6 +64,12 @@
   background: var(--background-color-highlight);
 }
 
+@media (prefers-color-scheme: dark) {
+  :root .edit-container .btn:hover {
+    background: hsl(210 10% 26%);
+  }
+}
+
 .dialog-list-item.active {
   background: hsl(var(--border-color-hsl) / 60%);
 }
