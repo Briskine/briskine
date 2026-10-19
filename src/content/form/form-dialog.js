@@ -234,7 +234,7 @@ function FormDialog () {
   })
 
   return (
-    <dialog ref={dialog} class="briskine-form" on:cancel={cancel}>
+    <dialog ref={dialog} class="briskine-form briskine-ui" on:cancel={cancel}>
       <style>{styles}</style>
       <form ref={form} method="dialog" on:submit={submit} on:input={change}>
         <header class="briskine-form-header modal-header">{title()}</header>
