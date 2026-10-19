@@ -169,41 +169,40 @@ export default function PopupDashboard () {
         </button>
       </div>
 
+      <Show when={user()?.customers?.length > 1}>
+        <form class="team-selector">
+          <div class="form-text mb-2">
+            You're signed in to <strong>{getCustomerTitle(user().customer)}</strong>
+          </div>
+          <label for="team-select" class="form-label mb-1">
+            Switch to a different team:
+          </label>
+          <div
+            classList={{
+              'block-loading': switchCustomerRequest.loading,
+            }}
+            >
+            <select
+              id="team-select"
+              class="form-select"
+              onChange={switchTeam}
+              >
+              <For each={user().customers}>
+                {(id) => (
+                  <option
+                    value={id}
+                    selected={id === user().customer}
+                    >
+                    {getCustomerTitle(id)}
+                  </option>
+                )}
+              </For>
+            </select>
+          </div>
+        </form>
+      </Show>
+
       <ul class="list-unstyled popup-menu">
-        <Show when={user()?.customers?.length > 1}>
-          <li>
-            <form class="team-selector">
-              <div class="form-text mb-2">
-                You're signed in to <strong>{getCustomerTitle(user().customer)}</strong>
-              </div>
-              <label for="team-select" class="form-label mb-1">
-                Switch to a different team:
-              </label>
-              <div
-                classList={{
-                  'block-loading': switchCustomerRequest.loading,
-                }}
-                >
-                <select
-                  id="team-select"
-                  class="form-select"
-                  onChange={switchTeam}
-                  >
-                  <For each={user().customers}>
-                    {(id) => (
-                      <option
-                        value={id}
-                        selected={id === user().customer}
-                        >
-                        {getCustomerTitle(id)}
-                      </option>
-                    )}
-                  </For>
-                </select>
-              </div>
-            </form>
-          </li>
-        </Show>
         <li>
           <a
             href={`${functionsUrl}/template/new/`}
