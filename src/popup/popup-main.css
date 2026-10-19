@@ -61,6 +61,7 @@ a:not(.btn) {
 }
 
 a:not(.btn):hover {
+  color: var(--link-color-hover);
   text-decoration: underline;
 }
 
@@ -150,6 +151,11 @@ a:not(.btn):hover {
 
   color: var(--text-color-muted);
   font-size: inherit;
+}
+
+.popup-user:hover,
+.btn-logout:hover {
+  color: var(--link-color-hover);
 }
 
 .btn-logout {

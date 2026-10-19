@@ -107,6 +107,7 @@
   :is(a, button).btn-link:hover {
     background: transparent;
 
+    color: var(--link-color-hover);
     text-decoration: underline;
   }
 
