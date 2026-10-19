@@ -20,41 +20,37 @@ export default function PopupLogin () {
   })
 
   return (
-    <div class="popup-login text-center">
-      <div class="popup-box popup-logo">
+    <div class="popup-login">
+      <div class="popup-logo">
         <a href={websiteUrl} target="_blank">
-          <img src="../icons/briskine-combo.svg" width="160" alt="Briskine"/>
+          <img src="../icons/briskine-combo.svg" width="132" alt="Briskine"/>
         </a>
       </div>
 
-      <div class="popup-box">
+      <div class="popup-login-body">
         <Show when={!showLoginForm()} fallback={(<PopupLoginForm />)}>
-          <p>
-            <strong>
-              Sign in to access your templates.
-            </strong>
+          <p class="popup-login-lead">
+            Sign in to access your templates.
           </p>
 
           <button
             type="button"
-            class="btn btn-lg btn-primary"
+            class="btn btn-primary btn-wide"
             classList={{
               'btn-loading': showLoginForm.loading
             }}
             onClick={() => setGetSession(true)}>
-            Sign In
+            Sign in
           </button>
         </Show>
       </div>
 
-      <div class="popup-box text-muted popup-label-register">
-        <small>
-          Don't have an account yet?
-          <br />
-          <a href={`${functionsUrl}/signup/`} target="_blank">
-            Create a free account
-          </a>
-        </small>
+      <div class="popup-login-footer popup-label-register">
+        Don't have an account yet?
+        <br />
+        <a href={`${functionsUrl}/signup/`} target="_blank">
+          Create a free account
+        </a>
       </div>
     </div>
   )

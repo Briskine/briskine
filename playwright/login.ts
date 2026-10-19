@@ -9,7 +9,7 @@ export default async function login ({page, extensionId}) {
   await page.getByLabel('Email').fill(process.env.TEST_EMAIL || 'MISSING EMAIL')
   await page.getByLabel('Password').fill(process.env.TEST_PASSWORD || 'MISSING PASSWORD')
   await page.getByRole('button').click()
-  const premium = page.getByText('go premium')
-  await premium.waitFor()
+  const dashboard = page.getByText('Upgrade to Premium')
+  await dashboard.waitFor()
 }
 

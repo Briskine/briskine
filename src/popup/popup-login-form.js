@@ -26,7 +26,7 @@ export default function PopupLoginForm ()  {
 
   return (
     <form
-      class="popup-login-form text-start js-login-form"
+      class="popup-login-form js-login-form"
       onSubmit={submit}
       >
       <Show when={signinRequest.error}>
@@ -35,8 +35,8 @@ export default function PopupLoginForm ()  {
         </div>
       </Show>
 
-      <div class="mb-3">
-        <label for="login-email" class="form-label">
+      <div class="popup-field">
+        <label for="login-email">
           Email
         </label>
         <input
@@ -48,19 +48,20 @@ export default function PopupLoginForm ()  {
         />
       </div>
 
-      <div class="mb-3">
-        <a
-          href={`${functionsUrl}/forgot-password/`}
-          target="_blank"
-          class="btn btn-link float-end btn-forgot"
-          tabindex="-1"
-          >
-          Forgot password?
-        </a>
-
-        <label for="login-password" class="form-label">
+      <div class="popup-field">
+        <div class="popup-field-label">
+          <label for="login-password">
             Password
-        </label>
+          </label>
+          <a
+            href={`${functionsUrl}/forgot-password/`}
+            target="_blank"
+            class="btn-forgot"
+            tabindex="-1"
+            >
+            Forgot password?
+          </a>
+        </div>
         <input
           type="password"
           class="form-control"
@@ -70,17 +71,15 @@ export default function PopupLoginForm ()  {
           />
       </div>
 
-      <div class="text-center">
-        <button
-          type="submit"
-          class="btn btn-lg btn-primary"
-          classList={{
-            'btn-loading' : signinRequest.loading,
-          }}
-          >
-          Sign In
-        </button>
-      </div>
+      <button
+        type="submit"
+        class="btn btn-primary btn-wide"
+        classList={{
+          'btn-loading' : signinRequest.loading,
+        }}
+        >
+        Sign in
+      </button>
     </form>
   )
 }

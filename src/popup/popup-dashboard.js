@@ -287,7 +287,7 @@ export default function PopupDashboard () {
             <a
               href={`${functionsUrl}/subscription/`}
               target={dashboardTarget}
-              class="btn btn-success btn-upgrade"
+              class="btn btn-success btn-wide"
               >
               Upgrade to Premium
             </a>

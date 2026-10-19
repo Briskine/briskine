@@ -14,14 +14,6 @@ body {
   }
 }
 
-.popup-login p {
-  margin-bottom: var(--space-3);
-}
-
-small {
-  font-size: 85%;
-}
-
 label {
   font-weight: 700;
 }
@@ -29,7 +21,8 @@ label {
 .popup-container {
   --popup-width: 300px;
 
-  display: block;
+  display: flex;
+  flex-direction: column;
   width: var(--popup-width);
   min-height: 250px;
   margin: 0 auto;
@@ -51,10 +44,6 @@ label {
   }
 }
 
-.popup-box {
-  padding: var(--space-3);
-}
-
 a:not(.btn) {
   color: var(--link-color);
   text-decoration: none;
@@ -65,29 +54,70 @@ a:not(.btn):hover {
   text-decoration: underline;
 }
 
-.form-label {
-  display: inline-block;
-  margin-bottom: .5em;
+.popup-logo {
+  padding: var(--space-3) var(--space-3) var(--space-2);
+  border-bottom: 1px solid var(--background-color-highlight);
+}
+
+.popup-logo img {
+  display: block;
+}
+
+/* popup-login
+ */
+.popup-login {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+}
+
+.popup-login-body {
+  display: grid;
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-3);
+}
+
+.popup-login-lead {
+  margin: 0;
+
+  font-weight: 600;
+}
+
+.popup-login-form {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.popup-login-form .alert {
+  margin: 0;
+}
+
+.popup-field {
+  display: grid;
+  gap: var(--space-1);
+}
+
+.popup-field-label {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
 }
 
 .btn-forgot {
-  padding: 0;
+  font-size: var(--font-size-small);
+}
+
+.popup-login-footer {
+  margin-top: auto;
+  padding: var(--space-2) var(--space-3);
+  border-top: 1px solid var(--border-color);
+
+  color: var(--text-color-secondary);
+  font-size: var(--font-size-small);
 }
 
 /* popup-dashboard
  */
-.popup-logo {
-  border-bottom: 1px solid var(--background-color-highlight);
-}
-
-.popup-dashboard .popup-logo {
-  padding: var(--space-3) var(--space-3) var(--space-2);
-}
-
-.popup-dashboard .popup-logo img {
-  display: block;
-}
-
 .popup-menu {
   display: grid;
   gap: var(--space-1);
@@ -198,8 +228,9 @@ a:not(.btn):hover {
   font-size: var(--font-size-small);
 }
 
-.btn-upgrade {
+.btn-wide {
   display: block;
+  width: 100%;
   padding: .6em 1em;
 
   font-weight: bold;
