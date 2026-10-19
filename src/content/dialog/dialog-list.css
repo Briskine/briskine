@@ -80,7 +80,7 @@
 }
 
 .list-no-results {
-  padding: 20px;
+  padding: var(--space-4);
 
   text-align: center;
 }
@@ -100,7 +100,7 @@
   --tag-color-black: #344563;
 
   display: flex;
-  gap: .4em;
+  gap: var(--space-1);
   overflow: hidden;
 
   white-space: nowrap;

@@ -15,7 +15,7 @@ body,
 }
 
 #sidepanel .dialog-search {
-  padding: 3px;
+  padding: var(--space-1);
 }
 
 #sidepanel .dialog-search input {

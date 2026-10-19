@@ -1,6 +1,6 @@
 .briskine-form {
-  --padding-x: 16px;
-  --padding-y: 12px;
+  --padding-x: var(--space-4);
+  --padding-y: var(--space-3);
 
   display: none;
   width: min(640px, calc(100vw - 32px));
@@ -94,7 +94,7 @@
 }
 
 .briskine-form-hidden {
-  margin: 4px 0;
+  margin: var(--space-1) 0;
   padding: var(--padding-y) var(--padding-x);
   border-radius: var(--radius);
   background: var(--border-color);

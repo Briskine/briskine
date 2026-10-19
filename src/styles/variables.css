@@ -36,8 +36,10 @@
   --font-size-small: 12px;
   --line-height: 1.5;
 
+  --space-1: 4px;
   --space-2: 8px;
   --space-3: 12px;
+  --space-4: 16px;
 
   --radius: 5px;
   --radius-small: 3px;

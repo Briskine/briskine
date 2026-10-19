@@ -1,8 +1,8 @@
 .briskine-dialog {
   --dialog-height: 250px;
   --footer-height: 40px;
-  --padding-x: 12px;
-  --padding-y: 8px;
+  --padding-x: var(--space-3);
+  --padding-y: var(--space-2);
 
   position: relative;
   display: block;
@@ -122,11 +122,11 @@ input[type=search]:focus {
 
 .dialog-content {
   flex: 1;
-  padding: 3px;
+  padding: var(--space-1);
   /* improves scrollIntoView behaviour by including padding around the
    * element scrolled into view.
    */
-  scroll-padding: 3px;
+  scroll-padding: var(--space-1);
   overflow: auto;
 
   /* improve performance for rendering large lists
@@ -141,7 +141,7 @@ input[type=search]:focus {
   padding: var(--padding-y) var(--padding-x);
   background: hsl(var(--primary-color-hsl) / 8%);
   border-radius: var(--radius-small);
-  margin-bottom: 3px;
+  margin-bottom: var(--space-1);
 }
 
 .dialog-info a {
@@ -159,7 +159,7 @@ input[type=search]:focus {
 }
 
 .dialog-info-icon {
-  padding-right: 8px;
+  padding-right: var(--space-2);
 }
 
 .dialog-info-icon svg {
@@ -171,14 +171,14 @@ input[type=search]:focus {
 /* loading placeholders
  */
 .templates-placeholder {
-  padding: 8px 12px;
+  padding: var(--padding-y) var(--padding-x);
 }
 
 .templates-placeholder-text {
   height: 1em;
   width: 50%;
   background-color: var(--border-color);
-  margin-bottom: 4px;
+  margin-bottom: var(--space-1);
 
   cursor: wait;
   animation: glow 2s ease-in-out infinite;

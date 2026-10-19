@@ -235,8 +235,8 @@
 
   .alert {
     position: relative;
-    margin-bottom: 1em;
-    padding: 1em;
+    margin-bottom: var(--space-3);
+    padding: var(--space-3);
     border-radius: var(--radius-small);
 
     font-weight: bold;
