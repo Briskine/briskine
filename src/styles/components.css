@@ -96,10 +96,6 @@
     background: var(--success-color-hover);
   }
 
-  :is(a, button).btn-success:is(:active, :focus) {
-    background: var(--success-color-active);
-  }
-
   .btn-link {
     color: var(--link-color);
   }

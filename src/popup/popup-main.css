@@ -186,7 +186,7 @@ a:not(.btn):hover {
   width: 6px;
   height: 6px;
   margin-right: .4em;
-  background-color: var(--green-color);
+  background-color: var(--success-color);
   border-radius: 100%;
 }
 
@@ -206,7 +206,7 @@ a:not(.btn):hover {
   padding: 3px;
   border: 0;
   border-radius: 100%;
-  background-color: var(--green-color);
+  background-color: var(--success-color);
   transition: background-color .5s ease-out;
 
   color: #fff;
