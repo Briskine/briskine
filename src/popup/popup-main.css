@@ -15,7 +15,7 @@ body {
 }
 
 .popup-login p {
-  margin-bottom: .8rem;
+  margin-bottom: var(--space-3);
 }
 
 small {
@@ -27,9 +27,10 @@ label {
 }
 
 .popup-container {
+  --popup-width: 300px;
+
   display: block;
-  /* browser action width */
-  width: 22em;
+  width: var(--popup-width);
   min-height: 250px;
   margin: 0 auto;
   background-color: var(--background-color);
@@ -44,8 +45,7 @@ label {
 
 @media (min-width: 42em) {
   .popup-container {
-    /* full screen width */
-    width: 28em;
+    width: var(--popup-width);
     border-radius: 4px;
     box-shadow: 0 10px 8px -4px rgb(0 0 0 / 5%);
   }
@@ -116,6 +116,11 @@ a:not(.btn):hover {
 
   color: var(--text-color);
   text-decoration: none;
+}
+
+.popup-menu a:focus-visible {
+  outline: 0;
+  box-shadow: var(--focus-ring);
 }
 
 .popup-menu .icon {
