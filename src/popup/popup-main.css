@@ -81,7 +81,7 @@ a:not(.btn):hover {
 }
 
 .popup-menu {
-  margin: 1em 0;
+  margin: var(--space-1) 0;
 }
 
 .team-selector {
