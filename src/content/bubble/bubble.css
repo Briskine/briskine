@@ -64,7 +64,7 @@ button {
 button:hover {
   background-color: rgba(var(--color-background), .8);
   background-image: linear-gradient(rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.1));
-  box-shadow: var(--shadow-small);
+  box-shadow: 0 0 12px rgba(0,0,0,.1);
 }
 
 button:active {
@@ -103,7 +103,7 @@ span {
   border-radius: 2px;
 
   color: #fff;
-  font-size: var(--font-size-xs);
+  font-size: 11px;
   font-weight: bold;
   line-height: 1;
   white-space: nowrap;

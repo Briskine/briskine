@@ -245,7 +245,7 @@
   .alert-danger {
     background-color: var(--danger-background-color);
 
-    color: var(--danger-color);
+    color: var(--danger-text-color);
   }
 
   .modal-header {

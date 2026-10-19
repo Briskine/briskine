@@ -16,24 +16,24 @@
   --text-color: hsl(var(--text-color-hsl));
   --text-color-secondary: hsl(var(--text-color-hsl) / 60%);
 
-  --error-color: hsl(354 70% 46%);
-
-  /* popup colors */
-  --yellow-color: #ffcc00;
-  --yellow-text-color: #3c3000;
-  --success-color: #00994d;
-  --success-color-hover: #008743;
-  --icon-color: #918992;
   --link-color: var(--primary-color-hover);
   --link-color-hover: #0760c5;
+
   --input-border-color: #dee2e6;
-  --danger-color: #58151c;
+
+  --danger-color: hsl(354 70% 46%);
+  --danger-text-color: #58151c;
   --danger-background-color: #f8d7da;
+
+  --success-color: #00994d;
+  --success-color-hover: #008743;
+
+  --yellow-color: #ffcc00;
+  --yellow-text-color: #3c3000;
 
   --font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", "Noto Sans", "Liberation Sans", Arial, sans-serif;
   --font-size: 13px;
   --font-size-small: 12px;
-  --font-size-xs: 11px;
   --line-height: 1.5;
 
   --space-2: 8px;
@@ -46,7 +46,6 @@
     0 2px 4px rgba(0,0,0,0.07),
     0 4px 8px rgba(0,0,0,0.07),
     0 8px 16px rgba(0,0,0,0.07);
-  --shadow-small: 0 0 12px rgba(0,0,0,.1);
 
   --focus-ring: 0 0 0 .25em hsl(var(--primary-color-hsl) / 25%);
 
@@ -71,7 +70,7 @@
     --link-color: #62a9f9;
     --link-color-hover: #89befb;
     --input-border-color: #495057;
-    --danger-color: #ea868f;
+    --danger-text-color: #ea868f;
     --danger-background-color: #2c0b0e;
   }
 }

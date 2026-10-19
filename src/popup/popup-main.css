@@ -109,7 +109,7 @@ a:not(.btn):hover {
   margin-right: .8em;
   transition: all var(--duration) ease-out;
 
-  color: var(--icon-color);
+  color: var(--text-color-secondary);
 }
 
 .popup-menu a:hover .icon {

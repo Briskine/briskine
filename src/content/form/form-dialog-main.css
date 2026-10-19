@@ -90,7 +90,7 @@
 }
 
 .briskine-form-content .form-control:user-invalid {
-  border-color: var(--error-color);
+  border-color: var(--danger-color);
 }
 
 .briskine-form-hidden {
