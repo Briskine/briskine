@@ -9,7 +9,7 @@
   white-space: nowrap;
   line-height: 1.2;
 
-  transition: scale .075s ease-in;
+  transition: scale var(--duration-fast) ease-in;
 }
 
 .dialog-list-item h1 {

@@ -106,9 +106,9 @@ a:not(.btn):hover {
 .popup-menu .icon {
   display: inline-flex;
   margin-right: .8em;
-  transition: all .1s ease-out;
+  transition: all var(--duration) ease-out;
 
-  color: #918992;
+  color: var(--icon-color);
 }
 
 .popup-menu a:hover .icon {
@@ -139,7 +139,7 @@ a:not(.btn):hover {
   display: flex;
   overflow: hidden;
 
-  font-size: 12px;
+  font-size: var(--font-size-small);
 }
 
 .popup-user,

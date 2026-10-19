@@ -25,10 +25,7 @@
   top: 0;
   left: 0;
 
-  box-shadow: 0 0 2px rgba(0,0,0,.1),
-    0 2px 4px rgba(0,0,0,0.07),
-    0 4px 8px rgba(0,0,0,0.07),
-    0 8px 16px rgba(0,0,0,0.07);
+  box-shadow: var(--shadow);
 }
 
 .briskine-dialog-popover .briskine-dialog.briskine-dialog-visible {
@@ -120,7 +117,7 @@ input[type=search]:focus {
   opacity: .6;
   pointer-events: none;
 
-  color: hsl(var(--text-color-hsl) / 60%);
+  color: var(--text-color-secondary);
 }
 
 .dialog-content {
@@ -236,7 +233,7 @@ input[type=search]:focus {
   translate: 0 30%;
   scale: 0.95;
   opacity: 0;
-  transition: all .075s ease-in;
+  transition: all var(--duration-fast) ease-in;
 }
 
 @media (prefers-reduced-motion) {
