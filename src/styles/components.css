@@ -75,13 +75,13 @@
   }
 
   .btn-primary {
-    background: var(--button-primary-color);
+    background: var(--primary-color);
 
     color: #fff;
   }
 
   :is(a, button).btn-primary:hover {
-    background: var(--button-primary-color-hover);
+    background: var(--primary-color-hover);
   }
 
   .btn-success {
@@ -159,7 +159,7 @@
 
   .form-control:focus {
     outline: 0;
-    border-color: var(--input-focus-border-color);
+    border-color: hsl(var(--primary-color-hsl) / 50%);
     box-shadow: var(--focus-ring);
   }
 

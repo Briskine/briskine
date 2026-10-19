@@ -3,8 +3,9 @@
  */
 :host,
 :root {
-  --primary-color-hsl: 212 93% 51%;
+  --primary-color-hsl: 211.9 92.8% 50.8%;
   --primary-color: hsl(var(--primary-color-hsl));
+  --primary-color-hover: #086ad8;
 
   --background-color: hsl(0 0% 100%);
   --background-color-highlight: hsl(0 0% 98%);
@@ -21,16 +22,13 @@
   --green-color: #37c837;
   --yellow-color: #ffcc00;
   --yellow-text-color: #3c3000;
-  --button-primary-color: #0983fa;
-  --button-primary-color-hover: #0483ff;
   --success-color: #02c38d;
   --success-color-hover: #06d79c;
   --success-color-active: #00a576;
   --icon-color: #918992;
-  --link-color: #0d6efd;
-  --link-color-hover: #0a58ca;
+  --link-color: var(--primary-color-hover);
+  --link-color-hover: #0760c5;
   --input-border-color: #dee2e6;
-  --input-focus-border-color: #86b7fe;
   --danger-color: #58151c;
   --danger-background-color: #f8d7da;
 
@@ -72,8 +70,8 @@
     --text-color-hsl: 210 14% 89%;
     --text-color: hsl(var(--text-color-hsl));
     --text-color-secondary: hsl(var(--text-color-hsl) / 60%);
-    --link-color: #6ea8fe;
-    --link-color-hover: #8bb9fe;
+    --link-color: #62a9f9;
+    --link-color-hover: #89befb;
     --input-border-color: #495057;
     --danger-color: #ea868f;
     --danger-background-color: #2c0b0e;
