@@ -232,6 +232,7 @@ a:not(.btn):hover {
 .popup-status {
   display: flex;
   align-items: center;
+  gap: var(--space-2);
   padding: var(--space-2) var(--space-3);
   border-top: 1px solid var(--border-color);
   overflow: hidden;
@@ -253,7 +254,7 @@ a:not(.btn):hover {
 }
 
 .btn-logout {
-  min-width: 5em;
+  flex-shrink: 0;
   margin-left: auto;
 
   white-space: nowrap;
@@ -283,7 +284,6 @@ a:not(.btn):hover {
 
 .label-premium {
   padding: .1em .4em;
-  margin-left: .4em;
 
   cursor: default;
 }
