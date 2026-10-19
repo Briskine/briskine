@@ -57,6 +57,7 @@
 }
 
 .briskine-form-content {
+  line-height: 2;
   overflow-wrap: break-word;
 }
 
@@ -69,11 +70,21 @@
   max-width: 100%;
 
   font: inherit;
-  vertical-align: baseline;
+  line-height: var(--line-height);
+  vertical-align: middle;
 }
 
 .briskine-form-content :is(input.form-control:not(.form-control-color), .form-select) {
   width: auto;
+}
+
+.briskine-form-content :is(input.form-control, .form-select:not([multiple])) {
+  height: calc(1.5em + .25em + 2px);
+  padding-block: .125em;
+}
+
+.briskine-form-content .form-control-color {
+  padding: .125em;
 }
 
 .briskine-form-content textarea.form-control {
