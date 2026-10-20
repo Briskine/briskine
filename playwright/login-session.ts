@@ -14,7 +14,8 @@ export default async function loginSession ({page, extensionId}) {
 
   await page.goto(`${extensionId}/popup/popup.html`)
   await page.getByRole('button').click()
-  const premium = page.getByText('Upgrade to Premium')
+  // shown once the account's plan has loaded
+  const premium = page.getByText('Premium', {exact: true}).or(page.getByText('Upgrade to Premium'))
   await premium.waitFor()
 }
 

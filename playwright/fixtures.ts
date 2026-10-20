@@ -99,3 +99,11 @@ export async function insertFromDialog (page: Page, editor: Locator, search = 'n
   await page.waitForTimeout(500)
   await page.keyboard.press('Enter')
 }
+
+// the form dialog's shadow root is closed, so tests can't find its elements.
+// the page sees its element as focused while a field has focus,
+// so wait for that, then use the keyboard.
+export async function waitForForm (page: Page) {
+  // formTagPrefix in src/config.js
+  await page.waitForFunction(() => document.activeElement?.tagName.toLowerCase().startsWith('b-form-'))
+}
