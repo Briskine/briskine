@@ -1,6 +1,14 @@
 /* global styles for attachments
  */
 
+.briskine-attachment {
+  cursor: default;
+}
+
+.briskine-attachment a {
+  cursor: pointer;
+}
+
 .briskine-attachment button {
   padding: 0 5px;
   height: 16px;
