@@ -64,6 +64,14 @@ describe('form handlebars helpers', () => {
       expect(html).to.equal('<input type="checkbox" class="form-check-input" id="field-ps-0" data-form-id="ps" aria-label="Add P.S." checked>')
     })
 
+    it('should treat the string false as false', async () => {
+      const {html, session} = await render('{{input type="checkbox" id="ps" checked="false"}}{{input id="name" required="false"}}{{#select id="tools" multiple="false"}}{{option "A"}}{{/select}}', {}, 'form')
+      expect(html).not.to.contain('checked')
+      expect(html).not.to.contain('required')
+      expect(html).not.to.contain('multiple')
+      expect(session.fields.get('ps').default).to.equal(false)
+    })
+
     it('should not render checkboxes in final mode', async () => {
       const {html} = await render('a{{input type="checkbox" id="ps"}}b', {ps: true})
       expect(html).to.equal('ab')

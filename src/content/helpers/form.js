@@ -25,7 +25,7 @@ const fieldClasses = {
 }
 
 const inputTypes = ['text', 'number', 'email', 'url', 'tel', 'date', 'time', 'datetime-local', 'month', 'week', 'color', 'checkbox']
-const attributeNames = ['placeholder', 'required', 'min', 'max', 'step', 'pattern', 'rows', 'cols', 'size']
+const attributeNames = ['placeholder', 'min', 'max', 'step', 'pattern', 'rows', 'cols', 'size']
 const maxVisibleOptions = 6
 
 function renderAttributes (attributes = {}) {
@@ -35,9 +35,14 @@ function renderAttributes (attributes = {}) {
     .join('')
 }
 
+// checked="false" is false
+function toBoolean (value) {
+  return value !== 'false' && Boolean(value)
+}
+
 function inputDefault (type, hash = {}) {
   if (type === 'checkbox') {
-    return Boolean(hash.checked)
+    return toBoolean(hash.checked)
   }
 
   if (type === 'number' && hash.value !== undefined && hash.value !== '') {
@@ -48,7 +53,7 @@ function inputDefault (type, hash = {}) {
 }
 
 function selectDefault (hash = {}, choices = []) {
-  if (hash.multiple) {
+  if (toBoolean(hash.multiple)) {
     return hash.value === undefined ? [] : [].concat(hash.value).map(String)
   }
 
@@ -100,6 +105,7 @@ export default function createForm ({
       'aria-label': options.hash.label || options.hash.placeholder || id,
     }
     attributeNames.forEach((name) => attributes[name] = options.hash[name])
+    attributes.required = toBoolean(options.hash.required)
 
     return {
       value: Object.hasOwn(values, id) ? values[id] : (fields.get(id) ?? field).default,
@@ -171,7 +177,7 @@ export default function createForm ({
       throw new Error(`{{#select id="${claimed.id}"}} has more than one option with the value "${duplicate.value}"`)
     }
 
-    const multiple = Boolean(options.hash.multiple)
+    const multiple = toBoolean(options.hash.multiple)
     const {value, attributes} = register(claimed, options, {
       type: multiple ? 'select-multiple' : 'select',
       default: selectDefault(options.hash, choices),
