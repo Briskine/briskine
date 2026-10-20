@@ -16,6 +16,7 @@ import stopPageEvents from '../utils/stop-page-events.js'
 import { scopeTagName } from '../utils/extension-element.js'
 import debug from '../../debug.js'
 
+import IconBriskine from '../../icons/briskine-logo-small.svg'
 import styles from './form-dialog.css?inline'
 
 const relay = createRequest(formRelayRequest)
@@ -284,7 +285,12 @@ function FormDialog () {
       <style>{styles}</style>
       <form ref={form} method="dialog" on:submit={submit} on:input={change}>
         <header class="briskine-form-header modal-header">
-          {title()}
+          <div class="briskine-form-title">
+            <span class="briskine-form-logo" aria-hidden="true">
+              <IconBriskine />
+            </span>
+            <span class="briskine-form-title-text" title={title()}>{title()}</span>
+          </div>
           <button
             type="button"
             class="btn btn-close briskine-form-close"

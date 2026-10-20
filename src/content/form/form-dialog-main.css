@@ -41,6 +41,33 @@
   border-bottom: 1px solid var(--border-color);
 }
 
+.briskine-form-title {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+.briskine-form-title-text {
+  overflow: hidden;
+
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.briskine-form-close {
+  flex-shrink: 0;
+}
+
+.briskine-form-logo {
+  flex-shrink: 0;
+}
+
+.briskine-form-logo svg {
+  display: block;
+}
+
 .briskine-form-content {
   line-height: 2;
   overflow-wrap: break-word;
