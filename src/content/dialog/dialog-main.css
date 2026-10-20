@@ -200,13 +200,8 @@ input[type=search]:focus {
 
 /* hidden dashboard links - for safari
  */
-.dialog-safari .dialog-safari-hide,
-.dialog-safari-show {
+.dialog-safari .dialog-safari-hide {
   display: none !important;
-}
-
-.dialog-safari .dialog-safari-show {
-  display: revert !important;
 }
 
 /* dialog modals
