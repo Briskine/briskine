@@ -294,6 +294,15 @@ describe('form dialog', () => {
     expect(dialog().open).to.equal(false)
   })
 
+  it('should cancel when the dialog is destroyed', async () => {
+    respondToShow(form)
+
+    destroy()
+
+    await vi.waitFor(() => expect(relayed(eventFormClose).length).to.equal(1))
+    expect(relayed(eventFormClose)[0].details.insert).to.equal(false)
+  })
+
   it('should cancel with escape', async () => {
     respondToShow(form)
 

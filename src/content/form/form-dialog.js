@@ -229,6 +229,8 @@ function FormDialog () {
   })
 
   onCleanup(() => {
+    // the editor frame is waiting for the form
+    close(false)
     abortController.abort()
     showForm = () => false
   })
