@@ -193,8 +193,19 @@ function FormDialog () {
 
   function cancel (e) {
     e.preventDefault()
-    // some websites close their own modal on the escape keyup
-    window.addEventListener('keyup', (e) => e.stopPropagation(), {capture: true, once: true})
+    // some websites close their own modal on the escape keyup.
+    // the keyup can land in the editor iframe, so stop waiting for it after a moment.
+    const keyupController = new AbortController()
+    window.addEventListener('keyup', (e) => {
+      if (e.key === 'Escape') {
+        e.stopPropagation()
+        keyupController.abort()
+      }
+    }, {
+      capture: true,
+      signal: keyupController.signal,
+    })
+    setTimeout(() => keyupController.abort(), 1000)
     close(false)
   }
 

@@ -331,6 +331,41 @@ describe('form dialog', () => {
     expect(relayed(eventFormClose).length).to.equal(1)
   })
 
+  it('should keep the escape keyup from the page', () => {
+    const keyups = []
+    const listener = (e) => keyups.push(e.key)
+    document.addEventListener('keyup', listener)
+    vi.useFakeTimers()
+
+    respondToShow(form)
+    dialog().dispatchEvent(new Event('cancel', {cancelable: true}))
+
+    document.body.dispatchEvent(new KeyboardEvent('keyup', {key: 'a', bubbles: true}))
+    document.body.dispatchEvent(new KeyboardEvent('keyup', {key: 'Escape', bubbles: true}))
+    document.body.dispatchEvent(new KeyboardEvent('keyup', {key: 'Escape', bubbles: true}))
+    expect(keyups).to.deep.equal(['a', 'Escape'])
+
+    vi.useRealTimers()
+    document.removeEventListener('keyup', listener)
+  })
+
+  it('should stop waiting for the escape keyup', () => {
+    const keyups = []
+    const listener = (e) => keyups.push(e.key)
+    document.addEventListener('keyup', listener)
+    vi.useFakeTimers()
+
+    respondToShow(form)
+    dialog().dispatchEvent(new Event('cancel', {cancelable: true}))
+    vi.advanceTimersByTime(1000)
+
+    document.body.dispatchEvent(new KeyboardEvent('keyup', {key: 'Escape', bubbles: true}))
+    expect(keyups).to.deep.equal(['Escape'])
+
+    vi.useRealTimers()
+    document.removeEventListener('keyup', listener)
+  })
+
   it('should keep key events from the page', () => {
     const pageListener = vi.fn()
     window.addEventListener('keydown', pageListener)
