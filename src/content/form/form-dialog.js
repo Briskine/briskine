@@ -152,7 +152,12 @@ function FormDialog () {
 
     setError('')
     if (typeof response?.html === 'string') {
-      update(response.html)
+      try {
+        update(response.html)
+      } catch (err) {
+        debug(['form update', err], 'error')
+        setError(err.message || String(err))
+      }
     }
   }
 

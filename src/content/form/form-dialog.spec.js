@@ -1,4 +1,5 @@
 import { expect, describe, it, vi, beforeAll, beforeEach, afterEach, afterAll } from 'vitest'
+import { Idiomorph } from 'idiomorph'
 
 import { eventFormRender, eventFormClose } from '../../config.js'
 import { respondToShow, destroy } from './form-dialog.js'
@@ -263,6 +264,25 @@ describe('form dialog', () => {
     await vi.waitFor(() => expect(error.hidden).to.equal(false))
     expect(error.textContent).to.equal('Missing helper')
     expect(field('name')).to.be.instanceOf(HTMLInputElement)
+  })
+
+  it('should show a failed render, and render again', async () => {
+    respond = async ({details}) => ({html: details.values.name})
+    vi.spyOn(Idiomorph, 'morph').mockImplementationOnce(() => {
+      throw new Error('morph')
+    })
+    respondToShow(form)
+
+    const error = root.querySelector('.briskine-form-error')
+
+    typeIn(field('name'), 'J')
+    await vi.waitFor(() => expect(error.textContent).to.equal('morph'))
+    expect(error.hidden).to.equal(false)
+
+    typeIn(field('name'), 'Jane')
+    await vi.waitFor(() => expect(root.querySelector('.briskine-form-content').textContent).to.equal('Jane'))
+    expect(error.hidden).to.equal(true)
+    vi.restoreAllMocks()
   })
 
   it('should insert on submit', async () => {
