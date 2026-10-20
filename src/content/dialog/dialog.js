@@ -14,6 +14,7 @@ import {getEditableCaret, getContentEditableCaret, getDialogPosition} from './di
 import autocomplete from '../autocomplete.js'
 import { getSelectionRange, setSelectionRange }  from '../utils/selection.js'
 import { getActiveElement } from '../utils/active-element.js'
+import stopPageEvents from '../utils/stop-page-events.js'
 import { isBubbleElement, scopeTagName } from '../utils/extension-element.js'
 import {keybind, keyunbind} from '../keybind.js'
 
@@ -134,28 +135,6 @@ function Dialog (originalProps) {
     }
   }
 
-  function stopPropagation (e, target) {
-    if (
-      target
-      && dialogInstance
-      && (
-        dialogInstance === target
-        || dialogInstance === target?.getRootNode?.()?.host
-      )
-    ) {
-      e.stopPropagation()
-    }
-  }
-
-  function stopTargetPropagation (e) {
-    stopPropagation(e, e.target)
-  }
-
-  function stopRelatedTargetPropagation (e) {
-    stopPropagation(e, e.relatedTarget)
-  }
-
-
     async function restoreSelection () {
     // will also hide dialog because of focusout
     editor.focus({ preventScroll: true })
@@ -206,37 +185,7 @@ function Dialog (originalProps) {
     window.addEventListener('focusout', hideOnFocusout, globalListenerOptions)
     window.addEventListener('keydown', hideOnEsc, globalListenerOptions)
 
-    // prevent parent page from handling composed events.
-    // fix interaction with our dialog in some modals (Gmail, LinkedIn new post, GitHub search).
-    const stopTargetEvents = [
-      // stop Gmail from preventing keys assigned to Gmail shortcuts to be typed
-      // inside the dialog search field
-      'keydown',
-      'keyup',
-      // stop Front from catching keyboard shortcuts when typing in the dialog
-      'keypress',
-      // stop GitHub search from closing the dialog when clicking inside it
-      'mousedown',
-      'mouseup',
-      // stop GitHub search from preventing opening the dialog
-      // stop LinkedIn New Post from stealing focus when opening the dialog
-      'focus',
-      'focusin',
-    ]
-
-    const stopRelatedTargetEvents = [
-      // stop GitHub search and LinkedIn new post from handling blur
-      'blur',
-      'focusout',
-    ]
-
-    stopTargetEvents.forEach((event) => {
-      window.addEventListener(event, stopTargetPropagation, globalListenerOptions)
-    })
-
-    stopRelatedTargetEvents.forEach((event) => {
-      window.addEventListener(event, stopRelatedTargetPropagation, globalListenerOptions)
-    })
+    stopPageEvents(element, globalAbortController.signal)
 
     // expose show on element
     element.show = show

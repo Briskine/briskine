@@ -12,6 +12,7 @@ import { Idiomorph } from 'idiomorph'
 import { eventFormShow, eventFormRender, eventFormClose, formTagPrefix, hiddenAttribute } from '../../config.js'
 import { on, off, createRequest } from '../../store/store-content.js'
 import sanitize from '../utils/sanitize.js'
+import stopPageEvents from '../utils/stop-page-events.js'
 import { scopeTagName } from '../utils/extension-element.js'
 import debug from '../../debug.js'
 
@@ -231,24 +232,14 @@ function FormDialog () {
       signal: abortController.signal,
     }
 
-    // keep the page from handling events in the dialog,
-    // eg. Gmail keyboard shortcuts while typing in a field.
-    const stopEvents = ['keydown', 'keyup', 'keypress', 'mousedown', 'mouseup', 'focus', 'focusin']
-    stopEvents.forEach((event) => {
-      window.addEventListener(event, (e) => {
-        if (e.target !== formInstance) {
-          return
-        }
-
-        e.stopPropagation()
-
-        // stopping propagation also hides it from our own listeners
-        if (event === 'keydown' && e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
-          e.preventDefault()
-          form.requestSubmit()
-        }
-      }, listenerOptions)
-    })
+    // registered first, stopPageEvents hides the event from our own listeners
+    window.addEventListener('keydown', (e) => {
+      if (e.target === formInstance && e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
+        e.preventDefault()
+        form.requestSubmit()
+      }
+    }, listenerOptions)
+    stopPageEvents(dialog, abortController.signal)
 
     showForm = show
   })
