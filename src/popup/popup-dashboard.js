@@ -1,4 +1,4 @@
-import {createSignal, createResource, Show, Switch, Match, onMount, For, createMemo} from 'solid-js'
+import {createSignal, createResource, createEffect, on, Show, Switch, Match, onMount, For, createMemo} from 'solid-js'
 
 import { websiteUrl, functionsUrl, dashboardTarget, freeTemplatesLimit } from '../config.js'
 import {
@@ -107,10 +107,6 @@ export default function PopupDashboard () {
     const account = await getAccount()
     setUser(account)
 
-    getTemplates()
-      .then((templates) => setTemplatesCount(templates.length))
-      .catch(() => {})
-
     await Promise.all(
       account.customers.map((customerId) => {
         return getCustomer(customerId).then((customerData) => {
@@ -131,6 +127,21 @@ export default function PopupDashboard () {
 
     return plan === 'free'
   }, null)
+
+  // the template count is only shown on the free plan.
+  // switching teams changes the templates.
+  createEffect(on(
+    () => [isFree(), user().customer],
+    ([free]) => {
+      if (free !== true) {
+        return
+      }
+
+      getTemplates()
+        .then((templates) => setTemplatesCount(templates.length))
+        .catch(() => {})
+    },
+  ))
 
   function switchTeam (e) {
     setCustomer(e.currentTarget.value)
