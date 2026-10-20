@@ -293,6 +293,25 @@ describe('form dialog', () => {
     expect(relayed(eventFormClose)[0].details.insert).to.equal(false)
   })
 
+  it('should cancel when the browser closes the dialog', async () => {
+    respondToShow(form)
+
+    dialog().close()
+
+    await vi.waitFor(() => expect(relayed(eventFormClose).length).to.equal(1))
+    expect(relayed(eventFormClose)[0].details.insert).to.equal(false)
+    expect(respondToShow({...form, id: 'other'})).to.equal(true)
+  })
+
+  it('should close the form once', async () => {
+    respondToShow(form)
+
+    root.querySelector('.briskine-form-cancel').click()
+    await new Promise((resolve) => setTimeout(resolve, 50))
+
+    expect(relayed(eventFormClose).length).to.equal(1)
+  })
+
   it('should keep key events from the page', () => {
     const pageListener = vi.fn()
     window.addEventListener('keydown', pageListener)
