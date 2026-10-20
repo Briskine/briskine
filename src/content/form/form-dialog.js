@@ -112,16 +112,23 @@ function FormDialog () {
       return false
     }
 
+    setTitle(title)
+    setError('')
+    try {
+      content.innerHTML = prepare(html)
+      dialog.showModal()
+    } catch (err) {
+      debug(['form show', err], 'error')
+      content.replaceChildren()
+      // the editor frame shows an error, false is for another open form
+      return null
+    }
+
     current = {
       id,
       frameId,
       values: {},
     }
-    setTitle(title)
-    setError('')
-    content.innerHTML = prepare(html)
-
-    dialog.showModal()
     content.querySelector('[data-form-id]')?.focus()
 
     return true

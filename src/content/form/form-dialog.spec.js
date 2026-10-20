@@ -87,6 +87,22 @@ describe('form dialog', () => {
     expect(respondToShow({...form, id: 'other'})).to.equal(false)
   })
 
+  it('should show the next form when one fails to open', () => {
+    // creates the dialog
+    respondToShow(form)
+    root.querySelector('.briskine-form-cancel').click()
+    vi.spyOn(dialog(), 'showModal').mockImplementationOnce(() => {
+      throw new DOMException('Invalid state', 'InvalidStateError')
+    })
+
+    expect(respondToShow(form)).to.equal(null)
+    expect(dialog().open).to.equal(false)
+    expect(field('name')).to.equal(null)
+
+    expect(respondToShow({...form, id: 'other'})).to.equal(true)
+    expect(dialog().open).to.equal(true)
+  })
+
   it('should sanitize the template', () => {
     respondToShow({
       ...form,
