@@ -166,6 +166,11 @@ export default function createForm ({
     frame.select = choices
     await options.fn(this, {data: frame})
 
+    const duplicate = choices.find((choice, index) => choices.findIndex((c) => c.value === choice.value) !== index)
+    if (duplicate) {
+      throw new Error(`{{#select id="${claimed.id}"}} has more than one option with the value "${duplicate.value}"`)
+    }
+
     const multiple = Boolean(options.hash.multiple)
     const {value, attributes} = register(claimed, options, {
       type: multiple ? 'select-multiple' : 'select',
@@ -196,7 +201,7 @@ export default function createForm ({
       selected
         .map((selectedValue) => {
           const choice = choices.find((c) => c.value === selectedValue)
-          return choice?.html ? selectedValue : escapeExpression(selectedValue)
+          return choice?.html ?? escapeExpression(selectedValue)
         })
         .join(', ')
     )
@@ -217,11 +222,11 @@ export default function createForm ({
       // added before rendering, to keep the template order
       const choice = {
         label: String(options.hash.label),
-        value: '',
-        html: true,
+        value: String(options.hash.value ?? options.hash.label),
+        html: '',
       }
       choices.push(choice)
-      choice.value = String(await options.fn(this))
+      choice.html = String(await options.fn(this))
       return ''
     }
 
@@ -229,7 +234,6 @@ export default function createForm ({
     choices.push({
       label: String(label),
       value: String(options.hash.value ?? label),
-      html: false,
     })
     return ''
   }

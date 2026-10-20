@@ -2,6 +2,7 @@ import { expect, describe, it, beforeAll, afterAll, vi } from 'vitest'
 
 import parseTemplate, { createSession, renderTemplate } from '../utils/parse-template.js'
 import { escapeExpression } from '../../briskbars/briskbars.js'
+import { cursorMarker } from '../cursors/cursors.js'
 
 function premium () {
   window.browser.runtime.sendMessage = async ({type}) => {
@@ -207,7 +208,36 @@ describe('form handlebars helpers', () => {
       const blocks = '{{#select id="intro"}}{{#option label="Long"}}<p>Dear {{name}},</p>{{/option}}{{option "Short"}}{{/select}}'
       const session = await createSession({name: 'Jane & co'})
       expect(await renderTemplate(blocks, session)).to.equal('<p>Dear Jane &amp; co,</p>')
-      expect(await renderTemplate(blocks, session, 'form')).to.contain('<option value="&lt;p&gt;Dear Jane &amp;amp; co,&lt;/p&gt;" selected>Long</option>')
+      expect(await renderTemplate(blocks, session, 'form')).to.contain('<option value="Long" selected>Long</option>')
+    })
+
+    it('should render the current html of the selected block option', async () => {
+      const blocks = '{{input id="name"}}{{#select id="intro"}}{{option "Short"}}{{#option label="Long"}}<p>Dear {{@form.name}},</p>{{/option}}{{/select}}'
+      const session = await createSession()
+      Object.assign(session.values, {name: 'Ann', intro: 'Long'})
+      await renderTemplate(blocks, session, 'form')
+      session.values.name = 'Anna'
+      expect(await renderTemplate(blocks, session, 'form')).to.contain('<option value="Long" selected>Long</option>')
+      expect(await renderTemplate(blocks, session)).to.equal('Anna<p>Dear Anna,</p>')
+    })
+
+    it('should keep the cursor in block options', async () => {
+      const {html} = await render('{{#select id="intro"}}{{#option label="Long"}}<p>Hi {{cursor}}</p>{{/option}}{{/select}}')
+      expect(html).to.equal(`<p>Hi ${cursorMarker}${cursorMarker}</p>`)
+    })
+
+    it('should select a block option by value', async () => {
+      const {html} = await render('{{#select id="intro" value="long"}}{{#option label="Short"}}Hi{{/option}}{{#option label="Long" value="long"}}Hello there{{/option}}{{/select}}')
+      expect(html).to.equal('Hello there')
+    })
+
+    it('should insert nothing for an empty block option', async () => {
+      const {html} = await render('{{#select id="intro"}}{{#option label="None"}}{{/option}}{{/select}}')
+      expect(html).to.equal('')
+    })
+
+    it('should throw for options with the same value', async () => {
+      expect(await parseTemplate('{{#select id="a"}}{{#option label="Long"}}a{{/option}}{{option "Long"}}{{/select}}')).to.equal('<pre>{{#select id="a"}} has more than one option with the value "Long"</pre>')
     })
 
     it('should throw for an option outside a select', async () => {
