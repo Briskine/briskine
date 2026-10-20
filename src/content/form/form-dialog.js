@@ -91,7 +91,8 @@ function FormDialog () {
 
   // the open form: its id, the frame that renders it, and the changed values
   let current = null
-  let renderCount = 0
+  let rendering = false
+  let stale = false
 
   function update (html) {
     Idiomorph.morph(content, prepare(html), {
@@ -125,16 +126,8 @@ function FormDialog () {
     return true
   }
 
-  async function change (e) {
-    const fieldId = e.target?.dataset?.formId
-    if (!current || !fieldId) {
-      return
-    }
-
-    current.values[fieldId] = readValue(e.target)
-
+  async function render () {
     const {id, frameId, values} = current
-    const count = ++renderCount
     const response = await relay({
       event: eventFormRender,
       details: {
@@ -146,8 +139,8 @@ function FormDialog () {
       debug(['form render', err], 'error')
     })
 
-    // a newer render started, or the form was closed
-    if (count !== renderCount || current?.id !== id) {
+    // values changed during the render, or the form was closed
+    if (stale || current?.id !== id) {
       return
     }
 
@@ -160,6 +153,27 @@ function FormDialog () {
     if (typeof response?.html === 'string') {
       update(response.html)
     }
+  }
+
+  async function change (e) {
+    const fieldId = e.target?.dataset?.formId
+    if (!current || !fieldId) {
+      return
+    }
+
+    current.values[fieldId] = readValue(e.target)
+
+    if (rendering) {
+      stale = true
+      return
+    }
+
+    rendering = true
+    do {
+      stale = false
+      await render()
+    } while (stale && current)
+    rendering = false
   }
 
   function close (insert = false) {

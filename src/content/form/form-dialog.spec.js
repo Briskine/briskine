@@ -181,14 +181,19 @@ describe('form dialog', () => {
       `,
     })
 
+    const rendered = (count) => vi.waitFor(() => expect(relayed(eventFormRender).length).to.equal(count))
+
     field('ps').checked = true
     field('ps').dispatchEvent(new Event('input', {bubbles: true, composed: true}))
+    await rendered(1)
     typeIn(field('amount'), '25')
+    await rendered(2)
     field('tools').options[1].selected = true
     field('tools').dispatchEvent(new Event('input', {bubbles: true, composed: true}))
+    await rendered(3)
     typeIn(field('amount'), '')
+    await rendered(4)
 
-    await vi.waitFor(() => expect(relayed(eventFormRender).length).to.equal(4))
     expect(relayed(eventFormRender).map((request) => request.details.values)).to.deep.equal([
       {ps: true},
       {ps: true, amount: 25},
@@ -197,7 +202,7 @@ describe('form dialog', () => {
     ])
   })
 
-  it('should ignore an older render', async () => {
+  it('should render once more with the latest values', async () => {
     let first
     respond = ({details}) => {
       if (details.values.name === 'J') {
@@ -208,12 +213,35 @@ describe('form dialog', () => {
     respondToShow(form)
 
     typeIn(field('name'), 'J')
+    typeIn(field('name'), 'Ja')
+    typeIn(field('name'), 'Jan')
     typeIn(field('name'), 'Jane')
-    await vi.waitFor(() => expect(root.querySelector('.briskine-form-content').textContent).to.equal('newer'))
+    expect(relayed(eventFormRender).length).to.equal(1)
 
     first({html: 'older'})
-    await new Promise((resolve) => setTimeout(resolve))
-    expect(root.querySelector('.briskine-form-content').textContent).to.equal('newer')
+    await vi.waitFor(() => expect(root.querySelector('.briskine-form-content').textContent).to.equal('newer'))
+    expect(relayed(eventFormRender).map((request) => request.details.values.name)).to.deep.equal(['J', 'Jane'])
+  })
+
+  it('should not show a render when values changed during it', async () => {
+    let first
+    let second
+    respond = ({details}) => {
+      if (details.values.name === 'J') {
+        return new Promise((resolve) => first = resolve)
+      }
+      return new Promise((resolve) => second = resolve)
+    }
+    respondToShow(form)
+
+    typeIn(field('name'), 'J')
+    typeIn(field('name'), 'Jane')
+    first({html: 'older'})
+    await vi.waitFor(() => expect(second).to.be.a('function'))
+    expect(root.querySelector('.briskine-form-content').textContent).not.to.equal('older')
+
+    second({html: 'newer'})
+    await vi.waitFor(() => expect(root.querySelector('.briskine-form-content').textContent).to.equal('newer'))
   })
 
   it('should show render errors', async () => {
