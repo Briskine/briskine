@@ -48,6 +48,8 @@ async function open (template = 'Hi {{input id="name" value="there"}}{{cursor}}'
     session,
     title: 'Title',
   })
+  // some tests expect a rejection, after it happened
+  filled.catch(() => {})
   const {details} = await shown()
   return {session, filled, id: details.id}
 }
@@ -136,18 +138,25 @@ describe('form', () => {
     expect(await send(eventFormRender, {id})).to.equal(null)
   })
 
-  it('should cancel when the top frame does not show the form', async () => {
-    showResponse = null
+  it('should cancel when another form is open', async () => {
+    showResponse = false
     const {filled} = await open()
 
     expect(await filled).to.equal(false)
   })
 
-  it('should cancel when the top frame can not be reached', async () => {
+  it('should fail when the top frame does not answer', async () => {
+    showResponse = null
+    const {filled} = await open()
+
+    await expect(filled).rejects.toThrow('can\'t be shown on this page')
+  })
+
+  it('should fail when the top frame can not be reached', async () => {
     showResponse = new Error('Could not establish connection')
     const {filled} = await open()
 
-    expect(await filled).to.equal(false)
+    await expect(filled).rejects.toThrow('can\'t be shown on this page')
   })
 
   it('should cancel open forms when destroyed', async () => {

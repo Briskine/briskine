@@ -21,14 +21,16 @@ async function renderForm (form) {
   return html.replaceAll(cursorMarker, '')
 }
 
-// resolves true to insert the template, false when the form was canceled
+// resolves true to insert the template, false when the form was canceled.
+// rejects when the top frame can't show the form.
 export default async function fillForm ({template = '', session, title = ''}) {
   const id = crypto.randomUUID()
   const form = {template, session}
   const html = await renderForm(form)
 
-  return new Promise((resolve) => {
+  return new Promise((resolve, reject) => {
     form.resolve = resolve
+    form.reject = reject
     forms.set(id, form)
 
     relay({
@@ -41,15 +43,31 @@ export default async function fillForm ({template = '', session, title = ''}) {
       frameId: topFrameId,
     })
     .then((shown) => {
-      if (!shown) {
+      // another form is open
+      if (shown === false) {
         closeForm({id})
+        return
+      }
+
+      if (shown !== true) {
+        failForm(id)
       }
     })
     .catch((err) => {
       debug(['fillForm', err], 'error')
-      closeForm({id})
+      failForm(id)
     })
   })
+}
+
+function failForm (id) {
+  const form = forms.get(id)
+  if (!form) {
+    return
+  }
+
+  forms.delete(id)
+  form.reject(new Error('This template has a form, which can\'t be shown on this page.'))
 }
 
 async function respondToRender ({id, values = {}} = {}) {

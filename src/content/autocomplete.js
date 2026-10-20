@@ -106,13 +106,16 @@ export default async function autocomplete ({ template }) {
       template: withAttachments,
       session,
       title: template.title,
-    })
+    }).catch((err) => err)
     await restoreSelection(element, range)
-    if (!insert) {
+
+    if (insert instanceof Error) {
+      parsed = `<div>${insert.message}</div>`
+    } else if (insert) {
+      parsed = await parseTemplate(withAttachments, data, session)
+    } else {
       return
     }
-
-    parsed = await parseTemplate(withAttachments, data, session)
   }
 
   const html = sanitize(parsed)
