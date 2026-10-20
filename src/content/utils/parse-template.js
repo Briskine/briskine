@@ -1,5 +1,5 @@
 /* globals ENV */
-import {getTemplates, getPlan} from '../../store/store-content.js'
+import {getTemplates, isFreePlan} from '../../store/store-content.js'
 import parseContext from './parse-context.js'
 import PremiumError from './premium-error.js'
 import debug from '../../debug.js'
@@ -67,8 +67,7 @@ async function getPartials () {
 
 async function checkFree () {
   try {
-    const plan = await getPlan()
-    return !plan || plan === 'free'
+    return await isFreePlan()
   } catch (err) {
     if (err !== 'logged-out') {
       debug(['checkFree', err], 'warn')

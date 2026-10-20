@@ -11,8 +11,8 @@ let showResponse = true
 
 function respondToRelay () {
   window.browser.runtime.sendMessage = async ({type, data}) => {
-    if (type === 'getPlan') {
-      return 'team'
+    if (type === 'isFreePlan') {
+      return false
     }
 
     if (type === 'formRelay') {

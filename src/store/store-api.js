@@ -369,18 +369,13 @@ async function setSignedInUser (user) {
   return user
 }
 
-// the plan of the user's active customer
-async function getUserPlan (user) {
+async function isFree (user) {
   const customers = await getCollection({
     user: user,
     collection: 'customers'
   })
-  return customers[user.customer]?.subscription?.plan || ''
-}
-
-async function isFree (user) {
-  const plan = await getUserPlan(user)
-  return !plan || plan === 'free'
+  const customer = customers[user.customer]
+  return customer.subscription.plan === 'free'
 }
 
 export async function getTemplates () {
@@ -512,8 +507,8 @@ export async function getCustomer (customerId) {
   return customers[customerId]
 }
 
-export async function getPlan () {
-  return getUserPlan(await getSignedInUser())
+export async function isFreePlan () {
+  return isFree(await getSignedInUser())
 }
 
 async function getActiveCustomer (user = {}) {

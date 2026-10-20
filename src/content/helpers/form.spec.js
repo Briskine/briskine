@@ -10,8 +10,8 @@ function premium () {
       return {email: 'john@briskine.com'}
     }
 
-    if (type === 'getPlan') {
-      return 'team'
+    if (type === 'isFreePlan') {
+      return false
     }
 
     return []
@@ -322,8 +322,8 @@ describe('form handlebars helpers on the free plan', () => {
         return {email: 'john@briskine.com'}
       }
 
-      if (type === 'getPlan') {
-        return 'free'
+      if (type === 'isFreePlan') {
+        return true
       }
 
       return []
@@ -347,7 +347,7 @@ describe('form handlebars helpers on the free plan', () => {
 describe('form handlebars helpers when logged-out', () => {
   beforeAll(() => {
     window.browser.runtime.sendMessage = async ({type}) => {
-      if (type === 'getPlan') {
+      if (type === 'isFreePlan') {
         return {storeError: 'logged-out'}
       }
 
