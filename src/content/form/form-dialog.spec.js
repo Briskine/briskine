@@ -130,6 +130,17 @@ describe('form dialog', () => {
     expect(content.innerHTML).to.equal('b<img src="x">ok')
   })
 
+  it('should not let the template submit or reset the form', () => {
+    respondToShow({
+      ...form,
+      html: '<input type="submit"><input type="IMAGE" src="x"><input type="reset"><input type="text" id="field-name-0" data-form-id="name">',
+    })
+
+    const content = root.querySelector('.briskine-form-content')
+    expect(content.querySelectorAll('input').length).to.equal(1)
+    expect(field('name')).to.be.instanceOf(HTMLInputElement)
+  })
+
   describe('hidden blocks', () => {
     const start = '<span data-briskine-hidden="start"></span>'
     const end = '<span data-briskine-hidden="end"></span>'

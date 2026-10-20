@@ -62,6 +62,7 @@ function wrapHidden (root) {
 function prepare (html = '') {
   const template = document.createElement('template')
   template.innerHTML = sanitize(html, sanitizeOptions)
+  template.content.querySelectorAll('input:is([type="submit" i], [type="image" i], [type="reset" i])').forEach((input) => input.remove())
   wrapHidden(template.content)
   return template.innerHTML
 }

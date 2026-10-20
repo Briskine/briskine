@@ -84,10 +84,15 @@ async function selectShortcut (element, shortcut = '') {
   return false
 }
 
-// give focus back to the editor, after the form
+// give focus back to the editor, after the form.
+// the editor can change its content while the form is open.
 async function restoreSelection (element, range) {
   element.focus({ preventScroll: true })
-  if (isContentEditable(element) && range) {
+  if (
+    isContentEditable(element)
+    && range
+    && element.contains(range.commonAncestorContainer)
+  ) {
     await setSelectionRange(element, range)
   }
 }
@@ -107,6 +112,12 @@ export default async function autocomplete ({ template }) {
       session,
       title: template.title,
     }).catch((err) => err)
+
+    // the editor was closed while the form was open
+    if (!element.isConnected) {
+      return
+    }
+
     await restoreSelection(element, range)
 
     if (insert instanceof Error) {
