@@ -306,13 +306,16 @@ function FormDialog () {
 }
 
 customElements.define(formTagName, class extends HTMLElement {
+  #shadowRoot = null
+
   connectedCallback () {
     if (!this.isConnected) {
       return
     }
 
-    const shadowRoot = this.attachShadow({mode: 'closed'})
-    this.disposer = render(() => <FormDialog />, shadowRoot)
+    // the page can remove and add our element again
+    this.#shadowRoot ??= this.attachShadow({mode: 'closed'})
+    this.disposer = render(() => <FormDialog />, this.#shadowRoot)
   }
   disconnectedCallback () {
     this.disposer?.()
@@ -320,8 +323,8 @@ customElements.define(formTagName, class extends HTMLElement {
 })
 
 export function respondToShow (details = {}) {
-  if (!formInstance) {
-    formInstance = document.createElement(formTagName)
+  formInstance ??= document.createElement(formTagName)
+  if (!formInstance.isConnected) {
     document.documentElement.appendChild(formInstance)
   }
 

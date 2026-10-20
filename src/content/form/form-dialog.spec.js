@@ -103,6 +103,23 @@ describe('form dialog', () => {
     expect(dialog().open).to.equal(true)
   })
 
+  it('should show the form when the page removed the dialog', () => {
+    respondToShow(form)
+    root.querySelector('.briskine-form-cancel').click()
+    const host = root.host
+
+    host.remove()
+    expect(respondToShow(form)).to.equal(true)
+    expect(dialog().open).to.equal(true)
+    root.querySelector('.briskine-form-cancel').click()
+
+    host.remove()
+    document.body.appendChild(host)
+    expect(respondToShow({...form, id: 'other'})).to.equal(true)
+    expect(dialog().open).to.equal(true)
+    expect(document.querySelectorAll(host.tagName).length).to.equal(1)
+  })
+
   it('should sanitize the template', () => {
     respondToShow({
       ...form,
