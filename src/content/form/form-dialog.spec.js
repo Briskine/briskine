@@ -284,6 +284,16 @@ describe('form dialog', () => {
     expect(dialog().open).to.equal(false)
   })
 
+  it('should cancel with the close button', async () => {
+    respondToShow(form)
+
+    root.querySelector('.briskine-form-close').click()
+
+    await vi.waitFor(() => expect(relayed(eventFormClose).length).to.equal(1))
+    expect(relayed(eventFormClose)[0].details.insert).to.equal(false)
+    expect(dialog().open).to.equal(false)
+  })
+
   it('should cancel with escape', async () => {
     respondToShow(form)
 

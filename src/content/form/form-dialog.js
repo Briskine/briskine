@@ -237,7 +237,16 @@ function FormDialog () {
     <dialog ref={dialog} class="briskine-form briskine-ui" on:cancel={cancel} on:close={() => close(false)}>
       <style>{styles}</style>
       <form ref={form} method="dialog" on:submit={submit} on:input={change}>
-        <header class="briskine-form-header modal-header">{title()}</header>
+        <header class="briskine-form-header modal-header">
+          {title()}
+          <button
+            type="button"
+            class="btn btn-close briskine-form-close"
+            title="Close"
+            aria-label="Close"
+            on:click={() => close(false)}
+            />
+        </header>
         <div ref={content} class="briskine-form-content modal-body" />
         <div class="briskine-form-error alert alert-danger" hidden={!error()}>{error()}</div>
         <footer class="briskine-form-footer modal-footer">
