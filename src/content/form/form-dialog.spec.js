@@ -23,6 +23,14 @@ function typeIn (input, value) {
   input.dispatchEvent(new Event('input', {bubbles: true, composed: true}))
 }
 
+function pressEscape () {
+  field('name').dispatchEvent(new KeyboardEvent('keydown', {
+    key: 'Escape',
+    bubbles: true,
+    composed: true,
+  }))
+}
+
 function relayed (event) {
   return requests.filter((request) => request.event === event)
 }
@@ -366,7 +374,9 @@ describe('form dialog', () => {
     vi.useFakeTimers()
 
     respondToShow(form)
-    dialog().dispatchEvent(new Event('cancel', {cancelable: true}))
+    pressEscape()
+    // without a cancel event, like chrome without user activation
+    dialog().close()
 
     document.body.dispatchEvent(new KeyboardEvent('keyup', {key: 'a', bubbles: true}))
     document.body.dispatchEvent(new KeyboardEvent('keyup', {key: 'Escape', bubbles: true}))
@@ -384,7 +394,8 @@ describe('form dialog', () => {
     vi.useFakeTimers()
 
     respondToShow(form)
-    dialog().dispatchEvent(new Event('cancel', {cancelable: true}))
+    pressEscape()
+    dialog().close()
     vi.advanceTimersByTime(1000)
 
     document.body.dispatchEvent(new KeyboardEvent('keyup', {key: 'Escape', bubbles: true}))

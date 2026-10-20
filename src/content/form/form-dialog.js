@@ -208,8 +208,12 @@ function FormDialog () {
 
   function cancel (e) {
     e.preventDefault()
-    // some websites close their own modal on the escape keyup.
-    // the keyup can land in the editor iframe, so stop waiting for it after a moment.
+    close(false)
+  }
+
+  // some websites close their own modal on the escape keyup.
+  // the keyup can land in the editor iframe, so stop waiting for it after a moment.
+  function stopEscapeKeyup () {
     const keyupController = new AbortController()
     window.addEventListener('keyup', (e) => {
       if (e.key === 'Escape') {
@@ -221,7 +225,7 @@ function FormDialog () {
       signal: keyupController.signal,
     })
     setTimeout(() => keyupController.abort(), 1000)
-    close(false)
+    abortController.signal.addEventListener('abort', () => keyupController.abort())
   }
 
   let abortController
@@ -234,9 +238,18 @@ function FormDialog () {
 
     // registered first, stopPageEvents hides the event from our own listeners
     window.addEventListener('keydown', (e) => {
-      if (e.target === formInstance && e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
+      if (e.target !== formInstance) {
+        return
+      }
+
+      if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
         e.preventDefault()
         form.requestSubmit()
+      }
+
+      // chrome can close the dialog without a cancel event
+      if (e.key === 'Escape') {
+        stopEscapeKeyup()
       }
     }, listenerOptions)
     stopPageEvents(dialog, abortController.signal)
