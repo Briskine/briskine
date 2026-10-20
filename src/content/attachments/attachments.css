@@ -18,10 +18,10 @@
   vertical-align: middle;
 }
 
-[contenteditable=true] .briskine-attachment:hover {
+:read-write .briskine-attachment:hover {
   background-color: #e9eceb !important;
 }
 
-[contenteditable=true] .briskine-attachment:hover button {
+:read-write .briskine-attachment:hover button {
   display: inline-block !important;
 }
