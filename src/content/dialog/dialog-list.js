@@ -52,17 +52,8 @@ export default function DialogList (originalProps) {
     })
   }
 
-  let lastX = 0
-  let lastY = 0
-  function onMouseOver (e) {
-    if (e.screenX === lastX && e.screenY === lastY) {
-      return
-    }
-
-    lastX = e.screenX
-    lastY = e.screenY
-
-    // hover templates
+  // mouseover also fires when the list changes under a still pointer
+  function onMouseMove (e) {
     const container = e.target.closest('[data-id]')
     if (container) {
       setActive(container.dataset.id)
@@ -125,7 +116,7 @@ export default function DialogList (originalProps) {
       ref={element}
       class="dialog-list"
       on:click={onClick}
-      on:mouseover={onMouseOver}
+      on:mousemove={onMouseMove}
       >
       <ul class="list-unstyled">
         <Show
