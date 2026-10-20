@@ -87,7 +87,9 @@ export async function createSession (data = {}) {
     context: await parseContext(data),
     partials: await getPartials(),
     now: moment(),
-    randoms: [],
+    // random numbers per template,
+    // so the body and the extra fields get different randoms.
+    randoms: new Map(),
     cache: {
       site: new Map(),
       eachSite: new Map(),
@@ -105,10 +107,12 @@ export async function createSession (data = {}) {
 // mode is form, to render form fields, or final, to render their values
 export async function renderTemplate (template = '', session, mode = 'final') {
   const fields = new Map()
+  const randoms = session.randoms.get(template) ?? []
+  session.randoms.set(template, randoms)
   const renderHelpers = {
     ...helpers,
     moment: createMoment(session.now),
-    random: createRandom(session.randoms),
+    random: createRandom(randoms),
     site: createSite(session.cache.site),
     eachSite: createEachSite(session.cache.eachSite),
     css: createCss(session.cache.css),

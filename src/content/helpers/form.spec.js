@@ -288,6 +288,19 @@ describe('form handlebars helpers', () => {
       }
     })
 
+    it('should pick random values separately for each template', async () => {
+      const random = Math.random
+      const numbers = [0.1, 0.9]
+      Math.random = () => numbers.shift()
+
+      const session = await createSession()
+      expect(await renderTemplate('{{random "a" "b"}}', session)).to.equal('a')
+      expect(await renderTemplate('{{random "x" "y"}}', session)).to.equal('y')
+      expect(await renderTemplate('{{random "a" "b"}}', session)).to.equal('a')
+
+      Math.random = random
+    })
+
     it('should use the same time on every render', async () => {
       const session = await createSession()
       const template = '{{moment format="HH:mm:ss.SSS"}}'
