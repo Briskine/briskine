@@ -5,13 +5,13 @@
  * even when the editor is in an iframe.
  */
 
-import { eventFormShow, eventFormRender, eventFormClose } from '../../config.js'
+import { eventFormShow, eventFormRender, eventFormClose, formRelayRequest } from '../../config.js'
 import { on, off, createRequest } from '../../store/store-content.js'
 import { renderTemplate } from '../utils/parse-template.js'
 import { cursorMarker } from '../cursors/cursors.js'
 import debug from '../../debug.js'
 
-const relay = createRequest('formRelay')
+const relay = createRequest(formRelayRequest)
 const topFrameId = 0
 
 const forms = new Map()

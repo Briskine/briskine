@@ -10,7 +10,8 @@ import sanitize from './utils/sanitize.js'
 import htmlToText from './utils/html-to-text.js'
 import debug from '../debug.js'
 import { getWord, selectWord } from './utils/word.js'
-import { getSelectionRange, setSelectionRange } from './utils/selection.js'
+import { getSelectionRange } from './utils/selection.js'
+import restoreSelection from './utils/restore-selection.js'
 import { updateTemplateStats } from '../store/store-content.js'
 import { getActiveElement } from './utils/active-element.js'
 import { selectFirstCursor } from './cursors/cursors.js'
@@ -82,19 +83,6 @@ async function selectShortcut (element, shortcut = '') {
   }
 
   return false
-}
-
-// give focus back to the editor, after the form.
-// the editor can change its content while the form is open.
-async function restoreSelection (element, range) {
-  element.focus({ preventScroll: true })
-  if (
-    isContentEditable(element)
-    && range
-    && element.contains(range.commonAncestorContainer)
-  ) {
-    await setSelectionRange(element, range)
-  }
 }
 
 export default async function autocomplete ({ template }) {

@@ -7,16 +7,15 @@
 
 import browser from 'webextension-polyfill'
 
-import { eventFormShow, eventFormRender, eventFormClose } from '../config.js'
+import { eventFormShow, eventFormRender, eventFormClose, formRelayRequest } from '../config.js'
 import trigger from './background-trigger.js'
 
-const relayRequest = 'formRelay'
 const formEvents = [eventFormShow, eventFormRender, eventFormClose]
 
 browser.runtime.onMessage.addListener((req, sender, sendResponse) => {
   const {event, details, frameId} = req?.data || {}
   if (
-    req?.type !== relayRequest
+    req?.type !== formRelayRequest
     || sender.id !== browser.runtime.id
     || !sender.tab
     || !formEvents.includes(event)

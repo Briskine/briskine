@@ -3,7 +3,8 @@
  */
 import autocomplete from './autocomplete.js'
 import getEventTarget from './utils/event-target.js'
-import { getSelectionRange, setSelectionRange } from './utils/selection.js'
+import { getSelectionRange } from './utils/selection.js'
+import restoreSelection from './utils/restore-selection.js'
 import { getWord } from './utils/word.js'
 import { isContentEditable } from './editors/editor-contenteditable.js'
 import { isTextfieldEditor } from './editors/editor-textfield.js'
@@ -64,12 +65,7 @@ async function keyboardAutocomplete (e) {
   // stopImmediatePropagation to have priority over cursors
   e.stopImmediatePropagation()
 
-  // restore selection
-  element.focus({ preventScroll: true })
-  if (
-    isContentEditable(element)
-    && cachedRange
-  ) {
+  if (cachedRange) {
     // force restore endOfsset in case other characters were added after the shortcut.
     // setEnd throws past the end, eg. when the editor removed characters instead.
     const endLength = cachedEndContainer.nodeType === Node.TEXT_NODE
@@ -78,9 +74,9 @@ async function keyboardAutocomplete (e) {
     if (cachedEndOffset && cachedEndOffset <= endLength) {
       cachedRange.setEnd(cachedEndContainer, cachedEndOffset)
     }
-
-    await setSelectionRange(element, cachedRange)
   }
+
+  await restoreSelection(element, cachedRange)
 
   autocomplete({
     template,

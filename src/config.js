@@ -35,6 +35,7 @@ export const eventSiteMatches = 'briskine-site-matches'
 export const eventFormShow = 'briskine-form-show'
 export const eventFormRender = 'briskine-form-render'
 export const eventFormClose = 'briskine-form-close'
+export const formRelayRequest = 'formRelay'
 
 // tag name prefixes for the custom elements of our own ui
 export const dialogTagPrefix = 'b-dialog-'

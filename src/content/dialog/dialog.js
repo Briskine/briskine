@@ -12,7 +12,8 @@ import {isContentEditable} from '../editors/editor-contenteditable.js'
 import { isTextfieldEditor } from '../editors/editor-textfield.js'
 import {getEditableCaret, getContentEditableCaret, getDialogPosition} from './dialog-position.js'
 import autocomplete from '../autocomplete.js'
-import { getSelectionRange, setSelectionRange }  from '../utils/selection.js'
+import { getSelectionRange }  from '../utils/selection.js'
+import restoreSelection from '../utils/restore-selection.js'
 import { getActiveElement } from '../utils/active-element.js'
 import stopPageEvents from '../utils/stop-page-events.js'
 import { isBubbleElement, scopeTagName } from '../utils/extension-element.js'
@@ -135,25 +136,9 @@ function Dialog (originalProps) {
     }
   }
 
-    async function restoreSelection () {
-    // will also hide dialog because of focusout
-    editor.focus({ preventScroll: true })
-
-    if (
-      isContentEditable(editor)
-      && cachedRange
-      // if all the nodes are destroyed in the editor, the range resets and moves to the top.
-      // (e.g., linkedin message editor in shadow dom likes to re-create the
-      // entire editor dom structure on focus)
-      // this will also be true when the editor is empty, when focus() is enough.
-      && !(
-        cachedRange.startContainer === editor
-        && cachedRange.collapsed === true
-        && cachedRange.startOffset === 0
-      )
-    ) {
-      await setSelectionRange(editor, cachedRange)
-    }
+  // will also hide dialog because of focusout
+  function restoreEditorSelection () {
+    return restoreSelection(editor, cachedRange)
   }
 
   function hideOnFocusout (e) {
@@ -170,7 +155,7 @@ function Dialog (originalProps) {
       // when closing our dialog.
       window.addEventListener('keyup', (e) => { e.stopPropagation() }, { capture: true, once: true })
 
-      restoreSelection()
+      restoreEditorSelection()
     }
   }
 
@@ -196,7 +181,7 @@ function Dialog (originalProps) {
   })
 
   async function insertTemplate (template) {
-    await restoreSelection()
+    await restoreEditorSelection()
 
     autocomplete({
       template: template,
