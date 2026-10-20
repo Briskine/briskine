@@ -248,6 +248,17 @@ describe('form handlebars helpers', () => {
       expect(await parseTemplate('{{#select id="a"}}{{#option label="Long"}}a{{/option}}{{option "Long"}}{{/select}}')).to.equal('<pre>{{#select id="a"}} has more than one option with the value "Long"</pre>')
     })
 
+    it('should default to the first option for an unknown value', async () => {
+      const template = '{{#select id="tone" value="Neutral"}}{{option "Formal"}}{{option "Casual"}}{{/select}}'
+      expect((await render(template)).html).to.equal('Formal')
+      expect((await render(template, {}, 'form')).html).to.contain('<option value="Formal" selected>Formal</option>')
+    })
+
+    it('should only select known values in multiple selects', async () => {
+      const {html} = await render('{{#select id="tools" multiple=true value="B"}}{{option "A"}}{{option "B"}}{{/select}}{{#select id="none" multiple=true value="X"}}{{option "A"}}{{/select}}')
+      expect(html).to.equal('B')
+    })
+
     it('should throw for an option outside a select', async () => {
       expect(await parseTemplate('{{option "Formal"}}')).to.equal('<pre>{{option}} must be used inside {{#select}}</pre>')
     })

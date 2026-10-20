@@ -107,11 +107,11 @@ export default async function autocomplete ({ template }) {
 
   // templates with form fields are filled in before inserting
   if (session.fields.size) {
-    const insert = await fillForm({
+    const result = await fillForm({
       template: withAttachments,
       session,
       title: template.title,
-    }).catch((err) => err)
+    }).then((insert) => ({insert}), (error) => ({error}))
 
     // the editor was closed while the form was open
     if (!element.isConnected) {
@@ -120,9 +120,9 @@ export default async function autocomplete ({ template }) {
 
     await restoreSelection(element, range)
 
-    if (insert instanceof Error) {
-      parsed = `<div>${insert.message}</div>`
-    } else if (insert) {
+    if (Object.hasOwn(result, 'error')) {
+      parsed = `<div>${result.error?.message || String(result.error)}</div>`
+    } else if (result.insert) {
       parsed = await parseTemplate(withAttachments, data, session)
     } else {
       return

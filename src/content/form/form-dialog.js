@@ -238,7 +238,9 @@ function FormDialog () {
       signal: keyupController.signal,
     })
     setTimeout(() => keyupController.abort(), 1000)
-    abortController.signal.addEventListener('abort', () => keyupController.abort())
+    abortController.signal.addEventListener('abort', () => keyupController.abort(), {
+      signal: keyupController.signal,
+    })
   }
 
   let abortController

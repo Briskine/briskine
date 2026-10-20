@@ -52,12 +52,16 @@ function inputDefault (type, hash = {}) {
   return hash.value ?? ''
 }
 
+// value="..." only selects existing options
 function selectDefault (hash = {}, choices = []) {
+  const values = [].concat(hash.value ?? []).map(String)
+    .filter((value) => choices.some((choice) => choice.value === value))
+
   if (toBoolean(hash.multiple)) {
-    return hash.value === undefined ? [] : [].concat(hash.value).map(String)
+    return values
   }
 
-  return hash.value === undefined ? (choices[0]?.value ?? '') : String(hash.value)
+  return values[0] ?? choices[0]?.value ?? ''
 }
 
 export default function createForm ({
