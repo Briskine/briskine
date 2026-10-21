@@ -10,7 +10,6 @@ import {
   setup as storeSetup,
   on as storeOn,
 } from '../store/store-content.js'
-import setTheme from './popup-theme.js'
 
 export default function PopupContainer () {
   const [loggedIn, setLoggedIn] = createSignal(null)
@@ -28,7 +27,6 @@ export default function PopupContainer () {
   }
 
   onMount(() => {
-    setTheme()
     storeSetup()
     checkLogin()
 
@@ -51,7 +49,7 @@ export default function PopupContainer () {
 
   return (
     <div
-      class={`popup-container ${REGISTER_DISABLED ? 'popup-register-disabled' : ''}`}
+      class={`popup-container briskine-ui ${REGISTER_DISABLED ? 'popup-register-disabled' : ''}`}
       >
         <Show when={loggedIn() === true}>
           <PopupDashboard />

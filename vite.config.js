@@ -4,8 +4,6 @@ import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 import { defineConfig } from 'vite'
-import purgecss from '@fullhuman/postcss-purgecss'
-import { globSync } from 'glob'
 import { ZipArchive } from 'archiver'
 import firebaseTools from 'firebase-tools'
 
@@ -87,25 +85,6 @@ function generateManifest ({ browser, mode }) {
   // https://github.com/w3c/webextensions/issues/218
 
   return updatedManifestFile
-}
-
-const unpurgedStyles = [
-  path.join(srcPath, 'content', 'dialog'),
-  path.join(srcPath, 'content', 'bubble'),
-]
-
-function purgeExtractedCss (options) {
-  const purge = purgecss(options)
-  return {
-    postcssPlugin: 'briskine-purgecss',
-    OnceExit (root, helpers) {
-      const from = root.source?.input?.file || ''
-      if (unpurgedStyles.some((stylePath) => from.startsWith(stylePath))) {
-        return
-      }
-      return purge.OnceExit(root, helpers)
-    },
-  }
 }
 
 function copyStaticFiles () {
@@ -198,16 +177,6 @@ export default defineConfig(async ({ mode }) => {
     },
 
     plugins: solidPlugins(),
-
-    css: {
-      postcss: {
-        plugins: [
-          purgeExtractedCss({
-            content: globSync(path.join(srcPath, '**/*'), {nodir: true}),
-          }),
-        ],
-      },
-    },
 
     build: {
       outDir: devPath,

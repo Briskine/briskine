@@ -1,0 +1,357 @@
+body {
+  margin: 0;
+  background-color: var(--background-color-highlight);
+}
+
+@media (min-width: 42em) {
+  body {
+    padding: calc(var(--space-4) * 2);
+    min-height: 100%;
+  }
+}
+
+.popup-container {
+  --popup-width: 300px;
+
+  display: flex;
+  flex-direction: column;
+  width: var(--popup-width);
+  min-height: 250px;
+  margin: 0 auto;
+  background-color: var(--background-color);
+}
+
+@media (min-width: 22em) {
+  .popup-container {
+    /* small screen width */
+    width: 100%;
+  }
+}
+
+@media (min-width: 42em) {
+  .popup-container {
+    width: var(--popup-width);
+    border-radius: 4px;
+    box-shadow: 0 10px 8px -4px rgb(0 0 0 / 5%);
+  }
+}
+
+a:not(.btn) {
+  color: var(--link-color);
+  text-decoration: none;
+}
+
+a:not(.btn):hover {
+  color: var(--link-color-hover);
+  text-decoration: underline;
+}
+
+.popup-logo {
+  padding: var(--space-3) var(--space-3) var(--space-2);
+  border-bottom: 1px solid var(--background-color-highlight);
+}
+
+.popup-logo img {
+  display: block;
+}
+
+/* align the logo box with the menu icons
+ */
+.popup-dashboard .popup-logo {
+  padding-left: calc(var(--space-3) + 6px);
+}
+
+/* popup-login
+ */
+.popup-login {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+}
+
+.popup-login-body {
+  display: grid;
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-3);
+}
+
+.popup-login-lead {
+  margin: 0;
+
+  font-weight: 600;
+}
+
+.popup-login-form {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.popup-login-form .alert {
+  margin: 0;
+}
+
+.popup-field {
+  display: grid;
+  gap: var(--space-1);
+}
+
+.popup-field-label {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.btn-forgot {
+  font-size: var(--font-size-small);
+}
+
+.popup-login-footer {
+  margin-top: auto;
+  padding: var(--space-2) var(--space-3);
+  border-top: 1px solid var(--border-color);
+
+  color: var(--text-color-secondary);
+  font-size: var(--font-size-small);
+}
+
+/* popup-dashboard
+ */
+.popup-menu {
+  display: grid;
+  gap: var(--space-1);
+  margin: 0;
+  padding: var(--space-1) var(--space-3) var(--space-2);
+}
+
+.team-selector {
+  padding: var(--space-2) var(--space-3);
+}
+
+.popup-menu a {
+  display: flex;
+  align-items: center;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-small);
+  background-color: var(--item-background-color);
+
+  color: var(--text-color);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.popup-menu a:hover {
+  background-color: var(--border-color);
+
+  color: var(--text-color);
+  text-decoration: none;
+}
+
+.popup-menu a:focus-visible {
+  outline: 0;
+  box-shadow: var(--focus-ring);
+}
+
+.popup-menu .icon {
+  display: inline-flex;
+  margin-right: var(--space-2);
+
+  color: var(--primary-color);
+}
+
+.popup-stats {
+  display: grid;
+  gap: var(--space-2);
+  margin: var(--space-1) var(--space-3) var(--space-2);
+  padding: var(--space-3);
+}
+
+.popup-stats p {
+  margin: 0;
+}
+
+.popup-free.popup-stats {
+  border-top: 1px solid var(--border-color);
+}
+
+.popup-premium.popup-stats {
+  gap: var(--space-1);
+  padding-top: var(--space-1);
+}
+
+.popup-saved {
+  color: var(--text-color-secondary);
+}
+
+.popup-saved strong {
+  color: var(--text-color);
+}
+
+.popup-motivation {
+  color: var(--text-color-secondary);
+}
+
+.popup-meter-group {
+  display: grid;
+  gap: var(--space-1);
+}
+
+.popup-meter-label {
+  font-size: var(--font-size-small);
+}
+
+.popup-meter {
+  height: 6px;
+  overflow: hidden;
+  border-radius: 3px;
+  background: var(--border-color);
+}
+
+.popup-meter span {
+  display: block;
+  height: 100%;
+  border-radius: 3px;
+  background: var(--primary-color);
+}
+
+.popup-meter-near span {
+  background: var(--yellow-color);
+}
+
+.popup-meter-full span {
+  background: var(--danger-color);
+}
+
+.popup-upgrade-reason {
+  color: var(--text-color-secondary);
+  font-size: var(--font-size-small);
+}
+
+.btn-wide {
+  display: block;
+  width: 100%;
+  padding: .6em 1em;
+
+  font-weight: bold;
+  text-align: center;
+}
+
+.popup-status {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  border-top: 1px solid var(--border-color);
+  overflow: hidden;
+
+  font-size: var(--font-size-small);
+}
+
+.popup-user,
+.btn-logout {
+  padding: 0;
+
+  color: var(--text-color-secondary);
+  font-size: inherit;
+}
+
+.popup-user:hover,
+.btn-logout:hover {
+  color: var(--link-color-hover);
+}
+
+.btn-logout {
+  flex-shrink: 0;
+  margin-left: auto;
+
+  white-space: nowrap;
+}
+
+.popup-user {
+  position: relative;
+  overflow: hidden;
+  padding-left: 1em;
+
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.popup-user:before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  transform: translateY(-50%);
+
+  width: 6px;
+  height: 6px;
+  background-color: var(--success-color);
+  border-radius: 100%;
+}
+
+.label-premium {
+  padding: .1em .4em;
+
+  cursor: default;
+}
+
+/* sync button
+ */
+.btn-sync {
+  display: flex;
+  margin-top: auto;
+  margin-bottom: auto;
+  padding: 3px;
+  border: 0;
+  border-radius: 100%;
+  background-color: var(--success-color);
+  transition: background-color .5s ease-out;
+
+  color: #fff;
+}
+
+.btn-sync-loading {
+  background-color: var(--yellow-color);
+}
+
+.btn-sync-loading svg {
+  animation: spin .5s linear infinite;
+}
+
+/* premium and free stats
+ */
+
+.popup-stats-details {
+  display: none;
+}
+
+.popup-premium .popup-stats-premium,
+.popup-free .popup-stats-free {
+  display: grid;
+  gap: var(--space-2);
+}
+
+/* hide website and registration links
+ * (eg. on safari)
+ */
+
+.popup-register-disabled .popup-logo a,
+.popup-register-disabled .popup-user {
+  pointer-events: none;
+}
+
+.popup-register-disabled .popup-label-register,
+.popup-register-disabled .btn-forgot,
+.popup-register-disabled .popup-menu {
+  display: none;
+}
+
+/* always show the premium stats on safari
+ */
+
+.popup-register-disabled .popup-stats-free {
+  display: none;
+}
+
+.popup-register-disabled .popup-stats-premium {
+  display: grid;
+}

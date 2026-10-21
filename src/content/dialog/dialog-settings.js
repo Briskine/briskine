@@ -42,7 +42,7 @@ export default function DialogSettings (originalProps) {
 
   return (
     <div class="dialog-settings dialog-modal">
-      <div class="dialog-modal-header">
+      <div class="dialog-modal-header modal-header">
         <h2 class="text-secondary">
           Dialog settings
         </h2>
@@ -54,7 +54,7 @@ export default function DialogSettings (originalProps) {
           data-b-modal="settings"
           />
       </div>
-      <div class="dialog-modal-body">
+      <div class="modal-body">
         <form onChange={updateSettings}>
           <div class="form-block d-flex">
             <label for="dialog_sort" class="form-label">

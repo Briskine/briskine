@@ -1,0 +1,5 @@
+/* form dialog styles
+ */
+
+@import url("../../styles/components.css");
+@import url("./form-dialog-main.css") layer(local);

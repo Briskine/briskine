@@ -1,9 +1,3 @@
-.dialog-list ul {
-  padding: 0;
-  margin: 0;
-  list-style-type: none;
-}
-
 .dialog-list-item {
   overflow: hidden;
   position: relative;
@@ -15,7 +9,7 @@
   white-space: nowrap;
   line-height: 1.2;
 
-  transition: scale .075s ease-in;
+  transition: scale var(--duration-fast) ease-in;
 }
 
 .dialog-list-item h1 {
@@ -37,10 +31,8 @@
   padding: 0 4px;
   background: var(--background-color-highlight);
   border: 1px solid var(--primary-color);
-  border-radius: var(--radius-small);
 
   font-size: .9em;
-  font-weight: bold;
   vertical-align: top;
   text-overflow: ellipsis;
 }
@@ -53,13 +45,13 @@
   position: absolute;
   top: 0;
   right: 0;
-  width: 5rem;
+  width: 5em;
   height: 100%;
-  padding-right: 0.5rem;
+  padding-right: 0.5em;
   display: flex;
   align-items: center;
   justify-content: end;
-  background: linear-gradient(to right, transparent, hsl(var(--border-color-hsl) / 98%) 60%);
+  background: linear-gradient(to right, transparent, var(--border-color) 60%);
 
   visibility: hidden;
 }
@@ -68,8 +60,18 @@
   visibility: visible;
 }
 
+.edit-container .btn:hover {
+  background: var(--background-color-highlight);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root .edit-container .btn:hover {
+    background: #3c4249;
+  }
+}
+
 .dialog-list-item.active {
-  background: hsl(var(--border-color-hsl) / 60%);
+  background: var(--item-background-color);
 }
 
 .dialog-list-item.active:active {
@@ -78,7 +80,7 @@
 }
 
 .list-no-results {
-  padding: 20px;
+  padding: var(--space-4);
 
   text-align: center;
 }
@@ -98,25 +100,18 @@
   --tag-color-black: #344563;
 
   display: flex;
-  gap: .4rem;
+  gap: var(--space-1);
   overflow: hidden;
-  padding: 0;
-  margin-top: .2rem;
-  list-style-type: none;
 
   white-space: nowrap;
   text-overflow: ellipsis;
 }
 
 .dialog-tags li {
-  display: inline-block;
-  padding: .2em .4em;
-  border-radius: var(--radius-small);
   background-color: var(--tag-bg-color, transparent);
 
   color: #fff;
   font-size: .75em;
-  font-weight: 700;
 }
 
 .dialog-tags li.text-secondary {

@@ -1,6 +1,6 @@
-import {createSignal, createResource, Show, Switch, Match, onMount, For, createMemo} from 'solid-js'
+import {createSignal, createResource, createEffect, on, Show, Switch, Match, onMount, For, createMemo} from 'solid-js'
 
-import { websiteUrl, functionsUrl, dashboardTarget } from '../config.js'
+import { websiteUrl, functionsUrl, dashboardTarget, freeTemplatesLimit } from '../config.js'
 import {
   autosync,
   getExtensionData,
@@ -8,6 +8,7 @@ import {
   getAccount,
   getCustomer,
   getSession,
+  getTemplates,
   logout,
 } from '../store/store-content.js'
 
@@ -77,6 +78,9 @@ export default function PopupDashboard () {
   })
 
   const [stats, setStats] = createSignal(getStats(0))
+  const [templatesCount, setTemplatesCount] = createSignal(0)
+  const atLimit = () => templatesCount() >= freeTemplatesLimit
+  const nearLimit = () => !atLimit() && templatesCount() >= freeTemplatesLimit * .9
 
   const [user, setUser] = createSignal({})
   const [customers, setCustomers] = createSignal({})
@@ -124,6 +128,21 @@ export default function PopupDashboard () {
     return plan === 'free'
   }, null)
 
+  // the template count is only shown on the free plan.
+  // switching teams changes the templates.
+  createEffect(on(
+    () => [isFree(), user().customer],
+    ([free]) => {
+      if (free !== true) {
+        return
+      }
+
+      getTemplates()
+        .then((templates) => setTemplatesCount(templates.length))
+        .catch(() => {})
+    },
+  ))
+
   function switchTeam (e) {
     setCustomer(e.currentTarget.value)
   }
@@ -142,9 +161,9 @@ export default function PopupDashboard () {
 
   return (
     <div class="popup-dashboard">
-      <div class="popup-box popup-logo d-flex justify-content-between">
+      <div class="popup-logo d-flex justify-content-between">
         <a href={websiteUrl} target="_blank">
-          <img src="../icons/briskine-combo.svg" width="132" alt="Briskine"/>
+          <img src="../icons/briskine-combo.svg" width="120" alt="Briskine"/>
         </a>
 
         <button
@@ -161,41 +180,40 @@ export default function PopupDashboard () {
         </button>
       </div>
 
+      <Show when={user()?.customers?.length > 1}>
+        <form class="team-selector">
+          <div class="form-text mb-2">
+            You're signed in to <strong>{getCustomerTitle(user().customer)}</strong>
+          </div>
+          <label for="team-select" class="form-label mb-1">
+            Switch to a different team:
+          </label>
+          <div
+            classList={{
+              'block-loading': switchCustomerRequest.loading,
+            }}
+            >
+            <select
+              id="team-select"
+              class="form-select"
+              onChange={switchTeam}
+              >
+              <For each={user().customers}>
+                {(id) => (
+                  <option
+                    value={id}
+                    selected={id === user().customer}
+                    >
+                    {getCustomerTitle(id)}
+                  </option>
+                )}
+              </For>
+            </select>
+          </div>
+        </form>
+      </Show>
+
       <ul class="list-unstyled popup-menu">
-        <Show when={user()?.customers?.length > 1}>
-          <li>
-            <form class="team-selector">
-              <div class="form-text mb-2">
-                You're signed in to <strong>{getCustomerTitle(user().customer)}</strong>
-              </div>
-              <label for="team-select" class="mb-1">
-                Switch to a different team:
-              </label>
-              <div
-                classList={{
-                  'block-loading': switchCustomerRequest.loading,
-                }}
-                >
-                <select
-                  id="team-select"
-                  class="form-select"
-                  onChange={switchTeam}
-                  >
-                  <For each={user().customers}>
-                    {(id) => (
-                      <option
-                        value={id}
-                        selected={id === user().customer}
-                        >
-                        {getCustomerTitle(id)}
-                      </option>
-                    )}
-                  </For>
-                </select>
-              </div>
-            </form>
-          </li>
-        </Show>
         <li>
           <a
             href={`${functionsUrl}/template/new/`}
@@ -226,41 +244,67 @@ export default function PopupDashboard () {
       </ul>
 
       <div
-        class="popup-box popup-stats"
+        class="popup-stats"
         classList={{
           'popup-premium': isFree() === false,
           'popup-free': isFree() === true,
         }}
         >
           <Show when={stats().time !== '0min'}>
-            <p>
-              You saved <strong>{stats().time}</strong> using Briskine!
+            <p class="popup-saved">
+              You saved <strong>{stats().time}</strong> with Briskine.
             </p>
           </Show>
 
           <div class="popup-stats-details popup-stats-premium">
-            <MotivationalMessage words={stats().words} />
+            <p class="popup-motivation">
+              <MotivationalMessage words={stats().words} />
+            </p>
           </div>
 
           <div class="popup-stats-details popup-stats-free">
-            <p class="label-upgrade">
-              Go Premium to get
-              Unlimited Templates
-              and
-              Template Sharing.
+            <div class="popup-meter-group">
+              <div class="popup-meter-label d-flex justify-content-between">
+                <strong>Free plan</strong>
+                <span>{templatesCount()} of {freeTemplatesLimit} templates</span>
+              </div>
+              <div
+                class="popup-meter"
+                classList={{
+                  'popup-meter-near': nearLimit(),
+                  'popup-meter-full': atLimit(),
+                }}
+                role="progressbar"
+                aria-label="Templates used"
+                aria-valuemin="0"
+                aria-valuemax={freeTemplatesLimit}
+                aria-valuenow={templatesCount()}
+                >
+                <span style={{width: `${Math.min(templatesCount() / freeTemplatesLimit, 1) * 100}%`}} />
+              </div>
+            </div>
+            <p class="popup-upgrade-reason">
+              <Switch fallback="Upgrade for unlimited templates and template sharing.">
+                <Match when={atLimit()}>
+                  You've reached the free plan's limit. Upgrade to add more templates and share them.
+                </Match>
+                <Match when={nearLimit()}>
+                  You're close to the limit. Upgrade for unlimited templates and template sharing.
+                </Match>
+              </Switch>
             </p>
 
             <a
               href={`${functionsUrl}/subscription/`}
               target={dashboardTarget}
-              class="btn btn-success btn-upgrade"
+              class="btn btn-success btn-wide"
               >
               Upgrade to Premium
             </a>
           </div>
       </div>
 
-      <div class="popup-box popup-status">
+      <div class="popup-status">
           <a
             href={`${functionsUrl}/account/`}
             target={dashboardTarget}
@@ -270,7 +314,7 @@ export default function PopupDashboard () {
             {user().email}
           </a>
           <Show when={isFree() === false}>
-            <span class="label-premium">
+            <span class="badge text-bg-warning label-premium">
               Premium
             </span>
           </Show>

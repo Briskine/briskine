@@ -44,7 +44,7 @@ const actions = [
 export default function DialogActions () {
   return (
     <div class="dialog-actions dialog-modal">
-      <div class="dialog-modal-header">
+      <div class="dialog-modal-header modal-header">
         <h2 class="text-secondary">
           Briskine v{VERSION}
         </h2>
@@ -56,8 +56,8 @@ export default function DialogActions () {
           data-b-modal="actions"
           />
       </div>
-      <div class="dialog-modal-body">
-        <ul class="list-group">
+      <div class="modal-body">
+        <ul class="list-unstyled">
           <For each={actions}>
             {(action) => (
               <li>

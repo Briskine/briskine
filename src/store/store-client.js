@@ -72,6 +72,7 @@ browser.runtime.onMessage.addListener((req, sender, sendResponse) => {
 export const getSettings = createRequest('getSettings')
 export const getAccount = createRequest('getAccount')
 export const getCustomer = createRequest('getCustomer')
+export const isFreePlan = createRequest('isFreePlan')
 export const setActiveCustomer = createRequest('setActiveCustomer')
 export const getTemplates = createRequest('getTemplates')
 export const updateTemplateStats = createRequest('updateTemplateStats')

@@ -1,0 +1,357 @@
+/*
+ * Template form dialog, in the top frame.
+ *
+ * Shows the template with its form fields,
+ * and asks the frame of the editor to render it again when a field changes.
+ */
+
+import {createSignal, onMount, onCleanup} from 'solid-js'
+import {render} from 'solid-js/web'
+import { Idiomorph } from 'idiomorph'
+
+import { eventFormShow, eventFormRender, eventFormClose, formRelayRequest, formTagPrefix, hiddenAttribute } from '../../config.js'
+import { on, off, createRequest } from '../../store/store-content.js'
+import sanitize from '../utils/sanitize.js'
+import stopPageEvents from '../utils/stop-page-events.js'
+import { scopeTagName } from '../utils/extension-element.js'
+import debug from '../../debug.js'
+
+import IconBriskine from '../../icons/briskine-logo-small.svg'
+import styles from './form-dialog.css?inline'
+
+const relay = createRequest(formRelayRequest)
+const formTagName = scopeTagName(formTagPrefix)
+
+// the template can't add its own form, submit ours, or style the dialog
+const sanitizeOptions = {
+  FORBID_TAGS: ['form', 'dialog', 'button', 'style'],
+}
+
+let formInstance = null
+let showForm = () => false
+
+// wrap {{#hidden}} blocks, to highlight them.
+// extracting a range splits the elements it starts or ends in,
+// so the wrapper is valid even when the block spans several lines.
+function wrapHidden (root) {
+  const starts = []
+  root.querySelectorAll(`[${hiddenAttribute}]`).forEach((marker) => {
+    if (marker.getAttribute(hiddenAttribute) === 'start') {
+      starts.push(marker)
+      return
+    }
+
+    const start = starts.pop()
+    if (!start) {
+      return
+    }
+
+    const range = document.createRange()
+    range.setStartAfter(start)
+    range.setEndBefore(marker)
+
+    const wrapper = document.createElement('div')
+    wrapper.className = 'briskine-form-hidden'
+    wrapper.append(range.extractContents())
+    range.insertNode(wrapper)
+
+    start.remove()
+    marker.remove()
+  })
+}
+
+function prepare (html = '') {
+  const template = document.createElement('template')
+  template.innerHTML = sanitize(html, sanitizeOptions)
+  template.content.querySelectorAll('input:is([type="submit" i], [type="image" i], [type="reset" i])').forEach((input) => input.remove())
+  wrapHidden(template.content)
+  return template.innerHTML
+}
+
+function readValue (field) {
+  if (field.type === 'checkbox') {
+    return field.checked
+  }
+
+  if (field.type === 'number') {
+    return field.value === '' ? '' : field.valueAsNumber
+  }
+
+  if (field.multiple) {
+    return Array.from(field.selectedOptions).map((option) => option.value)
+  }
+
+  return field.value
+}
+
+function FormDialog () {
+  let dialog = null
+  let form = null
+  let content = null
+
+  const [title, setTitle] = createSignal('')
+  const [error, setError] = createSignal('')
+
+  // the open form: its id, the frame that renders it, and the changed values
+  let current = null
+  let rendering = false
+  let stale = false
+
+  function update (html) {
+    Idiomorph.morph(content, prepare(html), {
+      morphStyle: 'innerHTML',
+      callbacks: {
+        // keep what's being typed in the focused field
+        beforeAttributeUpdated: (attribute, element) => {
+          return !(attribute === 'value' && element === content.getRootNode().activeElement)
+        },
+      },
+    })
+  }
+
+  function show ({id, frameId, title = '', html = ''} = {}) {
+    if (current) {
+      return false
+    }
+
+    setTitle(title)
+    setError('')
+    try {
+      content.innerHTML = prepare(html)
+      dialog.showModal()
+    } catch (err) {
+      debug(['form show', err], 'error')
+      content.replaceChildren()
+      // the editor frame shows an error, false is for another open form
+      return null
+    }
+
+    current = {
+      id,
+      frameId,
+      values: {},
+    }
+    content.querySelector('[data-form-id]')?.focus()
+
+    return true
+  }
+
+  async function render () {
+    const {id, frameId, values} = current
+    const response = await relay({
+      event: eventFormRender,
+      details: {
+        id,
+        values,
+      },
+      frameId,
+    }).catch((err) => {
+      debug(['form render', err], 'error')
+    })
+
+    // values changed during the render, or the form was closed
+    if (stale || current?.id !== id) {
+      return
+    }
+
+    if (response?.error) {
+      setError(response.error)
+      return
+    }
+
+    setError('')
+    if (typeof response?.html === 'string') {
+      try {
+        update(response.html)
+      } catch (err) {
+        debug(['form update', err], 'error')
+        setError(err.message || String(err))
+      }
+    }
+  }
+
+  async function change (e) {
+    const fieldId = e.target?.dataset?.formId
+    if (!current || !fieldId) {
+      return
+    }
+
+    current.values[fieldId] = readValue(e.target)
+
+    if (rendering) {
+      stale = true
+      return
+    }
+
+    rendering = true
+    do {
+      stale = false
+      await render()
+    } while (stale && current)
+    rendering = false
+  }
+
+  function close (insert = false) {
+    if (!current) {
+      return
+    }
+
+    const {id, frameId, values} = current
+    current = null
+    // gives focus back to the page, or the iframe of the editor
+    dialog.close()
+    content.replaceChildren()
+
+    relay({
+      event: eventFormClose,
+      details: {
+        id,
+        values,
+        insert,
+      },
+      frameId,
+    }).catch((err) => {
+      debug(['form close', err], 'error')
+    })
+  }
+
+  function submit (e) {
+    e.preventDefault()
+    close(true)
+  }
+
+  function cancel (e) {
+    e.preventDefault()
+    close(false)
+  }
+
+  // some websites close their own modal on the escape keyup.
+  // the keyup can land in the editor iframe, so stop waiting for it after a moment.
+  function stopEscapeKeyup () {
+    const keyupController = new AbortController()
+    window.addEventListener('keyup', (e) => {
+      if (e.key === 'Escape') {
+        e.stopPropagation()
+        keyupController.abort()
+      }
+    }, {
+      capture: true,
+      signal: keyupController.signal,
+    })
+    setTimeout(() => keyupController.abort(), 1000)
+    abortController.signal.addEventListener('abort', () => keyupController.abort(), {
+      signal: keyupController.signal,
+    })
+  }
+
+  let abortController
+  onMount(() => {
+    abortController = new AbortController()
+    const listenerOptions = {
+      capture: true,
+      signal: abortController.signal,
+    }
+
+    // registered first, stopPageEvents hides the event from our own listeners
+    window.addEventListener('keydown', (e) => {
+      if (e.target !== formInstance) {
+        return
+      }
+
+      if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
+        e.preventDefault()
+        form.requestSubmit()
+      }
+
+      // chrome can close the dialog without a cancel event
+      if (e.key === 'Escape') {
+        stopEscapeKeyup()
+      }
+    }, listenerOptions)
+    stopPageEvents(dialog, abortController.signal)
+
+    showForm = show
+  })
+
+  onCleanup(() => {
+    // the editor frame is waiting for the form
+    close(false)
+    abortController.abort()
+    showForm = () => false
+  })
+
+  return (
+    <dialog ref={dialog} class="briskine-form briskine-ui" on:cancel={cancel} on:close={() => close(false)}>
+      <style>{styles}</style>
+      <form ref={form} method="dialog" on:submit={submit} on:input={change}>
+        <header class="briskine-form-header modal-header">
+          <div class="briskine-form-title">
+            <span class="briskine-form-logo" aria-hidden="true">
+              <IconBriskine />
+            </span>
+            <span class="briskine-form-title-text" title={title()}>{title()}</span>
+          </div>
+          <button
+            type="button"
+            class="btn btn-close briskine-form-close"
+            title="Close"
+            aria-label="Close"
+            on:click={() => close(false)}
+            />
+        </header>
+        <div ref={content} class="briskine-form-content modal-body" />
+        <div class="briskine-form-error alert alert-danger" hidden={!error()}>{error()}</div>
+        <footer class="briskine-form-footer modal-footer">
+          <button type="button" class="btn briskine-form-cancel" on:click={() => close(false)}>
+            Cancel
+          </button>
+          <button type="submit" class="btn btn-primary briskine-form-insert">
+            Insert
+          </button>
+        </footer>
+      </form>
+    </dialog>
+  )
+}
+
+customElements.define(formTagName, class extends HTMLElement {
+  #shadowRoot = null
+
+  connectedCallback () {
+    if (!this.isConnected) {
+      return
+    }
+
+    // the page can remove and add our element again
+    this.#shadowRoot ??= this.attachShadow({mode: 'closed'})
+    this.disposer = render(() => <FormDialog />, this.#shadowRoot)
+  }
+  disconnectedCallback () {
+    this.disposer?.()
+  }
+})
+
+export function respondToShow (details = {}) {
+  formInstance ??= document.createElement(formTagName)
+  if (!formInstance.isConnected) {
+    document.documentElement.appendChild(formInstance)
+  }
+
+  return showForm(details)
+}
+
+export function setup () {
+  // forms from every frame show in the top one
+  if (window !== window.top) {
+    return
+  }
+
+  on(eventFormShow, respondToShow)
+}
+
+export function destroy () {
+  off(eventFormShow, respondToShow)
+
+  formInstance?.remove()
+  formInstance = null
+}

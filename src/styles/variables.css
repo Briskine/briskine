@@ -1,0 +1,97 @@
+/*
+ * variables used in both shadow roots and extension pages, like the sidepanel.
+ */
+:host,
+:root {
+  --primary-color: #0d7af6;
+  --primary-color-hover: #086ad8;
+
+  --background-color: #ffffff;
+  --background-color-highlight: #fafafa;
+  --border-color: #f0f0f0;
+  --item-background-color: color-mix(in srgb, var(--border-color) 60%, transparent);
+  --info-background-color: color-mix(in srgb, var(--primary-color) 8%, transparent);
+  --backdrop-color: color-mix(in srgb, var(--text-color) 20%, transparent);
+
+  --text-color: #010132;
+  --text-color-secondary: color-mix(in srgb, var(--text-color) 60%, transparent);
+
+  --link-color: var(--primary-color-hover);
+  --link-color-hover: #0760c5;
+
+  --input-border-color: #dee2e6;
+  --input-focus-border-color: color-mix(in srgb, var(--primary-color) 50%, transparent);
+
+  --danger-color: #c72334;
+  --danger-text-color: #58151c;
+  --danger-background-color: #f8d7da;
+
+  --success-color: #00994d;
+  --success-color-hover: #008743;
+
+  --yellow-color: #ffcc00;
+  --yellow-text-color: #3c3000;
+
+  --font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", "Noto Sans", "Liberation Sans", Arial, sans-serif;
+  --font-size: 13px;
+  --font-size-small: 12px;
+  --line-height: 1.5;
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+
+  --radius: 5px;
+  --radius-small: 3px;
+
+  --shadow: 0 0 2px rgba(0,0,0,.1),
+    0 2px 4px rgba(0,0,0,0.07),
+    0 4px 8px rgba(0,0,0,0.07),
+    0 8px 16px rgba(0,0,0,0.07);
+
+  --focus-ring-color: color-mix(in srgb, var(--primary-color) 25%, transparent);
+  --focus-ring: 0 0 0 .25em var(--focus-ring-color);
+
+  --duration-fast: .075s;
+  --duration: .1s;
+  --duration-slow: .2s;
+}
+
+/* auto dark mode only on extension pages, like the popup and sidepanel.
+ */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background-color: #22262a;
+    --background-color-highlight: #2b3035;
+    --border-color: #33383d;
+    --text-color: #dfe3e7;
+    --link-color: #62a9f9;
+    --link-color-hover: #89befb;
+    --input-border-color: #495057;
+    --danger-text-color: #ea868f;
+    --danger-background-color: #2c0b0e;
+  }
+}
+
+/* chrome 109 and 110 don't support color-mix().
+ * 109 is the last version on windows 7 and 8.
+ */
+@supports not (color: color-mix(in srgb, red, red)) {
+  :host,
+  :root {
+    --item-background-color: #f0f0f099;
+    --info-background-color: #0d7af614;
+    --backdrop-color: #01013233;
+    --text-color-secondary: #01013299;
+    --input-focus-border-color: #0d7af680;
+    --focus-ring-color: #0d7af640;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --item-background-color: #33383d99;
+      --text-color-secondary: #dfe3e799;
+    }
+  }
+}

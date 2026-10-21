@@ -12,8 +12,10 @@ import {isContentEditable} from '../editors/editor-contenteditable.js'
 import { isTextfieldEditor } from '../editors/editor-textfield.js'
 import {getEditableCaret, getContentEditableCaret, getDialogPosition} from './dialog-position.js'
 import autocomplete from '../autocomplete.js'
-import { getSelectionRange, setSelectionRange }  from '../utils/selection.js'
+import { getSelectionRange }  from '../utils/selection.js'
+import restoreSelection from '../utils/restore-selection.js'
 import { getActiveElement } from '../utils/active-element.js'
+import stopPageEvents from '../utils/stop-page-events.js'
 import { isBubbleElement, scopeTagName } from '../utils/extension-element.js'
 import {keybind, keyunbind} from '../keybind.js'
 
@@ -134,47 +136,9 @@ function Dialog (originalProps) {
     }
   }
 
-  function stopPropagation (e, target) {
-    if (
-      target
-      && dialogInstance
-      && (
-        dialogInstance === target
-        || dialogInstance === target?.getRootNode?.()?.host
-      )
-    ) {
-      e.stopPropagation()
-    }
-  }
-
-  function stopTargetPropagation (e) {
-    stopPropagation(e, e.target)
-  }
-
-  function stopRelatedTargetPropagation (e) {
-    stopPropagation(e, e.relatedTarget)
-  }
-
-
-    async function restoreSelection () {
-    // will also hide dialog because of focusout
-    editor.focus({ preventScroll: true })
-
-    if (
-      isContentEditable(editor)
-      && cachedRange
-      // if all the nodes are destroyed in the editor, the range resets and moves to the top.
-      // (e.g., linkedin message editor in shadow dom likes to re-create the
-      // entire editor dom structure on focus)
-      // this will also be true when the editor is empty, when focus() is enough.
-      && !(
-        cachedRange.startContainer === editor
-        && cachedRange.collapsed === true
-        && cachedRange.startOffset === 0
-      )
-    ) {
-      await setSelectionRange(editor, cachedRange)
-    }
+  // will also hide dialog because of focusout
+  function restoreEditorSelection () {
+    return restoreSelection(editor, cachedRange)
   }
 
   function hideOnFocusout (e) {
@@ -191,7 +155,7 @@ function Dialog (originalProps) {
       // when closing our dialog.
       window.addEventListener('keyup', (e) => { e.stopPropagation() }, { capture: true, once: true })
 
-      restoreSelection()
+      restoreEditorSelection()
     }
   }
 
@@ -206,37 +170,7 @@ function Dialog (originalProps) {
     window.addEventListener('focusout', hideOnFocusout, globalListenerOptions)
     window.addEventListener('keydown', hideOnEsc, globalListenerOptions)
 
-    // prevent parent page from handling composed events.
-    // fix interaction with our dialog in some modals (Gmail, LinkedIn new post, GitHub search).
-    const stopTargetEvents = [
-      // stop Gmail from preventing keys assigned to Gmail shortcuts to be typed
-      // inside the dialog search field
-      'keydown',
-      'keyup',
-      // stop Front from catching keyboard shortcuts when typing in the dialog
-      'keypress',
-      // stop GitHub search from closing the dialog when clicking inside it
-      'mousedown',
-      'mouseup',
-      // stop GitHub search from preventing opening the dialog
-      // stop LinkedIn New Post from stealing focus when opening the dialog
-      'focus',
-      'focusin',
-    ]
-
-    const stopRelatedTargetEvents = [
-      // stop GitHub search and LinkedIn new post from handling blur
-      'blur',
-      'focusout',
-    ]
-
-    stopTargetEvents.forEach((event) => {
-      window.addEventListener(event, stopTargetPropagation, globalListenerOptions)
-    })
-
-    stopRelatedTargetEvents.forEach((event) => {
-      window.addEventListener(event, stopRelatedTargetPropagation, globalListenerOptions)
-    })
+    stopPageEvents(element, globalAbortController.signal)
 
     // expose show on element
     element.show = show
@@ -247,7 +181,7 @@ function Dialog (originalProps) {
   })
 
   async function insertTemplate (template) {
-    await restoreSelection()
+    await restoreEditorSelection()
 
     autocomplete({
       template: template,
@@ -257,7 +191,7 @@ function Dialog (originalProps) {
   return (
     <div
       ref={element}
-      class="briskine-dialog"
+      class="briskine-dialog briskine-ui"
       classList={{
         'briskine-dialog-visible': visible(),
       }}

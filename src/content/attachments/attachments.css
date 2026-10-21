@@ -1,6 +1,14 @@
 /* global styles for attachments
  */
 
+.briskine-attachment {
+  cursor: default;
+}
+
+.briskine-attachment a {
+  cursor: pointer;
+}
+
 .briskine-attachment button {
   padding: 0 5px;
   height: 16px;
@@ -18,10 +26,10 @@
   vertical-align: middle;
 }
 
-[contenteditable=true] .briskine-attachment:hover {
+:read-write .briskine-attachment:hover {
   background-color: #e9eceb !important;
 }
 
-[contenteditable=true] .briskine-attachment:hover button {
+:read-write .briskine-attachment:hover button {
   display: inline-block !important;
 }

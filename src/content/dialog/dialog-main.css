@@ -1,39 +1,12 @@
-.briskine-dialog,
-.briskine-dialog * {
-  box-sizing: border-box;
-}
-
 .briskine-dialog {
-  /* reset inherited html and body styles
-   */
-  all: initial;
-
-  --primary-color-hsl: 212 93% 51%;
-  --primary-color: hsl(var(--primary-color-hsl));
-
-  --background-color: hsl(0 0% 100%);
-  --background-color-highlight: hsl(0 0% 98%);
-  --border-color-hsl: 0 0% 94%;
-  --border-color: hsl(var(--border-color-hsl));
-
-  --text-color-hsl: 240 96% 10%;
-  --text-color: hsl(var(--text-color-hsl));
-
-  --radius: 5px;
-  --radius-small: 3px;
   --dialog-height: 250px;
   --footer-height: 40px;
-  --padding-x: 12px;
-  --padding-y: 8px;
+  --padding-x: var(--space-3);
+  --padding-y: var(--space-2);
 
   position: relative;
   display: block;
   overflow: hidden;
-
-  color: var(--text-color);
-  font-size: 13px;
-  font-family: sans-serif;
-  line-height: 1.5;
 
   border-radius: var(--radius);
   background: var(--background-color);
@@ -52,10 +25,7 @@
   top: 0;
   left: 0;
 
-  box-shadow: 0 0 2px rgba(0,0,0,.1),
-    0 2px 4px rgba(0,0,0,0.07),
-    0 4px 8px rgba(0,0,0,0.07),
-    0 8px 16px rgba(0,0,0,0.07);
+  box-shadow: var(--shadow);
 }
 
 .briskine-dialog-popover .briskine-dialog.briskine-dialog-visible {
@@ -89,74 +59,8 @@
   }
 }
 
-/* general
- */
-p {
-  margin: 0  0 .5rem 0;
-}
-
-/* utilities
- */
-.d-flex {
-  display: flex !important;
-  align-items: center;
-}
-
-.flex-fill {
-  flex: 1;
-}
-
-.text-secondary {
-  color: hsl(var(--text-color-hsl) / 60%) !important;
-}
-
-.list-group {
-  list-style-type: none;
-  margin: 0;
-  padding: 0;
-}
-
 .list-group-icon {
   padding-right: var(--padding-x);
-}
-
-/* buttons
- */
-.btn {
-  display: inline-block;
-  padding: 4px 10px;
-  border: 0;
-  border-radius: var(--radius-small);
-  background: transparent;
-
-  color: var(--text-color);
-  text-decoration: none;
-}
-
-a.btn:hover,
-button.btn:hover {
-  background: var(--background-color-highlight);
-
-  cursor: pointer;
-}
-
-.btn-sm {
-  padding: 4px;
-}
-
-/* close button
- */
-.btn-close {
-  --btn-close-bg: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23000'%3e%3cpath d='M.293.293a1 1 0 0 1 1.414 0L8 6.586 14.293.293a1 1 0 1 1 1.414 1.414L9.414 8l6.293 6.293a1 1 0 0 1-1.414 1.414L8 9.414l-6.293 6.293a1 1 0 0 1-1.414-1.414L6.586 8 .293 1.707a1 1 0 0 1 0-1.414z'/%3e%3c/svg%3e");
-
-  width: 1em;
-  height: 1em;
-  background: transparent var(--btn-close-bg) center/1em auto no-repeat !important;
-  opacity: .5;
-}
-
-.btn-close:hover {
-  opacity: .75;
 }
 
 /* icons
@@ -213,16 +117,16 @@ input[type=search]:focus {
   opacity: .6;
   pointer-events: none;
 
-  color: hsl(var(--text-color-hsl) / 60%);
+  color: var(--text-color-secondary);
 }
 
 .dialog-content {
   flex: 1;
-  padding: 3px;
+  padding: var(--space-1);
   /* improves scrollIntoView behaviour by including padding around the
    * element scrolled into view.
    */
-  scroll-padding: 3px;
+  scroll-padding: var(--space-1);
   overflow: auto;
 
   /* improve performance for rendering large lists
@@ -235,9 +139,9 @@ input[type=search]:focus {
  */
 .dialog-info {
   padding: var(--padding-y) var(--padding-x);
-  background: hsl(var(--primary-color-hsl) / 8%);
+  background: var(--info-background-color);
   border-radius: var(--radius-small);
-  margin-bottom: 3px;
+  margin-bottom: var(--space-1);
 }
 
 .dialog-info a {
@@ -255,7 +159,7 @@ input[type=search]:focus {
 }
 
 .dialog-info-icon {
-  padding-right: 8px;
+  padding-right: var(--space-2);
 }
 
 .dialog-info-icon svg {
@@ -267,14 +171,14 @@ input[type=search]:focus {
 /* loading placeholders
  */
 .templates-placeholder {
-  padding: 8px 12px;
+  padding: var(--padding-y) var(--padding-x);
 }
 
 .templates-placeholder-text {
   height: 1em;
   width: 50%;
   background-color: var(--border-color);
-  margin-bottom: 4px;
+  margin-bottom: var(--space-1);
 
   cursor: wait;
   animation: glow 2s ease-in-out infinite;
@@ -296,13 +200,8 @@ input[type=search]:focus {
 
 /* hidden dashboard links - for safari
  */
-.dialog-safari .dialog-safari-hide,
-.dialog-safari-show {
+.dialog-safari .dialog-safari-hide {
   display: none !important;
-}
-
-.dialog-safari .dialog-safari-show {
-  display: revert !important;
 }
 
 /* dialog modals
@@ -329,7 +228,7 @@ input[type=search]:focus {
   translate: 0 30%;
   scale: 0.95;
   opacity: 0;
-  transition: all .075s ease-in;
+  transition: all var(--duration-fast) ease-in;
 }
 
 @media (prefers-reduced-motion) {
@@ -339,10 +238,6 @@ input[type=search]:focus {
 }
 
 .dialog-modal-header {
-  display: flex;
-  flex-shrink: 0;
-  align-items: center;
-  justify-content: space-between;
   padding: var(--padding-x);
 }
 
@@ -354,7 +249,3 @@ input[type=search]:focus {
   font-weight: bold;
 }
 
-.dialog-modal-body {
-  overflow: auto;
-  padding: var(--padding-y) var(--padding-x);
-}

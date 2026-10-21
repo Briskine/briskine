@@ -14,6 +14,7 @@ import {
 
 export {
   getCustomer,
+  isFreePlan,
   setActiveCustomer,
   updateTemplateStats,
   searchTemplates,

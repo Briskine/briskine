@@ -316,7 +316,7 @@ async function getOutlookData ({ element }) {
   return vars
 }
 
-async function actions ({ element, template, data }) {
+async function actions ({ element, template, data, session }) {
   if (!isActive()) {
     return
   }
@@ -326,7 +326,7 @@ async function actions ({ element, template, data }) {
   const editable = element
   const $subject = getSubjectField(editable)
   if (template.subject && $subject) {
-    var parsedSubject = await parseTemplate(template.subject, data)
+    var parsedSubject = await parseTemplate(template.subject, data, session)
     $subject.value = parsedSubject
     $subject.dispatchEvent(new Event('input', {bubbles: true}))
   }
@@ -338,7 +338,7 @@ async function actions ({ element, template, data }) {
 
   if (template.to) {
     const $to = getToContainer(editable)
-    const parsedTo = await parseTemplate(template.to, data)
+    const parsedTo = await parseTemplate(template.to, data, session)
     if ($to) {
       await updateContactField($to, parsedTo)
     }
@@ -346,7 +346,7 @@ async function actions ({ element, template, data }) {
 
   if (template.cc) {
     var $cc = getCcContainer(editable)
-    var parsedCc = await parseTemplate(template.cc, data)
+    var parsedCc = await parseTemplate(template.cc, data, session)
     var $ccButton = getCcButton(editable)
     await updateSection(
       $cc,
@@ -358,7 +358,7 @@ async function actions ({ element, template, data }) {
 
   if (template.bcc) {
     const $bcc = getBccContainer(editable)
-    const parsedBcc = await parseTemplate(template.bcc, data)
+    const parsedBcc = await parseTemplate(template.bcc, data, session)
     const $bccButton = getBccButton(editable)
     await updateSection(
       $bcc,

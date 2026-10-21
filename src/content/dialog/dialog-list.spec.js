@@ -121,4 +121,18 @@ describe('DialogList', () => {
 
     expect(selected).to.deep.equal(['search-two', 'full-one'])
   })
+
+  it('should only hover a template when the pointer moves', () => {
+    mount(() => <DialogList list={templates} />)
+
+    const active = () => document.querySelector('.dialog-list-item.active')?.dataset.id
+    const two = document.querySelector('[data-id="two"]')
+
+    // the list rendered under a still pointer
+    two.dispatchEvent(new MouseEvent('mouseover', {bubbles: true}))
+    expect(active()).to.equal('one')
+
+    two.dispatchEvent(new MouseEvent('mousemove', {bubbles: true}))
+    expect(active()).to.equal('two')
+  })
 })

@@ -52,17 +52,8 @@ export default function DialogList (originalProps) {
     })
   }
 
-  let lastX = 0
-  let lastY = 0
-  function onMouseOver (e) {
-    if (e.screenX === lastX && e.screenY === lastY) {
-      return
-    }
-
-    lastX = e.screenX
-    lastY = e.screenY
-
-    // hover templates
+  // mouseover also fires when the list changes under a still pointer
+  function onMouseMove (e) {
     const container = e.target.closest('[data-id]')
     if (container) {
       setActive(container.dataset.id)
@@ -125,9 +116,9 @@ export default function DialogList (originalProps) {
       ref={element}
       class="dialog-list"
       on:click={onClick}
-      on:mouseover={onMouseOver}
+      on:mousemove={onMouseMove}
       >
-      <ul>
+      <ul class="list-unstyled">
         <Show
           when={shortlist().length}
           fallback={(
@@ -149,20 +140,21 @@ export default function DialogList (originalProps) {
                 <div class="d-flex">
                   <h1>{t.title}</h1>
                   <Show when={t.shortcut}>
-                    <abbr>{t.shortcut}</abbr>
+                    <abbr class="badge">{t.shortcut}</abbr>
                   </Show>
                 </div>
                 <p class="text-secondary">
                   {t._body_plaintext.slice(0, bodyCharacterRenderLimit)}
                 </p>
                 <Show when={props.extensionData.dialogTags && t.tags && t.tags.length}>
-                  <ul class="dialog-tags">
+                  <ul class="dialog-tags list-unstyled">
                     <For each={t.tags}>
                       {(tagId) => {
                         const tag = () => props.tags.find((t) => t.id === tagId)
                         return (
                           <Show when={tag()}>
                             <li
+                              class="badge"
                               style={{
                                 '--tag-bg-color': `var(--tag-color-${tag().color})`
                               }}

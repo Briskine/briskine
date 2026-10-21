@@ -4,12 +4,14 @@
 
 import { getPluginData, runPluginActions } from './plugin.js'
 import { addAttachments } from './attachments/attachments.js'
-import parseTemplate from './utils/parse-template.js'
+import parseTemplate, { createSession } from './utils/parse-template.js'
+import fillForm from './form/form.js'
 import sanitize from './utils/sanitize.js'
 import htmlToText from './utils/html-to-text.js'
 import debug from '../debug.js'
 import { getWord, selectWord } from './utils/word.js'
 import { getSelectionRange } from './utils/selection.js'
+import restoreSelection from './utils/restore-selection.js'
 import { updateTemplateStats } from '../store/store-content.js'
 import { getActiveElement } from './utils/active-element.js'
 import { selectFirstCursor } from './cursors/cursors.js'
@@ -85,9 +87,37 @@ async function selectShortcut (element, shortcut = '') {
 
 export default async function autocomplete ({ template }) {
   const element = getActiveElement()
+  const range = getSelectionRange(element)
   const withAttachments = addAttachments(template.body, template.attachments)
   const data = await getPluginData({ element })
-  const html = sanitize(await parseTemplate(withAttachments, data))
+  const session = await createSession(data)
+  let parsed = await parseTemplate(withAttachments, data, session)
+
+  // templates with form fields are filled in before inserting
+  if (session.fields.size) {
+    const result = await fillForm({
+      template: withAttachments,
+      session,
+      title: template.title,
+    }).then((insert) => ({insert}), (error) => ({error}))
+
+    // the editor was closed while the form was open
+    if (!element.isConnected) {
+      return
+    }
+
+    await restoreSelection(element, range)
+
+    if (Object.hasOwn(result, 'error')) {
+      parsed = `<div>${result.error?.message || String(result.error)}</div>`
+    } else if (result.insert) {
+      parsed = await parseTemplate(withAttachments, data, session)
+    } else {
+      return
+    }
+  }
+
+  const html = sanitize(parsed)
   const text = htmlToText(html)
 
   if (template.shortcut) {
@@ -109,6 +139,7 @@ export default async function autocomplete ({ template }) {
     element,
     template,
     data,
+    session,
     html,
     text,
   })

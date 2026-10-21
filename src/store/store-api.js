@@ -24,7 +24,7 @@ import {
   orderBy,
 } from 'firebase/firestore/lite'
 
-import { functionsUrl }  from '../config.js'
+import { functionsUrl, freeTemplatesLimit }  from '../config.js'
 import trigger from '../background/background-trigger.js'
 import fuzzySearch from './search.js'
 import {badgeUpdate} from '../background/badge.js'
@@ -80,7 +80,6 @@ const templateConverter = {
 }
 const templatesCollection = collection(db, 'templates').withConverter(templateConverter)
 
-const templatesFreeLimit = 30
 
 async function templatesQuery (user) {
   // isFree will load the customers collection
@@ -94,7 +93,7 @@ async function templatesQuery (user) {
       where('owner', '==', user.id),
 
       orderBy('created_datetime'),
-      limit(templatesFreeLimit),
+      limit(freeTemplatesLimit),
     )
   }
 
@@ -506,6 +505,10 @@ export async function getCustomer (customerId) {
     collection: 'customers'
   })
   return customers[customerId]
+}
+
+export async function isFreePlan () {
+  return isFree(await getSignedInUser())
 }
 
 async function getActiveCustomer (user = {}) {

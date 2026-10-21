@@ -1,0 +1,150 @@
+.briskine-form {
+  --padding-x: var(--space-4);
+  --padding-y: var(--space-3);
+
+  display: none;
+  width: min(640px, calc(100vw - 32px));
+  height: fit-content;
+  max-height: 90vh;
+  margin: auto;
+  padding: 0;
+  overflow: hidden;
+
+  border: 0;
+  border-radius: var(--radius);
+  background: var(--background-color);
+  box-shadow: var(--shadow);
+
+  /* restore the modal dialog default, reset by .briskine-ui */
+  user-select: text;
+}
+
+.briskine-form[open] {
+  display: block;
+  position: fixed;
+  inset: 0;
+}
+
+.briskine-form::backdrop {
+  background: var(--backdrop-color);
+}
+
+.briskine-form form {
+  display: flex;
+  flex-direction: column;
+  max-height: 90vh;
+  margin: 0;
+}
+
+.briskine-form-header {
+  font-weight: bold;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.briskine-form-title {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+.briskine-form-title-text {
+  overflow: hidden;
+
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.briskine-form-close {
+  flex-shrink: 0;
+}
+
+.briskine-form-logo {
+  flex-shrink: 0;
+}
+
+.briskine-form-logo svg {
+  display: block;
+}
+
+.briskine-form-content {
+  line-height: 2;
+  overflow-wrap: break-word;
+}
+
+.briskine-form-content img {
+  max-width: 100%;
+}
+
+.briskine-form-content :is(.form-control, .form-select) {
+  display: inline-block;
+  max-width: 100%;
+
+  font: inherit;
+  line-height: var(--line-height);
+  vertical-align: middle;
+}
+
+.briskine-form-content :is(input.form-control:not(.form-control-color), .form-select) {
+  width: auto;
+}
+
+.briskine-form-content :is(input.form-control, .form-select:not([multiple])) {
+  height: calc(1.5em + .25em + 2px);
+  padding-block: .125em;
+}
+
+.briskine-form-content .form-select[multiple] {
+  margin-block: .25em;
+}
+
+.briskine-form-content .form-control-color {
+  padding: .125em;
+}
+
+.briskine-form-content textarea.form-control {
+  display: block;
+  width: 100%;
+}
+
+.briskine-form-content .form-check-input {
+  float: none;
+  margin: 0;
+
+  vertical-align: middle;
+}
+
+.briskine-form-hidden :is(.form-select, .form-check-input:not(:checked)) {
+  background-color: var(--background-color);
+}
+
+.briskine-form-content .form-control:user-invalid {
+  border-color: var(--danger-color);
+}
+
+.briskine-form-hidden {
+  margin: var(--space-1) 0;
+  padding: var(--padding-y) var(--padding-x);
+  border-radius: var(--radius);
+  background: var(--border-color);
+}
+
+.briskine-form-error {
+  margin: 0 var(--padding-x) var(--padding-y);
+  white-space: pre-wrap;
+  font-family: monospace;
+}
+
+.briskine-form-error[hidden] {
+  display: none;
+}
+
+.briskine-form-footer {
+  border-top: 1px solid var(--border-color);
+}
+
+.briskine-form-footer .btn {
+  padding: 6px 14px;
+  border-radius: var(--radius);
+}
