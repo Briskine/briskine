@@ -27,9 +27,12 @@ import './tab-context.js'
 const briskineTab = {id: 7, url: 'https://www.briskine.com/messaging/', title: 'Briskine', active: true, windowId: 1}
 const olderTab = {id: 8, url: 'https://www.briskine.com/feed/', title: 'Feed', active: false, windowId: 1, lastAccessed: 1}
 
-function request (type, data) {
+const privateTab = {id: 9, url: 'https://www.briskine.com/private/', title: 'Private', active: false, windowId: 3, incognito: true}
+
+// requests come from a regular tab in window 1, unless a sender tab is passed
+function request (type, data, senderTab = {windowId: 1}) {
   return new Promise((resolve) => {
-    const handled = listeners[0]({type: type, data: data}, {tab: {windowId: 1}}, resolve)
+    const handled = listeners[0]({type: type, data: data}, {tab: senderTab}, resolve)
     if (handled !== true) {
       resolve('not handled')
     }
@@ -73,6 +76,22 @@ describe('tab-context', () => {
       getSettings.mockResolvedValue({blacklist: ['briskine.com']})
 
       expect(await request('getTabContext', {pattern: 'briskine.com'})).to.equal(null)
+    })
+
+    it('should not read private tabs from a regular window', async () => {
+      tabsQuery.mockResolvedValue([privateTab])
+
+      expect(await request('getTabContext', {pattern: 'briskine.com'})).to.equal(null)
+      expect(trigger).not.toHaveBeenCalled()
+    })
+
+    it('should only read private tabs from a private window', async () => {
+      tabsQuery.mockResolvedValue([briskineTab, privateTab])
+
+      const context = await request('getTabContext', {pattern: 'briskine.com'}, {windowId: 3, incognito: true})
+
+      expect(context.tabId).to.equal(9)
+      expect(trigger.mock.calls.every(([, , tab]) => tab.id === 9)).to.equal(true)
     })
 
     it('should still report a tab with no plugin data', async () => {
@@ -229,6 +248,22 @@ describe('tab-context', () => {
       expect(await request('getTabContexts', {pattern: 'gmail.com'})).to.deep.equal([])
     })
 
+    it('should not list private tabs in a regular window', async () => {
+      tabsQuery.mockResolvedValue([otherWindowTab, privateTab, firstTab])
+
+      const contexts = await request('getTabContexts', {pattern: 'briskine.com'})
+
+      expect(contexts.map((context) => context.tabId)).to.deep.equal([3, 1])
+    })
+
+    it('should only list private tabs in a private window', async () => {
+      tabsQuery.mockResolvedValue([otherWindowTab, privateTab, firstTab])
+
+      const contexts = await request('getTabContexts', {pattern: 'briskine.com'}, {windowId: 3, incognito: true})
+
+      expect(contexts.map((context) => context.tabId)).to.deep.equal([9])
+    })
+
     it('should answer an empty list for a pattern it refuses', async () => {
       expect(await request('getTabContexts', {pattern: '*'})).to.deep.equal([])
     })
@@ -248,6 +283,22 @@ describe('tab-context', () => {
         .to.deep.equal([{text: 'one'}])
       expect(tabsGet).toHaveBeenCalledWith(7)
       expect(trigger).toHaveBeenCalledWith(eventSiteMatches, {selector: '.item'}, briskineTab, 0)
+    })
+
+    it('should not read a private tab from a regular window', async () => {
+      tabsGet.mockResolvedValue(privateTab)
+      trigger.mockResolvedValue([[{text: 'one'}]])
+
+      expect(await request('getSiteMatches', {tabId: 9, selector: '.item'})).to.deep.equal([])
+      expect(trigger).not.toHaveBeenCalled()
+    })
+
+    it('should not read a regular tab from a private window', async () => {
+      trigger.mockResolvedValue([[{text: 'one'}]])
+
+      expect(await request('getSiteMatches', {tabId: 7, selector: '.item'}, {windowId: 3, incognito: true}))
+        .to.deep.equal([])
+      expect(trigger).not.toHaveBeenCalled()
     })
 
     it('should not query every tab', async () => {

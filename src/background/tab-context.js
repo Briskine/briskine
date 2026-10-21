@@ -19,7 +19,13 @@ async function allowedSettings () {
   }
 }
 
-async function findTabs (pattern = '') {
+// a private window only reads private tabs, and a regular window only regular ones,
+// so a template never carries content between them.
+function samePrivacy (tab = {}, senderTab = {}) {
+  return Boolean(tab.incognito) === Boolean(senderTab.incognito)
+}
+
+async function findTabs (pattern = '', senderTab = {}) {
   const settings = await allowedSettings()
 
   // compile once, then test every tab
@@ -33,6 +39,7 @@ async function findTabs (pattern = '') {
   const tabs = await browser.tabs.query({url: contentScripts.matches})
   return tabs.filter((tab) => {
     return tab.id
+      && samePrivacy(tab, senderTab)
       && testUrl(urlPattern, tab.url)
       && !isBlocklisted(settings, tab.url)
   })
@@ -90,8 +97,8 @@ function tabContext (tab, data) {
   }
 }
 
-async function getTabContext ({pattern} = {}, windowId) {
-  const tabs = sortTabs(await findTabs(pattern), windowId)
+async function getTabContext ({pattern} = {}, senderTab = {}) {
+  const tabs = sortTabs(await findTabs(pattern, senderTab), senderTab.windowId)
   if (!tabs.length) {
     // no tab matched, {{#site}} renders its else branch
     return null
@@ -109,8 +116,8 @@ async function getTabContext ({pattern} = {}, windowId) {
   return tabContext(tabs[0], {})
 }
 
-async function getTabContexts ({pattern} = {}, windowId) {
-  const tabs = sortTabsByStrip(await findTabs(pattern), windowId)
+async function getTabContexts ({pattern} = {}, senderTab = {}) {
+  const tabs = sortTabsByStrip(await findTabs(pattern, senderTab), senderTab.windowId)
 
   return Promise.all(tabs.map(async (tab) => {
     const data = await askTab(tab, eventSiteData, {})
@@ -118,14 +125,14 @@ async function getTabContexts ({pattern} = {}, windowId) {
   }))
 }
 
-async function getSiteMatches ({tabId, selector} = {}) {
+async function getSiteMatches ({tabId, selector} = {}, senderTab = {}) {
   const [settings, tab] = await Promise.all([
     allowedSettings(),
     // rejects when the tab is gone
     browser.tabs.get(tabId).catch(() => null),
   ])
 
-  if (!tab || isBlocklisted(settings, tab.url)) {
+  if (!tab || !samePrivacy(tab, senderTab) || isBlocklisted(settings, tab.url)) {
     return []
   }
 
@@ -144,7 +151,7 @@ browser.runtime.onMessage.addListener((req, sender, sendResponse) => {
     return false
   }
 
-  handler(req.data, sender.tab?.windowId)
+  handler(req.data, sender.tab)
     .then(sendResponse)
     .catch((err) => {
       debug([req.type, req.data, err], 'error')
