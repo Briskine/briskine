@@ -87,7 +87,7 @@ async function selectShortcut (element, shortcut = '') {
 
 export default async function autocomplete ({ template }) {
   const element = getActiveElement()
-  const range = saveSelection(element)
+  const selection = saveSelection(element)
   const withAttachments = addAttachments(template.body, template.attachments)
   const data = await getPluginData({ element })
   const session = await createSession(data)
@@ -106,7 +106,7 @@ export default async function autocomplete ({ template }) {
       return
     }
 
-    await restoreSelection(element, range)
+    await restoreSelection(element, selection)
 
     if (Object.hasOwn(result, 'error')) {
       parsed = `<div>${result.error?.message || String(result.error)}</div>`

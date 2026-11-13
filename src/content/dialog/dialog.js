@@ -26,7 +26,7 @@ let settingsCache = {}
 // the editor the dialog was opened for,
 // to restore its selection and insert templates.
 let editor = null
-let cachedRange = null
+let cachedSelection = null
 // a show request is waiting for the top frame
 let showing = false
 
@@ -139,7 +139,7 @@ async function show ({ target: node } = {}) {
 
   showing = true
   editor = getActiveElement()
-  cachedRange = saveSelection(editor)
+  cachedSelection = saveSelection(editor)
   // before focus moves to the dialog
   trigger(eventDialogVisibility, {visible: true})
 
@@ -161,7 +161,7 @@ async function respondToClose ({ template } = {}) {
   let restored = false
   try {
     if (editor?.isConnected) {
-      await restoreSelection(editor, cachedRange)
+      await restoreSelection(editor, cachedSelection)
       restored = true
     }
   } catch (err) {
@@ -202,6 +202,6 @@ export function destroy () {
   off(eventDialogClose, respondToClose)
 
   editor = null
-  cachedRange = null
+  cachedSelection = null
   showing = false
 }

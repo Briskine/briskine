@@ -17,15 +17,15 @@ export function saveSelection (element) {
 }
 
 // give focus back to the editor, and restore its selection
-export async function restoreSelection (element, range) {
+export async function restoreSelection (element, selection) {
   element.focus({ preventScroll: true })
 
   // browsers can move the caret to the start when focusing,
   // e.g. when closing a modal dialog gives focus back.
   if (isTextfieldEditor(element)) {
     // type=email has no selection
-    if (Number.isInteger(range?.start) && element.selectionStart !== null) {
-      element.setSelectionRange(range.start, range.end, range.direction)
+    if (Number.isInteger(selection?.start)) {
+      element.setSelectionRange(selection.start, selection.end, selection.direction)
     }
 
     return
@@ -33,15 +33,15 @@ export async function restoreSelection (element, range) {
 
   if (
     !isContentEditable(element)
-    || !range
+    || !selection
     // the editor changed its content
-    || !element.contains(range.commonAncestorContainer)
+    || !element.contains(selection.commonAncestorContainer)
     // the range moved to the start when the editor re-created its content
     // (eg. linkedin in shadow dom), or the editor is empty, when focus is enough.
-    || (range.startContainer === element && range.collapsed && range.startOffset === 0)
+    || (selection.startContainer === element && selection.collapsed && selection.startOffset === 0)
   ) {
     return
   }
 
-  await setSelectionRange(element, range)
+  await setSelectionRange(element, selection)
 }
