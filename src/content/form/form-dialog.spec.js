@@ -55,7 +55,7 @@ describe('form dialog', () => {
     requests = []
     respond = async () => null
     window.browser.runtime.sendMessage = async ({type, data}) => {
-      if (type === 'formRelay') {
+      if (type === 'frameRelay') {
         // the dialog keeps changing its values object
         requests.push(structuredClone(data))
         return respond(data)

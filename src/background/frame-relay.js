@@ -1,24 +1,38 @@
 /*
- * Relay form messages between frames of the same tab.
+ * Relay messages between frames of the same tab.
  *
- * The form is shown in the top frame, but rendered in the frame of the editor.
+ * The dialog and the form are shown in the top frame,
+ * but the editor can be in another frame.
  * Adds the sender's frameId, so the other frame can answer.
  */
 
 import browser from 'webextension-polyfill'
 
-import { eventFormShow, eventFormRender, eventFormClose, formRelayRequest } from '../config.js'
+import {
+  eventFormShow,
+  eventFormRender,
+  eventFormClose,
+  eventDialogShow,
+  eventDialogClose,
+  frameRelayRequest,
+} from '../config.js'
 import trigger from './background-trigger.js'
 
-const formEvents = [eventFormShow, eventFormRender, eventFormClose]
+const relayEvents = [
+  eventFormShow,
+  eventFormRender,
+  eventFormClose,
+  eventDialogShow,
+  eventDialogClose,
+]
 
 browser.runtime.onMessage.addListener((req, sender, sendResponse) => {
   const {event, details, frameId} = req?.data || {}
   if (
-    req?.type !== formRelayRequest
+    req?.type !== frameRelayRequest
     || sender.id !== browser.runtime.id
     || !sender.tab
-    || !formEvents.includes(event)
+    || !relayEvents.includes(event)
   ) {
     return false
   }

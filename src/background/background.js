@@ -4,7 +4,7 @@ import './open-tutorial.js'
 import './update-content.js'
 import './context-menu.js'
 import './tab-context.js'
-import './form-relay.js'
+import './frame-relay.js'
 import '../store/store-background.js'
 
 import {autosync} from '../store/store-api.js'

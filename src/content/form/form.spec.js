@@ -15,7 +15,7 @@ function respondToRelay () {
       return false
     }
 
-    if (type === 'formRelay') {
+    if (type === 'frameRelay') {
       relayed.push(data)
       if (showResponse instanceof Error) {
         throw showResponse

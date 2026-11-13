@@ -9,7 +9,7 @@ import {createSignal, onMount, onCleanup} from 'solid-js'
 import {render} from 'solid-js/web'
 import { Idiomorph } from 'idiomorph'
 
-import { eventFormShow, eventFormRender, eventFormClose, formRelayRequest, formTagPrefix, hiddenAttribute } from '../../config.js'
+import { eventFormShow, eventFormRender, eventFormClose, frameRelayRequest, formTagPrefix, hiddenAttribute } from '../../config.js'
 import { on, off, createRequest } from '../../store/store-content.js'
 import sanitize from '../utils/sanitize.js'
 import stopPageEvents from '../utils/stop-page-events.js'
@@ -19,7 +19,7 @@ import debug from '../../debug.js'
 import IconBriskine from '../../icons/briskine-logo-small.svg'
 import styles from './form-dialog.css?inline'
 
-const relay = createRequest(formRelayRequest)
+const relay = createRequest(frameRelayRequest)
 const formTagName = scopeTagName(formTagPrefix)
 
 // the template can't add its own form, submit ours, or style the dialog

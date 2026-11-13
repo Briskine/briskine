@@ -14,8 +14,8 @@ vi.mock('webextension-polyfill', () => ({
 }))
 vi.mock('./background-trigger.js', () => ({default: trigger}))
 
-import { eventFormShow, eventFormRender, eventSiteData } from '../config.js'
-import './form-relay.js'
+import { eventFormShow, eventFormRender, eventDialogShow, eventDialogClose, eventSiteData } from '../config.js'
+import './frame-relay.js'
 
 const tab = {id: 7}
 const sender = {
@@ -26,14 +26,14 @@ const sender = {
 
 function request (data, from = sender) {
   return new Promise((resolve) => {
-    const handled = listeners[0]({type: 'formRelay', data: data}, from, resolve)
+    const handled = listeners[0]({type: 'frameRelay', data: data}, from, resolve)
     if (handled !== true) {
       resolve('not handled')
     }
   })
 }
 
-describe('form-relay', () => {
+describe('frame-relay', () => {
   beforeEach(() => {
     trigger.mockReset().mockResolvedValue([true])
   })
@@ -59,6 +59,22 @@ describe('form-relay', () => {
     })).to.deep.equal({html: 'rendered'})
   })
 
+  it('should relay the dialog events', async () => {
+    await request({
+      event: eventDialogShow,
+      details: {placement: 'bottom-right'},
+      frameId: 0,
+    })
+    await request({
+      event: eventDialogClose,
+      details: {},
+      frameId: 2,
+    })
+
+    expect(trigger).toHaveBeenCalledWith(eventDialogShow, {placement: 'bottom-right', frameId: 3}, tab, 0)
+    expect(trigger).toHaveBeenCalledWith(eventDialogClose, {frameId: 3}, tab, 2)
+  })
+
   it('should answer null when the frame does not answer', async () => {
     trigger.mockResolvedValue(undefined)
 
@@ -78,7 +94,7 @@ describe('form-relay', () => {
     expect(trigger).not.toHaveBeenCalled()
   })
 
-  it('should only relay form events', async () => {
+  it('should only relay frame events', async () => {
     expect(await request({
       event: eventSiteData,
       frameId: 0,

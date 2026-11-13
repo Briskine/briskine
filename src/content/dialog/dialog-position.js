@@ -35,21 +35,38 @@ function closestRendered (target) {
   return node
 }
 
-export function getDialogPosition (target, instance, placement = 'top-left') {
-  const dialogMetrics = instance.getBoundingClientRect()
-  const targetNode = closestRendered(target)
-  const targetMetrics = targetNode.getBoundingClientRect()
-
-  // target is offscreen
-  // (e.g. hidden iframe caret - google sheets, or caret is scrolled out of main
-  // page viewport)
-  const targetInViewport = (
-    targetMetrics.bottom > 0
-    && targetMetrics.right > 0
-    && targetMetrics.top < window.innerHeight
-    && targetMetrics.left < window.innerWidth
+function isInViewport (rect) {
+  return (
+    rect.top + rect.height > 0
+    && rect.left + rect.width > 0
+    && rect.top < window.innerHeight
+    && rect.left < window.innerWidth
   )
-  if (!targetInViewport) {
+}
+
+// the target's position in the current frame's viewport.
+// null when it's offscreen (e.g. hidden iframe caret - google sheets,
+// or caret is scrolled out of the viewport).
+export function getTargetRect (target) {
+  if (!target) {
+    return null
+  }
+
+  const {top, left, width, height} = closestRendered(target).getBoundingClientRect()
+  const rect = {
+    top,
+    left,
+    width,
+    height,
+  }
+
+  return isInViewport(rect) ? rect : null
+}
+
+export function getDialogPosition (targetMetrics, instance, placement = 'top-left') {
+  const dialogMetrics = instance.getBoundingClientRect()
+
+  if (!targetMetrics || !isInViewport(targetMetrics)) {
     // center the dialog
     return {
       top: Math.max(0, (window.innerHeight - dialogMetrics.height) / 2),
