@@ -23,6 +23,7 @@ import getEventTarget from '../utils/event-target.js'
 let bubbleInstance = null
 let removeFocusListeners = () => {}
 let cleanupFloatingUi = () => {}
+let updateBubblePosition = () => {}
 let currentTextfield = null
 let hideTimeout = null
 // stay visible while the dialog is open,
@@ -115,7 +116,11 @@ function handleDialogVisibility ({ visible } = {}) {
   // the dialog gives focus back to the textfield when it closes
   if (getActiveElement(true) !== currentTextfield) {
     deferHideBubble()
+    return
   }
+
+  // the textfield could have changed while the dialog was open
+  updateBubblePosition()
 }
 
 let toggleBubbleHandler = () => {}
@@ -376,6 +381,7 @@ function showBubble (textfield) {
   }
 
   const stopAutoUpdate = autoUpdate(textfield, bubbleInstance, updatePosition)
+  updateBubblePosition = updatePosition
 
   cleanupFloatingUi = () => {
     cancelled = true

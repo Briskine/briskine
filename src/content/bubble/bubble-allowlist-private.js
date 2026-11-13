@@ -10,7 +10,8 @@ const selector = `
   head [href*="cdn.office.net"],
   meta[content*="owamail"],
   link[href*="/owamail/"],
-  script[src*="/owamail/"]
+  script[src*="/owamail/"],
+  meta[name="briskine-playwright-bubble"]
 `
 
 export default function bubbleAllowlistPrivate (hostname, { content = false } = {}) {

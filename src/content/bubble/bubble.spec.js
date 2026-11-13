@@ -220,6 +220,22 @@ describe('bubble', () => {
       })
     })
 
+    it('updates its position when the dialog closes', async () => {
+      const textarea = createTextarea()
+      await showFor(textarea)
+      const {left} = getBubble().getBoundingClientRect()
+
+      setDialogVisibility(true)
+      textarea.style.left = '50px'
+      await new Promise(resolve => setTimeout(resolve, 50))
+      expect(getBubble().getBoundingClientRect().left).toBe(left)
+
+      setDialogVisibility(false)
+      await vi.waitFor(() => {
+        expect(getBubble().getBoundingClientRect().left).toBe(left - 50)
+      })
+    })
+
     it('stays visible when the dialog covers it', async () => {
       const textarea = createTextarea()
       await showFor(textarea)

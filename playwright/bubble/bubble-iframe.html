@@ -1,0 +1,24 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Bubble in iframe</title>
+    <script src="/extension-ready.js"></script>
+  </head>
+  <body>
+    <script>
+      const $iframe = document.createElement('iframe')
+      $iframe.id = 'iframe'
+      $iframe.style.cssText = 'width: 500px; height: 250px; margin: 50px;'
+      document.body.appendChild($iframe)
+      // shows the bubble, see bubble-allowlist-private.js
+      const template = `
+        <meta name="briskine-playwright-bubble">
+        <textarea rows="10" cols="50"></textarea>
+      `
+      $iframe.contentWindow.document.open()
+      $iframe.contentWindow.document.write(template)
+      $iframe.contentWindow.document.close()
+    </script>
+  </body>
+</html>
