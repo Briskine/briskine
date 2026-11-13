@@ -1,6 +1,8 @@
 /* Dialog positioning and caret detection
  */
 
+import { computePosition, flip, shift } from '@floating-ui/dom'
+
 import { getSelectionRange } from '../utils/selection.js'
 
 // moves up the tree finding the closest "rendered" element
@@ -63,55 +65,39 @@ export function getTargetRect (target) {
   return isInViewport(rect) ? rect : null
 }
 
-export function getDialogPosition (targetMetrics, instance, placement = 'top-left') {
-  const dialogMetrics = instance.getBoundingClientRect()
-
-  if (!targetMetrics || !isInViewport(targetMetrics)) {
+// placement is a floating-ui placement
+export async function getDialogPosition (rect, instance, placement = 'bottom-start') {
+  if (!rect || !isInViewport(rect)) {
+    const {width, height} = instance.getBoundingClientRect()
     // center the dialog
     return {
-      top: Math.max(0, (window.innerHeight - dialogMetrics.height) / 2),
-      left: Math.max(0, (window.innerWidth - dialogMetrics.width) / 2),
+      top: Math.max(0, (window.innerHeight - height) / 2),
+      left: Math.max(0, (window.innerWidth - width) / 2),
     }
   }
 
-  let top = targetMetrics.top
-  let left = targetMetrics.left
-
-  if (placement.includes('right')) {
-    left += targetMetrics.width
-
-    // check if we have enough space on the right
-    const pageWidth = window.innerWidth
-    const spaceRight = pageWidth - left
-    if (spaceRight < dialogMetrics.width) {
-      // flip it on the x-axis if we don't
-      placement = placement + '-flip'
-    }
+  const reference = {
+    getBoundingClientRect: () => ({
+      ...rect,
+      x: rect.left,
+      y: rect.top,
+      right: rect.left + rect.width,
+      bottom: rect.top + rect.height,
+    }),
   }
 
-  if (placement.includes('flip')) {
-    left -= dialogMetrics.width
-  }
-
-  if (placement.includes('bottom')) {
-    top += targetMetrics.height
-  }
-
-  // check if we have enough space at the bottom
-  const pageHeight = window.innerHeight
-  const spaceBelow = pageHeight - top
-  const spaceAbove = targetMetrics.top
-  if (
-    spaceBelow < dialogMetrics.height
-    && spaceAbove > dialogMetrics.height
-  ) {
-    // flip it on the y-axis if we don't
-    top -= dialogMetrics.height
-  }
+  const {x, y} = await computePosition(reference, instance, {
+    strategy: 'fixed',
+    placement,
+    middleware: [
+      flip({crossAxis: 'alignment'}),
+      shift(),
+    ],
+  })
 
   return {
-    top: Math.max(0, top),
-    left: Math.max(0, left),
+    top: y,
+    left: x,
   }
 }
 

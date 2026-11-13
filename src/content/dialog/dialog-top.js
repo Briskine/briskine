@@ -61,10 +61,11 @@ function Dialog () {
     element.setAttribute('dir', details.direction || 'ltr')
 
     setVisible(true)
-    const position = getDialogPosition(details.rect, element, details.placement)
-    Object.assign(element.style, {
-      top: `${position.top}px`,
-      left: `${position.left}px`,
+    getDialogPosition(details.rect, element, details.placement).then((position) => {
+      Object.assign(element.style, {
+        top: `${position.top}px`,
+        left: `${position.left}px`,
+      })
     })
 
     return true

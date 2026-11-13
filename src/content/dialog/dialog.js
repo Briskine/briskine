@@ -29,9 +29,15 @@ let settingsCache = {}
 let editor = null
 let cachedRange = null
 
-// the placement of the dialog, relative to the target
-function getTarget (node) {
-  const direction = window.getComputedStyle(node).direction || 'ltr'
+// where the dialog opens, below an anchor in the target's rect.
+// start and end follow the direction of the dialog.
+function getTarget (node, rtl = false) {
+  // the caret, with the dialog starting after it
+  const caretAnchor = (rect) => ({
+    ...rect,
+    left: rtl ? rect.left : rect.left + rect.width,
+    width: 0,
+  })
 
   if (isTextfieldEditor(node)) {
     // input, textarea
@@ -39,37 +45,41 @@ function getTarget (node) {
     return {
       target,
       removeCaretParent,
-      direction,
-      placement: direction === 'rtl' ? 'bottom-left-flip' : 'bottom-right',
+      anchor: caretAnchor,
+      placement: 'bottom-start',
     }
   }
 
   if (isContentEditable(node)) {
     const target = getContentEditableCaret(node)
-    // only use the targetMetrics width when caret is a range.
-    // workaround for when the contenteditable caret is the endContainer.
-    const isRange = target instanceof Range
-
-    let placement = 'top-left'
-    if (direction === 'rtl') {
-      placement = isRange ? 'bottom-left-flip' : 'top-right-flip'
-    } else if (isRange) {
-      placement = 'bottom-right'
+    if (target instanceof Range) {
+      return {
+        target,
+        anchor: caretAnchor,
+        placement: 'bottom-start',
+      }
     }
 
+    // the caret is in an empty element, at its top start corner
     return {
       target,
-      direction,
-      placement,
+      anchor: (rect) => ({
+        top: rect.top,
+        left: rtl ? rect.left + rect.width : rect.left,
+        width: 0,
+        height: 0,
+      }),
+      placement: 'bottom-start',
     }
   }
 
-  // when the dialog is opened from the bubble button
+  // when the dialog is opened from the bubble button,
+  // open it toward the inside of the textfield.
   if (isBubbleElement(node)) {
     return {
       target: node,
-      direction,
-      placement: direction === 'rtl' ? 'bottom-left' : 'bottom-right-flip',
+      anchor: (rect) => rect,
+      placement: 'bottom-end',
     }
   }
 
@@ -83,23 +93,26 @@ async function show ({ target: node } = {}) {
     return
   }
 
-  const target = getTarget(node)
+  const direction = window.getComputedStyle(node).direction || 'ltr'
+  const target = getTarget(node, direction === 'rtl')
   if (!target) {
     return
   }
 
   editor = getActiveElement()
   cachedRange = getSelectionRange(editor)
-  let rect = getTargetRect(target.target)
+  const targetRect = getTargetRect(target.target)
   // clean-up the virtual caret mirror, used on input and textarea
   target.removeCaretParent?.()
 
-  if (rect) {
+  let rect = null
+  if (targetRect) {
     const offset = await getFrameOffset()
+    const anchor = target.anchor(targetRect)
     rect = offset ? {
-      ...rect,
-      top: rect.top + offset.top,
-      left: rect.left + offset.left,
+      ...anchor,
+      top: anchor.top + offset.top,
+      left: anchor.left + offset.left,
     } : null
   }
 
@@ -109,7 +122,7 @@ async function show ({ target: node } = {}) {
       details: {
         rect,
         placement: target.placement,
-        direction: target.direction,
+        direction,
         keyboardShortcut: settingsCache.dialog_shortcut,
       },
       frameId: topFrameId,
