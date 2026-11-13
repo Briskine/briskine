@@ -60,7 +60,7 @@ describe('bubble', () => {
   afterEach(() => {
     vi.restoreAllMocks()
     destroy()
-    document.querySelectorAll('textarea, [contenteditable]').forEach(el => el.remove())
+    document.querySelectorAll('textarea, [contenteditable], dialog').forEach(el => el.remove())
   })
 
   it('creates a bubble element in the document', () => {
@@ -91,6 +91,48 @@ describe('bubble', () => {
 
     await new Promise(resolve => setTimeout(resolve, 50))
     expect(getBubble().hasAttribute('visible')).toBe(false)
+  })
+
+  it('shows for a single line contenteditable', async () => {
+    const editable = createContentEditable(300, 27)
+    editable.focus()
+
+    await vi.waitFor(() => {
+      expect(getBubble().hasAttribute('visible')).toBe(true)
+    })
+  })
+
+  it('does not show for a contenteditable shorter than a line', async () => {
+    const editable = createContentEditable(300, 26)
+    editable.focus()
+
+    await new Promise(resolve => setTimeout(resolve, 50))
+    expect(getBubble().hasAttribute('visible')).toBe(false)
+  })
+
+  it('moves into the modal dialog of the textfield, and back out', async () => {
+    const dialog = document.createElement('dialog')
+    document.body.appendChild(dialog)
+    const modalTextarea = createTextarea()
+    dialog.appendChild(modalTextarea)
+    dialog.showModal()
+
+    modalTextarea.focus()
+    await vi.waitFor(() => {
+      expect(getBubble().parentNode).toBe(dialog)
+      expect(getBubble().style.visibility).toBe('visible')
+    })
+
+    // the page outside the modal dialog doesn't get clicks
+    const {left, top, width, height} = getBubble().getBoundingClientRect()
+    expect(document.elementFromPoint(left + width / 2, top + height / 2)).toBe(getBubble())
+
+    dialog.close()
+    createTextarea().focus()
+    await vi.waitFor(() => {
+      expect(getBubble().parentNode).toBe(document.documentElement)
+    })
+    expect(getBubble().hasAttribute('visible')).toBe(true)
   })
 
   it('hides when the textarea loses focus', async () => {

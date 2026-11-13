@@ -14,6 +14,7 @@ import { getActiveElement } from '../utils/active-element.js'
 import bubbleAllowlistPrivate from './bubble-allowlist-private.js'
 import { addFocusListeners } from '../utils/shadow-focus.js'
 import { isExtensionElement, scopeTagName } from '../utils/extension-element.js'
+import { closestDeep } from '../utils/selectors.js'
 
 import bubbleStyles from './bubble.css?inline'
 import bubbleIcon from '../../icons/briskine-logo-small-bare.svg?raw'
@@ -158,7 +159,7 @@ export function destroy () {
 const bubbleSize = 28
 const bubbleMargin = 5
 const textfieldMinWidth = 100
-const textfieldMinHeight = 32
+const textfieldMinHeight = 27
 
 function isValidTextfield (elem) {
   if (
@@ -176,7 +177,7 @@ function isValidTextfield (elem) {
     // check if the element is big enough
     // to only show the bubble for large textfields
     const metrics = elem.getBoundingClientRect()
-    if (metrics.width > textfieldMinWidth && metrics.height > textfieldMinHeight) {
+    if (metrics.width >= textfieldMinWidth && metrics.height >= textfieldMinHeight) {
       return true
     }
   }
@@ -268,6 +269,14 @@ function showBubble (textfield) {
   }
 
   currentTextfield = textfield
+
+  // the page is inert outside its modal dialog,
+  // so the bubble must be inside it to be clicked.
+  const container = closestDeep('dialog:modal', textfield) || document.documentElement
+  if (bubbleInstance.parentNode !== container) {
+    container.append(bubbleInstance)
+  }
+
   bubbleInstance.setAttribute('visible', 'true')
 
   const isRtl = getComputedStyle(textfield).direction === 'rtl'
