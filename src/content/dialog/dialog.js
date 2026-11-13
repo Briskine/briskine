@@ -28,6 +28,8 @@ let settingsCache = {}
 // to restore its selection and insert templates.
 let editor = null
 let cachedRange = null
+// a show request is waiting for the top frame
+let showing = false
 
 // where the dialog opens, below an anchor in the target's rect.
 // start and end follow the direction of the dialog.
@@ -86,27 +88,15 @@ function getTarget (node, rtl = false) {
   return null
 }
 
-// node is defined only when opened from the bubble
-async function show ({ target: node } = {}) {
-  node ??= getActiveElement()
-  if (!node) {
-    return
+// asks the top frame to show the dialog, next to the target
+async function requestShow (target, direction) {
+  let targetRect
+  try {
+    targetRect = getTargetRect(target.target)
+  } finally {
+    // clean-up the virtual caret mirror, used on input and textarea
+    target.removeCaretParent?.()
   }
-
-  const direction = window.getComputedStyle(node).direction || 'ltr'
-  const target = getTarget(node, direction === 'rtl')
-  if (!target) {
-    return
-  }
-
-  editor = getActiveElement()
-  cachedRange = getSelectionRange(editor)
-  // before focus moves to the dialog
-  trigger(eventDialogVisibility, {visible: true})
-
-  const targetRect = getTargetRect(target.target)
-  // clean-up the virtual caret mirror, used on input and textarea
-  target.removeCaretParent?.()
 
   let rect = null
   if (targetRect) {
@@ -119,20 +109,48 @@ async function show ({ target: node } = {}) {
     } : null
   }
 
+  return relay({
+    event: eventDialogShow,
+    details: {
+      rect,
+      placement: target.placement,
+      direction,
+      keyboardShortcut: settingsCache.dialog_shortcut,
+    },
+    frameId: topFrameId,
+  })
+}
+
+// node is defined only when opened from the bubble
+async function show ({ target: node } = {}) {
+  if (showing) {
+    return
+  }
+
+  node ??= getActiveElement()
+  if (!node) {
+    return
+  }
+
+  const direction = window.getComputedStyle(node).direction || 'ltr'
+  const target = getTarget(node, direction === 'rtl')
+  if (!target) {
+    return
+  }
+
+  showing = true
+  editor = getActiveElement()
+  cachedRange = getSelectionRange(editor)
+  // before focus moves to the dialog
+  trigger(eventDialogVisibility, {visible: true})
+
   let shown = false
   try {
-    shown = await relay({
-      event: eventDialogShow,
-      details: {
-        rect,
-        placement: target.placement,
-        direction,
-        keyboardShortcut: settingsCache.dialog_shortcut,
-      },
-      frameId: topFrameId,
-    })
+    shown = await requestShow(target, direction)
   } catch (err) {
     debug(['dialog show', err], 'error')
+  } finally {
+    showing = false
   }
 
   if (shown !== true) {
@@ -141,15 +159,19 @@ async function show ({ target: node } = {}) {
 }
 
 async function respondToClose ({ template } = {}) {
-  if (!editor?.isConnected) {
-    trigger(eventDialogVisibility, {visible: false})
-    return
+  let restored = false
+  try {
+    if (editor?.isConnected) {
+      await restoreSelection(editor, cachedRange)
+      restored = true
+    }
+  } catch (err) {
+    debug(['dialog restore selection', err], 'error')
   }
 
-  await restoreSelection(editor, cachedRange)
   trigger(eventDialogVisibility, {visible: false})
 
-  if (template) {
+  if (restored && template) {
     autocomplete({
       template: template,
     })
@@ -182,4 +204,5 @@ export function destroy () {
 
   editor = null
   cachedRange = null
+  showing = false
 }

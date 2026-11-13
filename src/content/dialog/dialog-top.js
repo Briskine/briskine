@@ -79,11 +79,17 @@ function Dialog () {
     return true
   }
 
+  // the template to insert, when the dialog closes
+  let closeTemplate = null
+
+  function close (template) {
+    closeTemplate = template
+    element.close()
+  }
+
   // the frame of the editor restores its focus and selection,
   // and inserts the template.
-  function close (template) {
-    element.close()
-
+  function notifyClose (template) {
     relay({
       event: eventDialogClose,
       details: {template},
@@ -91,6 +97,13 @@ function Dialog () {
     }).catch((err) => {
       debug(['dialog close', err], 'error')
     })
+  }
+
+  // every way of closing the dialog
+  function handleClose () {
+    setVisible(false)
+    notifyClose(closeTemplate)
+    closeTemplate = null
   }
 
   // clicks outside the dialog land on its backdrop
@@ -109,7 +122,11 @@ function Dialog () {
     e.preventDefault()
     // focus is back in the editor on keyup.
     // some websites (eg. linkedin) close their modal on the escape keyup.
-    window.addEventListener('keyup', (e) => { e.stopPropagation() }, { capture: true, once: true })
+    window.addEventListener('keyup', (e) => {
+      if (e.key === 'Escape') {
+        e.stopPropagation()
+      }
+    }, { capture: true, once: true })
 
     close()
   }
@@ -118,7 +135,7 @@ function Dialog () {
   onMount(() => {
     globalAbortController = new AbortController()
 
-    element.addEventListener('close', () => setVisible(false))
+    element.addEventListener('close', handleClose)
     element.addEventListener('cancel', closeOnCancel)
     element.addEventListener('click', closeOnBackdropClick)
 
@@ -130,6 +147,11 @@ function Dialog () {
 
   onCleanup(() => {
     globalAbortController.abort()
+
+    // removing the open dialog doesn't fire the close event
+    if (visible()) {
+      notifyClose()
+    }
   })
 
   return (
@@ -179,7 +201,7 @@ customElements.define(dialogTagName, class extends HTMLElement {
   }
 })
 
-function respondToShow (details = {}) {
+export function respondToShow (details = {}) {
   dialogInstance ??= document.createElement(dialogTagName)
   if (!dialogInstance.isConnected) {
     document.documentElement.appendChild(dialogInstance)

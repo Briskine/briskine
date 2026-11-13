@@ -73,6 +73,29 @@ describe('dialog', () => {
     expect(document.activeElement).to.equal(textarea)
   })
 
+  it('should only ask the top frame once, while it is showing the dialog', async () => {
+    let answer
+    showResponse = new Promise((resolve) => answer = resolve)
+
+    const first = trigger(eventShowDialog, {})
+    const second = trigger(eventShowDialog, {})
+    answer(true)
+    await Promise.all([first, second])
+
+    expect(relayed.length).to.equal(1)
+    expect(visibility).to.deep.equal([true])
+  })
+
+  it('should not be visible when the dialog closes, even if the selection was not restored', async () => {
+    await trigger(eventShowDialog, {})
+
+    textarea.focus = () => {
+      throw new Error('focus')
+    }
+    await trigger(eventDialogClose, {})
+    expect(visibility).to.deep.equal([true, false])
+  })
+
   it('should not be visible when the top frame does not show the dialog', async () => {
     showResponse = false
     await trigger(eventShowDialog, {})

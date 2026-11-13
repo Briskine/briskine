@@ -14,7 +14,10 @@ const answerTimeout = 500
 let abortController = null
 
 function findFrame (source) {
-  return querySelectorAllDeep('iframe, frame').find((frame) => frame.contentWindow === source)
+  const isSource = (frame) => frame.contentWindow === source
+  // shadow roots are slower to search
+  return Array.from(document.querySelectorAll('iframe, frame')).find(isSource)
+    || querySelectorAllDeep('iframe, frame').find(isSource)
 }
 
 // the frame's viewport starts inside its border and padding

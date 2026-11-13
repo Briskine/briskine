@@ -387,6 +387,7 @@ function showBubble (textfield) {
     cancelled = true
     stopPolling()
     stopAutoUpdate()
+    updateBubblePosition = () => {}
   }
 }
 

@@ -1,7 +1,7 @@
 // returns the shadow root of the element,
 // with support for closed shadow roots, which extensions can open.
 
-import { isExtensionElement } from './extension-element.js'
+import { isExtensionHost } from './extension-element.js'
 
 export default function getShadowRoot (element) {
   if (element?.nodeType !== Node.ELEMENT_NODE) {
@@ -13,7 +13,7 @@ export default function getShadowRoot (element) {
   }
 
   // our own ui is not a page editor
-  if (isExtensionElement(element)) {
+  if (isExtensionHost(element)) {
     return null
   }
 
