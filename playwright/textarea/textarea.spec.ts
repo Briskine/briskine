@@ -23,6 +23,14 @@ test.describe('Textarea', () => {
     await expect(textarea).toHaveValue(template)
   })
 
+  test('should insert template from dialog at the caret in textarea', async ({page}) => {
+    const textarea = page.getByTestId('textarea')
+    await textarea.fill('hello world')
+    await textarea.evaluate((element: HTMLTextAreaElement) => element.setSelectionRange(6, 6))
+    await insertFromDialog(page, textarea)
+    await expect(textarea).toHaveValue('hello It was nice talking to you.world')
+  })
+
   test('should insert template with keyboard shortcut in input', async ({page}) => {
     const input = page.getByTestId('input')
     await input.fill('kr')

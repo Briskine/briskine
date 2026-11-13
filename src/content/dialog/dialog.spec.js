@@ -73,6 +73,17 @@ describe('dialog', () => {
     expect(document.activeElement).to.equal(textarea)
   })
 
+  it('should restore the caret when the dialog closes', async () => {
+    textarea.value = 'hello world'
+    textarea.setSelectionRange(5, 5)
+    await trigger(eventShowDialog, {})
+
+    // closing the modal dialog gives focus back with the caret at the start
+    textarea.setSelectionRange(0, 0)
+    await trigger(eventDialogClose, {})
+    expect(textarea.selectionStart).to.equal(5)
+  })
+
   it('should only ask the top frame once, while it is showing the dialog', async () => {
     let answer
     showResponse = new Promise((resolve) => answer = resolve)

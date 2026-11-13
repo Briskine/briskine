@@ -11,7 +11,7 @@ import htmlToText from './utils/html-to-text.js'
 import debug from '../debug.js'
 import { getWord, selectWord } from './utils/word.js'
 import { getSelectionRange } from './utils/selection.js'
-import restoreSelection from './utils/restore-selection.js'
+import { saveSelection, restoreSelection } from './utils/restore-selection.js'
 import { updateTemplateStats } from '../store/store-content.js'
 import { getActiveElement } from './utils/active-element.js'
 import { selectFirstCursor } from './cursors/cursors.js'
@@ -87,7 +87,7 @@ async function selectShortcut (element, shortcut = '') {
 
 export default async function autocomplete ({ template }) {
   const element = getActiveElement()
-  const range = getSelectionRange(element)
+  const range = saveSelection(element)
   const withAttachments = addAttachments(template.body, template.attachments)
   const data = await getPluginData({ element })
   const session = await createSession(data)

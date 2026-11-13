@@ -11,8 +11,7 @@ import { isContentEditable } from '../editors/editor-contenteditable.js'
 import { isTextfieldEditor } from '../editors/editor-textfield.js'
 import { getEditableCaret, getContentEditableCaret, getTargetRect } from './dialog-position.js'
 import autocomplete from '../autocomplete.js'
-import { getSelectionRange } from '../utils/selection.js'
-import restoreSelection from '../utils/restore-selection.js'
+import { saveSelection, restoreSelection } from '../utils/restore-selection.js'
 import { getActiveElement } from '../utils/active-element.js'
 import { isBubbleElement } from '../utils/extension-element.js'
 import getFrameOffset from '../utils/frame-offset.js'
@@ -140,7 +139,7 @@ async function show ({ target: node } = {}) {
 
   showing = true
   editor = getActiveElement()
-  cachedRange = getSelectionRange(editor)
+  cachedRange = saveSelection(editor)
   // before focus moves to the dialog
   trigger(eventDialogVisibility, {visible: true})
 
