@@ -58,7 +58,7 @@
     "archiver": "^8.0.0",
     "dotenv": "^18.0.0",
     "eslint": "^10.0.0",
-    "eslint-plugin-solid": "^0.18.0",
+    "eslint-plugin-solid": "^0.19.0",
     "firebase-tools": "^15.0.0",
     "globals": "^17.0.0",
     "http-server": "^14.1.1",
