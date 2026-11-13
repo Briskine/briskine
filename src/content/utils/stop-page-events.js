@@ -9,17 +9,18 @@ const targetEvents = [
   'keyup',
   // stop Front from catching keyboard shortcuts when typing in our fields
   'keypress',
-  // stop GitHub search from closing the dialog when clicking inside it
+  // stop GitHub search from closing when clicking inside our dialog
   'mousedown',
   'mouseup',
-  // stop GitHub search from preventing opening the dialog
-  // stop LinkedIn New Post from stealing focus when opening the dialog
+  // stop pages from reacting to focus moving to our fields,
+  // e.g. closing their popups
   'focus',
   'focusin',
 ]
 
 const relatedTargetEvents = [
-  // stop GitHub search and LinkedIn new post from handling blur
+  // stop pages (e.g. GitHub search) from handling blur, when focus moves to our
+  // fields
   'blur',
   'focusout',
 ]
