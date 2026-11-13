@@ -60,6 +60,14 @@ function Dialog () {
     setKeyboardShortcut(details.keyboardShortcut || '')
     element.setAttribute('dir', details.direction || 'ltr')
 
+    // modal, to show and work above modal dialogs on the page
+    try {
+      element.showModal()
+    } catch (err) {
+      debug(['dialog showModal', err], 'error')
+      return false
+    }
+
     setVisible(true)
     getDialogPosition(details.rect, element, details.placement).then((position) => {
       Object.assign(element.style, {
@@ -71,10 +79,17 @@ function Dialog () {
     return true
   }
 
+  // the page is inert while our dialog is open
+  function hide () {
+    if (element.open) {
+      element.close()
+    }
+  }
+
   // the frame of the editor restores its focus and selection,
   // and inserts the template.
   function close (template) {
-    setVisible(false)
+    hide()
 
     relay({
       event: eventDialogClose,
@@ -87,13 +102,33 @@ function Dialog () {
 
   function hideOnFocusout (e) {
     if (e.target === dialogInstance) {
-      setVisible(false)
+      hide()
     }
+  }
+
+  // clicks outside the dialog land on its backdrop
+  function closeOnBackdropClick (e) {
+    const {top, left, right, bottom} = element.getBoundingClientRect()
+    if (
+      e.target === element
+      && (e.clientX < left || e.clientX > right || e.clientY < top || e.clientY > bottom)
+    ) {
+      close()
+    }
+  }
+
+  // other close requests (e.g. the android back button)
+  function closeOnCancel (e) {
+    e.preventDefault()
+    close()
   }
 
   function hideOnEsc (e) {
     if (e.key === 'Escape' && visible()) {
       e.stopPropagation()
+      // the escape close request would close the modal dialog on the page,
+      // after closing ours.
+      e.preventDefault()
       // prevent triggering the keyup event on the page.
       // causes some websites (eg. linkedin) to also close the underlying modal
       // when closing our dialog.
@@ -114,10 +149,14 @@ function Dialog () {
     window.addEventListener('focusout', hideOnFocusout, globalListenerOptions)
     window.addEventListener('keydown', hideOnEsc, globalListenerOptions)
 
+    element.addEventListener('close', () => setVisible(false))
+    element.addEventListener('cancel', closeOnCancel)
+    element.addEventListener('click', closeOnBackdropClick)
+
     stopPageEvents(element, globalAbortController.signal)
 
     // expose show on element
-    element.show = show
+    element.showDialog = show
   })
 
   onCleanup(() => {
@@ -125,7 +164,7 @@ function Dialog () {
   })
 
   return (
-    <div
+    <dialog
       ref={element}
       class="briskine-dialog briskine-ui"
       classList={{
@@ -137,7 +176,7 @@ function Dialog () {
           visible={visible()}
           onInsert={close}
         />
-    </div>
+    </dialog>
   )
 }
 
@@ -150,7 +189,7 @@ customElements.define(dialogTagName, class extends HTMLElement {
     this.disposer = () => {}
 
     this.show = function (details) {
-      return this.#shadowRoot.querySelector(dialogSelector).show(details)
+      return this.#shadowRoot.querySelector(dialogSelector).showDialog(details)
     }
   }
   connectedCallback () {

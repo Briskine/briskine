@@ -33,6 +33,12 @@
   opacity: 0;
 }
 
+/* the page stays visible under our modal dialog
+ */
+.briskine-dialog-popover .briskine-dialog::backdrop {
+  background: transparent;
+}
+
 .briskine-dialog.b-dialog-open-animation {
   animation: .1s open .1s linear 1 forwards;
 }
