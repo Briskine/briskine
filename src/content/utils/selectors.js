@@ -6,10 +6,12 @@
  *
  */
 
+import getShadowRoot from './shadow-root.js'
+
 function* shadowHosts (root) {
   const walker = document.createTreeWalker(root, NodeFilter.SHOW_ELEMENT, {
     acceptNode(node) {
-      if (node.shadowRoot) {
+      if (getShadowRoot(node)) {
         return NodeFilter.FILTER_ACCEPT
       }
       return NodeFilter.FILTER_SKIP
@@ -30,7 +32,7 @@ export function querySelectorDeep (selector, root = document) {
   }
 
   for (const host of shadowHosts(root)) {
-    const result = querySelectorDeep(selector, host.shadowRoot)
+    const result = querySelectorDeep(selector, getShadowRoot(host))
     if (result) {
       return result
     }
@@ -43,7 +45,7 @@ export function querySelectorAllDeep (selector, root = document) {
   const found = [...root.querySelectorAll(selector)]
 
   for (const host of shadowHosts(root)) {
-    found.push(...querySelectorAllDeep(selector, host.shadowRoot))
+    found.push(...querySelectorAllDeep(selector, getShadowRoot(host)))
   }
 
   return found

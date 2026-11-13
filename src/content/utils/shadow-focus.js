@@ -7,9 +7,12 @@
 // will our regular document handler catch the event.
 // that's why we need to also need to attach the focusin/out listeners to the shadow roots.
 import { getActiveElement } from './active-element.js'
+import getShadowRoot from './shadow-root.js'
 
 export function addFocusListeners (callback = () => {}, eventType = '') {
   const shadowRootsRegistry = new WeakSet()
+  // the same event can reach several of our listeners
+  const handledEvents = new WeakSet()
 
   const abortController = new AbortController()
   const listenerOptions = {
@@ -17,10 +20,16 @@ export function addFocusListeners (callback = () => {}, eventType = '') {
     signal: abortController.signal,
   }
 
-  function callbackWrap (e) {
-    if (e.__handled === true) {
+  function handle (e) {
+    if (handledEvents.has(e)) {
       return
     }
+
+    handledEvents.add(e)
+    callback(e)
+  }
+
+  function callbackWrap (e) {
 
     const path = e.composedPath()
     // find the inner most root, to support nested shadow roots
@@ -35,7 +44,7 @@ export function addFocusListeners (callback = () => {}, eventType = '') {
       // required for nested shadow roots.
       || e.currentTarget === innermostRoot
     ) {
-      callback(e)
+      handle(e)
     }
   }
 
@@ -54,8 +63,7 @@ export function addFocusListeners (callback = () => {}, eventType = '') {
       // the focusin event could already be in progress.
       // manually trigger it because the newly attached listener might miss it.
       if (event) {
-        event.__handled = true
-        callback(event)
+        handle(event)
       }
     }
   }
@@ -64,6 +72,13 @@ export function addFocusListeners (callback = () => {}, eventType = '') {
     const path = event.composedPath()
     for (const node of path) {
       hookShadowRoot(node, event)
+    }
+
+    // closed shadow roots are not in the event path
+    let root = getShadowRoot(path[0])
+    while (root) {
+      hookShadowRoot(root, event)
+      root = getShadowRoot(root.activeElement)
     }
   }
 

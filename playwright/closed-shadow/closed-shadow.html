@@ -1,0 +1,26 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Closed shadow root</title>
+  </head>
+  <body>
+    <div id="host"></div>
+    <script>
+      const root = document.getElementById('host').attachShadow({mode: 'closed'})
+      root.innerHTML = '<textarea rows="10" cols="50"></textarea>'
+      // the tests can't reach into the closed shadow root
+      window.closedTextarea = root.querySelector('textarea')
+
+      // extension-ready.js can't find the textarea, so wait for the extension here.
+      // it starts when an editor is focused.
+      window.addEventListener('message', (e) => {
+        if (e.data === 'briskine-ready') {
+          // eslint-disable-next-line no-console
+          console.log('BSKN inited')
+        }
+      })
+      window.addEventListener('load', () => window.closedTextarea.focus())
+    </script>
+  </body>
+</html>
