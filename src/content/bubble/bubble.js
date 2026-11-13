@@ -5,7 +5,7 @@
 
 import { computePosition, autoUpdate, offset, shift, limitShift, hide } from '@floating-ui/dom'
 
-import { eventShowDialog, eventToggleBubble, bubbleTagPrefix } from '../../config.js'
+import { eventShowDialog, eventToggleBubble, eventDialogVisibility, bubbleTagPrefix } from '../../config.js'
 import { getExtensionData, trigger, on, off } from '../../store/store-content.js'
 import { isContentEditable } from '../editors/editor-contenteditable.js'
 import { isTextfieldEditor } from '../editors/editor-textfield.js'
@@ -25,6 +25,9 @@ let removeFocusListeners = () => {}
 let cleanupFloatingUi = () => {}
 let currentTextfield = null
 let hideTimeout = null
+// stay visible while the dialog is open,
+// even when focus leaves the frame, or the dialog covers the bubble.
+let pinned = false
 
 export const bubbleTagName = scopeTagName(bubbleTagPrefix)
 
@@ -85,6 +88,10 @@ function handleTextfieldFocus (event) {
 }
 
 function blurTextfield (e) {
+  if (pinned) {
+    return
+  }
+
   // don't hide the bubble if the newly focused node is in our own ui.
   // when pressing the bubble, or when focusing inside the dialog.
   if (isExtensionElement(e.relatedTarget)) {
@@ -92,6 +99,23 @@ function blurTextfield (e) {
   }
 
   return deferHideBubble()
+}
+
+function handleDialogVisibility ({ visible } = {}) {
+  if (visible) {
+    pinned = true
+    return
+  }
+
+  if (!pinned) {
+    return
+  }
+
+  pinned = false
+  // the dialog gives focus back to the textfield when it closes
+  if (getActiveElement(true) !== currentTextfield) {
+    deferHideBubble()
+  }
 }
 
 let toggleBubbleHandler = () => {}
@@ -133,6 +157,7 @@ function create (settings = {}) {
 
   // attach focusin and focusout events with support for shadow dom
   removeFocusListeners = addFocusListeners(handleTextfieldFocus)
+  on(eventDialogVisibility, handleDialogVisibility)
 
   const activeElement = getActiveElement(true)
   if (activeElement) {
@@ -149,6 +174,8 @@ function destroyInstance () {
   }
 
   removeFocusListeners()
+  off(eventDialogVisibility, handleDialogVisibility)
+  pinned = false
 }
 
 export function destroy () {
@@ -314,7 +341,9 @@ function showBubble (textfield) {
   }
 
   const updatePosition = () => {
-    if (cancelled) {
+    // keep the position and visibility while the dialog is open,
+    // it covers the bubble.
+    if (cancelled || pinned) {
       return
     }
 

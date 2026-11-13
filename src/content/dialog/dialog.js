@@ -5,8 +5,8 @@
  * even when the editor is in an iframe.
  */
 
-import { eventShowDialog, eventDialogShow, eventDialogClose, frameRelayRequest } from '../../config.js'
-import { on, off, createRequest } from '../../store/store-content.js'
+import { eventShowDialog, eventDialogShow, eventDialogClose, eventDialogVisibility, frameRelayRequest } from '../../config.js'
+import { on, off, trigger, createRequest } from '../../store/store-content.js'
 import { isContentEditable } from '../editors/editor-contenteditable.js'
 import { isTextfieldEditor } from '../editors/editor-textfield.js'
 import { getEditableCaret, getContentEditableCaret, getTargetRect } from './dialog-position.js'
@@ -101,6 +101,9 @@ async function show ({ target: node } = {}) {
 
   editor = getActiveElement()
   cachedRange = getSelectionRange(editor)
+  // before focus moves to the dialog
+  trigger(eventDialogVisibility, {visible: true})
+
   const targetRect = getTargetRect(target.target)
   // clean-up the virtual caret mirror, used on input and textarea
   target.removeCaretParent?.()
@@ -116,8 +119,9 @@ async function show ({ target: node } = {}) {
     } : null
   }
 
+  let shown = false
   try {
-    await relay({
+    shown = await relay({
       event: eventDialogShow,
       details: {
         rect,
@@ -130,14 +134,20 @@ async function show ({ target: node } = {}) {
   } catch (err) {
     debug(['dialog show', err], 'error')
   }
+
+  if (shown !== true) {
+    trigger(eventDialogVisibility, {visible: false})
+  }
 }
 
 async function respondToClose ({ template } = {}) {
   if (!editor?.isConnected) {
+    trigger(eventDialogVisibility, {visible: false})
     return
   }
 
   await restoreSelection(editor, cachedRange)
+  trigger(eventDialogVisibility, {visible: false})
 
   if (template) {
     autocomplete({

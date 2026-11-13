@@ -3,7 +3,7 @@ import { userEvent } from 'vitest/browser'
 
 import { setup, destroy, bubbleTagName } from './bubble.js'
 import * as store from '../../store/store-content.js'
-import { eventShowDialog } from '../../config.js'
+import { eventShowDialog, eventDialogVisibility } from '../../config.js'
 
 vi.mock('../../store/store-content.js', () => ({
   getExtensionData: vi.fn(),
@@ -167,6 +167,78 @@ describe('bubble', () => {
     expect(getBubble().hasAttribute('visible')).toBe(true)
 
     dialog.remove()
+  })
+
+  describe('while the dialog is open', () => {
+    function setDialogVisibility (visible) {
+      const [, handler] = vi.mocked(store.on).mock.calls.find(([name]) => name === eventDialogVisibility)
+      handler({visible})
+    }
+
+    async function showFor (textarea) {
+      textarea.focus()
+      await vi.waitFor(() => {
+        expect(getBubble().style.visibility).toBe('visible')
+      })
+    }
+
+    it('stays visible when focus leaves the textfield', async () => {
+      const textarea = createTextarea()
+      await showFor(textarea)
+
+      setDialogVisibility(true)
+      // focus moves to the dialog in the top frame
+      textarea.blur()
+
+      await new Promise(resolve => setTimeout(resolve, 50))
+      expect(getBubble().hasAttribute('visible')).toBe(true)
+    })
+
+    it('stays visible when the dialog gives focus back to the textfield', async () => {
+      const textarea = createTextarea()
+      await showFor(textarea)
+
+      setDialogVisibility(true)
+      textarea.blur()
+      textarea.focus()
+      setDialogVisibility(false)
+
+      await new Promise(resolve => setTimeout(resolve, 50))
+      expect(getBubble().hasAttribute('visible')).toBe(true)
+    })
+
+    it('hides when the dialog closes without focusing the textfield', async () => {
+      const textarea = createTextarea()
+      await showFor(textarea)
+
+      setDialogVisibility(true)
+      textarea.blur()
+      setDialogVisibility(false)
+
+      await vi.waitFor(() => {
+        expect(getBubble().hasAttribute('visible')).toBe(false)
+      })
+    })
+
+    it('stays visible when the dialog covers it', async () => {
+      const textarea = createTextarea()
+      await showFor(textarea)
+
+      setDialogVisibility(true)
+      const cover = document.createElement('div')
+      Object.assign(cover.style, {
+        position: 'fixed',
+        inset: '0',
+      })
+      document.body.appendChild(cover)
+      // trigger a position update
+      textarea.style.height = '120px'
+
+      await new Promise(resolve => setTimeout(resolve, 100))
+      expect(getBubble().style.visibility).toBe('visible')
+
+      cover.remove()
+    })
   })
 
   it('stays visible without toggling when focus returns from the dialog to the textfield', async () => {

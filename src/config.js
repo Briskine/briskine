@@ -37,6 +37,7 @@ export const eventFormRender = 'briskine-form-render'
 export const eventFormClose = 'briskine-form-close'
 export const eventDialogShow = 'briskine-dialog-show'
 export const eventDialogClose = 'briskine-dialog-close'
+export const eventDialogVisibility = 'briskine-dialog-visibility'
 export const frameRelayRequest = 'frameRelay'
 
 // tag name prefixes for the custom elements of our own ui
