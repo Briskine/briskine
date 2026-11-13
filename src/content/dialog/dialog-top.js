@@ -79,17 +79,10 @@ function Dialog () {
     return true
   }
 
-  // the page is inert while our dialog is open
-  function hide () {
-    if (element.open) {
-      element.close()
-    }
-  }
-
   // the frame of the editor restores its focus and selection,
   // and inserts the template.
   function close (template) {
-    hide()
+    element.close()
 
     relay({
       event: eventDialogClose,
@@ -98,12 +91,6 @@ function Dialog () {
     }).catch((err) => {
       debug(['dialog close', err], 'error')
     })
-  }
-
-  function hideOnFocusout (e) {
-    if (e.target === dialogInstance) {
-      hide()
-    }
   }
 
   // clicks outside the dialog land on its backdrop
@@ -117,37 +104,19 @@ function Dialog () {
     }
   }
 
-  // other close requests (e.g. the android back button)
+  // escape, or other close requests (e.g. the android back button)
   function closeOnCancel (e) {
     e.preventDefault()
+    // focus is back in the editor on keyup.
+    // some websites (eg. linkedin) close their modal on the escape keyup.
+    window.addEventListener('keyup', (e) => { e.stopPropagation() }, { capture: true, once: true })
+
     close()
-  }
-
-  function hideOnEsc (e) {
-    if (e.key === 'Escape' && visible()) {
-      e.stopPropagation()
-      // the escape close request would close the modal dialog on the page,
-      // after closing ours.
-      e.preventDefault()
-      // prevent triggering the keyup event on the page.
-      // causes some websites (eg. linkedin) to also close the underlying modal
-      // when closing our dialog.
-      window.addEventListener('keyup', (e) => { e.stopPropagation() }, { capture: true, once: true })
-
-      close()
-    }
   }
 
   let globalAbortController
   onMount(() => {
     globalAbortController = new AbortController()
-    const globalListenerOptions = {
-      capture: true,
-      signal: globalAbortController.signal,
-    }
-
-    window.addEventListener('focusout', hideOnFocusout, globalListenerOptions)
-    window.addEventListener('keydown', hideOnEsc, globalListenerOptions)
 
     element.addEventListener('close', () => setVisible(false))
     element.addEventListener('cancel', closeOnCancel)
