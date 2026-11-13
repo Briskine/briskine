@@ -93,8 +93,8 @@ function blurTextfield (e) {
     return
   }
 
-  // don't hide the bubble if the newly focused node is in our own ui.
-  // when pressing the bubble, or when focusing inside the dialog.
+  // don't hide the bubble if the newly focused node is in our own ui,
+  // like the form dialog.
   if (isExtensionElement(e.relatedTarget)) {
     return
   }

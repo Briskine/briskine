@@ -18,7 +18,6 @@
 
   width: 360px;
   height: var(--dialog-height);
-  z-index: 2147483646;
 
   will-change: top, left;
   contain: layout;

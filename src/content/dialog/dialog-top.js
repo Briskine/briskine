@@ -83,6 +83,12 @@ function Dialog () {
   let closeTemplate = null
 
   function close (template) {
+    // there's no close event for a closed dialog,
+    // to clear the template.
+    if (!element.open) {
+      return
+    }
+
     closeTemplate = template
     element.close()
   }

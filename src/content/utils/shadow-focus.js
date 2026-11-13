@@ -30,7 +30,6 @@ export function addFocusListeners (callback = () => {}, eventType = '') {
   }
 
   function callbackWrap (e) {
-
     const path = e.composedPath()
     // find the inner most root, to support nested shadow roots
     const innermostRoot = path.find(node => node instanceof ShadowRoot)
