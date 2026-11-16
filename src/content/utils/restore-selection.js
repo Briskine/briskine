@@ -31,17 +31,32 @@ export async function restoreSelection (element, selection) {
     return
   }
 
-  if (
-    !isContentEditable(element)
-    || !selection
-    // the editor changed its content
-    || !element.contains(selection.commonAncestorContainer)
-    // the range moved to the start when the editor re-created its content
-    // (eg. linkedin in shadow dom), or the editor is empty, when focus is enough.
-    || (selection.startContainer === element && selection.collapsed && selection.startOffset === 0)
-  ) {
+  if (!isContentEditable(element)) {
     return
   }
 
-  await setSelectionRange(element, selection)
+  // the editor changed its content
+  const range = element.contains(selection?.commonAncestorContainer) ? selection : null
+  if (
+    range
+    // the range moved to the start when the editor re-created its content
+    // (eg. linkedin in shadow dom), or the editor is empty, when focus is enough.
+    && !(range.startContainer === element && range.collapsed && range.startOffset === 0)
+  ) {
+    await setSelectionRange(element, range)
+    return
+  }
+
+  // focus can come back without a caret,
+  // e.g. when closing a modal dialog gives focus back.
+  if (!hasCaret(element)) {
+    const start = new Range()
+    start.setStart(element, 0)
+    await setSelectionRange(element, start)
+  }
+}
+
+function hasCaret (element) {
+  const range = getSelectionRange(element)
+  return Boolean(range && element.contains(range.startContainer))
 }

@@ -51,6 +51,29 @@ describe('restoreSelection', () => {
     expect(document.activeElement).to.equal(input)
   })
 
+  it('should put the caret in a focused contenteditable without one', async () => {
+    const editable = create('<div contenteditable="true"><br></div>')
+    const selection = saveSelection(editable)
+
+    // closing a modal dialog can give focus back without a caret
+    window.getSelection().removeAllRanges()
+    await restoreSelection(editable, selection)
+
+    const range = window.getSelection().getRangeAt(0)
+    expect(editable.contains(range.startContainer)).to.equal(true)
+  })
+
+  it('should keep the caret of a contenteditable that has one', async () => {
+    const editable = create('<div contenteditable="true">hello world</div>')
+    // the saved range is at the start, the editor put the caret back itself
+    const selection = document.createRange()
+    selection.setStart(editable, 0)
+    window.getSelection().collapse(editable.firstChild, 5)
+
+    await restoreSelection(editable, selection)
+    expect(window.getSelection().focusOffset).to.equal(5)
+  })
+
   it('should restore the range in a contenteditable', async () => {
     const editable = create('<div contenteditable="true">hello world</div>')
     const range = document.createRange()
