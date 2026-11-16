@@ -52,7 +52,7 @@
   "devDependencies": {
     "@eslint/js": "^10.0.0",
     "@playwright/test": "^1.42.1",
-    "@stylistic/eslint-plugin": "^5.0.0",
+    "@stylistic/eslint-plugin": "^6.0.0",
     "@types/node": "^26.0.0",
     "@vitest/browser-playwright": "^5.0.0",
     "archiver": "^8.0.0",
