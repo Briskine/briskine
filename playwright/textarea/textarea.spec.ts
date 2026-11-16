@@ -35,7 +35,7 @@ test.describe('Textarea', () => {
     const input = page.getByTestId('input')
     await input.fill('kr')
     await input.press('Tab')
-    await expect(input).toHaveValue('Kind regards,.')
+    await expect(input).toHaveValue('Kind regards, .')
   })
 
   test('should insert template from dialog in input', async ({page}) => {
