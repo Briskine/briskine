@@ -1,4 +1,4 @@
-// ../../../../../tmp/tmp.py9TsyCKPw/node_modules/orderedmap/dist/index.js
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/orderedmap/dist/index.js
 function OrderedMap(content) {
   this.content = content;
 }
@@ -117,7 +117,7 @@ OrderedMap.from = function(value) {
 };
 var dist_default = OrderedMap;
 
-// ../../../../../tmp/tmp.py9TsyCKPw/node_modules/prosemirror-model/dist/index.js
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/prosemirror-model/dist/index.js
 function findDiffStart(a, b, pos) {
   for (let i = 0; ; i++) {
     if (i == a.childCount || i == b.childCount)
@@ -1565,6 +1565,16 @@ var Node = class _Node {
   }
 };
 Node.prototype.text = void 0;
+var v8InternHack = (() => {
+  let { stack } = new Error("/");
+  if (!stack || !/\n\s*at\s/.test(stack))
+    return (s) => s;
+  let obj = /* @__PURE__ */ Object.create(null);
+  return (s) => {
+    obj[s];
+    return s;
+  };
+})();
 var TextNode = class _TextNode extends Node {
   /**
   @internal
@@ -1584,7 +1594,7 @@ var TextNode = class _TextNode extends Node {
     return this.text;
   }
   textBetween(from, to) {
-    return this.text.slice(from, to);
+    return v8InternHack(this.text.slice(from, to));
   }
   get nodeSize() {
     return this.text.length;
@@ -1600,7 +1610,7 @@ var TextNode = class _TextNode extends Node {
   cut(from = 0, to = this.text.length) {
     if (from == 0 && to == this.text.length)
       return this;
-    return this.withText(this.text.slice(from, to));
+    return this.withText(v8InternHack(this.text.slice(from, to)));
   }
   eq(other) {
     return this.sameMarkup(other) && this.text == other.text;
@@ -3327,7 +3337,7 @@ function renderSpec(doc3, structure, xmlNS, blockArraysIn) {
   return { dom, contentDOM };
 }
 
-// ../../../../../tmp/tmp.py9TsyCKPw/node_modules/prosemirror-transform/dist/index.js
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/prosemirror-transform/dist/index.js
 var lower16 = 65535;
 var factor16 = Math.pow(2, 16);
 function makeRecover(index, offset) {
@@ -3425,9 +3435,12 @@ var StepMap = class _StepMap {
         if (simple)
           return result;
         let recover = pos == (assoc < 0 ? start : end) ? null : makeRecover(i / 3, pos - start);
-        let del = pos == start ? DEL_AFTER : pos == end ? DEL_BEFORE : DEL_ACROSS;
-        if (assoc < 0 ? pos != start : pos != end)
-          del |= DEL_SIDE;
+        let del = 0;
+        if (oldSize) {
+          del |= pos == start ? DEL_AFTER : pos == end ? DEL_BEFORE : DEL_ACROSS;
+          if (assoc < 0 ? pos != start : pos != end)
+            del |= DEL_SIDE;
+        }
         return new MapResult(result, del, recover);
       }
       diff += newSize - oldSize;
@@ -3721,14 +3734,27 @@ var AddMarkStep = class _AddMarkStep extends Step {
     }, parent), oldSlice.openStart, oldSlice.openEnd);
     return StepResult.fromReplace(doc3, this.from, this.to, slice);
   }
-  invert() {
-    return new RemoveMarkStep(this.from, this.to, this.mark);
+  invert(doc3) {
+    let steps = [];
+    doc3.nodesBetween(this.from, this.to, (node, pos) => {
+      if (node.isInline && node.isAtom) {
+        let added = this.mark.addToSet(node.marks);
+        if (!Mark.sameSet(added, node.marks)) {
+          let from = Math.max(this.from, pos), to = Math.min(this.to, pos + node.nodeSize);
+          pushMarkStep(RemoveMarkStep, from, to, this.mark, steps);
+          for (let mark of node.marks)
+            if (!mark.isInSet(added))
+              pushMarkStep(_AddMarkStep, from, to, mark, steps);
+        }
+      }
+    });
+    return steps.length == 1 ? steps[0] : new MarkSetStep(steps);
   }
   map(mapping) {
-    let from = mapping.mapResult(this.from, 1), to = mapping.mapResult(this.to, -1);
-    if (from.deleted && to.deleted || from.pos >= to.pos)
+    let from = mapping.map(this.from, 1), to = mapping.map(this.to, -1);
+    if (from >= to)
       return null;
-    return new _AddMarkStep(from.pos, to.pos, this.mark);
+    return new _AddMarkStep(from, to, this.mark);
   }
   merge(other) {
     if (other instanceof _AddMarkStep && other.mark.eq(this.mark) && this.from <= other.to && this.to >= other.from)
@@ -3770,14 +3796,19 @@ var RemoveMarkStep = class _RemoveMarkStep extends Step {
     }, doc3), oldSlice.openStart, oldSlice.openEnd);
     return StepResult.fromReplace(doc3, this.from, this.to, slice);
   }
-  invert() {
-    return new AddMarkStep(this.from, this.to, this.mark);
+  invert(doc3) {
+    let steps = [];
+    doc3.nodesBetween(this.from, this.to, (node, pos) => {
+      if (node.isInline && node.isAtom && this.mark.isInSet(node.marks))
+        pushMarkStep(AddMarkStep, Math.max(this.from, pos), Math.min(this.to, pos + node.nodeSize), this.mark, steps);
+    });
+    return steps.length == 1 ? steps[0] : new MarkSetStep(steps);
   }
   map(mapping) {
-    let from = mapping.mapResult(this.from, 1), to = mapping.mapResult(this.to, -1);
-    if (from.deleted && to.deleted || from.pos >= to.pos)
+    let from = mapping.map(this.from, 1), to = mapping.map(this.to, -1);
+    if (from >= to)
       return null;
-    return new _RemoveMarkStep(from.pos, to.pos, this.mark);
+    return new _RemoveMarkStep(from, to, this.mark);
   }
   merge(other) {
     if (other instanceof _RemoveMarkStep && other.mark.eq(this.mark) && this.from <= other.to && this.to >= other.from)
@@ -3802,6 +3833,50 @@ var RemoveMarkStep = class _RemoveMarkStep extends Step {
   }
 };
 Step.jsonID("removeMark", RemoveMarkStep);
+function pushMarkStep(cls, from, to, mark, target) {
+  let last = target.length ? target[target.length - 1] : null;
+  if (last && last instanceof cls && last.to == from && last.mark.eq(mark)) {
+    target[target.length - 1] = new cls(last.from, to, mark);
+  } else {
+    target.push(new cls(from, to, mark));
+  }
+}
+var MarkSetStep = class _MarkSetStep extends Step {
+  constructor(steps) {
+    super();
+    this.steps = steps;
+  }
+  apply(doc3) {
+    for (let step of this.steps) {
+      let result = step.apply(doc3);
+      if (!result.doc)
+        return result;
+      doc3 = result.doc;
+    }
+    return new StepResult(doc3, null);
+  }
+  invert(doc3) {
+    return new _MarkSetStep(this.steps.map((s) => s.invert(doc3)));
+  }
+  map(mapping) {
+    let result = [];
+    for (let step of this.steps) {
+      let mapped = step.map(mapping);
+      if (mapped)
+        result.push(mapped);
+    }
+    return result.length ? new _MarkSetStep(result) : null;
+  }
+  toJSON() {
+    return { stepType: "markSet", steps: this.steps.map((s) => s.toJSON()) };
+  }
+  static fromJSON(schema2, json) {
+    if (!Array.isArray(json.steps) || !json.steps.every((s) => s.stepType == "addMark" || s.stepType == "removeMark"))
+      throw new RangeError("Invalid JSON for MarkSetStep");
+    return new _MarkSetStep(json.steps.map((s) => Step.fromJSON(schema2, s)));
+  }
+};
+Step.jsonID("markSet", MarkSetStep);
 var AddNodeMarkStep = class _AddNodeMarkStep extends Step {
   /**
   Create a node mark step.
@@ -4000,7 +4075,7 @@ var ReplaceAroundStep = class _ReplaceAroundStep extends Step {
     let from = mapping.mapResult(this.from, 1), to = mapping.mapResult(this.to, -1);
     let gapFrom = this.from == this.gapFrom ? from.pos : mapping.map(this.gapFrom, -1);
     let gapTo = this.to == this.gapTo ? to.pos : mapping.map(this.gapTo, 1);
-    if (from.deletedAcross && to.deletedAcross || gapFrom < from.pos || gapTo > to.pos)
+    if (from.deletedAcross && to.deletedAcross || gapFrom < from.pos || gapTo > to.pos || gapFrom > gapTo)
       return null;
     return new _ReplaceAroundStep(from.pos, to.pos, gapFrom, gapTo, this.slice, this.insert, this.structure);
   }
@@ -4047,36 +4122,22 @@ function contentBetween(doc3, from, to) {
   return false;
 }
 function addMark(tr, from, to, mark) {
-  let removed = [], added = [];
-  let removing, adding;
+  let added = [];
   tr.doc.nodesBetween(from, to, (node, pos, parent) => {
     if (!node.isInline)
       return;
     let marks2 = node.marks;
     if (!mark.isInSet(marks2) && parent.type.allowsMarkType(mark.type)) {
       let start = Math.max(pos, from), end = Math.min(pos + node.nodeSize, to);
-      let newSet = mark.addToSet(marks2);
-      for (let i = 0; i < marks2.length; i++) {
-        if (!marks2[i].isInSet(newSet)) {
-          if (removing && removing.to == start && removing.mark.eq(marks2[i]))
-            removing.to = end;
-          else
-            removed.push(removing = new RemoveMarkStep(start, end, marks2[i]));
-        }
-      }
-      if (adding && adding.to == start)
-        adding.to = end;
-      else
-        added.push(adding = new AddMarkStep(start, end, mark));
+      pushMarkStep(AddMarkStep, start, end, mark, added);
     }
   });
-  removed.forEach((s) => tr.step(s));
   added.forEach((s) => tr.step(s));
 }
 function removeMark(tr, from, to, mark) {
   let matched = [], step = 0;
   tr.doc.nodesBetween(from, to, (node, pos) => {
-    if (!node.isInline)
+    if (!node.isInline || !node.isAtom)
       return;
     step++;
     let toRemove = null;
@@ -4473,12 +4534,11 @@ var Fitter = class {
     this.frontier[frontierDepth].match = match;
     if (toEnd && openEndCount < 0 && parent && parent.type == this.frontier[this.depth].type && this.frontier.length > 1)
       this.closeFrontierNode();
-    for (let i = 0, cur = fragment; i < openEndCount; i++) {
-      let node = cur.lastChild;
-      this.frontier.push({ type: node.type, match: node.contentMatchAt(node.childCount) });
-      cur = node.content;
+    for (let i = 0, cur = add2[add2.length - 1]; cur && i < openEndCount; i++) {
+      this.frontier.push({ type: cur.type, match: cur.contentMatchAt(cur.childCount) });
+      cur = cur.lastChild;
     }
-    this.unplaced = !toEnd ? new Slice(dropFromFragment(slice.content, sliceDepth, taken), slice.openStart, slice.openEnd) : sliceDepth == 0 ? Slice.empty : new Slice(dropFromFragment(slice.content, sliceDepth - 1, 1), sliceDepth - 1, openEndCount < 0 ? slice.openEnd : sliceDepth - 1);
+    this.unplaced = !toEnd ? new Slice(dropFromFragment(slice.content, sliceDepth, taken), sliceDepth, slice.openEnd) : sliceDepth == 0 ? Slice.empty : new Slice(dropFromFragment(slice.content, sliceDepth - 1, 1), sliceDepth - 1, openEndCount < 0 ? slice.openEnd : sliceDepth - 1);
   }
   mustMoveInline() {
     if (!this.$to.parent.isTextblock)
@@ -5077,7 +5137,7 @@ var Transform = class {
   }
 };
 
-// ../../../../../tmp/tmp.py9TsyCKPw/node_modules/prosemirror-state/dist/index.js
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/prosemirror-state/dist/index.js
 var classesById = /* @__PURE__ */ Object.create(null);
 var Selection = class {
   /**
@@ -5946,7 +6006,7 @@ var EditorState = class _EditorState {
   }
 };
 
-// ../../../../../tmp/tmp.py9TsyCKPw/node_modules/prosemirror-view/dist/index.js
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/prosemirror-view/dist/index.js
 var domIndex = function(node) {
   for (var index = 0; ; index++) {
     node = node.previousSibling;
@@ -5979,13 +6039,13 @@ function scanFor(node, off, targetNode, targetOff, dir) {
       return true;
     if (off == (dir < 0 ? 0 : nodeSize(node))) {
       let parent = node.parentNode;
-      if (!parent || parent.nodeType != 1 || hasBlockDesc(node) || atomElements.test(node.nodeName) || node.contentEditable == "false")
+      if (!parent || !isElt(parent) || hasBlockDesc(node) || atomElements.test(node.nodeName) || node.contentEditable == "false")
         return false;
       off = domIndex(node) + (dir < 0 ? 0 : 1);
       node = parent;
-    } else if (node.nodeType == 1) {
+    } else if (isElt(node)) {
       let child = node.childNodes[off + (dir < 0 ? -1 : 0)];
-      if (child.nodeType == 1 && child.contentEditable == "false") {
+      if (isElt(child) && child.contentEditable == "false") {
         if ((_a = child.pmViewDesc) === null || _a === void 0 ? void 0 : _a.ignoreForSelection)
           off += dir;
         else
@@ -6002,11 +6062,20 @@ function scanFor(node, off, targetNode, targetOff, dir) {
 function nodeSize(node) {
   return node.nodeType == 3 ? node.nodeValue.length : node.childNodes.length;
 }
+function isElt(node) {
+  return node.nodeType == 1;
+}
+function isText(node) {
+  return node.nodeType == 3;
+}
+function contains(parent, child) {
+  return child ? parent.contains(isElt(child) ? child : child.parentNode) : false;
+}
 function textNodeBefore$1(node, offset) {
   for (; ; ) {
-    if (node.nodeType == 3 && offset)
+    if (isText(node) && offset)
       return node;
-    if (node.nodeType == 1 && offset > 0) {
+    if (isElt(node) && offset > 0) {
       if (node.contentEditable == "false")
         return null;
       node = node.childNodes[offset - 1];
@@ -6021,9 +6090,9 @@ function textNodeBefore$1(node, offset) {
 }
 function textNodeAfter$1(node, offset) {
   for (; ; ) {
-    if (node.nodeType == 3 && offset < node.nodeValue.length)
+    if (isText(node) && offset < node.nodeValue.length)
       return node;
-    if (node.nodeType == 1 && offset < node.childNodes.length) {
+    if (isElt(node) && offset < node.childNodes.length) {
       if (node.contentEditable == "false")
         return null;
       node = node.childNodes[offset];
@@ -6144,13 +6213,12 @@ function scrollRectIntoView(view, rect, startDOM) {
   for (let parent = startDOM || view.dom; ; ) {
     if (!parent)
       break;
-    if (parent.nodeType != 1) {
+    if (!isElt(parent)) {
       parent = parentNode(parent);
       continue;
     }
-    let elt = parent;
-    let atTop = elt == doc3.body;
-    let bounding = atTop ? windowRect(doc3) : clientRect(elt);
+    let atTop = parent == doc3.body;
+    let bounding = atTop ? windowRect(doc3) : clientRect(parent);
     let moveX = 0, moveY = 0;
     if (rect.top < bounding.top + getSide(scrollThreshold, "top"))
       moveY = -(bounding.top - rect.top + getSide(scrollMargin, "top"));
@@ -6164,12 +6232,12 @@ function scrollRectIntoView(view, rect, startDOM) {
       if (atTop) {
         doc3.defaultView.scrollBy(moveX, moveY);
       } else {
-        let startX = elt.scrollLeft, startY = elt.scrollTop;
+        let startX = parent.scrollLeft, startY = parent.scrollTop;
         if (moveY)
-          elt.scrollTop += moveY;
+          parent.scrollTop += moveY;
         if (moveX)
-          elt.scrollLeft += moveX;
-        let dX = elt.scrollLeft - startX, dY = elt.scrollTop - startY;
+          parent.scrollLeft += moveX;
+        let dX = parent.scrollLeft - startX, dY = parent.scrollTop - startY;
         rect = { left: rect.left - dX, top: rect.top - dY, right: rect.right - dX, bottom: rect.bottom - dY };
       }
     }
@@ -6236,14 +6304,15 @@ function focusPreventScroll(dom) {
   }
 }
 function findOffsetInNode(node, coords) {
-  let closest, dxClosest = 2e8, coordsClosest, offset = 0;
+  let closest;
+  let dxClosest = 2e8, coordsClosest, offset = 0;
   let rowBot = coords.top, rowTop = coords.top;
   let firstBelow, coordsBelow;
   for (let child = node.firstChild, childIndex = 0; child; child = child.nextSibling, childIndex++) {
     let rects;
-    if (child.nodeType == 1)
+    if (isElt(child))
       rects = child.getClientRects();
-    else if (child.nodeType == 3)
+    else if (isText(child))
       rects = textRange(child).getClientRects();
     else
       continue;
@@ -6256,11 +6325,11 @@ function findOffsetInNode(node, coords) {
         if (dx < dxClosest) {
           closest = child;
           dxClosest = dx;
-          coordsClosest = dx && closest.nodeType == 3 ? {
+          coordsClosest = dx && isText(closest) ? {
             left: rect.right < coords.left ? rect.right : rect.left,
             top: coords.top
           } : coords;
-          if (child.nodeType == 1 && dx)
+          if (isElt(child) && dx)
             offset = childIndex + (coords.left >= (rect.left + rect.right) / 2 ? 1 : 0);
           continue;
         }
@@ -6277,9 +6346,9 @@ function findOffsetInNode(node, coords) {
     coordsClosest = coordsBelow;
     dxClosest = 0;
   }
-  if (closest && closest.nodeType == 3)
+  if (closest && isText(closest))
     return findOffsetInText(closest, coordsClosest);
-  if (!closest || dxClosest && closest.nodeType == 1)
+  if (!closest || dxClosest)
     return { node, offset };
   return findOffsetInNode(closest, coordsClosest);
 }
@@ -6311,7 +6380,7 @@ function targetKludge(dom, coords) {
 }
 function posFromElement(view, elt, coords) {
   let { node, offset } = findOffsetInNode(elt, coords), bias = -1;
-  if (node.nodeType == 1 && !node.firstChild) {
+  if (isElt(node) && !node.firstChild) {
     let rect = node.getBoundingClientRect();
     bias = rect.left != rect.right && coords.left > (rect.left + rect.right) / 2 ? 1 : -1;
   }
@@ -6325,7 +6394,7 @@ function posFromCaret(view, node, offset, coords) {
     let desc = view.docView.nearestDesc(cur, true), rect;
     if (!desc)
       return null;
-    if (desc.dom.nodeType == 1 && (desc.node.isBlock && desc.parent || !desc.contentDOM) && // Ignore elements with zero-size bounding rectangles
+    if (isElt(desc.dom) && (desc.node.isBlock && desc.parent || !desc.contentDOM) && // Ignore elements with zero-size bounding rectangles
     ((rect = desc.dom.getBoundingClientRect()).width || rect.height)) {
       if (desc.node.isBlock && desc.parent && !/^T(R|BODY|HEAD|FOOT)$/.test(desc.dom.nodeName)) {
         if (!sawBlock && rect.left > coords.left || rect.top > coords.top)
@@ -6348,7 +6417,7 @@ function elementFromPoint(element, coords, box) {
   if (len && box.top < box.bottom) {
     for (let startI = Math.max(0, Math.min(len - 1, Math.floor(len * (coords.top - box.top) / (box.bottom - box.top)) - 2)), i = startI; ; ) {
       let child = element.childNodes[i];
-      if (child.nodeType == 1) {
+      if (isElt(child)) {
         let rects = child.getClientRects();
         for (let j = 0; j < rects.length; j++) {
           let rect = rects[j];
@@ -6369,7 +6438,7 @@ function posAtCoords(view, coords) {
     ({ node, offset } = caret);
   let elt = (view.root.elementFromPoint ? view.root : doc3).elementFromPoint(coords.left, coords.top);
   let pos;
-  if (!elt || !view.dom.contains(elt.nodeType != 1 ? elt.parentNode : elt)) {
+  if (!elt || !view.dom.contains(elt)) {
     let box = view.dom.getBoundingClientRect();
     if (!inRect(coords, box))
       return null;
@@ -6384,7 +6453,7 @@ function posAtCoords(view, coords) {
   }
   elt = targetKludge(elt, coords);
   if (node) {
-    if (gecko && node.nodeType == 1) {
+    if (gecko && isElt(node)) {
       offset = Math.min(offset, node.childNodes.length);
       if (offset < node.childNodes.length) {
         let next = node.childNodes[offset], box;
@@ -6393,11 +6462,11 @@ function posAtCoords(view, coords) {
       }
     }
     let prev;
-    if (webkit && offset && node.nodeType == 1 && (prev = node.childNodes[offset - 1]).nodeType == 1 && prev.contentEditable == "false" && prev.getBoundingClientRect().top >= coords.top)
+    if (webkit && offset && isElt(node) && isElt(prev = node.childNodes[offset - 1]) && prev.contentEditable == "false" && prev.getBoundingClientRect().top >= coords.top)
       offset--;
-    if (node == view.dom && offset == node.childNodes.length - 1 && node.lastChild.nodeType == 1 && coords.top > node.lastChild.getBoundingClientRect().bottom)
+    if (node == view.dom && offset == node.childNodes.length - 1 && isElt(node.lastChild) && coords.top > node.lastChild.getBoundingClientRect().bottom)
       pos = view.state.doc.content.size;
-    else if (offset == 0 || node.nodeType != 1 || node.childNodes[offset - 1].nodeName != "BR")
+    else if (offset == 0 || !isElt(node) || node.childNodes[offset - 1].nodeName != "BR")
       pos = posFromCaret(view, node, offset, coords);
   }
   if (pos == null)
@@ -6421,7 +6490,7 @@ var BIDI = /[\u0590-\u05f4\u0600-\u06ff\u0700-\u08ac]/;
 function coordsAtPos(view, pos, side) {
   let { node, offset, atom } = view.docView.domFromPos(pos, side < 0 ? -1 : 1);
   let supportEmptyRange = webkit || gecko;
-  if (node.nodeType == 3) {
+  if (isText(node)) {
     if (supportEmptyRange && (BIDI.test(node.nodeValue) || (side < 0 ? !offset : offset == node.nodeValue.length))) {
       let rect = singleRect(textRange(node, offset, offset), side);
       if (gecko && offset && /\s/.test(node.nodeValue[offset - 1]) && offset < node.nodeValue.length) {
@@ -6453,19 +6522,19 @@ function coordsAtPos(view, pos, side) {
   if (!$dom.parent.inlineContent) {
     if (atom == null && offset && (side < 0 || offset == nodeSize(node))) {
       let before = node.childNodes[offset - 1];
-      if (before.nodeType == 1)
+      if (isElt(before))
         return flattenH(before.getBoundingClientRect(), false);
     }
     if (atom == null && offset < nodeSize(node)) {
       let after = node.childNodes[offset];
-      if (after.nodeType == 1)
+      if (isElt(after))
         return flattenH(after.getBoundingClientRect(), true);
     }
     return flattenH(node.getBoundingClientRect(), side >= 0);
   }
   if (atom == null && offset && (side < 0 || offset == nodeSize(node))) {
     let before = node.childNodes[offset - 1];
-    let target = before.nodeType == 3 ? textRange(before, nodeSize(before) - (supportEmptyRange ? 0 : 1)) : before.nodeType == 1 && (before.nodeName != "BR" || !before.nextSibling) ? before : null;
+    let target = isText(before) ? textRange(before, nodeSize(before) - (supportEmptyRange ? 0 : 1)) : isElt(before) && (before.nodeName != "BR" || !before.nextSibling) ? before : null;
     if (target)
       return flattenV(singleRect(target, 1), false);
   }
@@ -6473,11 +6542,11 @@ function coordsAtPos(view, pos, side) {
     let after = node.childNodes[offset];
     while (after.pmViewDesc && after.pmViewDesc.ignoreForCoords)
       after = after.nextSibling;
-    let target = !after ? null : after.nodeType == 3 ? textRange(after, 0, supportEmptyRange ? 0 : 1) : after.nodeType == 1 ? after : null;
+    let target = !after ? null : isText(after) ? textRange(after, 0, supportEmptyRange ? 0 : 1) : isElt(after) ? after : null;
     if (target)
       return flattenV(singleRect(target, -1), true);
   }
-  return flattenV(singleRect(node.nodeType == 3 ? textRange(node) : node, -side), side >= 0);
+  return flattenV(singleRect(isText(node) ? textRange(node) : node, -side), side >= 0);
 }
 function flattenV(rect, left) {
   if (rect.width == 0)
@@ -6524,9 +6593,9 @@ function endOfTextblockVertical(view, state, dir) {
     let coords = coordsAtPos(view, $pos.pos, 1);
     for (let child = dom.firstChild; child; child = child.nextSibling) {
       let boxes;
-      if (child.nodeType == 1)
+      if (isElt(child))
         boxes = child.getClientRects();
-      else if (child.nodeType == 3)
+      else if (isText(child))
         boxes = textRange(child, 0, child.nodeValue.length).getClientRects();
       else
         continue;
@@ -6556,7 +6625,7 @@ function endOfTextblockHorizontal(view, state, dir) {
     sel.modify("move", dir, "character");
     let parentDOM = $head.depth ? view.docView.domAfterPos($head.before()) : view.dom;
     let { focusNode: newNode, focusOffset: newOff } = view.domSelectionRange();
-    let result = newNode && !parentDOM.contains(newNode.nodeType == 1 ? newNode : newNode.parentNode) || oldNode == newNode && oldOff == newOff;
+    let result = newNode && !contains(parentDOM, newNode) || oldNode == newNode && oldOff == newOff;
     try {
       sel.collapse(anchorNode, anchorOffset);
       if (oldNode && (oldNode != anchorNode || oldOff != anchorOffset) && sel.extend)
@@ -6656,7 +6725,7 @@ var ViewDesc = class {
     return this.posAtStart + this.size - 2 * this.border;
   }
   localPosFromDOM(dom, offset, bias) {
-    if (this.contentDOM && this.contentDOM.contains(dom.nodeType == 1 ? dom : dom.parentNode)) {
+    if (this.contentDOM && contains(this.contentDOM, dom)) {
       if (bias < 0) {
         let domBefore, desc;
         if (dom == this.contentDOM) {
@@ -6687,7 +6756,12 @@ var ViewDesc = class {
     if (dom == this.dom && this.contentDOM) {
       atEnd = offset > domIndex(this.contentDOM);
     } else if (this.contentDOM && this.contentDOM != this.dom && this.dom.contains(this.contentDOM)) {
-      atEnd = dom.compareDocumentPosition(this.contentDOM) & 2;
+      let rel = dom.compareDocumentPosition(this.contentDOM);
+      if (rel & 16) {
+        atEnd = offset > Array.from(dom.childNodes).findIndex((n) => n.contains(this.contentDOM));
+      } else {
+        atEnd = !(rel & 4);
+      }
     } else if (this.dom.firstChild) {
       if (offset == 0)
         for (let search = dom; ; search = search.parentNode) {
@@ -6714,7 +6788,7 @@ var ViewDesc = class {
     for (let first = true, cur = dom; cur; cur = cur.parentNode) {
       let desc = this.getDesc(cur), nodeDOM;
       if (desc && (!onlyNodes || desc.node)) {
-        if (first && (nodeDOM = desc.nodeDOM) && !(nodeDOM.nodeType == 1 ? nodeDOM.contains(dom.nodeType == 1 ? dom : dom.parentNode) : nodeDOM == dom))
+        if (first && (nodeDOM = desc.nodeDOM) && !(isElt(nodeDOM) ? contains(nodeDOM, dom) : nodeDOM == dom))
           first = false;
         else
           return desc;
@@ -6763,7 +6837,7 @@ var ViewDesc = class {
     let i = 0, offset = 0;
     for (let curPos = 0; i < this.children.length; i++) {
       let child = this.children[i], end = curPos + child.size;
-      if (end > pos || child instanceof TrailingHackViewDesc) {
+      if (end > pos) {
         offset = pos - curPos;
         break;
       }
@@ -6771,7 +6845,10 @@ var ViewDesc = class {
     }
     if (offset)
       return this.children[i].domFromPos(offset - this.children[i].border, side);
-    for (let prev; i && !(prev = this.children[i - 1]).size && prev instanceof WidgetViewDesc && prev.side >= 0; i--) {
+    for (; i > 0; i--) {
+      let prev = this.children[i - 1];
+      if (prev.size || !(prev instanceof BufferHackViewDesc || prev instanceof WidgetViewDesc && prev.side >= 0))
+        break;
     }
     if (side <= 0) {
       let prev, enter = true;
@@ -6845,7 +6922,7 @@ var ViewDesc = class {
   }
   domAfterPos(pos) {
     let { node, offset } = this.domFromPos(pos, 0);
-    if (node.nodeType != 1 || offset == node.childNodes.length)
+    if (!isElt(node) || offset == node.childNodes.length)
       throw new RangeError("No node after pos " + pos);
     return node.childNodes[offset];
   }
@@ -6869,7 +6946,7 @@ var ViewDesc = class {
     let brKludge = false;
     if ((gecko || safari) && anchor == head) {
       let { node, offset } = anchorDOM;
-      if (node.nodeType == 3) {
+      if (isText(node)) {
         brKludge = !!(offset && node.nodeValue[offset - 1] == "\n");
         if (brKludge && offset == node.nodeValue.length) {
           for (let scan = node, after; scan; scan = scan.parentNode) {
@@ -6888,7 +6965,7 @@ var ViewDesc = class {
         brKludge = prev && (prev.nodeName == "BR" || prev.contentEditable == "false");
       }
     }
-    if (gecko && selRange.focusNode && selRange.focusNode != headDOM.node && selRange.focusNode.nodeType == 1) {
+    if (gecko && selRange.focusNode && selRange.focusNode != headDOM.node && isElt(selRange.focusNode)) {
       let after = selRange.focusNode.childNodes[selRange.focusOffset];
       if (after && after.contentEditable == "false")
         force = true;
@@ -6978,14 +7055,14 @@ var WidgetViewDesc = class extends ViewDesc {
           return self.parent.posBeforeChild(self);
       });
     if (!widget.type.spec.raw) {
-      if (dom.nodeType != 1) {
-        let wrap2 = document.createElement("span");
-        wrap2.appendChild(dom);
-        dom = wrap2;
+      let elt = isElt(dom) ? dom : document.createElement("span");
+      if (elt != dom) {
+        elt.appendChild(dom);
+        dom = elt;
       }
-      if (!dom.hasAttribute("contenteditable"))
-        dom.contentEditable = "false";
-      dom.classList.add("ProseMirror-widget");
+      if (!elt.hasAttribute("contenteditable"))
+        elt.contentEditable = "false";
+      elt.classList.add("ProseMirror-widget");
     }
     super(parent, [], dom, null);
     this.widget = widget;
@@ -7122,7 +7199,7 @@ var NodeViewDesc = class _NodeViewDesc extends ViewDesc {
     if (node.isText) {
       if (!dom)
         dom = document.createTextNode(node.text);
-      else if (dom.nodeType != 3)
+      else if (!isText(dom))
         throw new RangeError("Text must be rendered as a DOM text node");
     } else if (!dom) {
       let spec2 = DOMSerializer.renderSpec(document, node.type.spec.toDOM(node), null, node.attrs);
@@ -7162,7 +7239,7 @@ var NodeViewDesc = class _NodeViewDesc extends ViewDesc {
         }
       }
       if (!rule.contentElement) {
-        let found2 = addedNodes && addedNodes.find((n) => n.nodeType == 1 && addedNodes.indexOf(n.parentNode) < 0 && this.dom.contains(n));
+        let found2 = addedNodes && addedNodes.find((n) => isElt(n) && addedNodes.indexOf(n.parentNode) < 0 && this.dom.contains(n));
         if (found2)
           rule.contentElement = found2;
         else
@@ -7190,6 +7267,7 @@ var NodeViewDesc = class _NodeViewDesc extends ViewDesc {
     let localComposition = composition && composition.pos > -1 ? composition : null;
     let compositionInChild = composition && composition.pos < 0;
     let updater = new ViewTreeUpdater(this, localComposition && localComposition.node, view);
+    let addBuffers = this.node.inlineContent, atBufferPos = addBuffers && this.node.isBlock;
     iterDeco(this.node, this.innerDeco, (widget, i, insideNode) => {
       if (widget.spec.marks)
         updater.syncToMarks(widget.spec.marks, inline, view, i);
@@ -7198,6 +7276,8 @@ var NodeViewDesc = class _NodeViewDesc extends ViewDesc {
       updater.placeWidget(widget, view, off);
     }, (child, outerDeco, innerDeco, i) => {
       updater.syncToMarks(child.marks, inline, view, i);
+      if (atBufferPos && child.isAtom && !child.isText)
+        updater.addHackNode("IMG", updater.top);
       let compIndex;
       if (updater.findNodeMatch(child, outerDeco, innerDeco, i)) ;
       else if (compositionInChild && view.state.selection.from > off && view.state.selection.to < off + child.nodeSize && (compIndex = updater.findIndexWithChild(composition.node)) > -1 && updater.updateNodeAt(child, outerDeco, innerDeco, compIndex, view)) ;
@@ -7206,6 +7286,8 @@ var NodeViewDesc = class _NodeViewDesc extends ViewDesc {
         updater.addNode(child, outerDeco, innerDeco, view, off);
       }
       off += child.nodeSize;
+      if (addBuffers)
+        atBufferPos = child.isAtom && !child.isText;
     });
     updater.syncToMarks([], inline, view, 0);
     if (this.node.isTextblock)
@@ -7271,7 +7353,7 @@ var NodeViewDesc = class _NodeViewDesc extends ViewDesc {
   updateOuterDeco(outerDeco) {
     if (sameOuterDeco(outerDeco, this.outerDeco))
       return;
-    let needsWrap = this.nodeDOM.nodeType != 1;
+    let needsWrap = !isElt(this.nodeDOM);
     let oldDOM = this.dom;
     this.dom = patchOuterDeco(this.dom, this.nodeDOM, computeOuterDeco(this.outerDeco, this.node, needsWrap), computeOuterDeco(outerDeco, this.node, needsWrap));
     if (this.dom != oldDOM) {
@@ -7282,7 +7364,7 @@ var NodeViewDesc = class _NodeViewDesc extends ViewDesc {
   }
   // Mark this node as being the selected node.
   selectNode() {
-    if (this.nodeDOM.nodeType == 1) {
+    if (isElt(this.nodeDOM)) {
       this.nodeDOM.classList.add("ProseMirror-selectednode");
       if (this.contentDOM || !this.node.type.spec.draggable)
         this.nodeDOM.draggable = true;
@@ -7290,7 +7372,7 @@ var NodeViewDesc = class _NodeViewDesc extends ViewDesc {
   }
   // Remove selected node marking from this node.
   deselectNode() {
-    if (this.nodeDOM.nodeType == 1) {
+    if (isElt(this.nodeDOM)) {
       this.nodeDOM.classList.remove("ProseMirror-selectednode");
       if (this.contentDOM || !this.node.type.spec.draggable)
         this.nodeDOM.removeAttribute("draggable");
@@ -7364,7 +7446,7 @@ var TextViewDesc = class _TextViewDesc extends NodeViewDesc {
     return this.node.text == text;
   }
 };
-var TrailingHackViewDesc = class extends ViewDesc {
+var BufferHackViewDesc = class extends ViewDesc {
   parseRule() {
     return { ignore: true };
   }
@@ -7532,7 +7614,7 @@ function patchAttributes(dom, prev, cur) {
   }
 }
 function applyOuterDeco(dom, deco, node) {
-  return patchOuterDeco(dom, dom, noDeco, computeOuterDeco(deco, node, dom.nodeType != 1));
+  return patchOuterDeco(dom, dom, noDeco, computeOuterDeco(deco, node, !isElt(dom)));
 }
 function sameOuterDeco(a, b) {
   if (a.length != b.length)
@@ -7762,7 +7844,7 @@ var ViewTreeUpdater = class {
       }
       if (nodeName == "BR")
         dom.className = "ProseMirror-trailingBreak";
-      let hack = new TrailingHackViewDesc(this.top, [], dom, null);
+      let hack = new BufferHackViewDesc(this.top, [], dom, null);
       if (parent != this.top)
         parent.children.push(hack);
       else
@@ -7771,7 +7853,7 @@ var ViewTreeUpdater = class {
     }
   }
   isLocked(node) {
-    return this.lock && (node == this.lock || node.nodeType == 1 && node.contains(this.lock.parentNode));
+    return this.lock && (node == this.lock || isElt(node) && node.contains(this.lock.parentNode));
   }
 };
 function preMatch(frag, parentDesc) {
@@ -7947,10 +8029,18 @@ function selectionFromDOM(view, origin = null) {
     anchor = head;
     while (nearestDesc && !nearestDesc.node)
       nearestDesc = nearestDesc.parent;
-    let nearestDescNode = nearestDesc.node;
-    if (nearestDesc && nearestDescNode.isAtom && NodeSelection.isSelectable(nearestDescNode) && nearestDesc.parent && !(nearestDescNode.isInline && isOnEdge(domSel.focusNode, domSel.focusOffset, nearestDesc.dom))) {
+    if (nearestDesc && nearestDesc.node.isAtom && NodeSelection.isSelectable(nearestDesc.node) && nearestDesc.parent && !(nearestDesc.node.isInline && isOnEdge(domSel.focusNode, domSel.focusOffset, nearestDesc.dom))) {
       let pos = nearestDesc.posBefore;
       selection = new NodeSelection(head == pos ? $head : doc3.resolve(pos));
+    } else if (gecko && origin == "key" && head > view.state.selection.to && isElt(domSel.focusNode) && domSel.focusOffset == domSel.focusNode.childNodes.length && nearestDesc && nearestDesc.posAtStart > view.state.selection.to) {
+      for (let scan = domSel.focusNode; ; scan = scan.parentNode) {
+        if (getComputedStyle(scan).overflow != "visible") {
+          selection = Selection.findFrom(doc3.resolve(nearestDesc.posAtStart), 1);
+          break;
+        }
+        if (scan == nearestDesc.dom || scan.nextSibling || !scan.parentNode || !isElt(scan.parentNode))
+          break;
+      }
     }
   } else {
     if (domSel instanceof view.dom.ownerDocument.defaultView.Selection && domSel.rangeCount > 1) {
@@ -8113,7 +8203,7 @@ function hasSelection(view) {
   if (!sel.anchorNode)
     return false;
   try {
-    return view.dom.contains(sel.anchorNode.nodeType == 3 ? sel.anchorNode.parentNode : sel.anchorNode) && (view.editable || view.dom.contains(sel.focusNode.nodeType == 3 ? sel.focusNode.parentNode : sel.focusNode));
+    return contains(view.dom, sel.anchorNode) && (view.editable || contains(view.dom, sel.focusNode));
   } catch (_) {
     return false;
   }
@@ -8149,7 +8239,7 @@ function selectHorizontally(view, dir, mods) {
       if (next && next instanceof NodeSelection)
         return apply(view, next);
       return false;
-    } else if (!(mac && mods.indexOf("m") > -1)) {
+    } else if (!mac || mods.indexOf("m") < 0) {
       let $head = sel.$head, node = $head.textOffset ? null : dir < 0 ? $head.nodeBefore : $head.nodeAfter, desc;
       if (!node || node.isText)
         return false;
@@ -8158,10 +8248,8 @@ function selectHorizontally(view, dir, mods) {
         return false;
       if (NodeSelection.isSelectable(node)) {
         return apply(view, new NodeSelection(dir < 0 ? view.state.doc.resolve($head.pos - node.nodeSize) : $head));
-      } else if (webkit) {
-        return apply(view, new TextSelection(view.state.doc.resolve(dir < 0 ? nodePos : nodePos + node.nodeSize)));
       } else {
-        return false;
+        return apply(view, new TextSelection(view.state.doc.resolve(dir < 0 ? nodePos : nodePos + node.nodeSize)));
       }
     }
   } else if (sel instanceof NodeSelection && sel.node.isInline) {
@@ -8173,12 +8261,9 @@ function selectHorizontally(view, dir, mods) {
     return false;
   }
 }
-function nodeLen(node) {
-  return node.nodeType == 3 ? node.nodeValue.length : node.childNodes.length;
-}
 function isIgnorable(dom, dir) {
   let desc = dom.pmViewDesc;
-  return desc ? desc.size == 0 && (dir < 0 || dom.nextSibling || dom.nodeName != "BR") : dom.nodeType == 1 && dom.contentEditable == "false";
+  return desc ? desc.size == 0 && (dir < 0 || dom.nextSibling || dom.nodeName != "BR") : isElt(dom) && dom.contentEditable == "false";
 }
 function skipIgnoredNodes(view, dir) {
   return dir < 0 ? skipIgnoredNodesBefore(view) : skipIgnoredNodesAfter(view);
@@ -8189,22 +8274,21 @@ function skipIgnoredNodesBefore(view) {
   if (!node)
     return;
   let moveNode, moveOffset, force = false;
-  if (gecko && node.nodeType == 1 && offset < nodeLen(node) && isIgnorable(node.childNodes[offset], -1))
+  if (gecko && isElt(node) && offset < nodeSize(node) && isIgnorable(node.childNodes[offset], -1))
     force = true;
   for (; ; ) {
     if (offset > 0) {
-      if (node.nodeType != 1) {
+      if (!isElt(node))
         break;
+      let before = node.childNodes[offset - 1];
+      if (isIgnorable(before, -1)) {
+        moveNode = node;
+        moveOffset = --offset;
+      } else if (isText(before)) {
+        node = before;
+        offset = node.nodeValue.length;
       } else {
-        let before = node.childNodes[offset - 1];
-        if (isIgnorable(before, -1)) {
-          moveNode = node;
-          moveOffset = --offset;
-        } else if (before.nodeType == 3) {
-          node = before;
-          offset = node.nodeValue.length;
-        } else
-          break;
+        break;
       }
     } else if (isBlockNode(node)) {
       break;
@@ -8222,7 +8306,7 @@ function skipIgnoredNodesBefore(view) {
         offset = 0;
       } else {
         node = prev;
-        offset = nodeLen(node);
+        offset = nodeSize(node);
       }
     }
   }
@@ -8236,18 +8320,19 @@ function skipIgnoredNodesAfter(view) {
   let node = sel.focusNode, offset = sel.focusOffset;
   if (!node)
     return;
-  let len = nodeLen(node);
+  let len = nodeSize(node);
   let moveNode, moveOffset;
   for (; ; ) {
     if (offset < len) {
-      if (node.nodeType != 1)
+      if (!isElt(node))
         break;
       let after = node.childNodes[offset];
       if (isIgnorable(after, 1)) {
         moveNode = node;
         moveOffset = ++offset;
-      } else
+      } else {
         break;
+      }
     } else if (isBlockNode(node)) {
       break;
     } else {
@@ -8265,7 +8350,7 @@ function skipIgnoredNodesAfter(view) {
       } else {
         node = next;
         offset = 0;
-        len = nodeLen(node);
+        len = nodeSize(node);
       }
     }
   }
@@ -8283,9 +8368,9 @@ function textNodeAfter(node, offset) {
   }
   while (node && offset < node.childNodes.length) {
     let next = node.childNodes[offset];
-    if (next.nodeType == 3)
+    if (isText(next))
       return next;
-    if (next.nodeType == 1 && next.contentEditable == "false")
+    if (isElt(next) && next.contentEditable == "false")
       break;
     node = next;
     offset = 0;
@@ -8298,16 +8383,16 @@ function textNodeBefore(node, offset) {
   }
   while (node && offset) {
     let next = node.childNodes[offset - 1];
-    if (next.nodeType == 3)
+    if (isText(next))
       return next;
-    if (next.nodeType == 1 && next.contentEditable == "false")
+    if (isElt(next) && next.contentEditable == "false")
       break;
     node = next;
     offset = node.childNodes.length;
   }
 }
 function setSelFocus(view, node, offset) {
-  if (node.nodeType != 3) {
+  if (!isText(node)) {
     let before, after;
     if (after = textNodeAfter(node, offset)) {
       node = after;
@@ -8317,16 +8402,13 @@ function setSelFocus(view, node, offset) {
       offset = before.nodeValue.length;
     }
   }
-  let sel = view.domSelection();
+  let sel = view.domSelection(), range = view.domSelectionRange();
   if (!sel)
     return;
-  if (selectionCollapsed(sel)) {
-    let range = document.createRange();
-    range.setEnd(node, offset);
-    range.setStart(node, offset);
-    sel.removeAllRanges();
-    sel.addRange(range);
+  if (selectionCollapsed(range)) {
+    sel.collapse(node, offset);
   } else if (sel.extend) {
+    sel.collapse(range.anchorNode, range.anchorOffset);
     sel.extend(node, offset);
   }
   view.domObserver.setCurSelection();
@@ -8353,7 +8435,13 @@ function findDirection(view, pos) {
         return after.left > coords.left ? "ltr" : "rtl";
     }
   }
-  let computed = getComputedStyle(view.dom).direction;
+  let block = view.dom;
+  for (let d = $pos.depth; d > 0; d--)
+    if ($pos.node(d).isBlock) {
+      block = view.nodeDOM($pos.before(d)) || block;
+      break;
+    }
+  let computed = getComputedStyle(block).direction;
   return computed == "rtl" ? "rtl" : "ltr";
 }
 function selectVertically(view, dir, mods) {
@@ -8406,7 +8494,7 @@ function safariDownArrowBug(view) {
   if (!safari || view.state.selection.$head.parentOffset > 0)
     return false;
   let { focusNode, focusOffset } = view.domSelectionRange();
-  if (focusNode && focusNode.nodeType == 1 && focusOffset == 0 && focusNode.firstChild && focusNode.firstChild.contentEditable == "false") {
+  if (focusNode && isElt(focusNode) && focusOffset == 0 && focusNode.firstChild && isElt(focusNode.firstChild) && focusNode.firstChild.contentEditable == "false") {
     let child = focusNode.firstChild;
     switchEditable(view, child, "true");
     setTimeout(() => switchEditable(view, child, "false"), 20);
@@ -8464,7 +8552,7 @@ function serializeForClipboard(view, slice) {
   let doc3 = detachedDoc(), wrap2 = doc3.createElement("div");
   wrap2.appendChild(serializer.serializeFragment(content, { document: doc3 }));
   let firstChild = wrap2.firstChild, needsWrap, wrappers = 0;
-  while (firstChild && firstChild.nodeType == 1 && (needsWrap = wrapMap[firstChild.nodeName.toLowerCase()])) {
+  while (firstChild && isElt(firstChild) && (needsWrap = wrapMap[firstChild.nodeName.toLowerCase()])) {
     for (let i = needsWrap.length - 1; i >= 0; i--) {
       let wrapper = doc3.createElement(needsWrap[i]);
       while (wrap2.firstChild)
@@ -8474,7 +8562,7 @@ function serializeForClipboard(view, slice) {
     }
     firstChild = wrap2.firstChild;
   }
-  if (firstChild && firstChild.nodeType == 1)
+  if (firstChild && isElt(firstChild))
     firstChild.setAttribute("data-pm-slice", `${openStart} ${openEnd}${wrappers ? ` -${wrappers}` : ""} ${JSON.stringify(context)}`);
   let text = view.someProp("clipboardTextSerializer", (f) => f(slice, view)) || slice.content.textBetween(0, slice.content.size, "\n\n");
   return { dom: wrap2, text, slice };
@@ -8522,7 +8610,7 @@ function parseFromClipboard(view, text, html, plainText, $context) {
   if (sliceData && sliceData[3])
     for (let i = +sliceData[3]; i > 0; i--) {
       let child = dom.firstChild;
-      while (child && child.nodeType != 1)
+      while (child && !isElt(child))
         child = child.nextSibling;
       if (!child)
         break;
@@ -8722,6 +8810,7 @@ var InputState = class {
     this.mouseDown = null;
     this.lastKeyCode = null;
     this.lastKeyCodeTime = 0;
+    this.lastKeyDispatched = false;
     this.lastClick = { time: 0, x: 0, y: 0, type: "", button: 0 };
     this.lastSelectionOrigin = null;
     this.lastSelectionTime = 0;
@@ -8795,6 +8884,15 @@ function dispatchEvent(view, event) {
   if (!runCustomHandler(view, event) && handlers[event.type] && (view.editable || !(event.type in editHandlers)))
     handlers[event.type](view, event);
 }
+function dispatchKey(view, event) {
+  let { input } = view;
+  if (input.lastKeyDispatched || view.composing)
+    return false;
+  input.lastKeyDispatched = true;
+  if (typeof event == "string")
+    event = keyEvent(event == "Backspace" ? 8 : 13, event);
+  return view.someProp("handleKeyDown", (f) => f(view, event));
+}
 editHandlers.keydown = (view, _event) => {
   let event = _event;
   view.input.shiftKey = event.keyCode == 16 || event.shiftKey;
@@ -8802,6 +8900,7 @@ editHandlers.keydown = (view, _event) => {
     return;
   view.input.lastKeyCode = event.keyCode;
   view.input.lastKeyCodeTime = Date.now();
+  view.input.lastKeyDispatched = false;
   if (android && chrome && event.keyCode == 13)
     return;
   if (event.keyCode != 229)
@@ -8811,11 +8910,11 @@ editHandlers.keydown = (view, _event) => {
     view.input.lastIOSEnter = now;
     view.input.lastIOSEnterFallbackTimeout = setTimeout(() => {
       if (view.input.lastIOSEnter == now) {
-        view.someProp("handleKeyDown", (f) => f(view, keyEvent(13, "Enter")));
+        dispatchKey(view, "Enter");
         view.input.lastIOSEnter = 0;
       }
     }, 200);
-  } else if (view.someProp("handleKeyDown", (f) => f(view, event)) || captureKeyDown(view, event)) {
+  } else if (dispatchKey(view, event) || captureKeyDown(view, event)) {
     event.preventDefault();
   } else {
     setSelectionOrigin(view, "key");
@@ -8865,8 +8964,7 @@ function updateSelection(view, selection, origin) {
   if (view.state.selection.eq(selection))
     return;
   let tr = view.state.tr.setSelection(selection);
-  if (origin == "pointer")
-    tr.setMeta("pointer", true);
+  tr.setMeta("pointer", true);
   view.dispatch(tr);
 }
 function selectClickedLeaf(view, inside) {
@@ -8874,7 +8972,7 @@ function selectClickedLeaf(view, inside) {
     return false;
   let $pos = view.state.doc.resolve(inside), node = $pos.nodeAfter;
   if (node && node.isAtom && NodeSelection.isSelectable(node)) {
-    updateSelection(view, new NodeSelection($pos), "pointer");
+    updateSelection(view, new NodeSelection($pos));
     return true;
   }
   return false;
@@ -8897,7 +8995,7 @@ function selectClickedNode(view, inside) {
     }
   }
   if (selectAt != null) {
-    updateSelection(view, NodeSelection.create(view.state.doc, selectAt), "pointer");
+    updateSelection(view, NodeSelection.create(view.state.doc, selectAt));
     return true;
   } else {
     return false;
@@ -8918,7 +9016,7 @@ function defaultTripleClick(view, inside, event) {
   let selection = selectionForTripleClick(view, inside, true), doc3 = view.state.doc;
   if (!selection)
     return false;
-  updateSelection(view, selection, "pointer");
+  updateSelection(view, selection);
   if (selection instanceof TextSelection && doc3.eq(view.state.doc))
     view.input.mouseDown = new TripleClickDrag(view, selection);
   return true;
@@ -9012,7 +9110,7 @@ var LeftMouseDown = class extends MouseDown {
     }
     const target = flushed ? null : event.target;
     const targetDesc = target ? view.docView.nearestDesc(target, true) : null;
-    this.target = targetDesc && targetDesc.nodeDOM.nodeType == 1 ? targetDesc.nodeDOM : null;
+    this.target = targetDesc && isElt(targetDesc.nodeDOM) ? targetDesc.nodeDOM : null;
     let { selection } = view.state;
     if (event.button == 0 && (targetNode.type.spec.draggable && targetNode.type.spec.selectable !== false || selection instanceof NodeSelection && selection.from <= targetPos && selection.to > targetPos))
       this.mightDrag = {
@@ -9071,7 +9169,7 @@ var LeftMouseDown = class extends MouseDown {
     // thus doesn't get a reaction from ProseMirror. This
     // works around that.
     chrome && !this.view.state.selection.visible && Math.min(Math.abs(pos.pos - this.view.state.selection.from), Math.abs(pos.pos - this.view.state.selection.to)) <= 2)) {
-      updateSelection(this.view, Selection.near(this.view.state.doc.resolve(pos.pos)), "pointer");
+      updateSelection(this.view, Selection.near(this.view.state.doc.resolve(pos.pos)));
       event.preventDefault();
     } else {
       setSelectionOrigin(this.view, "pointer");
@@ -9112,7 +9210,7 @@ var TripleClickDrag = class extends MouseDown {
       return;
     let { doc: doc3 } = this.view.state, start = this.startSelection;
     let [anchor, head] = target.from < start.from ? [start.to, target.from] : [start.from, target.to];
-    updateSelection(this.view, TextSelection.create(doc3, anchor, head), "pointer");
+    updateSelection(this.view, TextSelection.create(doc3, anchor, head));
   }
 };
 handlers.touchstart = (view) => {
@@ -9147,11 +9245,11 @@ editHandlers.compositionstart = editHandlers.compositionupdate = (view) => {
       endComposition(view, !state.selection.empty);
       if (gecko && state.selection.empty && $pos.parentOffset && !$pos.textOffset && $pos.nodeBefore.marks.length) {
         let sel = view.domSelectionRange();
-        for (let node = sel.focusNode, offset = sel.focusOffset; node && node.nodeType == 1 && offset != 0; ) {
+        for (let node = sel.focusNode, offset = sel.focusOffset; node && isElt(node) && offset != 0; ) {
           let before = offset < 0 ? node.lastChild : node.childNodes[offset - 1];
           if (!before)
             break;
-          if (before.nodeType == 3) {
+          if (isText(before)) {
             let sel2 = view.domSelection();
             if (sel2)
               sel2.collapse(before, before.nodeValue.length);
@@ -9169,10 +9267,10 @@ editHandlers.compositionstart = editHandlers.compositionupdate = (view) => {
 };
 function selectionBeforeUneditable(view) {
   let { focusNode, focusOffset } = view.domSelectionRange();
-  if (!focusNode || focusNode.nodeType != 1 || focusOffset >= focusNode.childNodes.length)
+  if (!focusNode || !isElt(focusNode) || focusOffset >= focusNode.childNodes.length)
     return false;
   let next = focusNode.childNodes[focusOffset];
-  return next.nodeType == 1 && next.contentEditable == "false";
+  return isElt(next) && next.contentEditable == "false";
 }
 editHandlers.compositionend = (view, event) => {
   if (view.composing) {
@@ -9354,7 +9452,7 @@ handlers.dragstart = (view, _event) => {
   if (pos && pos.pos >= sel.from && pos.pos <= (sel instanceof NodeSelection ? sel.to - 1 : sel.to)) ;
   else if (mouseDown && mouseDown.mightDrag) {
     node = NodeSelection.create(view.state.doc, mouseDown.mightDrag.pos);
-  } else if (event.target && event.target.nodeType == 1) {
+  } else if (event.target && isElt(event.target)) {
     let desc = view.docView.nearestDesc(event.target, true);
     if (desc && desc.node.type.spec.draggable && desc != view.docView)
       node = NodeSelection.create(view.state.doc, desc.posBefore);
@@ -9445,10 +9543,15 @@ handlers.focus = (view) => {
     view.dom.classList.add("ProseMirror-focused");
     view.domObserver.start();
     view.focused = true;
-    setTimeout(() => {
-      if (view.docView && view.hasFocus() && !view.domObserver.currentSelection.eq(view.domSelectionRange()))
-        selectionToDOM(view);
-    }, 20);
+    let startSel = view.domSelectionRange();
+    if (!view.domObserver.currentSelection.eq(startSel)) {
+      let { focusNode, focusOffset } = startSel;
+      setTimeout(() => {
+        let newSel = view.domSelectionRange();
+        if (newSel.focusNode == focusNode && newSel.focusOffset == focusOffset && view.docView && view.hasFocus())
+          selectionToDOM(view);
+      }, 20);
+    }
   }
 };
 handlers.blur = (view, _event) => {
@@ -9468,11 +9571,11 @@ handlers.beforeinput = (view, _event) => {
     view.domObserver.flushSoon();
     let { domChangeCount } = view.input;
     setTimeout(() => {
-      if (view.input.domChangeCount != domChangeCount)
+      if (view.input.domChangeCount != domChangeCount || view.domObserver.pendingRecords().length)
         return;
       view.dom.blur();
       view.focus();
-      if (view.someProp("handleKeyDown", (f) => f(view, keyEvent(8, "Backspace"))))
+      if (dispatchKey(view, "Backspace"))
         return;
       let { $cursor } = view.state.selection;
       if ($cursor && $cursor.pos > 0)
@@ -9493,6 +9596,23 @@ function compareObjs(a, b) {
       return false;
   return true;
 }
+var FragmentCursor = class {
+  constructor(frag) {
+    this.frag = frag;
+    this.index = 0;
+    this.off = 0;
+  }
+  nodeAt(off) {
+    while (this.off <= off && this.index < this.frag.childCount) {
+      let next = this.frag.child(this.index);
+      if (this.off == off)
+        return next;
+      this.off += next.nodeSize;
+      this.index++;
+    }
+    return null;
+  }
+};
 var WidgetType = class _WidgetType {
   constructor(toDOM, spec) {
     this.toDOM = toDOM;
@@ -9550,9 +9670,9 @@ var NodeType2 = class _NodeType {
       return null;
     return new Decoration(from.pos - offset, to.pos - offset, this);
   }
-  valid(node, span) {
-    let { index, offset } = node.content.findIndex(span.from), child;
-    return offset == span.from && !(child = node.child(index)).isText && offset + child.nodeSize == span.to;
+  valid(node, span, cursor) {
+    let found2 = cursor.nodeAt(span.from);
+    return !!found2 && !found2.isText && span.from + found2.nodeSize == span.to;
   }
   eq(other) {
     return this == other || other instanceof _NodeType && compareObjs(this.attrs, other.attrs) && compareObjs(this.spec, other.spec);
@@ -9691,12 +9811,15 @@ var DecorationSet = class _DecorationSet {
   */
   mapInner(mapping, node, offset, oldOffset, options) {
     let newLocal;
-    for (let i = 0; i < this.local.length; i++) {
-      let mapped = this.local[i].map(mapping, offset, oldOffset);
-      if (mapped && mapped.type.valid(node, mapped))
-        (newLocal || (newLocal = [])).push(mapped);
-      else if (options.onRemove)
-        options.onRemove(this.local[i].spec);
+    if (this.local.length) {
+      let cur = new FragmentCursor(node.content);
+      for (let i = 0; i < this.local.length; i++) {
+        let mapped = this.local[i].map(mapping, offset, oldOffset);
+        if (mapped && mapped.type.valid(node, mapped, cur))
+          (newLocal || (newLocal = [])).push(mapped);
+        else if (options.onRemove)
+          options.onRemove(this.local[i].spec);
+      }
     }
     if (this.children.length)
       return mapChildren(this.children, newLocal || [], mapping, node, offset, oldOffset, options);
@@ -9733,9 +9856,12 @@ var DecorationSet = class _DecorationSet {
       childIndex += 3;
     });
     let local = moveSpans(childIndex ? withoutNulls(decorations) : decorations, -offset);
-    for (let i = 0; i < local.length; i++)
-      if (!local[i].type.valid(doc3, local[i]))
-        local.splice(i--, 1);
+    if (local.length) {
+      let cur = new FragmentCursor(doc3.content);
+      for (let i = 0; i < local.length; i++)
+        if (!local[i].type.valid(doc3, local[i], cur))
+          local.splice(i--, 1);
+    }
     return new _DecorationSet(local.length ? this.local.concat(local).sort(byPos) : this.local, children || this.children);
   }
   /**
@@ -10052,12 +10178,15 @@ function buildTree(spans, node, offset, options) {
     }
   });
   let locals = moveSpans(hasNulls ? withoutNulls(spans) : spans, -offset).sort(byPos);
-  for (let i = 0; i < locals.length; i++)
-    if (!locals[i].type.valid(node, locals[i])) {
-      if (options.onRemove)
-        options.onRemove(locals[i].spec);
-      locals.splice(i--, 1);
-    }
+  if (locals.length) {
+    let cur = new FragmentCursor(node.content);
+    for (let i = 0; i < locals.length; i++)
+      if (!locals[i].type.valid(node, locals[i], cur)) {
+        if (options.onRemove)
+          options.onRemove(locals[i].spec);
+        locals.splice(i--, 1);
+      }
+  }
   return locals.length || children.length ? new DecorationSet(locals, children) : empty;
 }
 function byPos(a, b) {
@@ -10243,7 +10372,7 @@ var DOMObserver = class {
     let desc = container && this.view.docView.nearestDesc(container);
     if (desc && desc.ignoreMutation({
       type: "selection",
-      target: container.nodeType == 3 ? container.parentNode : container
+      target: isText(container) ? container.parentNode : container
     })) {
       this.setCurSelection();
       return true;
@@ -10262,8 +10391,11 @@ var DOMObserver = class {
     let mutations = this.pendingRecords();
     if (mutations.length)
       this.queue = [];
-    let sel = view.domSelectionRange();
-    let newSel = !this.suppressingSelectionUpdates && !this.currentSelection.eq(sel) && hasFocusAndSelection(view) && !this.ignoreSelectionChange(sel);
+    let selRange, newSel = false;
+    if (!this.suppressingSelectionUpdates && hasFocusAndSelection(view)) {
+      selRange = view.domSelectionRange();
+      newSel = !this.currentSelection.eq(selRange) && !this.ignoreSelectionChange(selRange);
+    }
     let from = -1, to = -1, typeOver = false, added = [];
     if (view.editable) {
       for (let i = 0; i < mutations.length; i++) {
@@ -10280,7 +10412,7 @@ var DOMObserver = class {
       for (let node of added)
         if (node.nodeName == "BR" && node.parentNode) {
           let after = node.nextSibling;
-          while (after && after.nodeType == 1) {
+          while (after && isElt(after)) {
             if (after.contentEditable == "false") {
               node.parentNode.removeChild(node);
               break;
@@ -10306,10 +10438,10 @@ var DOMObserver = class {
       }
     }
     let readSel = null;
-    if (from < 0 && newSel && view.input.lastFocus > Date.now() - 200 && Math.max(view.input.lastTouch, view.input.lastClick.time) < Date.now() - 300 && selectionCollapsed(sel) && (readSel = selectionFromDOM(view)) && readSel.eq(Selection.near(view.state.doc.resolve(0), 1))) {
+    if (from < 0 && newSel && view.input.lastFocus > Date.now() - 200 && Math.max(view.input.lastTouch, view.input.lastClick.time) < Date.now() - 300 && selectionCollapsed(selRange) && (readSel = selectionFromDOM(view)) && readSel.eq(Selection.near(view.state.doc.resolve(0), 1))) {
       view.input.lastFocus = 0;
       selectionToDOM(view);
-      this.currentSelection.set(sel);
+      this.currentSelection.set(selRange);
       view.scrollToSelection();
     } else if (from > -1 || newSel) {
       if (from > -1) {
@@ -10323,9 +10455,10 @@ var DOMObserver = class {
       this.handleDOMChange(from, to, typeOver, added);
       if (view.docView && view.docView.dirty)
         view.updateState(view.state);
-      else if (!this.currentSelection.eq(sel))
+      else if (selRange && !this.currentSelection.eq(selRange))
         selectionToDOM(view);
-      this.currentSelection.set(sel);
+      if (selRange)
+        this.currentSelection.set(selRange);
     }
   }
   registerMutation(mut, added) {
@@ -10341,7 +10474,7 @@ var DOMObserver = class {
       for (let i = 0; i < mut.addedNodes.length; i++) {
         let node = mut.addedNodes[i];
         added.push(node);
-        if (node.nodeType == 3)
+        if (isText(node))
           this.lastChangedTextNode = node;
       }
       if (desc.contentDOM && desc.contentDOM != desc.dom && !desc.contentDOM.contains(mut.target))
@@ -10436,7 +10569,7 @@ function fixUpBadSafariComposition(view, addedNodes) {
         let parent = nextCell;
         for (; ; ) {
           let first = parent.firstChild;
-          if (!first || first.nodeType != 1 || first.contentEditable == "false" || /^(BR|IMG)$/.test(first.nodeName))
+          if (!first || !isElt(first) || first.contentEditable == "false" || /^(BR|IMG)$/.test(first.nodeName))
             break;
           parent = first;
         }
@@ -10454,7 +10587,7 @@ function parseBetween(view, from_, to_, addedNodes) {
   let domSel = view.domSelectionRange();
   let find;
   let anchor = domSel.anchorNode;
-  if (anchor && view.dom.contains(anchor.nodeType == 1 ? anchor : anchor.parentNode)) {
+  if (anchor && contains(view.dom, anchor)) {
     find = [{ node: anchor, offset: domSel.anchorOffset }];
     if (!selectionCollapsed(domSel))
       find.push({ node: domSel.focusNode, offset: domSel.focusOffset });
@@ -10517,7 +10650,7 @@ function readDOMChange(view, from, to, typeOver, addedNodes) {
     let origin = view.input.lastSelectionTime > Date.now() - 50 ? view.input.lastSelectionOrigin : null;
     let newSel = selectionFromDOM(view, origin);
     if (newSel && !view.state.selection.eq(newSel)) {
-      if (chrome && android && view.input.lastKeyCode === 13 && Date.now() - 100 < view.input.lastKeyCodeTime && view.someProp("handleKeyDown", (f) => f(view, keyEvent(13, "Enter"))))
+      if (chrome && android && view.input.lastKeyCode === 13 && Date.now() - 100 < view.input.lastKeyCodeTime && dispatchKey(view, "Enter"))
         return;
       let tr = view.state.tr.setSelection(newSel);
       if (origin == "pointer")
@@ -10549,7 +10682,7 @@ function readDOMChange(view, from, to, typeOver, addedNodes) {
   let change = findDiff(compare.content, parse.doc.content, parse.from, preferredPos, preferredSide);
   if (change)
     view.input.domChangeCount++;
-  if ((ios && view.input.lastIOSEnter > Date.now() - 225 || android) && addedNodes.some((n) => n.nodeType == 1 && !isInline.test(n.nodeName)) && (!change || change.endA >= change.endB) && view.someProp("handleKeyDown", (f) => f(view, keyEvent(13, "Enter")))) {
+  if ((ios && view.input.lastIOSEnter > Date.now() - 225 || android) && addedNodes.some((n) => isElt(n) && !isInline.test(n.nodeName)) && (!change || change.endA >= change.endB) && dispatchKey(view, "Enter")) {
     view.input.lastIOSEnter = 0;
     return;
   }
@@ -10586,11 +10719,11 @@ function readDOMChange(view, from, to, typeOver, addedNodes) {
   let $to = parse.doc.resolveNoCache(change.endB - parse.from);
   let $fromA = doc3.resolve(change.start);
   let inlineChange = $from.sameParent($to) && $from.parent.inlineContent && $fromA.end() >= change.endA;
-  if ((ios && view.input.lastIOSEnter > Date.now() - 225 && (!inlineChange || addedNodes.some((n) => n.nodeName == "DIV" || n.nodeName == "P")) || !inlineChange && looksLikeEnter(parse.doc, $from.pos, $to.pos)) && view.someProp("handleKeyDown", (f) => f(view, keyEvent(13, "Enter")))) {
+  if ((ios && view.input.lastIOSEnter > Date.now() - 225 && (!inlineChange || addedNodes.some((n) => n.nodeName == "DIV" || n.nodeName == "P")) || !inlineChange && looksLikeEnter(parse.doc, $from.pos, $to.pos)) && dispatchKey(view, "Enter")) {
     view.input.lastIOSEnter = 0;
     return;
   }
-  if (view.state.selection.anchor > change.start && looksLikeBackspace(doc3, change.start, change.endA, $from, $to) && view.someProp("handleKeyDown", (f) => f(view, keyEvent(8, "Backspace")))) {
+  if (view.state.selection.anchor > change.start && (inlineChange ? change.endA > change.start && change.endB == change.start : looksLikeBlockJoin(doc3, change.start, change.endA, $from, $to)) && dispatchKey(view, "Backspace")) {
     if (android && chrome)
       view.domObserver.suppressSelectionUpdates();
     return;
@@ -10600,11 +10733,7 @@ function readDOMChange(view, from, to, typeOver, addedNodes) {
   if (android && !inlineChange && $from.start() != $to.start() && $to.parentOffset == 0 && $from.depth == $to.depth && parse.sel && parse.sel.anchor == parse.sel.head && parse.sel.head == change.endA) {
     change.endB -= 2;
     $to = parse.doc.resolveNoCache(change.endB - parse.from);
-    setTimeout(() => {
-      view.someProp("handleKeyDown", function(f) {
-        return f(view, keyEvent(13, "Enter"));
-      });
-    }, 20);
+    setTimeout(() => dispatchKey(view, "Enter"), 20);
   }
   let chFrom = change.start, chTo = change.endA;
   let mkTr = (base) => {
@@ -10681,7 +10810,7 @@ function isMarkChange(cur, prev) {
   if (Fragment.from(updated).eq(cur))
     return { mark, type };
 }
-function looksLikeBackspace(old, start, end, $newStart, $newEnd) {
+function looksLikeBlockJoin(old, start, end, $newStart, $newEnd) {
   if (
     // The content must have shrunk
     end - start <= $newEnd.pos - $newStart.pos || // newEnd must point directly at or after the end of the block that newStart points into
@@ -10689,7 +10818,7 @@ function looksLikeBackspace(old, start, end, $newStart, $newEnd) {
   )
     return false;
   let $start = old.resolve(start);
-  if (!$newStart.parent.isTextblock) {
+  if (!$newStart.parent.inlineContent) {
     let after = $start.nodeAfter;
     return after != null && end == start + after.nodeSize;
   }
@@ -10916,11 +11045,11 @@ var EditorView = class {
   */
   scrollToSelection() {
     let startDOM = this.domSelectionRange().focusNode;
-    if (!startDOM || !this.dom.contains(startDOM.nodeType == 1 ? startDOM : startDOM.parentNode)) ;
+    if (!startDOM || !contains(this.dom, startDOM)) ;
     else if (this.someProp("handleScrollToSelection", (f) => f(this))) ;
     else if (this.state.selection instanceof NodeSelection) {
       let target = this.docView.domAfterPos(this.state.selection.from);
-      if (target.nodeType == 1)
+      if (isElt(target))
         scrollRectIntoView(this, target.getBoundingClientRect(), startDOM);
     } else {
       scrollRectIntoView(this, this.coordsAtPos(this.state.selection.head, 1), startDOM);
@@ -11176,7 +11305,7 @@ var EditorView = class {
   @internal
   */
   domSelectionRange() {
-    let sel = this.domSelection();
+    let sel = this.dom.isConnected !== false && this.domSelection();
     if (!sel)
       return { focusNode: null, focusOffset: 0, anchorNode: null, anchorOffset: 0 };
     return safari && this.root.nodeType === 11 && deepActiveElement(this.dom.ownerDocument) == this.dom && safariShadowSelectionRange(this, sel) || sel;
@@ -11261,7 +11390,7 @@ function checkStateComponent(plugin) {
     throw new RangeError("Plugins passed directly to the view must not have a state component");
 }
 
-// ../../../../../tmp/tmp.py9TsyCKPw/node_modules/prosemirror-schema-basic/dist/index.js
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/prosemirror-schema-basic/dist/index.js
 var pDOM = ["p", 0];
 var blockquoteDOM = ["blockquote", 0];
 var hrDOM = ["hr"];
@@ -11327,7 +11456,7 @@ var nodes = {
       { tag: "h6", attrs: { level: 6 } }
     ],
     toDOM(node) {
-      return ["h" + node.attrs.level, 0];
+      return ["h" + +node.attrs.level, 0];
     }
   },
   /**
@@ -11460,7 +11589,7 @@ var marks = {
 };
 var schema = new Schema({ nodes, marks });
 
-// ../../../../../tmp/tmp.py9TsyCKPw/node_modules/prosemirror-schema-list/dist/index.js
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/prosemirror-schema-list/dist/index.js
 var olDOM = ["ol", 0];
 var ulDOM = ["ul", 0];
 var liDOM = ["li", 0];
